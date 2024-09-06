@@ -8,7 +8,8 @@
         "build": "ng build",
         "test": "ng test",
         "lint": "ng lint",
-        "e2e": "ng e2e"
+        "e2e": "ng e2e",
+        "prepare": "husky"
     },
     "private": true,
     "dependencies": {
@@ -38,15 +39,26 @@
     },
     "devDependencies": {
         "@angular-devkit/build-angular": "^18.2.2",
+        "@angular-eslint/builder": "18.3.0",
+        "@angular-eslint/eslint-plugin": "18.3.0",
+        "@angular-eslint/eslint-plugin-template": "18.3.0",
+        "@angular-eslint/schematics": "18.3.0",
+        "@angular-eslint/template-parser": "18.3.0",
         "@angular/cli": "^18.2.2",
         "@angular/compiler-cli": "^18.2.0",
         "@types/jasmine": "~5.1.0",
+        "@typescript-eslint/eslint-plugin": "7.11.0",
+        "@typescript-eslint/parser": "7.11.0",
+        "eslint": "8.57.0",
+        "husky": "^9.1.5",
         "jasmine-core": "~5.2.0",
         "karma": "~6.4.0",
         "karma-chrome-launcher": "~3.2.0",
         "karma-coverage": "~2.2.0",
         "karma-jasmine": "~5.1.0",
         "karma-jasmine-html-reporter": "~2.1.0",
+        "lint-staged": "^15.2.10",
+        "prettier": "3.3.3",
         "typescript": "~5.5.2"
     }
 }

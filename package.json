@@ -1,6 +1,6 @@
 {
     "name": "PyEducaVirtual",
-    "version": "17.0.0",
+    "version": "0.0.0",
     "license": "MIT",
     "scripts": {
         "ng": "ng",
@@ -10,6 +10,10 @@
         "lint": "ng lint",
         "e2e": "ng e2e",
         "prepare": "husky"
+    },
+    "engines": {
+        "npm": ">=10.8.2",
+        "node": ">=20.17.0"
     },
     "private": true,
     "dependencies": {

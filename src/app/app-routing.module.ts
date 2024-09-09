@@ -58,6 +58,13 @@ import { LoginComponent } from './shared/login/login.component'
                             (m) => m.DocenteModule
                         ),
                 },
+                {
+                    path: 'configuracion',
+                    loadChildren: () =>
+                        import(
+                            './sistema/configuracion/configuracion.module'
+                        ).then((m) => m.ConfiguracionModule),
+                },
 
                 {
                     path: 'auth',

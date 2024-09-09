@@ -49,9 +49,12 @@
         <!-- <button class="p-link layout-topbar-button">
             <i class="pi pi-cog"></i>
         </button> -->
-        <div class="p-link layout-topbar-button">
-            <i class="pi pi-cog" (onClick)="menu.toggle($event)"></i>
-        </div>
+        <button
+            class="p-link layout-topbar-button"
+            (click)="menu.toggle($event)"
+        >
+            <i class="pi pi-cog"></i>
+        </button>
         <p-menu #menu [model]="items" [popup]="true" />
     </div>
 </div>

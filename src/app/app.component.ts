@@ -20,10 +20,7 @@ export class AppComponent implements OnInit {
         this.primengConfig.ripple = true
         this.isLoggedIn = !!this.tokenStorageService.getToken()
 
-        if (this.isLoggedIn) {
-            const user = this.tokenStorageService.getUser()
-            this.username = user.user.cCredUsuario
-        } else {
+        if (!this.isLoggedIn) {
             this.router.navigate(['login'])
         }
     }

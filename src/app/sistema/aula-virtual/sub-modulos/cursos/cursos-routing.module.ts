@@ -1,21 +1,18 @@
 import { NgModule } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { RouterModule, Routes } from '@angular/router'
+import { CursosComponent } from './cursos/cursos.component'
+import { CursoDetalleComponent } from './curso-detalle/curso-detalle.component'
 
 const routes: Routes = [
     {
         path: '',
+        pathMatch: 'full',
+        component: CursosComponent,
     },
     {
-        path: '/:id',
-        children: [
-            {
-                path: 'tarea',
-            },
-            {
-                path: 'tarea/:id',
-            },
-        ],
+        path: ':id',
+        component: CursoDetalleComponent,
     },
 ]
 

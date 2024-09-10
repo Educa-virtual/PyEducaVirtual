@@ -1,8 +1,29 @@
-<p-card> 
-  <ng-template pTemplate="header">
-    <div class="d-flex justify-content-between align-items-center">
-      <h5 class="p-3 text-uppercase text-primary"><b>{{ title }}</b></h5>
-    </div>
-  </ng-template>
-  <ng-content></ng-content>
+<p-card>
+    <p-toolbar>
+        <div class="p-toolbar-group-start">
+            <div class="d-flex justify-content-between align-items-center">
+                <h3 class="p-3 text-uppercase text-primary">
+                    <b>{{ title }}</b>
+                </h3>
+            </div>
+        </div>
+        <div class="p-toolbar-group-center">
+            <ng-container *ngFor="let item of actions">
+                <button
+                    size="small"
+                    [rounded]="true"
+                    pButton
+                    pRipple
+                    [icon]="item.icon"
+                    [pTooltip]="item.labelTooltip"
+                    tooltipPosition="top"
+                    (click)="accionBtn(item.accion, rowData)"
+                    [ngClass]="item.class"
+                >
+                    &nbsp;{{ item.text }}
+                </button>
+            </ng-container>
+        </div>
+    </p-toolbar>
+    <ng-content></ng-content>
 </p-card>

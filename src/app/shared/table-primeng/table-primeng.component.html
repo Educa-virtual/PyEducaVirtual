@@ -1,0 +1,95 @@
+<div class="container">
+    <p-table
+        #dt
+        [columns]="columnas"
+        [value]="data"
+        [loading]="loading"
+        responsiveLayout="scroll"
+        styleClass="p-datatable-sm"
+        [paginator]="true"
+        [rows]="10"
+        [tableStyle]="{ 'min-width': '50rem' }"
+        currentPageReportTemplate="{first} - {last} de {totalRecords} registros"
+        [rowsPerPageOptions]="[10, 25, 50]"
+        sortMode="multiple"
+        class="hoverTable"
+    >
+        <ng-template pTemplate="caption">
+            <div class="flex p-1">
+                <p-iconField iconPosition="left">
+                    <p-inputIcon styleClass="pi pi-search" />
+                    <input
+                        pInputText
+                        type="text"
+                        (input)="
+                            dt.filterGlobal($event.target.value, 'contains')
+                        "
+                        placeholder="Buscar palabra clave"
+                    />
+                </p-iconField>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header" let-columns>
+            <tr class="text-uppercase">
+                <th
+                    *ngFor="let col of columns"
+                    [pSortableColumn]="col.field"
+                    [style.width]="col.width"
+                >
+                    @if (col.type !== 'actions' && col.type !== 'item') {
+                        <div [style.text-align]="col.text_header">
+                            <span> {{ col.header }}</span
+                            ><p-sortIcon [field]="col.header"></p-sortIcon>
+                        </div>
+                    } @else {
+                        <div [style.text-align]="col.text_header">
+                            {{ col.header }}
+                        </div>
+                    }
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template
+            pTemplate="body"
+            let-rowData
+            let-columns="columns"
+            let-rowIndex="rowIndex"
+        >
+            <tr [pSelectableRow]="rowData">
+                <td *ngFor="let col of columns; let i = index">
+                    <ng-container *ngIf="col.type === 'item'">
+                        <div [style.text-align]="col.text">
+                            <span>{{ rowIndex + 1 }}</span>
+                        </div>
+                    </ng-container>
+
+                    <ng-container *ngIf="col.type === 'text'">
+                        <div [style.text-align]="col.text">
+                            {{ rowData[col.field] }}
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="col.type === 'actions'">
+                        <p-buttonGroup class="d-block text-center">
+                            <ng-container *ngFor="let item of actions">
+                                <ng-container *ngIf="item.type === 'item'">
+                                    <button
+                                        type="button"
+                                        pButton
+                                        pRipple
+                                        [icon]="item.icon"
+                                        [pTooltip]="item.labelTooltip"
+                                        tooltipPosition="top"
+                                        (click)="
+                                            accionBtn(item.accion, rowData)
+                                        "
+                                        [class]="item.class"
+                                    ></button>
+                                </ng-container>
+                            </ng-container>
+                        </p-buttonGroup>
+                    </ng-container>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>

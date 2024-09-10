@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core'
+import { Component, EventEmitter, Input, Output } from '@angular/core'
 import { PrimengModule } from 'src/app/primeng.module'
 
 @Component({
@@ -9,6 +9,8 @@ import { PrimengModule } from 'src/app/primeng.module'
     styleUrl: './container-page.component.scss',
 })
 export class ContainerPageComponent {
+    @Output() accionBtnItem = new EventEmitter()
+
     @Input() title: string = 'Titulo'
     @Input() actions = [
         {
@@ -33,4 +35,12 @@ export class ContainerPageComponent {
             class: 'p-button-success',
         },
     ]
+
+    accionBtn(accion, item) {
+        const data = {
+            accion,
+            item,
+        }
+        this.accionBtnItem.emit(data)
+    }
 }

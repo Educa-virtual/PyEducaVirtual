@@ -21,9 +21,7 @@
                     <input
                         pInputText
                         type="text"
-                        (input)="
-                            dt.filterGlobal($event.target.value, 'contains')
-                        "
+                        (input)="dt.filterGlobal($event.target, 'contains')"
                         placeholder="Buscar palabra clave"
                     />
                 </p-iconField>
@@ -69,11 +67,12 @@
                         </div>
                     </ng-container>
                     <ng-container *ngIf="col.type === 'actions'">
-                        <p-buttonGroup class="d-block text-center">
+                        <div class="d-block text-center">
                             <ng-container *ngFor="let item of actions">
                                 <ng-container *ngIf="item.type === 'item'">
                                     <button
-                                        type="button"
+                                        size="small"
+                                        [rounded]="true"
                                         pButton
                                         pRipple
                                         [icon]="item.icon"
@@ -82,11 +81,11 @@
                                         (click)="
                                             accionBtn(item.accion, rowData)
                                         "
-                                        [class]="item.class"
+                                        [ngClass]="item.class"
                                     ></button>
                                 </ng-container>
                             </ng-container>
-                        </p-buttonGroup>
+                        </div>
                     </ng-container>
                 </td>
             </tr>

@@ -37,6 +37,8 @@ import { StepsModule } from 'primeng/steps'
 import { ChartModule } from 'primeng/chart'
 import { CardModule } from 'primeng/card'
 import { MenuModule } from 'primeng/menu'
+import { IconFieldModule } from 'primeng/iconfield'
+import { InputIconModule } from 'primeng/inputicon'
 
 @NgModule({
     imports: [
@@ -76,6 +78,8 @@ import { MenuModule } from 'primeng/menu'
         ChartModule,
         CardModule,
         MenuModule,
+        IconFieldModule,
+        InputIconModule,
     ],
     exports: [
         TableModule,
@@ -114,6 +118,8 @@ import { MenuModule } from 'primeng/menu'
         ChartModule,
         CardModule,
         MenuModule,
+        IconFieldModule,
+        InputIconModule,
     ],
     providers: [ConfirmationService, MessageService],
 })

@@ -36,7 +36,12 @@
                 "plugin:@angular-eslint/template/accessibility"
             ],
             "rules": {
-                
+                "@angular-eslint/template/elements-content": [
+                    "error",
+                    {
+                        "allowList": ["pTooltip"]
+                    }
+                ]
             }
         }
     ]

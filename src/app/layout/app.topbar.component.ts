@@ -37,6 +37,7 @@ export class AppTopBarComponent implements OnInit {
             { iProfile: 1002, profile: 'Estudiante' },
             { iProfile: 1003, profile: 'Aula Virtual' },
             { iProfile: 1004, profile: 'Otro' },
+            { iProfile: 1005, profile: 'Administrador' },
         ]
         this.items = [
             {

@@ -59,8 +59,23 @@ const aula_virtual = [
         items: [
             {
                 label: 'Mis Cursos',
-                icon: 'pi pi-fw pi-desktop',
-                routerLink: ['/'],
+                icon: 'pi pi-fw pi-book',
+                routerLink: ['/aula-virtual'],
+            },
+            {
+                label: 'Calendario',
+                icon: 'pi pi-fw pi-calendar',
+                routerLink: ['/aula-virtual'],
+            },
+            {
+                label: 'Recursos',
+                icon: 'pi pi-fw pi-folder',
+                routerLink: ['/aula-virtual'],
+            },
+            {
+                label: 'DashBoard',
+                icon: 'pi pi-fw pi-chart-bar',
+                routerLink: ['/aula-virtual'],
             },
         ],
     },
@@ -335,6 +350,50 @@ const other = [
         ],
     },
 ]
+
+const administrador = [
+    {
+        label: 'Configuración',
+        items: [
+            {
+                label: 'Personas',
+                icon: 'pi pi-fw pi-desktop',
+                routerLink: ['/configuracion/personas'],
+            },
+            {
+                label: 'Calendario Académico',
+                icon: 'pi pi-fw pi-desktop',
+                routerLink: ['/'],
+            },
+            {
+                label: 'Cursos',
+                icon: 'pi pi-fw pi-desktop',
+                routerLink: ['/'],
+            },
+            {
+                label: 'Horarios',
+                icon: 'pi pi-fw pi-desktop',
+                routerLink: ['/'],
+            },
+            {
+                label: 'Grados',
+                icon: 'pi pi-fw pi-desktop',
+                routerLink: ['/'],
+            },
+            {
+                label: 'Sección',
+                icon: 'pi pi-fw pi-desktop',
+                routerLink: ['/'],
+            },
+            {
+                label: 'Usuarios',
+                icon: 'pi pi-fw pi-desktop',
+                routerLink: ['/'],
+            },
+        ],
+    },
+]
+
 @Injectable({
     providedIn: 'root',
 })
@@ -349,6 +408,8 @@ export class ConstantesService {
                 return estudiante
             case 1003:
                 return aula_virtual
+            case 1005:
+                return administrador
             default:
                 return other
         }

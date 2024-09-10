@@ -13,6 +13,8 @@ import { NodeService } from './demo/service/node.service'
 import { PhotoService } from './demo/service/photo.service'
 import { PrimengModule } from './primeng.module'
 import { SharedModule } from './shared/shared.module'
+import { HTTP_INTERCEPTORS } from '@angular/common/http'
+import { GlobalLoaderInterceptor } from './shared/global-loader/global-loader-interceptor/global-loader-interceptor.interceptor'
 
 //////////////////
 
@@ -28,6 +30,11 @@ import { SharedModule } from './shared/shared.module'
         NodeService,
         PhotoService,
         ProductService,
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: GlobalLoaderInterceptor,
+            multi: true,
+        },
     ],
     bootstrap: [AppComponent],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],

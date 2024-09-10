@@ -4,8 +4,13 @@ import { RouterModule } from '@angular/router'
 import { FormsModule } from '@angular/forms'
 import { ContainerPageComponent } from './container-page/container-page.component'
 import { BtnLoadingComponent } from './btn-loading/btn-loading.component'
+import { TablePrimengComponent } from './table-primeng/table-primeng.component'
 
-const components = [ContainerPageComponent, BtnLoadingComponent]
+const components = [
+    ContainerPageComponent,
+    BtnLoadingComponent,
+    TablePrimengComponent,
+]
 
 @NgModule({
     exports: components,

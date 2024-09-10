@@ -1,5 +1,5 @@
 @if (isVisible$ | async) {
-    <div class="container-overlay">
+    <div class="container-overlay" [@fadeInOut]>
         <p-progressSpinner ariaLabel="Cargando..." />
     </div>
 }

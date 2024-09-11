@@ -1,11 +1,21 @@
 import { Component, OnInit } from '@angular/core';
-import { SelectItem } from 'primeng/api';
-import { DataView } from 'primeng/dataview';
+import { SelectItem, PrimeTemplate } from 'primeng/api';
+import { DataView, DataViewModule } from 'primeng/dataview';
 import { Product } from 'src/app/demo/api/product';
 import { ProductService } from 'src/app/demo/service/product.service';
+import { DropdownModule } from 'primeng/dropdown';
+import { InputTextModule } from 'primeng/inputtext';
+import { NgFor } from '@angular/common';
+import { RatingModule } from 'primeng/rating';
+import { FormsModule } from '@angular/forms';
+import { Button } from 'primeng/button';
+import { PickListModule } from 'primeng/picklist';
+import { OrderListModule } from 'primeng/orderlist';
 
 @Component({
-    templateUrl: './listdemo.component.html'
+    templateUrl: './listdemo.component.html',
+    standalone: true,
+    imports: [DataViewModule, PrimeTemplate, DropdownModule, InputTextModule, NgFor, RatingModule, FormsModule, Button, PickListModule, OrderListModule]
 })
 export class ListDemoComponent implements OnInit {
 

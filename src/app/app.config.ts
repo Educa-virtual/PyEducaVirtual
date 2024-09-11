@@ -1,36 +1,29 @@
-import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core'
 import { LocationStrategy, PathLocationStrategy } from '@angular/common'
-import { AppComponent } from './app.component'
+import { HTTP_INTERCEPTORS } from '@angular/common/http'
+import { ApplicationConfig, importProvidersFrom } from '@angular/core'
+import { MessageService } from 'primeng/api'
+import { ToastModule } from 'primeng/toast'
 import { AppRoutingModule } from './app-routing.module'
-import { AppLayoutModule } from './layout/app.layout.module'
-import { NotfoundComponent } from './demo/components/notfound/notfound.component'
-import { ProductService } from './demo/service/product.service'
 import { CountryService } from './demo/service/country.service'
 import { CustomerService } from './demo/service/customer.service'
 import { EventService } from './demo/service/event.service'
 import { IconService } from './demo/service/icon.service'
 import { NodeService } from './demo/service/node.service'
 import { PhotoService } from './demo/service/photo.service'
+import { ProductService } from './demo/service/product.service'
+import { AppLayoutModule } from './layout/app.layout.module'
 import { PrimengModule } from './primeng.module'
-import { SharedModule } from './shared/shared.module'
-import { HTTP_INTERCEPTORS } from '@angular/common/http'
-import { GlobalLoaderInterceptor } from './shared/interceptors/global-loader/global-loader-interceptor/global-loader-interceptor.interceptor'
 import { ErrorInterceptor } from './shared/interceptors/error-interceptor/error-interceptor.interceptor'
-import { MessageService } from 'primeng/api'
-import { ToastModule } from 'primeng/toast'
+import { GlobalLoaderInterceptor } from './shared/interceptors/global-loader/global-loader-interceptor/global-loader-interceptor.interceptor'
 
-//////////////////
-
-@NgModule({
-    declarations: [AppComponent, NotfoundComponent],
-    imports: [
-        AppRoutingModule,
-        AppLayoutModule,
-        PrimengModule,
-        SharedModule,
-        ToastModule,
-    ],
+export const appConfig: ApplicationConfig = {
     providers: [
+        importProvidersFrom(
+            AppRoutingModule,
+            AppLayoutModule,
+            PrimengModule,
+            ToastModule
+        ),
         { provide: LocationStrategy, useClass: PathLocationStrategy },
         CountryService,
         CustomerService,
@@ -39,7 +32,6 @@ import { ToastModule } from 'primeng/toast'
         NodeService,
         PhotoService,
         MessageService,
-
         ProductService,
         {
             provide: HTTP_INTERCEPTORS,
@@ -52,7 +44,4 @@ import { ToastModule } from 'primeng/toast'
             multi: true,
         },
     ],
-    bootstrap: [AppComponent],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
-})
-export class AppModule {}
+}

@@ -70,21 +70,21 @@ export class TablePrimengComponent implements OnChanges {
             icon: 'pi pi-plus',
             accion: 'agregar',
             type: 'item',
-            class: 'p-button-rounded p-button-primary',
+            class: 'p-button-rounded p-button-primary p-button-text',
         },
         {
             labelTooltip: 'Agregar',
             icon: 'pi pi-plus',
             accion: 'agregar',
             type: 'item',
-            class: 'p-button-rounded p-button-danger',
+            class: 'p-button-rounded p-button-danger p-button-text',
         },
         {
-            labelTooltip: 'Agregar',
+            labelTooltip: 'Editar',
             icon: 'pi pi-plus',
-            accion: 'agregar',
+            accion: 'editar',
             type: 'item',
-            class: 'p-button-rounded p-button-success',
+            class: 'p-button-rounded p-button-success p-button-text',
         },
     ]
 

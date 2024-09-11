@@ -10,8 +10,8 @@ import { PrimengModule } from 'src/app/primeng.module'
 })
 export class ContainerPageComponent {
     @Output() accionBtnItem = new EventEmitter()
-
     @Input() title: string = 'Titulo'
+    @Input() subtitle?: string
     @Input() actions = [
         {
             labelTooltip: 'Agregar',

@@ -1,8 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { IconService } from 'src/app/demo/service/icon.service';
+import { InputTextModule } from 'primeng/inputtext';
+import { NgFor } from '@angular/common';
 
 @Component({
     templateUrl: './icons.component.html',
+    standalone: true,
+    imports: [InputTextModule, NgFor],
 })
 export class IconsComponent implements OnInit {
 

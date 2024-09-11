@@ -14,7 +14,7 @@ import { PhotoService } from './demo/service/photo.service'
 import { PrimengModule } from './primeng.module'
 import { SharedModule } from './shared/shared.module'
 import { HTTP_INTERCEPTORS } from '@angular/common/http'
-import { GlobalLoaderInterceptor } from './shared/global-loader/global-loader-interceptor/global-loader-interceptor.interceptor'
+import { GlobalLoaderInterceptor } from './shared/interceptors/global-loader/global-loader-interceptor/global-loader-interceptor.interceptor'
 
 //////////////////
 

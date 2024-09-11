@@ -50,7 +50,7 @@
                 "@angular-eslint/template/elements-content": [
                     "error",
                     {
-                        "allowList": ["pTooltip"]
+                        "allowList": ["pTooltip", "label"]
                     }
                 ]
             }

@@ -19,7 +19,7 @@ import { AppSidebarComponent } from './app.sidebar.component'
 import { AppLayoutComponent } from './app.layout.component'
 import { DropdownModule } from 'primeng/dropdown'
 import { PrimengModule } from '../primeng.module'
-import { GlobalLoaderComponent } from '../shared/global-loader/global-loader.component'
+import { GlobalLoaderComponent } from '../shared/interceptors/global-loader/global-loader.component'
 
 @NgModule({
     declarations: [

@@ -1,5 +1,17 @@
 import { Component, OnInit } from '@angular/core';
-import { MegaMenuItem, MenuItem } from 'primeng/api';
+import { MegaMenuItem, MenuItem, PrimeTemplate } from 'primeng/api';
+import { MenubarModule } from 'primeng/menubar';
+import { InputTextModule } from 'primeng/inputtext';
+import { BreadcrumbModule } from 'primeng/breadcrumb';
+import { TabMenuModule } from 'primeng/tabmenu';
+import { StepsModule } from 'primeng/steps';
+import { RouterOutlet } from '@angular/router';
+import { TieredMenuModule } from 'primeng/tieredmenu';
+import { MenuModule } from 'primeng/menu';
+import { ButtonDirective } from 'primeng/button';
+import { ContextMenuModule } from 'primeng/contextmenu';
+import { MegaMenuModule } from 'primeng/megamenu';
+import { PanelMenuModule } from 'primeng/panelmenu';
 
 @Component({
     templateUrl: './menus.component.html',
@@ -7,7 +19,9 @@ import { MegaMenuItem, MenuItem } from 'primeng/api';
         :host ::ng-deep .p-menubar-root-list {
             flex-wrap: wrap;
         }
-    `]
+    `],
+    standalone: true,
+    imports: [MenubarModule, PrimeTemplate, InputTextModule, BreadcrumbModule, TabMenuModule, StepsModule, RouterOutlet, TieredMenuModule, MenuModule, ButtonDirective, ContextMenuModule, MegaMenuModule, PanelMenuModule]
 })
 export class MenusComponent implements OnInit {
 

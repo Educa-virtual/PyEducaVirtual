@@ -1,9 +1,33 @@
 import { Component, OnInit } from '@angular/core';
-import { SelectItem } from 'primeng/api';
+import { SelectItem, PrimeTemplate } from 'primeng/api';
 import { CountryService } from 'src/app/demo/service/country.service';
+import { InputTextModule } from 'primeng/inputtext';
+import { InputTextareaModule } from 'primeng/inputtextarea';
+import { AutoCompleteModule } from 'primeng/autocomplete';
+import { FormsModule } from '@angular/forms';
+import { CalendarModule } from 'primeng/calendar';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { ChipsModule } from 'primeng/chips';
+import { SliderModule } from 'primeng/slider';
+import { RatingModule } from 'primeng/rating';
+import { ColorPickerModule } from 'primeng/colorpicker';
+import { KnobModule } from 'primeng/knob';
+import { RadioButtonModule } from 'primeng/radiobutton';
+import { CheckboxModule } from 'primeng/checkbox';
+import { InputSwitchModule } from 'primeng/inputswitch';
+import { ListboxModule } from 'primeng/listbox';
+import { DropdownModule } from 'primeng/dropdown';
+import { MultiSelectModule } from 'primeng/multiselect';
+import { ToggleButtonModule } from 'primeng/togglebutton';
+import { SelectButtonModule } from 'primeng/selectbutton';
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
+import { ButtonDirective } from 'primeng/button';
 
 @Component({
-    templateUrl: './inputdemo.component.html'
+    templateUrl: './inputdemo.component.html',
+    standalone: true,
+    imports: [InputTextModule, InputTextareaModule, AutoCompleteModule, FormsModule, CalendarModule, InputNumberModule, ChipsModule, SliderModule, RatingModule, ColorPickerModule, KnobModule, RadioButtonModule, CheckboxModule, InputSwitchModule, ListboxModule, DropdownModule, MultiSelectModule, PrimeTemplate, ToggleButtonModule, SelectButtonModule, InputGroupModule, InputGroupAddonModule, ButtonDirective]
 })
 export class InputDemoComponent implements OnInit {
     

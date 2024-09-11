@@ -1,11 +1,24 @@
 import { Component, OnInit } from '@angular/core';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService, PrimeTemplate } from 'primeng/api';
 import { Product } from 'src/app/demo/api/product';
 import { ProductService } from 'src/app/demo/service/product.service';
+import { ToastModule } from 'primeng/toast';
+import { DialogModule } from 'primeng/dialog';
+import { ButtonDirective } from 'primeng/button';
+import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { TableModule } from 'primeng/table';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { SidebarModule } from 'primeng/sidebar';
+import { InputTextModule } from 'primeng/inputtext';
+import { TooltipModule } from 'primeng/tooltip';
+import { Ripple } from 'primeng/ripple';
+import { ConfirmPopupModule } from 'primeng/confirmpopup';
 
 @Component({
     templateUrl: './overlaysdemo.component.html',
-    providers: [ConfirmationService, MessageService]
+    providers: [ConfirmationService, MessageService],
+    standalone: true,
+    imports: [ToastModule, DialogModule, PrimeTemplate, ButtonDirective, OverlayPanelModule, TableModule, ConfirmDialogModule, SidebarModule, InputTextModule, TooltipModule, Ripple, ConfirmPopupModule]
 })
 export class OverlaysDemoComponent implements OnInit {
 

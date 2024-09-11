@@ -1,1 +1,25 @@
-<p>personas works!</p>
+<div class="row">
+    <div
+        class="col-md-12"
+        [@animate]="{
+            value: '*',
+            params: {
+                y: '100px',
+                opacity: '0',
+                delay: '300ms',
+                duration: '300ms',
+            },
+        }"
+    >
+        <app-container-page
+            title="Lista de personas"
+            [actions]="actions"
+            (accionBtnItem)="accionBtnItem($event)"
+            ><app-table-primeng></app-table-primeng
+        ></app-container-page>
+    </div>
+</div>
+
+<p-sidebar [(visible)]="showForm" position="right">
+    <h3>Right Sidebar</h3>
+</p-sidebar>

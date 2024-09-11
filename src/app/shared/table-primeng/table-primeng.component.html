@@ -15,16 +15,15 @@
 >
     <ng-template pTemplate="caption">
         <div class="flex justify-content-between flex-column sm:flex-row">
-            <span class="p-input-icon-left mb-2">
-                <i class="pi pi-search"></i>
+            <p-iconField iconPosition="left">
+                <p-inputIcon styleClass="pi pi-search" />
                 <input
                     pInputText
                     type="text"
-                    #filter
-                    placeholder="Search Keyword"
-                    class="w-full"
+                    (input)="dt.filterGlobal($event.target, 'contains')"
+                    placeholder="Buscar palabra clave"
                 />
-            </span>
+            </p-iconField>
         </div>
     </ng-template>
     <ng-template pTemplate="header" let-columns>

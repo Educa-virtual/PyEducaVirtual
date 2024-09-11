@@ -21,4 +21,7 @@ import { TablePrimengComponent } from '../../../../../shared/table-primeng/table
     styleUrl: './cursos.component.css',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CursosComponent {}
+export class CursosComponent {
+    sortField: string = ''
+    sortOrder: number = 0
+}

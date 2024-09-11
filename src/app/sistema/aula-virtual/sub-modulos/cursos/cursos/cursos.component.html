@@ -2,9 +2,11 @@
     <p-dataView
         #dv
         [value]="[]"
-        [paginator]="false"
+        [paginator]="true"
         [rows]="9"
         filterBy="name"
+        [sortField]="sortField"
+        [sortOrder]="sortOrder"
         layout="grid"
     >
         <ng-template pTemplate="header">

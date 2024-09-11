@@ -17,6 +17,9 @@ import {
 export class TablePrimengComponent implements OnChanges {
     @Output() accionBtnItem = new EventEmitter()
 
+    @Input() showCaption: boolean = true
+    @Input() showPaginator: boolean = true
+
     @Input() data = [
         {
             cActividad1: 'cActividad1',
@@ -132,6 +135,8 @@ export class TablePrimengComponent implements OnChanges {
     constructor() {}
 
     ngOnChanges(changes) {
+        console.log(changes)
+
         const { currentValue } = changes.data
         this.data = currentValue
     }

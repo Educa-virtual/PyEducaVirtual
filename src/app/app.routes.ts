@@ -56,17 +56,15 @@ export const routes: Routes = [
                         (m) => m.DocenteModule
                     ),
             },
+            {
+                path: 'aula-virtual',
+                loadChildren: () =>
+                    import('./sistema/aula-virtual/aula-virtual.routes'),
+            },
         ],
     },
     { path: 'login', component: LoginComponent },
 
-    {
-        path: 'docente',
-        loadChildren: () =>
-            import('./sistema/docente/docente.module').then(
-                (m) => m.DocenteModule
-            ),
-    },
     {
         path: 'configuracion',
         loadChildren: () =>
@@ -82,13 +80,7 @@ export const routes: Routes = [
                 (m) => m.AuthModule
             ),
     },
-    {
-        path: 'aula-virtual',
-        loadChildren: () =>
-            import('./sistema/aula-virtual/aula-virtual.module').then(
-                (m) => m.AulaVirtualModule
-            ),
-    },
+
     {
         path: 'landing',
         loadChildren: () =>

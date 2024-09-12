@@ -60,17 +60,17 @@ const aula_virtual = [
             {
                 label: 'Mis Cursos',
                 icon: 'pi pi-fw pi-book',
-                routerLink: ['/aula-virtual'],
+                routerLink: ['/aula-virtual/cursos'],
             },
             {
                 label: 'Calendario',
                 icon: 'pi pi-fw pi-calendar',
-                routerLink: ['/aula-virtual'],
+                routerLink: ['/aula-virtual/calendario'],
             },
             {
                 label: 'Recursos',
                 icon: 'pi pi-fw pi-folder',
-                routerLink: ['/aula-virtual'],
+                routerLink: ['/aula-virtual/recursos'],
             },
             {
                 label: 'DashBoard',

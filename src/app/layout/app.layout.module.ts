@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core'
-import { BrowserModule } from '@angular/platform-browser'
 import { FormsModule } from '@angular/forms'
 import { HttpClientModule } from '@angular/common/http'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
@@ -14,26 +13,19 @@ import { AppMenuitemComponent } from './app.menuitem.component'
 import { RouterModule } from '@angular/router'
 import { AppTopBarComponent } from './app.topbar.component'
 import { AppFooterComponent } from './app.footer.component'
-import { AppConfigModule } from './config/config.module'
+
 import { AppSidebarComponent } from './app.sidebar.component'
 import { AppLayoutComponent } from './app.layout.component'
 import { DropdownModule } from 'primeng/dropdown'
 import { PrimengModule } from '../primeng.module'
-import { GlobalLoaderComponent } from '../shared/global-loader/global-loader.component'
+import { GlobalLoaderComponent } from '../shared/interceptors/global-loader/global-loader.component'
+import { CommonModule } from '@angular/common'
 
 @NgModule({
-    declarations: [
-        AppMenuitemComponent,
-        AppTopBarComponent,
-        AppFooterComponent,
-        AppMenuComponent,
-        AppSidebarComponent,
-        AppLayoutComponent,
-    ],
     imports: [
         GlobalLoaderComponent,
-        BrowserModule,
         FormsModule,
+        CommonModule,
         HttpClientModule,
         BrowserAnimationsModule,
         InputTextModule,
@@ -43,9 +35,14 @@ import { GlobalLoaderComponent } from '../shared/global-loader/global-loader.com
         InputSwitchModule,
         RippleModule,
         RouterModule,
-        AppConfigModule,
         DropdownModule,
         PrimengModule,
+        AppMenuitemComponent,
+        AppTopBarComponent,
+        AppFooterComponent,
+        AppMenuComponent,
+        AppSidebarComponent,
+        AppLayoutComponent,
     ],
     exports: [AppLayoutComponent],
 })

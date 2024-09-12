@@ -3,6 +3,11 @@ import { MenuItem } from 'primeng/api'
 import { LayoutService } from './service/app.layout.service'
 import { LocalStoreService } from '../servicios/local-store.service'
 import { TokenStorageService } from '../servicios/token.service'
+import { RouterLink } from '@angular/router';
+import { DropdownModule } from 'primeng/dropdown';
+import { FormsModule } from '@angular/forms';
+import { NgClass } from '@angular/common';
+import { MenuModule } from 'primeng/menu';
 
 interface Profile {
     iProfile: number
@@ -12,6 +17,14 @@ interface Profile {
 @Component({
     selector: 'app-topbar',
     templateUrl: './app.topbar.component.html',
+    standalone: true,
+    imports: [
+        RouterLink,
+        DropdownModule,
+        FormsModule,
+        NgClass,
+        MenuModule,
+    ],
 })
 export class AppTopBarComponent implements OnInit {
     items!: MenuItem[]

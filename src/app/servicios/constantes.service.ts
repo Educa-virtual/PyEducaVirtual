@@ -81,6 +81,45 @@ const aula_virtual = [
     },
 ]
 
+const evaluaciones = [
+    {
+        label: 'ERE',
+        items: [
+            {
+                label: 'Dashboard',
+                icon: 'pi pi-fw pi-book',
+                routerLink: ['/aula-virtual'],
+            },
+            {
+                label: 'Evaluaciones',
+                icon: 'pi pi-fw pi-calendar',
+                routerLink: ['/aula-virtual'],
+            },
+            {
+                label: 'Áreas',
+                icon: 'pi pi-fw pi-folder',
+                routerLink: ['/aula-virtual'],
+            },
+            {
+                label: 'Preguntas',
+                icon: 'pi pi-fw pi-user',
+                items: [
+                    {
+                        label: 'Banco de preguntas',
+                        icon: 'pi pi-fw pi-sign-in',
+                        routerLink: ['/auth/login'],
+                    },
+                    {
+                        label: 'Preguntas activas',
+                        icon: 'pi pi-fw pi-times-circle',
+                        routerLink: ['/auth/error'],
+                    },
+                ],
+            },
+        ],
+    },
+]
+
 const other = [
     {
         label: 'Home',
@@ -410,6 +449,8 @@ export class ConstantesService {
                 return aula_virtual
             case 1005:
                 return administrador
+            case 1006:
+                return evaluaciones
             default:
                 return other
         }

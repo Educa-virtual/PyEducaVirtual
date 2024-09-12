@@ -5,7 +5,7 @@
     [loading]="loading"
     responsiveLayout="scroll"
     styleClass="p-datatable-sm"
-    [paginator]="true"
+    [paginator]="showPaginator"
     [rows]="10"
     [tableStyle]="{ 'min-width': '50rem' }"
     currentPageReportTemplate="{first} - {last} de {totalRecords} registros"
@@ -13,20 +13,21 @@
     sortMode="multiple"
     class="hoverTable"
 >
-    <ng-template pTemplate="caption">
-        <div class="flex justify-content-between flex-column sm:flex-row">
-            <span class="p-input-icon-left mb-2">
-                <i class="pi pi-search"></i>
-                <input
-                    pInputText
-                    type="text"
-                    #filter
-                    placeholder="Search Keyword"
-                    class="w-full"
-                />
-            </span>
-        </div>
-    </ng-template>
+    @if (showCaption) {
+        <ng-template pTemplate="caption">
+            <div class="flex justify-content-between flex-column sm:flex-row">
+                <p-iconField iconPosition="left">
+                    <p-inputIcon styleClass="pi pi-search" />
+                    <input
+                        pInputText
+                        type="text"
+                        (input)="dt.filterGlobal($event.target, 'contains')"
+                        placeholder="Buscar palabra clave"
+                    />
+                </p-iconField>
+            </div>
+        </ng-template>
+    }
     <ng-template pTemplate="header" let-columns>
         <tr class="text-uppercase">
             <th

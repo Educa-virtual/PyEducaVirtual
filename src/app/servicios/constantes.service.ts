@@ -88,7 +88,7 @@ const evaluaciones = [
             {
                 label: 'Dashboard',
                 icon: 'pi pi-fw pi-book',
-                routerLink: ['/aula-virtual'],
+                routerLink: ['/evaluaciones'],
             },
             {
                 label: 'Evaluaciones',

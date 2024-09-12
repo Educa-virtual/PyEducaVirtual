@@ -3,7 +3,7 @@ import { Routes } from '@angular/router'
 const routes: Routes = [
     {
         path: '',
-        redirectTo: 'cursos',
+        redirectTo: 'dashboard',
         pathMatch: 'full',
     },
     {

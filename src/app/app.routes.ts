@@ -81,9 +81,7 @@ export const routes: Routes = [
             {
                 path: 'evaluaciones',
                 loadChildren: () =>
-                    import('./sistema/evaluaciones/evaluaciones.module').then(
-                        (m) => m.evaluacionesModule
-                    ),
+                    import('./sistema/evaluaciones/evaluaciones.routes'),
             },
         ],
     },

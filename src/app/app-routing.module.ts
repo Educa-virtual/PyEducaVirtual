@@ -179,6 +179,15 @@ import { LoginComponent } from './shared/login/login.component'
                             './sistema/aula-virtual/aula-virtual.module'
                         ).then((m) => m.AulaVirtualModule),
                 },
+
+                {
+                    path: 'evaluaciones',
+                    loadChildren: () =>
+                        import(
+                            './sistema/evaluaciones/evaluaciones.module'
+                        ).then((m) => m.evaluacionesModule),
+                },
+
                 {
                     path: 'landing',
                     loadChildren: () =>

@@ -7,12 +7,13 @@ import {
 } from '@angular/common/http'
 import { inject, Injectable } from '@angular/core'
 import { catchError, Observable, throwError } from 'rxjs'
-import { Message, MessageService } from 'primeng/api'
 import { getMessageByHttpCode } from '../../utils/get-severity-by-http-code'
+import { ConfirmationModalService } from '../../confirm-modal/confirmation-modal.service'
+import { IModal } from '../../confirm-modal/modal.interface'
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
-    private _messageService = inject(MessageService)
+    private _messageService = inject(ConfirmationModalService)
     constructor() {}
 
     intercept(
@@ -21,7 +22,7 @@ export class ErrorInterceptor implements HttpInterceptor {
     ): Observable<HttpEvent<unknown>> {
         return next.handle(req).pipe(
             catchError((error: HttpErrorResponse) => {
-                const message: Message = getMessageByHttpCode(error.status)
+                const message: IModal = getMessageByHttpCode(error.status)
                 let errorMsg = ''
                 if (error.error instanceof ErrorEvent) {
                     errorMsg = `Error: ${error.error.message}`
@@ -29,8 +30,10 @@ export class ErrorInterceptor implements HttpInterceptor {
                     // verificar respuesta api
                     errorMsg = error.error
                 }
-                message.detail = errorMsg
-                this._messageService.add(message)
+                message.message = errorMsg
+                message.rejectVisible = false
+                message.rejectLabel = ''
+                this._messageService.openDialog(message)
                 console.log(error)
                 return throwError(() => errorMsg)
             })

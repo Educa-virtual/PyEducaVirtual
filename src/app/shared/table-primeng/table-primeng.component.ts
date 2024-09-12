@@ -17,6 +17,9 @@ import {
 export class TablePrimengComponent implements OnChanges {
     @Output() accionBtnItem = new EventEmitter()
 
+    @Input() showCaption: boolean = true
+    @Input() showPaginator: boolean = true
+
     @Input() data = [
         {
             cActividad1: 'cActividad1',
@@ -70,21 +73,21 @@ export class TablePrimengComponent implements OnChanges {
             icon: 'pi pi-plus',
             accion: 'agregar',
             type: 'item',
-            class: 'p-button-rounded p-button-primary',
+            class: 'p-button-rounded p-button-primary p-button-text',
         },
         {
             labelTooltip: 'Agregar',
             icon: 'pi pi-plus',
             accion: 'agregar',
             type: 'item',
-            class: 'p-button-rounded p-button-danger',
+            class: 'p-button-rounded p-button-danger p-button-text',
         },
         {
-            labelTooltip: 'Agregar',
+            labelTooltip: 'Editar',
             icon: 'pi pi-plus',
-            accion: 'agregar',
+            accion: 'editar',
             type: 'item',
-            class: 'p-button-rounded p-button-success',
+            class: 'p-button-rounded p-button-success p-button-text',
         },
     ]
 
@@ -132,6 +135,8 @@ export class TablePrimengComponent implements OnChanges {
     constructor() {}
 
     ngOnChanges(changes) {
+        console.log(changes)
+
         const { currentValue } = changes.data
         this.data = currentValue
     }

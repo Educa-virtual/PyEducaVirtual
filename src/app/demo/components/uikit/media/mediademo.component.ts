@@ -2,9 +2,16 @@ import { Component, OnInit } from '@angular/core';
 import { ProductService } from 'src/app/demo/service/product.service';
 import { PhotoService } from 'src/app/demo/service/photo.service';
 import { Product } from 'src/app/demo/api/product';
+import { CarouselModule } from 'primeng/carousel';
+import { PrimeTemplate } from 'primeng/api';
+import { ButtonDirective } from 'primeng/button';
+import { ImageModule } from 'primeng/image';
+import { GalleriaModule } from 'primeng/galleria';
 
 @Component({
-    templateUrl: './mediademo.component.html'
+    templateUrl: './mediademo.component.html',
+    standalone: true,
+    imports: [CarouselModule, PrimeTemplate, ButtonDirective, ImageModule, GalleriaModule]
 })
 export class MediaDemoComponent implements OnInit {
 

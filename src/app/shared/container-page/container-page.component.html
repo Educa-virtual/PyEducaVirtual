@@ -1,0 +1,31 @@
+<p-panel>
+    <ng-template pTemplate="header">
+        <div class="flex flex-column gap-2">
+            <h3 class="m-0 text-uppercase text-primary">
+                {{ title }}
+            </h3>
+            @if (subtitle) {
+                <p>{{ subtitle }}</p>
+            }
+        </div>
+    </ng-template>
+    <ng-template pTemplate="icons">
+        <ng-content select="[icons]"></ng-content>
+        <ng-container *ngFor="let item of actions">
+            <button
+                size="small"
+                [rounded]="true"
+                pButton
+                pRipple
+                [icon]="item.icon"
+                [pTooltip]="item.labelTooltip"
+                tooltipPosition="top"
+                (click)="accionBtn(item.accion, [])"
+                [ngClass]="item.class"
+            >
+                &nbsp;{{ item.text }}
+            </button>
+        </ng-container>
+    </ng-template>
+    <ng-content></ng-content>
+</p-panel>

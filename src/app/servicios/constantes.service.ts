@@ -93,7 +93,7 @@ const evaluaciones = [
             {
                 label: 'Evaluaciones',
                 icon: 'pi pi-fw pi-calendar',
-                routerLink: ['/aula-virtual'],
+                routerLink: ['/evaluaciones/evaluaciones'],
             },
             {
                 label: 'Áreas',
@@ -107,12 +107,12 @@ const evaluaciones = [
                     {
                         label: 'Banco de preguntas',
                         icon: 'pi pi-fw pi-sign-in',
-                        routerLink: ['/auth/login'],
+                        routerLink: ['/evaluaciones/banco-preguntas'],
                     },
                     {
                         label: 'Preguntas activas',
                         icon: 'pi pi-fw pi-times-circle',
-                        routerLink: ['/auth/error'],
+                        routerLink: ['/evaluaciones/preguntas-activas'],
                     },
                 ],
             },

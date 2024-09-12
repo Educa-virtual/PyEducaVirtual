@@ -35,14 +35,14 @@
                                 <input
                                     pInputText
                                     [type]="!showPassword ? 'password' : 'text'"
-                                    class="flex-1"
+                                    class="flex-1 border-noround-right"
                                     [placeholder]="
                                         !showPassword ? '********' : ''
                                     "
                                     formControlName="password"
                                 />
                                 <button
-                                    class=""
+                                    class="p-button-outlined p-button-secondary border-noround-left"
                                     type="button"
                                     pButton
                                     (click)="showPassword = !showPassword"

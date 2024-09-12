@@ -1,0 +1,83 @@
+<section class="flex flex-column gap-2">
+    <p-breadcrumb class="max-w-full" [model]="items">
+        <ng-template pTemplate="item" let-item>
+            <ng-container *ngIf="item.route; else elseBlock">
+                <a [routerLink]="item.route" class="p-menuitem-link">
+                    <span
+                        [ngClass]="[item.icon ? item.icon : '', 'text-color']"
+                    ></span>
+                    <span class="text-primary font-semibold">{{
+                        item.label
+                    }}</span>
+                </a>
+            </ng-container>
+            <ng-template #elseBlock>
+                <a [href]="item.url">
+                    <span class="text-color">{{ item.label }}</span>
+                </a>
+            </ng-template>
+        </ng-template>
+    </p-breadcrumb>
+
+    <p-tabView styleClass="">
+        <p-tabPanel header="">
+            <ng-template pTemplate="header">
+                <div class="flex flex-column align-items-center gap-2">
+                    <i class="pi pi-home"></i>
+                    <span class="white-space-nowrap m-0"> Inicio </span>
+                </div>
+            </ng-template>
+            <p>Inicio</p>
+        </p-tabPanel>
+        <p-tabPanel header="Header III">
+            <ng-template pTemplate="header">
+                <div class="flex flex-column align-items-center gap-2">
+                    <i class="pi pi-book"></i>
+                    <span class="white-space-nowrap m-0"> Contenido </span>
+                </div>
+            </ng-template>
+            <app-tab-contenido
+                class="flex flex-column gap-2"
+            ></app-tab-contenido>
+        </p-tabPanel>
+
+        <p-tabPanel header="">
+            <ng-template pTemplate="header">
+                <div class="flex flex-column align-items-center gap-2">
+                    <i class="pi pi-users"></i>
+                    <span class="white-space-nowrap m-0"> Estudiantes </span>
+                </div>
+            </ng-template>
+            <p>Inicio</p>
+        </p-tabPanel>
+        <p-tabPanel header="">
+            <ng-template pTemplate="header">
+                <div class="flex flex-column align-items-center gap-2">
+                    <i class="pi pi-users"></i>
+                    <span class="white-space-nowrap m-0">Calificaciones</span>
+                </div>
+            </ng-template>
+            <p>Calificaciones</p>
+        </p-tabPanel>
+        <p-tabPanel header="">
+            <ng-template pTemplate="header">
+                <div class="flex flex-column align-items-center gap-2">
+                    <i class="pi pi-sitemap"></i>
+                    <span class="white-space-nowrap m-0"> Rubricas </span>
+                </div>
+            </ng-template>
+            <p>Inicio</p>
+        </p-tabPanel>
+        <p-tabPanel header="">
+            <ng-template pTemplate="header">
+                <div class="flex flex-column align-items-center gap-2">
+                    <i class="pi pi-question"></i>
+                    <span class="white-space-nowrap m-0">
+                        Banco Preguntas
+                    </span>
+                </div>
+            </ng-template>
+            <p>Inicio</p>
+        </p-tabPanel>
+    </p-tabView>
+</section>

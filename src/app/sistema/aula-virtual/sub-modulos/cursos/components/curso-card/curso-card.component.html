@@ -16,6 +16,10 @@
     </div>
     <footer class="p-3 pt-0 flex align-items-center justify-content-between">
         <span>{{ curso.totalEstudiantes }} studiantes</span>
-        <p-button label="Ver más" styleClass="p-button-link"></p-button>
+        <p-button
+            [routerLink]="['./', curso.id]"
+            label="Ver más"
+            styleClass="p-button-link"
+        ></p-button>
     </footer>
 </article>

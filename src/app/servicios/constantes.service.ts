@@ -98,7 +98,7 @@ const evaluaciones = [
             {
                 label: 'Áreas',
                 icon: 'pi pi-fw pi-folder',
-                routerLink: ['/aula-virtual'],
+                routerLink: ['/evaluaciones/areas'],
             },
             {
                 label: 'Preguntas',

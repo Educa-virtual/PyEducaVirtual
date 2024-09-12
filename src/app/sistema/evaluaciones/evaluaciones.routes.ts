@@ -11,6 +11,13 @@ const routes: Routes = [
         loadChildren: () =>
             import('./sub-evaluaciones/dashboard/dashboard.routes'),
     },
+    {
+        path: 'areas',
+        loadComponent: () =>
+            import('./sub-evaluaciones/areas/areas.component').then(
+                (c) => c.AreasComponent
+            ),
+    },
 ]
 
 export default routes

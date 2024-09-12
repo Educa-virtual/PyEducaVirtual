@@ -1,0 +1,11 @@
+:host {
+    display: block;
+}
+
+.curso__image-container {
+    height: 8rem;
+
+    img {
+        object-fit: cover;
+    }
+}

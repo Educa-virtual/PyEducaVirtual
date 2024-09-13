@@ -5,6 +5,9 @@ import { BreadcrumbModule } from 'primeng/breadcrumb'
 import { TabMenuModule } from 'primeng/tabmenu'
 import { TabViewModule } from 'primeng/tabview'
 import { TabContenidoComponent } from '../tabs/tab-contenido/tab-contenido/tab-contenido.component'
+import { CursoDetalleNavigationComponent } from './curso-detalle-navigation/curso-detalle-navigation.component'
+import { RouterOutlet } from '@angular/router'
+import { PanelModule } from 'primeng/panel'
 
 @Component({
     selector: 'app-curso-detalle',
@@ -15,13 +18,17 @@ import { TabContenidoComponent } from '../tabs/tab-contenido/tab-contenido/tab-c
         TabMenuModule,
         TabViewModule,
         TabContenidoComponent,
+        CursoDetalleNavigationComponent,
+        RouterOutlet,
+        PanelModule,
     ],
     templateUrl: './curso-detalle.component.html',
     styleUrl: './curso-detalle.component.scss',
 })
 export class CursoDetalleComponent implements OnInit {
+    tab = 'inicio'
+
     items: MenuItem[] | undefined
-    routeItems: MenuItem[] = []
 
     home: MenuItem | undefined
 
@@ -33,12 +40,9 @@ export class CursoDetalleComponent implements OnInit {
             { label: 'Cursos', route: '/aula-virtual/cursos' },
             { label: 'Matemática I', route: '/aula-virtual/cursos/0' },
         ]
+    }
 
-        this.routeItems = [
-            { label: 'Inicio', icon: 'pi pi-home' },
-            { label: 'Contenido', icon: 'pi pi-book' },
-            { label: 'Estudiantes', icon: 'pi pi-users' },
-            { label: 'Calificaciones' },
-        ]
+    updateTab(tab: string) {
+        this.tab = tab
     }
 }

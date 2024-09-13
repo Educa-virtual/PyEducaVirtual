@@ -223,6 +223,7 @@ export class BancoPreguntasComponent implements OnInit {
     }
 
     ok() {
+        console.log(this.textAyuda)
         alert(this.textAyuda)
     }
 }

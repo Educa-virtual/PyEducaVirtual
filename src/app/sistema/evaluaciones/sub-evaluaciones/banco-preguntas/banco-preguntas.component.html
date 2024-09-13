@@ -3,6 +3,192 @@
 <div class="grid">
     <div class="col-12">
         <div class="card">
+            <h5>Agregar pregunta</h5>
+            <p-dialog
+                header="Agregar pregunta"
+                [(visible)]="display"
+                [modal]="true"
+                showEffect="fade"
+                [style]="{ width: '30vw' }"
+                [breakpoints]="{ '960px': '75vw' }"
+            >
+                <div class="line-height-3 m-0">
+                    <div class="field grid">
+                        <label
+                            htmlFor="name3"
+                            class="col-12 mb-2 md:col-2 md:mb-0"
+                            >Competencia</label
+                        >
+                        <div class="col-12 md:col-10">
+                            <p-dropdown
+                                [options]="competencia"
+                                [(ngModel)]="selectedDrop"
+                                placeholder="Selecciones un Grado"
+                                [showClear]="true"
+                            ></p-dropdown>
+                        </div>
+                    </div>
+                    <div class="field grid">
+                        <label
+                            htmlFor="email3"
+                            class="col-12 mb-2 md:col-2 md:mb-0"
+                            >Capacidad</label
+                        >
+                        <div class="col-12 md:col-10">
+                            <p-dropdown
+                                [options]="capacidad"
+                                [(ngModel)]="selectedDrop"
+                                placeholder="Selecciones un Grado"
+                                [showClear]="true"
+                            ></p-dropdown>
+                        </div>
+                    </div>
+
+                    <div class="field grid">
+                        <label
+                            htmlFor="email3"
+                            class="col-12 mb-2 md:col-2 md:mb-0"
+                            >Desempeño</label
+                        >
+                        <div class="col-12 md:col-10">
+                            <p-dropdown
+                                [options]="desempenio"
+                                [(ngModel)]="selectedDrop"
+                                placeholder="Selecciones un Grado"
+                                [showClear]="true"
+                            ></p-dropdown>
+                        </div>
+                    </div>
+
+                    <div class="field grid">
+                        <label
+                            htmlFor="email3"
+                            class="col-12 mb-2 md:col-2 md:mb-0"
+                            >Tipo pregunta</label
+                        >
+                        <div class="col-12 md:col-10">
+                            <p-dropdown
+                                [options]="tipo_pregunta"
+                                [(ngModel)]="selectedDrop"
+                                placeholder="Selecciones un Grado"
+                                [showClear]="true"
+                            ></p-dropdown>
+                        </div>
+                    </div>
+
+                    <div class="field grid">
+                        <label
+                            htmlFor="email3"
+                            class="col-12 mb-2 md:col-2 md:mb-0"
+                            >Pregunta</label
+                        >
+                        <div class="col-12 md:col-10">
+                            <textarea
+                                rows="5"
+                                cols="30"
+                                placeholder="Your Message"
+                                pInputTextarea
+                            ></textarea>
+                        </div>
+                    </div>
+
+                    <div class="field grid">
+                        <label
+                            htmlFor="email3"
+                            class="col-12 mb-2 md:col-2 md:mb-0"
+                            >Texto ayuda</label
+                        >
+                        <div class="col-12 md:col-10">
+                            <textarea
+                                rows="5"
+                                cols="30"
+                                placeholder="Your Message"
+                                pInputTextarea
+                            ></textarea>
+                        </div>
+                    </div>
+
+                    <div class="field grid">
+                        <label
+                            htmlFor="email3"
+                            class="col-12 mb-2 md:col-2 md:mb-0"
+                            >Nivel</label
+                        >
+                        <div class="col-12 md:col-10">
+                            <input pInputText id="email3" type="text" />
+                        </div>
+                    </div>
+
+                    <div class="field grid">
+                        <label
+                            htmlFor="email3"
+                            class="col-12 mb-2 md:col-2 md:mb-0"
+                            >Peso</label
+                        >
+                        <div class="col-12 md:col-10">
+                            <input pInputText id="email3" type="text" />
+                        </div>
+                    </div>
+
+                    <div class="field grid">
+                        <label
+                            htmlFor="email3"
+                            class="col-12 mb-2 md:col-2 md:mb-0"
+                            >Tiempo</label
+                        >
+                        <div class="col-12 md:col-10">
+                            <input pInputText id="email3" type="text" />
+                        </div>
+                    </div>
+
+                    <div class="field grid">
+                        <label
+                            htmlFor="email3"
+                            class="col-12 mb-2 md:col-2 md:mb-0"
+                            >Estado</label
+                        >
+                        <div class="col-12 md:col-10">
+                            <p-inputSwitch
+                                [(ngModel)]="valSwitch"
+                            ></p-inputSwitch>
+                        </div>
+                    </div>
+                    <div class="field grid">
+                        <label
+                            htmlFor="email3"
+                            class="col-12 mb-2 md:col-2 md:mb-0"
+                            >Clave</label
+                        >
+                        <div class="col-12 md:col-10">
+                            <p-dropdown
+                                [options]="clave"
+                                [(ngModel)]="selectedDrop"
+                                placeholder="Seleccione la clave"
+                                [showClear]="true"
+                            ></p-dropdown>
+                        </div>
+                    </div>
+                </div>
+                <ng-template pTemplate="footer">
+                    <button
+                        pButton
+                        icon="pi pi-check"
+                        (click)="display = false"
+                        label="Guardar xd"
+                        class="p-button-outlined"
+                    ></button>
+                    <button
+                        pButton
+                        icon="pi pi-times"
+                        (click)="display = false"
+                        label="Cancelar"
+                        class="p-button-outlined"
+                    ></button>
+                </ng-template>
+            </p-dialog>
+        </div>
+
+        <div class="card">
             <h5>Banco de preguntas</h5>
             <p-table
                 #dt1
@@ -60,11 +246,10 @@
                         class="flex justify-content-between flex-column sm:flex-row"
                     >
                         <button
+                            (click)="display = true"
                             pButton
-                            label="Agregar preguntas"
-                            class="p-button-outlined mb-2"
                             icon="pi pi-plus"
-                            (click)="clear(dt1)"
+                            label="Agregar preguntas"
                         ></button>
 
                         <span class="p-input-icon-left mb-2">

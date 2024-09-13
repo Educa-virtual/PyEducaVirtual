@@ -8,6 +8,7 @@ import { Table, TableModule } from 'primeng/table'
 import { MessageService, ConfirmationService, PrimeTemplate } from 'primeng/api'
 import { ButtonDirective, Button } from 'primeng/button'
 import { InputTextModule } from 'primeng/inputtext'
+import { InputSwitchModule } from 'primeng/inputswitch'
 import { MultiSelectModule } from 'primeng/multiselect'
 import { FormsModule } from '@angular/forms'
 import { DropdownModule } from 'primeng/dropdown'
@@ -18,6 +19,7 @@ import { ToggleButtonModule } from 'primeng/togglebutton'
 import { ToastModule } from 'primeng/toast'
 import { Ripple } from 'primeng/ripple'
 import { RatingModule } from 'primeng/rating'
+import { DialogModule } from 'primeng/dialog'
 
 interface expandedRows {
     [key: string]: boolean
@@ -30,6 +32,7 @@ interface expandedRows {
     standalone: true,
     imports: [
         TableModule,
+        DialogModule,
         PrimeTemplate,
         ButtonDirective,
         InputTextModule,
@@ -47,9 +50,12 @@ interface expandedRows {
         NgIf,
         CurrencyPipe,
         DatePipe,
+        InputSwitchModule,
     ],
 })
 export class BancoPreguntasComponent implements OnInit {
+    display: boolean = false
+
     customers1: Customer[] = []
 
     selectedCustomers1: Customer[] = []
@@ -73,12 +79,17 @@ export class BancoPreguntasComponent implements OnInit {
     idFrozen: boolean = false
 
     loading: boolean = true
-
+    valSwitch: boolean = false
     selectedDrop: SelectItem = { value: '' }
     nivel: SelectItem[] = []
     grado: SelectItem[] = []
     area: SelectItem[] = []
 
+    competencia: SelectItem[] = []
+    capacidad: SelectItem[] = []
+    desempenio: SelectItem[] = []
+    tipo_pregunta: SelectItem[] = []
+    clave: SelectItem[] = []
     @ViewChild('filter') filter!: ElementRef
 
     constructor(
@@ -120,6 +131,64 @@ export class BancoPreguntasComponent implements OnInit {
             },
         ]
 
+        this.competencia = [
+            {
+                label: 'Matemáticas',
+                value: { id: 1, name: 'New York', code: 'NY' },
+            },
+            {
+                label: 'Comunicación',
+                value: { id: 2, name: 'Rome', code: 'RM' },
+            },
+        ]
+        this.capacidad = [
+            {
+                label: 'Matemáticas',
+                value: { id: 1, name: 'New York', code: 'NY' },
+            },
+            {
+                label: 'Comunicación',
+                value: { id: 2, name: 'Rome', code: 'RM' },
+            },
+        ]
+        this.desempenio = [
+            {
+                label: 'Matemáticas',
+                value: { id: 1, name: 'New York', code: 'NY' },
+            },
+            {
+                label: 'Comunicación',
+                value: { id: 2, name: 'Rome', code: 'RM' },
+            },
+        ]
+        this.tipo_pregunta = [
+            {
+                label: 'Matemáticas',
+                value: { id: 1, name: 'New York', code: 'NY' },
+            },
+            {
+                label: 'Comunicación',
+                value: { id: 2, name: 'Rome', code: 'RM' },
+            },
+        ]
+        this.clave = [
+            {
+                label: 'A',
+                value: { id: 1, name: 'New York', code: 'NY' },
+            },
+            {
+                label: 'B',
+                value: { id: 2, name: 'Rome', code: 'RM' },
+            },
+            {
+                label: 'C',
+                value: { id: 2, name: 'Rome', code: 'RM' },
+            },
+            {
+                label: 'D',
+                value: { id: 2, name: 'Rome', code: 'RM' },
+            },
+        ]
         //  this.productService.getProductsWithOrdersSmall().then(data => this.products = data);
     }
 

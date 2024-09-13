@@ -6,7 +6,7 @@ import { CalendarModule } from 'primeng/calendar'
 import { IconFieldModule } from 'primeng/iconfield'
 import { InputIconModule } from 'primeng/inputicon'
 import { InputTextModule } from 'primeng/inputtext'
-import { ContenidoRowComponent } from '../../components/contenido-row/contenido-row.component'
+import { ActividadRowComponent } from '@/app/sistema/aula-virtual/sub-modulos/actividades/components/actividad-row/actividad-row.component'
 
 @Component({
     selector: 'app-tab-contenido',
@@ -19,7 +19,7 @@ import { ContenidoRowComponent } from '../../components/contenido-row/contenido-
         CalendarModule,
         FormsModule,
         AccordionModule,
-        ContenidoRowComponent,
+        ActividadRowComponent,
     ],
     templateUrl: './tab-contenido.component.html',
     styleUrl: './tab-contenido.component.scss',

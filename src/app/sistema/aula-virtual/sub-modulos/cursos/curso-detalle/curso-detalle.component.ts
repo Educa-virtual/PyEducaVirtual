@@ -12,6 +12,8 @@ import { TabsKeys } from './tabs/tab.interface'
 import { TabEstudiantesComponent } from './tabs/tab-estudiantes/tab-estudiantes.component'
 import { TabInicioComponent } from './tabs/tab-inicio/tab-inicio.component'
 import { TabEvaluacionesComponent } from './tabs/tab-evaluaciones/tab-evaluaciones.component'
+import { MenuModule } from 'primeng/menu'
+import { ProfesorAvatarComponent } from '../components/profesor-avatar/profesor-avatar.component'
 
 @Component({
     selector: 'app-curso-detalle',
@@ -28,6 +30,8 @@ import { TabEvaluacionesComponent } from './tabs/tab-evaluaciones/tab-evaluacion
         TabEstudiantesComponent,
         TabInicioComponent,
         TabEvaluacionesComponent,
+        ProfesorAvatarComponent,
+        MenuModule,
     ],
     templateUrl: './curso-detalle.component.html',
     styleUrl: './curso-detalle.component.scss',

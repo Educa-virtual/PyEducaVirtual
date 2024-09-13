@@ -11,7 +11,29 @@
 .curso-detalle {
     &__content {
         display: grid;
-        grid-template-columns: 200px 1fr;
-        gap: 2rem;
+        grid-template-columns: 1fr;
+        gap: 0;
+        @media (min-width: 992px) {
+            grid-template-columns: 200px 1fr;
+            gap: 2rem;
+        }
     }
+}
+
+.menu-button {
+    display: block;
+    @media (min-width: 992px) {
+        display: none;
+    }
+}
+
+.sidebar-menu {
+    display: none;
+    @media (min-width: 992px) {
+        display: block;
+    }
+}
+
+.divider {
+    border-bottom: 1px solid var(--primary-color);
 }

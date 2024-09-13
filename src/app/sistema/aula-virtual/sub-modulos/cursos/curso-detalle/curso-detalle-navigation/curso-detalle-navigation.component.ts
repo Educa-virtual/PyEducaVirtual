@@ -1,9 +1,9 @@
 import { NgClass } from '@angular/common'
-import { Component, EventEmitter, OnInit, Output } from '@angular/core'
-import { MenuItem } from 'primeng/api'
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
 import { ButtonModule } from 'primeng/button'
 import { MenuModule } from 'primeng/menu'
 import { PanelModule } from 'primeng/panel'
+import { ITabs, TabsKeys } from '../tabs/tab.interface'
 
 @Component({
     selector: 'app-curso-detalle-navigation',
@@ -13,39 +13,41 @@ import { PanelModule } from 'primeng/panel'
     styleUrl: './curso-detalle-navigation.component.scss',
 })
 export class CursoDetalleNavigationComponent implements OnInit {
-    items: MenuItem[] | undefined
-    @Output() tabChange = new EventEmitter<string>()
+    items: ITabs[] | undefined
+
+    @Input({ required: true }) actualTab: TabsKeys
+    @Output() tabChange = new EventEmitter<TabsKeys>()
     ngOnInit() {
         this.items = [
             {
-                label: 'Inicio',
+                title: 'Inicio',
                 icon: 'pi pi-home',
-                tabindex: 'inicio',
+                tab: 'inicio',
             },
             {
-                label: 'Contenido',
+                title: 'Contenido',
                 icon: 'pi pi-book',
-                tabindex: 'contenido',
+                tab: 'contenido',
             },
             {
-                label: 'Estudiantes',
+                title: 'Estudiantes',
                 icon: 'pi pi-users',
-                tabindex: 'estudiantes',
+                tab: 'estudiantes',
             },
             {
-                label: 'Rubricas',
+                title: 'Rubricas',
                 icon: 'pi pi-sitemap',
-                tabindex: 'rubricas',
+                tab: 'rubricas',
             },
             {
-                label: 'Banco de preguntas',
+                title: 'Banco de preguntas',
                 icon: 'pi pi-question',
-                tabindex: 'banco-preguntas',
+                tab: 'banco-preguntas',
             },
         ]
     }
 
-    updateTab(tab: string) {
+    updateTab(tab: TabsKeys) {
         this.tabChange.emit(tab)
     }
 }

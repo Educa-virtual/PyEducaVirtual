@@ -4,10 +4,14 @@ import { MenuItem } from 'primeng/api'
 import { BreadcrumbModule } from 'primeng/breadcrumb'
 import { TabMenuModule } from 'primeng/tabmenu'
 import { TabViewModule } from 'primeng/tabview'
-import { TabContenidoComponent } from '../tabs/tab-contenido/tab-contenido/tab-contenido.component'
 import { CursoDetalleNavigationComponent } from './curso-detalle-navigation/curso-detalle-navigation.component'
 import { RouterOutlet } from '@angular/router'
 import { PanelModule } from 'primeng/panel'
+import { TabContenidoComponent } from './tabs/tab-contenido/tab-contenido.component'
+import { TabsKeys } from './tabs/tab.interface'
+import { TabEstudiantesComponent } from './tabs/tab-estudiantes/tab-estudiantes.component'
+import { TabInicioComponent } from './tabs/tab-inicio/tab-inicio.component'
+import { TabEvaluacionesComponent } from './tabs/tab-evaluaciones/tab-evaluaciones.component'
 
 @Component({
     selector: 'app-curso-detalle',
@@ -21,12 +25,15 @@ import { PanelModule } from 'primeng/panel'
         CursoDetalleNavigationComponent,
         RouterOutlet,
         PanelModule,
+        TabEstudiantesComponent,
+        TabInicioComponent,
+        TabEvaluacionesComponent,
     ],
     templateUrl: './curso-detalle.component.html',
     styleUrl: './curso-detalle.component.scss',
 })
 export class CursoDetalleComponent implements OnInit {
-    tab = 'inicio'
+    tab: TabsKeys = 'inicio'
 
     items: MenuItem[] | undefined
 
@@ -42,7 +49,7 @@ export class CursoDetalleComponent implements OnInit {
         ]
     }
 
-    updateTab(tab: string) {
+    updateTab(tab: TabsKeys) {
         this.tab = tab
     }
 }

@@ -95,6 +95,7 @@ export class BancoPreguntasComponent implements OnInit {
     clave: SelectItem[] = []
 
     text
+    textAyuda
     @ViewChild('filter') filter!: ElementRef
 
     constructor(

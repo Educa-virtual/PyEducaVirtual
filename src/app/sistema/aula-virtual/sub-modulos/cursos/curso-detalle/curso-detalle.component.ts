@@ -14,6 +14,7 @@ import { TabInicioComponent } from './tabs/tab-inicio/tab-inicio.component'
 import { TabEvaluacionesComponent } from './tabs/tab-evaluaciones/tab-evaluaciones.component'
 import { MenuModule } from 'primeng/menu'
 import { ProfesorAvatarComponent } from '../components/profesor-avatar/profesor-avatar.component'
+import { IEstudiante } from '../../../interfaces/estudiantes.interface'
 
 @Component({
     selector: 'app-curso-detalle',
@@ -45,11 +46,30 @@ export class CursoDetalleComponent implements OnInit {
 
     rangeDates: Date[] | undefined
 
+    public estudiantes: IEstudiante[] = []
+
     ngOnInit() {
         this.items = [
             { icon: 'pi pi-home', route: '/aula-virtual' },
             { label: 'Cursos', route: '/aula-virtual/cursos' },
             { label: 'Matemática I', route: '/aula-virtual/cursos/0' },
+        ]
+
+        this.estudiantes = [
+            {
+                id: '1',
+                nombre: 'Estudiante',
+                apellidos: '1',
+                email: '1',
+                numeroOrden: 1,
+            },
+            {
+                id: '2',
+                nombre: 'Estudiante',
+                apellidos: '2',
+                email: '2',
+                numeroOrden: 2,
+            },
         ]
     }
 

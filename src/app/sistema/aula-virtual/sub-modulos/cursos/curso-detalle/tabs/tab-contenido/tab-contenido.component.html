@@ -20,14 +20,9 @@
     </div>
 </div>
 
-<div class="card">
+<div class="flex flex-column gap-2">
     <p-accordion [multiple]="true">
-        <p-accordionTab
-            header="Tema I"
-            [selected]="true"
-            class=""
-            iconPos="end"
-        >
+        <p-accordionTab header="Tema I" class="" iconPos="end">
             <p-accordion>
                 <app-actividad-row
                     [icon]="'pi pi-file'"
@@ -46,9 +41,89 @@
                 ></app-actividad-row>
             </p-accordion>
         </p-accordionTab>
-        <p-accordionTab header="Tema II" class="" iconPos="end">
+    </p-accordion>
+    <p-accordion [multiple]="true">
+        <p-accordionTab header="Tema I" class="" iconPos="end">
+            <p-accordion>
+                <app-actividad-row
+                    [icon]="'pi pi-file'"
+                    [title]="'Tarea 1'"
+                    [category]="'Tarea'"
+                ></app-actividad-row>
+                <app-actividad-row
+                    [icon]="'pi pi-file'"
+                    [title]="'Tarea 2'"
+                    [category]="'Tarea'"
+                ></app-actividad-row>
+                <app-actividad-row
+                    [icon]="'pi pi-file'"
+                    [title]="'Tarea 3'"
+                    [category]="'Tarea'"
+                ></app-actividad-row>
+            </p-accordion>
         </p-accordionTab>
-        <p-accordionTab header="Tema III" class="" iconPos="end">
+    </p-accordion>
+    <p-accordion [multiple]="true">
+        <p-accordionTab header="Tema I" class="" iconPos="end">
+            <p-accordion>
+                <app-actividad-row
+                    [icon]="'pi pi-file'"
+                    [title]="'Tarea 1'"
+                    [category]="'Tarea'"
+                ></app-actividad-row>
+                <app-actividad-row
+                    [icon]="'pi pi-file'"
+                    [title]="'Tarea 2'"
+                    [category]="'Tarea'"
+                ></app-actividad-row>
+                <app-actividad-row
+                    [icon]="'pi pi-file'"
+                    [title]="'Tarea 3'"
+                    [category]="'Tarea'"
+                ></app-actividad-row>
+            </p-accordion>
+        </p-accordionTab>
+    </p-accordion>
+    <p-accordion [multiple]="true">
+        <p-accordionTab header="Tema I" class="" iconPos="end">
+            <p-accordion>
+                <app-actividad-row
+                    [icon]="'pi pi-file'"
+                    [title]="'Tarea 1'"
+                    [category]="'Tarea'"
+                ></app-actividad-row>
+                <app-actividad-row
+                    [icon]="'pi pi-file'"
+                    [title]="'Tarea 2'"
+                    [category]="'Tarea'"
+                ></app-actividad-row>
+                <app-actividad-row
+                    [icon]="'pi pi-file'"
+                    [title]="'Tarea 3'"
+                    [category]="'Tarea'"
+                ></app-actividad-row>
+            </p-accordion>
+        </p-accordionTab>
+    </p-accordion>
+    <p-accordion [multiple]="true">
+        <p-accordionTab header="Tema I" class="" iconPos="end">
+            <p-accordion>
+                <app-actividad-row
+                    [icon]="'pi pi-file'"
+                    [title]="'Tarea 1'"
+                    [category]="'Tarea'"
+                ></app-actividad-row>
+                <app-actividad-row
+                    [icon]="'pi pi-file'"
+                    [title]="'Tarea 2'"
+                    [category]="'Tarea'"
+                ></app-actividad-row>
+                <app-actividad-row
+                    [icon]="'pi pi-file'"
+                    [title]="'Tarea 3'"
+                    [category]="'Tarea'"
+                ></app-actividad-row>
+            </p-accordion>
         </p-accordionTab>
     </p-accordion>
 </div>

@@ -1,0 +1,50 @@
+<section class="flex flex-column gap-4">
+    <p-breadcrumb class="max-w-full" [model]="items">
+        <ng-template pTemplate="item" let-item>
+            <ng-container *ngIf="item.route; else elseBlock">
+                <a [routerLink]="item.route" class="p-menuitem-link">
+                    <span
+                        [ngClass]="[item.icon ? item.icon : '', 'text-color']"
+                    ></span>
+                    <span class="text-primary font-semibold">{{
+                        item.label
+                    }}</span>
+                </a>
+            </ng-container>
+            <ng-template #elseBlock>
+                <a [href]="item.url">
+                    <span class="text-color">{{ item.label }}</span>
+                </a>
+            </ng-template>
+        </ng-template>
+    </p-breadcrumb>
+
+    <div class="curso-detalle__content">
+        <app-curso-detalle-navigation (tabChange)="updateTab($event)" />
+        @switch (tab) {
+            @case ('inicio') {
+                <p-panel header="Contenido del curso">
+                    <p>
+                        Lorem, ipsum dolor sit amet consectetur adipisicing
+                        elit. Esse neque placeat laboriosam ab obcaecati nobis
+                        repudiandae rerum nulla laborum, eaque perspiciatis
+                        magnam blanditiis dolorum earum. Cum voluptatibus
+                        cupiditate non doloremque, hic, sequi quam error fugiat
+                        nobis ut omnis delectus sapiente voluptate quisquam
+                        culpa. Atque sapiente minus eaque, pariatur nihil vitae
+                        debitis cumque voluptatum nemo molestiae. Minus, eius
+                        quas quo architecto temporibus ab atque, porro
+                        repellendus aliquid voluptatum illo harum, cumque
+                        placeat facere sit earum amet praesentium repudiandae
+                        exercitationem? Inventore id ipsum beatae. Ducimus
+                        placeat rerum voluptatum amet labore quod dolores ipsam
+                        quidem laborum reiciendis blanditiis nam, qui pariatur
+                        deserunt quibusdam natus iste.
+                    </p>
+                </p-panel>
+            }
+            @default {}
+        }
+        <!-- <router-outlet></router-outlet> -->
+    </div>
+</section>

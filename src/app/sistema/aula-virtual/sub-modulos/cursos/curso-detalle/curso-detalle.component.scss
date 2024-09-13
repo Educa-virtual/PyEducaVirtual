@@ -1,0 +1,17 @@
+:host {
+    display: block;
+}
+
+:host ::ng-deep .p-tabview .p-tabview-panels {
+    padding: 0;
+    padding-top: 1rem;
+    background-color: transparent;
+}
+
+.curso-detalle {
+    &__content {
+        display: grid;
+        grid-template-columns: 200px 1fr;
+        gap: 2rem;
+    }
+}

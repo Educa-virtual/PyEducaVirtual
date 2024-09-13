@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core'
+import { SelectItem } from 'primeng/api'
 import { Customer, Representative } from 'src/app/demo/api/customer'
 import { CustomerService } from 'src/app/demo/service/customer.service'
 import { Product } from 'src/app/demo/api/product'
@@ -73,6 +74,11 @@ export class BancoPreguntasComponent implements OnInit {
 
     loading: boolean = true
 
+    selectedDrop: SelectItem = { value: '' }
+    nivel: SelectItem[] = []
+    grado: SelectItem[] = []
+    area: SelectItem[] = []
+
     @ViewChild('filter') filter!: ElementRef
 
     constructor(
@@ -89,6 +95,30 @@ export class BancoPreguntasComponent implements OnInit {
                 (customer) => (customer.date = new Date(customer.date))
             )*/
         })
+        this.nivel = [
+            {
+                label: 'Nivel Primaria',
+                value: { id: 1, name: 'New York', code: 'NY' },
+            },
+            {
+                label: 'Nivel Secundaria',
+                value: { id: 2, name: 'Rome', code: 'RM' },
+            },
+        ]
+        this.grado = [
+            { label: '2do.', value: { id: 1, name: 'New York', code: 'NY' } },
+            { label: '4to.', value: { id: 2, name: 'Rome', code: 'RM' } },
+        ]
+        this.area = [
+            {
+                label: 'Matemáticas',
+                value: { id: 1, name: 'New York', code: 'NY' },
+            },
+            {
+                label: 'Comunicación',
+                value: { id: 2, name: 'Rome', code: 'RM' },
+            },
+        ]
 
         //  this.productService.getProductsWithOrdersSmall().then(data => this.products = data);
     }

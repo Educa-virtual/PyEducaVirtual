@@ -1,0 +1,37 @@
+.login {
+    min-height: 100dvh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas: 'banner form';
+
+    &__banner {
+        grid-area: banner;
+        aspect-ratio: 1/1;
+        max-height: 100dvh;
+    }
+
+    &__form {
+        grid-area: form;
+    }
+
+    @media (max-width: 800px) {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            'form'
+            'banner';
+        &__banner {
+            img {
+                display: none;
+            }
+        }
+    }
+}
+.login_card {
+    width: 80%;
+    margin-left: 20%;
+    @media (max-width: 800px) {
+        width: 100%;
+        margin-left: 0%;
+        margin-top: 20%;
+    }
+}

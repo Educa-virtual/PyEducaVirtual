@@ -85,9 +85,9 @@ export class BancoPreguntasComponent implements OnInit {
             this.customers1 = customers
             this.loading = false
 
-            this.customers1.forEach(
+            /*  this.customers1.forEach(
                 (customer) => (customer.date = new Date(customer.date))
-            )
+            )*/
         })
 
         //  this.productService.getProductsWithOrdersSmall().then(data => this.products = data);

@@ -20,18 +20,8 @@ export class TablePrimengComponent implements OnChanges {
     @Input() showCaption: boolean = true
     @Input() showPaginator: boolean = true
 
-    @Input() data = [
-        {
-            cActividad1: 'cActividad1',
-            cActividad2: 'cActividad2',
-            cActividad3: 'cActividad3',
-        },
-        {
-            cActividad1: 'cActividad1',
-            cActividad2: 'cActividad2',
-            cActividad3: 'cActividad3',
-        },
-    ]
+    @Input() data = []
+
     @Input() columnas = [
         {
             type: 'text',

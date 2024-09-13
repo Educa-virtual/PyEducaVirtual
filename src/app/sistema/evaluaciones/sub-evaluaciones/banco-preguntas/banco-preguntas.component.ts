@@ -20,6 +20,8 @@ import { ToastModule } from 'primeng/toast'
 import { Ripple } from 'primeng/ripple'
 import { RatingModule } from 'primeng/rating'
 import { DialogModule } from 'primeng/dialog'
+//EDITOR
+import { EditorModule } from 'primeng/editor'
 
 interface expandedRows {
     [key: string]: boolean
@@ -31,6 +33,7 @@ interface expandedRows {
     providers: [MessageService, ConfirmationService],
     standalone: true,
     imports: [
+        EditorModule,
         TableModule,
         DialogModule,
         PrimeTemplate,
@@ -90,6 +93,8 @@ export class BancoPreguntasComponent implements OnInit {
     desempenio: SelectItem[] = []
     tipo_pregunta: SelectItem[] = []
     clave: SelectItem[] = []
+
+    text
     @ViewChild('filter') filter!: ElementRef
 
     constructor(

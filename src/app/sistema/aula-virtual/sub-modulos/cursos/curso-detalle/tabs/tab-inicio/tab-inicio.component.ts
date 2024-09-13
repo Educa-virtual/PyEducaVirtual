@@ -1,4 +1,4 @@
-import { Component } from '@angular/core'
+import { Component, Input } from '@angular/core'
 
 @Component({
     selector: 'app-tab-inicio',
@@ -7,4 +7,6 @@ import { Component } from '@angular/core'
     templateUrl: './tab-inicio.component.html',
     styleUrl: './tab-inicio.component.scss',
 })
-export class TabInicioComponent {}
+export class TabInicioComponent {
+    @Input() anuncios = []
+}

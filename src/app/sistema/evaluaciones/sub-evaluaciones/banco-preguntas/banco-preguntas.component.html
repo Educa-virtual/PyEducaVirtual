@@ -2,191 +2,161 @@
 
 <div class="grid">
     <div class="col-12">
-        <div class="card">
-            <h5>Agregar pregunta</h5>
-            <p-dialog
-                header="Agregar pregunta"
-                [(visible)]="display"
-                [modal]="true"
-                showEffect="fade"
-                [style]="{ width: '30vw' }"
-                [breakpoints]="{ '960px': '75vw' }"
-            >
-                <div class="line-height-3 m-0">
-                    <div class="field grid">
-                        <label
-                            htmlFor="name3"
-                            class="col-12 mb-2 md:col-2 md:mb-0"
-                            >Competencia</label
-                        >
-                        <div class="col-12 md:col-10">
-                            <p-dropdown
-                                [options]="competencia"
-                                [(ngModel)]="selectedDrop"
-                                placeholder="Selecciones un Grado"
-                                [showClear]="true"
-                            ></p-dropdown>
-                        </div>
-                    </div>
-                    <div class="field grid">
-                        <label
-                            htmlFor="email3"
-                            class="col-12 mb-2 md:col-2 md:mb-0"
-                            >Capacidad</label
-                        >
-                        <div class="col-12 md:col-10">
-                            <p-dropdown
-                                [options]="capacidad"
-                                [(ngModel)]="selectedDrop"
-                                placeholder="Selecciones un Grado"
-                                [showClear]="true"
-                            ></p-dropdown>
-                        </div>
-                    </div>
-
-                    <div class="field grid">
-                        <label
-                            htmlFor="email3"
-                            class="col-12 mb-2 md:col-2 md:mb-0"
-                            >Desempeño</label
-                        >
-                        <div class="col-12 md:col-10">
-                            <p-dropdown
-                                [options]="desempenio"
-                                [(ngModel)]="selectedDrop"
-                                placeholder="Selecciones un Grado"
-                                [showClear]="true"
-                            ></p-dropdown>
-                        </div>
-                    </div>
-
-                    <div class="field grid">
-                        <label
-                            htmlFor="email3"
-                            class="col-12 mb-2 md:col-2 md:mb-0"
-                            >Tipo pregunta</label
-                        >
-                        <div class="col-12 md:col-10">
-                            <p-dropdown
-                                [options]="tipo_pregunta"
-                                [(ngModel)]="selectedDrop"
-                                placeholder="Selecciones un Grado"
-                                [showClear]="true"
-                            ></p-dropdown>
-                        </div>
-                    </div>
-
-                    <div class="field grid">
-                        <label
-                            htmlFor="email3"
-                            class="col-12 mb-2 md:col-2 md:mb-0"
-                            >Pregunta</label
-                        >
-                        <div class="col-12 md:col-10">
-                            <textarea
-                                rows="5"
-                                cols="30"
-                                placeholder="Your Message"
-                                pInputTextarea
-                            ></textarea>
-                        </div>
-                    </div>
-
-                    <div class="field grid">
-                        <label
-                            htmlFor="email3"
-                            class="col-12 mb-2 md:col-2 md:mb-0"
-                            >Texto ayuda</label
-                        >
-                        <div class="col-12 md:col-10">
-                            <textarea
-                                rows="5"
-                                cols="30"
-                                placeholder="Your Message"
-                                pInputTextarea
-                            ></textarea>
-                        </div>
-                    </div>
-
-                    <div class="field grid">
-                        <label
-                            htmlFor="email3"
-                            class="col-12 mb-2 md:col-2 md:mb-0"
-                            >Nivel</label
-                        >
-                        <div class="col-12 md:col-10">
-                            <input pInputText id="email3" type="text" />
-                        </div>
-                    </div>
-
-                    <div class="field grid">
-                        <label
-                            htmlFor="email3"
-                            class="col-12 mb-2 md:col-2 md:mb-0"
-                            >Peso</label
-                        >
-                        <div class="col-12 md:col-10">
-                            <input pInputText id="email3" type="text" />
-                        </div>
-                    </div>
-
-                    <div class="field grid">
-                        <label
-                            htmlFor="email3"
-                            class="col-12 mb-2 md:col-2 md:mb-0"
-                            >Tiempo</label
-                        >
-                        <div class="col-12 md:col-10">
-                            <input pInputText id="email3" type="text" />
-                        </div>
-                    </div>
-
-                    <div class="field grid">
-                        <label
-                            htmlFor="email3"
-                            class="col-12 mb-2 md:col-2 md:mb-0"
-                            >Estado</label
-                        >
-                        <div class="col-12 md:col-10">
-                            <p-inputSwitch
-                                [(ngModel)]="valSwitch"
-                            ></p-inputSwitch>
-                        </div>
-                    </div>
-                    <div class="field grid">
-                        <label
-                            htmlFor="email3"
-                            class="col-12 mb-2 md:col-2 md:mb-0"
-                            >Clave</label
-                        >
-                        <div class="col-12 md:col-10">
-                            <p-dropdown
-                                [options]="clave"
-                                [(ngModel)]="selectedDrop"
-                                placeholder="Seleccione la clave"
-                                [showClear]="true"
-                            ></p-dropdown>
-                        </div>
+        <!--<h5>Agregar preguntaaaa</h5>-->
+        <p-dialog
+            header="Agregar pregunta"
+            [(visible)]="display"
+            [modal]="true"
+            showEffect="fade"
+            [style]="{ width: '30vw' }"
+            [breakpoints]="{ '960px': '75vw' }"
+        >
+            <div class="line-height-3 m-0">
+                <div class="field grid">
+                    <label htmlFor="name3" class="col-12 mb-2 md:col-2 md:mb-0"
+                        >Competencia</label
+                    >
+                    <div class="col-12 md:col-10">
+                        <p-dropdown
+                            [options]="competencia"
+                            [(ngModel)]="selectedDrop"
+                            placeholder="Selecciones un Grado"
+                            [showClear]="true"
+                        ></p-dropdown>
                     </div>
                 </div>
-                <ng-template pTemplate="footer">
-                    <button
-                        pButton
-                        icon="pi pi-check"
-                        (click)="display = false"
-                        label="Guardar xd"
-                        class="p-button-outlined"
-                    ></button>
-                    <button
-                        pButton
-                        icon="pi pi-times"
-                        (click)="display = false"
-                        label="Cancelar"
-                        class="p-button-outlined"
-                    ></button>
-                </ng-template>
-            </p-dialog>
-        </div>
+                <div class="field grid">
+                    <label htmlFor="email3" class="col-12 mb-2 md:col-2 md:mb-0"
+                        >Capacidad</label
+                    >
+                    <div class="col-12 md:col-10">
+                        <p-dropdown
+                            [options]="capacidad"
+                            [(ngModel)]="selectedDrop"
+                            placeholder="Selecciones un Grado"
+                            [showClear]="true"
+                        ></p-dropdown>
+                    </div>
+                </div>
+
+                <div class="field grid">
+                    <label htmlFor="email3" class="col-12 mb-2 md:col-2 md:mb-0"
+                        >Desempeño</label
+                    >
+                    <div class="col-12 md:col-10">
+                        <p-dropdown
+                            [options]="desempenio"
+                            [(ngModel)]="selectedDrop"
+                            placeholder="Selecciones un Grado"
+                            [showClear]="true"
+                        ></p-dropdown>
+                    </div>
+                </div>
+
+                <div class="field grid">
+                    <label htmlFor="email3" class="col-12 mb-2 md:col-2 md:mb-0"
+                        >Tipo pregunta</label
+                    >
+                    <div class="col-12 md:col-10">
+                        <p-dropdown
+                            [options]="tipo_pregunta"
+                            [(ngModel)]="selectedDrop"
+                            placeholder="Selecciones un Grado"
+                            [showClear]="true"
+                        ></p-dropdown>
+                    </div>
+                </div>
+
+                <div class="field grid">
+                    <label htmlFor="email3" class="col-12 mb-2 md:col-2 md:mb-0"
+                        >Pregunta</label
+                    >
+                    <div class="col-12 md:col-10">
+                        <p-editor
+                            [(ngModel)]="text"
+                            [style]="{ height: '320px' }"
+                        />
+                    </div>
+                </div>
+
+                <div class="field grid">
+                    <label htmlFor="email3" class="col-12 mb-2 md:col-2 md:mb-0"
+                        >Texto ayuda</label
+                    >
+                    <div class="col-12 md:col-10">
+                        <p-editor
+                            [(ngModel)]="text"
+                            [style]="{ height: '320px' }"
+                        />
+                    </div>
+                </div>
+
+                <div class="field grid">
+                    <label htmlFor="email3" class="col-12 mb-2 md:col-2 md:mb-0"
+                        >Nivel</label
+                    >
+                    <div class="col-12 md:col-10">
+                        <input pInputText id="email3" type="text" />
+                    </div>
+                </div>
+
+                <div class="field grid">
+                    <label htmlFor="email3" class="col-12 mb-2 md:col-2 md:mb-0"
+                        >Peso</label
+                    >
+                    <div class="col-12 md:col-10">
+                        <input pInputText id="email3" type="text" />
+                    </div>
+                </div>
+
+                <div class="field grid">
+                    <label htmlFor="email3" class="col-12 mb-2 md:col-2 md:mb-0"
+                        >Tiempo</label
+                    >
+                    <div class="col-12 md:col-10">
+                        <input pInputText id="email3" type="text" />
+                    </div>
+                </div>
+
+                <div class="field grid">
+                    <label htmlFor="email3" class="col-12 mb-2 md:col-2 md:mb-0"
+                        >Estado</label
+                    >
+                    <div class="col-12 md:col-10">
+                        <p-inputSwitch [(ngModel)]="valSwitch"></p-inputSwitch>
+                    </div>
+                </div>
+                <div class="field grid">
+                    <label htmlFor="email3" class="col-12 mb-2 md:col-2 md:mb-0"
+                        >Clave</label
+                    >
+                    <div class="col-12 md:col-10">
+                        <p-dropdown
+                            [options]="clave"
+                            [(ngModel)]="selectedDrop"
+                            placeholder="Seleccione la clave"
+                            [showClear]="true"
+                        ></p-dropdown>
+                    </div>
+                </div>
+            </div>
+            <ng-template pTemplate="footer">
+                <button
+                    pButton
+                    icon="pi pi-check"
+                    (click)="display = false"
+                    label="Guardar xd"
+                    class="p-button-outlined"
+                ></button>
+                <button
+                    pButton
+                    icon="pi pi-times"
+                    (click)="display = false"
+                    label="Cancelar"
+                    class="p-button-outlined"
+                ></button>
+            </ng-template>
+        </p-dialog>
 
         <div class="card">
             <h5>Banco de preguntas</h5>
@@ -272,12 +242,6 @@
                                 class="flex justify-content-between align-items-center"
                             >
                                 #
-                                <p-columnFilter
-                                    type="text"
-                                    field="name"
-                                    display="menu"
-                                    placeholder="Search by name"
-                                ></p-columnFilter>
                             </div>
                         </th>
                         <th style="min-width: 12rem">
@@ -285,12 +249,6 @@
                                 class="flex justify-content-between align-items-center"
                             >
                                 Pregunta
-                                <p-columnFilter
-                                    type="text"
-                                    field="country.name"
-                                    display="menu"
-                                    placeholder="Search by country"
-                                ></p-columnFilter>
                             </div>
                         </th>
                         <th style="min-width: 14rem">
@@ -298,58 +256,6 @@
                                 class="flex justify-content-between align-items-center"
                             >
                                 Nivel
-                                <p-columnFilter
-                                    field="representative"
-                                    matchMode="in"
-                                    display="menu"
-                                    [showMatchModes]="false"
-                                    [showOperator]="false"
-                                    [showAddButton]="false"
-                                >
-                                    <ng-template pTemplate="header">
-                                        <div class="px-3 pt-3 pb-0">
-                                            <span class="font-bold"
-                                                >Agent Picker</span
-                                            >
-                                        </div>
-                                    </ng-template>
-                                    <ng-template
-                                        pTemplate="filter"
-                                        let-value
-                                        let-filter="filterCallback"
-                                    >
-                                        <p-multiSelect
-                                            [ngModel]="value"
-                                            [options]="representatives"
-                                            placeholder="Any"
-                                            (onChange)="filter($event.value)"
-                                            optionLabel="name"
-                                        >
-                                            <ng-template
-                                                let-option
-                                                pTemplate="item"
-                                            >
-                                                <div
-                                                    class="p-multiselect-representative-option"
-                                                >
-                                                    <img
-                                                        [alt]="option.label"
-                                                        src="assets/demo/images/avatar/{{
-                                                            option.image
-                                                        }}"
-                                                        width="32"
-                                                        style="
-                                                            vertical-align: middle;
-                                                        "
-                                                    />
-                                                    <span class="ml-2">{{
-                                                        option.name
-                                                    }}</span>
-                                                </div>
-                                            </ng-template>
-                                        </p-multiSelect>
-                                    </ng-template>
-                                </p-columnFilter>
                             </div>
                         </th>
                         <th style="min-width: 10rem">
@@ -357,12 +263,6 @@
                                 class="flex justify-content-between align-items-center"
                             >
                                 Peso
-                                <p-columnFilter
-                                    type="date"
-                                    field="date"
-                                    display="menu"
-                                    placeholder="mm/dd/yyyy"
-                                ></p-columnFilter>
                             </div>
                         </th>
                         <th style="min-width: 10rem">
@@ -370,12 +270,6 @@
                                 class="flex justify-content-between align-items-center"
                             >
                                 Clave
-                                <p-columnFilter
-                                    type="numeric"
-                                    field="balance"
-                                    display="menu"
-                                    currency="USD"
-                                ></p-columnFilter>
                             </div>
                         </th>
                         <th style="min-width: 12rem">
@@ -383,38 +277,6 @@
                                 class="flex justify-content-between align-items-center"
                             >
                                 Acciones
-                                <p-columnFilter
-                                    field="status"
-                                    matchMode="equals"
-                                    display="menu"
-                                >
-                                    <ng-template
-                                        pTemplate="filter"
-                                        let-value
-                                        let-filter="filterCallback"
-                                    >
-                                        <p-dropdown
-                                            [ngModel]="value"
-                                            [options]="statuses"
-                                            (onChange)="filter($event.value)"
-                                            placeholder="Any"
-                                            [style]="{ 'min-width': '12rem' }"
-                                        >
-                                            <ng-template
-                                                let-option
-                                                pTemplate="item"
-                                            >
-                                                <span
-                                                    [class]="
-                                                        'customer-badge status-' +
-                                                        option.value
-                                                    "
-                                                    >{{ option.label }}</span
-                                                >
-                                            </ng-template>
-                                        </p-dropdown>
-                                    </ng-template>
-                                </p-columnFilter>
                             </div>
                         </th>
                     </tr>

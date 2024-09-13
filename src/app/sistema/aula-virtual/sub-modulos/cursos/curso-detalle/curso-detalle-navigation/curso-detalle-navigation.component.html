@@ -1,0 +1,15 @@
+<p-panel header="Detalles y Acciones">
+    <ul class="flex flex-column gap-4 p-0">
+        @for (item of items; track item.id) {
+            <li class="list-none">
+                <a class="flex gap-2 align-items-start cursor-pointer">
+                    <i class="pi pt-1" [ngClass]="item.icon"></i>
+                    <div class="flex gap-2 flex-column">
+                        <span class="text-primary">{{ item.label }}</span>
+                        <!-- <span class="text-primary">subtitle</span> -->
+                    </div>
+                </a>
+            </li>
+        }
+    </ul>
+</p-panel>

@@ -5,6 +5,9 @@ import { BreadcrumbModule } from 'primeng/breadcrumb'
 import { TabMenuModule } from 'primeng/tabmenu'
 import { TabViewModule } from 'primeng/tabview'
 import { TabContenidoComponent } from '../tabs/tab-contenido/tab-contenido/tab-contenido.component'
+import { CursoDetalleNavigationComponent } from './curso-detalle-navigation/curso-detalle-navigation.component'
+import { RouterOutlet } from '@angular/router'
+import { PanelModule } from 'primeng/panel'
 
 @Component({
     selector: 'app-curso-detalle',
@@ -15,6 +18,9 @@ import { TabContenidoComponent } from '../tabs/tab-contenido/tab-contenido/tab-c
         TabMenuModule,
         TabViewModule,
         TabContenidoComponent,
+        CursoDetalleNavigationComponent,
+        RouterOutlet,
+        PanelModule,
     ],
     templateUrl: './curso-detalle.component.html',
     styleUrl: './curso-detalle.component.scss',

@@ -1,4 +1,4 @@
-<section class="flex flex-column gap-2">
+<section class="flex flex-column gap-4">
     <p-breadcrumb class="max-w-full" [model]="items">
         <ng-template pTemplate="item" let-item>
             <ng-container *ngIf="item.route; else elseBlock">
@@ -19,65 +19,25 @@
         </ng-template>
     </p-breadcrumb>
 
-    <p-tabView styleClass="">
-        <p-tabPanel header="">
-            <ng-template pTemplate="header">
-                <div class="flex flex-column align-items-center gap-2">
-                    <i class="pi pi-home"></i>
-                    <span class="white-space-nowrap m-0"> Inicio </span>
-                </div>
-            </ng-template>
-            <p>Inicio</p>
-        </p-tabPanel>
-        <p-tabPanel header="Header III">
-            <ng-template pTemplate="header">
-                <div class="flex flex-column align-items-center gap-2">
-                    <i class="pi pi-book"></i>
-                    <span class="white-space-nowrap m-0"> Contenido </span>
-                </div>
-            </ng-template>
-            <app-tab-contenido
-                class="flex flex-column gap-2"
-            ></app-tab-contenido>
-        </p-tabPanel>
-
-        <p-tabPanel header="">
-            <ng-template pTemplate="header">
-                <div class="flex flex-column align-items-center gap-2">
-                    <i class="pi pi-users"></i>
-                    <span class="white-space-nowrap m-0"> Estudiantes </span>
-                </div>
-            </ng-template>
-            <p>Inicio</p>
-        </p-tabPanel>
-        <p-tabPanel header="">
-            <ng-template pTemplate="header">
-                <div class="flex flex-column align-items-center gap-2">
-                    <i class="pi pi-users"></i>
-                    <span class="white-space-nowrap m-0">Calificaciones</span>
-                </div>
-            </ng-template>
-            <p>Calificaciones</p>
-        </p-tabPanel>
-        <p-tabPanel header="">
-            <ng-template pTemplate="header">
-                <div class="flex flex-column align-items-center gap-2">
-                    <i class="pi pi-sitemap"></i>
-                    <span class="white-space-nowrap m-0"> Rubricas </span>
-                </div>
-            </ng-template>
-            <p>Inicio</p>
-        </p-tabPanel>
-        <p-tabPanel header="">
-            <ng-template pTemplate="header">
-                <div class="flex flex-column align-items-center gap-2">
-                    <i class="pi pi-question"></i>
-                    <span class="white-space-nowrap m-0">
-                        Banco Preguntas
-                    </span>
-                </div>
-            </ng-template>
-            <p>Inicio</p>
-        </p-tabPanel>
-    </p-tabView>
+    <div class="curso-detalle__content">
+        <app-curso-detalle-navigation />
+        <p-panel header="Contenido del curso">
+            <p>
+                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Esse
+                neque placeat laboriosam ab obcaecati nobis repudiandae rerum
+                nulla laborum, eaque perspiciatis magnam blanditiis dolorum
+                earum. Cum voluptatibus cupiditate non doloremque, hic, sequi
+                quam error fugiat nobis ut omnis delectus sapiente voluptate
+                quisquam culpa. Atque sapiente minus eaque, pariatur nihil vitae
+                debitis cumque voluptatum nemo molestiae. Minus, eius quas quo
+                architecto temporibus ab atque, porro repellendus aliquid
+                voluptatum illo harum, cumque placeat facere sit earum amet
+                praesentium repudiandae exercitationem? Inventore id ipsum
+                beatae. Ducimus placeat rerum voluptatum amet labore quod
+                dolores ipsam quidem laborum reiciendis blanditiis nam, qui
+                pariatur deserunt quibusdam natus iste.
+            </p>
+        </p-panel>
+        <!-- <router-outlet></router-outlet> -->
+    </div>
 </section>

@@ -44,23 +44,27 @@
             (tabChange)="updateTab($event)"
             class="sidebar-menu"
         />
-        @switch (tab) {
-            @case ('inicio') {
-                <app-tab-inicio></app-tab-inicio>
+        <p-panel [header]="tab" class="panel-content">
+            @switch (tab) {
+                @case ('inicio') {
+                    <app-tab-inicio></app-tab-inicio>
+                }
+                @case ('contenido') {
+                    <app-tab-contenido></app-tab-contenido>
+                }
+                @case ('estudiantes') {
+                    <app-tab-estudiantes
+                        [estudiantes]="estudiantes"
+                    ></app-tab-estudiantes>
+                }
+                @case ('evaluaciones') {
+                    <app-tab-evaluaciones></app-tab-evaluaciones>
+                }
+                @case ('rubricas') {}
+                @case ('banco-preguntas') {}
+                @default {}
             }
-            @case ('contenido') {
-                <app-tab-contenido></app-tab-contenido>
-            }
-            @case ('estudiantes') {
-                <app-tab-estudiantes></app-tab-estudiantes>
-            }
-            @case ('evaluaciones') {
-                <app-tab-evaluaciones></app-tab-evaluaciones>
-            }
-            @case ('rubricas') {}
-            @case ('banco-preguntas') {}
-            @default {}
-        }
+        </p-panel>
         <!-- <router-outlet></router-outlet> -->
     </div>
 </section>

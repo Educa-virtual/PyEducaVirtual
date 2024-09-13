@@ -37,3 +37,10 @@
 .divider {
     border-bottom: 1px solid var(--primary-color);
 }
+
+:host ::ng-deep .panel-content .p-panel .p-panel-content {
+    padding: 0;
+    padding-top: 1rem;
+    background: transparent;
+    border: none;
+}

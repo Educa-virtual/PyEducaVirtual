@@ -221,4 +221,8 @@ export class BancoPreguntasComponent implements OnInit {
         table.clear()
         this.filter.nativeElement.value = ''
     }
+
+    ok() {
+        alert(this.textAyuda)
+    }
 }

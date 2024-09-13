@@ -1,13 +1,17 @@
 import { Component, ElementRef, ViewChild, OnInit } from '@angular/core'
 import { MenuItem } from 'primeng/api'
-import { LayoutService } from './service/app.layout.service'
-import { LocalStoreService } from '../servicios/local-store.service'
-import { TokenStorageService } from '../servicios/token.service'
-import { RouterLink } from '@angular/router';
-import { DropdownModule } from 'primeng/dropdown';
-import { FormsModule } from '@angular/forms';
-import { NgClass } from '@angular/common';
-import { MenuModule } from 'primeng/menu';
+import { LayoutService } from '../service/app.layout.service'
+import { LocalStoreService } from '../../servicios/local-store.service'
+import { TokenStorageService } from '../../servicios/token.service'
+import { RouterLink } from '@angular/router'
+import { DropdownModule } from 'primeng/dropdown'
+import { FormsModule } from '@angular/forms'
+import { NgClass } from '@angular/common'
+import { MenuModule } from 'primeng/menu'
+import {
+    IRole,
+    RolesDropdownComponent,
+} from './roles-dropdown/roles-dropdown.component'
 
 interface Profile {
     iProfile: number
@@ -24,11 +28,32 @@ interface Profile {
         FormsModule,
         NgClass,
         MenuModule,
+        RolesDropdownComponent,
     ],
 })
 export class AppTopBarComponent implements OnInit {
     items!: MenuItem[]
     profile: Profile[] | []
+    public roles: IRole[] = [
+        {
+            id: '1',
+            ieCodigo: '20542',
+            nombre: 'JAVIER PEREZ DE CUELLAR',
+            codigoModular: '050092-0',
+            nivel: 'PRIMARIA',
+            direccion: 'DRE LIMA PROVINCIAS',
+            ugel: '15 HUAROCHIRI',
+        },
+        {
+            id: '2',
+            ieCodigo: '9999',
+            nombre: 'JUAN PEREZ',
+            codigoModular: '000000-0',
+            nivel: 'SECUNDARIA',
+            direccion: 'DRE MOQUEGUA PROVINCIAS',
+            ugel: '17 ILO',
+        },
+    ]
     selectedProfile: Profile | undefined
 
     @ViewChild('menubutton') menuButton!: ElementRef

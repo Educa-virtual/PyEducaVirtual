@@ -1,3 +1,7 @@
 @for (actividad of actividades; track actividad.id) {
-    <app-actividad-row [actividad]="actividad"></app-actividad-row>
+    <app-actividad-row
+        [actividad]="actividad"
+        class="actividad"
+        (actionSelected)="actionSelected.emit($event)"
+    ></app-actividad-row>
 }

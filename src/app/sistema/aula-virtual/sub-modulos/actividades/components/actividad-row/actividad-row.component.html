@@ -4,20 +4,25 @@
     collapsed="true"
     expandIcon="pi pi-angle-down"
     collapseIcon="pi pi-angle-right"
-    class="cursor-pointer"
+    class="cursor-pointer panel-actividad-detalle"
     toggler="header"
 >
     <ng-template pTemplate="header">
         <div class="flex justify-content-between align-items-start w-full">
             <div class="flex align-items-center gap-4 font-normal text-primary">
-                <!-- <i class="text-4xl" [ngClass]="icon"></i> -->
+                <app-icon
+                    [name]="
+                        actividad.tipoActividad | appActividadConfig: 'icon'
+                    "
+                />
                 <div class="flex flex-column gap-2 align-items-start">
-                    <span class="text-2xl">{{
-                        actividad.nombreActividad
-                    }}</span>
+                    <span class="text-xl">{{ actividad.nombreActividad }}</span>
                     <span
                         class="text-sm customer-badge"
-                        [ngClass]="actividad.tipoActividad | colorByNumber"
+                        [ngClass]="
+                            actividad.tipoActividad
+                                | appActividadConfig: 'bg-color'
+                        "
                         >{{ actividad.tipoActividadNombre }}</span
                     >
                 </div>
@@ -25,6 +30,7 @@
         </div>
     </ng-template>
     <ng-template pTemplate="icons">
+        <p-menu #menuActividad [model]="accionesActividad" [popup]="true" />
         <button
             class="p-link ml-auto mr-2 text-primary"
             (click)="$event.stopPropagation(); menuActividad.toggle($event)"
@@ -32,7 +38,12 @@
             <span class="pi pi-cog"></span>
         </button>
     </ng-template>
-    Fecha Cierre: 17/03/2025 Hora: 4:00 p.m.
+    <ng-content>
+        <div class="flex mb-3">Fecha Cierre: 17/03/2025 Hora: 4:00 p.m.</div>
+        <div class="flex justify-content-end">
+            <button pButton size="small">
+                Ver {{ actividad.tipoActividadNombre }}
+            </button>
+        </div>
+    </ng-content>
 </p-panel>
-
-<p-menu #menuActividad [model]="[{}]" [popup]="true" />

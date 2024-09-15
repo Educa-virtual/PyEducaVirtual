@@ -21,11 +21,62 @@
 </div>
 
 <div class="flex flex-column gap-2">
-    <p-accordion [multiple]="true">
-        <p-accordionTab header="Tema I" class="" iconPos="end">
+    <p-accordion
+        [multiple]="true"
+        expandIcon="pi pi-angle-right"
+        collapseIcon="pi pi-angle-down "
+    >
+        <p-accordionTab header="" class="" iconPos="end">
+            <ng-template pTemplate="header">
+                <span class="flex align-items-center gap-2 w-full">
+                    <span class=""> Tema I </span>
+                </span>
+
+                <button
+                    class="p-link ml-auto mr-2 text-primary"
+                    (click)="
+                        $event.stopPropagation(); menuContenido.toggle($event)
+                    "
+                >
+                    <span class="pi pi-cog"></span>
+                </button>
+            </ng-template>
             <app-actividad-lista
                 [actividades]="actividades"
+                (actionSelected)="actionSelected($event)"
             ></app-actividad-lista>
         </p-accordionTab>
     </p-accordion>
 </div>
+
+<p-menu #menuContenido [model]="accionesContenido" [popup]="true" />
+
+<p-dialog
+    header="Crear Tarea"
+    [modal]="true"
+    [(visible)]="actividadDialogVisibildad"
+    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+    [style]="{ width: '50vw' }"
+    [position]="'top'"
+    [draggable]="false"
+>
+    <ng-template pTemplate="content"> </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button
+            pButton
+            pRipple
+            label="Cancelar"
+            icon="pi pi-times"
+            class="p-button-text"
+            (click)="hideDialog()"
+        ></button>
+        <button
+            pButton
+            pRipple
+            label="Guardar"
+            icon="pi pi-check"
+            class="p-button-text"
+        ></button>
+    </ng-template>
+</p-dialog>

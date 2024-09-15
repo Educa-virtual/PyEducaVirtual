@@ -1,3 +1,21 @@
 :host {
     display: block;
 }
+
+:host ::ng-deep .p-panel-icons {
+    display: flex;
+}
+
+:host ::ng-deep .p-panel .p-panel-header .p-panel-header-icon {
+    color: var(--primary-color);
+}
+
+:host ::ng-deep .p-panel .p-panel-header .p-panel-header-icon {
+    color: var(--primary-color);
+}
+
+:host ::ng-deep .panel-actividad-detalle {
+    .p-panel .p-panel-content {
+        border: none;
+    }
+}

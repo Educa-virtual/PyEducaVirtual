@@ -22,6 +22,13 @@ import {
     withInMemoryScrolling,
     withRouterConfig,
 } from '@angular/router'
+
+import {
+    provideIcons,
+    provideNgIconsConfig,
+    withExceptionLogger,
+} from '@ng-icons/core'
+
 import { routes } from './app.routes'
 
 const scrollConfig: InMemoryScrollingOptions = {
@@ -39,6 +46,13 @@ const inMemoryScrollingFeature: InMemoryScrollingFeature =
 export const appConfig: ApplicationConfig = {
     providers: [
         provideRouter(routes, inMemoryScrollingFeature, routerConfig),
+        provideNgIconsConfig(
+            {
+                size: '1.5em',
+            },
+            withExceptionLogger()
+        ),
+        provideIcons({}),
         importProvidersFrom(AppLayoutModule, PrimengModule, ToastModule),
         { provide: LocationStrategy, useClass: PathLocationStrategy },
         CountryService,

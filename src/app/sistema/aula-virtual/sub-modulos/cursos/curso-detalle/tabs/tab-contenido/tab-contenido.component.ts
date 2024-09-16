@@ -13,6 +13,7 @@ import { TActividadActions } from '@/app/sistema/aula-virtual/interfaces/activid
 import { DialogModule } from 'primeng/dialog'
 import { MenuModule } from 'primeng/menu'
 import { MenuItem, MenuItemCommandEvent } from 'primeng/api'
+import { TareaFormContainerComponent } from '../../../../actividades/actividad-tarea/tarea-form-container/tarea-form-container.component'
 
 @Component({
     selector: 'app-tab-contenido',
@@ -29,6 +30,7 @@ import { MenuItem, MenuItemCommandEvent } from 'primeng/api'
         ActividadListaComponent,
         DialogModule,
         MenuModule,
+        TareaFormContainerComponent,
     ],
     templateUrl: './tab-contenido.component.html',
     styleUrl: './tab-contenido.component.scss',

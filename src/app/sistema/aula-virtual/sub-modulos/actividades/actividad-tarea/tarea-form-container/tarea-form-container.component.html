@@ -1,0 +1,30 @@
+<p-dialog
+    header="Crear Tarea"
+    [modal]="true"
+    [(visible)]="visible"
+    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+    [style]="{ width: '50vw' }"
+    [position]="'top'"
+    [draggable]="false"
+>
+    <ng-template pTemplate="content">
+        <app-tarea-form></app-tarea-form>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button
+            pButton
+            pRipple
+            label="Cancelar"
+            icon="pi pi-times"
+            class="p-button-text"
+        ></button>
+        <button
+            pButton
+            pRipple
+            label="Guardar"
+            icon="pi pi-check"
+            class="p-button-text"
+        ></button>
+    </ng-template>
+</p-dialog>

@@ -25,6 +25,13 @@
                         placeholder="Buscar palabra clave"
                     />
                 </p-iconField>
+                <p-multiSelect
+                    [options]="columnas"
+                    [(ngModel)]="selectedColumns"
+                    optionLabel="header"
+                    selectedItemsLabel="{0} Columnas seleccionadas"
+                    placeholder="Seleccione Columnas"
+                />
             </div>
         </ng-template>
     }

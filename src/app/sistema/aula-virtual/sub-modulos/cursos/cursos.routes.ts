@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router'
 import { CursoDetalleComponent } from './curso-detalle/curso-detalle.component'
 import { CursosComponent } from './cursos/cursos.component'
+import { ActividadComponent } from './actividad/actividad.component'
 
 const routes: Routes = [
     {
@@ -11,6 +12,10 @@ const routes: Routes = [
     {
         path: ':id',
         component: CursoDetalleComponent,
+    },
+    {
+        path: 'actividad/:actividadId',
+        component: ActividadComponent,
     },
 ]
 

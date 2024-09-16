@@ -1,0 +1,17 @@
+:host {
+    display: block;
+}
+
+:host ::ng-deep .actividad-tabs .p-tabview-nav {
+    display: flex;
+    justify-content: space-between;
+
+    & li {
+        flex: 1;
+        & a {
+            text-align: center;
+            width: 100%;
+            display: block;
+        }
+    }
+}

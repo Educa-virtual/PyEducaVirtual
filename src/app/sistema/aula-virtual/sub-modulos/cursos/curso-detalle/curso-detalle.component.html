@@ -21,7 +21,9 @@
 
     <div class="flex flex-column">
         <div class="flex justify-content-between">
-            <app-profesor-avatar></app-profesor-avatar>
+            <h1>
+                {{ curso.nombre }}
+            </h1>
             <p-menu #menu [model]="items" [popup]="true">
                 <ng-template pTemplate="start">
                     <app-curso-detalle-navigation

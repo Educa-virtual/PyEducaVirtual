@@ -8,30 +8,35 @@ const docente = [
         label: 'Docente',
         items: [
             {
-                label: 'Dashboard',
-                icon: 'pi pi-fw pi-chart-bar',
-                routerLink: ['/docente/dahsboard'],
-            }, //ver reglamento, resumen, estadística.
-            {
-                label: 'Silabos',
-                icon: 'pi pi-fw pi-list-check',
-                routerLink: ['/docente/silabo'],
+                label: 'Áreas de Estudio',
+                icon: 'pi pi-fw pi-book',
+                routerLink: ['/docente/areas-estudio'],
             },
-            {
-                label: 'Asistencia',
-                icon: 'pi pi-fw pi-list',
-                routerLink: ['/docente/asistencia'],
-            },
-            {
-                label: 'Personal',
-                icon: 'pi pi-fw pi-users',
-                routerLink: ['/docente/personal'],
-            },
-            {
-                label: 'Sesiones de Aprendizaje',
-                icon: 'pi pi-fw pi-users',
-                routerLink: ['/docente/sesion-aprendizaje'],
-            },
+            // {
+            //     label: 'Dashboard',
+            //     icon: 'pi pi-fw pi-chart-bar',
+            //     routerLink: ['/docente/dahsboard'],
+            // }, //ver reglamento, resumen, estadística.
+            // {
+            //     label: 'Silabos',
+            //     icon: 'pi pi-fw pi-list-check',
+            //     routerLink: ['/docente/silabo'],
+            // },
+            // {
+            //     label: 'Asistencia',
+            //     icon: 'pi pi-fw pi-list',
+            //     routerLink: ['/docente/asistencia'],
+            // },
+            // {
+            //     label: 'Personal',
+            //     icon: 'pi pi-fw pi-users',
+            //     routerLink: ['/docente/personal'],
+            // },
+            // {
+            //     label: 'Sesiones de Aprendizaje',
+            //     icon: 'pi pi-fw pi-users',
+            //     routerLink: ['/docente/sesion-aprendizaje'],
+            // },
             // {
             //     label: 'Mi Perfil',
             //     icon: 'pi pi-fw pi-id-card',

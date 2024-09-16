@@ -35,8 +35,8 @@ export class LoginComponent implements OnInit {
         private messageService: MessageService
     ) {
         this.formLogin = this.fb.group({
-            cEmail: ['', Validators.required],
-            cPassword: ['', Validators.required],
+            user: ['', Validators.required],
+            pass: ['', Validators.required],
         })
     }
 

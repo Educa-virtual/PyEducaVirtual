@@ -60,7 +60,11 @@
     [position]="'top'"
     [draggable]="false"
 >
-    <ng-template pTemplate="content"> </ng-template>
+    <ng-template pTemplate="content">
+        <form [formGroup]="tareaForm">
+            <app-common-input controlKey="name" />
+        </form>
+    </ng-template>
 
     <ng-template pTemplate="footer">
         <button

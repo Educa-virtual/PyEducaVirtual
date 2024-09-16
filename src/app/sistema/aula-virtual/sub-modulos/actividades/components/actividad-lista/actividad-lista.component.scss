@@ -1,0 +1,10 @@
+:host ::ng-deep .actividad {
+    .p-panel .p-toggleable-content {
+        border-bottom: 0.5px solid var(--primary-color);
+    }
+
+    .p-panel .p-panel-header {
+        border-radius: 0;
+        border: none;
+    }
+}

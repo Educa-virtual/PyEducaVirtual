@@ -5,10 +5,28 @@ import { TreeModule } from 'primeng/tree'
 import { TreeTableModule } from 'primeng/treetable'
 import { NgFor, NgIf } from '@angular/common'
 
+import { DropdownModule } from 'primeng/dropdown'
+import { IconFieldModule } from 'primeng/iconfield'
+import { InputIconModule } from 'primeng/inputicon'
+import { InputTextModule } from 'primeng/inputtext'
+import { CalendarModule } from 'primeng/calendar'
+
 @Component({
     templateUrl: './recurso.component.html',
+    styleUrl: './recurso.component.scss',
     standalone: true,
-    imports: [TreeModule, TreeTableModule, PrimeTemplate, NgFor, NgIf],
+    imports: [
+        TreeModule,
+        CalendarModule,
+        InputTextModule,
+        InputIconModule,
+        IconFieldModule,
+        DropdownModule,
+        TreeTableModule,
+        PrimeTemplate,
+        NgFor,
+        NgIf,
+    ],
 })
 export class RecursoComponent implements OnInit {
     files1: TreeNode[] = []
@@ -40,9 +58,9 @@ export class RecursoComponent implements OnInit {
         })
 
         this.cols = [
-            { field: 'name', header: 'name' },
-            { field: 'size', header: 'Size' },
-            { field: 'type', header: 'Type' },
+            { field: 'Nombre', header: 'Nombre' },
+            { field: 'Tamaño', header: 'Tamaño' },
+            { field: 'Tipo', header: 'Tipo' },
             { field: 'Acción', header: 'Acción' },
         ]
     }

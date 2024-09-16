@@ -6,6 +6,32 @@
                     <i class="pi pi-fw pi-paperclip"></i>Gestión de Recursos
                 </h5>
             </section>
+            <div
+                class="flex flex-column md:flex-row md:justify-content-between gap-2 padding:100px"
+            >
+                <p-dropdown
+                    [options]="[]"
+                    placeholder="2024"
+                    styleClass="w-full"
+                    class="flex-1"
+                    [emptyMessage]="'2023'"
+                >
+                </p-dropdown>
+                <p-dropdown
+                    [options]="[]"
+                    placeholder="Nombre de Curso"
+                    styleClass="w-full"
+                    class="flex-1"
+                    [emptyMessage]="'Área de Matematica'"
+                >
+                </p-dropdown>
+                <p-iconField iconPosition="left">
+                    <p-inputIcon styleClass="pi pi-search" />
+                    <input pInputText type="text" placeholder="Buscar..." />
+                </p-iconField>
+                <!--<p-dataViewLayoutOptions></p-dataViewLayoutOptions>-->
+            </div>
+            <br />
             <p-treeTable
                 [value]="files2"
                 [columns]="cols"

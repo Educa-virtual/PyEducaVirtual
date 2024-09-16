@@ -31,8 +31,6 @@ export class TareaFormComponent {
 
     private _formBuilder = inject(FormBuilder)
 
-    public text: string = ''
-
     public tareaForm = this._formBuilder.group({
         titulo: ['', [Validators.required]],
         descripcion: ['', [Validators.required]],
@@ -40,6 +38,8 @@ export class TareaFormComponent {
     })
 
     submit() {
+        console.log('submit')
+
         if (this.tareaForm.valid) {
             this.submitEvent.emit(this.tareaForm)
         } else {

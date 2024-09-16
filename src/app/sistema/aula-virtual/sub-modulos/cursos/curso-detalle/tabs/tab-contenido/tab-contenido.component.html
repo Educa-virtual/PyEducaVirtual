@@ -49,9 +49,13 @@
     </p-accordion>
 </div>
 
-<p-menu #menuContenido [model]="accionesContenido" [popup]="true" />
-
-<app-tarea-form-container
-    [visible]="actividadDialogVisibildad"
-    (visibleChange)="actividadDialogVisibildad = $event"
-></app-tarea-form-container>
+<p-menu #menuContenido [model]="accionesContenido" [popup]="true">
+    <ng-template pTemplate="item" let-item>
+        <a pRipple class="flex align-items-center gap-2 p-2 px-3 text-color">
+            <!-- <app-icon [name]="item.icon" size="sm" /> -->
+            <span>
+                {{ item.label }}
+            </span>
+        </a>
+    </ng-template>
+</p-menu>

@@ -1,4 +1,4 @@
-<div [formGroup]="tareaForm" class="flex flex-column gap-3">
+<form [formGroup]="tareaForm" class="flex flex-column gap-3">
     <app-common-input [controlKey]="'titulo'" label="Título" />
 
     <app-disponibilidad-form />
@@ -12,4 +12,4 @@
         <label for="indicaciones">Indicaciones</label>
         <p-editor id="indicaciones" formControlName="indicaciones" />
     </div>
-</div>
+</form>

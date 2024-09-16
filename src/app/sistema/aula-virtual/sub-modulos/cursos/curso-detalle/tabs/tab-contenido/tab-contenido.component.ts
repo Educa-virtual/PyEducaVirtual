@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common'
-import { Component, inject, OnInit } from '@angular/core'
-import { FormBuilder, FormsModule } from '@angular/forms'
+import { Component, OnInit } from '@angular/core'
+import { FormsModule } from '@angular/forms'
 import { AccordionModule } from 'primeng/accordion'
 import { CalendarModule } from 'primeng/calendar'
 import { IconFieldModule } from 'primeng/iconfield'
@@ -12,8 +12,23 @@ import { IActividad } from '@/app/sistema/aula-virtual/interfaces/actividad.inte
 import { TActividadActions } from '@/app/sistema/aula-virtual/interfaces/actividad-actions.iterface'
 import { DialogModule } from 'primeng/dialog'
 import { MenuModule } from 'primeng/menu'
-import { MenuItem, MenuItemCommandEvent } from 'primeng/api'
+import { MenuItem } from 'primeng/api'
 import { TareaFormContainerComponent } from '../../../../actividades/actividad-tarea/tarea-form-container/tarea-form-container.component'
+import { VideoconferenciaContainerFormComponent } from '../../../../actividades/actividad-videoconferencia/videoconferencia-container-form/videoconferencia-container-form.component'
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog'
+import { IconComponent } from '@/app/shared/icon/icon.component'
+import { provideIcons } from '@ng-icons/core'
+import {
+    matFactCheck,
+    matQuiz,
+    matAssignment,
+    matDescription,
+    matForum,
+    matVideocam,
+} from '@ng-icons/material-icons/baseline'
+import { MODAL_CONFIG } from '@/app/shared/constants/modal.config'
+import { ForoFormContainerComponent } from '../../../../actividades/actividad-foro/foro-form-container/foro-form-container.component'
+import { ActividadFormComponent } from '../../../../actividades/components/actividad-form/actividad-form.component'
 
 @Component({
     selector: 'app-tab-contenido',
@@ -31,21 +46,28 @@ import { TareaFormContainerComponent } from '../../../../actividades/actividad-t
         DialogModule,
         MenuModule,
         TareaFormContainerComponent,
+        VideoconferenciaContainerFormComponent,
+        IconComponent,
     ],
     templateUrl: './tab-contenido.component.html',
     styleUrl: './tab-contenido.component.scss',
+    providers: [
+        DialogService,
+        provideIcons({
+            matFactCheck,
+            matQuiz,
+            matAssignment,
+            matDescription,
+            matForum,
+            matVideocam,
+        }),
+    ],
 })
 export class TabContenidoComponent implements OnInit {
-    public actividadDialogVisibildad: boolean = false
     public rangeDates: Date[] | undefined
     public accionesContenido: MenuItem[]
-
-    private _formBuilder = inject(FormBuilder)
-
-    public tareaForm = this._formBuilder.group({
-        name: [''],
-        description: [''],
-    })
+    public actividadSelected: IActividad | undefined
+    public accionSeleccionada: TActividadActions | undefined
 
     public actividades: IActividad[] = [
         {
@@ -80,6 +102,8 @@ export class TabContenidoComponent implements OnInit {
         },
     ]
 
+    constructor(private _dialogService: DialogService) {}
+
     ngOnInit(): void {
         const today = new Date()
         const nextWeek = new Date()
@@ -89,24 +113,149 @@ export class TabContenidoComponent implements OnInit {
 
         this.accionesContenido = [
             {
-                label: 'Editar',
-                icon: 'pi pi-pencil',
-                command: (event: MenuItemCommandEvent) => {
-                    event.originalEvent.stopPropagation()
+                label: 'Tarea',
+                icon: 'matAssignment',
+                command: () => {
+                    this.handleTareaAction('CREAR', null)
+                },
+            },
+            {
+                label: 'Cuestionario',
+                icon: 'matQuiz',
+                command: () => {
+                    this.handleForoAction('CREAR', null)
+                },
+            },
+            {
+                label: 'Videoconferencia',
+                icon: 'matVideocam',
+                command: () => {
+                    this.handleVideoconferenciaAction('CREAR', null)
+                },
+            },
+            {
+                label: 'Foro',
+                icon: 'matForum',
+                // command: (event: MenuItemCommandEvent) => {
+                command: () => {
+                    this.handleForoAction('CREAR', null)
+                },
+            },
+            {
+                label: 'Material',
+                icon: 'matDescription',
+                command: () => {
+                    this.handleMaterialAction('CREAR', null, 'Crear Material')
                 },
             },
         ]
     }
 
-    hideDialog() {
-        this.actividadDialogVisibildad = false
-    }
-
-    actionSelected(event: {
+    actionSelected({
+        actividad,
+        action,
+    }: {
         actividad: IActividad
         action: TActividadActions
     }) {
-        this.actividadDialogVisibildad = true
-        console.log(event)
+        this.actividadSelected = actividad
+        this.accionSeleccionada = action
+
+        if (actividad.tipoActividad === 1) {
+            this.handleTareaAction(action, actividad)
+            return
+        }
+
+        if (actividad.tipoActividad === 2) {
+            this.handleForoAction(action, actividad)
+            return
+        }
+
+        if (actividad.tipoActividad === 4) {
+            this.handleVideoconferenciaAction(action, actividad)
+            return
+        }
+
+        if (actividad.tipoActividad === 5) {
+            this.handleMaterialAction('EDITAR', actividad, 'Editar Material')
+        }
+    }
+
+    handleTareaAction(action: TActividadActions, actividad: IActividad) {
+        if (action === 'EDITAR') {
+            const ref: DynamicDialogRef = this._dialogService.open(
+                TareaFormContainerComponent,
+                {
+                    ...MODAL_CONFIG,
+                    data: actividad,
+                    header: 'Editar Tarea',
+                }
+            )
+            ref.onClose.subscribe((result) => {
+                if (result) {
+                    console.log('Formulario enviado', result)
+                } else {
+                    console.log('Formulario cancelado')
+                }
+            })
+        }
+
+        if (action === 'CREAR') {
+            this._dialogService.open(TareaFormContainerComponent, {
+                ...MODAL_CONFIG,
+                header: 'Crear Tarea',
+                data: null,
+            })
+        }
+    }
+
+    handleVideoconferenciaAction(
+        action: TActividadActions,
+        actividad: IActividad
+    ) {
+        if (action === 'EDITAR' || action === 'CREAR') {
+            let data = null
+            let header = 'Crear Videoconferencia'
+            if (action === 'EDITAR') {
+                data = actividad
+                header = 'Editar Videoconferencia'
+            }
+            this._dialogService.open(VideoconferenciaContainerFormComponent, {
+                ...MODAL_CONFIG,
+                data: data,
+                header: header,
+            })
+        }
+    }
+
+    handleForoAction(action: TActividadActions, actividad: IActividad) {
+        if (action === 'EDITAR') {
+            this._dialogService.open(ForoFormContainerComponent, {
+                ...MODAL_CONFIG,
+                data: actividad,
+                header: 'Editar Foro',
+            })
+        }
+        if (action === 'CREAR') {
+            this._dialogService.open(ForoFormContainerComponent, {
+                ...MODAL_CONFIG,
+                header: 'Crear Foro',
+                data: null,
+            })
+        }
+    }
+
+    handleMaterialAction(
+        action: TActividadActions,
+        actividad: IActividad,
+        header
+    ) {
+        if (action === 'EDITAR' || action === 'CREAR') {
+            this._dialogService.open(ActividadFormComponent, {
+                ...MODAL_CONFIG,
+                data: actividad,
+                header: header,
+            })
+        }
     }
 }

@@ -49,34 +49,13 @@
     </p-accordion>
 </div>
 
-<p-menu #menuContenido [model]="accionesContenido" [popup]="true" />
-
-<p-dialog
-    header="Crear Tarea"
-    [modal]="true"
-    [(visible)]="actividadDialogVisibildad"
-    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
-    [style]="{ width: '50vw' }"
-    [position]="'top'"
-    [draggable]="false"
->
-    <ng-template pTemplate="content"> </ng-template>
-
-    <ng-template pTemplate="footer">
-        <button
-            pButton
-            pRipple
-            label="Cancelar"
-            icon="pi pi-times"
-            class="p-button-text"
-            (click)="hideDialog()"
-        ></button>
-        <button
-            pButton
-            pRipple
-            label="Guardar"
-            icon="pi pi-check"
-            class="p-button-text"
-        ></button>
+<p-menu #menuContenido [model]="accionesContenido" [popup]="true">
+    <ng-template pTemplate="item" let-item>
+        <a pRipple class="flex align-items-center gap-2 p-2 px-3 text-color">
+            <!-- <app-icon [name]="item.icon" size="sm" /> -->
+            <span>
+                {{ item.label }}
+            </span>
+        </a>
     </ng-template>
-</p-dialog>
+</p-menu>

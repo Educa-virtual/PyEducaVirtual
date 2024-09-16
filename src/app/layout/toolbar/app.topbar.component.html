@@ -40,12 +40,13 @@
                 layoutService.state.profileSidebarVisible,
         }"
     >
-        <button class="p-link layout-topbar-button">
+        <!-- <button class="p-link layout-topbar-button">
             <i class="pi pi-moon"></i>
         </button>
         <button class="p-link layout-topbar-button">
             <i class="pi pi-user"></i>
-        </button>
+        </button> -->
+        <app-roles-dropdown [roles]="roles" />
         <!-- <button class="p-link layout-topbar-button">
             <i class="pi pi-cog"></i>
         </button> -->

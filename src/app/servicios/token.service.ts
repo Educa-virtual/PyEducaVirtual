@@ -9,6 +9,7 @@ const USER_KEY = 'auth-user'
 })
 export class TokenStorageService {
     constructor() {}
+    private ls = window.localStorage
 
     signOut(): void {
         window.sessionStorage.clear()
@@ -49,5 +50,10 @@ export class TokenStorageService {
         }
 
         return {}
+    }
+    public setItem(key, value) {
+        value = JSON.stringify(value)
+        this.ls.setItem(key, value)
+        return true
     }
 }

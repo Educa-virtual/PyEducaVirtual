@@ -1,16 +1,16 @@
 import { Routes } from '@angular/router'
-//import { CursoDetalleComponent } from './curso-detalle/curso-detalle.component'
-import { CursosComponent } from './recursos/recursos.component'
+//import { Recurso1Component } from './recursos/recurso1.component'
+import { RecursoComponent } from './recursos/recursos.component'
 
 const routes: Routes = [
     {
         path: '',
         pathMatch: 'full',
-        component: CursosComponent,
+        component: RecursoComponent,
     },
     /*{
         path: ':id',
-        component: CursoDetalleComponent,
+        component: Recurso1Component,
     },*/
 ]
 

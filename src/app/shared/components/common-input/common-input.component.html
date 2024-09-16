@@ -1,6 +1,6 @@
-<div class="flex flex-column gap-2">
+<div class="flex flex-column gap-2" [formGroup]="parentFormGroup">
     <label [for]="id">Username</label>
-    <input pInputText [id]="id" [formControlName]="formControlName" />
+    <input pInputText [id]="id" [formControlName]="controlKey" />
     <small id="username-help">
         Enter your username to reset your password.
     </small>

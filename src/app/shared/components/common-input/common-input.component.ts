@@ -1,6 +1,10 @@
 import { CommonModule } from '@angular/common'
-import { Component, Input } from '@angular/core'
-import { ReactiveFormsModule } from '@angular/forms'
+import { Component, inject, Input, OnInit } from '@angular/core'
+import {
+    ControlContainer,
+    FormGroup,
+    ReactiveFormsModule,
+} from '@angular/forms'
 import { InputTextModule } from 'primeng/inputtext'
 
 @Component({
@@ -10,7 +14,16 @@ import { InputTextModule } from 'primeng/inputtext'
     templateUrl: './common-input.component.html',
     styleUrl: './common-input.component.scss',
 })
-export class CommonInputComponent {
-    @Input({ required: true }) formControlName: string
+export class CommonInputComponent implements OnInit {
+    @Input({ required: true }) controlKey: string
     @Input() id: string
+    private _parentContainer = inject(ControlContainer)
+
+    ngOnInit(): void {
+        console.log(this._parentContainer.control.get(this.controlKey))
+    }
+
+    get parentFormGroup() {
+        return this._parentContainer.control as FormGroup
+    }
 }

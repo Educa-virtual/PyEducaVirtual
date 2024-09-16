@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common'
-import { Component, OnInit } from '@angular/core'
-import { FormsModule } from '@angular/forms'
+import { Component, inject, OnInit } from '@angular/core'
+import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { AccordionModule } from 'primeng/accordion'
 import { CalendarModule } from 'primeng/calendar'
 import { IconFieldModule } from 'primeng/iconfield'
@@ -13,6 +13,7 @@ import { TActividadActions } from '@/app/sistema/aula-virtual/interfaces/activid
 import { DialogModule } from 'primeng/dialog'
 import { MenuModule } from 'primeng/menu'
 import { MenuItem, MenuItemCommandEvent } from 'primeng/api'
+import { CommonInputComponent } from '@/app/shared/components/common-input/common-input.component'
 
 @Component({
     selector: 'app-tab-contenido',
@@ -29,6 +30,8 @@ import { MenuItem, MenuItemCommandEvent } from 'primeng/api'
         ActividadListaComponent,
         DialogModule,
         MenuModule,
+        ReactiveFormsModule,
+        CommonInputComponent,
     ],
     templateUrl: './tab-contenido.component.html',
     styleUrl: './tab-contenido.component.scss',
@@ -37,6 +40,13 @@ export class TabContenidoComponent implements OnInit {
     public actividadDialogVisibildad: boolean = false
     public rangeDates: Date[] | undefined
     public accionesContenido: MenuItem[]
+
+    private _formBuilder = inject(FormBuilder)
+
+    public tareaForm = this._formBuilder.group({
+        name: [''],
+        description: [''],
+    })
 
     public actividades: IActividad[] = [
         {

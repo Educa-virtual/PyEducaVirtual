@@ -36,16 +36,16 @@ export class CursosComponent {
     public cursos: ICurso[] = [
         {
             id: 0,
-            name: 'Matemática',
-            description: 'dedscripcion?',
+            nombre: 'Matemática',
+            descripcion: 'dedscripcion?',
             seccion: 'A',
             grado: '1°',
             totalEstudiantes: 20,
         },
         {
             id: 1,
-            name: 'Inglés',
-            description: 'Descripcion?',
+            nombre: 'Inglés',
+            descripcion: 'Descripcion?',
             seccion: 'A',
             grado: '2°',
             totalEstudiantes: 2,

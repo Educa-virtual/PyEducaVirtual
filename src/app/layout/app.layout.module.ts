@@ -11,7 +11,7 @@ import { RippleModule } from 'primeng/ripple'
 import { AppMenuComponent } from './app.menu.component'
 import { AppMenuitemComponent } from './app.menuitem.component'
 import { RouterModule } from '@angular/router'
-import { AppTopBarComponent } from './app.topbar.component'
+import { AppTopBarComponent } from './toolbar/app.topbar.component'
 import { AppFooterComponent } from './app.footer.component'
 
 import { AppSidebarComponent } from './app.sidebar.component'

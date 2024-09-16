@@ -116,6 +116,28 @@ const evaluaciones = [
                     },
                 ],
             },
+
+            {
+                label: 'Configuración',
+                icon: 'pi pi-fw pi-user',
+                items: [
+                    {
+                        label: 'Competencias',
+                        icon: 'pi pi-fw pi-sign-in',
+                        routerLink: ['/evaluaciones/competencias'],
+                    },
+                    {
+                        label: 'Capacidades',
+                        icon: 'pi pi-fw pi-times-circle',
+                        routerLink: ['/evaluaciones/preguntas-activas'],
+                    },
+                    {
+                        label: 'Desempeños',
+                        icon: 'pi pi-fw pi-times-circle',
+                        routerLink: ['/evaluaciones/preguntas-activas'],
+                    },
+                ],
+            },
         ],
     },
 ]

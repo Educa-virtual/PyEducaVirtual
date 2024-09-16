@@ -20,6 +20,10 @@ import { ToastModule } from 'primeng/toast'
 import { Ripple } from 'primeng/ripple'
 import { RatingModule } from 'primeng/rating'
 import { DialogModule } from 'primeng/dialog'
+
+import { AlternativasComponent } from '../alternativas/alternativas.component'
+import { CompetenciasComponent } from '../competencias/competencias.component'
+
 //EDITOR
 import { EditorModule } from 'primeng/editor'
 
@@ -33,6 +37,9 @@ interface expandedRows {
     providers: [MessageService, ConfirmationService],
     standalone: true,
     imports: [
+        AlternativasComponent,
+        CompetenciasComponent,
+
         EditorModule,
         TableModule,
         DialogModule,
@@ -169,11 +176,11 @@ export class BancoPreguntasComponent implements OnInit {
         ]
         this.tipo_pregunta = [
             {
-                label: 'Matemáticas',
+                label: 'Única',
                 value: { id: 1, name: 'New York', code: 'NY' },
             },
             {
-                label: 'Comunicación',
+                label: 'Multiple',
                 value: { id: 2, name: 'Rome', code: 'RM' },
             },
         ]

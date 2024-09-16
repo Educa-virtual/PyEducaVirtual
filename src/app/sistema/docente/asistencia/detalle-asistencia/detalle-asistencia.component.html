@@ -1,0 +1,70 @@
+<div class="row">
+    <div class="col-md-12">
+        <app-container-page title="Lista de Asistencia" [actions]="[]">
+            <app-table-primeng
+                [actions]="[]"
+                [data]="data"
+                [columnas]="columnsAsistencia"
+            ></app-table-primeng>
+        </app-container-page>
+    </div>
+</div>
+<div class="card mt-4">
+    <div class="row font-bold">
+        <div class="col-md-2">
+            <div class="leyend">Leyenda:</div>
+        </div>
+        <div class="col-md-2">
+            <div class="leyend">[X] Asistió</div>
+        </div>
+        <div class="col-md-2">
+            <div class="leyend">[I] Inasistencia</div>
+        </div>
+        <div class="col-md-2">
+            <div class="leyend">[J] Inasistencia Justificada</div>
+        </div>
+        <div class="col-md-2">
+            <div class="leyend">[T] Tardanza</div>
+        </div>
+        <div class="col-md-2">
+            <div class="leyend">[P] Tardanza Justificada</div>
+        </div>
+    </div>
+</div>
+<div class="card mt-4">
+    <div class="row">
+        <div class="col-md-3 justify-content-center">
+            <app-btn-loading
+                btnClass="btn-primary btn-rounded mt-3"
+                loadingText="Atrás"
+                (click)="goBack()"
+                [loading]="false"
+                >Atrás</app-btn-loading
+            >
+        </div>
+        <div class="col-md-3 justify-content-center">
+            <app-btn-loading
+                btnClass="btn-danger btn-rounded mt-3"
+                loadingText="Ver Asistencia PDF"
+                [loading]="false"
+                >Ver Asistencia PDF</app-btn-loading
+            >
+        </div>
+        <div class="col-md-3 justify-content-center">
+            <app-btn-loading
+                btnClass="btn-warning btn-rounded mt-3"
+                loadingText="Guardar Sin Finalizar"
+                [loading]="false"
+                >Guardar Sin Finalizar</app-btn-loading
+            >
+        </div>
+        <div class="col-md-3 justify-content-center">
+            <app-btn-loading
+                btnClass="btn-success btn-rounded mt-3"
+                loadingText="Guardar y Finalizar"
+                [loading]="false"
+                >Guardar y Finalizar</app-btn-loading
+            >
+        </div>
+    </div>
+</div>

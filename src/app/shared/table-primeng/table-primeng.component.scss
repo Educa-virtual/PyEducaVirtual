@@ -1,0 +1,17 @@
+.hoverTable {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px;
+}
+.hoverTable tr th {
+    background-color: #e6e6ee;
+}
+.hoverTable tr:hover {
+    background-color: #d1e7f0;
+}
+tr {
+    font-size: 0.75rem;
+}
+.p-button-rounded {
+    border-radius: 2rem !important;
+}

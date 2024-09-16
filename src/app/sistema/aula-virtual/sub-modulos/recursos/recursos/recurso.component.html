@@ -1,0 +1,117 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card">
+            <section>
+                <h5>
+                    <i class="pi pi-fw pi-paperclip"></i>Gestión de Recursos
+                </h5>
+            </section>
+            <div
+                class="flex flex-column md:flex-row md:justify-content-between gap-2 padding:100px"
+            >
+                <p-dropdown
+                    [options]="[]"
+                    placeholder="2024"
+                    styleClass="w-full"
+                    class="flex-1"
+                    [emptyMessage]="'2023'"
+                >
+                </p-dropdown>
+                <p-dropdown
+                    [options]="[]"
+                    placeholder="Nombre de Curso"
+                    styleClass="w-full"
+                    class="flex-1"
+                    [emptyMessage]="'Área de Matematica'"
+                >
+                </p-dropdown>
+                <p-iconField iconPosition="left">
+                    <p-inputIcon styleClass="pi pi-search" />
+                    <input pInputText type="text" placeholder="Buscar..." />
+                </p-iconField>
+                <!--<p-dataViewLayoutOptions></p-dataViewLayoutOptions>-->
+            </div>
+            <br />
+
+            <p-treeTable
+                [value]="files2"
+                [columns]="cols"
+                selectionMode="checkbox"
+                [(selection)]="selectedFiles2"
+            >
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Tamaño</th>
+                        <th>Tipo</th>
+                        <th>Acciones</th>
+                    </tr>
+                </ng-template>
+                <ng-template
+                    pTemplate="body"
+                    let-rowNode
+                    let-rowData="rowData"
+                    let-columns="columns"
+                >
+                    <tr>
+                        <td *ngFor="let col of columns; let i = index">
+                            <p-treeTableToggler
+                                [rowNode]="rowNode"
+                                *ngIf="i === 0"
+                            ></p-treeTableToggler>
+                            <p-treeTableCheckbox
+                                [value]="rowNode"
+                                *ngIf="i === 0"
+                            ></p-treeTableCheckbox>
+                            {{ rowData[col.field] }}
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template
+                    pTemplate="body"
+                    let-rowNode
+                    let-rowData="rowData"
+                    let-columns="columns"
+                >
+                    <tr [ttRow]="rowNode">
+                        <td
+                            *ngFor="
+                                let col of columns;
+                                let i = index;
+                                let last = last
+                            "
+                        >
+                            <p-treeTableToggler
+                                [rowNode]="rowNode"
+                                *ngIf="i === 0"
+                            />
+                            {{ rowData[col.field] }}
+                            <ng-container *ngIf="last">
+                                <p-button
+                                    icon="pi pi-folder-open"
+                                    rounded="true"
+                                    severity="secondary"
+                                    [outlined]="true"
+                                    [style]="{ 'margin-right': '.5em' }"
+                                />
+                                <p-button
+                                    icon="pi pi-file"
+                                    rounded="true"
+                                    severity="secondary"
+                                    [outlined]="true"
+                                    [style]="{ 'margin-right': '.5em' }"
+                                />
+                                <p-button
+                                    icon="pi pi-download"
+                                    rounded="true"
+                                    severity="danger"
+                                    [outlined]="true"
+                                />
+                            </ng-container>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-treeTable>
+        </div>
+    </div>
+</div>

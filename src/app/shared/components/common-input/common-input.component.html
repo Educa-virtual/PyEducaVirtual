@@ -1,7 +1,11 @@
 <div class="flex flex-column gap-2" [formGroup]="parentFormGroup">
-    <label [for]="id">Username</label>
-    <input pInputText [id]="id" [formControlName]="controlKey" />
-    <small id="username-help">
-        Enter your username to reset your password.
+    @if (label !== null && label !== undefined) {
+        <label [for]="id">{{ label }}</label>
+    }
+    <input pInputText [id]="id" [formControlName]="controlKey" [type]="type" />
+    <small>
+        @if (campoInvalido) {
+            <span class="text-red-500"> {{ errorMessage }} </span>
+        }
     </small>
 </div>

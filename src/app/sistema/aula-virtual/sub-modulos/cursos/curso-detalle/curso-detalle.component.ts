@@ -15,6 +15,7 @@ import { TabEvaluacionesComponent } from './tabs/tab-evaluaciones/tab-evaluacion
 import { MenuModule } from 'primeng/menu'
 import { ProfesorAvatarComponent } from '../components/profesor-avatar/profesor-avatar.component'
 import { IEstudiante } from '../../../interfaces/estudiantes.interface'
+import { ICurso } from '../interfaces/curso.interface'
 
 @Component({
     selector: 'app-curso-detalle',
@@ -38,6 +39,7 @@ import { IEstudiante } from '../../../interfaces/estudiantes.interface'
     styleUrl: './curso-detalle.component.scss',
 })
 export class CursoDetalleComponent implements OnInit {
+    curso: ICurso | undefined
     tab: TabsKeys = 'inicio'
 
     items: MenuItem[] | undefined
@@ -49,6 +51,14 @@ export class CursoDetalleComponent implements OnInit {
     public estudiantes: IEstudiante[] = []
 
     ngOnInit() {
+        this.curso = {
+            id: 1,
+            nombre: 'Matemática I',
+            descripcion: 'Matemática I Un curso espectacular',
+            totalEstudiantes: 20,
+            grado: '1°',
+            seccion: 'A',
+        }
         this.items = [
             { icon: 'pi pi-home', route: '/aula-virtual' },
             { label: 'Cursos', route: '/aula-virtual/cursos' },

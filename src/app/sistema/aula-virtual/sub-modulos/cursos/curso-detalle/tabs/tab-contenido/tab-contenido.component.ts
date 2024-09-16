@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common'
-import { Component, OnInit } from '@angular/core'
-import { FormsModule } from '@angular/forms'
+import { Component, inject, OnInit } from '@angular/core'
+import { FormBuilder, FormsModule } from '@angular/forms'
 import { AccordionModule } from 'primeng/accordion'
 import { CalendarModule } from 'primeng/calendar'
 import { IconFieldModule } from 'primeng/iconfield'
@@ -39,6 +39,13 @@ export class TabContenidoComponent implements OnInit {
     public actividadDialogVisibildad: boolean = false
     public rangeDates: Date[] | undefined
     public accionesContenido: MenuItem[]
+
+    private _formBuilder = inject(FormBuilder)
+
+    public tareaForm = this._formBuilder.group({
+        name: [''],
+        description: [''],
+    })
 
     public actividades: IActividad[] = [
         {

@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common'
 import { Component, inject, OnInit } from '@angular/core'
-import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms'
+import { FormBuilder, FormsModule } from '@angular/forms'
 import { AccordionModule } from 'primeng/accordion'
 import { CalendarModule } from 'primeng/calendar'
 import { IconFieldModule } from 'primeng/iconfield'
@@ -13,7 +13,7 @@ import { TActividadActions } from '@/app/sistema/aula-virtual/interfaces/activid
 import { DialogModule } from 'primeng/dialog'
 import { MenuModule } from 'primeng/menu'
 import { MenuItem, MenuItemCommandEvent } from 'primeng/api'
-import { CommonInputComponent } from '@/app/shared/components/common-input/common-input.component'
+import { TareaFormContainerComponent } from '../../../../actividades/actividad-tarea/tarea-form-container/tarea-form-container.component'
 
 @Component({
     selector: 'app-tab-contenido',
@@ -30,8 +30,7 @@ import { CommonInputComponent } from '@/app/shared/components/common-input/commo
         ActividadListaComponent,
         DialogModule,
         MenuModule,
-        ReactiveFormsModule,
-        CommonInputComponent,
+        TareaFormContainerComponent,
     ],
     templateUrl: './tab-contenido.component.html',
     styleUrl: './tab-contenido.component.scss',

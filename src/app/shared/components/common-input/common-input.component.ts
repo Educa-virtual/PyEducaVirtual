@@ -13,6 +13,12 @@ import { InputTextModule } from 'primeng/inputtext'
     imports: [CommonModule, ReactiveFormsModule, InputTextModule],
     templateUrl: './common-input.component.html',
     styleUrl: './common-input.component.scss',
+    viewProviders: [
+        {
+            provide: ControlContainer,
+            useFactory: () => inject(ControlContainer, { skipSelf: true }),
+        },
+    ],
 })
 export class CommonInputComponent implements OnInit {
     @Input({ required: true }) controlKey: string

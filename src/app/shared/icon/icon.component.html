@@ -1,6 +1,10 @@
-<ng-icon
-    [name]="name"
-    [color]="color"
-    [strokeWidth]="strokeWidth"
-    [size]="getSize"
-></ng-icon>
+@if (isPrimeIcon) {
+    <i [class]="name + ' ' + color"></i>
+} @else {
+    <ng-icon
+        [name]="name"
+        [color]="color"
+        [strokeWidth]="strokeWidth"
+        [size]="getSize"
+    ></ng-icon>
+}

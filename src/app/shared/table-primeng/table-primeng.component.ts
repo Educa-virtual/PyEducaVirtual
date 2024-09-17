@@ -144,8 +144,6 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     }
 
     ngOnChanges(changes) {
-        console.log(changes)
-
         const { currentValue } = changes.data
         this.data = currentValue
     }

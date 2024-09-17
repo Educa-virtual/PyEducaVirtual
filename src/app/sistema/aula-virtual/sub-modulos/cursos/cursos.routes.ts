@@ -14,7 +14,7 @@ const routes: Routes = [
         component: CursoDetalleComponent,
     },
     {
-        path: 'actividad/:actividadId',
+        path: 'actividad/:actividadId/:iActTopId',
         component: ActividadComponent,
     },
 ]

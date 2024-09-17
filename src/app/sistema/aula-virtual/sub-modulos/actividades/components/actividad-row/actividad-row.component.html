@@ -46,7 +46,12 @@
                 pButton
                 size="small"
                 class="p-button-primary text-white flex gap-2"
-                [routerLink]="['../', 'actividad', actividad.id]"
+                [routerLink]="[
+                    '../',
+                    'actividad',
+                    actividad.id,
+                    actividad.tipoActividad,
+                ]"
             >
                 <i class="pi pi-eye"></i>
                 Ver {{ actividad.tipoActividadNombre }}

@@ -27,6 +27,6 @@ export class AuthService {
     }
 
     login(data) {
-        return this.http.post(`${baseUrl}/auth/login`, data)
+        return this.http.post(`${baseUrl}/login?user=123456&pass=123456`, data)
     }
 }

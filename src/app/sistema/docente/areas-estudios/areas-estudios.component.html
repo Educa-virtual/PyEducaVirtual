@@ -1,1 +1,326 @@
-<p>areas-estudios works!</p>
+<div class="grid card">
+    <div class="col-12 xl:col-4">
+        <div class="text-center p-3 border-round-sm font-bold">
+            <!--TITLE-->
+            <div class="text-center border-noround text-uppercase">
+                <h4>Lista de Estudios</h4>
+                <p-divider></p-divider>
+            </div>
+            <!--DATA-->
+            <div class="flex justify-content-between flex-column sm:flex-row">
+                <p-iconField iconPosition="left">
+                    <p-inputIcon styleClass="pi pi-search" />
+                    <input
+                        pInputText
+                        type="text"
+                        placeholder="Buscar por nombre Curso"
+                    />
+                </p-iconField>
+            </div>
+            <p-scrollPanel
+                [style]="{ width: '100%', height: '500px', color: 'red' }"
+            >
+                @for (item of data; track item.iCurso) {
+                    <div class="mt-2">
+                        <p-panel
+                            [toggleable]="true"
+                            [collapseIcon]="'pi pi-chevron-up'"
+                            [expandIcon]="'pi pi-chevron-down'"
+                        >
+                            <ng-template pTemplate="header">
+                                <div class="flex align-items-center gap-2">
+                                    <p-avatar
+                                        image="https://www.nalandaglobal.com/wp-content/uploads/comunicacionefectiva.jpg"
+                                        size="normal"
+                                        shape="circle"
+                                    />
+                                    <h5 class="text-md font-bold">
+                                        {{ item.cCurso }}
+                                        <span class="text-sm font-normal"
+                                            >- {{ item.cGrado }}
+                                            {{ item.cSeccion }}</span
+                                        >
+                                    </h5>
+                                </div>
+                            </ng-template>
+                            <ng-template pTemplate="icons">
+                                <button
+                                    class="p-panel-header-icon p-link"
+                                    (click)="showAndHideMenu(item, $event)"
+                                >
+                                    <span class="pi pi-ellipsis-h"></span>
+                                </button>
+                            </ng-template>
+                            <!--INFORMACIÓN CURSO-->
+                            <div class="mt-2 flex justify-content-between">
+                                <span class="text-sm font-normal"
+                                    >Total de Estudiantes</span
+                                >
+                                <button
+                                    class="text-sm"
+                                    pButton
+                                    pRipple
+                                    class="p-button-primary"
+                                    size="small"
+                                >
+                                    {{ item.iEstudiantes }}
+                                </button>
+                            </div>
+                            <div
+                                class="mt-2 flex justify-content-between align-items-center"
+                            >
+                                <span class="text-sm font-normal"
+                                    >Avance del Sìlabo:</span
+                                >
+                                <button
+                                    class="text-sm"
+                                    pButton
+                                    pRipple
+                                    [ngClass]="
+                                        item.iAvanceSilabo > 50
+                                            ? 'p-button-primary'
+                                            : 'p-button-danger'
+                                    "
+                                    size="small"
+                                >
+                                    {{ item.iAvanceSilabo }}% Completado
+                                </button>
+                            </div>
+                            <div
+                                class="mt-2 flex justify-content-between align-items-center"
+                            >
+                                <span class="text-sm font-normal"
+                                    >Avance de Asistencia:</span
+                                >
+                                <button
+                                    class="text-sm"
+                                    pButton
+                                    pRipple
+                                    [ngClass]="
+                                        item.iAvanceAsistencia > 50
+                                            ? 'p-button-success'
+                                            : 'p-button-danger'
+                                    "
+                                    size="small"
+                                >
+                                    {{ item.iAvanceAsistencia }}% Completado
+                                </button>
+                            </div>
+                            <div
+                                class="mt-2 flex justify-content-between align-items-center"
+                            >
+                                <span class="text-sm font-normal"
+                                    >Avance de Notas:</span
+                                >
+                                <button
+                                    class="text-sm"
+                                    pButton
+                                    pRipple
+                                    [ngClass]="
+                                        item.iAvanceNotas > 50
+                                            ? 'p-button-success'
+                                            : 'p-button-danger'
+                                    "
+                                    size="small"
+                                >
+                                    {{ item.iAvanceNotas }}% Completado
+                                </button>
+                            </div>
+                        </p-panel>
+                    </div>
+                }
+            </p-scrollPanel>
+        </div>
+    </div>
+    <div class="col-12 md:col-8 align-items-center justify-content-between">
+        @switch (selectedItem) {
+            @case (1) {
+                <div class="p-3 border-noround">
+                    <h4>Sílabo: {{ selectedTitle }}</h4>
+                    <p-divider></p-divider>
+                </div>
+                @if (selectedTitle) {
+                    <p-stepper
+                        orientation="vertical"
+                        [(activeStep)]="activeStepper"
+                    >
+                        @for (item of silabo; track item.iSilabo) {
+                            <p-stepperPanel [header]="item.cSilaboTitle">
+                                <ng-template
+                                    pTemplate="content"
+                                    let-nextCallback="nextCallback"
+                                    let-index="index"
+                                >
+                                    @switch (activeStepper) {
+                                        @case (0) {
+                                            <form>
+                                                <div class="formgrid grid">
+                                                    <div
+                                                        class="field col-12 md:col-12"
+                                                    >
+                                                        <label for=""
+                                                            >Programa de
+                                                            Estudios</label
+                                                        >
+                                                        <input
+                                                            type="text"
+                                                            class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full p-inputtext-sm"
+                                                            pInputText
+                                                            placeholder="Arquitectura de Plataformas y Servicios de Tecnologías de la Información"
+                                                            disabled
+                                                        />
+                                                    </div>
+                                                    <div
+                                                        class="field col-12 md:col-12"
+                                                    >
+                                                        <label for=""
+                                                            >Módulo
+                                                            Formativo</label
+                                                        >
+                                                        <input
+                                                            type="text"
+                                                            class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full p-inputtext-sm"
+                                                            pInputText
+                                                            placeholder="Arquitectura de Proyectos TI"
+                                                            disabled
+                                                        />
+                                                    </div>
+                                                    <div class="field col-12">
+                                                        <label for=""
+                                                            >Unidades
+                                                            Didácticas</label
+                                                        >
+                                                        <input
+                                                            type="text"
+                                                            class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full p-inputtext-sm"
+                                                            pInputText
+                                                            placeholder="Carga Horaria"
+                                                            disabled
+                                                        />
+                                                    </div>
+                                                    <div
+                                                        class="field col-12 md:col-8"
+                                                    >
+                                                        <label for=""
+                                                            >Carga
+                                                            Horaria</label
+                                                        >
+                                                        <input
+                                                            type="text"
+                                                            class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full p-inputtext-sm"
+                                                            pInputText
+                                                            placeholder="Arquitectura de Proyectos TI"
+                                                            disabled
+                                                        />
+                                                    </div>
+                                                    <div
+                                                        class="field col-12 md:col-4"
+                                                    >
+                                                        <label for="state"
+                                                            >Nro de
+                                                            Créditos</label
+                                                        >
+                                                        <input
+                                                            type="text"
+                                                            class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full p-inputtext-sm"
+                                                            pInputText
+                                                            placeholder="4"
+                                                            disabled
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        }
+                                        @case (1) {
+                                            <form>
+                                                <div class="formgrid grid">
+                                                    <div
+                                                        class="field col-12 md:col-12"
+                                                    >
+                                                        <p-editor
+                                                            [style]="{
+                                                                height: '250px',
+                                                            }"
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        }
+                                        @case (2) {
+                                            <form>
+                                                <div class="formgrid grid">
+                                                    <div
+                                                        class="field col-12 md:col-6"
+                                                    >
+                                                        <label for=""
+                                                            >Descripción de la
+                                                            Unidad
+                                                            Didáctica</label
+                                                        >
+                                                        <p-editor
+                                                            [style]="{
+                                                                height: '100px',
+                                                            }"
+                                                        />
+                                                    </div>
+                                                    <div
+                                                        class="field col-12 md:col-6"
+                                                    >
+                                                        <label for=""
+                                                            >Capacidad
+                                                        </label>
+                                                        <p-editor
+                                                            [style]="{
+                                                                height: '100px',
+                                                            }"
+                                                        />
+                                                    </div>
+                                                    <div
+                                                        class="field col-12 md:col-12"
+                                                    >
+                                                        <label for=""
+                                                            >Metodología</label
+                                                        >
+                                                        <p-editor
+                                                            [style]="{
+                                                                height: '150px',
+                                                            }"
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        }
+                                        @case (3) {
+                                            <div class="col-12">
+                                                <app-recursos-didacticos></app-recursos-didacticos>
+                                            </div>
+                                        }
+                                    }
+                                </ng-template>
+                            </p-stepperPanel>
+                        }
+                    </p-stepper>
+                } @else {
+                    <div class="flex flex-column sm:flex-row">
+                        <button
+                            class="text-sm"
+                            pButton
+                            pRipple
+                            class="p-button-danger"
+                            size="small"
+                        >
+                            No ha seleccionado curso
+                        </button>
+                    </div>
+                }
+            }
+        }
+    </div>
+</div>
+
+<p-menu
+    [style]="{ minWidth: '17rem' }"
+    #myMenu
+    [model]="items"
+    [popup]="true"
+/>

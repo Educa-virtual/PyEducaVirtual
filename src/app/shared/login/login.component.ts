@@ -11,6 +11,7 @@ interface Data {
     accessToken: string
     refreshToken: string
     expires_in: number
+    msg?
 }
 
 @Component({
@@ -35,8 +36,8 @@ export class LoginComponent implements OnInit {
         private messageService: MessageService
     ) {
         this.formLogin = this.fb.group({
-            cEmail: ['', Validators.required],
-            cPassword: ['', Validators.required],
+            user: ['', Validators.required],
+            pass: ['', Validators.required],
         })
     }
 
@@ -49,18 +50,23 @@ export class LoginComponent implements OnInit {
         this.loadingText = 'Verificando...'
         // this.authService.login(this.formLogin.value).subscribe({
         //     next: (data: Data) => {
-        //         this.tokenStorage.setItem('mpiToken', data)
-
+        //         this.loading = false
+        //         if (!data.msg.length) return this.messageService.add({
+        //             severity: 'error',
+        //             summary: '¡Acceso Denegado!',
+        //             detail: 'No hay registros',
+        //         })
+        //         this.tokenStorage.setItem('dremoToken', data)
         //         this.tokenStorage.saveToken(data.accessToken)
         //         this.tokenStorage.saveRefreshToken(data.refreshToken)
         //         this.tokenStorage.saveUser(data)
-        //         this.loading = false
+
         //         this.router.navigate(['./'])
         //         setTimeout(() => {
         //             location.reload()
         //         }, 350)
         //     },
-        //     complete: () => {},
+        //     complete: () => { },
         //     error: (err) => {
         //         console.log(err)
         //         this.loading = false

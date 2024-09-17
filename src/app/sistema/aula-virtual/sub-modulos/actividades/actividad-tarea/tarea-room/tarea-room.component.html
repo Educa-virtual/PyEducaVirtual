@@ -136,8 +136,10 @@
                                 <p-tabPanel header="Individual">
                                     <app-table-primeng
                                         [showCaption]="false"
-                                        [data]="[]"
+                                        [data]="estudiantes"
                                         [columnas]="columnas"
+                                        [actions]="acciones"
+                                        (accionBtnItem)="accionBtnItem($event)"
                                         [tableStyle]="{ width: '100%' }"
                                     ></app-table-primeng>
                                 </p-tabPanel>

@@ -1,9 +1,8 @@
-<p-dialog
-    [header]="option + ' Recurso Didáctico'"
-    [modal]="true"
-    [(visible)]="showModal"
-    [style]="{ width: '35rem' }"
-    (onHide)="accionBtn('close-modal', [])"
+<app-modal-primeng
+    [title]="option + ' Recurso Didáctico'"
+    [showModal]="showModal"
+    [width]="'35rem'"
+    (accionBtn)="accionBtn($event)"
 >
     <div class="flex align-items-center gap-3 mb-3">
         <label for="" class="font-semibold">Tipo de Recurso</label>
@@ -21,8 +20,11 @@
         <p-button
             label="Cancelar"
             severity="secondary"
-            (onClick)="accionBtn('close-modal', [])"
+            (onClick)="accionBtn({ accion: 'close-modal', item: [] })"
         />
-        <p-button [label]="option" (onClick)="accionBtn('close-modal', [])" />
+        <p-button
+            [label]="option"
+            (onClick)="accionBtn({ accion: 'close-modal', item: [] })"
+        />
     </div>
-</p-dialog>
+</app-modal-primeng>

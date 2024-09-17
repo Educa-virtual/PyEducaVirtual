@@ -3,18 +3,24 @@ import { ContainerPageComponent } from '@/app/shared/container-page/container-pa
 import { Component, OnInit, ViewChild } from '@angular/core'
 import { TablePrimengComponent } from '../../../shared/table-primeng/table-primeng.component'
 import { Menu } from 'primeng/menu'
+import { RecursosDidacticosComponent } from './components/recursos-didacticos/recursos-didacticos.component'
 
 @Component({
     selector: 'app-areas-estudios',
     standalone: true,
-    imports: [ContainerPageComponent, PrimengModule, TablePrimengComponent],
+    imports: [
+        ContainerPageComponent,
+        PrimengModule,
+        TablePrimengComponent,
+        RecursosDidacticosComponent,
+    ],
     templateUrl: './areas-estudios.component.html',
     styleUrl: './areas-estudios.component.scss',
 })
 export class AreasEstudiosComponent implements OnInit {
     @ViewChild('myMenu') menu!: Menu
 
-    activeStepper: number = 0
+    activeStepper: number = null
     selectedItem: number = 0
     selectedTitle: string
     selectedData = []

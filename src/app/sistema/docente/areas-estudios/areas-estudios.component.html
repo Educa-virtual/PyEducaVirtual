@@ -1,5 +1,5 @@
 <div class="grid card">
-    <div class="col-12 md:col-4">
+    <div class="col-12 xl:col-4">
         <div class="text-center p-3 border-round-sm font-bold">
             <!--TITLE-->
             <div class="text-center border-noround text-uppercase">
@@ -17,7 +17,9 @@
                     />
                 </p-iconField>
             </div>
-            <p-scrollPanel [style]="{ width: '100%', height: '500px' }">
+            <p-scrollPanel
+                [style]="{ width: '100%', height: '500px', color: 'red' }"
+            >
                 @for (item of data; track item.iCurso) {
                     <div class="mt-2">
                         <p-panel
@@ -287,6 +289,11 @@
                                                     </div>
                                                 </div>
                                             </form>
+                                        }
+                                        @case (3) {
+                                            <div class="col-12">
+                                                <app-recursos-didacticos></app-recursos-didacticos>
+                                            </div>
                                         }
                                     }
                                 </ng-template>

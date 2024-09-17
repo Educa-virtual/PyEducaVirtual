@@ -1,60 +1,6 @@
-<section class="flex flex-column gap-4">
-    <p-tabView styleClass="actividad-tabs">
-        <p-tabPanel>
-            <ng-template pTemplate="header">
-                <div class="flex align-items-center flex-column gap-2">
-                    <i class="pi pi-info-circle"></i>
-                    <span class="font-bold white-space-nowrap m-0">
-                        Instrucciones
-                    </span>
-                </div>
-            </ng-template>
-            <div class="card">
-                <h2>Tarea</h2>
-
-                <div class="grid">
-                    <div class="col-12 md:col-6 flex flex-column gap-2">
-                        <span class="font-bold text-xl flex gap-2">
-                            <app-icon
-                                name="matCalendarMonth"
-                                class="text-primary"
-                                size="sm"
-                            ></app-icon>
-                            Fecha inicio</span
-                        >
-                        <p>
-                            Doming 15 de marzo de 2025
-                            <span class="font-bold">Hora Limite: </span>
-                            5:00 p.m.
-                        </p>
-                    </div>
-                    <div class="col-12 md:col-6 flex flex-column gap-2">
-                        <span class="font-bold text-xl flex gap-2">
-                            <app-icon
-                                name="matCalendarMonth"
-                                class="text-primary"
-                                size="sm"
-                            ></app-icon>
-                            Fecha de Entrega</span
-                        >
-                        <p>
-                            Doming 15 de marzo de 2025
-                            <span class="font-bold">Hora Limite: </span>
-                            5:00 p.m.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </p-tabPanel>
-        <p-tabPanel>
-            <ng-template pTemplate="header">
-                <div class="flex align-items-center flex-column gap-2">
-                    <i class="pi pi-info-circle"></i>
-                    <span class="font-bold white-space-nowrap m-0">
-                        Trabajos de los alumnos
-                    </span>
-                </div>
-            </ng-template>
-        </p-tabPanel>
-    </p-tabView>
-</section>
+@switch (iActTopId) {
+    @case (1) {
+        <app-tarea-room></app-tarea-room>
+    }
+    @default {}
+}

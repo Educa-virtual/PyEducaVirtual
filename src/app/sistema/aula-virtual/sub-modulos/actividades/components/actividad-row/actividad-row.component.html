@@ -39,11 +39,23 @@
         </button>
     </ng-template>
     <ng-content>
+        <div class="flex mb-3">Fecha Inicio: 17/03/2025 Hora: 2:00 p.m.</div>
         <div class="flex mb-3">Fecha Cierre: 17/03/2025 Hora: 4:00 p.m.</div>
         <div class="flex justify-content-end">
-            <button pButton size="small">
+            <a
+                pButton
+                size="small"
+                class="p-button-primary text-white flex gap-2"
+                [routerLink]="[
+                    '../',
+                    'actividad',
+                    actividad.id,
+                    actividad.tipoActividad,
+                ]"
+            >
+                <i class="pi pi-eye"></i>
                 Ver {{ actividad.tipoActividadNombre }}
-            </button>
+            </a>
         </div>
     </ng-content>
 </p-panel>

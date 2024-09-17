@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core'
 import { HttpClient, HttpHeaders } from '@angular/common/http'
 import { BehaviorSubject } from 'rxjs'
-import { environment } from '@/environments/environment'
+import { environment } from '@/environments/environment.template'
 
 const httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' }),

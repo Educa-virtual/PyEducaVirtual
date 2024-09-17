@@ -8,7 +8,7 @@ import {
     OnInit,
 } from '@angular/core'
 
-interface IColumn {
+export interface IColumn {
     type: string
     width: string
     field: string
@@ -31,6 +31,9 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     @Input() showPaginator: boolean = true
 
     @Input() data = []
+    @Input() tableStyle: {
+        [klass: string]: unknown
+    } = { 'min-width': '50rem' }
 
     @Input() columnas: IColumn[] = [
         {

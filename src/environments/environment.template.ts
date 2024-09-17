@@ -4,8 +4,8 @@
 
 export const environment = {
     production: false,
-    backend: 'http://10.26.10.158:8000',
-    backendApi: 'http://10.26.10.158:8000/api',
+    backend: 'http://127.0.0.1:8000',
+    backendApi: 'http://127.0.0.1:8000/api',
 }
 
 /*

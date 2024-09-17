@@ -7,7 +7,7 @@
     styleClass="p-datatable-sm"
     [paginator]="showPaginator"
     [rows]="10"
-    [tableStyle]="{ 'min-width': '50rem' }"
+    [tableStyle]="tableStyle"
     currentPageReportTemplate="{first} - {last} de {totalRecords} registros"
     [rowsPerPageOptions]="[10, 25, 50]"
     sortMode="multiple"
@@ -15,7 +15,9 @@
 >
     @if (showCaption) {
         <ng-template pTemplate="caption">
-            <div class="flex justify-content-between flex-column sm:flex-row">
+            <div
+                class="flex justify-content-between flex-column sm:flex-row flex-wrap"
+            >
                 <p-iconField iconPosition="left">
                     <p-inputIcon styleClass="pi pi-search" />
                     <input
@@ -43,9 +45,9 @@
                 [style.width]="col.width"
             >
                 @if (col.type !== 'actions' && col.type !== 'item') {
-                    <div [style.text-align]="col.text_header">
-                        <span> {{ col.header }}</span
-                        ><p-sortIcon [field]="col.header"></p-sortIcon>
+                    <div [style.text-align]="col.text_header" class="">
+                        <span> {{ col.header }}</span>
+                        <p-sortIcon [field]="col.header"></p-sortIcon>
                     </div>
                 } @else {
                     <div [style.text-align]="col.text_header">

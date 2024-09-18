@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core'
+import { Component, OnInit, ViewChild, ElementRef, inject } from '@angular/core'
 import { SelectItem } from 'primeng/api'
 import { Customer, Representative } from 'src/app/demo/api/customer'
 import { CustomerService } from 'src/app/demo/service/customer.service'
@@ -31,10 +31,14 @@ interface expandedRows {
     [key: string]: boolean
 }
 
+/* modal  */
+import { DialogService } from 'primeng/dynamicdialog'
+import { BancoPreguntasFormComponent } from '../banco-preguntas/banco-preguntas-form/banco-preguntas-form.component'
+import { MODAL_CONFIG } from '@/app/shared/constants/modal.config'
 @Component({
     selector: 'app-banco-preguntas',
     templateUrl: './banco-preguntas.component.html',
-    providers: [MessageService, ConfirmationService],
+    providers: [MessageService, ConfirmationService, DialogService],
     standalone: true,
     imports: [
         AlternativasComponent,
@@ -64,6 +68,8 @@ interface expandedRows {
     ],
 })
 export class BancoPreguntasComponent implements OnInit {
+    private _dialogService = inject(DialogService)
+
     display: boolean = false
 
     customers1: Customer[] = []
@@ -119,6 +125,7 @@ export class BancoPreguntasComponent implements OnInit {
                 (customer) => (customer.date = new Date(customer.date))
             )*/
         })
+
         this.nivel = [
             {
                 label: 'Nivel Primaria',
@@ -143,66 +150,6 @@ export class BancoPreguntasComponent implements OnInit {
                 value: { id: 2, name: 'Rome', code: 'RM' },
             },
         ]
-
-        this.competencia = [
-            {
-                label: 'Matemáticas',
-                value: { id: 1, name: 'New York', code: 'NY' },
-            },
-            {
-                label: 'Comunicación',
-                value: { id: 2, name: 'Rome', code: 'RM' },
-            },
-        ]
-        this.capacidad = [
-            {
-                label: 'Matemáticas',
-                value: { id: 1, name: 'New York', code: 'NY' },
-            },
-            {
-                label: 'Comunicación',
-                value: { id: 2, name: 'Rome', code: 'RM' },
-            },
-        ]
-        this.desempenio = [
-            {
-                label: 'Matemáticas',
-                value: { id: 1, name: 'New York', code: 'NY' },
-            },
-            {
-                label: 'Comunicación',
-                value: { id: 2, name: 'Rome', code: 'RM' },
-            },
-        ]
-        this.tipo_pregunta = [
-            {
-                label: 'Única',
-                value: { id: 1, name: 'New York', code: 'NY' },
-            },
-            {
-                label: 'Multiple',
-                value: { id: 2, name: 'Rome', code: 'RM' },
-            },
-        ]
-        this.clave = [
-            {
-                label: 'A',
-                value: { id: 1, name: 'New York', code: 'NY' },
-            },
-            {
-                label: 'B',
-                value: { id: 2, name: 'Rome', code: 'RM' },
-            },
-            {
-                label: 'C',
-                value: { id: 2, name: 'Rome', code: 'RM' },
-            },
-            {
-                label: 'D',
-                value: { id: 2, name: 'Rome', code: 'RM' },
-            },
-        ]
-        //  this.productService.getProductsWithOrdersSmall().then(data => this.products = data);
     }
 
     onSort() {
@@ -232,5 +179,15 @@ export class BancoPreguntasComponent implements OnInit {
     ok() {
         console.log(this.textAyuda)
         alert(this.textAyuda)
+    }
+
+    agregarPregunta() {
+        // if (event.accion === 'calificar') {
+        console.log('agregar')
+        this._dialogService.open(BancoPreguntasFormComponent, {
+            ...MODAL_CONFIG,
+            header: 'Agragar pregunta al banco de preguntas',
+        })
+        // }
     }
 }

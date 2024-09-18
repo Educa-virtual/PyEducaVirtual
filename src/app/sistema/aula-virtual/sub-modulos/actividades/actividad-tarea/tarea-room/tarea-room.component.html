@@ -130,25 +130,29 @@
                 <article class="card">
                     <h2>Trabajos</h2>
 
-                    <div class="grid">
-                        <div class="col-8">
+                    <div class="grid flex-column md:flex-row-reverse">
+                        <div
+                            class="md:col-4 col-12 flex justify-content-center ml-auto md:ml-0"
+                        >
+                            <app-leyenda-tareas
+                                class=""
+                                [items]="leyendaTareas"
+                            />
+                        </div>
+                        <div class="md:col-8 col-12">
                             <p-tabView>
                                 <p-tabPanel header="Individual">
                                     <app-table-primeng
                                         [showCaption]="false"
-                                        [data]="[]"
+                                        [data]="estudiantes"
                                         [columnas]="columnas"
+                                        [actions]="acciones"
+                                        (accionBtnItem)="accionBtnItem($event)"
                                         [tableStyle]="{ width: '100%' }"
                                     ></app-table-primeng>
                                 </p-tabPanel>
                                 <p-tabPanel header="Grupal"> </p-tabPanel>
                             </p-tabView>
-                        </div>
-                        <div class="col-4 flex justify-content-center">
-                            <app-leyenda-tareas
-                                class="max-w-15rem"
-                                [items]="leyendaTareas"
-                            />
                         </div>
                     </div>
                 </article>

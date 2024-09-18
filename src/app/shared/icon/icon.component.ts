@@ -20,6 +20,7 @@ const impactClasses: Record<NonNullable<IconSize>, string> = {
 })
 export class IconComponent {
     @Input({ required: true }) name!: IconName | string
+    @Input() isPrimeIcon = false
     @Input() color: string | undefined
     @Input() strokeWidth: string | number | undefined
     @Input() size: IconSize = 'base'

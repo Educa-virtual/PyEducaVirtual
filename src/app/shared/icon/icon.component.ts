@@ -1,10 +1,11 @@
 import { Component, Input } from '@angular/core'
 import { IconName, NgIconComponent } from '@ng-icons/core'
 
-type IconSize = 'sm' | 'base' | 'lg' | 'xl' | 'none'
+export type IconSize = 'xs' | 'sm' | 'base' | 'lg' | 'xl' | 'none'
 
 const impactClasses: Record<NonNullable<IconSize>, string> = {
     base: 'var(--icon-size-base)',
+    xs: 'var(--icon-size-xs)',
     sm: 'var(--icon-size-sm)',
     lg: 'var(--icon-size-lg)',
     xl: 'var(--icon-size-xl)',
@@ -23,7 +24,7 @@ export class IconComponent {
     @Input() isPrimeIcon = false
     @Input() color: string | undefined
     @Input() strokeWidth: string | number | undefined
-    @Input() size: IconSize = 'base'
+    @Input() size: IconSize | string = 'base'
 
     get getSize(): string {
         return impactClasses[this.size]

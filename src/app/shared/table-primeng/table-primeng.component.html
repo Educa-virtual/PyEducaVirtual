@@ -39,7 +39,7 @@
     }
     <ng-template pTemplate="header" let-columns>
         <tr class="text-uppercase">
-            @for (col of columns; track col.field) {
+            @for (col of columns; track $index) {
                 <th [pSortableColumn]="col.field" [style.width]="col.width">
                     @if (col.type !== 'actions' && col.type !== 'item') {
                         <div [style.text-align]="col.text_header" class="">
@@ -77,7 +77,7 @@
                     }
                     @if (col.type === 'actions') {
                         <div class="d-block text-center">
-                            @for (item of actions; track item.accion) {
+                            @for (item of actions; track $index) {
                                 @if (item.type === 'item') {
                                     <button
                                         [rounded]="true"

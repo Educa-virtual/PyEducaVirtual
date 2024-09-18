@@ -21,7 +21,7 @@ import { Ripple } from 'primeng/ripple'
 import { RatingModule } from 'primeng/rating'
 import { DialogModule } from 'primeng/dialog'
 
-import { AlternativasComponent } from '../alternativas/alternativas.component'
+import { AlternativasComponent } from './alternativas/alternativas.component'
 import { CompetenciasComponent } from '../competencias/competencias.component'
 
 //EDITOR
@@ -186,7 +186,7 @@ export class BancoPreguntasComponent implements OnInit {
         console.log('agregar')
         this._dialogService.open(BancoPreguntasFormComponent, {
             ...MODAL_CONFIG,
-            header: 'Agragar pregunta al banco de preguntas',
+            header: 'Nueva pregunta',
         })
         // }
     }

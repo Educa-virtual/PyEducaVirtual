@@ -12,10 +12,19 @@ import { InputSwitchModule } from 'primeng/inputswitch'
 //EDITOR
 import { EditorModule } from 'primeng/editor'
 
+/*Tab */
+import { TabViewModule } from 'primeng/tabview'
+
 @Component({
     selector: 'app-banco-preguntas-form',
     standalone: true,
-    imports: [FormsModule, DropdownModule, InputSwitchModule, EditorModule],
+    imports: [
+        FormsModule,
+        DropdownModule,
+        InputSwitchModule,
+        EditorModule,
+        TabViewModule,
+    ],
     templateUrl: './banco-preguntas-form.component.html',
     styleUrl: './banco-preguntas-form.component.scss',
 })

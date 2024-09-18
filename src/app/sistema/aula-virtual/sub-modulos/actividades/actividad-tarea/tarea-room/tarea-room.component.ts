@@ -3,8 +3,8 @@ import {
     IColumn,
     TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component'
-import { ILeyendaItem } from '@/app/sistema/aula-virtual/components/leyenda-tareas/leyenda-item/leyenda-item.component'
-import { LeyendaTareasComponent } from '@/app/sistema/aula-virtual/components/leyenda-tareas/leyenda-tareas.component'
+import { ILeyendaItem } from '@/app/sistema/aula-virtual/sub-modulos/actividades/components/leyenda-tareas/leyenda-item/leyenda-item.component'
+import { LeyendaTareasComponent } from '@/app/sistema/aula-virtual/sub-modulos/actividades/components/leyenda-tareas/leyenda-tareas.component'
 import { CommonModule } from '@angular/common'
 import { Component, inject } from '@angular/core'
 import { provideIcons } from '@ng-icons/core'

@@ -1,6 +1,8 @@
-<div class="flex flex-column gap-4">
-    <article class="p-3 bg-gray-200 border-round flex flex-column gap-2">
-        <h2 class="text-center text-xl">Información del Estudiante</h2>
+<div class="flex flex-column gap-6">
+    <article class="p-3 bg-gray-100 border-round flex flex-column gap-2">
+        <h2 class="text-center text-xl font-medium">
+            Información del Estudiante
+        </h2>
         <div class="grid flex-column md:flex-row">
             <div class="col-6">
                 <span class="font-bold">Codigo:</span> 4325656
@@ -27,7 +29,27 @@
         </div>
     </article>
 
-    <form></form>
+    <div class="">
+        <h2 class="text-xl">Calificación</h2>
+        <hr />
+        <form class="flex flex-column gap-2" [formGroup]="calificarTareaForm">
+            <app-common-input
+                [label]="'Nota'"
+                [controlKey]="'nota'"
+                type="number"
+            ></app-common-input>
+
+            <div class="flex flex-column gap-2">
+                <label for="">Observaciones</label>
+                <textarea
+                    rows="5"
+                    cols="30"
+                    placeholder="Observciones..."
+                    pInputTextarea
+                ></textarea>
+            </div>
+        </form>
+    </div>
 
     <div class="flex justify-content-end gap-2 pt-3">
         <button

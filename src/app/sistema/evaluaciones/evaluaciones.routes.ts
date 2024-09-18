@@ -18,7 +18,6 @@ const routes: Routes = [
                 './sub-evaluaciones/evaluaciones/evaluaciones.component'
             ).then((c) => c.EvaluacionesComponent),
     },
-
     {
         path: 'areas',
         loadComponent: () =>

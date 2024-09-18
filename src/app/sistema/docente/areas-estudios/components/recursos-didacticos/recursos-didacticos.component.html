@@ -1,0 +1,20 @@
+<app-container-page
+    title="Lista de Recursos Didácticos"
+    [actions]="actionsContainer"
+    (accionBtnItem)="accionBtnItem($event)"
+></app-container-page>
+<app-table-primeng
+    [showCaption]="false"
+    [showPaginator]="false"
+    [actions]="actions"
+    [data]="data"
+    [columnas]="columns"
+    (accionBtnItem)="accionBtnItem($event)"
+></app-table-primeng>
+
+<app-form-recursos-didacticos
+    [data]="itemRecursos"
+    [showModal]="showModal"
+    [option]="option"
+    (accionBtnItem)="accionBtnItem($event)"
+></app-form-recursos-didacticos>

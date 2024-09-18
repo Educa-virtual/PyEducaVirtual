@@ -5,7 +5,17 @@ import {
     EventEmitter,
     Input,
     OnChanges,
+    OnInit,
 } from '@angular/core'
+
+export interface IColumn {
+    type: string
+    width: string
+    field: string
+    header: string
+    text_header: string
+    text: string
+}
 
 @Component({
     selector: 'app-table-primeng',
@@ -14,25 +24,18 @@ import {
     standalone: true,
     imports: [PrimengModule],
 })
-export class TablePrimengComponent implements OnChanges {
+export class TablePrimengComponent implements OnChanges, OnInit {
     @Output() accionBtnItem = new EventEmitter()
 
     @Input() showCaption: boolean = true
     @Input() showPaginator: boolean = true
 
-    @Input() data = [
-        {
-            cActividad1: 'cActividad1',
-            cActividad2: 'cActividad2',
-            cActividad3: 'cActividad3',
-        },
-        {
-            cActividad1: 'cActividad1',
-            cActividad2: 'cActividad2',
-            cActividad3: 'cActividad3',
-        },
-    ]
-    @Input() columnas = [
+    @Input() data = []
+    @Input() tableStyle: {
+        [klass: string]: unknown
+    } = { 'min-width': '50rem' }
+
+    @Input() columnas: IColumn[] = [
         {
             type: 'text',
             width: '5rem',
@@ -130,13 +133,17 @@ export class TablePrimengComponent implements OnChanges {
         },
     ]
 
+    _columnasSeleccionadas: IColumn[] = []
+
     loading: boolean = false
 
     constructor() {}
 
-    ngOnChanges(changes) {
-        console.log(changes)
+    ngOnInit() {
+        this._columnasSeleccionadas = this.columnas
+    }
 
+    ngOnChanges(changes) {
         const { currentValue } = changes.data
         this.data = currentValue
     }
@@ -147,5 +154,15 @@ export class TablePrimengComponent implements OnChanges {
             item,
         }
         this.accionBtnItem.emit(data)
+    }
+
+    get selectedColumns(): IColumn[] {
+        return this._columnasSeleccionadas
+    }
+
+    set selectedColumns(val: IColumn[]) {
+        this._columnasSeleccionadas = this.columnas.filter((col) =>
+            val.includes(col)
+        )
     }
 }

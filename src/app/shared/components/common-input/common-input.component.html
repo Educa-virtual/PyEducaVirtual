@@ -1,0 +1,11 @@
+<div class="flex flex-column gap-2" [formGroup]="parentFormGroup">
+    @if (label !== null && label !== undefined) {
+        <label [for]="id">{{ label }}</label>
+    }
+    <input pInputText [id]="id" [formControlName]="controlKey" [type]="type" />
+    <small>
+        @if (campoInvalido) {
+            <span class="text-red-500"> {{ errorMessage }} </span>
+        }
+    </small>
+</div>

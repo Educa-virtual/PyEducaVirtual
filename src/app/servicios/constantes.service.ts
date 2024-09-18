@@ -8,45 +8,70 @@ const docente = [
         label: 'Docente',
         items: [
             {
-                label: 'Dashboard',
-                icon: 'pi pi-fw pi-chart-bar',
-                routerLink: ['/docente/dahsboard'],
-            }, //ver reglamento, resumen, estadística.
-            {
-                label: 'Mi Perfil',
-                icon: 'pi pi-fw pi-id-card',
-                routerLink: ['/docente/perfil'],
-            },
-            {
-                label: 'Mis Estudios',
-                icon: 'pi pi-fw pi-folder',
-                routerLink: ['/docente/estudios'],
-            },
-            {
                 label: 'Áreas de Estudio',
                 icon: 'pi pi-fw pi-book',
                 routerLink: ['/docente/areas-estudio'],
             },
-            {
-                label: 'Instrumentos de Evaluación',
-                icon: 'pi pi-fw pi-objects-column',
-                routerLink: ['/docente/instrumentos-evaluacion'],
-            },
-            {
-                label: 'Mis Capacitaciones',
-                icon: 'pi pi-fw pi-sitemap',
-                routerLink: ['/docente/capacitaciones'],
-            },
-            {
-                label: 'Mis Cursos Virtuales',
-                icon: 'pi pi-fw pi-desktop',
-                routerLink: ['/docente/cursos-virtual'],
-            },
-            {
-                label: 'Actividades No Lectivas',
-                icon: 'pi pi-fw pi-slack',
-                routerLink: ['/docente/actividades-no-lectivas'],
-            },
+            // {
+            //     label: 'Dashboard',
+            //     icon: 'pi pi-fw pi-chart-bar',
+            //     routerLink: ['/docente/dahsboard'],
+            // }, //ver reglamento, resumen, estadística.
+            // {
+            //     label: 'Silabos',
+            //     icon: 'pi pi-fw pi-list-check',
+            //     routerLink: ['/docente/silabo'],
+            // },
+            // {
+            //     label: 'Asistencia',
+            //     icon: 'pi pi-fw pi-list',
+            //     routerLink: ['/docente/asistencia'],
+            // },
+            // {
+            //     label: 'Personal',
+            //     icon: 'pi pi-fw pi-users',
+            //     routerLink: ['/docente/personal'],
+            // },
+            // {
+            //     label: 'Sesiones de Aprendizaje',
+            //     icon: 'pi pi-fw pi-users',
+            //     routerLink: ['/docente/sesion-aprendizaje'],
+            // },
+            // {
+            //     label: 'Mi Perfil',
+            //     icon: 'pi pi-fw pi-id-card',
+            //     routerLink: ['/docente/perfil'],
+            // },
+            // {
+            //     label: 'Mis Estudios',
+            //     icon: 'pi pi-fw pi-folder',
+            //     routerLink: ['/docente/estudios'],
+            // },
+            // {
+            //     label: 'Áreas de Estudio',
+            //     icon: 'pi pi-fw pi-book',
+            //     routerLink: ['/docente/areas-estudio'],
+            // },
+            // {
+            //     label: 'Instrumentos de Evaluación',
+            //     icon: 'pi pi-fw pi-objects-column',
+            //     routerLink: ['/docente/instrumentos-evaluacion'],
+            // },
+            // {
+            //     label: 'Mis Capacitaciones',
+            //     icon: 'pi pi-fw pi-sitemap',
+            //     routerLink: ['/docente/capacitaciones'],
+            // },
+            // {
+            //     label: 'Mis Cursos Virtuales',
+            //     icon: 'pi pi-fw pi-desktop',
+            //     routerLink: ['/docente/cursos-virtual'],
+            // },
+            // {
+            //     label: 'Actividades No Lectivas',
+            //     icon: 'pi pi-fw pi-slack',
+            //     routerLink: ['/docente/actividades-no-lectivas'],
+            // },
         ],
     },
 ]

@@ -7,7 +7,7 @@
     styleClass="p-datatable-sm"
     [paginator]="showPaginator"
     [rows]="10"
-    [tableStyle]="{ 'min-width': '50rem' }"
+    [tableStyle]="tableStyle"
     currentPageReportTemplate="{first} - {last} de {totalRecords} registros"
     [rowsPerPageOptions]="[10, 25, 50]"
     sortMode="multiple"
@@ -15,7 +15,9 @@
 >
     @if (showCaption) {
         <ng-template pTemplate="caption">
-            <div class="flex justify-content-between flex-column sm:flex-row">
+            <div
+                class="flex justify-content-between flex-column sm:flex-row flex-wrap"
+            >
                 <p-iconField iconPosition="left">
                     <p-inputIcon styleClass="pi pi-search" />
                     <input
@@ -25,27 +27,32 @@
                         placeholder="Buscar palabra clave"
                     />
                 </p-iconField>
+                <p-multiSelect
+                    [options]="columnas"
+                    [(ngModel)]="selectedColumns"
+                    optionLabel="header"
+                    selectedItemsLabel="{0} Columnas seleccionadas"
+                    placeholder="Seleccione Columnas"
+                />
             </div>
         </ng-template>
     }
     <ng-template pTemplate="header" let-columns>
         <tr class="text-uppercase">
-            <th
-                *ngFor="let col of columns"
-                [pSortableColumn]="col.field"
-                [style.width]="col.width"
-            >
-                @if (col.type !== 'actions' && col.type !== 'item') {
-                    <div [style.text-align]="col.text_header">
-                        <span> {{ col.header }}</span
-                        ><p-sortIcon [field]="col.header"></p-sortIcon>
-                    </div>
-                } @else {
-                    <div [style.text-align]="col.text_header">
-                        {{ col.header }}
-                    </div>
-                }
-            </th>
+            @for (col of columns; track $index) {
+                <th [pSortableColumn]="col.field" [style.width]="col.width">
+                    @if (col.type !== 'actions' && col.type !== 'item') {
+                        <div [style.text-align]="col.text_header" class="">
+                            <span> {{ col.header }}</span>
+                            <p-sortIcon [field]="col.header"></p-sortIcon>
+                        </div>
+                    } @else {
+                        <div [style.text-align]="col.text_header">
+                            {{ col.header }}
+                        </div>
+                    }
+                </th>
+            }
         </tr>
     </ng-template>
     <ng-template
@@ -55,38 +62,42 @@
         let-rowIndex="rowIndex"
     >
         <tr [pSelectableRow]="rowData">
-            <td *ngFor="let col of columns; let i = index">
-                <ng-container *ngIf="col.type === 'item'">
-                    <div [style.text-align]="col.text">
-                        <span>{{ rowIndex + 1 }}</span>
-                    </div>
-                </ng-container>
+            @for (col of columns; track $index; let i = $index) {
+                <td>
+                    @if (col.type === 'item') {
+                        <div [style.text-align]="col.text">
+                            <span>{{ rowIndex + 1 }}</span>
+                        </div>
+                    }
 
-                <ng-container *ngIf="col.type === 'text'">
-                    <div [style.text-align]="col.text">
-                        {{ rowData[col.field] }}
-                    </div>
-                </ng-container>
-                <ng-container *ngIf="col.type === 'actions'">
-                    <div class="d-block text-center">
-                        <ng-container *ngFor="let item of actions">
-                            <ng-container *ngIf="item.type === 'item'">
-                                <button
-                                    [rounded]="true"
-                                    pButton
-                                    pRipple
-                                    [icon]="item.icon"
-                                    [pTooltip]="item.labelTooltip"
-                                    tooltipPosition="top"
-                                    (click)="accionBtn(item.accion, rowData)"
-                                    class="w-auto p-1"
-                                    [ngClass]="item.class"
-                                ></button>
-                            </ng-container>
-                        </ng-container>
-                    </div>
-                </ng-container>
-            </td>
+                    @if (col.type === 'text') {
+                        <div [style.text-align]="col.text">
+                            {{ rowData[col.field] }}
+                        </div>
+                    }
+                    @if (col.type === 'actions') {
+                        <div class="d-block text-center">
+                            @for (item of actions; track $index) {
+                                @if (item.type === 'item') {
+                                    <button
+                                        [rounded]="true"
+                                        pButton
+                                        pRipple
+                                        [icon]="item.icon"
+                                        [pTooltip]="item.labelTooltip"
+                                        tooltipPosition="top"
+                                        (click)="
+                                            accionBtn(item.accion, rowData)
+                                        "
+                                        class="w-auto p-1"
+                                        [ngClass]="item.class"
+                                    ></button>
+                                }
+                            }
+                        </div>
+                    }
+                </td>
+            }
         </tr>
     </ng-template>
 </p-table>

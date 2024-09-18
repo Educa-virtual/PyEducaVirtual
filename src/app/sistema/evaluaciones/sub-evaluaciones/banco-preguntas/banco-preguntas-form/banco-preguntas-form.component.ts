@@ -1,10 +1,39 @@
 import { Component } from '@angular/core'
+/*Droodwn*/
+import { FormsModule } from '@angular/forms'
+import { DropdownModule } from 'primeng/dropdown'
+interface City {
+    name: string
+    code: string
+}
+/*InputSwitch */
+import { InputSwitchModule } from 'primeng/inputswitch'
+
+//EDITOR
+import { EditorModule } from 'primeng/editor'
 
 @Component({
     selector: 'app-banco-preguntas-form',
     standalone: true,
-    imports: [],
+    imports: [FormsModule, DropdownModule, InputSwitchModule, EditorModule],
     templateUrl: './banco-preguntas-form.component.html',
     styleUrl: './banco-preguntas-form.component.scss',
 })
-export class BancoPreguntasFormComponent {}
+export class BancoPreguntasFormComponent {
+    text
+    textAyuda
+    valSwitch: boolean = false
+    cities: City[] | undefined
+
+    selectedCity: City | undefined
+
+    ngOnInit() {
+        this.cities = [
+            { name: 'New York', code: 'NY' },
+            { name: 'Rome', code: 'RM' },
+            { name: 'London', code: 'LDN' },
+            { name: 'Istanbul', code: 'IST' },
+            { name: 'Paris', code: 'PRS' },
+        ]
+    }
+}

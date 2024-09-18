@@ -1,4 +1,4 @@
-<p-panel>
+<p-panel styleClass="container-page">
     <ng-template pTemplate="header">
         <div class="flex flex-column gap-2">
             <h3 class="m-0 text-uppercase text-primary">
@@ -10,22 +10,32 @@
         </div>
     </ng-template>
     <ng-template pTemplate="icons">
-        <ng-content select="[icons]"></ng-content>
-        <ng-container *ngFor="let item of actions">
-            <button
-                size="small"
-                [rounded]="true"
-                pButton
-                pRipple
-                [icon]="item.icon"
-                [pTooltip]="item.labelTooltip"
-                tooltipPosition="top"
-                (click)="accionBtn(item.accion, [])"
-                [ngClass]="item.class"
-            >
-                &nbsp;{{ item.text }}
-            </button>
-        </ng-container>
+        <div class="flex flex-wrap gap-2 justify-content-end">
+            <ng-content select="[icons]"></ng-content>
+            @for (item of actions; track $index) {
+                <button
+                    size="small"
+                    [rounded]="true"
+                    pButton
+                    pRipple
+                    [pTooltip]="item.labelTooltip"
+                    tooltipPosition="top"
+                    (click)="accionBtn(item.accion, [])"
+                    [ngClass]="item.class"
+                >
+                    @if (isIconObject(item.icon)) {
+                        <app-icon
+                            [name]="item.icon.name"
+                            [color]="item.icon.color"
+                            [size]="item.icon.size"
+                        ></app-icon>
+                    } @else {
+                        <i class="{{ item.icon }}"></i>
+                    }
+                    &nbsp;{{ item.text }}
+                </button>
+            }
+        </div>
     </ng-template>
     <ng-content></ng-content>
 </p-panel>

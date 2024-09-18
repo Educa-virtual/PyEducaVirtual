@@ -26,6 +26,7 @@ export interface IColumn {
 })
 export class TablePrimengComponent implements OnChanges, OnInit {
     @Output() accionBtnItem = new EventEmitter()
+    @Output() selectedItems = new EventEmitter()
 
     @Input() showCaption: boolean = true
     @Input() showPaginator: boolean = true
@@ -164,5 +165,9 @@ export class TablePrimengComponent implements OnChanges, OnInit {
         this._columnasSeleccionadas = this.columnas.filter((col) =>
             val.includes(col)
         )
+    }
+
+    onSelectionChange(event) {
+        this.selectedItems.emit(event)
     }
 }

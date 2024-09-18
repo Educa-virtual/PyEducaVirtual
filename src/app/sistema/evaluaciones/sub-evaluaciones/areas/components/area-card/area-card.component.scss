@@ -1,0 +1,11 @@
+:host {
+    display: block;
+}
+
+.area__image-container {
+    height: 8rem;
+
+    img {
+        object-fit: cover;
+    }
+}

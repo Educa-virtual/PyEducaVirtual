@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core'
 import { LocalStoreService } from './local-store.service'
 const store = new LocalStoreService()
 const perfil_actual = store.getItem('dremoPerfil')
-
+const verificado = store.getItem('dremoPerfilVerificado')
 const docente = [
     {
         label: 'Docente',
@@ -101,6 +101,67 @@ const aula_virtual = [
                 label: 'DashBoard',
                 icon: 'pi pi-fw pi-chart-bar',
                 routerLink: ['/aula-virtual'],
+            },
+        ],
+    },
+]
+
+const evaluaciones = [
+    {
+        label: 'ERE',
+        items: [
+            {
+                label: 'Dashboard',
+                icon: 'pi pi-fw pi-book',
+                routerLink: ['/evaluaciones'],
+            },
+            {
+                label: 'Evaluaciones',
+                icon: 'pi pi-fw pi-calendar',
+                routerLink: ['/evaluaciones/evaluaciones'],
+            },
+            {
+                label: 'Áreas',
+                icon: 'pi pi-fw pi-folder',
+                routerLink: ['/evaluaciones/areas'],
+            },
+            {
+                label: 'Preguntas',
+                icon: 'pi pi-fw pi-user',
+                items: [
+                    {
+                        label: 'Banco de preguntas',
+                        icon: 'pi pi-fw pi-sign-in',
+                        routerLink: ['/evaluaciones/banco-preguntas'],
+                    },
+                    {
+                        label: 'Preguntas activas',
+                        icon: 'pi pi-fw pi-times-circle',
+                        routerLink: ['/evaluaciones/preguntas-activas'],
+                    },
+                ],
+            },
+
+            {
+                label: 'Configuración',
+                icon: 'pi pi-fw pi-user',
+                items: [
+                    {
+                        label: 'Competencias',
+                        icon: 'pi pi-fw pi-sign-in',
+                        routerLink: ['/evaluaciones/competencias'],
+                    },
+                    {
+                        label: 'Capacidades',
+                        icon: 'pi pi-fw pi-times-circle',
+                        routerLink: ['/evaluaciones/preguntas-activas'],
+                    },
+                    {
+                        label: 'Desempeños',
+                        icon: 'pi pi-fw pi-times-circle',
+                        routerLink: ['/evaluaciones/preguntas-activas'],
+                    },
+                ],
             },
         ],
     },
@@ -435,8 +496,11 @@ export class ConstantesService {
                 return aula_virtual
             case 1005:
                 return administrador
+            case 1006:
+                return evaluaciones
             default:
                 return other
         }
     }
+    verificado = verificado
 }

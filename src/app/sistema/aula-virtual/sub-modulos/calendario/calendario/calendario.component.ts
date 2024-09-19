@@ -6,7 +6,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core'
     standalone: true,
     imports: [CommonModule],
     templateUrl: './calendario.component.html',
-    styleUrl: './calendario.component.css',
+    styleUrl: './calendario.component.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CalendarioComponent {}

@@ -12,6 +12,9 @@ interface Data {
     refreshToken: string
     expires_in: number
     msg?
+    data?
+    validated?: boolean
+    code?: number
 }
 
 @Component({
@@ -49,48 +52,40 @@ export class LoginComponent implements OnInit {
         this.loading = true
         this.loadingText = 'Verificando...'
         // this.authService.login(this.formLogin.value).subscribe({
-        //     next: (data: Data) => {
-        //         this.loading = false
-        //         if (!data.msg.length) return this.messageService.add({
-        //             severity: 'error',
-        //             summary: '¡Acceso Denegado!',
-        //             detail: 'No hay registros',
-        //         })
-        //         this.tokenStorage.setItem('dremoToken', data)
-        //         this.tokenStorage.saveToken(data.accessToken)
-        //         this.tokenStorage.saveRefreshToken(data.refreshToken)
-        //         this.tokenStorage.saveUser(data)
+        //     next: (response: Data) => {
 
-        //         this.router.navigate(['./'])
-        //         setTimeout(() => {
-        //             location.reload()
-        //         }, 350)
+        //         this.loading = false
+        //         if (!response.data.length) return this.messageService.add({ severity: 'error', summary: 'Acceso Denegado!', detail: 'No hay registros con las credenciales ingresadas' });
+
+        //         const item = response.data[0];
+
+        //         this.tokenStorage.setItem('dremoToken', item)
+        //         this.tokenStorage.setItem('dremoPerfilVerificado', item.bVerificado ? item.bVerificado : false)
+
+        //         this.tokenStorage.saveToken(response.accessToken)
+        //         this.tokenStorage.saveRefreshToken(response.refreshToken)
+        //         this.tokenStorage.saveUser(item)
+
+        //         if (item.bVerificado) {
+        //             this.router.navigate(['./'])
+        //             setTimeout(() => {
+        //                 location.reload()
+        //             }, 350)
+        //         }
+        //         else {
+        //             this.sendEmail()
+        //             this.router.navigate(['verificacion'])
+        //             setTimeout(() => {
+        //                 location.reload()
+        //             }, 350)
+        //         }
+
         //     },
         //     complete: () => { },
-        //     error: (err) => {
-        //         console.log(err)
+        //     error: (error) => {
+        //         console.log(error)
         //         this.loading = false
-        //         if (err.status == 401) {
-        //             this.messageService.add({
-        //                 severity: 'error',
-        //                 summary: '¡Acceso Denegado!',
-        //                 detail: err.error.error,
-        //             })
-        //         }
-        //         if (err.status == 403) {
-        //             this.messageService.add({
-        //                 severity: 'error',
-        //                 summary: '¡Acceso Prohibido!',
-        //                 detail: err.error.error,
-        //             })
-        //         }
-        //         if (err.error.password.length) {
-        //             this.messageService.add({
-        //                 severity: 'error',
-        //                 summary: '¡Atención!',
-        //                 detail: err.error.password[0],
-        //             })
-        //         }
+        //         this.messageService.add({ severity: 'error', summary: '¡Atención!', detail: 'Las credenciales son erróneas' });
         //     },
         // })
         setTimeout(() => {
@@ -107,5 +102,30 @@ export class LoginComponent implements OnInit {
         setTimeout(() => {
             location.reload()
         }, 350)
+    }
+    sendEmail() {
+        this.authService.sendEmail().subscribe({
+            next: (response: Data) => {
+                if (!response.validated)
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: '¡Atención!',
+                        detail: 'Vuelva a ingresar sus credenciales',
+                    })
+                this.router.navigate(['verificacion'])
+                setTimeout(() => {
+                    location.reload()
+                }, 350)
+            },
+            complete: () => {},
+            error: (error) => {
+                console.log(error)
+                this.messageService.add({
+                    severity: 'error',
+                    summary: '¡Atención!',
+                    detail: 'Las credenciales son erróneas',
+                })
+            },
+        })
     }
 }

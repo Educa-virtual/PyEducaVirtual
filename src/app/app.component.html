@@ -1,3 +1,9 @@
+<!-- @if(!bVerificado){
+
+<router-outlet></router-outlet>
+
+}
+@else { -->
 @if (!isLoggedIn) {
     <div class="container-fluid">
         <router-outlet></router-outlet>
@@ -6,3 +12,4 @@
     <app-layout></app-layout>
     <router-outlet></router-outlet>
 }
+<!-- } -->

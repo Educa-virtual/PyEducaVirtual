@@ -7,4 +7,5 @@ export const MODAL_CONFIG: DynamicDialogConfig = {
         '960px': '75vw',
         '640px': '90vw',
     },
+    position: 'top',
 }

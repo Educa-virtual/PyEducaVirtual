@@ -8,5 +8,18 @@
         [data]="data"
         (accionBtnItem)="accionBtnItem($event)"
         (selectedItems)="setSelectedItems($event)"
-    ></app-table-primeng>
+    >
+        <ng-container slot="caption-content">
+            <p-dropdown
+                [options]="competencias"
+                optionLabel="cCompetenciaDescripcion"
+            />
+            <p-dropdown
+                [options]="capacidades"
+                [styleClass]="'custom-dropdown'"
+                [optionLabel]="'cCapacidadDescripcion'"
+            />
+            <p-dropdown [options]="desempenios" />
+        </ng-container>
+    </app-table-primeng>
 </app-container-page>

@@ -239,16 +239,15 @@ export class BancoPreguntasComponent implements OnInit {
     }
 
     accionBtnItem(action) {
-        console.log(action)
+        if (action.accion === 'agregar') {
+            this.agregarPregunta()
+        }
     }
 
     agregarPregunta() {
-        // if (event.accion === 'calificar') {
-        console.log('agregar')
         this._dialogService.open(BancoPreguntasFormComponent, {
             ...MODAL_CONFIG,
             header: 'Nueva pregunta',
         })
-        // }
     }
 }

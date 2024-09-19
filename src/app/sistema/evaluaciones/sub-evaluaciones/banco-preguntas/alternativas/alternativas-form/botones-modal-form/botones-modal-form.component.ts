@@ -12,14 +12,21 @@ import { ButtonModule } from 'primeng/button'
         <div class="flex w-full justify-content-end mt-3">
             <p-button
                 type="button"
-                label="Cancel"
+                label="Cancelar"
                 icon="pi pi-times"
+                severity="contrast"
                 (onClick)="
                     closeDialog({
                         buttonType: 'Cancel',
                         summary: 'No Product Selected',
                     })
                 "
+            />
+            <p-button
+                type="button"
+                label="Guardar"
+                icon="pi pi-save"
+                (onClick)="guardarAlternativa()"
             />
         </div>
     `,
@@ -30,5 +37,8 @@ export class BotonesModalFormComponent {
 
     closeDialog(data) {
         this.ref.close(data)
+    }
+    guardarAlternativa() {
+        alert('guardar alternativa')
     }
 }

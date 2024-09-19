@@ -25,6 +25,7 @@ export class AlternativasComponent {
         this._dialogService.open(AlternativasFormComponent, {
             ...MODAL_CONFIG,
             header: 'Alternativa',
+            footer: 'Cancelar',
         })
     }
 }

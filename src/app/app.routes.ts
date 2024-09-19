@@ -3,6 +3,7 @@ import { Routes } from '@angular/router'
 import { LoginComponent } from './shared/login/login.component'
 
 import { NotfoundComponent } from './demo/components/notfound/notfound.component'
+import { VerificacionComponent } from './shared/verificacion/verificacion.component'
 
 export const routes: Routes = [
     {
@@ -87,6 +88,8 @@ export const routes: Routes = [
     },
 
     { path: 'login', component: LoginComponent },
+
+    { path: 'verificacion', component: VerificacionComponent },
 
     {
         path: 'configuracion',

@@ -1,0 +1,80 @@
+<form
+    class="flex justify-content-center align-items-center py-6"
+    [formGroup]="formVerify"
+>
+    <p-card header="Bienvenido Usuario" [style]="{ width: '400px' }">
+        <ng-template pTemplate="header">
+            <img src="assets/images/security.svg" alt="logo" />
+        </ng-template>
+
+        <p class="mb-4">
+            Ingrese su Código de Verificación que se le ha enviado a su correo
+            personal
+        </p>
+        <div class="flex">
+            <input
+                type="text"
+                class="w-full p-inputtext-sm ml-1"
+                maxlength="1"
+                formControlName="inp1"
+                pInputText
+            />
+            <input
+                type="text"
+                class="w-full p-inputtext-sm ml-1"
+                maxlength="1"
+                formControlName="inp2"
+                pInputText
+            />
+            <input
+                type="text"
+                class="w-full p-inputtext-sm ml-1"
+                maxlength="1"
+                formControlName="inp3"
+                pInputText
+            />
+            <input
+                type="text"
+                class="w-full p-inputtext-sm ml-1"
+                maxlength="1"
+                formControlName="inp4"
+                pInputText
+            />
+            <input
+                type="text"
+                class="w-full p-inputtext-sm ml-1"
+                maxlength="1"
+                formControlName="inp5"
+                pInputText
+            />
+            <input
+                type="text"
+                class="w-full p-inputtext-sm ml-1"
+                maxlength="1"
+                formControlName="inp6"
+                pInputText
+            />
+        </div>
+
+        <ng-template pTemplate="footer">
+            <div class="flex gap-3 mt-1">
+                <p-button
+                    label="Regresar"
+                    severity="secondary"
+                    class="w-full"
+                    styleClass="w-full"
+                    (click)="goLogin()"
+                />
+                <p-button
+                    label="Verificar Código"
+                    class="w-full"
+                    styleClass="w-full"
+                    [loading]="loading"
+                    (click)="onVerify()"
+                />
+            </div>
+        </ng-template>
+    </p-card>
+</form>
+
+<p-toast />

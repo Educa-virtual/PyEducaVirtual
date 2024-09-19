@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core'
 import { LocalStoreService } from './local-store.service'
 const store = new LocalStoreService()
 const perfil_actual = store.getItem('dremoPerfil')
-
+const verificado = store.getItem('dremoPerfilVerificado')
 const docente = [
     {
         label: 'Docente',
@@ -502,4 +502,5 @@ export class ConstantesService {
                 return other
         }
     }
+    verificado = verificado
 }

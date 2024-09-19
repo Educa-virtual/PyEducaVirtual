@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core'
 
-/*import { Customer } from '@domain/customer';
-/*import { CustomerService } from '@service/customerservice';*/
 /*GRILLA */
 import { Customer } from 'src/app/demo/api/customer'
 import { CustomerService } from 'src/app/demo/service/customer.service'

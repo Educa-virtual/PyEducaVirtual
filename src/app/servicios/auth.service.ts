@@ -29,4 +29,16 @@ export class AuthService {
     login(data) {
         return this.http.post(`${baseUrl}/login?user=123456&pass=123456`, data)
     }
+    sendEmail() {
+        return this.http.post(
+            `${baseUrl}/verificar?user=123456&pass=123456`,
+            []
+        )
+    }
+    sendVerify(data) {
+        return this.http.post(
+            `${baseUrl}/verificar_codigo?user=123456&pass=123456`,
+            data
+        )
+    }
 }

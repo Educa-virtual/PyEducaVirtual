@@ -21,7 +21,7 @@ const routes: Routes = [
     {
         path: 'areas',
         loadComponent: () =>
-            import('./sub-evaluaciones/areas/areas.component').then(
+            import('./sub-evaluaciones/areas/areas/areas.component').then(
                 (c) => c.AreasComponent
             ),
     },

@@ -2,7 +2,7 @@
     <p-tabView>
         <p-tabPanel header="Información pregunta">
             <div class="formgrid grid">
-                <div class="field col">
+                <div class="field col flex flex-column">
                     <label for="firstname2">Tipo pregunta</label>
                     <p-dropdown
                         [options]="cities"
@@ -23,9 +23,7 @@
 
             <div class="grid">
                 <div class="col">
-                    <div class="text-center p-3 border-round-sm">
-                        Tiempo para responder
-                    </div>
+                    <div class="border-round-sm">Tiempo para responder</div>
                 </div>
             </div>
 

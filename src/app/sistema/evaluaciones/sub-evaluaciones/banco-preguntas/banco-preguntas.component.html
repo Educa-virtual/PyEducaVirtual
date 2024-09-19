@@ -1,6 +1,7 @@
 <app-container-page
     [title]="'Banco de Preguntas - Primaria Matemáticas 1°'"
     [actions]="accionesPrincipal"
+    (accionBtnItem)="accionBtnItem($event)"
 >
     <app-table-primeng
         [columnas]="columnas"

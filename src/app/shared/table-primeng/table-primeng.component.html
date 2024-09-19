@@ -28,19 +28,23 @@
                         placeholder="Buscar palabra clave"
                     />
                 </p-iconField>
-                <p-multiSelect
+                <!-- <p-multiSelect
                     [options]="columnas"
                     [(ngModel)]="selectedColumns"
                     optionLabel="header"
                     selectedItemsLabel="{0} Columnas seleccionadas"
                     placeholder="Seleccione Columnas"
-                />
+                /> -->
+                <app-table-column-filter
+                    [columns]="columnas"
+                    (columnsChange)="onColumnSelected($event)"
+                ></app-table-column-filter>
             </div>
         </ng-template>
     }
     <ng-template pTemplate="header" let-columns>
         <tr class="text-uppercase">
-            @for (col of columns; track $index) {
+            @for (col of columnasSeleccionadas; track $index) {
                 <th [pSortableColumn]="col.field" [style.width]="col.width">
                     @switch (col.type) {
                         @case ('actions') {
@@ -74,7 +78,7 @@
         let-rowIndex="rowIndex"
     >
         <tr [pSelectableRow]="rowData">
-            @for (col of columns; track $index; let i = $index) {
+            @for (col of columnasSeleccionadas; track $index; let i = $index) {
                 <td>
                     @if (col.type === 'item') {
                         <div [style.text-align]="col.text">

@@ -7,6 +7,7 @@ import {
     OnChanges,
     OnInit,
 } from '@angular/core'
+import { TableColumnFilterComponent } from './table-column-filter/table-column-filter.component'
 
 export interface IColumn {
     type: string
@@ -22,7 +23,7 @@ export interface IColumn {
     templateUrl: './table-primeng.component.html',
     styleUrls: ['./table-primeng.component.scss'],
     standalone: true,
-    imports: [PrimengModule],
+    imports: [PrimengModule, TableColumnFilterComponent],
 })
 export class TablePrimengComponent implements OnChanges, OnInit {
     @Output() accionBtnItem = new EventEmitter()
@@ -36,7 +37,7 @@ export class TablePrimengComponent implements OnChanges, OnInit {
         [klass: string]: unknown
     } = { 'min-width': '50rem' }
 
-    @Input() columnas: IColumn[] = [
+    private _columnas: IColumn[] = [
         {
             type: 'text',
             width: '5rem',
@@ -70,6 +71,18 @@ export class TablePrimengComponent implements OnChanges, OnInit {
             text: 'center',
         },
     ]
+
+    @Input()
+    set columnas(value: IColumn[]) {
+        this._columnas = value.map((column) => ({
+            ...column,
+            selected: true,
+        }))
+    }
+
+    get columnas(): IColumn[] {
+        return this._columnas
+    }
 
     @Input() actions = [
         {
@@ -134,14 +147,14 @@ export class TablePrimengComponent implements OnChanges, OnInit {
         },
     ]
 
-    _columnasSeleccionadas: IColumn[] = []
+    public columnasSeleccionadas: IColumn[] = []
 
     loading: boolean = false
 
     constructor() {}
 
     ngOnInit() {
-        this._columnasSeleccionadas = this.columnas
+        this.columnasSeleccionadas = this.columnas
     }
 
     ngOnChanges(changes) {
@@ -157,14 +170,9 @@ export class TablePrimengComponent implements OnChanges, OnInit {
         this.accionBtnItem.emit(data)
     }
 
-    get selectedColumns(): IColumn[] {
-        return this._columnasSeleccionadas
-    }
-
-    set selectedColumns(val: IColumn[]) {
-        this._columnasSeleccionadas = this.columnas.filter((col) =>
-            val.includes(col)
-        )
+    onColumnSelected(columns) {
+        this.columnasSeleccionadas = columns
+        console.log(this.columnasSeleccionadas)
     }
 
     onSelectionChange(event) {

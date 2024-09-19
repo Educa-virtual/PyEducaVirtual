@@ -21,10 +21,12 @@ import { matGroupWork } from '@ng-icons/material-icons/baseline'
 import { DialogService } from 'primeng/dynamicdialog'
 import { BancoPreguntasFormComponent } from '../banco-preguntas/banco-preguntas-form/banco-preguntas-form.component'
 import { MODAL_CONFIG } from '@/app/shared/constants/modal.config'
+import { AsignarMatrizPreguntasFormComponent } from './asignar-matriz-preguntas-form/asignar-matriz-preguntas-form.component'
+import { MessageService } from 'primeng/api'
 @Component({
     selector: 'app-banco-preguntas',
     templateUrl: './banco-preguntas.component.html',
-    providers: [provideIcons({ matGroupWork }), DialogService],
+    providers: [provideIcons({ matGroupWork }), DialogService, MessageService],
     standalone: true,
     imports: [
         AlternativasComponent,
@@ -56,7 +58,7 @@ export class BancoPreguntasComponent implements OnInit {
                 size: 'xs',
                 color: '',
             },
-            accion: 'agregar',
+            accion: 'asignar',
             class: 'p-button-primary',
         },
         {
@@ -152,6 +154,20 @@ export class BancoPreguntasComponent implements OnInit {
         if (action.accion === 'agregar') {
             this.agregarPregunta()
         }
+        if (action.accion === 'asignar') {
+            this.asignarPreguntas()
+        }
+    }
+
+    asignarPreguntas() {
+        if (this.selectedItems.length === 0) {
+            return
+        }
+        this._dialogService.open(AsignarMatrizPreguntasFormComponent, {
+            ...MODAL_CONFIG,
+            data: this.selectedItems,
+            header: 'Asignar preguntas',
+        })
     }
 
     agregarPregunta() {

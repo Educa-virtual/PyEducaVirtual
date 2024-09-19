@@ -12,6 +12,7 @@
     [rowsPerPageOptions]="[10, 25, 50]"
     (selectionChange)="onSelectionChange($event)"
     sortMode="multiple"
+    [(selection)]="selectedRowData"
     class="hoverTable"
 >
     @if (showCaption) {

@@ -32,6 +32,8 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     @Input() showCaption: boolean = true
     @Input() showPaginator: boolean = true
 
+    @Input() selectedRowData = []
+
     @Input() data = []
     @Input() tableStyle: {
         [klass: string]: unknown

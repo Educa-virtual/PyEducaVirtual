@@ -125,7 +125,6 @@ export class BancoPreguntasComponent implements OnInit {
                 (customer) => (customer.date = new Date(customer.date))
             )*/
         })
-
         this.nivel = [
             {
                 label: 'Nivel Primaria',

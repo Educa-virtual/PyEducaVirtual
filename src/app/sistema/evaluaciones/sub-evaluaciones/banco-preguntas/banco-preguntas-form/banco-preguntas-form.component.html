@@ -1,81 +1,55 @@
 <div class="card">
     <p-tabView>
         <p-tabPanel header="Información pregunta">
-            <div class="line-height-3 m-0">
-                <div class="field grid">
-                    <label htmlFor="name3" class="col-12 mb-2 md:col-2 md:mb-0"
-                        >Competencia</label
-                    >
+            <div class="grid">
+                <div class="col">
+                    <div class="text-center p-3 border-round-sm font-bold">
+                        Tipo pregunta
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="text-center p-3 border-round-sm font-bold">
+                        <p-dropdown
+                            [options]="cities"
+                            [(ngModel)]="selectedCity"
+                            optionLabel="name"
+                            placeholder="Select a City"
+                        />
+                    </div>
+                </div>
+                <div class="col">Puntaje</div>
+                <div class="col">
+                    <input
+                        id="lastname2"
+                        type="text"
+                        class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"
+                    />
+                </div>
+            </div>
+
+            <div class="formgrid grid">
+                <div class="field col">
+                    <label for="firstname2">Tipo pregunta </label>
+
                     <p-dropdown
                         [options]="cities"
                         [(ngModel)]="selectedCity"
                         optionLabel="name"
                         placeholder="Select a City"
                     />
-
-                    <button
-                        pButton
-                        label="..."
-                        class="p-button-outlined mb-2"
-                    ></button>
                 </div>
-                <div class="field grid">
-                    <label htmlFor="email3" class="col-12 mb-2 md:col-2 md:mb-0"
-                        >Capacidad</label
-                    >
-                    <div class="col-12 md:col-10">
-                        <p-dropdown
-                            [options]="cities"
-                            [(ngModel)]="selectedCity"
-                            optionLabel="name"
-                            placeholder="Select a City"
-                        />
-                        <button
-                            pButton
-                            label="..."
-                            class="p-button-outlined mb-2"
-                        ></button>
-                    </div>
+                <div class="field col">
+                    <label for="lastname2">Puntaje</label>
+                    <input
+                        id="lastname2"
+                        type="text"
+                        class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"
+                    />
                 </div>
+            </div>
 
-                <div class="field grid">
-                    <label htmlFor="email3" class="col-12 mb-2 md:col-2 md:mb-0"
-                        >Desempeño</label
-                    >
-                    <div class="col-12 md:col-10">
-                        <p-dropdown
-                            [options]="cities"
-                            [(ngModel)]="selectedCity"
-                            optionLabel="name"
-                            placeholder="Select a City"
-                        />
-                        <button
-                            pButton
-                            label="..."
-                            class="p-button-outlined mb-2"
-                        ></button>
-                    </div>
-                </div>
-
-                <div class="field grid">
-                    <label htmlFor="email3" class="col-12 mb-2 md:col-2 md:mb-0"
-                        >Tipo pregunta</label
-                    >
-                    <div class="col-12 md:col-10">
-                        <p-dropdown
-                            [options]="cities"
-                            [(ngModel)]="selectedCity"
-                            optionLabel="name"
-                            placeholder="Select a City"
-                        />
-                        <button
-                            pButton
-                            label="..."
-                            class="p-button-outlined mb-2"
-                        ></button>
-                    </div>
-                </div>
-
+            <div class="line-height-3 m-0">
                 <div class="field grid">
                     <label htmlFor="email3" class="col-12 mb-2 md:col-2 md:mb-0"
                         >Pregunta</label

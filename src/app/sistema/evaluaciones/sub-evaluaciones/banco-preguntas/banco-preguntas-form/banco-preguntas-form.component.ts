@@ -15,6 +15,9 @@ import { EditorModule } from 'primeng/editor'
 /*Tab */
 import { TabViewModule } from 'primeng/tabview'
 
+/*Input text */
+import { InputTextModule } from 'primeng/inputtext'
+
 @Component({
     selector: 'app-banco-preguntas-form',
     standalone: true,
@@ -24,6 +27,7 @@ import { TabViewModule } from 'primeng/tabview'
         InputSwitchModule,
         EditorModule,
         TabViewModule,
+        InputTextModule,
     ],
     templateUrl: './banco-preguntas-form.component.html',
     styleUrl: './banco-preguntas-form.component.scss',
@@ -35,7 +39,7 @@ export class BancoPreguntasFormComponent {
     cities: City[] | undefined
 
     selectedCity: City | undefined
-
+    value: string | undefined
     ngOnInit() {
         this.cities = [
             { name: 'New York', code: 'NY' },

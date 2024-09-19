@@ -2,17 +2,11 @@ import { PrimengModule } from '@/app/primeng.module'
 import { BtnLoadingComponent } from '@/app/shared/btn-loading/btn-loading.component'
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
-import { Component, OnInit } from '@angular/core'
-
-interface Area_Estudio {
-    iAreaEstudioId: number
-    cAreaEstudio: string
-}
-
-interface Menu {
-    iMenuId: number
-    cMenu: string
-}
+import { Component } from '@angular/core'
+import { RecursosDidacticosComponent } from '../areas-estudios/components/recursos-didacticos/recursos-didacticos.component'
+import { ActividadesAprendizajeEvaluacionComponent } from '../areas-estudios/components/actividades-aprendizaje-evaluacion/actividades-aprendizaje-evaluacion.component'
+import { EvaluacionComponent } from '../areas-estudios/components/evaluacion/evaluacion.component'
+import { BibliografiaComponent } from '../areas-estudios/components/bibliografia/bibliografia.component'
 
 @Component({
     selector: 'app-silabo',
@@ -22,141 +16,32 @@ interface Menu {
         PrimengModule,
         BtnLoadingComponent,
         TablePrimengComponent,
+        RecursosDidacticosComponent,
+        ActividadesAprendizajeEvaluacionComponent,
+        EvaluacionComponent,
+        BibliografiaComponent,
     ],
     templateUrl: './silabo.component.html',
     styleUrl: './silabo.component.scss',
 })
-export class SilaboComponent implements OnInit {
-    areas: Area_Estudio[] | undefined
-    menu: Menu[]
-    selectedMenu: number = null
-    actions = []
-    columnsRecursos = [
+export class SilaboComponent {
+    activeStepper: number = 0
+    silabo = [
+        { iSilabo: 1, cSilaboTitle: 'Información General', icon: 'pi-info' },
+        { iSilabo: 2, cSilaboTitle: 'Perfil del Egreso', icon: 'pi-id-card' },
         {
-            type: 'text',
-            width: '10rem',
-            field: 'cNombreRecursoDidáctico',
-            header: 'Nombre del Recurso Didáctico',
-            text_header: 'center',
-            text: 'justify',
+            iSilabo: 3,
+            cSilaboTitle: 'Unidad Didáctica, Capacidad y Metodología',
+            icon: 'pi-list-check',
         },
+        { iSilabo: 4, cSilaboTitle: 'Recursos Didácticos', icon: 'pi-gift' },
         {
-            type: 'text',
-            width: '15rem',
-            field: 'cDescripcion',
-            header: 'Descripcion',
-            text_header: 'center',
-            text: 'justify',
+            iSilabo: 5,
+            cSilaboTitle:
+                'Desarrollo de Actividades de Aprendizaje y de Evaluación',
+            icon: 'pi-clipboard',
         },
-        {
-            type: 'actions',
-            width: '3rem',
-            field: 'actions',
-            header: 'Acciones',
-            text_header: 'center',
-            text: 'center',
-        },
+        { iSilabo: 6, cSilaboTitle: 'Evaluación', icon: 'pi-check-square' },
+        { iSilabo: 7, cSilaboTitle: 'Bibliografía', icon: 'pi-address-book' },
     ]
-
-    columnsActividades = [
-        {
-            type: 'text',
-            width: '5rem',
-            field: 'cNumero',
-            header: 'Núm.',
-            text_header: 'center',
-            text: 'center',
-        },
-        {
-            type: 'text',
-            width: '5rem',
-            field: 'cNombre',
-            header: 'Nombre',
-            text_header: 'center',
-            text: 'justify',
-        },
-        {
-            type: 'text',
-            width: '5rem',
-            field: 'cConcepto',
-            header: 'Concepto',
-            text_header: 'center',
-            text: 'justify',
-        },
-        {
-            type: 'text',
-            width: '8rem',
-            field: 'cElementos',
-            header: 'Elementos',
-            text_header: 'center',
-            text: 'justify',
-        },
-        {
-            type: 'text',
-            width: '8rem',
-            field: 'cActitudes',
-            header: 'Actitudes',
-            text_header: 'center',
-            text: 'justify',
-        },
-        {
-            type: 'text',
-            width: '10rem',
-            field: 'cProcedi10iento',
-            header: 'Procedimiento',
-            text_header: 'center',
-            text: 'justify',
-        },
-        {
-            type: 'actions',
-            width: '3rem',
-            field: 'actions',
-            header: 'Acciones',
-            text_header: 'center',
-            text: 'center',
-        },
-    ]
-
-    columnsBibliografia = [
-        {
-            type: 'text',
-            width: '10rem',
-            field: 'cTitulo',
-            header: 'Título',
-            text_header: 'center',
-            text: 'justify',
-        },
-        {
-            type: 'text',
-            width: '8rem',
-            field: 'cAutor',
-            header: 'Autor',
-            text_header: 'center',
-            text: 'justify',
-        },
-        {
-            type: 'actions',
-            width: '3rem',
-            field: 'actions',
-            header: 'Acciones',
-            text_header: 'center',
-            text: 'center',
-        },
-    ]
-
-    ngOnInit() {
-        this.areas = [
-            { iAreaEstudioId: 1, cAreaEstudio: 'Matemáticas' },
-            { iAreaEstudioId: 2, cAreaEstudio: 'Comunicación' },
-            { iAreaEstudioId: 3, cAreaEstudio: 'Arte' },
-            { iAreaEstudioId: 4, cAreaEstudio: 'Ciencias Sociales' },
-            { iAreaEstudioId: 5, cAreaEstudio: 'Religión' },
-        ]
-        this.menu = [
-            { iMenuId: 1, cMenu: 'INFORMACIÓN GENERAL' },
-            { iMenuId: 2, cMenu: 'RECURSOS DIDÁCTICOS' },
-            { iMenuId: 3, cMenu: 'ACTIVIDADES DE APRENDIZAJE' },
-            { iMenuId: 4, cMenu: 'BIBLIOGRAFÍA' },
-        ]
-    }
 }

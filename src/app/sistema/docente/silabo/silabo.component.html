@@ -1,389 +1,251 @@
-<div class="row">
-    <div class="col-md-3">
-        <app-container-page title="SÍLABOS" [actions]="[]">
-            <div class="flex justify-content-center">
-                <span style="width: 100%">
-                    <h6 class="m-2">Curso Asignado</h6>
-                    <p-dropdown
-                        [options]="areas"
-                        optionLabel="cAreaEstudio"
-                        placeholder="Seleccionar Curso"
-                        [style]="{ minWidth: '100%' }"
-                    />
-                    <h6 class="m-2">Semana Académica</h6>
-                    <p-dropdown
-                        [options]="[]"
-                        optionLabel="cSemana"
-                        placeholder="Seleccionar Semana Acad."
-                        [style]="{ minWidth: '100%' }"
-                    />
-                    <h6 class="m-2">Año Académico</h6>
-                    <p-dropdown
-                        [options]="[]"
-                        optionLabel="cYearAcademico"
-                        placeholder="Seleccionar Año Académico"
-                        [style]="{ minWidth: '100%' }"
-                    />
-                    <app-btn-loading
-                        btnClass="btn-primary btn-rounded mt-3"
-                        loadingText="BUSCAR"
-                        [loading]="true"
-                        >Ingresar</app-btn-loading
+<p-stepper [(activeStep)]="activeStepper">
+    @for (item of silabo; track item.iSilabo) {
+        <p-stepperPanel>
+            <ng-template
+                pTemplate="header"
+                let-onClick="onClick"
+                let-index="index"
+            >
+                <button
+                    class="bg-transparent border-none inline-flex flex-column gap-2"
+                    (click)="onClick.emit()"
+                    [pTooltip]="item.cSilaboTitle"
+                    tooltipPosition="top"
+                >
+                    <span
+                        class="border-round border-2 w-3rem h-3rem inline-flex align-items-center justify-content-center"
+                        [ngClass]="{
+                            'bg-primary border-primary': index <= activeStepper,
+                            'border-primary': index > activeStepper,
+                        }"
                     >
-                </span>
-            </div>
-        </app-container-page>
-        <div class="card flex justify-content-center mt-3">
-            <div class="d-grid gap-2">
-                @for (item of menu; track item.iMenuId) {
-                    <button
-                        class="btn"
-                        [ngClass]="
-                            selectedMenu === item.iMenuId
-                                ? 'btn-primary btn-rounded'
-                                : 'btn-secondary'
-                        "
-                        (click)="selectedMenu = item.iMenuId"
-                    >
-                        {{ item.cMenu }}
-                    </button>
+                        <p
+                            class="font-bold"
+                            [style]="
+                                index > activeStepper
+                                    ? 'color: var(--primary-color)'
+                                    : ''
+                            "
+                        >
+                            {{ index + 1 }}
+                        </p>
+                        <!-- <i class="pi {{item.icon}}" [style]="index > activeStepper ? 'color: var(--primary-color)' :''"></i> -->
+                    </span>
+                </button>
+            </ng-template>
+            <ng-template
+                pTemplate="content"
+                let-prevCallback="prevCallback"
+                let-nextCallback="nextCallback"
+                let-index="index"
+            >
+                <div class="border-noround text-uppercase">
+                    <h4>{{ item.cSilaboTitle }}</h4>
+                    <p-divider></p-divider>
+                </div>
+                @switch (activeStepper) {
+                    @case (0) {
+                        <form>
+                            <div class="formgrid grid">
+                                <div class="field col-12 md:col-12">
+                                    <label for="">Programa de Estudios</label>
+                                    <input
+                                        type="text"
+                                        class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full p-inputtext-sm"
+                                        pInputText
+                                        placeholder="Arquitectura de Plataformas y Servicios de Tecnologías de la Información"
+                                        disabled
+                                    />
+                                </div>
+                                <div class="field col-12 md:col-12">
+                                    <label for="">Módulo Formativo</label>
+                                    <input
+                                        type="text"
+                                        class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full p-inputtext-sm"
+                                        pInputText
+                                        placeholder="Arquitectura de Proyectos TI"
+                                        disabled
+                                    />
+                                </div>
+                                <div class="field col-12">
+                                    <label for="">Unidades Didácticas</label>
+                                    <input
+                                        type="text"
+                                        class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full p-inputtext-sm"
+                                        pInputText
+                                        placeholder="Carga Horaria"
+                                        disabled
+                                    />
+                                </div>
+                                <div class="field col-12 md:col-8">
+                                    <label for="">Carga Horaria</label>
+                                    <input
+                                        type="text"
+                                        class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full p-inputtext-sm"
+                                        pInputText
+                                        placeholder="Arquitectura de Proyectos TI"
+                                        disabled
+                                    />
+                                </div>
+                                <div class="field col-12 md:col-4">
+                                    <label for="state">Nro de Créditos</label>
+                                    <input
+                                        type="text"
+                                        class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full p-inputtext-sm"
+                                        pInputText
+                                        placeholder="4"
+                                        disabled
+                                    />
+                                </div>
+                            </div>
+                        </form>
+                        <div class="flex pt-4 justify-content-end">
+                            <p-button
+                                (onClick)="nextCallback.emit()"
+                                label="Siguiente"
+                                icon="pi pi-arrow-right"
+                                iconPos="right"
+                            />
+                        </div>
+                    }
+                    @case (1) {
+                        <form>
+                            <div class="formgrid grid">
+                                <div class="field col-12 md:col-12">
+                                    <p-editor
+                                        [style]="{
+                                            height: '250px',
+                                        }"
+                                    />
+                                </div>
+                            </div>
+                        </form>
+                        <div class="flex pt-4 justify-content-between">
+                            <p-button
+                                (onClick)="prevCallback.emit()"
+                                label="Anterior"
+                                severity="secondary"
+                                icon="pi pi-arrow-left"
+                            />
+                            <p-button
+                                (onClick)="nextCallback.emit()"
+                                label="Siguiente"
+                                icon="pi pi-arrow-right"
+                                iconPos="right"
+                            />
+                        </div>
+                    }
+                    @case (2) {
+                        <form>
+                            <div class="formgrid grid">
+                                <div class="field col-12 md:col-6">
+                                    <label for=""
+                                        >Descripción de la Unidad
+                                        Didáctica</label
+                                    >
+                                    <p-editor
+                                        [style]="{
+                                            height: '100px',
+                                        }"
+                                    />
+                                </div>
+                                <div class="field col-12 md:col-6">
+                                    <label for="">Capacidad </label>
+                                    <p-editor
+                                        [style]="{
+                                            height: '100px',
+                                        }"
+                                    />
+                                </div>
+                                <div class="field col-12 md:col-12">
+                                    <label for="">Metodología</label>
+                                    <p-editor
+                                        [style]="{
+                                            height: '150px',
+                                        }"
+                                    />
+                                </div>
+                            </div>
+                        </form>
+                        <div class="flex pt-4 justify-content-between">
+                            <p-button
+                                (onClick)="prevCallback.emit()"
+                                label="Anterior"
+                                severity="secondary"
+                                icon="pi pi-arrow-left"
+                            />
+                            <p-button
+                                (onClick)="nextCallback.emit()"
+                                label="Siguiente"
+                                icon="pi pi-arrow-right"
+                                iconPos="right"
+                            />
+                        </div>
+                    }
+                    @case (3) {
+                        <app-recursos-didacticos></app-recursos-didacticos>
+                        <div class="flex pt-4 justify-content-between">
+                            <p-button
+                                (onClick)="prevCallback.emit()"
+                                label="Anterior"
+                                severity="secondary"
+                                icon="pi pi-arrow-left"
+                            />
+                            <p-button
+                                (onClick)="nextCallback.emit()"
+                                label="Siguiente"
+                                icon="pi pi-arrow-right"
+                                iconPos="right"
+                            />
+                        </div>
+                    }
+                    @case (4) {
+                        <app-actividades-aprendizaje-evaluacion></app-actividades-aprendizaje-evaluacion>
+                        <div class="flex pt-4 justify-content-between">
+                            <p-button
+                                (onClick)="prevCallback.emit()"
+                                label="Anterior"
+                                severity="secondary"
+                                icon="pi pi-arrow-left"
+                            />
+                            <p-button
+                                (onClick)="nextCallback.emit()"
+                                label="Siguiente"
+                                icon="pi pi-arrow-right"
+                                iconPos="right"
+                            />
+                        </div>
+                    }
+                    @case (5) {
+                        <app-evaluacion></app-evaluacion>
+                        <div class="flex pt-4 justify-content-between">
+                            <p-button
+                                (onClick)="prevCallback.emit()"
+                                label="Anterior"
+                                severity="secondary"
+                                icon="pi pi-arrow-left"
+                            />
+                            <p-button
+                                (onClick)="nextCallback.emit()"
+                                label="Siguiente"
+                                icon="pi pi-arrow-right"
+                                iconPos="right"
+                            />
+                        </div>
+                    }
+                    @case (6) {
+                        <app-bibliografia></app-bibliografia>
+                        <div class="flex pt-4 justify-content-start">
+                            <p-button
+                                (onClick)="prevCallback.emit()"
+                                label="Anterior"
+                                severity="secondary"
+                                icon="pi pi-arrow-left"
+                            />
+                        </div>
+                    }
                 }
-            </div>
-        </div>
-    </div>
-    <div class="col-md-9">
-        @if (selectedMenu === 1) {
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="card flex justify-content-center">
-                        <span style="width: 100%">
-                            <h5 class="m-2">INFORMACIÓN GENERAL</h5>
-                            <h6 class="m-2">Programa de Estudios</h6>
-                            <textarea
-                                rows="3"
-                                pInputTextarea
-                                [style]="{ minWidth: '100%' }"
-                                disabled
-                                placeholder="Arquitectura de Plataformas y Servicios de Tecnologías de la Información"
-                            ></textarea>
-                            <h6 class="m-2">Módulo Formativo</h6>
-                            <textarea
-                                rows="1"
-                                pInputTextarea
-                                [style]="{ minWidth: '100%' }"
-                                disabled
-                                placeholder="Arquitectura de Proyectos TI"
-                            ></textarea>
-                            <h6 class="m-2">Unidades Didácticas</h6>
-                            <textarea
-                                rows="1"
-                                pInputTextarea
-                                [style]="{ minWidth: '100%' }"
-                                disabled
-                                placeholder="Arquitectura de Proyectos TI"
-                            ></textarea>
-                            <h6 class="m-2">Carga Horaria</h6>
-                            <textarea
-                                rows="1"
-                                pInputTextarea
-                                [style]="{ minWidth: '100%' }"
-                                disabled
-                                placeholder="Arquitectura de Proyectos TI"
-                            ></textarea>
-                            <h6 class="m-2">Nro de Créditos</h6>
-                            <textarea
-                                rows="1"
-                                pInputTextarea
-                                [style]="{ minWidth: '100%' }"
-                                disabled
-                                placeholder="4"
-                            ></textarea>
-                            <h6 class="m-2">Periodo Académico</h6>
-                            <textarea
-                                rows="1"
-                                pInputTextarea
-                                [style]="{ minWidth: '100%' }"
-                                disabled
-                                placeholder="Quinto"
-                            ></textarea>
-                            <h6 class="m-2">Periodo Lectivo</h6>
-                            <textarea
-                                rows="1"
-                                pInputTextarea
-                                [style]="{ minWidth: '100%' }"
-                                disabled
-                                placeholder="2021-I"
-                            ></textarea>
-                        </span>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card flex justify-content-center">
-                        <span style="width: 100%">
-                            <h6 class="m-2">Proceso de Egreso</h6>
-                            <textarea
-                                rows="7"
-                                pInputTextarea
-                                [style]="{ minWidth: '100%' }"
-                                placeholder="El Profesional Técnico del Programa de Estudios de Arquitectura de Plataformas y Servicios de Tecnologías de la Información,   es un especialista en el diseño, implementación  y   manejo de infraestructuras de plataformas de Tecnologías de la Información(TI); mantenimiento y  reparación de equipos de cómputo; conectividad de datos; desarrollo y gestión de software a medida en plataformas de escritorio, web y móvil; a su vez  brinda soluciones  innovadoras en los procesos productivos y de servicios, interactuando con una comunicación asertiva, uso del idioma inglés como soporte de sus actividades profesionales y aplica las herramientas informáticas para la toma de decisiones en las organizaciones públicas y privadas"
-                            ></textarea>
-                            <h6 class="m-2">Descripción de Unidad Didáctica</h6>
-                            <textarea
-                                rows="3"
-                                pInputTextarea
-                                [style]="{ minWidth: '100%' }"
-                                placeholder="En esta unidad didáctica se requiere que el estudiante diseñe, construya y despliegue Aplicaciones Móviles, incorporando tecnologías de multiplataforma y de acceso a servicios."
-                            ></textarea>
-                            <h6 class="m-2">Capacidad</h6>
-                            <textarea
-                                rows="2"
-                                pInputTextarea
-                                [style]="{ minWidth: '100%' }"
-                                disabled
-                                placeholder="Desarrollar aplicaciones móviles, según estándares de diseño de arquitecturas."
-                            ></textarea>
-                            <h6 class="m-2">Metodologia</h6>
-                            <textarea
-                                rows="6"
-                                pInputTextarea
-                                [style]="{ minWidth: '100%' }"
-                                disabled
-                                placeholder="MÉTODO
-              Estrategias centradas en la individualización de la enseñanza
-              Estrategias para la enseñanza en grupo, centradas en la presentación de información y la colaboración.
-              Estrategias centradas en el trabajo colaborativo.
-              TÉCNICAS
-              E-learning (interacción con los materiales didácticos y los estudiantes)
-              Proceso de enseñanza aprendizaje on line
-              Trabajo colaborativo
-              Glosarios colaborativos
-              Portafolios"
-                            ></textarea>
-                            <app-btn-loading
-                                btnClass="btn-primary btn-rounded mt-3"
-                                loadingText="GUARDAR"
-                                [loading]="true"
-                                >GUARDAR</app-btn-loading
-                            >
-                        </span>
-                    </div>
-                </div>
-            </div>
-        }
-        @if (selectedMenu === 2) {
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="card flex justify-content-center">
-                        <span style="width: 100%">
-                            <h5 class="m-2">Recursos Didácticos</h5>
-                            <h6 class="m-2">Nombre</h6>
-                            <textarea
-                                rows="3"
-                                pInputTextarea
-                                [style]="{ minWidth: '100%' }"
-                                placeholder=""
-                            ></textarea>
-                            <h6 class="m-2">Descripcion</h6>
-                            <textarea
-                                rows="3"
-                                pInputTextarea
-                                [style]="{ minWidth: '100%' }"
-                                placeholder=""
-                            ></textarea>
-                            <app-btn-loading
-                                btnClass="btn-primary btn-rounded mt-3"
-                                loadingText="GUARDAR"
-                                [loading]="true"
-                                >GUARDAR</app-btn-loading
-                            >
-                        </span>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card flex justify-content-center">
-                        <span style="width: 100%">
-                            <h5 class="m-2">Recursos Didácticos</h5>
-                            <textarea
-                                rows="3"
-                                pInputTextarea
-                                [style]="{ minWidth: '100%' }"
-                                disabled
-                                placeholder="Recurso Virtual Asincrono
-            Foros, Correos electrónicos, Tareas, cuestionarios."
-                            ></textarea>
-                            <textarea
-                                rows="3"
-                                pInputTextarea
-                                [style]="{ minWidth: '100%' }"
-                                disabled
-                                placeholder="Recurso Virtual Sincrono
-            Wathsapp, chat, mensajeria, aula virtual Q10"
-                            ></textarea>
-                        </span>
-                    </div>
-                </div>
-                <div class="col-md-12">
-                    <app-table-primeng
-                        [actions]="[]"
-                        [data]="[]"
-                        [columnas]="columnsRecursos"
-                    ></app-table-primeng>
-                </div>
-            </div>
-        }
-        @if (selectedMenu === 3) {
-            <div class="card">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="flex justify-content-center">
-                            <span style="width: 100%">
-                                <h5 class="m-2">Actividades de Aprendizaje</h5>
-                                <h6 class="m-2">Número</h6>
-                                <input
-                                    pInputText
-                                    [style]="{
-                                        minWidth: '50%',
-                                        height: '30px',
-                                    }"
-                                />
-                                <h6 class="m-2">Nombre de la Actividad</h6>
-                                <input
-                                    pInputText
-                                    [style]="{ minWidth: '100%' }"
-                                />
-                                <h6 class="m-2">Concepto</h6>
-                                <input
-                                    pInputText
-                                    [style]="{ minWidth: '100%' }"
-                                />
-                                <h6 class="m-2">Elementos de la capacidad</h6>
-                                <input
-                                    pInputText
-                                    [style]="{ minWidth: '100%' }"
-                                />
-                            </span>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="flex justify-content-center">
-                            <span style="width: 100%">
-                                <h6 class="m-2">Procedimiento</h6>
-                                <textarea
-                                    rows="2"
-                                    pInputTextarea
-                                    [style]="{ minWidth: '100%' }"
-                                    placeholder=""
-                                ></textarea>
-                                <h6 class="m-2">Concepto</h6>
-                                <textarea
-                                    rows="2"
-                                    pInputTextarea
-                                    [style]="{ minWidth: '100%' }"
-                                    placeholder=""
-                                ></textarea>
-                                <h6 class="m-2">Actitudes</h6>
-                                <textarea
-                                    rows="2"
-                                    pInputTextarea
-                                    [style]="{ minWidth: '100%' }"
-                                    placeholder=""
-                                ></textarea>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="col-md-12">
-                        <app-btn-loading
-                            btnClass="btn-primary btn-rounded mt-3"
-                            loadingText="GUARDAR"
-                            [loading]="true"
-                            >GUARDAR</app-btn-loading
-                        >
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <app-table-primeng
-                        [actions]="[]"
-                        [data]="[]"
-                        [columnas]="columnsActividades"
-                    ></app-table-primeng>
-                </div>
-            </div>
-        }
-        @if (selectedMenu === 4) {
-            <div class="card">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="flex justify-content-center">
-                            <span style="width: 100%">
-                                <h5 class="m-2">Bibliografía</h5>
-                                <h6 class="m-2">Título</h6>
-                                <textarea
-                                    rows="3"
-                                    pInputTextarea
-                                    [style]="{ minWidth: '100%' }"
-                                    placeholder=""
-                                ></textarea>
-                                <h6 class="m-2">Autor</h6>
-                                <input
-                                    pInputText
-                                    [style]="{ minWidth: '100%' }"
-                                />
-                                <h6 class="m-2">Concepto</h6>
-                                <input
-                                    pInputText
-                                    [style]="{ minWidth: '100%' }"
-                                />
-                            </span>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="flex justify-content-center">
-                            <span style="width: 100%">
-                                <h6 class="m-2">Año de Edición</h6>
-                                <input
-                                    pInputText
-                                    type="date"
-                                    [style]="{ minWidth: '100%' }"
-                                />
-                                <h6 class="m-2">Editorial</h6>
-                                <input
-                                    pInputText
-                                    [style]="{ minWidth: '100%' }"
-                                />
-                                <h6 class="m-2">Url</h6>
-                                <input
-                                    pInputText
-                                    [style]="{ minWidth: '100%' }"
-                                />
-                                <h6 class="m-2">Tipo de Bibliografia</h6>
-                                <input
-                                    pInputText
-                                    [style]="{ minWidth: '100%' }"
-                                />
-                            </span>
-                        </div>
-                    </div>
-                    <div class="col-md-12">
-                        <app-btn-loading
-                            btnClass="btn-primary btn-rounded mt-3"
-                            loadingText="GUARDAR"
-                            [loading]="true"
-                            >GUARDAR</app-btn-loading
-                        >
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <app-table-primeng
-                        [actions]="[]"
-                        [data]="[]"
-                        [columnas]="columnsBibliografia"
-                    ></app-table-primeng>
-                </div>
-            </div>
-        }
-    </div>
-</div>
+            </ng-template>
+        </p-stepperPanel>
+    }
+</p-stepper>

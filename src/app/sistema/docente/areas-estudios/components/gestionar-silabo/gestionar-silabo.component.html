@@ -1,0 +1,23 @@
+<div class="grid">
+    <p-toolbar class="col-12">
+        <div class="p-toolbar-group-start">
+            <h4 class="text-primary font-bold">
+                Gestionar Sílabo: {{ cCursoNombre }}
+            </h4>
+        </div>
+        <div class="p-toolbar-group-end">
+            <p-tag severity="warning" [value]="'Avance del Sílabo: 60%'" />
+            <p-button
+                icon="pi pi-undo"
+                pTooltip="Regresar"
+                tooltipPosition="top"
+                [rounded]="true"
+                [text]="true"
+                (onClick)="goAreasEstudio()"
+            />
+        </div>
+    </p-toolbar>
+    <div class="col-12">
+        <app-silabo></app-silabo>
+    </div>
+</div>

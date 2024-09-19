@@ -4,7 +4,20 @@ import { Component, OnInit, ViewChild } from '@angular/core'
 import { TablePrimengComponent } from '../../../shared/table-primeng/table-primeng.component'
 import { Menu } from 'primeng/menu'
 import { RecursosDidacticosComponent } from './components/recursos-didacticos/recursos-didacticos.component'
-
+import { Router } from '@angular/router'
+import { Table } from 'primeng/table'
+import { GeneralService } from '@/app/servicios/general.service'
+import { MessageService } from 'primeng/api'
+import { ConstantesService } from '@/app/servicios/constantes.service'
+interface Data {
+    accessToken: string
+    refreshToken: string
+    expires_in: number
+    msg?
+    data?
+    validated?: boolean
+    code?: number
+}
 @Component({
     selector: 'app-areas-estudios',
     standalone: true,
@@ -16,75 +29,24 @@ import { RecursosDidacticosComponent } from './components/recursos-didacticos/re
     ],
     templateUrl: './areas-estudios.component.html',
     styleUrl: './areas-estudios.component.scss',
+    providers: [MessageService],
 })
 export class AreasEstudiosComponent implements OnInit {
     @ViewChild('myMenu') menu!: Menu
 
-    activeStepper: number = null
-    selectedItem: number = 0
-    selectedTitle: string
+    constructor(
+        private router: Router,
+        private GeneralService: GeneralService,
+        private MessageService: MessageService,
+        private ConstantesService: ConstantesService
+    ) {}
+
     selectedData = []
     items = []
-    data = [
-        {
-            iCurso: 1,
-            cCurso: 'Matemática I',
-            cGrado: '4to',
-            cSeccion: 'A',
-            iEstudiantes: 45,
-            iAvanceSilabo: 50,
-            iAvanceAsistencia: 45,
-            iAvanceNotas: 69,
-        },
-        {
-            iCurso: 2,
-            cCurso: 'Comunicación I',
-            cGrado: '5to',
-            cSeccion: 'B',
-            iEstudiantes: 5,
-            iAvanceSilabo: 10,
-            iAvanceAsistencia: 90,
-            iAvanceNotas: 56,
-        },
-        {
-            iCurso: 3,
-            cCurso: 'Religión',
-            cGrado: '2to',
-            cSeccion: 'C',
-            iEstudiantes: 65,
-            iAvanceSilabo: 90,
-            iAvanceAsistencia: 15,
-            iAvanceNotas: 96,
-        },
-        {
-            iCurso: 4,
-            cCurso: 'Historia',
-            cGrado: '1to',
-            cSeccion: 'D',
-            iEstudiantes: 95,
-            iAvanceSilabo: 80,
-            iAvanceAsistencia: 25,
-            iAvanceNotas: 9,
-        },
-    ]
-    silabo = [
-        { iSilabo: 1, cSilaboTitle: 'Información General' },
-        { iSilabo: 2, cSilaboTitle: 'Perfil del Egreso' },
-        {
-            iSilabo: 3,
-            cSilaboTitle:
-                'Descripción de la Unidad Didáctica, Capacidad y Metodología',
-        },
-        { iSilabo: 4, cSilaboTitle: 'Recursos Didácticos' },
-        {
-            iSilabo: 5,
-            cSilaboTitle:
-                'Desarrollo de Actividades de Aprendizaje y de Evaluación',
-        },
-        { iSilabo: 6, cSilaboTitle: 'Evaluación' },
-        { iSilabo: 7, cSilaboTitle: 'Bibliografía' },
-    ]
+    data = []
+
     ngOnInit() {
+        this.getCursos()
         this.items = [
             {
                 label: 'Gestionar Sílabo',
@@ -114,14 +76,48 @@ export class AreasEstudiosComponent implements OnInit {
 
     showAndHideMenu(item, $ev: Event) {
         this.selectedData = item
+        // console.log($ev)
         this.menu.show($ev)
-        setTimeout(() => {
-            this.menu.hide()
-        }, 3000)
     }
-
+    onGlobalFilter(table: Table, event: Event) {
+        table.filterGlobal((event.target as HTMLInputElement).value, 'contains')
+    }
     getSilabo() {
-        this.selectedItem = 1
-        this.selectedTitle = this.selectedData['cCurso']
+        this.router.navigateByUrl(
+            'docente/gestionar-silabo/' +
+                this.selectedData['iCursoId'] +
+                '/' +
+                this.selectedData['cCursoNombre']
+        )
+    }
+    getCursos() {
+        const params = {
+            petition: 'post',
+            ruta: 'listar_cursos',
+            data: {
+                iPersId: this.ConstantesService.iPersId,
+            },
+        }
+        this.GeneralService.getGral(params).subscribe({
+            next: (response: Data) => {
+                this.data = []
+                if (!response.validated)
+                    this.MessageService.add({
+                        severity: 'error',
+                        summary: '¡Atención!',
+                        detail: 'Vuelva a ingresar sus credenciales',
+                    })
+                this.data = response.data
+            },
+            complete: () => {},
+            error: (error) => {
+                console.log(error)
+                this.MessageService.add({
+                    severity: 'error',
+                    summary: '¡Atención!',
+                    detail: 'Las credenciales son erróneas',
+                })
+            },
+        })
     }
 }

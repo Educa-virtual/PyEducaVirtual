@@ -10,6 +10,8 @@ import { CommonModule } from '@angular/common'
 import { DialogService } from 'primeng/dynamicdialog'
 import { AlternativasFormComponent } from '../alternativas/alternativas-form/alternativas-form.component'
 import { MODAL_CONFIG } from '@/app/shared/constants/modal.config'
+
+import { BotonesModalFormComponent } from '../alternativas/alternativas-form/botones-modal-form/botones-modal-form.component'
 @Component({
     selector: 'app-alternativas',
     standalone: true,
@@ -25,7 +27,9 @@ export class AlternativasComponent {
         this._dialogService.open(AlternativasFormComponent, {
             ...MODAL_CONFIG,
             header: 'Alternativa',
-            footer: 'Cancelar',
+            templates: {
+                footer: BotonesModalFormComponent,
+            },
         })
     }
 }

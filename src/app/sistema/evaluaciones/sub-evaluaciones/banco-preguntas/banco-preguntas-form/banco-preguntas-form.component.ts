@@ -17,7 +17,10 @@ import { TabViewModule } from 'primeng/tabview'
 
 /*Input text */
 import { InputTextModule } from 'primeng/inputtext'
+/*import alternativa*/
+import { AlternativasComponent } from '../alternativas/alternativas.component'
 
+import { ButtonModule } from 'primeng/button'
 @Component({
     selector: 'app-banco-preguntas-form',
     standalone: true,
@@ -28,6 +31,8 @@ import { InputTextModule } from 'primeng/inputtext'
         EditorModule,
         TabViewModule,
         InputTextModule,
+        AlternativasComponent,
+        ButtonModule,
     ],
     templateUrl: './banco-preguntas-form.component.html',
     styleUrl: './banco-preguntas-form.component.scss',

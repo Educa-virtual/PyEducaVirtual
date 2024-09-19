@@ -1,37 +1,9 @@
 <div class="card">
     <p-tabView>
         <p-tabPanel header="Información pregunta">
-            <div class="grid">
-                <div class="col">
-                    <div class="text-center p-3 border-round-sm font-bold">
-                        Tipo pregunta
-                    </div>
-                </div>
-
-                <div class="col">
-                    <div class="text-center p-3 border-round-sm font-bold">
-                        <p-dropdown
-                            [options]="cities"
-                            [(ngModel)]="selectedCity"
-                            optionLabel="name"
-                            placeholder="Select a City"
-                        />
-                    </div>
-                </div>
-                <div class="col">Puntaje</div>
-                <div class="col">
-                    <input
-                        id="lastname2"
-                        type="text"
-                        class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"
-                    />
-                </div>
-            </div>
-
             <div class="formgrid grid">
                 <div class="field col">
-                    <label for="firstname2">Tipo pregunta </label>
-
+                    <label for="firstname2">Tipo pregunta</label>
                     <p-dropdown
                         [options]="cities"
                         [(ngModel)]="selectedCity"
@@ -49,87 +21,66 @@
                 </div>
             </div>
 
-            <div class="line-height-3 m-0">
-                <div class="field grid">
-                    <label htmlFor="email3" class="col-12 mb-2 md:col-2 md:mb-0"
-                        >Pregunta</label
-                    >
-                    <div class="col-12 md:col-10">
-                        <p-editor
-                            [(ngModel)]="text"
-                            [style]="{ height: '320px' }"
-                        />
-                    </div>
-                </div>
-
-                <div class="field grid">
-                    <label htmlFor="email3" class="col-12 mb-2 md:col-2 md:mb-0"
-                        >Texto ayuda</label
-                    >
-                    <div class="col-12 md:col-10">
-                        <p-editor
-                            [(ngModel)]="textAyuda"
-                            [style]="{ height: '320px' }"
-                        />
-                    </div>
-                </div>
-
-                <div class="field grid">
-                    <label htmlFor="email3" class="col-12 mb-2 md:col-2 md:mb-0"
-                        >Nivel</label
-                    >
-                    <div class="col-12 md:col-10">
-                        <input pInputText id="email3" type="text" />
-                    </div>
-                </div>
-
-                <div class="field grid">
-                    <label htmlFor="email3" class="col-12 mb-2 md:col-2 md:mb-0"
-                        >Peso</label
-                    >
-                    <div class="col-12 md:col-10">
-                        <input pInputText id="email3" type="text" />
-                    </div>
-                </div>
-
-                <div class="field grid">
-                    <label htmlFor="email3" class="col-12 mb-2 md:col-2 md:mb-0"
-                        >Tiempo</label
-                    >
-                    <div class="col-12 md:col-10">
-                        <input pInputText id="email3" type="text" />
-                    </div>
-                </div>
-
-                <div class="field grid">
-                    <label htmlFor="email3" class="col-12 mb-2 md:col-2 md:mb-0"
-                        >Estado</label
-                    >
-                    <div class="col-12 md:col-10">
-                        <p-inputSwitch [(ngModel)]="valSwitch"></p-inputSwitch>
-                    </div>
-                </div>
-                <div class="field grid">
-                    <label htmlFor="email3" class="col-12 mb-2 md:col-2 md:mb-0"
-                        >Clave</label
-                    >
-                    <div class="col-12 md:col-10">
-                        <p-dropdown
-                            [options]="cities"
-                            [(ngModel)]="selectedCity"
-                            optionLabel="name"
-                            placeholder="Select a City"
-                        />
-                    </div>
-                </div>
-
-                <div class="field grid">
-                    <div class="col-12 md:col-10">
-                        <!--<app-alternativas></app-alternativas>-->
+            <div class="grid">
+                <div class="col">
+                    <div class="text-center p-3 border-round-sm">
+                        Tiempo para responder
                     </div>
                 </div>
             </div>
+
+            <div class="formgrid grid">
+                <div class="field col">
+                    <label for="firstname2">Hora</label>
+                    <input
+                        id="firstname2"
+                        type="text"
+                        class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"
+                    />
+                </div>
+                <div class="field col">
+                    <label for="lastname2">Minutos</label>
+                    <input
+                        id="lastname2"
+                        type="text"
+                        class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"
+                    />
+                </div>
+                <div class="field col">
+                    <label for="lastname2">Segundos</label>
+                    <input
+                        id="lastname2"
+                        type="text"
+                        class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"
+                    />
+                </div>
+            </div>
+
+            <div class="formgrid grid">
+                <div class="field col">
+                    <label for="firstname2">Enunciado de la pregunta</label>
+                    <p-editor
+                        [(ngModel)]="text"
+                        [style]="{ height: '320px' }"
+                    />
+                </div>
+            </div>
+
+            <div class="formgrid grid">
+                <div class="field col">
+                    <label for="firstname2">Texto ayuda</label>
+                    <p-editor
+                        [(ngModel)]="textAyuda"
+                        [style]="{ height: '320px' }"
+                    />
+                </div>
+            </div>
+
+            <p-button label="Siguiente" />
         </p-tabPanel>
-        <p-tabPanel header="Alternativas de la pregunta"> </p-tabPanel>
+        <p-tabPanel header="Alternativas de la pregunta">
+            <app-alternativas></app-alternativas>
+            <p-button label="FInalizar" />
+        </p-tabPanel>
     </p-tabView>
 </div>

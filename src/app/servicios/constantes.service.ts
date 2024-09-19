@@ -3,6 +3,8 @@ import { LocalStoreService } from './local-store.service'
 const store = new LocalStoreService()
 const perfil_actual = store.getItem('dremoPerfil')
 const verificado = store.getItem('dremoPerfilVerificado')
+const user = store.getItem('dremoToken')
+
 const docente = [
     {
         label: 'Docente',
@@ -484,6 +486,7 @@ const administrador = [
     providedIn: 'root',
 })
 export class ConstantesService {
+    iPersId = user ? user.iPersId : null
     nav = this.getMenu()
     getMenu() {
         if (!perfil_actual) return other

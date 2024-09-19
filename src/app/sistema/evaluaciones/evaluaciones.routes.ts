@@ -26,6 +26,14 @@ const routes: Routes = [
             ),
     },
     {
+        path: 'areas/:areaId/banco-preguntas',
+        loadComponent: () =>
+            import(
+                './sub-evaluaciones/banco-preguntas/banco-preguntas.component'
+            ).then((c) => c.BancoPreguntasComponent),
+        pathMatch: 'full',
+    },
+    {
         path: 'banco-preguntas',
         loadComponent: () =>
             import(

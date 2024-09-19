@@ -1,4 +1,4 @@
-import { Component } from '@angular/core'
+import { Component, OnInit } from '@angular/core'
 
 /*import { Customer } from '@domain/customer';
 /*import { CustomerService } from '@service/customerservice';*/
@@ -31,7 +31,7 @@ import { InputTextModule } from 'primeng/inputtext'
     templateUrl: './evaluaciones.component.html',
     styleUrl: './evaluaciones.component.scss',
 })
-export class EvaluacionesComponent {
+export class EvaluacionesComponent implements OnInit {
     customers!: Customer[]
     visible: boolean = false
 

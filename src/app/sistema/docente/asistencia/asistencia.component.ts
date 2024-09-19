@@ -2,7 +2,7 @@ import { PrimengModule } from '@/app/primeng.module'
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
 import { Component } from '@angular/core'
-import { Router } from '@angular/router'
+import { ActivatedRoute, Router } from '@angular/router'
 
 @Component({
     selector: 'app-asistencia',
@@ -12,119 +12,70 @@ import { Router } from '@angular/router'
     styleUrl: './asistencia.component.scss',
 })
 export class AsistenciaComponent {
-    constructor(private router: Router) {}
-    columnsAsistencia = [
-        {
-            type: 'item',
-            width: '2rem',
-            field: 'id',
-            header: 'N°',
-            text_header: 'center',
-            text: 'center',
-        },
-        {
-            type: 'text',
-            width: '5rem',
-            field: 'cCurso',
-            header: 'Curso',
-            text_header: 'center',
-            text: 'center',
-        },
-        {
-            type: 'text',
-            width: '3rem',
-            field: 'cTurno',
-            header: 'Turno',
-            text_header: 'center',
-            text: 'justify',
-        },
-        {
-            type: 'text',
-            width: '4rem',
-            field: 'cFasePeriodo',
-            header: 'Fase/Periodo',
-            text_header: 'center',
-            text: 'justify',
-        },
-        {
-            type: 'text',
-            width: '4rem',
-            field: 'cCiclo',
-            header: 'Ciclo',
-            text_header: 'center',
-            text: 'justify',
-        },
-        {
-            type: 'text',
-            width: '4rem',
-            field: 'cGrado',
-            header: 'Grado',
-            text_header: 'center',
-            text: 'justify',
-        },
-        {
-            type: 'text',
-            width: '4rem',
-            field: 'cSeccion',
-            header: 'Sección',
-            text_header: 'center',
-            text: 'justify',
-        },
-        {
-            type: 'text',
-            width: '4rem',
-            field: 'cMes',
-            header: 'Mes',
-            text_header: 'center',
-            text: 'justify',
-        },
-        {
-            type: 'text',
-            width: '4rem',
-            field: 'cEstado',
-            header: 'Estado',
-            text_header: 'center',
-            text: 'justify',
-        },
-        {
-            type: 'actions',
-            width: '3rem',
-            field: 'actions',
-            header: 'Acciones',
-            text_header: 'center',
-            text: 'center',
-        },
-    ]
+    iCursoId: number
+    cCursoNombre: string
+    constructor(
+        private activatedRoute: ActivatedRoute,
+        private router: Router
+    ) {
+        this.activatedRoute.params.subscribe((params) => {
+            this.iCursoId = params['iCursoId']
+            this.cCursoNombre = params['cCursoNombre']
+        })
+    }
 
-    actions = [
-        {
-            labelTooltip: 'Ingresar',
-            icon: 'pi pi-caret-right',
-            accion: 'ingresar',
-            type: 'item',
-            class: 'p-button-rounded p-button-primary p-button-text',
-        },
-        {
-            labelTooltip: 'Ver',
-            icon: 'pi pi-eye',
-            accion: 'ver_silabo',
-            type: 'item',
-            class: 'p-button-rounded p-button-success p-button-text',
-        },
-    ]
+    // cols = [
 
+    //     { field: 'iAsistencia', header: 'Asistencia', width: '100px' },
+    //     { field: 'iInasistencia', header: 'Inasistencia', width: '100px' },
+    //     { field: 'iInasistenciaJustif', header: 'Inasistencia Justificada', width: '100px' },
+    //     { field: 'iTardanzas', header: 'Tardanzas', width: '100px' },
+    //     { field: 'iTardanzasJustif', header: 'Tardanzas Justificada', width: '100px' },
+    //     { field: 'cEstudiante', header: 'Estudiante', width: '300px' },
+
+    // ];
     data = [
         {
-            cCurso: 'Matemáticas',
-            cTurno: 'Mañana',
-            cFasePeriodo: 'Fase Regular',
-            cCiclo: 'Ciclo II',
-            cGrado: 'Cuarto',
-            cSeccion: 'B',
-            cMes: 'Enero',
-            cEstado: '',
+            iEstudId: '1',
+            cEstudiante: 'Jhoand Velasquez Durand',
+            iAsistencia: '5',
+            iInasistencia: '2',
+            iInasistenciaJustif: '1',
+            iTardanzas: '6',
+            iTardanzasJustif: '2',
+        },
+        {
+            iEstudId: '2',
+            cEstudiante: 'Diana Luque Figueroa',
+            iAsistencia: '15',
+            iInasistencia: '3',
+            iInasistenciaJustif: '2',
+            iTardanzas: '2',
+            iTardanzasJustif: '0',
+        },
+        {
+            iEstudId: '3',
+            cEstudiante: 'Edgar Luna Quispe',
+            iAsistencia: '15',
+            iInasistencia: '1',
+            iInasistenciaJustif: '0',
+            iTardanzas: '0',
+            iTardanzasJustif: '0',
+        },
+        {
+            iEstudId: '4',
+            cEstudiante: 'Ferhat Tomas Ticona',
+            iAsistencia: '10',
+            iInasistencia: '2',
+            iInasistenciaJustif: '0',
+            iTardanzas: '4',
+            iTardanzasJustif: '4',
         },
     ]
+
+    goAreasEstudio() {
+        this.router.navigate(['docente/areas-estudio'])
+    }
 
     accionBtnItem(elemento): void {
         const { accion } = elemento

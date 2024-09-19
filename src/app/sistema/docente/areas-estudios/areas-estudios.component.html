@@ -67,13 +67,12 @@
                 <td style="text-align: center">{{ item.cGrado }}</td>
                 <td style="text-align: center">{{ item.cSeccion }}</td>
                 <td style="text-align: center">
-                    <button
-                        type="button"
-                        pButton
-                        pRipple
-                        icon="pi pi-ellipsis-h"
+                    <p-button
+                        [rounded]="true"
+                        [text]="true"
+                        icon="pi pi-chevron-down"
                         (click)="showAndHideMenu(item, $event)"
-                    ></button>
+                    ></p-button>
                 </td>
             </tr>
         </ng-template>

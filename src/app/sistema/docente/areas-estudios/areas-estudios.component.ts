@@ -52,24 +52,36 @@ export class AreasEstudiosComponent implements OnInit {
                 label: 'Gestionar Sílabo',
                 icon: 'pi pi-angle-right',
                 command: () => {
-                    this.getSilabo()
+                    this.goSection('silabo')
                 },
             },
             {
                 label: 'Fichas de Aprendizaje',
                 icon: 'pi pi-angle-right',
+                command: () => {
+                    this.goSection('ficha-aprendizaje')
+                },
             },
             {
                 label: 'Sessiones de Aprendizaje',
                 icon: 'pi pi-angle-right',
+                command: () => {
+                    this.goSection('sesion-aprendizaje')
+                },
             },
             {
                 label: 'Gestionar Asistencia',
                 icon: 'pi pi-angle-right',
+                command: () => {
+                    this.goSection('asistencia')
+                },
             },
             {
                 label: 'Gestionar Notas',
                 icon: 'pi pi-angle-right',
+                command: () => {
+                    this.goSection('notas')
+                },
             },
         ]
     }
@@ -78,17 +90,36 @@ export class AreasEstudiosComponent implements OnInit {
         this.selectedData = item
         // console.log($ev)
         this.menu.show($ev)
+        // this.menu.hide()
+        // setTimeout(() => {
+        //     this.menu.hide()
+        // }, 10000)
     }
     onGlobalFilter(table: Table, event: Event) {
         table.filterGlobal((event.target as HTMLInputElement).value, 'contains')
     }
-    getSilabo() {
-        this.router.navigateByUrl(
-            'docente/gestionar-silabo/' +
-                this.selectedData['iCursoId'] +
-                '/' +
-                this.selectedData['cCursoNombre']
-        )
+    goSection(section) {
+        switch (section) {
+            case 'silabo':
+                this.router.navigateByUrl(
+                    'docente/gestionar-silabo/' +
+                        this.selectedData['iCursoId'] +
+                        '/' +
+                        this.selectedData['cCursoNombre']
+                )
+                break
+            case 'sesion-aprendizaje':
+                this.router.navigateByUrl('docente/sesion-aprendizaje')
+                break
+            case 'asistencia':
+                this.router.navigateByUrl(
+                    'docente/asistencia/' +
+                        this.selectedData['iCursoId'] +
+                        '/' +
+                        this.selectedData['cCursoNombre']
+                )
+                break
+        }
     }
     getCursos() {
         const params = {

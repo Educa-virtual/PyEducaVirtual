@@ -24,7 +24,10 @@ import { GestionarSilaboComponent } from './areas-estudios/components/gestionar-
             },
             { path: 'ficha-actividades', component: FichaActividadesComponent },
             { path: 'silabo', component: SilaboComponent },
-            { path: 'asistencia', component: AsistenciaComponent },
+            {
+                path: 'asistencia/:iCursoId/:cCursoNombre',
+                component: AsistenciaComponent,
+            },
             {
                 path: 'detalle-asistencia',
                 component: DetalleAsistenciaComponent,

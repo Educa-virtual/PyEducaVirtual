@@ -10,6 +10,7 @@
     [tableStyle]="tableStyle"
     currentPageReportTemplate="{first} - {last} de {totalRecords} registros"
     [rowsPerPageOptions]="[10, 25, 50]"
+    (selectionChange)="onSelectionChange($event)"
     sortMode="multiple"
     class="hoverTable"
 >
@@ -27,29 +28,44 @@
                         placeholder="Buscar palabra clave"
                     />
                 </p-iconField>
-                <p-multiSelect
+                <!-- <p-multiSelect
                     [options]="columnas"
                     [(ngModel)]="selectedColumns"
                     optionLabel="header"
                     selectedItemsLabel="{0} Columnas seleccionadas"
                     placeholder="Seleccione Columnas"
-                />
+                /> -->
+                <app-table-column-filter
+                    [columns]="columnas"
+                    (columnsChange)="onColumnSelected($event)"
+                ></app-table-column-filter>
             </div>
         </ng-template>
     }
     <ng-template pTemplate="header" let-columns>
         <tr class="text-uppercase">
-            @for (col of columns; track $index) {
+            @for (col of columnasSeleccionadas; track $index) {
                 <th [pSortableColumn]="col.field" [style.width]="col.width">
-                    @if (col.type !== 'actions' && col.type !== 'item') {
-                        <div [style.text-align]="col.text_header" class="">
-                            <span> {{ col.header }}</span>
-                            <p-sortIcon [field]="col.header"></p-sortIcon>
-                        </div>
-                    } @else {
-                        <div [style.text-align]="col.text_header">
-                            {{ col.header }}
-                        </div>
+                    @switch (col.type) {
+                        @case ('actions') {
+                            <div [style.text-align]="col.text_header">
+                                {{ col.header }}
+                            </div>
+                        }
+                        @case ('item') {
+                            <div [style.text-align]="col.text_header">
+                                {{ col.header }}
+                            </div>
+                        }
+                        @case ('checkbox') {
+                            <p-tableHeaderCheckbox />
+                        }
+                        @default {
+                            <div [style.text-align]="col.text_header" class="">
+                                <span> {{ col.header }}</span>
+                                <p-sortIcon [field]="col.header"></p-sortIcon>
+                            </div>
+                        }
                     }
                 </th>
             }
@@ -62,7 +78,7 @@
         let-rowIndex="rowIndex"
     >
         <tr [pSelectableRow]="rowData">
-            @for (col of columns; track $index; let i = $index) {
+            @for (col of columnasSeleccionadas; track $index; let i = $index) {
                 <td>
                     @if (col.type === 'item') {
                         <div [style.text-align]="col.text">
@@ -74,6 +90,9 @@
                         <div [style.text-align]="col.text">
                             {{ rowData[col.field] }}
                         </div>
+                    }
+                    @if (col.type === 'checkbox') {
+                        <p-tableCheckbox [value]="rowData" />
                     }
                     @if (col.type === 'actions') {
                         <div class="d-block text-center">

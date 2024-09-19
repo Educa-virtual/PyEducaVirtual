@@ -1,4 +1,4 @@
-import { Component } from '@angular/core'
+import { Component, OnInit } from '@angular/core'
 /*Droodwn*/
 import { FormsModule } from '@angular/forms'
 import { DropdownModule } from 'primeng/dropdown'
@@ -37,7 +37,7 @@ import { ButtonModule } from 'primeng/button'
     templateUrl: './banco-preguntas-form.component.html',
     styleUrl: './banco-preguntas-form.component.scss',
 })
-export class BancoPreguntasFormComponent {
+export class BancoPreguntasFormComponent implements OnInit {
     text
     textAyuda
     valSwitch: boolean = false

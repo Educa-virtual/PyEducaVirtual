@@ -18,7 +18,6 @@ import {
 } from '@/app/shared/container-page/container-page.component'
 import { provideIcons } from '@ng-icons/core'
 import { matGroupWork } from '@ng-icons/material-icons/baseline'
-
 import { DialogService } from 'primeng/dynamicdialog'
 import { BancoPreguntasFormComponent } from '../banco-preguntas/banco-preguntas-form/banco-preguntas-form.component'
 import { MODAL_CONFIG } from '@/app/shared/constants/modal.config'
@@ -143,6 +142,23 @@ export class BancoPreguntasComponent implements OnInit {
                     'Comunica su comprensión sobrelos números y las operacione',
             },
         ]
+    }
+
+    setSelectedItems(event) {
+        this.selectedItems = event
+    }
+
+    accionBtnItem(action) {
+        if (action.accion === 'agregar') {
+            this.agregarPregunta()
+        }
+    }
+
+    agregarPregunta() {
+        this._dialogService.open(BancoPreguntasFormComponent, {
+            ...MODAL_CONFIG,
+            header: 'Nueva pregunta',
+        })
     }
 
     setSelectedItems(event) {

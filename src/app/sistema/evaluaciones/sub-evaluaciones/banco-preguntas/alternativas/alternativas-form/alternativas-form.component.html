@@ -1,1 +1,41 @@
-<p>alternativas-form works!</p>
+<div class="formgrid grid">
+    <div class="field col">
+        <label for="firstname2">Alternativa</label>
+        <input
+            id="lastname2"
+            type="text"
+            class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"
+        />
+    </div>
+    <div class="field col">
+        <label for="lastname2">Letra</label>
+        <input
+            id="lastname2"
+            type="text"
+            class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"
+        />
+    </div>
+</div>
+
+<div class="formgrid grid">
+    <div class="field col">
+        <label for="firstname2">Es pregunta correcta?</label>
+        <p-inputSwitch
+            [(ngModel)]="checked"
+            class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"
+        />
+    </div>
+</div>
+<div class="formgrid grid">
+    <div class="field col">
+        <label for="firstname2">Esplicación</label>
+        <textarea
+            rows="5"
+            cols="30"
+            pInputTextarea
+            class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"
+            [(ngModel)]="value"
+        >
+        </textarea>
+    </div>
+</div>

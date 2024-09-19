@@ -160,21 +160,4 @@ export class BancoPreguntasComponent implements OnInit {
             header: 'Nueva pregunta',
         })
     }
-
-    setSelectedItems(event) {
-        this.selectedItems = event
-    }
-
-    accionBtnItem(action) {
-        if (action.accion === 'agregar') {
-            this.agregarPregunta()
-        }
-    }
-
-    agregarPregunta() {
-        this._dialogService.open(BancoPreguntasFormComponent, {
-            ...MODAL_CONFIG,
-            header: 'Nueva pregunta',
-        })
-    }
 }

@@ -110,6 +110,19 @@
                             }
                         </div>
                     }
+                    @if (col.type === 'estado') {
+                        <p-tag
+                            [severity]="
+                                rowData[col.field] === 1 ? 'success' : 'danger'
+                            "
+                            [value]="
+                                rowData[col.field] === 1
+                                    ? col.customFalsy?.trueText
+                                    : col.customFalsy?.falseText
+                            "
+                        >
+                        </p-tag>
+                    }
                 </td>
             }
         </tr>

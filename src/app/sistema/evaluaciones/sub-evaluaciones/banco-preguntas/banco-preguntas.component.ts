@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core'
+import { Component, OnInit, inject, OnDestroy } from '@angular/core'
 import { Button } from 'primeng/button'
 import { InputTextModule } from 'primeng/inputtext'
 import { MultiSelectModule } from 'primeng/multiselect'
@@ -27,6 +27,7 @@ import { ApiEreService } from '../../services/api-ere.service'
 
 import dayjs from 'dayjs'
 import { FloatLabelModule } from 'primeng/floatlabel'
+import { Subject, takeUntil } from 'rxjs'
 
 @Component({
     selector: 'app-banco-preguntas',
@@ -47,9 +48,10 @@ import { FloatLabelModule } from 'primeng/floatlabel'
     ],
     styleUrls: ['./banco-preguntas.component.scss'],
 })
-export class BancoPreguntasComponent implements OnInit {
+export class BancoPreguntasComponent implements OnInit, OnDestroy {
     private _dialogService = inject(DialogService)
     private _apiEre = inject(ApiEreService)
+    private unsubscribe$: Subject<boolean> = new Subject()
 
     public competencias = []
     public capacidades = []
@@ -185,10 +187,6 @@ export class BancoPreguntasComponent implements OnInit {
                 iCompentenciaId: 0,
                 cCompetenciaDescripcion: 'Todos',
             },
-            {
-                iCompentenciaId: 1,
-                cCompetenciaDescripcion: 'Capacidad 1',
-            },
         ]
 
         this.estados = [
@@ -210,29 +208,55 @@ export class BancoPreguntasComponent implements OnInit {
                 iCapacidadId: 0,
                 cCapacidadDescripcion: 'Todos',
             },
-            {
-                iCapacidadId: 1,
-                cCapacidadDescripcion:
-                    'Comunica su comprensión sobrelos números y las operacione',
-            },
         ]
 
         this.obtenerBancoPreguntas()
+        this.obtenerCompetencias()
     }
 
     obtenerBancoPreguntas() {
-        this._apiEre.obtenerBancoPreguntas(this.params).subscribe({
+        this._apiEre
+            .obtenerBancoPreguntas(this.params)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+                next: (resp: unknown) => {
+                    resp['data'] = resp['data'].map((item) => {
+                        const time = dayjs(item.dtPreguntaTiempo)
+                        const hours = time.get('hour')
+                        const minutes = time.get('minute')
+                        const seconds = time.get('second')
+                        item.time = `${hours}h ${minutes}m ${seconds}s`
+                        item.bPreguntaEstado = parseInt(
+                            item.bPreguntaEstado,
+                            10
+                        )
+                        return item
+                    })
+                    this.data = resp['data']
+                },
+            })
+    }
+
+    obtenerCompetencias() {
+        this._apiEre.obtenerCompetencias(this.params).subscribe({
             next: (resp: unknown) => {
-                resp['data'] = resp['data'].map((item) => {
-                    const time = dayjs(item.dtPreguntaTiempo)
-                    const hours = time.get('hour')
-                    const minutes = time.get('minute')
-                    const seconds = time.get('second')
-                    item.time = `${hours}h ${minutes}m ${seconds}s`
-                    item.bPreguntaEstado = parseInt(item.bPreguntaEstado, 10)
-                    return item
+                this.competencias = resp['data']
+                this.competencias.unshift({
+                    iCompentenciaId: 0,
+                    cCompetenciaDescripcion: 'Todos',
                 })
-                this.data = resp['data']
+            },
+        })
+    }
+
+    obtenerCapacidades() {
+        this._apiEre.obtenerCapacidades(this.params).subscribe({
+            next: (resp: unknown) => {
+                this.capacidades = resp['data']
+                this.capacidades.unshift({
+                    iCapacidadId: 0,
+                    cCapacidadDescripcion: 'Todos',
+                })
             },
         })
     }
@@ -241,6 +265,7 @@ export class BancoPreguntasComponent implements OnInit {
         this.selectedItems = event
     }
 
+    // manejar las acciones
     accionBtnItem(action) {
         if (action.accion === 'agregar') {
             this.agregarPregunta()
@@ -250,6 +275,7 @@ export class BancoPreguntasComponent implements OnInit {
         }
     }
 
+    // abrir el modal para asignar preguntas
     asignarPreguntas() {
         if (this.selectedItems.length === 0) {
             return
@@ -270,10 +296,17 @@ export class BancoPreguntasComponent implements OnInit {
         })
     }
 
+    // abrir el modal para agregar una nueva pregunta
     agregarPregunta() {
         this._dialogService.open(BancoPreguntasFormComponent, {
             ...MODAL_CONFIG,
             header: 'Nueva pregunta',
         })
+    }
+
+    // desuscribirse de los observables cuando se destruye el componente
+    ngOnDestroy(): void {
+        this.unsubscribe$.next(true)
+        this.unsubscribe$.complete()
     }
 }

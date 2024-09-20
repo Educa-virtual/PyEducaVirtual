@@ -238,27 +238,33 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
     }
 
     obtenerCompetencias() {
-        this._apiEre.obtenerCompetencias(this.params).subscribe({
-            next: (resp: unknown) => {
-                this.competencias = resp['data']
-                this.competencias.unshift({
-                    iCompentenciaId: 0,
-                    cCompetenciaDescripcion: 'Todos',
-                })
-            },
-        })
+        this._apiEre
+            .obtenerCompetencias(this.params)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+                next: (resp: unknown) => {
+                    this.competencias = resp['data']
+                    this.competencias.unshift({
+                        iCompentenciaId: 0,
+                        cCompetenciaDescripcion: 'Todos',
+                    })
+                },
+            })
     }
 
     obtenerCapacidades() {
-        this._apiEre.obtenerCapacidades(this.params).subscribe({
-            next: (resp: unknown) => {
-                this.capacidades = resp['data']
-                this.capacidades.unshift({
-                    iCapacidadId: 0,
-                    cCapacidadDescripcion: 'Todos',
-                })
-            },
-        })
+        this._apiEre
+            .obtenerCapacidades(this.params)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+                next: (resp: unknown) => {
+                    this.capacidades = resp['data']
+                    this.capacidades.unshift({
+                        iCapacidadId: 0,
+                        cCapacidadDescripcion: 'Todos',
+                    })
+                },
+            })
     }
 
     setSelectedItems(event) {

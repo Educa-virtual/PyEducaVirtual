@@ -19,6 +19,8 @@ import { TabViewModule } from 'primeng/tabview'
 import { InputTextModule } from 'primeng/inputtext'
 /*import alternativa*/
 import { AlternativasComponent } from '../alternativas/alternativas.component'
+/*acordion */
+import { AccordionModule } from 'primeng/accordion'
 
 import { ButtonModule } from 'primeng/button'
 @Component({
@@ -33,6 +35,7 @@ import { ButtonModule } from 'primeng/button'
         InputTextModule,
         AlternativasComponent,
         ButtonModule,
+        AccordionModule,
     ],
     templateUrl: './banco-preguntas-form.component.html',
     styleUrl: './banco-preguntas-form.component.scss',
@@ -42,7 +45,7 @@ export class BancoPreguntasFormComponent implements OnInit {
     textAyuda
     valSwitch: boolean = false
     cities: City[] | undefined
-
+    checked: boolean = true
     selectedCity: City | undefined
     value: string | undefined
     ngOnInit() {

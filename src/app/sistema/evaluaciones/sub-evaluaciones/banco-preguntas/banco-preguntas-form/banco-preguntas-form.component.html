@@ -1,6 +1,6 @@
 <div class="card">
-    <p-tabView>
-        <p-tabPanel header="Información pregunta">
+    <p-accordion [activeIndex]="0">
+        <p-accordionTab header="Información pregunta">
             <div class="formgrid grid">
                 <div class="field col flex flex-column">
                     <label for="firstname2">Tipo pregunta</label>
@@ -21,12 +21,30 @@
                 </div>
             </div>
 
+            <div class="formgrid grid">
+                <div class="field col">
+                    <label for="firstname2">Nivel</label>
+                    <input
+                        id="firstname2"
+                        type="text"
+                        class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"
+                    />
+                </div>
+                <div class="field col">
+                    <label for="lastname2">Peso</label>
+                    <input
+                        id="lastname2"
+                        type="text"
+                        class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"
+                    />
+                </div>
+            </div>
+
             <div class="grid">
                 <div class="col">
                     <div class="border-round-sm">Tiempo para responder</div>
                 </div>
             </div>
-
             <div class="formgrid grid">
                 <div class="field col">
                     <label for="firstname2">Hora</label>
@@ -46,6 +64,21 @@
                 </div>
                 <div class="field col">
                     <label for="lastname2">Segundos</label>
+                    <input
+                        id="lastname2"
+                        type="text"
+                        class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"
+                    />
+                </div>
+            </div>
+
+            <div class="formgrid grid">
+                <div class="field col flex flex-column">
+                    <label for="firstname2">Pregunta estado</label>
+                    <p-inputSwitch [(ngModel)]="checked" />
+                </div>
+                <div class="field col">
+                    <label for="lastname2">Pregunta clave</label>
                     <input
                         id="lastname2"
                         type="text"
@@ -78,14 +111,14 @@
                     <p-button label="Siguiente" />
                 </div>
             </div>
-        </p-tabPanel>
-        <p-tabPanel header="Alternativas de la pregunta">
+        </p-accordionTab>
+        <p-accordionTab header="Alternativas de la pregunta">
             <app-alternativas></app-alternativas>
             <div class="grid">
                 <div class="col col-offset-10">
                     <p-button label="FInalizar" />
                 </div>
             </div>
-        </p-tabPanel>
-    </p-tabView>
+        </p-accordionTab>
+    </p-accordion>
 </div>

@@ -30,6 +30,7 @@ import {
 } from '@ng-icons/core'
 
 import { routes } from './app.routes'
+import { MessageInterceptor } from './shared/interceptors/message-interceptor.interceptor'
 
 const scrollConfig: InMemoryScrollingOptions = {
     scrollPositionRestoration: 'enabled',
@@ -71,6 +72,11 @@ export const appConfig: ApplicationConfig = {
         {
             provide: HTTP_INTERCEPTORS,
             useClass: ErrorInterceptor,
+            multi: true,
+        },
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: MessageInterceptor,
             multi: true,
         },
     ],

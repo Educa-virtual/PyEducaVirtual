@@ -1,10 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, inject } from '@angular/core'
-import { SelectItem } from 'primeng/api'
-import { Customer, Representative } from 'src/app/demo/api/customer'
-import { CustomerService } from 'src/app/demo/service/customer.service'
-import { Product } from 'src/app/demo/api/product'
-import { ProductService } from 'src/app/demo/service/product.service'
-import { Table } from 'primeng/table'
+import { Component, OnInit, inject } from '@angular/core'
 import { Button } from 'primeng/button'
 import { InputTextModule } from 'primeng/inputtext'
 import { MultiSelectModule } from 'primeng/multiselect'
@@ -14,7 +8,6 @@ import { DropdownModule } from 'primeng/dropdown'
 import { AlternativasComponent } from './alternativas/alternativas.component'
 import { CompetenciasComponent } from '../competencias/competencias.component'
 
-//EDITOR
 import {
     IColumn,
     TablePrimengComponent,
@@ -25,19 +18,20 @@ import {
 } from '@/app/shared/container-page/container-page.component'
 import { provideIcons } from '@ng-icons/core'
 import { matGroupWork } from '@ng-icons/material-icons/baseline'
-
-interface expandedRows {
-    [key: string]: boolean
-}
-
-/* modal  */
 import { DialogService } from 'primeng/dynamicdialog'
 import { BancoPreguntasFormComponent } from '../banco-preguntas/banco-preguntas-form/banco-preguntas-form.component'
 import { MODAL_CONFIG } from '@/app/shared/constants/modal.config'
+import { AsignarMatrizPreguntasFormComponent } from './asignar-matriz-preguntas-form/asignar-matriz-preguntas-form.component'
+import { MessageService } from 'primeng/api'
+import { ApiEreService } from '../../services/api-ere.service'
+
+import dayjs from 'dayjs'
+import { FloatLabelModule } from 'primeng/floatlabel'
+
 @Component({
     selector: 'app-banco-preguntas',
     templateUrl: './banco-preguntas.component.html',
-    providers: [provideIcons({ matGroupWork }), DialogService],
+    providers: [provideIcons({ matGroupWork }), DialogService, MessageService],
     standalone: true,
     imports: [
         AlternativasComponent,
@@ -49,46 +43,25 @@ import { MODAL_CONFIG } from '@/app/shared/constants/modal.config'
         ContainerPageComponent,
         Button,
         TablePrimengComponent,
+        FloatLabelModule,
     ],
+    styleUrls: ['./banco-preguntas.component.scss'],
 })
 export class BancoPreguntasComponent implements OnInit {
     private _dialogService = inject(DialogService)
+    private _apiEre = inject(ApiEreService)
 
-    display: boolean = false
+    public competencias = []
+    public capacidades = []
+    public desempenios = []
+    public estados = []
 
-    customers1: Customer[] = []
-
-    selectedCustomers1: Customer[] = []
-
-    selectedCustomer: Customer = {}
-
-    representatives: Representative[] = []
-
-    statuses: Product[] = []
-
-    products: Product[] = []
-
-    rowGroupMetadata: Product
-
-    expandedRows: expandedRows = {}
-
-    activityValues: number[] = [0, 100]
-
-    loading: boolean = true
-    valSwitch: boolean = false
-    selectedDrop: SelectItem = { value: '' }
-    nivel: SelectItem[] = []
-    grado: SelectItem[] = []
-    area: SelectItem[] = []
-
-    competencia: SelectItem[] = []
-    capacidad: SelectItem[] = []
-    desempenio: SelectItem[] = []
-    tipo_pregunta: SelectItem[] = []
-    clave: SelectItem[] = []
-
-    text
-    textAyuda
+    public params = {
+        iCompentenciaId: 0,
+        iCapacidadId: 0,
+        iDesempenioId: 0,
+        bPreguntaEstado: -1,
+    }
 
     selectedItems = []
     accionesPrincipal: IActionContainer[] = [
@@ -100,7 +73,7 @@ export class BancoPreguntasComponent implements OnInit {
                 size: 'xs',
                 color: '',
             },
-            accion: 'agregar',
+            accion: 'asignar',
             class: 'p-button-primary',
         },
         {
@@ -112,20 +85,7 @@ export class BancoPreguntasComponent implements OnInit {
         },
     ]
 
-    data = [
-        {
-            id: 1,
-            cPregunta: 'Pregunta 1',
-            tiempo: '0h 2m 0s',
-            iPreguntaPeso: '2',
-        },
-        {
-            id: 2,
-            cPregunta: 'Pregunta 2',
-            tiempo: '0h 2m 0s',
-            iPreguntaPeso: '2',
-        },
-    ]
+    data = []
 
     columnas: IColumn[] = [
         {
@@ -145,12 +105,12 @@ export class BancoPreguntasComponent implements OnInit {
             text_header: 'Pregunta',
         },
         {
-            field: 'tiempo',
+            field: 'time',
             header: 'Tiempo',
             type: 'text',
             width: '5rem',
             text: 'left',
-            text_header: 'Puntaje',
+            text_header: 'Tiempo',
         },
 
         {
@@ -161,77 +121,120 @@ export class BancoPreguntasComponent implements OnInit {
             text: 'left',
             text_header: 'Puntaje',
         },
+        {
+            field: 'iPreguntaNivel',
+            header: 'Nivel',
+            type: 'text',
+            width: '5rem',
+            text: 'left',
+            text_header: 'Nivel',
+        },
+        {
+            field: 'cPreguntaClave',
+            header: 'Clave',
+            type: 'text',
+            width: '5rem',
+            text: 'left',
+            text_header: 'Clave',
+        },
+        {
+            field: 'bPreguntaEstado',
+            header: 'Estado',
+            type: 'estado',
+            width: '5rem',
+            text: 'left',
+            text_header: 'Estado',
+            customFalsy: {
+                trueText: 'Asignado',
+                falseText: 'Sin asignar',
+            },
+        },
+        {
+            field: '',
+            header: 'Acciones',
+            type: 'actions',
+            width: '5rem',
+            text: 'left',
+            text_header: '',
+        },
     ]
 
-    @ViewChild('filter') filter!: ElementRef
-
-    constructor(
-        private customerService: CustomerService,
-        private productService: ProductService
-    ) {}
+    public accionesTabla = [
+        {
+            labelTooltip: 'Editar',
+            icon: 'pi pi-pencil',
+            accion: 'editar',
+            type: 'item',
+            class: 'p-button-rounded p-button-warning p-button-text',
+            isVisible: (row) => row.bPreguntaEstado === 0,
+        },
+        {
+            labelTooltip: 'Eliminar',
+            icon: 'pi pi-trash',
+            accion: 'editar',
+            type: 'item',
+            class: 'p-button-rounded p-button-danger p-button-text',
+            isVisible: (row) => row.bPreguntaEstado === 0,
+        },
+    ]
+    constructor() {}
 
     ngOnInit() {
-        this.customerService.getCustomersLarge().then((customers) => {
-            this.customers1 = customers
-            this.loading = false
+        this.competencias = [
+            {
+                iCompentenciaId: 0,
+                cCompetenciaDescripcion: 'Todos',
+            },
+            {
+                iCompentenciaId: 1,
+                cCompetenciaDescripcion: 'Capacidad 1',
+            },
+        ]
 
-            /*  this.customers1.forEach(
-                (customer) => (customer.date = new Date(customer.date))
-            )*/
+        this.estados = [
+            {
+                bPreguntaEstado: -1,
+                cDSC: 'Todos',
+            },
+            {
+                bPreguntaEstado: 0,
+                cDSC: 'Sin Asignar',
+            },
+            {
+                bPreguntaEstado: 1,
+                cDSC: 'Asignado',
+            },
+        ]
+        this.capacidades = [
+            {
+                iCapacidadId: 0,
+                cCapacidadDescripcion: 'Todos',
+            },
+            {
+                iCapacidadId: 1,
+                cCapacidadDescripcion:
+                    'Comunica su comprensión sobrelos números y las operacione',
+            },
+        ]
+
+        this.obtenerBancoPreguntas()
+    }
+
+    obtenerBancoPreguntas() {
+        this._apiEre.obtenerBancoPreguntas(this.params).subscribe({
+            next: (resp: unknown) => {
+                resp['data'] = resp['data'].map((item) => {
+                    const time = dayjs(item.dtPreguntaTiempo)
+                    const hours = time.get('hour')
+                    const minutes = time.get('minute')
+                    const seconds = time.get('second')
+                    item.time = `${hours}h ${minutes}m ${seconds}s`
+                    item.bPreguntaEstado = parseInt(item.bPreguntaEstado, 10)
+                    return item
+                })
+                this.data = resp['data']
+            },
         })
-        this.nivel = [
-            {
-                label: 'Nivel Primaria',
-                value: { id: 1, name: 'New York', code: 'NY' },
-            },
-            {
-                label: 'Nivel Secundaria',
-                value: { id: 2, name: 'Rome', code: 'RM' },
-            },
-        ]
-        this.grado = [
-            { label: '2do.', value: { id: 1, name: 'New York', code: 'NY' } },
-            { label: '4to.', value: { id: 2, name: 'Rome', code: 'RM' } },
-        ]
-        this.area = [
-            {
-                label: 'Matemáticas',
-                value: { id: 1, name: 'New York', code: 'NY' },
-            },
-            {
-                label: 'Comunicación',
-                value: { id: 2, name: 'Rome', code: 'RM' },
-            },
-        ]
-    }
-
-    onSort() {
-        this.updateRowGroupMetaData()
-    }
-
-    updateRowGroupMetaData() {
-        this.rowGroupMetadata = {}
-    }
-
-    formatCurrency(value: number) {
-        return value.toLocaleString('en-US', {
-            style: 'currency',
-            currency: 'USD',
-        })
-    }
-
-    onGlobalFilter(table: Table, event: Event) {
-        table.filterGlobal((event.target as HTMLInputElement).value, 'contains')
-    }
-
-    clear(table: Table) {
-        table.clear()
-        this.filter.nativeElement.value = ''
-    }
-
-    ok() {
-        console.log(this.textAyuda)
-        alert(this.textAyuda)
     }
 
     setSelectedItems(event) {
@@ -242,6 +245,29 @@ export class BancoPreguntasComponent implements OnInit {
         if (action.accion === 'agregar') {
             this.agregarPregunta()
         }
+        if (action.accion === 'asignar') {
+            this.asignarPreguntas()
+        }
+    }
+
+    asignarPreguntas() {
+        if (this.selectedItems.length === 0) {
+            return
+        }
+        const refModal = this._dialogService.open(
+            AsignarMatrizPreguntasFormComponent,
+            {
+                ...MODAL_CONFIG,
+                data: this.selectedItems,
+                header: 'Asignar preguntas',
+            }
+        )
+
+        refModal.onClose.subscribe((result) => {
+            if (result) {
+                this.obtenerBancoPreguntas()
+            }
+        })
     }
 
     agregarPregunta() {

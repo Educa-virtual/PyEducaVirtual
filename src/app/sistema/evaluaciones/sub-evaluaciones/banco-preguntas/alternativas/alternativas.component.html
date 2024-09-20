@@ -1,1 +1,39 @@
-<p>alternativas works!</p>
+<div class="formgrid grid">
+    <div class="field col">
+        <label for="firstname2">Alternativas</label>
+    </div>
+    <div class="field col col-offset-6">
+        <p-button
+            label="Agregar alternativa"
+            (onClick)="agregarAlternativa()"
+        />
+    </div>
+</div>
+
+<p-table [tableStyle]="{ 'min-width': '50rem' }">
+    <ng-template pTemplate="header">
+        <tr>
+            <th>Alternativa</th>
+            <th>Letra alternativa</th>
+            <th>Alternativa correcta</th>
+            <th>Esplicación</th>
+            <th>Acciones</th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-product>
+        <tr>
+            <td>Verdadero</td>
+            <td>a</td>
+            <td>Si</td>
+            <td>Es verdad por que</td>
+            <td>Es verdad por que</td>
+        </tr>
+        <tr>
+            <td>Falso</td>
+            <td>b</td>
+            <td>No</td>
+            <td></td>
+            <td>Es verdad por que</td>
+        </tr>
+    </ng-template>
+</p-table>

@@ -90,13 +90,13 @@ export class AsignarMatrizPreguntasFormComponent implements OnInit {
         ]
         this.capacidades = [
             {
-                iCompentenciaId: 1,
+                iCapacidadId: 1,
                 cCompetenciaDescripcion: 'Competencia 1',
             },
         ]
         this.desempenos = [
             {
-                iCompentenciaId: 1,
+                iDesempenoId: 1,
                 cCompetenciaDescripcion: 'Desempeño 1',
             },
         ]

@@ -16,4 +16,11 @@ export class ApiEreService {
             data
         )
     }
+
+    obtenerBancoPreguntas(params) {
+        return this.http.get(
+            `${this.baseUrl}/ere/banco-preguntas/obtenerBancoPreguntas`,
+            { params }
+        )
+    }
 }

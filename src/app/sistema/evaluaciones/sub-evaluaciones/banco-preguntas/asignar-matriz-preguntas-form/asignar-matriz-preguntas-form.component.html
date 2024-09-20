@@ -5,6 +5,7 @@
                 <label for="competencia">Competencias</label>
                 <p-dropdown
                     styleClass="w-full"
+                    optionValue="iCompentenciaId"
                     formControlName="iCompentenciaId"
                     [options]="competencias"
                     optionLabel="cCompetenciaDescripcion"
@@ -30,8 +31,9 @@
             <div class="flex flex-column col-12 gap-2">
                 <label for="competencia">Capacidades</label>
                 <p-dropdown
-                    styleClass="w-full"
+                    optionValue="iCapacidadId"
                     formControlName="iCapacidadId"
+                    styleClass="w-full"
                     [options]="capacidades"
                     optionLabel="cCompetenciaDescripcion"
                     [ngClass]="{
@@ -57,6 +59,7 @@
                 <label for="competencia">Desempeños</label>
                 <p-dropdown
                     styleClass="w-full"
+                    optionValue="iDesempenoId"
                     formControlName="iDesempenoId"
                     [options]="desempenos"
                     optionLabel="cCompetenciaDescripcion"

@@ -42,7 +42,7 @@ export class BancoPreguntasFormComponent implements OnInit {
     textAyuda
     valSwitch: boolean = false
     cities: City[] | undefined
-
+    checked: boolean = true
     selectedCity: City | undefined
     value: string | undefined
     ngOnInit() {

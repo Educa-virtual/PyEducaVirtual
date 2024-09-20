@@ -17,6 +17,8 @@ import { DialogModule } from 'primeng/dialog'
 import { ToastModule } from 'primeng/toast'
 import { FormsModule } from '@angular/forms'
 import { InputTextareaModule } from 'primeng/inputtextarea'
+import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
+import { AccordionModule } from 'primeng/accordion'
 
 @Component({
     //templateUrl: './01.component.html',
@@ -26,10 +28,11 @@ import { InputTextareaModule } from 'primeng/inputtextarea'
     standalone: true,
     imports: [
         TreeModule,
+        AccordionModule,
         InputTextareaModule,
         ToastModule,
         FormsModule,
-
+        ContainerPageComponent,
         CurrencyPipe,
         DialogModule,
         ButtonModule,

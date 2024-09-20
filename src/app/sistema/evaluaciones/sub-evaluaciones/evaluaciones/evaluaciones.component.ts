@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core'
+import { Component, inject, OnInit } from '@angular/core'
 
 /*GRILLA */
 import { Customer } from 'src/app/demo/api/customer'
@@ -16,6 +16,12 @@ import { DialogModule } from 'primeng/dialog'
 /*INPUT TEXT */
 import { InputTextModule } from 'primeng/inputtext'
 
+import { EvaluacionesFormComponent } from '../evaluaciones/evaluaciones-form/evaluaciones-form.component'
+import { DialogService } from 'primeng/dynamicdialog'
+import { MODAL_CONFIG } from '@/app/shared/constants/modal.config'
+
+import { BotonosModalFormComponent } from '../evaluaciones/evaluaciones-form/botonos-modal-form/botonos-modal-form.component'
+
 @Component({
     selector: 'app-evaluaciones',
     standalone: true,
@@ -26,10 +32,13 @@ import { InputTextModule } from 'primeng/inputtext'
         DialogModule,
         InputTextModule,
     ],
+    providers: [DialogService],
     templateUrl: './evaluaciones.component.html',
     styleUrl: './evaluaciones.component.scss',
 })
 export class EvaluacionesComponent implements OnInit {
+    private _dialogService = inject(DialogService)
+
     customers!: Customer[]
     visible: boolean = false
 
@@ -44,4 +53,14 @@ export class EvaluacionesComponent implements OnInit {
         this.visible = true
     }
     click() {}
+
+    agregarEvaluacion() {
+        this._dialogService.open(EvaluacionesFormComponent, {
+            ...MODAL_CONFIG,
+            header: 'Nueva evaluación',
+            templates: {
+                footer: BotonosModalFormComponent,
+            },
+        })
+    }
 }

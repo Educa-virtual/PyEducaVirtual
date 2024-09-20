@@ -1,4 +1,4 @@
-import { Component } from '@angular/core'
+import { Component, OnInit } from '@angular/core'
 /*Droodwn*/
 import { FormsModule } from '@angular/forms'
 import { DropdownModule } from 'primeng/dropdown'
@@ -17,7 +17,12 @@ import { TabViewModule } from 'primeng/tabview'
 
 /*Input text */
 import { InputTextModule } from 'primeng/inputtext'
+/*import alternativa*/
+import { AlternativasComponent } from '../alternativas/alternativas.component'
+/*acordion */
+import { AccordionModule } from 'primeng/accordion'
 
+import { ButtonModule } from 'primeng/button'
 @Component({
     selector: 'app-banco-preguntas-form',
     standalone: true,
@@ -28,16 +33,19 @@ import { InputTextModule } from 'primeng/inputtext'
         EditorModule,
         TabViewModule,
         InputTextModule,
+        AlternativasComponent,
+        ButtonModule,
+        AccordionModule,
     ],
     templateUrl: './banco-preguntas-form.component.html',
     styleUrl: './banco-preguntas-form.component.scss',
 })
-export class BancoPreguntasFormComponent {
+export class BancoPreguntasFormComponent implements OnInit {
     text
     textAyuda
     valSwitch: boolean = false
     cities: City[] | undefined
-
+    checked: boolean = true
     selectedCity: City | undefined
     value: string | undefined
     ngOnInit() {

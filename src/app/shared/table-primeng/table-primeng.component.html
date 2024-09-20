@@ -12,12 +12,13 @@
     [rowsPerPageOptions]="[10, 25, 50]"
     (selectionChange)="onSelectionChange($event)"
     sortMode="multiple"
+    [(selection)]="selectedRowData"
     class="hoverTable"
 >
     @if (showCaption) {
         <ng-template pTemplate="caption">
             <div
-                class="flex justify-content-between flex-column sm:flex-row flex-wrap"
+                class="flex justify-content-between gap-2 flex-column sm:flex-row flex-wrap"
             >
                 <p-iconField iconPosition="left">
                     <p-inputIcon styleClass="pi pi-search" />
@@ -28,13 +29,7 @@
                         placeholder="Buscar palabra clave"
                     />
                 </p-iconField>
-                <!-- <p-multiSelect
-                    [options]="columnas"
-                    [(ngModel)]="selectedColumns"
-                    optionLabel="header"
-                    selectedItemsLabel="{0} Columnas seleccionadas"
-                    placeholder="Seleccione Columnas"
-                /> -->
+                <ng-content select="[slot='caption-content']"></ng-content>
                 <app-table-column-filter
                     [columns]="columnas"
                     (columnsChange)="onColumnSelected($event)"
@@ -97,7 +92,11 @@
                     @if (col.type === 'actions') {
                         <div class="d-block text-center">
                             @for (item of actions; track $index) {
-                                @if (item.type === 'item') {
+                                @if (
+                                    item.type === 'item' && item.isVisible
+                                        ? item.isVisible(rowData)
+                                        : true
+                                ) {
                                     <button
                                         [rounded]="true"
                                         pButton
@@ -114,6 +113,19 @@
                                 }
                             }
                         </div>
+                    }
+                    @if (col.type === 'estado') {
+                        <p-tag
+                            [severity]="
+                                rowData[col.field] === 1 ? 'success' : 'danger'
+                            "
+                            [value]="
+                                rowData[col.field] === 1
+                                    ? col.customFalsy?.trueText
+                                    : col.customFalsy?.falseText
+                            "
+                        >
+                        </p-tag>
                     }
                 </td>
             }

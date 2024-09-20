@@ -16,6 +16,19 @@ export interface IColumn {
     header: string
     text_header: string
     text: string
+    customFalsy?: {
+        trueText: string
+        falseText: string
+    }
+}
+
+export interface IActionTable {
+    labelTooltip: string
+    icon: string
+    accion: string
+    type: string
+    class: string
+    isVisible?: (row) => boolean
 }
 
 @Component({
@@ -31,6 +44,8 @@ export class TablePrimengComponent implements OnChanges, OnInit {
 
     @Input() showCaption: boolean = true
     @Input() showPaginator: boolean = true
+
+    @Input() selectedRowData = []
 
     @Input() data = []
     @Input() tableStyle: {
@@ -84,7 +99,7 @@ export class TablePrimengComponent implements OnChanges, OnInit {
         return this._columnas
     }
 
-    @Input() actions = [
+    @Input() actions: IActionTable[] = [
         {
             labelTooltip: 'Agregar',
             icon: 'pi pi-plus',
@@ -104,6 +119,7 @@ export class TablePrimengComponent implements OnChanges, OnInit {
             icon: 'pi pi-plus',
             accion: 'editar',
             type: 'item',
+            isVisible: () => true,
             class: 'p-button-rounded p-button-success p-button-text',
         },
     ]

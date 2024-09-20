@@ -149,6 +149,33 @@ export class BancoPreguntasComponent implements OnInit {
                 falseText: 'Sin asignar',
             },
         },
+        {
+            field: '',
+            header: 'Acciones',
+            type: 'actions',
+            width: '5rem',
+            text: 'left',
+            text_header: '',
+        },
+    ]
+
+    public accionesTabla = [
+        {
+            labelTooltip: 'Editar',
+            icon: 'pi pi-pencil',
+            accion: 'editar',
+            type: 'item',
+            class: 'p-button-rounded p-button-warning p-button-text',
+            isVisible: (row) => row.bPreguntaEstado === 0,
+        },
+        {
+            labelTooltip: 'Eliminar',
+            icon: 'pi pi-trash',
+            accion: 'editar',
+            type: 'item',
+            class: 'p-button-rounded p-button-danger p-button-text',
+            isVisible: (row) => row.bPreguntaEstado === 0,
+        },
     ]
     constructor() {}
 

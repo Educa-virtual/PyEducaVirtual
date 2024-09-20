@@ -54,6 +54,7 @@
         [data]="data"
         (accionBtnItem)="accionBtnItem($event)"
         (selectedItems)="setSelectedItems($event)"
+        [actions]="accionesTabla"
     >
         <ng-container slot="caption-content"> </ng-container>
     </app-table-primeng>

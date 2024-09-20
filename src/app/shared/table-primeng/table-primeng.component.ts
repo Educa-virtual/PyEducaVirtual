@@ -22,6 +22,15 @@ export interface IColumn {
     }
 }
 
+export interface IActionTable {
+    labelTooltip: string
+    icon: string
+    accion: string
+    type: string
+    class: string
+    isVisible?: (row) => boolean
+}
+
 @Component({
     selector: 'app-table-primeng',
     templateUrl: './table-primeng.component.html',
@@ -90,7 +99,7 @@ export class TablePrimengComponent implements OnChanges, OnInit {
         return this._columnas
     }
 
-    @Input() actions = [
+    @Input() actions: IActionTable[] = [
         {
             labelTooltip: 'Agregar',
             icon: 'pi pi-plus',
@@ -110,6 +119,7 @@ export class TablePrimengComponent implements OnChanges, OnInit {
             icon: 'pi pi-plus',
             accion: 'editar',
             type: 'item',
+            isVisible: () => true,
             class: 'p-button-rounded p-button-success p-button-text',
         },
     ]

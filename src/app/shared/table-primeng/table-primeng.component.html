@@ -92,7 +92,11 @@
                     @if (col.type === 'actions') {
                         <div class="d-block text-center">
                             @for (item of actions; track $index) {
-                                @if (item.type === 'item') {
+                                @if (
+                                    item.type === 'item' && item.isVisible
+                                        ? item.isVisible(rowData)
+                                        : true
+                                ) {
                                     <button
                                         [rounded]="true"
                                         pButton

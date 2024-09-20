@@ -7,6 +7,13 @@ import {
     IColumn,
     TablePrimengComponent,
 } from '../../../../../shared/table-primeng/table-primeng.component'
+import { ApiEreService } from '../../../services/api-ere.service'
+import {
+    FormBuilder,
+    FormGroup,
+    ReactiveFormsModule,
+    Validators,
+} from '@angular/forms'
 
 @Component({
     selector: 'app-asignar-matriz-preguntas-form',
@@ -16,19 +23,27 @@ import {
         DropdownModule,
         ButtonModule,
         TablePrimengComponent,
+        ReactiveFormsModule,
     ],
     templateUrl: './asignar-matriz-preguntas-form.component.html',
     styleUrl: './asignar-matriz-preguntas-form.component.scss',
 })
 export class AsignarMatrizPreguntasFormComponent implements OnInit {
-    public competencias = []
-    public capacidades = []
-    public desempenios = []
-    public preguntas = []
+    private formBuilder = inject(FormBuilder)
     private selectedPreguntas = []
-
     private _config = inject(DynamicDialogConfig)
     private ref = inject(DynamicDialogRef)
+    private apiEre = inject(ApiEreService)
+
+    public competencias = []
+    public capacidades = []
+    public desempenos = []
+    public preguntas = []
+    public formAsignarMatriz: FormGroup = this.formBuilder.group({
+        iCompentenciaId: [null, Validators.required],
+        iCapacidadId: [null, Validators.required],
+        iDesempenoId: [null, Validators.required],
+    })
 
     columnas: IColumn[] = [
         {
@@ -73,6 +88,18 @@ export class AsignarMatrizPreguntasFormComponent implements OnInit {
                 cCompetenciaDescripcion: 'Capacidad 1',
             },
         ]
+        this.capacidades = [
+            {
+                iCompentenciaId: 1,
+                cCompetenciaDescripcion: 'Competencia 1',
+            },
+        ]
+        this.desempenos = [
+            {
+                iCompentenciaId: 1,
+                cCompetenciaDescripcion: 'Desempeño 1',
+            },
+        ]
         this.preguntas = this._config.data.map((item) => {
             item.checked = true
             return item
@@ -86,5 +113,25 @@ export class AsignarMatrizPreguntasFormComponent implements OnInit {
 
     closeModal(data) {
         this.ref.close(data)
+    }
+
+    asignarMatrizPreguntas() {
+        if (this.formAsignarMatriz.invalid) {
+            this.formAsignarMatriz.markAllAsTouched()
+            return
+        }
+
+        const matriz = this.formAsignarMatriz.value
+        const data = { preguntas: [] }
+        data.preguntas = this.selectedPreguntas.map((item) => {
+            item.datosJson = matriz
+            return item
+        })
+
+        this.apiEre.actualizarMatrizPreguntas(data).subscribe({
+            next: () => {
+                this.closeModal(data)
+            },
+        })
     }
 }

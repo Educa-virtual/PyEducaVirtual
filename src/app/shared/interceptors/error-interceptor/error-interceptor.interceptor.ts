@@ -24,11 +24,12 @@ export class ErrorInterceptor implements HttpInterceptor {
             catchError((error: HttpErrorResponse) => {
                 const message: IModal = getMessageByHttpCode(error.status)
                 let errorMsg = ''
+
                 if (error.error instanceof ErrorEvent) {
                     errorMsg = `Error: ${error.error.message}`
                 } else {
                     // verificar respuesta api
-                    errorMsg = error.error
+                    errorMsg = error.error.message
                 }
                 message.message = errorMsg
                 message.rejectVisible = false

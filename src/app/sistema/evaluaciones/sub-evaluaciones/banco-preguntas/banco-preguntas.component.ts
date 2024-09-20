@@ -72,13 +72,13 @@ export class BancoPreguntasComponent implements OnInit {
 
     data = [
         {
-            id: 1,
+            iPreguntaId: 1,
             cPregunta: 'Pregunta 1',
             tiempo: '0h 2m 0s',
             iPreguntaPeso: '2',
         },
         {
-            id: 2,
+            iPreguntaId: 2,
             cPregunta: 'Pregunta 2',
             tiempo: '0h 2m 0s',
             iPreguntaPeso: '2',

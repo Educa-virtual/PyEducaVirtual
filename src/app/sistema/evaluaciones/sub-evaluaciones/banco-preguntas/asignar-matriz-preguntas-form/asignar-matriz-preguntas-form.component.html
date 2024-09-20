@@ -1,29 +1,83 @@
 <div class="flex flex-column gap-2">
-    <form>
+    <form [formGroup]="formAsignarMatriz">
         <div class="formgrid grid gap-4">
             <div class="flex flex-column col-12 gap-2">
-                <label for="competencia">Competencia</label>
+                <label for="competencia">Competencias</label>
                 <p-dropdown
                     styleClass="w-full"
+                    formControlName="iCompentenciaId"
                     [options]="competencias"
                     optionLabel="cCompetenciaDescripcion"
+                    [ngClass]="{
+                        'ng-dirty ng-invalid':
+                            formAsignarMatriz.get('iCompentenciaId')?.errors &&
+                            formAsignarMatriz.get('iCompentenciaId')?.touched,
+                    }"
                 />
+                <small>
+                    @if (
+                        formAsignarMatriz
+                            .get('iCompentenciaId')
+                            .hasError('required') &&
+                        formAsignarMatriz.get('iCompentenciaId')?.touched
+                    ) {
+                        <span class="text-red-500">
+                            Este campo es requerido
+                        </span>
+                    }
+                </small>
             </div>
             <div class="flex flex-column col-12 gap-2">
                 <label for="competencia">Capacidades</label>
                 <p-dropdown
                     styleClass="w-full"
+                    formControlName="iCapacidadId"
                     [options]="capacidades"
                     optionLabel="cCompetenciaDescripcion"
+                    [ngClass]="{
+                        'ng-dirty ng-invalid':
+                            formAsignarMatriz.get('iCapacidadId')?.errors &&
+                            formAsignarMatriz.get('iCapacidadId')?.touched,
+                    }"
                 />
+                <small>
+                    @if (
+                        formAsignarMatriz
+                            .get('iCapacidadId')
+                            .hasError('required') &&
+                        formAsignarMatriz.get('iCapacidadId')?.touched
+                    ) {
+                        <span class="text-red-500">
+                            Este campo es requerido
+                        </span>
+                    }
+                </small>
             </div>
             <div class="flex flex-column col-12 gap-2">
                 <label for="competencia">Desempeños</label>
                 <p-dropdown
                     styleClass="w-full"
-                    [options]="desempenios"
+                    formControlName="iDesempenoId"
+                    [options]="desempenos"
                     optionLabel="cCompetenciaDescripcion"
+                    [ngClass]="{
+                        'ng-dirty ng-invalid':
+                            formAsignarMatriz.get('iDesempenoId')?.errors &&
+                            formAsignarMatriz.get('iDesempenoId')?.touched,
+                    }"
                 />
+                <small>
+                    @if (
+                        formAsignarMatriz
+                            .get('iDesempenoId')
+                            .hasError('required') &&
+                        formAsignarMatriz.get('iDesempenoId')?.touched
+                    ) {
+                        <span class="text-red-500">
+                            Este campo es requerido
+                        </span>
+                    }
+                </small>
             </div>
         </div>
     </form>
@@ -47,6 +101,7 @@
             class="p-button-secondary"
             type="button"
             size="small"
+            (click)="closeModal(null)"
         ></button>
         <button
             pButton
@@ -55,6 +110,7 @@
             icon="pi pi-save"
             size="small"
             class="p-button-primary"
+            (click)="asignarMatrizPreguntas()"
         ></button>
     </footer>
 </div>

@@ -23,6 +23,11 @@ import { BancoPreguntasFormComponent } from '../banco-preguntas/banco-preguntas-
 import { MODAL_CONFIG } from '@/app/shared/constants/modal.config'
 import { AsignarMatrizPreguntasFormComponent } from './asignar-matriz-preguntas-form/asignar-matriz-preguntas-form.component'
 import { MessageService } from 'primeng/api'
+import { ApiEreService } from '../../services/api-ere.service'
+
+import dayjs from 'dayjs'
+import { FloatLabelModule } from 'primeng/floatlabel'
+
 @Component({
     selector: 'app-banco-preguntas',
     templateUrl: './banco-preguntas.component.html',
@@ -38,15 +43,25 @@ import { MessageService } from 'primeng/api'
         ContainerPageComponent,
         Button,
         TablePrimengComponent,
+        FloatLabelModule,
     ],
     styleUrls: ['./banco-preguntas.component.scss'],
 })
 export class BancoPreguntasComponent implements OnInit {
     private _dialogService = inject(DialogService)
+    private _apiEre = inject(ApiEreService)
 
     public competencias = []
     public capacidades = []
     public desempenios = []
+    public estados = []
+
+    public params = {
+        iCompentenciaId: 0,
+        iCapacidadId: 0,
+        iDesempenioId: 0,
+        bPreguntaEstado: -1,
+    }
 
     selectedItems = []
     accionesPrincipal: IActionContainer[] = [
@@ -70,20 +85,7 @@ export class BancoPreguntasComponent implements OnInit {
         },
     ]
 
-    data = [
-        {
-            id: 1,
-            cPregunta: 'Pregunta 1',
-            tiempo: '0h 2m 0s',
-            iPreguntaPeso: '2',
-        },
-        {
-            id: 2,
-            cPregunta: 'Pregunta 2',
-            tiempo: '0h 2m 0s',
-            iPreguntaPeso: '2',
-        },
-    ]
+    data = []
 
     columnas: IColumn[] = [
         {
@@ -103,12 +105,12 @@ export class BancoPreguntasComponent implements OnInit {
             text_header: 'Pregunta',
         },
         {
-            field: 'tiempo',
+            field: 'time',
             header: 'Tiempo',
             type: 'text',
             width: '5rem',
             text: 'left',
-            text_header: 'Puntaje',
+            text_header: 'Tiempo',
         },
 
         {
@@ -119,6 +121,34 @@ export class BancoPreguntasComponent implements OnInit {
             text: 'left',
             text_header: 'Puntaje',
         },
+        {
+            field: 'iPreguntaNivel',
+            header: 'Nivel',
+            type: 'text',
+            width: '5rem',
+            text: 'left',
+            text_header: 'Nivel',
+        },
+        {
+            field: 'cPreguntaClave',
+            header: 'Clave',
+            type: 'text',
+            width: '5rem',
+            text: 'left',
+            text_header: 'Clave',
+        },
+        {
+            field: 'bPreguntaEstado',
+            header: 'Estado',
+            type: 'estado',
+            width: '5rem',
+            text: 'left',
+            text_header: 'Estado',
+            customFalsy: {
+                trueText: 'Asignado',
+                falseText: 'Sin asignar',
+            },
+        },
     ]
     constructor() {}
 
@@ -126,17 +156,32 @@ export class BancoPreguntasComponent implements OnInit {
         this.competencias = [
             {
                 iCompentenciaId: 0,
-                cCompetenciaDescripcion: 'Sin Asignar',
+                cCompetenciaDescripcion: 'Todos',
             },
             {
                 iCompentenciaId: 1,
                 cCompetenciaDescripcion: 'Capacidad 1',
             },
         ]
+
+        this.estados = [
+            {
+                bPreguntaEstado: -1,
+                cDSC: 'Todos',
+            },
+            {
+                bPreguntaEstado: 0,
+                cDSC: 'Sin Asignar',
+            },
+            {
+                bPreguntaEstado: 1,
+                cDSC: 'Asignado',
+            },
+        ]
         this.capacidades = [
             {
                 iCapacidadId: 0,
-                cCapacidadDescripcion: 'Sin Asignar',
+                cCapacidadDescripcion: 'Todos',
             },
             {
                 iCapacidadId: 1,
@@ -144,6 +189,25 @@ export class BancoPreguntasComponent implements OnInit {
                     'Comunica su comprensión sobrelos números y las operacione',
             },
         ]
+
+        this.obtenerBancoPreguntas()
+    }
+
+    obtenerBancoPreguntas() {
+        this._apiEre.obtenerBancoPreguntas(this.params).subscribe({
+            next: (resp: unknown) => {
+                resp['data'] = resp['data'].map((item) => {
+                    const time = dayjs(item.dtPreguntaTiempo)
+                    const hours = time.get('hour')
+                    const minutes = time.get('minute')
+                    const seconds = time.get('second')
+                    item.time = `${hours}h ${minutes}m ${seconds}s`
+                    item.bPreguntaEstado = parseInt(item.bPreguntaEstado, 10)
+                    return item
+                })
+                this.data = resp['data']
+            },
+        })
     }
 
     setSelectedItems(event) {
@@ -163,10 +227,19 @@ export class BancoPreguntasComponent implements OnInit {
         if (this.selectedItems.length === 0) {
             return
         }
-        this._dialogService.open(AsignarMatrizPreguntasFormComponent, {
-            ...MODAL_CONFIG,
-            data: this.selectedItems,
-            header: 'Asignar preguntas',
+        const refModal = this._dialogService.open(
+            AsignarMatrizPreguntasFormComponent,
+            {
+                ...MODAL_CONFIG,
+                data: this.selectedItems,
+                header: 'Asignar preguntas',
+            }
+        )
+
+        refModal.onClose.subscribe((result) => {
+            if (result) {
+                this.obtenerBancoPreguntas()
+            }
         })
     }
 

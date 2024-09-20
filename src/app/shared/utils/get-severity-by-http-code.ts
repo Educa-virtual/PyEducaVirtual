@@ -1,8 +1,10 @@
 import { IModal } from '../confirm-modal/modal.interface'
 
 export const getMessageByHttpCode = (code: number): IModal => {
-    const message: IModal = {}
-
+    const message: IModal = {
+        rejectVisible: false,
+        rejectLabel: '',
+    }
     if (code >= 200 && code < 300) {
         message.header = 'Éxito'
         message.severity = 'success'

@@ -16,6 +16,10 @@ export interface IColumn {
     header: string
     text_header: string
     text: string
+    customFalsy?: {
+        trueText: string
+        falseText: string
+    }
 }
 
 @Component({

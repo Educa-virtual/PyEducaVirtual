@@ -1,6 +1,6 @@
 <div class="card">
-    <p-tabView>
-        <p-tabPanel header="Información pregunta">
+    <p-accordion [activeIndex]="0">
+        <p-accordionTab header="Información pregunta">
             <div class="formgrid grid">
                 <div class="field col flex flex-column">
                     <label for="firstname2">Tipo pregunta</label>
@@ -111,14 +111,14 @@
                     <p-button label="Siguiente" />
                 </div>
             </div>
-        </p-tabPanel>
-        <p-tabPanel header="Alternativas de la pregunta">
+        </p-accordionTab>
+        <p-accordionTab header="Alternativas de la pregunta">
             <app-alternativas></app-alternativas>
             <div class="grid">
                 <div class="col col-offset-10">
                     <p-button label="FInalizar" />
                 </div>
             </div>
-        </p-tabPanel>
-    </p-tabView>
+        </p-accordionTab>
+    </p-accordion>
 </div>

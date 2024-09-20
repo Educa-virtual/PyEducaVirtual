@@ -32,8 +32,6 @@ export class ErrorInterceptor implements HttpInterceptor {
                     errorMsg = error.error.message
                 }
                 message.message = errorMsg
-                message.rejectVisible = false
-                message.rejectLabel = ''
                 this._messageService.openDialog(message)
                 console.log(error)
                 return throwError(() => errorMsg)

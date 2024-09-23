@@ -101,7 +101,6 @@
                                         [rounded]="true"
                                         pButton
                                         pRipple
-                                        [icon]="item.icon"
                                         [pTooltip]="item.labelTooltip"
                                         tooltipPosition="top"
                                         (click)="
@@ -109,7 +108,17 @@
                                         "
                                         class="w-auto p-1"
                                         [ngClass]="item.class"
-                                    ></button>
+                                    >
+                                        @if (item.icon | isIconType) {
+                                            <app-icon
+                                                [name]="item.icon.name"
+                                                [color]="item.icon.color"
+                                                [size]="item.icon.size"
+                                            ></app-icon>
+                                        } @else {
+                                            <i class="{{ item.icon }}"></i>
+                                        }
+                                    </button>
                                 }
                             }
                         </div>

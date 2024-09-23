@@ -1,5 +1,7 @@
 import { PrimengModule } from '@/app/primeng.module'
 import { AuthService } from '@/app/servicios/auth.service'
+import { ConstantesService } from '@/app/servicios/constantes.service'
+import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { TokenStorageService } from '@/app/servicios/token.service'
 import { Component } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
@@ -33,15 +35,12 @@ export class VerificacionComponent {
         private router: Router,
         private fb: FormBuilder,
         private authService: AuthService,
-        private messageService: MessageService
+        private messageService: MessageService,
+        private ConstantesService: ConstantesService,
+        private store: LocalStoreService
     ) {
         this.formVerify = this.fb.group({
-            inp1: ['', Validators.required],
-            inp2: ['', Validators.required],
-            inp3: ['', Validators.required],
-            inp4: ['', Validators.required],
-            inp5: ['', Validators.required],
-            inp6: ['', Validators.required],
+            cCodeVerif: ['', Validators.required],
         })
     }
 
@@ -49,37 +48,35 @@ export class VerificacionComponent {
         this.loading = true
         this.loadingText = 'Verificando...'
         const params = {
-            codigo:
-                this.formVerify.value.inp1 +
-                this.formVerify.value.inp2 +
-                this.formVerify.value.inp3 +
-                this.formVerify.value.inp4 +
-                this.formVerify.value.inp5 +
-                this.formVerify.value.inp6,
+            cCodeVerif: this.formVerify.value.cCodeVerif,
+            iPersId: this.ConstantesService.iPersId,
         }
         this.authService.sendVerify(params).subscribe({
             next: (response: Data) => {
                 this.loading = false
-                if (!response.validated)
+                if (!response.validated) {
                     this.messageService.add({
                         severity: 'error',
                         summary: '¡Atención!',
                         detail: 'Código erróneo, vuelva a ingresar',
                     })
-                this.tokenStorage.setItem('dremoPerfilVerificado', true)
-                this.messageService.add({
-                    severity: 'success',
-                    summary: '¡Genial!',
-                    detail: 'Código verificado correctamente',
-                })
-                // this.router.navigate(['./'])
-                // setTimeout(() => {
-                //   location.reload()
-                // }, 350)
+                } else {
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: '¡Genial!',
+                        detail: 'Código verificado correctamente',
+                    })
+                    this.tokenStorage.setItem('dremoPerfilVerificado', true)
+                    this.router.navigate(['./'])
+                    setTimeout(() => {
+                        location.reload()
+                    }, 350)
+                }
             },
             complete: () => {},
             error: (error) => {
                 console.log(error)
+                this.loading = false
                 this.messageService.add({
                     severity: 'error',
                     summary: '¡Atención!',
@@ -90,7 +87,8 @@ export class VerificacionComponent {
     }
 
     goLogin() {
-        //FALTA ELIMINAR CACHE Y COOKIE
+        this.tokenStorage.signOut()
+        this.store.clear()
         this.router.navigate(['login'])
         setTimeout(() => {
             location.reload()

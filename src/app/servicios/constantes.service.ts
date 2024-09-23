@@ -487,6 +487,8 @@ const administrador = [
 })
 export class ConstantesService {
     iPersId = user ? user.iPersId : null
+    iCredId = user ? user.iCredId : null
+
     nav = this.getMenu()
     getMenu() {
         if (!perfil_actual) return other

@@ -13,10 +13,7 @@ export class GeneralService {
     getGral(data) {
         switch (data.petition) {
             case 'post':
-                this.url = this.http.post(
-                    `${baseUrl}/` + data.ruta + `?user=123456&pass=123456`,
-                    data.data
-                )
+                this.url = this.http.post(`${baseUrl}/` + data.ruta, data.data)
                 break
             default:
                 break

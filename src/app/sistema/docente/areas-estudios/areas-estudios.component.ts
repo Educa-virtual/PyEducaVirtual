@@ -132,13 +132,15 @@ export class AreasEstudiosComponent implements OnInit {
         this.GeneralService.getGral(params).subscribe({
             next: (response: Data) => {
                 this.data = []
-                if (!response.validated)
+                if (!response.validated) {
                     this.MessageService.add({
                         severity: 'error',
                         summary: '¡Atención!',
                         detail: 'Vuelva a ingresar sus credenciales',
                     })
-                this.data = response.data
+                } else {
+                    this.data = response.data
+                }
             },
             complete: () => {},
             error: (error) => {

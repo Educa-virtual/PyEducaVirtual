@@ -11,49 +11,22 @@
             Ingrese su Código de Verificación que se le ha enviado a su correo
             personal
         </p>
-        <div class="flex">
-            <input
-                type="text"
-                class="w-full p-inputtext-sm ml-1"
-                maxlength="1"
-                formControlName="inp1"
-                pInputText
-            />
-            <input
-                type="text"
-                class="w-full p-inputtext-sm ml-1"
-                maxlength="1"
-                formControlName="inp2"
-                pInputText
-            />
-            <input
-                type="text"
-                class="w-full p-inputtext-sm ml-1"
-                maxlength="1"
-                formControlName="inp3"
-                pInputText
-            />
-            <input
-                type="text"
-                class="w-full p-inputtext-sm ml-1"
-                maxlength="1"
-                formControlName="inp4"
-                pInputText
-            />
-            <input
-                type="text"
-                class="w-full p-inputtext-sm ml-1"
-                maxlength="1"
-                formControlName="inp5"
-                pInputText
-            />
-            <input
-                type="text"
-                class="w-full p-inputtext-sm ml-1"
-                maxlength="1"
-                formControlName="inp6"
-                pInputText
-            />
+        <div class="flex justify-content-center grid">
+            <p-inputOtp
+                class="col-12"
+                formControlName="cCodeVerif"
+                style="gap: 2"
+                [length]="6"
+                ><ng-template pTemplate="input" let-token let-events="events">
+                    <input
+                        type="text"
+                        class="w-full p-inputtext-sm ml-1"
+                        maxlength="1"
+                        pInputText
+                        (input)="events.input($event)"
+                        (keydown)="events.keydown($event)"
+                    /> </ng-template
+            ></p-inputOtp>
         </div>
 
         <ng-template pTemplate="footer">

@@ -23,4 +23,18 @@ export class ApiEreService {
             { params }
         )
     }
+
+    obtenerCompetencias(params) {
+        return this.http.get(
+            `${this.baseUrl}/ere/competencias/obtenerCompetencias`,
+            { params }
+        )
+    }
+
+    obtenerCapacidades(params) {
+        return this.http.get(
+            `${this.baseUrl}/ere/capacidades/obtenerCapacidades`,
+            { params }
+        )
+    }
 }

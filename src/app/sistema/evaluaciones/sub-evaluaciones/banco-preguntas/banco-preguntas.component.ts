@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core'
+import { Component, OnInit, inject, OnDestroy } from '@angular/core'
 import { Button } from 'primeng/button'
 import { InputTextModule } from 'primeng/inputtext'
 import { MultiSelectModule } from 'primeng/multiselect'
@@ -9,6 +9,7 @@ import { AlternativasComponent } from './alternativas/alternativas.component'
 import { CompetenciasComponent } from '../competencias/competencias.component'
 
 import {
+    IActionTable,
     IColumn,
     TablePrimengComponent,
 } from '../../../../shared/table-primeng/table-primeng.component'
@@ -26,6 +27,7 @@ import { MessageService } from 'primeng/api'
 import { ApiEreService } from '../../services/api-ere.service'
 import dayjs from 'dayjs'
 import { FloatLabelModule } from 'primeng/floatlabel'
+import { Subject, takeUntil } from 'rxjs'
 
 @Component({
     selector: 'app-banco-preguntas',
@@ -46,9 +48,10 @@ import { FloatLabelModule } from 'primeng/floatlabel'
     ],
     styleUrls: ['./banco-preguntas.component.scss'],
 })
-export class BancoPreguntasComponent implements OnInit {
+export class BancoPreguntasComponent implements OnInit, OnDestroy {
     private _dialogService = inject(DialogService)
     private _apiEre = inject(ApiEreService)
+    private unsubscribe$: Subject<boolean> = new Subject()
 
     public competencias = []
     public capacidades = []
@@ -65,8 +68,8 @@ export class BancoPreguntasComponent implements OnInit {
     selectedItems = []
     accionesPrincipal: IActionContainer[] = [
         {
-            labelTooltip: 'Asignar',
-            text: 'Asignar',
+            labelTooltip: 'Asignar Matriz',
+            text: 'Asignar Matriz',
             icon: {
                 name: 'matGroupWork',
                 size: 'xs',
@@ -84,7 +87,7 @@ export class BancoPreguntasComponent implements OnInit {
         },
     ]
 
-    data = []
+    data = [{ id: 0 }, { id: 1 }, { id: 2 }]
 
     columnas: IColumn[] = [
         {
@@ -144,8 +147,8 @@ export class BancoPreguntasComponent implements OnInit {
             text: 'left',
             text_header: 'Estado',
             customFalsy: {
-                trueText: 'Asignado',
-                falseText: 'Sin asignar',
+                trueText: 'Con Matriz',
+                falseText: 'Sin Matriz',
             },
         },
         {
@@ -158,14 +161,13 @@ export class BancoPreguntasComponent implements OnInit {
         },
     ]
 
-    public accionesTabla = [
+    public accionesTabla: IActionTable[] = [
         {
             labelTooltip: 'Editar',
             icon: 'pi pi-pencil',
             accion: 'editar',
             type: 'item',
             class: 'p-button-rounded p-button-warning p-button-text',
-            isVisible: (row) => row.bPreguntaEstado === 0,
         },
         {
             labelTooltip: 'Eliminar',
@@ -173,7 +175,16 @@ export class BancoPreguntasComponent implements OnInit {
             accion: 'editar',
             type: 'item',
             class: 'p-button-rounded p-button-danger p-button-text',
-            isVisible: (row) => row.bPreguntaEstado === 0,
+        },
+        {
+            labelTooltip: 'Asignar Matriz',
+            icon: {
+                name: 'matGroupWork',
+                size: 'xs',
+            },
+            accion: 'agregar',
+            type: 'item',
+            class: 'p-button-rounded p-button-primary p-button-text',
         },
     ]
     constructor() {}
@@ -183,10 +194,6 @@ export class BancoPreguntasComponent implements OnInit {
             {
                 iCompentenciaId: 0,
                 cCompetenciaDescripcion: 'Todos',
-            },
-            {
-                iCompentenciaId: 1,
-                cCompetenciaDescripcion: 'Capacidad 1',
             },
         ]
 
@@ -209,37 +216,66 @@ export class BancoPreguntasComponent implements OnInit {
                 iCapacidadId: 0,
                 cCapacidadDescripcion: 'Todos',
             },
-            {
-                iCapacidadId: 1,
-                cCapacidadDescripcion:
-                    'Comunica su comprensión sobrelos números y las operacione',
-            },
         ]
 
-        this.obtenerBancoPreguntas()
+        // this.obtenerBancoPreguntas()
+        // this.obtenerCompetencias()
     }
 
     obtenerBancoPreguntas() {
-        this._apiEre.obtenerBancoPreguntas(this.params).subscribe({
-            next: (resp: unknown) => {
-                resp['data'] = resp['data'].map((item) => {
-                    const time = dayjs(item.dtPreguntaTiempo)
-                    const hours = time.get('hour')
-                    const minutes = time.get('minute')
-                    const seconds = time.get('second')
-                    item.time = `${hours}h ${minutes}m ${seconds}s`
-                    item.bPreguntaEstado = parseInt(item.bPreguntaEstado, 10)
-                    return item
-                })
-                this.data = resp['data']
-            },
-        })
+        this._apiEre
+            .obtenerBancoPreguntas(this.params)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+                next: (resp: unknown) => {
+                    resp['data'] = resp['data'].map((item) => {
+                        const time = dayjs(item.dtPreguntaTiempo)
+                        const hours = time.get('hour')
+                        const minutes = time.get('minute')
+                        const seconds = time.get('second')
+                        item.time = `${hours}h ${minutes}m ${seconds}s`
+                        item.bPreguntaEstado = parseInt(
+                            item.bPreguntaEstado,
+                            10
+                        )
+                        return item
+                    })
+                    this.data = resp['data']
+                },
+            })
     }
 
-    setSelectedItems(event) {
-        this.selectedItems = event
+    obtenerCompetencias() {
+        this._apiEre
+            .obtenerCompetencias(this.params)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+                next: (resp: unknown) => {
+                    this.competencias = resp['data']
+                    this.competencias.unshift({
+                        iCompentenciaId: 0,
+                        cCompetenciaDescripcion: 'Todos',
+                    })
+                },
+            })
     }
 
+    obtenerCapacidades() {
+        this._apiEre
+            .obtenerCapacidades(this.params)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+                next: (resp: unknown) => {
+                    this.capacidades = resp['data']
+                    this.capacidades.unshift({
+                        iCapacidadId: 0,
+                        cCapacidadDescripcion: 'Todos',
+                    })
+                },
+            })
+    }
+
+    // manejar las acciones
     accionBtnItem(action) {
         if (action.accion === 'agregar') {
             this.agregarPregunta()
@@ -249,6 +285,15 @@ export class BancoPreguntasComponent implements OnInit {
         }
     }
 
+    accionBtnItemTable({ accion, item }) {
+        if (accion === 'agregar') {
+            this.selectedItems = []
+            this.selectedItems = [item]
+            this.asignarPreguntas()
+        }
+    }
+
+    // abrir el modal para asignar preguntas
     asignarPreguntas() {
         if (this.selectedItems.length === 0) {
             return
@@ -266,13 +311,21 @@ export class BancoPreguntasComponent implements OnInit {
             if (result) {
                 this.obtenerBancoPreguntas()
             }
+            // this.selectedItems = []
         })
     }
 
+    // abrir el modal para agregar una nueva pregunta
     agregarPregunta() {
         this._dialogService.open(BancoPreguntasFormComponent, {
             ...MODAL_CONFIG,
             header: 'Nueva pregunta',
         })
+    }
+
+    // desuscribirse de los observables cuando se destruye el componente
+    ngOnDestroy(): void {
+        this.unsubscribe$.next(true)
+        this.unsubscribe$.complete()
     }
 }

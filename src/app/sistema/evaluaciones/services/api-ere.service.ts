@@ -37,4 +37,11 @@ export class ApiEreService {
             { params }
         )
     }
+
+    obtenerDesempenos(params) {
+        return this.http.get(
+            `${this.baseUrl}/ere/desempenos/obtenerDesempenos`,
+            { params }
+        )
+    }
 }

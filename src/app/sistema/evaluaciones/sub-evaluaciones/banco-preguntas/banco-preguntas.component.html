@@ -29,11 +29,15 @@
             />
         </div>
         <div class="flex flex-column gap-1 flex-1">
-            <label for="desempeños">Desempeños</label>
+            <label for="evaluaciones">Evaluación</label>
             <p-dropdown
-                [options]="desempenios"
-                styleClass="w-full"
-                inputId="desempeños"
+                [(ngModel)]="params.iEvaluacionId"
+                optionValue="iEvaluacionId"
+                inputId="evaluaciones"
+                [options]="evaluaciones"
+                [styleClass]="'custom-dropdown w-full'"
+                [optionLabel]="'cEvaluacionNombre'"
+                (onChange)="obtenerBancoPreguntas()"
             />
         </div>
         <div class="flex flex-column gap-1 flex-1">

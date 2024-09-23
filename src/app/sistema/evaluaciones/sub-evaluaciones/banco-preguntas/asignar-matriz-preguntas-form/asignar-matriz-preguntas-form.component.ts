@@ -39,11 +39,53 @@ export class AsignarMatrizPreguntasFormComponent implements OnInit {
     public capacidades = []
     public desempenos = []
     public preguntas = []
+    public selectedDesempeno
     public formAsignarMatriz: FormGroup = this.formBuilder.group({
-        iCompentenciaId: [null, Validators.required],
-        iCapacidadId: [null, Validators.required],
         iDesempenoId: [null, Validators.required],
     })
+
+    public columnasDesempeno: IColumn[] = [
+        {
+            field: 'radio',
+            header: '',
+            type: 'radio',
+            width: '5rem',
+            text: 'left',
+            text_header: '',
+        },
+        {
+            field: 'cEvaluacionNombre',
+            header: 'Evaluación',
+            type: 'text',
+            width: '5rem',
+            text: 'left',
+            text_header: '',
+        },
+        {
+            field: 'cCapacidadNombre',
+            header: 'Capacidad',
+            type: 'text',
+            width: '5rem',
+            text: 'left',
+            text_header: '',
+        },
+        {
+            field: 'cCompetenciaNombre',
+            header: 'Competencia',
+            type: 'text',
+            width: '5rem',
+            text: 'left',
+            text_header: '',
+        },
+        {
+            field: 'cDesempenoDescripcion',
+            header: 'Desempeño',
+            type: 'text',
+            width: 'auto',
+            text: 'left',
+            text_header: '',
+        },
+    ]
 
     columnas: IColumn[] = [
         {
@@ -100,15 +142,35 @@ export class AsignarMatrizPreguntasFormComponent implements OnInit {
                 cCompetenciaDescripcion: 'Desempeño 1',
             },
         ]
-        this.preguntas = this._config.data.map((item) => {
+        this.preguntas = this._config.data.preguntas
+        this.desempenos = this._config.data.desempenos
+
+        this.preguntas = this.preguntas.map((item) => {
             item.checked = true
+            if (item.iDesempenoId != null) {
+                this.selectedDesempeno = {
+                    iDesempenoId: item.iDesempenoId,
+                    checked: true,
+                }
+            }
             return item
         })
+        console.log(this.selectedDesempeno)
+
         this.selectedPreguntas = this.preguntas
     }
 
     setSelectedItems(event) {
         this.selectedPreguntas = event
+    }
+
+    onSelectDesempeno(event) {
+        console.log('select', event)
+
+        this.selectedDesempeno = event
+        this.formAsignarMatriz
+            .get('iDesempenoId')
+            .setValue(this.selectedDesempeno['iDesempenoId'])
     }
 
     closeModal(data) {

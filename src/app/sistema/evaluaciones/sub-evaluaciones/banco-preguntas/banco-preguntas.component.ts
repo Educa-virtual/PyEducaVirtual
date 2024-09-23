@@ -56,14 +56,19 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
 
     public competencias = []
     public capacidades = []
-    public desempenios = []
+    public desempenos = []
     public estados = []
+    public evaluaciones = []
 
     public params = {
         iCompentenciaId: 0,
         iCapacidadId: 0,
         iDesempenioId: 0,
         bPreguntaEstado: -1,
+        iCursoId: 1,
+        iNivelTipoId: 1,
+        iTipoPregId: 0,
+        iEvaluacionId: 0,
     }
 
     selectedItems = []
@@ -88,7 +93,7 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
         },
     ]
 
-    data = [{ id: 0 }, { id: 1 }, { id: 2 }]
+    data = []
 
     columnas: IColumn[] = [
         {
@@ -106,6 +111,14 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             width: '5rem',
             text: 'left',
             text_header: 'Pregunta',
+        },
+        {
+            field: 'cTipoPregDescripcion',
+            header: 'Tipo Pregunta',
+            type: 'text',
+            width: '5rem',
+            text: 'left',
+            text_header: 'Tipo Pregunta',
         },
         {
             field: 'time',
@@ -219,8 +232,20 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             },
         ]
 
-        // this.obtenerBancoPreguntas()
+        this.obtenerBancoPreguntas()
+        this.obtenerDesempenos()
         // this.obtenerCompetencias()
+    }
+
+    obtenerDesempenos() {
+        this._apiEre
+            .obtenerDesempenos(this.params)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+                next: (resp: unknown) => {
+                    this.desempenos = resp['data']
+                },
+            })
     }
 
     obtenerBancoPreguntas() {
@@ -303,7 +328,10 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             AsignarMatrizPreguntasFormComponent,
             {
                 ...MODAL_CONFIG,
-                data: this.selectedItems,
+                data: {
+                    preguntas: this.selectedItems,
+                    desempenos: this.desempenos,
+                },
                 header: 'Asignar preguntas',
             }
         )

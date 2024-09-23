@@ -9,6 +9,7 @@ import { AlternativasComponent } from './alternativas/alternativas.component'
 import { CompetenciasComponent } from '../competencias/competencias.component'
 
 import {
+    IActionTable,
     IColumn,
     TablePrimengComponent,
 } from '../../../../shared/table-primeng/table-primeng.component'
@@ -68,8 +69,8 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
     selectedItems = []
     accionesPrincipal: IActionContainer[] = [
         {
-            labelTooltip: 'Asignar',
-            text: 'Asignar',
+            labelTooltip: 'Asignar Matriz',
+            text: 'Asignar Matriz',
             icon: {
                 name: 'matGroupWork',
                 size: 'xs',
@@ -87,7 +88,7 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
         },
     ]
 
-    data = []
+    data = [{ id: 0 }, { id: 1 }, { id: 2 }]
 
     columnas: IColumn[] = [
         {
@@ -147,8 +148,8 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             text: 'left',
             text_header: 'Estado',
             customFalsy: {
-                trueText: 'Asignado',
-                falseText: 'Sin asignar',
+                trueText: 'Con Matriz',
+                falseText: 'Sin Matriz',
             },
         },
         {
@@ -161,14 +162,13 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
         },
     ]
 
-    public accionesTabla = [
+    public accionesTabla: IActionTable[] = [
         {
             labelTooltip: 'Editar',
             icon: 'pi pi-pencil',
             accion: 'editar',
             type: 'item',
             class: 'p-button-rounded p-button-warning p-button-text',
-            isVisible: (row) => row.bPreguntaEstado === 0,
         },
         {
             labelTooltip: 'Eliminar',
@@ -176,7 +176,16 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             accion: 'editar',
             type: 'item',
             class: 'p-button-rounded p-button-danger p-button-text',
-            isVisible: (row) => row.bPreguntaEstado === 0,
+        },
+        {
+            labelTooltip: 'Asignar Matriz',
+            icon: {
+                name: 'matGroupWork',
+                size: 'xs',
+            },
+            accion: 'agregar',
+            type: 'item',
+            class: 'p-button-rounded p-button-primary p-button-text',
         },
     ]
     constructor() {}
@@ -210,8 +219,8 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             },
         ]
 
-        this.obtenerBancoPreguntas()
-        this.obtenerCompetencias()
+        // this.obtenerBancoPreguntas()
+        // this.obtenerCompetencias()
     }
 
     obtenerBancoPreguntas() {
@@ -267,16 +276,20 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             })
     }
 
-    setSelectedItems(event) {
-        this.selectedItems = event
-    }
-
     // manejar las acciones
     accionBtnItem(action) {
         if (action.accion === 'agregar') {
             this.agregarPregunta()
         }
         if (action.accion === 'asignar') {
+            this.asignarPreguntas()
+        }
+    }
+
+    accionBtnItemTable({ accion, item }) {
+        if (accion === 'agregar') {
+            this.selectedItems = []
+            this.selectedItems = [item]
             this.asignarPreguntas()
         }
     }
@@ -299,6 +312,7 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             if (result) {
                 this.obtenerBancoPreguntas()
             }
+            // this.selectedItems = []
         })
     }
 

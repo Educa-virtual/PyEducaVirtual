@@ -52,8 +52,8 @@
     <app-table-primeng
         [columnas]="columnas"
         [data]="data"
-        (accionBtnItem)="accionBtnItem($event)"
-        (selectedItems)="setSelectedItems($event)"
+        (accionBtnItem)="accionBtnItemTable($event)"
+        [(selectedRowData)]="selectedItems"
         [actions]="accionesTabla"
     >
         <ng-container slot="caption-content"> </ng-container>

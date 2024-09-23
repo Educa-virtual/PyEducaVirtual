@@ -193,7 +193,6 @@ export class TablePrimengComponent implements OnChanges, OnInit {
 
         if (changes.selectedRowData?.currentValue) {
             this.selectedRowData = changes.selectedRowData.currentValue
-            console.log(this.selectedRowData)
         }
     }
 
@@ -207,7 +206,6 @@ export class TablePrimengComponent implements OnChanges, OnInit {
 
     onColumnSelected(columns) {
         this.columnasSeleccionadas = columns
-        console.log(this.columnasSeleccionadas)
     }
 
     onSelectionChange(event) {

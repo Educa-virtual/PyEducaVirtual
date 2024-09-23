@@ -145,17 +145,26 @@ export class AsignarMatrizPreguntasFormComponent implements OnInit {
         this.preguntas = this._config.data.preguntas
         this.desempenos = this._config.data.desempenos
 
+        let iDesempenoId = 0
+
         this.preguntas = this.preguntas.map((item) => {
             item.checked = true
             if (item.iDesempenoId != null) {
-                this.selectedDesempeno = {
-                    iDesempenoId: item.iDesempenoId,
-                    checked: true,
-                }
+                iDesempenoId = item.iDesempenoId
             }
             return item
         })
-        console.log(this.selectedDesempeno)
+
+        this.desempenos = this.desempenos.map((item) => {
+            if (item.iDesempenoId == iDesempenoId) {
+                item.checked = true
+            }
+            return item
+        })
+
+        this.selectedDesempeno = this.desempenos.find(
+            (item) => item.iDesempenoId == iDesempenoId
+        )
 
         this.selectedPreguntas = this.preguntas
     }
@@ -165,8 +174,6 @@ export class AsignarMatrizPreguntasFormComponent implements OnInit {
     }
 
     onSelectDesempeno(event) {
-        console.log('select', event)
-
         this.selectedDesempeno = event
         this.formAsignarMatriz
             .get('iDesempenoId')

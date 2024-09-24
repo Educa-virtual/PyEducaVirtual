@@ -1,0 +1,251 @@
+<p-stepper [(activeStep)]="activeStepper">
+    @for (item of silabo; track item.iSilabo) {
+        <p-stepperPanel>
+            <ng-template
+                pTemplate="header"
+                let-onClick="onClick"
+                let-index="index"
+            >
+                <button
+                    class="bg-transparent border-none inline-flex flex-column gap-2"
+                    (click)="onClick.emit()"
+                    [pTooltip]="item.cSilaboTitle"
+                    tooltipPosition="top"
+                >
+                    <span
+                        class="border-round border-2 w-3rem h-3rem inline-flex align-items-center justify-content-center"
+                        [ngClass]="{
+                            'bg-primary border-primary': index <= activeStepper,
+                            'border-primary': index > activeStepper,
+                        }"
+                    >
+                        <p
+                            class="font-bold"
+                            [style]="
+                                index > activeStepper
+                                    ? 'color: var(--primary-color)'
+                                    : ''
+                            "
+                        >
+                            {{ index + 1 }}
+                        </p>
+                        <!-- <i class="pi {{item.icon}}" [style]="index > activeStepper ? 'color: var(--primary-color)' :''"></i> -->
+                    </span>
+                </button>
+            </ng-template>
+            <ng-template
+                pTemplate="content"
+                let-prevCallback="prevCallback"
+                let-nextCallback="nextCallback"
+                let-index="index"
+            >
+                <div class="border-noround text-uppercase">
+                    <h4>{{ item.cSilaboTitle }}</h4>
+                    <p-divider></p-divider>
+                </div>
+                @switch (activeStepper) {
+                    @case (0) {
+                        <form>
+                            <div class="formgrid grid">
+                                <div class="field col-12 md:col-12">
+                                    <label for="">Programa de Estudios</label>
+                                    <input
+                                        type="text"
+                                        class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full p-inputtext-sm"
+                                        pInputText
+                                        placeholder="Arquitectura de Plataformas y Servicios de Tecnologías de la Información"
+                                        disabled
+                                    />
+                                </div>
+                                <div class="field col-12 md:col-12">
+                                    <label for="">Módulo Formativo</label>
+                                    <input
+                                        type="text"
+                                        class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full p-inputtext-sm"
+                                        pInputText
+                                        placeholder="Arquitectura de Proyectos TI"
+                                        disabled
+                                    />
+                                </div>
+                                <div class="field col-12">
+                                    <label for="">Unidades Didácticas</label>
+                                    <input
+                                        type="text"
+                                        class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full p-inputtext-sm"
+                                        pInputText
+                                        placeholder="Carga Horaria"
+                                        disabled
+                                    />
+                                </div>
+                                <div class="field col-12 md:col-8">
+                                    <label for="">Carga Horaria</label>
+                                    <input
+                                        type="text"
+                                        class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full p-inputtext-sm"
+                                        pInputText
+                                        placeholder="Arquitectura de Proyectos TI"
+                                        disabled
+                                    />
+                                </div>
+                                <div class="field col-12 md:col-4">
+                                    <label for="state">Nro de Créditos</label>
+                                    <input
+                                        type="text"
+                                        class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full p-inputtext-sm"
+                                        pInputText
+                                        placeholder="4"
+                                        disabled
+                                    />
+                                </div>
+                            </div>
+                        </form>
+                        <div class="flex pt-4 justify-content-end">
+                            <p-button
+                                (onClick)="nextCallback.emit()"
+                                label="Siguiente"
+                                icon="pi pi-arrow-right"
+                                iconPos="right"
+                            />
+                        </div>
+                    }
+                    @case (1) {
+                        <form>
+                            <div class="formgrid grid">
+                                <div class="field col-12 md:col-12">
+                                    <p-editor
+                                        [style]="{
+                                            height: '250px',
+                                        }"
+                                    />
+                                </div>
+                            </div>
+                        </form>
+                        <div class="flex pt-4 justify-content-between">
+                            <p-button
+                                (onClick)="prevCallback.emit()"
+                                label="Anterior"
+                                severity="secondary"
+                                icon="pi pi-arrow-left"
+                            />
+                            <p-button
+                                (onClick)="nextCallback.emit()"
+                                label="Siguiente"
+                                icon="pi pi-arrow-right"
+                                iconPos="right"
+                            />
+                        </div>
+                    }
+                    @case (2) {
+                        <form>
+                            <div class="formgrid grid">
+                                <div class="field col-12 md:col-6">
+                                    <label for=""
+                                        >Descripción de la Unidad
+                                        Didáctica</label
+                                    >
+                                    <p-editor
+                                        [style]="{
+                                            height: '100px',
+                                        }"
+                                    />
+                                </div>
+                                <div class="field col-12 md:col-6">
+                                    <label for="">Capacidad </label>
+                                    <p-editor
+                                        [style]="{
+                                            height: '100px',
+                                        }"
+                                    />
+                                </div>
+                                <div class="field col-12 md:col-12">
+                                    <label for="">Metodología</label>
+                                    <p-editor
+                                        [style]="{
+                                            height: '150px',
+                                        }"
+                                    />
+                                </div>
+                            </div>
+                        </form>
+                        <div class="flex pt-4 justify-content-between">
+                            <p-button
+                                (onClick)="prevCallback.emit()"
+                                label="Anterior"
+                                severity="secondary"
+                                icon="pi pi-arrow-left"
+                            />
+                            <p-button
+                                (onClick)="nextCallback.emit()"
+                                label="Siguiente"
+                                icon="pi pi-arrow-right"
+                                iconPos="right"
+                            />
+                        </div>
+                    }
+                    @case (3) {
+                        <app-recursos-didacticos></app-recursos-didacticos>
+                        <div class="flex pt-4 justify-content-between">
+                            <p-button
+                                (onClick)="prevCallback.emit()"
+                                label="Anterior"
+                                severity="secondary"
+                                icon="pi pi-arrow-left"
+                            />
+                            <p-button
+                                (onClick)="nextCallback.emit()"
+                                label="Siguiente"
+                                icon="pi pi-arrow-right"
+                                iconPos="right"
+                            />
+                        </div>
+                    }
+                    @case (4) {
+                        <app-actividades-aprendizaje-evaluacion></app-actividades-aprendizaje-evaluacion>
+                        <div class="flex pt-4 justify-content-between">
+                            <p-button
+                                (onClick)="prevCallback.emit()"
+                                label="Anterior"
+                                severity="secondary"
+                                icon="pi pi-arrow-left"
+                            />
+                            <p-button
+                                (onClick)="nextCallback.emit()"
+                                label="Siguiente"
+                                icon="pi pi-arrow-right"
+                                iconPos="right"
+                            />
+                        </div>
+                    }
+                    @case (5) {
+                        <app-evaluacion></app-evaluacion>
+                        <div class="flex pt-4 justify-content-between">
+                            <p-button
+                                (onClick)="prevCallback.emit()"
+                                label="Anterior"
+                                severity="secondary"
+                                icon="pi pi-arrow-left"
+                            />
+                            <p-button
+                                (onClick)="nextCallback.emit()"
+                                label="Siguiente"
+                                icon="pi pi-arrow-right"
+                                iconPos="right"
+                            />
+                        </div>
+                    }
+                    @case (6) {
+                        <app-bibliografia></app-bibliografia>
+                        <div class="flex pt-4 justify-content-start">
+                            <p-button
+                                (onClick)="prevCallback.emit()"
+                                label="Anterior"
+                                severity="secondary"
+                                icon="pi pi-arrow-left"
+                            />
+                        </div>
+                    }
+                }
+            </ng-template>
+        </p-stepperPanel>
+    }
+</p-stepper>

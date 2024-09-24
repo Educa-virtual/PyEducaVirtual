@@ -1,0 +1,65 @@
+<app-container-page
+    [title]="'Banco de Preguntas - Primaria Matemáticas 1°'"
+    [actions]="accionesPrincipal"
+    (accionBtnItem)="accionBtnItem($event)"
+>
+    <div class="flex gap-4 justify-content-between flex-wrap">
+        <div class="flex flex-column gap-1 flex-1">
+            <label for="competencias">Competencias</label>
+            <p-dropdown
+                [(ngModel)]="params.iCompentenciaId"
+                optionValue="iCompentenciaId"
+                [options]="competencias"
+                optionLabel="cCompetenciaDescripcion"
+                styleClass="w-full"
+                inputId="competencias"
+                (onChange)="obtenerBancoPreguntas(); obtenerCapacidades()"
+            />
+        </div>
+        <div class="flex flex-column gap-1 flex-1">
+            <label for="capacidades">capacidades</label>
+            <p-dropdown
+                [(ngModel)]="params.iCapacidadId"
+                optionValue="iCapacidadId"
+                inputId="capacidades"
+                [options]="capacidades"
+                [styleClass]="'custom-dropdown w-full'"
+                [optionLabel]="'cCapacidadDescripcion'"
+                (onChange)="obtenerBancoPreguntas()"
+            />
+        </div>
+        <div class="flex flex-column gap-1 flex-1">
+            <label for="evaluaciones">Evaluación</label>
+            <p-dropdown
+                [(ngModel)]="params.iEvaluacionId"
+                optionValue="iEvaluacionId"
+                inputId="evaluaciones"
+                [options]="evaluaciones"
+                [styleClass]="'custom-dropdown w-full'"
+                [optionLabel]="'cEvaluacionNombre'"
+                (onChange)="obtenerBancoPreguntas()"
+            />
+        </div>
+        <div class="flex flex-column gap-1 flex-1">
+            <label for="estado">Estado</label>
+            <p-dropdown
+                [(ngModel)]="params.bPreguntaEstado"
+                optionValue="bPreguntaEstado"
+                [options]="estados"
+                [styleClass]="'w-full'"
+                inputId="estado"
+                [optionLabel]="'cDSC'"
+                (onChange)="obtenerBancoPreguntas()"
+            />
+        </div>
+    </div>
+    <app-table-primeng
+        [columnas]="columnas"
+        [data]="data"
+        (accionBtnItem)="accionBtnItemTable($event)"
+        [(selectedRowData)]="selectedItems"
+        [actions]="accionesTabla"
+    >
+        <ng-container slot="caption-content"> </ng-container>
+    </app-table-primeng>
+</app-container-page>

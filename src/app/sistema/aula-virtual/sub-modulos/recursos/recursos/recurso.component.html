@@ -1,0 +1,189 @@
+<app-container-page [title]="'Mis Recursos'" [actions]="[]">
+    <div class="grid">
+        <div class="col-12">
+            <div class="card">
+                <div
+                    class="flex flex-column md:flex-row md:justify-content-between gap-2 padding:100px"
+                >
+                    <p-dropdown
+                        [options]="[]"
+                        placeholder="2024"
+                        styleClass="w-full"
+                        class="flex-1"
+                        [emptyMessage]="'2023'"
+                    >
+                    </p-dropdown>
+                    <p-dropdown
+                        [options]="[]"
+                        placeholder="Nombre de Curso"
+                        styleClass="w-full"
+                        class="flex-1"
+                        [emptyMessage]="'Área de Matematica'"
+                    >
+                    </p-dropdown>
+                    <p-iconField iconPosition="left">
+                        <p-inputIcon styleClass="pi pi-search" />
+                        <input pInputText type="text" placeholder="Buscar..." />
+                    </p-iconField>
+                    <!--<p-dataViewLayoutOptions></p-dataViewLayoutOptions>-->
+                </div>
+                <br />
+
+                <p-treeTable
+                    [value]="files2"
+                    [columns]="cols"
+                    selectionMode="checkbox"
+                    [(selection)]="selectedFiles2"
+                >
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Tamaño</th>
+                            <th>Tipo</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template
+                        pTemplate="body"
+                        let-rowNode
+                        let-rowData="rowData"
+                        let-columns="columns"
+                    >
+                        <tr>
+                            <td *ngFor="let col of columns; let i = index">
+                                <p-treeTableToggler
+                                    [rowNode]="rowNode"
+                                    *ngIf="i === 0"
+                                ></p-treeTableToggler>
+                                <p-treeTableCheckbox
+                                    [value]="rowNode"
+                                    *ngIf="i === 0"
+                                ></p-treeTableCheckbox>
+                                {{ rowData[col.field] }}
+                            </td>
+                        </tr>
+                    </ng-template>
+                    <ng-template
+                        pTemplate="body"
+                        let-rowNode
+                        let-rowData="rowData"
+                        let-columns="columns"
+                    >
+                        <tr [ttRow]="rowNode">
+                            <td
+                                *ngFor="
+                                    let col of columns;
+                                    let i = index;
+                                    let last = last
+                                "
+                            >
+                                <p-treeTableToggler
+                                    [rowNode]="rowNode"
+                                    *ngIf="i === 0"
+                                />
+                                {{ rowData[col.field] }}
+                                <ng-container *ngIf="last">
+                                    <p-button
+                                        icon="pi pi-folder-open"
+                                        rounded="true"
+                                        (click)="openNew()"
+                                        severity="secondary"
+                                        [style]="{ 'margin-right': '.5em' }"
+                                    />
+                                    <p-button
+                                        icon="pi pi-file"
+                                        rounded="true"
+                                        severity="secondary"
+                                        [outlined]="true"
+                                        [style]="{ 'margin-right': '.5em' }"
+                                    />
+                                    <p-button
+                                        icon="pi pi-download"
+                                        rounded="true"
+                                        severity="danger"
+                                        [outlined]="true"
+                                    />
+                                    <p-toast> </p-toast>
+                                </ng-container>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-treeTable>
+            </div>
+        </div>
+    </div>
+
+    <p-dialog
+        [(visible)]="productDialog"
+        [style]="{ width: '450px' }"
+        header="Agregar Recursos"
+        [modal]="true"
+        class="p-fluid"
+    >
+        <ng-template pTemplate="content">
+            <img
+                [src]="'assets/demo/images/product/' + product.image"
+                [alt]="product.image"
+                width="150"
+                class="mt-0 mx-auto mb-5 block shadow-2"
+                *ngIf="product.image"
+            />
+            <div class="field">
+                <label for="name">Nombre Recurso</label>
+                <input
+                    pInputText
+                    id="name"
+                    [(ngModel)]="product.name"
+                    required
+                    #myInput
+                    type="text"
+                />
+                <small
+                    class="ng-dirty ng-invalid"
+                    *ngIf="submitted && !product.name"
+                    >Este campo es requerido</small
+                >
+            </div>
+            <div class="field">
+                <label for="description">Descripción</label>
+                <textarea
+                    id="description"
+                    pInputTextarea
+                    [(ngModel)]="product.description"
+                    required
+                    rows="3"
+                    cols="20"
+                ></textarea>
+            </div>
+            <div class="field">
+                <label for="description">Recurso</label>
+                <textarea
+                    id="description"
+                    pInputTextarea
+                    [(ngModel)]="product.description"
+                    required
+                    rows="3"
+                    cols="20"
+                ></textarea>
+            </div>
+        </ng-template>
+
+        <ng-template pTemplate="footer">
+            <button
+                pButton
+                pRipple
+                label="Agregar"
+                icon="pi pi-check"
+                class="p-button-text"
+            ></button>
+            <button
+                pButton
+                pRipple
+                label="Cancelar"
+                icon="pi pi-times"
+                class="p-button-text"
+                (click)="hideDialog()"
+            ></button>
+        </ng-template>
+    </p-dialog>
+</app-container-page>

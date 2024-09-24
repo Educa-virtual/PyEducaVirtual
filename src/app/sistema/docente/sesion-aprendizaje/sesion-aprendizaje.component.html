@@ -1,0 +1,135 @@
+<div class="grid">
+    <p-toolbar class="col-12">
+        <div class="p-toolbar-group-start">
+            <h4 class="text-primary font-bold">Sesión de Aprendizaje</h4>
+        </div>
+        <div class="p-toolbar-group-end">
+            <p-button
+                icon="pi pi-undo"
+                pTooltip="Regresar"
+                tooltipPosition="top"
+                [rounded]="true"
+                [text]="true"
+                (onClick)="goAreasEstudio()"
+            />
+        </div>
+    </p-toolbar>
+    <div class="col-12">
+        <div class="card">
+            <p-steps
+                [activeIndex]="activeIndex"
+                (activeIndexChange)="onActiveIndexChange($event)"
+                [model]="items"
+                [readonly]="false"
+            />
+            <div class="row">
+                @switch (activeIndex) {
+                    @case (0) {
+                        <div class="row mt-3">
+                            <div class="col-md-3">
+                                <div class="flex justify-content-center">
+                                    <span style="width: 100%">
+                                        <h6 class="m-2">Tipo de Identidad</h6>
+                                        <input
+                                            pInputText
+                                            disabled
+                                            [style]="{ minWidth: '100%' }"
+                                            placeholder="DNI"
+                                        />
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="flex justify-content-center">
+                                    <span style="width: 100%">
+                                        <h6 class="m-2">
+                                            Documento de Identidad
+                                        </h6>
+                                        <input
+                                            pInputText
+                                            [style]="{ minWidth: '100%' }"
+                                            placeholder="74640582"
+                                        />
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 justify-content-center"></div>
+                            <div class="col-md-3">
+                                <div class="flex justify-content-center">
+                                    <span style="width: 100%">
+                                        <h6 class="m-2">Curso</h6>
+                                        <p-dropdown
+                                            [options]="[]"
+                                            optionLabel=""
+                                            [style]="{ minWidth: '100%' }"
+                                            placeholder="Seleccionar Curso"
+                                        />
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="flex justify-content-center">
+                                    <span style="width: 100%">
+                                        <h6 class="m-2">Tipo de Actividades</h6>
+                                        <p-dropdown
+                                            [options]="[]"
+                                            optionLabel=""
+                                            [style]="{ minWidth: '100%' }"
+                                            placeholder="Seleccionar Tipo de Actividad"
+                                        />
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="flex justify-content-center">
+                                    <span style="width: 100%">
+                                        <h6 class="m-2">Etapa</h6>
+                                        <p-dropdown
+                                            [options]="[]"
+                                            optionLabel=""
+                                            [style]="{ minWidth: '100%' }"
+                                            placeholder="Seleccionar Etapa"
+                                        />
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="flex justify-content-center">
+                                    <span style="width: 100%">
+                                        <h6 class="m-2">Sílabo</h6>
+                                        <p-dropdown
+                                            [options]="[]"
+                                            optionLabel=""
+                                            [style]="{ minWidth: '100%' }"
+                                            placeholder="Seleccionar Sílabo"
+                                        />
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                @if (activeIndex === 0) {
+                    <div class="flex pt-4 justify-content-end">
+                        <p-button
+                            (onClick)="goStep('next')"
+                            label="Siguiente"
+                            icon="pi pi-arrow-right"
+                            iconPos="right"
+                        />
+                    </div>
+                }
+                @if (activeIndex === 1) {
+                    <div class="flex pt-4 justify-content-start">
+                        <p-button
+                            (onClick)="goStep('back')"
+                            label="Atrás"
+                            icon="pi pi-arrow-left"
+                            iconPos="left"
+                        />
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

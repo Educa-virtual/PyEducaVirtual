@@ -37,4 +37,8 @@ export class ApiEreService {
             { params }
         )
     }
+
+    obtenerIE(params) {
+        return this.http.get(`${this.baseUrl}/ere/ie/obtenerIE`, { params })
+    }
 }

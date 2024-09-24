@@ -49,7 +49,6 @@ export class VerificacionComponent {
         const user = this.store.getItem('dremoToken')
         this.userName = user ? user.cPersNombreLargo : ''
         this.emails = user ? user.contactar : []
-        console.log(this.emails)
     }
 
     onVerify() {

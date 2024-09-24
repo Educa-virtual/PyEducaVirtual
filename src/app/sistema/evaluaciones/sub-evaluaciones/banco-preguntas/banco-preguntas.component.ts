@@ -28,6 +28,7 @@ import { ApiEreService } from '../../services/api-ere.service'
 import dayjs from 'dayjs'
 import { FloatLabelModule } from 'primeng/floatlabel'
 import { Subject, takeUntil } from 'rxjs'
+import { ApiEvaluacionesService } from '../../services/api-evaluaciones.service'
 
 @Component({
     selector: 'app-banco-preguntas',
@@ -51,6 +52,7 @@ import { Subject, takeUntil } from 'rxjs'
 export class BancoPreguntasComponent implements OnInit, OnDestroy {
     private _dialogService = inject(DialogService)
     private _apiEre = inject(ApiEreService)
+    private _apiEvaluaciones = inject(ApiEvaluacionesService)
     private unsubscribe$: Subject<boolean> = new Subject()
 
     public competencias = []
@@ -58,6 +60,7 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
     public desempenos = []
     public estados = []
     public evaluaciones = []
+    public tipoPreguntas = []
 
     public params = {
         iCompentenciaId: 0,
@@ -185,7 +188,7 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
         {
             labelTooltip: 'Eliminar',
             icon: 'pi pi-trash',
-            accion: 'editar',
+            accion: 'eliminar',
             type: 'item',
             class: 'p-button-rounded p-button-danger p-button-text',
         },
@@ -195,7 +198,7 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
                 name: 'matGroupWork',
                 size: 'xs',
             },
-            accion: 'agregar',
+            accion: 'asignar',
             type: 'item',
             class: 'p-button-rounded p-button-primary p-button-text',
         },
@@ -233,6 +236,7 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
 
         this.obtenerBancoPreguntas()
         this.obtenerDesempenos()
+        this.obtenerTipoPreguntas()
         // this.obtenerCompetencias()
     }
 
@@ -270,6 +274,17 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             })
     }
 
+    obtenerTipoPreguntas() {
+        this._apiEvaluaciones
+            .obtenerTipoPreguntas()
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+                next: (resp: unknown) => {
+                    this.tipoPreguntas = resp['data']
+                },
+            })
+    }
+
     obtenerCompetencias() {
         this._apiEre
             .obtenerCompetencias(this.params)
@@ -303,7 +318,9 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
     // manejar las acciones
     accionBtnItem(action) {
         if (action.accion === 'agregar') {
-            this.agregarPregunta()
+            this.agregarEditarPregunta({
+                iPreguntaId: 0,
+            })
         }
         if (action.accion === 'asignar') {
             this.asignarPreguntas()
@@ -311,11 +328,26 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
     }
 
     accionBtnItemTable({ accion, item }) {
-        if (accion === 'agregar') {
+        if (accion === 'asignar') {
             this.selectedItems = []
             this.selectedItems = [item]
             this.asignarPreguntas()
         }
+        if (accion === 'editar') {
+            this.agregarEditarPregunta(item)
+        }
+
+        if (accion === 'eliminar') {
+            this.eliminarPregunta(item)
+        }
+    }
+
+    eliminarPregunta(item) {
+        this._apiEvaluaciones.eliminarPreguntaById(item.iPreguntaId).subscribe({
+            next: () => {
+                this.obtenerBancoPreguntas()
+            },
+        })
     }
 
     // abrir el modal para asignar preguntas
@@ -344,10 +376,20 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
     }
 
     // abrir el modal para agregar una nueva pregunta
-    agregarPregunta() {
-        this._dialogService.open(BancoPreguntasFormComponent, {
+    agregarEditarPregunta(pregunta) {
+        const refModal = this._dialogService.open(BancoPreguntasFormComponent, {
             ...MODAL_CONFIG,
-            header: 'Nueva pregunta',
+            data: {
+                tipoPreguntas: this.tipoPreguntas,
+                pregunta: pregunta,
+                iCursoId: this.params.iCursoId,
+            },
+            header: pregunta == null ? 'Nueva pregunta' : 'Editar pregunta',
+        })
+        refModal.onClose.subscribe((result) => {
+            if (result) {
+                this.obtenerBancoPreguntas()
+            }
         })
     }
 

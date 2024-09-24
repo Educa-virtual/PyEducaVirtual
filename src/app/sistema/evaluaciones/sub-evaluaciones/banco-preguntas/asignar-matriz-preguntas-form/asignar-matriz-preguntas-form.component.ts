@@ -32,8 +32,8 @@ export class AsignarMatrizPreguntasFormComponent implements OnInit {
     private formBuilder = inject(FormBuilder)
     private selectedPreguntas = []
     private _config = inject(DynamicDialogConfig)
-    private ref = inject(DynamicDialogRef)
-    private apiEre = inject(ApiEreService)
+    private _ref = inject(DynamicDialogRef)
+    private _apiEre = inject(ApiEreService)
 
     public competencias = []
     public capacidades = []
@@ -181,7 +181,7 @@ export class AsignarMatrizPreguntasFormComponent implements OnInit {
     }
 
     closeModal(data) {
-        this.ref.close(data)
+        this._ref.close(data)
     }
 
     asignarMatrizPreguntas() {
@@ -197,7 +197,7 @@ export class AsignarMatrizPreguntasFormComponent implements OnInit {
             return item
         })
 
-        this.apiEre.actualizarMatrizPreguntas(data).subscribe({
+        this._apiEre.actualizarMatrizPreguntas(data).subscribe({
             next: () => {
                 this.closeModal(data)
             },

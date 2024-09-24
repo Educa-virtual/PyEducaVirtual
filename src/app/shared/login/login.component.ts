@@ -93,11 +93,10 @@ export class LoginComponent implements OnInit {
                         location.reload()
                     }, 350)
                 } else {
-                    this.sendEmail()
-                    // this.router.navigate(['verificacion'])
-                    // setTimeout(() => {
-                    //     location.reload()
-                    // }, 350)
+                    this.router.navigate(['verificacion'])
+                    setTimeout(() => {
+                        location.reload()
+                    }, 350)
                 }
             },
             complete: () => {},
@@ -108,51 +107,6 @@ export class LoginComponent implements OnInit {
                     severity: 'error',
                     summary: '¡Atención!',
                     detail: 'Las credenciales son erróneas',
-                })
-            },
-        })
-        // setTimeout(() => {
-        //     const data: Data = {
-        //         accessToken:
-        //             'ANB7xKhiUZmwltVd3f1odcHHM9VAwg02kwmLwtZwHv3SxGCOWLUf5W4G7X22PRjmR9StvFUqzpVZ1suOfyfOigdi-rnohxyEaSSuZceeLw_9OBW7fXldOG05HEgkeK3N-DBZZZyilodmjA1JWZHbgI3IU7Rmz5IPGyi-sDxHN3KlOr1BDZlLZpXPdFPwEyb6idq-z8AL-blKTSMtNI3_fz3oNBisfrHGUv5tXHoQT4B7FYcvdrap16gTOO7_wNt1zmgLJiUHvyxZgsgBchm_AhohVL-AYgcfCbCR0v7d2hgI4ag35pnZNeujDiBLfnCFcVMlqQGq8UEVZrmU9a8y4pVAGih_EImmghqmSrkxLPYZ800-vIWX-lw',
-        //         refreshToken: 'Bearer',
-        //         expires_in: 300,
-        //     }
-        //     this.tokenStorage.saveToken(data.accessToken)
-        //     this.loading = false
-        //     this.router.navigate(['./'])
-        // }, 200)
-        // setTimeout(() => {
-        //     location.reload()
-        // }, 350)
-    }
-    sendEmail() {
-        const user = this.store.getItem('dremoToken')
-        const params = {
-            iPersId: user ? user.iPersId : null,
-        }
-        this.authService.sendEmail(params).subscribe({
-            next: (response: Data) => {
-                if (!response.validated) {
-                    this.messageService.add({
-                        severity: 'error',
-                        summary: '¡Atención!',
-                        detail: 'Vuelva a ingresar sus credenciales',
-                    })
-                } else {
-                    this.router.navigate(['verificacion'])
-                    setTimeout(() => {
-                        location.reload()
-                    }, 350)
-                }
-            },
-            complete: () => {},
-            error: (error) => {
-                console.log(error)
-                this.messageService.add({
-                    severity: 'error',
-                    summary: '¡Atención!',
-                    detail: 'No se pudo enviar el correo',
                 })
             },
         })

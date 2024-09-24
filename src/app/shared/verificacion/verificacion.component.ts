@@ -30,6 +30,9 @@ export class VerificacionComponent {
     loadingText: string
     formVerify!: FormGroup
     userName: string
+    emails = []
+    correo = []
+
     constructor(
         private tokenStorage: TokenStorageService,
         private router: Router,
@@ -41,9 +44,12 @@ export class VerificacionComponent {
     ) {
         this.formVerify = this.fb.group({
             cCodeVerif: ['', Validators.required],
+            correo: ['', Validators.required],
         })
-        this.userName = this.store.getItem('dremoToken')
-        console.log(this.userName)
+        const user = this.store.getItem('dremoToken')
+        this.userName = user ? user.cPersNombreLargo : ''
+        this.emails = user ? user.contactar : []
+        console.log(this.emails)
     }
 
     onVerify() {
@@ -95,5 +101,33 @@ export class VerificacionComponent {
         setTimeout(() => {
             location.reload()
         }, 350)
+    }
+
+    sendEmail() {
+        const user = this.store.getItem('dremoToken')
+        const params = {
+            iPersId: user ? user.iPersId : null,
+            correo: this.formVerify.value.correo,
+        }
+        this.authService.sendEmail(params).subscribe({
+            next: (response: Data) => {
+                if (response.validated) {
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Exitoso!',
+                        detail: 'Se ha enviado al correo seleccionado su código de verificación',
+                    })
+                }
+            },
+            complete: () => {},
+            error: (error) => {
+                console.log(error)
+                this.messageService.add({
+                    severity: 'error',
+                    summary: '¡Atención!',
+                    detail: 'No se pudo enviar el correo',
+                })
+            },
+        })
     }
 }

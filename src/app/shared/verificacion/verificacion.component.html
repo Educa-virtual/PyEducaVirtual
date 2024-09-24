@@ -2,14 +2,27 @@
     class="flex justify-content-center align-items-center py-6"
     [formGroup]="formVerify"
 >
-    <p-card header="Bienvenido Usuario" [style]="{ width: '400px' }">
+    <p-card header="Bienvenido: {{ userName }}" [style]="{ width: '400px' }">
         <ng-template pTemplate="header">
             <img src="assets/images/security.svg" alt="logo" />
         </ng-template>
+        <p class="mb-2">
+            Seleccione el correo que desee que se le envié el código
+        </p>
+        @for (item of emails; track item.iPersConId) {
+            <div class="flex align-items-center">
+                <p-radioButton
+                    [value]="item.iPersConId"
+                    formControlName="correo"
+                    (onClick)="sendEmail()"
+                />
+                <span class="ml-2">{{ item.cPersConNombre }}</span>
+            </div>
+        }
 
-        <p class="mb-4">
+        <p class="mb-4 mt-2">
             Ingrese su Código de Verificación que se le ha enviado a su correo
-            personal
+            seleccionado previamente
         </p>
         <div class="flex justify-content-center grid">
             <p-inputOtp

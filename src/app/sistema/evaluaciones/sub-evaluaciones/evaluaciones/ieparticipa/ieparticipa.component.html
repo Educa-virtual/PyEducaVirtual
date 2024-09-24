@@ -1,15 +1,15 @@
 <p-pickList
     [source]="sourceProducts"
     [target]="targetProducts"
-    sourceHeader="Available"
-    targetHeader="Selected"
+    sourceHeader="I.E disponibles"
+    targetHeader="I.E seleccionados"
     [dragdrop]="true"
     [responsive]="true"
     [sourceStyle]="{ height: '30rem' }"
     [targetStyle]="{ height: '30rem' }"
     filterBy="name"
-    sourceFilterPlaceholder="Search by name"
-    targetFilterPlaceholder="Search by name"
+    sourceFilterPlaceholder="Buscar por nombre de I.E"
+    targetFilterPlaceholder="Buscar por nombre de I.E"
     breakpoint="1400px"
 >
     <ng-template let-product pTemplate="item">

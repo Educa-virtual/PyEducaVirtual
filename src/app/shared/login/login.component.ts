@@ -152,7 +152,7 @@ export class LoginComponent implements OnInit {
                 this.messageService.add({
                     severity: 'error',
                     summary: '¡Atención!',
-                    detail: 'Las credenciales son erróneas',
+                    detail: 'No se pudo enviar el correo',
                 })
             },
         })

@@ -29,7 +29,7 @@ export class VerificacionComponent {
     loading: boolean
     loadingText: string
     formVerify!: FormGroup
-
+    userName: string
     constructor(
         private tokenStorage: TokenStorageService,
         private router: Router,
@@ -42,6 +42,8 @@ export class VerificacionComponent {
         this.formVerify = this.fb.group({
             cCodeVerif: ['', Validators.required],
         })
+        this.userName = this.store.getItem('dremoToken')
+        console.log(this.userName)
     }
 
     onVerify() {

@@ -1,4 +1,5 @@
 import { PrimengModule } from '@/app/primeng.module'
+import { ModalPrimengComponent } from '@/app/shared/modal-primeng/modal-primeng.component'
 import {
     Component,
     EventEmitter,
@@ -6,16 +7,17 @@ import {
     OnChanges,
     Output,
 } from '@angular/core'
-import { ModalPrimengComponent } from '../../../../../shared/modal-primeng/modal-primeng.component'
 
 @Component({
-    selector: 'app-form-recursos-didacticos',
+    selector: 'app-form-actividades-aprendizaje-evaluacion',
     standalone: true,
-    imports: [PrimengModule, ModalPrimengComponent],
-    templateUrl: './form-recursos-didacticos.component.html',
-    styleUrl: './form-recursos-didacticos.component.scss',
+    imports: [ModalPrimengComponent, PrimengModule],
+    templateUrl: './form-actividades-aprendizaje-evaluacion.component.html',
+    styleUrl: './form-actividades-aprendizaje-evaluacion.component.scss',
 })
-export class FormRecursosDidacticosComponent implements OnChanges {
+export class FormActividadesAprendizajeEvaluacionComponent
+    implements OnChanges
+{
     @Output() accionBtnItem = new EventEmitter()
 
     @Input() showModal: boolean = true

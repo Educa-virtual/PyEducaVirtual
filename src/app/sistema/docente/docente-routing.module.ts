@@ -10,6 +10,7 @@ import { AsistenciaComponent } from './asistencia/asistencia.component'
 import { DetalleAsistenciaComponent } from './asistencia/detalle-asistencia/detalle-asistencia.component'
 import { PersonalComponent } from './personal/personal.component'
 import { SesionAprendizajeComponent } from './sesion-aprendizaje/sesion-aprendizaje.component'
+import { GestionarSilaboComponent } from './areas-estudios/components/gestionar-silabo/gestionar-silabo.component'
 
 @NgModule({
     imports: [
@@ -23,7 +24,10 @@ import { SesionAprendizajeComponent } from './sesion-aprendizaje/sesion-aprendiz
             },
             { path: 'ficha-actividades', component: FichaActividadesComponent },
             { path: 'silabo', component: SilaboComponent },
-            { path: 'asistencia', component: AsistenciaComponent },
+            {
+                path: 'asistencia/:iCursoId/:cCursoNombre',
+                component: AsistenciaComponent,
+            },
             {
                 path: 'detalle-asistencia',
                 component: DetalleAsistenciaComponent,
@@ -32,6 +36,10 @@ import { SesionAprendizajeComponent } from './sesion-aprendizaje/sesion-aprendiz
             {
                 path: 'sesion-aprendizaje',
                 component: SesionAprendizajeComponent,
+            },
+            {
+                path: 'gestionar-silabo/:iCursoId/:cCursoNombre',
+                component: GestionarSilaboComponent,
             },
         ]),
     ],

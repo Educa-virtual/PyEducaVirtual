@@ -1,107 +1,72 @@
-<div class="card">
-    <p-accordion [activeIndex]="0">
-        <p-accordionTab header="Información pregunta">
+<p-accordion [activeIndex]="0">
+    <p-accordionTab header="Información pregunta">
+        <form [formGroup]="bancoPreguntasForm">
             <div class="formgrid grid">
-                <div class="field col flex flex-column">
-                    <label for="firstname2">Tipo pregunta</label>
+                <div class="field flex flex-column col-12 md:col-6">
+                    <label for="tipo-pregunta">Tipo pregunta</label>
                     <p-dropdown
-                        [options]="cities"
-                        [(ngModel)]="selectedCity"
-                        optionLabel="name"
-                        placeholder="Select a City"
+                        [options]="tipoPreguntas"
+                        formArrayName="iTipoPregId"
+                        styleClass="w-full"
+                        placeholder="Seleccione un tipo de pregunta"
+                        optionLabel="cTipoPregDescripcion"
                     />
                 </div>
-                <div class="field col">
-                    <label for="lastname2">Puntaje</label>
-                    <input
-                        id="lastname2"
-                        type="text"
-                        class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"
+                <div class="field col-12 md:col-6">
+                    <app-common-input
+                        [label]="'Nivel'"
+                        [controlKey]="'iPreguntaNivel'"
+                    />
+                </div>
+
+                <div class="field col-12 md:col-6">
+                    <app-common-input
+                        [label]="'Peso'"
+                        [controlKey]="'iPreguntaPeso'"
+                    />
+                </div>
+                <div class="field col-12 md:col-6">
+                    <app-common-input
+                        [label]="'Pregunta Clave'"
+                        [controlKey]="'cPreguntaClave'"
                     />
                 </div>
             </div>
-
+            <h2 class="text-xl m-0 mb-2">Tiempo para responder</h2>
             <div class="formgrid grid">
-                <div class="field col">
-                    <label for="firstname2">Nivel</label>
-                    <input
-                        id="firstname2"
-                        type="text"
-                        class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"
+                <div class="field col-12 md:col">
+                    <app-common-input
+                        [label]="'Hora'"
+                        [controlKey]="'iHoras'"
                     />
                 </div>
-                <div class="field col">
-                    <label for="lastname2">Peso</label>
-                    <input
-                        id="lastname2"
-                        type="text"
-                        class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"
+                <div class="field col-12 md:col">
+                    <app-common-input
+                        [label]="'Minutos'"
+                        [controlKey]="'iMinutos'"
                     />
                 </div>
-            </div>
-
-            <div class="grid">
-                <div class="col">
-                    <div class="border-round-sm">Tiempo para responder</div>
-                </div>
-            </div>
-            <div class="formgrid grid">
-                <div class="field col">
-                    <label for="firstname2">Hora</label>
-                    <input
-                        id="firstname2"
-                        type="text"
-                        class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"
-                    />
-                </div>
-                <div class="field col">
-                    <label for="lastname2">Minutos</label>
-                    <input
-                        id="lastname2"
-                        type="text"
-                        class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"
-                    />
-                </div>
-                <div class="field col">
-                    <label for="lastname2">Segundos</label>
-                    <input
-                        id="lastname2"
-                        type="text"
-                        class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"
+                <div class="field col-12 md:col">
+                    <app-common-input
+                        [label]="'Segundos'"
+                        [controlKey]="'iSegundos'"
                     />
                 </div>
             </div>
-
-            <div class="formgrid grid">
-                <div class="field col flex flex-column">
-                    <label for="firstname2">Pregunta estado</label>
-                    <p-inputSwitch [(ngModel)]="checked" />
-                </div>
-                <div class="field col">
-                    <label for="lastname2">Pregunta clave</label>
-                    <input
-                        id="lastname2"
-                        type="text"
-                        class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"
-                    />
-                </div>
-            </div>
-
             <div class="formgrid grid">
                 <div class="field col">
                     <label for="firstname2">Enunciado de la pregunta</label>
                     <p-editor
-                        [(ngModel)]="text"
+                        [formControlName]="'cPregunta'"
                         [style]="{ height: '320px' }"
                     />
                 </div>
             </div>
-
             <div class="formgrid grid">
                 <div class="field col">
                     <label for="firstname2">Texto ayuda</label>
                     <p-editor
-                        [(ngModel)]="textAyuda"
+                        formControlName="cPreguntaTextoAyuda"
                         [style]="{ height: '320px' }"
                     />
                 </div>
@@ -111,14 +76,14 @@
                     <p-button label="Siguiente" />
                 </div>
             </div>
-        </p-accordionTab>
-        <p-accordionTab header="Alternativas de la pregunta">
-            <app-alternativas></app-alternativas>
-            <div class="grid">
-                <div class="col col-offset-10">
-                    <p-button label="FInalizar" />
-                </div>
+        </form>
+    </p-accordionTab>
+    <p-accordionTab header="Alternativas de la pregunta">
+        <app-alternativas></app-alternativas>
+        <div class="grid">
+            <div class="col col-offset-10">
+                <p-button label="FInalizar" />
             </div>
-        </p-accordionTab>
-    </p-accordion>
-</div>
+        </div>
+    </p-accordionTab>
+</p-accordion>

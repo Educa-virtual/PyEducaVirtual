@@ -1,12 +1,13 @@
-import { Component, OnInit } from '@angular/core'
+import { Component, inject } from '@angular/core'
 /*Droodwn*/
-import { FormsModule } from '@angular/forms'
+import {
+    FormBuilder,
+    FormGroup,
+    FormsModule,
+    ReactiveFormsModule,
+    Validators,
+} from '@angular/forms'
 import { DropdownModule } from 'primeng/dropdown'
-interface City {
-    name: string
-    code: string
-}
-/*InputSwitch */
 import { InputSwitchModule } from 'primeng/inputswitch'
 
 //EDITOR
@@ -23,6 +24,7 @@ import { AlternativasComponent } from '../alternativas/alternativas.component'
 import { AccordionModule } from 'primeng/accordion'
 
 import { ButtonModule } from 'primeng/button'
+import { CommonInputComponent } from '@/app/shared/components/common-input/common-input.component'
 @Component({
     selector: 'app-banco-preguntas-form',
     standalone: true,
@@ -36,25 +38,28 @@ import { ButtonModule } from 'primeng/button'
         AlternativasComponent,
         ButtonModule,
         AccordionModule,
+        ReactiveFormsModule,
+        CommonInputComponent,
     ],
     templateUrl: './banco-preguntas-form.component.html',
     styleUrl: './banco-preguntas-form.component.scss',
 })
-export class BancoPreguntasFormComponent implements OnInit {
-    text
-    textAyuda
-    valSwitch: boolean = false
-    cities: City[] | undefined
-    checked: boolean = true
-    selectedCity: City | undefined
-    value: string | undefined
-    ngOnInit() {
-        this.cities = [
-            { name: 'New York', code: 'NY' },
-            { name: 'Rome', code: 'RM' },
-            { name: 'London', code: 'LDN' },
-            { name: 'Istanbul', code: 'IST' },
-            { name: 'Paris', code: 'PRS' },
-        ]
-    }
+export class BancoPreguntasFormComponent {
+    public tipoPreguntas = []
+
+    private _formBuilder = inject(FormBuilder)
+
+    public bancoPreguntasForm: FormGroup = this._formBuilder.group({
+        iTipoPregId: [null, [Validators.required]],
+        iCursoId: [null, [Validators.required]],
+        cPregunta: [null, [Validators.required]],
+        cPreguntaTextoAyuda: [null, Validators.required],
+        iPreguntaNivel: [null, [Validators.required]],
+        iPreguntaPeso: [null, [Validators.required]],
+        // dtPreguntaTiempo: [null, [Validators.required]],
+        iHoras: [0, [Validators.required]],
+        iMinutos: [0, [Validators.required]],
+        iSegundos: [0, [Validators.required]],
+        cPreguntaClave: [null, [Validators.required]],
+    })
 }

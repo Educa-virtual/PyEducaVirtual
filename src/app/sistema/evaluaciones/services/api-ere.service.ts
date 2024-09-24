@@ -20,7 +20,9 @@ export class ApiEreService {
     obtenerBancoPreguntas(params) {
         return this.http.get(
             `${this.baseUrl}/ere/banco-preguntas/obtenerBancoPreguntas`,
-            { params }
+            {
+                params,
+            }
         )
     }
 

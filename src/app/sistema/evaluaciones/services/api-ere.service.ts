@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core'
-import { environment } from '@/environments/environment'
+import { environment } from '@/environments/environment.template'
 import { HttpClient } from '@angular/common/http'
 
 @Injectable({
@@ -20,7 +20,9 @@ export class ApiEreService {
     obtenerBancoPreguntas(params) {
         return this.http.get(
             `${this.baseUrl}/ere/banco-preguntas/obtenerBancoPreguntas`,
-            { params }
+            {
+                params,
+            }
         )
     }
 
@@ -34,6 +36,13 @@ export class ApiEreService {
     obtenerCapacidades(params) {
         return this.http.get(
             `${this.baseUrl}/ere/capacidades/obtenerCapacidades`,
+            { params }
+        )
+    }
+
+    obtenerDesempenos(params) {
+        return this.http.get(
+            `${this.baseUrl}/ere/desempenos/obtenerDesempenos`,
             { params }
         )
     }

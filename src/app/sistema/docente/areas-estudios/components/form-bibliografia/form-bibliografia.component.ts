@@ -1,4 +1,3 @@
-import { PrimengModule } from '@/app/primeng.module'
 import {
     Component,
     EventEmitter,
@@ -7,15 +6,16 @@ import {
     Output,
 } from '@angular/core'
 import { ModalPrimengComponent } from '../../../../../shared/modal-primeng/modal-primeng.component'
+import { PrimengModule } from '@/app/primeng.module'
 
 @Component({
-    selector: 'app-form-recursos-didacticos',
+    selector: 'app-form-bibliografia',
     standalone: true,
-    imports: [PrimengModule, ModalPrimengComponent],
-    templateUrl: './form-recursos-didacticos.component.html',
-    styleUrl: './form-recursos-didacticos.component.scss',
+    imports: [ModalPrimengComponent, PrimengModule],
+    templateUrl: './form-bibliografia.component.html',
+    styleUrl: './form-bibliografia.component.scss',
 })
-export class FormRecursosDidacticosComponent implements OnChanges {
+export class FormBibliografiaComponent implements OnChanges {
     @Output() accionBtnItem = new EventEmitter()
 
     @Input() showModal: boolean = true

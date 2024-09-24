@@ -1,124 +1,128 @@
-<div class="card">
-    <p-accordion [activeIndex]="0">
-        <p-accordionTab header="Información pregunta">
-            <div class="formgrid grid">
-                <div class="field col flex flex-column">
-                    <label for="firstname2">Tipo pregunta</label>
-                    <p-dropdown
-                        [options]="cities"
-                        [(ngModel)]="selectedCity"
-                        optionLabel="name"
-                        placeholder="Select a City"
-                    />
-                </div>
-                <div class="field col">
-                    <label for="lastname2">Puntaje</label>
-                    <input
-                        id="lastname2"
-                        type="text"
-                        class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"
-                    />
-                </div>
-            </div>
+<div class="flex flex-column gap-4">
+    <p-steps
+        [model]="pasos"
+        [(activeIndex)]="activeIndex"
+        [readonly]="mode === 'CREAR'"
+    ></p-steps>
+    @switch (activeIndex) {
+        @case (0) {
+            <form [formGroup]="bancoPreguntasForm">
+                <div class="formgrid grid">
+                    <div class="field flex flex-column col-12 md:col-6">
+                        <label for="tipo-pregunta">Tipo pregunta</label>
+                        <p-dropdown
+                            styleClass="w-full"
+                            optionValue="iTipoPregId"
+                            formControlName="iTipoPregId"
+                            [options]="tipoPreguntas"
+                            optionLabel="cTipoPregDescripcion"
+                            [class]="{
+                                'ng-dirty ng-invalid':
+                                    bancoPreguntasForm.get('iTipoPregId')
+                                        ?.errors &&
+                                    bancoPreguntasForm.get('iTipoPregId')
+                                        ?.touched,
+                            }"
+                        />
+                    </div>
+                    <div class="field col-12 md:col-6">
+                        <app-common-input
+                            [label]="'Nivel'"
+                            [controlKey]="'iPreguntaNivel'"
+                        />
+                    </div>
 
-            <div class="formgrid grid">
-                <div class="field col">
-                    <label for="firstname2">Nivel</label>
-                    <input
-                        id="firstname2"
-                        type="text"
-                        class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"
-                    />
+                    <div class="field col-12 md:col-6">
+                        <app-common-input
+                            [label]="'Peso'"
+                            [controlKey]="'iPreguntaPeso'"
+                        />
+                    </div>
+                    <div class="field col-12 md:col-6">
+                        <app-common-input
+                            [label]="'Pregunta Clave'"
+                            [controlKey]="'cPreguntaClave'"
+                        />
+                    </div>
                 </div>
-                <div class="field col">
-                    <label for="lastname2">Peso</label>
-                    <input
-                        id="lastname2"
-                        type="text"
-                        class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"
-                    />
+                <h2 class="text-xl m-0 mb-2">Tiempo para responder</h2>
+                <div class="formgrid grid">
+                    <div class="field col-12 md:col">
+                        <app-common-input
+                            [label]="'Horas'"
+                            [controlKey]="'iHoras'"
+                        />
+                    </div>
+                    <div class="field col-12 md:col">
+                        <app-common-input
+                            [label]="'Minutos'"
+                            [controlKey]="'iMinutos'"
+                        />
+                    </div>
+                    <div class="field col-12 md:col">
+                        <app-common-input
+                            [label]="'Segundos'"
+                            [controlKey]="'iSegundos'"
+                        />
+                    </div>
                 </div>
-            </div>
-
-            <div class="grid">
-                <div class="col">
-                    <div class="border-round-sm">Tiempo para responder</div>
+                <div class="formgrid grid">
+                    <div class="field col">
+                        <label for="firstname2">Enunciado de la pregunta</label>
+                        <p-editor
+                            [formControlName]="'cPregunta'"
+                            [style]="{ height: '320px' }"
+                        />
+                    </div>
                 </div>
-            </div>
-            <div class="formgrid grid">
-                <div class="field col">
-                    <label for="firstname2">Hora</label>
-                    <input
-                        id="firstname2"
-                        type="text"
-                        class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"
-                    />
+                <div class="formgrid grid">
+                    <div class="field col">
+                        <label for="firstname2">Texto ayuda</label>
+                        <p-editor
+                            formControlName="cPreguntaTextoAyuda"
+                            [style]="{ height: '320px' }"
+                        />
+                    </div>
                 </div>
-                <div class="field col">
-                    <label for="lastname2">Minutos</label>
-                    <input
-                        id="lastname2"
-                        type="text"
-                        class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"
-                    />
-                </div>
-                <div class="field col">
-                    <label for="lastname2">Segundos</label>
-                    <input
-                        id="lastname2"
-                        type="text"
-                        class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"
-                    />
-                </div>
-            </div>
-
-            <div class="formgrid grid">
-                <div class="field col flex flex-column">
-                    <label for="firstname2">Pregunta estado</label>
-                    <p-inputSwitch [(ngModel)]="checked" />
-                </div>
-                <div class="field col">
-                    <label for="lastname2">Pregunta clave</label>
-                    <input
-                        id="lastname2"
-                        type="text"
-                        class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"
-                    />
-                </div>
-            </div>
-
-            <div class="formgrid grid">
-                <div class="field col">
-                    <label for="firstname2">Enunciado de la pregunta</label>
-                    <p-editor
-                        [(ngModel)]="text"
-                        [style]="{ height: '320px' }"
-                    />
-                </div>
-            </div>
-
-            <div class="formgrid grid">
-                <div class="field col">
-                    <label for="firstname2">Texto ayuda</label>
-                    <p-editor
-                        [(ngModel)]="textAyuda"
-                        [style]="{ height: '320px' }"
-                    />
-                </div>
-            </div>
-            <div class="grid">
-                <div class="col col-offset-10">
-                    <p-button label="Siguiente" />
-                </div>
-            </div>
-        </p-accordionTab>
-        <p-accordionTab header="Alternativas de la pregunta">
-            <app-alternativas></app-alternativas>
-            <div class="grid">
-                <div class="col col-offset-10">
-                    <p-button label="FInalizar" />
-                </div>
-            </div>
-        </p-accordionTab>
-    </p-accordion>
+            </form>
+        }
+        @case (1) {
+            <app-alternativas
+                [alternativas]="alternativas"
+                [pregunta]="pregunta"
+            ></app-alternativas>
+            @if (alternativas.length < 2) {
+                <small class="text-red-500">
+                    Debe Agregar al menos dos opciones
+                </small>
+            }
+        }
+        @default {}
+    }
+    <div class="flex justify-content-between">
+        @if (activeIndex !== 0) {
+            <button pButton size="small" (click)="goStep('back')">Atrás</button>
+        }
+        @if (activeIndex !== 1) {
+            <button
+                pButton
+                size="small"
+                (click)="goStep('next')"
+                class="ml-auto"
+            >
+                Siguiente
+            </button>
+        }
+        @if (activeIndex === 1) {
+            <button
+                pButton
+                pRipple
+                label="Finalizar"
+                icon="pi pi-save"
+                size="small"
+                class="p-button-primary ml-auto"
+                (click)="guardarActualizarBancoPreguntas()"
+            ></button>
+        }
+    </div>
 </div>

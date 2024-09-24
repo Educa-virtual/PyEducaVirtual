@@ -2,58 +2,44 @@
     class="flex justify-content-center align-items-center py-6"
     [formGroup]="formVerify"
 >
-    <p-card header="Bienvenido Usuario" [style]="{ width: '400px' }">
+    <p-card header="Bienvenido: {{ userName }}" [style]="{ width: '400px' }">
         <ng-template pTemplate="header">
             <img src="assets/images/security.svg" alt="logo" />
         </ng-template>
-
-        <p class="mb-4">
-            Ingrese su Código de Verificación que se le ha enviado a su correo
-            personal
+        <p class="mb-2">
+            Seleccione el correo que desee que se le envié el código
         </p>
-        <div class="flex">
-            <input
-                type="text"
-                class="w-full p-inputtext-sm ml-1"
-                maxlength="1"
-                formControlName="inp1"
-                pInputText
-            />
-            <input
-                type="text"
-                class="w-full p-inputtext-sm ml-1"
-                maxlength="1"
-                formControlName="inp2"
-                pInputText
-            />
-            <input
-                type="text"
-                class="w-full p-inputtext-sm ml-1"
-                maxlength="1"
-                formControlName="inp3"
-                pInputText
-            />
-            <input
-                type="text"
-                class="w-full p-inputtext-sm ml-1"
-                maxlength="1"
-                formControlName="inp4"
-                pInputText
-            />
-            <input
-                type="text"
-                class="w-full p-inputtext-sm ml-1"
-                maxlength="1"
-                formControlName="inp5"
-                pInputText
-            />
-            <input
-                type="text"
-                class="w-full p-inputtext-sm ml-1"
-                maxlength="1"
-                formControlName="inp6"
-                pInputText
-            />
+        @for (item of emails; track item.iPersConId) {
+            <div class="flex align-items-center">
+                <p-radioButton
+                    [value]="item.iPersConId"
+                    formControlName="correo"
+                    (onClick)="sendEmail()"
+                />
+                <span class="ml-2">{{ item.cPersConNombre }}</span>
+            </div>
+        }
+
+        <p class="mb-4 mt-2">
+            Ingrese su Código de Verificación que se le ha enviado a su correo
+            seleccionado previamente
+        </p>
+        <div class="flex justify-content-center grid">
+            <p-inputOtp
+                class="col-12"
+                formControlName="cCodeVerif"
+                style="gap: 2"
+                [length]="6"
+                ><ng-template pTemplate="input" let-token let-events="events">
+                    <input
+                        type="text"
+                        class="w-full p-inputtext-sm ml-1"
+                        maxlength="1"
+                        pInputText
+                        (input)="events.input($event)"
+                        (keydown)="events.keydown($event)"
+                    /> </ng-template
+            ></p-inputOtp>
         </div>
 
         <ng-template pTemplate="footer">

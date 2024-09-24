@@ -13,6 +13,8 @@
     (selectionChange)="onSelectionChange($event)"
     sortMode="multiple"
     [(selection)]="selectedRowData"
+    [scrollable]="scrollable"
+    [scrollHeight]="scrollHeight"
     class="hoverTable"
 >
     @if (showCaption) {
@@ -88,6 +90,11 @@
                     }
                     @if (col.type === 'checkbox') {
                         <p-tableCheckbox [value]="rowData" />
+                    }
+                    @if (col.type === 'radio') {
+                        <p-tableRadioButton
+                            [value]="rowData"
+                        ></p-tableRadioButton>
                     }
                     @if (col.type === 'actions') {
                         <div class="d-block text-center">

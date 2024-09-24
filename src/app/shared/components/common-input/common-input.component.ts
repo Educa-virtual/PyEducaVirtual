@@ -29,7 +29,6 @@ export class CommonInputComponent implements OnInit {
 
     ngOnInit(): void {
         this.parentFormGroup.get(this.controlKey).hasError('required')
-        console.log(this._parentContainer.control.get(this.controlKey))
     }
 
     get parentFormGroup() {

@@ -54,7 +54,9 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     @Input() showCaption: boolean = true
     @Input() showPaginator: boolean = true
 
-    @Input() selectedRowData = []
+    @Input() selectedRowData
+    @Input() scrollable: boolean = false
+    @Input() scrollHeight: string = ''
 
     @Input() data = []
     @Input() tableStyle: {
@@ -204,7 +206,6 @@ export class TablePrimengComponent implements OnChanges, OnInit {
 
     onColumnSelected(columns) {
         this.columnasSeleccionadas = columns
-        console.log(this.columnasSeleccionadas)
     }
 
     onSelectionChange(event) {

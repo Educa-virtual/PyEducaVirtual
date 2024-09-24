@@ -22,6 +22,12 @@ import { MODAL_CONFIG } from '@/app/shared/constants/modal.config'
 
 import { BotonosModalFormComponent } from '../evaluaciones/evaluaciones-form/botonos-modal-form/botonos-modal-form.component'
 
+import {
+    IActionTable,
+    IColumn,
+    TablePrimengComponent,
+} from '../../../../shared/table-primeng/table-primeng.component'
+
 @Component({
     selector: 'app-evaluaciones',
     standalone: true,
@@ -31,6 +37,7 @@ import { BotonosModalFormComponent } from '../evaluaciones/evaluaciones-form/bot
         ButtonModule,
         DialogModule,
         InputTextModule,
+        TablePrimengComponent,
     ],
     providers: [DialogService],
     templateUrl: './evaluaciones.component.html',
@@ -41,6 +48,108 @@ export class EvaluacionesComponent implements OnInit {
 
     customers!: Customer[]
     visible: boolean = false
+
+    columnas: IColumn[] = [
+        {
+            field: 'checked',
+            header: '',
+            type: 'checkbox',
+            width: '5rem',
+            text: 'left',
+            text_header: '',
+        },
+        {
+            field: 'cPregunta',
+            header: 'Pregunta',
+            type: 'text',
+            width: '5rem',
+            text: 'left',
+            text_header: 'Pregunta',
+        },
+        {
+            field: 'time',
+            header: 'Tiempo',
+            type: 'text',
+            width: '5rem',
+            text: 'left',
+            text_header: 'Tiempo',
+        },
+
+        {
+            field: 'iPreguntaPeso',
+            header: 'Puntaje',
+            type: 'text',
+            width: '5rem',
+            text: 'left',
+            text_header: 'Puntaje',
+        },
+        {
+            field: 'iPreguntaNivel',
+            header: 'Nivel',
+            type: 'text',
+            width: '5rem',
+            text: 'left',
+            text_header: 'Nivel',
+        },
+        {
+            field: 'cPreguntaClave',
+            header: 'Clave',
+            type: 'text',
+            width: '5rem',
+            text: 'left',
+            text_header: 'Clave',
+        },
+        {
+            field: 'bPreguntaEstado',
+            header: 'Estado',
+            type: 'estado',
+            width: '5rem',
+            text: 'left',
+            text_header: 'Estado',
+            customFalsy: {
+                trueText: 'Con Matriz',
+                falseText: 'Sin Matriz',
+            },
+        },
+        {
+            field: '',
+            header: 'Acciones',
+            type: 'actions',
+            width: '5rem',
+            text: 'left',
+            text_header: '',
+        },
+    ]
+
+    data = [{ id: 0 }, { id: 1 }, { id: 2 }]
+
+    selectedItems = []
+    public accionesTabla: IActionTable[] = [
+        {
+            labelTooltip: 'Editar',
+            icon: 'pi pi-pencil',
+            accion: 'editar',
+            type: 'item',
+            class: 'p-button-rounded p-button-warning p-button-text',
+        },
+        {
+            labelTooltip: 'Eliminar',
+            icon: 'pi pi-trash',
+            accion: 'editar',
+            type: 'item',
+            class: 'p-button-rounded p-button-danger p-button-text',
+        },
+        {
+            labelTooltip: 'Asignar I.E ',
+            icon: {
+                name: 'matGroupWork',
+                size: 'xs',
+            },
+            accion: 'agregar',
+            type: 'item',
+            class: 'p-button-rounded p-button-primary p-button-text',
+        },
+    ]
 
     constructor(private customerService: CustomerService) {}
 
@@ -62,5 +171,23 @@ export class EvaluacionesComponent implements OnInit {
                 footer: BotonosModalFormComponent,
             },
         })
+    }
+
+    // manejar las acciones
+    accionBtnItem(action) {
+        if (action.accion === 'agregar') {
+            //this.agregarPregunta()
+        }
+        if (action.accion === 'asignar') {
+            //this.asignarPreguntas()
+        }
+    }
+
+    accionBtnItemTable({ accion, item }) {
+        if (accion === 'agregar') {
+            this.selectedItems = []
+            this.selectedItems = [item]
+            //.asignarPreguntas()
+        }
     }
 }

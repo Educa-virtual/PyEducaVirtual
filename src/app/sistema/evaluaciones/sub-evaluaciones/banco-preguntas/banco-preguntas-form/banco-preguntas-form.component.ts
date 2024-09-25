@@ -130,6 +130,7 @@ export class BancoPreguntasFormComponent implements OnInit {
         this.alternativas = alternativas
     }
 
+    // avanzar steps
     goStep(opcion: string) {
         switch (opcion) {
             case 'next':
@@ -168,6 +169,7 @@ export class BancoPreguntasFormComponent implements OnInit {
         this.bancoPreguntasForm.get('0.iCursoId').setValue(iCursoId)
     }
 
+    // escuchar cambio de tipo de preguntas y activar validaciones de las alternativas
     handleTipoPreguntaChange(tipoPregunta: number): void {
         console.log(tipoPregunta)
 
@@ -179,6 +181,7 @@ export class BancoPreguntasFormComponent implements OnInit {
         }
     }
 
+    // validaciones alternativas
     alternativasValidator() {
         return (control: AbstractControl) => {
             let tipoPregunta =

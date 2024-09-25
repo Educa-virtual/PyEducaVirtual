@@ -61,6 +61,7 @@ export class AlternativasFormComponent implements OnInit {
                 .get('iPreguntaId')
                 .setValue(this.pregunta.iPreguntaId)
         }
+        // editando alternativa
         if (this.alternativa != null) {
             this.alternativaFormGroup.patchValue(this.alternativa)
             this.alternativaFormGroup
@@ -83,8 +84,13 @@ export class AlternativasFormComponent implements OnInit {
 
         const alternativa = this.alternativaFormGroup.value
         if (this.pregunta.iPreguntaId == 0) {
-            alternativa.isLocal = true
+            // generar id por defecto
             alternativa.iAlternativaId = generarIdAleatorio()
+            if (this.alternativa != null) {
+                // si estamos editando asignar el id inicial
+                alternativa.iAlternativaId = this.alternativa.iAlternativaId
+            }
+            alternativa.isLocal = true
             this.closeModal(alternativa)
             return
         }

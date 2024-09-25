@@ -7,13 +7,8 @@ import {
     Output,
 } from '@angular/core'
 import { ButtonModule } from 'primeng/button'
-
-/*import { Product } from '@domain/product';
-import { ProductService } from '@service/productservice';*/
 import { TableModule } from 'primeng/table'
 import { CommonModule } from '@angular/common'
-
-/* modal  */
 import { DialogService, DynamicDialogConfig } from 'primeng/dynamicdialog'
 import { AlternativasFormComponent } from '../alternativas/alternativas-form/alternativas-form.component'
 import { MODAL_CONFIG } from '@/app/shared/constants/modal.config'
@@ -130,15 +125,18 @@ export class AlternativasComponent implements OnInit {
                 result.bAlternativaCorrecta = result.bAlternativaCorrecta
                     ? 1
                     : 0
-                const existeAlternativa = this.alternativas.some(
-                    (x) => x.iAlternativaId == result.iAlternativaId
-                )
+                const existeAlternativa = this.alternativas.some((x) => {
+                    console.log(x.iAlternativaId, result.iAlternativaId)
+
+                    return x.iAlternativaId == result.iAlternativaId
+                })
+
+                // si existe actualizar alternativa
                 if (existeAlternativa) {
-                    this.alternativas[
-                        this.alternativas.findIndex(
-                            (x) => x.iAlternativaId == result.iAlternativaId
-                        )
-                    ] = result
+                    const index = this.alternativas.findIndex(
+                        (x) => x.iAlternativaId == result.iAlternativaId
+                    )
+                    this.alternativas[index] = result
                     this.alternativasChange.emit(this.alternativas)
                 } else {
                     this.alternativas.push(result)

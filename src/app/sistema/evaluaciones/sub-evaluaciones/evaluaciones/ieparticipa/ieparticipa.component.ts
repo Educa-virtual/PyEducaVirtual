@@ -5,15 +5,27 @@ import { Product } from 'src/app/demo/api/product'
 import { ProductService } from 'src/app/demo/service/product.service'
 import { PickListModule } from 'primeng/picklist'
 
-import { ApiEreService } from '../../../services/api-ere.service'
+import { ApiEvaluacionesRService } from '../../../services/api-evaluaciones-r.service'
 import { Subject, takeUntil } from 'rxjs'
 //import dayjs from 'dayjs'
+import { FormsModule } from '@angular/forms'
+import { DropdownModule } from 'primeng/dropdown'
 
 import { ButtonModule } from 'primeng/button'
+
+/*interface City {
+  name: string;
+  code: string;
+}*/
+interface NivelTipo {
+    cNivelTipoNombre: string
+    iNivelTipoId: string
+}
+
 @Component({
     selector: 'app-ieparticipa',
     standalone: true,
-    imports: [PickListModule, ButtonModule],
+    imports: [PickListModule, ButtonModule, DropdownModule, FormsModule],
     templateUrl: './ieparticipa.component.html',
     styleUrl: './ieparticipa.component.scss',
     providers: [ProductService],
@@ -28,10 +40,13 @@ export class IeparticipaComponent {
     }
     public data = []
 
-    private _apiEre = inject(ApiEreService)
+    private _apiEre = inject(ApiEvaluacionesRService)
     sourceProducts!: Product[]
 
     targetProducts!: Product[]
+
+    nivelTipo: NivelTipo[] | undefined
+    selectedNivelTipo: NivelTipo | undefined
 
     constructor(
         private carService: ProductService,
@@ -44,6 +59,12 @@ export class IeparticipaComponent {
         })
         this.targetProducts = []
         this.obtenerIE()
+        this.obtenerNivelTipo()
+
+        this.nivelTipo = [
+            { cNivelTipoNombre: 'Primaria', iNivelTipoId: 'NY' },
+            { cNivelTipoNombre: 'Secundaria', iNivelTipoId: 'RM' },
+        ]
     }
 
     obtenerIE() {
@@ -64,7 +85,30 @@ export class IeparticipaComponent {
                 },
             })
     }
+    obtenerNivelTipo() {
+        this._apiEre
+            .obtenerNivelTipo(this.params)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+                next: (resp: unknown) => {
+                    /*.competencias = resp['data']
+                  this.competencias.unshift({
+                      iCompentenciaId: 0,
+                      cCompetenciaDescripcion: 'Todos',
+                  })*/
+
+                    this.nivelTipo = resp['data']
+                    alert(JSON.stringify(this.data))
+                    this.sourceProducts = this.data
+                },
+            })
+    }
     seleccionados() {
         alert(JSON.stringify(this.targetProducts))
+    }
+    onChange(event) {
+        //alert(v)
+        alert(JSON.stringify(event))
+        //this.verSeleccion = this.opcionSeleccionado;
     }
 }

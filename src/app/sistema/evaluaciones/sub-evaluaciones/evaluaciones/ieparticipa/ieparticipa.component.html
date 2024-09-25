@@ -1,4 +1,12 @@
 <div class="card flex justify-content-center">
+    <p-dropdown
+        [options]="nivelTipo"
+        [(ngModel)]="selectedNivelTipo"
+        optionLabel="cNivelTipoNombre"
+        placeholder="Seleccione un nivel"
+        (onChange)="onChange($event.value)"
+    />
+
     <p-button label="Submit" (onClick)="seleccionados()" />
 </div>
 
@@ -26,6 +34,9 @@
                     <i class="pi pi-tag text-sm"></i>
                     <span>
                         {{ product.cIieeCodigoModular }}
+                    </span>
+                    <span>
+                        <b>{{ product.cNivelTipoNombre }}</b>
                     </span>
                 </div>
             </div>

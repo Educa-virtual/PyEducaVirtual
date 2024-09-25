@@ -50,4 +50,7 @@ export class ApiEreService {
     obtenerIE(params) {
         return this.http.get(`${this.baseUrl}/ere/ie/obtenerIE`, { params })
     }
+    obtenerNivelTipo(params) {
+        return this.http.get(`${this.baseUrl}/ere/ie/obtenerIE`, { params })
+    }
 }

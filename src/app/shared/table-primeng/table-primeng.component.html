@@ -13,6 +13,8 @@
     (selectionChange)="onSelectionChange($event)"
     sortMode="multiple"
     [(selection)]="selectedRowData"
+    [scrollable]="scrollable"
+    [scrollHeight]="scrollHeight"
     class="hoverTable"
 >
     @if (showCaption) {
@@ -80,7 +82,14 @@
                             <span>{{ rowIndex + 1 }}</span>
                         </div>
                     }
-
+                    @if (col.type === 'p-editor') {
+                        <p-editor
+                            class="custom-editor"
+                            [readonly]="true"
+                            [modules]="{}"
+                            [(ngModel)]="rowData[col.field]"
+                        />
+                    }
                     @if (col.type === 'text') {
                         <div [style.text-align]="col.text">
                             {{ rowData[col.field] }}
@@ -88,6 +97,11 @@
                     }
                     @if (col.type === 'checkbox') {
                         <p-tableCheckbox [value]="rowData" />
+                    }
+                    @if (col.type === 'radio') {
+                        <p-tableRadioButton
+                            [value]="rowData"
+                        ></p-tableRadioButton>
                     }
                     @if (col.type === 'actions') {
                         <div class="d-block text-center">
@@ -101,7 +115,6 @@
                                         [rounded]="true"
                                         pButton
                                         pRipple
-                                        [icon]="item.icon"
                                         [pTooltip]="item.labelTooltip"
                                         tooltipPosition="top"
                                         (click)="
@@ -109,7 +122,17 @@
                                         "
                                         class="w-auto p-1"
                                         [ngClass]="item.class"
-                                    ></button>
+                                    >
+                                        @if (item.icon | isIconType) {
+                                            <app-icon
+                                                [name]="item.icon.name"
+                                                [color]="item.icon.color"
+                                                [size]="item.icon.size"
+                                            ></app-icon>
+                                        } @else {
+                                            <i class="{{ item.icon }}"></i>
+                                        }
+                                    </button>
                                 }
                             }
                         </div>

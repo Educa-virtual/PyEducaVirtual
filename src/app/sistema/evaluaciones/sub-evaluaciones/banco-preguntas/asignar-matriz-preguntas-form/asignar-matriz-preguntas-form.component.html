@@ -1,7 +1,7 @@
 <div class="flex flex-column gap-2">
     <form [formGroup]="formAsignarMatriz">
         <div class="formgrid grid gap-4">
-            <div class="flex flex-column col-12 gap-2">
+            <!-- <div class="flex flex-column col-12 gap-2">
                 <label for="competencia">Competencias</label>
                 <p-dropdown
                     styleClass="w-full"
@@ -27,60 +27,29 @@
                         </span>
                     }
                 </small>
-            </div>
+            </div> -->
             <div class="flex flex-column col-12 gap-2">
-                <label for="competencia">Capacidades</label>
-                <p-dropdown
-                    optionValue="iCapacidadId"
-                    formControlName="iCapacidadId"
-                    styleClass="w-full"
-                    [options]="capacidades"
-                    optionLabel="cCompetenciaDescripcion"
-                    [ngClass]="{
-                        'ng-dirty ng-invalid':
-                            formAsignarMatriz.get('iCapacidadId')?.errors &&
-                            formAsignarMatriz.get('iCapacidadId')?.touched,
-                    }"
+                <h2 class="text-xl">Desempeño</h2>
+                <app-table-primeng
+                    [showCaption]="false"
+                    [showPaginator]="false"
+                    [columnas]="columnasDesempeno"
+                    [selectedRowData]="selectedDesempeno"
+                    (selectedRowDataChange)="onSelectDesempeno($event)"
+                    [scrollable]="true"
+                    [scrollHeight]="'200px'"
+                    [data]="desempenos"
                 />
-                <small>
-                    @if (
-                        formAsignarMatriz
-                            .get('iCapacidadId')
-                            .hasError('required') &&
-                        formAsignarMatriz.get('iCapacidadId')?.touched
-                    ) {
-                        <span class="text-red-500">
-                            Este campo es requerido
-                        </span>
-                    }
-                </small>
-            </div>
-            <div class="flex flex-column col-12 gap-2">
-                <label for="competencia">Desempeños</label>
-                <p-dropdown
-                    styleClass="w-full"
-                    optionValue="iDesempenoId"
-                    formControlName="iDesempenoId"
-                    [options]="desempenos"
-                    optionLabel="cCompetenciaDescripcion"
-                    [ngClass]="{
-                        'ng-dirty ng-invalid':
-                            formAsignarMatriz.get('iDesempenoId')?.errors &&
-                            formAsignarMatriz.get('iDesempenoId')?.touched,
-                    }"
-                />
-                <small>
-                    @if (
-                        formAsignarMatriz
-                            .get('iDesempenoId')
-                            .hasError('required') &&
-                        formAsignarMatriz.get('iDesempenoId')?.touched
-                    ) {
-                        <span class="text-red-500">
-                            Este campo es requerido
-                        </span>
-                    }
-                </small>
+                @if (
+                    formAsignarMatriz
+                        .get('iDesempenoId')
+                        .hasError('required') &&
+                    formAsignarMatriz.get('iDesempenoId')?.touched
+                ) {
+                    <small class="text-red-500">
+                        Debe seleccionar un desempeño.
+                    </small>
+                }
             </div>
         </div>
     </form>

@@ -10,6 +10,10 @@ import { DialogModule } from 'primeng/dialog'
 import { InputTextModule } from 'primeng/inputtext'
 import { InputTextareaModule } from 'primeng/inputtextarea'
 import { FormsModule } from '@angular/forms'
+//TAB
+import { TabViewModule } from 'primeng/tabview'
+
+import { IeparticipaComponent } from '../ieparticipa/ieparticipa.component'
 @Component({
     selector: 'app-evaluaciones-form',
     standalone: true,
@@ -19,6 +23,8 @@ import { FormsModule } from '@angular/forms'
         InputTextModule,
         InputTextareaModule,
         FormsModule,
+        TabViewModule,
+        IeparticipaComponent,
     ],
     templateUrl: './evaluaciones-form.component.html',
     styleUrl: './evaluaciones-form.component.scss',

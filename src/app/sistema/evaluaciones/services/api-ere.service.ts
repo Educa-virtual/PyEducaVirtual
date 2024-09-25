@@ -20,7 +20,34 @@ export class ApiEreService {
     obtenerBancoPreguntas(params) {
         return this.http.get(
             `${this.baseUrl}/ere/banco-preguntas/obtenerBancoPreguntas`,
+            {
+                params,
+            }
+        )
+    }
+
+    obtenerCompetencias(params) {
+        return this.http.get(
+            `${this.baseUrl}/ere/competencias/obtenerCompetencias`,
             { params }
         )
+    }
+
+    obtenerCapacidades(params) {
+        return this.http.get(
+            `${this.baseUrl}/ere/capacidades/obtenerCapacidades`,
+            { params }
+        )
+    }
+
+    obtenerDesempenos(params) {
+        return this.http.get(
+            `${this.baseUrl}/ere/desempenos/obtenerDesempenos`,
+            { params }
+        )
+    }
+
+    obtenerIE(params) {
+        return this.http.get(`${this.baseUrl}/ere/ie/obtenerIE`, { params })
     }
 }

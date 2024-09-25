@@ -5,18 +5,18 @@
 >
     <div class="flex gap-4 justify-content-between flex-wrap">
         <div class="flex flex-column gap-1 flex-1">
-            <label for="competencias">Competencias</label>
+            <label for="tipo-pregunta">Tipo Pregunta</label>
             <p-dropdown
-                [(ngModel)]="params.iCompentenciaId"
-                optionValue="iCompentenciaId"
-                [options]="competencias"
-                optionLabel="cCompetenciaDescripcion"
+                [(ngModel)]="params.iTipoPregId"
+                optionValue="iTipoPregId"
+                [options]="tipoPreguntas"
+                optionLabel="cTipoPregDescripcion"
                 styleClass="w-full"
-                inputId="competencias"
+                inputId="tipo-pregunta"
                 (onChange)="obtenerBancoPreguntas()"
             />
         </div>
-        <div class="flex flex-column gap-1 flex-1">
+        <!-- <div class="flex flex-column gap-1 flex-1">
             <label for="capacidades">capacidades</label>
             <p-dropdown
                 [(ngModel)]="params.iCapacidadId"
@@ -27,15 +27,19 @@
                 [optionLabel]="'cCapacidadDescripcion'"
                 (onChange)="obtenerBancoPreguntas()"
             />
-        </div>
-        <div class="flex flex-column gap-1 flex-1">
-            <label for="desempeños">Desempeños</label>
+        </div> -->
+        <!-- <div class="flex flex-column gap-1 flex-1">
+            <label for="evaluaciones">Evaluación</label>
             <p-dropdown
-                [options]="desempenios"
-                styleClass="w-full"
-                inputId="desempeños"
+                [(ngModel)]="params.iEvaluacionId"
+                optionValue="iEvaluacionId"
+                inputId="evaluaciones"
+                [options]="evaluaciones"
+                [styleClass]="'custom-dropdown w-full'"
+                [optionLabel]="'cEvaluacionNombre'"
+                (onChange)="obtenerBancoPreguntas()"
             />
-        </div>
+        </div> -->
         <div class="flex flex-column gap-1 flex-1">
             <label for="estado">Estado</label>
             <p-dropdown
@@ -52,8 +56,8 @@
     <app-table-primeng
         [columnas]="columnas"
         [data]="data"
-        (accionBtnItem)="accionBtnItem($event)"
-        (selectedItems)="setSelectedItems($event)"
+        (accionBtnItem)="accionBtnItemTable($event)"
+        [(selectedRowData)]="selectedItems"
         [actions]="accionesTabla"
     >
         <ng-container slot="caption-content"> </ng-container>

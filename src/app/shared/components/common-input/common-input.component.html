@@ -2,7 +2,13 @@
     @if (label !== null && label !== undefined) {
         <label [for]="id">{{ label }}</label>
     }
-    <input pInputText [id]="id" [formControlName]="controlKey" [type]="type" />
+    <input
+        pInputText
+        [id]="id"
+        [formControlName]="controlKey"
+        [type]="type"
+        [ngClass]="{ 'ng-invalid ng-dirty': campoInvalido }"
+    />
     <small>
         @if (campoInvalido) {
             <span class="text-red-500"> {{ errorMessage }} </span>

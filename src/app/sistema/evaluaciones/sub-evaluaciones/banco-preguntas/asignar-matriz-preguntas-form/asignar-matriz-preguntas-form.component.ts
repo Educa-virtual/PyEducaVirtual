@@ -32,18 +32,60 @@ export class AsignarMatrizPreguntasFormComponent implements OnInit {
     private formBuilder = inject(FormBuilder)
     private selectedPreguntas = []
     private _config = inject(DynamicDialogConfig)
-    private ref = inject(DynamicDialogRef)
-    private apiEre = inject(ApiEreService)
+    private _ref = inject(DynamicDialogRef)
+    private _apiEre = inject(ApiEreService)
 
     public competencias = []
     public capacidades = []
     public desempenos = []
     public preguntas = []
+    public selectedDesempeno
     public formAsignarMatriz: FormGroup = this.formBuilder.group({
-        iCompentenciaId: [null, Validators.required],
-        iCapacidadId: [null, Validators.required],
         iDesempenoId: [null, Validators.required],
     })
+
+    public columnasDesempeno: IColumn[] = [
+        {
+            field: 'radio',
+            header: '',
+            type: 'radio',
+            width: '5rem',
+            text: 'left',
+            text_header: '',
+        },
+        {
+            field: 'cEvaluacionNombre',
+            header: 'Evaluación',
+            type: 'text',
+            width: '5rem',
+            text: 'left',
+            text_header: '',
+        },
+        {
+            field: 'cCapacidadNombre',
+            header: 'Capacidad',
+            type: 'text',
+            width: '5rem',
+            text: 'left',
+            text_header: '',
+        },
+        {
+            field: 'cCompetenciaNombre',
+            header: 'Competencia',
+            type: 'text',
+            width: '5rem',
+            text: 'left',
+            text_header: '',
+        },
+        {
+            field: 'cDesempenoDescripcion',
+            header: 'Desempeño',
+            type: 'text',
+            width: 'auto',
+            text: 'left',
+            text_header: '',
+        },
+    ]
 
     columnas: IColumn[] = [
         {
@@ -100,10 +142,30 @@ export class AsignarMatrizPreguntasFormComponent implements OnInit {
                 cCompetenciaDescripcion: 'Desempeño 1',
             },
         ]
-        this.preguntas = this._config.data.map((item) => {
+        this.preguntas = this._config.data.preguntas
+        this.desempenos = this._config.data.desempenos
+
+        let iDesempenoId = 0
+
+        this.preguntas = this.preguntas.map((item) => {
             item.checked = true
+            if (item.iDesempenoId != null) {
+                iDesempenoId = item.iDesempenoId
+            }
             return item
         })
+
+        this.desempenos = this.desempenos.map((item) => {
+            if (item.iDesempenoId == iDesempenoId) {
+                item.checked = true
+            }
+            return item
+        })
+
+        this.selectedDesempeno = this.desempenos.find(
+            (item) => item.iDesempenoId == iDesempenoId
+        )
+
         this.selectedPreguntas = this.preguntas
     }
 
@@ -111,8 +173,15 @@ export class AsignarMatrizPreguntasFormComponent implements OnInit {
         this.selectedPreguntas = event
     }
 
+    onSelectDesempeno(event) {
+        this.selectedDesempeno = event
+        this.formAsignarMatriz
+            .get('iDesempenoId')
+            .setValue(this.selectedDesempeno['iDesempenoId'])
+    }
+
     closeModal(data) {
-        this.ref.close(data)
+        this._ref.close(data)
     }
 
     asignarMatrizPreguntas() {
@@ -128,7 +197,7 @@ export class AsignarMatrizPreguntasFormComponent implements OnInit {
             return item
         })
 
-        this.apiEre.actualizarMatrizPreguntas(data).subscribe({
+        this._apiEre.actualizarMatrizPreguntas(data).subscribe({
             next: () => {
                 this.closeModal(data)
             },

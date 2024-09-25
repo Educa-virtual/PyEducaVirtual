@@ -26,12 +26,14 @@
                     [label]="message.acceptLabel"
                     (click)="cdManual.accept()"
                 ></button>
-                <button
-                    pButton
-                    [label]="message.rejectLabel"
-                    (click)="cdManual.reject()"
-                    class="p-button-outlined"
-                ></button>
+                @if (message.rejectVisible) {
+                    <button
+                        pButton
+                        [label]="message.rejectLabel"
+                        (click)="cdManual.reject()"
+                        class="p-button-outlined"
+                    ></button>
+                }
             </div>
         </div>
     </ng-template>

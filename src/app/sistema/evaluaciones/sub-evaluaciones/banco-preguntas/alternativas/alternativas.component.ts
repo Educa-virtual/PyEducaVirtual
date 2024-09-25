@@ -139,7 +139,7 @@ export class AlternativasComponent implements OnInit {
     }
 
     eliminarAlternativa(alternativa) {
-        this._confirmationModalService.openManual({
+        this._confirmationModalService.openConfirm({
             header: 'Esta seguro de eliminar la alternativa?',
             accept: () => {
                 if (alternativa.isLocal) {

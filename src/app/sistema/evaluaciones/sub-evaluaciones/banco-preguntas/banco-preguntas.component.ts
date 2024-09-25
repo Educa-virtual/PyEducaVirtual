@@ -345,7 +345,7 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
     }
 
     eliminarPregunta(item) {
-        this._confirmationModalService.openManual({
+        this._confirmationModalService.openConfirm({
             header: 'Esta seguro de eliminar la alternativa?',
             accept: () => {
                 this._apiEvaluaciones
@@ -364,6 +364,9 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
     // abrir el modal para asignar preguntas
     asignarPreguntas() {
         if (this.selectedItems.length === 0) {
+            this._confirmationModalService.openAlert({
+                header: 'Debe seleccionar una pregunta para asignarla.',
+            })
             return
         }
         const refModal = this._dialogService.open(
@@ -382,7 +385,6 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             if (result) {
                 this.obtenerBancoPreguntas()
             }
-            // this.selectedItems = []
         })
     }
 

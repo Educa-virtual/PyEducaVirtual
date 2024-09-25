@@ -65,9 +65,9 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
     public tipoPreguntas = []
 
     public params = {
-        iCompentenciaId: 0,
-        iCapacidadId: 0,
-        iDesempenioId: 0,
+        // iCompentenciaId: 0,
+        // iCapacidadId: 0,
+        // iDesempenioId: 0,
         bPreguntaEstado: -1,
         iCursoId: 1,
         iNivelTipoId: 1,
@@ -215,6 +215,13 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             },
         ]
 
+        this.tipoPreguntas = [
+            {
+                iTipoPregId: 0,
+                cTipoPregDescripcion: 'Todos',
+            },
+        ]
+
         this.estados = [
             {
                 bPreguntaEstado: -1,
@@ -283,6 +290,10 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             .subscribe({
                 next: (resp: unknown) => {
                     this.tipoPreguntas = resp['data']
+                    this.tipoPreguntas.unshift({
+                        iTipoPregId: 0,
+                        cTipoPregDescripcion: 'Todos',
+                    })
                 },
             })
     }

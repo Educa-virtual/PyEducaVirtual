@@ -5,18 +5,18 @@
 >
     <div class="flex gap-4 justify-content-between flex-wrap">
         <div class="flex flex-column gap-1 flex-1">
-            <label for="competencias">Competencias</label>
+            <label for="tipo-pregunta">Tipo Pregunta</label>
             <p-dropdown
-                [(ngModel)]="params.iCompentenciaId"
-                optionValue="iCompentenciaId"
-                [options]="competencias"
-                optionLabel="cCompetenciaDescripcion"
+                [(ngModel)]="params.iTipoPregId"
+                optionValue="iTipoPregId"
+                [options]="tipoPreguntas"
+                optionLabel="cTipoPregDescripcion"
                 styleClass="w-full"
-                inputId="competencias"
-                (onChange)="obtenerBancoPreguntas(); obtenerCapacidades()"
+                inputId="tipo-pregunta"
+                (onChange)="obtenerBancoPreguntas()"
             />
         </div>
-        <div class="flex flex-column gap-1 flex-1">
+        <!-- <div class="flex flex-column gap-1 flex-1">
             <label for="capacidades">capacidades</label>
             <p-dropdown
                 [(ngModel)]="params.iCapacidadId"
@@ -27,8 +27,8 @@
                 [optionLabel]="'cCapacidadDescripcion'"
                 (onChange)="obtenerBancoPreguntas()"
             />
-        </div>
-        <div class="flex flex-column gap-1 flex-1">
+        </div> -->
+        <!-- <div class="flex flex-column gap-1 flex-1">
             <label for="evaluaciones">Evaluación</label>
             <p-dropdown
                 [(ngModel)]="params.iEvaluacionId"
@@ -39,7 +39,7 @@
                 [optionLabel]="'cEvaluacionNombre'"
                 (onChange)="obtenerBancoPreguntas()"
             />
-        </div>
+        </div> -->
         <div class="flex flex-column gap-1 flex-1">
             <label for="estado">Estado</label>
             <p-dropdown

@@ -40,6 +40,12 @@ export class CommonInputComponent implements OnInit {
         if (control.hasError('required')) {
             return 'Este campo es requerido'
         }
+        if (control.hasError('minlength')) {
+            return `Mínimo ${control.getError('minlength')?.requiredLength} caracteres`
+        }
+        if (control.hasError('maxlength')) {
+            return `Máximo ${control.getError('maxlength')?.requiredLength} caracteres`
+        }
         return null
     }
 

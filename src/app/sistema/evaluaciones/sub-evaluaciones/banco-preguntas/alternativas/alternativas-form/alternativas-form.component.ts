@@ -39,16 +39,30 @@ export class AlternativasFormComponent implements OnInit {
         iAlternativaId: new FormControl<number | string>(0),
         iPreguntaId: [0],
         cAlternativaDescripcion: [null, Validators.required],
-        cAlternativaLetra: [null, Validators.required],
+        cAlternativaLetra: [
+            null,
+            Validators.required,
+            Validators.minLength(1),
+            Validators.maxLength(1),
+        ],
         bAlternativaCorrecta: [false, Validators.required],
         cAlternativaExplicacion: [''],
         isLocal: [false],
     })
 
+    // Dependiedo al tipo pregunta
+    // pregunta unica
+    //  debe seleccionar al menos 1 alternativa correcta
+    //  al menos 2 alternativas
+    // pregunta multiple
+    // debe de tener 2 alternativas
+    // debe seleccionar al menos 1 alternativa incorrecta
+
+    // si sellecciona debe de reaccionar la validacion.
+
     ngOnInit() {
         this.pregunta = this._config.data.pregunta
         this.alternativa = this._config.data.alternativa
-        console.log('pregunta', this.pregunta, 'alternativa', this.alternativa)
 
         if (this.pregunta.iPreguntaId != 0) {
             this.alternativaFormGroup
@@ -62,7 +76,6 @@ export class AlternativasFormComponent implements OnInit {
                 .setValue(
                     this.alternativa.bAlternativaCorrecta == 1 ? true : false
                 )
-            console.log(this.alternativaFormGroup.value)
         }
     }
 

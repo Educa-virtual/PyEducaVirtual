@@ -78,11 +78,20 @@ export class BancoPreguntasFormComponent implements OnInit {
         iHoras: [0, [Validators.required]],
         iMinutos: [0, [Validators.required]],
         iSegundos: [0, [Validators.required]],
-        cPreguntaClave: [null, [Validators.required]],
+        cPreguntaClave: [
+            null,
+            [
+                Validators.required,
+                Validators.minLength(1),
+                Validators.maxLength(1),
+            ],
+        ],
     })
 
     ngOnInit() {
-        this.tipoPreguntas = this._config.data.tipoPreguntas
+        this.tipoPreguntas = this._config.data.tipoPreguntas.filter((item) => {
+            return item.iTipoPregId !== 0
+        })
         this.pregunta = this._config.data.pregunta
 
         this.patchForm(this.pregunta, this._config.data.iCursoId)

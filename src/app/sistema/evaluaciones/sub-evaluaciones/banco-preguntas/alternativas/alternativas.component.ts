@@ -135,6 +135,13 @@ export class AlternativasComponent {
     }
 
     eliminarAlternativa(alternativa) {
+        this._confirmationModalService.openManual(
+            alertToConfirm({
+                header: 'Esta seguro de eliminar la alternativa?',
+                accept: () => {},
+                reject: () => {},
+            })
+        )
         if (alternativa.isLocal) {
             this.eliminarAlternativaLocal(alternativa)
             return
@@ -146,14 +153,6 @@ export class AlternativasComponent {
                     this.eliminarAlternativaLocal(alternativa)
                 },
             })
-        return
-        this._confirmationService.confirm(
-            alertToConfirm({
-                header: 'Esta seguro de eliminar la alternativa?',
-                accept: () => {},
-                reject: () => {},
-            })
-        )
     }
 
     eliminarAlternativaLocal(alternativa) {

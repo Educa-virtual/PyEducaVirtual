@@ -15,6 +15,16 @@ export class ConfirmationModalService {
     confirmationResponse$ = this.confirmationResponse.asObservable()
 
     openDialog(config: IModal) {
+        console.log('opendialog global')
+
         this.dialogState.next(config)
+    }
+
+    openManual({ ...config }: IModal) {
+        this.dialogState.next({
+            header: 'Confirmar',
+            key: 'manual',
+            ...config,
+        })
     }
 }

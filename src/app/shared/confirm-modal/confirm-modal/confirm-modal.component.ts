@@ -12,6 +12,7 @@ import { IModal } from '../modal.interface'
     imports: [CommonModule, ConfirmDialogModule, ButtonModule],
     templateUrl: './confirm-modal.component.html',
     styleUrl: './confirm-modal.component.scss',
+    providers: [ConfirmationModalService],
 })
 export class ConfirmModalComponent implements OnInit {
     private _confirmationService = inject(ConfirmationModalService)
@@ -22,6 +23,8 @@ export class ConfirmModalComponent implements OnInit {
 
     ngOnInit(): void {
         this._confirmationService.dialogState$.subscribe((config) => {
+            console.log(config)
+
             this._confirmService.confirm(config)
         })
     }

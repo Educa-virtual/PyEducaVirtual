@@ -246,7 +246,6 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
         this.obtenerBancoPreguntas()
         this.obtenerDesempenos()
         this.obtenerTipoPreguntas()
-        // this.obtenerCompetencias()
     }
 
     obtenerDesempenos() {
@@ -408,7 +407,10 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
                 pregunta: pregunta,
                 iCursoId: this.params.iCursoId,
             },
-            header: pregunta == null ? 'Nueva pregunta' : 'Editar pregunta',
+            header:
+                pregunta?.iPreguntaId == 0
+                    ? 'Nueva pregunta'
+                    : 'Editar pregunta',
         })
         refModal.onClose.subscribe((result) => {
             if (result) {

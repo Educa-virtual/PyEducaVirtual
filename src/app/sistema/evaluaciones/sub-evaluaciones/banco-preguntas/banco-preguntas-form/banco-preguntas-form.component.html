@@ -16,17 +16,28 @@
                             formControlName="iTipoPregId"
                             [options]="tipoPreguntas"
                             optionLabel="cTipoPregDescripcion"
-                            [class]="{
-                                'ng-dirty ng-invalid':
-                                    bancoPreguntasForm.get('iTipoPregId')
-                                        ?.errors &&
-                                    bancoPreguntasForm.get('iTipoPregId')
-                                        ?.touched,
-                            }"
+                            [styleClass]="
+                                bancoPreguntasForm.get('iTipoPregId')
+                                    ?.invalid &&
+                                bancoPreguntasForm.get('iTipoPregId')?.touched
+                                    ? 'w-full ng-dirty ng-invalid p-invalid'
+                                    : 'w-full'
+                            "
                         />
+                        @if (
+                            bancoPreguntasForm
+                                .get('iTipoPregId')
+                                .hasError('required') &&
+                            bancoPreguntasForm.get('iTipoPregId')?.touched
+                        ) {
+                            <small class="text-red-500">
+                                Este campo es requerido
+                            </small>
+                        }
                     </div>
                     <div class="field col-12 md:col-6">
                         <app-common-input
+                            type="number"
                             [label]="'Nivel'"
                             [controlKey]="'iPreguntaNivel'"
                         />
@@ -34,6 +45,7 @@
 
                     <div class="field col-12 md:col-6">
                         <app-common-input
+                            type="number"
                             [label]="'Peso'"
                             [controlKey]="'iPreguntaPeso'"
                         />
@@ -49,18 +61,21 @@
                 <div class="formgrid grid">
                     <div class="field col-12 md:col">
                         <app-common-input
+                            type="number"
                             [label]="'Horas'"
                             [controlKey]="'iHoras'"
                         />
                     </div>
                     <div class="field col-12 md:col">
                         <app-common-input
+                            type="number"
                             [label]="'Minutos'"
                             [controlKey]="'iMinutos'"
                         />
                     </div>
                     <div class="field col-12 md:col">
                         <app-common-input
+                            type="number"
                             [label]="'Segundos'"
                             [controlKey]="'iSegundos'"
                         />
@@ -73,6 +88,16 @@
                             [formControlName]="'cPregunta'"
                             [style]="{ height: '320px' }"
                         />
+                        @if (
+                            bancoPreguntasForm
+                                .get('cPregunta')
+                                .hasError('required') &&
+                            bancoPreguntasForm.get('cPregunta')?.touched
+                        ) {
+                            <small class="text-red-500">
+                                Este campo es requerido
+                            </small>
+                        }
                     </div>
                 </div>
                 <div class="formgrid grid">

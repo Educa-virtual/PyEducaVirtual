@@ -45,6 +45,16 @@ export class AlternativasFormComponent implements OnInit {
         isLocal: [false],
     })
 
+    // Dependiedo al tipo pregunta
+    // pregunta unica
+    //  debe seleccionar al menos 1 alternativa correcta
+    //  al menos 2 alternativas
+    // pregunta multiple
+    // debe de tener 2 alternativas
+    // debe seleccionar al menos 1 alternativa incorrecta
+
+    // si sellecciona debe de reaccionar la validacion.
+
     ngOnInit() {
         this.pregunta = this._config.data.pregunta
         this.alternativa = this._config.data.alternativa

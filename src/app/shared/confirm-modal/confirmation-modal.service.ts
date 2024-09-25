@@ -20,10 +20,14 @@ export class ConfirmationModalService {
         this.dialogState.next(config)
     }
 
-    openManual({ ...config }: IModal) {
+    openManual({ header, message = '', ...config }: IModal) {
         this.dialogState.next({
-            header: 'Confirmar',
+            header,
             key: 'manual',
+            icon: 'pi pi-exclamation-triangle',
+            acceptLabel: 'Si',
+            rejectLabel: 'No, cancelar',
+            message: message === '' ? message : 'No podrá revertir esta acción',
             ...config,
         })
     }

@@ -12,7 +12,7 @@ import { IModal } from '../modal.interface'
     imports: [CommonModule, ConfirmDialogModule, ButtonModule],
     templateUrl: './confirm-modal.component.html',
     styleUrl: './confirm-modal.component.scss',
-    providers: [ConfirmationModalService],
+    providers: [ConfirmationService],
 })
 export class ConfirmModalComponent implements OnInit {
     private _confirmationService = inject(ConfirmationModalService)

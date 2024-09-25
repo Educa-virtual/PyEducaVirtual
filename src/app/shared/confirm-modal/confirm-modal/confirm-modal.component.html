@@ -1,16 +1,38 @@
 <p-confirmDialog
     #cd
+    key="global"
     styleClass="custom-confirm-modal"
     [rejectLabel]="''"
     [acceptLabel]="'Aceptar'"
 >
 </p-confirmDialog>
 
-<p-confirmDialog
-    #cd
-    key="manual"
-    styleClass="custom-confirm-modal"
-    [rejectLabel]="''"
-    [acceptLabel]="'Aceptar2'"
->
+<p-confirmDialog key="manual" #cdManual>
+    <ng-template pTemplate="headless" let-message>
+        <div
+            class="flex flex-column align-items-center p-5 surface-overlay border-round"
+        >
+            <i
+                class="text-7xl mb-4 text-yellow-500"
+                [ngClass]="message.icon"
+            ></i>
+            <span class="font-bold text-2xl block mb-2 mt-4">
+                {{ message.header }}
+            </span>
+            <p class="mb-0">{{ message.message }}</p>
+            <div class="flex align-items-center gap-2 mt-4">
+                <button
+                    pButton
+                    [label]="message.acceptLabel"
+                    (click)="cdManual.accept()"
+                ></button>
+                <button
+                    pButton
+                    [label]="message.rejectLabel"
+                    (click)="cdManual.reject()"
+                    class="p-button-outlined"
+                ></button>
+            </div>
+        </div>
+    </ng-template>
 </p-confirmDialog>

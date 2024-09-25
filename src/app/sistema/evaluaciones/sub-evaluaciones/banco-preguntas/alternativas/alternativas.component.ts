@@ -1,4 +1,4 @@
-import { Component, inject, Input } from '@angular/core'
+import { Component, inject, Input, OnInit } from '@angular/core'
 import { ButtonModule } from 'primeng/button'
 
 /*import { Product } from '@domain/product';
@@ -7,7 +7,7 @@ import { TableModule } from 'primeng/table'
 import { CommonModule } from '@angular/common'
 
 /* modal  */
-import { DialogService } from 'primeng/dynamicdialog'
+import { DialogService, DynamicDialogConfig } from 'primeng/dynamicdialog'
 import { AlternativasFormComponent } from '../alternativas/alternativas-form/alternativas-form.component'
 import { MODAL_CONFIG } from '@/app/shared/constants/modal.config'
 
@@ -19,7 +19,6 @@ import {
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { ApiEvaluacionesService } from '../../../services/api-evaluaciones.service'
 import { ConfirmationService } from 'primeng/api'
-import { alertToConfirm } from '@/app/shared/utils/default-confirm-message'
 @Component({
     selector: 'app-alternativas',
     standalone: true,
@@ -28,12 +27,13 @@ import { alertToConfirm } from '@/app/shared/utils/default-confirm-message'
     styleUrl: './alternativas.component.scss',
     providers: [DialogService],
 })
-export class AlternativasComponent {
+export class AlternativasComponent implements OnInit {
     @Input() alternativas = []
     @Input() pregunta
     private _dialogService = inject(DialogService)
     private _confirmationModalService = inject(ConfirmationModalService)
     private _evaluacionesService = inject(ApiEvaluacionesService)
+    private _config = inject(DynamicDialogConfig)
     private _confirmationService = inject(ConfirmationService)
     public columnas: IColumn[] = [
         {
@@ -100,6 +100,10 @@ export class AlternativasComponent {
         },
     ]
 
+    ngOnInit() {
+        this.pregunta = this._config.data.pregunta
+    }
+
     agregarActualizarAlternativa(alternativa) {
         const refModal = this._dialogService.open(AlternativasFormComponent, {
             ...MODAL_CONFIG,
@@ -135,25 +139,23 @@ export class AlternativasComponent {
     }
 
     eliminarAlternativa(alternativa) {
-        if (alternativa.isLocal) {
-            this.eliminarAlternativaLocal(alternativa)
-            return
-        }
-        this._evaluacionesService
-            .eliminarAlternativaById(alternativa.iAlternativaId)
-            .subscribe({
-                next: () => {
+        this._confirmationModalService.openManual({
+            header: 'Esta seguro de eliminar la alternativa?',
+            accept: () => {
+                if (alternativa.isLocal) {
                     this.eliminarAlternativaLocal(alternativa)
-                },
-            })
-        return
-        this._confirmationService.confirm(
-            alertToConfirm({
-                header: 'Esta seguro de eliminar la alternativa?',
-                accept: () => {},
-                reject: () => {},
-            })
-        )
+                    return
+                }
+                this._evaluacionesService
+                    .eliminarAlternativaById(alternativa.iAlternativaId)
+                    .subscribe({
+                        next: () => {
+                            this.eliminarAlternativaLocal(alternativa)
+                        },
+                    })
+            },
+            reject: () => {},
+        })
     }
 
     eliminarAlternativaLocal(alternativa) {

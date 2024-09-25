@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from '@angular/core'
 import { InputTextareaModule } from 'primeng/inputtextarea'
 import {
     FormBuilder,
+    FormControl,
     FormsModule,
     ReactiveFormsModule,
     Validators,
@@ -35,7 +36,7 @@ export class AlternativasFormComponent implements OnInit {
     private alternativa
 
     public alternativaFormGroup = this._formBuilder.group({
-        iAlternativaId: [generarIdAleatorio()],
+        iAlternativaId: new FormControl<number | string>(0),
         iPreguntaId: [0],
         cAlternativaDescripcion: [null, Validators.required],
         cAlternativaLetra: [null, Validators.required],
@@ -47,6 +48,13 @@ export class AlternativasFormComponent implements OnInit {
     ngOnInit() {
         this.pregunta = this._config.data.pregunta
         this.alternativa = this._config.data.alternativa
+        console.log('pregunta', this.pregunta, 'alternativa', this.alternativa)
+
+        if (this.pregunta.iPreguntaId != 0) {
+            this.alternativaFormGroup
+                .get('iPreguntaId')
+                .setValue(this.pregunta.iPreguntaId)
+        }
         if (this.alternativa != null) {
             this.alternativaFormGroup.patchValue(this.alternativa)
             this.alternativaFormGroup
@@ -71,6 +79,7 @@ export class AlternativasFormComponent implements OnInit {
         const alternativa = this.alternativaFormGroup.value
         if (this.pregunta.iPreguntaId == 0) {
             alternativa.isLocal = true
+            alternativa.iAlternativaId = generarIdAleatorio()
             this.closeModal(alternativa)
             return
         }

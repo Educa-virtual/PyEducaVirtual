@@ -15,6 +15,20 @@ export class ConfirmationModalService {
     confirmationResponse$ = this.confirmationResponse.asObservable()
 
     openDialog(config: IModal) {
+        console.log('opendialog global')
+
         this.dialogState.next(config)
+    }
+
+    openManual({ header, message = '', ...config }: IModal) {
+        this.dialogState.next({
+            header,
+            key: 'manual',
+            icon: 'pi pi-exclamation-triangle',
+            acceptLabel: 'Si',
+            rejectLabel: 'No, cancelar',
+            message: message === '' ? message : 'No podrá revertir esta acción',
+            ...config,
+        })
     }
 }

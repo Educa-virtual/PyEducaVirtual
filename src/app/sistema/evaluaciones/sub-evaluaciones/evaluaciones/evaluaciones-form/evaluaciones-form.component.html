@@ -1,19 +1,23 @@
 <p-tabView>
     <p-tabPanel header="Información evaluación">
-        <div class="field">
+        <div class="field flex flex-column">
             <label for="firstname1">Tipo evaluación</label>
-            <input
-                id="firstname1"
-                type="text"
-                class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"
+
+            <p-dropdown
+                [options]="tipoEvaluacion"
+                [(ngModel)]="selectedTipoEvaluacion"
+                optionLabel="cTipoEvalDescripcion"
+                placeholder="Seleccione un tipo de evaluación"
+                (onChange)="onchange()"
             />
         </div>
-        <div class="field">
+        <div class="field flex flex-column">
             <label for="firstname1">Nivel evaluación</label>
-            <input
-                id="firstname1"
-                type="text"
-                class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"
+            <p-dropdown
+                [options]="nivelEvaluacion"
+                [(ngModel)]="selectedNivelEvaluacion"
+                optionLabel="cNivelEvalNombre"
+                placeholder="Seleccione un nivel de evaluación"
             />
         </div>
         <div class="field">
@@ -21,6 +25,7 @@
             <input
                 id="lastname1"
                 type="date"
+                [(ngModel)]="fecha"
                 required
                 class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"
             />
@@ -35,7 +40,7 @@
             />
         </div>
         <div class="field">
-            <label for="lastname1">Descripcion</label>
+            <label for="lastname1">Descripción</label>
             <input
                 id="lastname1"
                 type="text"

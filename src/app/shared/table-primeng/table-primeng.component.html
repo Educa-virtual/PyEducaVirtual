@@ -82,7 +82,14 @@
                             <span>{{ rowIndex + 1 }}</span>
                         </div>
                     }
-
+                    @if (col.type === 'p-editor') {
+                        <p-editor
+                            class="custom-editor"
+                            [readonly]="true"
+                            [modules]="{}"
+                            [(ngModel)]="rowData[col.field]"
+                        />
+                    }
                     @if (col.type === 'text') {
                         <div [style.text-align]="col.text">
                             {{ rowData[col.field] }}

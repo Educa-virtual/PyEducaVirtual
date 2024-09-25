@@ -111,7 +111,7 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
         {
             field: 'cPregunta',
             header: 'Pregunta',
-            type: 'text',
+            type: 'p-editor',
             width: '5rem',
             text: 'left',
             text_header: 'Pregunta',

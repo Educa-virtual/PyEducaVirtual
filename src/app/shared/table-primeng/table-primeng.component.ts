@@ -98,6 +98,14 @@ export class TablePrimengComponent implements OnChanges, OnInit {
             text_header: 'center',
             text: 'center',
         },
+        {
+            type: 'p-editor',
+            width: 'auto',
+            field: 'cEditor',
+            header: 'Descripcion',
+            text_header: 'left',
+            text: 'left',
+        },
     ]
 
     @Input()

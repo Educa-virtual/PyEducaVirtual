@@ -41,24 +41,16 @@ export class AlternativasFormComponent implements OnInit {
         cAlternativaDescripcion: [null, Validators.required],
         cAlternativaLetra: [
             null,
-            Validators.required,
-            Validators.minLength(1),
-            Validators.maxLength(1),
+            [
+                Validators.required,
+                Validators.minLength(1),
+                Validators.maxLength(1),
+            ],
         ],
         bAlternativaCorrecta: [false, Validators.required],
         cAlternativaExplicacion: [''],
         isLocal: [false],
     })
-
-    // Dependiedo al tipo pregunta
-    // pregunta unica
-    //  debe seleccionar al menos 1 alternativa correcta
-    //  al menos 2 alternativas
-    // pregunta multiple
-    // debe de tener 2 alternativas
-    // debe seleccionar al menos 1 alternativa incorrecta
-
-    // si sellecciona debe de reaccionar la validacion.
 
     ngOnInit() {
         this.pregunta = this._config.data.pregunta

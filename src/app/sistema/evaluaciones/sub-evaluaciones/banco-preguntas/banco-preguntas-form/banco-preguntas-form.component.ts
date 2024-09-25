@@ -1,6 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core'
 /*Droodwn*/
 import {
+    AbstractControl,
     FormBuilder,
     FormGroup,
     ReactiveFormsModule,
@@ -48,7 +49,7 @@ import { StepsModule } from 'primeng/steps'
 })
 export class BancoPreguntasFormComponent implements OnInit {
     public tipoPreguntas = []
-    public alternativas = []
+    // public alternativas = []
     public mode: 'EDITAR' | 'CREAR' = 'CREAR'
     public pregunta
     public pasos = [
@@ -67,25 +68,33 @@ export class BancoPreguntasFormComponent implements OnInit {
     private _ref = inject(DynamicDialogRef)
 
     public bancoPreguntasForm: FormGroup = this._formBuilder.group({
-        iPreguntaId: [0],
-        iTipoPregId: [null, [Validators.required]],
-        iCursoId: [null, [Validators.required]],
-        cPregunta: [null, [Validators.required]],
-        cPreguntaTextoAyuda: [''],
-        iPreguntaNivel: [null, [Validators.required]],
-        iPreguntaPeso: [null, [Validators.required]],
-        // dtPreguntaTiempo: [null, [Validators.required]],
-        iHoras: [0, [Validators.required]],
-        iMinutos: [0, [Validators.required]],
-        iSegundos: [0, [Validators.required]],
-        cPreguntaClave: [
-            null,
-            [
-                Validators.required,
-                Validators.minLength(1),
-                Validators.maxLength(1),
+        0: this._formBuilder.group({
+            iPreguntaId: [0],
+            iTipoPregId: [null, [Validators.required]],
+            iCursoId: [null, [Validators.required]],
+            cPregunta: [null, [Validators.required]],
+            cPreguntaTextoAyuda: [''],
+            iPreguntaNivel: [null, [Validators.required]],
+            iPreguntaPeso: [null, [Validators.required]],
+            // dtPreguntaTiempo: [null, [Validators.required]],
+            iHoras: [0, [Validators.required]],
+            iMinutos: [0, [Validators.required]],
+            iSegundos: [0, [Validators.required]],
+            cPreguntaClave: [
+                null,
+                [
+                    Validators.required,
+                    Validators.minLength(1),
+                    Validators.maxLength(1),
+                ],
             ],
-        ],
+        }),
+        1: this._formBuilder.group({
+            alternativas: [
+                [],
+                [Validators.required, this.alternativasValidator()],
+            ],
+        }),
     })
 
     ngOnInit() {
@@ -100,12 +109,35 @@ export class BancoPreguntasFormComponent implements OnInit {
             this.mode = 'EDITAR'
             this.obtenerAlternativas()
         }
+
+        this.bancoPreguntasForm
+            .get('0.iTipoPregId')
+            ?.valueChanges.subscribe((value) => {
+                this.handleTipoPreguntaChange(value)
+            })
+    }
+
+    get alternativas() {
+        return this.bancoPreguntasForm.get('1.alternativas').value
+    }
+
+    set alternativas(value) {
+        this.bancoPreguntasForm.get('1.alternativas').setValue(value)
+    }
+
+    alternativasChange(alternativas) {
+        console.log(alternativas)
+        this.alternativas = alternativas
     }
 
     goStep(opcion: string) {
         switch (opcion) {
             case 'next':
-                if (this.activeIndex === 0 && this.bancoPreguntasForm.invalid) {
+                if (
+                    this.activeIndex === 0 &&
+                    this.bancoPreguntasForm.get(this.activeIndex.toString())
+                        .invalid
+                ) {
                     this.bancoPreguntasForm.markAllAsTouched()
                     return
                 }
@@ -132,8 +164,90 @@ export class BancoPreguntasFormComponent implements OnInit {
     }
 
     patchForm(pregunta, iCursoId) {
-        this.bancoPreguntasForm.patchValue(pregunta)
-        this.bancoPreguntasForm.get('iCursoId').setValue(iCursoId)
+        this.bancoPreguntasForm.get('0').patchValue(pregunta)
+        this.bancoPreguntasForm.get('0.iCursoId').setValue(iCursoId)
+    }
+
+    handleTipoPreguntaChange(tipoPregunta: number): void {
+        console.log(tipoPregunta)
+
+        const alternativasControl =
+            this.bancoPreguntasForm.get('1.alternativas')
+        if (alternativasControl) {
+            // Reaplicar las validaciones personalizadas según el tipo de pregunta
+            alternativasControl.updateValueAndValidity()
+        }
+    }
+
+    alternativasValidator() {
+        return (control: AbstractControl) => {
+            let tipoPregunta =
+                this.bancoPreguntasForm?.get('0.iTipoPregId')?.value
+            const alternativas = control.value
+            tipoPregunta = parseInt(tipoPregunta, 10)
+
+            // Dependiedo al tipo pregunta
+            // pregunta unica
+            //  debe seleccionar al menos 1 alternativa correcta
+            //  al menos 2 alternativas
+            // pregunta multiple
+            // debe de tener 2 alternativas
+            // debe seleccionar al menos 1 alternativa incorrecta
+
+            // si sellecciona debe de reaccionar la validacion.
+
+            // Cualquier preguntadebe tener al menos 2 alternativas
+            console.log(alternativas, tipoPregunta)
+
+            if (alternativas.length < 2) {
+                return {
+                    alternativasInvalidas: 'Debe haber almenos 2 alternativas',
+                }
+            }
+
+            if (tipoPregunta === 1 && alternativas.length >= 2) {
+                // Una de sus respuestas debe ser correcta
+                if (
+                    alternativas.filter(
+                        (alternativa) => alternativa.bAlternativaCorrecta === 1
+                    ).length < 1
+                ) {
+                    return {
+                        alternativasInvalidas:
+                            'Debe haber al menos una alternativa correcta',
+                    }
+                }
+            }
+
+            if (tipoPregunta === 1 && alternativas.length >= 2) {
+                // Una de sus respuestas debe ser incorrecta
+                if (
+                    alternativas.filter(
+                        (alternativa) => alternativa.bAlternativaCorrecta === 1
+                    ).length > 1
+                ) {
+                    return {
+                        alternativasInvalidas:
+                            'Debe haber solo una alternativa correcta',
+                    }
+                }
+            }
+
+            // if (tipoPregunta === 2 && alternativas.length !== 2) {
+            //     // Pregunta de opción múltiple necesita al menos una alternativa incorrecta
+            //     return { minAlternativas: 'Debe haber al menos 2 alternativas' }
+            // }
+
+            // if (tipoPregunta === 3 && alternativas.length > 0) {
+            //     // Pregunta de respuesta abierta no debe tener alternativas
+            //     return {
+            //         noAlternativas:
+            //             'No se deben agregar alternativas a una pregunta abierta',
+            //     }
+            // }
+
+            return null // No hay errores
+        }
     }
 
     closeModal(data) {
@@ -141,6 +255,9 @@ export class BancoPreguntasFormComponent implements OnInit {
     }
 
     guardarActualizarBancoPreguntas() {
+        console.log(this.alternativas, this.bancoPreguntasForm.value)
+
+        return
         if (this.bancoPreguntasForm.invalid) {
             this.bancoPreguntasForm.markAllAsTouched()
             return

@@ -1,4 +1,11 @@
-import { Component, inject, Input, OnInit } from '@angular/core'
+import {
+    Component,
+    EventEmitter,
+    inject,
+    Input,
+    OnInit,
+    Output,
+} from '@angular/core'
 import { ButtonModule } from 'primeng/button'
 
 /*import { Product } from '@domain/product';
@@ -29,6 +36,7 @@ import { ConfirmationService } from 'primeng/api'
 })
 export class AlternativasComponent implements OnInit {
     @Input() alternativas = []
+    @Output() alternativasChange = new EventEmitter()
     @Input() pregunta
     private _dialogService = inject(DialogService)
     private _confirmationModalService = inject(ConfirmationModalService)
@@ -131,8 +139,10 @@ export class AlternativasComponent implements OnInit {
                             (x) => x.iAlternativaId == result.iAlternativaId
                         )
                     ] = result
+                    this.alternativasChange.emit(this.alternativas)
                 } else {
                     this.alternativas.push(result)
+                    this.alternativasChange.emit(this.alternativas)
                 }
             }
         })
@@ -162,6 +172,7 @@ export class AlternativasComponent implements OnInit {
         this.alternativas = this.alternativas.filter(
             (item) => item.iAlternativaId != alternativa.iAlternativaId
         )
+        this.alternativasChange.emit(this.alternativas)
     }
 
     accionBtnItemTable({ accion, item }) {

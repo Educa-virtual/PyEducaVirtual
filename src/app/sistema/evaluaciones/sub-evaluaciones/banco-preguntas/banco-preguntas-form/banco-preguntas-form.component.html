@@ -7,118 +7,131 @@
     @switch (activeIndex) {
         @case (0) {
             <form [formGroup]="bancoPreguntasForm">
-                <div class="formgrid grid">
-                    <div class="field flex flex-column col-12 md:col-6">
-                        <label for="tipo-pregunta">Tipo pregunta</label>
-                        <p-dropdown
-                            styleClass="w-full"
-                            optionValue="iTipoPregId"
-                            formControlName="iTipoPregId"
-                            [options]="tipoPreguntas"
-                            optionLabel="cTipoPregDescripcion"
-                            [styleClass]="
-                                bancoPreguntasForm.get('iTipoPregId')
-                                    ?.invalid &&
-                                bancoPreguntasForm.get('iTipoPregId')?.touched
-                                    ? 'w-full ng-dirty ng-invalid p-invalid'
-                                    : 'w-full'
-                            "
-                        />
-                        @if (
-                            bancoPreguntasForm
-                                .get('iTipoPregId')
-                                .hasError('required') &&
-                            bancoPreguntasForm.get('iTipoPregId')?.touched
-                        ) {
-                            <small class="text-red-500">
-                                Este campo es requerido
-                            </small>
-                        }
+                <ng-container formGroupName="0">
+                    <div class="formgrid grid">
+                        <div class="field flex flex-column col-12 md:col-6">
+                            <label for="tipo-pregunta">Tipo pregunta</label>
+                            <p-dropdown
+                                styleClass="w-full"
+                                optionValue="iTipoPregId"
+                                formControlName="iTipoPregId"
+                                [options]="tipoPreguntas"
+                                optionLabel="cTipoPregDescripcion"
+                                [styleClass]="
+                                    bancoPreguntasForm.get('0.iTipoPregId')
+                                        ?.invalid &&
+                                    bancoPreguntasForm.get('0.iTipoPregId')
+                                        ?.touched
+                                        ? 'w-full ng-dirty ng-invalid p-invalid'
+                                        : 'w-full'
+                                "
+                            />
+                            @if (
+                                bancoPreguntasForm
+                                    .get('0.iTipoPregId')
+                                    .hasError('required') &&
+                                bancoPreguntasForm.get('0.iTipoPregId')?.touched
+                            ) {
+                                <small class="text-red-500">
+                                    Este campo es requerido
+                                </small>
+                            }
+                        </div>
+                        <div class="field col-12 md:col-6">
+                            <app-common-input
+                                type="number"
+                                [label]="'Nivel'"
+                                [controlKey]="'iPreguntaNivel'"
+                            />
+                        </div>
+                        <div class="field col-12 md:col-6">
+                            <app-common-input
+                                type="number"
+                                [label]="'Peso'"
+                                [controlKey]="'iPreguntaPeso'"
+                            />
+                        </div>
+                        <div class="field col-12 md:col-6">
+                            <app-common-input
+                                [label]="'Pregunta Clave'"
+                                [controlKey]="'cPreguntaClave'"
+                            />
+                        </div>
                     </div>
-                    <div class="field col-12 md:col-6">
-                        <app-common-input
-                            type="number"
-                            [label]="'Nivel'"
-                            [controlKey]="'iPreguntaNivel'"
-                        />
+                    <h2 class="text-xl m-0 mb-2">Tiempo para responder</h2>
+                    <div class="formgrid grid">
+                        <div class="field col-12 md:col">
+                            <app-common-input
+                                type="number"
+                                [label]="'Horas'"
+                                [controlKey]="'iHoras'"
+                            />
+                        </div>
+                        <div class="field col-12 md:col">
+                            <app-common-input
+                                type="number"
+                                [label]="'Minutos'"
+                                [controlKey]="'iMinutos'"
+                            />
+                        </div>
+                        <div class="field col-12 md:col">
+                            <app-common-input
+                                type="number"
+                                [label]="'Segundos'"
+                                [controlKey]="'iSegundos'"
+                            />
+                        </div>
                     </div>
-
-                    <div class="field col-12 md:col-6">
-                        <app-common-input
-                            type="number"
-                            [label]="'Peso'"
-                            [controlKey]="'iPreguntaPeso'"
-                        />
+                    <div class="formgrid grid">
+                        <div class="field col">
+                            <label for="firstname2"
+                                >Enunciado de la pregunta</label
+                            >
+                            <p-editor
+                                [formControlName]="'cPregunta'"
+                                [style]="{ height: '320px' }"
+                            />
+                            @if (
+                                bancoPreguntasForm
+                                    .get('0.cPregunta')
+                                    .hasError('required') &&
+                                bancoPreguntasForm.get('0.cPregunta')?.touched
+                            ) {
+                                <small class="text-red-500">
+                                    Este campo es requerido
+                                </small>
+                            }
+                        </div>
                     </div>
-                    <div class="field col-12 md:col-6">
-                        <app-common-input
-                            [label]="'Pregunta Clave'"
-                            [controlKey]="'cPreguntaClave'"
-                        />
+                    <div class="formgrid grid">
+                        <div class="field col">
+                            <label for="firstname2">Texto ayuda</label>
+                            <p-editor
+                                formControlName="cPreguntaTextoAyuda"
+                                [style]="{ height: '320px' }"
+                            />
+                        </div>
                     </div>
-                </div>
-                <h2 class="text-xl m-0 mb-2">Tiempo para responder</h2>
-                <div class="formgrid grid">
-                    <div class="field col-12 md:col">
-                        <app-common-input
-                            type="number"
-                            [label]="'Horas'"
-                            [controlKey]="'iHoras'"
-                        />
-                    </div>
-                    <div class="field col-12 md:col">
-                        <app-common-input
-                            type="number"
-                            [label]="'Minutos'"
-                            [controlKey]="'iMinutos'"
-                        />
-                    </div>
-                    <div class="field col-12 md:col">
-                        <app-common-input
-                            type="number"
-                            [label]="'Segundos'"
-                            [controlKey]="'iSegundos'"
-                        />
-                    </div>
-                </div>
-                <div class="formgrid grid">
-                    <div class="field col">
-                        <label for="firstname2">Enunciado de la pregunta</label>
-                        <p-editor
-                            [formControlName]="'cPregunta'"
-                            [style]="{ height: '320px' }"
-                        />
-                        @if (
-                            bancoPreguntasForm
-                                .get('cPregunta')
-                                .hasError('required') &&
-                            bancoPreguntasForm.get('cPregunta')?.touched
-                        ) {
-                            <small class="text-red-500">
-                                Este campo es requerido
-                            </small>
-                        }
-                    </div>
-                </div>
-                <div class="formgrid grid">
-                    <div class="field col">
-                        <label for="firstname2">Texto ayuda</label>
-                        <p-editor
-                            formControlName="cPreguntaTextoAyuda"
-                            [style]="{ height: '320px' }"
-                        />
-                    </div>
-                </div>
+                </ng-container>
             </form>
         }
         @case (1) {
             <app-alternativas
                 [alternativas]="alternativas"
                 [pregunta]="pregunta"
+                (alternativasChange)="alternativasChange($event)"
             ></app-alternativas>
-            @if (alternativas.length < 2) {
+            @if (
+                bancoPreguntasForm
+                    .get('1.alternativas')
+                    ?.hasError('alternativasInvalidas')
+            ) {
                 <small class="text-red-500">
-                    Debe Agregar al menos dos opciones
+                    {{
+                        bancoPreguntasForm
+                            .get('1.alternativas')
+                            .getError('alternativasInvalidas')
+                    }}
                 </small>
             }
         }

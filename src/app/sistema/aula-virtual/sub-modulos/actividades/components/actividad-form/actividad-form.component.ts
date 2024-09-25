@@ -45,8 +45,6 @@ export class ActividadFormComponent {
     instance: DynamicDialogComponent | undefined
 
     constructor() {
-        console.log(this._config.data)
-
         this.actividadForm = this._formBuilder.group({
             titulo: ['', [Validators.required]],
             descripcion: ['', [Validators.required]],

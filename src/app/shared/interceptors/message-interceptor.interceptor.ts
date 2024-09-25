@@ -27,8 +27,6 @@ export class MessageInterceptor implements HttpInterceptor {
                 if (event instanceof HttpResponse && method !== 'GET') {
                     // Verifica si el estado es 200
 
-                    console.log(event)
-
                     const message: IModal = getMessageByHttpCode(event.status)
                     message.message = event.body.message
                     this._messageService.openDialog(message)

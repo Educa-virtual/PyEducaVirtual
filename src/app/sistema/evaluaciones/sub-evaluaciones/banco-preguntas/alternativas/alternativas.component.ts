@@ -1,12 +1,14 @@
-import { Component, inject, Input, OnInit } from '@angular/core'
+import {
+    Component,
+    EventEmitter,
+    inject,
+    Input,
+    OnInit,
+    Output,
+} from '@angular/core'
 import { ButtonModule } from 'primeng/button'
-
-/*import { Product } from '@domain/product';
-import { ProductService } from '@service/productservice';*/
 import { TableModule } from 'primeng/table'
 import { CommonModule } from '@angular/common'
-
-/* modal  */
 import { DialogService, DynamicDialogConfig } from 'primeng/dynamicdialog'
 import { AlternativasFormComponent } from '../alternativas/alternativas-form/alternativas-form.component'
 import { MODAL_CONFIG } from '@/app/shared/constants/modal.config'
@@ -29,6 +31,7 @@ import { ConfirmationService } from 'primeng/api'
 })
 export class AlternativasComponent implements OnInit {
     @Input() alternativas = []
+    @Output() alternativasChange = new EventEmitter()
     @Input() pregunta
     private _dialogService = inject(DialogService)
     private _confirmationModalService = inject(ConfirmationModalService)
@@ -110,6 +113,7 @@ export class AlternativasComponent implements OnInit {
             data: {
                 alternativa: alternativa,
                 pregunta: this.pregunta,
+                alternativas: this.alternativas,
             },
             header:
                 alternativa == null
@@ -122,17 +126,22 @@ export class AlternativasComponent implements OnInit {
                 result.bAlternativaCorrecta = result.bAlternativaCorrecta
                     ? 1
                     : 0
-                const existeAlternativa = this.alternativas.some(
-                    (x) => x.iAlternativaId == result.iAlternativaId
-                )
+                const existeAlternativa = this.alternativas.some((x) => {
+                    console.log(x.iAlternativaId, result.iAlternativaId)
+
+                    return x.iAlternativaId == result.iAlternativaId
+                })
+
+                // si existe actualizar alternativa
                 if (existeAlternativa) {
-                    this.alternativas[
-                        this.alternativas.findIndex(
-                            (x) => x.iAlternativaId == result.iAlternativaId
-                        )
-                    ] = result
+                    const index = this.alternativas.findIndex(
+                        (x) => x.iAlternativaId == result.iAlternativaId
+                    )
+                    this.alternativas[index] = result
+                    this.alternativasChange.emit(this.alternativas)
                 } else {
                     this.alternativas.push(result)
+                    this.alternativasChange.emit(this.alternativas)
                 }
             }
         })
@@ -162,6 +171,7 @@ export class AlternativasComponent implements OnInit {
         this.alternativas = this.alternativas.filter(
             (item) => item.iAlternativaId != alternativa.iAlternativaId
         )
+        this.alternativasChange.emit(this.alternativas)
     }
 
     accionBtnItemTable({ accion, item }) {

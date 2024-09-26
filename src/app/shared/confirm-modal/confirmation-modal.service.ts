@@ -31,7 +31,12 @@ export class ConfirmationModalService {
         })
     }
 
-    openAlert({ header, ...config }: IModal) {
+    openAlert({
+        header,
+        ...config
+    }: Omit<IModal, 'header'> & {
+        header: string
+    }) {
         this.dialogState.next({
             header,
             key: 'manual',

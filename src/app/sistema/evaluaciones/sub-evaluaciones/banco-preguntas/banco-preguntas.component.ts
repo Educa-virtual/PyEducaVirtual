@@ -208,6 +208,15 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
     constructor() {}
 
     ngOnInit() {
+        this.initializeData()
+        this.fetchInitialData()
+    }
+    fetchInitialData() {
+        this.obtenerBancoPreguntas()
+        this.obtenerDesempenos()
+        this.obtenerTipoPreguntas()
+    }
+    initializeData() {
         this.competencias = [
             {
                 iCompentenciaId: 0,
@@ -242,10 +251,6 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
                 cCapacidadDescripcion: 'Todos',
             },
         ]
-
-        this.obtenerBancoPreguntas()
-        this.obtenerDesempenos()
-        this.obtenerTipoPreguntas()
     }
 
     obtenerDesempenos() {
@@ -288,11 +293,13 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
                 next: (resp: unknown) => {
-                    this.tipoPreguntas = resp['data']
-                    this.tipoPreguntas.unshift({
-                        iTipoPregId: 0,
-                        cTipoPregDescripcion: 'Todos',
-                    })
+                    this.tipoPreguntas = [
+                        {
+                            iTipoPregId: 0,
+                            cTipoPregDescripcion: 'Todos',
+                        },
+                        ...resp['data'],
+                    ]
                 },
             })
     }
@@ -303,29 +310,31 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
                 next: (resp: unknown) => {
-                    this.competencias = resp['data']
-                    this.competencias.unshift({
-                        iCompentenciaId: 0,
-                        cCompetenciaDescripcion: 'Todos',
-                    })
+                    this.competencias = [
+                        {
+                            iCompentenciaId: 0,
+                            cCompetenciaDescripcion: 'Todos',
+                        },
+                        ...resp['data'],
+                    ]
                 },
             })
     }
 
-    obtenerCapacidades() {
-        this._apiEre
-            .obtenerCapacidades(this.params)
-            .pipe(takeUntil(this.unsubscribe$))
-            .subscribe({
-                next: (resp: unknown) => {
-                    this.capacidades = resp['data']
-                    this.capacidades.unshift({
-                        iCapacidadId: 0,
-                        cCapacidadDescripcion: 'Todos',
-                    })
-                },
-            })
-    }
+    // obtenerCapacidades() {
+    //     this._apiEre
+    //         .obtenerCapacidades(this.params)
+    //         .pipe(takeUntil(this.unsubscribe$))
+    //         .subscribe({
+    //             next: (resp: unknown) => {
+    //                 this.capacidades = resp['data']
+    //                 this.capacidades.unshift({
+    //                     iCapacidadId: 0,
+    //                     cCapacidadDescripcion: 'Todos',
+    //                 })
+    //             },
+    //         })
+    // }
 
     // manejar las acciones
     accionBtnItem(action) {
@@ -368,7 +377,6 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             },
             reject: () => {},
         })
-        return
     }
 
     // abrir el modal para asignar preguntas

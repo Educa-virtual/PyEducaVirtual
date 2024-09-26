@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core'
+import { Component, inject, OnInit } from '@angular/core'
 
 /*BOTONES */
 import { ButtonModule } from 'primeng/button'
@@ -9,7 +9,7 @@ import { DialogModule } from 'primeng/dialog'
 /*INPUT TEXT */
 import { InputTextModule } from 'primeng/inputtext'
 import { InputTextareaModule } from 'primeng/inputtextarea'
-import { FormsModule } from '@angular/forms'
+
 //TAB
 import { TabViewModule } from 'primeng/tabview'
 import { DropdownModule } from 'primeng/dropdown'
@@ -18,6 +18,14 @@ import { IeparticipaComponent } from '../ieparticipa/ieparticipa.component'
 
 import { ApiEvaluacionesRService } from '../../../services/api-evaluaciones-r.service'
 import { Subject, takeUntil } from 'rxjs'
+import { DynamicDialogRef } from 'primeng/dynamicdialog'
+import {
+    FormBuilder,
+    FormsModule,
+    ReactiveFormsModule,
+    Validators,
+} from '@angular/forms'
+import { CommonInputComponent } from '@/app/shared/components/common-input/common-input.component'
 
 interface TipoEvaluacion {
     idTipoEvalId: number
@@ -40,11 +48,32 @@ interface NivelEvaluacion {
         TabViewModule,
         IeparticipaComponent,
         DropdownModule,
+        CommonInputComponent,
+        ReactiveFormsModule,
     ],
     templateUrl: './evaluaciones-form.component.html',
     styleUrl: './evaluaciones-form.component.scss',
 })
-export class EvaluacionesFormComponent {
+export class EvaluacionesFormComponent implements OnInit {
+    private _formBuilder = inject(FormBuilder)
+    private _ref = inject(DynamicDialogRef)
+
+    public evaluacionFormGroup = this._formBuilder.group({
+        idTipoEvalId: [null, [Validators.required]],
+        iNivelEvalId: [null, [Validators.required]],
+        cEvaluacionDescripcion: [null],
+        cEvaluacionUrlDrive: [null],
+        cEvaluacionUrlPlantilla: [null],
+        cEvaluacionUrlManual: [null],
+        cEvaluacionUrlMatriz: [null],
+        dtEvaluacionLiberarMatriz: [null],
+        dtEvaluacionLiberarCuadernillo: [null],
+        dtEvaluacionLiberarResultados: [null],
+        dtEvaluacionCreacion: [null, Validators.required],
+
+        cEvaluacionNombre: [null, Validators.required],
+    })
+
     private unsubscribe$: Subject<boolean> = new Subject()
     public params = {
         iCompentenciaId: 0,
@@ -113,5 +142,16 @@ export class EvaluacionesFormComponent {
     onchange() {
         alert(JSON.stringify(this.selectedTipoEvaluacion))
         alert(this.fecha)
+    }
+
+    closeModal(data) {
+        this._ref.close(data)
+    }
+
+    guardarActualizarAlternativa() {
+        if (this.evaluacionFormGroup.invalid) {
+            this.evaluacionFormGroup.markAllAsTouched()
+            return
+        }
     }
 }

@@ -78,6 +78,13 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
     selectedItems = []
     accionesPrincipal: IActionContainer[] = [
         {
+            labelTooltip: 'Word',
+            text: 'Word',
+            icon: 'pi pi-file-word',
+            accion: 'generar-word',
+            class: 'p-button-info',
+        },
+        {
             labelTooltip: 'Asignar Matriz',
             text: 'Asignar Matriz',
             icon: {
@@ -346,6 +353,25 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
         if (action.accion === 'asignar') {
             this.asignarPreguntas()
         }
+
+        if (action.accion === 'generar-word') {
+            this.generarWord()
+        }
+    }
+
+    generarWord() {
+        if (this.selectedItems.length === 0) {
+            this._confirmationModalService.openAlert({
+                header: 'Debe seleccionar almenos una pregunta.',
+            })
+            return
+        }
+        const ids = this.selectedItems.map((item) => item.iPreguntaId).join(',')
+        const params = {
+            iCursoId: this.params.iCursoId,
+            ids,
+        }
+        this._apiEvaluaciones.generarWordByPreguntasIds(params)
     }
 
     accionBtnItemTable({ accion, item }) {

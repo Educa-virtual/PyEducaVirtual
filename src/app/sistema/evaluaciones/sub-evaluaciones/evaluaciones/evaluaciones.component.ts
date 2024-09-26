@@ -20,8 +20,6 @@ import { EvaluacionesFormComponent } from '../evaluaciones/evaluaciones-form/eva
 import { DialogService } from 'primeng/dynamicdialog'
 import { MODAL_CONFIG } from '@/app/shared/constants/modal.config'
 
-import { BotonosModalFormComponent } from '../evaluaciones/evaluaciones-form/botonos-modal-form/botonos-modal-form.component'
-
 import {
     IActionTable,
     IColumn,
@@ -155,9 +153,9 @@ export class EvaluacionesComponent implements OnInit {
         this._dialogService.open(EvaluacionesFormComponent, {
             ...MODAL_CONFIG,
             header: 'Nueva evaluación',
-            templates: {
+            /* templates: {
                 footer: BotonosModalFormComponent,
-            },
+            },*/
         })
     }
 

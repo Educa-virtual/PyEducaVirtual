@@ -5,6 +5,7 @@
 ></app-container-page>
 <app-table-primeng
     [showCaption]="false"
+    [tableStyle]="null"
     [showPaginator]="false"
     [actions]="actions"
     [data]="data"
@@ -12,5 +13,12 @@
     (accionBtnItem)="accionBtnItem($event)"
 ></app-table-primeng>
 
-<!-- <app-form-metodologia [data]="itemRecursos" [showModal]="showModal" [option]="option"
-  (accionBtnItem)="accionBtnItem($event)"></app-form-metodologia> -->
+<app-form-metodologia
+    [data]="tipoMetodologias"
+    [item]="itemData"
+    [showModal]="showModal"
+    [option]="option"
+    (accionBtnItem)="accionBtnItem($event)"
+></app-form-metodologia>
+
+<p-confirmDialog />

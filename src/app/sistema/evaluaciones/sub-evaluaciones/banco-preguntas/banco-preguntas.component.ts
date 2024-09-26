@@ -78,6 +78,13 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
     selectedItems = []
     accionesPrincipal: IActionContainer[] = [
         {
+            labelTooltip: 'Word',
+            text: 'Word',
+            icon: 'pi pi-file-word',
+            accion: 'generar-word',
+            class: 'p-button-info',
+        },
+        {
             labelTooltip: 'Asignar Matriz',
             text: 'Asignar Matriz',
             icon: {
@@ -208,6 +215,15 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
     constructor() {}
 
     ngOnInit() {
+        this.initializeData()
+        this.fetchInitialData()
+    }
+    fetchInitialData() {
+        this.obtenerBancoPreguntas()
+        this.obtenerDesempenos()
+        this.obtenerTipoPreguntas()
+    }
+    initializeData() {
         this.competencias = [
             {
                 iCompentenciaId: 0,
@@ -242,11 +258,6 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
                 cCapacidadDescripcion: 'Todos',
             },
         ]
-
-        this.obtenerBancoPreguntas()
-        this.obtenerDesempenos()
-        this.obtenerTipoPreguntas()
-        // this.obtenerCompetencias()
     }
 
     obtenerDesempenos() {
@@ -289,11 +300,13 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
                 next: (resp: unknown) => {
-                    this.tipoPreguntas = resp['data']
-                    this.tipoPreguntas.unshift({
-                        iTipoPregId: 0,
-                        cTipoPregDescripcion: 'Todos',
-                    })
+                    this.tipoPreguntas = [
+                        {
+                            iTipoPregId: 0,
+                            cTipoPregDescripcion: 'Todos',
+                        },
+                        ...resp['data'],
+                    ]
                 },
             })
     }
@@ -304,29 +317,31 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
                 next: (resp: unknown) => {
-                    this.competencias = resp['data']
-                    this.competencias.unshift({
-                        iCompentenciaId: 0,
-                        cCompetenciaDescripcion: 'Todos',
-                    })
+                    this.competencias = [
+                        {
+                            iCompentenciaId: 0,
+                            cCompetenciaDescripcion: 'Todos',
+                        },
+                        ...resp['data'],
+                    ]
                 },
             })
     }
 
-    obtenerCapacidades() {
-        this._apiEre
-            .obtenerCapacidades(this.params)
-            .pipe(takeUntil(this.unsubscribe$))
-            .subscribe({
-                next: (resp: unknown) => {
-                    this.capacidades = resp['data']
-                    this.capacidades.unshift({
-                        iCapacidadId: 0,
-                        cCapacidadDescripcion: 'Todos',
-                    })
-                },
-            })
-    }
+    // obtenerCapacidades() {
+    //     this._apiEre
+    //         .obtenerCapacidades(this.params)
+    //         .pipe(takeUntil(this.unsubscribe$))
+    //         .subscribe({
+    //             next: (resp: unknown) => {
+    //                 this.capacidades = resp['data']
+    //                 this.capacidades.unshift({
+    //                     iCapacidadId: 0,
+    //                     cCapacidadDescripcion: 'Todos',
+    //                 })
+    //             },
+    //         })
+    // }
 
     // manejar las acciones
     accionBtnItem(action) {
@@ -338,6 +353,25 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
         if (action.accion === 'asignar') {
             this.asignarPreguntas()
         }
+
+        if (action.accion === 'generar-word') {
+            this.generarWord()
+        }
+    }
+
+    generarWord() {
+        if (this.selectedItems.length === 0) {
+            this._confirmationModalService.openAlert({
+                header: 'Debe seleccionar almenos una pregunta.',
+            })
+            return
+        }
+        const ids = this.selectedItems.map((item) => item.iPreguntaId).join(',')
+        const params = {
+            iCursoId: this.params.iCursoId,
+            ids,
+        }
+        this._apiEvaluaciones.generarWordByPreguntasIds(params)
     }
 
     accionBtnItemTable({ accion, item }) {
@@ -369,7 +403,6 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             },
             reject: () => {},
         })
-        return
     }
 
     // abrir el modal para asignar preguntas
@@ -408,7 +441,10 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
                 pregunta: pregunta,
                 iCursoId: this.params.iCursoId,
             },
-            header: pregunta == null ? 'Nueva pregunta' : 'Editar pregunta',
+            header:
+                pregunta?.iPreguntaId == 0
+                    ? 'Nueva pregunta'
+                    : 'Editar pregunta',
         })
         refModal.onClose.subscribe((result) => {
             if (result) {

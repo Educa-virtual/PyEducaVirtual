@@ -114,7 +114,6 @@ export class TareaRoomComponent {
 
     public accionBtnItem(event) {
         if (event.accion === 'calificar') {
-            console.log('agregar')
             this._dialogService.open(CalificarTareaFormComponent, {
                 ...MODAL_CONFIG,
                 header: 'Calificar Tarea',

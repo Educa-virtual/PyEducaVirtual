@@ -1,0 +1,16 @@
+<app-container-page
+    title="Metodología"
+    [actions]="actionsContainer"
+    (accionBtnItem)="accionBtnItem($event)"
+></app-container-page>
+<app-table-primeng
+    [showCaption]="false"
+    [showPaginator]="false"
+    [actions]="actions"
+    [data]="data"
+    [columnas]="columns"
+    (accionBtnItem)="accionBtnItem($event)"
+></app-table-primeng>
+
+<!-- <app-form-metodologia [data]="itemRecursos" [showModal]="showModal" [option]="option"
+  (accionBtnItem)="accionBtnItem($event)"></app-form-metodologia> -->

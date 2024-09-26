@@ -62,6 +62,7 @@ export class LoginComponent implements OnInit {
         this.authService.login(this.formLogin.value).subscribe({
             next: (response: Data) => {
                 this.loading = false
+
                 if (!response.data.length)
                     return this.messageService.add({
                         severity: 'error',
@@ -74,7 +75,7 @@ export class LoginComponent implements OnInit {
                 this.tokenStorage.setItem('dremoToken', item)
                 this.tokenStorage.setItem(
                     'dremoPerfilVerificado',
-                    item.bCodeVerif == 1 ? true : false
+                    item.bCredVerificado == 1 ? true : false
                 )
 
                 this.tokenStorage.setItem('auth-token', response.accessToken)
@@ -87,16 +88,13 @@ export class LoginComponent implements OnInit {
                 this.tokenStorage.saveRefreshToken(response.refreshToken)
                 this.tokenStorage.saveUser(item)
 
-                if (item.bCodeVerif == 1) {
+                if (item.bCredVerificado == 1) {
                     this.router.navigate(['./'])
                     setTimeout(() => {
                         location.reload()
-                    }, 350)
+                    }, 500)
                 } else {
-                    this.router.navigate(['verificacion'])
-                    setTimeout(() => {
-                        location.reload()
-                    }, 350)
+                    this.router.navigateByUrl('verificacion')
                 }
             },
             complete: () => {},

@@ -54,9 +54,10 @@ export class VerificacionComponent {
     onVerify() {
         this.loading = true
         this.loadingText = 'Verificando...'
+        const user = this.store.getItem('dremoToken')
         const params = {
             cCodeVerif: this.formVerify.value.cCodeVerif,
-            iPersId: this.ConstantesService.iPersId,
+            iPersId: user ? user.iPersId : null,
         }
         this.authService.sendVerify(params).subscribe({
             next: (response: Data) => {
@@ -97,9 +98,6 @@ export class VerificacionComponent {
         this.tokenStorage.signOut()
         this.store.clear()
         this.router.navigate(['login'])
-        setTimeout(() => {
-            location.reload()
-        }, 350)
     }
 
     sendEmail() {

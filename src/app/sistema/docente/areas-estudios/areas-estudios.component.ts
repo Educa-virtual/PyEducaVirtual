@@ -44,6 +44,12 @@ export class AreasEstudiosComponent implements OnInit {
     selectedData = []
     items = []
     data = []
+    messages = [
+        {
+            severity: 'info',
+            detail: 'En esta sección podrá visualizar las áreas de estudio asignadas para el periodo seleccionado, así como la institución educativa a la que pertenece.',
+        },
+    ]
 
     ngOnInit() {
         this.getCursos()
@@ -103,9 +109,14 @@ export class AreasEstudiosComponent implements OnInit {
             case 'silabo':
                 this.router.navigateByUrl(
                     'docente/gestionar-silabo/' +
-                        this.selectedData['iCursoId'] +
+                        this.selectedData['idDocCursoId'] +
                         '/' +
-                        this.selectedData['cCursoNombre']
+                        this.selectedData['cCursoNombre'].replace(
+                            /[\^*@!"#$%&/()=?¡!¿':\\]/gi,
+                            ''
+                        ) +
+                        '/' +
+                        this.selectedData['iAvanceSilabo']
                 )
                 break
             case 'sesion-aprendizaje':
@@ -124,32 +135,25 @@ export class AreasEstudiosComponent implements OnInit {
     getCursos() {
         const params = {
             petition: 'post',
-            ruta: 'listar_cursos',
+            group: 'docente',
+            prefix: 'docente-cursos',
+            ruta: 'list', //'getDocentesCursos',
             data: {
-                iPersId: this.ConstantesService.iPersId,
+                opcion: 'CONSULTARxiPersId',
+                iCredId: this.ConstantesService.iCredId,
+                cYearNombre: null,
+                iSemAcadId: null,
+                iIieeId: null,
             },
         }
-        this.GeneralService.getGral(params).subscribe({
+        this.GeneralService.getGralPrefix(params).subscribe({
             next: (response: Data) => {
                 this.data = []
-                if (!response.validated) {
-                    this.MessageService.add({
-                        severity: 'error',
-                        summary: '¡Atención!',
-                        detail: 'Vuelva a ingresar sus credenciales',
-                    })
-                } else {
-                    this.data = response.data
-                }
+                this.data = response.data
             },
             complete: () => {},
             error: (error) => {
                 console.log(error)
-                this.MessageService.add({
-                    severity: 'error',
-                    summary: '¡Atención!',
-                    detail: 'Las credenciales son erróneas',
-                })
             },
         })
     }

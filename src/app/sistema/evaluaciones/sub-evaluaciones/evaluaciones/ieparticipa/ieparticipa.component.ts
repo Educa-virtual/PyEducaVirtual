@@ -10,6 +10,9 @@ import { Subject, takeUntil } from 'rxjs'
 //import dayjs from 'dayjs'
 import { FormsModule } from '@angular/forms'
 import { DropdownModule } from 'primeng/dropdown'
+import { IconFieldModule } from 'primeng/iconfield'
+import { InputIconModule } from 'primeng/inputicon'
+import { InputTextModule } from 'primeng/inputtext'
 
 import { ButtonModule } from 'primeng/button'
 
@@ -25,7 +28,15 @@ interface NivelTipo {
 @Component({
     selector: 'app-ieparticipa',
     standalone: true,
-    imports: [PickListModule, ButtonModule, DropdownModule, FormsModule],
+    imports: [
+        PickListModule,
+        ButtonModule,
+        InputTextModule,
+        DropdownModule,
+        FormsModule,
+        IconFieldModule,
+        InputIconModule,
+    ],
     templateUrl: './ieparticipa.component.html',
     styleUrl: './ieparticipa.component.scss',
     providers: [ProductService],

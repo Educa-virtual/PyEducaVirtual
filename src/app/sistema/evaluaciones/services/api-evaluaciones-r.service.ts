@@ -12,7 +12,7 @@ export class ApiEvaluacionesRService {
 
     obtenerEvaluacion(params) {
         return this.http.get(
-            `${this.baseUrl}/ere/evaluacion/obtenerEvaluacion`,
+            `${this.baseUrl}/ere/Evaluaciones/obtenerEvaluaciones`,
             { params }
         )
     }

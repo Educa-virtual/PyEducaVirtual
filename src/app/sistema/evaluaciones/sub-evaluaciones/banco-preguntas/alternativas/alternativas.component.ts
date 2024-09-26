@@ -113,6 +113,7 @@ export class AlternativasComponent implements OnInit {
             data: {
                 alternativa: alternativa,
                 pregunta: this.pregunta,
+                alternativas: this.alternativas,
             },
             header:
                 alternativa == null

@@ -28,6 +28,7 @@ import { CommonInputComponent } from '@/app/shared/components/common-input/commo
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog'
 import { ApiEvaluacionesService } from '../../../services/api-evaluaciones.service'
 import { StepsModule } from 'primeng/steps'
+import { getAlternativaValidation } from '../alternativas/get-alternativa-validation'
 @Component({
     selector: 'app-banco-preguntas-form',
     standalone: true,
@@ -189,67 +190,16 @@ export class BancoPreguntasFormComponent implements OnInit {
             const alternativas = control.value
             tipoPregunta = parseInt(tipoPregunta, 10)
 
-            // Dependiedo al tipo pregunta
-            // pregunta unica
-            //  debe seleccionar al menos 1 alternativa correcta
-            //  al menos 2 alternativas
-            // pregunta multiple
-            // debe de tener 2 alternativas
-            // debe seleccionar al menos 1 alternativa incorrecta
-
-            // si sellecciona debe de reaccionar la validacion.
-
-            // Cualquier preguntadebe tener al menos 2 alternativas
-            console.log(alternativas, tipoPregunta)
-
-            if (alternativas.length < 2) {
+            const errorMessage = getAlternativaValidation(
+                tipoPregunta,
+                alternativas
+            )
+            if (errorMessage) {
                 return {
-                    alternativasInvalidas: 'Debe haber almenos 2 alternativas',
+                    alternativasInvalidas: errorMessage,
                 }
             }
-
-            if (tipoPregunta === 1 && alternativas.length >= 2) {
-                // Una de sus respuestas debe ser correcta
-                if (
-                    alternativas.filter(
-                        (alternativa) => alternativa.bAlternativaCorrecta === 1
-                    ).length < 1
-                ) {
-                    return {
-                        alternativasInvalidas:
-                            'Debe haber al menos una alternativa correcta',
-                    }
-                }
-            }
-
-            if (tipoPregunta === 1 && alternativas.length >= 2) {
-                // Una de sus respuestas debe ser incorrecta
-                if (
-                    alternativas.filter(
-                        (alternativa) => alternativa.bAlternativaCorrecta === 1
-                    ).length > 1
-                ) {
-                    return {
-                        alternativasInvalidas:
-                            'Debe haber solo una alternativa correcta',
-                    }
-                }
-            }
-
-            // if (tipoPregunta === 2 && alternativas.length !== 2) {
-            //     // Pregunta de opción múltiple necesita al menos una alternativa incorrecta
-            //     return { minAlternativas: 'Debe haber al menos 2 alternativas' }
-            // }
-
-            // if (tipoPregunta === 3 && alternativas.length > 0) {
-            //     // Pregunta de respuesta abierta no debe tener alternativas
-            //     return {
-            //         noAlternativas:
-            //             'No se deben agregar alternativas a una pregunta abierta',
-            //     }
-            // }
-
-            return null // No hay errores
+            return errorMessage
         }
     }
 
@@ -258,9 +208,6 @@ export class BancoPreguntasFormComponent implements OnInit {
     }
 
     guardarActualizarBancoPreguntas() {
-        console.log(this.alternativas, this.bancoPreguntasForm.value)
-
-        return
         if (this.bancoPreguntasForm.invalid) {
             this.bancoPreguntasForm.markAllAsTouched()
             return
@@ -270,7 +217,7 @@ export class BancoPreguntasFormComponent implements OnInit {
             return
         }
 
-        const pregunta = this.bancoPreguntasForm.value
+        const pregunta = this.bancoPreguntasForm.get('0').value
         pregunta.datosAlternativas = this.alternativas
         if (this.mode == 'CREAR') {
             this._evaluacionesService

@@ -4,7 +4,20 @@ import { Component, OnInit, ViewChild } from '@angular/core'
 import { TablePrimengComponent } from '../../../shared/table-primeng/table-primeng.component'
 import { Menu } from 'primeng/menu'
 import { RecursosDidacticosComponent } from './components/recursos-didacticos/recursos-didacticos.component'
-
+import { Router } from '@angular/router'
+import { Table } from 'primeng/table'
+import { GeneralService } from '@/app/servicios/general.service'
+import { MessageService } from 'primeng/api'
+import { ConstantesService } from '@/app/servicios/constantes.service'
+interface Data {
+    accessToken: string
+    refreshToken: string
+    expires_in: number
+    msg?
+    data?
+    validated?: boolean
+    code?: number
+}
 @Component({
     selector: 'app-areas-estudios',
     standalone: true,
@@ -16,112 +29,132 @@ import { RecursosDidacticosComponent } from './components/recursos-didacticos/re
     ],
     templateUrl: './areas-estudios.component.html',
     styleUrl: './areas-estudios.component.scss',
+    providers: [MessageService],
 })
 export class AreasEstudiosComponent implements OnInit {
     @ViewChild('myMenu') menu!: Menu
 
-    activeStepper: number = null
-    selectedItem: number = 0
-    selectedTitle: string
+    constructor(
+        private router: Router,
+        private GeneralService: GeneralService,
+        private MessageService: MessageService,
+        private ConstantesService: ConstantesService
+    ) {}
+
     selectedData = []
     items = []
-    data = [
+    data = []
+    messages = [
         {
-            iCurso: 1,
-            cCurso: 'Matemática I',
-            cGrado: '4to',
-            cSeccion: 'A',
-            iEstudiantes: 45,
-            iAvanceSilabo: 50,
-            iAvanceAsistencia: 45,
-            iAvanceNotas: 69,
-        },
-        {
-            iCurso: 2,
-            cCurso: 'Comunicación I',
-            cGrado: '5to',
-            cSeccion: 'B',
-            iEstudiantes: 5,
-            iAvanceSilabo: 10,
-            iAvanceAsistencia: 90,
-            iAvanceNotas: 56,
-        },
-        {
-            iCurso: 3,
-            cCurso: 'Religión',
-            cGrado: '2to',
-            cSeccion: 'C',
-            iEstudiantes: 65,
-            iAvanceSilabo: 90,
-            iAvanceAsistencia: 15,
-            iAvanceNotas: 96,
-        },
-        {
-            iCurso: 4,
-            cCurso: 'Historia',
-            cGrado: '1to',
-            cSeccion: 'D',
-            iEstudiantes: 95,
-            iAvanceSilabo: 80,
-            iAvanceAsistencia: 25,
-            iAvanceNotas: 9,
+            severity: 'info',
+            detail: 'En esta sección podrá visualizar las áreas de estudio asignadas para el periodo seleccionado, así como la institución educativa a la que pertenece.',
         },
     ]
-    silabo = [
-        { iSilabo: 1, cSilaboTitle: 'Información General' },
-        { iSilabo: 2, cSilaboTitle: 'Perfil del Egreso' },
-        {
-            iSilabo: 3,
-            cSilaboTitle:
-                'Descripción de la Unidad Didáctica, Capacidad y Metodología',
-        },
-        { iSilabo: 4, cSilaboTitle: 'Recursos Didácticos' },
-        {
-            iSilabo: 5,
-            cSilaboTitle:
-                'Desarrollo de Actividades de Aprendizaje y de Evaluación',
-        },
-        { iSilabo: 6, cSilaboTitle: 'Evaluación' },
-        { iSilabo: 7, cSilaboTitle: 'Bibliografía' },
-    ]
+
     ngOnInit() {
+        this.getCursos()
         this.items = [
             {
                 label: 'Gestionar Sílabo',
                 icon: 'pi pi-angle-right',
                 command: () => {
-                    this.getSilabo()
+                    this.goSection('silabo')
                 },
             },
             {
                 label: 'Fichas de Aprendizaje',
                 icon: 'pi pi-angle-right',
+                command: () => {
+                    this.goSection('ficha-aprendizaje')
+                },
             },
             {
                 label: 'Sessiones de Aprendizaje',
                 icon: 'pi pi-angle-right',
+                command: () => {
+                    this.goSection('sesion-aprendizaje')
+                },
             },
             {
                 label: 'Gestionar Asistencia',
                 icon: 'pi pi-angle-right',
+                command: () => {
+                    this.goSection('asistencia')
+                },
             },
             {
                 label: 'Gestionar Notas',
                 icon: 'pi pi-angle-right',
+                command: () => {
+                    this.goSection('notas')
+                },
             },
         ]
     }
 
     showAndHideMenu(item, $ev: Event) {
         this.selectedData = item
+        // console.log($ev)
         this.menu.show($ev)
-        setTimeout(() => {
-            this.menu.hide()
-        }, 3000)
+        // this.menu.hide()
+        // setTimeout(() => {
+        //     this.menu.hide()
+        // }, 10000)
     }
-
-    getSilabo() {
-        this.selectedItem = 1
-        this.selectedTitle = this.selectedData['cCurso']
+    onGlobalFilter(table: Table, event: Event) {
+        table.filterGlobal((event.target as HTMLInputElement).value, 'contains')
+    }
+    goSection(section) {
+        switch (section) {
+            case 'silabo':
+                this.router.navigateByUrl(
+                    'docente/gestionar-silabo/' +
+                        this.selectedData['idDocCursoId'] +
+                        '/' +
+                        this.selectedData['cCursoNombre'].replace(
+                            /[\^*@!"#$%&/()=?¡!¿':\\]/gi,
+                            ''
+                        ) +
+                        '/' +
+                        this.selectedData['iAvanceSilabo']
+                )
+                break
+            case 'sesion-aprendizaje':
+                this.router.navigateByUrl('docente/sesion-aprendizaje')
+                break
+            case 'asistencia':
+                this.router.navigateByUrl(
+                    'docente/asistencia/' +
+                        this.selectedData['iCursoId'] +
+                        '/' +
+                        this.selectedData['cCursoNombre']
+                )
+                break
+        }
+    }
+    getCursos() {
+        const params = {
+            petition: 'post',
+            group: 'docente',
+            prefix: 'docente-cursos',
+            ruta: 'list', //'getDocentesCursos',
+            data: {
+                opcion: 'CONSULTARxiPersId',
+                iCredId: this.ConstantesService.iCredId,
+                cYearNombre: null,
+                iSemAcadId: null,
+                iIieeId: null,
+            },
+        }
+        this.GeneralService.getGralPrefix(params).subscribe({
+            next: (response: Data) => {
+                this.data = []
+                this.data = response.data
+            },
+            complete: () => {},
+            error: (error) => {
+                console.log(error)
+            },
+        })
     }
 }

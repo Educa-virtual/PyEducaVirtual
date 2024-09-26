@@ -17,4 +17,33 @@ export class ConfirmationModalService {
     openDialog(config: IModal) {
         this.dialogState.next(config)
     }
+
+    openConfirm({ header, message = '', ...config }: IModal) {
+        this.dialogState.next({
+            header,
+            key: 'manual',
+            icon: 'pi pi-exclamation-triangle',
+            acceptLabel: 'Si',
+            rejectLabel: 'No, cancelar',
+            rejectVisible: true,
+            message: message === '' ? message : 'No podrá revertir esta acción',
+            ...config,
+        })
+    }
+
+    openAlert({
+        header,
+        ...config
+    }: Omit<IModal, 'header'> & {
+        header: string
+    }) {
+        this.dialogState.next({
+            header,
+            key: 'manual',
+            icon: 'pi pi-exclamation-triangle',
+            rejectVisible: false,
+            acceptLabel: 'Aceptar',
+            ...config,
+        })
+    }
 }

@@ -21,6 +21,8 @@ import {
     RouterConfigurationFeature,
     withInMemoryScrolling,
     withRouterConfig,
+    withComponentInputBinding,
+    withHashLocation,
 } from '@angular/router'
 
 import {
@@ -30,6 +32,7 @@ import {
 } from '@ng-icons/core'
 
 import { routes } from './app.routes'
+import { MessageInterceptor } from './shared/interceptors/message-interceptor.interceptor'
 
 const scrollConfig: InMemoryScrollingOptions = {
     scrollPositionRestoration: 'enabled',
@@ -45,7 +48,13 @@ const inMemoryScrollingFeature: InMemoryScrollingFeature =
 
 export const appConfig: ApplicationConfig = {
     providers: [
-        provideRouter(routes, inMemoryScrollingFeature, routerConfig),
+        provideRouter(
+            routes,
+            inMemoryScrollingFeature,
+            routerConfig,
+            withComponentInputBinding(),
+            withHashLocation()
+        ),
         provideNgIconsConfig(
             {
                 size: '1.5em',
@@ -71,6 +80,11 @@ export const appConfig: ApplicationConfig = {
         {
             provide: HTTP_INTERCEPTORS,
             useClass: ErrorInterceptor,
+            multi: true,
+        },
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: MessageInterceptor,
             multi: true,
         },
     ],

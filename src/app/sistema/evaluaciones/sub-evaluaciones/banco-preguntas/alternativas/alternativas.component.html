@@ -1,1 +1,21 @@
-<p>alternativas works!</p>
+<div class="flex flex-column md:flex-row gap-2 justify-content-between mb-4">
+    <h2 class="text-xl">Alternativas</h2>
+    <button
+        pButton
+        pRipple
+        label="Agregar Alternativa"
+        icon="pi pi-plus"
+        size="small"
+        class="p-button-primary"
+        (click)="agregarActualizarAlternativa(null)"
+    ></button>
+</div>
+
+<app-table-primeng
+    [showCaption]="false"
+    [data]="alternativas"
+    [columnas]="columnas"
+    (accionBtnItem)="accionBtnItemTable($event)"
+    [actions]="accionesTabla"
+    [showPaginator]="false"
+/>

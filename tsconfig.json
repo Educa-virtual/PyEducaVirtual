@@ -23,7 +23,8 @@
         "lib": ["ES2022", "dom"],
         "paths": {
             "@/*": ["./src/*"]
-        }
+        },
+        "allowSyntheticDefaultImports": true
     },
     "exclude": ["node_modules", "**/node_modules/*"],
     "angularCompilerOptions": {

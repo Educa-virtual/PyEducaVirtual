@@ -12,12 +12,15 @@
     [rowsPerPageOptions]="[10, 25, 50]"
     (selectionChange)="onSelectionChange($event)"
     sortMode="multiple"
+    [(selection)]="selectedRowData"
+    [scrollable]="scrollable"
+    [scrollHeight]="scrollHeight"
     class="hoverTable"
 >
     @if (showCaption) {
         <ng-template pTemplate="caption">
             <div
-                class="flex justify-content-between flex-column sm:flex-row flex-wrap"
+                class="flex justify-content-between gap-2 flex-column sm:flex-row flex-wrap"
             >
                 <p-iconField iconPosition="left">
                     <p-inputIcon styleClass="pi pi-search" />
@@ -28,13 +31,7 @@
                         placeholder="Buscar palabra clave"
                     />
                 </p-iconField>
-                <!-- <p-multiSelect
-                    [options]="columnas"
-                    [(ngModel)]="selectedColumns"
-                    optionLabel="header"
-                    selectedItemsLabel="{0} Columnas seleccionadas"
-                    placeholder="Seleccione Columnas"
-                /> -->
+                <ng-content select="[slot='caption-content']"></ng-content>
                 <app-table-column-filter
                     [columns]="columnas"
                     (columnsChange)="onColumnSelected($event)"
@@ -85,7 +82,14 @@
                             <span>{{ rowIndex + 1 }}</span>
                         </div>
                     }
-
+                    @if (col.type === 'p-editor') {
+                        <p-editor
+                            class="custom-editor"
+                            [readonly]="true"
+                            [modules]="{}"
+                            [(ngModel)]="rowData[col.field]"
+                        />
+                    }
                     @if (col.type === 'text') {
                         <div [style.text-align]="col.text">
                             {{ rowData[col.field] }}
@@ -94,15 +98,23 @@
                     @if (col.type === 'checkbox') {
                         <p-tableCheckbox [value]="rowData" />
                     }
+                    @if (col.type === 'radio') {
+                        <p-tableRadioButton
+                            [value]="rowData"
+                        ></p-tableRadioButton>
+                    }
                     @if (col.type === 'actions') {
                         <div class="d-block text-center">
                             @for (item of actions; track $index) {
-                                @if (item.type === 'item') {
+                                @if (
+                                    item.type === 'item' && item.isVisible
+                                        ? item.isVisible(rowData)
+                                        : true
+                                ) {
                                     <button
                                         [rounded]="true"
                                         pButton
                                         pRipple
-                                        [icon]="item.icon"
                                         [pTooltip]="item.labelTooltip"
                                         tooltipPosition="top"
                                         (click)="
@@ -110,10 +122,33 @@
                                         "
                                         class="w-auto p-1"
                                         [ngClass]="item.class"
-                                    ></button>
+                                    >
+                                        @if (item.icon | isIconType) {
+                                            <app-icon
+                                                [name]="item.icon.name"
+                                                [color]="item.icon.color"
+                                                [size]="item.icon.size"
+                                            ></app-icon>
+                                        } @else {
+                                            <i class="{{ item.icon }}"></i>
+                                        }
+                                    </button>
                                 }
                             }
                         </div>
+                    }
+                    @if (col.type === 'estado') {
+                        <p-tag
+                            [severity]="
+                                rowData[col.field] === 1 ? 'success' : 'danger'
+                            "
+                            [value]="
+                                rowData[col.field] === 1
+                                    ? col.customFalsy?.trueText
+                                    : col.customFalsy?.falseText
+                            "
+                        >
+                        </p-tag>
                     }
                 </td>
             }

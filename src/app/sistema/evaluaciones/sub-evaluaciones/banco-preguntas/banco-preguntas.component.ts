@@ -1,10 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, inject } from '@angular/core'
-import { SelectItem } from 'primeng/api'
-import { Customer, Representative } from 'src/app/demo/api/customer'
-import { CustomerService } from 'src/app/demo/service/customer.service'
-import { Product } from 'src/app/demo/api/product'
-import { ProductService } from 'src/app/demo/service/product.service'
-import { Table } from 'primeng/table'
+import { Component, OnInit, inject, OnDestroy } from '@angular/core'
 import { Button } from 'primeng/button'
 import { InputTextModule } from 'primeng/inputtext'
 import { MultiSelectModule } from 'primeng/multiselect'
@@ -14,8 +8,8 @@ import { DropdownModule } from 'primeng/dropdown'
 import { AlternativasComponent } from './alternativas/alternativas.component'
 import { CompetenciasComponent } from '../competencias/competencias.component'
 
-//EDITOR
 import {
+    IActionTable,
     IColumn,
     TablePrimengComponent,
 } from '../../../../shared/table-primeng/table-primeng.component'
@@ -25,19 +19,22 @@ import {
 } from '@/app/shared/container-page/container-page.component'
 import { provideIcons } from '@ng-icons/core'
 import { matGroupWork } from '@ng-icons/material-icons/baseline'
-
-interface expandedRows {
-    [key: string]: boolean
-}
-
-/* modal  */
 import { DialogService } from 'primeng/dynamicdialog'
 import { BancoPreguntasFormComponent } from '../banco-preguntas/banco-preguntas-form/banco-preguntas-form.component'
 import { MODAL_CONFIG } from '@/app/shared/constants/modal.config'
+import { AsignarMatrizPreguntasFormComponent } from './asignar-matriz-preguntas-form/asignar-matriz-preguntas-form.component'
+import { MessageService } from 'primeng/api'
+import { ApiEreService } from '../../services/api-ere.service'
+import dayjs from 'dayjs'
+import { FloatLabelModule } from 'primeng/floatlabel'
+import { Subject, takeUntil } from 'rxjs'
+import { ApiEvaluacionesService } from '../../services/api-evaluaciones.service'
+import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
+
 @Component({
     selector: 'app-banco-preguntas',
     templateUrl: './banco-preguntas.component.html',
-    providers: [provideIcons({ matGroupWork }), DialogService],
+    providers: [provideIcons({ matGroupWork }), DialogService, MessageService],
     standalone: true,
     imports: [
         AlternativasComponent,
@@ -49,58 +46,53 @@ import { MODAL_CONFIG } from '@/app/shared/constants/modal.config'
         ContainerPageComponent,
         Button,
         TablePrimengComponent,
+        FloatLabelModule,
     ],
+    styleUrls: ['./banco-preguntas.component.scss'],
 })
-export class BancoPreguntasComponent implements OnInit {
+export class BancoPreguntasComponent implements OnInit, OnDestroy {
     private _dialogService = inject(DialogService)
+    private _apiEre = inject(ApiEreService)
+    private _apiEvaluaciones = inject(ApiEvaluacionesService)
+    private _confirmationModalService = inject(ConfirmationModalService)
+    private unsubscribe$: Subject<boolean> = new Subject()
 
-    display: boolean = false
+    public competencias = []
+    public capacidades = []
+    public desempenos = []
+    public estados = []
+    public evaluaciones = []
+    public tipoPreguntas = []
 
-    customers1: Customer[] = []
-
-    selectedCustomers1: Customer[] = []
-
-    selectedCustomer: Customer = {}
-
-    representatives: Representative[] = []
-
-    statuses: Product[] = []
-
-    products: Product[] = []
-
-    rowGroupMetadata: Product
-
-    expandedRows: expandedRows = {}
-
-    activityValues: number[] = [0, 100]
-
-    loading: boolean = true
-    valSwitch: boolean = false
-    selectedDrop: SelectItem = { value: '' }
-    nivel: SelectItem[] = []
-    grado: SelectItem[] = []
-    area: SelectItem[] = []
-
-    competencia: SelectItem[] = []
-    capacidad: SelectItem[] = []
-    desempenio: SelectItem[] = []
-    tipo_pregunta: SelectItem[] = []
-    clave: SelectItem[] = []
-
-    text
-    textAyuda
+    public params = {
+        // iCompentenciaId: 0,
+        // iCapacidadId: 0,
+        // iDesempenioId: 0,
+        bPreguntaEstado: -1,
+        iCursoId: 1,
+        iNivelTipoId: 1,
+        iTipoPregId: 0,
+        iEvaluacionId: 0,
+    }
 
     selectedItems = []
     accionesPrincipal: IActionContainer[] = [
         {
-            labelTooltip: 'Asignar',
-            text: 'Asignar',
+            labelTooltip: 'Word',
+            text: 'Word',
+            icon: 'pi pi-file-word',
+            accion: 'generar-word',
+            class: 'p-button-info',
+        },
+        {
+            labelTooltip: 'Asignar Matriz',
+            text: 'Asignar Matriz',
             icon: {
                 name: 'matGroupWork',
                 size: 'xs',
                 color: '',
             },
-            accion: 'agregar',
+            accion: 'asignar',
             class: 'p-button-primary',
         },
         {
@@ -112,20 +104,7 @@ export class BancoPreguntasComponent implements OnInit {
         },
     ]
 
-    data = [
-        {
-            id: 1,
-            cPregunta: 'Pregunta 1',
-            tiempo: '0h 2m 0s',
-            iPreguntaPeso: '2',
-        },
-        {
-            id: 2,
-            cPregunta: 'Pregunta 2',
-            tiempo: '0h 2m 0s',
-            iPreguntaPeso: '2',
-        },
-    ]
+    data = []
 
     columnas: IColumn[] = [
         {
@@ -139,18 +118,26 @@ export class BancoPreguntasComponent implements OnInit {
         {
             field: 'cPregunta',
             header: 'Pregunta',
-            type: 'text',
+            type: 'p-editor',
             width: '5rem',
             text: 'left',
             text_header: 'Pregunta',
         },
         {
-            field: 'tiempo',
+            field: 'cTipoPregDescripcion',
+            header: 'Tipo Pregunta',
+            type: 'text',
+            width: '5rem',
+            text: 'left',
+            text_header: 'Tipo Pregunta',
+        },
+        {
+            field: 'time',
             header: 'Tiempo',
             type: 'text',
             width: '5rem',
             text: 'left',
-            text_header: 'Puntaje',
+            text_header: 'Tiempo',
         },
 
         {
@@ -161,93 +148,314 @@ export class BancoPreguntasComponent implements OnInit {
             text: 'left',
             text_header: 'Puntaje',
         },
+        {
+            field: 'iPreguntaNivel',
+            header: 'Nivel',
+            type: 'text',
+            width: '5rem',
+            text: 'left',
+            text_header: 'Nivel',
+        },
+        {
+            field: 'cPreguntaClave',
+            header: 'Clave',
+            type: 'text',
+            width: '5rem',
+            text: 'left',
+            text_header: 'Clave',
+        },
+        {
+            field: 'bPreguntaEstado',
+            header: 'Estado',
+            type: 'estado',
+            width: '5rem',
+            text: 'left',
+            text_header: 'Estado',
+            customFalsy: {
+                trueText: 'Con Matriz',
+                falseText: 'Sin Matriz',
+            },
+        },
+        {
+            field: '',
+            header: 'Acciones',
+            type: 'actions',
+            width: '5rem',
+            text: 'left',
+            text_header: '',
+        },
     ]
 
-    @ViewChild('filter') filter!: ElementRef
-
-    constructor(
-        private customerService: CustomerService,
-        private productService: ProductService
-    ) {}
+    public accionesTabla: IActionTable[] = [
+        {
+            labelTooltip: 'Editar',
+            icon: 'pi pi-pencil',
+            accion: 'editar',
+            type: 'item',
+            class: 'p-button-rounded p-button-warning p-button-text',
+        },
+        {
+            labelTooltip: 'Eliminar',
+            icon: 'pi pi-trash',
+            accion: 'eliminar',
+            type: 'item',
+            class: 'p-button-rounded p-button-danger p-button-text',
+        },
+        {
+            labelTooltip: 'Asignar Matriz',
+            icon: {
+                name: 'matGroupWork',
+                size: 'xs',
+            },
+            accion: 'asignar',
+            type: 'item',
+            class: 'p-button-rounded p-button-primary p-button-text',
+        },
+    ]
+    constructor() {}
 
     ngOnInit() {
-        this.customerService.getCustomersLarge().then((customers) => {
-            this.customers1 = customers
-            this.loading = false
-
-            /*  this.customers1.forEach(
-                (customer) => (customer.date = new Date(customer.date))
-            )*/
-        })
-        this.nivel = [
+        this.initializeData()
+        this.fetchInitialData()
+    }
+    fetchInitialData() {
+        this.obtenerBancoPreguntas()
+        this.obtenerDesempenos()
+        this.obtenerTipoPreguntas()
+    }
+    initializeData() {
+        this.competencias = [
             {
-                label: 'Nivel Primaria',
-                value: { id: 1, name: 'New York', code: 'NY' },
-            },
-            {
-                label: 'Nivel Secundaria',
-                value: { id: 2, name: 'Rome', code: 'RM' },
+                iCompentenciaId: 0,
+                cCompetenciaDescripcion: 'Todos',
             },
         ]
-        this.grado = [
-            { label: '2do.', value: { id: 1, name: 'New York', code: 'NY' } },
-            { label: '4to.', value: { id: 2, name: 'Rome', code: 'RM' } },
-        ]
-        this.area = [
+
+        this.tipoPreguntas = [
             {
-                label: 'Matemáticas',
-                value: { id: 1, name: 'New York', code: 'NY' },
-            },
-            {
-                label: 'Comunicación',
-                value: { id: 2, name: 'Rome', code: 'RM' },
+                iTipoPregId: 0,
+                cTipoPregDescripcion: 'Todos',
             },
         ]
+
+        this.estados = [
+            {
+                bPreguntaEstado: -1,
+                cDSC: 'Todos',
+            },
+            {
+                bPreguntaEstado: 0,
+                cDSC: 'Sin Asignar',
+            },
+            {
+                bPreguntaEstado: 1,
+                cDSC: 'Asignado',
+            },
+        ]
+        this.capacidades = [
+            {
+                iCapacidadId: 0,
+                cCapacidadDescripcion: 'Todos',
+            },
+        ]
     }
 
-    onSort() {
-        this.updateRowGroupMetaData()
+    obtenerDesempenos() {
+        this._apiEre
+            .obtenerDesempenos(this.params)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+                next: (resp: unknown) => {
+                    this.desempenos = resp['data']
+                },
+            })
     }
 
-    updateRowGroupMetaData() {
-        this.rowGroupMetadata = {}
+    obtenerBancoPreguntas() {
+        this._apiEre
+            .obtenerBancoPreguntas(this.params)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+                next: (resp: unknown) => {
+                    resp['data'] = resp['data'].map((item) => {
+                        const time = dayjs(item.dtPreguntaTiempo)
+                        const hours = time.get('hour')
+                        const minutes = time.get('minute')
+                        const seconds = time.get('second')
+                        item.time = `${hours}h ${minutes}m ${seconds}s`
+                        item.bPreguntaEstado = parseInt(
+                            item.bPreguntaEstado,
+                            10
+                        )
+                        return item
+                    })
+                    this.data = resp['data']
+                },
+            })
     }
 
-    formatCurrency(value: number) {
-        return value.toLocaleString('en-US', {
-            style: 'currency',
-            currency: 'USD',
-        })
+    obtenerTipoPreguntas() {
+        this._apiEvaluaciones
+            .obtenerTipoPreguntas()
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+                next: (resp: unknown) => {
+                    this.tipoPreguntas = [
+                        {
+                            iTipoPregId: 0,
+                            cTipoPregDescripcion: 'Todos',
+                        },
+                        ...resp['data'],
+                    ]
+                },
+            })
     }
 
-    onGlobalFilter(table: Table, event: Event) {
-        table.filterGlobal((event.target as HTMLInputElement).value, 'contains')
+    obtenerCompetencias() {
+        this._apiEre
+            .obtenerCompetencias(this.params)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+                next: (resp: unknown) => {
+                    this.competencias = [
+                        {
+                            iCompentenciaId: 0,
+                            cCompetenciaDescripcion: 'Todos',
+                        },
+                        ...resp['data'],
+                    ]
+                },
+            })
     }
 
-    clear(table: Table) {
-        table.clear()
-        this.filter.nativeElement.value = ''
-    }
+    // obtenerCapacidades() {
+    //     this._apiEre
+    //         .obtenerCapacidades(this.params)
+    //         .pipe(takeUntil(this.unsubscribe$))
+    //         .subscribe({
+    //             next: (resp: unknown) => {
+    //                 this.capacidades = resp['data']
+    //                 this.capacidades.unshift({
+    //                     iCapacidadId: 0,
+    //                     cCapacidadDescripcion: 'Todos',
+    //                 })
+    //             },
+    //         })
+    // }
 
-    ok() {
-        console.log(this.textAyuda)
-        alert(this.textAyuda)
-    }
-
-    setSelectedItems(event) {
-        this.selectedItems = event
-    }
-
+    // manejar las acciones
     accionBtnItem(action) {
         if (action.accion === 'agregar') {
-            this.agregarPregunta()
+            this.agregarEditarPregunta({
+                iPreguntaId: 0,
+            })
+        }
+        if (action.accion === 'asignar') {
+            this.asignarPreguntas()
+        }
+
+        if (action.accion === 'generar-word') {
+            this.generarWord()
         }
     }
 
-    agregarPregunta() {
-        this._dialogService.open(BancoPreguntasFormComponent, {
-            ...MODAL_CONFIG,
-            header: 'Nueva pregunta',
+    generarWord() {
+        if (this.selectedItems.length === 0) {
+            this._confirmationModalService.openAlert({
+                header: 'Debe seleccionar almenos una pregunta.',
+            })
+            return
+        }
+        const ids = this.selectedItems.map((item) => item.iPreguntaId).join(',')
+        const params = {
+            iCursoId: this.params.iCursoId,
+            ids,
+        }
+        this._apiEvaluaciones.generarWordByPreguntasIds(params)
+    }
+
+    accionBtnItemTable({ accion, item }) {
+        if (accion === 'asignar') {
+            this.selectedItems = []
+            this.selectedItems = [item]
+            this.asignarPreguntas()
+        }
+        if (accion === 'editar') {
+            this.agregarEditarPregunta(item)
+        }
+
+        if (accion === 'eliminar') {
+            this.eliminarPregunta(item)
+        }
+    }
+
+    eliminarPregunta(item) {
+        this._confirmationModalService.openConfirm({
+            header: 'Esta seguro de eliminar la alternativa?',
+            accept: () => {
+                this._apiEvaluaciones
+                    .eliminarPreguntaById(item.iPreguntaId)
+                    .subscribe({
+                        next: () => {
+                            this.obtenerBancoPreguntas()
+                        },
+                    })
+            },
+            reject: () => {},
         })
+    }
+
+    // abrir el modal para asignar preguntas
+    asignarPreguntas() {
+        if (this.selectedItems.length === 0) {
+            this._confirmationModalService.openAlert({
+                header: 'Debe seleccionar una pregunta para asignarla.',
+            })
+            return
+        }
+        const refModal = this._dialogService.open(
+            AsignarMatrizPreguntasFormComponent,
+            {
+                ...MODAL_CONFIG,
+                data: {
+                    preguntas: this.selectedItems,
+                    desempenos: this.desempenos,
+                },
+                header: 'Asignar preguntas',
+            }
+        )
+
+        refModal.onClose.subscribe((result) => {
+            if (result) {
+                this.obtenerBancoPreguntas()
+            }
+        })
+    }
+
+    // abrir el modal para agregar una nueva pregunta
+    agregarEditarPregunta(pregunta) {
+        const refModal = this._dialogService.open(BancoPreguntasFormComponent, {
+            ...MODAL_CONFIG,
+            data: {
+                tipoPreguntas: this.tipoPreguntas,
+                pregunta: pregunta,
+                iCursoId: this.params.iCursoId,
+            },
+            header:
+                pregunta?.iPreguntaId == 0
+                    ? 'Nueva pregunta'
+                    : 'Editar pregunta',
+        })
+        refModal.onClose.subscribe((result) => {
+            if (result) {
+                this.obtenerBancoPreguntas()
+            }
+        })
+    }
+
+    // desuscribirse de los observables cuando se destruye el componente
+    ngOnDestroy(): void {
+        this.unsubscribe$.next(true)
+        this.unsubscribe$.complete()
     }
 }

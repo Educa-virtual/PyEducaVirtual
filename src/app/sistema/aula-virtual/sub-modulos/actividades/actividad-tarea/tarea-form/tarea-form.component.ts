@@ -38,8 +38,6 @@ export class TareaFormComponent {
     })
 
     submit() {
-        console.log('submit')
-
         if (this.tareaForm.valid) {
             this.submitEvent.emit(this.tareaForm)
         } else {

@@ -4,6 +4,7 @@ import { TokenStorageService } from './servicios/token.service'
 import { Router, RouterOutlet } from '@angular/router'
 import { AppLayoutComponent } from './layout/app.layout.component'
 import { ConstantesService } from './servicios/constantes.service'
+import { LocalStoreService } from './servicios/local-store.service'
 
 @Component({
     selector: 'app-root',
@@ -14,7 +15,7 @@ import { ConstantesService } from './servicios/constantes.service'
 export class AppComponent implements OnInit {
     isLoggedIn: boolean = false
     username: string
-    bVerificado: boolean = false
+    bCredVerificado: boolean = false
     constructor(
         private primengConfig: PrimeNGConfig,
         private tokenStorageService: TokenStorageService,
@@ -24,8 +25,22 @@ export class AppComponent implements OnInit {
 
     ngOnInit() {
         this.primengConfig.ripple = true
+        const store = new LocalStoreService()
+        const user = store.getItem('dremoToken')
+        const accessToken = store.getItem('auth-token')
+        const refreshToken = store.getItem('auth-refreshtoken')
+        if (user) {
+            this.tokenStorageService.saveUser(user)
+            this.tokenStorageService.saveToken(accessToken)
+            this.tokenStorageService.saveRefreshToken(refreshToken)
+        } else {
+            store.clear()
+            this.tokenStorageService.signOut()
+        }
+
         this.isLoggedIn = !!this.tokenStorageService.getToken()
-        this.bVerificado = this.ConstantesService.verificado || false
+        const verificado = store.getItem('dremoPerfilVerificado')
+        this.bCredVerificado = verificado || false
 
         if (!this.isLoggedIn) {
             this.router.navigate(['login'])

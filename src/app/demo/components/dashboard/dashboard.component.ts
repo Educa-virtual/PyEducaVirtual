@@ -9,6 +9,9 @@ import { TableModule } from 'primeng/table'
 import { ButtonDirective } from 'primeng/button'
 import { MenuModule } from 'primeng/menu'
 import { ChartModule } from 'primeng/chart'
+import { TokenStorageService } from '@/app/servicios/token.service'
+import { LocalStoreService } from '@/app/servicios/local-store.service'
+import { Router } from '@angular/router'
 
 @Component({
     templateUrl: './dashboard.component.html',
@@ -36,7 +39,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     constructor(
         private productService: ProductService,
-        public layoutService: LayoutService
+        public layoutService: LayoutService,
+        private tokenStorage: TokenStorageService,
+        private router: Router
     ) {
         this.subscription = this.layoutService.configUpdate$
             .pipe(debounceTime(25))
@@ -46,6 +51,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
+        const store = new LocalStoreService()
+        const verificado = store.getItem('dremoPerfilVerificado')
+        //const isLoggedIn = !!this.tokenStorage.getToken()
+        //console.log(isLoggedIn && verificado)
+        if (!verificado) {
+            store.clear()
+            this.tokenStorage.signOut()
+            this.router.navigate(['login'])
+        }
         this.initChart()
         this.productService
             .getProductsSmall()

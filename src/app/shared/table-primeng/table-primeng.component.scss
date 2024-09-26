@@ -15,3 +15,8 @@ tr {
 .p-button-rounded {
     border-radius: 2rem !important;
 }
+
+:host ::ng-deep .custom-editor .p-editor-container {
+    max-height: 10rem;
+    overflow: scroll;
+}

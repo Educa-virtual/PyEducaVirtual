@@ -28,6 +28,12 @@ import {
 
 import { ApiEvaluacionesRService } from '../../services/api-evaluaciones-r.service'
 import { Subject, takeUntil } from 'rxjs'
+import { ApiEreService } from '../../services/api-ere.service'
+
+import {
+    ContainerPageComponent,
+    IActionContainer,
+} from '@/app/shared/container-page/container-page.component'
 
 @Component({
     selector: 'app-evaluaciones',
@@ -39,6 +45,7 @@ import { Subject, takeUntil } from 'rxjs'
         DialogModule,
         InputTextModule,
         TablePrimengComponent,
+        ContainerPageComponent,
     ],
     providers: [DialogService],
     templateUrl: './evaluaciones.component.html',
@@ -55,9 +62,30 @@ export class EvaluacionesComponent implements OnInit {
     public data = []
     private _dialogService = inject(DialogService)
     private _apiEre = inject(ApiEvaluacionesRService)
-
+    private _apiEreE = inject(ApiEreService)
     customers!: Customer[]
     visible: boolean = false
+
+    accionesPrincipal: IActionContainer[] = [
+        /*{
+            labelTooltip: 'Asignar Matriz',
+            text: 'Asignar Matriz',
+            icon: {
+                name: 'matGroupWork',
+                size: 'xs',
+                color: '',
+            },
+            accion: 'asignar',
+            class: 'p-button-primary',
+        },*/
+        {
+            labelTooltip: 'Agregar evaluación',
+            text: 'Agregar Evaluación',
+            icon: 'pi pi-plus',
+            accion: 'agregar',
+            class: 'p-button-secondary',
+        },
+    ]
 
     columnas: IColumn[] = [
         {
@@ -159,16 +187,6 @@ export class EvaluacionesComponent implements OnInit {
         })
     }
 
-    // manejar las acciones
-    accionBtnItem(action) {
-        if (action.accion === 'agregar') {
-            //this.agregarPregunta()
-        }
-        if (action.accion === 'asignar') {
-            //this.asignarPreguntas()
-        }
-    }
-
     /*accionBtnItemTable({ accion, item }) {
         if (accion === 'agregar') {
             this.selectedItems = []
@@ -203,12 +221,69 @@ export class EvaluacionesComponent implements OnInit {
             // this.asignarPreguntas()
         }
         if (accion === 'editar') {
-            //this.agregarEditarPregunta(item)
+            this.agregarEditarPregunta(item)
         }
 
         if (accion === 'ver') {
             alert(item.iEvaluacionId)
             // this.eliminarPregunta(item)
         }
+    }
+
+    // abrir el modal para agregar una nueva pregunta
+    agregarEditarPregunta(evaluacion) {
+        alert(evaluacion.iEvaluacionId)
+        const refModal = this._dialogService.open(EvaluacionesFormComponent, {
+            ...MODAL_CONFIG,
+            data: {
+                //tipoPreguntas: this.tipoPreguntas,
+                evaluacion: evaluacion,
+                //iCursoId: this.params.iCursoId,
+            },
+            header:
+                evaluacion?.iEvaluacionId == 0
+                    ? 'Nueva evaluación'
+                    : 'Editar evaluación',
+        })
+        refModal.onClose.subscribe((result) => {
+            if (result) {
+                //this.obtenerBancoPreguntas()
+            }
+        })
+    }
+
+    /*obtenerBancoPreguntas() {
+        this._apiEreE
+            .obtenerBancoPreguntas(this.params)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+                next: (resp: unknown) => {
+                    resp['data'] = resp['data'].map((item) => {
+                        const time = dayjs(item.dtPreguntaTiempo)
+                        const hours = time.get('hour')
+                        const minutes = time.get('minute')
+                        const seconds = time.get('second')
+                        item.time = `${hours}h ${minutes}m ${seconds}s`
+                        item.bPreguntaEstado = parseInt(
+                            item.bPreguntaEstado,
+                            10
+                        )
+                        return item
+                    })
+                    this.data = resp['data']
+                },
+            })
+    }*/
+
+    // manejar las acciones
+    accionBtnItem(action) {
+        if (action.accion === 'agregar') {
+            this.agregarEditarPregunta({
+                iEvaluacionId: 0,
+            })
+        }
+        /* if (action.accion === 'asignar') {
+        //this.asignarPreguntas()
+    }*/
     }
 }

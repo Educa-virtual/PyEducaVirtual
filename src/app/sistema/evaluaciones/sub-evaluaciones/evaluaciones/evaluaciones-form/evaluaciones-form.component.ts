@@ -21,7 +21,6 @@ import { Subject, takeUntil } from 'rxjs'
 import { DynamicDialogRef } from 'primeng/dynamicdialog'
 import {
     FormBuilder,
-    FormControl,
     FormsModule,
     ReactiveFormsModule,
     Validators,
@@ -70,19 +69,9 @@ export class EvaluacionesFormComponent implements OnInit {
         dtEvaluacionLiberarMatriz: [null],
         dtEvaluacionLiberarCuadernillo: [null],
         dtEvaluacionLiberarResultados: [null],
+        dtEvaluacionCreacion: [null, Validators.required],
 
-        iAlternativaId: new FormControl<number | string>(0),
-        iPreguntaId: [0],
-        cAlternativaDescripcion: [null, Validators.required],
-        cAlternativaLetra: [
-            null,
-            Validators.required,
-            Validators.minLength(1),
-            Validators.maxLength(1),
-        ],
-        bAlternativaCorrecta: [false, Validators.required],
-        cAlternativaExplicacion: [''],
-        isLocal: [false],
+        cEvaluacionNombre: [null, Validators.required],
     })
 
     private unsubscribe$: Subject<boolean> = new Subject()

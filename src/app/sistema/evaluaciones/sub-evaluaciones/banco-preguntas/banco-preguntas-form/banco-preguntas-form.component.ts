@@ -1,5 +1,4 @@
 import { Component, inject, OnInit } from '@angular/core'
-/*Droodwn*/
 import {
     AbstractControl,
     FormBuilder,
@@ -9,26 +8,18 @@ import {
 } from '@angular/forms'
 import { DropdownModule } from 'primeng/dropdown'
 import { InputSwitchModule } from 'primeng/inputswitch'
-
-//EDITOR
 import { EditorModule } from 'primeng/editor'
-
-/*Tab */
 import { TabViewModule } from 'primeng/tabview'
-
-/*Input text */
 import { InputTextModule } from 'primeng/inputtext'
-/*import alternativa*/
 import { AlternativasComponent } from '../alternativas/alternativas.component'
-/*acordion */
 import { AccordionModule } from 'primeng/accordion'
-
 import { ButtonModule } from 'primeng/button'
 import { CommonInputComponent } from '@/app/shared/components/common-input/common-input.component'
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog'
 import { ApiEvaluacionesService } from '../../../services/api-evaluaciones.service'
 import { StepsModule } from 'primeng/steps'
 import { getAlternativaValidation } from '../alternativas/get-alternativa-validation'
+
 @Component({
     selector: 'app-banco-preguntas-form',
     standalone: true,
@@ -50,6 +41,13 @@ import { getAlternativaValidation } from '../alternativas/get-alternativa-valida
 })
 export class BancoPreguntasFormComponent implements OnInit {
     public tipoPreguntas = []
+    customOptions = [
+        {
+            import: 'attributors/style/size',
+            whitelist: ['12px', '20px', '24px'],
+        },
+        // You can import additional attributors for alignments, colors etc. here
+    ]
     // public alternativas = []
     public mode: 'EDITAR' | 'CREAR' = 'CREAR'
     public pregunta
@@ -99,6 +97,12 @@ export class BancoPreguntasFormComponent implements OnInit {
     })
 
     ngOnInit() {
+        this.bancoPreguntasForm
+            .get('0.cPregunta')
+            .valueChanges.subscribe((value) => {
+                console.log(value)
+            })
+
         this.tipoPreguntas = this._config.data.tipoPreguntas.filter((item) => {
             return item.iTipoPregId !== 0
         })
@@ -219,23 +223,12 @@ export class BancoPreguntasFormComponent implements OnInit {
 
         const pregunta = this.bancoPreguntasForm.get('0').value
         pregunta.datosAlternativas = this.alternativas
-        if (this.mode == 'CREAR') {
-            this._evaluacionesService
-                .guardarPreguntaConAlternativas(pregunta)
-                .subscribe({
-                    next: () => {
-                        this.closeModal(pregunta)
-                    },
-                })
-        }
-        if (this.mode == 'EDITAR') {
-            this._evaluacionesService
-                .actualizarBancoPreguntas(pregunta)
-                .subscribe({
-                    next: () => {
-                        this.closeModal(pregunta)
-                    },
-                })
-        }
+        this._evaluacionesService
+            .guardarActualizarPreguntaConAlternativas(pregunta)
+            .subscribe({
+                next: () => {
+                    this.closeModal(pregunta)
+                },
+            })
     }
 }

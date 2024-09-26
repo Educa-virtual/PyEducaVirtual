@@ -21,6 +21,8 @@ import {
     RouterConfigurationFeature,
     withInMemoryScrolling,
     withRouterConfig,
+    withComponentInputBinding,
+    withHashLocation,
 } from '@angular/router'
 
 import {
@@ -46,7 +48,13 @@ const inMemoryScrollingFeature: InMemoryScrollingFeature =
 
 export const appConfig: ApplicationConfig = {
     providers: [
-        provideRouter(routes, inMemoryScrollingFeature, routerConfig),
+        provideRouter(
+            routes,
+            inMemoryScrollingFeature,
+            routerConfig,
+            withComponentInputBinding(),
+            withHashLocation()
+        ),
         provideNgIconsConfig(
             {
                 size: '1.5em',

@@ -8,7 +8,9 @@
             >
                 <button
                     class="bg-transparent border-none inline-flex flex-column gap-2"
-                    (click)="onClick.emit()"
+                    (click)="
+                        onClick.emit(); getSilabo(this.activeStepper, true, [])
+                    "
                     [pTooltip]="item.cSilaboTitle"
                     tooltipPosition="top"
                 >
@@ -45,60 +47,89 @@
                 </div>
                 @switch (activeStepper) {
                     @case (0) {
-                        <form>
-                            <div class="formgrid grid">
-                                <div class="field col-12 md:col-12">
-                                    <label for="">Programa de Estudios</label>
-                                    <input
-                                        type="text"
-                                        class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full p-inputtext-sm"
-                                        pInputText
-                                        placeholder="Arquitectura de Plataformas y Servicios de Tecnologías de la Información"
-                                        disabled
-                                    />
+                        @if (dataInformation.length > 0) {
+                            <form>
+                                <div class="formgrid grid">
+                                    <div class="field col-12 md:col-12">
+                                        <label for=""
+                                            >Programa de Estudios</label
+                                        >
+                                        <input
+                                            type="text"
+                                            class="w-full p-inputtext-sm opacity-100"
+                                            pInputText
+                                            [placeholder]="
+                                                dataInformation[0][
+                                                    'cProgNombre'
+                                                ] || ''
+                                            "
+                                            disabled
+                                        />
+                                    </div>
+                                    <div class="field col-12 md:col-12">
+                                        <label for="">Módulo Formativo</label>
+                                        <input
+                                            type="text"
+                                            class="w-full p-inputtext-sm opacity-100"
+                                            pInputText
+                                            placeholder=""
+                                            disabled
+                                        />
+                                    </div>
+                                    <div class="field col-12">
+                                        <label for=""
+                                            >Unidades Didácticas</label
+                                        >
+                                        <input
+                                            type="text"
+                                            class="w-full p-inputtext-sm opacity-100"
+                                            pInputText
+                                            placeholder=""
+                                            disabled
+                                        />
+                                    </div>
+                                    <div class="field col-12 md:col-8">
+                                        <label for="">Carga Horaria</label>
+                                        <input
+                                            type="text"
+                                            class="w-full p-inputtext-sm opacity-100"
+                                            pInputText
+                                            placeholder=""
+                                            disabled
+                                        />
+                                    </div>
+                                    <div class="field col-12 md:col-4">
+                                        <label for="state"
+                                            >Nro de Créditos</label
+                                        >
+                                        <input
+                                            type="text"
+                                            class="w-full p-inputtext-sm opacity-100"
+                                            pInputText
+                                            placeholder=""
+                                            disabled
+                                        />
+                                    </div>
+                                    <div class="field col-12 md:col-12">
+                                        <label for="state"
+                                            >Perfil del Egreso</label
+                                        >
+                                        <textarea
+                                            class="w-full p-inputtext-sm opacity-100"
+                                            pInputTextarea
+                                            [placeholder]="
+                                                dataInformation[0][
+                                                    'cCurrPerfilEgresado'
+                                                ] || ''
+                                            "
+                                            rows="5"
+                                            disabled
+                                        ></textarea>
+                                    </div>
                                 </div>
-                                <div class="field col-12 md:col-12">
-                                    <label for="">Módulo Formativo</label>
-                                    <input
-                                        type="text"
-                                        class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full p-inputtext-sm"
-                                        pInputText
-                                        placeholder="Arquitectura de Proyectos TI"
-                                        disabled
-                                    />
-                                </div>
-                                <div class="field col-12">
-                                    <label for="">Unidades Didácticas</label>
-                                    <input
-                                        type="text"
-                                        class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full p-inputtext-sm"
-                                        pInputText
-                                        placeholder="Carga Horaria"
-                                        disabled
-                                    />
-                                </div>
-                                <div class="field col-12 md:col-8">
-                                    <label for="">Carga Horaria</label>
-                                    <input
-                                        type="text"
-                                        class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full p-inputtext-sm"
-                                        pInputText
-                                        placeholder="Arquitectura de Proyectos TI"
-                                        disabled
-                                    />
-                                </div>
-                                <div class="field col-12 md:col-4">
-                                    <label for="state">Nro de Créditos</label>
-                                    <input
-                                        type="text"
-                                        class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full p-inputtext-sm"
-                                        pInputText
-                                        placeholder="4"
-                                        disabled
-                                    />
-                                </div>
-                            </div>
-                        </form>
+                            </form>
+                        }
+
                         <div class="flex pt-4 justify-content-end">
                             <p-button
                                 (onClick)="nextCallback.emit()"
@@ -109,17 +140,40 @@
                         </div>
                     }
                     @case (1) {
-                        <form>
-                            <div class="formgrid grid">
-                                <div class="field col-12 md:col-12">
-                                    <p-editor
-                                        [style]="{
-                                            height: '250px',
-                                        }"
-                                    />
-                                </div>
+                        <div class="formgrid grid">
+                            <form
+                                [formGroup]="dataSilabo"
+                                class="field col-12 md:col-5"
+                            >
+                                <label for=""
+                                    >Descripción de la Unidad Didáctica</label
+                                >
+                                <p-editor
+                                    formControlName="cSilaboDescripcionCurso"
+                                    [style]="{
+                                        height: '120px',
+                                    }"
+                                />
+                                <br />
+                                <label for="">Capacidad </label>
+                                <p-editor
+                                    formControlName="cSilaboCapacidad"
+                                    [style]="{
+                                        height: '120px',
+                                    }"
+                                />
+                            </form>
+
+                            <div class="field col-12 md:col-7">
+                                <app-metodologia
+                                    [iSilaboId]="
+                                        this.dataSilabo.value.iSilaboId
+                                    "
+                                    [tipoMetodologias]="tipoMetodologias"
+                                ></app-metodologia>
                             </div>
-                        </form>
+                        </div>
+
                         <div class="flex pt-4 justify-content-between">
                             <p-button
                                 (onClick)="prevCallback.emit()"
@@ -136,53 +190,6 @@
                         </div>
                     }
                     @case (2) {
-                        <form>
-                            <div class="formgrid grid">
-                                <div class="field col-12 md:col-6">
-                                    <label for=""
-                                        >Descripción de la Unidad
-                                        Didáctica</label
-                                    >
-                                    <p-editor
-                                        [style]="{
-                                            height: '100px',
-                                        }"
-                                    />
-                                </div>
-                                <div class="field col-12 md:col-6">
-                                    <label for="">Capacidad </label>
-                                    <p-editor
-                                        [style]="{
-                                            height: '100px',
-                                        }"
-                                    />
-                                </div>
-                                <div class="field col-12 md:col-12">
-                                    <label for="">Metodología</label>
-                                    <p-editor
-                                        [style]="{
-                                            height: '150px',
-                                        }"
-                                    />
-                                </div>
-                            </div>
-                        </form>
-                        <div class="flex pt-4 justify-content-between">
-                            <p-button
-                                (onClick)="prevCallback.emit()"
-                                label="Anterior"
-                                severity="secondary"
-                                icon="pi pi-arrow-left"
-                            />
-                            <p-button
-                                (onClick)="nextCallback.emit()"
-                                label="Siguiente"
-                                icon="pi pi-arrow-right"
-                                iconPos="right"
-                            />
-                        </div>
-                    }
-                    @case (3) {
                         <app-recursos-didacticos></app-recursos-didacticos>
                         <div class="flex pt-4 justify-content-between">
                             <p-button
@@ -199,7 +206,7 @@
                             />
                         </div>
                     }
-                    @case (4) {
+                    @case (3) {
                         <app-actividades-aprendizaje-evaluacion></app-actividades-aprendizaje-evaluacion>
                         <div class="flex pt-4 justify-content-between">
                             <p-button
@@ -216,7 +223,7 @@
                             />
                         </div>
                     }
-                    @case (5) {
+                    @case (4) {
                         <app-evaluacion></app-evaluacion>
                         <div class="flex pt-4 justify-content-between">
                             <p-button
@@ -233,7 +240,7 @@
                             />
                         </div>
                     }
-                    @case (6) {
+                    @case (5) {
                         <app-bibliografia></app-bibliografia>
                         <div class="flex pt-4 justify-content-start">
                             <p-button

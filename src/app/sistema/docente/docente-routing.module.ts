@@ -38,7 +38,7 @@ import { GestionarSilaboComponent } from './areas-estudios/components/gestionar-
                 component: SesionAprendizajeComponent,
             },
             {
-                path: 'gestionar-silabo/:iCursoId/:cCursoNombre',
+                path: 'gestionar-silabo/:idDocCursoId/:cCursoNombre/:iAvanceSilabo',
                 component: GestionarSilaboComponent,
             },
         ]),

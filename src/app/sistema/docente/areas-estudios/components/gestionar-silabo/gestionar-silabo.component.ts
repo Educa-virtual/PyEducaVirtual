@@ -1,6 +1,6 @@
 import { PrimengModule } from '@/app/primeng.module'
-import { Component } from '@angular/core'
-import { ActivatedRoute, Router } from '@angular/router'
+import { Component, Input } from '@angular/core'
+import { Router } from '@angular/router'
 import { SilaboComponent } from '../../../silabo/silabo.component'
 
 @Component({
@@ -11,17 +11,11 @@ import { SilaboComponent } from '../../../silabo/silabo.component'
     styleUrl: './gestionar-silabo.component.scss',
 })
 export class GestionarSilaboComponent {
-    iCursoId: number
-    cCursoNombre: string
-    constructor(
-        private activatedRoute: ActivatedRoute,
-        private router: Router
-    ) {
-        this.activatedRoute.params.subscribe((params) => {
-            this.iCursoId = params['iCursoId']
-            this.cCursoNombre = params['cCursoNombre']
-        })
-    }
+    @Input() idDocCursoId: string
+    @Input() cCursoNombre: string
+    @Input() iAvanceSilabo: number
+
+    constructor(private router: Router) {}
     goAreasEstudio() {
         this.router.navigate(['docente/areas-estudio'])
     }

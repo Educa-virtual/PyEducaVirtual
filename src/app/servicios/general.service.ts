@@ -20,4 +20,22 @@ export class GeneralService {
         }
         return this.url
     }
+    getGralPrefix(data) {
+        switch (data.petition) {
+            case 'post':
+                this.url = this.http.post(
+                    `${baseUrl}/` +
+                        data.group +
+                        '/' +
+                        data.prefix +
+                        '/' +
+                        data.ruta,
+                    data.data
+                )
+                break
+            default:
+                break
+        }
+        return this.url
+    }
 }

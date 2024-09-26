@@ -17,9 +17,9 @@ export class ApiEvaluacionesService {
         )
     }
 
-    guardarActualizarBancoPreguntas(data) {
+    guardarActualizarPreguntaConAlternativas(data) {
         return this.http.post(
-            `${this.baseUrl}/evaluaciones/banco-preguntas/guardarActualizarBancoPreguntas`,
+            `${this.baseUrl}/evaluaciones/banco-preguntas/guardarActualizarPreguntaConAlternativas`,
             data
         )
     }

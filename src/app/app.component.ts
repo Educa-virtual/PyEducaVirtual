@@ -15,7 +15,7 @@ import { LocalStoreService } from './servicios/local-store.service'
 export class AppComponent implements OnInit {
     isLoggedIn: boolean = false
     username: string
-    bCodeVerif: boolean = false
+    bCredVerificado: boolean = false
     constructor(
         private primengConfig: PrimeNGConfig,
         private tokenStorageService: TokenStorageService,
@@ -39,7 +39,8 @@ export class AppComponent implements OnInit {
         }
 
         this.isLoggedIn = !!this.tokenStorageService.getToken()
-        this.bCodeVerif = this.ConstantesService.verificado || false
+        const verificado = store.getItem('dremoPerfilVerificado')
+        this.bCredVerificado = verificado || false
 
         if (!this.isLoggedIn) {
             this.router.navigate(['login'])

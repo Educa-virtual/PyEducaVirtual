@@ -25,8 +25,6 @@ export class TareaFormContainerComponent {
     }
 
     cancelar() {
-        console.log('Formulario cancelado')
-
         this.ref.close(null)
     }
 

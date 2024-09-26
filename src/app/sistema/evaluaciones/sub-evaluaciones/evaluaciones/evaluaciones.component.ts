@@ -20,13 +20,20 @@ import { EvaluacionesFormComponent } from '../evaluaciones/evaluaciones-form/eva
 import { DialogService } from 'primeng/dynamicdialog'
 import { MODAL_CONFIG } from '@/app/shared/constants/modal.config'
 
-import { BotonosModalFormComponent } from '../evaluaciones/evaluaciones-form/botonos-modal-form/botonos-modal-form.component'
-
 import {
     IActionTable,
     IColumn,
     TablePrimengComponent,
 } from '../../../../shared/table-primeng/table-primeng.component'
+
+import { ApiEvaluacionesRService } from '../../services/api-evaluaciones-r.service'
+import { Subject, takeUntil } from 'rxjs'
+import { ApiEreService } from '../../services/api-ere.service'
+
+import {
+    ContainerPageComponent,
+    IActionContainer,
+} from '@/app/shared/container-page/container-page.component'
 
 @Component({
     selector: 'app-evaluaciones',
@@ -38,78 +45,89 @@ import {
         DialogModule,
         InputTextModule,
         TablePrimengComponent,
+        ContainerPageComponent,
     ],
     providers: [DialogService],
     templateUrl: './evaluaciones.component.html',
     styleUrl: './evaluaciones.component.scss',
 })
 export class EvaluacionesComponent implements OnInit {
+    private unsubscribe$: Subject<boolean> = new Subject()
+    public params = {
+        iCompentenciaId: 0,
+        iCapacidadId: 0,
+        iDesempenioId: 0,
+        bPreguntaEstado: -1,
+    }
+    public data = []
     private _dialogService = inject(DialogService)
-
+    private _apiEre = inject(ApiEvaluacionesRService)
+    private _apiEreE = inject(ApiEreService)
     customers!: Customer[]
     visible: boolean = false
 
+    accionesPrincipal: IActionContainer[] = [
+        /*{
+            labelTooltip: 'Asignar Matriz',
+            text: 'Asignar Matriz',
+            icon: {
+                name: 'matGroupWork',
+                size: 'xs',
+                color: '',
+            },
+            accion: 'asignar',
+            class: 'p-button-primary',
+        },*/
+        {
+            labelTooltip: 'Agregar evaluación',
+            text: 'Agregar Evaluación',
+            icon: 'pi pi-plus',
+            accion: 'agregar',
+            class: 'p-button-secondary',
+        },
+    ]
+
     columnas: IColumn[] = [
         {
-            field: 'checked',
-            header: '',
-            type: 'checkbox',
-            width: '5rem',
-            text: 'left',
-            text_header: '',
-        },
-        {
-            field: 'cPregunta',
-            header: 'Pregunta',
+            field: 'iEvaluacionId',
+            header: 'ID',
             type: 'text',
             width: '5rem',
             text: 'left',
             text_header: 'Pregunta',
         },
         {
-            field: 'time',
-            header: 'Tiempo',
+            field: 'cTipoEvalDescripcion',
+            header: 'Tipo evaluación',
             type: 'text',
             width: '5rem',
             text: 'left',
-            text_header: 'Tiempo',
+            text_header: 'Tipo evaluación',
         },
 
         {
-            field: 'iPreguntaPeso',
-            header: 'Puntaje',
+            field: 'cNivelEvalNombre',
+            header: 'Nivel evaluación',
             type: 'text',
             width: '5rem',
             text: 'left',
             text_header: 'Puntaje',
         },
         {
-            field: 'iPreguntaNivel',
-            header: 'Nivel',
+            field: 'dtEvaluacionCreacion',
+            header: 'Fecha creación',
             type: 'text',
             width: '5rem',
             text: 'left',
             text_header: 'Nivel',
         },
         {
-            field: 'cPreguntaClave',
-            header: 'Clave',
+            field: 'cEvaluacionNombre',
+            header: 'Nombre evaluación',
             type: 'text',
             width: '5rem',
             text: 'left',
             text_header: 'Clave',
-        },
-        {
-            field: 'bPreguntaEstado',
-            header: 'Estado',
-            type: 'estado',
-            width: '5rem',
-            text: 'left',
-            text_header: 'Estado',
-            customFalsy: {
-                trueText: 'Con Matriz',
-                falseText: 'Sin Matriz',
-            },
         },
         {
             field: '',
@@ -121,10 +139,15 @@ export class EvaluacionesComponent implements OnInit {
         },
     ]
 
-    data = [{ id: 0 }, { id: 1 }, { id: 2 }]
-
     selectedItems = []
     public accionesTabla: IActionTable[] = [
+        {
+            labelTooltip: 'Ver',
+            icon: 'pi pi-eye',
+            accion: 'ver',
+            type: 'item',
+            class: 'p-button-rounded p-button-warning p-button-text',
+        },
         {
             labelTooltip: 'Editar',
             icon: 'pi pi-pencil',
@@ -139,16 +162,6 @@ export class EvaluacionesComponent implements OnInit {
             type: 'item',
             class: 'p-button-rounded p-button-danger p-button-text',
         },
-        {
-            labelTooltip: 'Asignar I.E ',
-            icon: {
-                name: 'matGroupWork',
-                size: 'xs',
-            },
-            accion: 'agregar',
-            type: 'item',
-            class: 'p-button-rounded p-button-primary p-button-text',
-        },
     ]
 
     constructor(private customerService: CustomerService) {}
@@ -157,6 +170,7 @@ export class EvaluacionesComponent implements OnInit {
         this.customerService
             .getCustomersLarge()
             .then((customers) => (this.customers = customers))
+        this.obtenerEvaluacion()
     }
     showDialog() {
         this.visible = true
@@ -167,27 +181,109 @@ export class EvaluacionesComponent implements OnInit {
         this._dialogService.open(EvaluacionesFormComponent, {
             ...MODAL_CONFIG,
             header: 'Nueva evaluación',
-            templates: {
+            /* templates: {
                 footer: BotonosModalFormComponent,
-            },
+            },*/
         })
     }
 
-    // manejar las acciones
-    accionBtnItem(action) {
-        if (action.accion === 'agregar') {
-            //this.agregarPregunta()
-        }
-        if (action.accion === 'asignar') {
-            //this.asignarPreguntas()
-        }
-    }
-
-    accionBtnItemTable({ accion, item }) {
+    /*accionBtnItemTable({ accion, item }) {
         if (accion === 'agregar') {
             this.selectedItems = []
             this.selectedItems = [item]
             //.asignarPreguntas()
         }
+    }*/
+
+    obtenerEvaluacion() {
+        this._apiEre
+            .obtenerEvaluacion(this.params)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+                next: (resp: unknown) => {
+                    /*.competencias = resp['data']
+                    this.competencias.unshift({
+                        iCompentenciaId: 0,
+                        cCompetenciaDescripcion: 'Todos',
+                    })*/
+
+                    this.data = resp['data']
+                    //alert(JSON.stringify(this.data))
+                    //this.sourceProducts = this.data
+                },
+            })
+    }
+
+    accionBtnItemTable({ accion, item }) {
+        if (accion === 'asignar') {
+            this.selectedItems = []
+            this.selectedItems = [item]
+            // this.asignarPreguntas()
+        }
+        if (accion === 'editar') {
+            this.agregarEditarPregunta(item)
+        }
+
+        if (accion === 'ver') {
+            alert(item.iEvaluacionId)
+            // this.eliminarPregunta(item)
+        }
+    }
+
+    // abrir el modal para agregar una nueva pregunta
+    agregarEditarPregunta(evaluacion) {
+        alert(evaluacion.iEvaluacionId)
+        const refModal = this._dialogService.open(EvaluacionesFormComponent, {
+            ...MODAL_CONFIG,
+            data: {
+                //tipoPreguntas: this.tipoPreguntas,
+                evaluacion: evaluacion,
+                //iCursoId: this.params.iCursoId,
+            },
+            header:
+                evaluacion?.iEvaluacionId == 0
+                    ? 'Nueva evaluación'
+                    : 'Editar evaluación',
+        })
+        refModal.onClose.subscribe((result) => {
+            if (result) {
+                //this.obtenerBancoPreguntas()
+            }
+        })
+    }
+
+    /*obtenerBancoPreguntas() {
+        this._apiEreE
+            .obtenerBancoPreguntas(this.params)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+                next: (resp: unknown) => {
+                    resp['data'] = resp['data'].map((item) => {
+                        const time = dayjs(item.dtPreguntaTiempo)
+                        const hours = time.get('hour')
+                        const minutes = time.get('minute')
+                        const seconds = time.get('second')
+                        item.time = `${hours}h ${minutes}m ${seconds}s`
+                        item.bPreguntaEstado = parseInt(
+                            item.bPreguntaEstado,
+                            10
+                        )
+                        return item
+                    })
+                    this.data = resp['data']
+                },
+            })
+    }*/
+
+    // manejar las acciones
+    accionBtnItem(action) {
+        if (action.accion === 'agregar') {
+            this.agregarEditarPregunta({
+                iEvaluacionId: 0,
+            })
+        }
+        /* if (action.accion === 'asignar') {
+        //this.asignarPreguntas()
+    }*/
     }
 }

@@ -23,8 +23,6 @@ export class ConfirmModalComponent implements OnInit {
 
     ngOnInit(): void {
         this._confirmationService.dialogState$.subscribe((config) => {
-            console.log(config)
-
             this._confirmService.confirm(config)
         })
     }

@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing'
 
-import { AreasComponent } from './areas.component'
+import { IeparticipaComponent } from './ieparticipa.component'
 
-describe('AreasComponent', () => {
-    let component: AreasComponent
-    let fixture: ComponentFixture<AreasComponent>
+describe('IeparticipaComponent', () => {
+    let component: IeparticipaComponent
+    let fixture: ComponentFixture<IeparticipaComponent>
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: [AreasComponent],
+            imports: [IeparticipaComponent],
         }).compileComponents()
 
-        fixture = TestBed.createComponent(AreasComponent)
+        fixture = TestBed.createComponent(IeparticipaComponent)
         component = fixture.componentInstance
         fixture.detectChanges()
     })

@@ -1,17 +1,13 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core'
 import { PrimengModule } from 'src/app/primeng.module'
-import { IconComponent, IconSize } from '../icon/icon.component'
-
-export interface IIconAction {
-    color: string
-    size?: IconSize
-    name: string
-}
+import { IconComponent } from '../icon/icon.component'
+import { IIcon } from '../icon/icon.interface'
+import { IsIconTypePipe } from '../pipes/is-icon-type.pipe'
 
 export interface IActionContainer {
     labelTooltip: string
     text: string
-    icon: string | IIconAction
+    icon: string | IIcon
     accion: string
     class: string
 }
@@ -19,7 +15,7 @@ export interface IActionContainer {
 @Component({
     selector: 'app-container-page',
     standalone: true,
-    imports: [PrimengModule, IconComponent],
+    imports: [PrimengModule, IconComponent, IsIconTypePipe],
     templateUrl: './container-page.component.html',
     styleUrl: './container-page.component.scss',
 })
@@ -64,9 +60,5 @@ export class ContainerPageComponent {
             item,
         }
         this.accionBtnItem.emit(data)
-    }
-
-    isIconObject(icon): icon is { name: string; size: string; color: string } {
-        return typeof icon === 'object' && icon !== null && 'name' in icon
     }
 }

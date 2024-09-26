@@ -7,60 +7,61 @@ import { map } from 'rxjs'
     providedIn: 'root',
 })
 export class ApiEvaluacionesService {
-    private baseUrl = environment.backendApi
+    private baseUrlApi = environment.backendApi
+    private baseUrl = environment.backend
     private http = inject(HttpClient)
     constructor() {}
 
     obtenerTipoPreguntas() {
         return this.http.get(
-            `${this.baseUrl}/evaluaciones/tipo-preguntas/obtenerTipoPreguntas`
+            `${this.baseUrlApi}/evaluaciones/tipo-preguntas/obtenerTipoPreguntas`
         )
     }
 
     guardarActualizarPreguntaConAlternativas(data) {
         return this.http.post(
-            `${this.baseUrl}/evaluaciones/banco-preguntas/guardarActualizarPreguntaConAlternativas`,
+            `${this.baseUrlApi}/evaluaciones/banco-preguntas/guardarActualizarPreguntaConAlternativas`,
             data
         )
     }
 
-    guardarPreguntaConAlternativas(data) {
-        return this.http.post(
-            `${this.baseUrl}/evaluaciones/banco-preguntas/guardarPreguntaConAlternativas`,
-            data
-        )
+    generarWordByPreguntasIds(baseParams) {
+        const url = `${this.baseUrl}/generarWordBancoPreguntasSeleccionadas`
+        const params = new URLSearchParams({ ...baseParams })
+        const fullUrl = `${url}?${params.toString()}`
+        window.open(fullUrl, '_blank')
     }
 
     eliminarPreguntaById(id) {
         return this.http.delete(
-            `${this.baseUrl}/evaluaciones/banco-preguntas/eliminarBancoPreguntasById/${id}`
+            `${this.baseUrlApi}/evaluaciones/banco-preguntas/eliminarBancoPreguntasById/${id}`
         )
     }
 
     actualizarBancoPreguntas(data) {
         return this.http.patch(
-            `${this.baseUrl}/evaluaciones/banco-preguntas/actualizarBancoPreguntas`,
+            `${this.baseUrlApi}/evaluaciones/banco-preguntas/actualizarBancoPreguntas`,
             data
         )
     }
 
     guardarActualizarAlternativa(data) {
         return this.http.post(
-            `${this.baseUrl}/evaluaciones/alternativas/guardarActualizarAlternativa`,
+            `${this.baseUrlApi}/evaluaciones/alternativas/guardarActualizarAlternativa`,
             data
         )
     }
 
     eliminarAlternativaById(id) {
         return this.http.delete(
-            `${this.baseUrl}/evaluaciones/alternativas/eliminarAlternativaById/${id}`
+            `${this.baseUrlApi}/evaluaciones/alternativas/eliminarAlternativaById/${id}`
         )
     }
 
     obtenerAlternativaByPreguntaId(id) {
         return this.http
             .get(
-                `${this.baseUrl}/evaluaciones/alternativas/obtenerAlternativaByPreguntaId/${id}`
+                `${this.baseUrlApi}/evaluaciones/alternativas/obtenerAlternativaByPreguntaId/${id}`
             )
             .pipe(
                 map((resp: unknown) => {

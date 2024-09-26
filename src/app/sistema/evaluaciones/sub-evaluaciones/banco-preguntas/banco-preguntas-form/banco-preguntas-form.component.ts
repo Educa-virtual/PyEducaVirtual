@@ -20,6 +20,13 @@ import { ApiEvaluacionesService } from '../../../services/api-evaluaciones.servi
 import { StepsModule } from 'primeng/steps'
 import { getAlternativaValidation } from '../alternativas/get-alternativa-validation'
 
+import Quill from 'quill'
+
+const ColorClass = Quill.import('attributors/class/color')
+const SizeStyle = Quill.import('attributors/style/size')
+Quill.register('attributors/class/color', ColorClass, true)
+Quill.register('attributors/style/size', SizeStyle, true)
+
 @Component({
     selector: 'app-banco-preguntas-form',
     standalone: true,
@@ -41,13 +48,7 @@ import { getAlternativaValidation } from '../alternativas/get-alternativa-valida
 })
 export class BancoPreguntasFormComponent implements OnInit {
     public tipoPreguntas = []
-    customOptions = [
-        {
-            import: 'attributors/style/size',
-            whitelist: ['12px', '20px', '24px'],
-        },
-        // You can import additional attributors for alignments, colors etc. here
-    ]
+    customOptions = []
     // public alternativas = []
     public mode: 'EDITAR' | 'CREAR' = 'CREAR'
     public pregunta

@@ -75,4 +75,11 @@ export class ApiEvaluacionesService {
                 })
             )
     }
+
+    obtenerEncabezadosPreguntas(params) {
+        return this.http.get(
+            `${this.baseUrlApi}/evaluaciones/banco-preguntas/obtenerEncabezadosPreguntas`,
+            { params }
+        )
+    }
 }

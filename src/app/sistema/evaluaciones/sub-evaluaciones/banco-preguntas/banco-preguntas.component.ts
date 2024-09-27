@@ -124,6 +124,14 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             text_header: 'Pregunta',
         },
         {
+            field: 'cEncabPregTitulo',
+            header: 'Encabezado',
+            type: 'text',
+            width: '5rem',
+            text: 'left',
+            text_header: 'Encabezado',
+        },
+        {
             field: 'cTipoPregDescripcion',
             header: 'Tipo Pregunta',
             type: 'text',

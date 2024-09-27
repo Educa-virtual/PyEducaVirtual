@@ -24,6 +24,10 @@ interface NivelTipo {
     cNivelTipoNombre: string
     iNivelTipoId: string
 }
+interface Ugeles {
+    cUgelNombre: string
+    iUgelId: string
+}
 
 @Component({
     selector: 'app-ieparticipa',
@@ -58,6 +62,9 @@ export class IeparticipaComponent {
 
     nivelTipo: NivelTipo[] | undefined
     selectedNivelTipo: NivelTipo | undefined
+
+    Ugeles: Ugeles[] | undefined
+    selectedUgeles: Ugeles | undefined
 
     constructor(
         private carService: ProductService,

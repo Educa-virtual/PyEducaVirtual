@@ -226,7 +226,9 @@
                         </div>
                     }
                     @case (4) {
-                        <app-evaluacion></app-evaluacion>
+                        <app-evaluacion
+                            [iSilaboId]="this.dataSilabo.value.iSilaboId"
+                        ></app-evaluacion>
                         <div class="flex pt-4 justify-content-between">
                             <p-button
                                 (onClick)="prevCallback.emit()"

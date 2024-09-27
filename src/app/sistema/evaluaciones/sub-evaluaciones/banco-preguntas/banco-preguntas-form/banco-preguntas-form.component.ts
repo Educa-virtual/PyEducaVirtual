@@ -21,11 +21,9 @@ import { StepsModule } from 'primeng/steps'
 import { getAlternativaValidation } from '../alternativas/get-alternativa-validation'
 
 import Quill from 'quill'
-import {
-    AutoCompleteCompleteEvent,
-    AutoCompleteModule,
-} from 'primeng/autocomplete'
+import { AutoCompleteModule } from 'primeng/autocomplete'
 import { Subject, takeUntil } from 'rxjs'
+import { EncabezadosPreguntasComponent } from '../encabezados-preguntas/encabezados-preguntas.component'
 
 const ColorClass = Quill.import('attributors/class/color')
 const SizeStyle = Quill.import('attributors/style/size')
@@ -48,6 +46,7 @@ Quill.register('attributors/style/size', SizeStyle, true)
         CommonInputComponent,
         StepsModule,
         AutoCompleteModule,
+        EncabezadosPreguntasComponent,
     ],
     templateUrl: './banco-preguntas-form.component.html',
     styleUrl: './banco-preguntas-form.component.scss',
@@ -55,7 +54,7 @@ Quill.register('attributors/style/size', SizeStyle, true)
 export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
     public tipoPreguntas = []
     public customOptions = []
-    public filteredCabeceras = []
+    public encabezadoSelected
 
     public mode: 'EDITAR' | 'CREAR' = 'CREAR'
     public pregunta
@@ -78,14 +77,12 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
     private _ref = inject(DynamicDialogRef)
     private unsubscribe$: Subject<boolean> = new Subject()
 
-    private encabezados = []
+    public encabezados = []
 
     public bancoPreguntasForm: FormGroup = this._formBuilder.group({
         0: this._formBuilder.group({
-            iEncabPregId: 0,
+            iEncabPregId: [null],
             bConEncabezado: [false],
-            cEncabPregTitulo: [''],
-            cEncabPregContenido: [''],
         }),
         1: this._formBuilder.group({
             iPreguntaId: [0],
@@ -149,8 +146,15 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
             .subscribe({
                 next: (resp: unknown) => {
                     this.encabezados = resp['data']
-                    this.filteredCabeceras = resp['data']
-                    console.log(this.filteredCabeceras)
+                    this.encabezados = this.encabezados.map((enc) => {
+                        if (enc.iEncabPregId == this.pregunta.iEncabPregId) {
+                            enc.checked = true
+                        }
+                        return enc
+                    })
+                    this.encabezadoSelected = this.encabezados.find(
+                        (enc) => enc.iEncabPregId == this.pregunta.iEncabPregId
+                    )
                 },
             })
     }
@@ -159,23 +163,13 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
     toggleValidationCabecera(event: InputSwitchChangeEvent) {
         if (event.checked) {
             this.bancoPreguntasForm
-                .get('0.cEncabPregTitulo')
-                .setValidators([Validators.required])
-            this.bancoPreguntasForm.get('0').updateValueAndValidity()
-
-            this.bancoPreguntasForm
-                .get('0.cEncabPregContenido')
+                .get('0.iEncabPregId')
                 .setValidators([Validators.required])
         } else {
-            this.bancoPreguntasForm
-                .get('0.cEncabPregTitulo')
-                .setValidators(null)
-
-            this.bancoPreguntasForm
-                .get('0.cEncabPregContenido')
-                .setValidators(null)
-            this.bancoPreguntasForm.get('0').updateValueAndValidity()
+            this.bancoPreguntasForm.get('0.iEncabPregId').setValidators(null)
         }
+
+        this.bancoPreguntasForm.get('0.iEncabPregId').updateValueAndValidity()
     }
 
     get alternativas() {
@@ -195,6 +189,11 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
     goStep(opcion: string) {
         switch (opcion) {
             case 'next':
+                console.log(
+                    this.bancoPreguntasForm.get(this.activeIndex.toString())
+                        .invalid
+                )
+
                 if (
                     this.bancoPreguntasForm.get(this.activeIndex.toString())
                         .invalid
@@ -229,7 +228,11 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
         this.bancoPreguntasForm.get('0').patchValue(pregunta)
         this.bancoPreguntasForm.get('1').patchValue(pregunta)
         this.bancoPreguntasForm.get('1.iCursoId').setValue(iCursoId)
-        if (parseInt(pregunta.iEncabPregId, 10) !== 0) {
+
+        if (
+            pregunta.iEncabPregId &&
+            parseInt(pregunta.iEncabPregId, 10) !== 0
+        ) {
             this.bancoPreguntasForm.get('0.bConEncabezado').setValue(true)
         }
     }
@@ -244,6 +247,10 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
             // Reaplicar las validaciones personalizadas según el tipo de pregunta
             alternativasControl.updateValueAndValidity()
         }
+    }
+
+    setEncabezado(encabezado) {
+        this.bancoPreguntasForm.get('0').patchValue(encabezado)
     }
 
     // validaciones alternativas
@@ -265,13 +272,6 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
             }
             return errorMessage
         }
-    }
-
-    filterCabeceras(event: AutoCompleteCompleteEvent) {
-        const queryLower = event.query.toLowerCase()
-        this.filteredCabeceras = this.encabezados.filter((encabezado) =>
-            encabezado.cEncabPregTitulo.toLowerCase().includes(queryLower)
-        )
     }
 
     closeModal(data) {

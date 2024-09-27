@@ -8,7 +8,7 @@
         @case (0) {
             <form [formGroup]="bancoPreguntasForm">
                 <ng-container formGroupName="0">
-                    <div class="grid">
+                    <div class="grid mb-4">
                         <div class="col-12">
                             <h2 class="text-xl">Formulario Encabezado</h2>
                         </div>
@@ -17,7 +17,6 @@
                                 <span>Sin Encabezado.</span>
                                 <p-inputSwitch
                                     formControlName="bConEncabezado"
-                                    aria-label="bConEncabezado"
                                     (onChange)="
                                         toggleValidationCabecera($event)
                                     "
@@ -28,6 +27,18 @@
                     </div>
                     @if (bancoPreguntasForm.get('0.bConEncabezado')?.value) {
                         <div class="grid">
+                            <div class="col-12">
+                                <h2 class="text-lg">Encabezados</h2>
+                            </div>
+                            <div class="col-12">
+                                <app-encabezados-preguntas
+                                    [encabezados]="encabezados"
+                                    [encabezado]="encabezadoSelected"
+                                    (encabezadoChange)="setEncabezado($event)"
+                                />
+                            </div>
+                        </div>
+                        <!-- <div class="grid">
                             <div class="field col-12">
                                 <label for="cEncabPregTitulo"
                                     >Titulo del encabezado</label
@@ -84,7 +95,7 @@
                                     </small>
                                 }
                             </div>
-                        </div>
+                        </div> -->
                     }
                 </ng-container>
             </form>

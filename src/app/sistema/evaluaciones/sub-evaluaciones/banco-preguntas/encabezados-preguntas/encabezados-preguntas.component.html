@@ -1,0 +1,10 @@
+<app-table-primeng
+    [columnas]="columnas"
+    [data]="encabezados"
+    (accionBtnItem)="accionBtnItemTable($event)"
+    [(selectedRowData)]="encabezado"
+    (selectedRowDataChange)="onSelectionChange($event)"
+    [actions]="accionesTabla"
+    [showPaginator]="false"
+>
+</app-table-primeng>

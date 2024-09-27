@@ -6,6 +6,7 @@ import { GeneralService } from '@/app/servicios/general.service'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { FormBuilder } from '@angular/forms'
 import { ConfirmationService, MessageService } from 'primeng/api'
+import { ConfirmDialogModule } from 'primeng/confirmdialog'
 interface Data {
     accessToken: string
     refreshToken: string
@@ -22,6 +23,7 @@ interface Data {
         ContainerPageComponent,
         TablePrimengComponent,
         FormBibliografiaComponent,
+        ConfirmDialogModule,
     ],
     templateUrl: './bibliografia.component.html',
     styleUrl: './bibliografia.component.scss',
@@ -142,20 +144,50 @@ export class BibliografiaComponent implements OnChanges {
     accionBtnItem(elemento): void {
         const { accion } = elemento
         const { item } = elemento
+
+        let params
         switch (accion) {
             case 'agregar':
             case 'actualizar':
                 this.showModal = true
                 this.itemBibliografia = item
                 this.option = accion === 'agregar' ? 'Agregar' : 'Actualizar'
-                console.log(this.option)
                 break
             case 'eliminar':
-                //
+                this.deleteBibliografias(item)
                 break
             case 'close-modal':
                 this.showModal = false
                 this.itemBibliografia = item
+                break
+            case 'guardar':
+                item.iSilaboId = this.iSilaboId
+                item.iCredId = this.ConstantesService.iCredId
+                params = {
+                    petition: 'post',
+                    group: 'docente',
+                    prefix: 'bibliografias',
+                    ruta: 'store',
+                    data: item,
+                }
+
+                this.getInformation(params, true)
+
+                break
+            case 'modificar':
+                item.iCredId = this.ConstantesService.iCredId
+                params = {
+                    petition: 'post',
+                    group: 'docente',
+                    prefix: 'bibliografias',
+                    ruta: 'store',
+                    data: item,
+                }
+                this.getInformation(params, true)
+
+                break
+            case 'refrescar':
+                this.getBibliografias()
                 break
             default:
                 break
@@ -163,19 +195,51 @@ export class BibliografiaComponent implements OnChanges {
     }
 
     getBibliografias() {
-        // const params = {
-        //     petition: 'post',
-        //     group: 'docente',
-        //     prefix: 'bibliogracias',
-        //     ruta: 'list',
-        //     seleccion:1,
-        //     data: {
-        //         opcion: 'CONSULTARxiSilaboId',
-        //         iCredId: this.ConstantesService.iCredId,
-        //         iSilaboId: this.iSilaboId,
-        //     },
-        // }
-        // this.getInformation(params, false)
+        const params = {
+            petition: 'post',
+            group: 'docente',
+            prefix: 'bibliografias',
+            ruta: 'list',
+            seleccion: 1,
+            data: {
+                opcion: 'CONSULTARxiSilaboId',
+                iCredId: this.ConstantesService.iCredId,
+                iSilaboId: this.iSilaboId,
+                iEstado: 1,
+            },
+        }
+        this.getInformation(params, false)
+    }
+    deleteBibliografias(item) {
+        this.confirmationService.confirm({
+            message:
+                'Deseas eliminar la biliobrafía ' + item.cBiblioTitulo + ' ?',
+            header: 'Eliminar Bibliografía',
+            icon: 'pi pi-info-circle',
+            acceptButtonStyleClass: 'p-button-danger p-button-text',
+            rejectButtonStyleClass: 'p-button-text p-button-text',
+            acceptIcon: 'none',
+            rejectIcon: 'none',
+            acceptLabel: 'Si',
+            rejectLabel: 'No',
+
+            accept: () => {
+                item.opcion = 'ELIMINARxiBiblioId'
+                item.iCredId = this.ConstantesService.iCredId
+                const params = {
+                    petition: 'post',
+                    group: 'docente',
+                    prefix: 'bibliografias',
+                    ruta: 'store',
+                    data: item,
+                }
+                this.getInformation(params, true)
+                //this.messageService.add({ severity: 'info', summary: 'Confirmado', detail: 'Eliminando Metodología' });
+            },
+            reject: () => {
+                //this.messageService.add({ severity: 'error', summary: '', detail: 'You have rejected' });
+            },
+        })
     }
     getInformation(params, api) {
         this.GeneralService.getGralPrefix(params).subscribe({

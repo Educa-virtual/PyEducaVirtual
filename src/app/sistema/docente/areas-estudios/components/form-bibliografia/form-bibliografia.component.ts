@@ -9,6 +9,9 @@ import {
 import { ModalPrimengComponent } from '../../../../../shared/modal-primeng/modal-primeng.component'
 import { PrimengModule } from '@/app/primeng.module'
 import { GeneralService } from '@/app/servicios/general.service'
+import { FormBuilder, Validators } from '@angular/forms'
+import { ConstantesService } from '@/app/servicios/constantes.service'
+import { MessageService } from 'primeng/api'
 interface Data {
     accessToken: string
     refreshToken: string
@@ -30,17 +33,46 @@ export class FormBibliografiaComponent implements OnChanges, OnInit {
 
     @Input() showModal: boolean = true
     @Input() data = []
+    @Input() item
     @Input() option: string
 
-    constructor(private GeneralService: GeneralService) {}
+    constructor(
+        private GeneralService: GeneralService,
+        private fb: FormBuilder,
+        private ConstantesService: ConstantesService,
+        private messageService: MessageService
+    ) {}
 
     ngOnInit() {
         this.getTipoBibliografias()
     }
     ngOnChanges(changes) {
-        const { currentValue } = changes.data
-        this.data = currentValue
+        this.dataBibliografias.reset()
+        if (changes.item?.currentValue) {
+            this.item = changes.item.currentValue
+            this.dataBibliografias.patchValue(this.item)
+        }
     }
+
+    dataBibliografias = this.fb.group({
+        opcion: ['', Validators.required],
+
+        iBiblioId: [''],
+        iTipoBiblioId: ['', Validators.required],
+        iSilaboId: [''],
+        cBiblioAutor: ['', Validators.required],
+        cBiblioTitulo: ['', Validators.required],
+        cBiblioAnioEdicion: ['', Validators.required],
+        cBiblioEditorial: ['', Validators.required],
+        cBiblioUrl: [''],
+        iEstado: [1],
+        iSesionId: [null],
+        dtCreado: [null],
+        dtActualizado: [null],
+
+        iCredId: [this.ConstantesService.iCredId, Validators.required],
+    })
+
     accionBtn(elemento): void {
         const { accion } = elemento
         const { item } = elemento
@@ -48,6 +80,43 @@ export class FormBibliografiaComponent implements OnChanges, OnInit {
         switch (accion) {
             case 'close-modal':
                 this.accionBtnItem.emit({ accion, item })
+                break
+
+            case 'Agregar':
+                this.dataBibliografias.controls.opcion.setValue(
+                    'GUARDARxiSilaboId'
+                )
+                if (this.dataBibliografias.valid) {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: '¡Atención!',
+                        detail: 'Debe de ingresar todos los campos',
+                    })
+                } else {
+                    this.accionBtnItem.emit({
+                        accion: 'guardar',
+                        item: this.dataBibliografias.value,
+                    })
+                }
+
+                break
+            case 'Actualizar':
+                this.dataBibliografias.controls.opcion.setValue(
+                    'ACTUALIZARxiBiblioId'
+                )
+                if (this.dataBibliografias.valid) {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: '¡Atención!',
+                        detail: 'Debe de ingresar todos los campos',
+                    })
+                } else {
+                    this.accionBtnItem.emit({
+                        accion: 'modificar',
+                        item: this.dataBibliografias.value,
+                    })
+                }
+
                 break
 
             default:

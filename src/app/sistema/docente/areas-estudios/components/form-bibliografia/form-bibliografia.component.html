@@ -4,58 +4,70 @@
     [width]="'55rem'"
     (accionBtnItem)="accionBtn($event)"
 >
-    <form>
+    <form [formGroup]="dataBibliografias">
         <div class="formgrid grid">
+            <div class="field col-12 md:col-4">
+                <label for="">Tipo de Bibliografìa</label>
+                <p-dropdown
+                    styleClass="flex-auto w-full"
+                    [options]="tipoBibliografias"
+                    placeholder="Seleccionar Tipo"
+                    optionLabel="cTipoBiblioNombre"
+                    optionValue="iTipoBiblioId"
+                    formControlName="iTipoBiblioId"
+                />
+            </div>
+            <div class="field col-12 md:col-8">
+                <label for="">Autor</label>
+                <input
+                    pInputText
+                    class="flex-auto w-full"
+                    formControlName="cBiblioAutor"
+                />
+            </div>
             <div class="field col-12 md:col-12">
-                <label class="font-semibold" for="">Título de la obra</label>
-                <input type="text" class="w-full p-inputtext-sm" pInputText />
-            </div>
-            <div class="field col-5">
-                <label class="font-semibold" for="">Autor</label>
+                <label for="">Título</label>
                 <input
-                    type="text"
-                    class="w-full p-inputtext-sm"
                     pInputText
-                    placeholder=""
+                    class="flex-auto w-full"
+                    formControlName="cBiblioTitulo"
                 />
             </div>
-            <div class="field col-5">
-                <label class="font-semibold" for="">Editorial</label>
+            <div class="field col-12 md:col-2">
+                <label for="">Año</label>
                 <input
-                    type="text"
-                    class="w-full p-inputtext-sm"
                     pInputText
-                    placeholder=""
+                    class="flex-auto w-full"
+                    formControlName="cBiblioAnioEdicion"
                 />
             </div>
-            <div class="field col-2">
-                <label class="font-semibold" for="">Año</label>
+            <div class="field col-12 md:col-4">
+                <label for="">Editorial</label>
                 <input
-                    type="text"
-                    class="w-full p-inputtext-sm"
                     pInputText
-                    placeholder=""
+                    class="flex-auto w-full"
+                    formControlName="cBiblioEditorial"
                 />
             </div>
-            <div clas="col-12 justify-content-center">
-                <div class="field align-items-center gap-1">
-                    <p-checkbox
-                        value="Si"
-                        label="¿El libro se encuentra en la I.E.?"
-                    />
-                </div>
+            <div class="field col-12 md:col-8">
+                <label for="">Url</label>
+                <input
+                    pInputText
+                    class="flex-auto w-full"
+                    formControlName="cBiblioUrl"
+                />
             </div>
-        </div>
-        <div class="flex justify-content-end gap-2">
-            <p-button
-                label="Cancelar"
-                severity="secondary"
-                (onClick)="accionBtn({ accion: 'close-modal', item: [] })"
-            />
-            <p-button
-                [label]="option"
-                (onClick)="accionBtn({ accion: 'close-modal', item: [] })"
-            />
         </div>
     </form>
+    <div class="flex justify-content-end gap-2">
+        <p-button
+            label="Cancelar"
+            severity="secondary"
+            (onClick)="accionBtn({ accion: 'close-modal', item: [] })"
+        />
+        <p-button
+            [label]="option"
+            (onClick)="accionBtn({ accion: option, item: [] })"
+        />
+    </div>
 </app-modal-primeng>

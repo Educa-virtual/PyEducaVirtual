@@ -48,7 +48,7 @@ export class FormMetodologiaComponent implements OnChanges {
         iSilaboId: ['', Validators.required],
         cSilMetDescripcion: ['', Validators.required],
 
-        iCredId: [this.ConstantesService.iCredId, Validators.required],
+        iCredId: [''],
     })
 
     accionBtn(elemento): void {
@@ -64,7 +64,7 @@ export class FormMetodologiaComponent implements OnChanges {
                 this.dataSilaboMetodologias.controls.opcion.setValue(
                     'GUARDARxiSilaboId'
                 )
-                if (this.dataSilaboMetodologias.valid) {
+                if (!this.dataSilaboMetodologias.valid) {
                     this.messageService.add({
                         severity: 'error',
                         summary: '¡Atención!',

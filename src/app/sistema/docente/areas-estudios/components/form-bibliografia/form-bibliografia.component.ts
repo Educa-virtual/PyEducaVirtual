@@ -70,7 +70,7 @@ export class FormBibliografiaComponent implements OnChanges, OnInit {
         dtCreado: [null],
         dtActualizado: [null],
 
-        iCredId: [this.ConstantesService.iCredId, Validators.required],
+        iCredId: [''],
     })
 
     accionBtn(elemento): void {
@@ -86,7 +86,8 @@ export class FormBibliografiaComponent implements OnChanges, OnInit {
                 this.dataBibliografias.controls.opcion.setValue(
                     'GUARDARxiSilaboId'
                 )
-                if (this.dataBibliografias.valid) {
+                console.log(this.dataBibliografias)
+                if (!this.dataBibliografias.valid) {
                     this.messageService.add({
                         severity: 'error',
                         summary: '¡Atención!',

@@ -57,6 +57,13 @@ export class MetodologiaComponent implements OnChanges {
             accion: 'agregar',
             class: 'p-button-primary',
         },
+        {
+            labelTooltip: 'Refrescar lista de metodologías',
+            text: 'Refrescar',
+            icon: 'pi pi-sync',
+            accion: 'refrescar',
+            class: 'p-button-danger',
+        },
     ]
     actions = [
         {
@@ -145,6 +152,9 @@ export class MetodologiaComponent implements OnChanges {
                 }
                 this.getInformation(params, true)
 
+                break
+            case 'refrescar':
+                this.getSilabosMetodologias()
                 break
             default:
                 break

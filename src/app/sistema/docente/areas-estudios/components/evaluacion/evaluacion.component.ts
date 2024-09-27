@@ -57,6 +57,13 @@ export class EvaluacionComponent implements OnChanges {
             accion: 'agregar',
             class: 'p-button-primary',
         },
+        {
+            labelTooltip: 'Refrescar lista de detalle de evaluaciones',
+            text: 'Refrescar',
+            icon: 'pi pi-sync',
+            accion: 'refrescar',
+            class: 'p-button-danger',
+        },
     ]
     actions = [
         {
@@ -145,6 +152,9 @@ export class EvaluacionComponent implements OnChanges {
                 }
                 this.getInformation(params, true)
 
+                break
+            case 'refrescar':
+                this.getDetalleEvaluaciones()
                 break
             default:
                 break

@@ -42,6 +42,8 @@ interface Data {
 export class SilaboComponent implements OnInit {
     @Input() idDocCursoId: string
 
+    activeStepper: number = 0
+
     constructor(
         private router: Router,
         private GeneralService: GeneralService,
@@ -50,7 +52,6 @@ export class SilaboComponent implements OnInit {
         private messageService: MessageService
     ) {}
 
-    activeStepper: number = 0
     silabo = [
         { iSilabo: 1, cSilaboTitle: 'Información General', icon: 'pi-info' },
         {
@@ -96,20 +97,29 @@ export class SilaboComponent implements OnInit {
                 params = {
                     petition: 'post',
                     group: 'docente',
-                    prefix: 'cursos',
+                    prefix: 'docente-cursos',
                     ruta: 'list',
                     data: {
-                        opcion: 'CONSULTARxiCursoId',
+                        opcion: 'CONSULTARxidDocCursoIdxiYAcadIdxiDocenteIdxiIeCursoId',
                         iCredId: this.ConstantesService.iCredId,
-                        iCursoId: this.idDocCursoId,
-                        cYearNombre: null,
-                        iSemAcadId: null,
-                        iIieeId: null,
+                        idDocCursoId: this.idDocCursoId,
+                        iSemAcadId:
+                            '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+                        iYAcadId:
+                            '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+                        iDocenteId:
+                            '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+                        iIeCursoId: null,
                     },
                 }
-                api
-                    ? this.getInformation(index, params)
-                    : (this.dataInformation = data)
+                if (api) {
+                    this.getInformation(index, params)
+                } else {
+                    this.dataInformation = data
+                    this.dataSilabo.controls.iSilaboId.setValue(
+                        this.dataInformation[0]?.iSilaboId
+                    )
+                }
                 break
             case 1:
                 this.dataSilabo.controls.opcion.setValue(

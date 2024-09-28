@@ -1,4 +1,8 @@
-import { LocationStrategy, PathLocationStrategy } from '@angular/common'
+import {
+    HashLocationStrategy,
+    LocationStrategy,
+    PathLocationStrategy,
+} from '@angular/common'
 import { HTTP_INTERCEPTORS } from '@angular/common/http'
 import { ApplicationConfig, importProvidersFrom } from '@angular/core'
 import { MessageService } from 'primeng/api'
@@ -64,6 +68,7 @@ export const appConfig: ApplicationConfig = {
         provideIcons({}),
         importProvidersFrom(AppLayoutModule, PrimengModule, ToastModule),
         { provide: LocationStrategy, useClass: PathLocationStrategy },
+        { provide: LocationStrategy, useClass: HashLocationStrategy },
         CountryService,
         CustomerService,
         EventService,

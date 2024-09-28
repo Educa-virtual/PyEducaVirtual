@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef, inject } from '@angular/core'
+import { Component, ChangeDetectorRef, inject, OnInit } from '@angular/core'
 /*import { Product } from '@domain/product';
 import { ProductService } from '@service/productservice';*/
 import { Product } from 'src/app/demo/api/product'
@@ -45,7 +45,7 @@ interface Ugeles {
     styleUrl: './ieparticipa.component.scss',
     providers: [ProductService],
 })
-export class IeparticipaComponent {
+export class IeparticipaComponent implements OnInit {
     private unsubscribe$: Subject<boolean> = new Subject()
     public params = {
         iCompentenciaId: 0,

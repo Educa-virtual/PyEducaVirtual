@@ -12,16 +12,15 @@ import { FormBuilder, Validators } from '@angular/forms'
 import { MessageService } from 'primeng/api'
 
 @Component({
-    selector: 'app-form-metodologia',
+    selector: 'app-form-detalle-evaluaciones',
     standalone: true,
     imports: [ModalPrimengComponent, PrimengModule],
-    templateUrl: './form-metodologia.component.html',
-    styleUrl: './form-metodologia.component.scss',
+    templateUrl: './form-detalle-evaluaciones.component.html',
+    styleUrl: './form-detalle-evaluaciones.component.scss',
 })
-export class FormMetodologiaComponent implements OnChanges {
+export class FormDetalleEvaluacionesComponent implements OnChanges {
     @Output() accionBtnItem = new EventEmitter()
 
-    @Input() data: []
     @Input() item
     @Input() showModal: boolean = true
     @Input() option: string
@@ -33,22 +32,20 @@ export class FormMetodologiaComponent implements OnChanges {
     ) {}
 
     ngOnChanges(changes) {
-        this.dataSilaboMetodologias.reset()
+        this.dataDetalleEvaluaciones.reset()
         if (changes.item?.currentValue) {
             this.item = changes.item.currentValue
-            this.dataSilaboMetodologias.patchValue(this.item)
+            this.dataDetalleEvaluaciones.patchValue(this.item)
         }
     }
-
-    dataSilaboMetodologias = this.fb.group({
+    dataDetalleEvaluaciones = this.fb.group({
         opcion: ['', Validators.required],
 
-        idSilMetId: [''],
-        iTipoMetId: ['', Validators.required],
+        iDetEvaId: [''],
         iSilaboId: ['', Validators.required],
-        cSilMetDescripcion: ['', Validators.required],
+        cDetEvalDetalles: ['', Validators.required],
 
-        iCredId: [''],
+        iCredId: [this.ConstantesService.iCredId, Validators.required],
     })
 
     accionBtn(elemento): void {
@@ -61,10 +58,10 @@ export class FormMetodologiaComponent implements OnChanges {
                 break
 
             case 'Agregar':
-                this.dataSilaboMetodologias.controls.opcion.setValue(
+                this.dataDetalleEvaluaciones.controls.opcion.setValue(
                     'GUARDARxiSilaboId'
                 )
-                if (!this.dataSilaboMetodologias.valid) {
+                if (this.dataDetalleEvaluaciones.valid) {
                     this.messageService.add({
                         severity: 'error',
                         summary: '¡Atención!',
@@ -73,16 +70,16 @@ export class FormMetodologiaComponent implements OnChanges {
                 } else {
                     this.accionBtnItem.emit({
                         accion: 'guardar',
-                        item: this.dataSilaboMetodologias.value,
+                        item: this.dataDetalleEvaluaciones.value,
                     })
                 }
 
                 break
             case 'Actualizar':
-                this.dataSilaboMetodologias.controls.opcion.setValue(
-                    'ACTUALIZARxidSilMetId'
+                this.dataDetalleEvaluaciones.controls.opcion.setValue(
+                    'ACTUALIZARxiDetEvaId'
                 )
-                if (this.dataSilaboMetodologias.valid) {
+                if (this.dataDetalleEvaluaciones.valid) {
                     this.messageService.add({
                         severity: 'error',
                         summary: '¡Atención!',
@@ -91,7 +88,7 @@ export class FormMetodologiaComponent implements OnChanges {
                 } else {
                     this.accionBtnItem.emit({
                         accion: 'modificar',
-                        item: this.dataSilaboMetodologias.value,
+                        item: this.dataDetalleEvaluaciones.value,
                     })
                 }
 

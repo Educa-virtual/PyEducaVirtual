@@ -4,8 +4,8 @@ import { CommonInputComponent } from '../../../../../../shared/components/common
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
 import { EditorModule } from 'primeng/editor'
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog'
-import { ApiEvaluacionesService } from '../../../../services/api-evaluaciones.service'
 import { ButtonModule } from 'primeng/button'
+import { ApiEvaluacionesRService } from '@/app/sistema/evaluaciones/services/api-evaluaciones-r.service'
 
 @Component({
     selector: 'app-encabezado-form',
@@ -23,7 +23,7 @@ import { ButtonModule } from 'primeng/button'
 export class EncabezadoFormComponent implements OnInit {
     private _fb = inject(FormBuilder)
     private _ref = inject(DynamicDialogRef)
-    private _evaluacionesService = inject(ApiEvaluacionesService)
+    private _evaluacionesService = inject(ApiEvaluacionesRService)
     private _config = inject(DynamicDialogConfig)
 
     public encabezadoForm = this._fb.group({

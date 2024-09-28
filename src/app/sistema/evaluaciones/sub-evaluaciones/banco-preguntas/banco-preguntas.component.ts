@@ -28,8 +28,9 @@ import { ApiEreService } from '../../services/api-ere.service'
 import dayjs from 'dayjs'
 import { FloatLabelModule } from 'primeng/floatlabel'
 import { Subject, takeUntil } from 'rxjs'
-import { ApiEvaluacionesService } from '../../services/api-evaluaciones.service'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
+import { ApiEvaluacionesRService } from '../../services/api-evaluaciones-r.service'
+import { ApiEvaluacionesService } from '../../services/api-evaluaciones.service'
 
 @Component({
     selector: 'app-banco-preguntas',
@@ -53,6 +54,7 @@ import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmatio
 export class BancoPreguntasComponent implements OnInit, OnDestroy {
     private _dialogService = inject(DialogService)
     private _apiEre = inject(ApiEreService)
+    private _apiEvaluacionesR = inject(ApiEvaluacionesRService)
     private _apiEvaluaciones = inject(ApiEvaluacionesService)
     private _confirmationModalService = inject(ConfirmationModalService)
     private unsubscribe$: Subject<boolean> = new Subject()
@@ -379,7 +381,7 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             iCursoId: this.params.iCursoId,
             ids,
         }
-        this._apiEvaluaciones.generarWordByPreguntasIds(params)
+        this._apiEvaluacionesR.generarWordByPreguntasIds(params)
     }
 
     accionBtnItemTable({ accion, item }) {
@@ -401,7 +403,7 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
         this._confirmationModalService.openConfirm({
             header: 'Esta seguro de eliminar la alternativa?',
             accept: () => {
-                this._apiEvaluaciones
+                this._apiEvaluacionesR
                     .eliminarPreguntaById(item.iPreguntaId)
                     .subscribe({
                         next: () => {

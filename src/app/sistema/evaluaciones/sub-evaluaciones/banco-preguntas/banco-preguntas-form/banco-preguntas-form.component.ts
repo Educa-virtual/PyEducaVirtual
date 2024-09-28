@@ -16,7 +16,6 @@ import { AccordionModule } from 'primeng/accordion'
 import { ButtonModule } from 'primeng/button'
 import { CommonInputComponent } from '@/app/shared/components/common-input/common-input.component'
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog'
-import { ApiEvaluacionesService } from '../../../services/api-evaluaciones.service'
 import { StepsModule } from 'primeng/steps'
 import { getAlternativaValidation } from '../alternativas/get-alternativa-validation'
 
@@ -24,6 +23,7 @@ import Quill from 'quill'
 import { AutoCompleteModule } from 'primeng/autocomplete'
 import { Subject, takeUntil } from 'rxjs'
 import { EncabezadosPreguntasComponent } from '../encabezados-preguntas/encabezados-preguntas.component'
+import { ApiEvaluacionesRService } from '../../../services/api-evaluaciones-r.service'
 
 const ColorClass = Quill.import('attributors/class/color')
 const SizeStyle = Quill.import('attributors/style/size')
@@ -73,7 +73,7 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
 
     private _formBuilder = inject(FormBuilder)
     private _config = inject(DynamicDialogConfig)
-    private _evaluacionesService = inject(ApiEvaluacionesService)
+    private _evaluacionesService = inject(ApiEvaluacionesRService)
     private _ref = inject(DynamicDialogRef)
     private unsubscribe$: Subject<boolean> = new Subject()
 

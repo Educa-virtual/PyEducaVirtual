@@ -19,8 +19,8 @@ import {
     TablePrimengComponent,
 } from '../../../../../shared/table-primeng/table-primeng.component'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
-import { ApiEvaluacionesService } from '../../../services/api-evaluaciones.service'
 import { ConfirmationService } from 'primeng/api'
+import { ApiEvaluacionesRService } from '../../../services/api-evaluaciones-r.service'
 @Component({
     selector: 'app-alternativas',
     standalone: true,
@@ -35,7 +35,7 @@ export class AlternativasComponent implements OnInit {
     @Input() pregunta
     private _dialogService = inject(DialogService)
     private _confirmationModalService = inject(ConfirmationModalService)
-    private _evaluacionesService = inject(ApiEvaluacionesService)
+    private _evaluacionesService = inject(ApiEvaluacionesRService)
     private _config = inject(DynamicDialogConfig)
     private _confirmationService = inject(ConfirmationService)
     public columnas: IColumn[] = [

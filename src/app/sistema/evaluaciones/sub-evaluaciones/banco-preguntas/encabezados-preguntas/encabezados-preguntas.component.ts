@@ -6,11 +6,11 @@ import {
 } from '@/app/shared/table-primeng/table-primeng.component'
 import { CommonModule } from '@angular/common'
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core'
-import { ApiEvaluacionesService } from '../../../services/api-evaluaciones.service'
 import { DialogService } from 'primeng/dynamicdialog'
 import { EncabezadoFormComponent } from './encabezado-form/encabezado-form.component'
 import { MODAL_CONFIG } from '@/app/shared/constants/modal.config'
 import { ButtonModule } from 'primeng/button'
+import { ApiEvaluacionesRService } from '../../../services/api-evaluaciones-r.service'
 
 @Component({
     selector: 'app-encabezados-preguntas',
@@ -26,7 +26,7 @@ export class EncabezadosPreguntasComponent {
     @Output() encabezadosChange = new EventEmitter()
 
     private _confirmService = inject(ConfirmationModalService)
-    private _evaluacionesService = inject(ApiEvaluacionesService)
+    private _evaluacionesService = inject(ApiEvaluacionesRService)
     private _dialogService = inject(DialogService)
 
     public columnas: IColumn[] = [

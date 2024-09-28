@@ -75,4 +75,26 @@ export class ApiEvaluacionesService {
                 })
             )
     }
+
+    // encabezados preguntas
+
+    guardarActualizarPreguntas(data) {
+        return this.http.post(
+            `${this.baseUrlApi}/evaluaciones/encabezado-preguntas/guardarActualizarEncabezadoPregunta`,
+            data
+        )
+    }
+
+    obtenerEncabezadosPreguntas(params) {
+        return this.http.get(
+            `${this.baseUrlApi}/evaluaciones/banco-preguntas/obtenerEncabezadosPreguntas`,
+            { params }
+        )
+    }
+
+    eliminarEncabezadoPreguntaById(id) {
+        return this.http.delete(
+            `${this.baseUrlApi}/evaluaciones/encabezado-preguntas/eliminarEncabezadoPreguntaById/${id}`
+        )
+    }
 }

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core'
+import { Component, inject, OnInit, OnDestroy } from '@angular/core'
 import {
     AbstractControl,
     FormBuilder,
@@ -7,7 +7,7 @@ import {
     Validators,
 } from '@angular/forms'
 import { DropdownModule } from 'primeng/dropdown'
-import { InputSwitchModule } from 'primeng/inputswitch'
+import { InputSwitchChangeEvent, InputSwitchModule } from 'primeng/inputswitch'
 import { EditorModule } from 'primeng/editor'
 import { TabViewModule } from 'primeng/tabview'
 import { InputTextModule } from 'primeng/inputtext'
@@ -21,6 +21,9 @@ import { StepsModule } from 'primeng/steps'
 import { getAlternativaValidation } from '../alternativas/get-alternativa-validation'
 
 import Quill from 'quill'
+import { AutoCompleteModule } from 'primeng/autocomplete'
+import { Subject, takeUntil } from 'rxjs'
+import { EncabezadosPreguntasComponent } from '../encabezados-preguntas/encabezados-preguntas.component'
 
 const ColorClass = Quill.import('attributors/class/color')
 const SizeStyle = Quill.import('attributors/style/size')
@@ -42,17 +45,23 @@ Quill.register('attributors/style/size', SizeStyle, true)
         ReactiveFormsModule,
         CommonInputComponent,
         StepsModule,
+        AutoCompleteModule,
+        EncabezadosPreguntasComponent,
     ],
     templateUrl: './banco-preguntas-form.component.html',
     styleUrl: './banco-preguntas-form.component.scss',
 })
-export class BancoPreguntasFormComponent implements OnInit {
+export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
     public tipoPreguntas = []
-    customOptions = []
-    // public alternativas = []
+    public customOptions = []
+    public encabezadoSelected
+
     public mode: 'EDITAR' | 'CREAR' = 'CREAR'
     public pregunta
     public pasos = [
+        {
+            label: 'Encabezado',
+        },
         {
             label: 'Información Pregunta',
         },
@@ -66,9 +75,16 @@ export class BancoPreguntasFormComponent implements OnInit {
     private _config = inject(DynamicDialogConfig)
     private _evaluacionesService = inject(ApiEvaluacionesService)
     private _ref = inject(DynamicDialogRef)
+    private unsubscribe$: Subject<boolean> = new Subject()
+
+    public encabezados = []
 
     public bancoPreguntasForm: FormGroup = this._formBuilder.group({
         0: this._formBuilder.group({
+            iEncabPregId: [null],
+            bConEncabezado: [false],
+        }),
+        1: this._formBuilder.group({
             iPreguntaId: [0],
             iTipoPregId: [null, [Validators.required]],
             iCursoId: [null, [Validators.required]],
@@ -89,7 +105,7 @@ export class BancoPreguntasFormComponent implements OnInit {
                 ],
             ],
         }),
-        1: this._formBuilder.group({
+        2: this._formBuilder.group({
             alternativas: [
                 [],
                 [Validators.required, this.alternativasValidator()],
@@ -98,12 +114,6 @@ export class BancoPreguntasFormComponent implements OnInit {
     })
 
     ngOnInit() {
-        this.bancoPreguntasForm
-            .get('0.cPregunta')
-            .valueChanges.subscribe((value) => {
-                console.log(value)
-            })
-
         this.tipoPreguntas = this._config.data.tipoPreguntas.filter((item) => {
             return item.iTipoPregId !== 0
         })
@@ -115,20 +125,59 @@ export class BancoPreguntasFormComponent implements OnInit {
             this.mode = 'EDITAR'
             this.obtenerAlternativas()
         }
+        this.obtenerEncabezados()
 
         this.bancoPreguntasForm
-            .get('0.iTipoPregId')
+            .get('1.iTipoPregId')
             ?.valueChanges.subscribe((value) => {
                 this.handleTipoPreguntaChange(value)
             })
     }
 
+    obtenerEncabezados() {
+        const params = {
+            iCursoId: this._config.data.iCursoId,
+            iNivelGradoId: 1,
+            iEspecialistaId: 1,
+        }
+        this._evaluacionesService
+            .obtenerEncabezadosPreguntas(params)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+                next: (resp: unknown) => {
+                    this.encabezados = resp['data']
+                    this.encabezados = this.encabezados.map((enc) => {
+                        if (enc.iEncabPregId == this.pregunta.iEncabPregId) {
+                            enc.checked = true
+                        }
+                        return enc
+                    })
+                    this.encabezadoSelected = this.encabezados.find(
+                        (enc) => enc.iEncabPregId == this.pregunta.iEncabPregId
+                    )
+                },
+            })
+    }
+
+    // cambiar validaciones si selecciona con o sin cabecera.
+    toggleValidationCabecera(event: InputSwitchChangeEvent) {
+        if (event.checked) {
+            this.bancoPreguntasForm
+                .get('0.iEncabPregId')
+                .setValidators([Validators.required])
+        } else {
+            this.bancoPreguntasForm.get('0.iEncabPregId').setValidators(null)
+        }
+
+        this.bancoPreguntasForm.get('0.iEncabPregId').updateValueAndValidity()
+    }
+
     get alternativas() {
-        return this.bancoPreguntasForm.get('1.alternativas').value
+        return this.bancoPreguntasForm.get('2.alternativas').value
     }
 
     set alternativas(value) {
-        this.bancoPreguntasForm.get('1.alternativas').setValue(value)
+        this.bancoPreguntasForm.get('2.alternativas').setValue(value)
     }
 
     alternativasChange(alternativas) {
@@ -136,19 +185,23 @@ export class BancoPreguntasFormComponent implements OnInit {
         this.alternativas = alternativas
     }
 
-    // avanzar steps
+    // avanzar pasos
     goStep(opcion: string) {
         switch (opcion) {
             case 'next':
+                console.log(
+                    this.bancoPreguntasForm.get(this.activeIndex.toString())
+                        .invalid
+                )
+
                 if (
-                    this.activeIndex === 0 &&
                     this.bancoPreguntasForm.get(this.activeIndex.toString())
                         .invalid
                 ) {
                     this.bancoPreguntasForm.markAllAsTouched()
                     return
                 }
-                if (this.activeIndex !== 1) {
+                if (this.activeIndex !== 2) {
                     this.activeIndex++
                 }
                 break
@@ -163,6 +216,7 @@ export class BancoPreguntasFormComponent implements OnInit {
     obtenerAlternativas() {
         this._evaluacionesService
             .obtenerAlternativaByPreguntaId(this.pregunta.iPreguntaId)
+            .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
                 next: (resp: unknown) => {
                     this.alternativas = resp['data']
@@ -172,7 +226,15 @@ export class BancoPreguntasFormComponent implements OnInit {
 
     patchForm(pregunta, iCursoId) {
         this.bancoPreguntasForm.get('0').patchValue(pregunta)
-        this.bancoPreguntasForm.get('0.iCursoId').setValue(iCursoId)
+        this.bancoPreguntasForm.get('1').patchValue(pregunta)
+        this.bancoPreguntasForm.get('1.iCursoId').setValue(iCursoId)
+
+        if (
+            pregunta.iEncabPregId &&
+            parseInt(pregunta.iEncabPregId, 10) !== 0
+        ) {
+            this.bancoPreguntasForm.get('0.bConEncabezado').setValue(true)
+        }
     }
 
     // escuchar cambio de tipo de preguntas y activar validaciones de las alternativas
@@ -187,11 +249,15 @@ export class BancoPreguntasFormComponent implements OnInit {
         }
     }
 
+    setEncabezado(encabezado) {
+        this.bancoPreguntasForm.get('0').patchValue(encabezado)
+    }
+
     // validaciones alternativas
     alternativasValidator() {
         return (control: AbstractControl) => {
             let tipoPregunta =
-                this.bancoPreguntasForm?.get('0.iTipoPregId')?.value
+                this.bancoPreguntasForm?.get('1.iTipoPregId')?.value
             const alternativas = control.value
             tipoPregunta = parseInt(tipoPregunta, 10)
 
@@ -222,8 +288,12 @@ export class BancoPreguntasFormComponent implements OnInit {
             return
         }
 
-        const pregunta = this.bancoPreguntasForm.get('0').value
+        const pregunta = this.bancoPreguntasForm.get('1').value
+        const encabezado = this.bancoPreguntasForm.get('0').value
         pregunta.datosAlternativas = this.alternativas
+        pregunta.iNivelGradoId = 1
+        pregunta.iEspecialistaId = 1
+        pregunta.encabezado = encabezado
         this._evaluacionesService
             .guardarActualizarPreguntaConAlternativas(pregunta)
             .subscribe({
@@ -231,5 +301,10 @@ export class BancoPreguntasFormComponent implements OnInit {
                     this.closeModal(pregunta)
                 },
             })
+    }
+
+    ngOnDestroy() {
+        this.unsubscribe$.next(true)
+        this.unsubscribe$.complete()
     }
 }

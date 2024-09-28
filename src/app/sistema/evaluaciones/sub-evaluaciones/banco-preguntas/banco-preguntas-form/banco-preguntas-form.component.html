@@ -28,9 +28,6 @@
                     @if (bancoPreguntasForm.get('0.bConEncabezado')?.value) {
                         <div class="grid">
                             <div class="col-12">
-                                <h2 class="text-lg">Encabezados</h2>
-                            </div>
-                            <div class="col-12">
                                 <app-encabezados-preguntas
                                     [encabezados]="encabezados"
                                     [encabezado]="encabezadoSelected"
@@ -38,64 +35,6 @@
                                 />
                             </div>
                         </div>
-                        <!-- <div class="grid">
-                            <div class="field col-12">
-                                <label for="cEncabPregTitulo"
-                                    >Titulo del encabezado</label
-                                >
-                                <p-autoComplete
-                                    formControlName="cEncabPregTitulo"
-                                    [styleClass]="
-                                        bancoPreguntasForm
-                                            .get('0.cEncabPregTitulo')
-                                            .hasError('required') &&
-                                        bancoPreguntasForm.get(
-                                            '0.cEncabPregTitulo'
-                                        )?.touched
-                                            ? 'w-full ng-dirty ng-invalid p-invalid'
-                                            : 'w-full'
-                                    "
-                                    inputId="cEncabPregTitulo"
-                                    [dropdown]="true"
-                                    [suggestions]="filteredCabeceras"
-                                    (completeMethod)="filterCabeceras($event)"
-                                    optionLabel="cEncabPregTitulo"
-                                />
-                                @if (
-                                    bancoPreguntasForm
-                                        .get('0.cEncabPregTitulo')
-                                        .hasError('required') &&
-                                    bancoPreguntasForm.get('0.cEncabPregTitulo')
-                                        ?.touched
-                                ) {
-                                    <small class="text-red-500">
-                                        Debe ingresar el titulo de la cabecera.
-                                    </small>
-                                }
-                            </div>
-                            <div class="field col-12">
-                                <label for="cEncabPregContenido"
-                                    >Contenido del Encabezado</label
-                                >
-                                <p-editor
-                                    [formControlName]="'cEncabPregContenido'"
-                                    [style]="{ height: '320px' }"
-                                />
-                                @if (
-                                    bancoPreguntasForm
-                                        .get('0.cEncabPregContenido')
-                                        .hasError('required') &&
-                                    bancoPreguntasForm.get(
-                                        '0.cEncabPregContenido'
-                                    )?.touched
-                                ) {
-                                    <small class="text-red-500">
-                                        Debe ingresar el contenido de la
-                                        cabecera.
-                                    </small>
-                                }
-                            </div>
-                        </div> -->
                     }
                 </ng-container>
             </form>

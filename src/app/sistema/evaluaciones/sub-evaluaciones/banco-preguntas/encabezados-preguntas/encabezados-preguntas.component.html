@@ -1,3 +1,15 @@
+<div class="flex flex-column md:flex-row gap-2 justify-content-between mb-4">
+    <h2 class="text-xl">Alternativas</h2>
+    <button
+        pButton
+        pRipple
+        label="Agregar Encabezado"
+        icon="pi pi-plus"
+        size="small"
+        class="p-button-primary"
+        (click)="agregarActualizarEncabezadoForm(null)"
+    ></button>
+</div>
 <app-table-primeng
     [columnas]="columnas"
     [data]="encabezados"

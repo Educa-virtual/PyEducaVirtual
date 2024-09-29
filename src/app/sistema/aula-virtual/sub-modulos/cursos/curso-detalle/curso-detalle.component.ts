@@ -16,6 +16,7 @@ import { MenuModule } from 'primeng/menu'
 import { ProfesorAvatarComponent } from '../components/profesor-avatar/profesor-avatar.component'
 import { IEstudiante } from '../../../interfaces/estudiantes.interface'
 import { ICurso } from '../interfaces/curso.interface'
+import { AulaBancoPreguntasComponent } from '../../aula-banco-preguntas/aula-banco-preguntas/aula-banco-preguntas.component'
 
 @Component({
     selector: 'app-curso-detalle',
@@ -34,6 +35,7 @@ import { ICurso } from '../interfaces/curso.interface'
         TabEvaluacionesComponent,
         ProfesorAvatarComponent,
         MenuModule,
+        AulaBancoPreguntasComponent,
     ],
     templateUrl: './curso-detalle.component.html',
     styleUrl: './curso-detalle.component.scss',

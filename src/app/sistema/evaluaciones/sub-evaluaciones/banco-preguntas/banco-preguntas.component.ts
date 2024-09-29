@@ -34,7 +34,7 @@ import { ApiEvaluacionesService } from '../../services/api-evaluaciones.service'
 
 @Component({
     selector: 'app-ere-preguntas',
-    templateUrl: './ere-preguntas.component.html',
+    templateUrl: './banco-preguntas.component.html',
     providers: [provideIcons({ matGroupWork }), DialogService, MessageService],
     standalone: true,
     imports: [
@@ -49,9 +49,9 @@ import { ApiEvaluacionesService } from '../../services/api-evaluaciones.service'
         TablePrimengComponent,
         FloatLabelModule,
     ],
-    styleUrls: ['./ere-preguntas.component.scss'],
+    styleUrls: ['./banco-preguntas.component.scss'],
 })
-export class ErePreguntasComponent implements OnInit, OnDestroy {
+export class BancoPreguntasComponent implements OnInit, OnDestroy {
     private _dialogService = inject(DialogService)
     private _apiEre = inject(ApiEreService)
     private _apiEvaluacionesR = inject(ApiEvaluacionesRService)

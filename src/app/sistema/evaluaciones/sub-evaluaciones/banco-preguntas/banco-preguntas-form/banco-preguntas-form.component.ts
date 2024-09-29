@@ -75,6 +75,7 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
     private _config = inject(DynamicDialogConfig)
     private _evaluacionesService = inject(ApiEvaluacionesRService)
     private _ref = inject(DynamicDialogRef)
+    public evaluacionesService = this._evaluacionesService
     private unsubscribe$: Subject<boolean> = new Subject()
 
     public encabezados = []
@@ -181,7 +182,6 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
     }
 
     alternativasChange(alternativas) {
-        console.log(alternativas)
         this.alternativas = alternativas
     }
 

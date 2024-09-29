@@ -1,11 +1,4 @@
-import {
-    Component,
-    EventEmitter,
-    inject,
-    Input,
-    OnInit,
-    Output,
-} from '@angular/core'
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core'
 import { ButtonModule } from 'primeng/button'
 import { TableModule } from 'primeng/table'
 import { CommonModule } from '@angular/common'
@@ -20,7 +13,6 @@ import {
 } from '../../../../../shared/table-primeng/table-primeng.component'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { ConfirmationService } from 'primeng/api'
-import { ApiEvaluacionesRService } from '../../../services/api-evaluaciones-r.service'
 @Component({
     selector: 'app-alternativas',
     standalone: true,
@@ -29,15 +21,15 @@ import { ApiEvaluacionesRService } from '../../../services/api-evaluaciones-r.se
     styleUrl: './alternativas.component.scss',
     providers: [DialogService],
 })
-export class AlternativasComponent implements OnInit {
+export class AlternativasComponent {
     @Input() alternativas = []
     @Output() alternativasChange = new EventEmitter()
     @Input() pregunta
     private _dialogService = inject(DialogService)
     private _confirmationModalService = inject(ConfirmationModalService)
-    private _evaluacionesService = inject(ApiEvaluacionesRService)
     private _config = inject(DynamicDialogConfig)
     private _confirmationService = inject(ConfirmationService)
+    @Input() serviceProvider
     public columnas: IColumn[] = [
         {
             type: 'text',
@@ -103,10 +95,6 @@ export class AlternativasComponent implements OnInit {
         },
     ]
 
-    ngOnInit() {
-        this.pregunta = this._config.data.pregunta
-    }
-
     agregarActualizarAlternativa(alternativa) {
         const refModal = this._dialogService.open(AlternativasFormComponent, {
             ...MODAL_CONFIG,
@@ -155,7 +143,7 @@ export class AlternativasComponent implements OnInit {
                     this.eliminarAlternativaLocal(alternativa)
                     return
                 }
-                this._evaluacionesService
+                this.serviceProvider
                     .eliminarAlternativaById(alternativa.iAlternativaId)
                     .subscribe({
                         next: () => {

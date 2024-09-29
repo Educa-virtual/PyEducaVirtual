@@ -20,7 +20,7 @@ import {
 import { provideIcons } from '@ng-icons/core'
 import { matGroupWork } from '@ng-icons/material-icons/baseline'
 import { DialogService } from 'primeng/dynamicdialog'
-import { BancoPreguntasFormComponent } from '../banco-preguntas/banco-preguntas-form/banco-preguntas-form.component'
+import { BancoPreguntasFormComponent } from './banco-preguntas-form/banco-preguntas-form.component'
 import { MODAL_CONFIG } from '@/app/shared/constants/modal.config'
 import { AsignarMatrizPreguntasFormComponent } from './asignar-matriz-preguntas-form/asignar-matriz-preguntas-form.component'
 import { MessageService } from 'primeng/api'
@@ -33,8 +33,8 @@ import { ApiEvaluacionesRService } from '../../services/api-evaluaciones-r.servi
 import { ApiEvaluacionesService } from '../../services/api-evaluaciones.service'
 
 @Component({
-    selector: 'app-banco-preguntas',
-    templateUrl: './banco-preguntas.component.html',
+    selector: 'app-ere-preguntas',
+    templateUrl: './ere-preguntas.component.html',
     providers: [provideIcons({ matGroupWork }), DialogService, MessageService],
     standalone: true,
     imports: [
@@ -49,9 +49,9 @@ import { ApiEvaluacionesService } from '../../services/api-evaluaciones.service'
         TablePrimengComponent,
         FloatLabelModule,
     ],
-    styleUrls: ['./banco-preguntas.component.scss'],
+    styleUrls: ['./ere-preguntas.component.scss'],
 })
-export class BancoPreguntasComponent implements OnInit, OnDestroy {
+export class ErePreguntasComponent implements OnInit, OnDestroy {
     private _dialogService = inject(DialogService)
     private _apiEre = inject(ApiEreService)
     private _apiEvaluacionesR = inject(ApiEvaluacionesRService)

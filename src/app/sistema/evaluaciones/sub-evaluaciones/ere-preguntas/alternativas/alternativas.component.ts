@@ -10,7 +10,7 @@ import { ButtonModule } from 'primeng/button'
 import { TableModule } from 'primeng/table'
 import { CommonModule } from '@angular/common'
 import { DialogService, DynamicDialogConfig } from 'primeng/dynamicdialog'
-import { AlternativasFormComponent } from '../alternativas/alternativas-form/alternativas-form.component'
+import { AlternativasFormComponent } from './alternativas-form/alternativas-form.component'
 import { MODAL_CONFIG } from '@/app/shared/constants/modal.config'
 
 import {

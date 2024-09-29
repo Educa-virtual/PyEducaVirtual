@@ -99,7 +99,7 @@ export class AsignarMatrizPreguntasFormComponent implements OnInit {
         {
             field: 'cPregunta',
             header: 'Pregunta',
-            type: 'text',
+            type: 'p-editor',
             width: '5rem',
             text: 'left',
             text_header: 'Pregunta',

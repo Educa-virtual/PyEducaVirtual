@@ -8,6 +8,40 @@
         @case (0) {
             <form [formGroup]="bancoPreguntasForm">
                 <ng-container formGroupName="0">
+                    <div class="grid mb-4">
+                        <div class="col-12">
+                            <h2 class="text-xl">Formulario Encabezado</h2>
+                        </div>
+                        <div class="col-12 flex justify-content-end">
+                            <div class="flex gap-2 align-items-center">
+                                <span>Sin Encabezado.</span>
+                                <p-inputSwitch
+                                    formControlName="bConEncabezado"
+                                    (onChange)="
+                                        toggleValidationCabecera($event)
+                                    "
+                                />
+                                Con Encabezado.
+                            </div>
+                        </div>
+                    </div>
+                    @if (bancoPreguntasForm.get('0.bConEncabezado')?.value) {
+                        <div class="grid">
+                            <div class="col-12">
+                                <app-encabezados-preguntas
+                                    [encabezados]="encabezados"
+                                    [encabezado]="encabezadoSelected"
+                                    (encabezadoChange)="setEncabezado($event)"
+                                />
+                            </div>
+                        </div>
+                    }
+                </ng-container>
+            </form>
+        }
+        @case (1) {
+            <form [formGroup]="bancoPreguntasForm">
+                <ng-container formGroupName="1">
                     <div class="formgrid grid">
                         <div class="field flex flex-column col-12 md:col-6">
                             <label for="tipo-pregunta">Tipo pregunta</label>
@@ -18,9 +52,9 @@
                                 [options]="tipoPreguntas"
                                 optionLabel="cTipoPregDescripcion"
                                 [styleClass]="
-                                    bancoPreguntasForm.get('0.iTipoPregId')
+                                    bancoPreguntasForm.get('1.iTipoPregId')
                                         ?.invalid &&
-                                    bancoPreguntasForm.get('0.iTipoPregId')
+                                    bancoPreguntasForm.get('1.iTipoPregId')
                                         ?.touched
                                         ? 'w-full ng-dirty ng-invalid p-invalid'
                                         : 'w-full'
@@ -28,9 +62,9 @@
                             />
                             @if (
                                 bancoPreguntasForm
-                                    .get('0.iTipoPregId')
+                                    .get('1.iTipoPregId')
                                     .hasError('required') &&
-                                bancoPreguntasForm.get('0.iTipoPregId')?.touched
+                                bancoPreguntasForm.get('1.iTipoPregId')?.touched
                             ) {
                                 <small class="text-red-500">
                                     Este campo es requerido
@@ -93,9 +127,9 @@
                             />
                             @if (
                                 bancoPreguntasForm
-                                    .get('0.cPregunta')
+                                    .get('1.cPregunta')
                                     .hasError('required') &&
-                                bancoPreguntasForm.get('0.cPregunta')?.touched
+                                bancoPreguntasForm.get('1.cPregunta')?.touched
                             ) {
                                 <small class="text-red-500">
                                     Este campo es requerido
@@ -116,21 +150,22 @@
                 </ng-container>
             </form>
         }
-        @case (1) {
+        @case (2) {
             <app-alternativas
                 [alternativas]="alternativas"
                 [pregunta]="pregunta"
                 (alternativasChange)="alternativasChange($event)"
+                [serviceProvider]="evaluacionesService"
             ></app-alternativas>
             @if (
                 bancoPreguntasForm
-                    .get('1.alternativas')
+                    .get('2.alternativas')
                     ?.hasError('alternativasInvalidas')
             ) {
                 <small class="text-red-500">
                     {{
                         bancoPreguntasForm
-                            .get('1.alternativas')
+                            .get('2.alternativas')
                             .getError('alternativasInvalidas')
                     }}
                 </small>
@@ -142,7 +177,7 @@
         @if (activeIndex !== 0) {
             <button pButton size="small" (click)="goStep('back')">Atrás</button>
         }
-        @if (activeIndex !== 1) {
+        @if (activeIndex !== 2) {
             <button
                 pButton
                 size="small"
@@ -152,7 +187,7 @@
                 Siguiente
             </button>
         }
-        @if (activeIndex === 1) {
+        @if (activeIndex === 2) {
             <button
                 pButton
                 pRipple

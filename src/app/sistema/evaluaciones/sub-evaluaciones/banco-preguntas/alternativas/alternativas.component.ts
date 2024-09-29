@@ -1,16 +1,9 @@
-import {
-    Component,
-    EventEmitter,
-    inject,
-    Input,
-    OnInit,
-    Output,
-} from '@angular/core'
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core'
 import { ButtonModule } from 'primeng/button'
 import { TableModule } from 'primeng/table'
 import { CommonModule } from '@angular/common'
 import { DialogService, DynamicDialogConfig } from 'primeng/dynamicdialog'
-import { AlternativasFormComponent } from '../alternativas/alternativas-form/alternativas-form.component'
+import { AlternativasFormComponent } from './alternativas-form/alternativas-form.component'
 import { MODAL_CONFIG } from '@/app/shared/constants/modal.config'
 
 import {
@@ -19,7 +12,6 @@ import {
     TablePrimengComponent,
 } from '../../../../../shared/table-primeng/table-primeng.component'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
-import { ApiEvaluacionesService } from '../../../services/api-evaluaciones.service'
 import { ConfirmationService } from 'primeng/api'
 @Component({
     selector: 'app-alternativas',
@@ -29,15 +21,15 @@ import { ConfirmationService } from 'primeng/api'
     styleUrl: './alternativas.component.scss',
     providers: [DialogService],
 })
-export class AlternativasComponent implements OnInit {
+export class AlternativasComponent {
     @Input() alternativas = []
     @Output() alternativasChange = new EventEmitter()
     @Input() pregunta
     private _dialogService = inject(DialogService)
     private _confirmationModalService = inject(ConfirmationModalService)
-    private _evaluacionesService = inject(ApiEvaluacionesService)
     private _config = inject(DynamicDialogConfig)
     private _confirmationService = inject(ConfirmationService)
+    @Input() serviceProvider
     public columnas: IColumn[] = [
         {
             type: 'text',
@@ -103,10 +95,6 @@ export class AlternativasComponent implements OnInit {
         },
     ]
 
-    ngOnInit() {
-        this.pregunta = this._config.data.pregunta
-    }
-
     agregarActualizarAlternativa(alternativa) {
         const refModal = this._dialogService.open(AlternativasFormComponent, {
             ...MODAL_CONFIG,
@@ -155,7 +143,7 @@ export class AlternativasComponent implements OnInit {
                     this.eliminarAlternativaLocal(alternativa)
                     return
                 }
-                this._evaluacionesService
+                this.serviceProvider
                     .eliminarAlternativaById(alternativa.iAlternativaId)
                     .subscribe({
                         next: () => {

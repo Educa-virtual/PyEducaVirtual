@@ -9,11 +9,11 @@ import {
 } from '@angular/forms'
 import { InputSwitchModule } from 'primeng/inputswitch'
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog'
-import { ApiEvaluacionesService } from '@/app/sistema/evaluaciones/services/api-evaluaciones.service'
 import { CommonInputComponent } from '@/app/shared/components/common-input/common-input.component'
 import { ButtonModule } from 'primeng/button'
 import { generarIdAleatorio } from '@/app/shared/utils/random-id'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
+import { ApiEvaluacionesRService } from '@/app/sistema/evaluaciones/services/api-evaluaciones-r.service'
 @Component({
     selector: 'app-alternativas-form',
     standalone: true,
@@ -32,7 +32,7 @@ export class AlternativasFormComponent implements OnInit {
     private _config = inject(DynamicDialogConfig)
     private _ref = inject(DynamicDialogRef)
     private _formBuilder = inject(FormBuilder)
-    private _evaluacionesService = inject(ApiEvaluacionesService)
+    private _evaluacionesService = inject(ApiEvaluacionesRService)
     private _confirmDialogService = inject(ConfirmationModalService)
     private pregunta
     private alternativa

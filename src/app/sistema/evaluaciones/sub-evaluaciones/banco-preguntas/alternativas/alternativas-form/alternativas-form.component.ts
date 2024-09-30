@@ -34,12 +34,12 @@ export class AlternativasFormComponent implements OnInit {
     private _formBuilder = inject(FormBuilder)
     private _evaluacionesService = inject(ApiEvaluacionesRService)
     private _confirmDialogService = inject(ConfirmationModalService)
-    private pregunta
     private alternativa
     private alternativas
 
+    public pregunta
     public alternativaFormGroup = this._formBuilder.group({
-        iAlternativaId: new FormControl<number | string>(0),
+        iAlternativaId: new FormControl<number | string>(generarIdAleatorio()),
         iPreguntaId: [0],
         cAlternativaDescripcion: [null, Validators.required],
         cAlternativaLetra: [
@@ -52,7 +52,8 @@ export class AlternativasFormComponent implements OnInit {
         ],
         bAlternativaCorrecta: [false, Validators.required],
         cAlternativaExplicacion: [''],
-        isLocal: [false],
+        isLocal: [true],
+        isDeleted: [false],
     })
 
     ngOnInit() {
@@ -60,11 +61,10 @@ export class AlternativasFormComponent implements OnInit {
         this.alternativa = this._config.data.alternativa
         this.alternativas = this._config.data.alternativas
 
-        if (this.pregunta.iPreguntaId != 0) {
-            this.alternativaFormGroup
-                .get('iPreguntaId')
-                .setValue(this.pregunta.iPreguntaId)
-        }
+        this.alternativaFormGroup
+            .get('iPreguntaId')
+            .setValue(this.pregunta.iPreguntaId)
+
         // editando alternativa
         if (this.alternativa != null) {
             this.alternativaFormGroup.patchValue(this.alternativa)
@@ -109,39 +109,19 @@ export class AlternativasFormComponent implements OnInit {
             return
         }
 
-        // const newAlternativas = this.getNewAlternativas(
-        //     this.alternativaFormGroup.value
-        // )
-
-        // const invalidMessage = getAlternativaValidation(
-        //     parseInt(this.pregunta.iTipoPregId, 10),
-        //     newAlternativas
-        // )
-
-        // if (invalidMessage != null) {
-        //     this._confirmDialogService.openAlert({ header: invalidMessage })
-        //     return
-        // }
         const alternativa = this.alternativaFormGroup.value
 
-        if (this.pregunta.iPreguntaId == 0) {
-            // generar id por defecto
-            alternativa.iAlternativaId = generarIdAleatorio()
-            if (this.alternativa != null) {
-                // si estamos editando asignar el id inicial
-                alternativa.iAlternativaId = this.alternativa.iAlternativaId
-            }
-            alternativa.isLocal = true
-            this.closeModal(alternativa)
-            return
-        }
-        this._evaluacionesService
-            .guardarActualizarAlternativa(alternativa)
-            .subscribe({
-                next: (resp: unknown) => {
-                    alternativa.iAlternativaId = resp['data'].id
-                    this.closeModal(alternativa)
-                },
-            })
+        this.closeModal(alternativa)
+        return
+        // if (this.pregunta.iPreguntaId == 0) {
+        // }
+        // this._evaluacionesService
+        //     .guardarActualizarAlternativa(alternativa)
+        //     .subscribe({
+        //         next: (resp: unknown) => {
+        //             alternativa.iAlternativaId = resp['data'].id
+        //             this.closeModal(alternativa)
+        //         },
+        //     })
     }
 }

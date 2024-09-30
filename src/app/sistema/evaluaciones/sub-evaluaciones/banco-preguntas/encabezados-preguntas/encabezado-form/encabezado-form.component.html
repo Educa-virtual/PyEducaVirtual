@@ -1,27 +1,5 @@
 <form [formGroup]="encabezadoForm">
-    <div class="grid">
-        <div class="field col-12">
-            <label for="cEncabPregTitulo">Titulo del encabezado</label>
-            <app-common-input [controlKey]="'cEncabPregTitulo'" />
-        </div>
-        <div class="field col-12">
-            <label for="cEncabPregContenido">Contenido del Encabezado</label>
-            <p-editor
-                [formControlName]="'cEncabPregContenido'"
-                [style]="{ height: '320px' }"
-            />
-            @if (
-                encabezadoForm
-                    .get('cEncabPregContenido')
-                    .hasError('required') &&
-                encabezadoForm.get('cEncabPregContenido')?.touched
-            ) {
-                <small class="text-red-500">
-                    Debe ingresar el contenido de la cabecera.
-                </small>
-            }
-        </div>
-    </div>
+    <div class="grid"></div>
 
     <div class="flex justify-content-end gap-2 pt-3">
         <button

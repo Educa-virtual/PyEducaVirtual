@@ -1,5 +1,9 @@
 <form [formGroup]="alternativaFormGroup">
     <div class="formgrid grid">
+        <div class="col-12 mb-3">
+            <h2 class="text-lg">Alternativas de la pregunta:</h2>
+            <div [innerHTML]="pregunta?.cPregunta"></div>
+        </div>
         <div class="field col">
             <app-common-input
                 controlKey="cAlternativaDescripcion"

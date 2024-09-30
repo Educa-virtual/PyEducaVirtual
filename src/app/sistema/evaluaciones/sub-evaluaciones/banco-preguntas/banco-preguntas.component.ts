@@ -121,7 +121,7 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             field: 'cPregunta',
             header: 'Pregunta',
             type: 'p-editor',
-            width: '5rem',
+            width: '15rem',
             text: 'left',
             text_header: 'Pregunta',
         },
@@ -288,15 +288,30 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             .subscribe({
                 next: (resp: unknown) => {
                     resp['data'] = resp['data'].map((item) => {
-                        const time = dayjs(item.dtPreguntaTiempo)
-                        const hours = time.get('hour')
-                        const minutes = time.get('minute')
-                        const seconds = time.get('second')
-                        item.time = `${hours}h ${minutes}m ${seconds}s`
-                        item.bPreguntaEstado = parseInt(
-                            item.bPreguntaEstado,
-                            10
-                        )
+                        if (item.preguntas != null) {
+                            item.preguntas = item.preguntas.map((subItem) => {
+                                const time = dayjs(subItem.dtPreguntaTiempo)
+                                const hours = time.get('hour')
+                                const minutes = time.get('minute')
+                                const seconds = time.get('second')
+                                subItem.time = `${hours}h ${minutes}m ${seconds}s`
+                                subItem.bPreguntaEstado = parseInt(
+                                    item.bPreguntaEstado,
+                                    10
+                                )
+                                return subItem
+                            })
+                        } else {
+                            const time = dayjs(item.dtPreguntaTiempo)
+                            const hours = time.get('hour')
+                            const minutes = time.get('minute')
+                            const seconds = time.get('second')
+                            item.time = `${hours}h ${minutes}m ${seconds}s`
+                            item.bPreguntaEstado = parseInt(
+                                item.bPreguntaEstado,
+                                10
+                            )
+                        }
                         return item
                     })
                     this.data = resp['data']
@@ -310,12 +325,16 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
                 next: (resp: unknown) => {
+                    const data = resp['data'].map((item) => {
+                        item.iTipoPregId = parseInt(item.iTipoPregId, 10)
+                        return item
+                    })
                     this.tipoPreguntas = [
                         {
                             iTipoPregId: 0,
                             cTipoPregDescripcion: 'Todos',
                         },
-                        ...resp['data'],
+                        ...data,
                     ]
                 },
             })
@@ -358,6 +377,8 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
         if (action.accion === 'agregar') {
             this.agregarEditarPregunta({
                 iPreguntaId: 0,
+                preguntas: [],
+                iEncabPregId: -1,
             })
         }
         if (action.accion === 'asignar') {
@@ -452,7 +473,7 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
                 iCursoId: this.params.iCursoId,
             },
             header:
-                pregunta?.iPreguntaId == 0
+                pregunta.iPreguntaId == 0
                     ? 'Nueva pregunta'
                     : 'Editar pregunta',
         })

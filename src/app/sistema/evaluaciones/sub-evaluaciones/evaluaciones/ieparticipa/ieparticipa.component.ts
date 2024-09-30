@@ -116,17 +116,17 @@ export class IeparticipaComponent implements OnInit {
                   })*/
 
                     this.nivelTipo = resp['data']
-                    alert(JSON.stringify(this.data))
+                    // alert(JSON.stringify(this.data))
                     this.sourceProducts = this.data
                 },
             })
     }
     seleccionados() {
-        alert(JSON.stringify(this.targetProducts))
+        // alert(JSON.stringify(this.targetProducts))
     }
-    onChange(event) {
+    onChange() {
         //alert(v)
-        alert(JSON.stringify(event))
+        // alert(JSON.stringify(event))
         //this.verSeleccion = this.opcionSeleccionado;
     }
 }

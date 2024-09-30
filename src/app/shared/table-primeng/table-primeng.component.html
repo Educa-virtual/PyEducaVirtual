@@ -1,0 +1,157 @@
+<p-table
+    #dt
+    [columns]="columnas"
+    [value]="data"
+    [loading]="loading"
+    responsiveLayout="scroll"
+    styleClass="p-datatable-sm"
+    [paginator]="showPaginator"
+    [rows]="10"
+    [tableStyle]="tableStyle"
+    currentPageReportTemplate="{first} - {last} de {totalRecords} registros"
+    [rowsPerPageOptions]="[10, 25, 50]"
+    (selectionChange)="onSelectionChange($event)"
+    sortMode="multiple"
+    [(selection)]="selectedRowData"
+    [scrollable]="scrollable"
+    [scrollHeight]="scrollHeight"
+    class="hoverTable"
+>
+    @if (showCaption) {
+        <ng-template pTemplate="caption">
+            <div
+                class="flex justify-content-between gap-2 flex-column sm:flex-row flex-wrap"
+            >
+                <p-iconField iconPosition="left">
+                    <p-inputIcon styleClass="pi pi-search" />
+                    <input
+                        pInputText
+                        type="text"
+                        (input)="dt.filterGlobal($event.target, 'contains')"
+                        placeholder="Buscar palabra clave"
+                    />
+                </p-iconField>
+                <ng-content select="[slot='caption-content']"></ng-content>
+                <app-table-column-filter
+                    [columns]="columnas"
+                    (columnsChange)="onColumnSelected($event)"
+                ></app-table-column-filter>
+            </div>
+        </ng-template>
+    }
+    <ng-template pTemplate="header" let-columns>
+        <tr class="text-uppercase">
+            @for (col of columnasSeleccionadas; track $index) {
+                <th [pSortableColumn]="col.field" [style.width]="col.width">
+                    @switch (col.type) {
+                        @case ('actions') {
+                            <div [style.text-align]="col.text_header">
+                                {{ col.header }}
+                            </div>
+                        }
+                        @case ('item') {
+                            <div [style.text-align]="col.text_header">
+                                {{ col.header }}
+                            </div>
+                        }
+                        @case ('checkbox') {
+                            <p-tableHeaderCheckbox />
+                        }
+                        @default {
+                            <div [style.text-align]="col.text_header" class="">
+                                <span> {{ col.header }}</span>
+                                <p-sortIcon [field]="col.header"></p-sortIcon>
+                            </div>
+                        }
+                    }
+                </th>
+            }
+        </tr>
+    </ng-template>
+    <ng-template
+        pTemplate="body"
+        let-rowData
+        let-columns="columns"
+        let-rowIndex="rowIndex"
+    >
+        <tr [pSelectableRow]="rowData">
+            @for (col of columnasSeleccionadas; track $index; let i = $index) {
+                <td>
+                    @if (col.type === 'item') {
+                        <div [style.text-align]="col.text">
+                            <span>{{ rowIndex + 1 }}</span>
+                        </div>
+                    }
+                    @if (col.type === 'p-editor') {
+                        <p-editor
+                            class="custom-editor"
+                            [readonly]="true"
+                            [modules]="{}"
+                            [(ngModel)]="rowData[col.field]"
+                        />
+                    }
+                    @if (col.type === 'text') {
+                        <div [style.text-align]="col.text">
+                            {{ rowData[col.field] }}
+                        </div>
+                    }
+                    @if (col.type === 'checkbox') {
+                        <p-tableCheckbox [value]="rowData" />
+                    }
+                    @if (col.type === 'radio') {
+                        <p-tableRadioButton
+                            [value]="rowData"
+                        ></p-tableRadioButton>
+                    }
+                    @if (col.type === 'actions') {
+                        <div [style.text-align]="col.text">
+                            @for (item of actions; track $index) {
+                                @if (
+                                    item.type === 'item' && item.isVisible
+                                        ? item.isVisible(rowData)
+                                        : true
+                                ) {
+                                    <button
+                                        [rounded]="true"
+                                        pButton
+                                        pRipple
+                                        [pTooltip]="item.labelTooltip"
+                                        tooltipPosition="top"
+                                        (click)="
+                                            accionBtn(item.accion, rowData)
+                                        "
+                                        class="p-1"
+                                        [ngClass]="item.class"
+                                    >
+                                        @if (item.icon | isIconType) {
+                                            <app-icon
+                                                [name]="item.icon.name"
+                                                [color]="item.icon.color"
+                                                [size]="item.icon.size"
+                                            ></app-icon>
+                                        } @else {
+                                            <i class="{{ item.icon }}"></i>
+                                        }
+                                    </button>
+                                }
+                            }
+                        </div>
+                    }
+                    @if (col.type === 'estado') {
+                        <p-tag
+                            [severity]="
+                                rowData[col.field] ? 'success' : 'danger'
+                            "
+                            [value]="
+                                rowData[col.field]
+                                    ? col.customFalsy?.trueText
+                                    : col.customFalsy?.falseText
+                            "
+                        >
+                        </p-tag>
+                    }
+                </td>
+            }
+        </tr>
+    </ng-template>
+</p-table>

@@ -1,0 +1,37 @@
+<div class="grid">
+    <div class="col-4">
+        <app-container-page
+            title="Actividades"
+            [actions]="actionsContainer"
+            (accionBtnItem)="accionBtnItem($event)"
+        ></app-container-page>
+        <p-divider />
+        <app-container-page
+            title="Indicadores"
+            [actions]="actionsContainer"
+            (accionBtnItem)="accionBtnItem($event)"
+        ></app-container-page>
+    </div>
+    <div class="col-8">
+        <app-container-page
+            title="Cronograma de Actividades de Aprendizaje"
+            [actions]="actionsContainer"
+            (accionBtnItem)="accionBtnItem($event)"
+        ></app-container-page>
+        <app-table-primeng
+            [showCaption]="false"
+            [showPaginator]="false"
+            [actions]="actions"
+            [data]="data"
+            [columnas]="columns"
+            (accionBtnItem)="accionBtnItem($event)"
+        ></app-table-primeng>
+
+        <app-form-actividades-aprendizaje-evaluacion
+            [data]="itemActividades"
+            [showModal]="showModal"
+            [option]="option"
+            (accionBtnItem)="accionBtnItem($event)"
+        ></app-form-actividades-aprendizaje-evaluacion>
+    </div>
+</div>

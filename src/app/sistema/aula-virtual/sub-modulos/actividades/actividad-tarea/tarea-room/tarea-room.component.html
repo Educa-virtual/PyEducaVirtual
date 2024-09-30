@@ -1,0 +1,162 @@
+<section class="flex flex-column gap-4">
+    <p-tabView styleClass="actividad-tabs">
+        <p-tabPanel>
+            <ng-template pTemplate="header">
+                <div class="flex align-items-center flex-column gap-2">
+                    <app-icon name="matListAlt"></app-icon>
+                    <span class="font-bold white-space-nowrap m-0">
+                        Instrucciones
+                    </span>
+                </div>
+            </ng-template>
+            <div class="flex flex-column gap-4">
+                <article class="card">
+                    <h2>Tarea</h2>
+
+                    <div class="grid">
+                        <div class="col-12 md:col-6 flex flex-column gap-2">
+                            <span class="font-bold text-xl flex gap-2">
+                                <app-icon
+                                    name="matCalendarMonth"
+                                    class="text-primary"
+                                    size="sm"
+                                ></app-icon>
+                                Fecha inicio</span
+                            >
+                            <p>
+                                Doming 15 de marzo de 2025
+                                <span class="font-bold">Hora Limite: </span>
+                                5:00 p.m.
+                            </p>
+                        </div>
+                        <div class="col-12 md:col-6 flex flex-column gap-2">
+                            <span class="font-bold text-xl flex gap-2">
+                                <app-icon
+                                    name="matCalendarMonth"
+                                    class="text-primary"
+                                    size="sm"
+                                ></app-icon>
+                                Fecha de Entrega</span
+                            >
+                            <p>
+                                Doming 15 de marzo de 2025
+                                <span class="font-bold">Hora Limite: </span>
+                                5:00 p.m.
+                            </p>
+                        </div>
+                    </div>
+                </article>
+                <article class="card">
+                    <h2>Recursos</h2>
+                    <ul class="list-none p-0 m-0">
+                        <li
+                            class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap"
+                        >
+                            <div class="flex gap-2 align-items-center">
+                                <i class="pi pi-file text-lg text-primary"></i>
+                                <span class="font-medium text-lg"
+                                    >Recurso.pdf</span
+                                >
+                                <span class="text-gray-500"
+                                    >tamaño(319.532KB)</span
+                                >
+                            </div>
+                        </li>
+                        <li
+                            class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap"
+                        >
+                            <div class="flex gap-2 align-items-center">
+                                <i class="pi pi-file text-lg text-primary"></i>
+                                <span class="font-medium text-lg"
+                                    >Recurso.pdf</span
+                                >
+                                <span class="text-gray-500"
+                                    >tamaño(319.532KB)</span
+                                >
+                            </div>
+                        </li>
+                        <li
+                            class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap"
+                        >
+                            <div class="flex gap-2 align-items-center">
+                                <i class="pi pi-file text-lg text-primary"></i>
+                                <span class="font-medium text-lg"
+                                    >Recurso.pdf</span
+                                >
+                                <span class="text-gray-500"
+                                    >tamaño(319.532KB)</span
+                                >
+                            </div>
+                        </li>
+                    </ul>
+                </article>
+
+                <article class="card flex flex-column gap-4">
+                    <h2>Tu trabajo</h2>
+
+                    <div class="flex justify-content-between gap-2 flex-wrap">
+                        <button pButton class="p-button-help">
+                            Subir Archivo
+                        </button>
+                        <button pButton class="p-button-help">
+                            Url o Link
+                        </button>
+                    </div>
+
+                    <div
+                        class="flex flex-column justify-content-center align-content-center border-2 border-dashed surface-border border-round surface-card h-10rem"
+                    >
+                        <p class="text-center">
+                            Arrastra o da Click para subir
+                        </p>
+                    </div>
+
+                    <button pButton class="p-button-primary mx-auto">
+                        Marcar como tarea completada
+                    </button>
+                </article>
+            </div>
+        </p-tabPanel>
+        <p-tabPanel>
+            <ng-template pTemplate="header">
+                <div class="flex align-items-center flex-column gap-2">
+                    <app-icon name="matPeople"></app-icon>
+                    <span class="font-bold white-space-nowrap m-0">
+                        Trabajos de los alumnos
+                    </span>
+                </div>
+            </ng-template>
+            <div class="flex flex-column gap-4">
+                <article class="card">
+                    <h2>Trabajos</h2>
+
+                    <div class="grid flex-column md:flex-row-reverse">
+                        <div
+                            class="md:col-4 col-12 flex justify-content-center ml-auto md:ml-0"
+                        >
+                            <app-leyenda-tareas
+                                class=""
+                                [items]="leyendaTareas"
+                            />
+                        </div>
+                        <div class="md:col-8 col-12">
+                            <p-tabView>
+                                <p-tabPanel header="Individual">
+                                    <app-table-primeng
+                                        [showCaption]="false"
+                                        [data]="estudiantes"
+                                        [columnas]="columnas"
+                                        [actions]="acciones"
+                                        (accionBtnItem)="accionBtnItem($event)"
+                                        [tableStyle]="{ width: '100%' }"
+                                    ></app-table-primeng>
+                                </p-tabPanel>
+                                <p-tabPanel header="Grupal"> </p-tabPanel>
+                            </p-tabView>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </p-tabPanel>
+    </p-tabView>
+</section>

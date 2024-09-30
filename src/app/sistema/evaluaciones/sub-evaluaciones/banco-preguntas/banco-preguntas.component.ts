@@ -20,7 +20,7 @@ import {
 import { provideIcons } from '@ng-icons/core'
 import { matGroupWork } from '@ng-icons/material-icons/baseline'
 import { DialogService } from 'primeng/dynamicdialog'
-import { BancoPreguntasFormComponent } from '../banco-preguntas/banco-preguntas-form/banco-preguntas-form.component'
+import { BancoPreguntasFormComponent } from './banco-preguntas-form/banco-preguntas-form.component'
 import { MODAL_CONFIG } from '@/app/shared/constants/modal.config'
 import { AsignarMatrizPreguntasFormComponent } from './asignar-matriz-preguntas-form/asignar-matriz-preguntas-form.component'
 import { MessageService } from 'primeng/api'
@@ -28,11 +28,13 @@ import { ApiEreService } from '../../services/api-ere.service'
 import dayjs from 'dayjs'
 import { FloatLabelModule } from 'primeng/floatlabel'
 import { Subject, takeUntil } from 'rxjs'
-import { ApiEvaluacionesService } from '../../services/api-evaluaciones.service'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
+import { ApiEvaluacionesRService } from '../../services/api-evaluaciones-r.service'
+import { ApiEvaluacionesService } from '../../services/api-evaluaciones.service'
+import { ActivatedRoute } from '@angular/router'
 
 @Component({
-    selector: 'app-banco-preguntas',
+    selector: 'app-ere-preguntas',
     templateUrl: './banco-preguntas.component.html',
     providers: [provideIcons({ matGroupWork }), DialogService, MessageService],
     standalone: true,
@@ -53,9 +55,17 @@ import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmatio
 export class BancoPreguntasComponent implements OnInit, OnDestroy {
     private _dialogService = inject(DialogService)
     private _apiEre = inject(ApiEreService)
+    private _apiEvaluacionesR = inject(ApiEvaluacionesRService)
     private _apiEvaluaciones = inject(ApiEvaluacionesService)
     private _confirmationModalService = inject(ConfirmationModalService)
+    private _route = inject(ActivatedRoute)
     private unsubscribe$: Subject<boolean> = new Subject()
+    public area = {
+        nombreCurso: '',
+        grado: '',
+        seccion: '',
+        nivel: '',
+    }
 
     public competencias = []
     public capacidades = []
@@ -119,9 +129,17 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             field: 'cPregunta',
             header: 'Pregunta',
             type: 'p-editor',
-            width: '5rem',
+            width: '15rem',
             text: 'left',
             text_header: 'Pregunta',
+        },
+        {
+            field: 'cEncabPregTitulo',
+            header: 'Encabezado',
+            type: 'text',
+            width: '5rem',
+            text: 'left',
+            text_header: 'Encabezado',
         },
         {
             field: 'cTipoPregDescripcion',
@@ -215,8 +233,20 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
     constructor() {}
 
     ngOnInit() {
+        this.getParamsByUrl()
         this.initializeData()
         this.fetchInitialData()
+    }
+
+    getParamsByUrl() {
+        this._route.queryParams.subscribe((params) => {
+            this.area = {
+                nombreCurso: params['nombreCurso'],
+                grado: params['grado'] ?? '',
+                seccion: params['seccion'] ?? '',
+                nivel: params['nivel'] ?? '',
+            }
+        })
     }
     fetchInitialData() {
         this.obtenerBancoPreguntas()
@@ -278,17 +308,25 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             .subscribe({
                 next: (resp: unknown) => {
                     resp['data'] = resp['data'].map((item) => {
-                        const time = dayjs(item.dtPreguntaTiempo)
-                        const hours = time.get('hour')
-                        const minutes = time.get('minute')
-                        const seconds = time.get('second')
-                        item.time = `${hours}h ${minutes}m ${seconds}s`
-                        item.bPreguntaEstado = parseInt(
-                            item.bPreguntaEstado,
-                            10
-                        )
+                        if (item.preguntas != null) {
+                            item.preguntas = item.preguntas.map((subItem) => {
+                                const time = dayjs(subItem.dtPreguntaTiempo)
+                                const hours = time.get('hour')
+                                const minutes = time.get('minute')
+                                const seconds = time.get('second')
+                                subItem.time = `${hours}h ${minutes}m ${seconds}s`
+                                return subItem
+                            })
+                        } else {
+                            const time = dayjs(item.dtPreguntaTiempo)
+                            const hours = time.get('hour')
+                            const minutes = time.get('minute')
+                            const seconds = time.get('second')
+                            item.time = `${hours}h ${minutes}m ${seconds}s`
+                        }
                         return item
                     })
+
                     this.data = resp['data']
                 },
             })
@@ -300,12 +338,16 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
                 next: (resp: unknown) => {
+                    const data = resp['data'].map((item) => {
+                        item.iTipoPregId = parseInt(item.iTipoPregId, 10)
+                        return item
+                    })
                     this.tipoPreguntas = [
                         {
                             iTipoPregId: 0,
                             cTipoPregDescripcion: 'Todos',
                         },
-                        ...resp['data'],
+                        ...data,
                     ]
                 },
             })
@@ -348,6 +390,8 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
         if (action.accion === 'agregar') {
             this.agregarEditarPregunta({
                 iPreguntaId: 0,
+                preguntas: [],
+                iEncabPregId: -1,
             })
         }
         if (action.accion === 'asignar') {
@@ -366,12 +410,25 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             })
             return
         }
-        const ids = this.selectedItems.map((item) => item.iPreguntaId).join(',')
+
+        let preguntas = []
+
+        console.log(this.selectedItems)
+
+        this.selectedItems.forEach((item) => {
+            if (item.iEncabPregId == -1) {
+                preguntas = [...preguntas, item]
+            } else {
+                preguntas = [...preguntas, ...item.preguntas]
+            }
+        })
+
+        const ids = preguntas.map((item) => item.iPreguntaId).join(',')
         const params = {
             iCursoId: this.params.iCursoId,
             ids,
         }
-        this._apiEvaluaciones.generarWordByPreguntasIds(params)
+        this._apiEvaluacionesR.generarWordByPreguntasIds(params)
     }
 
     accionBtnItemTable({ accion, item }) {
@@ -390,16 +447,19 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
     }
 
     eliminarPregunta(item) {
+        let ids = item.iPreguntaId
+        if (item.iEncabPregId != -1) {
+            ids = item.preguntas.map((item) => item.iPreguntaId).join(',')
+        }
+
         this._confirmationModalService.openConfirm({
             header: 'Esta seguro de eliminar la alternativa?',
             accept: () => {
-                this._apiEvaluaciones
-                    .eliminarPreguntaById(item.iPreguntaId)
-                    .subscribe({
-                        next: () => {
-                            this.obtenerBancoPreguntas()
-                        },
-                    })
+                this._apiEvaluacionesR.eliminarPreguntaById(ids).subscribe({
+                    next: () => {
+                        this.obtenerBancoPreguntas()
+                    },
+                })
             },
             reject: () => {},
         })
@@ -442,7 +502,7 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
                 iCursoId: this.params.iCursoId,
             },
             header:
-                pregunta?.iPreguntaId == 0
+                pregunta.iPreguntaId == 0
                     ? 'Nueva pregunta'
                     : 'Editar pregunta',
         })

@@ -36,6 +36,7 @@ export class AreasComponent {
             seccion: 'A',
             grado: '1°',
             totalEstudiantes: 20,
+            nivel: 'Primaria',
         },
         {
             id: 1,
@@ -44,6 +45,7 @@ export class AreasComponent {
             seccion: 'A',
             grado: '2°',
             totalEstudiantes: 2,
+            nivel: 'Primaria',
         },
         {
             id: 2,
@@ -52,6 +54,7 @@ export class AreasComponent {
             seccion: 'B',
             grado: '2°',
             totalEstudiantes: 2,
+            nivel: 'Primaria',
         },
     ]
     public sortField: string = ''

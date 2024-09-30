@@ -226,7 +226,9 @@
                         </div>
                     }
                     @case (4) {
-                        <app-evaluacion></app-evaluacion>
+                        <app-evaluacion
+                            [iSilaboId]="this.dataSilabo.value.iSilaboId"
+                        ></app-evaluacion>
                         <div class="flex pt-4 justify-content-between">
                             <p-button
                                 (onClick)="prevCallback.emit()"
@@ -243,7 +245,9 @@
                         </div>
                     }
                     @case (5) {
-                        <app-bibliografia></app-bibliografia>
+                        <app-bibliografia
+                            [iSilaboId]="this.dataSilabo.value.iSilaboId"
+                        ></app-bibliografia>
                         <div class="flex pt-4 justify-content-start">
                             <p-button
                                 (onClick)="prevCallback.emit()"

@@ -104,7 +104,7 @@
                         ></p-tableRadioButton>
                     }
                     @if (col.type === 'actions') {
-                        <div class="d-block text-center">
+                        <div [style.text-align]="col.text">
                             @for (item of actions; track $index) {
                                 @if (
                                     item.type === 'item' && item.isVisible
@@ -120,7 +120,7 @@
                                         (click)="
                                             accionBtn(item.accion, rowData)
                                         "
-                                        class="w-auto p-1"
+                                        class="p-1"
                                         [ngClass]="item.class"
                                     >
                                         @if (item.icon | isIconType) {
@@ -140,10 +140,10 @@
                     @if (col.type === 'estado') {
                         <p-tag
                             [severity]="
-                                rowData[col.field] === 1 ? 'success' : 'danger'
+                                rowData[col.field] ? 'success' : 'danger'
                             "
                             [value]="
-                                rowData[col.field] === 1
+                                rowData[col.field]
                                     ? col.customFalsy?.trueText
                                     : col.customFalsy?.falseText
                             "

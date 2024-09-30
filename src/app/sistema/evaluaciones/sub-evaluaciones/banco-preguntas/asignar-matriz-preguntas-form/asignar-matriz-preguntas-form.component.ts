@@ -99,7 +99,7 @@ export class AsignarMatrizPreguntasFormComponent implements OnInit {
         {
             field: 'cPregunta',
             header: 'Pregunta',
-            type: 'text',
+            type: 'p-editor',
             width: '5rem',
             text: 'left',
             text_header: 'Pregunta',
@@ -142,7 +142,15 @@ export class AsignarMatrizPreguntasFormComponent implements OnInit {
                 cCompetenciaDescripcion: 'Desempeño 1',
             },
         ]
-        this.preguntas = this._config.data.preguntas
+        const preguntas = this._config.data.preguntas
+
+        preguntas.forEach((item) => {
+            if (item.iEncabPregId == -1) {
+                this.preguntas = [...this.preguntas, item]
+            } else {
+                this.preguntas = [...this.preguntas, ...item.preguntas]
+            }
+        })
         this.desempenos = this._config.data.desempenos
 
         let iDesempenoId = 0

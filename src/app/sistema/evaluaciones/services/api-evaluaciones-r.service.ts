@@ -17,17 +17,11 @@ export class ApiEvaluacionesRService {
             { params }
         )
     }
-
     obtenerUgeles(params) {
         return this.http.get(`${this.baseUrl}/ere/Ugeles/obtenerUgeles`, {
             params,
         })
     }
-
-    obtenerIE(params) {
-        return this.http.get(`${this.baseUrl}/ere/ie/obtenerIE`, { params })
-    }
-
     obtenerNivelTipo(params) {
         return this.http.get(`${this.baseUrl}/ere/nivelTipo/obtenerNivelTipo`, {
             params,

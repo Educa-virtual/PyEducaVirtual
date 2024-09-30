@@ -1,14 +1,14 @@
 import { CommonModule } from '@angular/common'
-import { Component, OnInit } from '@angular/core'
+import { Component, inject, OnInit } from '@angular/core'
 import { MenuItem } from 'primeng/api'
 import { BreadcrumbModule } from 'primeng/breadcrumb'
 import { TabMenuModule } from 'primeng/tabmenu'
 import { TabViewModule } from 'primeng/tabview'
 import { CursoDetalleNavigationComponent } from './curso-detalle-navigation/curso-detalle-navigation.component'
-import { RouterOutlet } from '@angular/router'
+import { ActivatedRoute, Params, Router, RouterOutlet } from '@angular/router'
 import { PanelModule } from 'primeng/panel'
 import { TabContenidoComponent } from './tabs/tab-contenido/tab-contenido.component'
-import { TabsKeys } from './tabs/tab.interface'
+import { isValidTabKey, TabsKeys } from './tabs/tab.interface'
 import { TabEstudiantesComponent } from './tabs/tab-estudiantes/tab-estudiantes.component'
 import { TabInicioComponent } from './tabs/tab-inicio/tab-inicio.component'
 import { TabEvaluacionesComponent } from './tabs/tab-evaluaciones/tab-evaluaciones.component'
@@ -41,8 +41,11 @@ import { AulaBancoPreguntasComponent } from '../../aula-banco-preguntas/aula-ban
     styleUrl: './curso-detalle.component.scss',
 })
 export class CursoDetalleComponent implements OnInit {
+    private _activatedRoute = inject(ActivatedRoute)
+    private _router = inject(Router)
+
     curso: ICurso | undefined
-    tab: TabsKeys = 'inicio'
+    tab: TabsKeys
 
     items: MenuItem[] | undefined
 
@@ -53,6 +56,7 @@ export class CursoDetalleComponent implements OnInit {
     public estudiantes: IEstudiante[] = []
 
     ngOnInit() {
+        this.listenParams()
         this.curso = {
             id: 1,
             nombre: 'Matemática I',
@@ -84,8 +88,25 @@ export class CursoDetalleComponent implements OnInit {
             },
         ]
     }
+    listenParams() {
+        const tab = this._activatedRoute.snapshot.queryParams['tab']
+        if (isValidTabKey(tab)) {
+            this.updateTab(tab)
+        }
+    }
+
+    setNewTabQueryParam(tab: TabsKeys) {
+        const queryParams: Params = { tab: tab }
+
+        this._router.navigate([], {
+            relativeTo: this._activatedRoute,
+            queryParams,
+            queryParamsHandling: 'merge',
+        })
+    }
 
     updateTab(tab: TabsKeys) {
         this.tab = tab
+        this.setNewTabQueryParam(this.tab)
     }
 }

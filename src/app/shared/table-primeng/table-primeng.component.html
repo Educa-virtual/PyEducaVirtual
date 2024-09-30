@@ -23,10 +23,11 @@
                 class="flex justify-content-between gap-2 flex-column sm:flex-row flex-wrap"
             >
                 <p-iconField iconPosition="left">
-                    <p-inputIcon styleClass="pi pi-search" />
+                    <p-inputIcon styleClass="pi pi-search text-md" />
                     <input
                         pInputText
                         type="text"
+                        class="py-2"
                         (input)="dt.filterGlobal($event.target, 'contains')"
                         placeholder="Buscar palabra clave"
                     />

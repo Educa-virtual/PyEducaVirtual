@@ -424,8 +424,6 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
     }
 
     patchForm(pregunta) {
-        console.log(pregunta)
-
         if (pregunta?.iEncabPregId == '-1' || pregunta.iPreguntaId == 0) {
             pregunta.encabezadoSelected = {
                 iEncabPregId: -1,
@@ -440,12 +438,6 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
         }
         this.bancoPreguntasForm.get('0').patchValue(pregunta)
         this.bancoPreguntasForm.get('1').patchValue(pregunta)
-        // if (
-        //     pregunta.iEncabPregId &&
-        //     parseInt(pregunta.iEncabPregId, 10) !== 0
-        // ) {
-        //     this.bancoPreguntasForm.get('0.bConEncabezado').setValue(true)
-        // }
     }
 
     // escuchar cambio de tipo de preguntas y activar validaciones de las alternativas
@@ -491,8 +483,8 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
 
     agregarPreguntaForm() {
         this.changeIndexBancoForm(1)
-        this.toggleValidationInformacionPregunta(true)
         // agregar validaciones
+        this.toggleValidationInformacionPregunta(true)
     }
 
     accionPreguntaTable({ accion, item }) {
@@ -560,6 +552,7 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
         this.actualizarPreguntas(preguntaForm)
         this.changeIndexBancoForm(0)
         this.bancoPreguntasForm.get('1').reset(preguntaFormInfoDefaultValues)
+        this.toggleValidationInformacionPregunta(false)
     }
 
     closeModal(data) {

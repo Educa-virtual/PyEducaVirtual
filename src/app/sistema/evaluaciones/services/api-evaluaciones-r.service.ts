@@ -1,7 +1,6 @@
 import { inject, Injectable } from '@angular/core'
 import { environment } from '@/environments/environment.template'
 import { HttpClient } from '@angular/common/http'
-import { map } from 'rxjs'
 
 @Injectable({
     providedIn: 'root',
@@ -88,21 +87,9 @@ export class ApiEvaluacionesRService {
     }
 
     obtenerAlternativaByPreguntaId(id) {
-        return this.http
-            .get(
-                `${this.baseUrl}/ere/alternativas/obtenerAlternativaByPreguntaId/${id}`
-            )
-            .pipe(
-                map((resp: unknown) => {
-                    resp['data'].map((item) => {
-                        item.bAlternativaCorrecta = parseInt(
-                            item.bAlternativaCorrecta,
-                            10
-                        )
-                    })
-                    return resp
-                })
-            )
+        return this.http.get(
+            `${this.baseUrl}/ere/alternativas/obtenerAlternativaByPreguntaId/${id}`
+        )
     }
 
     // encabezados preguntas

@@ -4,157 +4,108 @@
         [(activeIndex)]="activeIndex"
         [readonly]="mode === 'CREAR'"
     ></p-steps>
+
     @switch (activeIndex) {
         @case (0) {
             <form [formGroup]="bancoPreguntasForm">
-                <ng-container formGroupName="0">
-                    <div class="grid mb-4">
-                        <div class="col-12">
-                            <h2 class="text-xl">Formulario Encabezado</h2>
-                        </div>
-                        <div class="col-12 flex justify-content-end">
-                            <div class="flex gap-2 align-items-center">
-                                <span>Sin Encabezado.</span>
-                                <p-inputSwitch
-                                    formControlName="bConEncabezado"
-                                    (onChange)="
-                                        toggleValidationCabecera($event)
-                                    "
-                                />
-                                Con Encabezado.
-                            </div>
-                        </div>
-                    </div>
-                    @if (bancoPreguntasForm.get('0.bConEncabezado')?.value) {
-                        <div class="grid">
-                            <div class="col-12">
-                                <app-encabezados-preguntas
-                                    [encabezados]="encabezados"
-                                    [encabezado]="encabezadoSelected"
-                                    (encabezadoChange)="setEncabezado($event)"
-                                />
-                            </div>
-                        </div>
-                    }
-                </ng-container>
+                <app-banco-pregunta-encabezado-form
+                    [controlKey]="'0'"
+                    [encabezados]="encabezados"
+                />
             </form>
         }
         @case (1) {
-            <form [formGroup]="bancoPreguntasForm">
-                <ng-container formGroupName="1">
-                    <div class="formgrid grid">
-                        <div class="field flex flex-column col-12 md:col-6">
-                            <label for="tipo-pregunta">Tipo pregunta</label>
-                            <p-dropdown
-                                styleClass="w-full"
-                                optionValue="iTipoPregId"
-                                formControlName="iTipoPregId"
-                                [options]="tipoPreguntas"
-                                optionLabel="cTipoPregDescripcion"
-                                [styleClass]="
-                                    bancoPreguntasForm.get('1.iTipoPregId')
-                                        ?.invalid &&
-                                    bancoPreguntasForm.get('1.iTipoPregId')
-                                        ?.touched
-                                        ? 'w-full ng-dirty ng-invalid p-invalid'
-                                        : 'w-full'
-                                "
-                            />
-                            @if (
-                                bancoPreguntasForm
-                                    .get('1.iTipoPregId')
-                                    .hasError('required') &&
-                                bancoPreguntasForm.get('1.iTipoPregId')?.touched
-                            ) {
-                                <small class="text-red-500">
-                                    Este campo es requerido
-                                </small>
-                            }
-                        </div>
-                        <div class="field col-12 md:col-6">
-                            <app-common-input
-                                type="number"
-                                [label]="'Nivel'"
-                                [controlKey]="'iPreguntaNivel'"
-                            />
-                        </div>
-                        <div class="field col-12 md:col-6">
-                            <app-common-input
-                                type="number"
-                                [label]="'Peso'"
-                                [controlKey]="'iPreguntaPeso'"
-                            />
-                        </div>
-                        <div class="field col-12 md:col-6">
-                            <app-common-input
-                                [label]="'Pregunta Clave'"
-                                [controlKey]="'cPreguntaClave'"
-                            />
-                        </div>
-                    </div>
-                    <h2 class="text-xl m-0 mb-2">Tiempo para responder</h2>
-                    <div class="formgrid grid">
-                        <div class="field col-12 md:col">
-                            <app-common-input
-                                type="number"
-                                [label]="'Horas'"
-                                [controlKey]="'iHoras'"
-                            />
-                        </div>
-                        <div class="field col-12 md:col">
-                            <app-common-input
-                                type="number"
-                                [label]="'Minutos'"
-                                [controlKey]="'iMinutos'"
-                            />
-                        </div>
-                        <div class="field col-12 md:col">
-                            <app-common-input
-                                type="number"
-                                [label]="'Segundos'"
-                                [controlKey]="'iSegundos'"
-                            />
-                        </div>
-                    </div>
-                    <div class="formgrid grid">
-                        <div class="field col">
-                            <label for="firstname2"
-                                >Enunciado de la pregunta</label
-                            >
-                            <p-editor
-                                [formControlName]="'cPregunta'"
-                                [style]="{ height: '320px' }"
-                            />
-                            @if (
-                                bancoPreguntasForm
-                                    .get('1.cPregunta')
-                                    .hasError('required') &&
-                                bancoPreguntasForm.get('1.cPregunta')?.touched
-                            ) {
-                                <small class="text-red-500">
-                                    Este campo es requerido
-                                </small>
-                            }
-                        </div>
-                    </div>
-                    <div class="formgrid grid">
-                        <div class="field col">
-                            <label for="firstname2">Texto ayuda</label>
-                            <p-editor
-                                [modules]="customOptions"
-                                formControlName="cPreguntaTextoAyuda"
-                                [style]="{ height: '320px' }"
-                            />
-                        </div>
-                    </div>
-                </ng-container>
-            </form>
+            <div class="grid mb-2">
+                <div
+                    class="col-12 flex justify-content-between flex-wrap gap-2"
+                >
+                    <h2 class="text-xl">Formulario Preguntas</h2>
+                    @if (!esSinEncabezado) {
+                        <button
+                            pButton
+                            pRipple
+                            label="Agregar Alternativa"
+                            icon="pi pi-plus"
+                            size="small"
+                            class="p-button-primary"
+                            (click)="agregarPreguntaForm()"
+                        ></button>
+                    }
+                </div>
+            </div>
+            @switch (bancoPreguntaActiveIndex) {
+                @case (0) {
+                    @if (esSinEncabezado) {
+                        <form [formGroup]="bancoPreguntasForm">
+                            <app-banco-pregunta-informacion-form
+                                [tipoPreguntas]="tipoPreguntas"
+                                [controlKey]="'1'"
+                            ></app-banco-pregunta-informacion-form>
+                        </form>
+                    } @else {
+                        <app-banco-pregunta-form-list
+                            [preguntas]="preguntas"
+                            (accionBtnItemTableChange)="
+                                accionPreguntaTable($event)
+                            "
+                        ></app-banco-pregunta-form-list>
+                    }
+                }
+                <!-- formulario info pregunta -->
+                @case (1) {
+                    <form [formGroup]="bancoPreguntasForm">
+                        <app-banco-pregunta-informacion-form
+                            [tipoPreguntas]="tipoPreguntas"
+                            [controlKey]="'1'"
+                        ></app-banco-pregunta-informacion-form>
+                    </form>
+                    <footer class="flex justify-content-end gap-2 pt-3">
+                        <button
+                            pButton
+                            pRipple
+                            label="Cancelar"
+                            icon="pi pi-times"
+                            class="p-button-secondary"
+                            type="button"
+                            size="small"
+                            (click)="
+                                changeIndexBancoForm(0);
+                                toggleValidationInformacionPregunta(false)
+                            "
+                        ></button>
+                        <button
+                            pButton
+                            pRipple
+                            label="Guardar"
+                            icon="pi pi-save"
+                            size="small"
+                            type="button"
+                            class="p-button-primary"
+                            (click)="guardarActualizarPreguntaForm()"
+                        ></button>
+                    </footer>
+                }
+                @default {}
+            }
         }
+        <!-- formulario alternativas 1 pregunta -->
         @case (2) {
+            <div class="grid">
+                <div class="col-12">
+                    <h2 class="text-lg">Alternativas de la pregunta:</h2>
+                    <div [innerHTML]="preguntaSelected?.cPregunta"></div>
+                </div>
+            </div>
+
             <app-alternativas
-                [alternativas]="alternativas"
-                [pregunta]="pregunta"
+                [alternativas]="preguntaSelected?.alternativas ?? []"
+                [pregunta]="
+                    formMode === 'SUB-PREGUNTAS' ? preguntaSelected : pregunta
+                "
                 (alternativasChange)="alternativasChange($event)"
+                (alternativasEliminadasChange)="
+                    setAlternativasEliminadas($event)
+                "
                 [serviceProvider]="evaluacionesService"
             ></app-alternativas>
             @if (
@@ -177,7 +128,7 @@
         @if (activeIndex !== 0) {
             <button pButton size="small" (click)="goStep('back')">Atrás</button>
         }
-        @if (activeIndex !== 2) {
+        @if (activeIndex !== pasos.length - 1) {
             <button
                 pButton
                 size="small"
@@ -187,7 +138,7 @@
                 Siguiente
             </button>
         }
-        @if (activeIndex === 2) {
+        @if (activeIndex === pasos.length - 1) {
             <button
                 pButton
                 pRipple

@@ -15,7 +15,12 @@ import { ApiEvaluacionesRService } from '../../../services/api-evaluaciones-r.se
 @Component({
     selector: 'app-encabezados-preguntas',
     standalone: true,
-    imports: [CommonModule, TablePrimengComponent, ButtonModule],
+    imports: [
+        CommonModule,
+        TablePrimengComponent,
+        ButtonModule,
+        EncabezadoFormComponent,
+    ],
     templateUrl: './encabezados-preguntas.component.html',
     styleUrl: './encabezados-preguntas.component.scss',
 })

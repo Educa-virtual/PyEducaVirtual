@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common'
-import { Component, inject, OnInit } from '@angular/core'
+import { Component, inject, Input, OnInit } from '@angular/core'
 import { CommonInputComponent } from '../../../../../../shared/components/common-input/common-input.component'
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
 import { EditorModule } from 'primeng/editor'
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog'
 import { ButtonModule } from 'primeng/button'
 import { ApiEvaluacionesRService } from '@/app/sistema/evaluaciones/services/api-evaluaciones-r.service'
+import { AutoCompleteModule } from 'primeng/autocomplete'
 
 @Component({
     selector: 'app-encabezado-form',
@@ -16,11 +17,14 @@ import { ApiEvaluacionesRService } from '@/app/sistema/evaluaciones/services/api
         ReactiveFormsModule,
         EditorModule,
         ButtonModule,
+        AutoCompleteModule,
     ],
     templateUrl: './encabezado-form.component.html',
     styleUrl: './encabezado-form.component.scss',
 })
 export class EncabezadoFormComponent implements OnInit {
+    @Input() encabezados = []
+    encabezadosFiltered = this.encabezados
     private _fb = inject(FormBuilder)
     private _ref = inject(DynamicDialogRef)
     private _evaluacionesService = inject(ApiEvaluacionesRService)
@@ -64,5 +68,9 @@ export class EncabezadoFormComponent implements OnInit {
                 this.closeModal(data)
             },
         })
+    }
+
+    search(event) {
+        console.log(event)
     }
 }

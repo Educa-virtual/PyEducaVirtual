@@ -1,4 +1,11 @@
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core'
+import {
+    Component,
+    EventEmitter,
+    inject,
+    Input,
+    Output,
+    OnChanges,
+} from '@angular/core'
 import { ButtonModule } from 'primeng/button'
 import { TableModule } from 'primeng/table'
 import { CommonModule } from '@angular/common'
@@ -21,8 +28,10 @@ import { ConfirmationService } from 'primeng/api'
     styleUrl: './alternativas.component.scss',
     providers: [DialogService],
 })
-export class AlternativasComponent {
+export class AlternativasComponent implements OnChanges {
     @Input() alternativas = []
+    alternativasEliminadas = []
+    @Output() alternativasEliminadasChange = new EventEmitter()
     @Output() alternativasChange = new EventEmitter()
     @Input() pregunta
     private _dialogService = inject(DialogService)
@@ -78,6 +87,11 @@ export class AlternativasComponent {
         },
     ]
 
+    ngOnChanges(changes): void {
+        this.alternativas = changes.alternativas.currentValue
+        console.log(changes)
+    }
+
     public accionesTabla: IActionTable[] = [
         {
             labelTooltip: 'Editar',
@@ -114,42 +128,46 @@ export class AlternativasComponent {
                 result.bAlternativaCorrecta = result.bAlternativaCorrecta
                     ? 1
                     : 0
-                const existeAlternativa = this.alternativas.some((x) => {
-                    console.log(x.iAlternativaId, result.iAlternativaId)
-
-                    return x.iAlternativaId == result.iAlternativaId
-                })
-
-                // si existe actualizar alternativa
-                if (existeAlternativa) {
-                    const index = this.alternativas.findIndex(
-                        (x) => x.iAlternativaId == result.iAlternativaId
-                    )
-                    this.alternativas[index] = result
-                    this.alternativasChange.emit(this.alternativas)
-                } else {
-                    this.alternativas.push(result)
-                    this.alternativasChange.emit(this.alternativas)
-                }
+                this.actualizarAlternativas(result)
             }
         })
+    }
+
+    actualizarAlternativas(alternativa) {
+        const existeAlternativa = this.alternativas.some((x) => {
+            return x.iAlternativaId == alternativa.iAlternativaId
+        })
+
+        // si existe actualizar alternativa
+        if (existeAlternativa) {
+            const index = this.alternativas.findIndex(
+                (x) => x.iAlternativaId == alternativa.iAlternativaId
+            )
+            this.alternativas[index] = alternativa
+        } else {
+            this.alternativas.push(alternativa)
+        }
+        this.alternativasChange.emit(this.alternativas)
     }
 
     eliminarAlternativa(alternativa) {
         this._confirmationModalService.openConfirm({
             header: 'Esta seguro de eliminar la alternativa?',
             accept: () => {
-                if (alternativa.isLocal) {
-                    this.eliminarAlternativaLocal(alternativa)
-                    return
+                this.eliminarAlternativaLocal(alternativa)
+                if (!alternativa.isLocal) {
+                    this.alternativasEliminadas.push(alternativa)
                 }
-                this.serviceProvider
-                    .eliminarAlternativaById(alternativa.iAlternativaId)
-                    .subscribe({
-                        next: () => {
-                            this.eliminarAlternativaLocal(alternativa)
-                        },
-                    })
+                this.alternativasEliminadasChange.emit(
+                    this.alternativasEliminadas
+                )
+                // this.serviceProvider
+                //     .eliminarAlternativaById(alternativa.iAlternativaId)
+                //     .subscribe({
+                //         next: () => {
+                //             this.eliminarAlternativaLocal(alternativa)
+                //         },
+                //     })
             },
             reject: () => {},
         })

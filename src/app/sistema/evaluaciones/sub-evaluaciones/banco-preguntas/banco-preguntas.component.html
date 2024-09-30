@@ -1,5 +1,14 @@
 <app-container-page
-    [title]="'Banco de Preguntas - Primaria Matemáticas 1°'"
+    [title]="
+        'Banco de Preguntas - ' +
+        area.nivel +
+        ' ' +
+        area.nombreCurso +
+        ' ' +
+        area.grado +
+        '' +
+        area.seccion
+    "
     [actions]="accionesPrincipal"
     (accionBtnItem)="accionBtnItem($event)"
 >

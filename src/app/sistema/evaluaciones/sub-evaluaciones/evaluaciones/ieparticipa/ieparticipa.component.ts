@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef, inject } from '@angular/core'
+import { Component, ChangeDetectorRef, inject, OnInit } from '@angular/core'
 /*import { Product } from '@domain/product';
 import { ProductService } from '@service/productservice';*/
 import { Product } from 'src/app/demo/api/product'
@@ -24,6 +24,10 @@ interface NivelTipo {
     cNivelTipoNombre: string
     iNivelTipoId: string
 }
+interface Ugeles {
+    cUgelNombre: string
+    iUgelId: string
+}
 
 @Component({
     selector: 'app-ieparticipa',
@@ -41,7 +45,7 @@ interface NivelTipo {
     styleUrl: './ieparticipa.component.scss',
     providers: [ProductService],
 })
-export class IeparticipaComponent {
+export class IeparticipaComponent implements OnInit {
     private unsubscribe$: Subject<boolean> = new Subject()
     public params = {
         iCompentenciaId: 0,
@@ -58,6 +62,9 @@ export class IeparticipaComponent {
 
     nivelTipo: NivelTipo[] | undefined
     selectedNivelTipo: NivelTipo | undefined
+
+    Ugeles: Ugeles[] | undefined
+    selectedUgeles: Ugeles | undefined
 
     constructor(
         private carService: ProductService,

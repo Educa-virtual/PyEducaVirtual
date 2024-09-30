@@ -22,7 +22,6 @@ import { getAlternativaValidation } from '../alternativas/get-alternativa-valida
 import Quill from 'quill'
 import { AutoCompleteModule } from 'primeng/autocomplete'
 import { Subject, takeUntil } from 'rxjs'
-import { EncabezadosPreguntasComponent } from '../encabezados-preguntas/encabezados-preguntas.component'
 import { ApiEvaluacionesRService } from '../../../services/api-evaluaciones-r.service'
 import { BancoPreguntaInformacionFormComponent } from './banco-pregunta-informacion-form/banco-pregunta-informacion-form.component'
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
@@ -70,7 +69,6 @@ const alternativasLabel = {
         CommonInputComponent,
         StepsModule,
         AutoCompleteModule,
-        EncabezadosPreguntasComponent,
         BancoPreguntaInformacionFormComponent,
         TablePrimengComponent,
         BancoPreguntaFormListComponent,
@@ -185,8 +183,6 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
                 // this.obtenerAlternativas()
             }
         }
-        this.obtenerEncabezados()
-
         this.obtenerEncabezados()
 
         this.bancoPreguntasForm

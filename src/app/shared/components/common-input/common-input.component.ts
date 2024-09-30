@@ -29,7 +29,6 @@ export class CommonInputComponent implements OnInit {
 
     ngOnInit(): void {
         this.parentFormGroup.get(this.controlKey).hasError('required')
-        console.log(this._parentContainer.control.get(this.controlKey))
     }
 
     get parentFormGroup() {
@@ -40,6 +39,12 @@ export class CommonInputComponent implements OnInit {
         const control = this._parentContainer.control.get(this.controlKey)
         if (control.hasError('required')) {
             return 'Este campo es requerido'
+        }
+        if (control.hasError('minlength')) {
+            return `Mínimo ${control.getError('minlength')?.requiredLength} caracteres`
+        }
+        if (control.hasError('maxlength')) {
+            return `Máximo ${control.getError('maxlength')?.requiredLength} caracteres`
         }
         return null
     }

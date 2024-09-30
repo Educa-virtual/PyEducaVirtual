@@ -4,18 +4,12 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner'
 import { GlobalLoaderServiceService } from './global-loader-service/global-loader-service.service'
 import { Observable } from 'rxjs'
 import { AsyncPipe } from '@angular/common'
-// import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { trigger, state, style, transition, animate } from '@angular/animations'
 
 @Component({
     selector: 'app-global-loader',
     standalone: true,
-    imports: [
-        ProgressSpinnerModule,
-        DialogModule,
-        AsyncPipe,
-        // BrowserAnimationsModule,
-    ],
+    imports: [ProgressSpinnerModule, DialogModule, AsyncPipe],
     templateUrl: './global-loader.component.html',
     styleUrl: './global-loader.component.scss',
     animations: [

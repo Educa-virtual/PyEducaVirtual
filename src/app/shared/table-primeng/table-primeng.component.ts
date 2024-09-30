@@ -8,6 +8,10 @@ import {
     OnInit,
 } from '@angular/core'
 import { TableColumnFilterComponent } from './table-column-filter/table-column-filter.component'
+import { IIcon } from '../icon/icon.interface'
+import { IconComponent } from '../icon/icon.component'
+import { isIIcon } from '../utils/is-icon-object'
+import { IsIconTypePipe } from '../pipes/is-icon-type.pipe'
 
 export interface IColumn {
     type: string
@@ -16,6 +20,19 @@ export interface IColumn {
     header: string
     text_header: string
     text: string
+    customFalsy?: {
+        trueText: string
+        falseText: string
+    }
+}
+
+export interface IActionTable {
+    labelTooltip: string
+    icon: string | IIcon
+    accion: string
+    type: string
+    class: string
+    isVisible?: (row) => boolean
 }
 
 @Component({
@@ -23,19 +40,30 @@ export interface IColumn {
     templateUrl: './table-primeng.component.html',
     styleUrls: ['./table-primeng.component.scss'],
     standalone: true,
-    imports: [PrimengModule, TableColumnFilterComponent],
+    imports: [
+        PrimengModule,
+        TableColumnFilterComponent,
+        IconComponent,
+        IsIconTypePipe,
+    ],
 })
 export class TablePrimengComponent implements OnChanges, OnInit {
     @Output() accionBtnItem = new EventEmitter()
-    @Output() selectedItems = new EventEmitter()
+    @Output() selectedRowDataChange = new EventEmitter()
 
     @Input() showCaption: boolean = true
     @Input() showPaginator: boolean = true
+
+    @Input() selectedRowData
+    @Input() scrollable: boolean = false
+    @Input() scrollHeight: string = ''
 
     @Input() data = []
     @Input() tableStyle: {
         [klass: string]: unknown
     } = { 'min-width': '50rem' }
+
+    public isIIcon = isIIcon
 
     private _columnas: IColumn[] = [
         {
@@ -70,6 +98,14 @@ export class TablePrimengComponent implements OnChanges, OnInit {
             text_header: 'center',
             text: 'center',
         },
+        {
+            type: 'p-editor',
+            width: 'auto',
+            field: 'cEditor',
+            header: 'Descripcion',
+            text_header: 'left',
+            text: 'left',
+        },
     ]
 
     @Input()
@@ -84,7 +120,7 @@ export class TablePrimengComponent implements OnChanges, OnInit {
         return this._columnas
     }
 
-    @Input() actions = [
+    @Input() actions: IActionTable[] = [
         {
             labelTooltip: 'Agregar',
             icon: 'pi pi-plus',
@@ -104,6 +140,7 @@ export class TablePrimengComponent implements OnChanges, OnInit {
             icon: 'pi pi-plus',
             accion: 'editar',
             type: 'item',
+            isVisible: () => true,
             class: 'p-button-rounded p-button-success p-button-text',
         },
     ]
@@ -158,8 +195,13 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     }
 
     ngOnChanges(changes) {
-        const { currentValue } = changes.data
-        this.data = currentValue
+        if (changes.data?.currentValue) {
+            this.data = changes.data.currentValue
+        }
+
+        if (changes.selectedRowData?.currentValue) {
+            this.selectedRowData = changes.selectedRowData.currentValue
+        }
     }
 
     accionBtn(accion, item) {
@@ -172,10 +214,10 @@ export class TablePrimengComponent implements OnChanges, OnInit {
 
     onColumnSelected(columns) {
         this.columnasSeleccionadas = columns
-        console.log(this.columnasSeleccionadas)
     }
 
     onSelectionChange(event) {
-        this.selectedItems.emit(event)
+        this.selectedRowData = event
+        this.selectedRowDataChange.emit(event)
     }
 }

@@ -17,6 +17,9 @@ import { DialogModule } from 'primeng/dialog'
 import { ToastModule } from 'primeng/toast'
 import { FormsModule } from '@angular/forms'
 import { InputTextareaModule } from 'primeng/inputtextarea'
+import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
+import { AccordionModule } from 'primeng/accordion'
+import { IActividad } from '@/app/sistema/aula-virtual/interfaces/actividad.interface'
 
 @Component({
     //templateUrl: './01.component.html',
@@ -26,10 +29,11 @@ import { InputTextareaModule } from 'primeng/inputtextarea'
     standalone: true,
     imports: [
         TreeModule,
+        AccordionModule,
         InputTextareaModule,
         ToastModule,
         FormsModule,
-
+        ContainerPageComponent,
         CurrencyPipe,
         DialogModule,
         ButtonModule,
@@ -67,6 +71,41 @@ export class RecursoComponent implements OnInit {
     cols: unknown[] = []
 
     productDialog: boolean = false
+
+    public actividadSelected: IActividad | undefined
+
+    public actividades: IActividad[] = [
+        {
+            id: '1',
+            tipoActividadNombre: 'Tarea',
+            tipoActividad: 1,
+            nombreActividad: 'Actividad I',
+        },
+        {
+            id: '2',
+            tipoActividadNombre: 'Foro',
+            tipoActividad: 2,
+            nombreActividad: 'Foro Debate',
+        },
+        {
+            id: '3',
+            tipoActividadNombre: 'Evaluacion',
+            tipoActividad: 3,
+            nombreActividad: 'Exámen Unidad',
+        },
+        {
+            id: '4',
+            tipoActividadNombre: 'Videoconferencia',
+            tipoActividad: 4,
+            nombreActividad: 'Reunión explicación',
+        },
+        {
+            id: '5',
+            tipoActividadNombre: 'Material',
+            tipoActividad: 5,
+            nombreActividad: 'Glosario',
+        },
+    ]
 
     constructor(private nodeService: NodeService) {}
 

@@ -1,20 +1,71 @@
-<app-container-page
-    title="Lista de Recursos Didácticos"
-    [actions]="actionsContainer"
-    (accionBtnItem)="accionBtnItem($event)"
-></app-container-page>
-<app-table-primeng
-    [showCaption]="false"
-    [showPaginator]="false"
-    [actions]="actions"
-    [data]="data"
-    [columnas]="columns"
-    (accionBtnItem)="accionBtnItem($event)"
-></app-table-primeng>
-
-<app-form-recursos-didacticos
-    [data]="itemRecursos"
-    [showModal]="showModal"
-    [option]="option"
-    (accionBtnItem)="accionBtnItem($event)"
-></app-form-recursos-didacticos>
+<div class="grid card">
+    <p-toolbar class="col-12">
+        <div class="p-toolbar-group-start">
+            <h4 class="text-primary font-bold">
+                LISTA DE MIS RECURSOS DIDÁCTICOS
+            </h4>
+        </div>
+        <div class="p-toolbar-group-end">
+            <span class="p-input-icon-left">
+                <i class="pi pi-search"></i>
+                <input
+                    pInputText
+                    placeholder="Buscar Recurso Didáctico"
+                    style="width: 350px"
+                />
+            </span>
+            <p-button
+                icon="pi pi-sync"
+                pTooltip="Refrescar Áreas de Estudios"
+                tooltipPosition="top"
+                [rounded]="true"
+                [text]="true"
+                severity="danger"
+                (onClick)="getRecursoSilabos()"
+            />
+        </div>
+    </p-toolbar>
+    <!-- <div class="col-12">
+        <p-messages [(value)]="messages" [enableService]="false" />
+    </div> -->
+    <p-table
+        #dt
+        class="col-12 mx-2 hoverTable"
+        [value]="data"
+        paginator="true"
+        [rows]="100"
+        [globalFilterFields]="['cRecDidacticoNombre']"
+    >
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="width: 1rem">#</th>
+                <th style="width: 15rem">Nombre del Recurso Didáctico</th>
+                <th style="width: 20rem; text-align: center">
+                    Descripción del Recurso Didáctico
+                </th>
+                <th style="width: 2rem; text-align: center">Estado</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
+            <tr>
+                <td class="justify-content-center">{{ rowIndex + 1 }}</td>
+                <td class="font-bold">
+                    {{ item.cRecDidacticoNombre }}
+                </td>
+                <td style="text-align: justify">
+                    {{ item.cRecDidacticoDescripcion }}
+                </td>
+                <td style="text-align: justify">
+                    <div class="flex justify-content-center">
+                        <p-checkbox
+                            [binary]="true"
+                            [(ngModel)]="item.iEstado"
+                            (onChange)="updateRecursoSilabos(item)"
+                        >
+                        </p-checkbox>
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>

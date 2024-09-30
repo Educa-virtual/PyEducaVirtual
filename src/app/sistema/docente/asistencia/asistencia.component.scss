@@ -1,0 +1,24 @@
+.toolbar-title {
+    background-color: #117fb3 !important;
+}
+.footer {
+    position: fixed;
+    bottom: 0.5rem;
+}
+.hoverTable {
+    border-collapse: collapse;
+    border: 1px;
+}
+.hoverTable tr th {
+    background-color: var(--primary-color) !important;
+    color: white;
+}
+.hoverTable tr:hover {
+    background-color: #e3f7ff;
+    border-left: 8px solid #4a47e2 !important;
+}
+
+th,
+td {
+    font-size: 0.8rem;
+}

@@ -23,12 +23,11 @@
                     (click)="accionBtn(item.accion, [])"
                     [ngClass]="item.class"
                 >
-                    @if (isIconObject(item.icon)) {
+                    @if (item.icon | isIconType) {
                         <app-icon
                             [name]="item.icon.name"
                             [color]="item.icon.color"
                             [size]="item.icon.size"
-                            [isPrimeIcon]="false"
                         ></app-icon>
                     } @else {
                         <i class="{{ item.icon }}"></i>

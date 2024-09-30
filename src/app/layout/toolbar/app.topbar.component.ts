@@ -100,6 +100,7 @@ export class AppTopBarComponent implements OnInit {
     }
 
     logout(): void {
+        this.store.clear()
         this.tokenStorageService.signOut()
         window.location.reload()
     }

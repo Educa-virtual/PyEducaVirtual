@@ -1,5 +1,5 @@
 <p-button (onClick)="menuColumnFilter.toggle($event)" size="small">
-    <app-icon [isPrimeIcon]="false" name="'matFilterList'" size="xs"></app-icon>
+    <app-icon name="'matFilterList'" size="xs"></app-icon>
 </p-button>
 <p-menu #menuColumnFilter [popup]="true" [model]="columns" appendTo="body">
     <ng-template pTemplate="item" let-item>

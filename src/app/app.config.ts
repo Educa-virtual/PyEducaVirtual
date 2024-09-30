@@ -1,4 +1,8 @@
-import { LocationStrategy, PathLocationStrategy } from '@angular/common'
+import {
+    HashLocationStrategy,
+    LocationStrategy,
+    PathLocationStrategy,
+} from '@angular/common'
 import { HTTP_INTERCEPTORS } from '@angular/common/http'
 import { ApplicationConfig, importProvidersFrom } from '@angular/core'
 import { MessageService } from 'primeng/api'
@@ -21,6 +25,8 @@ import {
     RouterConfigurationFeature,
     withInMemoryScrolling,
     withRouterConfig,
+    withComponentInputBinding,
+    withHashLocation,
 } from '@angular/router'
 
 import {
@@ -30,6 +36,7 @@ import {
 } from '@ng-icons/core'
 
 import { routes } from './app.routes'
+import { MessageInterceptor } from './shared/interceptors/message-interceptor.interceptor'
 
 const scrollConfig: InMemoryScrollingOptions = {
     scrollPositionRestoration: 'enabled',
@@ -45,7 +52,13 @@ const inMemoryScrollingFeature: InMemoryScrollingFeature =
 
 export const appConfig: ApplicationConfig = {
     providers: [
-        provideRouter(routes, inMemoryScrollingFeature, routerConfig),
+        provideRouter(
+            routes,
+            inMemoryScrollingFeature,
+            routerConfig,
+            withComponentInputBinding(),
+            withHashLocation()
+        ),
         provideNgIconsConfig(
             {
                 size: '1.5em',
@@ -55,6 +68,7 @@ export const appConfig: ApplicationConfig = {
         provideIcons({}),
         importProvidersFrom(AppLayoutModule, PrimengModule, ToastModule),
         { provide: LocationStrategy, useClass: PathLocationStrategy },
+        { provide: LocationStrategy, useClass: HashLocationStrategy },
         CountryService,
         CustomerService,
         EventService,
@@ -71,6 +85,11 @@ export const appConfig: ApplicationConfig = {
         {
             provide: HTTP_INTERCEPTORS,
             useClass: ErrorInterceptor,
+            multi: true,
+        },
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: MessageInterceptor,
             multi: true,
         },
     ],

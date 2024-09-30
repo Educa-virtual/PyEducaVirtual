@@ -21,12 +21,15 @@ const impactClasses: Record<NonNullable<IconSize>, string> = {
 })
 export class IconComponent {
     @Input({ required: true }) name!: IconName | string
-    @Input() isPrimeIcon = true
     @Input() color: string | undefined
     @Input() strokeWidth: string | number | undefined
     @Input() size: IconSize | string = 'base'
 
     get getSize(): string {
         return impactClasses[this.size]
+    }
+
+    isPrimeIcon(): boolean {
+        return this.name.startsWith('pi pi-')
     }
 }

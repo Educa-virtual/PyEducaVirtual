@@ -1,6 +1,7 @@
 import { PrimengModule } from '@/app/primeng.module'
 import { Component } from '@angular/core'
 import { BtnLoadingComponent } from '../../../shared/btn-loading/btn-loading.component'
+import { Router } from '@angular/router'
 
 @Component({
     selector: 'app-sesion-aprendizaje',
@@ -10,6 +11,7 @@ import { BtnLoadingComponent } from '../../../shared/btn-loading/btn-loading.com
     styleUrl: './sesion-aprendizaje.component.scss',
 })
 export class SesionAprendizajeComponent {
+    constructor(private router: Router) {}
     activeIndex: number = 0
     items = [
         {
@@ -35,5 +37,8 @@ export class SesionAprendizajeComponent {
                 }
                 break
         }
+    }
+    goAreasEstudio() {
+        this.router.navigate(['docente/areas-estudio'])
     }
 }

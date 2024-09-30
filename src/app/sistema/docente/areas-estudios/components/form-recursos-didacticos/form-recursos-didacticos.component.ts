@@ -6,11 +6,12 @@ import {
     OnChanges,
     Output,
 } from '@angular/core'
+import { ModalPrimengComponent } from '../../../../../shared/modal-primeng/modal-primeng.component'
 
 @Component({
     selector: 'app-form-recursos-didacticos',
     standalone: true,
-    imports: [PrimengModule],
+    imports: [PrimengModule, ModalPrimengComponent],
     templateUrl: './form-recursos-didacticos.component.html',
     styleUrl: './form-recursos-didacticos.component.scss',
 })
@@ -26,12 +27,17 @@ export class FormRecursosDidacticosComponent implements OnChanges {
         const { currentValue } = changes.data
         this.data = currentValue
     }
+    accionBtn(elemento): void {
+        const { accion } = elemento
+        const { item } = elemento
 
-    accionBtn(accion, item) {
-        const data = {
-            accion,
-            item,
+        switch (accion) {
+            case 'close-modal':
+                this.accionBtnItem.emit({ accion, item })
+                break
+
+            default:
+                break
         }
-        this.accionBtnItem.emit(data)
     }
 }

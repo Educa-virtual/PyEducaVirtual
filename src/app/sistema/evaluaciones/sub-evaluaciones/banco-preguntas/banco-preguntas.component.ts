@@ -295,10 +295,6 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
                                 const minutes = time.get('minute')
                                 const seconds = time.get('second')
                                 subItem.time = `${hours}h ${minutes}m ${seconds}s`
-                                subItem.bPreguntaEstado = parseInt(
-                                    item.bPreguntaEstado,
-                                    10
-                                )
                                 return subItem
                             })
                         } else {
@@ -307,13 +303,10 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
                             const minutes = time.get('minute')
                             const seconds = time.get('second')
                             item.time = `${hours}h ${minutes}m ${seconds}s`
-                            item.bPreguntaEstado = parseInt(
-                                item.bPreguntaEstado,
-                                10
-                            )
                         }
                         return item
                     })
+
                     this.data = resp['data']
                 },
             })
@@ -397,7 +390,20 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             })
             return
         }
-        const ids = this.selectedItems.map((item) => item.iPreguntaId).join(',')
+
+        let preguntas = []
+
+        console.log(this.selectedItems)
+
+        this.selectedItems.forEach((item) => {
+            if (item.iEncabPregId == -1) {
+                preguntas = [...preguntas, item]
+            } else {
+                preguntas = [...preguntas, ...item.preguntas]
+            }
+        })
+
+        const ids = preguntas.map((item) => item.iPreguntaId).join(',')
         const params = {
             iCursoId: this.params.iCursoId,
             ids,
@@ -421,16 +427,19 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
     }
 
     eliminarPregunta(item) {
+        let ids = item.iPreguntaId
+        if (item.iEncabPregId != -1) {
+            ids = item.preguntas.map((item) => item.iPreguntaId).join(',')
+        }
+
         this._confirmationModalService.openConfirm({
             header: 'Esta seguro de eliminar la alternativa?',
             accept: () => {
-                this._apiEvaluacionesR
-                    .eliminarPreguntaById(item.iPreguntaId)
-                    .subscribe({
-                        next: () => {
-                            this.obtenerBancoPreguntas()
-                        },
-                    })
+                this._apiEvaluacionesR.eliminarPreguntaById(ids).subscribe({
+                    next: () => {
+                        this.obtenerBancoPreguntas()
+                    },
+                })
             },
             reject: () => {},
         })

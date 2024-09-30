@@ -5,4 +5,5 @@ export interface IArea {
     seccion?: string
     grado?: string
     totalEstudiantes: number
+    nivel: string
 }

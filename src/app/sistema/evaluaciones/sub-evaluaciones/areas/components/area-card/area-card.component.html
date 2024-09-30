@@ -18,6 +18,12 @@
         <span>{{ area.totalEstudiantes }} studiantes</span>
         <p-button
             [routerLink]="['./', area.id, 'banco-preguntas']"
+            [queryParams]="{
+                nombreCurso: area.nombre,
+                seccion: area.seccion,
+                grado: area.grado,
+                nivel: area.nivel,
+            }"
             icon="pi pi-external-link"
             pTooltip="Banco de Preguntas"
         ></p-button>

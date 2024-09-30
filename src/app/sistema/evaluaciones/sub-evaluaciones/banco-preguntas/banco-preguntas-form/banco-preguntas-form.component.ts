@@ -6,39 +6,26 @@ import {
     ReactiveFormsModule,
     Validators,
 } from '@angular/forms'
-import { DropdownModule } from 'primeng/dropdown'
-import { InputSwitchModule } from 'primeng/inputswitch'
 import { EditorModule } from 'primeng/editor'
 import { TabViewModule } from 'primeng/tabview'
-import { InputTextModule } from 'primeng/inputtext'
 import { AlternativasComponent } from '../alternativas/alternativas.component'
-import { AccordionModule } from 'primeng/accordion'
-import { ButtonModule } from 'primeng/button'
-import { CommonInputComponent } from '@/app/shared/components/common-input/common-input.component'
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog'
 import { StepsModule } from 'primeng/steps'
 import { getAlternativaValidation } from '../alternativas/get-alternativa-validation'
 
-import Quill from 'quill'
-import { AutoCompleteModule } from 'primeng/autocomplete'
 import { Subject, takeUntil } from 'rxjs'
-import { EncabezadosPreguntasComponent } from '../encabezados-preguntas/encabezados-preguntas.component'
 import { ApiEvaluacionesRService } from '../../../services/api-evaluaciones-r.service'
 import { BancoPreguntaInformacionFormComponent } from './banco-pregunta-informacion-form/banco-pregunta-informacion-form.component'
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
-import { BancoPreguntaFormListComponent } from './banco-pregunta-form-list/banco-pregunta-form-list.component'
+import { BancoPreguntaFormListComponent } from '../components/banco-pregunta-form-list/banco-pregunta-form-list.component'
 import { generarIdAleatorio } from '@/app/shared/utils/random-id'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { MenuItem } from 'primeng/api'
 import {
     BancoPreguntaEncabezadoFormComponent,
     sinEncabezadoObj,
-} from './banco-pregunta-encabezado-form/banco-pregunta-encabezado-form.component'
-
-const ColorClass = Quill.import('attributors/class/color')
-const SizeStyle = Quill.import('attributors/style/size')
-Quill.register('attributors/class/color', ColorClass, true)
-Quill.register('attributors/style/size', SizeStyle, true)
+} from '../components/banco-pregunta-encabezado-form/banco-pregunta-encabezado-form.component'
+import { BancoPreguntasModule } from '../banco-preguntas.module'
 
 const preguntaFormInfoDefaultValues = {
     iPreguntaId: generarIdAleatorio(),
@@ -58,23 +45,16 @@ const alternativasLabel = {
     selector: 'app-banco-preguntas-form',
     standalone: true,
     imports: [
-        DropdownModule,
-        InputSwitchModule,
         EditorModule,
         TabViewModule,
-        InputTextModule,
         AlternativasComponent,
-        ButtonModule,
-        AccordionModule,
-        ReactiveFormsModule,
-        CommonInputComponent,
         StepsModule,
-        AutoCompleteModule,
-        EncabezadosPreguntasComponent,
         BancoPreguntaInformacionFormComponent,
         TablePrimengComponent,
         BancoPreguntaFormListComponent,
         BancoPreguntaEncabezadoFormComponent,
+        BancoPreguntasModule,
+        ReactiveFormsModule,
     ],
     templateUrl: './banco-preguntas-form.component.html',
     styleUrl: './banco-preguntas-form.component.scss',
@@ -185,8 +165,6 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
                 // this.obtenerAlternativas()
             }
         }
-        this.obtenerEncabezados()
-
         this.obtenerEncabezados()
 
         this.bancoPreguntasForm
@@ -419,7 +397,6 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
                         item.isLocal = false
                         return item
                     })
-                    console.log(this.alternativas)
                 },
             })
     }
@@ -442,9 +419,7 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
     }
 
     // escuchar cambio de tipo de preguntas y activar validaciones de las alternativas
-    handleTipoPreguntaChange(tipoPregunta: number): void {
-        console.log(tipoPregunta)
-
+    handleTipoPreguntaChange(): void {
         const alternativasControl =
             this.bancoPreguntasForm.get('1.alternativas')
         if (alternativasControl) {
@@ -561,21 +536,10 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
     }
 
     guardarActualizarBancoPreguntas() {
-        console.log(
-            this.bancoPreguntasForm.invalid,
-            this.bancoPreguntasForm.value,
-            this.bancoPreguntasForm
-        )
-
         if (this.bancoPreguntasForm.invalid) {
-            // mostrar menasje
             this.bancoPreguntasForm.markAllAsTouched()
             return
         }
-
-        // if (this.alternativas.length == 0) {
-        //     return
-        // }
 
         const pregunta = this.bancoPreguntasForm.get('1').value
         pregunta.alternativasEliminadas = this.alternativasEliminadas

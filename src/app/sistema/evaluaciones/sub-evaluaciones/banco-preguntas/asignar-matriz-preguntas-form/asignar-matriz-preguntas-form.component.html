@@ -1,33 +1,6 @@
 <div class="flex flex-column gap-2">
     <form [formGroup]="formAsignarMatriz">
         <div class="formgrid grid gap-4">
-            <!-- <div class="flex flex-column col-12 gap-2">
-                <label for="competencia">Competencias</label>
-                <p-dropdown
-                    styleClass="w-full"
-                    optionValue="iCompentenciaId"
-                    formControlName="iCompentenciaId"
-                    [options]="competencias"
-                    optionLabel="cCompetenciaDescripcion"
-                    [ngClass]="{
-                        'ng-dirty ng-invalid':
-                            formAsignarMatriz.get('iCompentenciaId')?.errors &&
-                            formAsignarMatriz.get('iCompentenciaId')?.touched,
-                    }"
-                />
-                <small>
-                    @if (
-                        formAsignarMatriz
-                            .get('iCompentenciaId')
-                            .hasError('required') &&
-                        formAsignarMatriz.get('iCompentenciaId')?.touched
-                    ) {
-                        <span class="text-red-500">
-                            Este campo es requerido
-                        </span>
-                    }
-                </small>
-            </div> -->
             <div class="flex flex-column col-12 gap-2">
                 <h2 class="text-xl">Desempeño</h2>
                 <app-table-primeng

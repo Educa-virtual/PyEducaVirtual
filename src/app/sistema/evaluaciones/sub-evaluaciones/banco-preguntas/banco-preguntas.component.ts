@@ -31,6 +31,7 @@ import { Subject, takeUntil } from 'rxjs'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { ApiEvaluacionesRService } from '../../services/api-evaluaciones-r.service'
 import { ApiEvaluacionesService } from '../../services/api-evaluaciones.service'
+import { ActivatedRoute } from '@angular/router'
 
 @Component({
     selector: 'app-ere-preguntas',
@@ -57,7 +58,14 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
     private _apiEvaluacionesR = inject(ApiEvaluacionesRService)
     private _apiEvaluaciones = inject(ApiEvaluacionesService)
     private _confirmationModalService = inject(ConfirmationModalService)
+    private _route = inject(ActivatedRoute)
     private unsubscribe$: Subject<boolean> = new Subject()
+    public area = {
+        nombreCurso: '',
+        grado: '',
+        seccion: '',
+        nivel: '',
+    }
 
     public competencias = []
     public capacidades = []
@@ -225,8 +233,20 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
     constructor() {}
 
     ngOnInit() {
+        this.getParamsByUrl()
         this.initializeData()
         this.fetchInitialData()
+    }
+
+    getParamsByUrl() {
+        this._route.queryParams.subscribe((params) => {
+            this.area = {
+                nombreCurso: params['nombreCurso'],
+                grado: params['grado'] ?? '',
+                seccion: params['seccion'] ?? '',
+                nivel: params['nivel'] ?? '',
+            }
+        })
     }
     fetchInitialData() {
         this.obtenerBancoPreguntas()

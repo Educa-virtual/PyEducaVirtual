@@ -185,6 +185,7 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
                 // this.obtenerAlternativas()
             }
         }
+        this.obtenerEncabezados()
 
         this.obtenerEncabezados()
 

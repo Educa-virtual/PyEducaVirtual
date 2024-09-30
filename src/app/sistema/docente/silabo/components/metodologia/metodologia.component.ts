@@ -88,7 +88,7 @@ export class MetodologiaComponent implements OnChanges {
             type: 'text',
             width: '3rem',
             field: 'cTipoMetNombre',
-            header: 'Tipo de Recurso',
+            header: 'Tipo de Metodología',
             text_header: 'center',
             text: 'center',
         },

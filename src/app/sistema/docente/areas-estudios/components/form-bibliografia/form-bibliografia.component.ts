@@ -88,11 +88,11 @@ export class FormBibliografiaComponent implements OnChanges, OnInit {
                 )
                 console.log(this.dataBibliografias)
                 if (!this.dataBibliografias.valid) {
-                    this.messageService.add({
-                        severity: 'error',
-                        summary: '¡Atención!',
-                        detail: 'Debe de ingresar todos los campos',
-                    })
+                    // this.messageService.add({
+                    //     severity: 'error',
+                    //     summary: '¡Atención!',
+                    //     detail: 'Debe de ingresar todos los campos',
+                    // })
                 } else {
                     this.accionBtnItem.emit({
                         accion: 'guardar',
@@ -105,7 +105,7 @@ export class FormBibliografiaComponent implements OnChanges, OnInit {
                 this.dataBibliografias.controls.opcion.setValue(
                     'ACTUALIZARxiBiblioId'
                 )
-                if (this.dataBibliografias.valid) {
+                if (!this.dataBibliografias.valid) {
                     this.messageService.add({
                         severity: 'error',
                         summary: '¡Atención!',

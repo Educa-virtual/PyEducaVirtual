@@ -36,9 +36,7 @@ export class AsistenciaComponent {
     // ];
 
     dates = [
-        {
-            dtFecha: '01/09/2024',
-        },
+        { dtFecha: '01/09/2024' },
         { dtFecha: '02/09/2024' },
         { dtFecha: '03/09/2024' },
         { dtFecha: '04/09/2024' },

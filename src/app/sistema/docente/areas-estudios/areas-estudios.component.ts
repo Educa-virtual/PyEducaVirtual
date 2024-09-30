@@ -127,7 +127,10 @@ export class AreasEstudiosComponent implements OnInit {
                     'docente/asistencia/' +
                         this.selectedData['iCursoId'] +
                         '/' +
-                        this.selectedData['cCursoNombre']
+                        this.selectedData['cCursoNombre'].replace(
+                            /[\^*@!"#$%&/()=?¡!¿':\\]/gi,
+                            ''
+                        )
                 )
                 break
         }

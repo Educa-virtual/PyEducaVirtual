@@ -32,6 +32,12 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
     private _confirmationModalService = inject(ConfirmationModalService)
     private _route = inject(ActivatedRoute)
     private unsubscribe$: Subject<boolean> = new Subject()
+    public area = {
+        nombreCurso: '',
+        grado: '',
+        seccion: '',
+        nivel: '',
+    }
 
     public area = {
         nombreCurso: '',

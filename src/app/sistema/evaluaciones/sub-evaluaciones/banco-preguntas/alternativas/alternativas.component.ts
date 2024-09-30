@@ -3,14 +3,14 @@ import {
     EventEmitter,
     inject,
     Input,
-    OnInit,
     Output,
+    OnChanges,
 } from '@angular/core'
 import { ButtonModule } from 'primeng/button'
 import { TableModule } from 'primeng/table'
 import { CommonModule } from '@angular/common'
 import { DialogService, DynamicDialogConfig } from 'primeng/dynamicdialog'
-import { AlternativasFormComponent } from '../alternativas/alternativas-form/alternativas-form.component'
+import { AlternativasFormComponent } from './alternativas-form/alternativas-form.component'
 import { MODAL_CONFIG } from '@/app/shared/constants/modal.config'
 
 import {
@@ -19,7 +19,6 @@ import {
     TablePrimengComponent,
 } from '../../../../../shared/table-primeng/table-primeng.component'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
-import { ApiEvaluacionesService } from '../../../services/api-evaluaciones.service'
 import { ConfirmationService } from 'primeng/api'
 @Component({
     selector: 'app-alternativas',
@@ -29,15 +28,17 @@ import { ConfirmationService } from 'primeng/api'
     styleUrl: './alternativas.component.scss',
     providers: [DialogService],
 })
-export class AlternativasComponent implements OnInit {
+export class AlternativasComponent implements OnChanges {
     @Input() alternativas = []
+    alternativasEliminadas = []
+    @Output() alternativasEliminadasChange = new EventEmitter()
     @Output() alternativasChange = new EventEmitter()
     @Input() pregunta
     private _dialogService = inject(DialogService)
     private _confirmationModalService = inject(ConfirmationModalService)
-    private _evaluacionesService = inject(ApiEvaluacionesService)
     private _config = inject(DynamicDialogConfig)
     private _confirmationService = inject(ConfirmationService)
+    @Input() serviceProvider
     public columnas: IColumn[] = [
         {
             type: 'text',
@@ -86,6 +87,11 @@ export class AlternativasComponent implements OnInit {
         },
     ]
 
+    ngOnChanges(changes): void {
+        this.alternativas = changes.alternativas.currentValue
+        console.log(changes)
+    }
+
     public accionesTabla: IActionTable[] = [
         {
             labelTooltip: 'Editar',
@@ -102,10 +108,6 @@ export class AlternativasComponent implements OnInit {
             class: 'p-button-rounded p-button-danger p-button-text',
         },
     ]
-
-    ngOnInit() {
-        this.pregunta = this._config.data.pregunta
-    }
 
     agregarActualizarAlternativa(alternativa) {
         const refModal = this._dialogService.open(AlternativasFormComponent, {
@@ -126,42 +128,46 @@ export class AlternativasComponent implements OnInit {
                 result.bAlternativaCorrecta = result.bAlternativaCorrecta
                     ? 1
                     : 0
-                const existeAlternativa = this.alternativas.some((x) => {
-                    console.log(x.iAlternativaId, result.iAlternativaId)
-
-                    return x.iAlternativaId == result.iAlternativaId
-                })
-
-                // si existe actualizar alternativa
-                if (existeAlternativa) {
-                    const index = this.alternativas.findIndex(
-                        (x) => x.iAlternativaId == result.iAlternativaId
-                    )
-                    this.alternativas[index] = result
-                    this.alternativasChange.emit(this.alternativas)
-                } else {
-                    this.alternativas.push(result)
-                    this.alternativasChange.emit(this.alternativas)
-                }
+                this.actualizarAlternativas(result)
             }
         })
+    }
+
+    actualizarAlternativas(alternativa) {
+        const existeAlternativa = this.alternativas.some((x) => {
+            return x.iAlternativaId == alternativa.iAlternativaId
+        })
+
+        // si existe actualizar alternativa
+        if (existeAlternativa) {
+            const index = this.alternativas.findIndex(
+                (x) => x.iAlternativaId == alternativa.iAlternativaId
+            )
+            this.alternativas[index] = alternativa
+        } else {
+            this.alternativas.push(alternativa)
+        }
+        this.alternativasChange.emit(this.alternativas)
     }
 
     eliminarAlternativa(alternativa) {
         this._confirmationModalService.openConfirm({
             header: 'Esta seguro de eliminar la alternativa?',
             accept: () => {
-                if (alternativa.isLocal) {
-                    this.eliminarAlternativaLocal(alternativa)
-                    return
+                this.eliminarAlternativaLocal(alternativa)
+                if (!alternativa.isLocal) {
+                    this.alternativasEliminadas.push(alternativa)
                 }
-                this._evaluacionesService
-                    .eliminarAlternativaById(alternativa.iAlternativaId)
-                    .subscribe({
-                        next: () => {
-                            this.eliminarAlternativaLocal(alternativa)
-                        },
-                    })
+                this.alternativasEliminadasChange.emit(
+                    this.alternativasEliminadas
+                )
+                // this.serviceProvider
+                //     .eliminarAlternativaById(alternativa.iAlternativaId)
+                //     .subscribe({
+                //         next: () => {
+                //             this.eliminarAlternativaLocal(alternativa)
+                //         },
+                //     })
             },
             reject: () => {},
         })

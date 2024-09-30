@@ -34,13 +34,6 @@ const routes: Routes = [
         pathMatch: 'full',
     },
     {
-        path: 'banco-preguntas',
-        loadComponent: () =>
-            import(
-                './sub-evaluaciones/banco-preguntas/banco-preguntas.component'
-            ).then((c) => c.BancoPreguntasComponent),
-    },
-    {
         path: 'preguntas-activas',
         loadComponent: () =>
             import(

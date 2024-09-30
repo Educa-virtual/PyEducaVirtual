@@ -12,14 +12,14 @@ export class ApiEreService {
 
     actualizarMatrizPreguntas(data) {
         return this.http.patch(
-            `${this.baseUrl}/ere/banco-preguntas/actualizarMatrizPreguntas`,
+            `${this.baseUrl}/ere/preguntas/actualizarMatrizPreguntas`,
             data
         )
     }
 
     obtenerBancoPreguntas(params) {
         return this.http.get(
-            `${this.baseUrl}/ere/banco-preguntas/obtenerBancoPreguntas`,
+            `${this.baseUrl}/ere/preguntas/obtenerBancoPreguntas`,
             {
                 params,
             }

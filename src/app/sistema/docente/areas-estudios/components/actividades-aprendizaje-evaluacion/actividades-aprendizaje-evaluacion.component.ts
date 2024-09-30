@@ -2,6 +2,7 @@ import { ContainerPageComponent } from '@/app/shared/container-page/container-pa
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
 import { Component } from '@angular/core'
 import { FormActividadesAprendizajeEvaluacionComponent } from '../form-actividades-aprendizaje-evaluacion/form-actividades-aprendizaje-evaluacion.component'
+import { PrimengModule } from '@/app/primeng.module'
 
 @Component({
     selector: 'app-actividades-aprendizaje-evaluacion',
@@ -10,6 +11,7 @@ import { FormActividadesAprendizajeEvaluacionComponent } from '../form-actividad
         ContainerPageComponent,
         TablePrimengComponent,
         FormActividadesAprendizajeEvaluacionComponent,
+        PrimengModule,
     ],
     templateUrl: './actividades-aprendizaje-evaluacion.component.html',
     styleUrl: './actividades-aprendizaje-evaluacion.component.scss',

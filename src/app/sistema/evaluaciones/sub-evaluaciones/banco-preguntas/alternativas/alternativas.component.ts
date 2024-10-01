@@ -9,7 +9,7 @@ import {
 import { ButtonModule } from 'primeng/button'
 import { TableModule } from 'primeng/table'
 import { CommonModule } from '@angular/common'
-import { DialogService, DynamicDialogConfig } from 'primeng/dynamicdialog'
+import { DialogService } from 'primeng/dynamicdialog'
 import { AlternativasFormComponent } from './alternativas-form/alternativas-form.component'
 import { MODAL_CONFIG } from '@/app/shared/constants/modal.config'
 
@@ -19,7 +19,6 @@ import {
     TablePrimengComponent,
 } from '../../../../../shared/table-primeng/table-primeng.component'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
-import { ConfirmationService } from 'primeng/api'
 @Component({
     selector: 'app-alternativas',
     standalone: true,
@@ -36,19 +35,16 @@ export class AlternativasComponent implements OnChanges {
     @Input() pregunta
     private _dialogService = inject(DialogService)
     private _confirmationModalService = inject(ConfirmationModalService)
-    private _config = inject(DynamicDialogConfig)
-    private _confirmationService = inject(ConfirmationService)
     @Input() serviceProvider
     public columnas: IColumn[] = [
         {
-            type: 'text',
-            width: '5rem',
+            type: 'p-editor',
+            width: '10rem',
             field: 'cAlternativaDescripcion',
             header: 'Descripción',
             text_header: 'left',
             text: 'left',
         },
-
         {
             type: 'text',
             width: '5rem',
@@ -89,7 +85,6 @@ export class AlternativasComponent implements OnChanges {
 
     ngOnChanges(changes): void {
         this.alternativas = changes.alternativas.currentValue
-        console.log(changes)
     }
 
     public accionesTabla: IActionTable[] = [
@@ -161,15 +156,7 @@ export class AlternativasComponent implements OnChanges {
                 this.alternativasEliminadasChange.emit(
                     this.alternativasEliminadas
                 )
-                // this.serviceProvider
-                //     .eliminarAlternativaById(alternativa.iAlternativaId)
-                //     .subscribe({
-                //         next: () => {
-                //             this.eliminarAlternativaLocal(alternativa)
-                //         },
-                //     })
             },
-            reject: () => {},
         })
     }
 

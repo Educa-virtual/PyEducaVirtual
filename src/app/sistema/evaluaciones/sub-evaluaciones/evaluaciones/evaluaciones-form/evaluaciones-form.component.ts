@@ -140,8 +140,8 @@ export class EvaluacionesFormComponent implements OnInit {
             })
     }
     onchange() {
-        alert(JSON.stringify(this.selectedTipoEvaluacion))
-        alert(this.fecha)
+        //alert(JSON.stringify(this.selectedTipoEvaluacion))
+        //alert(this.fecha)
     }
 
     closeModal(data) {
@@ -153,5 +153,6 @@ export class EvaluacionesFormComponent implements OnInit {
             this.evaluacionFormGroup.markAllAsTouched()
             return
         }
+        alert('guardar')
     }
 }

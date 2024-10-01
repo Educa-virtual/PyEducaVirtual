@@ -30,6 +30,14 @@ export class BancoPreguntaFormListComponent {
             text: 'left',
         },
         {
+            type: 'text',
+            width: '2rem',
+            field: 'iTotalAlternativas',
+            header: 'Total Alternativas',
+            text_header: 'left',
+            text: 'left',
+        },
+        {
             field: '',
             header: 'Acciones',
             type: 'actions',

@@ -67,6 +67,7 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
 
     public mode: 'EDITAR' | 'CREAR' = 'CREAR'
     public formMode: 'SUB-PREGUNTAS' | 'UNA-PREGUNTA' = 'UNA-PREGUNTA'
+    public showFooterSteps = true
     public pregunta
     public pasos: MenuItem[] = [
         {
@@ -341,6 +342,7 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
         this.alternativas = alternativas
         if (this.formMode === 'SUB-PREGUNTAS') {
             this.preguntaSelected.alternativas = alternativas
+            this.preguntaSelected.iTotalAlternativas = alternativas.length
             this.actualizarPreguntas(this.preguntaSelected)
         }
     }
@@ -457,8 +459,13 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
         this.bancoPreguntaActiveIndex = index
     }
 
+    toggleStepsVisibility(visibiltiy: boolean) {
+        this.showFooterSteps = visibiltiy
+    }
+
     agregarPreguntaForm() {
         this.changeIndexBancoForm(1)
+        this.toggleStepsVisibility(false)
         // agregar validaciones
         this.toggleValidationInformacionPregunta(true)
     }
@@ -466,6 +473,7 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
     accionPreguntaTable({ accion, item }) {
         if (accion === 'editar') {
             this.changeIndexBancoForm(1)
+            this.toggleStepsVisibility(false)
             this.bancoPreguntasForm.get('1').patchValue(item)
             console.log(this.bancoPreguntasForm.get('1').value)
         }
@@ -474,6 +482,7 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
         }
         if (accion === 'alternativas') {
             this.preguntaSelected = item
+            this.toggleStepsVisibility(false)
             this.toggleAlternativasSinEncabezado(true)
             this.activeIndex = this.pasos.length - 1
         }
@@ -529,6 +538,7 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
         this.changeIndexBancoForm(0)
         this.bancoPreguntasForm.get('1').reset(preguntaFormInfoDefaultValues)
         this.toggleValidationInformacionPregunta(false)
+        this.toggleStepsVisibility(true)
     }
 
     closeModal(data) {

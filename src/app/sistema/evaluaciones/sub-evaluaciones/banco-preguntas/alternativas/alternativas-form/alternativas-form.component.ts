@@ -12,8 +12,9 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog'
 import { CommonInputComponent } from '@/app/shared/components/common-input/common-input.component'
 import { ButtonModule } from 'primeng/button'
 import { generarIdAleatorio } from '@/app/shared/utils/random-id'
-import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
-import { ApiEvaluacionesRService } from '@/app/sistema/evaluaciones/services/api-evaluaciones-r.service'
+import { EditorModule } from 'primeng/editor'
+import { filterPreguntasUsadas } from '../pregunta-letra.model'
+import { DropdownModule } from 'primeng/dropdown'
 @Component({
     selector: 'app-alternativas-form',
     standalone: true,
@@ -23,7 +24,9 @@ import { ApiEvaluacionesRService } from '@/app/sistema/evaluaciones/services/api
         InputSwitchModule,
         ReactiveFormsModule,
         CommonInputComponent,
+        EditorModule,
         ButtonModule,
+        DropdownModule,
     ],
     templateUrl: './alternativas-form.component.html',
     styleUrl: './alternativas-form.component.scss',
@@ -32,10 +35,9 @@ export class AlternativasFormComponent implements OnInit {
     private _config = inject(DynamicDialogConfig)
     private _ref = inject(DynamicDialogRef)
     private _formBuilder = inject(FormBuilder)
-    private _evaluacionesService = inject(ApiEvaluacionesRService)
-    private _confirmDialogService = inject(ConfirmationModalService)
     private alternativa
     private alternativas
+    public letrasDisponiblesPreguntaSeleccionada
 
     public pregunta
     public alternativaFormGroup = this._formBuilder.group({
@@ -60,6 +62,12 @@ export class AlternativasFormComponent implements OnInit {
         this.pregunta = this._config.data.pregunta
         this.alternativa = this._config.data.alternativa
         this.alternativas = this._config.data.alternativas
+
+        const letrasUsadas = this.alternativas.map((x) => x.cAlternativaLetra)
+        this.letrasDisponiblesPreguntaSeleccionada =
+            filterPreguntasUsadas(letrasUsadas)
+
+        console.log(this.letrasDisponiblesPreguntaSeleccionada)
 
         this.alternativaFormGroup
             .get('iPreguntaId')

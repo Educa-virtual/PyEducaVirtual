@@ -39,13 +39,6 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
         nivel: '',
     }
 
-    public area = {
-        nombreCurso: '',
-        grado: '',
-        seccion: '',
-        nivel: '',
-    }
-
     public desempenos = []
     public estados = []
     public evaluaciones = []

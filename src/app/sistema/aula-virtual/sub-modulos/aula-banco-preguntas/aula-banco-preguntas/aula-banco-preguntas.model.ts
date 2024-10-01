@@ -31,7 +31,15 @@ export const columns: IColumn[] = [
     },
 ]
 
-export const actionsContainer: IActionContainer[] = []
+export const actionsContainer: IActionContainer[] = [
+    {
+        labelTooltip: 'Agregar Pregunta',
+        text: 'Agregar Pregunta',
+        icon: 'pi pi-plus',
+        accion: 'agregar',
+        class: 'p-button-secondary',
+    },
+]
 
 export const actionsTable: IActionTable[] = [
     {

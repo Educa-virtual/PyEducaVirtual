@@ -357,11 +357,6 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
     goStep(opcion: string) {
         switch (opcion) {
             case 'next':
-                console.log(
-                    this.bancoPreguntasForm.get(this.activeIndex.toString())
-                        .invalid
-                )
-
                 if (
                     this.bancoPreguntasForm.get(this.activeIndex.toString())
                         .invalid

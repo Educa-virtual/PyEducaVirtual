@@ -1,7 +1,12 @@
-<app-container-page [title]="'Banco de preguntas'" [actions]="actionsContainer">
+<app-container-page
+    [title]="'Banco de preguntas'"
+    [actions]="actionsContainer"
+    (accionBtnItem)="handleAcciones($event)"
+>
     <app-table-primeng
         [tableStyle]="{ 'min-width': '0' }"
         [columnas]="columnas"
         [actions]="actionsTable"
+        (accionBtnItem)="handleAcciones($event)"
     ></app-table-primeng>
 </app-container-page>

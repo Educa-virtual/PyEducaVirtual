@@ -45,9 +45,10 @@
         (accionBtnItem)="accionBtnItemTable($event)"
         [(selectedRowData)]="selectedItems"
         [actions]="accionesTabla"
+        [expandedRowKeys]="expandedRowKeys"
     >
         <ng-template #rowExpansionTemplate let-data let-columns="columns">
-            <tr>
+            <tr class="bg-gray-100">
                 <td [attr.colspan]="columns">
                     <app-banco-pregunta-preview [pregunta]="data" />
                 </td>

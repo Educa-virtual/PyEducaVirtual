@@ -16,13 +16,12 @@ import { ApiEvaluacionesRService } from '../../services/api-evaluaciones-r.servi
 import { ApiEvaluacionesService } from '../../services/api-evaluaciones.service'
 import { ActivatedRoute } from '@angular/router'
 import { BancoPreguntasModule } from './banco-preguntas.module'
-import { JsonPipe } from '@angular/common'
 
 @Component({
     selector: 'app-ere-preguntas',
     templateUrl: './banco-preguntas.component.html',
     standalone: true,
-    imports: [BancoPreguntasModule, JsonPipe],
+    imports: [BancoPreguntasModule],
     styleUrls: ['./banco-preguntas.component.scss'],
 })
 export class BancoPreguntasComponent implements OnInit, OnDestroy {

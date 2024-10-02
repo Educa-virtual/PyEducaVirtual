@@ -58,6 +58,12 @@ const alternativasLabel = {
     styleUrl: './banco-preguntas-form.component.scss',
 })
 export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
+    // manejar la pregunta como arreglo
+    //  si selecciona con cabecera, mostrar las preguntas como subpreguntas
+    //  si selecciona sin cabecera, mostrar la pregunta en el form.
+    // quitar el boton agregarPregunta si es sin cabecera o no se debe mostrar footer.
+    // formMode es 'Sub-preguntas' cuando
+
     public encabezadosFiltered = []
     public tipoPreguntas = []
     public customOptions = []

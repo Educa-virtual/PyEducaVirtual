@@ -16,12 +16,13 @@ import { ApiEvaluacionesRService } from '../../services/api-evaluaciones-r.servi
 import { ApiEvaluacionesService } from '../../services/api-evaluaciones.service'
 import { ActivatedRoute } from '@angular/router'
 import { BancoPreguntasModule } from './banco-preguntas.module'
+import { JsonPipe } from '@angular/common'
 
 @Component({
     selector: 'app-ere-preguntas',
     templateUrl: './banco-preguntas.component.html',
     standalone: true,
-    imports: [BancoPreguntasModule],
+    imports: [BancoPreguntasModule, JsonPipe],
     styleUrls: ['./banco-preguntas.component.scss'],
 })
 export class BancoPreguntasComponent implements OnInit, OnDestroy {
@@ -84,6 +85,14 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
     data = []
 
     columnas: IColumn[] = [
+        {
+            field: '',
+            header: '',
+            type: 'expansion',
+            width: '2rem',
+            text: 'left',
+            text_header: 'left',
+        },
         {
             field: 'checked',
             header: '',

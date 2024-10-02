@@ -44,6 +44,7 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
     public estados = []
     public evaluaciones = []
     public tipoPreguntas = []
+    public expandedRowKeys = {}
 
     public params = {
         bPreguntaEstado: -1,
@@ -102,14 +103,6 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             width: '5rem',
             text: 'left',
             text_header: '',
-        },
-        {
-            field: 'cPregunta',
-            header: 'Pregunta',
-            type: 'p-editor',
-            width: '15rem',
-            text: 'left',
-            text_header: 'Pregunta',
         },
         {
             field: 'cEncabPregTitulo',
@@ -278,6 +271,14 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             .subscribe({
                 next: (data) => {
                     this.data = data
+                    this.data.forEach((item) => {
+                        this.expandedRowKeys[item.iPreguntaId] = true
+                    })
+
+                    this.expandedRowKeys = Object.assign(
+                        {},
+                        this.expandedRowKeys
+                    )
                 },
             })
     }

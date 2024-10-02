@@ -53,6 +53,7 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     @Output() accionBtnItem = new EventEmitter()
     @Output() selectedRowDataChange = new EventEmitter()
 
+    @Input() expandedRowKeys = {}
     @Input() dataKey: string
 
     @Input() showCaption: boolean = true
@@ -208,6 +209,12 @@ export class TablePrimengComponent implements OnChanges, OnInit {
 
         if (changes.selectedRowData?.currentValue) {
             this.selectedRowData = changes.selectedRowData.currentValue
+        }
+
+        if (changes.expandedRowKeys?.currentValue) {
+            console.log(this.expandedRowKeys)
+
+            this.expandedRowKeys = changes.expandedRowKeys.currentValue
         }
     }
 

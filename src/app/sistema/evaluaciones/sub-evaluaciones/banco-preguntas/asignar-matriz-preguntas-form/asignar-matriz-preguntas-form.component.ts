@@ -29,6 +29,7 @@ import {
     styleUrl: './asignar-matriz-preguntas-form.component.scss',
 })
 export class AsignarMatrizPreguntasFormComponent implements OnInit {
+    // injeccion de depdencias
     private formBuilder = inject(FormBuilder)
     private selectedPreguntas = []
     private _config = inject(DynamicDialogConfig)
@@ -44,6 +45,7 @@ export class AsignarMatrizPreguntasFormComponent implements OnInit {
         iDesempenoId: [null, Validators.required],
     })
 
+    // columnas de l atabla desempeño
     public columnasDesempeno: IColumn[] = [
         {
             field: 'radio',
@@ -87,6 +89,7 @@ export class AsignarMatrizPreguntasFormComponent implements OnInit {
         },
     ]
 
+    // columnas de la tabla desempeño
     columnas: IColumn[] = [
         {
             field: 'checked',
@@ -142,8 +145,10 @@ export class AsignarMatrizPreguntasFormComponent implements OnInit {
                 cCompetenciaDescripcion: 'Desempeño 1',
             },
         ]
+
         const preguntas = this._config.data.preguntas
 
+        //  mapear las preguntas si es con cabecera o no
         preguntas.forEach((item) => {
             if (item.iEncabPregId == -1) {
                 this.preguntas = [...this.preguntas, item]
@@ -151,10 +156,11 @@ export class AsignarMatrizPreguntasFormComponent implements OnInit {
                 this.preguntas = [...this.preguntas, ...item.preguntas]
             }
         })
-        this.desempenos = this._config.data.desempenos
 
+        this.desempenos = this._config.data.desempenos
         let iDesempenoId = 0
 
+        // marcar el desempeno por defecto
         this.preguntas = this.preguntas.map((item) => {
             item.checked = true
             if (item.iDesempenoId != null) {
@@ -192,6 +198,7 @@ export class AsignarMatrizPreguntasFormComponent implements OnInit {
         this._ref.close(data)
     }
 
+    // asignar matriz de preguntas a las preguntas seleccionadas
     asignarMatrizPreguntas() {
         if (this.formAsignarMatriz.invalid) {
             this.formAsignarMatriz.markAllAsTouched()

@@ -33,6 +33,7 @@ export class BancoPreguntaInformacionFormComponent implements OnInit {
         this.formGroup = this.parentFormGroup
     }
 
+    // obtiene el formulario padre
     get parentFormGroup() {
         return this.parentContainer.control?.get(this.controlKey) as FormGroup
     }

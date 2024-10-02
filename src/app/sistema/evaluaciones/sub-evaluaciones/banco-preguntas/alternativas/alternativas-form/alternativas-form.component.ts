@@ -32,14 +32,16 @@ import { DropdownModule } from 'primeng/dropdown'
     styleUrl: './alternativas-form.component.scss',
 })
 export class AlternativasFormComponent implements OnInit {
+    // injeccion de depedencias
     private _config = inject(DynamicDialogConfig)
     private _ref = inject(DynamicDialogRef)
     private _formBuilder = inject(FormBuilder)
+
     private alternativa
     private alternativas
     public letrasDisponiblesPreguntaSeleccionada
-
     public pregunta
+    // inicializar el formulario
     public alternativaFormGroup = this._formBuilder.group({
         iAlternativaId: new FormControl<number | string>(generarIdAleatorio()),
         iPreguntaId: [0],
@@ -111,6 +113,7 @@ export class AlternativasFormComponent implements OnInit {
         this._ref.close(data)
     }
 
+    // validar el formulario y emitir la alternativa al cerrar el modal
     guardarActualizarAlternativa() {
         if (this.alternativaFormGroup.invalid) {
             this.alternativaFormGroup.markAllAsTouched()
@@ -120,16 +123,5 @@ export class AlternativasFormComponent implements OnInit {
         const alternativa = this.alternativaFormGroup.value
 
         this.closeModal(alternativa)
-        return
-        // if (this.pregunta.iPreguntaId == 0) {
-        // }
-        // this._evaluacionesService
-        //     .guardarActualizarAlternativa(alternativa)
-        //     .subscribe({
-        //         next: (resp: unknown) => {
-        //             alternativa.iAlternativaId = resp['data'].id
-        //             this.closeModal(alternativa)
-        //         },
-        //     })
     }
 }

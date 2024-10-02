@@ -86,20 +86,20 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
     public activeIndex = 0
     public bancoPreguntaActiveIndex = 0
 
+    // Injeccion de depedencias
     private _formBuilder = inject(FormBuilder)
     private _config = inject(DynamicDialogConfig)
     private _evaluacionesService = inject(ApiEvaluacionesRService)
     private _ref = inject(DynamicDialogRef)
     private _confirmationModalService = inject(ConfirmationModalService)
+
     public evaluacionesService = this._evaluacionesService
     private unsubscribe$: Subject<boolean> = new Subject()
-
     public encabezados = []
-
     public bancoPreguntasForm: FormGroup
-    alternativasEliminadas = []
+    public alternativasEliminadas = []
     public preguntaSelected = null
-    preguntasEliminar = []
+    public preguntasEliminar = []
 
     constructor() {
         this.inicializarFormulario()
@@ -171,6 +171,7 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
             ?.valueChanges.subscribe(() => {
                 // this.handleTipoPreguntaChange(value)
             })
+        // Llenar el formulario paso 1 basado en la seleccion de la cabecera.
         this.bancoPreguntasForm
             .get('0.encabezadoSelected')
             .valueChanges.subscribe((value) => {
@@ -262,6 +263,7 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
             .updateValueAndValidity()
     }
 
+    // quitar o agregar validaciones.
     toggleValidationInformacionPregunta(required: boolean) {
         if (required) {
             this.bancoPreguntasForm
@@ -308,6 +310,7 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
         }
     }
 
+    //  quitar o agregar alternativas
     toggleAlternativasSinEncabezado(toggle: boolean) {
         if (toggle) {
             const label = this.pasos.find((item) => item.id === '2')
@@ -336,6 +339,7 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
         )
     }
 
+    // asignar las alternativas a la pregunta
     alternativasChange(alternativas) {
         this.alternativas = alternativas
         if (this.formMode === 'SUB-PREGUNTAS') {
@@ -345,6 +349,7 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
         }
     }
 
+    // asignar las alternativas a la pregunta
     setAlternativasEliminadas(alternativas) {
         this.alternativasEliminadas = alternativas
         if (this.formMode === 'SUB-PREGUNTAS') {
@@ -354,7 +359,7 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
         }
     }
 
-    // avanzar pasos
+    // avanzar pasos y retroceder
     goStep(opcion: string) {
         switch (opcion) {
             case 'next':
@@ -397,6 +402,7 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
             })
     }
 
+    // asignar los datos al formulario.
     patchForm(pregunta) {
         if (pregunta?.iEncabPregId == '-1' || pregunta.iPreguntaId == 0) {
             pregunta.encabezadoSelected = {
@@ -443,6 +449,7 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
         this.toggleValidationInformacionPregunta(true)
     }
 
+    // manejar acciones de la tabla preguntas
     accionPreguntaTable({ accion, item }) {
         if (accion === 'editar') {
             this.changeIndexBancoForm(1)
@@ -516,6 +523,7 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
         this._ref.close(data)
     }
 
+    // enviar el formulario de banco de preguntas a guardar o actualizar
     guardarActualizarBancoPreguntas() {
         if (this.bancoPreguntasForm.invalid) {
             this.bancoPreguntasForm.markAllAsTouched()
@@ -550,6 +558,7 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
             })
     }
 
+    // desuscribirse de los observables cuando se destruye el componente
     ngOnDestroy() {
         this.unsubscribe$.next(true)
         this.unsubscribe$.complete()

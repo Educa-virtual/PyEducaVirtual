@@ -97,14 +97,6 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             text_header: 'left',
         },
         {
-            field: 'checked',
-            header: '',
-            type: 'checkbox',
-            width: '5rem',
-            text: 'left',
-            text_header: '',
-        },
-        {
             field: 'cEncabPregTitulo',
             header: 'Encabezado',
             type: 'text',
@@ -128,7 +120,6 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             text: 'left',
             text_header: 'Tiempo',
         },
-
         {
             field: 'iPreguntaPeso',
             header: 'Puntaje',
@@ -169,6 +160,14 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             field: '',
             header: 'Acciones',
             type: 'actions',
+            width: '5rem',
+            text: 'left',
+            text_header: '',
+        },
+        {
+            field: 'checked',
+            header: '',
+            type: 'checkbox',
             width: '5rem',
             text: 'left',
             text_header: '',

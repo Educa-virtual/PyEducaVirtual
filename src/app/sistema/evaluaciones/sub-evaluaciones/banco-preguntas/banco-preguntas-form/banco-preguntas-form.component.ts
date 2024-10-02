@@ -1,6 +1,5 @@
 import { Component, inject, OnInit, OnDestroy } from '@angular/core'
 import {
-    AbstractControl,
     FormBuilder,
     FormGroup,
     ReactiveFormsModule,
@@ -11,7 +10,6 @@ import { TabViewModule } from 'primeng/tabview'
 import { AlternativasComponent } from '../alternativas/alternativas.component'
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog'
 import { StepsModule } from 'primeng/steps'
-import { getAlternativaValidation } from '../alternativas/get-alternativa-validation'
 
 import { Subject, takeUntil } from 'rxjs'
 import { ApiEvaluacionesRService } from '../../../services/api-evaluaciones-r.service'
@@ -60,6 +58,12 @@ const alternativasLabel = {
     styleUrl: './banco-preguntas-form.component.scss',
 })
 export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
+    // manejar la pregunta como arreglo
+    //  si selecciona con cabecera, mostrar las preguntas como subpreguntas
+    //  si selecciona sin cabecera, mostrar la pregunta en el form.
+    // quitar el boton agregarPregunta si es sin cabecera o no se debe mostrar footer.
+    // formMode es 'Sub-preguntas' cuando
+
     public encabezadosFiltered = []
     public tipoPreguntas = []
     public customOptions = []
@@ -111,10 +115,7 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
             }),
             1: this.inicializarPreguntaInfoForm(),
             2: this._formBuilder.group({
-                alternativas: [
-                    [],
-                    // [Validators.required, this.alternativasValidator()],
-                ],
+                alternativas: [[]],
             }),
         })
     }
@@ -129,7 +130,6 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
             iPreguntaPeso: [null],
             isLocal: [true],
             isDeleted: [false],
-            // dtPreguntaTiempo: [null, [Validators.required]],
             iHoras: [0],
             iMinutos: [0],
             iSegundos: [0],
@@ -144,8 +144,6 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
         })
 
         this.pregunta = this._config.data.pregunta
-
-        console.log(this.pregunta)
 
         // la pregunta tiene preguntas
         if (this.pregunta.preguntas?.length > 0) {
@@ -223,8 +221,8 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
             .obtenerEncabezadosPreguntas(params)
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
-                next: (resp: unknown) => {
-                    this.encabezados = resp['data']
+                next: (data) => {
+                    this.encabezados = data
                     this.encabezadosFiltered = [
                         sinEncabezadoObj,
                         ...this.encabezados,
@@ -351,6 +349,7 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
         this.alternativasEliminadas = alternativas
         if (this.formMode === 'SUB-PREGUNTAS') {
             this.preguntaSelected.alternativasEliminar = alternativas
+            this.preguntaSelected.iTotalAlternativas = alternativas.length
             this.actualizarPreguntas(this.preguntaSelected)
         }
     }
@@ -359,11 +358,6 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
     goStep(opcion: string) {
         switch (opcion) {
             case 'next':
-                console.log(
-                    this.bancoPreguntasForm.get(this.activeIndex.toString())
-                        .invalid
-                )
-
                 if (
                     this.bancoPreguntasForm.get(this.activeIndex.toString())
                         .invalid
@@ -394,8 +388,8 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
             .obtenerAlternativaByPreguntaId(this.pregunta.iPreguntaId)
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
-                next: (resp: unknown) => {
-                    this.alternativas = resp['data'].map((item) => {
+                next: (data) => {
+                    this.alternativas = data.map((item) => {
                         item.isLocal = false
                         return item
                     })
@@ -434,27 +428,6 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
         this.bancoPreguntasForm.get('0').patchValue(encabezado)
     }
 
-    // validaciones alternativas
-    alternativasValidator() {
-        return (control: AbstractControl) => {
-            let tipoPregunta =
-                this.bancoPreguntasForm?.get('1.iTipoPregId')?.value
-            const alternativas = control.value
-            tipoPregunta = parseInt(tipoPregunta, 10)
-
-            const errorMessage = getAlternativaValidation(
-                tipoPregunta,
-                alternativas
-            )
-            if (errorMessage) {
-                return {
-                    alternativasInvalidas: errorMessage,
-                }
-            }
-            return errorMessage
-        }
-    }
-
     changeIndexBancoForm(index) {
         this.bancoPreguntaActiveIndex = index
     }
@@ -475,7 +448,6 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
             this.changeIndexBancoForm(1)
             this.toggleStepsVisibility(false)
             this.bancoPreguntasForm.get('1').patchValue(item)
-            console.log(this.bancoPreguntasForm.get('1').value)
         }
         if (accion === 'eliminar') {
             this.eliminarPregunta(item)
@@ -521,7 +493,6 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
                 ...this.preguntas[index],
                 ...pregunta,
             }
-            console.log(this.preguntas)
         } else {
             this.preguntas.push(pregunta)
         }

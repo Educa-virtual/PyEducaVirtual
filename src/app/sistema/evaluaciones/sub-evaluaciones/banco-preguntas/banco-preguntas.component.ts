@@ -85,6 +85,14 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
 
     columnas: IColumn[] = [
         {
+            field: '',
+            header: '',
+            type: 'expansion',
+            width: '2rem',
+            text: 'left',
+            text_header: 'left',
+        },
+        {
             field: 'checked',
             header: '',
             type: 'checkbox',

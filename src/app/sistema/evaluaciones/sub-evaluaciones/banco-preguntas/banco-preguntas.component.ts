@@ -277,6 +277,8 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
                 next: (data) => {
+                    console.log(data)
+
                     this.data = data
                 },
             })

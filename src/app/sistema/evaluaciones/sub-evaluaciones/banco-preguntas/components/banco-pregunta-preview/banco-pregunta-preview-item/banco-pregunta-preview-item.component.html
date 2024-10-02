@@ -9,36 +9,20 @@
             alternativa of pregunta.alternativas;
             track alternativa.iAlternativaId
         ) {
-            <div class="flex gap-2 flex-wrap align-items-start">
+            <div class="flex gap-2 flex-wrap">
                 <!-- AlternativaLetra -->
-
-                <div
-                    class="flex gap-2"
-                    [ngClass]="
-                        pregunta.iTipoPregId === 1
-                            ? 'field-radiobutton'
-                            : 'field-checkbox'
-                    "
-                >
-                    <span class="">{{ alternativa.cAlternativaLetra }} )</span>
-                    <!-- input o checkbox dependiendo del tipo pregunta -->
-                    @if (pregunta.iTipoPregId === 1) {
-                        <p-radioButton
-                            [name]="pregunta.iPreguntaId"
-                            [value]="alternativa.cAlternativaLetra"
-                            [(ngModel)]="pregunta.alternativaCorrecta"
-                            disabled="true"
-                        ></p-radioButton>
-                    }
-                    @if (pregunta.iTipoPregId === 2) {
-                        <p-checkbox
-                            disabled="true"
-                            [name]="pregunta.iPreguntaId"
-                            [value]="alternativa.cAlternativaLetra"
-                            [(ngModel)]="pregunta.alternativaCorrecta"
-                        />
-                    }
-                </div>
+                <h3>{{ alternativa.cAlternativaLetra }} )</h3>
+                <!-- input o checkbox dependiendo del tipo pregunta -->
+                @if (pregunta.iTipoPregId === 1) {
+                    <p-radioButton
+                        [name]="alternativa.cAlternativaLetra"
+                        [value]="alternativa"
+                        disabled="true"
+                    />
+                }
+                @if (pregunta.iTipoPregId === 2) {
+                    <p-checkbox [binary]="true" disabled="true" />
+                }
                 <!-- AlternativaContenido -->
                 <div [innerHTML]="alternativa.cAlternativaDescripcion"></div>
             </div>

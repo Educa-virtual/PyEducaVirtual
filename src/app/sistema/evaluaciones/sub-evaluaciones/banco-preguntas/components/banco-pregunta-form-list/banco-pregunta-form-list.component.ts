@@ -20,6 +20,7 @@ export class BancoPreguntaFormListComponent {
     @Input() preguntas = []
     @Output() accionBtnItemTableChange = new EventEmitter()
 
+    // Columnas de la tabla
     public columns: IColumn[] = [
         {
             type: 'p-editor',
@@ -47,6 +48,7 @@ export class BancoPreguntaFormListComponent {
         },
     ]
 
+    // Acciones de la tabla
     public accionesTabla: IActionTable[] = [
         {
             labelTooltip: 'Editar',
@@ -75,6 +77,7 @@ export class BancoPreguntaFormListComponent {
     ]
 
     public accionBtnItemTable(event) {
+        // emitir acciones al componente padre
         this.accionBtnItemTableChange.emit(event)
     }
 }

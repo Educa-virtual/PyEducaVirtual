@@ -1,0 +1,31 @@
+<!-- Pregunta contenido -->
+<div [innerHTML]="pregunta.cPregunta"></div>
+<!-- Pregunta texto ayuda -->
+<div [innerHTML]="pregunta.cPreguntaTextoAyuda"></div>
+
+@if (pregunta.alternativas !== undefined && pregunta.alternativas.length > 0) {
+    <div class="flex flex-column gap-2">
+        @for (
+            alternativa of pregunta.alternativas;
+            track alternativa.iAlternativaId
+        ) {
+            <div class="flex gap-2 flex-wrap">
+                <!-- AlternativaLetra -->
+                <h3>{{ alternativa.cAlternativaLetra }} )</h3>
+                <!-- input o checkbox dependiendo del tipo pregunta -->
+                @if (pregunta.iTipoPregId === 1) {
+                    <p-radioButton
+                        [name]="alternativa.cAlternativaLetra"
+                        [value]="alternativa"
+                        disabled="true"
+                    />
+                }
+                @if (pregunta.iTipoPregId === 2) {
+                    <p-checkbox [binary]="true" disabled="true" />
+                }
+                <!-- AlternativaContenido -->
+                <div [innerHTML]="alternativa.cAlternativaDescripcion"></div>
+            </div>
+        }
+    </div>
+}

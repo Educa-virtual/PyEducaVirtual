@@ -88,6 +88,8 @@ export class CursoDetalleComponent implements OnInit {
             },
         ]
     }
+
+    // obtiene el parametro y actualiza el tab
     listenParams() {
         const tab = this._activatedRoute.snapshot.queryParams['tab']
         if (isValidTabKey(tab)) {
@@ -95,6 +97,7 @@ export class CursoDetalleComponent implements OnInit {
         }
     }
 
+    // verifica el paramatero y coloca el tab
     setNewTabQueryParam(tab: TabsKeys) {
         const queryParams: Params = { tab: tab }
 
@@ -105,6 +108,7 @@ export class CursoDetalleComponent implements OnInit {
         })
     }
 
+    // actualiza los tabs basado en el parametro
     updateTab(tab: TabsKeys) {
         this.tab = tab
         this.setNewTabQueryParam(this.tab)

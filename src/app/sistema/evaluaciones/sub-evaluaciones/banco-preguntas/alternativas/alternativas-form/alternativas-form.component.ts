@@ -12,8 +12,9 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog'
 import { CommonInputComponent } from '@/app/shared/components/common-input/common-input.component'
 import { ButtonModule } from 'primeng/button'
 import { generarIdAleatorio } from '@/app/shared/utils/random-id'
-import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
-import { ApiEvaluacionesRService } from '@/app/sistema/evaluaciones/services/api-evaluaciones-r.service'
+import { EditorModule } from 'primeng/editor'
+import { filterPreguntasUsadas } from '../pregunta-letra.model'
+import { DropdownModule } from 'primeng/dropdown'
 @Component({
     selector: 'app-alternativas-form',
     standalone: true,
@@ -23,21 +24,24 @@ import { ApiEvaluacionesRService } from '@/app/sistema/evaluaciones/services/api
         InputSwitchModule,
         ReactiveFormsModule,
         CommonInputComponent,
+        EditorModule,
         ButtonModule,
+        DropdownModule,
     ],
     templateUrl: './alternativas-form.component.html',
     styleUrl: './alternativas-form.component.scss',
 })
 export class AlternativasFormComponent implements OnInit {
+    // injeccion de depedencias
     private _config = inject(DynamicDialogConfig)
     private _ref = inject(DynamicDialogRef)
     private _formBuilder = inject(FormBuilder)
-    private _evaluacionesService = inject(ApiEvaluacionesRService)
-    private _confirmDialogService = inject(ConfirmationModalService)
+
     private alternativa
     private alternativas
-
+    public letrasDisponiblesPreguntaSeleccionada
     public pregunta
+    // inicializar el formulario
     public alternativaFormGroup = this._formBuilder.group({
         iAlternativaId: new FormControl<number | string>(generarIdAleatorio()),
         iPreguntaId: [0],
@@ -60,6 +64,12 @@ export class AlternativasFormComponent implements OnInit {
         this.pregunta = this._config.data.pregunta
         this.alternativa = this._config.data.alternativa
         this.alternativas = this._config.data.alternativas
+
+        const letrasUsadas = this.alternativas.map((x) => x.cAlternativaLetra)
+        this.letrasDisponiblesPreguntaSeleccionada =
+            filterPreguntasUsadas(letrasUsadas)
+
+        console.log(this.letrasDisponiblesPreguntaSeleccionada)
 
         this.alternativaFormGroup
             .get('iPreguntaId')
@@ -103,6 +113,7 @@ export class AlternativasFormComponent implements OnInit {
         this._ref.close(data)
     }
 
+    // validar el formulario y emitir la alternativa al cerrar el modal
     guardarActualizarAlternativa() {
         if (this.alternativaFormGroup.invalid) {
             this.alternativaFormGroup.markAllAsTouched()
@@ -112,16 +123,5 @@ export class AlternativasFormComponent implements OnInit {
         const alternativa = this.alternativaFormGroup.value
 
         this.closeModal(alternativa)
-        return
-        // if (this.pregunta.iPreguntaId == 0) {
-        // }
-        // this._evaluacionesService
-        //     .guardarActualizarAlternativa(alternativa)
-        //     .subscribe({
-        //         next: (resp: unknown) => {
-        //             alternativa.iAlternativaId = resp['data'].id
-        //             this.closeModal(alternativa)
-        //         },
-        //     })
     }
 }

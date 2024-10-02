@@ -17,6 +17,7 @@
                 [suggestions]="encabezadosFiltered"
                 optionLabel="cEncabPregTitulo"
                 (completeMethod)="search($event)"
+                appendTo="body"
             />
             @if (
                 formGroup.get('cEncabPregTitulo').hasError('required') &&

@@ -39,12 +39,19 @@
         </div>
     </div>
     <app-table-primeng
+        [dataKey]="'iPreguntaId'"
         [columnas]="columnas"
         [data]="data"
         (accionBtnItem)="accionBtnItemTable($event)"
         [(selectedRowData)]="selectedItems"
         [actions]="accionesTabla"
     >
-        <ng-container slot="caption-content"> </ng-container>
+        <ng-template #rowExpansionTemplate let-data let-columns="columns">
+            <tr>
+                <td [attr.colspan]="columns">
+                    <app-banco-pregunta-preview [pregunta]="data" />
+                </td>
+            </tr>
+        </ng-template>
     </app-table-primeng>
 </app-container-page>

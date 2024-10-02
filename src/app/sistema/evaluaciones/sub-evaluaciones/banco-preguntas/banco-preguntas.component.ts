@@ -25,6 +25,7 @@ import { BancoPreguntasModule } from './banco-preguntas.module'
     styleUrls: ['./banco-preguntas.component.scss'],
 })
 export class BancoPreguntasComponent implements OnInit, OnDestroy {
+    // Injeccion de dependencias
     private _dialogService = inject(DialogService)
     private _apiEre = inject(ApiEreService)
     private _apiEvaluacionesR = inject(ApiEvaluacionesRService)
@@ -32,13 +33,13 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
     private _confirmationModalService = inject(ConfirmationModalService)
     private _route = inject(ActivatedRoute)
     private unsubscribe$: Subject<boolean> = new Subject()
+
     public area = {
         nombreCurso: '',
         grado: '',
         seccion: '',
         nivel: '',
     }
-
     public desempenos = []
     public estados = []
     public evaluaciones = []
@@ -53,6 +54,7 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
     }
 
     selectedItems = []
+    // acciones Contenedor
     accionesPrincipal: IActionContainer[] = [
         {
             labelTooltip: 'Word',
@@ -83,7 +85,16 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
 
     data = []
 
+    // Columnas Tabla Banco Preguntas
     columnas: IColumn[] = [
+        {
+            field: '',
+            header: '',
+            type: 'expansion',
+            width: '2rem',
+            text: 'left',
+            text_header: 'left',
+        },
         {
             field: 'checked',
             header: '',
@@ -171,6 +182,7 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
         },
     ]
 
+    // Acciones tabla Banco Preguntas
     public accionesTabla: IActionTable[] = [
         {
             labelTooltip: 'Editar',
@@ -215,11 +227,15 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             }
         })
     }
+
+    // obtener información inicial
     fetchInitialData() {
         this.obtenerBancoPreguntas()
         this.obtenerDesempenos()
         this.obtenerTipoPreguntas()
     }
+
+    // Inicializar filtros
     initializeData() {
         this.tipoPreguntas = [
             {

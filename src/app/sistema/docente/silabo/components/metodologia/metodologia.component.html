@@ -2,17 +2,17 @@
     title="Metodología"
     [actions]="actionsContainer"
     (accionBtnItem)="accionBtnItem($event)"
-></app-container-page>
-<app-table-primeng
-    [showCaption]="false"
-    [tableStyle]="null"
-    [showPaginator]="false"
-    [actions]="actions"
-    [data]="data"
-    [columnas]="columns"
-    (accionBtnItem)="accionBtnItem($event)"
-></app-table-primeng>
-
+>
+    <app-table-primeng
+        [showCaption]="false"
+        [tableStyle]="null"
+        [showPaginator]="false"
+        [actions]="actions"
+        [data]="data"
+        [columnas]="columns"
+        (accionBtnItem)="accionBtnItem($event)"
+    ></app-table-primeng>
+</app-container-page>
 <app-form-metodologia
     [data]="tipoMetodologias"
     [item]="itemData"

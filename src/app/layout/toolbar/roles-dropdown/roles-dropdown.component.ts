@@ -1,14 +1,6 @@
 import { NgTemplateOutlet } from '@angular/common'
-import {
-    Component,
-    EventEmitter,
-    Input,
-    OnInit,
-    Output,
-    inject,
-} from '@angular/core'
+import { Component, EventEmitter, Input, Output } from '@angular/core'
 import { DropdownChangeEvent, DropdownModule } from 'primeng/dropdown'
-import { ApiObtenerEuService } from './service/api-obtener-eu.service'
 
 export interface IRole {
     id: string
@@ -19,7 +11,6 @@ export interface IRole {
     direccion: string
     ugel: string
 }
-
 @Component({
     selector: 'app-roles-dropdown',
     standalone: true,
@@ -27,8 +18,7 @@ export interface IRole {
     templateUrl: './roles-dropdown.component.html',
     styleUrl: './roles-dropdown.component.scss',
 })
-export class RolesDropdownComponent implements OnInit {
-    private _apiValidacionE = inject(ApiObtenerEuService)
+export class RolesDropdownComponent {
     @Output() profileChangeEmitter = new EventEmitter<IRole>()
     @Input() selectedProfile: IRole | undefined
     @Input({ required: true }) roles: IRole[] = [
@@ -42,10 +32,6 @@ export class RolesDropdownComponent implements OnInit {
             ugel: '15 HUAROCHIRI',
         },
     ]
-    ngOnInit(): void {
-        /* this._apiValidacionE.obtenerAutenticacion(this)*/
-        console.log(this._apiValidacionE)
-    }
 
     changeProfile(event: DropdownChangeEvent) {
         const role = event.value as IRole

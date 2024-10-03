@@ -187,14 +187,6 @@ export class EvaluacionesComponent implements OnInit {
         })
     }
 
-    /*accionBtnItemTable({ accion, item }) {
-        if (accion === 'agregar') {
-            this.selectedItems = []
-            this.selectedItems = [item]
-            //.asignarPreguntas()
-        }
-    }*/
-
     obtenerEvaluacion() {
         this._apiEre
             .obtenerEvaluacion(this.params)
@@ -225,14 +217,14 @@ export class EvaluacionesComponent implements OnInit {
         }
 
         if (accion === 'ver') {
-            alert(item.iEvaluacionId)
+            /// alert(item.iEvaluacionId)
             // this.eliminarPregunta(item)
         }
     }
 
     // abrir el modal para agregar una nueva pregunta
     agregarEditarPregunta(evaluacion) {
-        alert(evaluacion.iEvaluacionId)
+        alert('iEvaluacionId' + evaluacion.iEvaluacionId)
         const refModal = this._dialogService.open(EvaluacionesFormComponent, {
             ...MODAL_CONFIG,
             data: {
@@ -251,29 +243,6 @@ export class EvaluacionesComponent implements OnInit {
             }
         })
     }
-
-    /*obtenerBancoPreguntas() {
-        this._apiEreE
-            .obtenerBancoPreguntas(this.params)
-            .pipe(takeUntil(this.unsubscribe$))
-            .subscribe({
-                next: (resp: unknown) => {
-                    resp['data'] = resp['data'].map((item) => {
-                        const time = dayjs(item.dtPreguntaTiempo)
-                        const hours = time.get('hour')
-                        const minutes = time.get('minute')
-                        const seconds = time.get('second')
-                        item.time = `${hours}h ${minutes}m ${seconds}s`
-                        item.bPreguntaEstado = parseInt(
-                            item.bPreguntaEstado,
-                            10
-                        )
-                        return item
-                    })
-                    this.data = resp['data']
-                },
-            })
-    }*/
 
     // manejar las acciones
     accionBtnItem(action) {

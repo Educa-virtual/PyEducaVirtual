@@ -1,58 +1,32 @@
 import { Component, OnInit, inject, OnDestroy } from '@angular/core'
-import { Button } from 'primeng/button'
-import { InputTextModule } from 'primeng/inputtext'
-import { MultiSelectModule } from 'primeng/multiselect'
-import { FormsModule } from '@angular/forms'
-import { DropdownModule } from 'primeng/dropdown'
-
-import { AlternativasComponent } from './alternativas/alternativas.component'
-import { CompetenciasComponent } from '../competencias/competencias.component'
 
 import {
     IActionTable,
     IColumn,
-    TablePrimengComponent,
 } from '../../../../shared/table-primeng/table-primeng.component'
-import {
-    ContainerPageComponent,
-    IActionContainer,
-} from '@/app/shared/container-page/container-page.component'
-import { provideIcons } from '@ng-icons/core'
-import { matGroupWork } from '@ng-icons/material-icons/baseline'
+import { IActionContainer } from '@/app/shared/container-page/container-page.component'
 import { DialogService } from 'primeng/dynamicdialog'
 import { BancoPreguntasFormComponent } from './banco-preguntas-form/banco-preguntas-form.component'
 import { MODAL_CONFIG } from '@/app/shared/constants/modal.config'
 import { AsignarMatrizPreguntasFormComponent } from './asignar-matriz-preguntas-form/asignar-matriz-preguntas-form.component'
-import { MessageService } from 'primeng/api'
 import { ApiEreService } from '../../services/api-ere.service'
-import dayjs from 'dayjs'
-import { FloatLabelModule } from 'primeng/floatlabel'
 import { Subject, takeUntil } from 'rxjs'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { ApiEvaluacionesRService } from '../../services/api-evaluaciones-r.service'
 import { ApiEvaluacionesService } from '../../services/api-evaluaciones.service'
 import { ActivatedRoute } from '@angular/router'
+import { BancoPreguntasModule } from './banco-preguntas.module'
+import { BancoPreguntaListaComponent } from './components/banco-pregunta-lista/banco-pregunta-lista.component'
 
 @Component({
     selector: 'app-ere-preguntas',
     templateUrl: './banco-preguntas.component.html',
-    providers: [provideIcons({ matGroupWork }), DialogService, MessageService],
     standalone: true,
-    imports: [
-        AlternativasComponent,
-        CompetenciasComponent,
-        InputTextModule,
-        MultiSelectModule,
-        FormsModule,
-        DropdownModule,
-        ContainerPageComponent,
-        Button,
-        TablePrimengComponent,
-        FloatLabelModule,
-    ],
+    imports: [BancoPreguntasModule, BancoPreguntaListaComponent],
     styleUrls: ['./banco-preguntas.component.scss'],
 })
 export class BancoPreguntasComponent implements OnInit, OnDestroy {
+    // Injeccion de dependencias
     private _dialogService = inject(DialogService)
     private _apiEre = inject(ApiEreService)
     private _apiEvaluacionesR = inject(ApiEvaluacionesRService)
@@ -60,24 +34,20 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
     private _confirmationModalService = inject(ConfirmationModalService)
     private _route = inject(ActivatedRoute)
     private unsubscribe$: Subject<boolean> = new Subject()
+
     public area = {
         nombreCurso: '',
         grado: '',
         seccion: '',
         nivel: '',
     }
-
-    public competencias = []
-    public capacidades = []
     public desempenos = []
     public estados = []
     public evaluaciones = []
     public tipoPreguntas = []
+    public expandedRowKeys = {}
 
     public params = {
-        // iCompentenciaId: 0,
-        // iCapacidadId: 0,
-        // iDesempenioId: 0,
         bPreguntaEstado: -1,
         iCursoId: 1,
         iNivelTipoId: 1,
@@ -86,6 +56,7 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
     }
 
     selectedItems = []
+    // acciones Contenedor
     accionesPrincipal: IActionContainer[] = [
         {
             labelTooltip: 'Word',
@@ -114,24 +85,17 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
         },
     ]
 
-    data = []
+    public data = []
 
+    // Columnas Tabla Banco Preguntas
     columnas: IColumn[] = [
         {
-            field: 'checked',
+            field: '',
             header: '',
-            type: 'checkbox',
-            width: '5rem',
+            type: 'expansion',
+            width: '2rem',
             text: 'left',
-            text_header: '',
-        },
-        {
-            field: 'cPregunta',
-            header: 'Pregunta',
-            type: 'p-editor',
-            width: '15rem',
-            text: 'left',
-            text_header: 'Pregunta',
+            text_header: 'left',
         },
         {
             field: 'cEncabPregTitulo',
@@ -157,7 +121,6 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             text: 'left',
             text_header: 'Tiempo',
         },
-
         {
             field: 'iPreguntaPeso',
             header: 'Puntaje',
@@ -202,8 +165,17 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             text: 'left',
             text_header: '',
         },
+        {
+            field: 'checked',
+            header: '',
+            type: 'checkbox',
+            width: '5rem',
+            text: 'left',
+            text_header: '',
+        },
     ]
 
+    // Acciones tabla Banco Preguntas
     public accionesTabla: IActionTable[] = [
         {
             labelTooltip: 'Editar',
@@ -248,19 +220,16 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             }
         })
     }
+
+    // obtener información inicial
     fetchInitialData() {
         this.obtenerBancoPreguntas()
         this.obtenerDesempenos()
         this.obtenerTipoPreguntas()
     }
-    initializeData() {
-        this.competencias = [
-            {
-                iCompentenciaId: 0,
-                cCompetenciaDescripcion: 'Todos',
-            },
-        ]
 
+    // Inicializar filtros
+    initializeData() {
         this.tipoPreguntas = [
             {
                 iTipoPregId: 0,
@@ -282,12 +251,6 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
                 cDSC: 'Asignado',
             },
         ]
-        this.capacidades = [
-            {
-                iCapacidadId: 0,
-                cCapacidadDescripcion: 'Todos',
-            },
-        ]
     }
 
     obtenerDesempenos() {
@@ -295,8 +258,8 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             .obtenerDesempenos(this.params)
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
-                next: (resp: unknown) => {
-                    this.desempenos = resp['data']
+                next: (data) => {
+                    this.desempenos = data
                 },
             })
     }
@@ -306,28 +269,16 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             .obtenerBancoPreguntas(this.params)
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
-                next: (resp: unknown) => {
-                    resp['data'] = resp['data'].map((item) => {
-                        if (item.preguntas != null) {
-                            item.preguntas = item.preguntas.map((subItem) => {
-                                const time = dayjs(subItem.dtPreguntaTiempo)
-                                const hours = time.get('hour')
-                                const minutes = time.get('minute')
-                                const seconds = time.get('second')
-                                subItem.time = `${hours}h ${minutes}m ${seconds}s`
-                                return subItem
-                            })
-                        } else {
-                            const time = dayjs(item.dtPreguntaTiempo)
-                            const hours = time.get('hour')
-                            const minutes = time.get('minute')
-                            const seconds = time.get('second')
-                            item.time = `${hours}h ${minutes}m ${seconds}s`
-                        }
-                        return item
+                next: (data) => {
+                    this.data = data
+                    this.data.forEach((item) => {
+                        this.expandedRowKeys[item.iPreguntaId] = true
                     })
 
-                    this.data = resp['data']
+                    this.expandedRowKeys = Object.assign(
+                        {},
+                        this.expandedRowKeys
+                    )
                 },
             })
     }
@@ -337,11 +288,7 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             .obtenerTipoPreguntas()
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
-                next: (resp: unknown) => {
-                    const data = resp['data'].map((item) => {
-                        item.iTipoPregId = parseInt(item.iTipoPregId, 10)
-                        return item
-                    })
+                next: (data) => {
                     this.tipoPreguntas = [
                         {
                             iTipoPregId: 0,
@@ -352,38 +299,6 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
                 },
             })
     }
-
-    obtenerCompetencias() {
-        this._apiEre
-            .obtenerCompetencias(this.params)
-            .pipe(takeUntil(this.unsubscribe$))
-            .subscribe({
-                next: (resp: unknown) => {
-                    this.competencias = [
-                        {
-                            iCompentenciaId: 0,
-                            cCompetenciaDescripcion: 'Todos',
-                        },
-                        ...resp['data'],
-                    ]
-                },
-            })
-    }
-
-    // obtenerCapacidades() {
-    //     this._apiEre
-    //         .obtenerCapacidades(this.params)
-    //         .pipe(takeUntil(this.unsubscribe$))
-    //         .subscribe({
-    //             next: (resp: unknown) => {
-    //                 this.capacidades = resp['data']
-    //                 this.capacidades.unshift({
-    //                     iCapacidadId: 0,
-    //                     cCapacidadDescripcion: 'Todos',
-    //                 })
-    //             },
-    //         })
-    // }
 
     // manejar las acciones
     accionBtnItem(action) {
@@ -412,8 +327,6 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
         }
 
         let preguntas = []
-
-        console.log(this.selectedItems)
 
         this.selectedItems.forEach((item) => {
             if (item.iEncabPregId == -1) {

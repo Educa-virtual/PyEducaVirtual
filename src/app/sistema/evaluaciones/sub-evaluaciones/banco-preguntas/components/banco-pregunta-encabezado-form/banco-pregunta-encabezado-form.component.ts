@@ -31,17 +31,21 @@ export const sinEncabezadoObj = {
 export class BancoPreguntaEncabezadoFormComponent implements OnInit {
     @Input({ required: true }) controlKey: string
     @Input() encabezados = []
+
     private parentContainer = inject(ControlContainer)
-    formGroup!: FormGroup
-    encabezadosFiltered = []
+    public formGroup!: FormGroup
+    public encabezadosFiltered = []
+
     ngOnInit(): void {
         this.formGroup = this.parentFormGroup
     }
 
     get parentFormGroup() {
+        // obtiene el formulario padre
         return this.parentContainer.control?.get(this.controlKey) as FormGroup
     }
 
+    // buscar termino y en la lista de encabezados
     search(event: AutoCompleteCompleteEvent) {
         const filtered = []
         const query = event.query

@@ -6,6 +6,7 @@
     ></p-steps>
 
     @switch (activeIndex) {
+        <!-- paso1 -->
         @case (0) {
             <form [formGroup]="bancoPreguntasForm">
                 <app-banco-pregunta-encabezado-form
@@ -14,17 +15,18 @@
                 />
             </form>
         }
+        <!-- paso2 -->
         @case (1) {
             <div class="grid mb-2">
                 <div
                     class="col-12 flex justify-content-between flex-wrap gap-2"
                 >
                     <h2 class="text-xl">Formulario Preguntas</h2>
-                    @if (!esSinEncabezado) {
+                    @if (!esSinEncabezado && showFooterSteps) {
                         <button
                             pButton
                             pRipple
-                            label="Agregar Alternativa"
+                            label="Agregar Pregunta"
                             icon="pi pi-plus"
                             size="small"
                             class="p-button-primary"
@@ -69,6 +71,7 @@
                             type="button"
                             size="small"
                             (click)="
+                                toggleStepsVisibility(true);
                                 changeIndexBancoForm(0);
                                 toggleValidationInformacionPregunta(false)
                             "
@@ -108,6 +111,7 @@
                 "
                 [serviceProvider]="evaluacionesService"
             ></app-alternativas>
+
             @if (
                 bancoPreguntasForm
                     .get('2.alternativas')
@@ -121,33 +125,53 @@
                     }}
                 </small>
             }
+
+            @if (!showFooterSteps) {
+                <footer class="flex justify-content-end gap-2 pt-3">
+                    <button
+                        pButton
+                        pRipple
+                        label="Guardar Alternativas"
+                        icon="pi pi-save"
+                        size="small"
+                        type="button"
+                        class="p-button-primary"
+                        (click)="goStep('back'); toggleStepsVisibility(true)"
+                    ></button>
+                </footer>
+            }
         }
         @default {}
     }
-    <div class="flex justify-content-between">
-        @if (activeIndex !== 0) {
-            <button pButton size="small" (click)="goStep('back')">Atrás</button>
-        }
-        @if (activeIndex !== pasos.length - 1) {
-            <button
-                pButton
-                size="small"
-                (click)="goStep('next')"
-                class="ml-auto"
-            >
-                Siguiente
-            </button>
-        }
-        @if (activeIndex === pasos.length - 1) {
-            <button
-                pButton
-                pRipple
-                label="Finalizar"
-                icon="pi pi-save"
-                size="small"
-                class="p-button-primary ml-auto"
-                (click)="guardarActualizarBancoPreguntas()"
-            ></button>
-        }
-    </div>
+
+    @if (showFooterSteps) {
+        <div class="flex justify-content-between">
+            @if (activeIndex !== 0) {
+                <button pButton size="small" (click)="goStep('back')">
+                    Atrás
+                </button>
+            }
+            @if (activeIndex !== pasos.length - 1) {
+                <button
+                    pButton
+                    size="small"
+                    (click)="goStep('next')"
+                    class="ml-auto"
+                >
+                    Siguiente
+                </button>
+            }
+            @if (activeIndex === pasos.length - 1) {
+                <button
+                    pButton
+                    pRipple
+                    label="Finalizar"
+                    icon="pi pi-save"
+                    size="small"
+                    class="p-button-primary ml-auto"
+                    (click)="guardarActualizarBancoPreguntas()"
+                ></button>
+            }
+        </div>
+    }
 </div>

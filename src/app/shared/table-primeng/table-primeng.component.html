@@ -16,6 +16,8 @@
     [scrollable]="scrollable"
     [scrollHeight]="scrollHeight"
     class="hoverTable"
+    [dataKey]="dataKey"
+    [expandedRowKeys]="expandedRowKeys"
 >
     @if (showCaption) {
         <ng-template pTemplate="caption">
@@ -57,6 +59,7 @@
                         @case ('checkbox') {
                             <p-tableHeaderCheckbox />
                         }
+                        @case ('expansion') {}
                         @default {
                             <div [style.text-align]="col.text_header" class="">
                                 <span> {{ col.header }}</span>
@@ -73,10 +76,26 @@
         let-rowData
         let-columns="columns"
         let-rowIndex="rowIndex"
+        let-expanded="expanded"
     >
         <tr [pSelectableRow]="rowData">
             @for (col of columnasSeleccionadas; track $index; let i = $index) {
                 <td>
+                    @if (col.type === 'expansion') {
+                        <button
+                            type="button"
+                            pButton
+                            pRipple
+                            [pRowToggler]="rowData"
+                            aria-label="Toggle row expansion"
+                            class="p-button-text p-button-rounded p-button-plain"
+                            [icon]="
+                                expanded
+                                    ? 'pi pi-chevron-down'
+                                    : 'pi pi-chevron-right'
+                            "
+                        ></button>
+                    }
                     @if (col.type === 'item') {
                         <div [style.text-align]="col.text">
                             <span>{{ rowIndex + 1 }}</span>
@@ -163,5 +182,15 @@
                 </td>
             }
         </tr>
+    </ng-template>
+    <ng-template pTemplate="rowexpansion" let-rowData>
+        <ng-container
+            [ngTemplateOutlet]="rowExpansionTemplate"
+            [ngTemplateOutletContext]="{
+                $implicit: rowData,
+                columns: columnasSeleccionadas.length,
+            }"
+        >
+        </ng-container>
     </ng-template>
 </p-table>

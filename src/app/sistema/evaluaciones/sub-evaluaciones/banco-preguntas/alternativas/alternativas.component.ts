@@ -9,7 +9,7 @@ import {
 import { ButtonModule } from 'primeng/button'
 import { TableModule } from 'primeng/table'
 import { CommonModule } from '@angular/common'
-import { DialogService, DynamicDialogConfig } from 'primeng/dynamicdialog'
+import { DialogService } from 'primeng/dynamicdialog'
 import { AlternativasFormComponent } from './alternativas-form/alternativas-form.component'
 import { MODAL_CONFIG } from '@/app/shared/constants/modal.config'
 
@@ -19,7 +19,6 @@ import {
     TablePrimengComponent,
 } from '../../../../../shared/table-primeng/table-primeng.component'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
-import { ConfirmationService } from 'primeng/api'
 @Component({
     selector: 'app-alternativas',
     standalone: true,
@@ -30,25 +29,26 @@ import { ConfirmationService } from 'primeng/api'
 })
 export class AlternativasComponent implements OnChanges {
     @Input() alternativas = []
-    alternativasEliminadas = []
+    @Input() pregunta
+    @Input() serviceProvider
     @Output() alternativasEliminadasChange = new EventEmitter()
     @Output() alternativasChange = new EventEmitter()
-    @Input() pregunta
+
+    // injeccion de depedencias
     private _dialogService = inject(DialogService)
     private _confirmationModalService = inject(ConfirmationModalService)
-    private _config = inject(DynamicDialogConfig)
-    private _confirmationService = inject(ConfirmationService)
-    @Input() serviceProvider
+
+    public alternativasEliminadas = []
+    // alternativas de la tabla alternativas
     public columnas: IColumn[] = [
         {
-            type: 'text',
-            width: '5rem',
+            type: 'p-editor',
+            width: '10rem',
             field: 'cAlternativaDescripcion',
             header: 'Descripción',
             text_header: 'left',
             text: 'left',
         },
-
         {
             type: 'text',
             width: '5rem',
@@ -87,11 +87,12 @@ export class AlternativasComponent implements OnChanges {
         },
     ]
 
+    // ver cambios en las alternativas
     ngOnChanges(changes): void {
         this.alternativas = changes.alternativas.currentValue
-        console.log(changes)
     }
 
+    // acciones de la tabla alternativas
     public accionesTabla: IActionTable[] = [
         {
             labelTooltip: 'Editar',
@@ -109,6 +110,7 @@ export class AlternativasComponent implements OnChanges {
         },
     ]
 
+    // Abrir modal alternativas form (agregar-actualizar)
     agregarActualizarAlternativa(alternativa) {
         const refModal = this._dialogService.open(AlternativasFormComponent, {
             ...MODAL_CONFIG,
@@ -133,6 +135,7 @@ export class AlternativasComponent implements OnChanges {
         })
     }
 
+    // actualizar alternativas de maner local
     actualizarAlternativas(alternativa) {
         const existeAlternativa = this.alternativas.some((x) => {
             return x.iAlternativaId == alternativa.iAlternativaId
@@ -150,6 +153,7 @@ export class AlternativasComponent implements OnChanges {
         this.alternativasChange.emit(this.alternativas)
     }
 
+    // eliminar alternativa confirmacion
     eliminarAlternativa(alternativa) {
         this._confirmationModalService.openConfirm({
             header: 'Esta seguro de eliminar la alternativa?',
@@ -161,18 +165,11 @@ export class AlternativasComponent implements OnChanges {
                 this.alternativasEliminadasChange.emit(
                     this.alternativasEliminadas
                 )
-                // this.serviceProvider
-                //     .eliminarAlternativaById(alternativa.iAlternativaId)
-                //     .subscribe({
-                //         next: () => {
-                //             this.eliminarAlternativaLocal(alternativa)
-                //         },
-                //     })
             },
-            reject: () => {},
         })
     }
 
+    // eliminar alternativa de manera local
     eliminarAlternativaLocal(alternativa) {
         this.alternativas = this.alternativas.filter(
             (item) => item.iAlternativaId != alternativa.iAlternativaId
@@ -180,6 +177,7 @@ export class AlternativasComponent implements OnChanges {
         this.alternativasChange.emit(this.alternativas)
     }
 
+    // manejar acciones de la tabla alternativas
     accionBtnItemTable({ accion, item }) {
         if (accion === 'eliminar') {
             this.eliminarAlternativa(item)

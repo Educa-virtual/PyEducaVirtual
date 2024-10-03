@@ -82,10 +82,10 @@ const estudiante = []
 
 const aula_virtual = [
     {
-        label: 'Mis Cursos',
+        label: 'Mis Áreas Curriculares',
         items: [
             {
-                label: 'Mis Cursos',
+                label: 'Mis Áreas Curriculares',
                 icon: 'pi pi-fw pi-book',
                 routerLink: ['/aula-virtual/cursos'],
             },
@@ -123,7 +123,7 @@ const evaluaciones = [
                 routerLink: ['/evaluaciones/evaluaciones'],
             },
             {
-                label: 'Áreas',
+                label: 'Mis Áreas Curriculares',
                 icon: 'pi pi-fw pi-folder',
                 routerLink: ['/evaluaciones/areas'],
             },

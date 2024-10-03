@@ -1,0 +1,18 @@
+<app-table-primeng
+    [dataKey]="'iPreguntaId'"
+    [columnas]="columnas"
+    [data]="data"
+    (accionBtnItem)="accionBtnItemTable.emit($event)"
+    [(selectedRowData)]="selectedRowData"
+    [actions]="accionesTabla"
+    [expandedRowKeys]="expandedRowKeys"
+    (selectedRowDataChange)="onSelectionChange($event)"
+>
+    <ng-template #rowExpansionTemplate let-data let-columns="columns">
+        <tr class="bg-gray-100">
+            <td [attr.colspan]="columns">
+                <app-banco-pregunta-preview [pregunta]="data" />
+            </td>
+        </tr>
+    </ng-template>
+</app-table-primeng>

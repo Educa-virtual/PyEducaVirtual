@@ -1,4 +1,12 @@
-import { Component, inject, OnInit, OnDestroy } from '@angular/core'
+import {
+    Component,
+    inject,
+    OnInit,
+    OnDestroy,
+    Input,
+    Output,
+    EventEmitter,
+} from '@angular/core'
 import {
     FormBuilder,
     FormGroup,
@@ -8,10 +16,9 @@ import {
 import { EditorModule } from 'primeng/editor'
 import { TabViewModule } from 'primeng/tabview'
 import { AlternativasComponent } from '../alternativas/alternativas.component'
-import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog'
 import { StepsModule } from 'primeng/steps'
 
-import { Subject, takeUntil } from 'rxjs'
+import { Subject } from 'rxjs'
 import { ApiEvaluacionesRService } from '../../../services/api-evaluaciones-r.service'
 import { BancoPreguntaInformacionFormComponent } from './banco-pregunta-informacion-form/banco-pregunta-informacion-form.component'
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
@@ -19,10 +26,7 @@ import { BancoPreguntaFormListComponent } from '../components/banco-pregunta-for
 import { generarIdAleatorio } from '@/app/shared/utils/random-id'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { MenuItem } from 'primeng/api'
-import {
-    BancoPreguntaEncabezadoFormComponent,
-    sinEncabezadoObj,
-} from '../components/banco-pregunta-encabezado-form/banco-pregunta-encabezado-form.component'
+import { BancoPreguntaEncabezadoFormComponent } from '../components/banco-pregunta-encabezado-form/banco-pregunta-encabezado-form.component'
 import { BancoPreguntasModule } from '../banco-preguntas.module'
 
 const preguntaFormInfoDefaultValues = {
@@ -58,21 +62,47 @@ const alternativasLabel = {
     styleUrl: './banco-preguntas-form.component.scss',
 })
 export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
-    // manejar la pregunta como arreglo
-    //  si selecciona con cabecera, mostrar las preguntas como subpreguntas
-    //  si selecciona sin cabecera, mostrar la pregunta en el form.
-    // quitar el boton agregarPregunta si es sin cabecera o no se debe mostrar footer.
-    // formMode es 'Sub-preguntas' cuando
+    @Output() closeModalChange = new EventEmitter()
+    @Output() submitChange = new EventEmitter()
+    @Input() public tipoPreguntas = []
+    @Input() public encabezados = []
+    @Input() public bancoPreguntasForm: FormGroup
+    @Input() public encabezadosFiltered = []
+    private _pregunta
 
-    public encabezadosFiltered = []
-    public tipoPreguntas = []
+    @Input()
+    set pregunta(pregunta) {
+        if (pregunta === undefined) {
+            return
+        }
+
+        if (
+            pregunta.preguntas !== undefined &&
+            pregunta.preguntas?.length > 0
+        ) {
+            this.formMode = 'SUB-PREGUNTAS'
+            this.handleConEncabezado()
+        } else {
+            this.formMode = 'UNA-PREGUNTA'
+            this.preguntaSelected = pregunta
+            this.handleSinEncabezado()
+            if (this.modePregunta === 'EDITAR') {
+                this.patchForm(pregunta)
+            }
+        }
+        this._pregunta = pregunta
+    }
+
+    get pregunta() {
+        return this._pregunta
+    }
+
     public customOptions = []
     public preguntas = []
 
-    public mode: 'EDITAR' | 'CREAR' = 'CREAR'
+    @Input() public modePregunta: 'EDITAR' | 'CREAR' = 'CREAR'
     public formMode: 'SUB-PREGUNTAS' | 'UNA-PREGUNTA' = 'UNA-PREGUNTA'
     public showFooterSteps = true
-    public pregunta
     public pasos: MenuItem[] = [
         {
             id: '0',
@@ -88,105 +118,24 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
 
     // Injeccion de depedencias
     private _formBuilder = inject(FormBuilder)
-    private _config = inject(DynamicDialogConfig)
     private _evaluacionesService = inject(ApiEvaluacionesRService)
-    private _ref = inject(DynamicDialogRef)
     private _confirmationModalService = inject(ConfirmationModalService)
 
     public evaluacionesService = this._evaluacionesService
     private unsubscribe$: Subject<boolean> = new Subject()
-    public encabezados = []
-    public bancoPreguntasForm: FormGroup
     public alternativasEliminadas = []
     public preguntaSelected = null
     public preguntasEliminar = []
 
-    constructor() {
-        this.inicializarFormulario()
-    }
-
-    inicializarFormulario() {
-        this.bancoPreguntasForm = this._formBuilder.group({
-            0: this._formBuilder.group({
-                iEncabPregId: [-1],
-                cEncabPregTitulo: [''],
-                encabezadoSelected: [sinEncabezadoObj],
-                cEncabPregContenido: [''],
-            }),
-            1: this.inicializarPreguntaInfoForm(),
-            2: this._formBuilder.group({
-                alternativas: [[]],
-            }),
-        })
-    }
-
-    inicializarPreguntaInfoForm() {
-        return this._formBuilder.group({
-            iPreguntaId: [generarIdAleatorio()],
-            iTipoPregId: [null],
-            cPregunta: [null],
-            cPreguntaTextoAyuda: [''],
-            iPreguntaNivel: [null],
-            iPreguntaPeso: [null],
-            isLocal: [true],
-            isDeleted: [false],
-            iHoras: [0],
-            iMinutos: [0],
-            iSegundos: [0],
-            cPreguntaClave: [null],
-            bPreguntaEstado: [0],
-        })
-    }
-
     ngOnInit() {
-        this.tipoPreguntas = this._config.data.tipoPreguntas.filter((item) => {
-            return item.iTipoPregId !== 0
-        })
-
-        this.pregunta = this._config.data.pregunta
-
-        // la pregunta tiene preguntas
-        if (this.pregunta.preguntas?.length > 0) {
-            this.mode = 'EDITAR'
-            this.formMode = 'SUB-PREGUNTAS'
-            this.patchForm(this.pregunta)
-            this.preguntas = this._config.data.pregunta.preguntas
-        } else {
-            // es solo una pregunta
-            this.toggleAlternativasSinEncabezado(true)
-            this.preguntaSelected = this._config.data.pregunta
-            if (
-                this.pregunta.iPreguntaId != 0 &&
-                this.pregunta.iEncabPregId == -1
-            ) {
-                this.mode = 'EDITAR'
-                this.patchForm(this.pregunta)
-                // this.obtenerAlternativas()
-            }
-        }
-        this.obtenerEncabezados()
-
-        this.bancoPreguntasForm
-            .get('1.iTipoPregId')
-            ?.valueChanges.subscribe(() => {
-                // this.handleTipoPreguntaChange(value)
-            })
         // Llenar el formulario paso 1 basado en la seleccion de la cabecera.
         this.bancoPreguntasForm
             .get('0.encabezadoSelected')
             .valueChanges.subscribe((value) => {
                 if (this.esSinEncabezado) {
-                    this.bancoPreguntasForm.get('0.iEncabPregId').setValue(null)
-                    this.toggleValidationInformacionPregunta(true)
-                    this.toggleAlternativasSinEncabezado(true)
-                    this.toggleValidationCabecera(false)
-                    this.formMode = 'UNA-PREGUNTA'
+                    this.handleSinEncabezado()
                 } else {
-                    // agregar quitar validaciones
-                    this.formMode = 'SUB-PREGUNTAS'
-                    this.toggleValidationInformacionPregunta(false)
-                    this.toggleAlternativasSinEncabezado(false)
-                    this.toggleValidationCabecera(true)
+                    this.handleConEncabezado()
                 }
                 if (typeof value === 'string') {
                     this.bancoPreguntasForm.get('0.iEncabPregId').setValue(0)
@@ -195,112 +144,87 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
                         .setValue(value)
                 }
                 if (typeof value === 'object') {
-                    this.bancoPreguntasForm
-                        .get('0.iEncabPregId')
-                        .setValue(value?.iEncabPregId)
-                    this.bancoPreguntasForm
-                        .get('0.cEncabPregTitulo')
-                        .setValue(value?.cEncabPregTitulo)
-                    this.bancoPreguntasForm
-                        .get('0.cEncabPregContenido')
-                        .setValue(value?.cEncabPregContenido)
+                    this.formEncabezado.patchValue({
+                        iEncabPregId: value?.iEncabPregId,
+                        cEncabPregTitulo: value?.cEncabPregTitulo,
+                        cEncabPregContenido: value?.cEncabPregContenido,
+                    })
                 }
             })
     }
 
-    generatePreguntaFormInfo() {
-        return this._formBuilder.group({})
+    get formPreguntaInfo(): FormGroup {
+        return this.bancoPreguntasForm.get('1') as FormGroup
     }
 
-    obtenerEncabezados() {
-        const params = {
-            iCursoId: this._config.data.iCursoId,
-            iNivelGradoId: 1,
-            iEspecialistaId: 1,
-        }
-        this._evaluacionesService
-            .obtenerEncabezadosPreguntas(params)
-            .pipe(takeUntil(this.unsubscribe$))
-            .subscribe({
-                next: (data) => {
-                    this.encabezados = data
-                    this.encabezadosFiltered = [
-                        sinEncabezadoObj,
-                        ...this.encabezados,
-                    ]
-                },
-            })
+    get formEncabezado() {
+        return this.bancoPreguntasForm.get('0')
     }
 
-    // cambiar validaciones si selecciona con o sin cabecera.
-    toggleValidationCabecera(required: boolean) {
-        if (required) {
-            this.bancoPreguntasForm
-                .get('0.iEncabPregId')
+    private handleSinEncabezado() {
+        this.agregarQuitarValidacionesFormPregunta('AGREGAR')
+        this.agregarQuitarValidacionesEncabezado('QUITAR')
+        this.agregarQuitarAlternativasPaso('AGREGAR')
+    }
+
+    private handleConEncabezado() {
+        this.agregarQuitarAlternativasPaso('QUITAR')
+        this.agregarQuitarValidacionesEncabezado('AGREGAR')
+        this.agregarQuitarValidacionesFormPregunta('QUITAR')
+    }
+
+    agregarQuitarValidacionesEncabezado(mode: 'AGREGAR' | 'QUITAR') {
+        if (mode === 'AGREGAR') {
+            this.formEncabezado
+                .get('iEncabPregId')
                 .setValidators([Validators.required])
-            this.bancoPreguntasForm
-                .get('0.cEncabPregTitulo')
+            this.formEncabezado
+                .get('cEncabPregTitulo')
                 .setValidators([Validators.required])
-            this.bancoPreguntasForm
-                .get('0.cEncabPregContenido')
+            this.formEncabezado
+                .get('cEncabPregContenido')
                 .setValidators([Validators.required])
         } else {
-            this.bancoPreguntasForm.get('0.iEncabPregId').setValidators(null)
-            this.bancoPreguntasForm
-                .get('0.cEncabPregTitulo')
-                .setValidators(null)
-            this.bancoPreguntasForm
-                .get('0.cEncabPregContenido')
-                .setValidators(null)
+            this.formEncabezado.get('iEncabPregId').setValidators(null)
+            this.formEncabezado.get('cEncabPregTitulo').setValidators(null)
+            this.formEncabezado.get('cEncabPregContenido').setValidators(null)
         }
 
-        this.bancoPreguntasForm.get('0.iEncabPregId').updateValueAndValidity()
-        this.bancoPreguntasForm
-            .get('0.cEncabPregTitulo')
-            .updateValueAndValidity()
-        this.bancoPreguntasForm
-            .get('0.cEncabPregContenido')
-            .updateValueAndValidity()
+        this.formEncabezado.get('iEncabPregId').updateValueAndValidity()
+        this.formEncabezado.get('cEncabPregTitulo').updateValueAndValidity()
+        this.formEncabezado.get('cEncabPregContenido').updateValueAndValidity()
     }
 
     // quitar o agregar validaciones.
-    toggleValidationInformacionPregunta(required: boolean) {
-        if (required) {
-            this.bancoPreguntasForm
-                .get('1.iPreguntaId')
+    agregarQuitarValidacionesFormPregunta(mode: 'AGREGAR' | 'QUITAR') {
+        if (mode === 'AGREGAR') {
+            this.formPreguntaInfo
+                .get('iPreguntaId')
                 .setValidators([Validators.required])
-            this.bancoPreguntasForm
-                .get('1.iTipoPregId')
+            this.formPreguntaInfo
+                .get('iTipoPregId')
                 .setValidators([Validators.required])
-            this.bancoPreguntasForm
-                .get('1.cPregunta')
+            this.formPreguntaInfo
+                .get('cPregunta')
                 .setValidators([Validators.required])
-            this.bancoPreguntasForm
-                .get('1.iPreguntaNivel')
+            this.formPreguntaInfo
+                .get('iPreguntaNivel')
+                ?.setValidators([Validators.required])
+            this.formPreguntaInfo
+                .get('iPreguntaPeso')
                 .setValidators([Validators.required])
-            this.bancoPreguntasForm
-                .get('1.iPreguntaPeso')
+            this.formPreguntaInfo
+                .get('iHoras')
                 .setValidators([Validators.required])
-            this.bancoPreguntasForm
-                .get('1.iHoras')
+            this.formPreguntaInfo
+                .get('iMinutos')
                 .setValidators([Validators.required])
-            this.bancoPreguntasForm
-                .get('1.iMinutos')
+            this.formPreguntaInfo
+                .get('iSegundos')
                 .setValidators([Validators.required])
-            this.bancoPreguntasForm
-                .get('1.iSegundos')
-                .setValidators([Validators.required])
-            this.bancoPreguntasForm
-                .get('1.cPreguntaClave')
-                .setValidators([
-                    Validators.required,
-                    Validators.minLength(1),
-                    Validators.maxLength(1),
-                ])
-            this.bancoPreguntasForm.get('1').updateValueAndValidity()
+            this.formPreguntaInfo.updateValueAndValidity()
         } else {
-            const formGroup = this.bancoPreguntasForm.get('1') as FormGroup
-            Object.keys(formGroup.controls).forEach((key) => {
+            Object.keys(this.formPreguntaInfo.controls).forEach((key) => {
                 this.bancoPreguntasForm.get('1').get(key).clearValidators()
                 this.bancoPreguntasForm
                     .get('1')
@@ -311,8 +235,8 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
     }
 
     //  quitar o agregar alternativas
-    toggleAlternativasSinEncabezado(toggle: boolean) {
-        if (toggle) {
+    agregarQuitarAlternativasPaso(mode: 'AGREGAR' | 'QUITAR') {
+        if (mode === 'AGREGAR') {
             const label = this.pasos.find((item) => item.id === '2')
             if (label == undefined) {
                 this.pasos = [...this.pasos, alternativasLabel]
@@ -380,26 +304,12 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
                         this.formMode === 'SUB-PREGUNTAS' &&
                         this.pasos[this.activeIndex].id === '2'
                     ) {
-                        this.toggleAlternativasSinEncabezado(false)
+                        this.agregarQuitarAlternativasPaso('AGREGAR')
                     }
                     this.activeIndex--
                 }
                 break
         }
-    }
-
-    obtenerAlternativas() {
-        this._evaluacionesService
-            .obtenerAlternativaByPreguntaId(this.pregunta.iPreguntaId)
-            .pipe(takeUntil(this.unsubscribe$))
-            .subscribe({
-                next: (data) => {
-                    this.alternativas = data.map((item) => {
-                        item.isLocal = false
-                        return item
-                    })
-                },
-            })
     }
 
     // asignar los datos al formulario.
@@ -445,8 +355,7 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
     agregarPreguntaForm() {
         this.changeIndexBancoForm(1)
         this.toggleStepsVisibility(false)
-        // agregar validaciones
-        this.toggleValidationInformacionPregunta(true)
+        this.agregarQuitarValidacionesFormPregunta('AGREGAR')
     }
 
     // manejar acciones de la tabla preguntas
@@ -462,7 +371,7 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
         if (accion === 'alternativas') {
             this.preguntaSelected = item
             this.toggleStepsVisibility(false)
-            this.toggleAlternativasSinEncabezado(true)
+            this.agregarQuitarAlternativasPaso('AGREGAR')
             this.activeIndex = this.pasos.length - 1
         }
     }
@@ -515,12 +424,8 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
         this.actualizarPreguntas(preguntaForm)
         this.changeIndexBancoForm(0)
         this.bancoPreguntasForm.get('1').reset(preguntaFormInfoDefaultValues)
-        this.toggleValidationInformacionPregunta(false)
+        this.agregarQuitarValidacionesFormPregunta('QUITAR')
         this.toggleStepsVisibility(true)
-    }
-
-    closeModal(data) {
-        this._ref.close(data)
     }
 
     // enviar el formulario de banco de preguntas a guardar o actualizar
@@ -534,10 +439,15 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
         pregunta.alternativasEliminadas = this.alternativasEliminadas
         const encabezado = this.bancoPreguntasForm.get('0').value
         pregunta.alternativas = this.alternativas
+        pregunta.cPreguntaClave = this.getPreguntaClave(pregunta.alternativas)
 
         let preguntas = [pregunta]
+
         if (this.formMode === 'SUB-PREGUNTAS') {
             preguntas = this.preguntas
+            preguntas = preguntas.map((x) => {
+                x.cPreguntaClave = this.getPreguntaClave(x.alternativas)
+            })
         }
 
         pregunta.iNivelGradoId = 1
@@ -549,13 +459,16 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
             preguntasEliminar: this.preguntasEliminar,
         }
 
-        this._evaluacionesService
-            .guardarActualizarPreguntaConAlternativas(data)
-            .subscribe({
-                next: () => {
-                    this.closeModal(pregunta)
-                },
-            })
+        this.submitChange.emit(data)
+    }
+
+    closeModal(data) {
+        this.closeModalChange.emit(data)
+    }
+
+    getPreguntaClave(alternativas = []) {
+        return alternativas.find((alt) => alt.bAlternativaCorrecta)
+            ?.cAlternativaLetra
     }
 
     // desuscribirse de los observables cuando se destruye el componente

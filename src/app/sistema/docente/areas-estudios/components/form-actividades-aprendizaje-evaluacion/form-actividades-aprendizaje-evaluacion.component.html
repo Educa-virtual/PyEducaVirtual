@@ -1,14 +1,78 @@
 <app-modal-primeng
-    [title]="option + ' Actividad de Aprendizaje'"
+    [title]="option + ' Indicador de Actividades'"
     [showModal]="showModal"
-    [width]="'55rem'"
+    [width]="'85%'"
     (accionBtnItem)="accionBtn($event)"
 >
-    <form>
+    <form [formGroup]="formIndicadorActividades">
         <div class="formgrid grid">
-            <div class="field col-12 md:col-12">
-                <label class="font-semibold" for="">Contenido</label>
-                <input type="text" class="w-full p-inputtext-sm" pInputText />
+            <div class="field col-12 md:col-6">
+                <label class="font-semibold" for="">Procedimientos</label>
+                <textarea
+                    rows="8"
+                    pInputText
+                    class="flex-auto w-full"
+                    formControlName="cIndActProcedimientos"
+                ></textarea>
+            </div>
+            <div class="field col-12 md:col-6">
+                <label class="font-semibold" for="">Actividad</label>
+                <p-dropdown
+                    styleClass="flex-auto w-full"
+                    [options]="actividades"
+                    placeholder="Seleccionar Actividad"
+                    optionLabel="cSilaboActAprendNombre"
+                    optionValue="iSilaboActAprendId"
+                    formControlName="iSilaboActAprendId"
+                />
+                <p-divider></p-divider>
+                <label class="font-semibold" for="">Indicador de Logro</label>
+                <textarea
+                    rows="3"
+                    pInputText
+                    class="flex-auto w-full"
+                    disabled
+                ></textarea>
+            </div>
+            <div class="field col-12 md:col-6">
+                <label class="font-semibold" for="">Conceptos</label>
+                <textarea
+                    rows="3"
+                    pInputText
+                    class="flex-auto w-full"
+                    formControlName="cIndActConceptual"
+                ></textarea>
+            </div>
+            <div class="field col-12 md:col-6">
+                <label class="font-semibold" for="">Tipo de Indicador</label>
+                <p-dropdown
+                    styleClass="flex-auto w-full"
+                    [options]="tipoIndicadorLogros"
+                    placeholder="Seleccionar Tipo de Indicador"
+                    optionLabel="cTipoIndLogNombre"
+                    optionValue="iTipoIndLogId"
+                    formControlName="iTipoIndLogId"
+                />
+                <p-divider></p-divider>
+            </div>
+
+            <div class="field col-12 md:col-6">
+                <label class="font-semibold" for="">Actitudes</label>
+                <textarea
+                    rows="3"
+                    pInputText
+                    class="flex-auto w-full"
+                    formControlName="cIndActActitudes"
+                ></textarea>
+            </div>
+            <div class="field col-12 md:col-6">
+                <label class="font-semibold" for="">Indicadores</label>
+                <textarea
+                    rows="3"
+                    pInputText
+                    class="flex-auto w-full"
+                    formControlName="cIndActNombre"
+                ></textarea>
             </div>
         </div>
         <div class="flex justify-content-end gap-2">
@@ -19,7 +83,7 @@
             />
             <p-button
                 [label]="option"
-                (onClick)="accionBtn({ accion: 'close-modal', item: [] })"
+                (onClick)="accionBtn({ accion: option, item: [] })"
             />
         </div>
     </form>

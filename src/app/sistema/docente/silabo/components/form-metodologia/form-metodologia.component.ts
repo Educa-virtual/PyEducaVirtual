@@ -64,36 +64,45 @@ export class FormMetodologiaComponent implements OnChanges {
                 this.dataSilaboMetodologias.controls.opcion.setValue(
                     'GUARDARxiSilaboId'
                 )
-                if (!this.dataSilaboMetodologias.valid) {
-                    this.messageService.add({
-                        severity: 'error',
-                        summary: '¡Atención!',
-                        detail: 'Debe de ingresar todos los campos',
-                    })
-                } else {
-                    this.accionBtnItem.emit({
-                        accion: 'guardar',
-                        item: this.dataSilaboMetodologias.value,
-                    })
-                }
+                // if (!this.dataSilaboMetodologias.valid) {
+                //     this.messageService.add({
+                //         severity: 'error',
+                //         summary: '¡Atención!',
+                //         detail: 'Debe de ingresar todos los campos',
+                //     })
+                // } else {
+                //     this.accionBtnItem.emit({
+                //         accion: 'guardar',
+                //         item: this.dataSilaboMetodologias.value,
+                //     })
+                // }
+                this.accionBtnItem.emit({
+                    accion: 'guardar',
+                    item: this.dataSilaboMetodologias.value,
+                })
 
                 break
             case 'Actualizar':
                 this.dataSilaboMetodologias.controls.opcion.setValue(
                     'ACTUALIZARxidSilMetId'
                 )
-                if (this.dataSilaboMetodologias.valid) {
-                    this.messageService.add({
-                        severity: 'error',
-                        summary: '¡Atención!',
-                        detail: 'Debe de ingresar todos los campos',
-                    })
-                } else {
-                    this.accionBtnItem.emit({
-                        accion: 'modificar',
-                        item: this.dataSilaboMetodologias.value,
-                    })
-                }
+                // if (this.dataSilaboMetodologias.valid) {
+                //     this.messageService.add({
+                //         severity: 'error',
+                //         summary: '¡Atención!',
+                //         detail: 'Debe de ingresar todos los campos',
+                //     })
+                // } else {
+                //     this.accionBtnItem.emit({
+                //         accion: 'modificar',
+                //         item: this.dataSilaboMetodologias.value,
+                //     })
+                // }
+
+                this.accionBtnItem.emit({
+                    accion: 'modificar',
+                    item: this.dataSilaboMetodologias.value,
+                })
 
                 break
             default:

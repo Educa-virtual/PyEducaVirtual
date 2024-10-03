@@ -19,12 +19,19 @@ export class ApiEvaluacionesRService {
         )
     }
 
+    obtenerTipoPreguntas() {
+        return this.http
+            .get(
+                `${this.baseUrl}/evaluaciones/tipo-preguntas/obtenerTipoPreguntas`
+            )
+            .pipe(map((resp) => resp['data']))
+    }
+
     obtenerUgeles(params) {
         return this.http.get(`${this.baseUrl}/ere/Ugeles/obtenerUgeles`, {
             params,
         })
     }
-
     obtenerIE(params) {
         return this.http.get(`${this.baseUrl}/ere/ie/obtenerIE`, { params })
     }

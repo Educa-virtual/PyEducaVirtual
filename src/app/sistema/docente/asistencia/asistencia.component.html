@@ -1,0 +1,128 @@
+<div class="grid">
+    <p-toolbar class="col-12">
+        <div class="p-toolbar-group-start">
+            <h4 class="text-primary font-bold">
+                Asistencia del Curso: {{ cCursoNombre }}
+            </h4>
+        </div>
+        <div class="p-toolbar-group-end">
+            <p-tag severity="success" [value]="'Avance de Asistencia: 60%'" />
+            <p-button
+                icon="pi pi-download"
+                severity="success"
+                pTooltip="Importar Excel"
+                tooltipPosition="top"
+                [rounded]="true"
+                [text]="true"
+            />
+            <p-button
+                icon="pi pi-file-pdf"
+                severity="danger"
+                pTooltip="Descargar Asistencia"
+                tooltipPosition="top"
+                [rounded]="true"
+                [text]="true"
+            />
+            <p-button
+                icon="pi pi-undo"
+                pTooltip="Regresar"
+                tooltipPosition="top"
+                [rounded]="true"
+                [text]="true"
+                (onClick)="goAreasEstudio()"
+            />
+            <p-button
+                icon="pi pi-sync"
+                pTooltip="Recargar"
+                tooltipPosition="top"
+                [rounded]="true"
+                [text]="true"
+                severity="danger"
+            />
+        </div>
+    </p-toolbar>
+    <!-- <div class="col-12 flex card justify-content-center">
+        <p-selectButton [options]="dates" [(ngModel)]="valSelect1" optionLabel="dtFecha">
+            <ng-template let-item pTemplate>
+                {{item.dtFecha}}
+            </ng-template>
+        </p-selectButton>
+    </div> -->
+    <!-- autoplayInterval="3000" -->
+    <div class="col-12 md:col-2 pt-4 mx-2">
+        <p-carousel
+            [value]="dates"
+            [numVisible]="7"
+            [numScroll]="7"
+            [circular]="true"
+            orientation="vertical"
+            [responsiveOptions]="carouselResponsiveOptions"
+        >
+            <ng-template let-item let-rowIndex="rowIndex" pTemplate="item">
+                <div class="text-center">
+                    <div>
+                        {{ rowIndex }}
+                        <p-button
+                            [label]="item.dtFecha"
+                            (onClick)="valSelect1 = item.dtFecha"
+                            [severity]="
+                                valSelect1 === item.dtFecha ? 'success' : 'info'
+                            "
+                        />
+                    </div>
+                </div>
+            </ng-template>
+        </p-carousel>
+    </div>
+    <div class="col-12 md:col-3 mx-2">
+        <p-table class="mt-1" [value]="data">
+            <ng-template pTemplate="caption">
+                <span class="p-input-icon-left">
+                    <i class="pi pi-search"></i>
+                    <input
+                        pInputText
+                        placeholder="Buscar Estudiante"
+                        style="width: 250px"
+                    />
+                </span>
+            </ng-template>
+            <ng-template pTemplate="header">
+                <tr style="height: 13px">
+                    <th style="width: 15rem">Nombres y Apellidos</th>
+                    <!-- <th style="width: 5px">[X]</th>
+                    <th style="width: 5px">[I]</th>
+                    <th style="width: 5px">[J]</th>
+                    <th style="width: 5px">[T]</th>
+                    <th style="width: 5px">[P]</th> -->
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
+                <tr
+                    style="height: 13px"
+                    [style]="
+                        valSelect2 === rowIndex
+                            ? 'background-color:var(--green-500) !important;color:white'
+                            : 'background-color:white'
+                    "
+                    (click)="valSelect2 = rowIndex"
+                >
+                    <td>{{ item.cEstudiante }}</td>
+                    <!-- <td>{{ item.iAsistencia }}</td>
+                    <td>{{ item.iInasistencia }}</td>
+                    <td>{{ item.iInasistenciaJustif }}</td>
+                    <td>{{ item.iTardanzas }}</td>
+                    <td>{{ item.iTardanzasJustif }}</td> -->
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+
+    <div class="col-12 footer flex gap-2 my-2 mx-2">
+        <p class="font-bold">Leyenda:</p>
+        <p-tag value="[X] Asistió" />
+        <p-tag severity="secondary" value="[I] Inasistencia" />
+        <p-tag severity="warning" value="[J] Inasistencia Justificada" />
+        <p-tag severity="success" value="[T] Tardanza" />
+        <p-tag severity="danger" value="[P] Tardanza Justificada" />
+    </div>
+</div>

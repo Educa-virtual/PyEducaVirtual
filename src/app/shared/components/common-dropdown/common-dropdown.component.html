@@ -1,0 +1,15 @@
+<div class="flex flex-column gap-2" [formGroup]="parentFormGroup">
+    <ng-content></ng-content>
+    <input
+        pInputText
+        [id]="id"
+        [formControlName]="controlKey"
+        [type]="type"
+        [ngClass]="{ 'ng-invalid ng-dirty': campoInvalido }"
+    />
+    <small>
+        @if (campoInvalido) {
+            <!-- <span class="text-red-500"> {{ errorMessage }} </span> -->
+        }
+    </small>
+</div>

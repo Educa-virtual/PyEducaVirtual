@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild, OnInit } from '@angular/core'
+import { Component, ElementRef, ViewChild, OnInit, inject } from '@angular/core'
 import { MenuItem } from 'primeng/api'
 import { LayoutService } from '../service/app.layout.service'
 import { LocalStoreService } from '../../servicios/local-store.service'
@@ -12,6 +12,7 @@ import {
     IRole,
     RolesDropdownComponent,
 } from './roles-dropdown/roles-dropdown.component'
+import { ApiObtenerEuService } from './roles-dropdown/service/api-obtener-eu.service'
 
 interface Profile {
     iProfile: number
@@ -32,6 +33,7 @@ interface Profile {
     ],
 })
 export class AppTopBarComponent implements OnInit {
+    private _apiValidacionE = inject(ApiObtenerEuService)
     items!: MenuItem[]
     profile: Profile[] | []
     public roles: IRole[] = [
@@ -43,15 +45,6 @@ export class AppTopBarComponent implements OnInit {
             nivel: 'PRIMARIA',
             direccion: 'DRE LIMA PROVINCIAS',
             ugel: '15 HUAROCHIRI',
-        },
-        {
-            id: '2',
-            ieCodigo: '9999',
-            nombre: 'JUAN PEREZ',
-            codigoModular: '000000-0',
-            nivel: 'SECUNDARIA',
-            direccion: 'DRE MOQUEGUA PROVINCIAS',
-            ugel: '17 ILO',
         },
     ]
     selectedProfile: Profile | undefined
@@ -90,6 +83,12 @@ export class AppTopBarComponent implements OnInit {
                 ],
             },
         ]
+        const userId = 1
+
+        this._apiValidacionE.obtenerAutenticacion(userId).subscribe((Data) => {
+            console.log('Datos ', Data)
+            this.roles = Data['data']
+        })
     }
 
     changeProfile(event) {

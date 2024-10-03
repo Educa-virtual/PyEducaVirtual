@@ -18,7 +18,13 @@ export class ConfirmationModalService {
         this.dialogState.next(config)
     }
 
-    openConfirm({ header, message = '', ...config }: IModal) {
+    openConfirm({
+        header,
+        message = '',
+        ...config
+    }: Omit<IModal, 'header'> & {
+        header: string
+    }) {
         this.dialogState.next({
             header,
             key: 'manual',

@@ -1,0 +1,13 @@
+<app-container-page
+    [title]="'Banco de preguntas'"
+    [actions]="actionsContainer"
+    (accionBtnItem)="handleAcciones($event)"
+>
+    <app-banco-pregunta-lista
+        [columnas]="columnas"
+        [data]="bancoPreguntas"
+        [expandedRowKeys]="expandedRowKeys"
+        [accionesTabla]="actionsTable"
+        (accionBtnItemTable)="handleAcciones($event)"
+    />
+</app-container-page>

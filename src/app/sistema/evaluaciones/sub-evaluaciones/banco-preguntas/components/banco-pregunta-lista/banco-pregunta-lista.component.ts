@@ -23,6 +23,7 @@ export class BancoPreguntaListaComponent {
     @Output() accionBtnItemTable = new EventEmitter()
     @Output() selectedRowDataChange = new EventEmitter()
     @Input() columnas: IColumn[] = []
+    @Input() dataKey: string = 'iPreguntaId'
 
     @Input() data: IPregunta[] = []
     @Input() selectedRowData: IPregunta[] = []

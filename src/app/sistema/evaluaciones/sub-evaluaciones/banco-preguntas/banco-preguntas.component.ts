@@ -16,15 +16,17 @@ import { ApiEvaluacionesRService } from '../../services/api-evaluaciones-r.servi
 import { ApiEvaluacionesService } from '../../services/api-evaluaciones.service'
 import { ActivatedRoute } from '@angular/router'
 import { BancoPreguntasModule } from './banco-preguntas.module'
+import { BancoPreguntaListaComponent } from './components/banco-pregunta-lista/banco-pregunta-lista.component'
 
 @Component({
     selector: 'app-ere-preguntas',
     templateUrl: './banco-preguntas.component.html',
     standalone: true,
-    imports: [BancoPreguntasModule],
+    imports: [BancoPreguntasModule, BancoPreguntaListaComponent],
     styleUrls: ['./banco-preguntas.component.scss'],
 })
 export class BancoPreguntasComponent implements OnInit, OnDestroy {
+    // Injeccion de dependencias
     private _dialogService = inject(DialogService)
     private _apiEre = inject(ApiEreService)
     private _apiEvaluacionesR = inject(ApiEvaluacionesRService)
@@ -32,17 +34,18 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
     private _confirmationModalService = inject(ConfirmationModalService)
     private _route = inject(ActivatedRoute)
     private unsubscribe$: Subject<boolean> = new Subject()
+
     public area = {
         nombreCurso: '',
         grado: '',
         seccion: '',
         nivel: '',
     }
-
     public desempenos = []
     public estados = []
     public evaluaciones = []
     public tipoPreguntas = []
+    public expandedRowKeys = {}
 
     public params = {
         bPreguntaEstado: -1,
@@ -53,6 +56,7 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
     }
 
     selectedItems = []
+    // acciones Contenedor
     accionesPrincipal: IActionContainer[] = [
         {
             labelTooltip: 'Word',
@@ -81,24 +85,17 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
         },
     ]
 
-    data = []
+    public data = []
 
+    // Columnas Tabla Banco Preguntas
     columnas: IColumn[] = [
         {
-            field: 'checked',
+            field: '',
             header: '',
-            type: 'checkbox',
-            width: '5rem',
+            type: 'expansion',
+            width: '2rem',
             text: 'left',
-            text_header: '',
-        },
-        {
-            field: 'cPregunta',
-            header: 'Pregunta',
-            type: 'p-editor',
-            width: '15rem',
-            text: 'left',
-            text_header: 'Pregunta',
+            text_header: 'left',
         },
         {
             field: 'cEncabPregTitulo',
@@ -124,7 +121,6 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             text: 'left',
             text_header: 'Tiempo',
         },
-
         {
             field: 'iPreguntaPeso',
             header: 'Puntaje',
@@ -169,8 +165,17 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             text: 'left',
             text_header: '',
         },
+        {
+            field: 'checked',
+            header: '',
+            type: 'checkbox',
+            width: '5rem',
+            text: 'left',
+            text_header: '',
+        },
     ]
 
+    // Acciones tabla Banco Preguntas
     public accionesTabla: IActionTable[] = [
         {
             labelTooltip: 'Editar',
@@ -215,11 +220,15 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             }
         })
     }
+
+    // obtener información inicial
     fetchInitialData() {
         this.obtenerBancoPreguntas()
         this.obtenerDesempenos()
         this.obtenerTipoPreguntas()
     }
+
+    // Inicializar filtros
     initializeData() {
         this.tipoPreguntas = [
             {
@@ -262,6 +271,14 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             .subscribe({
                 next: (data) => {
                     this.data = data
+                    this.data.forEach((item) => {
+                        this.expandedRowKeys[item.iPreguntaId] = true
+                    })
+
+                    this.expandedRowKeys = Object.assign(
+                        {},
+                        this.expandedRowKeys
+                    )
                 },
             })
     }

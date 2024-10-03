@@ -6,6 +6,8 @@ import {
     Input,
     OnChanges,
     OnInit,
+    ContentChild,
+    TemplateRef,
 } from '@angular/core'
 import { TableColumnFilterComponent } from './table-column-filter/table-column-filter.component'
 import { IIcon } from '../icon/icon.interface'
@@ -51,6 +53,9 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     @Output() accionBtnItem = new EventEmitter()
     @Output() selectedRowDataChange = new EventEmitter()
 
+    @Input() expandedRowKeys = {}
+    @Input() dataKey: string
+
     @Input() showCaption: boolean = true
     @Input() showPaginator: boolean = true
 
@@ -62,6 +67,9 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     @Input() tableStyle: {
         [klass: string]: unknown
     } = { 'min-width': '50rem' }
+
+    @ContentChild('rowExpansionTemplate', { static: false })
+    rowExpansionTemplate: TemplateRef<unknown>
 
     public isIIcon = isIIcon
 
@@ -201,6 +209,12 @@ export class TablePrimengComponent implements OnChanges, OnInit {
 
         if (changes.selectedRowData?.currentValue) {
             this.selectedRowData = changes.selectedRowData.currentValue
+        }
+
+        if (changes.expandedRowKeys?.currentValue) {
+            console.log(this.expandedRowKeys)
+
+            this.expandedRowKeys = changes.expandedRowKeys.currentValue
         }
     }
 

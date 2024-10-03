@@ -38,13 +38,12 @@
             />
         </div>
     </div>
-    <app-table-primeng
+    <app-banco-pregunta-lista
         [columnas]="columnas"
         [data]="data"
-        (accionBtnItem)="accionBtnItemTable($event)"
         [(selectedRowData)]="selectedItems"
-        [actions]="accionesTabla"
-    >
-        <ng-container slot="caption-content"> </ng-container>
-    </app-table-primeng>
+        [expandedRowKeys]="expandedRowKeys"
+        [accionesTabla]="accionesTabla"
+        (accionBtnItemTable)="accionBtnItemTable($event)"
+    />
 </app-container-page>

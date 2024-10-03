@@ -12,6 +12,8 @@ import { DialogService } from 'primeng/dynamicdialog'
 import { FloatLabelModule } from 'primeng/floatlabel'
 import { InputTextModule } from 'primeng/inputtext'
 import { MultiSelectModule } from 'primeng/multiselect'
+import { BancoPreguntaPreviewComponent } from './components/banco-pregunta-preview/banco-pregunta-preview.component'
+import { BancoPreguntaListaComponent } from './components/banco-pregunta-lista/banco-pregunta-lista.component'
 
 @NgModule({
     imports: [
@@ -24,6 +26,8 @@ import { MultiSelectModule } from 'primeng/multiselect'
         ButtonModule,
         TablePrimengComponent,
         FloatLabelModule,
+        BancoPreguntaPreviewComponent,
+        BancoPreguntaListaComponent,
     ],
     exports: [
         CommonInputComponent,
@@ -35,6 +39,8 @@ import { MultiSelectModule } from 'primeng/multiselect'
         ButtonModule,
         TablePrimengComponent,
         FloatLabelModule,
+        BancoPreguntaPreviewComponent,
+        BancoPreguntaListaComponent,
     ],
     declarations: [],
     providers: [provideIcons({ matGroupWork }), DialogService, MessageService],

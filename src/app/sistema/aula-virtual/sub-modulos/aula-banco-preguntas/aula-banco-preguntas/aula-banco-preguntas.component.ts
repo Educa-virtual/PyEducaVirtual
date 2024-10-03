@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core'
+import { Component, inject, OnInit, OnDestroy } from '@angular/core'
 import { AulaBancoPreguntasModule } from '../aula-banco-preguntas.module'
 import {
     actionsContainer,
@@ -8,6 +8,10 @@ import {
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { ApiAulaBancoPreguntasService } from '../../../services/api-aula-banco-preguntas.service'
 import { BancoPreguntaListaComponent } from '@/app/sistema/evaluaciones/sub-evaluaciones/banco-preguntas/components/banco-pregunta-lista/banco-pregunta-lista.component'
+import { Subject, takeUntil } from 'rxjs'
+import { MODAL_CONFIG } from '@/app/shared/constants/modal.config'
+import { DialogService } from 'primeng/dynamicdialog'
+import { AulaBancoPreguntaFormContainerComponent } from './components/aula-banco-pregunta-form-container/aula-banco-pregunta-form-container.component'
 
 @Component({
     selector: 'app-aula-banco-preguntas',
@@ -16,14 +20,18 @@ import { BancoPreguntaListaComponent } from '@/app/sistema/evaluaciones/sub-eval
     templateUrl: './aula-banco-preguntas.component.html',
     styleUrl: './aula-banco-preguntas.component.scss',
 })
-export class AulaBancoPreguntasComponent implements OnInit {
+export class AulaBancoPreguntasComponent implements OnInit, OnDestroy {
     public actionsTable = actionsTable
     public actionsContainer = actionsContainer
     public columnas = columns
     public bancoPreguntas = []
     public expandedRowKeys = {}
+    public tipoPreguntas = []
+
+    private unsubscribe$: Subject<boolean> = new Subject()
 
     private _aulaBancoApiService = inject(ApiAulaBancoPreguntasService)
+    private _dialogService = inject(DialogService)
 
     public params = {
         iCursoId: 1,
@@ -41,6 +49,28 @@ export class AulaBancoPreguntasComponent implements OnInit {
     }
 
     private getData() {
+        this.obtenerTipoPreguntas()
+        this.obtenerBancoPreguntas()
+    }
+
+    obtenerTipoPreguntas() {
+        this._aulaBancoApiService
+            .obtenerTipoPreguntas()
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+                next: (data) => {
+                    this.tipoPreguntas = [
+                        {
+                            iTipoPregId: 0,
+                            cTipoPregDescripcion: 'Todos',
+                        },
+                        ...data,
+                    ]
+                },
+            })
+    }
+
+    obtenerBancoPreguntas() {
         this._aulaBancoApiService.obtenerBancoPreguntas(this.params).subscribe({
             next: (data) => {
                 this.bancoPreguntas = data
@@ -56,11 +86,15 @@ export class AulaBancoPreguntasComponent implements OnInit {
     public handleAcciones({ accion, item }) {
         console.log(accion, item)
         if (accion === 'agregar') {
-            this.handleAgregarActualizarBancoPreguntas(null)
+            this.agregarEditarPregunta({
+                iPreguntaId: 0,
+                preguntas: [],
+                iEncabPregId: -1,
+            })
             return
         }
         if (accion === 'editar') {
-            this.handleAgregarActualizarBancoPreguntas(item)
+            this.agregarEditarPregunta(item)
         }
 
         if (accion === 'eliminar') {
@@ -68,8 +102,27 @@ export class AulaBancoPreguntasComponent implements OnInit {
         }
     }
 
-    handleAgregarActualizarBancoPreguntas(pregunta) {
-        console.log(pregunta)
+    agregarEditarPregunta(pregunta) {
+        const refModal = this._dialogService.open(
+            AulaBancoPreguntaFormContainerComponent,
+            {
+                ...MODAL_CONFIG,
+                data: {
+                    tipoPreguntas: this.tipoPreguntas,
+                    pregunta: pregunta,
+                    iCursoId: this.params.iCursoId,
+                },
+                header:
+                    pregunta.iPreguntaId == 0
+                        ? 'Nueva pregunta'
+                        : 'Editar pregunta',
+            }
+        )
+        refModal.onClose.subscribe((result) => {
+            if (result) {
+                this.obtenerBancoPreguntas()
+            }
+        })
     }
 
     handleEliminarBancoPreguntas(pregunta) {
@@ -79,5 +132,10 @@ export class AulaBancoPreguntasComponent implements OnInit {
                 console.log('eliminado', pregunta)
             },
         })
+    }
+
+    ngOnDestroy() {
+        this.unsubscribe$.next(true)
+        this.unsubscribe$.complete()
     }
 }

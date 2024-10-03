@@ -13,6 +13,7 @@ import { FloatLabelModule } from 'primeng/floatlabel'
 import { InputTextModule } from 'primeng/inputtext'
 import { MultiSelectModule } from 'primeng/multiselect'
 import { BancoPreguntaPreviewComponent } from './components/banco-pregunta-preview/banco-pregunta-preview.component'
+import { BancoPreguntaListaComponent } from './components/banco-pregunta-lista/banco-pregunta-lista.component'
 
 @NgModule({
     imports: [
@@ -26,6 +27,7 @@ import { BancoPreguntaPreviewComponent } from './components/banco-pregunta-previ
         TablePrimengComponent,
         FloatLabelModule,
         BancoPreguntaPreviewComponent,
+        BancoPreguntaListaComponent,
     ],
     exports: [
         CommonInputComponent,
@@ -38,6 +40,7 @@ import { BancoPreguntaPreviewComponent } from './components/banco-pregunta-previ
         TablePrimengComponent,
         FloatLabelModule,
         BancoPreguntaPreviewComponent,
+        BancoPreguntaListaComponent,
     ],
     declarations: [],
     providers: [provideIcons({ matGroupWork }), DialogService, MessageService],

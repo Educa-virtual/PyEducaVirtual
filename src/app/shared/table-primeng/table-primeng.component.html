@@ -123,6 +123,16 @@
                             [value]="rowData"
                         ></p-tableRadioButton>
                     }
+                    @if (col.type === 'icon-tooltip') {
+                        <div [style.text-align]="col.text">
+                            <i
+                                class="pi pi-info-circle"
+                                style="color: var(--primary-color)"
+                                [pTooltip]="rowData[col.field]"
+                                tooltipPosition="top"
+                            ></i>
+                        </div>
+                    }
                     @if (col.type === 'actions') {
                         <div [style.text-align]="col.text">
                             @for (item of actions; track $index) {

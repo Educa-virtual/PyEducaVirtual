@@ -1,5 +1,5 @@
 <app-container-page
-    title="Lista detalle de Evaluación"
+    title="Actividades"
     [actions]="actionsContainer"
     (accionBtnItem)="accionBtnItem($event)"
 >
@@ -11,13 +11,12 @@
         [data]="data"
         [columnas]="columns"
         (accionBtnItem)="accionBtnItem($event)"
-    ></app-table-primeng>
-</app-container-page>
-<app-form-detalle-evaluaciones
-    [item]="itemData"
+    ></app-table-primeng
+></app-container-page>
+
+<app-form-actividades
+    [item]="itemSilaboActividadAprendizajes"
     [showModal]="showModal"
     [option]="option"
     (accionBtnItem)="accionBtnItem($event)"
-></app-form-detalle-evaluaciones>
-
-<p-confirmDialog />
+></app-form-actividades>

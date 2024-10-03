@@ -4,26 +4,22 @@ import {
     Component,
     EventEmitter,
     Input,
-    OnChanges,
     Output,
+    OnChanges,
 } from '@angular/core'
 import { FormBuilder, Validators } from '@angular/forms'
 
 @Component({
-    selector: 'app-form-actividades-aprendizaje-evaluacion',
+    selector: 'app-form-contenido-semanas',
     standalone: true,
     imports: [ModalPrimengComponent, PrimengModule],
-    templateUrl: './form-actividades-aprendizaje-evaluacion.component.html',
-    styleUrl: './form-actividades-aprendizaje-evaluacion.component.scss',
+    templateUrl: './form-contenido-semanas.component.html',
+    styleUrl: './form-contenido-semanas.component.scss',
 })
-export class FormActividadesAprendizajeEvaluacionComponent
-    implements OnChanges
-{
+export class FormContenidoSemanasComponent implements OnChanges {
     @Output() accionBtnItem = new EventEmitter()
 
-    @Input() data = []
-    @Input() actividades = []
-    @Input() tipoIndicadorLogros = []
+    @Input() indicadorActividades = []
     @Input() item
     @Input() showModal: boolean = true
     @Input() option: string
@@ -31,28 +27,21 @@ export class FormActividadesAprendizajeEvaluacionComponent
     constructor(private fb: FormBuilder) {}
 
     ngOnChanges(changes) {
-        this.formIndicadorActividades.reset()
+        this.formContenidoSemanas.reset()
         if (changes.item?.currentValue) {
             this.item = changes.item.currentValue
-            this.formIndicadorActividades.patchValue(this.item)
+            this.formContenidoSemanas.patchValue(this.item)
         }
     }
 
-    formIndicadorActividades = this.fb.group({
+    formContenidoSemanas = this.fb.group({
         opcion: ['', Validators.required],
 
-        iIndActId: [''],
-        cIndActNumero: [''],
-        iIndActSemanaEval: [''],
-        cIndActDescripcion: [''],
-        bIndActEsEvaluado: [''],
-        iSilaboActAprendId: ['', Validators.required],
-        cIndActProcedimientos: [''],
-        cIndActActitudes: [''],
-        cIndActConceptual: [''],
-        IndActHoras: [''],
-        iTipoIndLogId: ['', Validators.required],
-        cIndActNombre: [''],
+        iContenidoSemId: [],
+        iIndActId: [],
+        cContenidoSemTitulo: [],
+        cContenidoSemNumero: [],
+        cContenidoSemDescripcion: [],
 
         iCredId: [''],
     })
@@ -65,22 +54,22 @@ export class FormActividadesAprendizajeEvaluacionComponent
                 this.accionBtnItem.emit({ accion, item })
                 break
             case 'Agregar':
-                this.formIndicadorActividades.controls.opcion.setValue(
-                    'GUARDARxiSilaboActAprendIdxiTipoIndLogId'
+                this.formContenidoSemanas.controls.opcion.setValue(
+                    'GUARDARxiIndActId'
                 )
                 this.accionBtnItem.emit({
                     accion: 'guardar',
-                    item: this.formIndicadorActividades.value,
+                    item: this.formContenidoSemanas.value,
                 })
 
                 break
             case 'Actualizar':
-                this.formIndicadorActividades.controls.opcion.setValue(
-                    'ACTUALIZARxiIndActId'
+                this.formContenidoSemanas.controls.opcion.setValue(
+                    'ACTUALIZARxiContenidoSemId'
                 )
                 this.accionBtnItem.emit({
                     accion: 'modificar',
-                    item: this.formIndicadorActividades.value,
+                    item: this.formContenidoSemanas.value,
                 })
 
                 break

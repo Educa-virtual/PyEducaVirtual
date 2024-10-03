@@ -17,7 +17,7 @@ import { GestionarSilaboComponent } from './areas-estudios/components/gestionar-
         RouterModule.forChild([
             { path: 'portafolio', component: PortafolioComponent },
             { path: 'estudios', component: EstudiosComponent },
-            { path: 'areas-estudio', component: AreasEstudiosComponent },
+            { path: 'areas-curriculares', component: AreasEstudiosComponent },
             {
                 path: 'itinerario-formativo',
                 component: ItinerarioFormativoComponent,
@@ -38,7 +38,7 @@ import { GestionarSilaboComponent } from './areas-estudios/components/gestionar-
                 component: SesionAprendizajeComponent,
             },
             {
-                path: 'gestionar-silabo/:idDocCursoId/:cCursoNombre/:iAvanceSilabo',
+                path: 'gestionar-programacion-curricular/:idDocCursoId/:cCursoNombre/:iAvanceSilabo',
                 component: GestionarSilaboComponent,
             },
         ]),

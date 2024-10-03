@@ -7,12 +7,12 @@ const user = store.getItem('dremoToken')
 
 const docente = [
     {
-        label: 'Docente',
+        label: 'Profesor',
         items: [
             {
-                label: 'Áreas de Estudio',
+                label: 'Áreas Curriculares',
                 icon: 'pi pi-fw pi-book',
-                routerLink: ['/docente/areas-estudio'],
+                routerLink: ['/docente/areas-curriculares'],
             },
             // {
             //     label: 'Dashboard',

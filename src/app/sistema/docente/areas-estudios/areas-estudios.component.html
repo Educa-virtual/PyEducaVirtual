@@ -40,10 +40,14 @@
         <ng-template pTemplate="header">
             <tr>
                 <th style="width: 1rem">#</th>
-                <th style="width: 30rem">Nombre del Área Curricular</th>
+                <th style="width: 15rem">Nombre del Área Curricular</th>
+                <th style="width: 2rem; text-align: center">
+                    Total Estudiantes
+                </th>
                 <th style="width: 2rem; text-align: center">Grado</th>
                 <th style="width: 2rem; text-align: center">Sección</th>
-                <th style="width: 1rem; text-align: center">Acción</th>
+                <th style="width: 2rem; text-align: center">Avances %</th>
+                <th style="width: 2rem; text-align: center">Acción</th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
@@ -51,38 +55,77 @@
                 <td class="justify-content-center">{{ rowIndex + 1 }}</td>
                 <td class="font-bold">
                     {{ item.cCursoNombre }}
-                    <div class="flex gap-2 mt-1">
-                        <p-tag [value]="item.iEstudiantes || 0 + ''" />
-                        <p-tag
-                            severity="warning"
-                            [value]="item.iAvanceSilabo + '%'"
-                        />
-                        <p-tag
-                            severity="success"
-                            [value]="item.iAvanceAsistencia + '%'"
-                        />
-                        <p-tag
-                            severity="danger"
-                            [value]="item.iAvanceNotas + '%'"
-                        />
-                    </div>
                 </td>
+                <td style="text-align: center">{{ item.iEstudiantes }}</td>
                 <td style="text-align: center">{{ item.cGradoAbreviacion }}</td>
                 <td style="text-align: center">{{ item.cSeccion }}</td>
                 <td style="text-align: center">
-                    <p-button
-                        [rounded]="true"
-                        [text]="true"
-                        icon="pi pi-chevron-down"
-                        (click)="showAndHideMenu(item, $event)"
-                    ></p-button>
+                    <div class="align-items-center align-content-center">
+                        <button
+                            pButton
+                            pRipple
+                            class="p-1 ml-1 p-button-warning"
+                        >
+                            {{ item.iAvanceSilabo + '%' }}
+                        </button>
+                        <button
+                            pButton
+                            pRipple
+                            class="p-1 ml-1 p-button-success"
+                        >
+                            {{ item.iAvanceAsistencia + '%' }}
+                        </button>
+                        <button
+                            pButton
+                            pRipple
+                            class="p-1 ml-1 p-button-danger"
+                        >
+                            {{ item.iAvanceNotas + '%' }}
+                        </button>
+                    </div>
+                </td>
+                <td style="text-align: center">
+                    <div class="align-items-center align-content-center">
+                        <button
+                            pTooltip="Gestionar Área Curricular"
+                            [rounded]="true"
+                            pButton
+                            pRipple
+                            class="p-1 p-button-rounded p-button-primary p-button-text"
+                            (click)="
+                                this.selectedData = item; menu.toggle($event)
+                            "
+                        >
+                            <i class="pi pi-chevron-down"></i>
+                        </button>
+                        <button
+                            pTooltip="Descargar Lista de Estudiantes"
+                            tooltipPosition="top"
+                            [rounded]="true"
+                            pButton
+                            pRipple
+                            class="p-1 p-button-rounded p-button-success p-button-text"
+                        >
+                            <i class="pi pi-file-excel"></i>
+                        </button>
+                        <button
+                            pTooltip="Descargar Programación Curricular"
+                            tooltipPosition="top"
+                            [rounded]="true"
+                            pButton
+                            pRipple
+                            class="p-1 p-button-rounded p-button-danger p-button-text"
+                        >
+                            <i class="pi pi-file-pdf"></i>
+                        </button>
+                    </div>
                 </td>
             </tr>
         </ng-template>
     </p-table>
     <div class="col-10 footer flex gap-2 my-2 mx-2">
         <p class="font-bold">Leyenda:</p>
-        <p-tag value="Total de Estudiantes" />
+        <!-- <p-tag value="Total de Estudiantes" /> -->
         <p-tag
             severity="warning"
             value="Avance de la Programación curricular"
@@ -92,9 +135,4 @@
     </div>
 </div>
 
-<p-menu
-    [style]="{ minWidth: '25rem' }"
-    #myMenu
-    [model]="items"
-    [popup]="true"
-/>
+<p-menu [style]="{ minWidth: '25rem' }" #menu [model]="items" [popup]="true" />

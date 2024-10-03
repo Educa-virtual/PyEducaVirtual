@@ -11,18 +11,35 @@
         ) {
             <div class="flex gap-2 flex-wrap">
                 <!-- AlternativaLetra -->
-                <h3>{{ alternativa.cAlternativaLetra }} )</h3>
+                <span>{{ alternativa.cAlternativaLetra }} )</span>
                 <!-- input o checkbox dependiendo del tipo pregunta -->
-                @if (pregunta.iTipoPregId === 1) {
-                    <p-radioButton
-                        [name]="alternativa.cAlternativaLetra"
-                        [value]="alternativa"
-                        disabled="true"
-                    />
-                }
-                @if (pregunta.iTipoPregId === 2) {
-                    <p-checkbox [binary]="true" disabled="true" />
-                }
+                <div
+                    class="flex gap-2"
+                    [ngClass]="
+                        pregunta.iTipoPregId === 1
+                            ? 'field-radiobutton'
+                            : 'field-checkbox'
+                    "
+                >
+                    <span class="">{{ alternativa.cAlternativaLetra }} )</span>
+                    <!-- input o checkbox dependiendo del tipo pregunta -->
+                    @if (pregunta.iTipoPregId === 1) {
+                        <p-radioButton
+                            [name]="pregunta.iPreguntaId"
+                            [value]="alternativa.cAlternativaLetra"
+                            [(ngModel)]="pregunta.alternativaCorrecta"
+                            disabled="true"
+                        ></p-radioButton>
+                    }
+                    @if (pregunta.iTipoPregId === 2) {
+                        <p-checkbox
+                            disabled="true"
+                            [name]="pregunta.iPreguntaId"
+                            [value]="alternativa.cAlternativaLetra"
+                            [(ngModel)]="pregunta.alternativaCorrecta"
+                        />
+                    }
+                </div>
                 <!-- AlternativaContenido -->
                 <div [innerHTML]="alternativa.cAlternativaDescripcion"></div>
             </div>

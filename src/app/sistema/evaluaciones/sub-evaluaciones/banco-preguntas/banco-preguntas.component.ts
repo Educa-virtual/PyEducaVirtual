@@ -16,12 +16,13 @@ import { ApiEvaluacionesRService } from '../../services/api-evaluaciones-r.servi
 import { ApiEvaluacionesService } from '../../services/api-evaluaciones.service'
 import { ActivatedRoute } from '@angular/router'
 import { BancoPreguntasModule } from './banco-preguntas.module'
+import { BancoPreguntaListaComponent } from './components/banco-pregunta-lista/banco-pregunta-lista.component'
 
 @Component({
     selector: 'app-ere-preguntas',
     templateUrl: './banco-preguntas.component.html',
     standalone: true,
-    imports: [BancoPreguntasModule],
+    imports: [BancoPreguntasModule, BancoPreguntaListaComponent],
     styleUrls: ['./banco-preguntas.component.scss'],
 })
 export class BancoPreguntasComponent implements OnInit, OnDestroy {
@@ -44,6 +45,7 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
     public estados = []
     public evaluaciones = []
     public tipoPreguntas = []
+    public expandedRowKeys = {}
 
     public params = {
         bPreguntaEstado: -1,
@@ -83,7 +85,7 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
         },
     ]
 
-    data = []
+    public data = []
 
     // Columnas Tabla Banco Preguntas
     columnas: IColumn[] = [
@@ -94,22 +96,6 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             width: '2rem',
             text: 'left',
             text_header: 'left',
-        },
-        {
-            field: 'checked',
-            header: '',
-            type: 'checkbox',
-            width: '5rem',
-            text: 'left',
-            text_header: '',
-        },
-        {
-            field: 'cPregunta',
-            header: 'Pregunta',
-            type: 'p-editor',
-            width: '15rem',
-            text: 'left',
-            text_header: 'Pregunta',
         },
         {
             field: 'cEncabPregTitulo',
@@ -135,7 +121,6 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             text: 'left',
             text_header: 'Tiempo',
         },
-
         {
             field: 'iPreguntaPeso',
             header: 'Puntaje',
@@ -176,6 +161,14 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             field: '',
             header: 'Acciones',
             type: 'actions',
+            width: '5rem',
+            text: 'left',
+            text_header: '',
+        },
+        {
+            field: 'checked',
+            header: '',
+            type: 'checkbox',
             width: '5rem',
             text: 'left',
             text_header: '',
@@ -278,6 +271,14 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             .subscribe({
                 next: (data) => {
                     this.data = data
+                    this.data.forEach((item) => {
+                        this.expandedRowKeys[item.iPreguntaId] = true
+                    })
+
+                    this.expandedRowKeys = Object.assign(
+                        {},
+                        this.expandedRowKeys
+                    )
                 },
             })
     }

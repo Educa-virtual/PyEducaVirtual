@@ -2,6 +2,7 @@ import { inject, Injectable } from '@angular/core'
 import { environment } from '@/environments/environment.template'
 import { HttpClient } from '@angular/common/http'
 import { map } from 'rxjs'
+import { mapData } from '../sub-evaluaciones/banco-preguntas/models/pregunta-data-transformer'
 
 @Injectable({
     providedIn: 'root',
@@ -24,19 +25,8 @@ export class ApiEreService {
                 params,
             })
             .pipe(
-                map((resp) => {
-                    return resp['data'].map((item) => {
-                        if (item.preguntas != null) {
-                            item.preguntas = item.preguntas.map((subItem) => {
-                                subItem.time = `${subItem.iHoras}h ${subItem.iMinutos}m ${subItem.iSegundos}s`
-                                return subItem
-                            })
-                        } else {
-                            item.time = `${item.iHoras}h ${item.iMinutos}m ${item.iSegundos}s`
-                        }
-                        return item
-                    })
-                })
+                map((resp) => resp['data']),
+                map((data) => mapData(data))
             )
     }
 

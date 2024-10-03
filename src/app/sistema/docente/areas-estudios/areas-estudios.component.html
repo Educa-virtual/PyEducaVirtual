@@ -2,7 +2,7 @@
     <p-toolbar class="col-12">
         <div class="p-toolbar-group-start">
             <h4 class="text-primary font-bold">
-                LISTA DE MIS ÁREAS DE ESTUDIOS
+                LISTA DE MIS ÁREAS CURRICULARES
             </h4>
         </div>
         <div class="p-toolbar-group-end">
@@ -10,14 +10,14 @@
                 <i class="pi pi-search"></i>
                 <input
                     pInputText
-                    placeholder="Buscar Curso"
+                    placeholder="Buscar área curricular"
                     style="width: 350px"
                     (input)="onGlobalFilter(dt, $event)"
                 />
             </span>
             <p-button
                 icon="pi pi-sync"
-                pTooltip="Refrescar Áreas de Estudios"
+                pTooltip="Refrescar áreas curriculares"
                 tooltipPosition="top"
                 [rounded]="true"
                 [text]="true"
@@ -40,7 +40,7 @@
         <ng-template pTemplate="header">
             <tr>
                 <th style="width: 1rem">#</th>
-                <th style="width: 30rem">Nombre del Curso</th>
+                <th style="width: 30rem">Nombre del Área Curricular</th>
                 <th style="width: 2rem; text-align: center">Grado</th>
                 <th style="width: 2rem; text-align: center">Sección</th>
                 <th style="width: 1rem; text-align: center">Acción</th>
@@ -83,14 +83,17 @@
     <div class="col-10 footer flex gap-2 my-2 mx-2">
         <p class="font-bold">Leyenda:</p>
         <p-tag value="Total de Estudiantes" />
-        <p-tag severity="warning" value="Avance de Sílabo" />
+        <p-tag
+            severity="warning"
+            value="Avance de la Programación curricular"
+        />
         <p-tag severity="success" value="Avance de Asistencia" />
-        <p-tag severity="danger" value="Avance de Notas" />
+        <p-tag severity="danger" value="Avance de Nivel de Logros" />
     </div>
 </div>
 
 <p-menu
-    [style]="{ minWidth: '17rem' }"
+    [style]="{ minWidth: '25rem' }"
     #myMenu
     [model]="items"
     [popup]="true"

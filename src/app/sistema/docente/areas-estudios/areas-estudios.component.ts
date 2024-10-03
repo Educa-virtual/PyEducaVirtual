@@ -47,7 +47,7 @@ export class AreasEstudiosComponent implements OnInit {
     messages = [
         {
             severity: 'info',
-            detail: 'En esta sección podrá visualizar las áreas de estudio asignadas para el periodo seleccionado, así como la institución educativa a la que pertenece.',
+            detail: 'En esta sección podrá visualizar las áreas curriculares asignadas para el periodo seleccionado, así como la institución educativa a la que pertenece.',
         },
     ]
 
@@ -55,7 +55,7 @@ export class AreasEstudiosComponent implements OnInit {
         this.getCursos()
         this.items = [
             {
-                label: 'Gestionar Sílabo',
+                label: 'Gestionar Programación curricular',
                 icon: 'pi pi-angle-right',
                 command: () => {
                     this.goSection('silabo')
@@ -83,7 +83,7 @@ export class AreasEstudiosComponent implements OnInit {
                 },
             },
             {
-                label: 'Gestionar Notas',
+                label: 'Gestionar Nivel de Logro',
                 icon: 'pi pi-angle-right',
                 command: () => {
                     this.goSection('notas')
@@ -108,7 +108,7 @@ export class AreasEstudiosComponent implements OnInit {
         switch (section) {
             case 'silabo':
                 this.router.navigateByUrl(
-                    'docente/gestionar-silabo/' +
+                    'docente/gestionar-programacion-curricular/' +
                         this.selectedData['idDocCursoId'] +
                         '/' +
                         this.selectedData['cCursoNombre'].replace(

@@ -6,34 +6,22 @@ import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.
 import { Component, Input, OnChanges } from '@angular/core'
 import { FormBuilder } from '@angular/forms'
 import { ConfirmationService, MessageService } from 'primeng/api'
-import { FormDetalleEvaluacionesComponent } from '../form-detalle-evaluaciones/form-detalle-evaluaciones.component'
+import { FormActividadesComponent } from '../form-actividades/form-actividades.component'
 
-interface Data {
-    accessToken: string
-    refreshToken: string
-    expires_in: number
-    msg?
-    data?
-    validated?: boolean
-    code?: number
-}
 @Component({
-    selector: 'app-evaluacion',
+    selector: 'app-actividades',
     standalone: true,
     imports: [
         PrimengModule,
-        ContainerPageComponent,
         TablePrimengComponent,
-        FormDetalleEvaluacionesComponent,
+        ContainerPageComponent,
+        FormActividadesComponent,
     ],
-    templateUrl: './evaluacion.component.html',
-    styleUrl: './evaluacion.component.scss',
+    templateUrl: './actividades.component.html',
+    styleUrl: './actividades.component.scss',
 })
-export class EvaluacionComponent implements OnChanges {
+export class ActividadesComponent implements OnChanges {
     @Input() iSilaboId: string
-    showModal: boolean = false
-    itemData = []
-    option: string
 
     constructor(
         private GeneralService: GeneralService,
@@ -45,9 +33,13 @@ export class EvaluacionComponent implements OnChanges {
     ngOnChanges(changes) {
         if (changes.iSilaboId?.currentValue) {
             this.iSilaboId = changes.iSilaboId.currentValue
-            this.getDetalleEvaluaciones()
+            this.getSilaboActividadAprendizajes()
         }
     }
+    data = []
+    showModal: boolean = false
+    itemSilaboActividadAprendizajes = []
+    option: string
 
     actionsContainer = [
         {
@@ -58,7 +50,7 @@ export class EvaluacionComponent implements OnChanges {
             class: 'p-button-primary',
         },
         {
-            labelTooltip: 'Refrescar lista de detalle de evaluaciones',
+            labelTooltip: 'Refrescar lista de actividades',
             text: 'Refrescar',
             icon: 'pi pi-sync',
             accion: 'refrescar',
@@ -81,22 +73,28 @@ export class EvaluacionComponent implements OnChanges {
             class: 'p-button-rounded p-button-danger p-button-text',
         },
     ]
-    data = []
-
     columns = [
         {
-            type: 'item',
-            width: '2rem',
-            field: 'Item',
-            header: 'N°',
+            type: 'text',
+            width: '8rem',
+            field: 'cSilaboActAprendNombre',
+            header: 'Nombre de la Actividad',
             text_header: 'center',
-            text: 'center',
+            text: 'justify',
         },
         {
             type: 'text',
-            width: '10rem',
-            field: 'cDetEvalDetalles',
-            header: 'Descripción',
+            width: '8rem',
+            field: 'cSilaboActAprendElementos',
+            header: 'Elemento de la Capacidad',
+            text_header: 'center',
+            text: 'justify',
+        },
+        {
+            type: 'text',
+            width: '7rem',
+            field: 'cSilaboActIndLogro',
+            header: 'Indicador de Logro',
             text_header: 'center',
             text: 'justify',
         },
@@ -113,20 +111,21 @@ export class EvaluacionComponent implements OnChanges {
     accionBtnItem(elemento): void {
         const { accion } = elemento
         const { item } = elemento
+
         let params
         switch (accion) {
             case 'agregar':
             case 'actualizar':
                 this.showModal = true
-                this.itemData = item
+                this.itemSilaboActividadAprendizajes = item
                 this.option = accion === 'agregar' ? 'Agregar' : 'Actualizar'
                 break
             case 'eliminar':
-                this.deleteDetalleEvaluaciones(item)
+                this.deleteSilaboActividadAprendizajes(item)
                 break
             case 'close-modal':
                 this.showModal = false
-                this.itemData = item
+                this.itemSilaboActividadAprendizajes = item
                 break
             case 'guardar':
                 item.iSilaboId = this.iSilaboId
@@ -134,10 +133,11 @@ export class EvaluacionComponent implements OnChanges {
                 params = {
                     petition: 'post',
                     group: 'docente',
-                    prefix: 'detalle-evaluaciones',
+                    prefix: 'silabo-actividad-aprendizajes',
                     ruta: 'store',
                     data: item,
                 }
+
                 this.getInformation(params, true)
 
                 break
@@ -146,7 +146,7 @@ export class EvaluacionComponent implements OnChanges {
                 params = {
                     petition: 'post',
                     group: 'docente',
-                    prefix: 'detalle-evaluaciones',
+                    prefix: 'silabo-actividad-aprendizajes',
                     ruta: 'store',
                     data: item,
                 }
@@ -154,18 +154,20 @@ export class EvaluacionComponent implements OnChanges {
 
                 break
             case 'refrescar':
-                this.getDetalleEvaluaciones()
+                this.getSilaboActividadAprendizajes()
                 break
             default:
                 break
         }
     }
-    getDetalleEvaluaciones() {
+
+    getSilaboActividadAprendizajes() {
         const params = {
             petition: 'post',
             group: 'docente',
-            prefix: 'detalle-evaluaciones',
+            prefix: 'silabo-actividad-aprendizajes',
             ruta: 'list',
+            seleccion: 1,
             data: {
                 opcion: 'CONSULTARxiSilaboId',
                 iCredId: this.ConstantesService.iCredId,
@@ -174,11 +176,13 @@ export class EvaluacionComponent implements OnChanges {
         }
         this.getInformation(params, false)
     }
-    deleteDetalleEvaluaciones(item) {
+    deleteSilaboActividadAprendizajes(item) {
         this.confirmationService.confirm({
             message:
-                'Deseas eliminar la evaluación ' + item.cDetEvalDetalles + ' ?',
-            header: 'Eliminar Evaluación',
+                'Deseas eliminar la actividad ' +
+                item.cSilaboActAprendNombre +
+                ' ?',
+            header: 'Eliminar Actividad',
             icon: 'pi pi-info-circle',
             acceptButtonStyleClass: 'p-button-danger p-button-text',
             rejectButtonStyleClass: 'p-button-text p-button-text',
@@ -188,12 +192,12 @@ export class EvaluacionComponent implements OnChanges {
             rejectLabel: 'No',
 
             accept: () => {
-                item.opcion = 'ELIMINARxiDetEvaId'
+                item.opcion = 'ELIMINARxiSilaboActAprendId'
                 item.iCredId = this.ConstantesService.iCredId
                 const params = {
                     petition: 'post',
                     group: 'docente',
-                    prefix: 'detalle-evaluaciones',
+                    prefix: 'silabo-actividad-aprendizajes',
                     ruta: 'store',
                     data: item,
                 }
@@ -207,10 +211,10 @@ export class EvaluacionComponent implements OnChanges {
     }
     getInformation(params, api) {
         this.GeneralService.getGralPrefix(params).subscribe({
-            next: (response: Data) => {
+            next: (response) => {
                 if (api) {
                     this.showModal = false
-                    this.getDetalleEvaluaciones()
+                    this.getSilaboActividadAprendizajes()
                 } else {
                     this.data = response.data
                 }

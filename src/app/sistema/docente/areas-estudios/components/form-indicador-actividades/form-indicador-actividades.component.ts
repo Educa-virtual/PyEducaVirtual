@@ -4,21 +4,19 @@ import {
     Component,
     EventEmitter,
     Input,
-    OnChanges,
     Output,
+    OnChanges,
 } from '@angular/core'
 import { FormBuilder, Validators } from '@angular/forms'
 
 @Component({
-    selector: 'app-form-actividades-aprendizaje-evaluacion',
+    selector: 'app-form-indicador-actividades',
     standalone: true,
     imports: [ModalPrimengComponent, PrimengModule],
-    templateUrl: './form-actividades-aprendizaje-evaluacion.component.html',
-    styleUrl: './form-actividades-aprendizaje-evaluacion.component.scss',
+    templateUrl: './form-indicador-actividades.component.html',
+    styleUrl: './form-indicador-actividades.component.scss',
 })
-export class FormActividadesAprendizajeEvaluacionComponent
-    implements OnChanges
-{
+export class FormIndicadorActividadesComponent implements OnChanges {
     @Output() accionBtnItem = new EventEmitter()
 
     @Input() data = []

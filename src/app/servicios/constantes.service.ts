@@ -7,7 +7,7 @@ const user = store.getItem('dremoToken')
 
 const docente = [
     {
-        label: 'Profesor',
+        label: 'Docente',
         items: [
             {
                 label: 'Áreas Curriculares',

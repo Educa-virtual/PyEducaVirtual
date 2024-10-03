@@ -64,7 +64,7 @@ export class AppTopBarComponent implements OnInit {
     ngOnInit() {
         this.selectedProfile = this.store.getItem('dremoPerfil')
         this.profile = [
-            { iProfile: 1001, profile: 'Profesor' },
+            { iProfile: 1001, profile: 'Docente' },
             { iProfile: 1002, profile: 'Estudiante' },
             { iProfile: 1003, profile: 'Aula Virtual' },
             { iProfile: 1004, profile: 'Otro' },

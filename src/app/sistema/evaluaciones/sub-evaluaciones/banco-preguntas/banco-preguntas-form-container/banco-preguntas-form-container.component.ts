@@ -55,18 +55,6 @@ export class BancoPreguntasFormContainerComponent implements OnInit {
 
     getData() {
         this.obtenerEncabezados()
-        this.obtenerTipoPreguntas()
-    }
-
-    obtenerTipoPreguntas() {
-        this._evaluacionesService
-            .obtenerTipoPreguntas()
-            .pipe(takeUntil(this.unsubscribe$))
-            .subscribe({
-                next: (data) => {
-                    this.tipoPreguntas = data
-                },
-            })
     }
 
     obtenerEncabezados() {

@@ -14,6 +14,14 @@ export class ApiAulaBancoPreguntasService {
 
     constructor() {}
 
+    obtenerTipoPreguntas() {
+        return this._http
+            .get(
+                `${this.baseUrlApi}/evaluaciones/tipo-preguntas/obtenerTipoPreguntas`
+            )
+            .pipe(map((resp) => resp['data']))
+    }
+
     obtenerBancoPreguntas(params): Observable<iPreguntaAula[]> {
         return this._http
             .get(
@@ -39,9 +47,27 @@ export class ApiAulaBancoPreguntasService {
             )
     }
 
+    // encabezados
+    obtenerEncabezadosPreguntas(params) {
+        return this._http
+            .get(
+                `${this.baseUrlApi}/evaluaciones/banco-preguntas/obtenerEncabezadosPreguntas`,
+                { params }
+            )
+            .pipe(map((resp) => resp['data']))
+    }
+
     guardarActualizarPregunta(data) {
         return this._http.post(
             `${this.baseUrlApi}/evaluaciones/banco-preguntas/guardarActualizarPregunta`,
+            data
+        )
+    }
+
+    // preguntas
+    guardarActualizarPreguntaConAlternativas(data) {
+        return this._http.post(
+            `${this.baseUrlApi}/evaluaciones/banco-preguntas/guardarActualizarPreguntaConAlternativas`,
             data
         )
     }

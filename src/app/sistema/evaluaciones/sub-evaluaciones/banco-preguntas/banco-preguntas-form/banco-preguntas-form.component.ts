@@ -209,7 +209,7 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
                 .setValidators([Validators.required])
             this.formPreguntaInfo
                 .get('iPreguntaNivel')
-                .setValidators([Validators.required])
+                ?.setValidators([Validators.required])
             this.formPreguntaInfo
                 .get('iPreguntaPeso')
                 .setValidators([Validators.required])

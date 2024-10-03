@@ -11,10 +11,16 @@ import { PanelModule } from 'primeng/panel'
 import { ToolbarModule } from 'primeng/toolbar'
 import { AulaBancoPreguntaFormContainerComponent } from './aula-banco-preguntas/components/aula-banco-pregunta-form-container/aula-banco-pregunta-form-container.component'
 import { StepsModule } from 'primeng/steps'
+import { BancoPreguntasFormComponent } from '@/app/sistema/evaluaciones/sub-evaluaciones/banco-preguntas/banco-preguntas-form/banco-preguntas-form.component'
 
 @NgModule({
     declarations: [AulaBancoPreguntaFormContainerComponent],
-    imports: [TablePrimengComponent, ContainerPageComponent, StepsModule],
+    imports: [
+        TablePrimengComponent,
+        ContainerPageComponent,
+        StepsModule,
+        BancoPreguntasFormComponent,
+    ],
     exports: [
         CommonModule,
         TablePrimengComponent,

@@ -6,17 +6,17 @@ import {
 
 export const columns: IColumn[] = [
     {
-        type: 'text',
-        width: '5rem',
-        field: 'cBancoPregunta',
-        header: 'Pregunta',
-        text_header: 'left',
+        field: '',
+        header: '',
+        type: 'expansion',
+        width: '2rem',
         text: 'left',
+        text_header: 'left',
     },
     {
         type: 'text',
         width: '3rem',
-        field: 'nBancoPuntaje',
+        field: 'iPreguntaPeso',
         header: 'Puntaje',
         text_header: 'left',
         text: 'left',
@@ -51,7 +51,7 @@ export const actionsTable: IActionTable[] = [
     },
     {
         labelTooltip: 'Eliminar',
-        icon: 'pi pi-pencil',
+        icon: 'pi pi-trash',
         accion: 'editar',
         type: 'item',
         class: 'p-button-rounded p-button-danger p-button-text',

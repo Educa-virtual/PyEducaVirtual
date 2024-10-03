@@ -22,24 +22,21 @@
                 <small class="text-red-500"> Este campo es requerido </small>
             }
         </div>
-        <div class="field col-12 md:col-6">
-            <app-common-input
-                type="number"
-                [label]="'Nivel'"
-                [controlKey]="'iPreguntaNivel'"
-            />
-        </div>
+
+        @if (formGroup.get('iPreguntaNivel') !== null) {
+            <div class="field col-12 md:col-6">
+                <app-common-input
+                    type="number"
+                    [label]="'Nivel'"
+                    [controlKey]="'iPreguntaNivel'"
+                />
+            </div>
+        }
         <div class="field col-12 md:col-6">
             <app-common-input
                 type="number"
                 [label]="'Peso'"
                 [controlKey]="'iPreguntaPeso'"
-            />
-        </div>
-        <div class="field col-12 md:col-6">
-            <app-common-input
-                [label]="'Pregunta Clave'"
-                [controlKey]="'cPreguntaClave'"
             />
         </div>
     </div>

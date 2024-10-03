@@ -3,10 +3,11 @@
     [actions]="actionsContainer"
     (accionBtnItem)="handleAcciones($event)"
 >
-    <app-table-primeng
-        [tableStyle]="{ 'min-width': '0' }"
+    <app-banco-pregunta-lista
         [columnas]="columnas"
-        [actions]="actionsTable"
-        (accionBtnItem)="handleAcciones($event)"
-    ></app-table-primeng>
+        [data]="bancoPreguntas"
+        [expandedRowKeys]="expandedRowKeys"
+        [accionesTabla]="actionsTable"
+        (accionBtnItemTable)="handleAcciones($event)"
+    />
 </app-container-page>

@@ -69,8 +69,6 @@ export class AlternativasFormComponent implements OnInit {
         this.letrasDisponiblesPreguntaSeleccionada =
             filterPreguntasUsadas(letrasUsadas)
 
-        console.log(this.letrasDisponiblesPreguntaSeleccionada)
-
         this.alternativaFormGroup
             .get('iPreguntaId')
             .setValue(this.pregunta.iPreguntaId)
@@ -92,8 +90,6 @@ export class AlternativasFormComponent implements OnInit {
             ? 1
             : 0
         const existeAlternativa = newAlternativas.some((x) => {
-            console.log(x.iAlternativaId, alternativa.iAlternativaId)
-
             return x.iAlternativaId == alternativa.iAlternativaId
         })
 

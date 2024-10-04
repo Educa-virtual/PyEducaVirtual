@@ -7,13 +7,13 @@ import {
     IColumn,
     TablePrimengComponent,
 } from '../../../../../shared/table-primeng/table-primeng.component'
-import { ApiEreService } from '../../../services/api-ere.service'
 import {
     FormBuilder,
     FormGroup,
     ReactiveFormsModule,
     Validators,
 } from '@angular/forms'
+import { ApiEvaluacionesRService } from '../../../services/api-evaluaciones-r.service'
 
 @Component({
     selector: 'app-asignar-matriz-preguntas-form',
@@ -34,7 +34,7 @@ export class AsignarMatrizPreguntasFormComponent implements OnInit {
     private selectedPreguntas = []
     private _config = inject(DynamicDialogConfig)
     private _ref = inject(DynamicDialogRef)
-    private _apiEre = inject(ApiEreService)
+    private _apiEre = inject(ApiEvaluacionesRService)
 
     public competencias = []
     public capacidades = []

@@ -17,6 +17,7 @@
                 [suggestions]="encabezadosFiltered"
                 optionLabel="cEncabPregTitulo"
                 (completeMethod)="search($event)"
+                (onSelect)="onSelect($event)"
                 appendTo="body"
             />
             @if (

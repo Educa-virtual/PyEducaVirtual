@@ -10,6 +10,7 @@
         @case (0) {
             <form [formGroup]="bancoPreguntasForm">
                 <app-banco-pregunta-encabezado-form
+                    (encabezadoChange)="encabezadoChange.emit($event)"
                     [controlKey]="'0'"
                     [encabezados]="encabezados"
                 />
@@ -95,23 +96,25 @@
         @case (2) {
             <div class="grid">
                 <div class="col-12">
+                    <!-- agregar el formulario como preguntaSelected -->
                     <h2 class="text-lg">Alternativas de la pregunta:</h2>
                     <div [innerHTML]="preguntaSelected?.cPregunta"></div>
                 </div>
             </div>
 
+            <!-- verificar el tipo pregunta, -->
+            <!-- si es unica o multiple -->
             <app-alternativas
-                [alternativas]="preguntaSelected?.alternativas ?? []"
-                [pregunta]="
-                    formMode === 'SUB-PREGUNTAS' ? preguntaSelected : pregunta
-                "
+                [alternativas]="preguntaSelected.alternativas ?? []"
+                [pregunta]="preguntaSelected"
                 (alternativasChange)="alternativasChange($event)"
                 (alternativasEliminadasChange)="
                     setAlternativasEliminadas($event)
                 "
                 [serviceProvider]="evaluacionesService"
             ></app-alternativas>
-
+            <!-- si es abierta -->
+            <!-- solo formulario => [alternativas] -->
             @if (
                 bancoPreguntasForm
                     .get('2.alternativas')

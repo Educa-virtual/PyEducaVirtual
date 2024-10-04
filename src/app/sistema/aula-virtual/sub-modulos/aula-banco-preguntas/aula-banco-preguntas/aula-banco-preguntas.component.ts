@@ -84,7 +84,6 @@ export class AulaBancoPreguntasComponent implements OnInit, OnDestroy {
     }
 
     public handleAcciones({ accion, item }) {
-        console.log(accion, item)
         if (accion === 'agregar') {
             this.agregarEditarPregunta({
                 iPreguntaId: 0,
@@ -98,7 +97,7 @@ export class AulaBancoPreguntasComponent implements OnInit, OnDestroy {
         }
 
         if (accion === 'eliminar') {
-            this.handleEliminarBancoPreguntas(item)
+            this.handleEliminarBancoPreguntas()
         }
     }
 
@@ -125,12 +124,10 @@ export class AulaBancoPreguntasComponent implements OnInit, OnDestroy {
         })
     }
 
-    handleEliminarBancoPreguntas(pregunta) {
+    handleEliminarBancoPreguntas() {
         this._confirmService.openConfirm({
             header: '¿Esta seguro de agregar la pregunta?',
-            accept: () => {
-                console.log('eliminado', pregunta)
-            },
+            accept: () => {},
         })
     }
 

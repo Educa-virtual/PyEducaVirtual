@@ -15,7 +15,7 @@ import { MenuModule } from 'primeng/menu'
 import { MenuItem } from 'primeng/api'
 import { TareaFormContainerComponent } from '../../../../actividades/actividad-tarea/tarea-form-container/tarea-form-container.component'
 import { VideoconferenciaContainerFormComponent } from '../../../../actividades/actividad-videoconferencia/videoconferencia-container-form/videoconferencia-container-form.component'
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog'
+import { DialogService } from 'primeng/dynamicdialog'
 import { IconComponent } from '@/app/shared/icon/icon.component'
 import { provideIcons } from '@ng-icons/core'
 import {
@@ -183,20 +183,10 @@ export class TabContenidoComponent implements OnInit {
 
     handleTareaAction(action: TActividadActions, actividad: IActividad) {
         if (action === 'EDITAR') {
-            const ref: DynamicDialogRef = this._dialogService.open(
-                TareaFormContainerComponent,
-                {
-                    ...MODAL_CONFIG,
-                    data: actividad,
-                    header: 'Editar Tarea',
-                }
-            )
-            ref.onClose.subscribe((result) => {
-                if (result) {
-                    console.log('Formulario enviado', result)
-                } else {
-                    console.log('Formulario cancelado')
-                }
+            this._dialogService.open(TareaFormContainerComponent, {
+                ...MODAL_CONFIG,
+                data: actividad,
+                header: 'Editar Tarea',
             })
         }
 

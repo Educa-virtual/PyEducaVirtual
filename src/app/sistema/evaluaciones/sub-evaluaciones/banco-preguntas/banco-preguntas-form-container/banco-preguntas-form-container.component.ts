@@ -44,13 +44,13 @@ export class BancoPreguntasFormContainerComponent implements OnInit {
         this.tipoPreguntas = this._config.data.tipoPreguntas.filter((item) => {
             return item.iTipoPregId !== 0
         })
-        this.pregunta = this._config.data.pregunta
 
-        if (this.pregunta.iPreguntaId == 0) {
+        if (this._config.data.pregunta.iPreguntaId == 0) {
             this.modePregunta = 'CREAR'
         } else {
             this.modePregunta = 'EDITAR'
         }
+        this.pregunta = this._config.data.pregunta
     }
 
     getData() {
@@ -73,6 +73,26 @@ export class BancoPreguntasFormContainerComponent implements OnInit {
                         sinEncabezadoObj,
                         ...this.encabezados,
                     ]
+                },
+            })
+    }
+
+    obtenerPreguntasPorEncabezado(iEncabPregId) {
+        const params = {
+            iEncabPregId,
+        }
+        this._evaluacionesService
+            .obtenerBancoPreguntas(params)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+                next: (data) => {
+                    if (data.length > 0) {
+                        this.pregunta = undefined
+                        this.pregunta = data[0]
+                        console.log(data[0])
+
+                        this.modePregunta = 'EDITAR'
+                    }
                 },
             })
     }

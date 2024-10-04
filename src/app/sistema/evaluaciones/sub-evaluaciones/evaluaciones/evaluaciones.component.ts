@@ -28,7 +28,6 @@ import {
 
 import { ApiEvaluacionesRService } from '../../services/api-evaluaciones-r.service'
 import { Subject, takeUntil } from 'rxjs'
-import { ApiEreService } from '../../services/api-ere.service'
 
 import {
     ContainerPageComponent,
@@ -62,7 +61,6 @@ export class EvaluacionesComponent implements OnInit {
     public data = []
     private _dialogService = inject(DialogService)
     private _apiEre = inject(ApiEvaluacionesRService)
-    private _apiEreE = inject(ApiEreService)
     customers!: Customer[]
     visible: boolean = false
 

@@ -64,10 +64,12 @@ const alternativasLabel = {
 export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
     @Output() closeModalChange = new EventEmitter()
     @Output() submitChange = new EventEmitter()
+    @Output() encabezadoChange = new EventEmitter()
     @Input() public tipoPreguntas = []
     @Input() public encabezados = []
     @Input() public bancoPreguntasForm: FormGroup
     @Input() public encabezadosFiltered = []
+    @Input() public obtenerPreguntasPorEncabezado: (id: number) => void
     private _pregunta
 
     @Input()
@@ -80,6 +82,7 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
             pregunta.preguntas !== undefined &&
             pregunta.preguntas?.length > 0
         ) {
+            this.preguntaSelected = pregunta
             this.formMode = 'SUB-PREGUNTAS'
             this.handleConEncabezado()
         } else {
@@ -265,9 +268,9 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
 
     // asignar las alternativas a la pregunta
     alternativasChange(alternativas) {
-        this.alternativas = alternativas
+        // this.alternativas = alternativas
+        this.preguntaSelected.alternativas = alternativas
         if (this.formMode === 'SUB-PREGUNTAS') {
-            this.preguntaSelected.alternativas = alternativas
             this.preguntaSelected.iTotalAlternativas = alternativas.length
             this.actualizarPreguntas(this.preguntaSelected)
         }
@@ -275,9 +278,9 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
 
     // asignar las alternativas a la pregunta
     setAlternativasEliminadas(alternativas) {
-        this.alternativasEliminadas = alternativas
+        // this.alternativasEliminadas = alternativas
+        this.preguntaSelected.alternativasEliminar = alternativas
         if (this.formMode === 'SUB-PREGUNTAS') {
-            this.preguntaSelected.alternativasEliminar = alternativas
             this.preguntaSelected.iTotalAlternativas = alternativas.length
             this.actualizarPreguntas(this.preguntaSelected)
         }

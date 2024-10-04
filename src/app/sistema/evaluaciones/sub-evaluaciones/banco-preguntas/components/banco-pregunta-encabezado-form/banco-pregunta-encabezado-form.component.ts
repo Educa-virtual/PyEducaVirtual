@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common'
-import { Component, inject, Input, OnInit } from '@angular/core'
+import {
+    Component,
+    EventEmitter,
+    inject,
+    Input,
+    OnInit,
+    Output,
+} from '@angular/core'
 import {
     ControlContainer,
     FormGroup,
@@ -31,6 +38,7 @@ export const sinEncabezadoObj = {
 export class BancoPreguntaEncabezadoFormComponent implements OnInit {
     @Input({ required: true }) controlKey: string
     @Input() encabezados = []
+    @Output() encabezadoChange = new EventEmitter()
 
     private parentContainer = inject(ControlContainer)
     public formGroup!: FormGroup
@@ -43,6 +51,13 @@ export class BancoPreguntaEncabezadoFormComponent implements OnInit {
     // obtiene el formulario padre
     get parentFormGroup() {
         return this.parentContainer.control?.get(this.controlKey) as FormGroup
+    }
+
+    onSelect({ value }) {
+        if (value.iEncabPregId == -1) {
+            return
+        }
+        this.encabezadoChange.emit(value.iEncabPregId)
     }
 
     // buscar termino y en la lista de encabezados

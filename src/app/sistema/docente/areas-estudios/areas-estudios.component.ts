@@ -1,8 +1,7 @@
 import { PrimengModule } from '@/app/primeng.module'
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
-import { Component, OnInit, ViewChild } from '@angular/core'
+import { Component, OnInit } from '@angular/core'
 import { TablePrimengComponent } from '../../../shared/table-primeng/table-primeng.component'
-import { Menu } from 'primeng/menu'
 import { RecursosDidacticosComponent } from './components/recursos-didacticos/recursos-didacticos.component'
 import { Router } from '@angular/router'
 import { Table } from 'primeng/table'
@@ -32,8 +31,6 @@ interface Data {
     providers: [MessageService],
 })
 export class AreasEstudiosComponent implements OnInit {
-    @ViewChild('myMenu') menu!: Menu
-
     constructor(
         private router: Router,
         private GeneralService: GeneralService,
@@ -47,7 +44,7 @@ export class AreasEstudiosComponent implements OnInit {
     messages = [
         {
             severity: 'info',
-            detail: 'En esta sección podrá visualizar las áreas de estudio asignadas para el periodo seleccionado, así como la institución educativa a la que pertenece.',
+            detail: 'En esta sección podrá visualizar las áreas curriculares asignadas para el periodo seleccionado, así como la institución educativa a la que pertenece.',
         },
     ]
 
@@ -55,7 +52,7 @@ export class AreasEstudiosComponent implements OnInit {
         this.getCursos()
         this.items = [
             {
-                label: 'Gestionar Sílabo',
+                label: 'Gestionar Programación curricular',
                 icon: 'pi pi-angle-right',
                 command: () => {
                     this.goSection('silabo')
@@ -83,7 +80,7 @@ export class AreasEstudiosComponent implements OnInit {
                 },
             },
             {
-                label: 'Gestionar Notas',
+                label: 'Gestionar Nivel de Logro',
                 icon: 'pi pi-angle-right',
                 command: () => {
                     this.goSection('notas')
@@ -92,23 +89,15 @@ export class AreasEstudiosComponent implements OnInit {
         ]
     }
 
-    showAndHideMenu(item, $ev: Event) {
-        this.selectedData = item
-        // console.log($ev)
-        this.menu.show($ev)
-        // this.menu.hide()
-        // setTimeout(() => {
-        //     this.menu.hide()
-        // }, 10000)
-    }
     onGlobalFilter(table: Table, event: Event) {
         table.filterGlobal((event.target as HTMLInputElement).value, 'contains')
     }
+
     goSection(section) {
         switch (section) {
             case 'silabo':
                 this.router.navigateByUrl(
-                    'docente/gestionar-silabo/' +
+                    'docente/gestionar-programacion-curricular/' +
                         this.selectedData['idDocCursoId'] +
                         '/' +
                         this.selectedData['cCursoNombre'].replace(

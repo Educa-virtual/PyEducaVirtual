@@ -6,7 +6,7 @@ import { CheckboxModule } from 'primeng/checkbox'
 import { MenuModule } from 'primeng/menu'
 import { IconComponent } from '../../icon/icon.component'
 import { provideIcons } from '@ng-icons/core'
-import { matFilterList } from '@ng-icons/material-icons/baseline'
+import { matTune } from '@ng-icons/material-icons/baseline'
 
 @Component({
     selector: 'app-table-column-filter',
@@ -21,7 +21,7 @@ import { matFilterList } from '@ng-icons/material-icons/baseline'
     ],
     templateUrl: './table-column-filter.component.html',
     styleUrl: './table-column-filter.component.scss',
-    providers: [provideIcons({ matFilterList })],
+    providers: [provideIcons({ matTune })],
 })
 export class TableColumnFilterComponent {
     @Input() columns = []

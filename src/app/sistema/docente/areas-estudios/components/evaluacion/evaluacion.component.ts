@@ -208,7 +208,6 @@ export class EvaluacionComponent implements OnChanges {
     getInformation(params, api) {
         this.GeneralService.getGralPrefix(params).subscribe({
             next: (response: Data) => {
-                console.log(response, api)
                 if (api) {
                     this.showModal = false
                     this.getDetalleEvaluaciones()

@@ -6,17 +6,16 @@ import {
 } from '../../../../shared/table-primeng/table-primeng.component'
 import { IActionContainer } from '@/app/shared/container-page/container-page.component'
 import { DialogService } from 'primeng/dynamicdialog'
-import { BancoPreguntasFormComponent } from './banco-preguntas-form/banco-preguntas-form.component'
 import { MODAL_CONFIG } from '@/app/shared/constants/modal.config'
 import { AsignarMatrizPreguntasFormComponent } from './asignar-matriz-preguntas-form/asignar-matriz-preguntas-form.component'
 import { ApiEreService } from '../../services/api-ere.service'
 import { Subject, takeUntil } from 'rxjs'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { ApiEvaluacionesRService } from '../../services/api-evaluaciones-r.service'
-import { ApiEvaluacionesService } from '../../services/api-evaluaciones.service'
 import { ActivatedRoute } from '@angular/router'
 import { BancoPreguntasModule } from './banco-preguntas.module'
 import { BancoPreguntaListaComponent } from './components/banco-pregunta-lista/banco-pregunta-lista.component'
+import { BancoPreguntasFormContainerComponent } from './banco-preguntas-form-container/banco-preguntas-form-container.component'
 
 @Component({
     selector: 'app-ere-preguntas',
@@ -30,7 +29,6 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
     private _dialogService = inject(DialogService)
     private _apiEre = inject(ApiEreService)
     private _apiEvaluacionesR = inject(ApiEvaluacionesRService)
-    private _apiEvaluaciones = inject(ApiEvaluacionesService)
     private _confirmationModalService = inject(ConfirmationModalService)
     private _route = inject(ActivatedRoute)
     private unsubscribe$: Subject<boolean> = new Subject()
@@ -284,7 +282,7 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
     }
 
     obtenerTipoPreguntas() {
-        this._apiEvaluaciones
+        this._apiEvaluacionesR
             .obtenerTipoPreguntas()
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
@@ -407,18 +405,21 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
 
     // abrir el modal para agregar una nueva pregunta
     agregarEditarPregunta(pregunta) {
-        const refModal = this._dialogService.open(BancoPreguntasFormComponent, {
-            ...MODAL_CONFIG,
-            data: {
-                tipoPreguntas: this.tipoPreguntas,
-                pregunta: pregunta,
-                iCursoId: this.params.iCursoId,
-            },
-            header:
-                pregunta.iPreguntaId == 0
-                    ? 'Nueva pregunta'
-                    : 'Editar pregunta',
-        })
+        const refModal = this._dialogService.open(
+            BancoPreguntasFormContainerComponent,
+            {
+                ...MODAL_CONFIG,
+                data: {
+                    tipoPreguntas: this.tipoPreguntas,
+                    pregunta: pregunta,
+                    iCursoId: this.params.iCursoId,
+                },
+                header:
+                    pregunta.iPreguntaId == 0
+                        ? 'Nueva pregunta'
+                        : 'Editar pregunta',
+            }
+        )
         refModal.onClose.subscribe((result) => {
             if (result) {
                 this.obtenerBancoPreguntas()

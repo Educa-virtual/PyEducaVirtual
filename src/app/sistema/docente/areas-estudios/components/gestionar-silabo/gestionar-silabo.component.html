@@ -2,13 +2,17 @@
     <p-toolbar class="col-12">
         <div class="p-toolbar-group-start">
             <h4 class="text-primary font-bold">
-                Gestionar Sílabo: {{ cCursoNombre }}
+                Gestionar Programación Curricular: {{ cCursoNombre }}
             </h4>
         </div>
         <div class="p-toolbar-group-end">
             <p-tag
                 severity="warning"
-                [value]="'Avance del Sílabo:' + iAvanceSilabo + '%'"
+                [value]="
+                    'Avance de la programación curricular: ' +
+                    iAvanceSilabo +
+                    '%'
+                "
             />
             <p-button
                 icon="pi pi-undo"

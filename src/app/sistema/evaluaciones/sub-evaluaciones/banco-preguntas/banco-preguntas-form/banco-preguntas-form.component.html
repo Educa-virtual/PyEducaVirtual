@@ -2,7 +2,7 @@
     <p-steps
         [model]="pasos"
         [(activeIndex)]="activeIndex"
-        [readonly]="mode === 'CREAR'"
+        [readonly]="modePregunta === 'CREAR'"
     ></p-steps>
 
     @switch (activeIndex) {
@@ -73,7 +73,7 @@
                             (click)="
                                 toggleStepsVisibility(true);
                                 changeIndexBancoForm(0);
-                                toggleValidationInformacionPregunta(false)
+                                agregarQuitarValidacionesFormPregunta('QUITAR')
                             "
                         ></button>
                         <button

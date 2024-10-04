@@ -116,7 +116,7 @@ export class TareaRoomComponent {
         if (event.accion === 'calificar') {
             this._dialogService.open(CalificarTareaFormComponent, {
                 ...MODAL_CONFIG,
-                header: 'Calificar Tarea',
+                header: 'Calificar Actividad',
             })
         }
     }

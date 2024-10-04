@@ -97,7 +97,7 @@ export class AulaBancoPreguntasComponent implements OnInit, OnDestroy {
         }
 
         if (accion === 'eliminar') {
-            this.handleEliminarBancoPreguntas(item)
+            this.handleEliminarBancoPreguntas()
         }
     }
 

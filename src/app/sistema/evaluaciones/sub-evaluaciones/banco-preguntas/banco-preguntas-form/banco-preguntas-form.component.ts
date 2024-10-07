@@ -64,10 +64,12 @@ const alternativasLabel = {
 export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
     @Output() closeModalChange = new EventEmitter()
     @Output() submitChange = new EventEmitter()
+    @Output() encabezadoChange = new EventEmitter()
     @Input() public tipoPreguntas = []
     @Input() public encabezados = []
     @Input() public bancoPreguntasForm: FormGroup
     @Input() public encabezadosFiltered = []
+    @Input() public obtenerPreguntasPorEncabezado: (id: number) => void
     private _pregunta
 
     @Input()
@@ -81,14 +83,16 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
             pregunta.preguntas?.length > 0
         ) {
             this.formMode = 'SUB-PREGUNTAS'
+            this.preguntas = pregunta.preguntas
+
             this.handleConEncabezado()
         } else {
             this.formMode = 'UNA-PREGUNTA'
-            this.preguntaSelected = pregunta
+            this.alternativas = pregunta.alternativas
             this.handleSinEncabezado()
-            if (this.modePregunta === 'EDITAR') {
-                this.patchForm(pregunta)
-            }
+        }
+        if (this.modePregunta === 'EDITAR') {
+            this.patchForm(pregunta)
         }
         this._pregunta = pregunta
     }
@@ -101,6 +105,7 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
     public preguntas = []
 
     @Input() public modePregunta: 'EDITAR' | 'CREAR' = 'CREAR'
+    @Input() public encabezadoMode: 'COMPLETADO' | 'EDITAR' = 'EDITAR'
     public formMode: 'SUB-PREGUNTAS' | 'UNA-PREGUNTA' = 'UNA-PREGUNTA'
     public showFooterSteps = true
     public pasos: MenuItem[] = [
@@ -133,8 +138,10 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
             .get('0.encabezadoSelected')
             .valueChanges.subscribe((value) => {
                 if (this.esSinEncabezado) {
+                    this.formMode = 'UNA-PREGUNTA'
                     this.handleSinEncabezado()
                 } else {
+                    this.formMode = 'SUB-PREGUNTAS'
                     this.handleConEncabezado()
                 }
                 if (typeof value === 'string') {
@@ -209,7 +216,7 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
                 .setValidators([Validators.required])
             this.formPreguntaInfo
                 .get('iPreguntaNivel')
-                .setValidators([Validators.required])
+                ?.setValidators([Validators.required])
             this.formPreguntaInfo
                 .get('iPreguntaPeso')
                 .setValidators([Validators.required])
@@ -327,7 +334,10 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
             }
         }
         this.bancoPreguntasForm.get('0').patchValue(pregunta)
-        this.bancoPreguntasForm.get('1').patchValue(pregunta)
+
+        if (this.formMode === 'UNA-PREGUNTA') {
+            this.bancoPreguntasForm.get('1').patchValue(pregunta)
+        }
     }
 
     // escuchar cambio de tipo de preguntas y activar validaciones de las alternativas
@@ -435,23 +445,30 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
             return
         }
 
-        const pregunta = this.bancoPreguntasForm.get('1').value
-        pregunta.alternativasEliminadas = this.alternativasEliminadas
         const encabezado = this.bancoPreguntasForm.get('0').value
-        pregunta.alternativas = this.alternativas
-        pregunta.cPreguntaClave = this.getPreguntaClave(pregunta.alternativas)
 
-        let preguntas = [pregunta]
+        let preguntas = []
+        if (this.formMode === 'UNA-PREGUNTA') {
+            const pregunta = this.bancoPreguntasForm.get('1').value
+            pregunta.alternativasEliminadas = this.alternativasEliminadas
+            pregunta.alternativas = this.alternativas
+            pregunta.cPreguntaClave = this.getPreguntaClave(
+                pregunta.alternativas
+            )
+            pregunta.iNivelGradoId = 1
+            pregunta.iEspecialistaId = 1
+            preguntas = [pregunta]
+        }
 
         if (this.formMode === 'SUB-PREGUNTAS') {
             preguntas = this.preguntas
             preguntas = preguntas.map((x) => {
                 x.cPreguntaClave = this.getPreguntaClave(x.alternativas)
+                x.iNivelGradoId = 1
+                x.iEspecialistaId = 1
+                return x
             })
         }
-
-        pregunta.iNivelGradoId = 1
-        pregunta.iEspecialistaId = 1
 
         const data = {
             encabezado,

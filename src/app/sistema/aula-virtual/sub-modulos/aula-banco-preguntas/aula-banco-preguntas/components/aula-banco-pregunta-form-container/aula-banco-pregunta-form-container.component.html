@@ -1,10 +1,11 @@
-<div class="flex flex-column gap-4">
-    <p-steps></p-steps>
-    <app-banco-preguntas-form></app-banco-preguntas-form>
-    <!-- form1 output valid padre objeto: encabezodo (onSelect)-->
-    <!-- form2.1 single -->
-    <!-- form2.2 multiple (modifique)="preguntas = $event" -->
-    <!-- form3 single (modifique)="preguntaSelected.alternativas = $event" -->
-    <!-- form3 button agregar alternativas -->
-    <!-- button Guardar y finalizar (validaciones) -->
-</div>
+<app-banco-preguntas-form
+    (closeModalChange)="closeModal($event)"
+    [bancoPreguntasForm]="bancoPreguntasForm"
+    (submitChange)="guardarBancoPreguntas($event)"
+    [encabezados]="encabezados"
+    [modePregunta]="modePregunta"
+    [pregunta]="pregunta"
+    [encabezadoMode]="encabezadoMode"
+    [tipoPreguntas]="tipoPreguntas"
+    (encabezadoChange)="obtenerPreguntasPorEncabezado($event)"
+/>

@@ -138,7 +138,7 @@ export class RecursoComponent implements OnInit {
         this.submitted = false
     }
     /*saveProduct() {
-       
+
         /*this.submitted = true
 
         if (this.product.name?.trim()) {
@@ -173,7 +173,7 @@ export class RecursoComponent implements OnInit {
                 })
             }
 
-            
+
 
             this.products = [...this.products]
             this.productDialog = false

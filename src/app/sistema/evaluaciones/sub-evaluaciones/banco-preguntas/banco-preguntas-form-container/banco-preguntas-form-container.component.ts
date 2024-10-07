@@ -31,6 +31,7 @@ export class BancoPreguntasFormContainerComponent implements OnInit {
     public encabezados = []
     public encabezadosFiltered = []
     public pregunta
+    public encabezadoMode: 'COMPLETADO' | 'EDITAR' = 'EDITAR'
 
     public modePregunta: 'CREAR' | 'EDITAR' = 'CREAR'
     private params = {}
@@ -44,29 +45,18 @@ export class BancoPreguntasFormContainerComponent implements OnInit {
         this.tipoPreguntas = this._config.data.tipoPreguntas.filter((item) => {
             return item.iTipoPregId !== 0
         })
-        this.pregunta = this._config.data.pregunta
 
-        if (this.pregunta.iPreguntaId == 0) {
+        if (this._config.data.pregunta.iPreguntaId == 0) {
             this.modePregunta = 'CREAR'
         } else {
             this.modePregunta = 'EDITAR'
+            this.encabezadoMode = 'COMPLETADO'
         }
+        this.pregunta = this._config.data.pregunta
     }
 
     getData() {
         this.obtenerEncabezados()
-        this.obtenerTipoPreguntas()
-    }
-
-    obtenerTipoPreguntas() {
-        this._evaluacionesService
-            .obtenerTipoPreguntas()
-            .pipe(takeUntil(this.unsubscribe$))
-            .subscribe({
-                next: (data) => {
-                    this.tipoPreguntas = data
-                },
-            })
     }
 
     obtenerEncabezados() {
@@ -85,6 +75,25 @@ export class BancoPreguntasFormContainerComponent implements OnInit {
                         sinEncabezadoObj,
                         ...this.encabezados,
                     ]
+                },
+            })
+    }
+
+    obtenerPreguntasPorEncabezado(iEncabPregId) {
+        const params = {
+            iEncabPregId,
+        }
+        this._evaluacionesService
+            .obtenerBancoPreguntas(params)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+                next: (data) => {
+                    if (data.length > 0) {
+                        this.pregunta = undefined
+                        this.pregunta = data[0]
+
+                        // this.modePregunta = 'EDITAR'
+                    }
                 },
             })
     }

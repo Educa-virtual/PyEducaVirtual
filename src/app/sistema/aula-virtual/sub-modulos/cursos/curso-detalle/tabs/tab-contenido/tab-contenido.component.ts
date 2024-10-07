@@ -15,7 +15,7 @@ import { MenuModule } from 'primeng/menu'
 import { MenuItem } from 'primeng/api'
 import { TareaFormContainerComponent } from '../../../../actividades/actividad-tarea/tarea-form-container/tarea-form-container.component'
 import { VideoconferenciaContainerFormComponent } from '../../../../actividades/actividad-videoconferencia/videoconferencia-container-form/videoconferencia-container-form.component'
-import { DialogService } from 'primeng/dynamicdialog'
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog'
 import { IconComponent } from '@/app/shared/icon/icon.component'
 import { provideIcons } from '@ng-icons/core'
 import {
@@ -72,7 +72,7 @@ export class TabContenidoComponent implements OnInit {
     public actividades: IActividad[] = [
         {
             id: '1',
-            tipoActividadNombre: 'Tarea',
+            tipoActividadNombre: 'Actividad',
             tipoActividad: 1,
             nombreActividad: 'Actividad I',
         },
@@ -113,7 +113,7 @@ export class TabContenidoComponent implements OnInit {
 
         this.accionesContenido = [
             {
-                label: 'Tarea',
+                label: 'Actividad',
                 icon: 'matAssignment',
                 command: () => {
                     this.handleTareaAction('CREAR', null)
@@ -183,17 +183,27 @@ export class TabContenidoComponent implements OnInit {
 
     handleTareaAction(action: TActividadActions, actividad: IActividad) {
         if (action === 'EDITAR') {
-            this._dialogService.open(TareaFormContainerComponent, {
-                ...MODAL_CONFIG,
-                data: actividad,
-                header: 'Editar Tarea',
+            const ref: DynamicDialogRef = this._dialogService.open(
+                TareaFormContainerComponent,
+                {
+                    ...MODAL_CONFIG,
+                    data: actividad,
+                    header: 'Editar Actividad',
+                }
+            )
+            ref.onClose.subscribe((result) => {
+                if (result) {
+                    console.log('Formulario enviado', result)
+                } else {
+                    console.log('Formulario cancelado')
+                }
             })
         }
 
         if (action === 'CREAR') {
             this._dialogService.open(TareaFormContainerComponent, {
                 ...MODAL_CONFIG,
-                header: 'Crear Tarea',
+                header: 'Crear Actividades de Aprendizaje',
                 data: null,
             })
         }

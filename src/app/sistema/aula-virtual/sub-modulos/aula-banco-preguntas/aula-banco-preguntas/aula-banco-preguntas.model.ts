@@ -45,14 +45,14 @@ export const actionsTable: IActionTable[] = [
     {
         labelTooltip: 'Editar',
         icon: 'pi pi-pencil',
-        accion: 'agregar',
+        accion: 'editar',
         type: 'item',
         class: 'p-button-rounded p-button-warning p-button-text',
     },
     {
         labelTooltip: 'Eliminar',
         icon: 'pi pi-trash',
-        accion: 'editar',
+        accion: 'eliminar',
         type: 'item',
         class: 'p-button-rounded p-button-danger p-button-text',
     },

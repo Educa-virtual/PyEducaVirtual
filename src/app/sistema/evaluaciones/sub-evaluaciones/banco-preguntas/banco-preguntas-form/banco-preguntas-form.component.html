@@ -10,9 +10,11 @@
         @case (0) {
             <form [formGroup]="bancoPreguntasForm">
                 <app-banco-pregunta-encabezado-form
+                    [mode]="encabezadoMode"
                     (encabezadoChange)="encabezadoChange.emit($event)"
                     [controlKey]="'0'"
                     [encabezados]="encabezados"
+                    [parentMode]="formMode"
                 />
             </form>
         }
@@ -98,15 +100,19 @@
                 <div class="col-12">
                     <!-- agregar el formulario como preguntaSelected -->
                     <h2 class="text-lg">Alternativas de la pregunta:</h2>
-                    <div [innerHTML]="preguntaSelected?.cPregunta"></div>
+                    <div
+                        [innerHTML]="
+                            preguntaSelected?.cPregunta ?? pregunta.cPregunta
+                        "
+                    ></div>
                 </div>
             </div>
 
             <!-- verificar el tipo pregunta, -->
             <!-- si es unica o multiple -->
             <app-alternativas
-                [alternativas]="preguntaSelected.alternativas ?? []"
-                [pregunta]="preguntaSelected"
+                [alternativas]="preguntaSelected?.alternativas ?? alternativas"
+                [pregunta]="preguntaSelected ?? pregunta"
                 (alternativasChange)="alternativasChange($event)"
                 (alternativasEliminadasChange)="
                     setAlternativasEliminadas($event)
@@ -139,7 +145,11 @@
                         size="small"
                         type="button"
                         class="p-button-primary"
-                        (click)="goStep('back'); toggleStepsVisibility(true)"
+                        (click)="
+                            goStep('back');
+                            toggleStepsVisibility(true);
+                            agregarQuitarAlternativasPaso('QUITAR')
+                        "
                     ></button>
                 </footer>
             }

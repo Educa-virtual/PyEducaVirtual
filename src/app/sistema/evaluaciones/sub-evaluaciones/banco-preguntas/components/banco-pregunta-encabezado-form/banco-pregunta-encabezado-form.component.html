@@ -9,24 +9,31 @@
             <label for="cEncabPregTitulo"
                 >Ingrese o seleccione un encabezado</label
             >
-            <p-autoComplete
-                formControlName="encabezadoSelected"
-                [dropdown]="true"
-                [showClear]="true"
-                [styleClass]="'w-full'"
-                [suggestions]="encabezadosFiltered"
-                optionLabel="cEncabPregTitulo"
-                (completeMethod)="search($event)"
-                (onSelect)="onSelect($event)"
-                appendTo="body"
-            />
-            @if (
-                formGroup.get('cEncabPregTitulo').hasError('required') &&
-                formGroup.get('cEncabPregTitulo')?.touched
-            ) {
-                <small class="text-red-500">
-                    Debe ingresar el título del encabezado
-                </small>
+            @if (mode === 'COMPLETADO') {
+                <app-common-input
+                    [controlKey]="'cEncabPregTitulo'"
+                ></app-common-input>
+            }
+            @if (mode === 'EDITAR') {
+                <p-autoComplete
+                    formControlName="encabezadoSelected"
+                    [dropdown]="true"
+                    [showClear]="true"
+                    [styleClass]="'w-full'"
+                    [suggestions]="encabezadosFiltered"
+                    optionLabel="cEncabPregTitulo"
+                    (completeMethod)="search($event)"
+                    (onSelect)="onSelect($event)"
+                    appendTo="body"
+                />
+                @if (
+                    formGroup.get('cEncabPregTitulo').hasError('required') &&
+                    formGroup.get('cEncabPregTitulo')?.touched
+                ) {
+                    <small class="text-red-500">
+                        Debe ingresar el título del encabezado
+                    </small>
+                }
             }
         </div>
         @if (formGroup.get('encabezadoSelected')?.value?.iEncabPregId !== -1) {

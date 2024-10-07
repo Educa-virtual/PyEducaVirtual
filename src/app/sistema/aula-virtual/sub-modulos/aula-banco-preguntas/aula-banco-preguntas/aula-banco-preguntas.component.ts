@@ -32,6 +32,7 @@ export class AulaBancoPreguntasComponent implements OnInit, OnDestroy {
 
     private _aulaBancoApiService = inject(ApiAulaBancoPreguntasService)
     private _dialogService = inject(DialogService)
+    private _confirmationModalService = inject(ConfirmationModalService)
 
     public params = {
         iCursoId: 1,
@@ -97,7 +98,7 @@ export class AulaBancoPreguntasComponent implements OnInit, OnDestroy {
         }
 
         if (accion === 'eliminar') {
-            this.handleEliminarBancoPreguntas()
+            this.handleEliminarBancoPreguntas(item)
         }
     }
 
@@ -124,10 +125,25 @@ export class AulaBancoPreguntasComponent implements OnInit, OnDestroy {
         })
     }
 
-    handleEliminarBancoPreguntas() {
+    handleEliminarBancoPreguntas(item) {
         this._confirmService.openConfirm({
             header: '¿Esta seguro de agregar la pregunta?',
-            accept: () => {},
+            accept: () => {
+                this.eliminarPregunta(item)
+            },
+        })
+    }
+
+    eliminarPregunta(item) {
+        let ids = item.iPreguntaId
+        if (item.iEncabPregId != -1) {
+            ids = item.preguntas.map((item) => item.iPreguntaId).join(',')
+        }
+
+        this._aulaBancoApiService.eliminarPreguntaById(ids).subscribe({
+            next: () => {
+                this.obtenerBancoPreguntas()
+            },
         })
     }
 

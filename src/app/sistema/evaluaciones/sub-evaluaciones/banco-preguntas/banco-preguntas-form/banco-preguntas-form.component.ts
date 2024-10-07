@@ -18,16 +18,22 @@ import { TabViewModule } from 'primeng/tabview'
 import { AlternativasComponent } from '../alternativas/alternativas.component'
 import { StepsModule } from 'primeng/steps'
 
-import { Subject } from 'rxjs'
+import { Subject, takeUntil } from 'rxjs'
 import { ApiEvaluacionesRService } from '../../../services/api-evaluaciones-r.service'
 import { BancoPreguntaInformacionFormComponent } from './banco-pregunta-informacion-form/banco-pregunta-informacion-form.component'
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
-import { BancoPreguntaFormListComponent } from '../components/banco-pregunta-form-list/banco-pregunta-form-list.component'
 import { generarIdAleatorio } from '@/app/shared/utils/random-id'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { MenuItem } from 'primeng/api'
 import { BancoPreguntaEncabezadoFormComponent } from '../components/banco-pregunta-encabezado-form/banco-pregunta-encabezado-form.component'
 import { BancoPreguntasModule } from '../banco-preguntas.module'
+import { validarPregunta } from '../banco-preguntas-validators'
+import {
+    accionesTablaListaPreguntaForm,
+    columnasListaPreguntaForm,
+} from './pregunta-lista-columns'
+import { provideIcons } from '@ng-icons/core'
+import { matListAlt } from '@ng-icons/material-icons/baseline'
 
 const preguntaFormInfoDefaultValues = {
     iPreguntaId: generarIdAleatorio(),
@@ -53,13 +59,13 @@ const alternativasLabel = {
         StepsModule,
         BancoPreguntaInformacionFormComponent,
         TablePrimengComponent,
-        BancoPreguntaFormListComponent,
         BancoPreguntaEncabezadoFormComponent,
         BancoPreguntasModule,
         ReactiveFormsModule,
     ],
     templateUrl: './banco-preguntas-form.component.html',
     styleUrl: './banco-preguntas-form.component.scss',
+    providers: [provideIcons({ matListAlt })],
 })
 export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
     @Output() closeModalChange = new EventEmitter()
@@ -70,6 +76,8 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
     @Input() public bancoPreguntasForm: FormGroup
     @Input() public encabezadosFiltered = []
     @Input() public obtenerPreguntasPorEncabezado: (id: number) => void
+    @Input() public columnasPreguntas = columnasListaPreguntaForm
+    @Input() public accionesPreguntas = accionesTablaListaPreguntaForm
     private _pregunta
 
     @Input()
@@ -88,10 +96,13 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
             this.handleConEncabezado()
         } else {
             this.formMode = 'UNA-PREGUNTA'
-            this.alternativas = pregunta.alternativas
+            this.alternativas = pregunta.alternativas ?? []
             this.handleSinEncabezado()
         }
         if (this.modePregunta === 'EDITAR') {
+            if (pregunta.iTipoPregId === 3) {
+                this.agregarQuitarAlternativasPaso('QUITAR')
+            }
             this.patchForm(pregunta)
         }
         this._pregunta = pregunta
@@ -103,6 +114,7 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
 
     public customOptions = []
     public preguntas = []
+    public alternativas = []
 
     @Input() public modePregunta: 'EDITAR' | 'CREAR' = 'CREAR'
     @Input() public encabezadoMode: 'COMPLETADO' | 'EDITAR' = 'EDITAR'
@@ -133,6 +145,8 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
     public preguntasEliminar = []
 
     ngOnInit() {
+        // escuchar cambio tip pregunta
+        this.listenTipoPregunta()
         // Llenar el formulario paso 1 basado en la seleccion de la cabecera.
         this.bancoPreguntasForm
             .get('0.encabezadoSelected')
@@ -166,6 +180,24 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
 
     get formEncabezado() {
         return this.bancoPreguntasForm.get('0')
+    }
+
+    private listenTipoPregunta() {
+        this.formPreguntaInfo
+            .get('iTipoPregId')
+            .valueChanges.pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+                next: (value) => {
+                    if (this.formMode === 'UNA-PREGUNTA') {
+                        this.pregunta.iTipoPregId = value
+                        if (value === 3) {
+                            this.agregarQuitarAlternativasPaso('QUITAR')
+                        } else {
+                            this.agregarQuitarAlternativasPaso('AGREGAR')
+                        }
+                    }
+                },
+            })
     }
 
     private handleSinEncabezado() {
@@ -253,14 +285,6 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
         }
     }
 
-    get alternativas() {
-        return this.bancoPreguntasForm.get('2.alternativas').value
-    }
-
-    set alternativas(value) {
-        this.bancoPreguntasForm.get('2.alternativas').setValue(value)
-    }
-
     get esSinEncabezado(): boolean {
         return (
             typeof this.bancoPreguntasForm.get('0.encabezadoSelected').value ===
@@ -334,6 +358,7 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
             }
         }
         this.bancoPreguntasForm.get('0').patchValue(pregunta)
+        this.formPreguntaInfo.get('iTipoPregId').disable()
 
         if (this.formMode === 'UNA-PREGUNTA') {
             this.bancoPreguntasForm.get('1').patchValue(pregunta)
@@ -430,12 +455,21 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
             return
         }
         const preguntaForm = { ...this.bancoPreguntasForm.get('1').value }
+        preguntaForm.cTipoPregDescripcion = this.obtenerTipoPreguntaDesc(
+            preguntaForm.iTipoPregId
+        )?.cTipoPregDescripcion
         // manejar el crud de preguntas local
         this.actualizarPreguntas(preguntaForm)
         this.changeIndexBancoForm(0)
         this.bancoPreguntasForm.get('1').reset(preguntaFormInfoDefaultValues)
         this.agregarQuitarValidacionesFormPregunta('QUITAR')
         this.toggleStepsVisibility(true)
+    }
+
+    obtenerTipoPreguntaDesc(iTipoPregId: number) {
+        return this.tipoPreguntas.find(
+            (item) => item.iTipoPregId === iTipoPregId
+        )
     }
 
     // enviar el formulario de banco de preguntas a guardar o actualizar
@@ -455,19 +489,52 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
             pregunta.cPreguntaClave = this.getPreguntaClave(
                 pregunta.alternativas
             )
-            pregunta.iNivelGradoId = 1
-            pregunta.iEspecialistaId = 1
+
             preguntas = [pregunta]
+            const { isValid, message } = validarPregunta(
+                pregunta,
+                this.alternativas
+            )
+
+            if (!isValid) {
+                this._confirmationModalService.openAlert({
+                    header: pregunta.cPregunta.replace(/<\/?[^>]+(>|$)/g, ''),
+                    message,
+                })
+                return
+            }
         }
 
         if (this.formMode === 'SUB-PREGUNTAS') {
             preguntas = this.preguntas
             preguntas = preguntas.map((x) => {
                 x.cPreguntaClave = this.getPreguntaClave(x.alternativas)
-                x.iNivelGradoId = 1
-                x.iEspecialistaId = 1
                 return x
             })
+            if (this.preguntas.length === 0) {
+                this._confirmationModalService.openAlert({
+                    header: encabezado.cEncabPregTitulo,
+                    message: 'Debe agregar al menos 1 pregunta',
+                })
+                return
+            }
+            for (const subPregunta of preguntas) {
+                const { isValid, message } = validarPregunta(
+                    subPregunta,
+                    this.alternativas
+                )
+
+                if (!isValid) {
+                    this._confirmationModalService.openAlert({
+                        header: subPregunta.cPregunta.replace(
+                            /<\/?[^>]+(>|$)/g,
+                            ''
+                        ),
+                        message,
+                    })
+                    return
+                }
+            }
         }
 
         const data = {

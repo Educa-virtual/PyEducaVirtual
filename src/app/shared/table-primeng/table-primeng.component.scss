@@ -18,5 +18,5 @@ tr {
 
 :host ::ng-deep .custom-editor .p-editor-container {
     max-height: 10rem;
-    overflow: scroll;
+    overflow: auto;
 }

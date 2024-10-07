@@ -212,8 +212,6 @@ export class TablePrimengComponent implements OnChanges, OnInit {
         }
 
         if (changes.expandedRowKeys?.currentValue) {
-            console.log(this.expandedRowKeys)
-
             this.expandedRowKeys = changes.expandedRowKeys.currentValue
         }
     }

@@ -29,6 +29,7 @@ export class BancoPreguntaListaComponent {
     @Input() selectedRowData: IPregunta[] = []
     @Input() accionesTabla: IActionTable[]
     @Input() expandedRowKeys = {}
+    @Input() showCaption: boolean = true
 
     onSelectionChange(event) {
         this.selectedRowData = event

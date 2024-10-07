@@ -4,6 +4,11 @@ import { inject, Injectable } from '@angular/core'
 import { map, Observable, tap } from 'rxjs'
 import { mapData } from '../../evaluaciones/sub-evaluaciones/banco-preguntas/models/pregunta-data-transformer'
 import { iPreguntaAula } from '../../evaluaciones/sub-evaluaciones/banco-preguntas/models/pregunta-aula.model'
+import {
+    mapAlternativa,
+    mapEncabezado,
+    mapPregunta,
+} from '../utils/map-pregunta'
 
 @Injectable({
     providedIn: 'root',
@@ -14,10 +19,11 @@ export class ApiAulaBancoPreguntasService {
 
     constructor() {}
 
-    obtenerTipoPreguntas() {
+    obtenerTipoPreguntas(params?) {
         return this._http
             .get(
-                `${this.baseUrlApi}/evaluaciones/tipo-preguntas/obtenerTipoPreguntas`
+                `${this.baseUrlApi}/evaluaciones/tipo-preguntas/obtenerTipoPreguntas`,
+                { params }
             )
             .pipe(map((resp) => resp['data']))
     }
@@ -32,32 +38,15 @@ export class ApiAulaBancoPreguntasService {
                 map((resp) => resp['data']),
                 map((data) => {
                     return data.map((item) => {
-                        const alternativas = item.alternativas?.map((alt) => {
-                            return {
-                                iAlternativaId: alt.iBancoAltId,
-                                cAlternativaDescripcion:
-                                    alt.cBancoAltDescripcion,
-                                cAlternativaLetra: alt.cBancoAltLetra,
-                                bAlternativaCorrecta: alt.bBancoAltRptaCorrecta,
-                                cAlternativaExplicacion:
-                                    alt.cBancoAltExplicacionRpta,
-                            }
-                        })
-                        return {
-                            iPreguntaId: item.iBancoId,
-                            cPregunta: item.cBancoPregunta,
-                            iCursoId: item.iCursoId,
-                            iDocenteId: item.iDocenteId,
-                            iTipoPregId: item.iTipoPregId,
-                            iEncabPregId: item.idEncabPregId,
-                            iPreguntaPeso: item.nBancoPuntaje,
-                            cEncabPregTitulo: item.cEncabPregTitulo,
-                            cEncabPregContenido: item.cTipoPregDescripcion,
-                            alternativas: alternativas,
-                            iHoras: item.iHoras,
-                            iMinutos: item.iMinutos,
-                            iSegundos: item.iSegundos,
-                            cPreguntaTextoAyuda: item.cBancoTextoAyuda,
+                        if (item.idEncabPregId == -1) {
+                            const alternativas = item.alternativas?.map(
+                                (alt) => {
+                                    return mapAlternativa(alt)
+                                }
+                            )
+                            return mapPregunta(item, alternativas)
+                        } else {
+                            return mapEncabezado(item)
                         }
                     })
                 }),

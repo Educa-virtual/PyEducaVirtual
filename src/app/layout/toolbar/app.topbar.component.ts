@@ -86,7 +86,6 @@ export class AppTopBarComponent implements OnInit {
         const userId = 1
 
         this._apiValidacionE.obtenerAutenticacion(userId).subscribe((Data) => {
-            console.log('Datos ', Data)
             this.roles = Data['data']
         })
     }

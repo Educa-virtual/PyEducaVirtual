@@ -66,7 +66,7 @@ export class AlternativasFormComponent implements OnInit {
     ngOnInit() {
         this.pregunta = this._config.data.pregunta
         this.alternativa = this._config.data.alternativa
-        this.alternativas = this._config.data.alternativas
+        this.alternativas = this._config.data.alternativas ?? []
 
         const letrasUsadas = this.alternativas.map((x) => x.cAlternativaLetra)
         this.letrasDisponiblesPreguntaSeleccionada =

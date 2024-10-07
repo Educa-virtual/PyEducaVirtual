@@ -102,7 +102,9 @@
                     <h2 class="text-lg">Alternativas de la pregunta:</h2>
                     <div
                         [innerHTML]="
-                            preguntaSelected?.cPregunta ?? pregunta.cPregunta
+                            preguntaSelected?.cPregunta ??
+                            pregunta.cPregunta ??
+                            formPreguntaInfo.get('cPregunta')?.value
                         "
                     ></div>
                 </div>

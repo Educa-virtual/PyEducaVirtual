@@ -109,6 +109,9 @@ export class BancoPreguntasFormContainerComponent implements OnInit {
     }
 
     guardarBancoPreguntas(data) {
+        data.iCursoId = 1
+        data.iNivelGradoId = 1
+        data.iEspecialistaId = 1
         this._evaluacionesService
             .guardarActualizarPreguntaConAlternativas(data)
             .subscribe({

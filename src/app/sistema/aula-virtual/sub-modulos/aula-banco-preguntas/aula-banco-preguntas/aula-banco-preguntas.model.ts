@@ -14,6 +14,14 @@ export const columns: IColumn[] = [
         text_header: 'left',
     },
     {
+        field: 'cEncabPregTitulo',
+        header: 'Encabezado',
+        type: 'text',
+        width: '5rem',
+        text: 'left',
+        text_header: 'Encabezado',
+    },
+    {
         type: 'text',
         width: '3rem',
         field: 'iPreguntaPeso',

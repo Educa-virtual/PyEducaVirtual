@@ -22,13 +22,18 @@ import { Subject, takeUntil } from 'rxjs'
 import { ApiEvaluacionesRService } from '../../../services/api-evaluaciones-r.service'
 import { BancoPreguntaInformacionFormComponent } from './banco-pregunta-informacion-form/banco-pregunta-informacion-form.component'
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
-import { BancoPreguntaFormListComponent } from '../components/banco-pregunta-form-list/banco-pregunta-form-list.component'
 import { generarIdAleatorio } from '@/app/shared/utils/random-id'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { MenuItem } from 'primeng/api'
 import { BancoPreguntaEncabezadoFormComponent } from '../components/banco-pregunta-encabezado-form/banco-pregunta-encabezado-form.component'
 import { BancoPreguntasModule } from '../banco-preguntas.module'
 import { validarPregunta } from '../banco-preguntas-validators'
+import {
+    accionesTablaListaPreguntaForm,
+    columnasListaPreguntaForm,
+} from './pregunta-lista-columns'
+import { provideIcons } from '@ng-icons/core'
+import { matListAlt } from '@ng-icons/material-icons/baseline'
 
 const preguntaFormInfoDefaultValues = {
     iPreguntaId: generarIdAleatorio(),
@@ -54,13 +59,13 @@ const alternativasLabel = {
         StepsModule,
         BancoPreguntaInformacionFormComponent,
         TablePrimengComponent,
-        BancoPreguntaFormListComponent,
         BancoPreguntaEncabezadoFormComponent,
         BancoPreguntasModule,
         ReactiveFormsModule,
     ],
     templateUrl: './banco-preguntas-form.component.html',
     styleUrl: './banco-preguntas-form.component.scss',
+    providers: [provideIcons({ matListAlt })],
 })
 export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
     @Output() closeModalChange = new EventEmitter()
@@ -71,6 +76,8 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
     @Input() public bancoPreguntasForm: FormGroup
     @Input() public encabezadosFiltered = []
     @Input() public obtenerPreguntasPorEncabezado: (id: number) => void
+    @Input() public columnasPreguntas = columnasListaPreguntaForm
+    @Input() public accionesPreguntas = accionesTablaListaPreguntaForm
     private _pregunta
 
     @Input()
@@ -448,12 +455,21 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
             return
         }
         const preguntaForm = { ...this.bancoPreguntasForm.get('1').value }
+        preguntaForm.cTipoPregDescripcion = this.obtenerTipoPreguntaDesc(
+            preguntaForm.iTipoPregId
+        )?.cTipoPregDescripcion
         // manejar el crud de preguntas local
         this.actualizarPreguntas(preguntaForm)
         this.changeIndexBancoForm(0)
         this.bancoPreguntasForm.get('1').reset(preguntaFormInfoDefaultValues)
         this.agregarQuitarValidacionesFormPregunta('QUITAR')
         this.toggleStepsVisibility(true)
+    }
+
+    obtenerTipoPreguntaDesc(iTipoPregId: number) {
+        return this.tipoPreguntas.find(
+            (item) => item.iTipoPregId === iTipoPregId
+        )
     }
 
     // enviar el formulario de banco de preguntas a guardar o actualizar

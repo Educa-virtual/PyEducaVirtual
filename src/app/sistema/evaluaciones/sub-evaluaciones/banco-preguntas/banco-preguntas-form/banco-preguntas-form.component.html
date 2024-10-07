@@ -48,12 +48,13 @@
                             ></app-banco-pregunta-informacion-form>
                         </form>
                     } @else {
-                        <app-banco-pregunta-form-list
-                            [preguntas]="preguntas"
-                            (accionBtnItemTableChange)="
-                                accionPreguntaTable($event)
-                            "
-                        ></app-banco-pregunta-form-list>
+                        <app-banco-pregunta-lista
+                            [showCaption]="false"
+                            [columnas]="columnasPreguntas"
+                            [accionesTabla]="accionesPreguntas"
+                            [data]="preguntas"
+                            (accionBtnItemTable)="accionPreguntaTable($event)"
+                        ></app-banco-pregunta-lista>
                     }
                 }
                 <!-- formulario info pregunta -->

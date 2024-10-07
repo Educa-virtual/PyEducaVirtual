@@ -22,6 +22,14 @@ export const columns: IColumn[] = [
         text: 'left',
     },
     {
+        type: 'text',
+        width: '3rem',
+        field: 'cTipoPregDescripcion',
+        header: 'Tipo de Pregunta',
+        text_header: 'left',
+        text: 'left',
+    },
+    {
         type: 'actions',
         width: '3rem',
         field: 'actions',

@@ -56,7 +56,7 @@ export class AulaBancoPreguntasComponent implements OnInit, OnDestroy {
 
     obtenerTipoPreguntas() {
         this._aulaBancoApiService
-            .obtenerTipoPreguntas()
+            .obtenerTipoPreguntas({ bancoTipo: 'aula' })
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
                 next: (data) => {

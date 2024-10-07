@@ -14,10 +14,11 @@ export class ApiAulaBancoPreguntasService {
 
     constructor() {}
 
-    obtenerTipoPreguntas() {
+    obtenerTipoPreguntas(params?) {
         return this._http
             .get(
-                `${this.baseUrlApi}/evaluaciones/tipo-preguntas/obtenerTipoPreguntas`
+                `${this.baseUrlApi}/evaluaciones/tipo-preguntas/obtenerTipoPreguntas`,
+                { params }
             )
             .pipe(map((resp) => resp['data']))
     }
@@ -58,6 +59,7 @@ export class ApiAulaBancoPreguntasService {
                             iMinutos: item.iMinutos,
                             iSegundos: item.iSegundos,
                             cPreguntaTextoAyuda: item.cBancoTextoAyuda,
+                            cTipoPregDescripcion: item.cTipoPregDescripcion,
                         }
                     })
                 }),

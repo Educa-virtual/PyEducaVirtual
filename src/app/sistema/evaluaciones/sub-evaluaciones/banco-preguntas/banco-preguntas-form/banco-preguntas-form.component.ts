@@ -93,6 +93,9 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
             this.handleSinEncabezado()
         }
         if (this.modePregunta === 'EDITAR') {
+            if (pregunta.iTipoPregId === 3) {
+                this.agregarQuitarAlternativasPaso('QUITAR')
+            }
             this.patchForm(pregunta)
         }
         this._pregunta = pregunta
@@ -178,7 +181,14 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
             .valueChanges.pipe(takeUntil(this.unsubscribe$))
             .subscribe({
                 next: (value) => {
-                    console.log(value)
+                    if (this.formMode === 'UNA-PREGUNTA') {
+                        this.pregunta.iTipoPregId = value
+                        if (value === 3) {
+                            this.agregarQuitarAlternativasPaso('QUITAR')
+                        } else {
+                            this.agregarQuitarAlternativasPaso('AGREGAR')
+                        }
+                    }
                 },
             })
     }

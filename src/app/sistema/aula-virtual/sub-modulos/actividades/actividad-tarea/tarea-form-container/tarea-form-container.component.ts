@@ -4,7 +4,6 @@ import { DialogModule } from 'primeng/dialog'
 import { TareaFormComponent } from '../tarea-form/tarea-form.component'
 import { IActividad } from '@/app/sistema/aula-virtual/interfaces/actividad.interface'
 import { ButtonModule } from 'primeng/button'
-import { FormGroup } from '@angular/forms'
 import { DynamicDialogRef } from 'primeng/dynamicdialog'
 
 @Component({
@@ -20,9 +19,7 @@ export class TareaFormContainerComponent {
 
     private ref = inject(DynamicDialogRef)
 
-    submitFormulario(form: FormGroup) {
-        console.log('Formulario enviado:', form.value)
-    }
+    submitFormulario() {}
 
     cancelar() {
         this.ref.close(null)

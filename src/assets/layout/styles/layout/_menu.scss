@@ -5,12 +5,13 @@
     z-index: 999;
     overflow-y: auto;
     user-select: none;
-    top: 7rem;
+    top: 6rem;
     left: 2rem;
     transition:
         transform $transitionDuration,
         left $transitionDuration;
-    background-color: var(--surface-overlay);
+    //background-color: var(--surface-overlay);
+    background-color: #f54848;
     border-radius: $borderRadius;
     padding: 0.5rem 1.5rem;
     box-shadow:
@@ -29,7 +30,8 @@
             font-size: 0.857rem;
             text-transform: uppercase;
             font-weight: 700;
-            color: var(--surface-900);
+            color: #ffffff;
+            //color: var(--surface-900);
             margin: 0.75rem 0;
         }
 
@@ -66,7 +68,9 @@
             align-items: center;
             position: relative;
             outline: 0 none;
-            color: var(--text-color);
+            //color: var(--text-color);
+            //color de sidebar
+            color: #fcf9f6;
             cursor: pointer;
             padding: 0.75rem 1rem;
             border-radius: $borderRadius;
@@ -91,7 +95,8 @@
             }
 
             &:hover {
-                background-color: var(--surface-hover);
+                //background-color: var(--surface-hover);
+                background-color: #fb8500;
             }
 
             &:focus {

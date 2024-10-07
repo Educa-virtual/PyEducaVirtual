@@ -8,7 +8,6 @@ import { IActionContainer } from '@/app/shared/container-page/container-page.com
 import { DialogService } from 'primeng/dynamicdialog'
 import { MODAL_CONFIG } from '@/app/shared/constants/modal.config'
 import { AsignarMatrizPreguntasFormComponent } from './asignar-matriz-preguntas-form/asignar-matriz-preguntas-form.component'
-import { ApiEreService } from '../../services/api-ere.service'
 import { Subject, takeUntil } from 'rxjs'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { ApiEvaluacionesRService } from '../../services/api-evaluaciones-r.service'
@@ -27,7 +26,7 @@ import { BancoPreguntasFormContainerComponent } from './banco-preguntas-form-con
 export class BancoPreguntasComponent implements OnInit, OnDestroy {
     // Injeccion de dependencias
     private _dialogService = inject(DialogService)
-    private _apiEre = inject(ApiEreService)
+    private _apiEre = inject(ApiEvaluacionesRService)
     private _apiEvaluacionesR = inject(ApiEvaluacionesRService)
     private _confirmationModalService = inject(ConfirmationModalService)
     private _route = inject(ActivatedRoute)
@@ -335,6 +334,7 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
         })
 
         const ids = preguntas.map((item) => item.iPreguntaId).join(',')
+
         const params = {
             iCursoId: this.params.iCursoId,
             ids,

@@ -32,6 +32,7 @@ export class AulaBancoPreguntasComponent implements OnInit, OnDestroy {
 
     private _aulaBancoApiService = inject(ApiAulaBancoPreguntasService)
     private _dialogService = inject(DialogService)
+    private _confirmationModalService = inject(ConfirmationModalService)
 
     public params = {
         iCursoId: 1,
@@ -55,7 +56,7 @@ export class AulaBancoPreguntasComponent implements OnInit, OnDestroy {
 
     obtenerTipoPreguntas() {
         this._aulaBancoApiService
-            .obtenerTipoPreguntas()
+            .obtenerTipoPreguntas({ bancoTipo: 'aula' })
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
                 next: (data) => {
@@ -84,7 +85,6 @@ export class AulaBancoPreguntasComponent implements OnInit, OnDestroy {
     }
 
     public handleAcciones({ accion, item }) {
-        console.log(accion, item)
         if (accion === 'agregar') {
             this.agregarEditarPregunta({
                 iPreguntaId: 0,
@@ -125,11 +125,24 @@ export class AulaBancoPreguntasComponent implements OnInit, OnDestroy {
         })
     }
 
-    handleEliminarBancoPreguntas(pregunta) {
+    handleEliminarBancoPreguntas(item) {
         this._confirmService.openConfirm({
             header: '¿Esta seguro de agregar la pregunta?',
             accept: () => {
-                console.log('eliminado', pregunta)
+                this.eliminarPregunta(item)
+            },
+        })
+    }
+
+    eliminarPregunta(item) {
+        let ids = item.iPreguntaId
+        if (item.iEncabPregId != -1) {
+            ids = item.preguntas.map((item) => item.iPreguntaId).join(',')
+        }
+
+        this._aulaBancoApiService.eliminarPreguntaById(ids).subscribe({
+            next: () => {
+                this.obtenerBancoPreguntas()
             },
         })
     }

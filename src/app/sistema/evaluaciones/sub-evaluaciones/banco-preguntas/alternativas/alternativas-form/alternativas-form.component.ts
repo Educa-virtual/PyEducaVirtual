@@ -3,6 +3,7 @@ import { InputTextareaModule } from 'primeng/inputtextarea'
 import {
     FormBuilder,
     FormControl,
+    FormGroup,
     FormsModule,
     ReactiveFormsModule,
     Validators,
@@ -11,10 +12,10 @@ import { InputSwitchModule } from 'primeng/inputswitch'
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog'
 import { CommonInputComponent } from '@/app/shared/components/common-input/common-input.component'
 import { ButtonModule } from 'primeng/button'
-import { generarIdAleatorio } from '@/app/shared/utils/random-id'
 import { EditorModule } from 'primeng/editor'
 import { filterPreguntasUsadas } from '../pregunta-letra.model'
 import { DropdownModule } from 'primeng/dropdown'
+import { generarIdAleatorio } from '@/app/shared/utils/random-id'
 @Component({
     selector: 'app-alternativas-form',
     standalone: true,
@@ -42,34 +43,20 @@ export class AlternativasFormComponent implements OnInit {
     public letrasDisponiblesPreguntaSeleccionada
     public pregunta
     // inicializar el formulario
-    public alternativaFormGroup = this._formBuilder.group({
-        iAlternativaId: new FormControl<number | string>(generarIdAleatorio()),
-        iPreguntaId: [0],
-        cAlternativaDescripcion: [null, Validators.required],
-        cAlternativaLetra: [
-            null,
-            [
-                Validators.required,
-                Validators.minLength(1),
-                Validators.maxLength(1),
-            ],
-        ],
-        bAlternativaCorrecta: [false, Validators.required],
-        cAlternativaExplicacion: [''],
-        isLocal: [true],
-        isDeleted: [false],
-    })
+
+    // dependiendo al tipo de pregunta
+    //  tipo abierta, multiple o unica
+    public alternativaFormGroup: FormGroup
 
     ngOnInit() {
         this.pregunta = this._config.data.pregunta
         this.alternativa = this._config.data.alternativa
-        this.alternativas = this._config.data.alternativas
+        this.alternativas = this._config.data.alternativas ?? []
 
+        this.buildForm()
         const letrasUsadas = this.alternativas.map((x) => x.cAlternativaLetra)
         this.letrasDisponiblesPreguntaSeleccionada =
             filterPreguntasUsadas(letrasUsadas)
-
-        console.log(this.letrasDisponiblesPreguntaSeleccionada)
 
         this.alternativaFormGroup
             .get('iPreguntaId')
@@ -86,14 +73,34 @@ export class AlternativasFormComponent implements OnInit {
         }
     }
 
+    buildForm() {
+        this.alternativaFormGroup = this._formBuilder.group({
+            iAlternativaId: new FormControl<number | string>(
+                generarIdAleatorio()
+            ),
+            iPreguntaId: [0],
+            cAlternativaDescripcion: [null, Validators.required],
+            cAlternativaLetra: [
+                null,
+                [
+                    Validators.required,
+                    Validators.minLength(1),
+                    Validators.maxLength(1),
+                ],
+            ],
+            bAlternativaCorrecta: [false, Validators.required],
+            cAlternativaExplicacion: [''],
+            isLocal: [true],
+            isDeleted: [false],
+        })
+    }
+
     getNewAlternativas(alternativa) {
         const newAlternativas = [...this.alternativas]
         alternativa.bAlternativaCorrecta = alternativa.bAlternativaCorrecta
             ? 1
             : 0
         const existeAlternativa = newAlternativas.some((x) => {
-            console.log(x.iAlternativaId, alternativa.iAlternativaId)
-
             return x.iAlternativaId == alternativa.iAlternativaId
         })
 

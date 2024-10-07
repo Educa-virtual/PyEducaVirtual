@@ -17,6 +17,8 @@ import {
     AutoCompleteModule,
 } from 'primeng/autocomplete'
 import { EditorModule } from 'primeng/editor'
+import { BancoPreguntasModule } from '../../banco-preguntas.module'
+import { CommonInputComponent } from '@/app/shared/components/common-input/common-input.component'
 
 export const sinEncabezadoObj = {
     iEncabPregId: -1,
@@ -25,19 +27,25 @@ export const sinEncabezadoObj = {
 
 @Component({
     selector: 'app-banco-pregunta-encabezado-form',
-    standalone: true,
     imports: [
         CommonModule,
         AutoCompleteModule,
         EditorModule,
         ReactiveFormsModule,
+        BancoPreguntasModule,
+        CommonInputComponent,
     ],
+    standalone: true,
     templateUrl: './banco-pregunta-encabezado-form.component.html',
     styleUrl: './banco-pregunta-encabezado-form.component.scss',
 })
 export class BancoPreguntaEncabezadoFormComponent implements OnInit {
     @Input({ required: true }) controlKey: string
     @Input() encabezados = []
+    @Input() mode: 'COMPLETADO' | 'EDITAR' = 'COMPLETADO'
+
+    @Input() parentMode: 'SUB-PREGUNTAS' | 'UNA-PREGUNTA'
+
     @Output() encabezadoChange = new EventEmitter()
 
     private parentContainer = inject(ControlContainer)
@@ -46,6 +54,10 @@ export class BancoPreguntaEncabezadoFormComponent implements OnInit {
 
     ngOnInit(): void {
         this.formGroup = this.parentFormGroup
+        if (this.parentMode === 'UNA-PREGUNTA' && this.mode === 'COMPLETADO') {
+            this.formGroup.get('cEncabPregTitulo').disable()
+            console.log(this.formGroup.get('cEncabPregTitulo'))
+        }
     }
 
     // obtiene el formulario padre

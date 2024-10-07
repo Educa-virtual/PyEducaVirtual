@@ -42,6 +42,9 @@ export class AlternativasFormComponent implements OnInit {
     public letrasDisponiblesPreguntaSeleccionada
     public pregunta
     // inicializar el formulario
+
+    // dependiendo al tipo de pregunta
+    //  tipo abierta, multiple o unica
     public alternativaFormGroup = this._formBuilder.group({
         iAlternativaId: new FormControl<number | string>(generarIdAleatorio()),
         iPreguntaId: [0],

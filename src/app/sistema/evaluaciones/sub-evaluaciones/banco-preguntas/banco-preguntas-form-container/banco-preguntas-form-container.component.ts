@@ -31,6 +31,7 @@ export class BancoPreguntasFormContainerComponent implements OnInit {
     public encabezados = []
     public encabezadosFiltered = []
     public pregunta
+    public encabezadoMode: 'COMPLETADO' | 'EDITAR' = 'EDITAR'
 
     public modePregunta: 'CREAR' | 'EDITAR' = 'CREAR'
     private params = {}
@@ -49,6 +50,7 @@ export class BancoPreguntasFormContainerComponent implements OnInit {
             this.modePregunta = 'CREAR'
         } else {
             this.modePregunta = 'EDITAR'
+            this.encabezadoMode = 'COMPLETADO'
         }
         this.pregunta = this._config.data.pregunta
     }
@@ -90,7 +92,7 @@ export class BancoPreguntasFormContainerComponent implements OnInit {
                         this.pregunta = undefined
                         this.pregunta = data[0]
 
-                        this.modePregunta = 'EDITAR'
+                        // this.modePregunta = 'EDITAR'
                     }
                 },
             })

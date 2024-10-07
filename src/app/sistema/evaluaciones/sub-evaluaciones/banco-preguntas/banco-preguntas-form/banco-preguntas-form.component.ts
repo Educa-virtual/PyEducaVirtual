@@ -84,9 +84,11 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
         ) {
             this.formMode = 'SUB-PREGUNTAS'
             this.preguntas = pregunta.preguntas
+
             this.handleConEncabezado()
         } else {
             this.formMode = 'UNA-PREGUNTA'
+            this.alternativas = pregunta.alternativas
             this.handleSinEncabezado()
         }
         if (this.modePregunta === 'EDITAR') {

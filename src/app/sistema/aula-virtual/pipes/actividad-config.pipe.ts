@@ -1,4 +1,5 @@
 import { Pipe, type PipeTransform } from '@angular/core'
+import { tipoActividadesKeys } from '../interfaces/actividad.interface'
 
 type ActividadConfig = {
     name: string
@@ -6,34 +7,32 @@ type ActividadConfig = {
     icon: string
 }
 
-const actividadesConfig: { [key: number]: ActividadConfig } = {
-    1: {
+const actividadesConfig: Record<tipoActividadesKeys, ActividadConfig> = {
+    tarea: {
         name: 'Actividades',
         'bg-color': 'bg-blue-500 text-white',
         icon: 'matAssignment',
     },
-    2: {
+    foro: {
         'bg-color': 'bg-green-500 text-white',
         icon: 'matForum',
         name: 'Foro',
     },
-    3: {
+    evaluacion: {
         'bg-color': 'bg-yellow-500 text-white',
         icon: 'matQuiz',
         name: 'Evaluación',
     },
-    4: {
+    'video-conferencia': {
         'bg-color': 'bg-pink-500 text-white',
         icon: 'matVideocam',
         name: 'VideoConferencia',
     },
-    5: {
+    material: {
         'bg-color': 'bg-indigo-500 text-white',
         icon: 'matDescription',
         name: 'Material',
     },
-    6: { 'bg-color': 'bg-purple-500 text-white', icon: '', name: '' },
-    7: { 'bg-color': 'bg-red-500 text-white', icon: '', name: '' },
 }
 
 @Pipe({
@@ -41,7 +40,7 @@ const actividadesConfig: { [key: number]: ActividadConfig } = {
     standalone: true,
 })
 export class ActividadConfigPipe implements PipeTransform {
-    transform(value: number, key: string): string {
+    transform(value: string, key: string): string {
         return actividadesConfig[value][key]
     }
 }

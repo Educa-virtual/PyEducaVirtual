@@ -73,31 +73,31 @@ export class TabContenidoComponent implements OnInit {
         {
             id: '1',
             tipoActividadNombre: 'Actividad',
-            tipoActividad: 1,
+            tipoActividad: 'tarea',
             nombreActividad: 'Actividad I',
         },
         {
             id: '2',
             tipoActividadNombre: 'Foro',
-            tipoActividad: 2,
+            tipoActividad: 'foro',
             nombreActividad: 'Foro Debate',
         },
         {
             id: '3',
             tipoActividadNombre: 'Evaluacion',
-            tipoActividad: 3,
+            tipoActividad: 'evaluacion',
             nombreActividad: 'Exámen Unidad',
         },
         {
             id: '4',
             tipoActividadNombre: 'Videoconferencia',
-            tipoActividad: 4,
+            tipoActividad: 'video-conferencia',
             nombreActividad: 'Reunión explicación',
         },
         {
             id: '5',
             tipoActividadNombre: 'Material',
-            tipoActividad: 5,
+            tipoActividad: 'material',
             nombreActividad: 'Glosario',
         },
     ]
@@ -161,22 +161,27 @@ export class TabContenidoComponent implements OnInit {
         this.actividadSelected = actividad
         this.accionSeleccionada = action
 
-        if (actividad.tipoActividad === 1) {
+        if (actividad.tipoActividad === 'tarea') {
             this.handleTareaAction(action, actividad)
             return
         }
 
-        if (actividad.tipoActividad === 2) {
+        if (actividad.tipoActividad === 'evaluacion') {
+            this.handleEvaluacionAction(action, actividad)
+            return
+        }
+
+        if (actividad.tipoActividad === 'foro') {
             this.handleForoAction(action, actividad)
             return
         }
 
-        if (actividad.tipoActividad === 4) {
+        if (actividad.tipoActividad === 'video-conferencia') {
             this.handleVideoconferenciaAction(action, actividad)
             return
         }
 
-        if (actividad.tipoActividad === 5) {
+        if (actividad.tipoActividad === 'material') {
             this.handleMaterialAction('EDITAR', actividad, 'Editar Material')
         }
     }
@@ -257,5 +262,24 @@ export class TabContenidoComponent implements OnInit {
                 header: header,
             })
         }
+    }
+
+    handleEvaluacionAction(action: TActividadActions, actividad: IActividad) {
+        console.log(action, actividad)
+
+        // if (action === 'EDITAR') {
+        //     this._dialogService.open(EvaluacionFormContainerComponent, {
+        //         ...MODAL_CONFIG,
+        //         data: actividad,
+        //         header: 'Editar Evaluacion',
+        //     })
+        // }
+        // if (action === 'CREAR') {
+        //     this._dialogService.open(EvaluacionFormContainerComponent, {
+        //         ...MODAL_CONFIG,
+        //         header: 'Crear Evaluacion',
+        //         data: null,
+        //     })
+        // }
     }
 }

@@ -10,6 +10,7 @@ import { ActividadRowComponent } from '@/app/sistema/aula-virtual/sub-modulos/ac
 import { ActividadListaComponent } from '../../../../actividades/components/actividad-lista/actividad-lista.component'
 import {
     actividadesConfig,
+    actividadesConfigList,
     IActividad,
     tipoActividadesKeys,
 } from '@/app/sistema/aula-virtual/interfaces/actividad.interface'
@@ -85,38 +86,7 @@ export class TabContenidoComponent implements OnInit {
         material: this.handleMaterialAction.bind(this),
     }
 
-    public actividades: IActividad[] = [
-        {
-            id: '1',
-            tipoActividadNombre: 'Actividad',
-            tipoActividad: 'tarea',
-            nombreActividad: 'Actividad I',
-        },
-        {
-            id: '2',
-            tipoActividadNombre: 'Foro',
-            tipoActividad: 'foro',
-            nombreActividad: 'Foro Debate',
-        },
-        {
-            id: '3',
-            tipoActividadNombre: 'Evaluacion',
-            tipoActividad: 'evaluacion',
-            nombreActividad: 'Exámen Unidad',
-        },
-        {
-            id: '4',
-            tipoActividadNombre: 'Videoconferencia',
-            tipoActividad: 'video-conferencia',
-            nombreActividad: 'Reunión explicación',
-        },
-        {
-            id: '5',
-            tipoActividadNombre: 'Material',
-            tipoActividad: 'material',
-            nombreActividad: 'Glosario',
-        },
-    ]
+    public actividades = actividadesConfigList
 
     constructor(private _dialogService: DialogService) {}
 
@@ -134,7 +104,7 @@ export class TabContenidoComponent implements OnInit {
         this.accionesContenido = Object.keys(actividadesConfig).map((key) => {
             const actividad = actividadesConfig[key as tipoActividadesKeys]
             return {
-                label: actividad.nombreActividad,
+                label: actividad.tipoActividadNombre,
                 icon: actividad.icon,
                 command: () => {
                     const actionHandler =
@@ -264,6 +234,7 @@ export class TabContenidoComponent implements OnInit {
         if (action === 'CREAR') {
             this._dialogService.open(EvaluacionFormContainerComponent, {
                 ...MODAL_CONFIG,
+                maximizable: true,
                 header: 'Crear Evaluación',
                 data: actividad,
             })

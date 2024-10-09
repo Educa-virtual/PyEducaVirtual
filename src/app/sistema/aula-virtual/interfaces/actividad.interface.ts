@@ -19,7 +19,7 @@ export interface IActividad {
     tipoActividad: tipoActividadesKeys
 }
 
-interface IActividadConfig extends IActividad {
+interface IActividadConfig extends Omit<IActividad, 'nombreActividad'> {
     'bg-color': string
     icon: string
 }
@@ -27,43 +27,71 @@ interface IActividadConfig extends IActividad {
 export const actividadesConfig: Record<tipoActividadesKeys, IActividadConfig> =
     {
         tarea: {
-            nombreActividad: 'Actividades',
             'bg-color': 'bg-blue-500 text-white',
             icon: 'matAssignment',
             id: '0',
-            tipoActividadNombre: '',
+            tipoActividadNombre: 'Actividad',
             tipoActividad: 'tarea',
         },
         foro: {
-            nombreActividad: 'Foro',
             'bg-color': 'bg-green-500 text-white',
             icon: 'matForum',
             id: '1',
-            tipoActividadNombre: '',
+            tipoActividadNombre: 'Foro',
             tipoActividad: 'foro',
         },
         evaluacion: {
             'bg-color': 'bg-yellow-500 text-white',
             icon: 'matQuiz',
-            nombreActividad: 'Evaluación',
             id: '2',
-            tipoActividadNombre: '',
+            tipoActividadNombre: 'Evaluación',
             tipoActividad: 'evaluacion',
         },
         'video-conferencia': {
             'bg-color': 'bg-pink-500 text-white',
             icon: 'matVideocam',
-            nombreActividad: 'VideoConferencia',
             tipoActividad: 'video-conferencia',
             id: '3',
-            tipoActividadNombre: '',
+            tipoActividadNombre: 'Video Conferencia',
         },
         material: {
             'bg-color': 'bg-indigo-500 text-white',
             icon: 'matDescription',
-            nombreActividad: 'Material',
             id: '4',
-            tipoActividadNombre: '',
+            tipoActividadNombre: 'Material',
             tipoActividad: 'material',
         },
     }
+
+export const actividadesConfigList: IActividad[] = [
+    {
+        id: '1',
+        nombreActividad: 'Resolución de ejercicios',
+        tipoActividadNombre: 'Tarea',
+        tipoActividad: 'tarea',
+    },
+    {
+        id: '2',
+        nombreActividad: 'Debate sobre tema de actualidad',
+        tipoActividadNombre: 'Foro',
+        tipoActividad: 'foro',
+    },
+    {
+        id: '3',
+        nombreActividad: 'Examen parcial',
+        tipoActividadNombre: 'Evaluación',
+        tipoActividad: 'evaluacion',
+    },
+    {
+        id: '4',
+        nombreActividad: 'Clase virtual de Matemáticas',
+        tipoActividadNombre: 'Video Conferencia',
+        tipoActividad: 'video-conferencia',
+    },
+    {
+        id: '5',
+        nombreActividad: 'Lectura de material adicional',
+        tipoActividadNombre: 'Material',
+        tipoActividad: 'material',
+    },
+]

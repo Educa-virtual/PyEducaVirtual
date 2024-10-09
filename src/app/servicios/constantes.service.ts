@@ -107,6 +107,48 @@ const aula_virtual = [
         ],
     },
 ]
+const administrador = [
+    {
+        label: 'Configuración',
+        items: [
+            {
+                label: 'Personas',
+                icon: 'pi pi-fw pi-desktop',
+                routerLink: ['/configuracion/personas'],
+            },
+            {
+                label: 'Calendario Académico',
+                icon: 'pi pi-fw pi-desktop',
+                routerLink: ['/'],
+            },
+            {
+                label: 'Cursos',
+                icon: 'pi pi-fw pi-desktop',
+                routerLink: ['/'],
+            },
+            {
+                label: 'Horarios',
+                icon: 'pi pi-fw pi-desktop',
+                routerLink: ['/'],
+            },
+            {
+                label: 'Grados',
+                icon: 'pi pi-fw pi-desktop',
+                routerLink: ['/'],
+            },
+            {
+                label: 'Sección',
+                icon: 'pi pi-fw pi-desktop',
+                routerLink: ['/'],
+            },
+            {
+                label: 'Roles',
+                icon: 'pi pi-users',
+                routerLink: ['/roles'],
+            },
+        ],
+    },
+]
 
 const evaluaciones = [
     {
@@ -434,49 +476,6 @@ const other = [
                 icon: 'pi pi-fw pi-search',
                 url: ['https://github.com/primefaces/sakai-ng'],
                 target: '_blank',
-            },
-        ],
-    },
-]
-
-const administrador = [
-    {
-        label: 'Configuración',
-        items: [
-            {
-                label: 'Personas',
-                icon: 'pi pi-fw pi-desktop',
-                routerLink: ['/configuracion/personas'],
-            },
-            {
-                label: 'Calendario Académico',
-                icon: 'pi pi-fw pi-desktop',
-                routerLink: ['/'],
-            },
-            {
-                label: 'Cursos',
-                icon: 'pi pi-fw pi-desktop',
-                routerLink: ['/'],
-            },
-            {
-                label: 'Horarios',
-                icon: 'pi pi-fw pi-desktop',
-                routerLink: ['/'],
-            },
-            {
-                label: 'Grados',
-                icon: 'pi pi-fw pi-desktop',
-                routerLink: ['/'],
-            },
-            {
-                label: 'Sección',
-                icon: 'pi pi-fw pi-desktop',
-                routerLink: ['/'],
-            },
-            {
-                label: 'Usuarios',
-                icon: 'pi pi-fw pi-desktop',
-                routerLink: ['/'],
             },
         ],
     },

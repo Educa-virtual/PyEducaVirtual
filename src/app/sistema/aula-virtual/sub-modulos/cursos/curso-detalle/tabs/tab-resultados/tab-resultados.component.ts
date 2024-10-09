@@ -4,6 +4,6 @@ import { Component } from '@angular/core'
     selector: 'app-tab-resultados',
     standalone: true,
     templateUrl: './tab-resultados.component.html',
-    styleUrls: ['./tab-resultados.component.css'],
+    styleUrls: [],
 })
 export class TabResultadosComponent {}

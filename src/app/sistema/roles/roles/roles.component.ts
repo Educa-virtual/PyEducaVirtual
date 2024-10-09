@@ -15,6 +15,7 @@ import { CarouselModule } from 'primeng/carousel'
 import { ImageModule } from 'primeng/image'
 import { GalleriaModule } from 'primeng/galleria'
 import { ProductService } from 'src/app/demo/service/product.service'
+import { OrderListModule } from 'primeng/orderlist'
 
 @Component({
     selector: 'app-roles',
@@ -37,6 +38,7 @@ import { ProductService } from 'src/app/demo/service/product.service'
         DropdownModule,
         TreeTableModule,
         IconFieldModule,
+        OrderListModule,
         ContainerPageComponent,
     ],
 })
@@ -45,9 +47,9 @@ export class RolesComponent implements OnInit {
     product: Product = {}
     submitted: boolean = false
     productDialog: boolean = false
-    images!: unknown[]
+    images = []
 
-    galleriaResponsiveOptions: unknown[] = [
+    galleriaResponsiveOptions = [
         {
             breakpoint: '1024px',
             numVisible: 5,
@@ -65,7 +67,7 @@ export class RolesComponent implements OnInit {
             numVisible: 1,
         },
     ]
-    carouselResponsiveOptions: unknown[] = [
+    carouselResponsiveOptions = [
         {
             breakpoint: '1024px',
             numVisible: 3,

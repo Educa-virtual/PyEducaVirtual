@@ -17,7 +17,7 @@ import { ProfesorAvatarComponent } from '../components/profesor-avatar/profesor-
 import { IEstudiante } from '../../../interfaces/estudiantes.interface'
 import { ICurso } from '../interfaces/curso.interface'
 import { AulaBancoPreguntasComponent } from '../../aula-banco-preguntas/aula-banco-preguntas/aula-banco-preguntas.component'
-
+import { TabResultadosComponent } from './tabs/tab-resultados/tab-resultados.component'
 @Component({
     selector: 'app-curso-detalle',
     standalone: true,
@@ -36,6 +36,7 @@ import { AulaBancoPreguntasComponent } from '../../aula-banco-preguntas/aula-ban
         ProfesorAvatarComponent,
         MenuModule,
         AulaBancoPreguntasComponent,
+        TabResultadosComponent,
     ],
     templateUrl: './curso-detalle.component.html',
     styleUrl: './curso-detalle.component.scss',
@@ -54,6 +55,7 @@ export class CursoDetalleComponent implements OnInit {
     rangeDates: Date[] | undefined
 
     public estudiantes: IEstudiante[] = []
+    public resultados: IEstudiante[] = []
 
     ngOnInit() {
         this.listenParams()
@@ -85,6 +87,15 @@ export class CursoDetalleComponent implements OnInit {
                 apellidos: '2',
                 email: '2',
                 numeroOrden: 2,
+            },
+        ]
+        this.resultados = [
+            {
+                id: '5',
+                nombre: 'Estudiante',
+                apellidos: '1',
+                email: '1',
+                numeroOrden: 1,
             },
         ]
     }

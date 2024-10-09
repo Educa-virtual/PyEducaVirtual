@@ -8,7 +8,11 @@ import { InputIconModule } from 'primeng/inputicon'
 import { InputTextModule } from 'primeng/inputtext'
 import { ActividadRowComponent } from '@/app/sistema/aula-virtual/sub-modulos/actividades/components/actividad-row/actividad-row.component'
 import { ActividadListaComponent } from '../../../../actividades/components/actividad-lista/actividad-lista.component'
-import { IActividad } from '@/app/sistema/aula-virtual/interfaces/actividad.interface'
+import {
+    actividadesConfig,
+    IActividad,
+    tipoActividadesKeys,
+} from '@/app/sistema/aula-virtual/interfaces/actividad.interface'
 import { TActividadActions } from '@/app/sistema/aula-virtual/interfaces/actividad-actions.iterface'
 import { DialogModule } from 'primeng/dialog'
 import { MenuModule } from 'primeng/menu'
@@ -29,6 +33,7 @@ import {
 import { MODAL_CONFIG } from '@/app/shared/constants/modal.config'
 import { ForoFormContainerComponent } from '../../../../actividades/actividad-foro/foro-form-container/foro-form-container.component'
 import { ActividadFormComponent } from '../../../../actividades/components/actividad-form/actividad-form.component'
+import { EvaluacionFormContainerComponent } from '../../../../actividades/actividad-evaluacion/evaluacion-form-container/evaluacion-form-container.component'
 
 @Component({
     selector: 'app-tab-contenido',
@@ -68,6 +73,17 @@ export class TabContenidoComponent implements OnInit {
     public accionesContenido: MenuItem[]
     public actividadSelected: IActividad | undefined
     public accionSeleccionada: TActividadActions | undefined
+
+    handleActionsMap: Record<
+        string,
+        (action: TActividadActions, actividad: IActividad) => void
+    > = {
+        tarea: this.handleTareaAction.bind(this),
+        foro: this.handleForoAction.bind(this),
+        evaluacion: this.handleEvaluacionAction.bind(this),
+        'video-conferencia': this.handleVideoconferenciaAction.bind(this),
+        material: this.handleMaterialAction.bind(this),
+    }
 
     public actividades: IActividad[] = [
         {
@@ -111,44 +127,24 @@ export class TabContenidoComponent implements OnInit {
 
         this.rangeDates = [today, nextWeek]
 
-        this.accionesContenido = [
-            {
-                label: 'Actividad',
-                icon: 'matAssignment',
+        this.generarAccionesContenido()
+    }
+
+    generarAccionesContenido() {
+        this.accionesContenido = Object.keys(actividadesConfig).map((key) => {
+            const actividad = actividadesConfig[key as tipoActividadesKeys]
+            return {
+                label: actividad.nombreActividad,
+                icon: actividad.icon,
                 command: () => {
-                    this.handleTareaAction('CREAR', null)
+                    const actionHandler =
+                        this.handleActionsMap[actividad.tipoActividad]
+                    if (actionHandler) {
+                        actionHandler('CREAR', null)
+                    }
                 },
-            },
-            {
-                label: 'Cuestionario',
-                icon: 'matQuiz',
-                command: () => {
-                    this.handleForoAction('CREAR', null)
-                },
-            },
-            {
-                label: 'Videoconferencia',
-                icon: 'matVideocam',
-                command: () => {
-                    this.handleVideoconferenciaAction('CREAR', null)
-                },
-            },
-            {
-                label: 'Foro',
-                icon: 'matForum',
-                // command: (event: MenuItemCommandEvent) => {
-                command: () => {
-                    this.handleForoAction('CREAR', null)
-                },
-            },
-            {
-                label: 'Material',
-                icon: 'matDescription',
-                command: () => {
-                    this.handleMaterialAction('CREAR', null, 'Crear Material')
-                },
-            },
-        ]
+            }
+        })
     }
 
     actionSelected({
@@ -265,21 +261,12 @@ export class TabContenidoComponent implements OnInit {
     }
 
     handleEvaluacionAction(action: TActividadActions, actividad: IActividad) {
-        console.log(action, actividad)
-
-        // if (action === 'EDITAR') {
-        //     this._dialogService.open(EvaluacionFormContainerComponent, {
-        //         ...MODAL_CONFIG,
-        //         data: actividad,
-        //         header: 'Editar Evaluacion',
-        //     })
-        // }
-        // if (action === 'CREAR') {
-        //     this._dialogService.open(EvaluacionFormContainerComponent, {
-        //         ...MODAL_CONFIG,
-        //         header: 'Crear Evaluacion',
-        //         data: null,
-        //     })
-        // }
+        if (action === 'CREAR') {
+            this._dialogService.open(EvaluacionFormContainerComponent, {
+                ...MODAL_CONFIG,
+                header: 'Crear Evaluación',
+                data: actividad,
+            })
+        }
     }
 }

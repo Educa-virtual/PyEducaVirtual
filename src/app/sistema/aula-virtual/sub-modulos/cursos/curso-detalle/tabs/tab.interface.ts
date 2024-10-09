@@ -3,6 +3,7 @@ export const TABS = {
     contenido: 'CONTENIDO',
     evaluaciones: 'EVALUACIONES',
     estudiantes: 'ESTUDIANTES',
+    resultados: 'Resultados',
 }
 
 export type TabsKeys = keyof typeof TABS

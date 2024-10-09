@@ -40,12 +40,12 @@
         <div class="divider"></div>
     </div>
 
+    <app-curso-detalle-navigation
+        [actualTab]="tab"
+        (tabChange)="updateTab($event)"
+        class="sidebar-menu"
+    />
     <div class="curso-detalle__content">
-        <app-curso-detalle-navigation
-            [actualTab]="tab"
-            (tabChange)="updateTab($event)"
-            class="sidebar-menu"
-        />
         @switch (tab) {
             @case ('inicio') {
                 <app-tab-inicio></app-tab-inicio>
@@ -61,13 +61,10 @@
             @case ('evaluaciones') {
                 <app-tab-evaluaciones></app-tab-evaluaciones>
             }
-            @case ('rubricas') {}
-            @case ('banco-preguntas') {
-                <app-aula-banco-preguntas></app-aula-banco-preguntas>
-            }
+
             @default {}
         }
 
-        <!-- <router-outlet></router-outlet> -->
+        <router-outlet></router-outlet>
     </div>
 </section>

@@ -19,40 +19,44 @@
         <i class="pi pi-ellipsis-v"></i>
     </button>
 
-    <div class="layout-topbar-profile">
+    <div class="layout-topbar-module">
         <p-dropdown
+            styleClass="border-0"
             [options]="profile"
             [(ngModel)]="selectedProfile"
             optionLabel="profile"
-            placeholder="Seleccione perfil"
+            placeholder="Módulo"
             (onChange)="changeProfile($event)"
         />
     </div>
 
+    <button class="p-link layout-topbar-button layout-topbar-notification">
+        <i class="pi pi-bell"></i>
+    </button>
+
     <div
         #topbarmenu
-        class="layout-topbar-menu"
+        class="layout-topbar-menu align-items-center"
         [ngClass]="{
             'layout-topbar-menu-mobile-active':
                 layoutService.state.profileSidebarVisible,
         }"
     >
-        <!-- <button class="p-link layout-topbar-button">
-            <i class="pi pi-moon"></i>
-        </button>
-        <button class="p-link layout-topbar-button">
-            <i class="pi pi-user"></i>
-        </button> -->
+        <app-anio-escolar class="mr-1"></app-anio-escolar>
+        <app-roles-dropdown class="mr-1" [roles]="roles" />
+        <app-user-account class="mr-1"></app-user-account>
+    </div>
+    <!-- <div #topbarmenu class="layout-topbar-menu" [ngClass]="{
+            'layout-topbar-menu-mobile-active':
+                layoutService.state.profileSidebarVisible,
+        }">
+       
         <app-roles-dropdown [roles]="roles" />
-        <!-- <button class="p-link layout-topbar-button">
-            <i class="pi pi-cog"></i>
-        </button> -->
-        <button
-            class="p-link layout-topbar-button"
-            (click)="menu.toggle($event)"
-        >
+        <app-roles-dropdown [roles]="roles" />
+      
+        <button class="p-link layout-topbar-button" (click)="menu.toggle($event)">
             <i class="pi pi-cog"></i>
         </button>
         <p-menu #menu [model]="items" [popup]="true" />
-    </div>
+    </div> -->
 </div>

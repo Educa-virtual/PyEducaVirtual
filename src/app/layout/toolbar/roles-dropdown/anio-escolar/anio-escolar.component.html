@@ -1,5 +1,5 @@
 <p-dropdown
-    [options]="roles"
+    [options]="anios"
     styleClass="border-0"
     (onChange)="changeProfile($event)"
 >
@@ -18,20 +18,12 @@
 <ng-template #templateRoleRow let-item="item">
     <div class="flex align-items-center gap-2">
         <i
-            class="pi pi-graduation-cap text-xl"
+            class="pi pi-calendar text-xl"
             style="color: var(--surface-menu)"
         ></i>
         <div class="flex flex-column text-xs">
-            <span class="block p-0 font-bold"
-                >IE: {{ item.iEspecialistaId }} {{ item.cPersNombre }}</span
-            >
-            <span class="block p-0"
-                >Cod. Modular: {{ item.codigoModular }}</span
-            >
-            <span class="block p-0"
-                >Nivel: {{ item.cNivelTipoNombre || '-' }} / UGEL:
-                {{ item.cUgelNombre || '-' }}</span
-            >
+            <span class="block p-0 font-bold">Año Escolar</span>
+            <span class="block p-0">{{ item.iAnioEscolar }}</span>
         </div>
     </div>
 </ng-template>

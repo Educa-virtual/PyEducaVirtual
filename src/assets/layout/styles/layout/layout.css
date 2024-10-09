@@ -294,6 +294,7 @@ a {
 }
 .layout-menu ul a.active-route {
     font-weight: 700;
+    /*color: var(--primary-color);*/
     color: var(--primary-color);
 }
 .layout-menu ul a:hover {

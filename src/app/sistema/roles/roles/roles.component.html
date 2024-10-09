@@ -108,50 +108,78 @@
 
     <p-dialog
         [(visible)]="productDialog"
-        [style]="{ width: '450px' }"
-        header="Agregar Rol"
+        [style]="{ width: '900px' }"
+        header="Seleccionar un Perfil"
         [modal]="true"
         class="p-fluid"
     >
-        <ng-template pTemplate="content">
-            <img
-                [src]="'assets/demo/images/product/' + product.image"
-                [alt]="product.image"
-                width="150"
-                class="mt-0 mx-auto mb-5 block shadow-2"
-                *ngIf="product.image"
-            />
+        <div class="flex flex-column md:flex-row gap-3 align-items-end">
             <div class="field">
-                <label for="name">Nombre Recurso</label>
-                <input pInputText id="name" required #myInput type="text" />
-                <small
-                    class="ng-dirty ng-invalid"
-                    *ngIf="submitted && !product.name"
-                    >Este campo es requerido</small
+                <label for="tipo-pregunta">Año Academico :</label>
+                <p-dropdown
+                    [options]="[]"
+                    placeholder="Seleccione Año"
+                    styleClass="w-full"
+                    class="flex-1"
+                    [emptyMessage]="'2024'"
                 >
+                </p-dropdown>
             </div>
             <div class="field">
-                <label for="description">Descripción</label>
-                <textarea
-                    id="description"
-                    pInputTextarea
-                    required
-                    rows="3"
-                    cols="20"
-                ></textarea>
+                <!-- <p-dropdown
+                [(ngModel)]="params.iTipoPregId"
+                optionValue="iTipoPregId"
+                [options]="tipoPreguntas"
+                optionLabel="cTipoPregDescripcion"
+                styleClass="w-full"
+                inputId="tipo-pregunta"
+                (onChange)="obtenerBancoPreguntas()"
+                />-->
+                <label for="tipo-pregunta">Año :</label>
+                <p-dropdown
+                    [options]="[]"
+                    placeholder="Todos los Periodos"
+                    styleClass="w-full"
+                    class="flex-1"
+                    [emptyMessage]="'000237'"
+                >
+                </p-dropdown>
             </div>
-            <div class="field">
-                <label for="description">Recurso</label>
-                <textarea
-                    id="description"
-                    pInputTextarea
-                    required
-                    rows="3"
-                    cols="20"
-                ></textarea>
+            <div class="field displey flex gap-3">
+                <p-iconField iconPosition="left">
+                    <p-inputIcon styleClass="pi pi-search" />
+                    <input pInputText type="text" placeholder="Buscar..." />
+                </p-iconField>
+                <p-button
+                    icon="pi pi-search"
+                    type="button"
+                    label="Buscar"
+                    class="p-button-success"
+                />
             </div>
-        </ng-template>
-
+        </div>
+        <p-orderList [value]="products" header="Hola!">
+            <ng-template let-product pTemplate="item">
+                <div class="flex flex-wrap p-2 align-items-center gap-3">
+                    <img
+                        [alt]="product.name"
+                        class="w-4rem shadow-2 flex-shrink-0 border-round"
+                    />
+                    <div class="flex-1 flex flex-column gap-2">
+                        <span class="font-bold">{{ product.name }}</span>
+                        <div class="flex align-items-center gap-2">
+                            <i class="pi pi-tag text-sm"></i>
+                            <span>
+                                {{ product.category }}
+                            </span>
+                        </div>
+                    </div>
+                    <span class="font-bold text-900">
+                        {{ '$' + product.price }}
+                    </span>
+                </div>
+            </ng-template>
+        </p-orderList>
         <ng-template pTemplate="footer">
             <button
                 pButton

@@ -1,0 +1,61 @@
+<section class="flex mb-2 gap-2 justify-content-end">
+    <!-- Breadcrumb eliminado para simplificar -->
+
+    <div class="flex flex-column">
+        <div class="flex mb-2 gap-2 justify-content-end">
+            <h1>
+                {{ curso.nombre }}
+            </h1>
+            <p-menu #menu [model]="items" [popup]="true">
+                <ng-template pTemplate="start">
+                    <app-curso-detalle-navigation
+                        [actualTab]="tab"
+                        (tabChange)="updateTab($event); menu.toggle(null)"
+                    ></app-curso-detalle-navigation>
+                </ng-template>
+                <ng-template pTemplate="item" let-item></ng-template>
+            </p-menu>
+            <button class="p-link menu-button" (click)="menu.toggle($event)">
+                <i class="pi pi-bars"></i>
+            </button>
+        </div>
+        <div class="divider"></div>
+    </div>
+
+    <div class="curso-detalle__content flex flex-column">
+        <!-- Mantener la navegación en la parte superior -->
+        <app-curso-detalle-navigation
+            [actualTab]="tab"
+            (tabChange)="updateTab($event)"
+            class="sidebar-menu"
+        ></app-curso-detalle-navigation>
+        <!-- Manejo de tabs con *ngIf -->
+        <div class="flex flex-column">
+            <ng-container *ngIf="tab === 'inicio'">
+                <app-tab-inicio></app-tab-inicio>
+            </ng-container>
+
+            <ng-container *ngIf="tab === 'contenido'">
+                <app-tab-contenido></app-tab-contenido>
+            </ng-container>
+
+            <ng-container *ngIf="tab === 'estudiantes'">
+                <app-tab-estudiante
+                    [estudiantes]="estudiantes"
+                ></app-tab-estudiante>
+            </ng-container>
+
+            <ng-container *ngIf="tab === 'evaluaciones'">
+                <app-tab-evaluaciones></app-tab-evaluaciones>
+            </ng-container>
+
+            <ng-container *ngIf="tab === 'rubrica'">
+                <!-- Agregar el componente para rúbrica aquí -->
+            </ng-container>
+
+            <ng-container *ngIf="tab === 'pregunta'">
+                <app-aula-banco-preguntas></app-aula-banco-preguntas>
+            </ng-container>
+        </div>
+    </div>
+</section>

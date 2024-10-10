@@ -1,27 +1,19 @@
-<div class="layout-topbar">
-    <a class="layout-topbar-logo" routerLink="">
-        <img src="assets/images/dremo.png" alt="logo" />
-    </a>
-
-    <button
-        #menubutton
-        class="p-link layout-menu-button layout-topbar-button"
-        (click)="layoutService.onMenuToggle()"
-    >
-        <i class="pi pi-bars"></i>
-    </button>
-
-    <button
-        #topbarmenubutton
-        class="p-link layout-topbar-menu-button layout-topbar-button"
-        (click)="layoutService.showProfileSidebar()"
-    >
-        <i class="pi pi-ellipsis-v"></i>
-    </button>
-
-    <div class="layout-topbar-module">
+<div class="topbar">
+    <div class="topbar__logo displaye-none">
+        <a routerLink="">
+            <img src="assets/images/dremo.png" alt="logo" />
+        </a>
+    </div>
+    <div class="topbar__bars_modulo">
+        <button
+            #menubutton
+            class="p-link ml-2"
+            (click)="layoutService.onMenuToggle()"
+        >
+            <i class="pi pi-bars"></i>
+        </button>
         <p-dropdown
-            styleClass="border-0"
+            styleClass="border-0 w-9rem ml-1"
             [options]="profile"
             [(ngModel)]="selectedProfile"
             optionLabel="profile"
@@ -29,34 +21,15 @@
             (onChange)="changeProfile($event)"
         />
     </div>
-
-    <button class="p-link layout-topbar-button layout-topbar-notification">
-        <i class="pi pi-bell"></i>
-    </button>
-
-    <div
-        #topbarmenu
-        class="layout-topbar-menu align-items-center"
-        [ngClass]="{
-            'layout-topbar-menu-mobile-active':
-                layoutService.state.profileSidebarVisible,
-        }"
-    >
+    <div class="topbar__notif_anio_inst_account">
+        <button class="p-link button-menu mr-1 displaye-none">
+            <i class="pi pi-bell"></i>
+        </button>
         <app-anio-escolar class="mr-1"></app-anio-escolar>
         <app-roles-dropdown class="mr-1" [roles]="roles" />
-        <app-user-account class="mr-1"></app-user-account>
+        <app-user-account
+            class="mr-1"
+            (accionMenuItem)="accionMenuItem($event)"
+        ></app-user-account>
     </div>
-    <!-- <div #topbarmenu class="layout-topbar-menu" [ngClass]="{
-            'layout-topbar-menu-mobile-active':
-                layoutService.state.profileSidebarVisible,
-        }">
-       
-        <app-roles-dropdown [roles]="roles" />
-        <app-roles-dropdown [roles]="roles" />
-      
-        <button class="p-link layout-topbar-button" (click)="menu.toggle($event)">
-            <i class="pi pi-cog"></i>
-        </button>
-        <p-menu #menu [model]="items" [popup]="true" />
-    </div> -->
 </div>

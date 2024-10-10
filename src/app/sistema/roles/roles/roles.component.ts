@@ -16,6 +16,7 @@ import { ImageModule } from 'primeng/image'
 import { GalleriaModule } from 'primeng/galleria'
 import { ProductService } from 'src/app/demo/service/product.service'
 import { OrderListModule } from 'primeng/orderlist'
+import { DataViewModule } from 'primeng/dataview'
 
 @Component({
     selector: 'app-roles',
@@ -25,6 +26,7 @@ import { OrderListModule } from 'primeng/orderlist'
     imports: [
         DialogModule,
         NgFor,
+        DataViewModule,
         NgIf,
         CurrencyPipe,
         InputTextModule,

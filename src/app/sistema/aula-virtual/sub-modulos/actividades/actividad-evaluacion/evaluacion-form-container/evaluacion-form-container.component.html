@@ -1,4 +1,7 @@
-<p-tabView>
+<p-dialog #dialogRef [modal]="true" [closable]="true" (onShow)="onDialogShow()">
+    <ng-content></ng-content>
+</p-dialog>
+<!-- <p-tabView>
     <p-tabPanel header="Información">
         <p>Lorem ipsum dolor sit amet...</p>
     </p-tabPanel>
@@ -31,4 +34,4 @@
         size="small"
         class="p-button-primary"
     ></button>
-</div>
+</div> -->

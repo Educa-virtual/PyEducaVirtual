@@ -232,12 +232,16 @@ export class TabContenidoComponent implements OnInit {
 
     handleEvaluacionAction(action: TActividadActions, actividad: IActividad) {
         if (action === 'CREAR') {
-            this._dialogService.open(EvaluacionFormContainerComponent, {
-                ...MODAL_CONFIG,
-                maximizable: true,
-                header: 'Crear Evaluación',
-                data: actividad,
-            })
+            const ref = this._dialogService.open(
+                EvaluacionFormContainerComponent,
+                {
+                    ...MODAL_CONFIG,
+                    maximizable: true,
+                    header: 'Crear Evaluación',
+                    data: actividad,
+                }
+            )
+            this._dialogService.getInstance(ref).maximize()
         }
     }
 }

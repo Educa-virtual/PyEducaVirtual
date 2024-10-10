@@ -8,7 +8,12 @@ import { InputIconModule } from 'primeng/inputicon'
 import { InputTextModule } from 'primeng/inputtext'
 import { ActividadRowComponent } from '@/app/sistema/aula-virtual/sub-modulos/actividades/components/actividad-row/actividad-row.component'
 import { ActividadListaComponent } from '../../../../actividades/components/actividad-lista/actividad-lista.component'
-import { IActividad } from '@/app/sistema/aula-virtual/interfaces/actividad.interface'
+import {
+    actividadesConfig,
+    actividadesConfigList,
+    IActividad,
+    tipoActividadesKeys,
+} from '@/app/sistema/aula-virtual/interfaces/actividad.interface'
 import { TActividadActions } from '@/app/sistema/aula-virtual/interfaces/actividad-actions.iterface'
 import { DialogModule } from 'primeng/dialog'
 import { MenuModule } from 'primeng/menu'
@@ -29,6 +34,7 @@ import {
 import { MODAL_CONFIG } from '@/app/shared/constants/modal.config'
 import { ForoFormContainerComponent } from '../../../../actividades/actividad-foro/foro-form-container/foro-form-container.component'
 import { ActividadFormComponent } from '../../../../actividades/components/actividad-form/actividad-form.component'
+import { EvaluacionFormContainerComponent } from '../../../../actividades/actividad-evaluacion/evaluacion-form-container/evaluacion-form-container.component'
 
 @Component({
     selector: 'app-tab-contenido',
@@ -69,38 +75,18 @@ export class TabContenidoComponent implements OnInit {
     public actividadSelected: IActividad | undefined
     public accionSeleccionada: TActividadActions | undefined
 
-    public actividades: IActividad[] = [
-        {
-            id: '1',
-            tipoActividadNombre: 'Actividad',
-            tipoActividad: 1,
-            nombreActividad: 'Actividad I',
-        },
-        {
-            id: '2',
-            tipoActividadNombre: 'Foro',
-            tipoActividad: 2,
-            nombreActividad: 'Foro Debate',
-        },
-        {
-            id: '3',
-            tipoActividadNombre: 'Evaluacion',
-            tipoActividad: 3,
-            nombreActividad: 'Exámen Unidad',
-        },
-        {
-            id: '4',
-            tipoActividadNombre: 'Videoconferencia',
-            tipoActividad: 4,
-            nombreActividad: 'Reunión explicación',
-        },
-        {
-            id: '5',
-            tipoActividadNombre: 'Material',
-            tipoActividad: 5,
-            nombreActividad: 'Glosario',
-        },
-    ]
+    handleActionsMap: Record<
+        string,
+        (action: TActividadActions, actividad: IActividad) => void
+    > = {
+        tarea: this.handleTareaAction.bind(this),
+        foro: this.handleForoAction.bind(this),
+        evaluacion: this.handleEvaluacionAction.bind(this),
+        'video-conferencia': this.handleVideoconferenciaAction.bind(this),
+        material: this.handleMaterialAction.bind(this),
+    }
+
+    public actividades = actividadesConfigList
 
     constructor(private _dialogService: DialogService) {}
 
@@ -111,44 +97,24 @@ export class TabContenidoComponent implements OnInit {
 
         this.rangeDates = [today, nextWeek]
 
-        this.accionesContenido = [
-            {
-                label: 'Actividad',
-                icon: 'matAssignment',
+        this.generarAccionesContenido()
+    }
+
+    generarAccionesContenido() {
+        this.accionesContenido = Object.keys(actividadesConfig).map((key) => {
+            const actividad = actividadesConfig[key as tipoActividadesKeys]
+            return {
+                label: actividad.tipoActividadNombre,
+                icon: actividad.icon,
                 command: () => {
-                    this.handleTareaAction('CREAR', null)
+                    const actionHandler =
+                        this.handleActionsMap[actividad.tipoActividad]
+                    if (actionHandler) {
+                        actionHandler('CREAR', null)
+                    }
                 },
-            },
-            {
-                label: 'Cuestionario',
-                icon: 'matQuiz',
-                command: () => {
-                    this.handleForoAction('CREAR', null)
-                },
-            },
-            {
-                label: 'Videoconferencia',
-                icon: 'matVideocam',
-                command: () => {
-                    this.handleVideoconferenciaAction('CREAR', null)
-                },
-            },
-            {
-                label: 'Foro',
-                icon: 'matForum',
-                // command: (event: MenuItemCommandEvent) => {
-                command: () => {
-                    this.handleForoAction('CREAR', null)
-                },
-            },
-            {
-                label: 'Material',
-                icon: 'matDescription',
-                command: () => {
-                    this.handleMaterialAction('CREAR', null, 'Crear Material')
-                },
-            },
-        ]
+            }
+        })
     }
 
     actionSelected({
@@ -161,22 +127,27 @@ export class TabContenidoComponent implements OnInit {
         this.actividadSelected = actividad
         this.accionSeleccionada = action
 
-        if (actividad.tipoActividad === 1) {
+        if (actividad.tipoActividad === 'tarea') {
             this.handleTareaAction(action, actividad)
             return
         }
 
-        if (actividad.tipoActividad === 2) {
+        if (actividad.tipoActividad === 'evaluacion') {
+            this.handleEvaluacionAction(action, actividad)
+            return
+        }
+
+        if (actividad.tipoActividad === 'foro') {
             this.handleForoAction(action, actividad)
             return
         }
 
-        if (actividad.tipoActividad === 4) {
+        if (actividad.tipoActividad === 'video-conferencia') {
             this.handleVideoconferenciaAction(action, actividad)
             return
         }
 
-        if (actividad.tipoActividad === 5) {
+        if (actividad.tipoActividad === 'material') {
             this.handleMaterialAction('EDITAR', actividad, 'Editar Material')
         }
     }
@@ -255,6 +226,17 @@ export class TabContenidoComponent implements OnInit {
                 ...MODAL_CONFIG,
                 data: actividad,
                 header: header,
+            })
+        }
+    }
+
+    handleEvaluacionAction(action: TActividadActions, actividad: IActividad) {
+        if (action === 'CREAR') {
+            this._dialogService.open(EvaluacionFormContainerComponent, {
+                ...MODAL_CONFIG,
+                maximizable: true,
+                header: 'Crear Evaluación',
+                data: actividad,
             })
         }
     }

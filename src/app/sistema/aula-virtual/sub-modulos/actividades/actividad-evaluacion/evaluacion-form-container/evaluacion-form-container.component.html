@@ -1,37 +1,47 @@
-<p-dialog #dialogRef [modal]="true" [closable]="true" (onShow)="onDialogShow()">
-    <ng-content></ng-content>
-</p-dialog>
-<!-- <p-tabView>
-    <p-tabPanel header="Información">
-        <p>Lorem ipsum dolor sit amet...</p>
-    </p-tabPanel>
-    <p-tabPanel header="Preguntas">
-        <p>
-            Sed ut perspiciatis unde omnis iste natus error sit voluptatem
-            accusantium...
-        </p>
-    </p-tabPanel>
-    <p-tabPanel header="Calificación">
-        <p>At vero eos et accusamus et iusto odio dignissimos...</p>
-    </p-tabPanel>
-</p-tabView>
+<div class="flex flex-column gap-4">
+    <p-steps
+        [model]="evaluacionFormPasos"
+        [(activeIndex)]="activeStepper"
+    ></p-steps>
 
-<div class="flex justify-content-between gap-2 pt-3">
-    <button
-        pButton
-        pRipple
-        label="Cancelar"
-        icon="pi pi-times"
-        class="p-button-secondary"
-        type="button"
-        size="small"
-    ></button>
-    <button
-        pButton
-        pRipple
-        label="Guardar y Cantinuar"
-        icon="pi pi-check"
-        size="small"
-        class="p-button-primary"
-    ></button>
-</div> -->
+    @switch (activeStepper) {
+        @case (0) {
+            <app-evaluacion-form-info
+                [evaluacionInfoForm]="evaluacionInfoForm"
+            ></app-evaluacion-form-info>
+        }
+        @case (1) {
+            <app-evaluacion-form-preguntas></app-evaluacion-form-preguntas>
+        }
+        @case (2) {
+            <app-evaluacion-form-calificacion></app-evaluacion-form-calificacion>
+        }
+        @default {}
+    }
+
+    <div class="flex justify-content-between">
+        @if (activeStepper !== 0) {
+            <button pButton size="small" (click)="goStep('back')">Atrás</button>
+        }
+        @if (activeStepper !== evaluacionFormPasos.length - 1) {
+            <button
+                pButton
+                size="small"
+                (click)="goStep('next')"
+                class="ml-auto"
+            >
+                Guardar y Continuar
+            </button>
+        }
+        @if (activeStepper === evaluacionFormPasos.length - 1) {
+            <button
+                pButton
+                pRipple
+                label="Guardar y Finalizar"
+                icon="pi pi-save"
+                size="small"
+                class="p-button-primary ml-auto"
+            ></button>
+        }
+    </div>
+</div>

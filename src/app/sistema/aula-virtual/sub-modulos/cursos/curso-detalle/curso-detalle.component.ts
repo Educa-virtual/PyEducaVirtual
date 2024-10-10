@@ -87,6 +87,14 @@ export class CursoDetalleComponent implements OnInit {
     // obtiene el parametro y actualiza el tab
     listenParams() {
         const tab = this._activatedRoute.snapshot.queryParams['tab']
+        const cCursoNombre =
+            this._activatedRoute.snapshot.queryParams['cCursoNombre']
+
+        this.curso = {
+            cCursoNombre,
+            iCursoId: '1',
+            iSilaboId: this.iSilaboId,
+        }
         if (isValidTabKey(tab)) {
             this.updateTab(tab)
         }

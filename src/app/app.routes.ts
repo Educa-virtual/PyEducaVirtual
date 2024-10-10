@@ -9,7 +9,7 @@ import { InicioComponent } from './sistema/inicio/inicio.component'
 export const routes: Routes = [
     { path: '', component: InicioComponent },
     {
-        path: 'dashboard',
+        path: '',
 
         children: [
             {

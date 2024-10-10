@@ -1,10 +1,10 @@
 <p-panel header="Detalles y Acciones">
-    <ul class="flex flex-column gap-2 p-0">
+    <ul class="flex flex-row gap-2 p-0">
         @for (item of items; track item.tab) {
             <li class="list-none">
                 <button
                     pButton
-                    class="p-button-link text-primary hover:bg-primary hover:text-white w-full flex gap-2 align-items-start cursor-pointer"
+                    class="p-button-link text-primary displey flex align-items-center hover:bg-primary hover:text-white w-full flex gap-2 align-items-start cursor-pointer"
                     [ngClass]="{
                         'bg-primary text-white': actualTab === item.tab,
                     }"

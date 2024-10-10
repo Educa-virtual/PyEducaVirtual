@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core'
-import { ProfesorAvatarComponent } from '../../../components/profesor-avatar/profesor-avatar.component'
-import { ICurso } from '../../../interfaces/curso.interface'
+import { ProfesorAvatarComponent } from '../../../../components/profesor-avatar/profesor-avatar.component'
+import { ICurso } from '../../../../interfaces/curso.interface'
 import { ButtonModule } from 'primeng/button'
 
 @Component({

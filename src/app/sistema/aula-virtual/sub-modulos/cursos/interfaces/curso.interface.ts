@@ -1,8 +1,9 @@
 export interface ICurso {
-    id: number
-    nombre: string
+    iCursoId: string
+    cCursoNombre: string
     descripcion: string
     seccion?: string
-    grado?: string
-    totalEstudiantes: number
+    cGradoAbreviacion?: string
+    iEstudiantes: number
+    iSilaboId: string
 }

@@ -17,7 +17,6 @@ export class CursoDetalleNavigationComponent implements OnInit {
 
     @Input({ required: true }) actualTab: TabsKeys
     @Output() tabChange = new EventEmitter<TabsKeys>()
-
     ngOnInit() {
         this.items = [
             {
@@ -26,7 +25,7 @@ export class CursoDetalleNavigationComponent implements OnInit {
                 tab: 'inicio',
             },
             {
-                title: 'Contenido Sesion de Aprendizaje',
+                title: 'Contenido',
                 icon: 'pi pi-book',
                 tab: 'contenido',
             },
@@ -36,14 +35,9 @@ export class CursoDetalleNavigationComponent implements OnInit {
                 tab: 'estudiantes',
             },
             {
-                title: 'rubrica',
-                icon: 'pi pi-sitemap',
-                tab: 'rubrica',
-            },
-            {
-                title: 'Banco de preguntas',
-                icon: 'pi pi-question',
-                tab: 'banco-preguntas',
+                title: 'Resultado',
+                icon: 'pi pi-users',
+                tab: 'resultados',
             },
         ]
     }

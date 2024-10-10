@@ -4,20 +4,19 @@ import { MenuItem } from 'primeng/api'
 import { BreadcrumbModule } from 'primeng/breadcrumb'
 import { TabMenuModule } from 'primeng/tabmenu'
 import { TabViewModule } from 'primeng/tabview'
-import { CursoDetalleNavigationComponent } from './curso-detalle-navigation/curso-detalle-navigation.component'
-import { ActivatedRoute, Params, Router, RouterOutlet } from '@angular/router'
+import { ActivatedRoute, Params, Router } from '@angular/router'
 import { PanelModule } from 'primeng/panel'
-import { TabContenidoComponent } from './tabs/tab-contenido/tab-contenido.component'
 import { isValidTabKey, TabsKeys } from './tabs/tab.interface'
-import { TabEstudiantesComponent } from './tabs/tab-estudiantes/tab-estudiantes.component'
-import { TabInicioComponent } from './tabs/tab-inicio/tab-inicio.component'
 import { TabEvaluacionesComponent } from './tabs/tab-evaluaciones/tab-evaluaciones.component'
 import { MenuModule } from 'primeng/menu'
 import { ProfesorAvatarComponent } from '../components/profesor-avatar/profesor-avatar.component'
-import { IEstudiante } from '../../../interfaces/estudiantes.interface'
 import { ICurso } from '../interfaces/curso.interface'
-import { AulaBancoPreguntasComponent } from '../../aula-banco-preguntas/aula-banco-preguntas/aula-banco-preguntas.component'
-import { AulaBancoPreguntasComponent_1 as AulaBancoPreguntasComponent } from '../../../aula-banco-preguntas/aula-banco-preguntas/aula-banco-preguntas.component'
+import { IEstudiante } from '@/app/sistema/aula-virtual/interfaces/estudiantes.interface'
+import { CursoDetalleNavigationComponent } from './curso-detalle-navigation/curso-detalle-navigation.component'
+import { TabInicioComponent } from './tabs/tab-inicio/tab-inicio.component'
+import { TabContenidoComponent } from './tabs/tab-contenido/tab-contenido.component'
+import { TabEstudiantesComponent } from './tabs/tab-estudiantes/tab-estudiantes.component'
+import { TabResultadosComponent } from './tabs/tab-resultados/tab-resultados.component'
 
 @Component({
     selector: 'app-curso-detalle',
@@ -27,17 +26,15 @@ import { AulaBancoPreguntasComponent_1 as AulaBancoPreguntasComponent } from '..
         BreadcrumbModule,
         TabMenuModule,
         TabViewModule,
-        TabContenidoComponent,
         CursoDetalleNavigationComponent,
-        RouterOutlet,
-        PanelModule,
-        TabEstudiantesComponent,
         TabInicioComponent,
+        TabContenidoComponent,
+        TabEstudiantesComponent,
+        TabResultadosComponent,
+        PanelModule,
         TabEvaluacionesComponent,
         ProfesorAvatarComponent,
         MenuModule,
-        AulaBancoPreguntasComponent,
-        AulaBancoPreguntasComponent_1,
     ],
     templateUrl: './curso-detalle.component.html',
     styleUrl: './curso-detalle.component.scss',

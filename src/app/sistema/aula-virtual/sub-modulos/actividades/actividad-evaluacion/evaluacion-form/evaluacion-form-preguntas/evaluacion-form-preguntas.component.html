@@ -1,0 +1,20 @@
+<div class="flex flex-column md:flex-row gap-2 justify-content-between mb-4">
+    <h2 class="text-2xl font-bold">Preguntas - {{ tituloEvaluacion }}</h2>
+    <button
+        pButton
+        class="p-button-primary gap-2"
+        (click)="menuAgregacionPreguntas.toggle($event)"
+        size="small"
+    >
+        <i class="pi pi-plus"></i>
+        <span class="text-md">Agregar Pregunta</span>
+    </button>
+</div>
+
+<p-menu
+    #menuAgregacionPreguntas
+    [popup]="true"
+    [model]="tiposAgrecacionPregunta"
+    appendTo="body"
+>
+</p-menu>

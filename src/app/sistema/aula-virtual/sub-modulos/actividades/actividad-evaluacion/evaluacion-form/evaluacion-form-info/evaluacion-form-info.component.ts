@@ -25,7 +25,7 @@ import { EditorModule } from 'primeng/editor'
 export class EvaluacionFormInfoComponent {
     @Input() public evaluacionInfoForm: FormGroup
 
-    public tipoEvaluaciones = []
+    @Input() public tipoEvaluaciones = []
 
     get invalidForm() {
         return true

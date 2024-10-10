@@ -1,6 +1,6 @@
 import { PrimengModule } from '@/app/primeng.module'
 import { CommonModule } from '@angular/common'
-import { Component, inject, OnInit, ViewChild } from '@angular/core'
+import { Component, inject, OnInit, ViewChild, OnDestroy } from '@angular/core'
 import { Dialog } from 'primeng/dialog'
 import { DialogService } from 'primeng/dynamicdialog'
 import { EvaluacionFormInfoComponent } from '../evaluacion-form/evaluacion-form-info/evaluacion-form-info.component'
@@ -9,6 +9,8 @@ import { EvaluacionFormCalificacionComponent } from '../evaluacion-form/evaluaci
 import { StepperModule } from 'primeng/stepper'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { MenuItem } from 'primeng/api'
+import { ApiEvaluacionesService } from '@/app/sistema/evaluaciones/services/api-evaluaciones.service'
+import { Subject, takeUntil } from 'rxjs'
 
 @Component({
     selector: 'app-evaluacion-form-container-',
@@ -25,7 +27,7 @@ import { MenuItem } from 'primeng/api'
     styleUrl: './evaluacion-form-container.component.scss',
     providers: [DialogService],
 })
-export class EvaluacionFormContainerComponent implements OnInit {
+export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
     @ViewChild('dialogRef') dialogRef!: Dialog
 
     public evaluacionInfoForm: FormGroup
@@ -47,14 +49,32 @@ export class EvaluacionFormContainerComponent implements OnInit {
             icon: 'pi-list-check',
         },
     ]
+    public tipoEvaluaciones = []
 
+    private unsubscribe$: Subject<boolean> = new Subject()
     private _formBuilder = inject(FormBuilder)
+    private _evaluacionService = inject(ApiEvaluacionesService)
+
+    constructor() {}
 
     ngOnInit(): void {
+        this.getData()
         this.initFormGroup()
         console.log(this.dialogRef, 'test')
     }
-    constructor() {}
+
+    getData() {
+        this.obtenerTipoEvaluaciones()
+    }
+
+    obtenerTipoEvaluaciones() {
+        this._evaluacionService
+            .obtenerTipoEvaluaciones()
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe((data) => {
+                this.tipoEvaluaciones = data
+            })
+    }
 
     onDialogShow() {
         console.log(this.dialogRef, 'test')
@@ -101,5 +121,10 @@ export class EvaluacionFormContainerComponent implements OnInit {
                 }
                 break
         }
+    }
+
+    ngOnDestroy() {
+        this.unsubscribe$.next(true)
+        this.unsubscribe$.complete()
     }
 }

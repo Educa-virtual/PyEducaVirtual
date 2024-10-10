@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router'
 import { CursoDetalleComponent } from './curso-detalle/curso-detalle.component'
-import { CursosComponent } from './cursos/cursos.component'
 import { ActividadComponent } from './actividad/actividad.component'
+import { CursosComponent } from './cursos.component'
 
 const routes: Routes = [
     {
@@ -10,7 +10,7 @@ const routes: Routes = [
         component: CursosComponent,
     },
     {
-        path: ':id',
+        path: ':iSilaboId',
         component: CursoDetalleComponent,
     },
     {

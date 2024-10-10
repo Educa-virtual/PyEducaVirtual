@@ -1,3 +1,4 @@
+import { ConstantesService } from '@/app/servicios/constantes.service'
 import { Component } from '@angular/core'
 
 @Component({
@@ -7,4 +8,9 @@ import { Component } from '@angular/core'
     templateUrl: './inicio.component.html',
     styleUrl: './inicio.component.scss',
 })
-export class InicioComponent {}
+export class InicioComponent {
+    name: string
+    constructor(private ConstantesService: ConstantesService) {
+        this.name = this.ConstantesService.nombres
+    }
+}

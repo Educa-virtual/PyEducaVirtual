@@ -8,7 +8,7 @@ type ActividadConfig = {
 
 const actividadesConfig: { [key: number]: ActividadConfig } = {
     1: {
-        name: 'Tarea',
+        name: 'Actividades',
         'bg-color': 'bg-blue-500 text-white',
         icon: 'matAssignment',
     },

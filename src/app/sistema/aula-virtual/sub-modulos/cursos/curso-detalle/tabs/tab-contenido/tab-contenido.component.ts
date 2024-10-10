@@ -72,7 +72,7 @@ export class TabContenidoComponent implements OnInit {
     public actividades: IActividad[] = [
         {
             id: '1',
-            tipoActividadNombre: 'Tarea',
+            tipoActividadNombre: 'Actividad',
             tipoActividad: 1,
             nombreActividad: 'Actividad I',
         },
@@ -113,7 +113,7 @@ export class TabContenidoComponent implements OnInit {
 
         this.accionesContenido = [
             {
-                label: 'Tarea',
+                label: 'Actividad',
                 icon: 'matAssignment',
                 command: () => {
                     this.handleTareaAction('CREAR', null)
@@ -188,7 +188,7 @@ export class TabContenidoComponent implements OnInit {
                 {
                     ...MODAL_CONFIG,
                     data: actividad,
-                    header: 'Editar Tarea',
+                    header: 'Editar Actividad',
                 }
             )
             ref.onClose.subscribe((result) => {
@@ -203,7 +203,7 @@ export class TabContenidoComponent implements OnInit {
         if (action === 'CREAR') {
             this._dialogService.open(TareaFormContainerComponent, {
                 ...MODAL_CONFIG,
-                header: 'Crear Tarea',
+                header: 'Crear Actividades de Aprendizaje',
                 data: null,
             })
         }

@@ -3,6 +3,20 @@
     [actions]="actionsContainer"
     (accionBtnItem)="handleAcciones($event)"
 >
+    <div class="flex gap-4 justify-content-between flex-wrap">
+        <div class="flex flex-column gap-1 flex-1">
+            <label for="tipo-pregunta">Tipo Pregunta</label>
+            <p-dropdown
+                [(ngModel)]="params.iTipoPregId"
+                optionValue="iTipoPregId"
+                [options]="tipoPreguntas"
+                optionLabel="cTipoPregDescripcion"
+                styleClass="w-full"
+                inputId="tipo-pregunta"
+                (onChange)="obtenerBancoPreguntas()"
+            />
+        </div>
+    </div>
     <app-banco-pregunta-lista
         [columnas]="columnas"
         [data]="bancoPreguntas"

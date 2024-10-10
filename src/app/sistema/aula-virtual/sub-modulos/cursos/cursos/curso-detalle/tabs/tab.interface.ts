@@ -1,10 +1,9 @@
-const TABS = {
+export const TABS = {
     inicio: 'INICIO',
     contenido: 'CONTENIDO',
     evaluaciones: 'EVALUACIONES',
     estudiantes: 'ESTUDIANTES',
-    rubrica: 'RUBRICAS',
-    ['banco-preguntas']: 'BANCO-PREGUNTAS',
+    resultados: 'Resultados',
 }
 
 export type TabsKeys = keyof typeof TABS
@@ -17,4 +16,11 @@ export interface ITabs {
     title: string
     subtitle?: string
     icon: string
+}
+
+export interface ItabsMenu {
+    label: string
+    tab: TabsKeys
+    icon: string
+    command?: () => void
 }

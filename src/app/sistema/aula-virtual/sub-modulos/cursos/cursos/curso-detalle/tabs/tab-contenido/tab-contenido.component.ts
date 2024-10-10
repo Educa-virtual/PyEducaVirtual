@@ -7,7 +7,7 @@ import { IconFieldModule } from 'primeng/iconfield'
 import { InputIconModule } from 'primeng/inputicon'
 import { InputTextModule } from 'primeng/inputtext'
 import { ActividadRowComponent } from '@/app/sistema/aula-virtual/sub-modulos/actividades/components/actividad-row/actividad-row.component'
-import { ActividadListaComponent } from '../../../../actividades/components/actividad-lista/actividad-lista.component'
+import { ActividadListaComponent } from '../../../../../actividades/components/actividad-lista/actividad-lista.component'
 import {
     actividadesConfig,
     actividadesConfigList,
@@ -18,8 +18,8 @@ import { TActividadActions } from '@/app/sistema/aula-virtual/interfaces/activid
 import { DialogModule } from 'primeng/dialog'
 import { MenuModule } from 'primeng/menu'
 import { MenuItem } from 'primeng/api'
-import { TareaFormContainerComponent } from '../../../../actividades/actividad-tarea/tarea-form-container/tarea-form-container.component'
-import { VideoconferenciaContainerFormComponent } from '../../../../actividades/actividad-videoconferencia/videoconferencia-container-form/videoconferencia-container-form.component'
+import { TareaFormContainerComponent } from '../../../../../actividades/actividad-tarea/tarea-form-container/tarea-form-container.component'
+import { VideoconferenciaContainerFormComponent } from '../../../../../actividades/actividad-videoconferencia/videoconferencia-container-form/videoconferencia-container-form.component'
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog'
 import { IconComponent } from '@/app/shared/icon/icon.component'
 import { provideIcons } from '@ng-icons/core'
@@ -32,9 +32,9 @@ import {
     matVideocam,
 } from '@ng-icons/material-icons/baseline'
 import { MODAL_CONFIG } from '@/app/shared/constants/modal.config'
-import { ForoFormContainerComponent } from '../../../../actividades/actividad-foro/foro-form-container/foro-form-container.component'
-import { ActividadFormComponent } from '../../../../actividades/components/actividad-form/actividad-form.component'
-import { EvaluacionFormContainerComponent } from '../../../../actividades/actividad-evaluacion/evaluacion-form-container/evaluacion-form-container.component'
+import { ForoFormContainerComponent } from '../../../../../actividades/actividad-foro/foro-form-container/foro-form-container.component'
+import { ActividadFormComponent } from '../../../../../actividades/components/actividad-form/actividad-form.component'
+import { EvaluacionFormContainerComponent } from '../../../../../actividades/actividad-evaluacion/evaluacion-form-container/evaluacion-form-container.component'
 
 @Component({
     selector: 'app-tab-contenido',
@@ -232,12 +232,16 @@ export class TabContenidoComponent implements OnInit {
 
     handleEvaluacionAction(action: TActividadActions, actividad: IActividad) {
         if (action === 'CREAR') {
-            this._dialogService.open(EvaluacionFormContainerComponent, {
-                ...MODAL_CONFIG,
-                maximizable: true,
-                header: 'Crear Evaluación',
-                data: actividad,
-            })
+            const ref = this._dialogService.open(
+                EvaluacionFormContainerComponent,
+                {
+                    ...MODAL_CONFIG,
+                    maximizable: true,
+                    header: 'Crear Evaluación',
+                    data: actividad,
+                }
+            )
+            this._dialogService.getInstance(ref).maximize()
         }
     }
 }

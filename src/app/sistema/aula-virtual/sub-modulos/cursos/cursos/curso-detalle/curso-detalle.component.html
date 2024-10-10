@@ -1,8 +1,26 @@
-<section class="flex mb-2 gap-2 justify-content-end">
-    <!-- Breadcrumb eliminado para simplificar -->
+<section class="flex flex-column gap-4">
+    <!-- <p-breadcrumb class="max-w-full" [model]="items">
+        <ng-template pTemplate="item" let-item>
+            <ng-container *ngIf="item.route; else elseBlock">
+                <a [routerLink]="item.route" class="p-menuitem-link">
+                    <span
+                        [ngClass]="[item.icon ? item.icon : '', 'text-color']"
+                    ></span>
+                    <span class="text-primary font-semibold">{{
+                        item.label
+                    }}</span>
+                </a>
+            </ng-container>
+            <ng-template #elseBlock>
+                <a [href]="item.url">
+                    <span class="text-color">{{ item.label }}</span>
+                </a>
+            </ng-template>
+        </ng-template>
+    </p-breadcrumb> -->
 
     <div class="flex flex-column">
-        <div class="flex mb-2 gap-2 justify-content-end">
+        <div class="flex justify-content-between">
             <h1>
                 {{ curso.nombre }}
             </h1>
@@ -11,7 +29,7 @@
                     <app-curso-detalle-navigation
                         [actualTab]="tab"
                         (tabChange)="updateTab($event); menu.toggle(null)"
-                    ></app-curso-detalle-navigation>
+                    />
                 </ng-template>
                 <ng-template pTemplate="item" let-item></ng-template>
             </p-menu>
@@ -22,40 +40,31 @@
         <div class="divider"></div>
     </div>
 
-    <div class="curso-detalle__content flex flex-column">
-        <!-- Mantener la navegación en la parte superior -->
-        <app-curso-detalle-navigation
-            [actualTab]="tab"
-            (tabChange)="updateTab($event)"
-            class="sidebar-menu"
-        ></app-curso-detalle-navigation>
-        <!-- Manejo de tabs con *ngIf -->
-        <div class="flex flex-column">
-            <ng-container *ngIf="tab === 'inicio'">
+    <app-curso-detalle-navigation
+        [actualTab]="tab"
+        (tabChange)="updateTab($event)"
+        class="sidebar-menu"
+    />
+    <div class="curso-detalle__content">
+        @switch (tab) {
+            @case ('inicio') {
                 <app-tab-inicio></app-tab-inicio>
-            </ng-container>
-
-            <ng-container *ngIf="tab === 'contenido'">
+            }
+            @case ('contenido') {
                 <app-tab-contenido></app-tab-contenido>
-            </ng-container>
-
-            <ng-container *ngIf="tab === 'estudiantes'">
-                <app-tab-estudiante
+            }
+            @case ('estudiantes') {
+                <app-tab-estudiantes
                     [estudiantes]="estudiantes"
-                ></app-tab-estudiante>
-            </ng-container>
+                ></app-tab-estudiantes>
+            }
+            @case ('resultados') {
+                <app-tab-resultados></app-tab-resultados>
+            }
 
-            <ng-container *ngIf="tab === 'evaluaciones'">
-                <app-tab-evaluaciones></app-tab-evaluaciones>
-            </ng-container>
+            @default {}
+        }
 
-            <ng-container *ngIf="tab === 'rubrica'">
-                <!-- Agregar el componente para rúbrica aquí -->
-            </ng-container>
-
-            <ng-container *ngIf="tab === 'pregunta'">
-                <app-aula-banco-preguntas></app-aula-banco-preguntas>
-            </ng-container>
-        </div>
+        <router-outlet></router-outlet>
     </div>
 </section>

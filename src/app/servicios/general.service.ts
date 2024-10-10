@@ -30,8 +30,10 @@ export class GeneralService {
                         data.prefix +
                         '/' +
                         data.ruta,
-                    data.data
+                    data.data,
+                    { params: data.params }
                 )
+
                 break
             default:
                 break

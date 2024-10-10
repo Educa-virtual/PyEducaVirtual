@@ -1,23 +1,26 @@
-<article class="card p-0 border-1 surface-border overflow-hidden">
+<article
+    class="card p-0 border-1 flex flex-column surface-border overflow-hidden h-full"
+>
     <div class="curso__image-container">
         <img
             src="assets/demo/images/product/bamboo-watch.jpg"
-            [alt]="curso.nombre"
+            [alt]="curso.cCursoNombre"
             class="w-full h-full"
         />
     </div>
-    <div class="p-3">
+    <div class="p-3 mb-auto">
         <h3 class="text-xl">
-            {{ curso.nombre }} {{ curso.grado }} {{ curso.seccion }}
+            {{ curso.cCursoNombre }} {{ curso.cGradoAbreviacion }}
+            {{ curso.seccion }}
         </h3>
         <p class="">
             {{ curso.descripcion }}
         </p>
     </div>
     <footer class="p-3 pt-0 flex align-items-center justify-content-between">
-        <span>{{ curso.totalEstudiantes }} studiantes</span>
+        <span>{{ curso.iEstudiantes }} studiantes</span>
         <p-button
-            [routerLink]="['./', curso.id]"
+            [routerLink]="['./', curso.iCursoId]"
             label="Ver más"
             styleClass="p-button-link"
         ></p-button>

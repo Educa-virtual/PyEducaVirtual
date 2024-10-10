@@ -1,0 +1,22 @@
+.button-menu {
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    border-radius: 50%;
+    width: 3rem;
+    height: 3rem;
+    cursor: pointer;
+    color: var(--surface-menu);
+}
+
+:host ::ng-deep .p-dropdown {
+    font-size: 10px !important;
+}
+
+:host ::ng-deep .p-dropdown-trigger {
+    font-size: 10px !important;
+}
+
+:host ::ng-deep .p-menu .p-submenu-header {
+    display: none !important;
+}

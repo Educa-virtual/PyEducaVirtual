@@ -5,6 +5,5 @@ import { Component } from '@angular/core'
     standalone: true,
     imports: [],
     templateUrl: './tab-evaluaciones.component.html',
-    styleUrl: './tab-evaluaciones.component.scss',
 })
 export class TabEvaluacionesComponent {}

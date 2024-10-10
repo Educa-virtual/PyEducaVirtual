@@ -1,0 +1,48 @@
+<div class="flex flex-column gap-4">
+    <p-steps
+        [model]="evaluacionFormPasos"
+        [(activeIndex)]="activeStepper"
+    ></p-steps>
+
+    @switch (activeStepper) {
+        @case (0) {
+            <app-evaluacion-form-info
+                [tipoEvaluaciones]="tipoEvaluaciones"
+                [evaluacionInfoForm]="evaluacionInfoForm"
+            ></app-evaluacion-form-info>
+        }
+        @case (1) {
+            <app-evaluacion-form-preguntas></app-evaluacion-form-preguntas>
+        }
+        @case (2) {
+            <app-evaluacion-form-calificacion></app-evaluacion-form-calificacion>
+        }
+        @default {}
+    }
+
+    <div class="flex justify-content-between">
+        @if (activeStepper !== 0) {
+            <button pButton size="small" (click)="goStep('back')">Atrás</button>
+        }
+        @if (activeStepper !== evaluacionFormPasos.length - 1) {
+            <button
+                pButton
+                size="small"
+                (click)="goStep('next')"
+                class="ml-auto"
+            >
+                Guardar y Continuar
+            </button>
+        }
+        @if (activeStepper === evaluacionFormPasos.length - 1) {
+            <button
+                pButton
+                pRipple
+                label="Guardar y Finalizar"
+                icon="pi pi-save"
+                size="small"
+                class="p-button-primary ml-auto"
+            ></button>
+        }
+    </div>
+</div>

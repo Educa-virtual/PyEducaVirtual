@@ -13,6 +13,10 @@
         display: grid;
         grid-template-columns: 1fr;
         gap: 0;
+        @media (min-width: 992px) {
+            grid-template-columns: 200px 1fr;
+            gap: 2rem;
+        }
     }
 }
 

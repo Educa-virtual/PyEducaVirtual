@@ -79,12 +79,18 @@ export const routes: Routes = [
                 loadChildren: () =>
                     import('./sistema/aula-virtual/aula-virtual.routes'),
             },
+
             {
                 path: 'evaluaciones',
                 loadChildren: () =>
                     import('./sistema/evaluaciones/evaluaciones.routes'),
             },
         ],
+    },
+    {
+        path: 'roles',
+
+        loadChildren: () => import('./sistema/roles/roles.routes'),
     },
 
     { path: 'login', component: LoginComponent },

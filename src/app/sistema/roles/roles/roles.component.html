@@ -1,0 +1,201 @@
+<app-container-page [title]="'Mis Roles'" [actions]="[]">
+    <div class="grid">
+        <!--<div class="col-12">
+          <div class="card">
+              <div
+                  class="flex flex-column md:flex-row md:justify-content-between gap-2 padding:100px"
+              >
+                  <p-dropdown
+                      [options]="[]"
+                      placeholder="2024"
+                      styleClass="w-full"
+                      class="flex-1"
+                      [emptyMessage]="'2023'"
+                  >
+                  </p-dropdown>
+                  <p-dropdown
+                      [options]="[]"
+                      placeholder="Nombre de Curso"
+                      styleClass="w-full"
+                      class="flex-1"
+                      [emptyMessage]="'Área de Matematica'"
+                  >
+                  </p-dropdown>
+                  <p-iconField iconPosition="left">
+                      <p-inputIcon styleClass="pi pi-search" />
+                      <input pInputText type="text" placeholder="Buscar..." />
+                  </p-iconField>
+                  
+                  <p-button
+                      icon="pi pi-folder-open"
+                      rounded="true"
+                      (click)="openNew()"
+                      severity="secondary"
+                      [style]="{ 'margin-right': '.5em' }"
+                  />
+
+                  <p-dataViewLayoutOptions></p-dataViewLayoutOptions>
+              </div>
+              <br />
+          </div>
+      </div>-->
+        <div class="grid p-fluid">
+            <div class="col-12">
+                <div class="card">
+                    <!--<h5>Hola! {{ item.cPersNombre }}</h5> -->
+                    <h5>Hola!</h5>
+                    <p-button
+                        icon="pi pi-folder-open"
+                        rounded="true"
+                        (click)="openNew()"
+                        severity="secondary"
+                        [style]="{ 'margin-right': '.5em' }"
+                    />
+                    <p-carousel
+                        [value]="products"
+                        [numVisible]="3"
+                        [numScroll]="3"
+                        [circular]="false"
+                        [responsiveOptions]="carouselResponsiveOptions"
+                    >
+                        <ng-template let-product pTemplate="item">
+                            <div
+                                class="border-round m-2 text-center p-2"
+                                style="border: 1px solid var(--surface-d)"
+                            >
+                                <div class="my-5">
+                                    <img
+                                        src="assets/demo/images/product/{{
+                                            product.image
+                                        }}"
+                                        [alt]="product.name"
+                                        class="shadow-4"
+                                        width="50%"
+                                    />
+                                </div>
+                                <div>
+                                    <h5 class="mb-1">{{ product.name }}</h5>
+                                    <h6 class="mt-0 mb-3">
+                                        ${{ product.price }}
+                                    </h6>
+                                    <span
+                                        [class]="
+                                            'product-badge status-' +
+                                            product.inventoryStatus.toLowerCase()
+                                        "
+                                        >{{ product.inventoryStatus }}</span
+                                    >
+                                    <div class="my-5">
+                                        <!--  <button pButton pRipple icon="pi pi-search" class="mr-2 p-button-rounded"></button>-->
+                                        <button
+                                            pButton
+                                            pRipple
+                                            icon="pi pi-sign-in"
+                                            class="mr-2 p-button-rounded p-button-success"
+                                        >
+                                            Ingresar
+                                        </button>
+                                        <!--<button pButton pRipple icon="pi pi-cog" class="p-button-rounded p-button-info"></button>-->
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-template>
+                    </p-carousel>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <p-dialog
+        [(visible)]="productDialog"
+        [style]="{ width: '900px' }"
+        header="Seleccionar un Perfil"
+        [modal]="true"
+        class="p-fluid"
+    >
+        <div class="flex flex-column md:flex-row gap-3 align-items-end">
+            <div class="field">
+                <label for="tipo-pregunta">Año Academico :</label>
+                <p-dropdown
+                    [options]="[]"
+                    placeholder="Seleccione Año"
+                    styleClass="w-full"
+                    class="flex-1"
+                    [emptyMessage]="'2024'"
+                >
+                </p-dropdown>
+            </div>
+            <div class="field">
+                <!-- <p-dropdown
+                [(ngModel)]="params.iTipoPregId"
+                optionValue="iTipoPregId"
+                [options]="tipoPreguntas"
+                optionLabel="cTipoPregDescripcion"
+                styleClass="w-full"
+                inputId="tipo-pregunta"
+                (onChange)="obtenerBancoPreguntas()"
+                />-->
+                <label for="tipo-pregunta">Año :</label>
+                <p-dropdown
+                    [options]="[]"
+                    placeholder="Todos los Periodos"
+                    styleClass="w-full"
+                    class="flex-1"
+                    [emptyMessage]="'000237'"
+                >
+                </p-dropdown>
+            </div>
+            <div class="field displey flex gap-3">
+                <p-iconField iconPosition="left">
+                    <p-inputIcon styleClass="pi pi-search" />
+                    <input pInputText type="text" placeholder="Buscar..." />
+                </p-iconField>
+                <p-button
+                    icon="pi pi-search"
+                    type="button"
+                    label="Buscar"
+                    class="p-button-success"
+                />
+            </div>
+        </div>
+        <p-orderList [value]="products" header="Hola!">
+            <ng-template let-product pTemplate="item">
+                <div class="flex flex-wrap p-2 align-items-center gap-3">
+                    <img
+                        [alt]="product.name"
+                        class="w-4rem shadow-2 flex-shrink-0 border-round"
+                    />
+                    <div class="flex-1 flex flex-column gap-2">
+                        <span class="font-bold">{{ product.name }}</span>
+                        <div class="flex align-items-center gap-2">
+                            <i class="pi pi-tag text-sm"></i>
+                            <span>
+                                {{ product.category }}
+                            </span>
+                        </div>
+                    </div>
+                    <span class="font-bold text-900">
+                        {{ '$' + product.price }}
+                    </span>
+                </div>
+            </ng-template>
+        </p-orderList>
+        <ng-template pTemplate="footer">
+            <button
+                pButton
+                pRipple
+                label="Agregar"
+                icon="pi pi-check"
+                class="p-button-text"
+            ></button>
+            <button
+                pButton
+                pRipple
+                label="Cancelar"
+                icon="pi pi-times"
+                class="p-button-text"
+                (click)="hideDialog()"
+            ></button>
+        </ng-template>
+    </p-dialog>
+</app-container-page>

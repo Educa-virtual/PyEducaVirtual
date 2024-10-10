@@ -4,10 +4,12 @@ import { LoginComponent } from './shared/login/login.component'
 
 import { NotfoundComponent } from './demo/components/notfound/notfound.component'
 import { VerificacionComponent } from './shared/verificacion/verificacion.component'
+import { InicioComponent } from './sistema/inicio/inicio.component'
 
 export const routes: Routes = [
+    { path: '', component: InicioComponent },
     {
-        path: '',
+        path: 'dashboard',
 
         children: [
             {

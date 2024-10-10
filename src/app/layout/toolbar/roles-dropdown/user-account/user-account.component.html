@@ -1,15 +1,23 @@
 <div class="flex align-items-center gap-2">
+    <div class="flex flex-column text-xs">
+        <span class="block p-0 font-semibold">{{ name }}</span>
+        <p-dropdown
+            [options]="profile"
+            [(ngModel)]="selectedProfile"
+            optionLabel="profile"
+            placeholder="Perfil"
+            styleClass="border-0 w-10rem h-2rem align-items-center"
+        ></p-dropdown>
+    </div>
     <p-avatar
         image="./assets/images/icons/IconUserAccount.png"
-        styleClass="mr-2"
         size="large"
         shape="circle"
     />
-    <div class="flex flex-column">
-        <span class="block p-0 font-bold">Jhoand Valk Valderrama</span>
 
-        <select class="flex-auto w-full p-dropdown" style="height: 20px">
-            <option></option>
-        </select>
-    </div>
+    <button class="p-link button-menu" (click)="menu.toggle($event)">
+        <i class="pi pi-sort-down-fill"></i>
+    </button>
 </div>
+
+<p-menu #menu [model]="items" [popup]="true" />

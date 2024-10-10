@@ -37,6 +37,7 @@ interface Profile {
         UserAccountComponent,
         PrimengModule,
     ],
+    styleUrl: './app.topbar.component.scss',
 })
 export class AppTopBarComponent implements OnInit {
     private _apiValidacionE = inject(ApiObtenerEuService)
@@ -107,5 +108,13 @@ export class AppTopBarComponent implements OnInit {
         this.store.clear()
         this.tokenStorageService.signOut()
         window.location.reload()
+    }
+
+    accionMenuItem(accion): void {
+        switch (accion) {
+            case 'logout':
+                this.logout()
+                break
+        }
     }
 }

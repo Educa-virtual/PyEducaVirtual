@@ -1,0 +1,16 @@
+<p-listbox [options]="estudiantes" [group]="true">
+    <ng-template let-estudiante pTemplate="group" class="p-0">
+        <div class="flex align-items-center gap-2">
+            <p-avatar
+                image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png"
+                styleClass=""
+                size="normal"
+                shape="circle"
+            />
+            <div class="flex flex-column gap-2 font-medium">
+                <span>{{ estudiante.nombre }}</span>
+                <span>N° de orden: {{ estudiante.numeroOrden }}</span>
+            </div>
+        </div>
+    </ng-template>
+</p-listbox>

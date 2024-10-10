@@ -1,0 +1,52 @@
+<app-container-page [title]="'Mis Áreas Curriculares'" [actions]="[]">
+    <p-dataView
+        #dv
+        [value]="cursos"
+        [paginator]="true"
+        [rows]="9"
+        filterBy="name"
+        [sortField]="sortField"
+        [sortOrder]="sortOrder"
+        layout="grid"
+    >
+        <ng-template pTemplate="header">
+            <div
+                class="flex flex-column md:flex-row md:justify-content-between gap-2"
+            >
+                <p-iconField iconPosition="left">
+                    <p-inputIcon styleClass="pi pi-search" />
+                    <input
+                        pInputText
+                        type="text"
+                        (input)="onFilter(dv, $event)"
+                        placeholder="Buscar..."
+                    />
+                </p-iconField>
+                <p-dropdown
+                    [options]="[]"
+                    placeholder="I.E."
+                    styleClass="w-full"
+                    class="flex-1"
+                    [emptyMessage]="'Sin I.E.'"
+                >
+                </p-dropdown>
+
+                <p-dataViewLayoutOptions></p-dataViewLayoutOptions>
+            </div>
+        </ng-template>
+        <ng-template let-products pTemplate="listItem">
+            <app-table-primeng
+                [showPaginator]="false"
+                [showCaption]="false"
+                [data]="[]"
+            ></app-table-primeng>
+        </ng-template>
+        <ng-template let-products pTemplate="gridItem">
+            <div class="cursos gap-4 py-2">
+                @for (curso of cursos; track curso.id) {
+                    <app-curso-card class="" [curso]="curso"></app-curso-card>
+                }
+            </div>
+        </ng-template>
+    </p-dataView>
+</app-container-page>

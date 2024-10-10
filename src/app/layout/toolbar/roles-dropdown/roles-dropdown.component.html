@@ -1,4 +1,8 @@
-<p-dropdown [options]="roles" styleClass="" (onChange)="changeProfile($event)">
+<p-dropdown
+    [options]="roles"
+    styleClass="border-0"
+    (onChange)="changeProfile($event)"
+>
     <ng-template pTemplate="selectedItem" let-item class="p-0">
         <ng-container
             *ngTemplateOutlet="templateRoleRow; context: { item: item }"
@@ -13,7 +17,10 @@
 
 <ng-template #templateRoleRow let-item="item">
     <div class="flex align-items-center gap-2">
-        <i class="pi pi-building-columns text-xl text-primary font-bold"></i>
+        <i
+            class="pi pi-graduation-cap text-xl"
+            style="color: var(--surface-menu)"
+        ></i>
         <div class="flex flex-column text-xs">
             <span class="block p-0 font-bold"
                 >IE: {{ item.iEspecialistaId }} {{ item.cPersNombre }}</span
@@ -21,9 +28,9 @@
             <span class="block p-0"
                 >Cod. Modular: {{ item.codigoModular }}</span
             >
-            <span class="block p-0">Nivel: {{ item.cNivelTipoNombre }}</span>
             <span class="block p-0"
-                >{{ item.direccion }}UGEL: {{ item.cUgelNombre }}</span
+                >Nivel: {{ item.cNivelTipoNombre || '-' }} / UGEL:
+                {{ item.cUgelNombre || '-' }}</span
             >
         </div>
     </div>

@@ -49,6 +49,7 @@
   --highlight-bg: #EEF2FF;
   --highlight-text-color: #4338CA;
   color-scheme: light;
+  --surface-menu: #f54848;
 }
 
 @font-face {

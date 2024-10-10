@@ -13,6 +13,9 @@ import {
     RolesDropdownComponent,
 } from './roles-dropdown/roles-dropdown.component'
 import { ApiObtenerEuService } from './roles-dropdown/service/api-obtener-eu.service'
+import { AnioEscolarComponent } from './roles-dropdown/anio-escolar/anio-escolar.component'
+import { PrimengModule } from '@/app/primeng.module'
+import { UserAccountComponent } from './roles-dropdown/user-account/user-account.component'
 
 interface Profile {
     iProfile: number
@@ -30,6 +33,9 @@ interface Profile {
         NgClass,
         MenuModule,
         RolesDropdownComponent,
+        AnioEscolarComponent,
+        UserAccountComponent,
+        PrimengModule,
     ],
 })
 export class AppTopBarComponent implements OnInit {

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common'
-import { Component, OnInit } from '@angular/core'
+import { Component, inject, Input, OnInit } from '@angular/core'
 import { FormsModule } from '@angular/forms'
 import { AccordionModule } from 'primeng/accordion'
 import { CalendarModule } from 'primeng/calendar'
@@ -9,7 +9,6 @@ import { InputTextModule } from 'primeng/inputtext'
 import { ActividadRowComponent } from '@/app/sistema/aula-virtual/sub-modulos/actividades/components/actividad-row/actividad-row.component'
 import {
     actividadesConfig,
-    actividadesConfigList,
     IActividad,
     tipoActividadesKeys,
 } from '@/app/sistema/aula-virtual/interfaces/actividad.interface'
@@ -35,6 +34,8 @@ import { VideoconferenciaContainerFormComponent } from '../../../../actividades/
 import { ForoFormContainerComponent } from '../../../../actividades/actividad-foro/foro-form-container/foro-form-container.component'
 import { ActividadFormComponent } from '../../../../actividades/components/actividad-form/actividad-form.component'
 import { EvaluacionFormContainerComponent } from '../../../../actividades/actividad-evaluacion/evaluacion-form-container/evaluacion-form-container.component'
+import { ConstantesService } from '@/app/servicios/constantes.service'
+import { GeneralService } from '@/app/servicios/general.service'
 
 @Component({
     selector: 'app-tab-contenido',
@@ -74,8 +75,15 @@ export class TabContenidoComponent implements OnInit {
     public accionesContenido: MenuItem[]
     public actividadSelected: IActividad | undefined
     public accionSeleccionada: TActividadActions | undefined
+    public contenidoSemanas = []
+    // public actividades = actividadesConfigList
 
-    handleActionsMap: Record<
+    private _constantesService = inject(ConstantesService)
+    private _generalService = inject(GeneralService)
+
+    @Input({ required: true }) private _iSilaboId: string
+
+    private handleActionsMap: Record<
         string,
         (action: TActividadActions, actividad: IActividad) => void
     > = {
@@ -85,8 +93,6 @@ export class TabContenidoComponent implements OnInit {
         'video-conferencia': this.handleVideoconferenciaAction.bind(this),
         material: this.handleMaterialAction.bind(this),
     }
-
-    public actividades = actividadesConfigList
 
     constructor(private _dialogService: DialogService) {}
 
@@ -98,6 +104,35 @@ export class TabContenidoComponent implements OnInit {
         this.rangeDates = [today, nextWeek]
 
         this.generarAccionesContenido()
+        this.getData()
+    }
+
+    private getData() {
+        this.obtenerContenidoSemanas()
+    }
+
+    private obtenerContenidoSemanas() {
+        const params = {
+            petition: 'post',
+            group: 'docente',
+            prefix: 'contenido-semanas',
+            ruta: 'list',
+            seleccion: 1,
+            data: {
+                opcion: 'CONSULTARxiSilaboId',
+                valorBusqueda: this._iSilaboId,
+                iCredId: this._constantesService.iCredId,
+            },
+            params: {
+                skipSuccessMessage: true,
+            },
+        }
+
+        this._generalService.getGralPrefix(params).subscribe({
+            next: (response) => {
+                this.contenidoSemanas = response.data
+            },
+        })
     }
 
     generarAccionesContenido() {

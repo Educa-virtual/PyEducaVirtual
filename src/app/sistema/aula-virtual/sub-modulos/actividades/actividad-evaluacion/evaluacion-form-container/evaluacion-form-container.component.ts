@@ -11,6 +11,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { MenuItem } from 'primeng/api'
 import { ApiEvaluacionesService } from '@/app/sistema/evaluaciones/services/api-evaluaciones.service'
 import { Subject, takeUntil } from 'rxjs'
+import dayjs from 'dayjs'
 
 @Component({
     selector: 'app-evaluacion-form-container-',
@@ -103,14 +104,6 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
     goStep(opcion: string) {
         switch (opcion) {
             case 'next':
-                if (
-                    this.activeStepper === 0 &&
-                    this.evaluacionInfoForm.invalid
-                ) {
-                    this.evaluacionInfoForm.markAllAsTouched()
-                    return
-                }
-
                 if (this.activeStepper !== 2) {
                     this.activeStepper++
                 }
@@ -121,6 +114,55 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
                 }
                 break
         }
+    }
+
+    public guardarCambios() {
+        if (this.activeStepper === 0) {
+            this.handleFormInfo()
+            return
+        }
+
+        // if (this.activeStepper === 1) {
+        // }
+    }
+
+    private addTimeToDate(date, time) {
+        const dateActual = dayjs(date)
+        const timeActual = dayjs(time, 'HH:mm')
+        const dateTime = dateActual
+            .set('hour', timeActual.hour())
+            .set('minute', timeActual.minute())
+        return dateTime.format('YYYY-MM-DD HH:mm')
+    }
+
+    private handleFormInfo() {
+        const data = this.evaluacionInfoForm.value
+
+        data.dtEvaluacionPublicacion = this.addTimeToDate(
+            data.dFechaEvaluacionPublicacion,
+            data.tHoraEvaluacionInico
+        )
+
+        // data.dtEvaluacionInicio = dayjs(data.dFechaEvaluacionInico).add(
+        //     data.tHoraEvaluacionInico
+        // )
+        // data.dtEvaluacionFin = dayjs(data.dFechaEvaluacionFin).add(
+        //     data.tHoraEvaluacionFin
+        // )
+        console.log(data)
+
+        if (this.evaluacionInfoForm.invalid) {
+            this.evaluacionInfoForm.markAllAsTouched()
+            return
+        }
+        this._evaluacionService
+            .guardarActualizarEvaluacion(data)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+                next: () => {
+                    this.goStep('next')
+                },
+            })
     }
 
     ngOnDestroy() {

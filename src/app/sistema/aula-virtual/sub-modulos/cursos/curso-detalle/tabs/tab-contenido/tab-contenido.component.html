@@ -21,7 +21,7 @@
 </div>
 
 <div class="flex flex-column gap-2">
-    @for (semana of contenidoSemanas; track semana.id) {
+    @for (semana of contenidoSemanas; track semana.iContenidoSemId) {
         <p-accordion
             [multiple]="true"
             expandIcon="pi pi-angle-right"

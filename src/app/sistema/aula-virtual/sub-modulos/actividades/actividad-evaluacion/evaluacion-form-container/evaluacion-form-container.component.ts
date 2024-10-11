@@ -32,6 +32,7 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
     @ViewChild('dialogRef') dialogRef!: Dialog
 
     public evaluacionInfoForm: FormGroup
+    public calificacionForm: FormGroup
     public activeStepper = 0
     public evaluacionFormPasos: MenuItem[] = [
         {
@@ -78,8 +79,6 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
     }
 
     onDialogShow() {
-        console.log(this.dialogRef, 'test')
-
         if (this.dialogRef) {
             this.dialogRef.maximize()
         }
@@ -89,7 +88,6 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
         this.evaluacionInfoForm = this._formBuilder.group({
             iEvaluacionId: [0],
             iTipoEvalId: [null, Validators.required],
-            dtEvaluacionPublicacion: [null, Validators.required],
             cEvaluacionTitulo: [null, Validators.required],
             dFechaEvaluacionPublicacion: [null, Validators.required],
             tHoraEvaluacionPublicacion: [null, Validators.required],
@@ -98,6 +96,10 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
             dFechaEvaluacionFin: [null, Validators.required],
             tHoraEvaluacionFin: [null, Validators.required],
             cEvaluacionDescripcion: ['', Validators.required],
+        })
+
+        this.calificacionForm = this._formBuilder.group({
+            usaInstrumentoEvaluacion: [0, Validators.required],
         })
     }
 
@@ -114,6 +116,10 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
                 }
                 break
         }
+    }
+
+    get tituloEvulacion() {
+        return this.evaluacionInfoForm.get('cEvaluacionTitulo')?.value
     }
 
     public guardarCambios() {
@@ -135,33 +141,47 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
         return dateTime.format('YYYY-MM-DD HH:mm')
     }
 
+    getInvalidControls(form: FormGroup): string[] {
+        const invalidControls: string[] = []
+        Object.keys(form.controls).forEach((controlName) => {
+            if (form.get(controlName)?.invalid) {
+                invalidControls.push(controlName)
+            }
+        })
+        return invalidControls
+    }
+
     private handleFormInfo() {
         const data = this.evaluacionInfoForm.value
 
-        data.dtEvaluacionPublicacion = this.addTimeToDate(
-            data.dFechaEvaluacionPublicacion,
-            data.tHoraEvaluacionInico
-        )
-
-        // data.dtEvaluacionInicio = dayjs(data.dFechaEvaluacionInico).add(
-        //     data.tHoraEvaluacionInico
-        // )
-        // data.dtEvaluacionFin = dayjs(data.dFechaEvaluacionFin).add(
-        //     data.tHoraEvaluacionFin
-        // )
-        console.log(data)
+        console.log(this.evaluacionInfoForm.valid, this.evaluacionInfoForm)
+        console.log(this.getInvalidControls(this.evaluacionInfoForm))
 
         if (this.evaluacionInfoForm.invalid) {
             this.evaluacionInfoForm.markAllAsTouched()
             return
         }
+
+        data.dtEvaluacionPublicacion = this.addTimeToDate(
+            data.dFechaEvaluacionPublicacion,
+            data.tHoraEvaluacionPublicacion
+        )
+        data.dtEvaluacionPublicacion = this.addTimeToDate(
+            data.dFechaEvaluacionInico,
+            data.dFechaEvaluacionFin
+        )
+        data.dtEvaluacionPublicacion = this.addTimeToDate(
+            data.dFechaEvaluacionFin,
+            data.tHoraEvaluacionFin
+        )
+
+        this.goStep('next')
+        return
         this._evaluacionService
             .guardarActualizarEvaluacion(data)
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
-                next: () => {
-                    this.goStep('next')
-                },
+                next: () => {},
             })
     }
 

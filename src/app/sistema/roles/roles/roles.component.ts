@@ -1,5 +1,5 @@
 import { Product } from '@/app/demo/api/product'
-import { Component, OnInit } from '@angular/core'
+import { Component, OnInit, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core'
 import { DialogModule } from 'primeng/dialog'
 import { NgFor, NgIf, CurrencyPipe } from '@angular/common'
 import { InputTextModule } from 'primeng/inputtext'
@@ -17,12 +17,13 @@ import { GalleriaModule } from 'primeng/galleria'
 import { ProductService } from 'src/app/demo/service/product.service'
 import { OrderListModule } from 'primeng/orderlist'
 import { DataViewModule } from 'primeng/dataview'
+//import { SelectItem } from 'primeng/api'
 
 @Component({
     selector: 'app-roles',
     standalone: true,
     templateUrl: './roles.component.html',
-    styleUrls: ['./roles.component.css'],
+    styleUrls: ['./roles.component.scss'],
     imports: [
         DialogModule,
         NgFor,
@@ -43,8 +44,13 @@ import { DataViewModule } from 'primeng/dataview'
         OrderListModule,
         ContainerPageComponent,
     ],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class RolesComponent implements OnInit {
+    /*sortOptions: SelectItem[];
+    sortOrder: number;
+    sortField: string;*/
+
     products: Product[] = []
     product: Product = {}
     submitted: boolean = false
@@ -88,10 +94,25 @@ export class RolesComponent implements OnInit {
     ]
     constructor(private productService: ProductService) {}
     ngOnInit() {
-        this.productService.getProductsSmall().then((products) => {
-            this.products = products
-        })
+        this.productService.getProducts().then((data) => (this.products = data))
+
+        /*this.sortOptions = [
+            {label: 'Price High to Low', value: '!price'},
+            {label: 'Price Low to High', value: 'price'}
+        ];*/
     }
+    /*onSortChange(event) {
+        /*let value = event.value;
+
+        if (value.indexOf('!') === 0) {
+            this.sortOrder = -1;
+            this.sortField = value.substring(1, value.length);
+        }
+        else {
+            this.sortOrder = 1;
+            this.sortField = value;
+        }
+    }*/
     openNew() {
         this.product = {}
         this.submitted = false

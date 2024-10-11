@@ -8,17 +8,27 @@
                 <p-editor id="indicaciones" formControlName="indicaciones" />
             </div>
             <br />
+            Adjuntar:
             <div class="card flex flex-column gap-4">
                 <div
                     class="flex flex-column justify-content-center align-content-center border-2 border-dashed surface-border border-round surface-card h-10rem"
                 >
-                    <p class="text-center">Arrastra o da Click para subir</p>
+                    <p class="fileUpload">Arrastra o da Click para subir</p>
                 </div>
                 <div class="flex justify-content-between gap-2 flex-wrap">
-                    <button pButton class="p-button-primary mx-auto">
+                    <button
+                        icon="pi pi-upload"
+                        pButton
+                        pi-link
+                        class="p-button-primary mx-auto"
+                    >
                         Subir Archivo
                     </button>
-                    <button pButton class="p-button-primary mx-auto">
+                    <button
+                        icon="pi pi-link"
+                        pButton
+                        class="p-button-primary mx-auto"
+                    >
                         Enlace
                     </button>
                 </div>
@@ -40,15 +50,16 @@
 
             <div class="field grid">
                 <label htmlFor="state" class="col-12 mb-2 md:col-12 md:mb-0"
-                    >Asignar a:</label
+                    >Asignar a Todos:</label
                 >
                 <div class="col-12 md:col-10">
-                    <p-dropdown
-                        [options]="dropdownItems"
-                        optionLabel="name"
-                        class="col-12"
-                        [(ngModel)]="selectedState"
-                    ></p-dropdown>
+                    <button
+                        icon="pi pi-users"
+                        pButton
+                        class="p-button-primary mx-auto"
+                    >
+                        Subir Archivo
+                    </button>
                 </div>
             </div>
             <div class="grid">
@@ -108,7 +119,11 @@
             <br />
             <div class="flex justify-content-between gap-2 flex-wrap">
                 <p>Instrumento de Evaluación</p>
-                <button pButton class="p-button-primary mx-auto">
+                <button
+                    icon="pi pi-upload"
+                    pButton
+                    class="p-button-primary mx-auto"
+                >
                     Subir Archivo
                 </button>
             </div>

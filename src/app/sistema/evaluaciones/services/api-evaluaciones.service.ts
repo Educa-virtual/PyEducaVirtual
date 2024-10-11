@@ -17,4 +17,13 @@ export class ApiEvaluacionesService {
             .get<any>(`${this.baseUrlApi}/evaluaciones/tipo-evaluaciones`)
             .pipe(map((resp) => resp.data))
     }
+
+    guardarActualizarEvaluacion(data) {
+        return this.http
+            .post<any>(
+                `${this.baseUrlApi}/evaluaciones/evaluacion/guardarActualizarEvaluacion`,
+                data
+            )
+            .pipe(map((resp) => resp.data))
+    }
 }

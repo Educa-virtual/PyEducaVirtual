@@ -2,6 +2,7 @@
     <p-steps
         [model]="evaluacionFormPasos"
         [(activeIndex)]="activeStepper"
+        [readonly]="false"
     ></p-steps>
 
     @switch (activeStepper) {
@@ -12,10 +13,15 @@
             ></app-evaluacion-form-info>
         }
         @case (1) {
-            <app-evaluacion-form-preguntas></app-evaluacion-form-preguntas>
+            <app-evaluacion-form-preguntas
+                [tituloEvaluacion]="tituloEvulacion"
+            ></app-evaluacion-form-preguntas>
         }
         @case (2) {
-            <app-evaluacion-form-calificacion></app-evaluacion-form-calificacion>
+            <app-evaluacion-form-calificacion
+                [calificacionForm]="calificacionForm"
+                [tituloEvaluacion]="tituloEvulacion"
+            ></app-evaluacion-form-calificacion>
         }
         @default {}
     }
@@ -28,7 +34,7 @@
             <button
                 pButton
                 size="small"
-                (click)="goStep('next')"
+                (click)="guardarCambios()"
                 class="ml-auto"
             >
                 Guardar y Continuar

@@ -11,6 +11,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { MenuItem } from 'primeng/api'
 import { ApiEvaluacionesService } from '@/app/sistema/evaluaciones/services/api-evaluaciones.service'
 import { Subject, takeUntil } from 'rxjs'
+import dayjs from 'dayjs'
 
 @Component({
     selector: 'app-evaluacion-form-container-',
@@ -31,6 +32,7 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
     @ViewChild('dialogRef') dialogRef!: Dialog
 
     public evaluacionInfoForm: FormGroup
+    public calificacionForm: FormGroup
     public activeStepper = 0
     public evaluacionFormPasos: MenuItem[] = [
         {
@@ -77,8 +79,6 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
     }
 
     onDialogShow() {
-        console.log(this.dialogRef, 'test')
-
         if (this.dialogRef) {
             this.dialogRef.maximize()
         }
@@ -88,7 +88,6 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
         this.evaluacionInfoForm = this._formBuilder.group({
             iEvaluacionId: [0],
             iTipoEvalId: [null, Validators.required],
-            dtEvaluacionPublicacion: [null, Validators.required],
             cEvaluacionTitulo: [null, Validators.required],
             dFechaEvaluacionPublicacion: [null, Validators.required],
             tHoraEvaluacionPublicacion: [null, Validators.required],
@@ -98,19 +97,15 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
             tHoraEvaluacionFin: [null, Validators.required],
             cEvaluacionDescripcion: ['', Validators.required],
         })
+
+        this.calificacionForm = this._formBuilder.group({
+            usaInstrumentoEvaluacion: [0, Validators.required],
+        })
     }
 
     goStep(opcion: string) {
         switch (opcion) {
             case 'next':
-                if (
-                    this.activeStepper === 0 &&
-                    this.evaluacionInfoForm.invalid
-                ) {
-                    this.evaluacionInfoForm.markAllAsTouched()
-                    return
-                }
-
                 if (this.activeStepper !== 2) {
                     this.activeStepper++
                 }
@@ -121,6 +116,73 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
                 }
                 break
         }
+    }
+
+    get tituloEvulacion() {
+        return this.evaluacionInfoForm.get('cEvaluacionTitulo')?.value
+    }
+
+    public guardarCambios() {
+        if (this.activeStepper === 0) {
+            this.handleFormInfo()
+            return
+        }
+
+        // if (this.activeStepper === 1) {
+        // }
+    }
+
+    private addTimeToDate(date, time) {
+        const dateActual = dayjs(date)
+        const timeActual = dayjs(time, 'HH:mm')
+        const dateTime = dateActual
+            .set('hour', timeActual.hour())
+            .set('minute', timeActual.minute())
+        return dateTime.format('YYYY-MM-DD HH:mm')
+    }
+
+    getInvalidControls(form: FormGroup): string[] {
+        const invalidControls: string[] = []
+        Object.keys(form.controls).forEach((controlName) => {
+            if (form.get(controlName)?.invalid) {
+                invalidControls.push(controlName)
+            }
+        })
+        return invalidControls
+    }
+
+    private handleFormInfo() {
+        const data = this.evaluacionInfoForm.value
+
+        console.log(this.evaluacionInfoForm.valid, this.evaluacionInfoForm)
+        console.log(this.getInvalidControls(this.evaluacionInfoForm))
+
+        if (this.evaluacionInfoForm.invalid) {
+            this.evaluacionInfoForm.markAllAsTouched()
+            return
+        }
+
+        data.dtEvaluacionPublicacion = this.addTimeToDate(
+            data.dFechaEvaluacionPublicacion,
+            data.tHoraEvaluacionPublicacion
+        )
+        data.dtEvaluacionPublicacion = this.addTimeToDate(
+            data.dFechaEvaluacionInico,
+            data.dFechaEvaluacionFin
+        )
+        data.dtEvaluacionPublicacion = this.addTimeToDate(
+            data.dFechaEvaluacionFin,
+            data.tHoraEvaluacionFin
+        )
+
+        this.goStep('next')
+        return
+        this._evaluacionService
+            .guardarActualizarEvaluacion(data)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+                next: () => {},
+            })
     }
 
     ngOnDestroy() {

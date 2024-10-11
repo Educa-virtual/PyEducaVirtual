@@ -88,14 +88,14 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
         this.evaluacionInfoForm = this._formBuilder.group({
             iEvaluacionId: [0],
             iTipoEvalId: [null, Validators.required],
-            cEvaluacionTitulo: [null, Validators.required],
-            dFechaEvaluacionPublicacion: [null, Validators.required],
-            tHoraEvaluacionPublicacion: [null, Validators.required],
-            dFechaEvaluacionInico: [null, Validators.required],
-            tHoraEvaluacionInico: [null, Validators.required],
-            dFechaEvaluacionFin: [null, Validators.required],
-            tHoraEvaluacionFin: [null, Validators.required],
             cEvaluacionDescripcion: ['', Validators.required],
+            cEvaluacionTitulo: [null, Validators.required],
+            dFechaEvaluacionPublicacion: [null],
+            tHoraEvaluacionPublicacion: [null],
+            dFechaEvaluacionInico: [null],
+            tHoraEvaluacionInico: [null],
+            dFechaEvaluacionFin: [null],
+            tHoraEvaluacionFin: [null],
         })
 
         this.calificacionForm = this._formBuilder.group({
@@ -134,11 +134,11 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
 
     private addTimeToDate(date, time) {
         const dateActual = dayjs(date)
-        const timeActual = dayjs(time, 'HH:mm')
+        const timeActual = dayjs(time, 'HH:mm:ss')
         const dateTime = dateActual
             .set('hour', timeActual.hour())
             .set('minute', timeActual.minute())
-        return dateTime.format('YYYY-MM-DD HH:mm')
+        return dateTime.format('YYYY-MM-DD HH:mm:ss')
     }
 
     getInvalidControls(form: FormGroup): string[] {
@@ -162,26 +162,33 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
             return
         }
 
-        data.dtEvaluacionPublicacion = this.addTimeToDate(
-            data.dFechaEvaluacionPublicacion,
-            data.tHoraEvaluacionPublicacion
-        )
-        data.dtEvaluacionPublicacion = this.addTimeToDate(
-            data.dFechaEvaluacionInico,
-            data.dFechaEvaluacionFin
-        )
-        data.dtEvaluacionPublicacion = this.addTimeToDate(
-            data.dFechaEvaluacionFin,
-            data.tHoraEvaluacionFin
-        )
+        if (data.dFechaEvaluacionPublicacion) {
+            data.dtEvaluacionPublicacion = this.addTimeToDate(
+                data.dFechaEvaluacionPublicacion,
+                data.tHoraEvaluacionPublicacion
+            )
+        }
+        if (data.dtEvaluacionInicio) {
+            data.dtEvaluacionInicio = this.addTimeToDate(
+                data.dFechaEvaluacionInico,
+                data.dFechaEvaluacionFin
+            )
+        }
 
-        this.goStep('next')
-        return
+        if (data.dtEvaluacionFin) {
+            data.dtEvaluacionFin = this.addTimeToDate(
+                data.dFechaEvaluacionFin,
+                data.tHoraEvaluacionFin
+            )
+        }
+
         this._evaluacionService
             .guardarActualizarEvaluacion(data)
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
-                next: () => {},
+                next: () => {
+                    this.goStep('next')
+                },
             })
     }
 

@@ -40,4 +40,20 @@ export class GeneralService {
         }
         return this.url
     }
+
+    getGralReporte(data) {
+        switch (data.petition) {
+            case 'get':
+                window.open(
+                    `${baseUrl}/` +
+                        `${data.group}/` +
+                        `${data.prefix}/` +
+                        `${data.ruta}/` +
+                        `${data.iSilaboId}`
+                )
+                break
+            default:
+                break
+        }
+    }
 }

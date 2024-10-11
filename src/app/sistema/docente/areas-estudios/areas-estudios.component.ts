@@ -149,4 +149,16 @@ export class AreasEstudiosComponent implements OnInit {
             },
         })
     }
+
+    getSilaboPdf(iSilaboId) {
+        if (!iSilaboId) return
+        const params = {
+            petition: 'get',
+            group: 'docente',
+            prefix: 'silabus_reporte',
+            ruta: 'report',
+            iSilaboId: iSilaboId,
+        }
+        this.GeneralService.getGralReporte(params)
+    }
 }

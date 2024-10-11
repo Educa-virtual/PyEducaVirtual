@@ -101,6 +101,10 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
         this.calificacionForm = this._formBuilder.group({
             usaInstrumentoEvaluacion: [0, Validators.required],
         })
+
+        this.calificacionForm = this._formBuilder.group({
+            usaInstrumentoEvaluacion: [0, Validators.required],
+        })
     }
 
     goStep(opcion: string) {

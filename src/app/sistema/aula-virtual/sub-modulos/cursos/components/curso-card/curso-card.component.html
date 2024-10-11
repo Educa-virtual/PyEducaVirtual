@@ -20,7 +20,10 @@
     <footer class="p-3 pt-0 flex align-items-center justify-content-between">
         <span>{{ curso.iEstudiantes }} studiantes</span>
         <p-button
-            [routerLink]="['./', curso.iCursoId]"
+            [routerLink]="['./', curso.iSilaboId]"
+            [queryParams]="{
+                cCursoNombre: curso.cCursoNombre,
+            }"
             label="Ver más"
             styleClass="p-button-link"
         ></p-button>

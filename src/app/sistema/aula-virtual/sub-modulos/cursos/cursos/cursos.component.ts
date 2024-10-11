@@ -14,6 +14,7 @@ import { DropdownModule } from 'primeng/dropdown'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { GeneralService } from '@/app/servicios/general.service'
 import { Subject, takeUntil } from 'rxjs'
+import { ButtonModule } from 'primeng/button'
 
 @Component({
     selector: 'app-cursos',
@@ -30,6 +31,7 @@ import { Subject, takeUntil } from 'rxjs'
         InputTextModule,
         CursoCardComponent,
         DropdownModule,
+        ButtonModule,
     ],
     templateUrl: './cursos.component.html',
     styleUrl: './cursos.component.scss',

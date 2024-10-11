@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common'
-import { Component, inject, OnInit } from '@angular/core'
+import { Component, inject, Input, OnInit } from '@angular/core'
 import { MenuItem } from 'primeng/api'
 import { BreadcrumbModule } from 'primeng/breadcrumb'
 import { TabMenuModule } from 'primeng/tabmenu'
@@ -40,6 +40,7 @@ import { TabResultadosComponent } from './tabs/tab-resultados/tab-resultados.com
     styleUrl: './curso-detalle.component.scss',
 })
 export class CursoDetalleComponent implements OnInit {
+    @Input() iSilaboId: string
     private _activatedRoute = inject(ActivatedRoute)
     private _router = inject(Router)
 
@@ -55,15 +56,10 @@ export class CursoDetalleComponent implements OnInit {
     public estudiantes: IEstudiante[] = []
 
     ngOnInit() {
+        console.log(this.iSilaboId)
+
         this.listenParams()
-        this.curso = {
-            id: 1,
-            nombre: 'Matemática I',
-            descripcion: 'Matemática I Un curso espectacular',
-            totalEstudiantes: 20,
-            grado: '1°',
-            seccion: 'A',
-        }
+
         this.items = [
             { icon: 'pi pi-home', route: '/aula-virtual' },
             { label: 'Cursos', route: '/aula-virtual/cursos' },

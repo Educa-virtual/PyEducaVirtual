@@ -17,6 +17,8 @@ import { TabInicioComponent } from './tabs/tab-inicio/tab-inicio.component'
 import { TabContenidoComponent } from './tabs/tab-contenido/tab-contenido.component'
 import { TabEstudiantesComponent } from './tabs/tab-estudiantes/tab-estudiantes.component'
 import { TabResultadosComponent } from './tabs/tab-resultados/tab-resultados.component'
+import { ConstantesService } from '@/app/servicios/constantes.service'
+import { GeneralService } from '@/app/servicios/general.service'
 
 @Component({
     selector: 'app-curso-detalle',
@@ -43,6 +45,8 @@ export class CursoDetalleComponent implements OnInit {
     @Input() iSilaboId: string
     private _activatedRoute = inject(ActivatedRoute)
     private _router = inject(Router)
+    private _constantesService = inject(ConstantesService)
+    private _generalService = inject(GeneralService)
 
     curso: ICurso | undefined
     tab: TabsKeys
@@ -57,6 +61,7 @@ export class CursoDetalleComponent implements OnInit {
 
     ngOnInit() {
         console.log(this.iSilaboId)
+        this.getData()
 
         this.listenParams()
 
@@ -84,9 +89,45 @@ export class CursoDetalleComponent implements OnInit {
         ]
     }
 
+    getData() {
+        this.obtenerContenidoSemanas()
+    }
+
+    private obtenerContenidoSemanas() {
+        const params = {
+            petition: 'post',
+            group: 'docente',
+            prefix: 'silabo-actividad-aprendizajes',
+            ruta: 'list',
+            seleccion: 1,
+            data: {
+                opcion: 'CONSULTARxiSilaboId',
+                iCredId: this._constantesService.iCredId,
+                iSilaboId: this.iSilaboId,
+            },
+            params: {
+                skipSuccessMessage: true,
+            },
+        }
+
+        this._generalService.getGralPrefix(params).subscribe({
+            next: (response) => {
+                console.log(response)
+            },
+        })
+    }
+
     // obtiene el parametro y actualiza el tab
     listenParams() {
         const tab = this._activatedRoute.snapshot.queryParams['tab']
+        const cCursoNombre =
+            this._activatedRoute.snapshot.queryParams['cCursoNombre']
+
+        this.curso = {
+            cCursoNombre,
+            iCursoId: '1',
+            iSilaboId: this.iSilaboId,
+        }
         if (isValidTabKey(tab)) {
             this.updateTab(tab)
         }

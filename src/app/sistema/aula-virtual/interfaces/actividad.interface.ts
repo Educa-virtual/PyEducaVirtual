@@ -66,8 +66,8 @@ export const actividadesConfig: Record<tipoActividadesKeys, IActividadConfig> =
 export const actividadesConfigList: IActividad[] = [
     {
         id: '1',
-        nombreActividad: 'Resolución de ejercicios',
-        tipoActividadNombre: 'Tarea',
+        nombreActividad: 'Sesiones de Aprendizaje',
+        tipoActividadNombre: 'Tareas',
         tipoActividad: 'tarea',
     },
     {

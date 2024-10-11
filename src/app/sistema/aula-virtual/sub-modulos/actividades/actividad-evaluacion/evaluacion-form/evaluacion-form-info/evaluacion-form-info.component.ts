@@ -1,7 +1,6 @@
 import { CommonInputComponent } from '@/app/shared/components/common-input/common-input.component'
 import { CommonModule } from '@angular/common'
 import { Component, Input, OnInit } from '@angular/core'
-import { CommonDropdownComponent } from '../../../../../../../shared/components/common-dropdown/common-dropdown.component'
 import { FormGroup, ReactiveFormsModule } from '@angular/forms'
 import { DropdownModule } from 'primeng/dropdown'
 import { CalendarModule } from 'primeng/calendar'
@@ -14,7 +13,6 @@ import dayjs from 'dayjs'
     imports: [
         CommonModule,
         CommonInputComponent,
-        CommonDropdownComponent,
         ReactiveFormsModule,
         DropdownModule,
         CalendarModule,

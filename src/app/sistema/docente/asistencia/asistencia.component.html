@@ -41,40 +41,8 @@
             />
         </div>
     </p-toolbar>
-    <!-- <div class="col-12 flex card justify-content-center">
-        <p-selectButton [options]="dates" [(ngModel)]="valSelect1" optionLabel="dtFecha">
-            <ng-template let-item pTemplate>
-                {{item.dtFecha}}
-            </ng-template>
-        </p-selectButton>
-    </div> -->
-    <!-- autoplayInterval="3000" -->
-    <div class="col-12 md:col-2 pt-4 mx-2">
-        <p-carousel
-            [value]="dates"
-            [numVisible]="7"
-            [numScroll]="7"
-            [circular]="true"
-            orientation="vertical"
-            [responsiveOptions]="carouselResponsiveOptions"
-        >
-            <ng-template let-item let-rowIndex="rowIndex" pTemplate="item">
-                <div class="text-center">
-                    <div>
-                        {{ rowIndex }}
-                        <p-button
-                            [label]="item.dtFecha"
-                            (onClick)="valSelect1 = item.dtFecha"
-                            [severity]="
-                                valSelect1 === item.dtFecha ? 'success' : 'info'
-                            "
-                        />
-                    </div>
-                </div>
-            </ng-template>
-        </p-carousel>
-    </div>
-    <div class="col-12 md:col-3 mx-2">
+
+    <div class="col-12 md:col-5 mx-2">
         <p-table class="mt-1" [value]="data">
             <ng-template pTemplate="caption">
                 <span class="p-input-icon-left">
@@ -89,8 +57,8 @@
             <ng-template pTemplate="header">
                 <tr style="height: 13px">
                     <th style="width: 15rem">Nombres y Apellidos</th>
-                    <!-- <th style="width: 5px">[X]</th>
-                    <th style="width: 5px">[I]</th>
+                    <th style="width: 5px">MARCAR ASISTENCIA</th>
+                    <!-- <th style="width: 5px">[I]</th>
                     <th style="width: 5px">[J]</th>
                     <th style="width: 5px">[T]</th>
                     <th style="width: 5px">[P]</th> -->
@@ -106,7 +74,7 @@
                     "
                     (click)="valSelect2 = rowIndex"
                 >
-                    <td>{{ item.cEstudiante }}</td>
+                    <td>{{ item.nombre_completo }}</td>
                     <!-- <td>{{ item.iAsistencia }}</td>
                     <td>{{ item.iInasistencia }}</td>
                     <td>{{ item.iInasistenciaJustif }}</td>

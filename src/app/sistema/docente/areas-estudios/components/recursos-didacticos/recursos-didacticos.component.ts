@@ -1,7 +1,8 @@
-import { Component, Input, OnChanges } from '@angular/core'
+import { Component, Input, OnChanges, OnDestroy } from '@angular/core'
 import { PrimengModule } from '@/app/primeng.module'
 import { GeneralService } from '@/app/servicios/general.service'
 import { ConstantesService } from '@/app/servicios/constantes.service'
+import { Subject, takeUntil } from 'rxjs'
 interface Data {
     accessToken: string
     refreshToken: string
@@ -18,8 +19,10 @@ interface Data {
     templateUrl: './recursos-didacticos.component.html',
     styleUrl: './recursos-didacticos.component.scss',
 })
-export class RecursosDidacticosComponent implements OnChanges {
+export class RecursosDidacticosComponent implements OnChanges, OnDestroy {
     @Input() iSilaboId: string
+    private unsubscribe$ = new Subject<boolean>()
+
     constructor(
         private GeneralService: GeneralService,
         private ConstantesService: ConstantesService
@@ -43,29 +46,32 @@ export class RecursosDidacticosComponent implements OnChanges {
                 iCredId: this.ConstantesService.iCredId,
                 iSilaboId: this.iSilaboId,
             },
+            params: { skipSuccessMessage: true },
         }
         this.getInformation(params, false)
     }
 
     getInformation(params, api) {
-        this.GeneralService.getGralPrefix(params).subscribe({
-            next: (response: Data) => {
-                if (!api) {
-                    this.data = response.data
-                    this.data.forEach((item) => {
-                        item.iEstado === '1'
-                            ? (item.iEstado = true)
-                            : (item.iEstado = false)
-                    })
-                } else {
-                    this.getRecursoSilabos()
-                }
-            },
-            complete: () => {},
-            error: (error) => {
-                console.log(error)
-            },
-        })
+        this.GeneralService.getGralPrefix(params)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+                next: (response: Data) => {
+                    if (!api) {
+                        this.data = response.data
+                        this.data.forEach((item) => {
+                            item.iEstado === '1'
+                                ? (item.iEstado = true)
+                                : (item.iEstado = false)
+                        })
+                    } else {
+                        this.getRecursoSilabos()
+                    }
+                },
+                complete: () => {},
+                error: (error) => {
+                    console.log(error)
+                },
+            })
     }
     updateRecursoSilabos(item) {
         item.valorBusqueda = item.iEstado
@@ -79,8 +85,12 @@ export class RecursosDidacticosComponent implements OnChanges {
             prefix: 'recurso-silabos',
             ruta: 'store',
             data: item,
+            params: { skipSuccessMessage: true },
         }
         //console.log(params)
         this.getInformation(params, true)
+    }
+    ngOnDestroy() {
+        this.unsubscribe$.next(true)
     }
 }

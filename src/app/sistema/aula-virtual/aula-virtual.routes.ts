@@ -3,11 +3,11 @@ import { Routes } from '@angular/router'
 const routes: Routes = [
     {
         path: '',
-        redirectTo: 'cursos',
+        redirectTo: 'areas-curriculares',
         pathMatch: 'full',
     },
     {
-        path: 'cursos',
+        path: 'areas-curriculares',
         loadChildren: () => import('./sub-modulos/cursos/cursos.routes'),
     },
 

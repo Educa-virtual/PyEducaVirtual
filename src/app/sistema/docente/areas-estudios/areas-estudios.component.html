@@ -1,8 +1,8 @@
-<div class="grid card">
-    <p-toolbar class="col-12">
+<div class="grid">
+    <!-- <p-toolbar class="col-12">
         <div class="p-toolbar-group-start">
             <h4 class="text-primary font-bold">
-                LISTA DE MIS ÁREAS CURRICULARES
+                Mis Áreas Curriculares
             </h4>
         </div>
         <div class="p-toolbar-group-end">
@@ -25,15 +25,15 @@
                 (onClick)="getCursos()"
             />
         </div>
-    </p-toolbar>
+    </p-toolbar> -->
     <div class="col-12">
         <p-messages [(value)]="messages" [enableService]="false" />
     </div>
     <p-table
-        #dt
+        #dv
         class="col-12 mx-2 hoverTable"
         [value]="data"
-        paginator="true"
+        paginator="false"
         [rows]="10"
         [globalFilterFields]="['cCurso']"
     >
@@ -46,8 +46,9 @@
                 </th>
                 <th style="width: 2rem; text-align: center">Grado</th>
                 <th style="width: 2rem; text-align: center">Sección</th>
-                <th style="width: 2rem; text-align: center">Avances %</th>
+                <th style="width: 8rem; text-align: center">Avances %</th>
                 <th style="width: 2rem; text-align: center">Acción</th>
+                <th style="width: 2rem; text-align: center">Aula Virtual</th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
@@ -120,6 +121,18 @@
                             <i class="pi pi-file-pdf"></i>
                         </button>
                     </div>
+                </td>
+                <td style="text-align: center">
+                    <p-button
+                        severity="success"
+                        [routerLink]="['./', item.iSilaboId]"
+                        [queryParams]="{
+                            cCursoNombre: item.cCursoNombre,
+                        }"
+                        label="Acceder"
+                        icon="pi pi-arrow-right"
+                        iconPos="right"
+                    />
                 </td>
             </tr>
         </ng-template>

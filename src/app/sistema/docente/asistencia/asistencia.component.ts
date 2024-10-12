@@ -2,8 +2,9 @@ import { PrimengModule } from '@/app/primeng.module'
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
 import { GeneralService } from '@/app/servicios/general.service'
-import { Component } from '@angular/core'
+import { Component, OnInit, OnDestroy } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
+import { Subject, takeUntil } from 'rxjs'
 interface Data {
     accessToken: string
     refreshToken: string
@@ -20,7 +21,9 @@ interface Data {
     templateUrl: './asistencia.component.html',
     styleUrl: './asistencia.component.scss',
 })
-export class AsistenciaComponent {
+export class AsistenciaComponent implements OnInit, OnDestroy {
+    private unsubscribe$ = new Subject<boolean>()
+
     iCursoId: number
     cCursoNombre: string
     constructor(
@@ -131,23 +134,29 @@ export class AsistenciaComponent {
             data: {
                 opcion: 'CONSULTAR',
             },
+            params: { skipSuccessMessage: true },
         }
         this.getInformation(params, false)
     }
     getInformation(params, api) {
-        this.GeneralService.getGralPrefix(params).subscribe({
-            next: (response: Data) => {
-                if (api) {
-                    this.showModal = false
-                    this.getObtenerAsitencias()
-                } else {
-                    this.data = response.data
-                }
-            },
-            complete: () => {},
-            error: (error) => {
-                console.log(error)
-            },
-        })
+        this.GeneralService.getGralPrefix(params)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+                next: (response: Data) => {
+                    if (api) {
+                        this.showModal = false
+                        this.getObtenerAsitencias()
+                    } else {
+                        this.data = response.data
+                    }
+                },
+                complete: () => {},
+                error: (error) => {
+                    console.log(error)
+                },
+            })
+    }
+    ngOnDestroy() {
+        this.unsubscribe$.next(true)
     }
 }

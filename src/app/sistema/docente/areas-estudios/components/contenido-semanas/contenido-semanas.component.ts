@@ -1,10 +1,11 @@
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { GeneralService } from '@/app/servicios/general.service'
-import { Component, Input, OnChanges } from '@angular/core'
+import { Component, Input, OnChanges, OnDestroy } from '@angular/core'
 import { ConfirmationService } from 'primeng/api'
 import { FormContenidoSemanasComponent } from '../form-contenido-semanas/form-contenido-semanas.component'
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
+import { Subject, takeUntil } from 'rxjs'
 
 @Component({
     selector: 'app-contenido-semanas',
@@ -17,9 +18,9 @@ import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.
     templateUrl: './contenido-semanas.component.html',
     styleUrl: './contenido-semanas.component.scss',
 })
-export class ContenidoSemanasComponent implements OnChanges {
+export class ContenidoSemanasComponent implements OnChanges, OnDestroy {
     @Input() iSilaboId: string
-
+    private unsubscribe$ = new Subject<boolean>()
     constructor(
         private ConstantesService: ConstantesService,
         private GeneralService: GeneralService,
@@ -119,6 +120,7 @@ export class ContenidoSemanasComponent implements OnChanges {
                 valorBusqueda: this.iSilaboId,
                 iCredId: this.ConstantesService.iCredId,
             },
+            params: { skipSuccessMessage: true },
         }
         this.getInformation(params, 'get_data')
     }
@@ -135,20 +137,23 @@ export class ContenidoSemanasComponent implements OnChanges {
                 valorBusqueda: this.iSilaboId,
                 iCredId: this.ConstantesService.iCredId,
             },
+            params: { skipSuccessMessage: true },
         }
         this.getInformation(params, 'get_indicador_actividades')
     }
 
     getInformation(params, accion) {
-        this.GeneralService.getGralPrefix(params).subscribe({
-            next: (response) => {
-                this.accionBtnItem({ accion, item: response?.data })
-            },
-            complete: () => {},
-            error: (error) => {
-                console.log(error)
-            },
-        })
+        this.GeneralService.getGralPrefix(params)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+                next: (response) => {
+                    this.accionBtnItem({ accion, item: response?.data })
+                },
+                complete: () => {},
+                error: (error) => {
+                    console.log(error)
+                },
+            })
     }
     deleteContenidoSemanas(item) {
         this.confirmationService.confirm({
@@ -174,6 +179,7 @@ export class ContenidoSemanasComponent implements OnChanges {
                     prefix: 'contenido-semanas',
                     ruta: 'store',
                     data: item,
+                    params: { skipSuccessMessage: true },
                 }
                 this.getInformation(params, 'refrescar')
                 //this.messageService.add({ severity: 'info', summary: 'Confirmado', detail: 'Eliminando Metodología' });
@@ -211,6 +217,7 @@ export class ContenidoSemanasComponent implements OnChanges {
                     prefix: 'contenido-semanas',
                     ruta: 'store',
                     data: item,
+                    params: { skipSuccessMessage: true },
                 }
                 this.getInformation(params, 'refrescar')
 
@@ -223,6 +230,7 @@ export class ContenidoSemanasComponent implements OnChanges {
                     prefix: 'contenido-semanas',
                     ruta: 'store',
                     data: item,
+                    params: { skipSuccessMessage: true },
                 }
                 this.getInformation(params, 'refrescar')
 
@@ -240,5 +248,8 @@ export class ContenidoSemanasComponent implements OnChanges {
             default:
                 break
         }
+    }
+    ngOnDestroy() {
+        this.unsubscribe$.next(true)
     }
 }

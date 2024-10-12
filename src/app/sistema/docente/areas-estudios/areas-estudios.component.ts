@@ -1,6 +1,6 @@
 import { PrimengModule } from '@/app/primeng.module'
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
-import { Component, OnInit } from '@angular/core'
+import { Component, OnInit, OnDestroy, inject, Input } from '@angular/core'
 import { TablePrimengComponent } from '../../../shared/table-primeng/table-primeng.component'
 import { RecursosDidacticosComponent } from './components/recursos-didacticos/recursos-didacticos.component'
 import { Router } from '@angular/router'
@@ -8,6 +8,7 @@ import { Table } from 'primeng/table'
 import { GeneralService } from '@/app/servicios/general.service'
 import { MessageService } from 'primeng/api'
 import { ConstantesService } from '@/app/servicios/constantes.service'
+import { Subject, takeUntil } from 'rxjs'
 interface Data {
     accessToken: string
     refreshToken: string
@@ -30,17 +31,20 @@ interface Data {
     styleUrl: './areas-estudios.component.scss',
     providers: [MessageService],
 })
-export class AreasEstudiosComponent implements OnInit {
+export class AreasEstudiosComponent implements OnInit, OnDestroy {
+    @Input() data = []
+    private unsubscribe$ = new Subject<boolean>()
+    private _constantesService = inject(ConstantesService)
+    private _generalService = inject(GeneralService)
+
     constructor(
         private router: Router,
-        private GeneralService: GeneralService,
-        private MessageService: MessageService,
-        private ConstantesService: ConstantesService
+        private MessageService: MessageService
     ) {}
 
     selectedData = []
     items = []
-    data = []
+    // data = []
     messages = [
         {
             severity: 'info',
@@ -49,7 +53,7 @@ export class AreasEstudiosComponent implements OnInit {
     ]
 
     ngOnInit() {
-        this.getCursos()
+        //this.getCursos()
         this.items = [
             {
                 label: 'Fichas de Aprendizaje',
@@ -144,22 +148,26 @@ export class AreasEstudiosComponent implements OnInit {
             ruta: 'list', //'getDocentesCursos',
             data: {
                 opcion: 'CONSULTARxiPersId',
-                iCredId: this.ConstantesService.iCredId,
+                iCredId: this._constantesService.iCredId,
                 cYearNombre: null,
                 iSemAcadId: null,
                 iIieeId: null,
             },
+            params: { skipSuccessMessage: true },
         }
-        this.GeneralService.getGralPrefix(params).subscribe({
-            next: (response: Data) => {
-                this.data = []
-                this.data = response.data
-            },
-            complete: () => {},
-            error: (error) => {
-                console.log(error)
-            },
-        })
+        this._generalService
+            .getGralPrefix(params)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+                next: (response: Data) => {
+                    this.data = []
+                    this.data = response.data
+                },
+                complete: () => {},
+                error: (error) => {
+                    console.log(error)
+                },
+            })
     }
 
     getSilaboPdf(iSilaboId) {
@@ -170,7 +178,11 @@ export class AreasEstudiosComponent implements OnInit {
             prefix: 'silabus_reporte',
             ruta: 'report',
             iSilaboId: iSilaboId,
+            params: { skipSuccessMessage: true },
         }
-        this.GeneralService.getGralReporte(params)
+        this._generalService.getGralReporte(params)
+    }
+    ngOnDestroy() {
+        this.unsubscribe$.next(true)
     }
 }

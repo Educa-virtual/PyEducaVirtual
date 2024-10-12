@@ -20,9 +20,9 @@ const docente = [
                 routerLink: ['/docente/portafolio'],
             },
             {
-                label: 'Mis áreas curriculares',
+                label: 'Mis Áreas Curriculares',
                 icon: 'pi pi-fw pi-book',
-                routerLink: ['/docente/areas-curriculares'],
+                routerLink: ['/aula-virtual/areas-curriculares'],
             },
             {
                 label: 'Mi Perfil',
@@ -52,12 +52,11 @@ const estudiante = [inicio]
 
 const aula_virtual = [
     {
-        label: 'Mis Áreas Curriculares',
         items: [
             {
                 label: 'Mis Áreas Curriculares',
                 icon: 'pi pi-fw pi-book',
-                routerLink: ['/aula-virtual/cursos'],
+                routerLink: ['/aula-virtual/areas-curriculares'],
             },
             {
                 label: 'Calendario',

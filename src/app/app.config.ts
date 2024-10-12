@@ -4,7 +4,11 @@ import {
     PathLocationStrategy,
 } from '@angular/common'
 import { HTTP_INTERCEPTORS } from '@angular/common/http'
-import { ApplicationConfig, importProvidersFrom } from '@angular/core'
+import {
+    APP_INITIALIZER,
+    ApplicationConfig,
+    importProvidersFrom,
+} from '@angular/core'
 import { MessageService } from 'primeng/api'
 import { ToastModule } from 'primeng/toast'
 import { CountryService } from './demo/service/country.service'
@@ -37,6 +41,16 @@ import {
 
 import { routes } from './app.routes'
 import { MessageInterceptor } from './shared/interceptors/message-interceptor.interceptor'
+
+import dayjs from 'dayjs'
+import 'dayjs/locale/es'
+
+function initializeDayjs() {
+    return () => {
+        dayjs.locale('es')
+        return Promise.resolve()
+    }
+}
 
 const scrollConfig: InMemoryScrollingOptions = {
     scrollPositionRestoration: 'enabled',
@@ -90,6 +104,11 @@ export const appConfig: ApplicationConfig = {
         {
             provide: HTTP_INTERCEPTORS,
             useClass: MessageInterceptor,
+            multi: true,
+        },
+        {
+            provide: APP_INITIALIZER,
+            useFactory: initializeDayjs,
             multi: true,
         },
     ],

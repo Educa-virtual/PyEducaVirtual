@@ -52,19 +52,20 @@ export class AreasEstudiosComponent implements OnInit {
         this.getCursos()
         this.items = [
             {
-                label: 'Gestionar Programación curricular',
-                icon: 'pi pi-angle-right',
-                command: () => {
-                    this.goSection('silabo')
-                },
-            },
-            {
                 label: 'Fichas de Aprendizaje',
                 icon: 'pi pi-angle-right',
                 command: () => {
                     this.goSection('ficha-aprendizaje')
                 },
             },
+            {
+                label: 'Programación curricular',
+                icon: 'pi pi-angle-right',
+                command: () => {
+                    this.goSection('silabo')
+                },
+            },
+
             {
                 label: 'Sessiones de Aprendizaje',
                 icon: 'pi pi-angle-right',
@@ -73,18 +74,29 @@ export class AreasEstudiosComponent implements OnInit {
                 },
             },
             {
-                label: 'Gestionar Asistencia',
+                label: 'Registro de evaluación',
                 icon: 'pi pi-angle-right',
-                command: () => {
-                    this.goSection('asistencia')
-                },
+                command: () => {},
             },
             {
-                label: 'Gestionar Nivel de Logro',
+                label: 'Material Educativo',
                 icon: 'pi pi-angle-right',
-                command: () => {
-                    this.goSection('notas')
-                },
+                command: () => {},
+            },
+            {
+                label: 'Cuaderno de campo',
+                icon: 'pi pi-angle-right',
+                command: () => {},
+            },
+            {
+                label: 'Instrumentos de Evaluación',
+                icon: 'pi pi-angle-right',
+                command: () => {},
+            },
+            {
+                label: 'Plan de trabajo',
+                icon: 'pi pi-angle-right',
+                command: () => {},
             },
         ]
     }
@@ -148,5 +160,17 @@ export class AreasEstudiosComponent implements OnInit {
                 console.log(error)
             },
         })
+    }
+
+    getSilaboPdf(iSilaboId) {
+        if (!iSilaboId) return
+        const params = {
+            petition: 'get',
+            group: 'docente',
+            prefix: 'silabus_reporte',
+            ruta: 'report',
+            iSilaboId: iSilaboId,
+        }
+        this.GeneralService.getGralReporte(params)
     }
 }

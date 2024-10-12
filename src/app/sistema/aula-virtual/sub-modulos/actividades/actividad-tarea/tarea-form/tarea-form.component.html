@@ -1,13 +1,23 @@
 <form [formGroup]="tareaForm" class="flex flex-column gap-3">
     <div class="grid">
-        <div class="col-8">
-            <app-common-input [controlKey]="'titulo'" label="Título" />
+        <div class="col-8 flex flex-column gap-2">
+            <app-common-input [controlKey]="'cTareaTitulo'" label="Título" />
+
+            <div class="flex flex-column gap-2">
+                <label for="indicaciones">Descripción</label>
+                <p-editor
+                    id="cTareaDescripcion"
+                    formControlName="cTareaDescripcion"
+                />
+            </div>
 
             <div class="flex flex-column gap-2">
                 <label for="indicaciones">Indicaciones</label>
-                <p-editor id="indicaciones" formControlName="indicaciones" />
+                <p-editor
+                    id="indicaciones"
+                    formControlName="cTareaIndicaciones"
+                />
             </div>
-            <br />
             <div class="card flex flex-column gap-4">
                 <div
                     class="flex flex-column justify-content-center align-content-center border-2 border-dashed surface-border border-round surface-card h-10rem"
@@ -26,7 +36,7 @@
         </div>
 
         <div class="col-4">
-            <div class="field grid">
+            <!-- <div class="field grid">
                 <label htmlFor="state" class="col-12 mb-2 md:col-12 md:mb-0"
                     >Para</label
                 >
@@ -34,11 +44,10 @@
                     [options]="dropdownItems"
                     class="col-12"
                     optionLabel="name"
-                    [(ngModel)]="selectedState"
                 ></p-dropdown>
-            </div>
+            </div> -->
 
-            <div class="field grid">
+            <!-- <div class="field grid">
                 <label htmlFor="state" class="col-12 mb-2 md:col-12 md:mb-0"
                     >Asignar a:</label
                 >
@@ -47,29 +56,22 @@
                         [options]="dropdownItems"
                         optionLabel="name"
                         class="col-12"
-                        [(ngModel)]="selectedState"
                     ></p-dropdown>
                 </div>
-            </div>
-            <div class="grid">
+            </div> -->
+            <!-- <div class="grid">
                 <div class="field col-6">
                     <label htmlFor="state">Categoria</label>
                     <p-dropdown
                         [options]="dropdownItems"
                         optionLabel="name"
-                        [(ngModel)]="selectedState"
                     ></p-dropdown>
                 </div>
 
                 <div class="field col-6">
-                    <label htmlFor="state">Punto:</label>
-                    <p-dropdown
-                        [options]="dropdownItems"
-                        optionLabel="name"
-                        [(ngModel)]="selectedState"
-                    ></p-dropdown>
+                    <app-common-input [controlKey]="'titulo'" label="Punto" />
                 </div>
-            </div>
+            </div> -->
 
             <div class="formgrid grid">
                 <div class="field flex flex-column col-12 md:col-6">
@@ -82,6 +84,7 @@
                         styleClass="w-full"
                         [showIcon]="true"
                         inputId="dFechaEvaluacionPublicacion"
+                        [appendTo]="'body'"
                     />
                 </div>
                 <div class="field flex flex-column col-12 md:col-6">
@@ -95,6 +98,7 @@
                         iconDisplay="input"
                         formControlName="tHoraEvaluacionPublicacion"
                         inputId="tHoraEvaluacionPublicacion"
+                        [appendTo]="'body'"
                     >
                         <ng-template
                             pTemplate="inputicon"

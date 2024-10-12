@@ -5,6 +5,8 @@ import { TareaFormComponent } from '../tarea-form/tarea-form.component'
 import { IActividad } from '@/app/sistema/aula-virtual/interfaces/actividad.interface'
 import { ButtonModule } from 'primeng/button'
 import { DynamicDialogRef } from 'primeng/dynamicdialog'
+import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
+import { ConstantesService } from '@/app/servicios/constantes.service'
 
 @Component({
     selector: 'app-tarea-form-container',
@@ -18,8 +20,18 @@ export class TareaFormContainerComponent {
     actividad: IActividad | undefined
 
     private ref = inject(DynamicDialogRef)
+    private _aulaService = inject(ApiAulaService)
+    private _constantsService = inject(ConstantesService)
 
-    submitFormulario() {}
+    submitFormulario(data) {
+        console.log('form', data)
+        data.iDocenteId = 1
+        this._aulaService.guardarActividad(data).subscribe({
+            next: (resp) => {
+                console.log(resp)
+            },
+        })
+    }
 
     cancelar() {
         this.ref.close(null)

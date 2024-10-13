@@ -7,7 +7,6 @@ const user = store.getItem('dremoToken')
 
 const docente = [
     {
-        label: 'Docente',
         items: [
             {
                 label: 'Áreas Curriculares',
@@ -507,4 +506,6 @@ export class ConstantesService {
         }
     }
     verificado = verificado
+
+    nombres = user ? user.cPersNombre + ' ' + user.cPersPaterno : null
 }

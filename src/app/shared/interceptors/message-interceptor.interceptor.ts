@@ -24,7 +24,13 @@ export class MessageInterceptor implements HttpInterceptor {
         return next.handle(req).pipe(
             tap((event) => {
                 const method = req.method
-                if (event instanceof HttpResponse && method !== 'GET') {
+                const skip = req.params.get('skipSuccessMessage')
+
+                if (
+                    event instanceof HttpResponse &&
+                    method !== 'GET' &&
+                    skip !== 'true'
+                ) {
                     // Verifica si el estado es 200
 
                     const message: IModal = getMessageByHttpCode(event.status)

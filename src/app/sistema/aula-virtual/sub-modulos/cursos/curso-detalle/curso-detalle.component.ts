@@ -1,23 +1,25 @@
 import { CommonModule } from '@angular/common'
-import { Component, inject, OnInit } from '@angular/core'
+import { Component, inject, Input, OnInit } from '@angular/core'
 import { MenuItem } from 'primeng/api'
 import { BreadcrumbModule } from 'primeng/breadcrumb'
 import { TabMenuModule } from 'primeng/tabmenu'
 import { TabViewModule } from 'primeng/tabview'
-import { CursoDetalleNavigationComponent } from './curso-detalle-navigation/curso-detalle-navigation.component'
-import { ActivatedRoute, Params, Router, RouterOutlet } from '@angular/router'
+import { ActivatedRoute, Params, Router } from '@angular/router'
 import { PanelModule } from 'primeng/panel'
-import { TabContenidoComponent } from './tabs/tab-contenido/tab-contenido.component'
 import { isValidTabKey, TabsKeys } from './tabs/tab.interface'
-import { TabEstudiantesComponent } from './tabs/tab-estudiantes/tab-estudiantes.component'
-import { TabInicioComponent } from './tabs/tab-inicio/tab-inicio.component'
 import { TabEvaluacionesComponent } from './tabs/tab-evaluaciones/tab-evaluaciones.component'
 import { MenuModule } from 'primeng/menu'
 import { ProfesorAvatarComponent } from '../components/profesor-avatar/profesor-avatar.component'
-import { IEstudiante } from '../../../interfaces/estudiantes.interface'
 import { ICurso } from '../interfaces/curso.interface'
-import { AulaBancoPreguntasComponent } from '../../aula-banco-preguntas/aula-banco-preguntas/aula-banco-preguntas.component'
+import { IEstudiante } from '@/app/sistema/aula-virtual/interfaces/estudiantes.interface'
+import { CursoDetalleNavigationComponent } from './curso-detalle-navigation/curso-detalle-navigation.component'
+import { TabInicioComponent } from './tabs/tab-inicio/tab-inicio.component'
+import { TabContenidoComponent } from './tabs/tab-contenido/tab-contenido.component'
+import { TabEstudiantesComponent } from './tabs/tab-estudiantes/tab-estudiantes.component'
 import { TabResultadosComponent } from './tabs/tab-resultados/tab-resultados.component'
+import { ConstantesService } from '@/app/servicios/constantes.service'
+import { GeneralService } from '@/app/servicios/general.service'
+
 @Component({
     selector: 'app-curso-detalle',
     standalone: true,
@@ -26,24 +28,25 @@ import { TabResultadosComponent } from './tabs/tab-resultados/tab-resultados.com
         BreadcrumbModule,
         TabMenuModule,
         TabViewModule,
-        TabContenidoComponent,
         CursoDetalleNavigationComponent,
-        RouterOutlet,
-        PanelModule,
-        TabEstudiantesComponent,
         TabInicioComponent,
+        PanelModule,
         TabEvaluacionesComponent,
         ProfesorAvatarComponent,
         MenuModule,
-        AulaBancoPreguntasComponent,
+        TabContenidoComponent,
+        TabEstudiantesComponent,
         TabResultadosComponent,
     ],
     templateUrl: './curso-detalle.component.html',
     styleUrl: './curso-detalle.component.scss',
 })
 export class CursoDetalleComponent implements OnInit {
+    @Input() iSilaboId: string
     private _activatedRoute = inject(ActivatedRoute)
     private _router = inject(Router)
+    private _constantesService = inject(ConstantesService)
+    private _generalService = inject(GeneralService)
 
     curso: ICurso | undefined
     tab: TabsKeys
@@ -55,18 +58,13 @@ export class CursoDetalleComponent implements OnInit {
     rangeDates: Date[] | undefined
 
     public estudiantes: IEstudiante[] = []
-    public resultados: IEstudiante[] = []
 
     ngOnInit() {
+        console.log(this.iSilaboId)
+        this.getData()
+
         this.listenParams()
-        this.curso = {
-            id: 1,
-            nombre: 'Matemática I',
-            descripcion: 'Matemática I Un curso espectacular',
-            totalEstudiantes: 20,
-            grado: '1°',
-            seccion: 'A',
-        }
+
         this.items = [
             { icon: 'pi pi-home', route: '/aula-virtual' },
             { label: 'Cursos', route: '/aula-virtual/cursos' },
@@ -89,20 +87,47 @@ export class CursoDetalleComponent implements OnInit {
                 numeroOrden: 2,
             },
         ]
-        this.resultados = [
-            {
-                id: '5',
-                nombre: 'Estudiante',
-                apellidos: '1',
-                email: '1',
-                numeroOrden: 1,
+    }
+
+    getData() {
+        this.obtenerContenidoSemanas()
+    }
+
+    private obtenerContenidoSemanas() {
+        const params = {
+            petition: 'post',
+            group: 'docente',
+            prefix: 'silabo-actividad-aprendizajes',
+            ruta: 'list',
+            seleccion: 1,
+            data: {
+                opcion: 'CONSULTARxiSilaboId',
+                iCredId: this._constantesService.iCredId,
+                iSilaboId: this.iSilaboId,
             },
-        ]
+            params: {
+                skipSuccessMessage: true,
+            },
+        }
+
+        this._generalService.getGralPrefix(params).subscribe({
+            next: (response) => {
+                console.log(response)
+            },
+        })
     }
 
     // obtiene el parametro y actualiza el tab
     listenParams() {
         const tab = this._activatedRoute.snapshot.queryParams['tab']
+        const cCursoNombre =
+            this._activatedRoute.snapshot.queryParams['cCursoNombre']
+
+        this.curso = {
+            cCursoNombre,
+            iCursoId: '1',
+            iSilaboId: this.iSilaboId,
+        }
         if (isValidTabKey(tab)) {
             this.updateTab(tab)
         }

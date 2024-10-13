@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core'
+import { ButtonModule } from 'primeng/button'
 import { ProfesorAvatarComponent } from '../../../components/profesor-avatar/profesor-avatar.component'
 import { ICurso } from '../../../interfaces/curso.interface'
-import { ButtonModule } from 'primeng/button'
 
 @Component({
     selector: 'app-tab-inicio',

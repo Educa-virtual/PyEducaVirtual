@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
-import { environment } from '@/environments/environment.template'
+import { environment } from '@/environments/environment'
 
 const baseUrl = environment.backendApi
 
@@ -30,8 +30,10 @@ export class GeneralService {
                         data.prefix +
                         '/' +
                         data.ruta,
-                    data.data
+                    data.data,
+                    { params: data.params }
                 )
+
                 break
             default:
                 break

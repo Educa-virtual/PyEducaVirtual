@@ -12,3 +12,29 @@
         />
     </div>
 </div>
+
+<p-dialog
+    [(visible)]="modalPerfiles"
+    [style]="{ width: '1000px' }"
+    header="Seleccionar un Perfil"
+    [modal]="true"
+    class="p-fluid"
+>
+    <div [style]="{ height: '300px' }">
+        <h5>Selecciones su perfil</h5>
+        <div class="field w-full max-w-md pb-0">
+            <label for="tipo-pregunta">Perfil :</label>
+            <p-dropdown
+                [options]="perfiles"
+                placeholder="Seleccione Perfil"
+                styleClass="w-full"
+                class="flex-1"
+                [emptyMessage]="'---'"
+                optionValue="iPerfilId"
+                optionLabel="cPerfilNombre"
+                (onChange)="seleccionarPerfil($event)"
+            >
+            </p-dropdown>
+        </div>
+    </div>
+</p-dialog>

@@ -3,7 +3,7 @@
         <div class="grid p-fluid">
             <div class="col-12">
                 <div class="card">
-                    <h5>Hola! {{ item?.iCredEntPerfId }}</h5>
+                    <!--<h5>Hola! {{ item?.iCredEntPerfId }}</h5>-->
                     <p-button
                         icon="pi pi-folder-open"
                         rounded="true"
@@ -16,7 +16,7 @@
         </div>
     </div>
 
-    <p-dialog
+    <!--<p-dialog
         [(visible)]="productDialog"
         [style]="{ width: '1000px' }"
         header="Seleccionar un Perfil"
@@ -72,7 +72,7 @@
                 [data]="roles"
                 [actions]="actions"
             />
-            <!--<h1> hh {{item?.legnth}} hola </h1>
+            <h1> hh {{item?.legnth}} hola </h1>
             <p-dataView
                 #dv
                 [value]="roles"
@@ -111,7 +111,7 @@
                         </div>
                     </div> 
                 </ng-template>
-            </p-dataView>-->
+            </p-dataView>
         </div>
 
         <ng-template pTemplate="footer">
@@ -123,14 +123,14 @@
                 class="p-button-text"
                 (click)="hideDialog()"
             ></button>
-            <!--<button
+            <button
                 pButton
                 pRipple
                 label="Cancelar"
                 icon="pi pi-times"
                 class="p-button-text"
                 (click)="hideDialog()"
-            ></button>-->
+            ></button>
         </ng-template>
-    </p-dialog>
+    </p-dialog>-->
 </app-container-page>

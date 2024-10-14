@@ -12,29 +12,46 @@
         />
     </div>
 </div>
-
 <p-dialog
     [(visible)]="modalPerfiles"
     [style]="{ width: '1000px' }"
-    header="Seleccionar un Perfil"
+    header="Lista de roles"
     [modal]="true"
     class="p-fluid"
 >
-    <div [style]="{ height: '300px' }">
-        <h5>Selecciones su perfil</h5>
-        <div class="field w-full max-w-md pb-0">
-            <label for="tipo-pregunta">Perfil :</label>
-            <p-dropdown
-                [options]="perfiles"
-                placeholder="Seleccione Perfil"
-                styleClass="w-full"
-                class="flex-1"
-                [emptyMessage]="'---'"
-                optionValue="iPerfilId"
-                optionLabel="cPerfilNombre"
-                (onChange)="seleccionarPerfil($event)"
-            >
-            </p-dropdown>
-        </div>
-    </div>
+    <p-orderList
+        [value]="perfiles"
+        header="Hola.. {{
+            name1 | uppercase
+        }} seleccione el rol que desea ingresar:"
+    >
+        <ng-template let-perfiles pTemplate="listItem">
+            <div class="p-col-12">
+                <div
+                    class="perfiles-list-item"
+                    (keypress)="seleccionarElemento(perfiles)"
+                    tabindex="0"
+                >
+                    <img
+                        src="assets/demo/images/matemit/avatar.png"
+                        [alt]="perfiles.name"
+                        class="w-4rem min-h-9 shadow-2 flex-shrink-0 border-round"
+                    />
+                    <div class="perfiles-list-detail">
+                        <div class="perfil-name">
+                            {{ perfiles.cPerfilNombre }}
+                        </div>
+                        <div class="perfil-name">IE: {{ name }}</div>
+                        <div class="perfil-description">
+                            Cod. Modular:{{ name }}
+                        </div>
+                        <div class="perfil-description">Nivel: {{ name }}</div>
+                        <div class="perfil-description">
+                            DRE MOQUEGUA - UGUEL MARISCAL NIETO
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+    </p-orderList>
 </p-dialog>

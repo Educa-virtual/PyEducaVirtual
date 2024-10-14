@@ -1,9 +1,15 @@
-const TIPO_ACTIVIDADES = {
-    tarea: 'TAREA',
-    foro: 'FORO',
-    evaluacion: 'EVALUACION',
-    'video-conferencia': 'VIDEO_CONFERENCIA',
-    material: 'MATERIAL',
+const TAREA = 1
+const FORO = 2
+const EVALUACION = 3
+const VIDEO_CONFERENCIA = 4
+const MATERIAL = 5
+
+export const TIPO_ACTIVIDADES = {
+    tarea: TAREA,
+    foro: FORO,
+    evaluacion: EVALUACION,
+    'video-conferencia': VIDEO_CONFERENCIA,
+    material: MATERIAL,
 }
 
 export type tipoActividadesKeys = keyof typeof TIPO_ACTIVIDADES

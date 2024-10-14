@@ -2,11 +2,20 @@ import { CommonInputComponent } from '@/app/shared/components/common-input/commo
 import { CommonModule } from '@angular/common'
 import { Component, EventEmitter, inject, Output, OnInit } from '@angular/core'
 import { DropdownModule } from 'primeng/dropdown'
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
+import {
+    FormBuilder,
+    ReactiveFormsModule,
+    Validators,
+    FormsModule,
+} from '@angular/forms'
 import { EditorModule } from 'primeng/editor'
 import { DisponibilidadFormComponent } from '../../components/disponibilidad-form/disponibilidad-form.component'
 import { CountryService } from '@/app/demo/service/country.service'
 import { CalendarModule } from 'primeng/calendar'
+import { DialogModule } from 'primeng/dialog'
+import { TableModule } from 'primeng/table'
+import { CheckboxModule } from 'primeng/checkbox'
+import { FileUploadModule } from 'primeng/fileupload'
 @Component({
     selector: 'app-tarea-form',
     standalone: true,
@@ -14,10 +23,15 @@ import { CalendarModule } from 'primeng/calendar'
         CommonModule,
         ReactiveFormsModule,
         CommonInputComponent,
+        FormsModule,
         EditorModule,
         DropdownModule,
         DisponibilidadFormComponent,
         CalendarModule,
+        DialogModule,
+        TableModule,
+        CheckboxModule,
+        FileUploadModule,
     ],
     templateUrl: './tarea-form.component.html',
     styleUrl: './tarea-form.component.scss',
@@ -41,10 +55,21 @@ export class TareaFormComponent implements OnInit {
         ]
     }
 
+    estudiantes: any[] = [
+        { nombre: 'Prueba', apellido: 'prueba name', selected: false },
+    ]
+
+    // nota
+    puntajeArray: { name: string; code: string }[] = []
+
     ngOnInit() {
         this.countryService.getCountries().then((countries) => {
             this.countries = countries
         })
+
+        for (let i = 1; i <= 20; i++) {
+            this.puntajeArray.push({ name: `${i}`, code: `${i}` })
+        }
     }
 
     public tareaForm = this._formBuilder.group({
@@ -54,6 +79,38 @@ export class TareaFormComponent implements OnInit {
         dFechaEvaluacionPublicacion: [''],
         tHoraEvaluacionPublicacion: [''],
     })
+    displayModal: boolean = false
+
+    mostrarModal() {
+        this.displayModal = true
+    }
+
+    onUpload(event: any) {
+        console.log('subida de archivos', event.files)
+    }
+
+    onError(event: any) {
+        console.log('error subida de archivos', event)
+    }
+
+    linkDialogVisible: boolean = false
+    link: string = ''
+    linkToShow: string = ''
+
+    openLinkDialog() {
+        this.linkDialogVisible = true
+    }
+
+    addLink() {
+        console.log('Enlace agregado: ', this.link)
+        this.linkToShow = this.link
+        this.linkDialogVisible = false
+        this.link = ''
+    }
+
+    cerrarModal() {
+        this.displayModal = false
+    }
 
     dropdownItems = [
         { name: 'Todo el grupo', code: 'Option 1' },

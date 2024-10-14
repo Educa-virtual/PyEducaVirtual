@@ -19,30 +19,50 @@
                 />
             </div>
             <div class="card flex flex-column gap-4">
-                <div
-                    class="flex flex-column justify-content-center align-content-center border-2 border-dashed surface-border border-round surface-card h-10rem"
-                >
-                    <p class="fileUpload">Arrastra o da Click para subir</p>
+                <p>Adjuntar</p>
+
+                <div>
+                    <p>{{ linkToShow }}</p>
                 </div>
                 <div class="flex justify-content-between gap-2 flex-wrap">
-                    <button
-                        icon="pi pi-upload"
-                        pButton
-                        pi-link
-                        class="p-button-primary mx-auto"
-                    >
-                        Subir Archivo
-                    </button>
+                    <p-fileUpload
+                        name="files[]"
+                        mode="basic"
+                        (onUpload)="onUpload($event)"
+                        (onError)="onError($event)"
+                        chooseLabel="Seleccionar Archivo"
+                        uploadLabel="Subir"
+                        cancelLabel="Cancelar"
+                        class="fileUpload"
+                    ></p-fileUpload>
+
                     <button
                         icon="pi pi-link"
                         pButton
                         class="p-button-primary mx-auto"
+                        (click)="openLinkDialog()"
                     >
                         Enlace
                     </button>
                 </div>
             </div>
         </div>
+
+        <p-dialog
+            header="Agregar Enlace"
+            [(visible)]="linkDialogVisible"
+            modal="modal"
+            [draggable]="false"
+        >
+            <div>
+                <input
+                    type="text"
+                    placeholder="Ingrese el enlace"
+                    [(ngModel)]="link"
+                />
+                <button (click)="addLink()">Agregar</button>
+            </div>
+        </p-dialog>
 
         <div class="col-4">
             <!-- <div class="field grid">
@@ -54,7 +74,7 @@
                     class="col-12"
                     optionLabel="name"
                 ></p-dropdown>
-            </div> -->
+            </div>-->
 
             <!-- <div class="field grid">
                 <label htmlFor="state" class="col-12 mb-2 md:col-12 md:mb-0"
@@ -81,6 +101,68 @@
                     <app-common-input [controlKey]="'titulo'" label="Punto" />
                 </div>
             </div> -->
+
+            <div class="field grid">
+                <div class="field flex flex-column col-12 md:col-12">
+                    <button
+                        pButton
+                        class="pi pi-users"
+                        (click)="mostrarModal()"
+                    >
+                        Toda la clase
+                    </button>
+
+                    <p-dialog
+                        header="Asignar a"
+                        [(visible)]="displayModal"
+                        [modal]="true"
+                        [closable]="false"
+                        [draggable]="false"
+                    >
+                        <div>
+                            <p-table [value]="estudiantes">
+                                <ng-template pTemplate="header">
+                                    <tr>
+                                        <th></th>
+                                        <th>Nombre</th>
+                                        <th>Apellido</th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-estudiante>
+                                    <tr>
+                                        <td>
+                                            <p-checkbox
+                                                [(ngModel)]="
+                                                    estudiante.selected
+                                                "
+                                            ></p-checkbox>
+                                        </td>
+                                        <td>{{ estudiante.nombre }}</td>
+                                        <td>{{ estudiante.apellido }}</td>
+                                    </tr>
+                                </ng-template>
+                            </p-table>
+                        </div>
+                        <footer>
+                            <br />
+                            <button
+                                pButton
+                                class="bg-green-500 mr-4"
+                                label="Aceptar"
+                                icon="pi pi-times"
+                                (click)="cerrarModal()"
+                            ></button>
+                            <button
+                                pButton
+                                label="Cerrar"
+                                class="bg-gray-100 text-gray-900"
+                                icon="pi pi-times"
+                                (click)="cerrarModal()"
+                            ></button>
+                        </footer>
+                    </p-dialog>
+                </div>
+            </div>
 
             <div class="formgrid grid">
                 <div class="field flex flex-column col-12 md:col-6">
@@ -119,15 +201,42 @@
                 </div>
             </div>
             <br />
+
+            <div class="field grid">
+                <label htmlFor="state" class="col-12 mb-2 md:col-12 md:mb-0"
+                    >Areas</label
+                >
+                <p-dropdown
+                    [options]="puntajeArray"
+                    class="col-12"
+                    optionLabel="name"
+                    placeholder="Selecciona"
+                ></p-dropdown>
+            </div>
+            <div class="field grid">
+                <label htmlFor="state" class="col-12 mb-2 md:col-12 md:mb-0"
+                    >Puntaje</label
+                >
+                <p-dropdown
+                    [options]="puntajeArray"
+                    class="col-12"
+                    optionLabel="name"
+                    placeholder="Selecciona"
+                ></p-dropdown>
+            </div>
+
             <div class="flex justify-content-between gap-2 flex-wrap">
                 <p>Instrumento de Evaluación</p>
-                <button
-                    icon="pi pi-upload"
-                    pButton
-                    class="p-button-primary mx-auto"
-                >
-                    Subir Archivo
-                </button>
+                <p-fileUpload
+                    name="files[]"
+                    mode="basic"
+                    (onUpload)="onUpload($event)"
+                    (onError)="onError($event)"
+                    chooseLabel="Seleccionar Archivo"
+                    uploadLabel="Subir"
+                    cancelLabel="Cancelar"
+                    class="fileUpload"
+                ></p-fileUpload>
             </div>
         </div>
     </div>

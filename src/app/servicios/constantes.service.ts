@@ -477,5 +477,8 @@ export class ConstantesService {
     }
     verificado = verificado
 
-    nombres = user ? user.cPersNombre + ' ' + user.cPersPaterno : null
+    nombres = user
+        ? user.cPersNombre + ' ' + user.cPersPaterno + ' ' + user.cPersMaterno
+        : null
+    nombre = user ? user.cPersNombre : null
 }

@@ -65,43 +65,6 @@
         </p-dialog>
 
         <div class="col-4">
-            <!-- <div class="field grid">
-                <label htmlFor="state" class="col-12 mb-2 md:col-12 md:mb-0"
-                    >Para</label
-                >
-                <p-dropdown
-                    [options]="dropdownItems"
-                    class="col-12"
-                    optionLabel="name"
-                ></p-dropdown>
-            </div>-->
-
-            <!-- <div class="field grid">
-                <label htmlFor="state" class="col-12 mb-2 md:col-12 md:mb-0"
-                    >Asignar a Todos:</label
-                >
-                <div class="col-12 md:col-10">
-                    <p-dropdown
-                        [options]="dropdownItems"
-                        optionLabel="name"
-                        class="col-12"
-                    ></p-dropdown>
-                </div>
-            </div> -->
-            <!-- <div class="grid">
-                <div class="field col-6">
-                    <label htmlFor="state">Categoria</label>
-                    <p-dropdown
-                        [options]="dropdownItems"
-                        optionLabel="name"
-                    ></p-dropdown>
-                </div>
-
-                <div class="field col-6">
-                    <app-common-input [controlKey]="'titulo'" label="Punto" />
-                </div>
-            </div> -->
-
             <div class="field grid">
                 <div class="field flex flex-column col-12 md:col-12">
                     <button
@@ -124,8 +87,9 @@
                                 <ng-template pTemplate="header">
                                     <tr>
                                         <th></th>
-                                        <th>Nombre</th>
-                                        <th>Apellido</th>
+                                        <th>Nombres</th>
+                                        <th>Apellido Paterno</th>
+                                        <th>Apellido Materno</th>
                                     </tr>
                                 </ng-template>
                                 <ng-template pTemplate="body" let-estudiante>
@@ -137,8 +101,13 @@
                                                 "
                                             ></p-checkbox>
                                         </td>
-                                        <td>{{ estudiante.nombre }}</td>
-                                        <td>{{ estudiante.apellido }}</td>
+                                        <td>{{ estudiante.nombres }}</td>
+                                        <td>
+                                            {{ estudiante.apellidoPaterno }}
+                                        </td>
+                                        <td>
+                                            {{ estudiante.apellidoMaterno }}
+                                        </td>
                                     </tr>
                                 </ng-template>
                             </p-table>
@@ -163,7 +132,7 @@
                     </p-dialog>
                 </div>
             </div>
-
+            <!-- fecha de publicacion -->
             <div class="formgrid grid">
                 <div class="field flex flex-column col-12 md:col-6">
                     <label for="dFechaEvaluacionPublicacion"
@@ -201,30 +170,31 @@
                 </div>
             </div>
             <br />
+            <div class="formgrid grid">
+                <!-- Columna para Nivel de logro -->
+                <div class="field col-12 md:col-6">
+                    <label htmlFor="state">Nivel de logro</label>
+                    <p-dropdown
+                        [options]="niveldelogrosDropdownItems"
+                        class="col-12"
+                        optionLabel="name"
+                        placeholder="Selecciona"
+                    ></p-dropdown>
+                </div>
 
-            <div class="field grid">
-                <label htmlFor="state" class="col-12 mb-2 md:col-12 md:mb-0"
-                    >Areas</label
-                >
-                <p-dropdown
-                    [options]="puntajeArray"
-                    class="col-12"
-                    optionLabel="name"
-                    placeholder="Selecciona"
-                ></p-dropdown>
-            </div>
-            <div class="field grid">
-                <label htmlFor="state" class="col-12 mb-2 md:col-12 md:mb-0"
-                    >Puntaje</label
-                >
-                <p-dropdown
-                    [options]="puntajeArray"
-                    class="col-12"
-                    optionLabel="name"
-                    placeholder="Selecciona"
-                ></p-dropdown>
+                <!-- Columna para Puntaje -->
+                <div class="field col-12 md:col-6">
+                    <label htmlFor="state">Puntaje</label>
+                    <p-dropdown
+                        [options]="puntajeArray"
+                        class="col-12"
+                        optionLabel="name"
+                        placeholder="Selecciona"
+                    ></p-dropdown>
+                </div>
             </div>
 
+            <!-- Columna para instrumentos de evalaucion -->
             <div class="flex justify-content-between gap-2 flex-wrap">
                 <p>Instrumento de Evaluación</p>
                 <p-fileUpload

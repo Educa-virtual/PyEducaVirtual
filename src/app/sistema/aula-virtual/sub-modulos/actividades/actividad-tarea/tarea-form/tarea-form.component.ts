@@ -112,10 +112,11 @@ export class TareaFormComponent implements OnInit {
         this.displayModal = false
     }
 
-    dropdownItems = [
-        { name: 'Todo el grupo', code: 'Option 1' },
-        { name: 'Option 2', code: 'Option 2' },
-        { name: 'Option 3', code: 'Option 3' },
+    niveldelogrosDropdownItems = [
+        { name: '01', code: 'A' },
+        { name: '02', code: 'B' },
+        { name: '02', code: 'C' },
+        { name: '02', code: 'C' },
     ]
 
     submit() {

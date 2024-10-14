@@ -142,15 +142,24 @@
             </tr>
         </ng-template>
     </p-table>
-    <div class="col-12 flex gap-5 my-5 mx-5">
-        <p class="font-bold">Leyenda:</p>
-        <!-- <p-tag value="Total de Estudiantes" /> -->
+    <div class="col-12 flex flex-column md:flex-row my-5 mx-5">
+        <p class="font-bold ml-2 mt-1">Leyenda:</p>
+
         <p-tag
             severity="warning"
             value="Avance de la Programación curricular"
+            class="ml-2 mt-1"
         />
-        <p-tag severity="success" value="Avance de Asistencia" />
-        <p-tag severity="danger" value="Avance de Nivel de Logros" />
+        <p-tag
+            severity="success"
+            value="Avance de Asistencia"
+            class="ml-2 mt-1"
+        />
+        <p-tag
+            severity="danger"
+            value="Avance de Nivel de Logros"
+            class="ml-2 mt-1"
+        />
     </div>
 </div>
 

@@ -1,6 +1,14 @@
 import { PrimengModule } from '@/app/primeng.module'
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
-import { Component, OnInit, OnDestroy, inject, Input } from '@angular/core'
+import {
+    Component,
+    OnInit,
+    OnDestroy,
+    inject,
+    Input,
+    OnChanges,
+    ViewChild,
+} from '@angular/core'
 import { TablePrimengComponent } from '../../../shared/table-primeng/table-primeng.component'
 import { RecursosDidacticosComponent } from './components/recursos-didacticos/recursos-didacticos.component'
 import { Router } from '@angular/router'
@@ -31,8 +39,11 @@ interface Data {
     styleUrl: './areas-estudios.component.scss',
     providers: [MessageService],
 })
-export class AreasEstudiosComponent implements OnInit, OnDestroy {
+export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
+    @ViewChild('dv') dv!: Table
+
     @Input() data = []
+    @Input() searchText: Event
     private unsubscribe$ = new Subject<boolean>()
     private _constantesService = inject(ConstantesService)
     private _generalService = inject(GeneralService)
@@ -53,7 +64,6 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy {
     ]
 
     ngOnInit() {
-        //this.getCursos()
         this.items = [
             {
                 label: 'Fichas de Aprendizaje',
@@ -104,8 +114,19 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy {
             },
         ]
     }
+    ngOnChanges(changes) {
+        if (changes.data?.currentValue) {
+            this.data = changes.data.currentValue
+        }
+
+        if (changes.searchText?.currentValue) {
+            this.searchText = changes.searchText.currentValue
+            this.onGlobalFilter(this.dv, this.searchText)
+        }
+    }
 
     onGlobalFilter(table: Table, event: Event) {
+        if (!table) return
         table.filterGlobal((event.target as HTMLInputElement).value, 'contains')
     }
 

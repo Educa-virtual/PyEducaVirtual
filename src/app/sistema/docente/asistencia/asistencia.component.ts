@@ -108,7 +108,7 @@ export class AsistenciaComponent implements OnInit, OnDestroy {
     ]
 
     goAreasEstudio() {
-        this.router.navigate(['docente/areas-estudio'])
+        this.router.navigate(['aula-virtual/areas-curriculares'])
     }
 
     accionBtnItem(elemento): void {

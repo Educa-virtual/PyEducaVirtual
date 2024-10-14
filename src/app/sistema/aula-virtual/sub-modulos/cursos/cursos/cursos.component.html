@@ -2,8 +2,8 @@
     <p-dataView
         #dv
         [value]="cursos"
-        [paginator]="true"
-        [rows]="9"
+        [paginator]="layout === 'list' ? false : true"
+        [rows]="10"
         filterBy="cCursoNombre"
         [sortField]="sortField"
         [sortOrder]="sortOrder"
@@ -18,31 +18,48 @@
                     <input
                         pInputText
                         type="text"
+                        [(ngModel)]="text"
                         (input)="onFilter(dv, $event)"
-                        placeholder="Buscar..."
+                        placeholder="Buscar por curso"
                     />
                 </p-iconField>
-                <p-dropdown
-                    [options]="[]"
-                    placeholder="I.E."
-                    styleClass="w-full"
-                    class="flex-1"
-                    [emptyMessage]="'Sin I.E.'"
-                >
-                </p-dropdown>
 
-                <p-dataViewLayoutOptions></p-dataViewLayoutOptions>
+                <div class="flex justify-end">
+                    <p-selectButton
+                        [(ngModel)]="layout"
+                        [options]="options"
+                        [allowEmpty]="false"
+                        (onChange)="text = ''"
+                    >
+                        <ng-template pTemplate="item" let-item>
+                            <i
+                                class="pi"
+                                [ngClass]="{
+                                    'pi-bars': item === 'list',
+                                    'pi-th-large': item === 'grid',
+                                }"
+                            ></i>
+                        </ng-template>
+                    </p-selectButton>
+                </div>
             </div>
-        </ng-template>
-        <ng-template let-products pTemplate="listItem">
-            <app-areas-estudios [data]="cursos"></app-areas-estudios>
         </ng-template>
         <ng-template let-products pTemplate="gridItem">
             <div class="cursos gap-4 py-2">
                 @for (curso of cursos; track curso.iCursoId) {
-                    <app-curso-card class="" [curso]="curso"></app-curso-card>
+                    <app-curso-card
+                        #dv
+                        class=""
+                        [curso]="curso"
+                    ></app-curso-card>
                 }
             </div>
         </ng-template>
     </p-dataView>
+    @if (layout === 'list') {
+        <app-areas-estudios
+            [searchText]="searchText"
+            [data]="cursos"
+        ></app-areas-estudios>
+    }
 </app-container-page>

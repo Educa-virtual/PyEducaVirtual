@@ -37,6 +37,7 @@ export interface IRole {
         DialogModule,
         NgFor,
         DataViewModule,
+        DataViewModule,
         NgIf,
         CurrencyPipe,
         InputTextModule,

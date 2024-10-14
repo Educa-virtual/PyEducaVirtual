@@ -15,7 +15,9 @@ import { ConstantesService } from '@/app/servicios/constantes.service'
 import { GeneralService } from '@/app/servicios/general.service'
 import { Subject, takeUntil } from 'rxjs'
 import { ButtonModule } from 'primeng/button'
-
+import { AreasEstudiosComponent } from '../../../../docente/areas-estudios/areas-estudios.component'
+import { LocalStoreService } from '@/app/servicios/local-store.service'
+export type Layout = 'list' | 'grid'
 @Component({
     selector: 'app-cursos',
     standalone: true,
@@ -32,6 +34,7 @@ import { ButtonModule } from 'primeng/button'
         CursoCardComponent,
         DropdownModule,
         ButtonModule,
+        AreasEstudiosComponent,
     ],
     templateUrl: './cursos.component.html',
     styleUrl: './cursos.component.scss',
@@ -40,14 +43,28 @@ export class CursosComponent implements OnDestroy, OnInit {
     public cursos: ICurso[] = []
     public sortField: string = ''
     public sortOrder: number = 0
+    public layout: Layout = 'list'
 
     private unsubscribe$ = new Subject<boolean>()
     private _constantesService = inject(ConstantesService)
     private _generalService = inject(GeneralService)
+    private _store = inject(LocalStoreService)
 
     constructor() {}
 
     ngOnInit(): void {
+        const profile = this._store.getItem('dremoPerfil')
+        switch (profile.iProfile) {
+            case 1001:
+                this.layout = 'list'
+                break
+            case 1003:
+                this.layout = 'grid'
+                break
+            default:
+                break
+        }
+        console.log(profile.iProfile)
         this.getCursos()
     }
 
@@ -79,6 +96,10 @@ export class CursosComponent implements OnDestroy, OnInit {
                         iCursoId: curso.idDocCursoId,
                         ...curso,
                     }))
+                },
+                complete: () => {},
+                error: (error) => {
+                    console.log(error)
                 },
             })
     }

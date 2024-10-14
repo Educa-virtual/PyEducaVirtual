@@ -21,32 +21,38 @@
 </div>
 
 <div class="flex flex-column gap-2">
-    <p-accordion
-        [multiple]="true"
-        expandIcon="pi pi-angle-right"
-        collapseIcon="pi pi-angle-down "
-    >
-        <p-accordionTab header="" class="" iconPos="end">
-            <ng-template pTemplate="header">
-                <span class="flex align-items-center gap-2 w-full">
-                    <span class=""> Tema I </span>
-                </span>
+    @for (semana of contenidoSemanas; track semana.iContenidoSemId) {
+        <p-accordion
+            [multiple]="true"
+            expandIcon="pi pi-angle-right"
+            collapseIcon="pi pi-angle-down "
+        >
+            <p-accordionTab header="" class="" iconPos="end">
+                <ng-template pTemplate="header">
+                    <span class="flex align-items-center gap-2 w-full">
+                        <span class="">
+                            {{ semana.cContenidoSemNumero }} SEMANA -
+                            {{ semana.cContenidoSemTitulo }}
+                        </span>
+                    </span>
 
-                <button
-                    class="p-link ml-auto mr-2 text-primary"
-                    (click)="
-                        $event.stopPropagation(); menuContenido.toggle($event)
-                    "
-                >
-                    <span class="pi pi-cog"></span>
-                </button>
-            </ng-template>
-            <app-actividad-lista
-                [actividades]="actividades"
-                (actionSelected)="actionSelected($event)"
-            ></app-actividad-lista>
-        </p-accordionTab>
-    </p-accordion>
+                    <button
+                        class="p-link ml-auto mr-2 text-primary"
+                        (click)="
+                            $event.stopPropagation();
+                            menuContenido.toggle($event)
+                        "
+                    >
+                        <span class="pi pi-cog"></span>
+                    </button>
+                </ng-template>
+                <!-- <app-actividad-lista
+                    [actividades]="actividades"
+                    (actionSelected)="actionSelected($event)"
+                ></app-actividad-lista> -->
+            </p-accordionTab>
+        </p-accordion>
+    }
 </div>
 
 <p-menu #menuContenido [model]="accionesContenido" [popup]="true">

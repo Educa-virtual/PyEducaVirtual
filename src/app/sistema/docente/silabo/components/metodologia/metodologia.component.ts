@@ -1,5 +1,5 @@
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
-import { Component, Input, OnChanges } from '@angular/core'
+import { Component, Input, OnChanges, OnDestroy } from '@angular/core'
 import { FormMetodologiaComponent } from '../form-metodologia/form-metodologia.component'
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
 import { GeneralService } from '@/app/servicios/general.service'
@@ -7,6 +7,7 @@ import { ConstantesService } from '@/app/servicios/constantes.service'
 import { FormBuilder } from '@angular/forms'
 import { ConfirmationService, MessageService } from 'primeng/api'
 import { ConfirmDialogModule } from 'primeng/confirmdialog'
+import { Subject, takeUntil } from 'rxjs'
 interface Data {
     accessToken: string
     refreshToken: string
@@ -28,9 +29,11 @@ interface Data {
     templateUrl: './metodologia.component.html',
     styleUrl: './metodologia.component.scss',
 })
-export class MetodologiaComponent implements OnChanges {
+export class MetodologiaComponent implements OnChanges, OnDestroy {
     @Input() iSilaboId: string
     @Input() tipoMetodologias: []
+
+    private unsubscribe$ = new Subject<boolean>()
 
     constructor(
         private GeneralService: GeneralService,
@@ -137,6 +140,7 @@ export class MetodologiaComponent implements OnChanges {
                     prefix: 'silabo-metodologias',
                     ruta: 'store',
                     data: item,
+                    params: { skipSuccessMessage: true },
                 }
                 this.getInformation(params, true)
 
@@ -149,6 +153,7 @@ export class MetodologiaComponent implements OnChanges {
                     prefix: 'silabo-metodologias',
                     ruta: 'store',
                     data: item,
+                    params: { skipSuccessMessage: true },
                 }
                 this.getInformation(params, true)
 
@@ -172,6 +177,7 @@ export class MetodologiaComponent implements OnChanges {
                 iCredId: this.ConstantesService.iCredId,
                 iSilaboId: this.iSilaboId,
             },
+            params: { skipSuccessMessage: true },
         }
         this.getInformation(params, false)
     }
@@ -200,6 +206,7 @@ export class MetodologiaComponent implements OnChanges {
                     prefix: 'silabo-metodologias',
                     ruta: 'store',
                     data: item,
+                    params: { skipSuccessMessage: true },
                 }
                 this.getInformation(params, true)
                 //this.messageService.add({ severity: 'info', summary: 'Confirmado', detail: 'Eliminando Metodología' });
@@ -211,19 +218,25 @@ export class MetodologiaComponent implements OnChanges {
     }
 
     getInformation(params, api) {
-        this.GeneralService.getGralPrefix(params).subscribe({
-            next: (response: Data) => {
-                if (api) {
-                    this.showModal = false
-                    this.getSilabosMetodologias()
-                } else {
-                    this.data = response.data
-                }
-            },
-            complete: () => {},
-            error: (error) => {
-                console.log(error)
-            },
-        })
+        this.GeneralService.getGralPrefix(params)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+                next: (response: Data) => {
+                    if (api) {
+                        this.showModal = false
+                        this.getSilabosMetodologias()
+                    } else {
+                        this.data = response.data
+                    }
+                },
+                complete: () => {},
+                error: (error) => {
+                    console.log(error)
+                },
+            })
+    }
+
+    ngOnDestroy() {
+        this.unsubscribe$.next(true)
     }
 }

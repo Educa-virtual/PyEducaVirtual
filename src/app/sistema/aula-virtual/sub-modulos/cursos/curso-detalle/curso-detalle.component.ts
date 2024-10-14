@@ -89,33 +89,7 @@ export class CursoDetalleComponent implements OnInit {
         ]
     }
 
-    getData() {
-        this.obtenerContenidoSemanas()
-    }
-
-    private obtenerContenidoSemanas() {
-        const params = {
-            petition: 'post',
-            group: 'docente',
-            prefix: 'silabo-actividad-aprendizajes',
-            ruta: 'list',
-            seleccion: 1,
-            data: {
-                opcion: 'CONSULTARxiSilaboId',
-                iCredId: this._constantesService.iCredId,
-                iSilaboId: this.iSilaboId,
-            },
-            params: {
-                skipSuccessMessage: true,
-            },
-        }
-
-        this._generalService.getGralPrefix(params).subscribe({
-            next: (response) => {
-                console.log(response)
-            },
-        })
-    }
+    getData() {}
 
     // obtiene el parametro y actualiza el tab
     listenParams() {

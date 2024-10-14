@@ -2,7 +2,7 @@ import { PrimengModule } from '@/app/primeng.module'
 import { BtnLoadingComponent } from '@/app/shared/btn-loading/btn-loading.component'
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
-import { Component, Input, OnInit } from '@angular/core'
+import { Component, Input, OnInit, OnDestroy } from '@angular/core'
 import { RecursosDidacticosComponent } from '../areas-estudios/components/recursos-didacticos/recursos-didacticos.component'
 import { ActividadesAprendizajeEvaluacionComponent } from '../areas-estudios/components/actividades-aprendizaje-evaluacion/actividades-aprendizaje-evaluacion.component'
 import { EvaluacionComponent } from '../areas-estudios/components/evaluacion/evaluacion.component'
@@ -13,6 +13,7 @@ import { ConstantesService } from '@/app/servicios/constantes.service'
 import { FormBuilder, Validators } from '@angular/forms'
 import { MessageService } from 'primeng/api'
 import { MetodologiaComponent } from './components/metodologia/metodologia.component'
+import { Subject, takeUntil } from 'rxjs'
 interface Data {
     accessToken: string
     refreshToken: string
@@ -39,10 +40,11 @@ interface Data {
     templateUrl: './silabo.component.html',
     styleUrl: './silabo.component.scss',
 })
-export class SilaboComponent implements OnInit {
+export class SilaboComponent implements OnInit, OnDestroy {
     @Input() idDocCursoId: string
 
     activeStepper: number = 0
+    private unsubscribe$ = new Subject<boolean>()
 
     constructor(
         private router: Router,
@@ -111,6 +113,7 @@ export class SilaboComponent implements OnInit {
                             '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
                         iIeCursoId: null,
                     },
+                    params: { skipSuccessMessage: true },
                 }
                 if (api) {
                     this.getInformation(index, params)
@@ -147,6 +150,7 @@ export class SilaboComponent implements OnInit {
                     prefix: 'silabos',
                     ruta: 'list',
                     data: this.dataSilabo.value,
+                    params: { skipSuccessMessage: true },
                 }
                 api
                     ? this.getInformation(index, params)
@@ -171,6 +175,7 @@ export class SilaboComponent implements OnInit {
                     data: {
                         opcion: 'CONSULTAR',
                     },
+                    params: { skipSuccessMessage: true },
                 }
                 api
                     ? this.getInformation(index, params)
@@ -182,18 +187,23 @@ export class SilaboComponent implements OnInit {
     }
 
     getInformation(index, params) {
-        this.GeneralService.getGralPrefix(params).subscribe({
-            next: (response: Data) => {
-                this.getSilabo(index, false, response.data)
-            },
-            complete: () => {},
-            error: (error) => {
-                console.log(error)
-            },
-        })
+        this.GeneralService.getGralPrefix(params)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+                next: (response: Data) => {
+                    this.getSilabo(index, false, response.data)
+                },
+                complete: () => {},
+                error: (error) => {
+                    console.log(error)
+                },
+            })
     }
 
     getTipoMetodologias() {
         this.getSilabo('tipo_metodologias', true, [])
+    }
+    ngOnDestroy() {
+        this.unsubscribe$.next(true)
     }
 }

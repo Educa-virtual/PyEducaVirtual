@@ -4,10 +4,10 @@
         [value]="cursos"
         [paginator]="true"
         [rows]="9"
-        filterBy="name"
+        filterBy="cCursoNombre"
         [sortField]="sortField"
         [sortOrder]="sortOrder"
-        layout="grid"
+        [layout]="layout"
     >
         <ng-template pTemplate="header">
             <div
@@ -35,11 +35,7 @@
             </div>
         </ng-template>
         <ng-template let-products pTemplate="listItem">
-            <app-table-primeng
-                [showPaginator]="false"
-                [showCaption]="false"
-                [data]="[]"
-            ></app-table-primeng>
+            <app-areas-estudios [data]="cursos"></app-areas-estudios>
         </ng-template>
         <ng-template let-products pTemplate="gridItem">
             <div class="cursos gap-4 py-2">

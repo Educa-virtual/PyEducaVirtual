@@ -5,88 +5,58 @@ const perfil_actual = store.getItem('dremoPerfil')
 const verificado = store.getItem('dremoPerfilVerificado')
 const user = store.getItem('dremoToken')
 
+const inicio = {
+    label: 'Inicio',
+    icon: 'pi pi-fw pi-home',
+    routerLink: [''],
+}
 const docente = [
     {
         items: [
+            inicio,
             {
-                label: 'Áreas Curriculares',
-                icon: 'pi pi-fw pi-book',
-                routerLink: ['/docente/areas-curriculares'],
+                label: 'Portafolio',
+                icon: 'pi pi-fw pi-folder',
+                routerLink: ['/docente/portafolio'],
             },
-            // {
-            //     label: 'Dashboard',
-            //     icon: 'pi pi-fw pi-chart-bar',
-            //     routerLink: ['/docente/dahsboard'],
-            // }, //ver reglamento, resumen, estadística.
-            // {
-            //     label: 'Silabos',
-            //     icon: 'pi pi-fw pi-list-check',
-            //     routerLink: ['/docente/silabo'],
-            // },
-            // {
-            //     label: 'Asistencia',
-            //     icon: 'pi pi-fw pi-list',
-            //     routerLink: ['/docente/asistencia'],
-            // },
-            // {
-            //     label: 'Personal',
-            //     icon: 'pi pi-fw pi-users',
-            //     routerLink: ['/docente/personal'],
-            // },
-            // {
-            //     label: 'Sesiones de Aprendizaje',
-            //     icon: 'pi pi-fw pi-users',
-            //     routerLink: ['/docente/sesion-aprendizaje'],
-            // },
-            // {
-            //     label: 'Mi Perfil',
-            //     icon: 'pi pi-fw pi-id-card',
-            //     routerLink: ['/docente/perfil'],
-            // },
-            // {
-            //     label: 'Mis Estudios',
-            //     icon: 'pi pi-fw pi-folder',
-            //     routerLink: ['/docente/estudios'],
-            // },
-            // {
-            //     label: 'Áreas de Estudio',
-            //     icon: 'pi pi-fw pi-book',
-            //     routerLink: ['/docente/areas-estudio'],
-            // },
-            // {
-            //     label: 'Instrumentos de Evaluación',
-            //     icon: 'pi pi-fw pi-objects-column',
-            //     routerLink: ['/docente/instrumentos-evaluacion'],
-            // },
-            // {
-            //     label: 'Mis Capacitaciones',
-            //     icon: 'pi pi-fw pi-sitemap',
-            //     routerLink: ['/docente/capacitaciones'],
-            // },
-            // {
-            //     label: 'Mis Cursos Virtuales',
-            //     icon: 'pi pi-fw pi-desktop',
-            //     routerLink: ['/docente/cursos-virtual'],
-            // },
-            // {
-            //     label: 'Actividades No Lectivas',
-            //     icon: 'pi pi-fw pi-slack',
-            //     routerLink: ['/docente/actividades-no-lectivas'],
-            // },
+            {
+                label: 'Mis Áreas Curriculares',
+                icon: 'pi pi-fw pi-book',
+                routerLink: ['/aula-virtual/areas-curriculares'],
+            },
+            {
+                label: 'Mi Perfil',
+                icon: 'pi pi-fw pi-id-card',
+                routerLink: ['/docente/perfil'],
+            },
+            {
+                label: 'Actividades No Lectivas',
+                icon: 'pi pi-fw pi-list-check',
+                routerLink: ['/docente/actividades-no-lectivas'],
+            },
+            {
+                label: 'Informes',
+                icon: 'pi pi-fw pi-objects-column',
+                routerLink: ['/docente/informes'],
+            },
+            {
+                label: 'Mis Capacitaciones',
+                icon: 'pi pi-fw pi-sitemap',
+                routerLink: ['/docente/capacitaciones'],
+            },
         ],
     },
 ]
 
-const estudiante = []
+const estudiante = [inicio]
 
 const aula_virtual = [
     {
-        label: 'Mis Áreas Curriculares',
         items: [
             {
                 label: 'Mis Áreas Curriculares',
                 icon: 'pi pi-fw pi-book',
-                routerLink: ['/aula-virtual/cursos'],
+                routerLink: ['/aula-virtual/areas-curriculares'],
             },
             {
                 label: 'Calendario',

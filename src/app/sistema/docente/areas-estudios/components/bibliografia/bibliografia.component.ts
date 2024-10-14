@@ -1,12 +1,13 @@
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
-import { Component, Input, OnChanges } from '@angular/core'
+import { Component, Input, OnChanges, OnDestroy } from '@angular/core'
 import { FormBibliografiaComponent } from '../form-bibliografia/form-bibliografia.component'
 import { GeneralService } from '@/app/servicios/general.service'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { FormBuilder } from '@angular/forms'
 import { ConfirmationService, MessageService } from 'primeng/api'
 import { ConfirmDialogModule } from 'primeng/confirmdialog'
+import { Subject, takeUntil } from 'rxjs'
 interface Data {
     accessToken: string
     refreshToken: string
@@ -28,9 +29,9 @@ interface Data {
     templateUrl: './bibliografia.component.html',
     styleUrl: './bibliografia.component.scss',
 })
-export class BibliografiaComponent implements OnChanges {
+export class BibliografiaComponent implements OnChanges, OnDestroy {
     @Input() iSilaboId: string
-
+    private unsubscribe$ = new Subject<boolean>()
     constructor(
         private GeneralService: GeneralService,
         private ConstantesService: ConstantesService,
@@ -169,6 +170,7 @@ export class BibliografiaComponent implements OnChanges {
                     prefix: 'bibliografias',
                     ruta: 'store',
                     data: item,
+                    params: { skipSuccessMessage: true },
                 }
 
                 this.getInformation(params, true)
@@ -182,6 +184,7 @@ export class BibliografiaComponent implements OnChanges {
                     prefix: 'bibliografias',
                     ruta: 'store',
                     data: item,
+                    params: { skipSuccessMessage: true },
                 }
                 this.getInformation(params, true)
 
@@ -207,6 +210,7 @@ export class BibliografiaComponent implements OnChanges {
                 iSilaboId: this.iSilaboId,
                 iEstado: 1,
             },
+            params: { skipSuccessMessage: true },
         }
         this.getInformation(params, false)
     }
@@ -232,6 +236,7 @@ export class BibliografiaComponent implements OnChanges {
                     prefix: 'bibliografias',
                     ruta: 'store',
                     data: item,
+                    params: { skipSuccessMessage: true },
                 }
                 this.getInformation(params, true)
                 //this.messageService.add({ severity: 'info', summary: 'Confirmado', detail: 'Eliminando Metodología' });
@@ -242,19 +247,24 @@ export class BibliografiaComponent implements OnChanges {
         })
     }
     getInformation(params, api) {
-        this.GeneralService.getGralPrefix(params).subscribe({
-            next: (response: Data) => {
-                if (api) {
-                    this.showModal = false
-                    this.getBibliografias()
-                } else {
-                    this.data = response.data
-                }
-            },
-            complete: () => {},
-            error: (error) => {
-                console.log(error)
-            },
-        })
+        this.GeneralService.getGralPrefix(params)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+                next: (response: Data) => {
+                    if (api) {
+                        this.showModal = false
+                        this.getBibliografias()
+                    } else {
+                        this.data = response.data
+                    }
+                },
+                complete: () => {},
+                error: (error) => {
+                    console.log(error)
+                },
+            })
+    }
+    ngOnDestroy() {
+        this.unsubscribe$.next(true)
     }
 }

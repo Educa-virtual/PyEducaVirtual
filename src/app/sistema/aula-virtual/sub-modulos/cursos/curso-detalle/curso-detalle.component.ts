@@ -13,12 +13,12 @@ import { ProfesorAvatarComponent } from '../components/profesor-avatar/profesor-
 import { ICurso } from '../interfaces/curso.interface'
 import { IEstudiante } from '@/app/sistema/aula-virtual/interfaces/estudiantes.interface'
 import { CursoDetalleNavigationComponent } from './curso-detalle-navigation/curso-detalle-navigation.component'
-import { TabInicioComponent } from './tabs/tab-inicio/tab-inicio.component'
 import { TabContenidoComponent } from './tabs/tab-contenido/tab-contenido.component'
 import { TabEstudiantesComponent } from './tabs/tab-estudiantes/tab-estudiantes.component'
 import { TabResultadosComponent } from './tabs/tab-resultados/tab-resultados.component'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { GeneralService } from '@/app/servicios/general.service'
+import { TabInicioComponent } from './tabs/tab-inicio/tab-inicio.component'
 
 @Component({
     selector: 'app-curso-detalle',
@@ -29,7 +29,6 @@ import { GeneralService } from '@/app/servicios/general.service'
         TabMenuModule,
         TabViewModule,
         CursoDetalleNavigationComponent,
-        TabInicioComponent,
         PanelModule,
         TabEvaluacionesComponent,
         ProfesorAvatarComponent,
@@ -37,6 +36,7 @@ import { GeneralService } from '@/app/servicios/general.service'
         TabContenidoComponent,
         TabEstudiantesComponent,
         TabResultadosComponent,
+        TabInicioComponent,
     ],
     templateUrl: './curso-detalle.component.html',
     styleUrl: './curso-detalle.component.scss',

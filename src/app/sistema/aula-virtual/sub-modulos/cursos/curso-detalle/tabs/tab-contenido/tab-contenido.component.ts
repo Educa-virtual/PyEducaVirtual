@@ -9,8 +9,12 @@ import { InputTextModule } from 'primeng/inputtext'
 import { ActividadRowComponent } from '@/app/sistema/aula-virtual/sub-modulos/actividades/components/actividad-row/actividad-row.component'
 import {
     actividadesConfig,
+    EVALUACION,
+    FORO,
     IActividad,
-    tipoActividadesKeys,
+    MATERIAL,
+    TAREA,
+    VIDEO_CONFERENCIA,
 } from '@/app/sistema/aula-virtual/interfaces/actividad.interface'
 import { TActividadActions } from '@/app/sistema/aula-virtual/interfaces/actividad-actions.iterface'
 import { DialogModule } from 'primeng/dialog'
@@ -89,14 +93,14 @@ export class TabContenidoComponent implements OnInit {
     @Input({ required: true }) private _iSilaboId: string
 
     private handleActionsMap: Record<
-        string,
+        number,
         (action: TActividadActions, actividad: IActividad) => void
     > = {
-        tarea: this.handleTareaAction.bind(this),
-        foro: this.handleForoAction.bind(this),
-        evaluacion: this.handleEvaluacionAction.bind(this),
-        'video-conferencia': this.handleVideoconferenciaAction.bind(this),
-        material: this.handleMaterialAction.bind(this),
+        [TAREA]: this.handleTareaAction.bind(this),
+        [FORO]: this.handleForoAction.bind(this),
+        [EVALUACION]: this.handleEvaluacionAction.bind(this),
+        [VIDEO_CONFERENCIA]: this.handleVideoconferenciaAction.bind(this),
+        [MATERIAL]: this.handleMaterialAction.bind(this),
     }
 
     constructor(private _dialogService: DialogService) {}
@@ -136,13 +140,13 @@ export class TabContenidoComponent implements OnInit {
 
     generarAccionesContenido() {
         this.accionesContenido = Object.keys(actividadesConfig).map((key) => {
-            const actividad = actividadesConfig[key as tipoActividadesKeys]
+            const actividad = actividadesConfig[key]
             return {
-                label: actividad.tipoActividadNombre,
+                label: actividad.cActTipoNombre,
                 icon: actividad.icon,
                 command: () => {
                     const actionHandler =
-                        this.handleActionsMap[actividad.tipoActividad]
+                        this.handleActionsMap[actividad.iActTipoId]
                     if (actionHandler) {
                         actionHandler('CREAR', null)
                     }
@@ -161,27 +165,27 @@ export class TabContenidoComponent implements OnInit {
         this.actividadSelected = actividad
         this.accionSeleccionada = action
 
-        if (actividad.tipoActividad === 'tarea') {
+        if (actividad.iActTipoId === TAREA) {
             this.handleTareaAction(action, actividad)
             return
         }
 
-        if (actividad.tipoActividad === 'evaluacion') {
+        if (actividad.iActTipoId === EVALUACION) {
             this.handleEvaluacionAction(action, actividad)
             return
         }
 
-        if (actividad.tipoActividad === 'foro') {
+        if (actividad.iActTipoId === FORO) {
             this.handleForoAction(action, actividad)
             return
         }
 
-        if (actividad.tipoActividad === 'video-conferencia') {
+        if (actividad.iActTipoId === VIDEO_CONFERENCIA) {
             this.handleVideoconferenciaAction(action, actividad)
             return
         }
 
-        if (actividad.tipoActividad === 'material') {
+        if (actividad.iActTipoId === MATERIAL) {
             this.handleMaterialAction('EDITAR', actividad, 'Editar Material')
         }
     }

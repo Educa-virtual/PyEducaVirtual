@@ -12,7 +12,7 @@ import { MenuItem } from 'primeng/api'
 import { ApiEvaluacionesService } from '@/app/sistema/evaluaciones/services/api-evaluaciones.service'
 import { Subject, takeUntil } from 'rxjs'
 import dayjs from 'dayjs'
-import { TIPO_ACTIVIDADES } from '@/app/sistema/aula-virtual/interfaces/actividad.interface'
+import { EVALUACION } from '@/app/sistema/aula-virtual/interfaces/actividad.interface'
 
 @Component({
     selector: 'app-evaluacion-form-container-',
@@ -167,7 +167,7 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
     private handleFormInfo() {
         const data = this.evaluacionInfoForm.value
         data.iDocenteId = 1
-        data.iActTipoId = TIPO_ACTIVIDADES['tarea']
+        data.iActTipoId = EVALUACION
         data.iContenidoSemId = this._paramsData.iContenidoSemId
         console.log(data)
 

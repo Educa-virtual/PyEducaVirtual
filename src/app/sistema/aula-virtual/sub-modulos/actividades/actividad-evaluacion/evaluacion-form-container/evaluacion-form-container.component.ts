@@ -2,7 +2,7 @@ import { PrimengModule } from '@/app/primeng.module'
 import { CommonModule } from '@angular/common'
 import { Component, inject, OnInit, ViewChild, OnDestroy } from '@angular/core'
 import { Dialog } from 'primeng/dialog'
-import { DialogService } from 'primeng/dynamicdialog'
+import { DialogService, DynamicDialogConfig } from 'primeng/dynamicdialog'
 import { EvaluacionFormInfoComponent } from '../evaluacion-form/evaluacion-form-info/evaluacion-form-info.component'
 import { EvaluacionFormPreguntasComponent } from '../evaluacion-form/evaluacion-form-preguntas/evaluacion-form-preguntas.component'
 import { EvaluacionFormCalificacionComponent } from '../evaluacion-form/evaluacion-form-calificacion/evaluacion-form-calificacion.component'
@@ -12,6 +12,7 @@ import { MenuItem } from 'primeng/api'
 import { ApiEvaluacionesService } from '@/app/sistema/evaluaciones/services/api-evaluaciones.service'
 import { Subject, takeUntil } from 'rxjs'
 import dayjs from 'dayjs'
+import { TIPO_ACTIVIDADES } from '@/app/sistema/aula-virtual/interfaces/actividad.interface'
 
 @Component({
     selector: 'app-evaluacion-form-container-',
@@ -56,13 +57,20 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
     private unsubscribe$: Subject<boolean> = new Subject()
     private _formBuilder = inject(FormBuilder)
     private _evaluacionService = inject(ApiEvaluacionesService)
+    private _config = inject(DynamicDialogConfig)
+    private _paramsData = {
+        iContenidoSemId: 0,
+    }
 
     constructor() {}
 
     ngOnInit(): void {
         this.getData()
         this.initFormGroup()
-        console.log(this.dialogRef, 'test')
+
+        this._paramsData.iContenidoSemId =
+            this._config.data.semana.iContenidoSemId
+        console.log(this._config, 'test')
     }
 
     getData() {
@@ -86,6 +94,7 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
 
     initFormGroup() {
         this.evaluacionInfoForm = this._formBuilder.group({
+            iProgActId: [0],
             iEvaluacionId: [0],
             iTipoEvalId: [null, Validators.required],
             cEvaluacionDescripcion: ['', Validators.required],
@@ -142,7 +151,7 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
         const dateTime = dateActual
             .set('hour', timeActual.hour())
             .set('minute', timeActual.minute())
-        return dateTime.format('YYYY-MM-DD HH:mm:ss')
+        return dateTime.format('YYYY-DD-MM HH:mm:ss')
     }
 
     getInvalidControls(form: FormGroup): string[] {
@@ -157,9 +166,10 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
 
     private handleFormInfo() {
         const data = this.evaluacionInfoForm.value
-
-        console.log(this.evaluacionInfoForm.valid, this.evaluacionInfoForm)
-        console.log(this.getInvalidControls(this.evaluacionInfoForm))
+        data.iDocenteId = 1
+        data.iActTipoId = TIPO_ACTIVIDADES['tarea']
+        data.iContenidoSemId = this._paramsData.iContenidoSemId
+        console.log(data)
 
         if (this.evaluacionInfoForm.invalid) {
             this.evaluacionInfoForm.markAllAsTouched()
@@ -190,7 +200,11 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
             .guardarActualizarEvaluacion(data)
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
-                next: () => {
+                next: (data) => {
+                    this.evaluacionInfoForm.patchValue({
+                        iProgActId: data.iProgActId,
+                        iEvaluacionId: data.iEvaluacionId,
+                    })
                     this.goStep('next')
                 },
             })

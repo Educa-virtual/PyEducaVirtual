@@ -36,6 +36,8 @@ import { ActividadFormComponent } from '../../../../actividades/components/activ
 import { EvaluacionFormContainerComponent } from '../../../../actividades/actividad-evaluacion/evaluacion-form-container/evaluacion-form-container.component'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { GeneralService } from '@/app/servicios/general.service'
+import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
+import { Subject, takeUntil } from 'rxjs'
 
 @Component({
     selector: 'app-tab-contenido',
@@ -80,6 +82,9 @@ export class TabContenidoComponent implements OnInit {
 
     private _constantesService = inject(ConstantesService)
     private _generalService = inject(GeneralService)
+    private _aulaService = inject(ApiAulaService)
+    private semanaSeleccionada
+    private _unsubscribe$ = new Subject<boolean>()
 
     @Input({ required: true }) private _iSilaboId: string
 
@@ -112,27 +117,21 @@ export class TabContenidoComponent implements OnInit {
     }
 
     private obtenerContenidoSemanas() {
-        const params = {
-            petition: 'post',
-            group: 'docente',
-            prefix: 'contenido-semanas',
-            ruta: 'list',
-            seleccion: 1,
-            data: {
-                opcion: 'CONSULTARxiSilaboId',
-                valorBusqueda: this._iSilaboId,
-                iCredId: this._constantesService.iCredId,
-            },
-            params: {
-                skipSuccessMessage: true,
-            },
-        }
+        this._aulaService
+            .contenidoSemanasProgramacionActividades({
+                iSilaboId: this._iSilaboId,
+            })
+            .pipe(takeUntil(this._unsubscribe$))
+            .subscribe({
+                next: (data) => {
+                    this.contenidoSemanas = data
+                    console.log(this.contenidoSemanas)
+                },
+            })
+    }
 
-        this._generalService.getGralPrefix(params).subscribe({
-            next: (response) => {
-                this.contenidoSemanas = response.data
-            },
-        })
+    setSemanaSeleccionada(semana) {
+        this.semanaSeleccionada = semana
     }
 
     generarAccionesContenido() {
@@ -273,7 +272,10 @@ export class TabContenidoComponent implements OnInit {
                     ...MODAL_CONFIG,
                     maximizable: true,
                     header: 'Crear Evaluación',
-                    data: actividad,
+                    data: {
+                        actividad,
+                        semana: this.semanaSeleccionada,
+                    },
                 }
             )
             this._dialogService.getInstance(ref).maximize()

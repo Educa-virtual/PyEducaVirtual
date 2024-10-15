@@ -1,6 +1,7 @@
 import { environment } from '@/environments/environment'
 import { HttpClient } from '@angular/common/http'
 import { inject, Injectable } from '@angular/core'
+import { map } from 'rxjs'
 
 @Injectable({
     providedIn: 'root',
@@ -15,5 +16,14 @@ export class ApiAulaService {
             `${this.baseUrlApi}/aula-virtual/contenidos/actividad/guardarActividad`,
             data
         )
+    }
+
+    contenidoSemanasProgramacionActividades(params) {
+        return this._http
+            .get<any>(
+                `${this.baseUrlApi}/aula-virtual/contenidos/contenidoSemanasProgramacionActividades`,
+                { params }
+            )
+            .pipe(map((resp) => resp.data))
     }
 }

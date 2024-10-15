@@ -40,6 +40,7 @@
                         class="p-link ml-auto mr-2 text-primary"
                         (click)="
                             $event.stopPropagation();
+                            setSemanaSeleccionada(semana);
                             menuContenido.toggle($event)
                         "
                     >
@@ -47,7 +48,7 @@
                     </button>
                 </ng-template>
                 <!-- <app-actividad-lista
-                    [actividades]="actividades"
+                    [actividades]="semana.fechas"
                     (actionSelected)="actionSelected($event)"
                 ></app-actividad-lista> -->
             </p-accordionTab>

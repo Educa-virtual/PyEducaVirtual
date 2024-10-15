@@ -47,10 +47,14 @@
                         <span class="pi pi-cog"></span>
                     </button>
                 </ng-template>
-                <!-- <app-actividad-lista
-                    [actividades]="semana.fechas"
-                    (actionSelected)="actionSelected($event)"
-                ></app-actividad-lista> -->
+                @for (fecha of semana.fechas; track $index) {
+                    <h3 class="text-primary text-xl">{{ fecha.fecha }}</h3>
+                    <hr />
+                    <app-actividad-lista
+                        [actividades]="fecha.actividades"
+                        (actionSelected)="actionSelected($event)"
+                    ></app-actividad-lista>
+                }
             </p-accordionTab>
         </p-accordion>
     }

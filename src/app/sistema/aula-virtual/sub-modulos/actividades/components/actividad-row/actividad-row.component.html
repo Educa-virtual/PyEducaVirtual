@@ -11,19 +11,19 @@
         <div class="flex justify-content-between align-items-start w-full">
             <div class="flex align-items-center gap-4 font-normal text-primary">
                 <app-icon
-                    [name]="
-                        actividad.tipoActividad | appActividadConfig: 'icon'
-                    "
+                    [name]="actividad.iActTipoId | appActividadConfig: 'icon'"
                 />
                 <div class="flex flex-column gap-2 align-items-start">
-                    <span class="text-xl">{{ actividad.nombreActividad }}</span>
+                    <span class="text-xl">{{
+                        actividad.cProgActTituloLeccion
+                    }}</span>
                     <span
                         class="text-sm customer-badge"
                         [ngClass]="
-                            actividad.tipoActividad
+                            actividad.iActTipoId
                                 | appActividadConfig: 'bg-color'
                         "
-                        >{{ actividad.tipoActividadNombre }}</span
+                        >{{ actividad.cActTipoNombre }}</span
                     >
                 </div>
             </div>
@@ -49,12 +49,12 @@
                 [routerLink]="[
                     '../',
                     'actividad',
-                    actividad.id,
-                    actividad.tipoActividad,
+                    actividad.iProgActId,
+                    actividad.iActTipoId,
                 ]"
             >
                 <i class="pi pi-eye"></i>
-                Ver {{ actividad.tipoActividadNombre }}
+                Ver {{ actividad.cActTipoNombre }}
             </a>
         </div>
     </ng-content>

@@ -1,5 +1,5 @@
 <div class="grid">
-    <div class="col-4">
+    <div class="col-3">
         <p><strong>Código Area:</strong> ief7qu</p>
         <p><strong>N° Estudiantes:</strong> 12</p>
         <p><strong>Docente:</strong> Carlos Jose</p>
@@ -9,28 +9,24 @@
         <p><strong>Ciclo:</strong> VI</p>
         <p><strong>Tiempo:</strong> 45:23:00</p>
     </div>
-    <div class="col-8">
-        <h2>Sección de Anuncios:</h2>
-        <textarea pInputTextarea placeholder="Anuncia algo aquí"></textarea>
-        <div>
-            <button
-                pButton
-                type="button"
-                label="Link"
-                icon="pi pi-link"
-            ></button>
-            <button
-                pButton
-                type="button"
-                label="Cancelar"
-                class="p-button-secondary"
-            ></button>
-            <button
-                pButton
-                type="button"
-                label="Publicar"
-                class="p-button-success"
-            ></button>
-        </div>
+    <div class="col-9">
+        <label for="Anuncia algo aquí"
+            >Anuncia algo aquí Para toda la clase</label
+        >
+        <p-editor id="cTareaDescripcion" formControlName="cTareaDescripcion" />
+        <br />
+        <button pButton type="button" label="Link" icon="pi pi-link"></button>
+        <button
+            pButton
+            type="button"
+            label="Cancelar"
+            class="pi pi-times"
+        ></button>
+        <button
+            pButton
+            type="button"
+            label="Publicar"
+            class="pi pi-users"
+        ></button>
     </div>
 </div>

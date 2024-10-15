@@ -37,7 +37,6 @@
                         id="cTareaArchivoAdjunto"
                         formControlName="cTareaArchivoAdjunto"
                     ></p-fileUpload>
-
                     <button
                         icon="pi pi-link"
                         pButton
@@ -62,7 +61,9 @@
                     placeholder="Ingrese el enlace"
                     [(ngModel)]="link"
                 />
-                <button (click)="addLink()">Agregar</button>
+                <button class="p-button-primary mx-auto" (click)="addLink()">
+                    Agregar
+                </button>
             </div>
         </p-dialog>
 
@@ -115,30 +116,33 @@
                             </p-table>
                         </div>
                         <footer>
-                            <br />
-                            <button
-                                pButton
-                                class="bg-green-500 mr-4"
-                                label="Aceptar"
-                                icon="pi pi-times"
-                                (click)="cerrarModal()"
-                            ></button>
-                            <button
-                                pButton
-                                label="Cerrar"
-                                class="bg-gray-100 text-gray-900"
-                                icon="pi pi-times"
-                                (click)="cerrarModal()"
-                            ></button>
+                            <div class="col text-left">
+                                <button
+                                    pButton
+                                    label="Cerrar"
+                                    class="p-button-label ql-color"
+                                    icon="pi pi-times"
+                                    (click)="cerrarModal()"
+                                ></button>
+                            </div>
+                            <div class="col text-right">
+                                <button
+                                    pButton
+                                    class="p-button-label ql-color"
+                                    label="Guardar"
+                                    icon="pi pi-save"
+                                    (click)="guardarDatos()"
+                                ></button>
+                            </div>
                         </footer>
                     </p-dialog>
                 </div>
             </div>
-            <!-- fecha de publicacion -->
+            <!-- fecha hora de Inicio -->
             <div class="formgrid grid">
                 <div class="field flex flex-column col-12 md:col-6">
                     <label for="dFechaEvaluacionPublicacion"
-                        >Fecha publicación</label
+                        >Fecha de Inicio</label
                     >
                     <p-calendar
                         formControlName="dFechaEvaluacionPublicacion"
@@ -151,7 +155,46 @@
                 </div>
                 <div class="field flex flex-column col-12 md:col-6">
                     <label for="tHoraEvaluacionPublicacion"
-                        >Hora publicación</label
+                        >Hora de Inicio</label
+                    >
+                    <p-calendar
+                        [timeOnly]="true"
+                        styleClass="w-full"
+                        [showIcon]="true"
+                        iconDisplay="input"
+                        formControlName="tHoraEvaluacionPublicacion"
+                        inputId="tHoraEvaluacionPublicacion"
+                        [appendTo]="'body'"
+                    >
+                        <ng-template
+                            pTemplate="inputicon"
+                            let-clickCallBack="clickCallBack"
+                        >
+                            <i class="pi pi-clock pointer-events-none"></i>
+                        </ng-template>
+                    </p-calendar>
+                </div>
+            </div>
+            <br />
+
+            <!-- fecha y hora fin -->
+            <div class="formgrid grid">
+                <div class="field flex flex-column col-12 md:col-6">
+                    <label for="dFechaEvaluacionPublicacion"
+                        >Fecha de finalizacion</label
+                    >
+                    <p-calendar
+                        formControlName="dFechaEvaluacionPublicacion"
+                        [iconDisplay]="'input'"
+                        styleClass="w-full"
+                        [showIcon]="true"
+                        inputId="dFechaEvaluacionPublicacion"
+                        [appendTo]="'body'"
+                    />
+                </div>
+                <div class="field flex flex-column col-12 md:col-6">
+                    <label for="tHoraEvaluacionPublicacion"
+                        >Hora finalizacion</label
                     >
                     <p-calendar
                         [timeOnly]="true"

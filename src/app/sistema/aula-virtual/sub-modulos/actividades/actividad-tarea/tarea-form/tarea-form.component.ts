@@ -75,6 +75,7 @@ export class TareaFormComponent implements OnInit {
     public tareaForm = this._formBuilder.group({
         cTareaTitulo: ['', [Validators.required]],
         cTareaDescripcion: ['', [Validators.required]],
+        cTareaArchivoAdjunto: [''],
         cTareaIndicaciones: [''],
         dFechaEvaluacionPublicacion: [''],
         tHoraEvaluacionPublicacion: [''],
@@ -115,8 +116,8 @@ export class TareaFormComponent implements OnInit {
     niveldelogrosDropdownItems = [
         { name: '01', code: 'A' },
         { name: '02', code: 'B' },
-        { name: '02', code: 'C' },
-        { name: '02', code: 'C' },
+        { name: '03', code: 'C' },
+        { name: '04', code: 'C' },
     ]
 
     submit() {
@@ -131,6 +132,10 @@ export class TareaFormComponent implements OnInit {
     }
 
     cancel() {
+        this.tareaForm.reset()
+        this.cancelEvent.emit()
+    }
+    guardarDatos() {
         this.tareaForm.reset()
         this.cancelEvent.emit()
     }

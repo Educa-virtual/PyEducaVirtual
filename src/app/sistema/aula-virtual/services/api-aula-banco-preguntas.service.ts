@@ -85,10 +85,12 @@ export class ApiAulaBancoPreguntasService {
 
     // preguntas
     guardarActualizarPreguntaConAlternativas(data) {
-        return this._http.post(
-            `${this.baseUrlApi}/evaluaciones/banco-preguntas/guardarActualizarPreguntaConAlternativas`,
-            data
-        )
+        return this._http
+            .post(
+                `${this.baseUrlApi}/evaluaciones/banco-preguntas/guardarActualizarPreguntaConAlternativas`,
+                data
+            )
+            .pipe(map((resp) => resp['data']))
     }
 
     eliminarPreguntaById(id) {

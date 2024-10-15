@@ -112,8 +112,8 @@ export class AulaBancoPreguntaFormContainerComponent implements OnInit {
         this._aulaBancoPreguntasService
             .guardarActualizarPreguntaConAlternativas(data)
             .subscribe({
-                next: () => {
-                    this.closeModal(data)
+                next: (respData) => {
+                    this.closeModal(respData)
                 },
             })
     }

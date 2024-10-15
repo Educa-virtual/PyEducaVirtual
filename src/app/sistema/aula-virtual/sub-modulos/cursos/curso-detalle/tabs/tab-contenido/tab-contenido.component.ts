@@ -129,7 +129,6 @@ export class TabContenidoComponent implements OnInit {
             .subscribe({
                 next: (data) => {
                     this.contenidoSemanas = data
-                    console.log(this.contenidoSemanas)
                 },
             })
     }

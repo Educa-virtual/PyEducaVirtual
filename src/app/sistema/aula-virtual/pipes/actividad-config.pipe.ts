@@ -7,8 +7,6 @@ import { actividadesConfig } from '../interfaces/actividad.interface'
 })
 export class ActividadConfigPipe implements PipeTransform {
     transform(value: number, key: string): string {
-        console.log(actividadesConfig[1])
-
         return actividadesConfig[value][key]
     }
 }

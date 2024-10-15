@@ -1,38 +1,59 @@
-<div class="container my-4">
-    <div class="row">
-        <!-- Columna izquierda (Sección de Anuncios) -->
-        <div class="col-12">
-            <article class="card p-3">
-                <h2 class="mb-3 text-2xl">Sección de Anuncios:</h2>
-                <p><strong>Anuncie aquí</strong> 30</p>
-            </article>
+<!doctype html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Interfaz de Clase y Anuncios</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                display: flex;
+                margin: 0;
+                padding: 20px;
+            }
+            .class-info {
+                width: 200px;
+                border: 1px solid #ccc;
+                padding: 10px;
+                margin-right: 20px;
+            }
+            .announcement-section {
+                flex-grow: 1;
+            }
+            textarea {
+                width: 100%;
+                height: 100px;
+                margin-bottom: 10px;
+            }
+            button {
+                background-color: #00308f;
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                margin-right: 10px;
+                cursor: pointer;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="class-info">
+            <p><strong>Código Area:</strong> ief7qu</p>
+            <p><strong>N° Estudiantes:</strong> 12</p>
+            <p><strong>Docente:</strong> Carlos Jose</p>
+            <p><strong>Tutor:</strong> Jose Maria</p>
+            <p><strong>Grado:</strong> 4to</p>
+            <p><strong>Sección:</strong> H</p>
+            <p><strong>Ciclo:</strong> VI</p>
+            <p><strong>Tiempo:</strong> 45:23:00</p>
         </div>
-
-        <!-- Columna derecha (Datos del Docente) -->
-        <div class="col-12 mt-4">
-            <h1>Datos del Docente</h1>
-            <div class="row">
-                <div class="col-md-6">
-                    <p><strong>Código Área:</strong> cief7qu</p>
-                    <p><strong># Estudiantes:</strong> 30</p>
-                    <p><strong>Docente:</strong> Carlos Jose</p>
-                    <p><strong>Tutor:</strong> Jose María</p>
-                    <p><strong>Grado:</strong> 4to</p>
-                    <p><strong>Sección:</strong> H</p>
-                    <p><strong>Ciclo:</strong> VI</p>
-                    <p><strong>Tiempo:</strong> 45:23:00</p>
-                </div>
-                <div class="col-md-6">
-                    <div class="row">
-                        <div class="col-12">
-                            <p><strong>Código Área:</strong> cief7qu</p>
-                        </div>
-                        <div class="col-12">
-                            <button class="btn btn-primary">Primary</button>
-                        </div>
-                    </div>
-                </div>
+        <div class="announcement-section">
+            <h2>Sección de Anuncios:</h2>
+            <textarea placeholder="Anuncia algo algo aquí:"></textarea>
+            <div>
+                <button>Link</button>
+                <button>Cancelar</button>
+                <button>Publicar</button>
             </div>
         </div>
-    </div>
-</div>
+    </body>
+</html>

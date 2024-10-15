@@ -12,6 +12,7 @@
         />
     </div>
 </div>
+
 <p-dialog
     [(visible)]="modalPerfiles"
     [style]="{ width: '1000px' }"
@@ -20,6 +21,7 @@
     class="p-fluid"
 >
     <p-orderList
+        class=""
         [value]="perfiles"
         header="Hola.. {{
             name1 | uppercase
@@ -41,13 +43,13 @@
                         <div class="perfil-name">
                             {{ perfiles.cPerfilNombre }}
                         </div>
-                        <div class="perfil-name">IE: {{ name }}</div>
+                        <div class="perfil-name">IE: {{ null }}</div>
                         <div class="perfil-description">
-                            Cod. Modular:{{ name }}
+                            Cod. Modular:{{ null }}
                         </div>
-                        <div class="perfil-description">Nivel: {{ name }}</div>
+                        <div class="perfil-description">Nivel: {{ null }}</div>
                         <div class="perfil-description">
-                            DRE MOQUEGUA - UGUEL MARISCAL NIETO
+                            {{ perfiles.cEntNombreLargo }}
                         </div>
                     </div>
                 </div>

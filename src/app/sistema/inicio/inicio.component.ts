@@ -24,9 +24,8 @@ import { CommonModule } from '@angular/common'
 export class InicioComponent implements OnInit {
     name: string
     name1: string
-
+    primerNombre: string = ''
     perfiles: any[] = []
-
     modalPerfiles: boolean = false
     perfilSeleccionado: any = {}
 
@@ -45,21 +44,25 @@ export class InicioComponent implements OnInit {
     obtenerPerfiles() {
         const info = this.lg.getItem('dremoToken')
         this.perfiles = info.perfiles
+
         //console.log('perfiles', this.perfiles)
+
         this.openModal()
     }
 
     openModal() {
         this.modalPerfiles = true
     }
-    seleccionarPerfil(e) {
+    /*seleccionarPerfil(e) {
         const val = e.value
         const found = this.perfiles.find((item) => item.iPerfilId == val)
         console.log('found ', found)
         this.perfilSeleccionado = found
         this.modalPerfiles = false
-    }
+    }*/
     seleccionarElemento(perfiles: any): void {
+        /*const perfil_actual = perfiles.iPerfilId
+        this.ConstantesService.getMenu(perfil_actual);*/
         const found = (this.perfilSeleccionado = perfiles)
         console.log(found)
         this.modalPerfiles = false

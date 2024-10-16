@@ -2,6 +2,7 @@ import {
     HashLocationStrategy,
     LocationStrategy,
     PathLocationStrategy,
+    registerLocaleData,
 } from '@angular/common'
 import { HTTP_INTERCEPTORS } from '@angular/common/http'
 import {
@@ -42,8 +43,13 @@ import {
 import { routes } from './app.routes'
 import { MessageInterceptor } from './shared/interceptors/message-interceptor.interceptor'
 
+import { LOCALE_ID } from '@angular/core'
+import localeEs from '@angular/common/locales/es'
+
 import dayjs from 'dayjs'
 import 'dayjs/locale/es'
+
+registerLocaleData(localeEs)
 
 function initializeDayjs() {
     return () => {
@@ -73,6 +79,7 @@ export const appConfig: ApplicationConfig = {
             withComponentInputBinding(),
             withHashLocation()
         ),
+        { provide: LOCALE_ID, useValue: 'es' },
         provideNgIconsConfig(
             {
                 size: '1.5em',

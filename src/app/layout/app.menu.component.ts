@@ -21,7 +21,7 @@ export class AppMenuComponent implements OnInit {
 
     ngOnInit() {
         this.model = this.ConstantesService.nav
-
+        console.log(this.model)
         // if (!this.model.length) { this.router.navigate(['./']); }
         // else {
         //     const ruta = this.model[0]['items'][0].routerLink[0]

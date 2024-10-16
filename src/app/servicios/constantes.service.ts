@@ -459,9 +459,10 @@ export class ConstantesService {
 
     nav = this.getMenu()
     getMenu() {
-        console.log('perfil_actual', perfil_actual)
+        //console.log(perfil_actual.iPerfilId)
         if (!perfil_actual) return other
-        switch (perfil_actual.iProfile) {
+        console.log(perfil_actual)
+        switch (Number(perfil_actual.iPerfilId)) {
             case 1001:
                 return docente
             case 1002:
@@ -472,7 +473,11 @@ export class ConstantesService {
                 return administrador
             case 1006:
                 return evaluaciones
+            case 1:
+                return administrador
             case 7:
+                return docente
+            case 8:
                 return docente
             default:
                 return other

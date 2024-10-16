@@ -11,6 +11,7 @@ import { DetalleAsistenciaComponent } from './asistencia/detalle-asistencia/deta
 import { PersonalComponent } from './personal/personal.component'
 import { SesionAprendizajeComponent } from './sesion-aprendizaje/sesion-aprendizaje.component'
 import { GestionarSilaboComponent } from './areas-estudios/components/gestionar-silabo/gestionar-silabo.component'
+import { PerfilComponent } from './perfil/perfil.component'
 
 @NgModule({
     imports: [
@@ -40,6 +41,10 @@ import { GestionarSilaboComponent } from './areas-estudios/components/gestionar-
             {
                 path: 'gestionar-programacion-curricular/:idDocCursoId/:cCursoNombre/:iAvanceSilabo',
                 component: GestionarSilaboComponent,
+            },
+            {
+                path: 'perfil',
+                component: PerfilComponent,
             },
         ]),
     ],

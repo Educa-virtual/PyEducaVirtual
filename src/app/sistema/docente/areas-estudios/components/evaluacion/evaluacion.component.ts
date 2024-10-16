@@ -3,10 +3,11 @@ import { ConstantesService } from '@/app/servicios/constantes.service'
 import { GeneralService } from '@/app/servicios/general.service'
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
-import { Component, Input, OnChanges } from '@angular/core'
+import { Component, Input, OnChanges, OnDestroy } from '@angular/core'
 import { FormBuilder } from '@angular/forms'
 import { ConfirmationService, MessageService } from 'primeng/api'
 import { FormDetalleEvaluacionesComponent } from '../form-detalle-evaluaciones/form-detalle-evaluaciones.component'
+import { Subject, takeUntil } from 'rxjs'
 
 interface Data {
     accessToken: string
@@ -29,8 +30,10 @@ interface Data {
     templateUrl: './evaluacion.component.html',
     styleUrl: './evaluacion.component.scss',
 })
-export class EvaluacionComponent implements OnChanges {
+export class EvaluacionComponent implements OnChanges, OnDestroy {
     @Input() iSilaboId: string
+    private unsubscribe$ = new Subject<boolean>()
+
     showModal: boolean = false
     itemData = []
     option: string
@@ -137,6 +140,7 @@ export class EvaluacionComponent implements OnChanges {
                     prefix: 'detalle-evaluaciones',
                     ruta: 'store',
                     data: item,
+                    params: { skipSuccessMessage: true },
                 }
                 this.getInformation(params, true)
 
@@ -149,6 +153,7 @@ export class EvaluacionComponent implements OnChanges {
                     prefix: 'detalle-evaluaciones',
                     ruta: 'store',
                     data: item,
+                    params: { skipSuccessMessage: true },
                 }
                 this.getInformation(params, true)
 
@@ -171,6 +176,7 @@ export class EvaluacionComponent implements OnChanges {
                 iCredId: this.ConstantesService.iCredId,
                 iSilaboId: this.iSilaboId,
             },
+            params: { skipSuccessMessage: true },
         }
         this.getInformation(params, false)
     }
@@ -196,6 +202,7 @@ export class EvaluacionComponent implements OnChanges {
                     prefix: 'detalle-evaluaciones',
                     ruta: 'store',
                     data: item,
+                    params: { skipSuccessMessage: true },
                 }
                 this.getInformation(params, true)
                 //this.messageService.add({ severity: 'info', summary: 'Confirmado', detail: 'Eliminando Metodología' });
@@ -206,19 +213,24 @@ export class EvaluacionComponent implements OnChanges {
         })
     }
     getInformation(params, api) {
-        this.GeneralService.getGralPrefix(params).subscribe({
-            next: (response: Data) => {
-                if (api) {
-                    this.showModal = false
-                    this.getDetalleEvaluaciones()
-                } else {
-                    this.data = response.data
-                }
-            },
-            complete: () => {},
-            error: (error) => {
-                console.log(error)
-            },
-        })
+        this.GeneralService.getGralPrefix(params)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+                next: (response: Data) => {
+                    if (api) {
+                        this.showModal = false
+                        this.getDetalleEvaluaciones()
+                    } else {
+                        this.data = response.data
+                    }
+                },
+                complete: () => {},
+                error: (error) => {
+                    console.log(error)
+                },
+            })
+    }
+    ngOnDestroy() {
+        this.unsubscribe$.next(true)
     }
 }

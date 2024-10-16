@@ -1,6 +1,6 @@
 .layout-topbar {
     position: fixed;
-    height: 70px;
+    height: 60px;
     z-index: 1000;
     left: 0;
     top: 0;
@@ -88,10 +88,6 @@
         ::-webkit-scrollbar-track {
             border-radius: 10px;
         }
-    }
-
-    .layout-topbar-notification {
-        //
     }
 
     .layout-menu-button {

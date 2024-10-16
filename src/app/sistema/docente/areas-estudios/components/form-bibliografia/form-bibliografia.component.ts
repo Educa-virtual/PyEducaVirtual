@@ -5,6 +5,7 @@ import {
     OnChanges,
     Output,
     OnInit,
+    OnDestroy,
 } from '@angular/core'
 import { ModalPrimengComponent } from '../../../../../shared/modal-primeng/modal-primeng.component'
 import { PrimengModule } from '@/app/primeng.module'
@@ -12,6 +13,7 @@ import { GeneralService } from '@/app/servicios/general.service'
 import { FormBuilder, Validators } from '@angular/forms'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { MessageService } from 'primeng/api'
+import { Subject, takeUntil } from 'rxjs'
 interface Data {
     accessToken: string
     refreshToken: string
@@ -28,7 +30,7 @@ interface Data {
     templateUrl: './form-bibliografia.component.html',
     styleUrl: './form-bibliografia.component.scss',
 })
-export class FormBibliografiaComponent implements OnChanges, OnInit {
+export class FormBibliografiaComponent implements OnChanges, OnInit, OnDestroy {
     @Output() accionBtnItem = new EventEmitter()
 
     @Input() showModal: boolean = true
@@ -36,6 +38,7 @@ export class FormBibliografiaComponent implements OnChanges, OnInit {
     @Input() item
     @Input() option: string
 
+    private unsubscribe$ = new Subject<boolean>()
     constructor(
         private GeneralService: GeneralService,
         private fb: FormBuilder,
@@ -133,21 +136,27 @@ export class FormBibliografiaComponent implements OnChanges, OnInit {
             data: {
                 opcion: 'CONSULTAR',
             },
+            params: { skipSuccessMessage: true },
         }
         this.getInformation(params, false)
     }
     tipoBibliografias = []
     getInformation(params, api) {
-        this.GeneralService.getGralPrefix(params).subscribe({
-            next: (response: Data) => {
-                if (!api) {
-                    this.tipoBibliografias = response.data
-                }
-            },
-            complete: () => {},
-            error: (error) => {
-                console.log(error)
-            },
-        })
+        this.GeneralService.getGralPrefix(params)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+                next: (response: Data) => {
+                    if (!api) {
+                        this.tipoBibliografias = response.data
+                    }
+                },
+                complete: () => {},
+                error: (error) => {
+                    console.log(error)
+                },
+            })
+    }
+    ngOnDestroy() {
+        this.unsubscribe$.next(true)
     }
 }

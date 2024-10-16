@@ -15,7 +15,11 @@ import { ConstantesService } from '@/app/servicios/constantes.service'
 import { GeneralService } from '@/app/servicios/general.service'
 import { Subject, takeUntil } from 'rxjs'
 import { ButtonModule } from 'primeng/button'
+import { AreasEstudiosComponent } from '../../../../docente/areas-estudios/areas-estudios.component'
+import { LocalStoreService } from '@/app/servicios/local-store.service'
+import { PrimengModule } from '@/app/primeng.module'
 
+export type Layout = 'list' | 'grid'
 @Component({
     selector: 'app-cursos',
     standalone: true,
@@ -32,27 +36,57 @@ import { ButtonModule } from 'primeng/button'
         CursoCardComponent,
         DropdownModule,
         ButtonModule,
+        AreasEstudiosComponent,
+        ButtonModule,
+        PrimengModule,
     ],
     templateUrl: './cursos.component.html',
     styleUrl: './cursos.component.scss',
 })
 export class CursosComponent implements OnDestroy, OnInit {
     public cursos: ICurso[] = []
+    public data: ICurso[] = []
+
     public sortField: string = ''
     public sortOrder: number = 0
+    public layout: Layout = 'list'
+    options = ['list', 'grid']
+    public searchText: Event
+    public text: string = ''
 
     private unsubscribe$ = new Subject<boolean>()
     private _constantesService = inject(ConstantesService)
     private _generalService = inject(GeneralService)
+    private _store = inject(LocalStoreService)
 
     constructor() {}
 
     ngOnInit(): void {
+        const profile = this._store.getItem('dremoPerfil')
+        switch (profile.iProfile) {
+            case 1001:
+                this.layout = 'list'
+                break
+            case 1003:
+                this.layout = 'grid'
+                break
+            default:
+                break
+        }
         this.getCursos()
     }
 
     public onFilter(dv: DataView, event: Event) {
-        dv.filter((event.target as HTMLInputElement).value)
+        const text = (event.target as HTMLInputElement).value
+        this.cursos = this.data
+        dv.value = this.data
+        if (text.length > 1) {
+            dv.filter(text)
+            this.cursos = dv.filteredValue
+        }
+        if (this.layout === 'list') {
+            this.searchText = event
+        }
     }
 
     getCursos() {
@@ -79,6 +113,11 @@ export class CursosComponent implements OnDestroy, OnInit {
                         iCursoId: curso.idDocCursoId,
                         ...curso,
                     }))
+                    this.data = this.cursos
+                },
+                complete: () => {},
+                error: (error) => {
+                    console.log(error)
                 },
             })
     }

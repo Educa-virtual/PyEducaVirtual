@@ -10,3 +10,7 @@
 .p-dropdown {
     width: 100%;
 }
+
+:host ::ng-deep .p-dataview-emptymessage {
+    display: none !important;
+}

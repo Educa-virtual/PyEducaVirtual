@@ -16,6 +16,7 @@ import { DialogModule } from 'primeng/dialog'
 import { TableModule } from 'primeng/table'
 import { CheckboxModule } from 'primeng/checkbox'
 import { FileUploadModule } from 'primeng/fileupload'
+import { DynamicDialogRef } from 'primeng/dynamicdialog'
 @Component({
     selector: 'app-tarea-form',
     standalone: true,
@@ -41,6 +42,7 @@ export class TareaFormComponent implements OnInit {
     @Output() cancelEvent = new EventEmitter<void>()
 
     private _formBuilder = inject(FormBuilder)
+    private ref = inject(DynamicDialogRef)
     selectedState: unknown = null
     cities: any[]
     countries: any[] = []
@@ -87,7 +89,9 @@ export class TareaFormComponent implements OnInit {
     }
 
     onUpload(event: any) {
-        console.log('subida de archivos', event.files)
+        const file = event.file[0]
+        const formData = new FormData()
+        formData.append('cTareaArchivoAdjunto', file, file.name)
     }
 
     onError(event: any) {
@@ -122,7 +126,6 @@ export class TareaFormComponent implements OnInit {
 
     submit() {
         const value = this.tareaForm.value
-        console.log(value)
 
         if (this.tareaForm.invalid) {
             this.tareaForm.markAllAsTouched()

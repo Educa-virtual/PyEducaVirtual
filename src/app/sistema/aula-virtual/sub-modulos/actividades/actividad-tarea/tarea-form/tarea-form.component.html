@@ -34,7 +34,7 @@
                         uploadLabel="Subir"
                         cancelLabel="Cancelar"
                         class="fileUpload"
-                        id="cTareaArchivoAdjunto"
+                        inputId="cTareaArchivoAdjunto"
                         formControlName="cTareaArchivoAdjunto"
                     ></p-fileUpload>
                     <button
@@ -145,16 +145,16 @@
                         >Fecha de Inicio</label
                     >
                     <p-calendar
-                        formControlName="dFechaEvaluacionPublicacion"
+                        formControlName="dFechaEvaluacionPublicacionInicio"
                         [iconDisplay]="'input'"
                         styleClass="w-full"
                         [showIcon]="true"
-                        inputId="dFechaEvaluacionPublicacion"
+                        inputId="dFechaEvaluacionPublicacionInicio"
                         [appendTo]="'body'"
                     />
                 </div>
                 <div class="field flex flex-column col-12 md:col-6">
-                    <label for="tHoraEvaluacionPublicacion"
+                    <label for="tHoraEvaluacionPublicacionInicio"
                         >Hora de Inicio</label
                     >
                     <p-calendar
@@ -162,8 +162,8 @@
                         styleClass="w-full"
                         [showIcon]="true"
                         iconDisplay="input"
-                        formControlName="tHoraEvaluacionPublicacion"
-                        inputId="tHoraEvaluacionPublicacion"
+                        formControlName="tHoraEvaluacionPublicacionInicio"
+                        inputId="tHoraEvaluacionPublicacionInicio"
                         [appendTo]="'body'"
                     >
                         <ng-template
@@ -180,20 +180,20 @@
             <!-- fecha y hora fin -->
             <div class="formgrid grid">
                 <div class="field flex flex-column col-12 md:col-6">
-                    <label for="dFechaEvaluacionPublicacion"
+                    <label for="dFechaEvaluacionPublicacionFin"
                         >Fecha de finalizacion</label
                     >
                     <p-calendar
-                        formControlName="dFechaEvaluacionPublicacion"
+                        formControlName="dFechaEvaluacionPublicacionFin"
                         [iconDisplay]="'input'"
                         styleClass="w-full"
                         [showIcon]="true"
-                        inputId="dFechaEvaluacionPublicacion"
+                        inputId="dFechaEvaluacionPublicacionFin"
                         [appendTo]="'body'"
                     />
                 </div>
                 <div class="field flex flex-column col-12 md:col-6">
-                    <label for="tHoraEvaluacionPublicacion"
+                    <label for="tHoraEvaluacionPublicacionFin"
                         >Hora finalizacion</label
                     >
                     <p-calendar
@@ -201,8 +201,8 @@
                         styleClass="w-full"
                         [showIcon]="true"
                         iconDisplay="input"
-                        formControlName="tHoraEvaluacionPublicacion"
-                        inputId="tHoraEvaluacionPublicacion"
+                        formControlName="tHoraEvaluacionPublicacionFin"
+                        inputId="tHoraEvaluacionPublicacionFin"
                         [appendTo]="'body'"
                     >
                         <ng-template

@@ -90,39 +90,39 @@ export class TareaFormComponent implements OnInit {
     mostrarModal() {
         this.displayModal = true
     }
-    filesToUpload: any;
-    cDocuAdmiArchivo:any;
-    onUpload(event: any) {
+    filesToUpload: any
+    cDocuAdmiArchivo: any
+    // onUpload(event: any) {
+    //     console.log(event)
+    // let archivoFile = null;
+    // this.cDocuAdmiArchivo = null;
+    // this.filesToUpload = <Array<File>>event.target.files;
+    // console.log(this.filesToUpload.length)
+    // if (this.filesToUpload.length) {
+    //   archivoFile = this.filesToUpload[0];
 
-        let archivoFile = null;
-        this.cDocuAdmiArchivo = null;
-        this.filesToUpload = <Array<File>>event.target.files;
-        console.log(this.filesToUpload.length)
-        if (this.filesToUpload.length) {
-          archivoFile = this.filesToUpload[0];
+    // //   const formData = new FormData();
 
-          const formData = new FormData();
+    //   const dataFile = this.objectToFormData({
+    //     file: archivoFile,
+    //   });
 
-          const dataFile = this.objectToFormData({
-            file: archivoFile,
-          });
+    //   this.GeneralService.subirArchivo(dataFile).subscribe(
+    //     (resp:any) => {
+    //         console.log(resp)
+    //     },
+    //     (error) => {}
+    //   );
+    // }
 
-          this.GeneralService.subirArchivo(dataFile).subscribe(
-            (resp:any) => {
-                console.log(resp)
-            },
-            (error) => {}
-          );
-        }
+    // const file = event.file[0]
+    // const formData = new FormData()
+    // formData.append('cTareaArchivoAdjunto', file, file.name)
+    // }
 
-        const file = event.file[0]
-        const formData = new FormData()
-        formData.append('cTareaArchivoAdjunto', file, file.name)
-    }
-
-    onError(event: any) {
-        console.log('error subida de archivos', event)
-    }
+    // onError(event: any) {
+    //     console.log('error subida de archivos', event)
+    // }
 
     linkDialogVisible: boolean = false
     link: string = ''
@@ -169,16 +169,16 @@ export class TareaFormComponent implements OnInit {
         this.cancelEvent.emit()
     }
 
-    objectToFormData(obj:any) {
-        const formData = new FormData();
+    // objectToFormData(obj:any) {
+    //     const formData = new FormData();
 
-        // prevent to send empty fields
-        Object.keys(obj).forEach((key) => {
-          if (obj[key] !== "") {
-            formData.append(key, obj[key]);
-          }
-        });
+    //     // prevent to send empty fields
+    //     Object.keys(obj).forEach((key) => {
+    //       if (obj[key] !== "") {
+    //         formData.append(key, obj[key]);
+    //       }
+    //     });
 
-        return formData;
-      }
+    //     return formData;
+    //   }
 }

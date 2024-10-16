@@ -25,6 +25,9 @@ export class AppComponent implements OnInit {
 
     ngOnInit() {
         this.primengConfig.ripple = true
+        this.primengConfig.setTranslation({
+            dateFormat: 'dd/mm/yy',
+        })
         const store = new LocalStoreService()
         const user = store.getItem('dremoToken')
         const accessToken = store.getItem('auth-token')

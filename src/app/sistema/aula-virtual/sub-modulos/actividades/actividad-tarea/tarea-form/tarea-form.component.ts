@@ -18,6 +18,7 @@ import { CheckboxModule } from 'primeng/checkbox'
 import { FileUploadModule } from 'primeng/fileupload'
 import { DynamicDialogRef } from 'primeng/dynamicdialog'
 import { GeneralService } from '@/app/servicios/general.service'
+import { FileUploadPrimengComponent } from '../../../../../../shared/file-upload-primeng/file-upload-primeng.component'
 @Component({
     selector: 'app-tarea-form',
     standalone: true,
@@ -34,6 +35,7 @@ import { GeneralService } from '@/app/servicios/general.service'
         TableModule,
         CheckboxModule,
         FileUploadModule,
+        FileUploadPrimengComponent,
     ],
     templateUrl: './tarea-form.component.html',
     styleUrl: './tarea-form.component.scss',
@@ -41,6 +43,9 @@ import { GeneralService } from '@/app/servicios/general.service'
 export class TareaFormComponent implements OnInit {
     @Output() submitEvent = new EventEmitter<any>()
     @Output() cancelEvent = new EventEmitter<void>()
+
+    FilesTareas: any[] = []
+    FilesInstrumentos: any[] = []
 
     private _formBuilder = inject(FormBuilder)
     private GeneralService = inject(GeneralService)
@@ -80,49 +85,23 @@ export class TareaFormComponent implements OnInit {
     public tareaForm = this._formBuilder.group({
         cTareaTitulo: ['', [Validators.required]],
         cTareaDescripcion: ['', [Validators.required]],
-        cTareaArchivoAdjunto: [''],
+        cTareaArchivoAdjunto: [],
         cTareaIndicaciones: [''],
         dFechaEvaluacionPublicacion: [''],
         tHoraEvaluacionPublicacion: [''],
+        dFechaEvaluacionPublicacionInicio: [''],
+        tHoraEvaluacionPublicacionInicio: [''],
+        dFechaEvaluacionPublicacionFin: [''],
+        tHoraEvaluacionPublicacionFin: [''],
+
+        iActTipoId: [],
+        iContenidoSemId: [],
     })
     displayModal: boolean = false
 
     mostrarModal() {
         this.displayModal = true
     }
-    filesToUpload: any
-    cDocuAdmiArchivo: any
-    // onUpload(event: any) {
-    //     console.log(event)
-    // let archivoFile = null;
-    // this.cDocuAdmiArchivo = null;
-    // this.filesToUpload = <Array<File>>event.target.files;
-    // console.log(this.filesToUpload.length)
-    // if (this.filesToUpload.length) {
-    //   archivoFile = this.filesToUpload[0];
-
-    // //   const formData = new FormData();
-
-    //   const dataFile = this.objectToFormData({
-    //     file: archivoFile,
-    //   });
-
-    //   this.GeneralService.subirArchivo(dataFile).subscribe(
-    //     (resp:any) => {
-    //         console.log(resp)
-    //     },
-    //     (error) => {}
-    //   );
-    // }
-
-    // const file = event.file[0]
-    // const formData = new FormData()
-    // formData.append('cTareaArchivoAdjunto', file, file.name)
-    // }
-
-    // onError(event: any) {
-    //     console.log('error subida de archivos', event)
-    // }
 
     linkDialogVisible: boolean = false
     link: string = ''
@@ -151,6 +130,9 @@ export class TareaFormComponent implements OnInit {
     ]
 
     submit() {
+        this.tareaForm.controls.cTareaArchivoAdjunto.setValue(
+            JSON.stringify(this.FilesTareas)
+        )
         const value = this.tareaForm.value
 
         if (this.tareaForm.invalid) {
@@ -169,16 +151,23 @@ export class TareaFormComponent implements OnInit {
         this.cancelEvent.emit()
     }
 
-    // objectToFormData(obj:any) {
-    //     const formData = new FormData();
+    handleAction(elemento): void {
+        const { accion } = elemento
+        const { item } = elemento
 
-    //     // prevent to send empty fields
-    //     Object.keys(obj).forEach((key) => {
-    //       if (obj[key] !== "") {
-    //         formData.append(key, obj[key]);
-    //       }
-    //     });
-
-    //     return formData;
-    //   }
+        switch (accion) {
+            case 'subir-archivo-tareas':
+                this.FilesTareas.push({
+                    name: item.file.name,
+                    size: item.file.size,
+                })
+                break
+            case 'subir-archivo-instrumentos':
+                this.FilesInstrumentos.push({
+                    name: item.file.name,
+                    size: item.file.size,
+                })
+                break
+        }
+    }
 }

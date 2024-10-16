@@ -149,7 +149,7 @@ export class TabContenidoComponent implements OnInit {
                     const actionHandler =
                         this.handleActionsMap[actividad.iActTipoId]
                     if (actionHandler) {
-                        actionHandler('CREAR', null)
+                        actionHandler('CREAR', actividad)
                     }
                 },
             }
@@ -192,31 +192,28 @@ export class TabContenidoComponent implements OnInit {
     }
 
     handleTareaAction(action: TActividadActions, actividad: IActividad) {
-        if (action === 'EDITAR') {
-            const ref: DynamicDialogRef = this._dialogService.open(
-                TareaFormContainerComponent,
-                {
-                    ...MODAL_CONFIG,
-                    data: actividad,
-                    header: 'Editar Actividad',
-                }
-            )
-            ref.onClose.subscribe((result) => {
-                if (result) {
-                    console.log('Formulario enviado', result)
-                } else {
-                    console.log('Formulario cancelado')
-                }
-            })
-        }
-
-        if (action === 'CREAR') {
-            this._dialogService.open(TareaFormContainerComponent, {
+        const ref: DynamicDialogRef = this._dialogService.open(
+            TareaFormContainerComponent,
+            {
                 ...MODAL_CONFIG,
-                header: 'Crear Actividades de Aprendizaje',
-                data: null,
-            })
-        }
+                data: {
+                    iContenidoSemId: this.semanaSeleccionada.iContenidoSemId,
+                    iActTipoId: actividad.iActTipoId,
+                },
+                header:
+                    action === 'EDITAR'
+                        ? 'Editar Actividad'
+                        : 'Crear Actividades de Aprendizaje',
+            }
+        )
+        ref.onClose.subscribe((result) => {
+            this.getData()
+            if (result) {
+                console.log('Formulario enviado', result)
+            } else {
+                console.log('Formulario cancelado')
+            }
+        })
     }
 
     handleVideoconferenciaAction(
@@ -270,13 +267,16 @@ export class TabContenidoComponent implements OnInit {
     }
 
     handleEvaluacionAction(action: TActividadActions, actividad: IActividad) {
-        if (action === 'CREAR') {
+        if (action === 'CREAR' || action === 'EDITAR') {
             const ref = this._dialogService.open(
                 EvaluacionFormContainerComponent,
                 {
                     ...MODAL_CONFIG,
                     maximizable: true,
-                    header: 'Crear Evaluación',
+                    header:
+                        actividad == null
+                            ? 'Crear Evaluación'
+                            : 'Editar Evaluación',
                     data: {
                         actividad,
                         semana: this.semanaSeleccionada,
@@ -284,6 +284,13 @@ export class TabContenidoComponent implements OnInit {
                 }
             )
             this._dialogService.getInstance(ref).maximize()
+            ref.onClose.pipe(takeUntil(this._unsubscribe$)).subscribe({
+                next: (result) => {
+                    if (result) {
+                        this.obtenerContenidoSemanas()
+                    }
+                },
+            })
         }
 
         if (action === 'ELIMINAR') {

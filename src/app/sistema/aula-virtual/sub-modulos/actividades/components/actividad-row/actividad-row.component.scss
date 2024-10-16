@@ -6,6 +6,10 @@
     display: flex;
 }
 
+:host ::ng-deep .p-panel .p-panel-header {
+    gap: 0.5rem;
+}
+
 :host ::ng-deep .p-panel .p-panel-header .p-panel-header-icon {
     color: var(--primary-color);
 }

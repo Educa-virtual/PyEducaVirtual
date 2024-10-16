@@ -48,7 +48,9 @@
                     </button>
                 </ng-template>
                 @for (fecha of semana.fechas; track $index) {
-                    <h3 class="text-primary text-xl">{{ fecha.fecha }}</h3>
+                    <h3 class="text-primary text-xl">
+                        {{ fecha.fecha | date: "EEEE, d 'de' MMMM 'de' yyyy" }}
+                    </h3>
                     <hr />
                     <app-actividad-lista
                         [actividades]="fecha.actividades"

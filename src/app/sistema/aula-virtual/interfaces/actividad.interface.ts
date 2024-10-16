@@ -25,9 +25,11 @@ export interface IActividad {
     cProgActDescripcion?: string
     iActTipoId?: number
     ixActivadadId: number
+    [key: string]: any
 }
 
 interface IActividadConfig extends Partial<IActividad> {
+    'icon-color': string
     'bg-color': string
     icon: string
 }
@@ -37,6 +39,7 @@ export const actividadesConfig: Record<
     Omit<IActividadConfig, 'cProgActTituloLeccion'>
 > = {
     [TAREA]: {
+        'icon-color': 'text-blue-500',
         'bg-color': 'bg-blue-500 text-white',
         icon: 'matAssignment',
         iProgActId: '0',
@@ -44,6 +47,7 @@ export const actividadesConfig: Record<
         iActTipoId: TAREA,
     },
     [FORO]: {
+        'icon-color': 'text-green-500',
         'bg-color': 'bg-green-500 text-white',
         icon: 'matForum',
         iProgActId: '1',
@@ -51,6 +55,7 @@ export const actividadesConfig: Record<
         iActTipoId: FORO,
     },
     [EVALUACION]: {
+        'icon-color': 'text-yellow-500',
         'bg-color': 'bg-yellow-500 text-white',
         icon: 'matQuiz',
         iProgActId: '2',
@@ -58,6 +63,7 @@ export const actividadesConfig: Record<
         iActTipoId: EVALUACION,
     },
     [VIDEO_CONFERENCIA]: {
+        'icon-color': 'text-pink-500',
         'bg-color': 'bg-pink-500 text-white',
         icon: 'matVideocam',
         iProgActId: '3',
@@ -65,6 +71,7 @@ export const actividadesConfig: Record<
         iActTipoId: VIDEO_CONFERENCIA,
     },
     [MATERIAL]: {
+        'icon-color': 'text-indigo-500',
         'bg-color': 'bg-indigo-500 text-white',
         icon: 'matDescription',
         iProgActId: '4',

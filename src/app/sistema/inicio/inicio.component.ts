@@ -44,7 +44,6 @@ export class InicioComponent implements OnInit {
     obtenerPerfiles() {
         const info = this.ls.getItem('dremoToken')
         this.perfiles = info.perfiles
-        //console.log('perfiles', this.perfiles)
         this.openModal()
     }
 
@@ -57,7 +56,6 @@ export class InicioComponent implements OnInit {
         setTimeout(() => {
             window.location.reload()
         }, 200)
-        //console.log(found)
         this.modalPerfiles = false
     }
 }

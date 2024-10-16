@@ -33,4 +33,13 @@ export class ApiAulaService {
             )
             .pipe(map((resp) => resp.data))
     }
+
+    obtenerActividad(params: { iActTipoId; ixActivadadId }) {
+        return this._http
+            .get<any>(
+                `${this.baseUrlApi}/aula-virtual/contenidos/actividad/obtenerActividad`,
+                { params }
+            )
+            .pipe(map((resp) => resp.data))
+    }
 }

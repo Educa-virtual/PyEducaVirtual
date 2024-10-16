@@ -270,13 +270,16 @@ export class TabContenidoComponent implements OnInit {
     }
 
     handleEvaluacionAction(action: TActividadActions, actividad: IActividad) {
-        if (action === 'CREAR') {
+        if (action === 'CREAR' || action === 'EDITAR') {
             const ref = this._dialogService.open(
                 EvaluacionFormContainerComponent,
                 {
                     ...MODAL_CONFIG,
                     maximizable: true,
-                    header: 'Crear Evaluación',
+                    header:
+                        actividad == null
+                            ? 'Crear Evaluación'
+                            : 'Editar Evaluación',
                     data: {
                         actividad,
                         semana: this.semanaSeleccionada,
@@ -284,6 +287,13 @@ export class TabContenidoComponent implements OnInit {
                 }
             )
             this._dialogService.getInstance(ref).maximize()
+            ref.onClose.pipe(takeUntil(this._unsubscribe$)).subscribe({
+                next: (result) => {
+                    if (result) {
+                        this.obtenerContenidoSemanas()
+                    }
+                },
+            })
         }
 
         if (action === 'ELIMINAR') {

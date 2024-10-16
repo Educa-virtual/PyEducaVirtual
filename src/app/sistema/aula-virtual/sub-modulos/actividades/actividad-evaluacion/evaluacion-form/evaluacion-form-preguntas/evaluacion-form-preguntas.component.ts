@@ -77,6 +77,8 @@ export class EvaluacionFormPreguntasComponent {
         })
         refModal.onClose.subscribe((result) => {
             if (result) {
+                this.preguntas.push(result)
+                this.preguntasSeleccionadasChange.emit(this.preguntas)
                 console.log(result)
             }
         })
@@ -91,14 +93,13 @@ export class EvaluacionFormPreguntasComponent {
     }
 
     selectedRowDataChange(event) {
-        this.preguntasSeleccionadas = event
-        console.log(event)
+        this.preguntasSeleccionadas = [...event]
     }
 
     agregarPreguntas() {
         // validaciones
         this.closeModalBancoPreguntas()
         this.preguntas = this.preguntasSeleccionadas
-        // this.preguntasSeleccionadasChange.emit(this.preguntasSeleccionadas)
+        this.preguntasSeleccionadasChange.emit(this.preguntas)
     }
 }

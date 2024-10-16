@@ -15,6 +15,9 @@
         @case (1) {
             <app-evaluacion-form-preguntas
                 [tituloEvaluacion]="tituloEvulacion"
+                (preguntasSeleccionadasChange)="
+                    preguntasSeleccionadasChange($event)
+                "
             ></app-evaluacion-form-preguntas>
         }
         @case (2) {

@@ -24,9 +24,10 @@ export interface IActividad {
     cActTipoNombre: string
     cProgActDescripcion?: string
     iActTipoId?: number
+    ixActivadadId: number
 }
 
-interface IActividadConfig extends Omit<IActividad, 'nombreActividad'> {
+interface IActividadConfig extends Partial<IActividad> {
     'bg-color': string
     icon: string
 }
@@ -72,7 +73,7 @@ export const actividadesConfig: Record<
     },
 }
 
-export const actividadesConfigList: IActividad[] = [
+export const actividadesConfigList: Partial<IActividad>[] = [
     {
         iProgActId: '1',
         cProgActTituloLeccion: 'Sesiones de Aprendizaje',

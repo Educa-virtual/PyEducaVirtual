@@ -42,6 +42,7 @@ import { ConstantesService } from '@/app/servicios/constantes.service'
 import { GeneralService } from '@/app/servicios/general.service'
 import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
 import { Subject, takeUntil } from 'rxjs'
+import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 
 @Component({
     selector: 'app-tab-contenido',
@@ -86,6 +87,7 @@ export class TabContenidoComponent implements OnInit {
 
     private _constantesService = inject(ConstantesService)
     private _generalService = inject(GeneralService)
+    private _confirmService = inject(ConfirmationModalService)
     private _aulaService = inject(ApiAulaService)
     private semanaSeleccionada
     private _unsubscribe$ = new Subject<boolean>()
@@ -283,5 +285,29 @@ export class TabContenidoComponent implements OnInit {
             )
             this._dialogService.getInstance(ref).maximize()
         }
+
+        if (action === 'ELIMINAR') {
+            this._confirmService.openConfirm({
+                header: '¿Esta seguro de eliminar la evaluación?',
+                accept: () => {
+                    this.eliminarActividad(
+                        actividad.iProgActId,
+                        actividad.iActTipoId,
+                        actividad.ixActivadadId
+                    )
+                },
+            })
+        }
+    }
+
+    private eliminarActividad(iProgActId, iActTipoId, ixActivadadId) {
+        this._aulaService
+            .eliminarActividad({ iProgActId, iActTipoId, ixActivadadId })
+            .pipe(takeUntil(this._unsubscribe$))
+            .subscribe({
+                next: () => {
+                    this.obtenerContenidoSemanas()
+                },
+            })
     }
 }

@@ -18,6 +18,13 @@ export class ApiAulaService {
         )
     }
 
+    eliminarActividad(data) {
+        return this._http.delete(
+            `${this.baseUrlApi}/aula-virtual/contenidos/actividad/eliminarActividad`,
+            { params: data }
+        )
+    }
+
     contenidoSemanasProgramacionActividades(params) {
         return this._http
             .get<any>(

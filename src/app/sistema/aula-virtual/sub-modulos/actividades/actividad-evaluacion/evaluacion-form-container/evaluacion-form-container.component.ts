@@ -58,6 +58,7 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
     private _formBuilder = inject(FormBuilder)
     private _evaluacionService = inject(ApiEvaluacionesService)
     private _config = inject(DynamicDialogConfig)
+    private preguntasSeleccionadas = []
     private _paramsData = {
         iContenidoSemId: 0,
     }
@@ -137,12 +138,13 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
 
     public guardarCambios() {
         if (this.activeStepper === 0) {
-            this.handleFormInfo()
+            this.guardarActualizarFormInfo()
             return
         }
 
-        // if (this.activeStepper === 1) {
-        // }
+        if (this.activeStepper === 1) {
+            this.guardarActualizarPreguntas()
+        }
     }
 
     private addTimeToDate(date, time) {
@@ -154,17 +156,7 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
         return dateTime.format('YYYY-DD-MM HH:mm:ss')
     }
 
-    getInvalidControls(form: FormGroup): string[] {
-        const invalidControls: string[] = []
-        Object.keys(form.controls).forEach((controlName) => {
-            if (form.get(controlName)?.invalid) {
-                invalidControls.push(controlName)
-            }
-        })
-        return invalidControls
-    }
-
-    private handleFormInfo() {
+    private guardarActualizarFormInfo() {
         const data = this.evaluacionInfoForm.value
         data.iDocenteId = 1
         data.iActTipoId = EVALUACION
@@ -208,6 +200,14 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
                     this.goStep('next')
                 },
             })
+    }
+
+    private guardarActualizarPreguntas() {
+        console.log(this.preguntasSeleccionadas)
+    }
+
+    public preguntasSeleccionadasChange(event) {
+        this.preguntasSeleccionadas = event
     }
 
     ngOnDestroy() {

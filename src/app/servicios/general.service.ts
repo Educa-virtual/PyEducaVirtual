@@ -56,4 +56,10 @@ export class GeneralService {
                 break
         }
     }
+
+    subirArchivo(data:any) {
+        return this.http.post(`${baseUrl}/general/subir-archivo`,
+          data
+        );
+      }
 }

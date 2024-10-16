@@ -16,6 +16,8 @@ import { DialogModule } from 'primeng/dialog'
 import { TableModule } from 'primeng/table'
 import { CheckboxModule } from 'primeng/checkbox'
 import { FileUploadModule } from 'primeng/fileupload'
+import { DynamicDialogRef } from 'primeng/dynamicdialog'
+import { GeneralService } from '@/app/servicios/general.service'
 @Component({
     selector: 'app-tarea-form',
     standalone: true,
@@ -41,6 +43,9 @@ export class TareaFormComponent implements OnInit {
     @Output() cancelEvent = new EventEmitter<void>()
 
     private _formBuilder = inject(FormBuilder)
+    private GeneralService = inject(GeneralService)
+
+    private ref = inject(DynamicDialogRef)
     selectedState: unknown = null
     cities: any[]
     countries: any[] = []
@@ -85,14 +90,39 @@ export class TareaFormComponent implements OnInit {
     mostrarModal() {
         this.displayModal = true
     }
+    filesToUpload: any
+    cDocuAdmiArchivo: any
+    // onUpload(event: any) {
+    //     console.log(event)
+    // let archivoFile = null;
+    // this.cDocuAdmiArchivo = null;
+    // this.filesToUpload = <Array<File>>event.target.files;
+    // console.log(this.filesToUpload.length)
+    // if (this.filesToUpload.length) {
+    //   archivoFile = this.filesToUpload[0];
 
-    onUpload(event: any) {
-        console.log('subida de archivos', event.files)
-    }
+    // //   const formData = new FormData();
 
-    onError(event: any) {
-        console.log('error subida de archivos', event)
-    }
+    //   const dataFile = this.objectToFormData({
+    //     file: archivoFile,
+    //   });
+
+    //   this.GeneralService.subirArchivo(dataFile).subscribe(
+    //     (resp:any) => {
+    //         console.log(resp)
+    //     },
+    //     (error) => {}
+    //   );
+    // }
+
+    // const file = event.file[0]
+    // const formData = new FormData()
+    // formData.append('cTareaArchivoAdjunto', file, file.name)
+    // }
+
+    // onError(event: any) {
+    //     console.log('error subida de archivos', event)
+    // }
 
     linkDialogVisible: boolean = false
     link: string = ''
@@ -122,7 +152,6 @@ export class TareaFormComponent implements OnInit {
 
     submit() {
         const value = this.tareaForm.value
-        console.log(value)
 
         if (this.tareaForm.invalid) {
             this.tareaForm.markAllAsTouched()
@@ -139,4 +168,17 @@ export class TareaFormComponent implements OnInit {
         this.tareaForm.reset()
         this.cancelEvent.emit()
     }
+
+    // objectToFormData(obj:any) {
+    //     const formData = new FormData();
+
+    //     // prevent to send empty fields
+    //     Object.keys(obj).forEach((key) => {
+    //       if (obj[key] !== "") {
+    //         formData.append(key, obj[key]);
+    //       }
+    //     });
+
+    //     return formData;
+    //   }
 }

@@ -3,10 +3,11 @@ import { ConstantesService } from '@/app/servicios/constantes.service'
 import { GeneralService } from '@/app/servicios/general.service'
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
-import { Component, Input, OnChanges } from '@angular/core'
+import { Component, Input, OnChanges, OnDestroy } from '@angular/core'
 import { FormBuilder } from '@angular/forms'
 import { ConfirmationService, MessageService } from 'primeng/api'
 import { FormActividadesComponent } from '../form-actividades/form-actividades.component'
+import { Subject, takeUntil } from 'rxjs'
 
 @Component({
     selector: 'app-actividades',
@@ -20,9 +21,9 @@ import { FormActividadesComponent } from '../form-actividades/form-actividades.c
     templateUrl: './actividades.component.html',
     styleUrl: './actividades.component.scss',
 })
-export class ActividadesComponent implements OnChanges {
+export class ActividadesComponent implements OnChanges, OnDestroy {
     @Input() iSilaboId: string
-
+    private unsubscribe$ = new Subject<boolean>()
     constructor(
         private GeneralService: GeneralService,
         private ConstantesService: ConstantesService,
@@ -136,6 +137,7 @@ export class ActividadesComponent implements OnChanges {
                     prefix: 'silabo-actividad-aprendizajes',
                     ruta: 'store',
                     data: item,
+                    params: { skipSuccessMessage: true },
                 }
 
                 this.getInformation(params, true)
@@ -149,6 +151,7 @@ export class ActividadesComponent implements OnChanges {
                     prefix: 'silabo-actividad-aprendizajes',
                     ruta: 'store',
                     data: item,
+                    params: { skipSuccessMessage: true },
                 }
                 this.getInformation(params, true)
 
@@ -173,6 +176,7 @@ export class ActividadesComponent implements OnChanges {
                 iCredId: this.ConstantesService.iCredId,
                 iSilaboId: this.iSilaboId,
             },
+            params: { skipSuccessMessage: true },
         }
         this.getInformation(params, false)
     }
@@ -200,6 +204,7 @@ export class ActividadesComponent implements OnChanges {
                     prefix: 'silabo-actividad-aprendizajes',
                     ruta: 'store',
                     data: item,
+                    params: { skipSuccessMessage: true },
                 }
                 this.getInformation(params, true)
                 //this.messageService.add({ severity: 'info', summary: 'Confirmado', detail: 'Eliminando Metodología' });
@@ -210,19 +215,24 @@ export class ActividadesComponent implements OnChanges {
         })
     }
     getInformation(params, api) {
-        this.GeneralService.getGralPrefix(params).subscribe({
-            next: (response) => {
-                if (api) {
-                    this.showModal = false
-                    this.getSilaboActividadAprendizajes()
-                } else {
-                    this.data = response.data
-                }
-            },
-            complete: () => {},
-            error: (error) => {
-                console.log(error)
-            },
-        })
+        this.GeneralService.getGralPrefix(params)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+                next: (response) => {
+                    if (api) {
+                        this.showModal = false
+                        this.getSilaboActividadAprendizajes()
+                    } else {
+                        this.data = response.data
+                    }
+                },
+                complete: () => {},
+                error: (error) => {
+                    console.log(error)
+                },
+            })
+    }
+    ngOnDestroy() {
+        this.unsubscribe$.next(true)
     }
 }

@@ -39,6 +39,6 @@ export class SesionAprendizajeComponent {
         }
     }
     goAreasEstudio() {
-        this.router.navigate(['docente/areas-estudio'])
+        this.router.navigate(['aula-virtual/areas-curriculares'])
     }
 }

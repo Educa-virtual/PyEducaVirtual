@@ -2,10 +2,11 @@ import { ConstantesService } from '@/app/servicios/constantes.service'
 import { GeneralService } from '@/app/servicios/general.service'
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
-import { Component, Input, OnInit, OnChanges } from '@angular/core'
+import { Component, Input, OnInit, OnChanges, OnDestroy } from '@angular/core'
 import { ConfirmationService } from 'primeng/api'
 import { FormIndicadorActividadesComponent } from '../form-indicador-actividades/form-indicador-actividades.component'
 import { PrimengModule } from '@/app/primeng.module'
+import { Subject, takeUntil } from 'rxjs'
 
 @Component({
     selector: 'app-indicador-actividades',
@@ -19,8 +20,11 @@ import { PrimengModule } from '@/app/primeng.module'
     templateUrl: './indicador-actividades.component.html',
     styleUrl: './indicador-actividades.component.scss',
 })
-export class IndicadorActividadesComponent implements OnInit, OnChanges {
+export class IndicadorActividadesComponent
+    implements OnInit, OnChanges, OnDestroy
+{
     @Input() iSilaboId: string
+    private unsubscribe$ = new Subject<boolean>()
 
     tipoIndicadorLogros = []
 
@@ -157,6 +161,7 @@ export class IndicadorActividadesComponent implements OnInit, OnChanges {
                 valorBusqueda: this.iSilaboId,
                 iCredId: this.ConstantesService.iCredId,
             },
+            params: { skipSuccessMessage: true },
         }
         this.getInformation(params, 'get_data')
     }
@@ -171,6 +176,7 @@ export class IndicadorActividadesComponent implements OnInit, OnChanges {
                 opcion: 'CONSULTAR',
                 iCredId: this.ConstantesService.iCredId,
             },
+            params: { skipSuccessMessage: true },
         }
         this.getInformation(params, 'get_tipo_indicador_logros')
     }
@@ -186,20 +192,23 @@ export class IndicadorActividadesComponent implements OnInit, OnChanges {
                 iCredId: this.ConstantesService.iCredId,
                 iSilaboId: this.iSilaboId,
             },
+            params: { skipSuccessMessage: true },
         }
         this.getInformation(params, 'get_actividades')
     }
 
     getInformation(params, accion) {
-        this.GeneralService.getGralPrefix(params).subscribe({
-            next: (response) => {
-                this.accionBtnItem({ accion, item: response?.data })
-            },
-            complete: () => {},
-            error: (error) => {
-                console.log(error)
-            },
-        })
+        this.GeneralService.getGralPrefix(params)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+                next: (response) => {
+                    this.accionBtnItem({ accion, item: response?.data })
+                },
+                complete: () => {},
+                error: (error) => {
+                    console.log(error)
+                },
+            })
     }
     deleteIndicadorActividades(item) {
         this.confirmationService.confirm({
@@ -225,6 +234,7 @@ export class IndicadorActividadesComponent implements OnInit, OnChanges {
                     prefix: 'indicador-actividades',
                     ruta: 'store',
                     data: item,
+                    params: { skipSuccessMessage: true },
                 }
                 this.getInformation(params, 'refrescar')
                 //this.messageService.add({ severity: 'info', summary: 'Confirmado', detail: 'Eliminando Metodología' });
@@ -261,6 +271,7 @@ export class IndicadorActividadesComponent implements OnInit, OnChanges {
                     prefix: 'indicador-actividades',
                     ruta: 'store',
                     data: item,
+                    params: { skipSuccessMessage: true },
                 }
                 this.getInformation(params, 'refrescar')
 
@@ -273,6 +284,7 @@ export class IndicadorActividadesComponent implements OnInit, OnChanges {
                     prefix: 'indicador-actividades',
                     ruta: 'store',
                     data: item,
+                    params: { skipSuccessMessage: true },
                 }
                 this.getInformation(params, 'refrescar')
 
@@ -293,5 +305,9 @@ export class IndicadorActividadesComponent implements OnInit, OnChanges {
             default:
                 break
         }
+    }
+
+    ngOnDestroy() {
+        this.unsubscribe$.next(true)
     }
 }

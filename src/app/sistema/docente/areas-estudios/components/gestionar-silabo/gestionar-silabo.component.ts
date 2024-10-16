@@ -17,6 +17,6 @@ export class GestionarSilaboComponent {
 
     constructor(private router: Router) {}
     goAreasEstudio() {
-        this.router.navigate(['docente/areas-curriculares'])
+        this.router.navigate(['aula-virtual/areas-curriculares'])
     }
 }

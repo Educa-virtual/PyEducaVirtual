@@ -58,6 +58,7 @@ export class VerificacionComponent {
         const params = {
             cCodeVerif: this.formVerify.value.cCodeVerif,
             iPersId: user ? user.iPersId : null,
+            params: { skipSuccessMessage: true },
         }
         this.authService.sendVerify(params).subscribe({
             next: (response: Data) => {
@@ -105,6 +106,7 @@ export class VerificacionComponent {
         const params = {
             iPersId: user ? user.iPersId : null,
             correo: this.formVerify.value.correo,
+            params: { skipSuccessMessage: true },
         }
         this.authService.sendEmail(params).subscribe({
             next: (response: Data) => {

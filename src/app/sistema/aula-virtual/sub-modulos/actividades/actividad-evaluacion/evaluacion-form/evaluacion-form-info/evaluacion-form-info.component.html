@@ -1,0 +1,141 @@
+<h2 class="text-2xl font-bold">Información</h2>
+
+<form [formGroup]="evaluacionInfoForm">
+    <div class="formgrid grid">
+        <div class="field flex flex-column col-12 md:col-6">
+            <app-common-input
+                [label]="'Nombre de la evaluación'"
+                [controlKey]="'cEvaluacionTitulo'"
+            />
+        </div>
+        <div class="field flex flex-column col-12 md:col-6">
+            <label for="tipo-pregunta">Tipo evaluación</label>
+            <p-dropdown
+                styleClass="w-full"
+                optionValue="iTipoEvalId"
+                formControlName="iTipoEvalId"
+                [options]="tipoEvaluaciones"
+                optionLabel="cTipoEvalNombre"
+                [styleClass]="
+                    evaluacionInfoForm.get('iTipoEvalId')?.invalid &&
+                    evaluacionInfoForm.get('iTipoEvalId')?.touched
+                        ? 'w-full ng-dirty ng-invalid p-invalid'
+                        : 'w-full'
+                "
+            />
+            @if (
+                evaluacionInfoForm.get('iTipoEvalId').hasError('required') &&
+                evaluacionInfoForm.get('iTipoEvalId')?.touched
+            ) {
+                <small class="text-red-500"> Este campo es requerido </small>
+            }
+        </div>
+    </div>
+
+    <h3 class="text-lg mt-0">Disponibilidad</h3>
+
+    <div class="formgrid grid">
+        <div class="field flex flex-column col-12 md:col-6">
+            <label for="dFechaEvaluacionPublicacion">Fecha publicación</label>
+            <p-calendar
+                formControlName="dFechaEvaluacionPublicacion"
+                [iconDisplay]="'input'"
+                styleClass="w-full"
+                [showIcon]="true"
+                inputId="dFechaEvaluacionPublicacion"
+            />
+        </div>
+        <div class="field flex flex-column col-12 md:col-6">
+            <label for="tHoraEvaluacionPublicacion">Hora publicación</label>
+            <p-calendar
+                [timeOnly]="true"
+                styleClass="w-full"
+                [showIcon]="true"
+                iconDisplay="input"
+                formControlName="tHoraEvaluacionPublicacion"
+                inputId="tHoraEvaluacionPublicacion"
+            >
+                <ng-template
+                    pTemplate="inputicon"
+                    let-clickCallBack="clickCallBack"
+                >
+                    <i
+                        class="pi pi-clock pointer-events-none"
+                    ></i> </ng-template
+            ></p-calendar>
+        </div>
+    </div>
+
+    <div class="formgrid grid">
+        <div class="field flex flex-column col-12 md:col-6">
+            <label for="dFechaEvaluacionInico">Fecha inicio evaluación</label>
+            <p-calendar
+                formControlName="dFechaEvaluacionInico"
+                [iconDisplay]="'input'"
+                styleClass="w-full"
+                [showIcon]="true"
+                inputId="dFechaEvaluacionInico"
+            />
+        </div>
+        <div class="field flex flex-column col-12 md:col-6">
+            <label for="tHoraEvaluacionInico">Hora inicio evaluación</label>
+            <p-calendar
+                [timeOnly]="true"
+                styleClass="w-full"
+                [showIcon]="true"
+                iconDisplay="input"
+                formControlName="tHoraEvaluacionInico"
+                inputId="tHoraEvaluacionInico"
+            >
+                <ng-template
+                    pTemplate="inputicon"
+                    let-clickCallBack="clickCallBack"
+                >
+                    <i
+                        class="pi pi-clock pointer-events-none"
+                    ></i> </ng-template
+            ></p-calendar>
+        </div>
+    </div>
+
+    <div class="formgrid grid">
+        <div class="field flex flex-column col-12 md:col-6">
+            <label for="dFechaEvaluacionFin">Fecha fin evaluación</label>
+            <p-calendar
+                formControlName="dFechaEvaluacionFin"
+                [iconDisplay]="'input'"
+                styleClass="w-full"
+                [showIcon]="true"
+                inputId="dFechaEvaluacionFin"
+            />
+        </div>
+        <div class="field flex flex-column col-12 md:col-6">
+            <label for="tHoraEvaluacionFin">Hora fin evaluación</label>
+            <p-calendar
+                [timeOnly]="true"
+                styleClass="w-full"
+                [showIcon]="true"
+                iconDisplay="input"
+                formControlName="tHoraEvaluacionFin"
+                inputId="tHoraEvaluacionFin"
+            >
+                <ng-template
+                    pTemplate="inputicon"
+                    let-clickCallBack="clickCallBack"
+                >
+                    <i class="pi pi-clock pointer-events-none"></i>
+                </ng-template>
+            </p-calendar>
+        </div>
+    </div>
+
+    <div class="formgrid grid">
+        <div class="field flex flex-column col-12">
+            <label for="cEvaluacionDescripcion">Descripción</label>
+            <p-editor
+                styleClass="w-full"
+                formControlName="cEvaluacionDescripcion"
+            />
+        </div>
+    </div>
+</form>

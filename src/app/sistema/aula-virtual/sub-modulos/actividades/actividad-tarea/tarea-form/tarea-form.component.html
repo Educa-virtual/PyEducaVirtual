@@ -1,0 +1,117 @@
+<form [formGroup]="tareaForm" class="flex flex-column gap-3">
+    <div class="grid">
+        <div class="col-8">
+            <app-common-input [controlKey]="'titulo'" label="Título" />
+
+            <div class="flex flex-column gap-2">
+                <label for="indicaciones">Indicaciones</label>
+                <p-editor id="indicaciones" formControlName="indicaciones" />
+            </div>
+            <br />
+            <div class="card flex flex-column gap-4">
+                <div
+                    class="flex flex-column justify-content-center align-content-center border-2 border-dashed surface-border border-round surface-card h-10rem"
+                >
+                    <p class="text-center">Arrastra o da Click para subir</p>
+                </div>
+                <div class="flex justify-content-between gap-2 flex-wrap">
+                    <button pButton class="p-button-primary mx-auto">
+                        Subir Archivo
+                    </button>
+                    <button pButton class="p-button-primary mx-auto">
+                        Enlace
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-4">
+            <div class="field grid">
+                <label htmlFor="state" class="col-12 mb-2 md:col-12 md:mb-0"
+                    >Para</label
+                >
+                <p-dropdown
+                    [options]="dropdownItems"
+                    class="col-12"
+                    optionLabel="name"
+                    [(ngModel)]="selectedState"
+                ></p-dropdown>
+            </div>
+
+            <div class="field grid">
+                <label htmlFor="state" class="col-12 mb-2 md:col-12 md:mb-0"
+                    >Asignar a:</label
+                >
+                <div class="col-12 md:col-10">
+                    <p-dropdown
+                        [options]="dropdownItems"
+                        optionLabel="name"
+                        class="col-12"
+                        [(ngModel)]="selectedState"
+                    ></p-dropdown>
+                </div>
+            </div>
+            <div class="grid">
+                <div class="field col-6">
+                    <label htmlFor="state">Categoria</label>
+                    <p-dropdown
+                        [options]="dropdownItems"
+                        optionLabel="name"
+                        [(ngModel)]="selectedState"
+                    ></p-dropdown>
+                </div>
+
+                <div class="field col-6">
+                    <label htmlFor="state">Punto:</label>
+                    <p-dropdown
+                        [options]="dropdownItems"
+                        optionLabel="name"
+                        [(ngModel)]="selectedState"
+                    ></p-dropdown>
+                </div>
+            </div>
+
+            <div class="formgrid grid">
+                <div class="field flex flex-column col-12 md:col-6">
+                    <label for="dFechaEvaluacionPublicacion"
+                        >Fecha publicación</label
+                    >
+                    <p-calendar
+                        formControlName="dFechaEvaluacionPublicacion"
+                        [iconDisplay]="'input'"
+                        styleClass="w-full"
+                        [showIcon]="true"
+                        inputId="dFechaEvaluacionPublicacion"
+                    />
+                </div>
+                <div class="field flex flex-column col-12 md:col-6">
+                    <label for="tHoraEvaluacionPublicacion"
+                        >Hora publicación</label
+                    >
+                    <p-calendar
+                        [timeOnly]="true"
+                        styleClass="w-full"
+                        [showIcon]="true"
+                        iconDisplay="input"
+                        formControlName="tHoraEvaluacionPublicacion"
+                        inputId="tHoraEvaluacionPublicacion"
+                    >
+                        <ng-template
+                            pTemplate="inputicon"
+                            let-clickCallBack="clickCallBack"
+                        >
+                            <i class="pi pi-clock pointer-events-none"></i>
+                        </ng-template>
+                    </p-calendar>
+                </div>
+            </div>
+            <br />
+            <div class="flex justify-content-between gap-2 flex-wrap">
+                <p>Instrumento de Evaluación</p>
+                <button pButton class="p-button-primary mx-auto">
+                    Subir Archivo
+                </button>
+            </div>
+        </div>
+    </div>
+</form>

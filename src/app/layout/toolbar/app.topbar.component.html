@@ -1,0 +1,35 @@
+<div class="topbar">
+    <div class="topbar__logo displaye-none">
+        <a routerLink="">
+            <img src="assets/images/dremo.png" alt="logo" />
+        </a>
+    </div>
+    <div class="topbar__bars_modulo">
+        <button
+            #menubutton
+            class="p-link ml-2"
+            (click)="layoutService.onMenuToggle()"
+        >
+            <i class="pi pi-bars"></i>
+        </button>
+        <p-dropdown
+            styleClass="border-0 w-10rem ml-1"
+            [options]="profile"
+            [(ngModel)]="selectedProfile"
+            optionLabel="profile"
+            placeholder="Módulo"
+            (onChange)="changeProfile($event)"
+        />
+    </div>
+    <div class="topbar__notif_anio_inst_account">
+        <button class="p-link button-menu mr-1 displaye-none">
+            <i class="pi pi-bell"></i>
+        </button>
+        <app-anio-escolar class="mr-1"></app-anio-escolar>
+        <app-roles-dropdown class="mr-1" [roles]="roles" />
+        <app-user-account
+            class="mr-1"
+            (accionMenuItem)="accionMenuItem($event)"
+        ></app-user-account>
+    </div>
+</div>

@@ -1,0 +1,70 @@
+<section class="flex flex-column gap-4">
+    <!-- <p-breadcrumb class="max-w-full" [model]="items">
+        <ng-template pTemplate="item" let-item>
+            <ng-container *ngIf="item.route; else elseBlock">
+                <a [routerLink]="item.route" class="p-menuitem-link">
+                    <span
+                        [ngClass]="[item.icon ? item.icon : '', 'text-color']"
+                    ></span>
+                    <span class="text-primary font-semibold">{{
+                        item.label
+                    }}</span>
+                </a>
+            </ng-container>
+            <ng-template #elseBlock>
+                <a [href]="item.url">
+                    <span class="text-color">{{ item.label }}</span>
+                </a>
+            </ng-template>
+        </ng-template>
+    </p-breadcrumb> -->
+
+    <div class="flex flex-column">
+        <div class="flex justify-content-between">
+            <h1>
+                {{ curso?.cCursoNombre }}
+            </h1>
+            <p-menu #menu [model]="items" [popup]="true">
+                <ng-template pTemplate="start">
+                    <app-curso-detalle-navigation
+                        [actualTab]="tab"
+                        (tabChange)="updateTab($event); menu.toggle(null)"
+                    />
+                </ng-template>
+                <ng-template pTemplate="item" let-item></ng-template>
+            </p-menu>
+            <button class="p-link menu-button" (click)="menu.toggle($event)">
+                <i class="pi pi-bars"></i>
+            </button>
+        </div>
+        <div class="divider"></div>
+    </div>
+
+    <app-curso-detalle-navigation
+        [actualTab]="tab"
+        (tabChange)="updateTab($event)"
+        class="sidebar-menu"
+    />
+    <div class="curso-detalle__content">
+        @switch (tab) {
+            @case ('inicio') {
+                <app-tab-inicio></app-tab-inicio>
+            }
+            @case ('contenido') {
+                <app-tab-contenido [_iSilaboId]="iSilaboId"></app-tab-contenido>
+            }
+            @case ('estudiantes') {
+                <app-tab-estudiantes
+                    [estudiantes]="estudiantes"
+                ></app-tab-estudiantes>
+            }
+            @case ('resultados') {
+                <app-tab-resultados></app-tab-resultados>
+            }
+
+            @default {}
+        }
+
+        <router-outlet></router-outlet>
+    </div>
+</section>

@@ -45,7 +45,7 @@ export class InicioComponent implements OnInit {
         const info = this.lg.getItem('dremoToken')
         this.perfiles = info.perfiles
 
-        //console.log('perfiles', this.perfiles)
+        console.log('perfiles', this.perfiles)
 
         this.openModal()
     }
@@ -64,6 +64,14 @@ export class InicioComponent implements OnInit {
         /*const perfil_actual = perfiles.iPerfilId
         this.ConstantesService.getMenu(perfil_actual);*/
         const found = (this.perfilSeleccionado = perfiles)
+        this.lg.setItem('dremoPerfil', {
+            iProfile: parseInt(found.iPerfilId),
+            profile: found.cPerfilNombre,
+        })
+        setTimeout(() => {
+            window.location.reload()
+        }, 200)
+
         console.log(found)
         this.modalPerfiles = false
     }

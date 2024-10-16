@@ -459,6 +459,7 @@ export class ConstantesService {
 
     nav = this.getMenu()
     getMenu() {
+        console.log('perfil_actual', perfil_actual)
         if (!perfil_actual) return other
         switch (perfil_actual.iProfile) {
             case 1001:
@@ -471,6 +472,8 @@ export class ConstantesService {
                 return administrador
             case 1006:
                 return evaluaciones
+            case 7:
+                return docente
             default:
                 return other
         }

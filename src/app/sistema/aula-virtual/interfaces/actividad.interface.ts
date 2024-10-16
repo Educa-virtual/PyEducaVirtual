@@ -25,6 +25,7 @@ export interface IActividad {
     cProgActDescripcion?: string
     iActTipoId?: number
     ixActivadadId: number
+    [key: string]: any
 }
 
 interface IActividadConfig extends Partial<IActividad> {

@@ -8,8 +8,8 @@
     toggler="header"
 >
     <ng-template pTemplate="header">
-        <div class="flex justify-content-between align-items-start w-full">
-            <div class="flex align-items-center gap-4 font-normal">
+        <div class="flex flex-column w-full">
+            <div class="flex gap-4 font-normal">
                 <app-icon
                     [name]="actividad.iActTipoId | appActividadConfig: 'icon'"
                     [color]="
@@ -30,6 +30,26 @@
                         "
                         >{{ actividad.cActTipoNombre }}</span
                     >
+                </div>
+            </div>
+            <div class="flex align-items-end flex-column gap-1">
+                <div
+                    class="font-medium text-sm text-gray-500 gap-1 flex align-items-center"
+                >
+                    <i class="pi pi-calendar text-primary"></i>
+                    <span>
+                        Publicación:
+                        {{
+                            actividad['dtProgActPublicacion']
+                                | date: 'dd/MM/yyyy'
+                        }}
+                    </span>
+                </div>
+                <div
+                    class="font-medium text-sm text-gray-500 gap-1 flex align-items-center"
+                >
+                    <i class="pi pi-clock text-primary"></i>
+                    {{ actividad['dtProgActPublicacion'] | date: 'h:mm a' }}
                 </div>
             </div>
         </div>

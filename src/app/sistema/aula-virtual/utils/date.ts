@@ -7,7 +7,6 @@ export const convertStringToDate = (date) => {
 
 export const getTimeFromDatetime = (date, format = 'HH:mm') => {
     const datetime = dayjs(date)
-
     const time = datetime.format(format)
     return time
 }

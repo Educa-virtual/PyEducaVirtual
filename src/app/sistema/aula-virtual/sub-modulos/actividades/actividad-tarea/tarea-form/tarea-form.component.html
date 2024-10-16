@@ -24,49 +24,33 @@
                 <div>
                     <p>{{ linkToShow }}</p>
                 </div>
-                <div class="flex justify-content-between gap-2 flex-wrap">
-                    <!-- <p-fileUpload
-                        name="files[]"
-                        mode="basic"
-                        (onUpload)="onUpload($event)"
-                        (onError)="onError($event)"
-                        chooseLabel="Seleccionar Archivo"
-                        uploadLabel="Subir"
-                        cancelLabel="Cancelar"
-                        class="fileUpload"
-                        inputId="cTareaArchivoAdjunto"
-                        formControlName="cTareaArchivoAdjunto"
-                    ></p-fileUpload> -->
-                    <button
-                        icon="pi pi-link"
-                        pButton
-                        class="p-button-primary mx-auto"
-                        (click)="openLinkDialog()"
-                    >
-                        Enlace
-                    </button>
+                <div class="flex grid">
+                    <div class="col-6">
+                        <app-file-upload-primeng
+                            [nameFile]="'tareas'"
+                            [nameOption]="'tareas'"
+                            (actionFileUpload)="handleAction($event)"
+                        >
+                        </app-file-upload-primeng>
+                        <ul *ngIf="FilesTareas.length">
+                            <li *ngFor="let file of FilesTareas">
+                                {{ file.name }}
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-6">
+                        <button
+                            icon="pi pi-link"
+                            pButton
+                            class="p-button-primary mx-auto"
+                            (click)="openLinkDialog()"
+                        >
+                            Enlace
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
-
-        <p-dialog
-            header="Agregar Enlace"
-            [(visible)]="linkDialogVisible"
-            modal="modal"
-            [draggable]="false"
-        >
-            <div>
-                <input
-                    type="text"
-                    placeholder="Ingrese el enlace"
-                    [(ngModel)]="link"
-                />
-                <button class="p-button-primary mx-auto" (click)="addLink()">
-                    Agregar
-                </button>
-            </div>
-        </p-dialog>
-
         <div class="col-4">
             <div class="field grid">
                 <div class="field flex flex-column col-12 md:col-12">
@@ -77,65 +61,6 @@
                     >
                         Toda la clase
                     </button>
-
-                    <p-dialog
-                        header="Asignar a"
-                        [(visible)]="displayModal"
-                        [modal]="true"
-                        [closable]="false"
-                        [draggable]="false"
-                    >
-                        <div>
-                            <p-table [value]="estudiantes">
-                                <ng-template pTemplate="header">
-                                    <tr>
-                                        <th></th>
-                                        <th>Nombres</th>
-                                        <th>Apellido Paterno</th>
-                                        <th>Apellido Materno</th>
-                                    </tr>
-                                </ng-template>
-                                <ng-template pTemplate="body" let-estudiante>
-                                    <tr>
-                                        <td>
-                                            <p-checkbox
-                                                [(ngModel)]="
-                                                    estudiante.selected
-                                                "
-                                            ></p-checkbox>
-                                        </td>
-                                        <td>{{ estudiante.nombres }}</td>
-                                        <td>
-                                            {{ estudiante.apellidoPaterno }}
-                                        </td>
-                                        <td>
-                                            {{ estudiante.apellidoMaterno }}
-                                        </td>
-                                    </tr>
-                                </ng-template>
-                            </p-table>
-                        </div>
-                        <footer>
-                            <div class="col text-left">
-                                <button
-                                    pButton
-                                    label="Cerrar"
-                                    class="p-button-label ql-color"
-                                    icon="pi pi-times"
-                                    (click)="cerrarModal()"
-                                ></button>
-                            </div>
-                            <div class="col text-right">
-                                <button
-                                    pButton
-                                    class="p-button-label ql-color"
-                                    label="Guardar"
-                                    icon="pi pi-save"
-                                    (click)="guardarDatos()"
-                                ></button>
-                            </div>
-                        </footer>
-                    </p-dialog>
                 </div>
             </div>
             <!-- fecha hora de Inicio -->
@@ -242,18 +167,94 @@
             <!-- Columna para instrumentos de evalaucion -->
             <div class="flex justify-content-between gap-2 flex-wrap">
                 <p>Instrumento de Evaluación</p>
-                <!-- <p-fileUpload
-                    name="files[]"
-                    mode="basic"
-                    (onUpload)="onUpload($event)"
-                    (onError)="onError($event)"
-                    chooseLabel="Seleccionar Archivo"
-                    uploadLabel="Subir"
-                    cancelLabel="Cancelar"
-                    class="fileUpload"
-                >
-            </p-fileUpload> -->
+                <app-file-upload-primeng
+                    [nameFile]="'instrumentos'"
+                    [nameOption]="'instrumentos'"
+                    (actionFileUpload)="handleAction($event)"
+                ></app-file-upload-primeng>
+
+                <ul *ngIf="FilesInstrumentos.length">
+                    <li *ngFor="let file of FilesInstrumentos">
+                        {{ file.name }}
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
 </form>
+
+<p-dialog
+    header="Agregar Enlace"
+    [(visible)]="linkDialogVisible"
+    modal="modal"
+    [draggable]="false"
+>
+    <div>
+        <input
+            pInputText
+            type="text"
+            placeholder="Ingrese el enlace"
+            [(ngModel)]="link"
+        />
+        <button class="p-button-primary mx-auto" (click)="addLink()">
+            Agregar
+        </button>
+    </div>
+</p-dialog>
+
+<p-dialog
+    header="Asignar a"
+    [(visible)]="displayModal"
+    [modal]="true"
+    [closable]="false"
+    [draggable]="false"
+>
+    <div>
+        <p-table [value]="estudiantes">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th></th>
+                    <th>Nombres</th>
+                    <th>Apellido Paterno</th>
+                    <th>Apellido Materno</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-estudiante>
+                <tr>
+                    <td>
+                        <p-checkbox
+                            [(ngModel)]="estudiante.selected"
+                        ></p-checkbox>
+                    </td>
+                    <td>{{ estudiante.nombres }}</td>
+                    <td>
+                        {{ estudiante.apellidoPaterno }}
+                    </td>
+                    <td>
+                        {{ estudiante.apellidoMaterno }}
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+    <footer>
+        <div class="col text-left">
+            <button
+                pButton
+                label="Cerrar"
+                class="p-button-label ql-color"
+                icon="pi pi-times"
+                (click)="cerrarModal()"
+            ></button>
+        </div>
+        <div class="col text-right">
+            <button
+                pButton
+                class="p-button-label ql-color"
+                label="Guardar"
+                icon="pi pi-save"
+                (click)="guardarDatos()"
+            ></button>
+        </div>
+    </footer>
+</p-dialog>

@@ -13,7 +13,8 @@ import { DropdownModule } from 'primeng/dropdown'
 import { ButtonModule } from 'primeng/button'
 import { EditorModule } from 'primeng/editor'
 import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
-
+import { CalendarModule } from 'primeng/calendar'
+import { BaseDatePickerDirective } from '@/app/shared/directives/base-date-picker.directive'
 @Component({
     selector: 'app-foro-form-container',
     standalone: true,
@@ -25,6 +26,8 @@ import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.ser
         DropdownModule,
         ButtonModule,
         EditorModule,
+        CalendarModule,
+        BaseDatePickerDirective,
     ],
     templateUrl: './foro-form-container.component.html',
     styleUrl: './foro-form-container.component.scss',
@@ -37,16 +40,20 @@ export class ForoFormContainerComponent implements OnInit {
 
     categorias: any[] = []
 
-    public selectCategorias = {}
+    selectCategorias: any = {}
 
     public foroForm: FormGroup = this._formBuilder.group({
-        titulo: ['', [Validators.required]],
-        descripcion: ['', [Validators.required]],
+        cForoTitulo: ['', [Validators.required]],
+        cForoDescripcion: ['', [Validators.required]],
         categoria: [0, [Validators.required]],
+        dtForoInicio: [''],
+        dtForoPublicacion: ['dtForoInicio'],
+        dtForoFin: [],
     })
     ngOnInit(): void {
         this.mostrarCategorias()
     }
+
     mostrarCategorias() {
         const userId = 1
         this._aulaService.guardarForo(userId).subscribe((Data) => {
@@ -54,13 +61,12 @@ export class ForoFormContainerComponent implements OnInit {
             //console.log('Datos mit', this.categorias)
         })
     }
+
     closeModal(data) {
         this.ref.close(data)
     }
-
-    submitFormulario(data) {
-        console.log('Prueba Mit', data)
-        // this._aulaService.guardarForo(data)
-        // console.log(this._aulaService)
+    submit() {
+        const value = this.foroForm.value
+        console.log('Guardar Foros', value)
     }
 }

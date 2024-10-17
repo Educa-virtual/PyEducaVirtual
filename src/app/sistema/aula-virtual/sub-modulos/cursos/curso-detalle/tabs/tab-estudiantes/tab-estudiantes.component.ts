@@ -2,11 +2,13 @@ import { IEstudiante } from '@/app/sistema/aula-virtual/interfaces/estudiantes.i
 import { Component, Input } from '@angular/core'
 import { AvatarModule } from 'primeng/avatar'
 import { ListboxModule } from 'primeng/listbox'
+import { TableModule } from 'primeng/table'
+import { FormsModule } from '@angular/forms'
 
 @Component({
     selector: 'app-tab-estudiantes',
     standalone: true,
-    imports: [ListboxModule, AvatarModule],
+    imports: [ListboxModule, AvatarModule, TableModule, FormsModule],
     templateUrl: './tab-estudiantes.component.html',
     styleUrl: './tab-estudiantes.component.scss',
 })

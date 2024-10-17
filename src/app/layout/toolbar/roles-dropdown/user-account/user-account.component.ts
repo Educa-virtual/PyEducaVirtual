@@ -1,6 +1,6 @@
 import { PrimengModule } from '@/app/primeng.module'
 import { ConstantesService } from '@/app/servicios/constantes.service'
-import { Component, EventEmitter, OnInit, Output } from '@angular/core'
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
 import { MenuItem } from 'primeng/api'
 
 @Component({
@@ -11,7 +11,11 @@ import { MenuItem } from 'primeng/api'
     styleUrl: './user-account.component.scss',
 })
 export class UserAccountComponent implements OnInit {
-    @Output() accionMenuItem = new EventEmitter()
+    @Output() actionTopBar = new EventEmitter()
+
+    @Input() modulos = []
+    @Input() selectedModulo: string
+
     name: string
     constructor(private ConstantesService: ConstantesService) {
         this.name = this.ConstantesService.nombres
@@ -30,13 +34,21 @@ export class UserAccountComponent implements OnInit {
                         label: 'Salir Sesión',
                         icon: 'pi pi-sign-out',
                         command: () => {
-                            this.accionMenuItem.emit('logout')
+                            this.actionTopBar.emit({ accion: 'logout' })
                         },
                     },
                 ],
             },
         ]
     }
-    selectedProfile: undefined
-    profile = []
+
+    changePerfil() {
+        const data = {
+            accion: 'modulo',
+            item: this.modulos.find(
+                (item) => item.iModuloId === this.selectedModulo
+            ),
+        }
+        this.actionTopBar.emit(data)
+    }
 }

@@ -1,40 +1,61 @@
+import { PrimengModule } from '@/app/primeng.module'
 import { NgTemplateOutlet } from '@angular/common'
-import { Component, EventEmitter, Input, Output } from '@angular/core'
-import { DropdownChangeEvent, DropdownModule } from 'primeng/dropdown'
-
-export interface IRole {
-    id: string
-    ieCodigo: string
-    nombre: string
-    codigoModular: string
-    nivel: string
-    direccion: string
-    ugel: string
-}
+import {
+    Component,
+    EventEmitter,
+    Input,
+    Output,
+    OnChanges,
+    OnInit,
+} from '@angular/core'
+import { FormsModule, ReactiveFormsModule } from '@angular/forms'
+import { DropdownModule } from 'primeng/dropdown'
+import { FormPerfilesComponent } from './form-perfiles/form-perfiles.component'
+import { LocalStoreService } from '@/app/servicios/local-store.service'
 @Component({
     selector: 'app-roles-dropdown',
     standalone: true,
-    imports: [DropdownModule, NgTemplateOutlet],
+    imports: [
+        DropdownModule,
+        NgTemplateOutlet,
+        FormsModule,
+        ReactiveFormsModule,
+        PrimengModule,
+        FormPerfilesComponent,
+    ],
     templateUrl: './roles-dropdown.component.html',
     styleUrl: './roles-dropdown.component.scss',
 })
-export class RolesDropdownComponent {
-    @Output() profileChangeEmitter = new EventEmitter<IRole>()
-    @Input() selectedProfile: IRole | undefined
-    @Input({ required: true }) roles: IRole[] = [
-        {
-            id: '1',
-            ieCodigo: '20542',
-            nombre: 'JAVIER PEREZ DE CUELLAR',
-            codigoModular: '050092-0',
-            nivel: 'PRIMARIA',
-            direccion: 'DRE LIMA PROVINCIAS',
-            ugel: '15 HUAROCHIRI',
-        },
-    ]
+export class RolesDropdownComponent implements OnChanges, OnInit {
+    @Output() actionTopBar = new EventEmitter()
 
-    changeProfile(event: DropdownChangeEvent) {
-        const role = event.value as IRole
-        this.profileChangeEmitter.emit(role)
+    @Input() perfiles = []
+    @Input() selectedPerfil
+
+    showModal: boolean = false
+
+    constructor(private store: LocalStoreService) {}
+    ngOnChanges(changes) {
+        if (changes.perfiles?.currentValue) {
+            this.perfiles = changes.perfiles.currentValue
+        }
+        if (changes.selectedPerfil?.currentValue) {
+            this.selectedPerfil = changes.selectedPerfil.currentValue
+        }
+    }
+    ngOnInit() {
+        const modalPerfil = this.store.getItem('dremoModalPerfil')
+        if (!modalPerfil) return
+        this.showModal = true
+    }
+    accionBtnItem(elemento): void {
+        const { accion } = elemento
+        switch (accion) {
+            case 'close-modal':
+                this.showModal = false
+                break
+            default:
+                break
+        }
     }
 }

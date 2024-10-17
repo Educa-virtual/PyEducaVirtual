@@ -1,37 +1,29 @@
-<p-dropdown
-    [options]="roles"
+<p-button
     styleClass="border-0"
-    (onChange)="changeProfile($event)"
+    [text]="true"
+    severity="secondary"
+    (onClick)="showModal = true"
 >
-    <ng-template pTemplate="selectedItem" let-item class="p-0">
-        <ng-container
-            *ngTemplateOutlet="templateRoleRow; context: { item: item }"
-        ></ng-container>
-    </ng-template>
-    <ng-template let-item pTemplate="item">
-        <ng-container
-            *ngTemplateOutlet="templateRoleRow; context: { item: item }"
-        ></ng-container>
-    </ng-template>
-</p-dropdown>
-
-<ng-template #templateRoleRow let-item="item">
     <div class="flex align-items-center gap-2">
         <i
             class="pi pi-graduation-cap"
             style="color: var(--surface-menu); font-size: 1.5rem"
         ></i>
-        <div class="flex flex-column text-xs">
+        <div class="flex flex-column text-xs text-left">
             <span class="block p-0 font-bold"
-                >IE: {{ item.iEspecialistaId }} {{ item.cPersNombre }}</span
+                >Perfil: {{ selectedPerfil.cPerfilNombre }}</span
             >
-            <span class="block p-0"
-                >Cod. Modular: {{ item.codigoModular }}</span
+            <span class="block p-0 font-bold"
+                >IE: {{ selectedPerfil.cEntNombreLargo }}</span
             >
-            <span class="block p-0"
-                >Nivel: {{ item.cNivelTipoNombre || '-' }} / UGEL:
-                {{ item.cUgelNombre || '-' }}</span
+            <span class="p-0 display-none"
+                >Cod. Modular: - Nivel: - / UGEL: -</span
             >
         </div>
     </div>
-</ng-template>
+</p-button>
+
+<app-form-perfiles
+    [showModal]="showModal"
+    (accionBtnItem)="accionBtnItem($event)"
+></app-form-perfiles>

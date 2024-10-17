@@ -47,6 +47,7 @@ export class ForoFormContainerComponent implements OnInit {
     ngOnInit(): void {
         this.mostrarCategorias()
     }
+
     mostrarCategorias() {
         const userId = 1
         this._aulaService.guardarForo(userId).subscribe((Data) => {
@@ -54,13 +55,12 @@ export class ForoFormContainerComponent implements OnInit {
             //console.log('Datos mit', this.categorias)
         })
     }
+
     closeModal(data) {
         this.ref.close(data)
     }
-
-    submitFormulario(data) {
-        console.log('Prueba Mit', data)
-        // this._aulaService.guardarForo(data)
-        // console.log(this._aulaService)
+    submit() {
+        const value = this.foroForm.value
+        console.log(value)
     }
 }

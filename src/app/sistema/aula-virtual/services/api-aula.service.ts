@@ -17,6 +17,12 @@ export class ApiAulaService {
             data
         )
     }
+    guardarForo(data) {
+        return this._http.post(
+            `${this.baseUrlApi}/aula-virtual/contenidos/foro/guardarForo`,
+            data
+        )
+    }
 
     eliminarActividad(data) {
         return this._http.delete(

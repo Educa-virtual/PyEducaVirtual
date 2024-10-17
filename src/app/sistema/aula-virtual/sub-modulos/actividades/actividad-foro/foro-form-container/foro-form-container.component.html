@@ -1,28 +1,74 @@
 <form [formGroup]="foroForm" class="flex flex-column gap-3">
     <div class="grid">
         <div class="col-6 flex flex-column gap-2">
-            <app-common-input [controlKey]="'titulo'" label="Título" />
+            <app-common-input [controlKey]="'cForoTitulo'" label="Título" />
         </div>
+        <!-- Mostrar las Categorias en un Select -->
         <div class="col-6 flex flex-column gap-2">
             <label for="categoria">Categoría</label>
             <p-dropdown
                 [options]="categorias"
                 formControlName="categoria"
-                optionLabel="categoria"
                 styleClass="w-full"
                 optionValue="iForoCatId"
                 optionLabel="cForoCatDescripcion"
-                emptyMessage="No hay categorías"
                 placeholder="Seleccione una categoría"
             />
         </div>
     </div>
-
-    <app-disponibilidad-form />
-
+    <div class="flex flex-column gap-3">
+        <span>Disponibilidad</span>
+        <div class="grid">
+            <!-- Mostrar fechas -->
+            <div class="col-6 flex flex-column gap-2">
+                <label for="">Fecha Inicio</label>
+                <p-calendar
+                    appBaseDatePicker
+                    formControlName="dtForoInicio"
+                    [iconDisplay]="'input'"
+                    [showIcon]="true"
+                    tabindex=""
+                    inputId=""
+                />
+            </div>
+            <div class="col-6 flex flex-column gap-2">
+                <label for="hora">Hora</label>
+                <p-calendar [showIcon]="true" [timeOnly]="true">
+                    <ng-template
+                        pTemplate="inputicon"
+                        let-clickCallBack="clickCallBack"
+                    >
+                        <i class="pi pi-clock pointer-events-none"></i>
+                    </ng-template>
+                </p-calendar>
+            </div>
+            <div class="col-6 flex flex-column gap-2">
+                <label for="">Fecha Fin</label>
+                <p-calendar
+                    appBaseDatePicker
+                    formControlName="dtForoFin"
+                    [iconDisplay]="'input'"
+                    [showIcon]="true"
+                    inputId=""
+                />
+            </div>
+            <div class="col-6 flex flex-column gap-2">
+                <label for="hora">Hora</label>
+                <p-calendar [showIcon]="true" [timeOnly]="true">
+                    <ng-template
+                        pTemplate="inputicon"
+                        let-clickCallBack="clickCallBack"
+                    >
+                        <i class="pi pi-clock pointer-events-none"></i>
+                    </ng-template>
+                </p-calendar>
+            </div>
+        </div>
+        <div class="flex flex-column"></div>
+    </div>
     <div class="flex flex-column gap-2">
-        <label for="descripcion">Descripción</label>
-        <p-editor id="descripcion" formControlName="descripcion" />
+        <label for="cForoDescripcion">Descripción</label>
+        <p-editor id="descripcion" formControlName="cForoDescripcion" />
     </div>
 </form>
 

@@ -12,3 +12,48 @@
         />
     </div>
 </div>
+
+<p-dialog
+    [(visible)]="modalPerfiles"
+    [style]="{ width: '1000px' }"
+    header="Lista de roles"
+    [modal]="true"
+    class="p-fluid"
+>
+    <p-orderList
+        class=""
+        [value]="perfiles"
+        header="Hola.. {{
+            name1 | uppercase
+        }} seleccione el rol que desea ingresar:"
+    >
+        <ng-template let-perfiles pTemplate="listItem">
+            <div class="p-col-12">
+                <div
+                    class="perfiles-list-item"
+                    (keypress)="seleccionarElemento(perfiles)"
+                    tabindex="0"
+                >
+                    <img
+                        src="assets/demo/images/matemit/avatar.png"
+                        [alt]="perfiles.name"
+                        class="w-4rem min-h-9 shadow-2 flex-shrink-0 border-round"
+                    />
+                    <div class="perfiles-list-detail">
+                        <div class="perfil-name">
+                            {{ perfiles.cPerfilNombre }}
+                        </div>
+                        <div class="perfil-name">IE: {{ null }}</div>
+                        <div class="perfil-description">
+                            Cod. Modular:{{ null }}
+                        </div>
+                        <div class="perfil-description">Nivel: {{ null }}</div>
+                        <div class="perfil-description">
+                            {{ perfiles.cEntNombreLargo }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+    </p-orderList>
+</p-dialog>

@@ -1,5 +1,4 @@
-import { Component, ElementRef, ViewChild, OnInit, inject } from '@angular/core'
-import { MenuItem } from 'primeng/api'
+import { Component, ElementRef, ViewChild, OnInit } from '@angular/core'
 import { LayoutService } from '../service/app.layout.service'
 import { LocalStoreService } from '../../servicios/local-store.service'
 import { TokenStorageService } from '../../servicios/token.service'
@@ -8,19 +7,10 @@ import { DropdownModule } from 'primeng/dropdown'
 import { FormsModule } from '@angular/forms'
 import { NgClass } from '@angular/common'
 import { MenuModule } from 'primeng/menu'
-import {
-    IRole,
-    RolesDropdownComponent,
-} from './roles-dropdown/roles-dropdown.component'
-import { ApiObtenerEuService } from './roles-dropdown/service/api-obtener-eu.service'
+import { RolesDropdownComponent } from './roles-dropdown/roles-dropdown.component'
 import { AnioEscolarComponent } from './roles-dropdown/anio-escolar/anio-escolar.component'
 import { PrimengModule } from '@/app/primeng.module'
 import { UserAccountComponent } from './roles-dropdown/user-account/user-account.component'
-
-interface Profile {
-    iProfile: number
-    profile: string
-}
 
 @Component({
     selector: 'app-topbar',
@@ -40,26 +30,17 @@ interface Profile {
     styleUrl: './app.topbar.component.scss',
 })
 export class AppTopBarComponent implements OnInit {
-    private _apiValidacionE = inject(ApiObtenerEuService)
-    items!: MenuItem[]
-    profile: Profile[] | []
-    public roles: IRole[] = [
-        {
-            id: '1',
-            ieCodigo: '20542',
-            nombre: 'JAVIER PEREZ DE CUELLAR',
-            codigoModular: '050092-0',
-            nivel: 'PRIMARIA',
-            direccion: 'DRE LIMA PROVINCIAS',
-            ugel: '15 HUAROCHIRI',
-        },
-    ]
-    selectedProfile: Profile | undefined
+    years = []
+    selectedYear: string
+
+    perfiles = []
+    selectedPerfil: string
+
+    modulos = []
+    selectedModulo: string
 
     @ViewChild('menubutton') menuButton!: ElementRef
-
-    @ViewChild('topbarmenubutton') topbarMenuButton!: ElementRef
-
+    // @ViewChild('topbarmenubutton') topbarMenuButton!: ElementRef
     @ViewChild('topbarmenu') menu!: ElementRef
 
     constructor(
@@ -69,36 +50,41 @@ export class AppTopBarComponent implements OnInit {
     ) {}
 
     ngOnInit() {
-        this.selectedProfile = this.store.getItem('dremoPerfil')
-        this.profile = [
-            { iProfile: 1001, profile: 'Docente' },
-            { iProfile: 1002, profile: 'Estudiante' },
-            { iProfile: 1003, profile: 'Aula Virtual' },
-            { iProfile: 1004, profile: 'Otro' },
-            { iProfile: 1005, profile: 'Administrador' },
-            { iProfile: 1006, profile: 'Evaluaciones' },
-        ]
-        this.items = [
-            {
-                // label: 'Options',
-                items: [
-                    {
-                        label: 'Cerrar Sesión',
-                        icon: 'pi pi-sign-out',
-                        command: () => this.logout(),
-                    },
-                ],
-            },
-        ]
-        const userId = 1
+        const user = this.store.getItem('dremoUser')
 
-        this._apiValidacionE.obtenerAutenticacion(userId).subscribe((Data) => {
-            this.roles = Data['data']
-        })
+        const year = this.store.getItem('dremoYear')
+        this.years = user.years
+        this.selectedYear = year ? year : null
+
+        const perfil = this.store.getItem('dremoPerfil')
+        this.perfiles = user.perfiles
+
+        const perfil_data = {
+            iPerfilId: 0,
+            cPerfilNombre: '-',
+            cEntNombreLargo: '-',
+        }
+        this.selectedPerfil = perfil ? perfil : perfil_data
+
+        const modulo = this.store.getItem('dremoModulo')
+        this.modulos = user.modulos
+        this.selectedModulo = modulo ? modulo.iModuloId : null
     }
 
-    changeProfile(event) {
-        this.store.setItem('dremoPerfil', event.value)
+    changeModulo(value) {
+        this.store.setItem('dremoModulo', value)
+        setTimeout(() => {
+            window.location.reload()
+        }, 200)
+    }
+    changePerfile(value) {
+        this.store.setItem('dremoPerfil', value)
+        setTimeout(() => {
+            window.location.reload()
+        }, 200)
+    }
+    changeYear(value) {
+        this.store.setItem('dremoYear', value)
         setTimeout(() => {
             window.location.reload()
         }, 200)
@@ -110,10 +96,21 @@ export class AppTopBarComponent implements OnInit {
         window.location.reload()
     }
 
-    accionMenuItem(accion): void {
+    actionTopBar(elemento): void {
+        console.log(elemento)
+        const { accion } = elemento
+        const { item } = elemento
+
         switch (accion) {
+            case 'year':
+                this.changeYear(item)
+                break
             case 'logout':
+                console.log(accion)
                 this.logout()
+                break
+            case 'modulo':
+                this.changeModulo(item)
                 break
         }
     }

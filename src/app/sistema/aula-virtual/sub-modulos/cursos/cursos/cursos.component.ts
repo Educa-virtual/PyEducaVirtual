@@ -64,10 +64,10 @@ export class CursosComponent implements OnDestroy, OnInit {
     ngOnInit(): void {
         const profile = this._store.getItem('dremoPerfil')
         switch (profile.iProfile) {
-            case 1001:
+            case 2:
                 this.layout = 'list'
                 break
-            case 1003:
+            case 1:
                 this.layout = 'grid'
                 break
             default:

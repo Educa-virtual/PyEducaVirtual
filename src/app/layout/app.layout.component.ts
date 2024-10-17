@@ -79,12 +79,6 @@ export class AppLayoutComponent implements OnDestroy {
                                 ) ||
                                 this.appTopbar.menu?.nativeElement.contains(
                                     event.target
-                                ) ||
-                                this.appTopbar.topbarMenuButton.nativeElement.isSameNode(
-                                    event.target
-                                ) ||
-                                this.appTopbar.topbarMenuButton.nativeElement.contains(
-                                    event.target
                                 )
                             )
 

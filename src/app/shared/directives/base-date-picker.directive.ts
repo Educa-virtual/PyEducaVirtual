@@ -1,11 +1,4 @@
-import {
-    Directive,
-    ElementRef,
-    Host,
-    Input,
-    OnInit,
-    Renderer2,
-} from '@angular/core'
+import { Directive, Host, Input, OnInit } from '@angular/core'
 import { Calendar } from 'primeng/calendar'
 
 @Directive({
@@ -18,11 +11,7 @@ export class BaseDatePickerDirective implements OnInit {
         this.setAttributes()
     }
 
-    constructor(
-        @Host() private pCalendar: Calendar,
-        private _renderer: Renderer2,
-        private _element: ElementRef
-    ) {}
+    constructor(@Host() private pCalendar: Calendar) {}
 
     private setAttributes() {
         this.pCalendar.appendTo = 'body'

@@ -20,3 +20,9 @@
 :host ::ng-deep .p-menu .p-submenu-header {
     display: none !important;
 }
+
+:host ::ng-deep .p-dropdown .p-dropdown-label {
+    background: transparent;
+    border: 0 none;
+    font-size: 10px !important;
+}

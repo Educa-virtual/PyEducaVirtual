@@ -17,6 +17,11 @@ interface Data {
     data?
     validated?: boolean
     code?: number
+    user?
+    modulos?
+    entidades?
+    perfiles?
+    years?
 }
 
 @Component({
@@ -63,25 +68,28 @@ export class LoginComponent implements OnInit {
             next: (response: Data) => {
                 this.loading = false
 
-                if (!response.data.length)
+                if (!response.user)
                     return this.messageService.add({
                         severity: 'error',
                         summary: 'Acceso Denegado!',
                         detail: 'No hay registros con las credenciales ingresadas',
                     })
 
-                const item = response.data[0]
+                const item = response.user
 
-                this.tokenStorage.setItem('dremoToken', item)
+                this.tokenStorage.setItem('dremoToken', response.accessToken)
+                this.tokenStorage.setItem('dremoUser', response.user)
+
+                this.store.setItem('dremoModalPerfil', true)
+
+                this.tokenStorage.setItem(
+                    'dremoRefreshToken',
+                    response.refreshToken
+                )
+
                 this.tokenStorage.setItem(
                     'dremoPerfilVerificado',
                     item.bCredVerificado == 1 ? true : false
-                )
-
-                this.tokenStorage.setItem('auth-token', response.accessToken)
-                this.tokenStorage.setItem(
-                    'auth-refreshtoken',
-                    response.refreshToken
                 )
 
                 this.tokenStorage.saveToken(response.accessToken)

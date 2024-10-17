@@ -65,14 +65,14 @@ export class TareaFormComponent implements OnInit {
         ]
     }
 
-    estudiantes: any[] = [
-        { nombre: 'Prueba', apellido: 'prueba name', selected: false },
-    ]
+    estudiantes = []
 
     // nota
     puntajeArray: { name: string; code: string }[] = []
 
     ngOnInit() {
+        this.getEstudiantesMatricula()
+
         this.countryService.getCountries().then((countries) => {
             this.countries = countries
         })
@@ -160,14 +160,47 @@ export class TareaFormComponent implements OnInit {
                 this.FilesTareas.push({
                     name: item.file.name,
                     size: item.file.size,
+                    ruta: item.name,
                 })
                 break
             case 'subir-archivo-instrumentos':
                 this.FilesInstrumentos.push({
                     name: item.file.name,
                     size: item.file.size,
+                    ruta: item.name,
                 })
                 break
         }
+    }
+
+    getEstudiantesMatricula() {
+        const params = {
+            petition: 'post',
+            group: 'aula-virtual',
+            prefix: 'matricula',
+            ruta: 'list',
+            data: {
+                opcion: 'CONSULTAR-ESTUDIANTESxiSemAcadIdxiYAcadIdxiCurrId',
+                iSemAcadId:
+                    '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+                iYAcadId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+                iCurrId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            },
+            params: { skipSuccessMessage: true },
+        }
+
+        this.getInformation(params)
+    }
+
+    getInformation(params) {
+        this.GeneralService.getGralPrefix(params).subscribe({
+            next: (response) => {
+                this.estudiantes = response.data
+            },
+            complete: () => {},
+            error: (error) => {
+                console.log(error)
+            },
+        })
     }
 }

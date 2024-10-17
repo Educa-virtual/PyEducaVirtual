@@ -5,6 +5,7 @@ import { Router, RouterOutlet } from '@angular/router'
 import { AppLayoutComponent } from './layout/app.layout.component'
 import { ConstantesService } from './servicios/constantes.service'
 import { LocalStoreService } from './servicios/local-store.service'
+import localEs from 'primelocale/es.json'
 
 @Component({
     selector: 'app-root',
@@ -25,6 +26,7 @@ export class AppComponent implements OnInit {
 
     ngOnInit() {
         this.primengConfig.ripple = true
+        this.primengConfig.setTranslation(localEs.es)
         const store = new LocalStoreService()
         const user = store.getItem('dremoToken')
         const accessToken = store.getItem('auth-token')

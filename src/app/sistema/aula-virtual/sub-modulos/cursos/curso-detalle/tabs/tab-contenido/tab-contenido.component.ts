@@ -9,8 +9,12 @@ import { InputTextModule } from 'primeng/inputtext'
 import { ActividadRowComponent } from '@/app/sistema/aula-virtual/sub-modulos/actividades/components/actividad-row/actividad-row.component'
 import {
     actividadesConfig,
+    EVALUACION,
+    FORO,
     IActividad,
-    tipoActividadesKeys,
+    MATERIAL,
+    TAREA,
+    VIDEO_CONFERENCIA,
 } from '@/app/sistema/aula-virtual/interfaces/actividad.interface'
 import { TActividadActions } from '@/app/sistema/aula-virtual/interfaces/actividad-actions.iterface'
 import { DialogModule } from 'primeng/dialog'
@@ -36,6 +40,9 @@ import { ActividadFormComponent } from '../../../../actividades/components/activ
 import { EvaluacionFormContainerComponent } from '../../../../actividades/actividad-evaluacion/evaluacion-form-container/evaluacion-form-container.component'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { GeneralService } from '@/app/servicios/general.service'
+import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
+import { Subject, takeUntil } from 'rxjs'
+import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 
 @Component({
     selector: 'app-tab-contenido',
@@ -80,18 +87,22 @@ export class TabContenidoComponent implements OnInit {
 
     private _constantesService = inject(ConstantesService)
     private _generalService = inject(GeneralService)
+    private _confirmService = inject(ConfirmationModalService)
+    private _aulaService = inject(ApiAulaService)
+    private semanaSeleccionada
+    private _unsubscribe$ = new Subject<boolean>()
 
     @Input({ required: true }) private _iSilaboId: string
 
     private handleActionsMap: Record<
-        string,
+        number,
         (action: TActividadActions, actividad: IActividad) => void
     > = {
-        tarea: this.handleTareaAction.bind(this),
-        foro: this.handleForoAction.bind(this),
-        evaluacion: this.handleEvaluacionAction.bind(this),
-        'video-conferencia': this.handleVideoconferenciaAction.bind(this),
-        material: this.handleMaterialAction.bind(this),
+        [TAREA]: this.handleTareaAction.bind(this),
+        [FORO]: this.handleForoAction.bind(this),
+        [EVALUACION]: this.handleEvaluacionAction.bind(this),
+        [VIDEO_CONFERENCIA]: this.handleVideoconferenciaAction.bind(this),
+        [MATERIAL]: this.handleMaterialAction.bind(this),
     }
 
     constructor(private _dialogService: DialogService) {}
@@ -112,40 +123,33 @@ export class TabContenidoComponent implements OnInit {
     }
 
     private obtenerContenidoSemanas() {
-        const params = {
-            petition: 'post',
-            group: 'docente',
-            prefix: 'contenido-semanas',
-            ruta: 'list',
-            seleccion: 1,
-            data: {
-                opcion: 'CONSULTARxiSilaboId',
-                valorBusqueda: this._iSilaboId,
-                iCredId: this._constantesService.iCredId,
-            },
-            params: {
-                skipSuccessMessage: true,
-            },
-        }
+        this._aulaService
+            .contenidoSemanasProgramacionActividades({
+                iSilaboId: this._iSilaboId,
+            })
+            .pipe(takeUntil(this._unsubscribe$))
+            .subscribe({
+                next: (data) => {
+                    this.contenidoSemanas = data
+                },
+            })
+    }
 
-        this._generalService.getGralPrefix(params).subscribe({
-            next: (response) => {
-                this.contenidoSemanas = response.data
-            },
-        })
+    setSemanaSeleccionada(semana) {
+        this.semanaSeleccionada = semana
     }
 
     generarAccionesContenido() {
         this.accionesContenido = Object.keys(actividadesConfig).map((key) => {
-            const actividad = actividadesConfig[key as tipoActividadesKeys]
+            const actividad = actividadesConfig[key]
             return {
-                label: actividad.tipoActividadNombre,
+                label: actividad.cActTipoNombre,
                 icon: actividad.icon,
                 command: () => {
                     const actionHandler =
-                        this.handleActionsMap[actividad.tipoActividad]
+                        this.handleActionsMap[actividad.iActTipoId]
                     if (actionHandler) {
-                        actionHandler('CREAR', null)
+                        actionHandler('CREAR', actividad)
                     }
                 },
             }
@@ -162,57 +166,54 @@ export class TabContenidoComponent implements OnInit {
         this.actividadSelected = actividad
         this.accionSeleccionada = action
 
-        if (actividad.tipoActividad === 'tarea') {
+        if (actividad.iActTipoId === TAREA) {
             this.handleTareaAction(action, actividad)
             return
         }
 
-        if (actividad.tipoActividad === 'evaluacion') {
+        if (actividad.iActTipoId === EVALUACION) {
             this.handleEvaluacionAction(action, actividad)
             return
         }
 
-        if (actividad.tipoActividad === 'foro') {
+        if (actividad.iActTipoId === FORO) {
             this.handleForoAction(action, actividad)
             return
         }
 
-        if (actividad.tipoActividad === 'video-conferencia') {
+        if (actividad.iActTipoId === VIDEO_CONFERENCIA) {
             this.handleVideoconferenciaAction(action, actividad)
             return
         }
 
-        if (actividad.tipoActividad === 'material') {
+        if (actividad.iActTipoId === MATERIAL) {
             this.handleMaterialAction('EDITAR', actividad, 'Editar Material')
         }
     }
 
     handleTareaAction(action: TActividadActions, actividad: IActividad) {
-        if (action === 'EDITAR') {
-            const ref: DynamicDialogRef = this._dialogService.open(
-                TareaFormContainerComponent,
-                {
-                    ...MODAL_CONFIG,
-                    data: actividad,
-                    header: 'Editar Actividad',
-                }
-            )
-            ref.onClose.subscribe((result) => {
-                if (result) {
-                    console.log('Formulario enviado', result)
-                } else {
-                    console.log('Formulario cancelado')
-                }
-            })
-        }
-
-        if (action === 'CREAR') {
-            this._dialogService.open(TareaFormContainerComponent, {
+        const ref: DynamicDialogRef = this._dialogService.open(
+            TareaFormContainerComponent,
+            {
                 ...MODAL_CONFIG,
-                header: 'Crear Actividades de Aprendizaje',
-                data: null,
-            })
-        }
+                data: {
+                    iContenidoSemId: this.semanaSeleccionada.iContenidoSemId,
+                    iActTipoId: actividad.iActTipoId,
+                },
+                header:
+                    action === 'EDITAR'
+                        ? 'Editar Actividad'
+                        : 'Crear Actividades de Aprendizaje',
+            }
+        )
+        ref.onClose.subscribe((result) => {
+            this.getData()
+            if (result) {
+                console.log('Formulario enviado', result)
+            } else {
+                console.log('Formulario cancelado')
+            }
+        })
     }
 
     handleVideoconferenciaAction(
@@ -266,17 +267,54 @@ export class TabContenidoComponent implements OnInit {
     }
 
     handleEvaluacionAction(action: TActividadActions, actividad: IActividad) {
-        if (action === 'CREAR') {
+        if (action === 'CREAR' || action === 'EDITAR') {
             const ref = this._dialogService.open(
                 EvaluacionFormContainerComponent,
                 {
                     ...MODAL_CONFIG,
                     maximizable: true,
-                    header: 'Crear Evaluación',
-                    data: actividad,
+                    header:
+                        actividad == null
+                            ? 'Crear Evaluación'
+                            : 'Editar Evaluación',
+                    data: {
+                        actividad,
+                        semana: this.semanaSeleccionada,
+                    },
                 }
             )
             this._dialogService.getInstance(ref).maximize()
+            ref.onClose.pipe(takeUntil(this._unsubscribe$)).subscribe({
+                next: (result) => {
+                    if (result) {
+                        this.obtenerContenidoSemanas()
+                    }
+                },
+            })
         }
+
+        if (action === 'ELIMINAR') {
+            this._confirmService.openConfirm({
+                header: '¿Esta seguro de eliminar la evaluación?',
+                accept: () => {
+                    this.eliminarActividad(
+                        actividad.iProgActId,
+                        actividad.iActTipoId,
+                        actividad.ixActivadadId
+                    )
+                },
+            })
+        }
+    }
+
+    private eliminarActividad(iProgActId, iActTipoId, ixActivadadId) {
+        this._aulaService
+            .eliminarActividad({ iProgActId, iActTipoId, ixActivadadId })
+            .pipe(takeUntil(this._unsubscribe$))
+            .subscribe({
+                next: () => {
+                    this.obtenerContenidoSemanas()
+                },
+            })
     }
 }

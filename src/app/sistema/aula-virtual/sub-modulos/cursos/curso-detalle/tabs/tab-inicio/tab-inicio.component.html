@@ -1,28 +1,32 @@
-<div class="container my-4">
-    <div class="row">
-        <!-- Columna izquierda (Sección de Anuncios) -->
-        <div class="col-md-6">
-            <article class="card p-3">
-                <h2 class="mb-3 text-2xl">Sección de Anuncios:</h2>
-                <p><strong>Anuncie a qui </strong> 30</p>
-            </article>
-        </div>
-
-        <div class="container">
-            <h1>Datos del Docente</h1>
-            <div class="column">
-                <p><strong>Código Área:</strong> cief7qu</p>
-                <p><strong># Estudiantes:</strong> 30</p>
-                <p><strong>Docente:</strong> Carlos Jose</p>
-                <p><strong>Tutor:</strong> Jose María</p>
-                <p><strong>Grado:</strong> 4to</p>
-                <p><strong>Sección:</strong> H</p>
-                <p><strong>Ciclo:</strong> VI</p>
-                <p><strong>Tiempo:</strong> 45:23:00</p>
-            </div>
-            <div class="column">
-                <p-button label="Primary" />
-            </div>
-        </div>
+<div class="grid">
+    <div class="col-3">
+        <p><strong>Código Area:</strong> ief7qu</p>
+        <p><strong>N° Estudiantes:</strong> 12</p>
+        <p><strong>Docente:</strong> Carlos Jose</p>
+        <p><strong>Tutor:</strong> Jose Maria</p>
+        <p><strong>Grado:</strong> 4to</p>
+        <p><strong>Sección:</strong> H</p>
+        <p><strong>Ciclo:</strong> VI</p>
+        <p><strong>Tiempo:</strong> 45:23:00</p>
+    </div>
+    <div class="col-9">
+        <label for="Anuncia algo aquí"
+            >Anuncia algo aquí Para toda la clase</label
+        >
+        <p-editor id="cTareaDescripcion" formControlName="cTareaDescripcion" />
+        <br />
+        <button pButton type="button" label="Link" icon="pi pi-link"></button>
+        <button
+            pButton
+            type="button"
+            label="Cancelar"
+            class="pi pi-times"
+        ></button>
+        <button
+            pButton
+            type="button"
+            label="Publicar"
+            class="pi pi-users"
+        ></button>
     </div>
 </div>

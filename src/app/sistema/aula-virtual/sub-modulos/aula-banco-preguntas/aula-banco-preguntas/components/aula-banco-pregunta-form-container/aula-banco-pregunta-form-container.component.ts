@@ -53,6 +53,7 @@ export class AulaBancoPreguntaFormContainerComponent implements OnInit {
 
     getData() {
         this.obtenerEncabezados()
+        this.obtenerTipoPreguntas()
     }
 
     obtenerEncabezados() {
@@ -72,6 +73,18 @@ export class AulaBancoPreguntaFormContainerComponent implements OnInit {
                         sinEncabezadoObj,
                         ...this.encabezados,
                     ]
+                },
+            })
+    }
+
+    obtenerTipoPreguntas() {
+        if (this.tipoPreguntas.length > 0) return
+        this._aulaBancoPreguntasService
+            .obtenerTipoPreguntas({ bancoTipo: 'aula' })
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+                next: (data) => {
+                    this.tipoPreguntas = data
                 },
             })
     }
@@ -112,8 +125,11 @@ export class AulaBancoPreguntaFormContainerComponent implements OnInit {
         this._aulaBancoPreguntasService
             .guardarActualizarPreguntaConAlternativas(data)
             .subscribe({
-                next: () => {
-                    this.closeModal(data)
+                next: (respData) => {
+                    if (respData.length > 0) {
+                        respData = respData[0]
+                    }
+                    this.closeModal(respData)
                 },
             })
     }

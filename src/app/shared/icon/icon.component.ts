@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core'
+import { Component, HostBinding, Input } from '@angular/core'
 import { IconName, NgIconComponent } from '@ng-icons/core'
 
 export type IconSize = 'xs' | 'sm' | 'base' | 'lg' | 'xl' | 'none'
@@ -27,6 +27,11 @@ export class IconComponent {
 
     get getSize(): string {
         return impactClasses[this.size]
+    }
+
+    @HostBinding('class')
+    get hostClasses(): string {
+        return this.color
     }
 
     isPrimeIcon(): boolean {

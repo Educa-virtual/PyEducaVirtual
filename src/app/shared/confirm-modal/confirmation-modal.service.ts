@@ -25,6 +25,8 @@ export class ConfirmationModalService {
     }: Omit<IModal, 'header'> & {
         header: string
     }) {
+        console.log(message === '')
+
         this.dialogState.next({
             header,
             key: 'manual',
@@ -32,7 +34,8 @@ export class ConfirmationModalService {
             acceptLabel: 'Si',
             rejectLabel: 'No, cancelar',
             rejectVisible: true,
-            message: message === '' ? message : 'No podrá revertir esta acción',
+            message:
+                message === '' ? 'No podrá revertir esta acción.' : message,
             ...config,
         })
     }

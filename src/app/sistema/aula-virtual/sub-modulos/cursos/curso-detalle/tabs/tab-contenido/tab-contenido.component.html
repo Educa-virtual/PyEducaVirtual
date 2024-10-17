@@ -40,16 +40,23 @@
                         class="p-link ml-auto mr-2 text-primary"
                         (click)="
                             $event.stopPropagation();
+                            setSemanaSeleccionada(semana);
                             menuContenido.toggle($event)
                         "
                     >
                         <span class="pi pi-cog"></span>
                     </button>
                 </ng-template>
-                <!-- <app-actividad-lista
-                    [actividades]="actividades"
-                    (actionSelected)="actionSelected($event)"
-                ></app-actividad-lista> -->
+                @for (fecha of semana.fechas; track $index) {
+                    <h3 class="text-primary text-xl">
+                        {{ fecha.fecha | date: "EEEE, d 'de' MMMM 'de' yyyy" }}
+                    </h3>
+                    <hr />
+                    <app-actividad-lista
+                        [actividades]="fecha.actividades"
+                        (actionSelected)="actionSelected($event)"
+                    ></app-actividad-lista>
+                }
             </p-accordionTab>
         </p-accordion>
     }

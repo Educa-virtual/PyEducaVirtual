@@ -42,9 +42,9 @@ export class InicioComponent implements OnInit {
     }
 
     obtenerPerfiles() {
-        const info = this.ls.getItem('dremoToken')
+        const info = this.ls.getItem('dremoUser')
         this.perfiles = info.perfiles
-        this.openModal()
+        // this.openModal()
     }
 
     openModal() {

@@ -19,12 +19,15 @@ import { FileUploadModule } from 'primeng/fileupload'
 import { DynamicDialogRef } from 'primeng/dynamicdialog'
 import { GeneralService } from '@/app/servicios/general.service'
 import { FileUploadPrimengComponent } from '../../../../../../shared/file-upload-primeng/file-upload-primeng.component'
+import { PickListModule } from 'primeng/picklist'
+
 @Component({
     selector: 'app-tarea-form',
     standalone: true,
     imports: [
         CommonModule,
         ReactiveFormsModule,
+        PickListModule,
         CommonInputComponent,
         FormsModule,
         EditorModule,
@@ -65,7 +68,7 @@ export class TareaFormComponent implements OnInit {
         ]
     }
 
-    estudiantes = []
+    estudiantes: any[] = []
 
     // nota
     puntajeArray: { name: string; code: string }[] = []
@@ -188,9 +191,15 @@ export class TareaFormComponent implements OnInit {
             },
             params: { skipSuccessMessage: true },
         }
+        console.log(this.getInformation)
 
         this.getInformation(params)
     }
+
+    // obtenerEstudiantes(){
+    //     const userId = 1;
+    //     this.getEstudiantesMatricula(params).subscribe((Data) => this.estudiantes = Data['data'])
+    // }
 
     getInformation(params) {
         this.GeneralService.getGralPrefix(params).subscribe({

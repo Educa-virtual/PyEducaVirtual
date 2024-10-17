@@ -1,4 +1,11 @@
-import { Directive, ElementRef, Host, OnInit, Renderer2 } from '@angular/core'
+import {
+    Directive,
+    ElementRef,
+    Host,
+    Input,
+    OnInit,
+    Renderer2,
+} from '@angular/core'
 import { Calendar } from 'primeng/calendar'
 
 @Directive({
@@ -6,6 +13,7 @@ import { Calendar } from 'primeng/calendar'
     standalone: true,
 })
 export class BaseDatePickerDirective implements OnInit {
+    @Input() showTodayButton = false
     ngOnInit() {
         this.setAttributes()
     }
@@ -22,5 +30,8 @@ export class BaseDatePickerDirective implements OnInit {
         this.pCalendar.styleClass = 'w-full'
         this.pCalendar.showButtonBar = true
         this.pCalendar.showIcon = true
+        if (!this.showTodayButton) {
+            this.pCalendar.todayButtonStyleClass = 'hidden'
+        }
     }
 }

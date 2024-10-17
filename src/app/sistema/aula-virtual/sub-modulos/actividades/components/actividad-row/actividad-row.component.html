@@ -64,8 +64,26 @@
         </button>
     </ng-template>
     <ng-content>
-        <div class="flex mb-3">Fecha Inicio: 17/03/2025 Hora: 2:00 p.m.</div>
-        <div class="flex mb-3">Fecha Cierre: 17/03/2025 Hora: 4:00 p.m.</div>
+        @if (
+            actividad['dtProgActInicio'] !== null &&
+            actividad['dtProgActInicio'] !== undefined
+        ) {
+            <div class="flex mb-3">
+                Fecha Inicio:
+                {{ actividad['dtProgActInicio'] | date: 'dd/MM/yyyy' }} Hora:
+                {{ actividad['dtProgActInicio'] | date: 'h:mm a' }}
+            </div>
+        }
+        @if (
+            actividad['dtProgActFin'] !== null &&
+            actividad['dtProgActFin'] !== undefined
+        ) {
+            <div class="flex mb-3">
+                Fecha Cierre:
+                {{ actividad['dtProgActFin'] | date: 'dd/MM/yyyy' }} Hora:
+                {{ actividad['dtProgActFin'] | date: 'h:mm a' }}
+            </div>
+        }
         <div class="flex justify-content-end">
             <a
                 pButton

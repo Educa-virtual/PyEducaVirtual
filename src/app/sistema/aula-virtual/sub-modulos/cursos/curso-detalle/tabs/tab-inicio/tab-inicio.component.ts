@@ -4,10 +4,17 @@ import { ProfesorAvatarComponent } from '../../../components/profesor-avatar/pro
 import { ICurso } from '../../../interfaces/curso.interface'
 import { EditorModule } from 'primeng/editor'
 import { TableModule } from 'primeng/table'
+import { PickListModule } from 'primeng/picklist'
 @Component({
     selector: 'app-tab-inicio',
     standalone: true,
-    imports: [ProfesorAvatarComponent, ButtonModule, EditorModule, TableModule],
+    imports: [
+        ProfesorAvatarComponent,
+        ButtonModule,
+        EditorModule,
+        TableModule,
+        PickListModule,
+    ],
     templateUrl: './tab-inicio.component.html',
     styleUrl: './tab-inicio.component.scss',
 })

@@ -4,13 +4,14 @@
         font-weight: normal;
     }
 
-    .product-name {
-        font-size: 1.5rem;
-        font-weight: 700;
+    .perfil-name {
+        font-size: 0.9rem;
+        font-weight: bold;
     }
 
-    .product-description {
-        margin: 0 0 1rem 0;
+    .perfil-description {
+        font-size: 0.8rem;
+        margin: 0 0 0.2rem 0;
     }
 
     .product-category-icon {
@@ -23,7 +24,7 @@
         vertical-align: middle;
     }
 
-    .product-list-item {
+    .perfiles-list-item {
         display: flex;
         align-items: center;
         padding: 1rem;
@@ -139,4 +140,10 @@
             width: 100%;
         }
     }
+}
+
+:host ::ng-deep .p-button:focus {
+    outline: 0 none;
+    outline-offset: 0px;
+    box-shadow: none;
 }

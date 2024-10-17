@@ -69,7 +69,7 @@
         .layout-sidebar {
             transform: translateX(-100%);
             left: 0;
-            top: 9vh;
+            //top: 9vh;
             height: 100vh;
             border-top-left-radius: 0;
             border-bottom-left-radius: 0;
@@ -96,5 +96,16 @@
                 animation: fadein $transitionDuration;
             }
         }
+    }
+}
+
+@media (max-width: 780px) {
+    .layout-sidebar {
+        transform: translateX(-100%);
+        left: 0;
+        top: 11vh;
+        height: 100vh;
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
     }
 }

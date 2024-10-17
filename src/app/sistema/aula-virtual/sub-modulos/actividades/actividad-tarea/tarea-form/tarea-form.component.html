@@ -39,30 +39,29 @@
                         </ul>
                     </div>
                     <div class="col-6">
-                        <button
+                        <p-button
                             icon="pi pi-link"
-                            pButton
+                            label="Enlace"
                             class="p-button-primary mx-auto"
-                            (click)="openLinkDialog()"
+                            (onClick)="openLinkDialog()"
                         >
-                            Enlace
-                        </button>
+                        </p-button>
                     </div>
                 </div>
             </div>
         </div>
         <div class="col-4">
-            <div class="field grid">
+            <!--<div class="field grid">
                 <div class="field flex flex-column col-12 md:col-12">
                     <button
                         pButton
                         class="pi pi-users"
                         (click)="mostrarModal()"
                     >
-                        Toda la clase
+
                     </button>
                 </div>
-            </div>
+            </div>-->
             <!-- fecha hora de Inicio -->
             <div class="formgrid grid">
                 <div class="field flex flex-column col-12 md:col-6">
@@ -106,7 +105,7 @@
             <div class="formgrid grid">
                 <div class="field flex flex-column col-12 md:col-6">
                     <label for="dFechaEvaluacionPublicacionFin"
-                        >Fecha de finalizacion</label
+                        >Fecha finalizacion</label
                     >
                     <p-calendar
                         formControlName="dFechaEvaluacionPublicacionFin"
@@ -140,9 +139,9 @@
                 </div>
             </div>
             <br />
-            <div class="formgrid grid">
-                <!-- Columna para Nivel de logro -->
-                <div class="field col-12 md:col-6">
+            <!--<div class="formgrid grid">
+                 Columna para Nivel de logro -->
+            <!--<div class="field col-12 md:col-6">
                     <label htmlFor="state">Nivel de logro</label>
                     <p-dropdown
                         [options]="niveldelogrosDropdownItems"
@@ -150,10 +149,10 @@
                         optionLabel="name"
                         placeholder="Selecciona"
                     ></p-dropdown>
-                </div>
+                </div>-->
 
-                <!-- Columna para Puntaje -->
-                <div class="field col-12 md:col-6">
+            <!-- Columna para Puntaje -->
+            <!--<div class="field col-12 md:col-6">
                     <label htmlFor="state">Puntaje</label>
                     <p-dropdown
                         [options]="puntajeArray"
@@ -162,7 +161,7 @@
                         placeholder="Selecciona"
                     ></p-dropdown>
                 </div>
-            </div>
+            </div>-->
 
             <!-- Columna para instrumentos de evalaucion -->
             <div class="flex justify-content-between gap-2 flex-wrap">
@@ -189,30 +188,43 @@
     modal="modal"
     [draggable]="false"
 >
-    <div>
-        <input
-            pInputText
-            type="text"
-            placeholder="Ingrese el enlace"
-            [(ngModel)]="link"
-        />
-        <button class="p-button-primary mx-auto" (click)="addLink()">
-            Agregar
-        </button>
+    <div class="p-fluid">
+        <div class="p-field p-mb-3">
+            <input
+                id="linkInput"
+                pInputText
+                type="text"
+                placeholder="Ingrese el enlace"
+                [(ngModel)]="link"
+                class="p-inputtext p-component"
+            />
+        </div>
+
+        <div class="p-field" style="margin-top: 15px">
+            <!-- Espaciado extra aquí -->
+            <button
+                pButton
+                label="Agregar"
+                icon="pi pi-check"
+                class="p-button-primary"
+                (click)="addLink()"
+            ></button>
+        </div>
     </div>
 </p-dialog>
 
-<p-dialog
+<!--<p-dialog
     header="Asignar a"
     [(visible)]="displayModal"
     [modal]="true"
     [closable]="false"
     [draggable]="false"
+
 >
-    <div>
-        <p-table [value]="estudiantes">
+     <div>
+        <p-table [value]="estudiantes" scrollable="true" scrollHeight="200px">
             <ng-template pTemplate="header">
-                <tr>
+                <tr class="sticky-header">
                     <th></th>
                     <th>Nombres</th>
                     <th>Apellido Paterno</th>
@@ -236,25 +248,60 @@
                 </tr>
             </ng-template>
         </p-table>
-    </div>
+    </div>-->
+<!--<p-pickList
+            sourceHeader="Lista de Estudiantes"
+            targetHeader="Lista de Estudiantes"
+            [dragdrop]="true"
+            [responsive]="true"
+            [sourceStyle]="{ height: '30rem' }"
+            [targetStyle]="{ height: '30rem' }"
+            filterBy="cIieeNombre"
+            sourceFilterPlaceholder="Buscar por nombre"
+            targetFilterPlaceholder="Buscar por nombre"
+            [source]="estudiantes"
+            showSourceControls="false"
+            showTargetControls="false"
+
+    >
+        <ng-template let-estudiante pTemplate="item">
+
+
+                    <span class="font-bold">
+                        {{ estudiante.cPersNombre }}
+                    </span>
+                    <div class="flex align-products-center ">
+                        <span>
+                            {{ estudiante.cPersPaterno }}
+                        </span>
+                        <span>
+                            {{ estudiante.cPersMaterno }}
+                        </span>
+                    </div>
+
+        </ng-template>
+</p-pickList>
     <footer>
-        <div class="col text-left">
-            <button
-                pButton
-                label="Cerrar"
-                class="p-button-label ql-color"
-                icon="pi pi-times"
-                (click)="cerrarModal()"
-            ></button>
+        <div class="field flex">
+            <div class="col text-left">
+                <button
+                    pButton
+                    label="Cerrar"
+                    class="p-button-label ql-color"
+                    icon="pi pi-times"
+                    (click)="cerrarModal()"
+                ></button>
+            </div>
+            <div class="col text-right">
+                <button
+                    pButton
+                    class="p-button-label ql-color"
+                    label="Guardar"
+                    icon="pi pi-save"
+                    (click)="guardarDatos()"
+                ></button>
+            </div>
         </div>
-        <div class="col text-right">
-            <button
-                pButton
-                class="p-button-label ql-color"
-                label="Guardar"
-                icon="pi pi-save"
-                (click)="guardarDatos()"
-            ></button>
-        </div>
+
     </footer>
-</p-dialog>
+    </p-dialog>-->

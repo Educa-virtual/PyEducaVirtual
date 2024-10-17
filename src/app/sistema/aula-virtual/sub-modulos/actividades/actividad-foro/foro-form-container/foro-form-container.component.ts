@@ -34,9 +34,10 @@ export class ForoFormContainerComponent implements OnInit {
     private _aulaService = inject(ApiAulaService)
     private _formBuilder = inject(FormBuilder)
     private ref = inject(DynamicDialogRef)
-    perfiles: any[] = []
 
-    public categorias = []
+    categorias: any[] = []
+
+    public selectCategorias = {}
 
     public foroForm: FormGroup = this._formBuilder.group({
         titulo: ['', [Validators.required]],
@@ -44,21 +45,22 @@ export class ForoFormContainerComponent implements OnInit {
         categoria: [0, [Validators.required]],
     })
     ngOnInit(): void {
+        this.mostrarCategorias()
+    }
+    mostrarCategorias() {
         const userId = 1
         this._aulaService.guardarForo(userId).subscribe((Data) => {
-            this.perfiles = Data['data']
+            this.categorias = Data['data']
+            //console.log('Datos mit', this.categorias)
         })
-
-        console.log('Datos mit', this.perfiles)
     }
-
     closeModal(data) {
         this.ref.close(data)
     }
 
     submitFormulario(data) {
         console.log('Prueba Mit', data)
-        this._aulaService.guardarForo(data)
-        console.log(this._aulaService)
+        // this._aulaService.guardarForo(data)
+        // console.log(this._aulaService)
     }
 }

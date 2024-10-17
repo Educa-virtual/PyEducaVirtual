@@ -15,6 +15,8 @@ export const mapPregunta = (pregunta, alternativas) => {
         iSegundos: pregunta.iSegundos,
         cPreguntaTextoAyuda: pregunta.cBancoTextoAyuda,
         cTipoPregDescripcion: pregunta.cTipoPregDescripcion,
+        iEvalPregId: pregunta.iEvalPregId,
+        isLocal: false,
     }
 }
 
@@ -23,7 +25,7 @@ export const mapAlternativa = (alternativa) => {
         iAlternativaId: alternativa.iBancoAltId,
         cAlternativaDescripcion: alternativa.cBancoAltDescripcion,
         cAlternativaLetra: alternativa.cBancoAltLetra,
-        bAlternativaCorrecta: alternativa.bBancoAltRptaCorrecta,
+        bAlternativaCorrecta: alternativa.bBancoAltRptaCorrecta ? 1 : 0,
         cAlternativaExplicacion: alternativa.cBancoAltExplicacionRpta,
     }
 }

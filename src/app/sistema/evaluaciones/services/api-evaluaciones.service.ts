@@ -18,6 +18,8 @@ export class ApiEvaluacionesService {
             .pipe(map((resp) => resp.data))
     }
 
+    // evaluacion contenido aula
+
     guardarActualizarEvaluacion(data) {
         return this.http
             .post<any>(
@@ -31,6 +33,12 @@ export class ApiEvaluacionesService {
         return this.http.post<any>(
             `${this.baseUrlApi}/evaluaciones/evaluacion/guardarActualizarPreguntasEvaluacion`,
             data
+        )
+    }
+
+    quitarPreguntaEvaluacion(iEvalPregId) {
+        return this.http.delete<any>(
+            `${this.baseUrlApi}/evaluaciones/evaluacion/eliminarPreguntaEvulacion/${iEvalPregId}`
         )
     }
 }

@@ -16,6 +16,8 @@
     [showCaption]="false"
     [showPaginator]="false"
     [accionesTabla]="acciones"
+    (accionBtnItemTable)="accionBtnItemTable($event)"
+    [columnas]="columnasEvaluacionLista"
 ></app-banco-pregunta-lista>
 
 <p-menu
@@ -33,7 +35,7 @@
     [(visible)]="showModalBancoPreguntas"
     [position]="'top'"
     [maximizable]="true"
-    [style]="{ width: '75vw' }"
+    [style]="{ width: '100%' }"
 >
     @defer (when showModalBancoPreguntas) {
         <!-- las preguntas seleccionadas -->

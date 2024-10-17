@@ -39,9 +39,7 @@
             <label for="dFechaEvaluacionPublicacion">Fecha publicación</label>
             <p-calendar
                 formControlName="dFechaEvaluacionPublicacion"
-                [appendTo]="'body'"
-                [iconDisplay]="'input'"
-                [styleClass]="'w-full'"
+                appBaseDatePicker
                 [ngClass]="{
                     'ng-invalid ng-dirty':
                         evaluacionInfoForm.get('dFechaEvaluacionPublicacion')
@@ -49,7 +47,6 @@
                         evaluacionInfoForm.get('dFechaEvaluacionPublicacion')
                             ?.touched,
                 }"
-                [showIcon]="true"
                 inputId="dFechaEvaluacionPublicacion"
             />
             @if (
@@ -65,10 +62,7 @@
             <label for="tHoraEvaluacionPublicacion">Hora publicación</label>
             <p-calendar
                 [timeOnly]="true"
-                styleClass="w-full"
-                [appendTo]="'body'"
-                [showIcon]="true"
-                iconDisplay="input"
+                appBaseDatePicker
                 [ngClass]="{
                     'ng-invalid ng-dirty':
                         evaluacionInfoForm.get('tHoraEvaluacionPublicacion')
@@ -102,22 +96,15 @@
         <div class="field flex flex-column col-12 md:col-6">
             <label for="dFechaEvaluacionInico">Fecha inicio evaluación</label>
             <p-calendar
+                appBaseDatePicker
                 formControlName="dFechaEvaluacionInico"
-                [iconDisplay]="'input'"
-                styleClass="w-full"
-                [appendTo]="'body'"
-                [showIcon]="true"
                 inputId="dFechaEvaluacionInico"
             />
         </div>
         <div class="field flex flex-column col-12 md:col-6">
             <label for="tHoraEvaluacionInico">Hora inicio evaluación</label>
             <p-calendar
-                [timeOnly]="true"
-                styleClass="w-full"
-                [showIcon]="true"
-                iconDisplay="input"
-                [appendTo]="'body'"
+                appBaseDatePicker
                 formControlName="tHoraEvaluacionInico"
                 inputId="tHoraEvaluacionInico"
             >
@@ -137,21 +124,14 @@
             <label for="dFechaEvaluacionFin">Fecha fin evaluación</label>
             <p-calendar
                 formControlName="dFechaEvaluacionFin"
-                [iconDisplay]="'input'"
-                [appendTo]="'body'"
-                styleClass="w-full"
-                [showIcon]="true"
+                appBaseDatePicker
                 inputId="dFechaEvaluacionFin"
             />
         </div>
         <div class="field flex flex-column col-12 md:col-6">
             <label for="tHoraEvaluacionFin">Hora fin evaluación</label>
             <p-calendar
-                [timeOnly]="true"
-                styleClass="w-full"
-                [showIcon]="true"
-                iconDisplay="input"
-                [appendTo]="'body'"
+                appBaseDatePicker
                 formControlName="tHoraEvaluacionFin"
                 inputId="tHoraEvaluacionFin"
             >

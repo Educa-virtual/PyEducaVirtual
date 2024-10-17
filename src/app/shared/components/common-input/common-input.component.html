@@ -1,4 +1,7 @@
-<div class="flex flex-column gap-2" [formGroup]="parentFormGroup">
+<div
+    class="flex flex-column align-items-start gap-2"
+    [formGroup]="parentFormGroup"
+>
     @if (label !== null && label !== undefined) {
         <label [for]="id">{{ label }}</label>
     }
@@ -7,6 +10,7 @@
         [id]="id"
         [formControlName]="controlKey"
         [type]="type"
+        class="w-full"
         [ngClass]="{ 'ng-invalid ng-dirty': campoInvalido }"
     />
     <small>

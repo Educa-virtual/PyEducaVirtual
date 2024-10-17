@@ -91,8 +91,6 @@ export class BancoPreguntasFormContainerComponent implements OnInit {
                     if (data.length > 0) {
                         this.pregunta = undefined
                         this.pregunta = data[0]
-
-                        // this.modePregunta = 'EDITAR'
                     }
                 },
             })

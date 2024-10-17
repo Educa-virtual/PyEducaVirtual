@@ -23,7 +23,7 @@ export class ActividadComponent implements OnInit {
 
     ngOnInit() {
         const keyTab = this._activatedRoute.snapshot.params['iActTopId']
-        this.iActTopId = keyTab as tipoActividadesKeys
-        console.log(keyTab, this.iActTopId)
+        const tab = parseInt(keyTab)
+        this.iActTopId = tab as tipoActividadesKeys
     }
 }

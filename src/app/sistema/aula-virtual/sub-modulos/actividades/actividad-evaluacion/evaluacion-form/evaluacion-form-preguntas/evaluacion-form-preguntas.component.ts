@@ -1,14 +1,15 @@
 import { BancoPreguntaListaComponent } from '@/app/sistema/evaluaciones/sub-evaluaciones/banco-preguntas/components/banco-pregunta-lista/banco-pregunta-lista.component'
 import { CommonModule } from '@angular/common'
-import { Component, inject, Input } from '@angular/core'
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core'
 import { MenuItem } from 'primeng/api'
 import { ButtonModule } from 'primeng/button'
 import { MenuModule } from 'primeng/menu'
 import { DialogService } from 'primeng/dynamicdialog'
 import { AulaBancoPreguntasModule } from '../../../../aula-banco-preguntas/aula-banco-preguntas.module'
 import { AulaBancoPreguntasService } from '../../../../aula-banco-preguntas/aula-banco-preguntas/aula-banco-.preguntas.service'
-import { MODAL_CONFIG } from '@/app/shared/constants/modal.config'
+import { DialogModule } from 'primeng/dialog'
 import { AulaBancoPreguntasComponent } from '../../../../aula-banco-preguntas/aula-banco-preguntas/aula-banco-preguntas.component'
+import { accionesPreguntasEvaluacion } from './evaluacion-form-preguntas'
 
 @Component({
     selector: 'app-evaluacion-form-preguntas',
@@ -19,6 +20,8 @@ import { AulaBancoPreguntasComponent } from '../../../../aula-banco-preguntas/au
         MenuModule,
         BancoPreguntaListaComponent,
         AulaBancoPreguntasModule,
+        DialogModule,
+        AulaBancoPreguntasComponent,
     ],
     templateUrl: './evaluacion-form-preguntas.component.html',
     styleUrl: './evaluacion-form-preguntas.component.scss',
@@ -26,8 +29,15 @@ import { AulaBancoPreguntasComponent } from '../../../../aula-banco-preguntas/au
 })
 export class EvaluacionFormPreguntasComponent {
     @Input() tituloEvaluacion: string = 'Sin título de evaluación'
-
     @Input() preguntas: any[] = []
+
+    @Output() preguntasSeleccionadasChange = new EventEmitter()
+
+    public acciones = accionesPreguntasEvaluacion
+
+    public showModalBancoPreguntas: boolean = false
+
+    preguntasSeleccionadas = []
 
     private _dialogService = inject(DialogService)
     private _aulaBancoPreguntasService = inject(AulaBancoPreguntasService)
@@ -67,14 +77,29 @@ export class EvaluacionFormPreguntasComponent {
         })
         refModal.onClose.subscribe((result) => {
             if (result) {
+                this.preguntas.push(result)
+                this.preguntasSeleccionadasChange.emit(this.preguntas)
                 console.log(result)
             }
         })
     }
 
     handleBancopregunta() {
-        this._dialogService.open(AulaBancoPreguntasComponent, {
-            ...MODAL_CONFIG,
-        })
+        this.showModalBancoPreguntas = true
+    }
+
+    closeModalBancoPreguntas() {
+        this.showModalBancoPreguntas = false
+    }
+
+    selectedRowDataChange(event) {
+        this.preguntasSeleccionadas = [...event]
+    }
+
+    agregarPreguntas() {
+        // validaciones
+        this.closeModalBancoPreguntas()
+        this.preguntas = this.preguntasSeleccionadas
+        this.preguntasSeleccionadasChange.emit(this.preguntas)
     }
 }

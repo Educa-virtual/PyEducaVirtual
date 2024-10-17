@@ -1,4 +1,12 @@
-import { Component, inject, OnInit, OnDestroy } from '@angular/core'
+import {
+    Component,
+    inject,
+    OnInit,
+    OnDestroy,
+    Input,
+    Output,
+    EventEmitter,
+} from '@angular/core'
 import { AulaBancoPreguntasModule } from '../aula-banco-preguntas.module'
 import {
     actionsContainer,
@@ -21,6 +29,8 @@ import { AulaBancoPreguntaFormContainerComponent } from './components/aula-banco
     styleUrl: './aula-banco-preguntas.component.scss',
 })
 export class AulaBancoPreguntasComponent implements OnInit, OnDestroy {
+    @Input() public mode: 'SELECTION' | 'NORMAL' = 'NORMAL'
+    @Output() public selectedRowDataChange = new EventEmitter()
     public actionsTable = actionsTable
     public actionsContainer = actionsContainer
     public columnas = columns
@@ -47,6 +57,20 @@ export class AulaBancoPreguntasComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.getData()
+        this.setupConfig()
+    }
+
+    setupConfig() {
+        if (this.mode === 'SELECTION') {
+            this.columnas.push({
+                field: 'checked',
+                header: '',
+                type: 'checkbox',
+                width: '5rem',
+                text: 'left',
+                text_header: '',
+            })
+        }
     }
 
     private getData() {

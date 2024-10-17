@@ -15,6 +15,10 @@
         @case (1) {
             <app-evaluacion-form-preguntas
                 [tituloEvaluacion]="tituloEvulacion"
+                [preguntas]="preguntasSeleccionadas"
+                (preguntasSeleccionadasChange)="
+                    preguntasSeleccionadasChange($event)
+                "
             ></app-evaluacion-form-preguntas>
         }
         @case (2) {
@@ -48,6 +52,7 @@
                 icon="pi pi-save"
                 size="small"
                 class="p-button-primary ml-auto"
+                (click)="guardarCambios()"
             ></button>
         }
     </div>

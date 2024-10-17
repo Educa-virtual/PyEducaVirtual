@@ -26,4 +26,11 @@ export class ApiEvaluacionesService {
             )
             .pipe(map((resp) => resp.data))
     }
+
+    guardarActualizarPreguntasEvaluacion(data) {
+        return this.http.post<any>(
+            `${this.baseUrlApi}/evaluaciones/evaluacion/guardarActualizarPreguntasEvaluacion`,
+            data
+        )
+    }
 }

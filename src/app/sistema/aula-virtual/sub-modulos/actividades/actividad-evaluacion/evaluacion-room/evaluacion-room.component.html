@@ -11,24 +11,38 @@
             </ng-template>
             <div class="flex flex-column gap-4">
                 <article class="card">
-                    <h2>Evaluación</h2>
+                    <h2>Evaluación: {{ evaluacion?.cEvaluacionTitulo }}</h2>
+                    <hr />
 
                     <div class="grid mb-4">
                         <div
                             class="col-12 md:col-6 flex flex-column gap-2 align-items-start"
                         >
-                            <span class="font-bold text-xl"
-                                >Fecha de publicación
-                            </span>
-                            <button pButton size="small" class="p-button-info">
-                                Publicar Exámen
-                            </button>
+                            <span class="font-bold text-xl flex gap-2">
+                                <app-icon
+                                    name="matCalendarMonth"
+                                    class="text-primary"
+                                    size="sm"
+                                ></app-icon>
+                                Fecha Publicación</span
+                            >
+                            <p>
+                                {{
+                                    evaluacion?.dtEvaluacionPublicacion
+                                        | date: "EEEE, d 'de' MMMM 'de' yyyy"
+                                }}
+
+                                {{
+                                    evaluacion?.dtEvaluacionPublicacion
+                                        | date: 'h:mm a'
+                                }}
+                            </p>
                         </div>
                         <div class="col-12 md:col-6 gap-2 flex flex-column">
                             <span class="font-bold text-xl"
                                 >Tipo Evaluación</span
                             >
-                            <span>Procedimental</span>
+                            <span>{{ evaluacion?.cTipoEvalNombre }}</span>
                         </div>
                     </div>
 
@@ -40,12 +54,26 @@
                                     class="text-primary"
                                     size="sm"
                                 ></app-icon>
-                                Inicia Evaluación</span
+                                Inicio de Evaluación</span
                             >
-                            <p>
-                                Doming 15 de marzo de 2025
-                                <span class="font-bold">Hora Limite: </span>
-                                5:00 p.m.
+                            <p class="flex gap-2 flex-wrap">
+                                {{
+                                    evaluacion?.dtEvaluacionInicio
+                                        | date: "EEEE, d 'de' MMMM 'de' yyyy"
+                                }}
+
+                                <span class="flex gap-2">
+                                    <app-icon
+                                        name="matAccessTime"
+                                        class="text-primary"
+                                        size="sm"
+                                    ></app-icon>
+                                    <span class="font-bold">Hora Limite:</span>
+                                    {{
+                                        evaluacion?.dtEvaluacionInicio
+                                            | date: 'h:mm a'
+                                    }}
+                                </span>
                             </p>
                         </div>
                         <div class="col-12 md:col-6 flex flex-column gap-2">
@@ -55,12 +83,26 @@
                                     class="text-primary"
                                     size="sm"
                                 ></app-icon>
-                                Cierre Evaluación</span
+                                Cierre de Evaluación</span
                             >
-                            <p>
-                                Doming 15 de marzo de 2025
-                                <span class="font-bold">Hora Limite: </span>
-                                5:00 p.m.
+                            <p class="flex gap-2 flex-wrap">
+                                {{
+                                    evaluacion?.dtEvaluacionFin
+                                        | date: "EEEE, d 'de' MMMM 'de' yyyy"
+                                }}
+
+                                <span class="flex gap-2">
+                                    <app-icon
+                                        name="matAccessTime"
+                                        class="text-primary"
+                                        size="sm"
+                                    ></app-icon>
+                                    <span class="font-bold">Hora Limite:</span>
+                                    {{
+                                        evaluacion?.dtEvaluacionFin
+                                            | date: 'h:mm a'
+                                    }}
+                                </span>
                             </p>
                         </div>
                     </div>
@@ -72,9 +114,11 @@
                             <span class="font-bold text-xl"
                                 >Total de Preguntas
                             </span>
-                            <span>0</span>
+                            <span>{{
+                                evaluacion?.iEvaluacionNroPreguntas ?? 0
+                            }}</span>
                         </div>
-                        <div class="col-12 md:col-6 gap-2 flex flex-column">
+                        <!-- <div class="col-12 md:col-6 gap-2 flex flex-column">
                             <div
                                 class="bg-yellow-100 p-2 border-round h-8rem flex gap-2 flex-column flex-column justify-content-between"
                             >
@@ -93,7 +137,7 @@
                                     >
                                 </p>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
 
                     <div class="flex gap-2 flex-wrap align-items-center mb-4">
@@ -106,19 +150,17 @@
                     </div>
 
                     <div
-                        class="bg-gray-100 text-center p-2 border-round h-10rem flex justify-content-center align-items-center gap-2 flex-column"
+                        class="bg-gray-100 p-1 border-round min-h-10rem flex gap-2 flex-column"
                     >
-                        <p class="max-w-30rem">
-                            t is a long established fact that a reader will be
-                            distracted by the readable content of a page when
-                            looking at its layout. The point of using Lorem
-                            Ipsum is
-                        </p>
+                        <div
+                            class="ql-editor"
+                            [innerHTML]="evaluacion?.cEvaluacionDescripcion"
+                        ></div>
                     </div>
                 </article>
                 <article class="card">
                     <h2>Recursos</h2>
-                    <ul class="list-none p-0 m-0">
+                    <!-- <ul class="list-none p-0 m-0">
                         <li
                             class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap"
                         >
@@ -158,11 +200,11 @@
                                 >
                             </div>
                         </li>
-                    </ul>
+                    </ul> -->
                 </article>
 
                 <article class="card flex flex-column gap-4">
-                    <div class="flex justify-content-between flex-wrap gap-2">
+                    <!-- <div class="flex justify-content-between flex-wrap gap-2">
                         <h2>Preguntas</h2>
                         <button
                             pButton
@@ -172,16 +214,26 @@
                         >
                             Agregar Pregunta
                         </button>
-                    </div>
+                    </div> -->
 
-                    <div
-                        class="bg-indigo-200 p-2 border-round h-10rem flex justify-content-center align-items-center gap-2 flex-column"
-                    >
-                        <app-icon name="matHideSource" size="xl"></app-icon>
-                        <p class="text-2xl">
-                            No se Encontraron Preguntas en esta Evaluacion
-                        </p>
-                    </div>
+                    @if (
+                        evaluacion?.preguntas === null ||
+                        evaluacion?.preguntas === undefined ||
+                        evaluacion?.preguntas.length === 0
+                    ) {
+                        <div
+                            class="bg-indigo-200 p-2 border-round h-10rem flex justify-content-center align-items-center gap-2 flex-column"
+                        >
+                            <app-icon name="matHideSource" size="xl"></app-icon>
+                            <p class="text-2xl">
+                                No se Encontraron Preguntas en esta Evaluacion
+                            </p>
+                        </div>
+                    } @else {
+                        <app-evaluacion-form-preguntas
+                            [preguntas]="evaluacion?.preguntas ?? []"
+                        ></app-evaluacion-form-preguntas>
+                    }
                 </article>
             </div>
         </p-tabPanel>

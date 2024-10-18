@@ -112,6 +112,13 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
                 icon: 'pi pi-angle-right',
                 command: () => {},
             },
+            {
+                label: 'Asistencia',
+                icon: 'pi pi-angle-right',
+                command: () => {
+                    this.goSection('asistencia')
+                },
+            },
         ]
     }
     ngOnChanges(changes) {

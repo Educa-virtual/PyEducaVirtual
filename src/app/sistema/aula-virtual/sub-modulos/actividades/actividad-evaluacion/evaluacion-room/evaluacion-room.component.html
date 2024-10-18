@@ -231,6 +231,7 @@
                         </div>
                     } @else {
                         <app-evaluacion-form-preguntas
+                            [tituloEvaluacion]="''"
                             [preguntas]="evaluacion?.preguntas ?? []"
                         ></app-evaluacion-form-preguntas>
                     }

@@ -17,6 +17,7 @@ import { GeneralService } from '@/app/servicios/general.service'
 import { MessageService } from 'primeng/api'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { Subject, takeUntil } from 'rxjs'
+import { LocalStoreService } from '@/app/servicios/local-store.service'
 interface Data {
     accessToken: string
     refreshToken: string
@@ -50,7 +51,8 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
 
     constructor(
         private router: Router,
-        private MessageService: MessageService
+        private MessageService: MessageService,
+        private store: LocalStoreService
     ) {}
 
     selectedData = []
@@ -162,15 +164,17 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
         }
     }
     getCursos() {
+        const year = this.store.getItem('dremoYear')
+
         const params = {
             petition: 'post',
             group: 'docente',
             prefix: 'docente-cursos',
             ruta: 'list', //'getDocentesCursos',
             data: {
-                opcion: 'CONSULTARxiPersId',
+                opcion: 'CONSULTARxiPersIdxiYearId',
                 iCredId: this._constantesService.iCredId,
-                cYearNombre: null,
+                valorBusqueda: year, //iYearId
                 iSemAcadId: null,
                 iIieeId: null,
             },

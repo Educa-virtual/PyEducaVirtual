@@ -82,6 +82,16 @@ export class LoginComponent implements OnInit {
 
                 this.store.setItem('dremoModalPerfil', true)
 
+                const user = this.store.getItem('dremoUser')
+
+                const years = user ? user.years : null
+                const year = years.length ? years[0] : null
+                this.store.setItem('dremoYear', year.iYearId)
+
+                const modulos = user ? user.modulos : null
+                const modulo = modulos.length ? modulos[0] : null
+                this.store.setItem('dremoModulo', modulo)
+
                 this.tokenStorage.setItem(
                     'dremoRefreshToken',
                     response.refreshToken

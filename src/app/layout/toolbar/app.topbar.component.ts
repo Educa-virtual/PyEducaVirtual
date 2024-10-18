@@ -2,7 +2,7 @@ import { Component, ElementRef, ViewChild, OnInit } from '@angular/core'
 import { LayoutService } from '../service/app.layout.service'
 import { LocalStoreService } from '../../servicios/local-store.service'
 import { TokenStorageService } from '../../servicios/token.service'
-import { RouterLink } from '@angular/router'
+import { Router, RouterLink } from '@angular/router'
 import { DropdownModule } from 'primeng/dropdown'
 import { FormsModule } from '@angular/forms'
 import { NgClass } from '@angular/common'
@@ -46,7 +46,8 @@ export class AppTopBarComponent implements OnInit {
     constructor(
         public layoutService: LayoutService,
         private store: LocalStoreService,
-        private tokenStorageService: TokenStorageService
+        private tokenStorageService: TokenStorageService,
+        private router: Router
     ) {}
 
     ngOnInit() {
@@ -72,18 +73,21 @@ export class AppTopBarComponent implements OnInit {
     }
 
     changeModulo(value) {
+        this.router.navigate(['./'])
         this.store.setItem('dremoModulo', value)
         setTimeout(() => {
             window.location.reload()
         }, 200)
     }
     changePerfile(value) {
+        this.router.navigate(['./'])
         this.store.setItem('dremoPerfil', value)
         setTimeout(() => {
             window.location.reload()
         }, 200)
     }
     changeYear(value) {
+        this.router.navigate(['./'])
         this.store.setItem('dremoYear', value)
         setTimeout(() => {
             window.location.reload()

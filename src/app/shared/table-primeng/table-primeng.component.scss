@@ -20,3 +20,11 @@ tr {
     max-height: 10rem;
     overflow: auto;
 }
+
+.truncate-text {
+    display: -webkit-box;
+    max-width: 200px;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}

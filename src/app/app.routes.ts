@@ -94,6 +94,12 @@ export const routes: Routes = [
 
         loadChildren: () => import('./sistema/roles/roles.routes'),
     },
+    {
+        path: 'especialista-ugel',
+
+        loadChildren: () =>
+            import('./sistema/especialista-ugel/especialista-ugel.routes'),
+    },
 
     { path: 'login', component: LoginComponent },
 

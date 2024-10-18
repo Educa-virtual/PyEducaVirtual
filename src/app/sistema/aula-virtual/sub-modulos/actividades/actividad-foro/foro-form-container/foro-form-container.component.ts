@@ -15,6 +15,7 @@ import { EditorModule } from 'primeng/editor'
 import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
 import { CalendarModule } from 'primeng/calendar'
 import { BaseDatePickerDirective } from '@/app/shared/directives/base-date-picker.directive'
+import { SelectButtonModule } from 'primeng/selectbutton'
 @Component({
     selector: 'app-foro-form-container',
     standalone: true,
@@ -28,6 +29,7 @@ import { BaseDatePickerDirective } from '@/app/shared/directives/base-date-picke
         EditorModule,
         CalendarModule,
         BaseDatePickerDirective,
+        SelectButtonModule,
     ],
     templateUrl: './foro-form-container.component.html',
     styleUrl: './foro-form-container.component.scss',
@@ -39,6 +41,7 @@ export class ForoFormContainerComponent implements OnInit {
     private ref = inject(DynamicDialogRef)
 
     categorias: any[] = []
+    estado: any[] = []
 
     selectCategorias: any = {}
 
@@ -47,6 +50,7 @@ export class ForoFormContainerComponent implements OnInit {
         cForoDescripcion: ['', [Validators.required]],
         categoria: [0, [Validators.required]],
         dtForoInicio: [''],
+        iEstado: [0, Validators.required],
         dtForoPublicacion: ['dtForoInicio'],
         dtForoFin: [],
     })

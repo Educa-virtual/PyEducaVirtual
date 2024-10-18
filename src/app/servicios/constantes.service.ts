@@ -53,6 +53,28 @@ const estudiante = [
         items: [inicio],
     },
 ]
+const especialista_ugel = [
+    {
+        items: [
+            inicio,
+            {
+                label: 'Perfiel',
+                icon: 'pi pi-user',
+                routerLink: ['/especialista-ugel'],
+            },
+            {
+                label: 'Evaluaciones',
+                icon: 'pi pi-fw pi-calendar',
+                routerLink: ['/evaluaciones/evaluaciones'],
+            },
+            {
+                label: 'Mis Áreas Curriculares',
+                icon: 'pi pi-fw pi-folder',
+                routerLink: ['/evaluaciones/areas'],
+            },
+        ],
+    },
+]
 const aula_virtual = [
     {
         items: [
@@ -529,6 +551,8 @@ export class ConstantesService {
                 return concurso_docente
             case 11:
                 return apoderados
+            case 12:
+                return especialista_ugel
             default:
                 return first
         }

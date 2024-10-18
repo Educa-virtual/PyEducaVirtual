@@ -1,0 +1,35 @@
+<p-dropdown
+    [options]="years"
+    styleClass="border-0"
+    (onChange)="changeYear($event)"
+    [(ngModel)]="selectedYear"
+    optionValue="iYearId"
+    optionLabel="cYearNombre"
+>
+    <ng-template let-filterSelectedProperty pTemplate="selectedItem">
+        <div class="flex align-items-center gap-2">
+            <i
+                class="pi pi-calendar"
+                style="color: var(--surface-menu); font-size: 1.5rem"
+            ></i>
+            <div class="flex flex-column text-xs">
+                <span class="block p-0 font-bold">Año Escolar</span>
+                <span class="block p-0">{{
+                    filterSelectedProperty.cYearNombre
+                }}</span>
+            </div>
+        </div>
+    </ng-template>
+    <ng-template let-filterProperty pTemplate="item">
+        <div class="flex align-items-center gap-2">
+            <i
+                class="pi pi-calendar"
+                style="color: var(--surface-menu); font-size: 1.5rem"
+            ></i>
+            <div class="flex flex-column text-xs">
+                <span class="block p-0 font-bold">Año Escolar</span>
+                <span class="block p-0">{{ filterProperty.cYearNombre }}</span>
+            </div>
+        </div>
+    </ng-template>
+</p-dropdown>

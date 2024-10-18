@@ -1,0 +1,24 @@
+<app-container-page
+    title="Indicadores"
+    [actions]="actionsContainer"
+    (accionBtnItem)="accionBtnItem($event)"
+>
+    <app-table-primeng
+        [showCaption]="false"
+        [tableStyle]="null"
+        [showPaginator]="false"
+        [actions]="actions"
+        [data]="data"
+        [columnas]="columns"
+        (accionBtnItem)="accionBtnItem($event)"
+    ></app-table-primeng
+></app-container-page>
+
+<app-form-indicador-actividades
+    [actividades]="actividades"
+    [tipoIndicadorLogros]="tipoIndicadorLogros"
+    [item]="itemIndicadorActividades"
+    [showModal]="showModal"
+    [option]="option"
+    (accionBtnItem)="accionBtnItem($event)"
+></app-form-indicador-actividades>

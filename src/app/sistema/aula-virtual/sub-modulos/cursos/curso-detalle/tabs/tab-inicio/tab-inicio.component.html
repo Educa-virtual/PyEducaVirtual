@@ -1,0 +1,79 @@
+<div class="grid">
+    <div class="col-3">
+        <p><strong>Código Area:</strong> ief7qu</p>
+        <p><strong>N° Estudiantes:</strong> 12</p>
+        <p><strong>Docente:</strong> Carlos Jose</p>
+        <p><strong>Tutor:</strong> Jose Maria</p>
+        <p><strong>Grado:</strong> 4to</p>
+        <p><strong>Sección:</strong> H</p>
+        <p><strong>Ciclo:</strong> VI</p>
+    </div>
+
+    <div class="col-9">
+        <label for="cTareaDescripcion"
+            >Anuncia algo aquí Para toda la clase</label
+        >
+        <p-editor
+            id="cTareaDescripcion"
+            formControlName="cTareaDescripcion"
+        ></p-editor>
+        <br />
+        <button pButton type="button" label="Link" icon="pi pi-link"></button>
+        <button
+            pButton
+            type="button"
+            label="Cancelar"
+            icon="pi pi-times"
+            class="p-button-danger"
+        ></button>
+        <button
+            pButton
+            type="button"
+            label="Publicar"
+            icon="pi pi-users"
+            class="p-button-success"
+        ></button>
+    </div>
+
+    <!-- Listar aquí el anuncio -->
+    <div class="col-12">
+        <p-pickList
+            showSourceControls="false"
+            showTargetControls="false"
+            sourceHeader="Anuncios de la actividad"
+            targetHeader="Listando Anuncios"
+            [dragdrop]="true"
+            [responsive]="true"
+            [sourceStyle]="{ height: '30rem' }"
+            [targetStyle]="{ height: '30rem' }"
+            filterBy="cIieeNombre"
+            targetFilterPlaceholder="Buscar Anuncio"
+            breakpoint="1400px"
+        >
+            <ng-template let-product pTemplate="item">
+                <div class="flex flex-wrap p-2 align-items-center gap-3">
+                    <div class="flex-1 flex flex-column gap-2">
+                        <span class="font-bold">
+                            Docente:
+                            <p><strong>Docente:</strong> Carlos Jose</p>
+                            {{ product.cIieeNombre }}
+                        </span>
+                        <div class="flex align-products-center gap-2">
+                            <i class="pi pi-tag text-sm"></i>
+                            <span>
+                                Mensaje:
+                                {{ product.cIieeCodigoModular }}
+                            </span>
+                            <span>
+                                <b>
+                                    Fecha:
+                                    {{ product.cNivelTipoNombre }}
+                                </b>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </ng-template>
+        </p-pickList>
+    </div>
+</div>

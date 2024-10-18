@@ -1,0 +1,11 @@
+.listbox-20rem .ui-listbox-list {
+    width: 20rem;
+}
+
+:host ::ng-deep .p-listbox .p-listbox-list .p-listbox-item-group {
+    border-bottom: 1px solid var(--text-color-secondary);
+
+    &:last-child {
+        border: none;
+    }
+}

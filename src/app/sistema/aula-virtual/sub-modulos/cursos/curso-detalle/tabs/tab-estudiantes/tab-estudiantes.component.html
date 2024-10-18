@@ -1,0 +1,46 @@
+<p-listbox [options]="estudiantes" [group]="true">
+    <ng-template let-estudiante pTemplate="group" class="p-0">
+        <div class="flex align-items-center gap-2">
+            <p-avatar
+                image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png"
+                styleClass=""
+                size="normal"
+                shape="circle"
+            />
+            <div class="flex flex-column gap-2 font-medium">
+                <span>{{ estudiante.nombre }}</span>
+                <span>N° de orden: {{ estudiante.numeroOrden }}</span>
+            </div>
+        </div>
+    </ng-template>
+</p-listbox>
+<div>
+    <div>
+        <p-table [value]="estudiantes" scrollable="true" scrollHeight="200px">
+            <ng-template pTemplate="header">
+                <tr class="sticky-header">
+                    <th></th>
+                    <th>Nombres</th>
+                    <th>Apellido Paterno</th>
+                    <th>Apellido Materno</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-estudiante>
+                <tr>
+                    <td>
+                        <p-checkbox
+                            [(ngModel)]="estudiante.selected"
+                        ></p-checkbox>
+                    </td>
+                    <td>{{ estudiante.cPersNombre }}</td>
+                    <td>
+                        {{ estudiante.cPersPaterno }}
+                    </td>
+                    <td>
+                        {{ estudiante.cPersMaterno }}
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</div>

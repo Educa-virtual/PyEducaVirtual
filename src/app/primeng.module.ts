@@ -105,6 +105,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { HttpClientModule } from '@angular/common/http'
 import { NgModule } from '@angular/core'
 import { ConfirmationService, MessageService } from 'primeng/api'
+import { FullCalendarModule } from '@fullcalendar/angular'
 
 @NgModule({
     imports: [
@@ -212,6 +213,7 @@ import { ConfirmationService, MessageService } from 'primeng/api'
         IconFieldModule,
         InputIconModule,
         AutoFocusModule,
+        FullCalendarModule,
     ],
     exports: [
         AvatarModule,
@@ -319,6 +321,7 @@ import { ConfirmationService, MessageService } from 'primeng/api'
         IconFieldModule,
         InputIconModule,
         AutoFocusModule,
+        FullCalendarModule,
     ],
     providers: [ConfirmationService, MessageService],
 })

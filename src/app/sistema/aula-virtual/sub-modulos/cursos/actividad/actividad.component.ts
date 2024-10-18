@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common'
-import { Component, inject, OnInit } from '@angular/core'
+import { Component, inject, Input, OnInit } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
 import { provideIcons } from '@ng-icons/core'
 import { matCalendarMonth } from '@ng-icons/material-icons/baseline'
@@ -16,6 +16,7 @@ import { tipoActividadesKeys } from '../../../interfaces/actividad.interface'
     providers: [provideIcons({ matCalendarMonth })],
 })
 export class ActividadComponent implements OnInit {
+    @Input() ixActivadadId: string
     public iActTopId: tipoActividadesKeys
 
     private _router = inject(Router)
@@ -25,5 +26,6 @@ export class ActividadComponent implements OnInit {
         const keyTab = this._activatedRoute.snapshot.params['iActTopId']
         const tab = parseInt(keyTab)
         this.iActTopId = tab as tipoActividadesKeys
+        console.log(this.ixActivadadId)
     }
 }

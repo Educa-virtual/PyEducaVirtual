@@ -71,6 +71,7 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
     private _paramsData = {
         iContenidoSemId: 0,
         iEvaluacionId: 0,
+        ixActivadadId: '',
     }
 
     constructor() {}
@@ -88,6 +89,7 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
         if (actividad !== null) {
             this.mode = 'EDITAR'
             this._paramsData.iContenidoSemId = actividad.iContenidoSemId
+            this._paramsData.ixActivadadId = actividad.ixActivadadId
             this.obtenerEvaluacion()
         }
     }
@@ -97,17 +99,14 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
     }
 
     obtenerEvaluacion() {
-        const ixActivadadId = this.evaluacionInfoForm.get('iEvaluacionId').value
         this._aulaVirtualService
             .obtenerActividad({
                 iActTipoId: EVALUACION,
-                ixActivadadId,
+                ixActivadadId: this._paramsData.ixActivadadId,
             })
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
                 next: (data) => {
-                    console.log(data)
-
                     this.patchData(data)
                 },
             })
@@ -147,7 +146,6 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
             dFechaEvaluacionFin,
             tHoraEvaluacionFin,
         })
-        console.log(this.evaluacionInfoForm.value)
     }
 
     obtenerTipoEvaluaciones() {
@@ -168,9 +166,9 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
     initFormGroup() {
         this.evaluacionInfoForm = this._formBuilder.group({
             iProgActId: [0],
-            iEvaluacionId: [17],
+            iEvaluacionId: [0],
             iTipoEvalId: [null, Validators.required],
-            cEvaluacionDescripcion: [null, Validators.required],
+            cEvaluacionDescripcion: [''],
             cEvaluacionTitulo: [null, Validators.required],
             dFechaEvaluacionPublicacion: [null, Validators.required],
             tHoraEvaluacionPublicacion: [null, Validators.required],

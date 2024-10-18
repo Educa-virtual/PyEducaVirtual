@@ -151,7 +151,7 @@ export class TabContenidoComponent implements OnInit {
                     const actionHandler =
                         this.handleActionsMap[actividad.iActTipoId]
                     if (actionHandler) {
-                        actionHandler('CREAR', null)
+                        actionHandler('CREAR', actividad)
                     }
                 },
             }

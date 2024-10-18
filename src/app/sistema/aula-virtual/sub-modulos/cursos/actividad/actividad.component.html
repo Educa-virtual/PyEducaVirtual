@@ -5,7 +5,10 @@
     }
     <!-- evaluacion -->
     @case (3) {
-        <app-evaluacion-room></app-evaluacion-room>
+        <app-evaluacion-room
+            [ixActivadadId]="ixActivadadId"
+            [iActTopId]="iActTopId"
+        ></app-evaluacion-room>
     }
     @default {}
 }

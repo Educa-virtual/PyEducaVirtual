@@ -5,9 +5,7 @@ export const convertStringToDate = (date) => {
     return dateToTransform.isValid() ? dateToTransform.toDate() : null
 }
 
-export const getTimeFromDatetime = (date, format = 'HH:mm') => {
+export const getTimeFromDatetime = (date) => {
     const dateTimeToTransform = dayjs(date)
-    return dateTimeToTransform.isValid()
-        ? dateTimeToTransform.format(format)
-        : null
+    return dateTimeToTransform.isValid() ? dateTimeToTransform.toDate() : null
 }

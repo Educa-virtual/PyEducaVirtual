@@ -64,41 +64,57 @@
         </button>
     </ng-template>
     <ng-content>
-        @if (
-            actividad['dtProgActInicio'] !== null &&
-            actividad['dtProgActInicio'] !== undefined
-        ) {
-            <div class="flex mb-3">
-                Fecha Inicio:
-                {{ actividad['dtProgActInicio'] | date: 'dd/MM/yyyy' }} Hora:
-                {{ actividad['dtProgActInicio'] | date: 'h:mm a' }}
+        <div class="flex flex-column gap-2">
+            @if (
+                actividad['dtProgActInicio'] !== null &&
+                actividad['dtProgActInicio'] !== undefined
+            ) {
+                <div
+                    class="font-medium text-sm text-gray-500 gap-1 flex align-items-center"
+                >
+                    <i class="pi pi-calendar text-primary"></i>
+                    <span>
+                        Fecha Inicio:
+                        {{ actividad['dtProgActInicio'] | date: 'dd/MM/yyyy' }}
+                        <i class="pi pi-clock text-primary"></i>
+                        Hora:
+                        {{ actividad['dtProgActInicio'] | date: 'h:mm a' }}
+                    </span>
+                </div>
+            }
+            @if (
+                actividad['dtProgActFin'] !== null &&
+                actividad['dtProgActFin'] !== undefined
+            ) {
+                <div
+                    class="font-medium text-sm text-gray-500 gap-1 flex align-items-center"
+                >
+                    <i class="pi pi-calendar text-primary"></i>
+                    <span>
+                        Fecha Cierre:
+                        {{ actividad['dtProgActFin'] | date: 'dd/MM/yyyy' }}
+                        Hora:
+                        <i class="pi pi-clock text-primary"></i>
+                        {{ actividad['dtProgActFin'] | date: 'h:mm a' }}
+                    </span>
+                </div>
+            }
+            <div class="flex justify-content-end">
+                <a
+                    pButton
+                    size="small"
+                    class="p-button-primary text-white flex gap-2"
+                    [routerLink]="[
+                        '../',
+                        'actividad',
+                        actividad.ixActivadadId,
+                        actividad.iActTipoId,
+                    ]"
+                >
+                    <i class="pi pi-eye"></i>
+                    Ver {{ actividad.cActTipoNombre }}
+                </a>
             </div>
-        }
-        @if (
-            actividad['dtProgActFin'] !== null &&
-            actividad['dtProgActFin'] !== undefined
-        ) {
-            <div class="flex mb-3">
-                Fecha Cierre:
-                {{ actividad['dtProgActFin'] | date: 'dd/MM/yyyy' }} Hora:
-                {{ actividad['dtProgActFin'] | date: 'h:mm a' }}
-            </div>
-        }
-        <div class="flex justify-content-end">
-            <a
-                pButton
-                size="small"
-                class="p-button-primary text-white flex gap-2"
-                [routerLink]="[
-                    '../',
-                    'actividad',
-                    actividad.ixActivadadId,
-                    actividad.iActTipoId,
-                ]"
-            >
-                <i class="pi pi-eye"></i>
-                Ver {{ actividad.cActTipoNombre }}
-            </a>
         </div>
     </ng-content>
 </p-panel>

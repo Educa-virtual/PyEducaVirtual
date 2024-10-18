@@ -121,7 +121,6 @@ export class AulaBancoPreguntaFormContainerComponent implements OnInit {
         data.iDocenteId = 1
         data.iCursoId = 1
         data.iCurrContId = 1
-
         this._aulaBancoPreguntasService
             .guardarActualizarPreguntaConAlternativas(data)
             .subscribe({

@@ -2,6 +2,10 @@ import { environment } from '@/environments/environment'
 import { HttpClient } from '@angular/common/http'
 import { inject, Injectable } from '@angular/core'
 import { map } from 'rxjs'
+import {
+    mapData,
+    mapItemsBancoToEre,
+} from '../../evaluaciones/sub-evaluaciones/banco-preguntas/models/pregunta-data-transformer'
 
 @Injectable({
     providedIn: 'root',
@@ -46,6 +50,15 @@ export class ApiAulaService {
                 `${this.baseUrlApi}/aula-virtual/contenidos/actividad/obtenerActividad`,
                 { params }
             )
-            .pipe(map((resp) => resp.data))
+            .pipe(
+                map((resp) => resp.data),
+                map((data) => {
+                    if (data.iActTipoId == 3) {
+                        const preguntas = mapItemsBancoToEre(data.preguntas)
+                        data.preguntas = mapData(preguntas)
+                    }
+                    return data
+                })
+            )
     }
 }

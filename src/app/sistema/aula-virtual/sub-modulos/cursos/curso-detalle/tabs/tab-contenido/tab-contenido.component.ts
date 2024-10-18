@@ -94,6 +94,7 @@ export class TabContenidoComponent implements OnInit {
 
     @Input({ required: true }) private _iSilaboId: string
 
+    // lista de acciones base para la semana
     private handleActionsMap: Record<
         number,
         (action: TActividadActions, actividad: IActividad) => void
@@ -139,6 +140,7 @@ export class TabContenidoComponent implements OnInit {
         this.semanaSeleccionada = semana
     }
 
+    // genera las acciones de contenido segun la configuracion de las actividades
     generarAccionesContenido() {
         this.accionesContenido = Object.keys(actividadesConfig).map((key) => {
             const actividad = actividadesConfig[key]
@@ -285,10 +287,9 @@ export class TabContenidoComponent implements OnInit {
             )
             this._dialogService.getInstance(ref).maximize()
             ref.onClose.pipe(takeUntil(this._unsubscribe$)).subscribe({
-                next: (result) => {
-                    if (result) {
-                        this.obtenerContenidoSemanas()
-                    }
+                next: () => {
+                    // todo validar solo cuando sea necesario
+                    this.obtenerContenidoSemanas()
                 },
             })
         }

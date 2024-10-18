@@ -4,3 +4,9 @@
 
 // @import "~quill/dist/quill.core.css";
 // @import "~quill/dist/quill.snow.css";
+.sticky-header {
+    position: sticky;
+    top: 0;
+    background-color: white;
+    z-index: 100;
+}

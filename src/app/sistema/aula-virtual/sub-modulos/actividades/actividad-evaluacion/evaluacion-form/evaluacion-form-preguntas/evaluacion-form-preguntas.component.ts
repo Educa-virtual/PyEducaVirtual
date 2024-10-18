@@ -115,26 +115,31 @@ export class EvaluacionFormPreguntasComponent {
     }
 
     quitarPreguntaEvulacion(item) {
-        console.log(item, item.isLocal)
-
         if (item.isLocal) {
-            this.quitarPreguntaLocal(item.iEvalPregId)
+            this.quitarPreguntaLocal(item)
             return
         }
-
-        this._evaluacionService
-            .quitarPreguntaEvaluacion(item.iEvalPregId)
-            .subscribe({
-                next: () => {
-                    this.quitarPreguntaLocal(item.iEvalPregId)
-                },
-            })
+        let ids = item.iEvalPregId
+        if (item.iEncabPregId != -1) {
+            ids = item.preguntas.map((item) => item.iEvalPregId).join(',')
+        }
+        this._evaluacionService.quitarPreguntaEvaluacion(ids).subscribe({
+            next: () => {
+                this.quitarPreguntaLocal(item)
+            },
+        })
     }
 
-    quitarPreguntaLocal(iEvalPregId: string) {
-        this.preguntas = this.preguntas.filter(
-            (item) => item.iEvalPregId != iEvalPregId
-        )
+    quitarPreguntaLocal(item) {
+        if (item.preguntas == null) {
+            this.preguntas = this.preguntas.filter(
+                (pregunta) => pregunta.iEvalPregId != item.iEvalPregId
+            )
+        } else {
+            this.preguntas = this.preguntas.filter(
+                (pregunta) => pregunta.iEncabPregId != item.iEncabPregId
+            )
+        }
         this.preguntasSeleccionadasChange.emit(this.preguntas)
     }
 

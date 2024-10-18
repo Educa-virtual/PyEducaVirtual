@@ -29,6 +29,14 @@ export const columnasPreguntasEvaluacion: IColumn[] = [
         text_header: 'left',
     },
     {
+        field: 'cPreguntaNoHTML',
+        header: 'Pregunta Título',
+        type: 'trim',
+        width: '7rem',
+        text: 'left',
+        text_header: 'left',
+    },
+    {
         field: 'cEncabPregTitulo',
         header: 'Encabezado',
         type: 'text',

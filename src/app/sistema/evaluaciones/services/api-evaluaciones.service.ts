@@ -36,9 +36,9 @@ export class ApiEvaluacionesService {
         )
     }
 
-    quitarPreguntaEvaluacion(iEvalPregId) {
+    quitarPreguntaEvaluacion(ids) {
         return this.http.delete<any>(
-            `${this.baseUrlApi}/evaluaciones/evaluacion/eliminarPreguntaEvulacion/${iEvalPregId}`
+            `${this.baseUrlApi}/evaluaciones/evaluacion/eliminarPreguntaEvulacion/${ids}`
         )
     }
 }

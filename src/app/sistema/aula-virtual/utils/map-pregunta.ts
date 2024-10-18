@@ -1,7 +1,10 @@
+import { removeHTML } from '@/app/shared/utils/remove-html'
+
 export const mapPregunta = (pregunta, alternativas) => {
     return {
         iPreguntaId: pregunta.iBancoId,
         cPregunta: pregunta.cBancoPregunta,
+        cPreguntaNoHTML: removeHTML(pregunta.cBancoPregunta),
         iCursoId: pregunta.iCursoId,
         iDocenteId: pregunta.iDocenteId,
         iTipoPregId: pregunta.iTipoPregId,
@@ -31,11 +34,16 @@ export const mapAlternativa = (alternativa) => {
 }
 
 export const mapEncabezado = (encabezado) => {
+    encabezado.cPreguntaNoHTML = removeHTML(encabezado.cPregunta)
+    encabezado.iEncabPregId = encabezado.idEncabPregId
+    const ids = []
     encabezado.preguntas = encabezado.preguntas.map((subPregunta) => {
+        ids.push(subPregunta.iBancoId)
         const alternativas = subPregunta.alternativas?.map((alt) => {
             return mapAlternativa(alt)
         })
         return mapPregunta(subPregunta, alternativas)
     })
+    encabezado.iPreguntaId = ids.join(',')
     return encabezado
 }

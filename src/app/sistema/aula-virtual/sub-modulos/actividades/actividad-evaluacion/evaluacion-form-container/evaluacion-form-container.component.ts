@@ -52,11 +52,11 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
             label: 'Preguntas',
             icon: 'pi-list-check',
         },
-        {
-            id: '2',
-            label: 'Calificación',
-            icon: 'pi-list-check',
-        },
+        // {
+        //     id: '2',
+        //     label: 'Calificación',
+        //     icon: 'pi-list-check',
+        // },
     ]
     public tipoEvaluaciones = []
     public mode: 'CREAR' | 'EDITAR' = 'CREAR'
@@ -67,41 +67,7 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
     private _aulaVirtualService = inject(ApiAulaService)
     private _config = inject(DynamicDialogConfig)
     private _ref = inject(DynamicDialogRef)
-    public preguntasSeleccionadas = [
-        // {
-        //     iPreguntaId: 49,
-        //     cPregunta: '<p>3</p>',
-        //     iCursoId: 1,
-        //     iDocenteId: 1,
-        //     iTipoPregId: 1,
-        //     iEncabPregId: -1,
-        //     iPreguntaPeso: 3,
-        //     cEncabPregTitulo: 'Sin Encabezado',
-        //     cEncabPregContenido: 'Opcion Unica',
-        //     alternativas: [
-        //         {
-        //             iAlternativaId: 58,
-        //             cAlternativaDescripcion: '<p>333</p>',
-        //             cAlternativaLetra: 'a',
-        //             bAlternativaCorrecta: false,
-        //             cAlternativaExplicacion: '',
-        //         },
-        //         {
-        //             iAlternativaId: 59,
-        //             cAlternativaDescripcion: '<p>33</p>',
-        //             cAlternativaLetra: 'b',
-        //             bAlternativaCorrecta: true,
-        //             cAlternativaExplicacion: '',
-        //         },
-        //     ],
-        //     iHoras: 0,
-        //     iMinutos: 0,
-        //     iSegundos: 0,
-        //     cTipoPregDescripcion: 'Opcion Unica',
-        //     time: '0h 0m 0s',
-        //     alternativaCorrecta: 'b',
-        // },
-    ]
+    public preguntasSeleccionadas = []
     private _paramsData = {
         iContenidoSemId: 0,
         iEvaluacionId: 0,
@@ -117,6 +83,8 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
             this._config.data.semana?.iContenidoSemId
 
         const actividad = this._config.data.actividad
+        console.log(actividad)
+
         if (actividad !== null) {
             this.mode = 'EDITAR'
             this._paramsData.iContenidoSemId = actividad.iContenidoSemId
@@ -333,35 +301,37 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
                 next: (resp) => {
-                    this.preguntasSeleccionadas =
-                        this.preguntasSeleccionadas.map((pregunta) => {
-                            if (pregunta.preguntas == null) {
-                                const preguntaResp = resp.find(
-                                    (item) =>
-                                        item.iEvalPregId == pregunta.iEvalPregId
-                                )
+                    console.log(resp)
+                    this.closeModal(resp)
+                    // this.preguntasSeleccionadas =
+                    //     this.preguntasSeleccionadas.map((pregunta) => {
+                    //         if (pregunta.preguntas == null) {
+                    //             const preguntaResp = resp.find(
+                    //                 (item) =>
+                    //                     item.iEvalPregId == pregunta.iEvalPregId
+                    //             )
 
-                                pregunta.iEvalPregId = preguntaResp.newId
-                                pregunta.isLocal = false
-                            } else {
-                                pregunta.preguntas = pregunta.preguntas.map(
-                                    (item) => {
-                                        const preguntaResp = resp.find(
-                                            (item2) =>
-                                                item2.iEvalPregId ==
-                                                item.iEvalPregId
-                                        )
-                                        item.iEvalPregId = preguntaResp.newId
-                                        item.isLocal = false
-                                        return item
-                                    }
-                                )
-                            }
-                            return pregunta
-                        })
-                    console.log(this.preguntasSeleccionadas)
+                    //             pregunta.iEvalPregId = preguntaResp.newId
+                    //             pregunta.isLocal = false
+                    //         } else {
+                    //             pregunta.preguntas = pregunta.preguntas.map(
+                    //                 (item) => {
+                    //                     const preguntaResp = resp.find(
+                    //                         (item2) =>
+                    //                             item2.iEvalPregId ==
+                    //                             item.iEvalPregId
+                    //                     )
+                    //                     item.iEvalPregId = preguntaResp.newId
+                    //                     item.isLocal = false
+                    //                     return item
+                    //                 }
+                    //             )
+                    //         }
+                    //         return pregunta
+                    //     })
+                    // console.log(this.preguntasSeleccionadas)
 
-                    this.goStep('next')
+                    // this.goStep('next')
                 },
             })
     }

@@ -1,6 +1,13 @@
 import { CommonInputComponent } from '@/app/shared/components/common-input/common-input.component'
 import { CommonModule } from '@angular/common'
-import { Component, EventEmitter, inject, Output, OnInit } from '@angular/core'
+import {
+    Component,
+    EventEmitter,
+    inject,
+    Output,
+    OnInit,
+    Input,
+} from '@angular/core'
 import { DropdownModule } from 'primeng/dropdown'
 import {
     FormBuilder,
@@ -47,6 +54,8 @@ export class TareaFormComponent implements OnInit {
     @Output() submitEvent = new EventEmitter<any>()
     @Output() cancelEvent = new EventEmitter<void>()
 
+    @Input() tarea
+
     FilesTareas: any[] = []
     FilesInstrumentos: any[] = []
 
@@ -85,7 +94,20 @@ export class TareaFormComponent implements OnInit {
         }
     }
 
+    ngOnChanges(changes) {
+        if (changes.tarea?.currentValue) {
+            this.tarea = changes.tarea.currentValue
+            this.tareaForm.patchValue(this.tarea)
+
+            this.FilesTareas =
+                this.tareaForm.value.cTareaArchivoAdjunto !== ''
+                    ? JSON.parse(this.tareaForm.value.cTareaArchivoAdjunto)
+                    : []
+        }
+    }
+
     public tareaForm = this._formBuilder.group({
+        iTareaId: [''],
         cTareaTitulo: ['', [Validators.required]],
         cTareaDescripcion: ['', [Validators.required]],
         cTareaArchivoAdjunto: [],

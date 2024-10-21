@@ -8,7 +8,7 @@
             <label for="categoria">Categoría</label>
             <p-dropdown
                 [options]="categorias"
-                formControlName="categoria"
+                formControlName="iForoCatId"
                 styleClass="w-full"
                 optionValue="iForoCatId"
                 optionLabel="cForoCatDescripcion"
@@ -18,9 +18,10 @@
         <div class="col-6 flex flex-column gap-2">
             <p-selectButton
                 [options]="estado"
-                formControlName="value"
+                formControlName="iEstado"
                 optionLabel="label"
                 optionValue="value"
+                class="buttonmit"
             />
         </div>
     </div>

@@ -1,0 +1,24 @@
+<form class="flex flex-column gap-2" [formGroup]="rubricaForm">
+    <div class="formgrid grid">
+        <div class="field col-12">
+            <app-common-input
+                [controlKey]="'cInstrumentoNombre'"
+                label="Nombre"
+            ></app-common-input>
+        </div>
+        <div class="field flex flex-column col-12">
+            <label class="align-self-start" for="descripcion"
+                >Descripción</label
+            >
+            <textarea
+                rows="2"
+                cols="30"
+                placeholder="Descripción"
+                formControlName="cInstrumentoDescripcion"
+                pInputTextarea
+                class="w-full"
+                id="descripcion"
+            ></textarea>
+        </div>
+    </div>
+</form>

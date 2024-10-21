@@ -50,7 +50,8 @@ export interface IActionTable {
     ],
 })
 export class TablePrimengComponent implements OnChanges, OnInit {
-    @Output() accionBtnItem = new EventEmitter()
+    @Output() accionBtnItem: EventEmitter<{ accion: any; item: any }> =
+        new EventEmitter()
     @Output() selectedRowDataChange = new EventEmitter()
 
     @Input() expandedRowKeys = {}

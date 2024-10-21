@@ -1,6 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core'
 import { FormBuilder, FormGroup } from '@angular/forms'
 import { RubricaFormService } from './rubrica-form.service'
+import { DynamicDialogRef } from 'primeng/dynamicdialog'
 
 @Component({
     selector: 'app-rubrica-form',
@@ -13,6 +14,8 @@ export class RubricaFormComponent implements OnInit {
 
     private _formBuilder = inject(FormBuilder)
 
+    private ref = inject(DynamicDialogRef)
+
     constructor(private _rubricaFormService: RubricaFormService) {}
 
     ngOnInit() {
@@ -24,5 +27,11 @@ export class RubricaFormComponent implements OnInit {
         this.rubricaForm = this._rubricaFormService.rubricaForm
 
         console.log(this.rubricaForm)
+    }
+
+    guardarActualizarRubrica() {}
+
+    closeModal() {
+        this.ref.close(null)
     }
 }

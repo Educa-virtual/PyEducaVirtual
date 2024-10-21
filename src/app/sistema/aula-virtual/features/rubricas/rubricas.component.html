@@ -1,0 +1,14 @@
+<div class="flex justify-content-end">
+    <button
+        pButton
+        class="primary"
+        icon="pi pi-plus"
+        label="Agregar Instrumento Evaluación"
+        (click)="agregarInstrumentoEvaluacion()"
+    ></button>
+</div>
+<app-table-primeng
+    [data]="data"
+    [columnas]="columnasTabla"
+    (accionBtnItem)="onActionBtn($event)"
+></app-table-primeng>

@@ -234,4 +234,7 @@ export class TareaFormComponent implements OnInit {
             },
         })
     }
+    showModalDialog() {
+        this.displayModal = true
+    }
 }

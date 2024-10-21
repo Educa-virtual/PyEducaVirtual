@@ -199,8 +199,12 @@ export class TabContenidoComponent implements OnInit {
             {
                 ...MODAL_CONFIG,
                 data: {
-                    iContenidoSemId: this.semanaSeleccionada.iContenidoSemId,
+                    iContenidoSemId: this.semanaSeleccionada
+                        ? this.semanaSeleccionada.iContenidoSemId
+                        : null,
                     iActTipoId: actividad.iActTipoId,
+                    actividad: actividad,
+                    action: action,
                 },
                 header:
                     action === 'EDITAR'

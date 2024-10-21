@@ -41,19 +41,24 @@ export class ForoFormContainerComponent implements OnInit {
     private ref = inject(DynamicDialogRef)
 
     categorias: any[] = []
-    estado: any[] = []
+
+    estado: any[] = [
+        { label: 'Activo', value: 1 },
+        { label: 'Desactivo', vuele: 2 },
+    ]
 
     selectCategorias: any = {}
 
     public foroForm: FormGroup = this._formBuilder.group({
         cForoTitulo: ['', [Validators.required]],
         cForoDescripcion: ['', [Validators.required]],
-        categoria: [0, [Validators.required]],
+        iForoCatId: [0, [Validators.required]],
         dtForoInicio: [''],
         iEstado: [0, Validators.required],
         dtForoPublicacion: ['dtForoInicio'],
         dtForoFin: [],
     })
+
     ngOnInit(): void {
         this.mostrarCategorias()
     }
@@ -62,7 +67,7 @@ export class ForoFormContainerComponent implements OnInit {
         const userId = 1
         this._aulaService.guardarForo(userId).subscribe((Data) => {
             this.categorias = Data['data']
-            //console.log('Datos mit', this.categorias)
+            console.log('Datos mit', this.categorias)
         })
     }
 

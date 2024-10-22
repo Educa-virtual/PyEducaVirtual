@@ -8,6 +8,15 @@ export class RubricaFormService {
     private _formBuilder = inject(FormBuilder)
     constructor() {}
 
+    initRubricaForm() {
+        this.rubricaForm = this._formBuilder.group({
+            iInstrumentoId: [0],
+            cInstrumentoNombre: ['', [Validators.required]],
+            cInstrumentoDescripcion: ['', [Validators.required]],
+            criterios: this._formBuilder.array([]),
+        })
+    }
+
     addNivelToForm(index: number) {
         const criterios = this.rubricaForm.get('criterios') as FormArray
         const niveles = criterios.at(index).get('niveles') as FormArray
@@ -31,14 +40,6 @@ export class RubricaFormService {
         niveles.removeAt(nivelIndex)
     }
 
-    initRubricaForm() {
-        this.rubricaForm = this._formBuilder.group({
-            cInstrumentoNombre: ['', [Validators.required]],
-            cInstrumentoDescripcion: ['', [Validators.required]],
-            criterios: this._formBuilder.array([]),
-        })
-    }
-
     addCriterioToForm() {
         const criterios = this.rubricaForm.get('criterios') as FormArray
         const criterioFormGroup = this.criterioForm()
@@ -54,7 +55,7 @@ export class RubricaFormService {
         return this._formBuilder.group({
             iInstrumentoId: [generarIdAleatorio(), [Validators.required]],
             cCriterioNombre: [null, [Validators.required]],
-            nCriterioDescripcion: ['', [Validators.required]],
+            cCriterioDescripcion: ['', [Validators.required]],
             niveles: this._formBuilder.array([this.nivelForm()]),
         })
     }

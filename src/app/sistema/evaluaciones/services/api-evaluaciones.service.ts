@@ -41,4 +41,24 @@ export class ApiEvaluacionesService {
             `${this.baseUrlApi}/evaluaciones/evaluacion/eliminarPreguntaEvulacion/${ids}`
         )
     }
+
+    // Rubricas
+
+    obtenerRubricas(params) {
+        return this.http
+            .get<any>(
+                `${this.baseUrlApi}/evaluaciones/instrumento-evaluaciones/rubrica`,
+                { params }
+            )
+            .pipe(map((resp) => resp.data))
+    }
+
+    guardarActualizarRubrica(data) {
+        return this.http
+            .post<any>(
+                `${this.baseUrlApi}/evaluaciones/instrumento-evaluaciones/rubrica`,
+                data
+            )
+            .pipe(map((resp) => resp.data))
+    }
 }

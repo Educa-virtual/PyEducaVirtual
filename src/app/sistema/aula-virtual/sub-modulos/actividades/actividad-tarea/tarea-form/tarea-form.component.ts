@@ -27,12 +27,17 @@ import { DynamicDialogRef } from 'primeng/dynamicdialog'
 import { GeneralService } from '@/app/servicios/general.service'
 import { FileUploadPrimengComponent } from '../../../../../../shared/file-upload-primeng/file-upload-primeng.component'
 import { PickListModule } from 'primeng/picklist'
+import { ToggleButtonModule } from 'primeng/togglebutton'
+import { DataViewModule } from 'primeng/dataview'
+import { InputTextModule } from 'primeng/inputtext'
 
 @Component({
     selector: 'app-tarea-form',
     standalone: true,
     imports: [
         CommonModule,
+        InputTextModule,
+        ToggleButtonModule,
         ReactiveFormsModule,
         PickListModule,
         CommonInputComponent,
@@ -46,6 +51,7 @@ import { PickListModule } from 'primeng/picklist'
         CheckboxModule,
         FileUploadModule,
         FileUploadPrimengComponent,
+        DataViewModule,
     ],
     templateUrl: './tarea-form.component.html',
     styleUrl: './tarea-form.component.scss',
@@ -56,6 +62,7 @@ export class TareaFormComponent implements OnInit {
 
     @Input() tarea
 
+    checked: boolean = false
     FilesTareas: any[] = []
     FilesInstrumentos: any[] = []
 
@@ -82,6 +89,10 @@ export class TareaFormComponent implements OnInit {
     // nota
     puntajeArray: { name: string; code: string }[] = []
 
+    //
+    itemtareas: any[] = [{ label: 'Nuevo', value: 1 }]
+    selectedTarea: any
+
     ngOnInit() {
         this.getEstudiantesMatricula()
 
@@ -92,6 +103,9 @@ export class TareaFormComponent implements OnInit {
         for (let i = 1; i <= 20; i++) {
             this.puntajeArray.push({ name: `${i}`, code: `${i}` })
         }
+    }
+    onToggleChange(event: any) {
+        console.log('Estado del ToggleButton:', event)
     }
 
     ngOnChanges(changes) {
@@ -104,6 +118,18 @@ export class TareaFormComponent implements OnInit {
                     ? JSON.parse(this.tareaForm.value.cTareaArchivoAdjunto)
                     : []
         }
+    }
+
+    onTareaSelected(event: any) {
+        const selectedTarea = event.value
+        if (selectedTarea) {
+            this.showModalDialog9(selectedTarea)
+        }
+    }
+    showModalDialog9(tarea: any) {
+        console.log('Mostrando modal para la tarea:', tarea)
+        // Aquí puedes implementar la lógica para mostrar el modal, como usar un servicio de PrimeNG o ng-bootstrap
+        // por ejemplo, puedes activar un modal o caja de diálogo si ya lo tienes implementado.
     }
 
     public tareaForm = this._formBuilder.group({
@@ -194,6 +220,7 @@ export class TareaFormComponent implements OnInit {
                     size: item.file.size,
                     ruta: item.name,
                 })
+
                 break
         }
     }
@@ -234,7 +261,8 @@ export class TareaFormComponent implements OnInit {
             },
         })
     }
-    showModalDialog() {
+    showModalDialog(event: any) {
         this.displayModal = true
+        console.log('Estado del ToggleButton:', event)
     }
 }

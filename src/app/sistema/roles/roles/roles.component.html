@@ -16,7 +16,7 @@
         </div>
     </div>
 
-    <!--<p-dialog
+    <!-- <p-dialog
         [(visible)]="productDialog"
         [style]="{ width: '1000px' }"
         [style]="{ width: '1000px' }"
@@ -26,43 +26,44 @@
     >
         <div class="flex flex-column md:flex-row gap-3 align-items-end">
             <div class="field w-full max-w-md pb-0">
-            <div class="field w-full max-w-md pb-0">
-                <label for="tipo-pregunta">Año Academico :</label>
-                <p-dropdown
-                    [options]="[]"
-                    placeholder="Seleccione Año"
-                    styleClass="w-full"
-                    class="flex-1"
-                    [emptyMessage]="'2024'"
-                >
-                </p-dropdown>
-            </div>
-            <div class="field w-full max-w-md">
-            <div class="field w-full max-w-md">
-                <label for="tipo-pregunta">Año :</label>
-                <p-dropdown
-                    [options]="[]"
-                    placeholder="Todos los Periodos"
-                    styleClass="w-full"
-                    class="flex-1"
-                    [emptyMessage]="'000237'"
-                >
-                </p-dropdown>
-            </div>
-            <div class="field displey flex gap-3 w-full max-w-md">
-                <div class="w-full max-w-xs">
-                    <p-iconField iconPosition="left">
-                        <p-inputIcon styleClass="pi pi-search" />
-                        <input pInputText type="text" placeholder="Buscar..." />
-                    </p-iconField>
+                <div class="field w-full max-w-md pb-0">
+                    <label for="tipo-pregunta">Año Academico :</label>
+                    <p-dropdown
+                        [options]="[]"
+                        placeholder="Seleccione Año"
+                        styleClass="w-full"
+                        class="flex-1"
+                        [emptyMessage]="'2024'"
+                    >
+                    </p-dropdown>
                 </div>
-                <div>
-                    <p-button
-                        icon="pi pi-search"
-                        type="button"
-                        label="Buscar"
-                        class="p-button-success"
-                    />
+                <div class="field w-full max-w-md"></div>
+                <div class="field w-full max-w-md">
+                    <label for="tipo-pregunta">Año :</label>
+                    <p-dropdown
+                        [options]="[]"
+                        placeholder="Todos los Periodos"
+                        styleClass="w-full"
+                        class="flex-1"
+                        [emptyMessage]="'000237'"
+                    >
+                    </p-dropdown>
+                </div>
+                <div class="field displey flex gap-3 w-full max-w-md">
+                    <div class="w-full max-w-xs">
+                        <p-iconField iconPosition="left">
+                            <p-inputIcon styleClass="pi pi-search" />
+                            <input pInputText type="text" placeholder="Buscar..." />
+                        </p-iconField>
+                    </div>
+                    <div>
+                        <p-button
+                            icon="pi pi-search"
+                            type="button"
+                            label="Buscar"
+                            class="p-button-success"
+                        />
+                    </div>
                 </div>
             </div>
         </div>
@@ -75,7 +76,7 @@
                 [data]="roles"
                 [actions]="actions"
             />
-            <h1> hh {{item?.legnth}} hola </h1>
+            <h1> hh hola </h1>
             <p-dataView
                 #dv
                 [value]="roles"
@@ -85,33 +86,33 @@
             >
 
                 <ng-template let-product pTemplate="listItem">
-                <div class="p-col-12">
-                        <div class="product-list-item">
-                            <div class="product-list-detail">
-                                <div class="product-name" ngModel>
-                                    {{ product.iCredEntPerfId }}
+                    <div class="p-col-12">
+                            <div class="product-list-item">
+                                <div class="product-list-detail">
+                                    <div class="product-name" ngModel>
+                                        {{ product.iCredEntPerfId }}
+                                    </div>
+                                    <div class="product-description">
+                                        {{ product.cPersNombreLargo }}
+                                    </div>
+                                    <i class="pi pi-tag product-category-icon"></i
+                                    ><span class="product-category">{{
+                                        product.cPersDocumento
+                                    }}</span>
                                 </div>
-                                <div class="product-description">
-                                    {{ product.cPersNombreLargo }}
+                                <div class="product-list-action">
+                                    <span class="product-price">{{
+                                        product.cPerfilNombre
+                                    }}</span>
+                                    <p-button
+                                    
+                                    ></p-button>
+                                    <span
+                                    
+                                        >{{ product.cPerfilNombre }}</span
+                                    >
                                 </div>
-                                <i class="pi pi-tag product-category-icon"></i
-                                ><span class="product-category">{{
-                                    product.cPersDocumento
-                                }}</span>
                             </div>
-                            <div class="product-list-action">
-                                <span class="product-price">{{
-                                    product.cPerfilNombre
-                                }}</span>
-                                <p-button
-                                   
-                                ></p-button>
-                                <span
-                                   
-                                    >{{ product.cPerfilNombre }}</span
-                                >
-                            </div>
-                        </div>
                     </div> 
                 </ng-template>
             </p-dataView>
@@ -135,5 +136,5 @@
                 (click)="hideDialog()"
             ></button>
         </ng-template>
-    </p-dialog>-->
+    </p-dialog> -->
 </app-container-page>

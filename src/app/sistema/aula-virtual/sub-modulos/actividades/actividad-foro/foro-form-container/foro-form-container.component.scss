@@ -13,3 +13,12 @@
     width: 180px;
     background-image: conic-gradiente(red 20deg, transparent 120deg);
 }
+.flex-conteiner {
+    display: flex;
+    // grid-template-columns: repeat(3, 1fr);
+    justify-content: space-around;
+}
+.flex-conteiner > div {
+    flex: 1;
+    margin: 0 10px;
+}

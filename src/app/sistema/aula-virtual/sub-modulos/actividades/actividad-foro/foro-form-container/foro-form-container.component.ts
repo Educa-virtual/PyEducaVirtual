@@ -44,7 +44,7 @@ export class ForoFormContainerComponent implements OnInit {
 
     estado: any[] = [
         { label: 'Activo', value: 1 },
-        { label: 'Desactivo', vuele: 2 },
+        { label: 'Desactivo', value: 2 },
     ]
 
     selectCategorias: any = {}

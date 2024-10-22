@@ -63,6 +63,21 @@ export class ApiEvaluacionesService {
             .pipe(map((resp) => resp.data))
     }
 
+    eliminarRubrica({
+        id,
+        tipo,
+    }: {
+        id: number
+        tipo: 'INSTRUMENTO' | 'CRITERIO' | 'NIVEL'
+    }) {
+        return this.http
+            .delete<ApiResponse>(
+                `${this.baseUrlApi}/evaluaciones/instrumento-evaluaciones/rubrica/${id}`,
+                { params: { cTipo: tipo } }
+            )
+            .pipe(map((resp) => resp.data))
+    }
+
     // escala calificaciones
 
     obtenerEscalaCalificaciones() {

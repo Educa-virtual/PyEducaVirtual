@@ -45,6 +45,8 @@
                         rows="2"
                         cols="30"
                         placeholder="Descripción"
+                        formControlName="cNivelEvaDescripcion"
+                        [autoResize]="true"
                         pInputTextarea
                         id="descripcion"
                     ></textarea>
@@ -70,7 +72,7 @@
                         size="small"
                         icon="pi pi-trash"
                         class="p-button-rounded p-button-danger"
-                        (click)="eliminarNivel(j)"
+                        (click)="confirmarEliminar(j)"
                     ></button>
                 </div>
             </div>

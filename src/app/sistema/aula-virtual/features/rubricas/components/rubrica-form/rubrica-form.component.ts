@@ -1,7 +1,7 @@
-import { Component, inject, OnInit } from '@angular/core'
+import { Component, inject, OnInit, OnDestroy } from '@angular/core'
 import { FormBuilder, FormGroup } from '@angular/forms'
 import { RubricaFormService } from './rubrica-form.service'
-import { DynamicDialogRef } from 'primeng/dynamicdialog'
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { ApiEvaluacionesService } from '@/app/sistema/evaluaciones/services/api-evaluaciones.service'
 import { Subject, takeUntil } from 'rxjs'
@@ -11,17 +11,19 @@ import { Subject, takeUntil } from 'rxjs'
     templateUrl: './rubrica-form.component.html',
     styleUrl: './rubrica-form.component.scss',
 })
-export class RubricaFormComponent implements OnInit {
+export class RubricaFormComponent implements OnInit, OnDestroy {
     public rubricaForm: FormGroup
     public mode: 'EDITAR' | 'CREAR' = 'CREAR'
 
     public escalasCalificativas: any[] = []
 
+    private rubrica = null
     private _formBuilder = inject(FormBuilder)
     private _ref = inject(DynamicDialogRef)
     private _constantesService = inject(ConstantesService)
     private _apiEvaluacionesServ = inject(ApiEvaluacionesService)
     private _unsubscribe$ = new Subject<boolean>()
+    private _config = inject(DynamicDialogConfig)
 
     private _params = {
         iCursoId: 1,
@@ -31,8 +33,22 @@ export class RubricaFormComponent implements OnInit {
     constructor(private _rubricaFormService: RubricaFormService) {}
 
     ngOnInit() {
-        this.getData()
+        this.rubrica = this._config.data.rubrica
         this.initForm()
+        this.getData()
+        this.handleMode()
+    }
+
+    handleMode() {
+        if (this.rubrica != null) {
+            this.mode = 'EDITAR'
+            this.patchValues()
+        }
+    }
+
+    patchValues() {
+        this._rubricaFormService.patchRubricaForm(this.rubrica)
+        console.log(this.rubricaForm.value)
     }
 
     getData() {
@@ -56,8 +72,6 @@ export class RubricaFormComponent implements OnInit {
     initForm() {
         this._rubricaFormService.initRubricaForm()
         this.rubricaForm = this._rubricaFormService.rubricaForm
-
-        console.log(this.rubricaForm)
     }
 
     guardarActualizarRubrica() {
@@ -71,13 +85,17 @@ export class RubricaFormComponent implements OnInit {
             .guardarActualizarRubrica(data)
             .pipe(takeUntil(this._unsubscribe$))
             .subscribe({
-                next: (data) => {
-                    this.closeModal(data)
+                next: () => {
+                    this.closeModal('obtenerRubricas')
                 },
             })
     }
 
     closeModal(data) {
         this._ref.close(data)
+    }
+    ngOnDestroy() {
+        this._unsubscribe$.next(true)
+        this._unsubscribe$.complete()
     }
 }

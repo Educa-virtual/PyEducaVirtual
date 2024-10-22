@@ -17,6 +17,17 @@ export class RubricaFormService {
         })
     }
 
+    patchRubricaForm(rubrica) {
+        this.rubricaForm.patchValue({
+            iInstrumentoId: rubrica.iInstrumentoId,
+            cInstrumentoNombre: rubrica.cInstrumentoNombre,
+            cInstrumentoDescripcion: rubrica.cInstrumentoDescripcion,
+        })
+
+        // patch criterios
+        this.patchCriterioForm(rubrica.criterios)
+    }
+
     // niveles
     addNivelToForm(index: number) {
         const criterios = this.rubricaForm.get('criterios') as FormArray
@@ -29,22 +40,26 @@ export class RubricaFormService {
             iNivelEvaId: [0, [Validators.required]],
             cNivelEvaNombre: ['', [Validators.required]],
             iEscalaCalifId: [0, [Validators.required]],
-            cNivelEvaDescripcion: this._formBuilder.array([]),
+            cNivelEvaDescripcion: [''],
         })
     }
 
     eliminarNivelFromForm(criterioIndex, nivelIndex) {
         const criterios = this.rubricaForm.get('criterios') as FormArray
         const niveles = criterios.at(criterioIndex).get('niveles') as FormArray
-        if (niveles.length === 1) {
-            return
-        }
         niveles.removeAt(nivelIndex)
     }
 
     // criterios
     addCriterioToForm() {
         const criterios = this.rubricaForm.get('criterios') as FormArray
+        if (
+            criterios.length > 0 &&
+            criterios.at(criterios.length - 1).invalid
+        ) {
+            criterios.at(criterios.length - 1).markAllAsTouched()
+            return
+        }
         const criterioFormGroup = this.criterioForm()
         criterios.push(criterioFormGroup)
     }
@@ -61,6 +76,34 @@ export class RubricaFormService {
             cCriterioNombre: [null, [Validators.required]],
             cCriterioDescripcion: ['', [Validators.required]],
             niveles: this._formBuilder.array([this.nivelForm()]),
+        })
+    }
+
+    patchCriterioForm(criterios) {
+        const criteriosFormArray = this.rubricaForm.get(
+            'criterios'
+        ) as FormArray
+
+        criterios.forEach((criterio) => {
+            // patch niveles
+            const niveles = criterio.niveles ?? []
+            const criterioFormGroup = this.criterioForm()
+            const nivelesFormArray = criterioFormGroup.get(
+                'niveles'
+            ) as FormArray
+
+            while (nivelesFormArray.length) {
+                nivelesFormArray.removeAt(0)
+            }
+
+            niveles.forEach((nivel) => {
+                const nivelFormGroup = this.nivelForm()
+                nivelFormGroup.patchValue(nivel)
+                nivelesFormArray.push(nivelFormGroup)
+            })
+
+            criterioFormGroup.patchValue(criterio)
+            criteriosFormArray.push(criterioFormGroup)
         })
     }
 }

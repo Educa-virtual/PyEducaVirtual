@@ -224,9 +224,7 @@ export class TareaFormComponent implements OnInit {
                 break
         }
     }
-    cancelarArchivo(index: 1) {
-        this.FilesInstrumentos.splice(index, 1) // Elimina el archivo de la lista
-    }
+
     getEstudiantesMatricula() {
         const params = {
             petition: 'post',

@@ -1,4 +1,3 @@
-import { generarIdAleatorio } from '@/app/shared/utils/random-id'
 import { inject, Injectable } from '@angular/core'
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms'
 
@@ -6,6 +5,7 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms'
 export class RubricaFormService {
     rubricaForm: FormGroup
     private _formBuilder = inject(FormBuilder)
+
     constructor() {}
 
     initRubricaForm() {
@@ -17,6 +17,7 @@ export class RubricaFormService {
         })
     }
 
+    // niveles
     addNivelToForm(index: number) {
         const criterios = this.rubricaForm.get('criterios') as FormArray
         const niveles = criterios.at(index).get('niveles') as FormArray
@@ -25,6 +26,7 @@ export class RubricaFormService {
 
     nivelForm(): FormGroup {
         return this._formBuilder.group({
+            iNivelEvaId: [0, [Validators.required]],
             cNivelEvaNombre: ['', [Validators.required]],
             iEscalaCalifId: [0, [Validators.required]],
             cNivelEvaDescripcion: this._formBuilder.array([]),
@@ -40,6 +42,7 @@ export class RubricaFormService {
         niveles.removeAt(nivelIndex)
     }
 
+    // criterios
     addCriterioToForm() {
         const criterios = this.rubricaForm.get('criterios') as FormArray
         const criterioFormGroup = this.criterioForm()
@@ -53,7 +56,8 @@ export class RubricaFormService {
 
     criterioForm(): FormGroup {
         return this._formBuilder.group({
-            iInstrumentoId: [generarIdAleatorio(), [Validators.required]],
+            iCriterioId: [0, Validators.required],
+            iInstrumentoId: [0, [Validators.required]],
             cCriterioNombre: [null, [Validators.required]],
             cCriterioDescripcion: ['', [Validators.required]],
             niveles: this._formBuilder.array([this.nivelForm()]),

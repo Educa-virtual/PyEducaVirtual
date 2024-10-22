@@ -1,3 +1,4 @@
+import { ApiResponse } from '@/app/shared/interfaces/api-response.model'
 import { environment } from '@/environments/environment.template'
 import { HttpClient } from '@angular/common/http'
 import { inject, Injectable } from '@angular/core'
@@ -46,7 +47,7 @@ export class ApiEvaluacionesService {
 
     obtenerRubricas(params) {
         return this.http
-            .get<any>(
+            .get<ApiResponse>(
                 `${this.baseUrlApi}/evaluaciones/instrumento-evaluaciones/rubrica`,
                 { params }
             )
@@ -55,10 +56,18 @@ export class ApiEvaluacionesService {
 
     guardarActualizarRubrica(data) {
         return this.http
-            .post<any>(
+            .post<ApiResponse>(
                 `${this.baseUrlApi}/evaluaciones/instrumento-evaluaciones/rubrica`,
                 data
             )
+            .pipe(map((resp) => resp.data))
+    }
+
+    // escala calificaciones
+
+    obtenerEscalaCalificaciones() {
+        return this.http
+            .get<any>(`${this.baseUrlApi}/evaluaciones/escala-calificaciones`)
             .pipe(map((resp) => resp.data))
     }
 }

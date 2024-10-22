@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core'
+import { Component, Input, OnChanges } from '@angular/core'
 import { FormArray, FormGroup } from '@angular/forms'
 import { RubricaFormService } from '../rubrica-form.service'
 import { MenuItem } from 'primeng/api'
@@ -8,9 +8,9 @@ import { MenuItem } from 'primeng/api'
     templateUrl: './rubrica-form-criterios.component.html',
     styleUrl: './rubrica-form-criterios.component.scss',
 })
-export class RubricaFormCriteriosComponent {
+export class RubricaFormCriteriosComponent implements OnChanges {
     @Input() rubricaForm: FormGroup
-
+    @Input() escalasCalificativas = []
     public criterioIndex = -1
     public accionesCriterio: MenuItem[] = [
         {
@@ -31,6 +31,10 @@ export class RubricaFormCriteriosComponent {
 
     get criterios() {
         return this.rubricaForm.get('criterios') as FormArray
+    }
+
+    ngOnChanges() {
+        console.log(this.escalasCalificativas)
     }
 
     constructor(private _rubricaFormService: RubricaFormService) {}

@@ -1,9 +1,11 @@
-import { Component, inject } from '@angular/core'
+import { Component, inject, OnInit } from '@angular/core'
 import { RubricasModule } from './rubricas.module'
 import { IColumn } from '@/app/shared/table-primeng/table-primeng.component'
 import { DialogService } from 'primeng/dynamicdialog'
 import { RubricaFormComponent } from './components/rubrica-form/rubrica-form.component'
 import { MODAL_CONFIG } from '@/app/shared/constants/modal.config'
+import { ApiEvaluacionesService } from '@/app/sistema/evaluaciones/services/api-evaluaciones.service'
+import { Subject, takeUntil } from 'rxjs'
 
 @Component({
     selector: 'app-rubricas',
@@ -12,12 +14,12 @@ import { MODAL_CONFIG } from '@/app/shared/constants/modal.config'
     templateUrl: './rubricas.component.html',
     styleUrl: './rubricas.component.scss',
 })
-export class RubricasComponent {
+export class RubricasComponent implements OnInit {
     public columnasTabla: IColumn[] = [
         {
             type: 'text',
             width: 'auto',
-            field: 'cInstrumentoNombre',
+            field: 'cIntrumentoNombre',
             header: 'Instrumento de Evaluación',
             text_header: 'left',
             text: 'left',
@@ -25,7 +27,7 @@ export class RubricasComponent {
         {
             type: 'text',
             width: '10rem',
-            field: 'cInstrumentoDescripcion',
+            field: 'cIntrumentoDescripcion',
             header: 'Descripcion',
             text_header: 'left',
             text: 'left',
@@ -33,8 +35,28 @@ export class RubricasComponent {
     ]
 
     public data = []
-
     private _dialogService = inject(DialogService)
+    private _evaluacionApiService = inject(ApiEvaluacionesService)
+    private _unsubscribe$ = new Subject<boolean>()
+
+    ngOnInit() {
+        this.getData()
+    }
+
+    getData() {
+        this.obtenerRubricas()
+    }
+
+    obtenerRubricas() {
+        this._evaluacionApiService
+            .obtenerRubricas({})
+            .pipe(takeUntil(this._unsubscribe$))
+            .subscribe({
+                next: (data) => {
+                    this.data = data
+                },
+            })
+    }
 
     agregarInstrumentoEvaluacion() {
         this.agregarActualizarEvaluacionModal(null)

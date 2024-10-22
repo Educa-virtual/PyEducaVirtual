@@ -15,6 +15,8 @@ export class RubricaFormComponent implements OnInit {
     public rubricaForm: FormGroup
     public mode: 'EDITAR' | 'CREAR' = 'CREAR'
 
+    public escalasCalificativas: any[] = []
+
     private _formBuilder = inject(FormBuilder)
     private _ref = inject(DynamicDialogRef)
     private _constantesService = inject(ConstantesService)
@@ -29,7 +31,26 @@ export class RubricaFormComponent implements OnInit {
     constructor(private _rubricaFormService: RubricaFormService) {}
 
     ngOnInit() {
+        this.getData()
         this.initForm()
+    }
+
+    getData() {
+        this.obtenerEscalaCalificaciones()
+    }
+
+    obtenerEscalaCalificaciones() {
+        this._apiEvaluacionesServ
+            .obtenerEscalaCalificaciones()
+            .pipe(takeUntil(this._unsubscribe$))
+            .subscribe({
+                next: (data) => {
+                    this.escalasCalificativas = data.map((item) => {
+                        item.cEscalaCalifNombre = `${item.cEscalaCalifNombre ?? ''} ${item.cEscalaCalifDescripcion ?? ''} ${item.nEscalaCalifEquivalente ?? ''}`
+                        return item
+                    })
+                },
+            })
     }
 
     initForm() {

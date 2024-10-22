@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnInit } from '@angular/core'
+import { Component, inject, Input, OnInit, OnChanges } from '@angular/core'
 import { ControlContainer, FormArray, FormGroup } from '@angular/forms'
 import { RubricaFormService } from '../rubrica-form.service'
 
@@ -7,7 +7,7 @@ import { RubricaFormService } from '../rubrica-form.service'
     templateUrl: './rubrica-form-niveles.component.html',
     styleUrl: './rubrica-form-niveles.component.scss',
 })
-export class RubricaFormNivelesComponent implements OnInit {
+export class RubricaFormNivelesComponent implements OnInit, OnChanges {
     @Input() index: number
 
     @Input() escalasCalificativas = []
@@ -20,6 +20,9 @@ export class RubricaFormNivelesComponent implements OnInit {
 
     ngOnInit() {
         console.log(this._parentContainer.control, this.index)
+    }
+    ngOnChanges() {
+        console.log(this.escalasCalificativas)
     }
 
     get nivelesFormArray() {

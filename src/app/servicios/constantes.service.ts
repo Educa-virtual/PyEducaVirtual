@@ -139,6 +139,17 @@ const evaluaciones = [
                 routerLink: ['/evaluaciones/areas'],
             },
             {
+                label: 'Configuracion',
+                icon: 'pi pi-fw pi-cog',
+                items: [
+                    {
+                        label: 'Registro de año escolar',
+                        icon: 'pi pi-fw pi-cog',
+                        routerLink: ['/evaluaciones/configuracion'],
+                    },
+                ],
+            },
+            {
                 label: 'Preguntas',
                 icon: 'pi pi-fw pi-user',
                 items: [

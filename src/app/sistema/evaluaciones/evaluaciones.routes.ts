@@ -48,6 +48,14 @@ const routes: Routes = [
                 './sub-evaluaciones/competencias/competencias.component'
             ).then((c) => c.CompetenciasComponent),
     },
+
+    {
+        path: 'configuracion',
+        loadChildren: () =>
+            import(
+                './sub-evaluaciones/configuracion/configuracion.module'
+            ).then((c) => c.ConfiguracionModule),
+    },
 ]
 
 export default routes

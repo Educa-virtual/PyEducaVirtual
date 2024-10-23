@@ -90,11 +90,6 @@ export const routes: Routes = [
         ],
     },
     {
-        path: 'roles',
-
-        loadChildren: () => import('./sistema/roles/roles.routes'),
-    },
-    {
         path: 'especialista-ugel',
 
         loadChildren: () =>

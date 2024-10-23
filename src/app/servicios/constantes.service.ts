@@ -137,11 +137,6 @@ const administrador = [
                 icon: 'pi pi-fw pi-desktop',
                 routerLink: ['/'],
             },
-            {
-                label: 'Roles',
-                icon: 'pi pi-users',
-                routerLink: ['/roles'],
-            },
         ],
     },
 ]

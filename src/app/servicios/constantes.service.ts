@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core'
 import { LocalStoreService } from './local-store.service'
 const store = new LocalStoreService()
-const modulo = store.getItem('dremoModulo')
+// const modulo = store.getItem('dremoModulo')
+const perfil = store.getItem('dremoPerfil')
 const verificado = store.getItem('dremoPerfilVerificado')
 const user = store.getItem('dremoUser')
 
@@ -53,28 +54,28 @@ const estudiante = [
         items: [inicio],
     },
 ]
-const especialista_ugel = [
-    {
-        items: [
-            inicio,
-            {
-                label: 'Perfiel',
-                icon: 'pi pi-user',
-                routerLink: ['/especialista-ugel'],
-            },
-            {
-                label: 'Evaluaciones',
-                icon: 'pi pi-fw pi-calendar',
-                routerLink: ['/evaluaciones/evaluaciones'],
-            },
-            {
-                label: 'Mis Áreas Curriculares',
-                icon: 'pi pi-fw pi-folder',
-                routerLink: ['/evaluaciones/areas'],
-            },
-        ],
-    },
-]
+// const especialista_ugel = [
+//     {
+//         items: [
+//             inicio,
+//             {
+//                 label: 'Perfiel',
+//                 icon: 'pi pi-user',
+//                 routerLink: ['/especialista-ugel'],
+//             },
+//             {
+//                 label: 'Evaluaciones',
+//                 icon: 'pi pi-fw pi-calendar',
+//                 routerLink: ['/evaluaciones/evaluaciones'],
+//             },
+//             {
+//                 label: 'Mis Áreas Curriculares',
+//                 icon: 'pi pi-fw pi-folder',
+//                 routerLink: ['/evaluaciones/areas'],
+//             },
+//         ],
+//     },
+// ]
 const aula_virtual = [
     {
         items: [
@@ -136,11 +137,6 @@ const administrador = [
                 icon: 'pi pi-fw pi-desktop',
                 routerLink: ['/'],
             },
-            {
-                label: 'Roles',
-                icon: 'pi pi-users',
-                routerLink: ['/roles'],
-            },
         ],
     },
 ]
@@ -150,58 +146,87 @@ const notas_evaluaciones = [
         items: [
             inicio,
             {
-                label: 'Dashboard',
+                label: 'Sincronizar SIAGIE',
                 icon: 'pi pi-fw pi-book',
                 routerLink: ['/evaluaciones'],
             },
             {
-                label: 'Evaluaciones',
-                icon: 'pi pi-fw pi-calendar',
-                routerLink: ['/evaluaciones/evaluaciones'],
-            },
-            {
-                label: 'Mis Áreas Curriculares',
-                icon: 'pi pi-fw pi-folder',
-                routerLink: ['/evaluaciones/areas'],
-            },
-            {
-                label: 'Preguntas',
-                icon: 'pi pi-fw pi-user',
-                items: [
-                    {
-                        label: 'Banco de preguntas',
-                        icon: 'pi pi-fw pi-sign-in',
-                        routerLink: ['/evaluaciones/banco-preguntas'],
-                    },
-                    {
-                        label: 'Preguntas activas',
-                        icon: 'pi pi-fw pi-times-circle',
-                        routerLink: ['/evaluaciones/preguntas-activas'],
-                    },
-                ],
+                label: 'Configurar Modulo',
+                icon: 'pi pi-fw pi-book',
+                routerLink: ['/evaluaciones'],
             },
 
             {
-                label: 'Configuración',
+                label: 'Pruebas Escolares',
                 icon: 'pi pi-fw pi-user',
                 items: [
                     {
-                        label: 'Competencias',
+                        label: 'ERE',
                         icon: 'pi pi-fw pi-sign-in',
-                        routerLink: ['/evaluaciones/competencias'],
+                        //routerLink: ['/especialista-ugel/ver-evaluacion'],
+                        items: [
+                            {
+                                label: 'Evaluaciones',
+                                icon: 'pi pi-fw pi-calendar',
+                                routerLink: ['/evaluaciones/evaluaciones'],
+                            },
+                            {
+                                label: 'Dashboard',
+                                icon: 'pi pi-fw pi-user',
+                                routerLink: [
+                                    '/especialista-ugel/ver-evaluacion',
+                                ],
+                            },
+                            {
+                                label: 'Informes',
+                                icon: 'pi pi-fw pi-sign-in',
+                                //routerLink: ['/especialista-ugel/ver-evaluacion'],
+                                items: [
+                                    {
+                                        label: 'I.E',
+                                        icon: 'pi pi-fw pi-user',
+                                        routerLink: [
+                                            '/especialista-ugel/institucion-educativa',
+                                        ],
+                                    },
+                                ],
+                            },
+                        ],
                     },
                     {
-                        label: 'Capacidades',
-                        icon: 'pi pi-fw pi-times-circle',
-                        routerLink: ['/evaluaciones/preguntas-activas'],
-                    },
-                    {
-                        label: 'Desempeños',
+                        label: 'Prueba ECE',
                         icon: 'pi pi-fw pi-times-circle',
                         routerLink: ['/evaluaciones/preguntas-activas'],
                     },
                 ],
             },
+            //Borrar
+            // {
+            //     label: 'Mis Áreas Curriculares',
+            //     icon: 'pi pi-fw pi-folder',
+            //     routerLink: ['/evaluaciones/areas'],
+            // },
+            // {
+            //     label: 'Configuración',
+            //     icon: 'pi pi-fw pi-user',
+            //     items: [
+            //         {
+            //             label: 'Competencias',
+            //             icon: 'pi pi-fw pi-sign-in',
+            //             routerLink: ['/evaluaciones/competencias'],
+            //         },
+            //         {
+            //             label: 'Capacidades',
+            //             icon: 'pi pi-fw pi-times-circle',
+            //             routerLink: ['/evaluaciones/preguntas-activas'],
+            //         },
+            //         {
+            //             label: 'Desempeños',
+            //             icon: 'pi pi-fw pi-times-circle',
+            //             routerLink: ['/evaluaciones/preguntas-activas'],
+            //         },
+            //     ],
+            // },
         ],
     },
 ]
@@ -482,11 +507,11 @@ const registro_asistencia = [
     },
 ]
 
-const seguridad = [
-    {
-        items: [inicio],
-    },
-]
+// const seguridad = [
+//     {
+//         items: [inicio],
+//     },
+// ]
 
 const bienestar = [
     {
@@ -494,23 +519,23 @@ const bienestar = [
     },
 ]
 
-const comunicado = [
-    {
-        items: [inicio],
-    },
-]
+// const comunicado = [
+//     {
+//         items: [inicio],
+//     },
+// ]
 
-const concurso_docente = [
-    {
-        items: [inicio],
-    },
-]
+// const concurso_docente = [
+//     {
+//         items: [inicio],
+//     },
+// ]
 
-const apoderados = [
-    {
-        items: [inicio],
-    },
-]
+// const apoderados = [
+//     {
+//         items: [inicio],
+//     },
+// ]
 
 const first = [
     {
@@ -528,36 +553,60 @@ export class ConstantesService {
 
     nav = this.getMenu()
     getMenu() {
-        if (!modulo) return first
-        switch (Number(modulo.iModuloId)) {
+        if (!perfil) return first
+        console.log('perfiles', perfil)
+        switch (Number(perfil.iPerfilId)) {
             case 1:
                 return aula_virtual
             case 2:
                 return docente
             case 3:
-                return estudiante
-            case 4:
                 return notas_evaluaciones
+            case 4:
+                return estudiante
             case 5:
                 return registro_asistencia
             case 6:
                 return administrador
             case 7:
-                return seguridad
+                return docente
             case 8:
                 return bienestar
-            case 9:
-                return comunicado
-            case 10:
-                return concurso_docente
-            case 11:
-                return apoderados
-            case 12:
-                return especialista_ugel
             default:
                 return first
         }
     }
+    // getMenu() {
+    //     if (!modulo) return first
+    //     switch (Number(modulo.iModuloId)) {
+    //         case 1:
+    //             return aula_virtual
+    //         case 2:
+    //             return docente
+    //         case 3:
+    //             return estudiante
+    //         case 4:
+    //             return notas_evaluaciones
+    //         case 5:
+    //             return registro_asistencia
+    //         case 6:
+    //             return administrador
+    //         case 7:
+    //             return seguridad
+    //         case 8:
+    //             return bienestar
+    //         case 9:
+    //             return comunicado
+    //         case 10:
+    //             return concurso_docente
+    //         case 11:
+    //             return apoderados
+    //         case 12:
+    //             return especialista_ugel
+    //         default:
+    //             return first
+    //     }
+    // }
     verificado = verificado
 
     nombres = user

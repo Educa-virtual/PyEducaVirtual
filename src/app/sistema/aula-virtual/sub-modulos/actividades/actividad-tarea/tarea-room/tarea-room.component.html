@@ -229,20 +229,74 @@
                                     >
                                         <ng-template pTemplate="header">
                                             <tr>
-                                                <th
-                                                    style="
-                                                        width: 0.5rem;
-                                                        text-align: center;
-                                                    "
-                                                ></th>
-                                                <th style="width: 10rem">
-                                                    Nombre del Estudiante
-                                                </th>
-                                                <th style="width: 0.5rem">
-                                                    Estado
-                                                </th>
-                                            </tr>
-                                        </ng-template>
+                                                <!-- incio -->
+                                                <p-table
+                                                    [value]="estudiantes"
+                                                    [scrollable]="true"
+                                                    scrollHeight="500px"
+                                                >
+                                                    <ng-template
+                                                        pTemplate="header"
+                                                    >
+                                                        <tr
+                                                            class="sticky-header"
+                                                        >
+                                                            <th>#</th>
+                                                            <th>Nombres</th>
+                                                            <th>Apellidos</th>
+                                                            <th>Estado</th>
+                                                        </tr>
+                                                    </ng-template>
+                                                    <ng-template
+                                                        pTemplate="body"
+                                                        let-estudiante
+                                                        let-rowIndex="rowIndex"
+                                                    >
+                                                        <tr>
+                                                            <!-- <td>
+                                                            <p-checkbox
+                                                                [(ngModel)]="estudiante.selected"
+                                                            ></p-checkbox>
+                                                        </td> -->
+                                                            <td>
+                                                                {{
+                                                                    rowIndex + 1
+                                                                }}
+                                                            </td>
+                                                            <td>
+                                                                {{
+                                                                    estudiante.cPersNombre
+                                                                }}
+                                                            </td>
+                                                            <td>
+                                                                {{
+                                                                    estudiante.cPersPaterno
+                                                                }}
+                                                            </td>
+                                                            <td
+                                                                style="
+                                                                    text-align: center;
+                                                                "
+                                                            >
+                                                                <div
+                                                                    class="w-1rem h-1rem border-circle ml-3"
+                                                                    [ngClass]="
+                                                                        estudiante.cEstado ===
+                                                                        'F'
+                                                                            ? 'bg-red-500'
+                                                                            : estudiante.cEstado ===
+                                                                                'P'
+                                                                              ? 'bg-yellow-500'
+                                                                              : 'bg-green-500'
+                                                                    "
+                                                                ></div>
+                                                            </td>
+                                                        </tr>
+                                                    </ng-template>
+                                                </p-table>
+                                                <!-- incio -->
+                                            </tr></ng-template
+                                        >
                                         <ng-template
                                             pTemplate="emptymessage"
                                             let-columns
@@ -251,53 +305,6 @@
                                                 <td [attr.colspan]="8">
                                                     No se encontraron
                                                     resultados.
-                                                </td>
-                                            </tr>
-                                        </ng-template>
-                                        <ng-template
-                                            pTemplate="body"
-                                            let-item
-                                            let-rowIndex="rowIndex"
-                                        >
-                                            <tr
-                                                [style]="
-                                                    rowIndex ===
-                                                    estudianteSeleccionado
-                                                        ? 'background:#98FB98'
-                                                        : ''
-                                                "
-                                            >
-                                                <td
-                                                    class="justify-content-center"
-                                                >
-                                                    <p-checkbox
-                                                        [(ngModel)]="
-                                                            item.iCheckbox
-                                                        "
-                                                        [binary]="true"
-                                                        inputId="binary"
-                                                    />
-                                                </td>
-                                                <td
-                                                    class="font-bold"
-                                                    (click)="
-                                                        getTareaRealizada(item)
-                                                    "
-                                                >
-                                                    {{ item.nombre }}
-                                                </td>
-                                                <td style="text-align: center">
-                                                    <div
-                                                        class="w-1rem h-1rem border-circle ml-3"
-                                                        [ngClass]="
-                                                            item.cEstado === 'F'
-                                                                ? 'bg-red-500'
-                                                                : item.cEstado ===
-                                                                    'P'
-                                                                  ? 'bg-yellow-500'
-                                                                  : 'bg-green-500'
-                                                        "
-                                                    ></div>
                                                 </td>
                                             </tr>
                                         </ng-template>
@@ -364,6 +371,95 @@
                                             iconPos="left"
                                         />
                                     </div>
+                                    <p-table
+                                        #dv
+                                        class="col-12 hoverTable"
+                                        [value]="estudiantes"
+                                        paginator="false"
+                                        styleClass="p-datatable-sm"
+                                    >
+                                        <ng-template pTemplate="header">
+                                            <tr>
+                                                <!-- incio -->
+                                                <p-table
+                                                    [value]="estudiantes"
+                                                    [scrollable]="true"
+                                                    scrollHeight="500px"
+                                                >
+                                                    <ng-template
+                                                        pTemplate="header"
+                                                    >
+                                                        <tr
+                                                            class="sticky-header"
+                                                        >
+                                                            <th>#</th>
+                                                            <th>Nombres</th>
+                                                            <th>Apellidos</th>
+                                                            <th>Estado</th>
+                                                        </tr>
+                                                    </ng-template>
+                                                    <ng-template
+                                                        pTemplate="body"
+                                                        let-estudiante
+                                                        let-rowIndex="rowIndex"
+                                                    >
+                                                        <tr>
+                                                            <!-- <td>
+                                                            <p-checkbox
+                                                                [(ngModel)]="estudiante.selected"
+                                                            ></p-checkbox>
+                                                        </td> -->
+                                                            <td>
+                                                                {{
+                                                                    rowIndex + 1
+                                                                }}
+                                                            </td>
+                                                            <td>
+                                                                {{
+                                                                    estudiante.cPersNombre
+                                                                }}
+                                                            </td>
+                                                            <td>
+                                                                {{
+                                                                    estudiante.cPersPaterno
+                                                                }}
+                                                            </td>
+                                                            <td
+                                                                style="
+                                                                    text-align: center;
+                                                                "
+                                                            >
+                                                                <div
+                                                                    class="w-1rem h-1rem border-circle ml-3"
+                                                                    [ngClass]="
+                                                                        estudiante.cEstado ===
+                                                                        'F'
+                                                                            ? 'bg-red-500'
+                                                                            : estudiante.cEstado ===
+                                                                                'P'
+                                                                              ? 'bg-yellow-500'
+                                                                              : 'bg-green-500'
+                                                                    "
+                                                                ></div>
+                                                            </td>
+                                                        </tr>
+                                                    </ng-template>
+                                                </p-table>
+                                                <!-- incio -->
+                                            </tr></ng-template
+                                        >
+                                        <ng-template
+                                            pTemplate="emptymessage"
+                                            let-columns
+                                        >
+                                            <tr>
+                                                <td [attr.colspan]="8">
+                                                    No se encontraron
+                                                    resultados.
+                                                </td>
+                                            </tr>
+                                        </ng-template>
+                                    </p-table>
                                 </div>
                             </p-accordionTab>
                         </p-accordion>

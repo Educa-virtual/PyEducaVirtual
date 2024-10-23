@@ -1,6 +1,8 @@
-<p-listbox [options]="estudiantes" [group]="true">
+<!-- <p-listbox [options]="estudiantes" [group]="true"
+    [style]="{ height: '100%' }"
+    >
     <ng-template let-estudiante pTemplate="group" class="p-0">
-        <div class="flex align-items-center gap-2">
+        <div class="flex align-items-center gap-2 ">
             <p-avatar
                 image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png"
                 styleClass=""
@@ -9,35 +11,57 @@
             />
             <div class="flex flex-column gap-2 font-medium">
                 <span>{{ estudiante.nombre }}</span>
-                <span>N° de orden: {{ estudiante.numeroOrden }}</span>
+                <span>{{ estudiante.cPersNombre }}</span>
+                <td>
+                    {{ estudiante.cPersPaterno }}
+                </td>
+                <td>
+                    {{ estudiante.cPersMaterno }}
+                </td>
             </div>
         </div>
     </ng-template>
-</p-listbox>
+</p-listbox> -->
 <div>
     <div>
-        <p-table [value]="estudiantes" scrollable="true" scrollHeight="200px">
+        <p-table [value]="estudiantes" paginator="true" [rows]="10">
             <ng-template pTemplate="header">
                 <tr class="sticky-header">
-                    <th></th>
+                    <td>Nº</td>
                     <th>Nombres</th>
                     <th>Apellido Paterno</th>
                     <th>Apellido Materno</th>
+                    <th>Acciones</th>
+                    <!-- Columna de acciones -->
                 </tr>
             </ng-template>
             <ng-template pTemplate="body" let-estudiante>
                 <tr>
-                    <td>
-                        <p-checkbox
-                            [(ngModel)]="estudiante.selected"
-                        ></p-checkbox>
-                    </td>
+                    <!-- <td>
+                        <p-checkbox [(ngModel)]="estudiante.selected"></p-checkbox>
+                    </td> -->
+                    <td>{{ estudiante.iEstudianteId }}</td>
+                    <!-- Muestra el número de la fila -->
                     <td>{{ estudiante.cPersNombre }}</td>
+                    <td>{{ estudiante.cPersPaterno }}</td>
+                    <td>{{ estudiante.cPersMaterno }}</td>
                     <td>
-                        {{ estudiante.cPersPaterno }}
-                    </td>
-                    <td>
-                        {{ estudiante.cPersMaterno }}
+                        <!-- Botón de editar -->
+                        <button
+                            pButton
+                            icon="pi pi-pencil"
+                            class="p-button-rounded p-button-info"
+                            (click)="onEdit(estudiante)"
+                            label=""
+                        ></button>
+                        <!-- Botón de eliminar -->
+                        <button
+                            pButton
+                            icon="pi pi-trash"
+                            class="p-button-rounded p-button-danger"
+                            (click)="onDelete(estudiante)"
+                            label=""
+                        ></button>
                     </td>
                 </tr>
             </ng-template>

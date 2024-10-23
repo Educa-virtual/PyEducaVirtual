@@ -1,14 +1,19 @@
 import { Component } from '@angular/core'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
-
+import { Button } from 'primeng/button'
+import { CardModule } from 'primeng/card'
+import { DividerModule } from 'primeng/divider'
+import { TableModule } from 'primeng/table'
+import { CommonModule } from '@angular/common'
 @Component({
-    selector: 'app-especialista-ugel',
+    selector: 'app-ver-evaluacion',
     standalone: true,
-    templateUrl: './especialista-ugel.component.html',
-    styleUrls: ['./especialista-ugel.component.scss'],
+    imports: [DividerModule, CardModule, Button, TableModule, CommonModule],
+    templateUrl: './ver-evaluacion.component.html',
+    styleUrl: './ver-evaluacion.component.scss',
 })
-export class EspecialistaUgelComponent {
+export class VerEvaluacionComponent {
     // constructor() {}
     name: string
     name1: string
@@ -46,4 +51,13 @@ export class EspecialistaUgelComponent {
         }, 200)
         this.modalPerfiles = false
     }
+    products = [
+        {
+            code: '1',
+            name: 'Product 1',
+            category: 'Electronics',
+            quantity: 100,
+        },
+        { code: '2', name: 'Product 2', category: 'Apparel', quantity: 50 },
+    ]
 }

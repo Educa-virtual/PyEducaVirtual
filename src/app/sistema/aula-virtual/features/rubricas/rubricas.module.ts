@@ -8,17 +8,29 @@ import { PrimengModule } from '@/app/primeng.module'
 import { DialogService } from 'primeng/dynamicdialog'
 import { MessageService } from 'primeng/api'
 import { CommonInputComponent } from '@/app/shared/components/common-input/common-input.component'
-import { RubricaFormService } from './components/rubrica-form/rubrica-form.service'
+import { EmptySectionComponent } from '@/app/shared/components/empty-section/empty-section.component'
+
+const COMPONENTS = [
+    RubricaFormHeaderComponent,
+    RubricaFormNivelesComponent,
+    RubricaFormCriteriosComponent,
+    RubricaFormComponent,
+]
 
 @NgModule({
-    declarations: [
-        RubricaFormHeaderComponent,
-        RubricaFormNivelesComponent,
-        RubricaFormCriteriosComponent,
-        RubricaFormComponent,
+    declarations: [...COMPONENTS],
+    imports: [
+        TablePrimengComponent,
+        PrimengModule,
+        CommonInputComponent,
+        EmptySectionComponent,
     ],
-    imports: [TablePrimengComponent, PrimengModule, CommonInputComponent],
-    exports: [TablePrimengComponent, PrimengModule],
-    providers: [DialogService, MessageService, RubricaFormService],
+    exports: [
+        TablePrimengComponent,
+        PrimengModule,
+        EmptySectionComponent,
+        ...COMPONENTS,
+    ],
+    providers: [DialogService, MessageService],
 })
 export class RubricasModule {}

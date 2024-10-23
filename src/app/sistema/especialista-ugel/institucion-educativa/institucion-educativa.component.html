@@ -1,0 +1,68 @@
+<p>institucion-educativa works!</p>
+<div class="card">
+    <h3>.:: INSTITUCION EDUCATIVA</h3>
+    <p-divider type="solid" />
+    <div class="flex justify-content-center align-items-center">
+        <div class="p-fluid w-64 h-12">
+            <p-dropdown
+                [options]="cities"
+                [(ngModel)]="selectedCity"
+                optionLabel="name"
+                placeholder="Nivel"
+                styleClass="custom-dropdown"
+            />
+            <label
+                for="countries"
+                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >Select an option</label
+            >
+        </div>
+        <p-divider layout="vertical" />
+        <div class="justify-content-center buscarIe">
+            <p-dropdown
+                class="hola"
+                [options]="cities"
+                [(ngModel)]="selectedCity"
+                optionLabel="name"
+                placeholder="Ugel"
+            />
+            <label
+                for="countries"
+                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >Select an option</label
+            >
+        </div>
+        <p-divider layout="vertical" />
+        <div class="flex justify-content-center">
+            <p-button label="Submit" />
+        </div>
+    </div>
+    <p-divider type="solid" />
+    <div class="card">
+        <p-table [value]="products" [tableStyle]="{ 'min-width': '50rem' }">
+            <ng-template pTemplate="caption"> .::I.E </ng-template>
+            <ng-template pTemplate="header" let-columns>
+                <tr>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Category</th>
+                    <th>Quantity</th>
+                    <th>Status</th>
+                    <th>Reviews</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-product let-columns="columns">
+                <tr>
+                    <td>x</td>
+                    <td>a</td>
+                    <td>b</td>
+                    <td>c</td>
+                    <td>
+                        <span>asd</span>
+                    </td>
+                    <td>asd</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</div>

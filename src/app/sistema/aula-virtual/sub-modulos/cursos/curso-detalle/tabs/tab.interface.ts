@@ -4,6 +4,7 @@ export const TABS = {
     evaluaciones: 'EVALUACIONES',
     estudiantes: 'ESTUDIANTES',
     resultados: 'Resultados',
+    'banco-preguntas': 'Banco de Preguntas',
 }
 
 export type TabsKeys = keyof typeof TABS

@@ -59,15 +59,15 @@ export class CursosComponent implements OnDestroy, OnInit {
     private _generalService = inject(GeneralService)
     private _store = inject(LocalStoreService)
 
-    constructor() {}
+    constructor(private store: LocalStoreService) {}
 
     ngOnInit(): void {
-        const profile = this._store.getItem('dremoPerfil')
-        switch (profile.iProfile) {
-            case 1001:
+        const modulo = this._store.getItem('dremoModulo')
+        switch (Number(modulo.iModuloId)) {
+            case 2:
                 this.layout = 'list'
                 break
-            case 1003:
+            case 1:
                 this.layout = 'grid'
                 break
             default:
@@ -90,15 +90,17 @@ export class CursosComponent implements OnDestroy, OnInit {
     }
 
     getCursos() {
+        const year = this.store.getItem('dremoYear')
+
         const params = {
             petition: 'post',
             group: 'docente',
             prefix: 'docente-cursos',
             ruta: 'list', //'getDocentesCursos',
             data: {
-                opcion: 'CONSULTARxiPersId',
+                opcion: 'CONSULTARxiPersIdxiYearId',
                 iCredId: this._constantesService.iCredId,
-                cYearNombre: null,
+                valorBusqueda: year, //iYearId
                 iSemAcadId: null,
                 iIieeId: null,
             },

@@ -1,14 +1,14 @@
 @if (pregunta.preguntas !== undefined) {
     <!-- encabezado  -->
-    <h1>{{ pregunta.cPregContenido }}</h1>
-    <div [innerHTML]="pregunta.cEncabPregContenido"></div>
+    <h1 class="mb-2">{{ pregunta.cPregContenido }}</h1>
+    <div class="mb-2" [innerHTML]="pregunta.cEncabPregContenido"></div>
     <!-- contenido encabezado -->
     <div class="flex flex-column gap-4">
         @for (
             preguntaItem of pregunta.preguntas;
             track preguntaItem.iPreguntaId
         ) {
-            <app-banco-pregunta-preview-item [pregunta]="pregunta" />
+            <app-banco-pregunta-preview-item [pregunta]="preguntaItem" />
         }
     </div>
 } @else {

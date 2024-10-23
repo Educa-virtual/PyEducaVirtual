@@ -1,0 +1,46 @@
+<p-dialog
+    [(visible)]="showModal"
+    [style]="{ width: '1000px' }"
+    header="Lista de roles"
+    [modal]="true"
+    class="p-fluid"
+    (onHide)="closeModal()"
+>
+    <p-orderList
+        class="list"
+        [value]="perfiles"
+        header="Hola. {{
+            name1 | uppercase
+        }} seleccione el rol que desea ingresar: "
+    >
+        <ng-template let-perfiles pTemplate="listItem">
+            <p-button
+                [text]="true"
+                severity="secondary"
+                class="p-col-12"
+                (onClick)="changePerfil(perfiles)"
+            >
+                <div class="perfiles-list-item text-left" tabindex="0">
+                    <img
+                        src="assets/demo/images/matemit/avatar.png"
+                        [alt]="perfiles.name"
+                        class="w-4rem min-h-9 shadow-2 flex-shrink-0 border-round"
+                    />
+                    <div class="perfiles-list-detail">
+                        <div class="perfil-name">
+                            {{ perfiles.cPerfilNombre }}
+                        </div>
+                        <div class="perfil-name">IE: {{ null }}</div>
+                        <div class="perfil-description">
+                            Cod. Modular:{{ null }}
+                        </div>
+                        <div class="perfil-description">Nivel: {{ null }}</div>
+                        <div class="perfil-description">
+                            {{ perfiles.cEntNombreLargo }}
+                        </div>
+                    </div>
+                </div>
+            </p-button>
+        </ng-template>
+    </p-orderList>
+</p-dialog>

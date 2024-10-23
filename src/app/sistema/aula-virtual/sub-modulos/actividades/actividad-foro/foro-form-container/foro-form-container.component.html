@@ -1,30 +1,97 @@
-<form [formGroup]="foroForm" class="flex flex-column gap-3">
+<form [formGroup]="foroForm" class="flex flex-column gap-3 w-full">
     <div class="grid">
-        <div class="col-6 flex flex-column gap-2">
-            <app-common-input [controlKey]="'titulo'" label="Título" />
+        <!-- Mostrar el título -->
+        <div class="col-4 w-5 flex flex-column gap-2">
+            <app-common-input [controlKey]="'cForoTitulo'" label="Título" />
         </div>
-        <div class="col-6 flex flex-column gap-2">
+        <!-- Mostrar las Categorias en un Select -->
+        <div class="col-4 w-3 flex flex-column gap-2">
             <label for="categoria">Categoría</label>
             <p-dropdown
                 [options]="categorias"
-                formControlName="categoria"
-                optionLabel="categoria"
+                formControlName="iForoCatId"
                 styleClass="w-full"
-                emptyMessage="No hay categorías"
+                optionValue="iForoCatId"
+                optionLabel="cForoCatDescripcion"
                 placeholder="Seleccione una categoría"
             />
         </div>
-    </div>
-
-    <app-disponibilidad-form />
-
-    <div class="flex flex-column gap-2">
-        <label for="descripcion">Descripción</label>
-        <p-editor id="descripcion" formControlName="descripcion" />
+        <!-- Mostrar el estado -->
+        <div class="col-4 flex flex-column gap-2">
+            <label for="">Estado</label>
+            <p-selectButton
+                [options]="estado"
+                formControlName="iEstado"
+                optionLabel="label"
+                optionValue="value"
+                class="buttonmit"
+            />
+        </div>
+        <!-- Mostrar descripción -->
+        <div class="col-8 flex-column gap-4 pt-9">
+            <label for="cForoDescripcion">Descripción</label>
+            <p-editor
+                [style]="{ height: '220px' }"
+                id="descripcion"
+                formControlName="cForoDescripcion"
+            />
+        </div>
+        <!-- Asignar Los times -->
+        <div class="col-4">
+            <div class="formgrid grid">
+                <!-- <span>Disponibilidad</span> -->
+                <div class="formgrid grid">
+                    <!-- Mostrar fechas -->
+                    <div class="field flex flex-column col-12 md:col-6 gap-2">
+                        <label for="">Fecha Inicio</label>
+                        <p-calendar
+                            appBaseDatePicker
+                            formControlName="dtForoInicio"
+                            [iconDisplay]="'input'"
+                            [showIcon]="true"
+                            tabindex=""
+                            inputId=""
+                        />
+                    </div>
+                    <div class="field flex flex-column col-12 md:col-6 gap-2">
+                        <label for="hora">Hora</label>
+                        <p-calendar [showIcon]="true" [timeOnly]="true">
+                            <ng-template
+                                pTemplate="inputicon"
+                                let-clickCallBack="clickCallBack"
+                            >
+                                <i class="pi pi-clock pointer-events-none"></i>
+                            </ng-template>
+                        </p-calendar>
+                    </div>
+                    <div class="field flex flex-column col-12 md:col-6 gap-2">
+                        <label for="">Fecha Fin</label>
+                        <p-calendar
+                            appBaseDatePicker
+                            formControlName="dtForoFin"
+                            [iconDisplay]="'input'"
+                            [showIcon]="true"
+                            inputId=""
+                        />
+                    </div>
+                    <div class="field flex flex-column col-12 md:col-6 gap-2">
+                        <label for="hora">Hora</label>
+                        <p-calendar [showIcon]="true" [timeOnly]="true">
+                            <ng-template
+                                pTemplate="inputicon"
+                                let-clickCallBack="clickCallBack"
+                            >
+                                <i class="pi pi-clock pointer-events-none"></i>
+                            </ng-template>
+                        </p-calendar>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </form>
 
-<div class="flex justify-content-end gap-2 pt-3">
+<div class="flex justify-content-center gap-2 pt-3">
     <button
         pButton
         pRipple
@@ -42,5 +109,6 @@
         icon="pi pi-check"
         size="small"
         class="p-button-primary"
+        (click)="submit()"
     ></button>
 </div>

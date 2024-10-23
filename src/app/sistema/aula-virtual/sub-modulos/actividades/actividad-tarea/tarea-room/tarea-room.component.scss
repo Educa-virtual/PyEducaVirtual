@@ -27,3 +27,28 @@
     padding-inline: 0;
     padding-block-end: 0;
 }
+
+.leyenda-tareas {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.hoverTable {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px;
+    cursor: pointer;
+}
+.hoverTable tr th {
+    background-color: var(--primary-color) !important;
+    color: white;
+}
+.hoverTable tr {
+    font-size: small;
+}
+.hoverTable tr:hover {
+    background-color: #e3f7ff;
+    border-left: 8px solid #4a47e2 !important;
+}

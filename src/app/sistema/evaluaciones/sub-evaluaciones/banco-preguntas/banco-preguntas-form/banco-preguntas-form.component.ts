@@ -454,7 +454,10 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
             this.bancoPreguntasForm.get('1').markAllAsTouched()
             return
         }
-        const preguntaForm = { ...this.bancoPreguntasForm.get('1').value }
+        const preguntaForm = {
+            ...this.bancoPreguntasForm.get('1').getRawValue(),
+        }
+
         preguntaForm.cTipoPregDescripcion = this.obtenerTipoPreguntaDesc(
             preguntaForm.iTipoPregId
         )?.cTipoPregDescripcion
@@ -479,11 +482,11 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
             return
         }
 
-        const encabezado = this.bancoPreguntasForm.get('0').value
+        const encabezado = this.bancoPreguntasForm.get('0').getRawValue()
 
         let preguntas = []
         if (this.formMode === 'UNA-PREGUNTA') {
-            const pregunta = this.bancoPreguntasForm.get('1').value
+            const pregunta = this.bancoPreguntasForm.get('1').getRawValue()
             pregunta.alternativasEliminadas = this.alternativasEliminadas
             pregunta.alternativas = this.alternativas
             pregunta.cPreguntaClave = this.getPreguntaClave(

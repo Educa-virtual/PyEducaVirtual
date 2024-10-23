@@ -1,3 +1,9 @@
+import {
+    mapAlternativa,
+    mapEncabezado,
+    mapPregunta,
+} from '@/app/sistema/aula-virtual/utils/map-pregunta'
+
 export const formatTime = (hours, minutes, seconds) => {
     return `${hours}h ${minutes}m ${seconds}s`
 }
@@ -50,6 +56,19 @@ export const processItem = (item) => {
         }
     }
     return item
+}
+
+function processItemBancoToEre(item) {
+    if (item.idEncabPregId == -1) {
+        const alternativas = item.alternativas?.map(mapAlternativa)
+        return mapPregunta(item, alternativas)
+    } else {
+        return mapEncabezado(item)
+    }
+}
+
+export function mapItemsBancoToEre(data) {
+    return data.map(processItemBancoToEre)
 }
 
 export const mapData = (data) => {

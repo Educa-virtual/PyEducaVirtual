@@ -2,7 +2,11 @@ import { PrimengModule } from '@/app/primeng.module'
 import { CommonModule } from '@angular/common'
 import { Component, inject, OnInit, ViewChild, OnDestroy } from '@angular/core'
 import { Dialog } from 'primeng/dialog'
-import { DialogService } from 'primeng/dynamicdialog'
+import {
+    DialogService,
+    DynamicDialogConfig,
+    DynamicDialogRef,
+} from 'primeng/dynamicdialog'
 import { EvaluacionFormInfoComponent } from '../evaluacion-form/evaluacion-form-info/evaluacion-form-info.component'
 import { EvaluacionFormPreguntasComponent } from '../evaluacion-form/evaluacion-form-preguntas/evaluacion-form-preguntas.component'
 import { EvaluacionFormCalificacionComponent } from '../evaluacion-form/evaluacion-form-calificacion/evaluacion-form-calificacion.component'
@@ -12,6 +16,9 @@ import { MenuItem } from 'primeng/api'
 import { ApiEvaluacionesService } from '@/app/sistema/evaluaciones/services/api-evaluaciones.service'
 import { Subject, takeUntil } from 'rxjs'
 import dayjs from 'dayjs'
+import { EVALUACION } from '@/app/sistema/aula-virtual/interfaces/actividad.interface'
+import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
+import { convertStringToDate } from '@/app/sistema/aula-virtual/utils/date'
 
 @Component({
     selector: 'app-evaluacion-form-container-',
@@ -45,28 +52,100 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
             label: 'Preguntas',
             icon: 'pi-list-check',
         },
-        {
-            id: '2',
-            label: 'Calificación',
-            icon: 'pi-list-check',
-        },
+        // {
+        //     id: '2',
+        //     label: 'Calificación',
+        //     icon: 'pi-list-check',
+        // },
     ]
     public tipoEvaluaciones = []
+    public mode: 'CREAR' | 'EDITAR' = 'CREAR'
 
     private unsubscribe$: Subject<boolean> = new Subject()
     private _formBuilder = inject(FormBuilder)
     private _evaluacionService = inject(ApiEvaluacionesService)
+    private _aulaVirtualService = inject(ApiAulaService)
+    private _config = inject(DynamicDialogConfig)
+    private _ref = inject(DynamicDialogRef)
+    public preguntasSeleccionadas = []
+    private _paramsData = {
+        iContenidoSemId: 0,
+        iEvaluacionId: 0,
+        ixActivadadId: '',
+    }
 
     constructor() {}
 
     ngOnInit(): void {
         this.getData()
         this.initFormGroup()
-        console.log(this.dialogRef, 'test')
+
+        this._paramsData.iContenidoSemId =
+            this._config.data.semana?.iContenidoSemId
+
+        const actividad = this._config.data.actividad
+        console.log(actividad)
+
+        if (actividad !== null) {
+            this.mode = 'EDITAR'
+            this._paramsData.iContenidoSemId = actividad.iContenidoSemId
+            this._paramsData.ixActivadadId = actividad.ixActivadadId
+            this.obtenerEvaluacion()
+        }
     }
 
     getData() {
         this.obtenerTipoEvaluaciones()
+    }
+
+    obtenerEvaluacion() {
+        this._aulaVirtualService
+            .obtenerActividad({
+                iActTipoId: EVALUACION,
+                ixActivadadId: this._paramsData.ixActivadadId,
+            })
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+                next: (data) => {
+                    this.patchData(data)
+                },
+            })
+    }
+
+    patchData(data) {
+        this.patchEvaluacionInfo(data)
+        this.preguntasSeleccionadas = data.preguntas
+    }
+
+    patchEvaluacionInfo(data: any) {
+        const dFechaEvaluacionPublicacion = convertStringToDate(
+            data.dtEvaluacionPublicacion
+        )
+        const tHoraEvaluacionPublicacion = convertStringToDate(
+            data.dtEvaluacionPublicacion
+        )
+        const dFechaEvaluacionInico = convertStringToDate(
+            data.dtEvaluacionInicio
+        )
+        const tHoraEvaluacionInico = convertStringToDate(
+            data.dtEvaluacionInicio
+        )
+        const dFechaEvaluacionFin = convertStringToDate(data.dtEvaluacionFin)
+        const tHoraEvaluacionFin = convertStringToDate(data.dtEvaluacionFin)
+
+        this.evaluacionInfoForm.patchValue({
+            iProgActId: data.iProgActId,
+            iEvaluacionId: data.iEvaluacionId,
+            iTipoEvalId: data.iTipoEvalId,
+            cEvaluacionTitulo: data.cEvaluacionTitulo,
+            cEvaluacionDescripcion: data.cEvaluacionDescripcion,
+            dFechaEvaluacionPublicacion,
+            tHoraEvaluacionPublicacion,
+            dFechaEvaluacionInico,
+            tHoraEvaluacionInico,
+            dFechaEvaluacionFin,
+            tHoraEvaluacionFin,
+        })
     }
 
     obtenerTipoEvaluaciones() {
@@ -86,16 +165,21 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
 
     initFormGroup() {
         this.evaluacionInfoForm = this._formBuilder.group({
+            iProgActId: [0],
             iEvaluacionId: [0],
             iTipoEvalId: [null, Validators.required],
+            cEvaluacionDescripcion: [''],
             cEvaluacionTitulo: [null, Validators.required],
             dFechaEvaluacionPublicacion: [null, Validators.required],
             tHoraEvaluacionPublicacion: [null, Validators.required],
-            dFechaEvaluacionInico: [null, Validators.required],
-            tHoraEvaluacionInico: [null, Validators.required],
-            dFechaEvaluacionFin: [null, Validators.required],
-            tHoraEvaluacionFin: [null, Validators.required],
-            cEvaluacionDescripcion: ['', Validators.required],
+            dFechaEvaluacionInico: [null],
+            tHoraEvaluacionInico: [null],
+            dFechaEvaluacionFin: [null],
+            tHoraEvaluacionFin: [null],
+        })
+
+        this.calificacionForm = this._formBuilder.group({
+            usaInstrumentoEvaluacion: [0, Validators.required],
         })
 
         this.calificacionForm = this._formBuilder.group({
@@ -124,65 +208,143 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
 
     public guardarCambios() {
         if (this.activeStepper === 0) {
-            this.handleFormInfo()
+            this.guardarActualizarFormInfo()
             return
         }
 
-        // if (this.activeStepper === 1) {
-        // }
+        if (this.activeStepper === 1) {
+            this.guardarActualizarPreguntas()
+        }
+
+        if (this.activeStepper === 2) {
+            this.guardarActualizarCalificacion()
+        }
     }
 
     private addTimeToDate(date, time) {
         const dateActual = dayjs(date)
-        const timeActual = dayjs(time, 'HH:mm')
+        const timeActual = dayjs(time, 'HH:mm:ss')
         const dateTime = dateActual
             .set('hour', timeActual.hour())
             .set('minute', timeActual.minute())
-        return dateTime.format('YYYY-MM-DD HH:mm')
+        return dateTime.format('YYYY-DD-MM HH:mm:ss')
     }
 
-    getInvalidControls(form: FormGroup): string[] {
-        const invalidControls: string[] = []
-        Object.keys(form.controls).forEach((controlName) => {
-            if (form.get(controlName)?.invalid) {
-                invalidControls.push(controlName)
-            }
-        })
-        return invalidControls
-    }
-
-    private handleFormInfo() {
-        const data = this.evaluacionInfoForm.value
-
-        console.log(this.evaluacionInfoForm.valid, this.evaluacionInfoForm)
-        console.log(this.getInvalidControls(this.evaluacionInfoForm))
+    private guardarActualizarFormInfo() {
+        const data = this.evaluacionInfoForm.getRawValue()
+        data.iDocenteId = 1
+        data.iActTipoId = EVALUACION
+        data.iContenidoSemId = this._paramsData.iContenidoSemId
 
         if (this.evaluacionInfoForm.invalid) {
             this.evaluacionInfoForm.markAllAsTouched()
             return
         }
 
-        data.dtEvaluacionPublicacion = this.addTimeToDate(
-            data.dFechaEvaluacionPublicacion,
+        if (
+            data.dFechaEvaluacionPublicacion &&
             data.tHoraEvaluacionPublicacion
-        )
-        data.dtEvaluacionPublicacion = this.addTimeToDate(
-            data.dFechaEvaluacionInico,
-            data.dFechaEvaluacionFin
-        )
-        data.dtEvaluacionPublicacion = this.addTimeToDate(
-            data.dFechaEvaluacionFin,
-            data.tHoraEvaluacionFin
-        )
+        ) {
+            data.dtEvaluacionPublicacion = this.addTimeToDate(
+                data.dFechaEvaluacionPublicacion,
+                data.tHoraEvaluacionPublicacion
+            )
+        }
+        if (data.dFechaEvaluacionInico && data.tHoraEvaluacionInico) {
+            data.dtEvaluacionInicio = this.addTimeToDate(
+                data.dFechaEvaluacionInico,
+                data.tHoraEvaluacionInico
+            )
+        }
 
-        this.goStep('next')
-        return
+        if (data.dFechaEvaluacionFin && data.tHoraEvaluacionFin) {
+            data.dtEvaluacionFin = this.addTimeToDate(
+                data.dFechaEvaluacionFin,
+                data.tHoraEvaluacionFin
+            )
+        }
+
         this._evaluacionService
             .guardarActualizarEvaluacion(data)
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
-                next: () => {},
+                next: (data) => {
+                    this.evaluacionInfoForm.patchValue({
+                        iProgActId: data.iProgActId,
+                        iEvaluacionId: data.iEvaluacionId,
+                    })
+                    this.goStep('next')
+                },
             })
+    }
+
+    private guardarActualizarPreguntas() {
+        console.log(this.preguntasSeleccionadas)
+        const preguntas = this.preguntasSeleccionadas.reduce((acc, item) => {
+            if (item.preguntas == null) {
+                acc.push(item)
+            } else {
+                acc.push(...item.preguntas)
+            }
+            return acc
+        }, [])
+
+        const data = {
+            iEvaluacionId: this.evaluacionInfoForm.value.iEvaluacionId,
+            preguntas,
+        }
+
+        this._evaluacionService
+            .guardarActualizarPreguntasEvaluacion(data)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+                next: (resp) => {
+                    console.log(resp)
+                    this.closeModal(resp)
+                    // this.preguntasSeleccionadas =
+                    //     this.preguntasSeleccionadas.map((pregunta) => {
+                    //         if (pregunta.preguntas == null) {
+                    //             const preguntaResp = resp.find(
+                    //                 (item) =>
+                    //                     item.iEvalPregId == pregunta.iEvalPregId
+                    //             )
+
+                    //             pregunta.iEvalPregId = preguntaResp.newId
+                    //             pregunta.isLocal = false
+                    //         } else {
+                    //             pregunta.preguntas = pregunta.preguntas.map(
+                    //                 (item) => {
+                    //                     const preguntaResp = resp.find(
+                    //                         (item2) =>
+                    //                             item2.iEvalPregId ==
+                    //                             item.iEvalPregId
+                    //                     )
+                    //                     item.iEvalPregId = preguntaResp.newId
+                    //                     item.isLocal = false
+                    //                     return item
+                    //                 }
+                    //             )
+                    //         }
+                    //         return pregunta
+                    //     })
+                    // console.log(this.preguntasSeleccionadas)
+
+                    // this.goStep('next')
+                },
+            })
+    }
+
+    guardarActualizarCalificacion() {
+        const data = this.calificacionForm.value
+        this.closeModal(data)
+    }
+
+    public preguntasSeleccionadasChange(event) {
+        this.preguntasSeleccionadas = event
+    }
+
+    closeModal(data) {
+        this._ref.close(data)
     }
 
     ngOnDestroy() {

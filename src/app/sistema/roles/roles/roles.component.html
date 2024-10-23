@@ -1,49 +1,9 @@
 <app-container-page [title]="'Mis Roles'" [actions]="[]">
     <div class="grid">
-        <!--<div class="col-12">
-          <div class="card">
-              <div
-                  class="flex flex-column md:flex-row md:justify-content-between gap-2 padding:100px"
-              >
-                  <p-dropdown
-                      [options]="[]"
-                      placeholder="2024"
-                      styleClass="w-full"
-                      class="flex-1"
-                      [emptyMessage]="'2023'"
-                  >
-                  </p-dropdown>
-                  <p-dropdown
-                      [options]="[]"
-                      placeholder="Nombre de Curso"
-                      styleClass="w-full"
-                      class="flex-1"
-                      [emptyMessage]="'Área de Matematica'"
-                  >
-                  </p-dropdown>
-                  <p-iconField iconPosition="left">
-                      <p-inputIcon styleClass="pi pi-search" />
-                      <input pInputText type="text" placeholder="Buscar..." />
-                  </p-iconField>
-
-                  <p-button
-                      icon="pi pi-folder-open"
-                      rounded="true"
-                      (click)="openNew()"
-                      severity="secondary"
-                      [style]="{ 'margin-right': '.5em' }"
-                  />
-
-                  <p-dataViewLayoutOptions></p-dataViewLayoutOptions>
-              </div>
-              <br />
-          </div>
-      </div>-->
         <div class="grid p-fluid">
             <div class="col-12">
                 <div class="card">
-                    <!--<h5>Hola! {{ item.cPersNombre }}</h5> -->
-                    <h5>Hola!</h5>
+                    <!--<h5>Hola! {{ item?.iCredEntPerfId }}</h5>-->
                     <p-button
                         icon="pi pi-folder-open"
                         rounded="true"
@@ -51,63 +11,14 @@
                         severity="secondary"
                         [style]="{ 'margin-right': '.5em' }"
                     />
-                    <p-carousel
-                        [value]="products"
-                        [numVisible]="3"
-                        [numScroll]="3"
-                        [circular]="false"
-                        [responsiveOptions]="carouselResponsiveOptions"
-                    >
-                        <ng-template let-product pTemplate="item">
-                            <div
-                                class="border-round m-2 text-center p-2"
-                                style="border: 1px solid var(--surface-d)"
-                            >
-                                <div class="my-5">
-                                    <img
-                                        src="assets/demo/images/product/{{
-                                            product.image
-                                        }}"
-                                        [alt]="product.name"
-                                        class="shadow-4"
-                                        width="50%"
-                                    />
-                                </div>
-                                <div>
-                                    <h5 class="mb-1">{{ product.name }}</h5>
-                                    <h6 class="mt-0 mb-3">
-                                        ${{ product.price }}
-                                    </h6>
-                                    <span
-                                        [class]="
-                                            'product-badge status-' +
-                                            product.inventoryStatus.toLowerCase()
-                                        "
-                                        >{{ product.inventoryStatus }}</span
-                                    >
-                                    <div class="my-5">
-                                        <!--  <button pButton pRipple icon="pi pi-search" class="mr-2 p-button-rounded"></button>-->
-                                        <button
-                                            pButton
-                                            pRipple
-                                            icon="pi pi-sign-in"
-                                            class="mr-2 p-button-rounded p-button-success"
-                                        >
-                                            Ingresar
-                                        </button>
-                                        <!--<button pButton pRipple icon="pi pi-cog" class="p-button-rounded p-button-info"></button>-->
-                                    </div>
-                                </div>
-                            </div>
-                        </ng-template>
-                    </p-carousel>
                 </div>
             </div>
         </div>
     </div>
 
-    <p-dialog
+    <!-- <p-dialog
         [(visible)]="productDialog"
+        [style]="{ width: '1000px' }"
         [style]="{ width: '1000px' }"
         header="Seleccionar un Perfil"
         [modal]="true"
@@ -115,189 +26,106 @@
     >
         <div class="flex flex-column md:flex-row gap-3 align-items-end">
             <div class="field w-full max-w-md pb-0">
-                <label for="tipo-pregunta">Año Academico :</label>
-                <p-dropdown
-                    [options]="[]"
-                    placeholder="Seleccione Año"
-                    styleClass="w-full"
-                    class="flex-1"
-                    [emptyMessage]="'2024'"
-                >
-                </p-dropdown>
-            </div>
-            <div class="field w-full max-w-md">
-                <label for="tipo-pregunta">Año :</label>
-                <p-dropdown
-                    [options]="[]"
-                    placeholder="Todos los Periodos"
-                    styleClass="w-full"
-                    class="flex-1"
-                    [emptyMessage]="'000237'"
-                >
-                </p-dropdown>
-            </div>
-            <div class="field displey flex gap-3 w-full max-w-md">
-                <div class="w-full max-w-xs">
-                    <p-iconField iconPosition="left">
-                        <p-inputIcon styleClass="pi pi-search" />
-                        <input pInputText type="text" placeholder="Buscar..." />
-                    </p-iconField>
+                <div class="field w-full max-w-md pb-0">
+                    <label for="tipo-pregunta">Año Academico :</label>
+                    <p-dropdown
+                        [options]="[]"
+                        placeholder="Seleccione Año"
+                        styleClass="w-full"
+                        class="flex-1"
+                        [emptyMessage]="'2024'"
+                    >
+                    </p-dropdown>
                 </div>
-                <div>
-                    <p-button
-                        icon="pi pi-search"
-                        type="button"
-                        label="Buscar"
-                        class="p-button-success"
-                    />
+                <div class="field w-full max-w-md"></div>
+                <div class="field w-full max-w-md">
+                    <label for="tipo-pregunta">Año :</label>
+                    <p-dropdown
+                        [options]="[]"
+                        placeholder="Todos los Periodos"
+                        styleClass="w-full"
+                        class="flex-1"
+                        [emptyMessage]="'000237'"
+                    >
+                    </p-dropdown>
+                </div>
+                <div class="field displey flex gap-3 w-full max-w-md">
+                    <div class="w-full max-w-xs">
+                        <p-iconField iconPosition="left">
+                            <p-inputIcon styleClass="pi pi-search" />
+                            <input pInputText type="text" placeholder="Buscar..." />
+                        </p-iconField>
+                    </div>
+                    <div>
+                        <p-button
+                            icon="pi pi-search"
+                            type="button"
+                            label="Buscar"
+                            class="p-button-success"
+                        />
+                    </div>
                 </div>
             </div>
         </div>
-        <div>
-            <!-- <div class="card">
-                <p-dataView
-                    #dv
-                    [value]="products"
-                    [paginator]="true"
-                    [rows]="9"
-                    filterBy="name"
-                    [sortField]="sortField"
-                    [sortOrder]="sortOrder"
-                    layout="grid"
-                >
-                    <ng-template pTemplate="header">
-                        <div
-                            class="flex flex-column md:flex-row md:justify-content-between"
-                        >
-                            <p-dropdown
-                                [options]="sortOptions"
-                                [(ngModel)]="sortKey"
-                                placeholder="Sort By Price"
-                                (onChange)="onSortChange($event)"
-                                styleClass="mb-2 md:mb-0"
-                            ></p-dropdown>
+        <div class="card">
+            <h1 class="text-lg">Hola.</h1>
+            <app-table-primeng
+                [showCaption]="false"
+                [showPaginator]="false"
+                [columnas]="columnas"
+                [data]="roles"
+                [actions]="actions"
+            />
+            <h1> hh hola </h1>
+            <p-dataView
+                #dv
+                [value]="roles"
+                [paginator]="true"
+                [rows]="9"
+                filterBy="nombre"
+            >
 
-                            <p-dataViewLayoutOptions></p-dataViewLayoutOptions>
-                        </div>
-                    </ng-template>
-                    <ng-template let-product pTemplate="listItem">
-                        <div class="col-12">
+                <ng-template let-product pTemplate="listItem">
+                    <div class="p-col-12">
                             <div class="product-list-item">
-                                <img
-                                    [src]="
-                                        'assets/showcase/images/demo/product/' +
-                                        product.image
-                                    "
-                                    [alt]="product.name"
-                                />
                                 <div class="product-list-detail">
-                                    <div class="product-name">
-                                        {{ product.name }}
+                                    <div class="product-name" ngModel>
+                                        {{ product.iCredEntPerfId }}
                                     </div>
                                     <div class="product-description">
-                                        {{ product.description }}
+                                        {{ product.cPersNombreLargo }}
                                     </div>
-                                    <p-rating
-                                        [ngModel]="product.rating"
-                                        [readonly]="true"
-                                        [cancel]="false"
-                                    ></p-rating>
-                                    <i
-                                        class="pi pi-tag product-category-icon"
-                                    ></i
+                                    <i class="pi pi-tag product-category-icon"></i
                                     ><span class="product-category">{{
-                                        product.category
+                                        product.cPersDocumento
                                     }}</span>
                                 </div>
                                 <div class="product-list-action">
-                                    <span class="product-price"
-                                        >${{ product.price }}</span
-                                    >
+                                    <span class="product-price">{{
+                                        product.cPerfilNombre
+                                    }}</span>
                                     <p-button
-                                        icon="pi pi-shopping-cart"
-                                        label="Add to Cart"
-                                        [disabled]="
-                                            product.inventoryStatus ===
-                                            'OUTOFSTOCK'
-                                        "
+                                    
                                     ></p-button>
                                     <span
-                                        [class]="
-                                            'product-badge status-' +
-                                            product.inventoryStatus.toLowerCase()
-                                        "
-                                        >{{ product.inventoryStatus }}</span
+                                    
+                                        >{{ product.cPerfilNombre }}</span
                                     >
                                 </div>
                             </div>
-                        </div>
-                    </ng-template>
-                    <ng-template let-product pTemplate="gridItem">
-                        <div class="col-12 md:col-4">
-                            <div class="product-grid-item card">
-                                <div class="product-grid-item-top">
-                                    <div>
-                                        <i
-                                            class="pi pi-tag product-category-icon"
-                                        ></i>
-                                        <span class="product-category">{{
-                                            product.category
-                                        }}</span>
-                                    </div>
-                                    <span
-                                        [class]="
-                                            'product-badge status-' +
-                                            product.inventoryStatus.toLowerCase()
-                                        "
-                                        >{{ product.inventoryStatus }}</span
-                                    >
-                                </div>
-                                <div class="product-grid-item-content">
-                                    <img
-                                        [src]="
-                                            'assets/showcase/images/demo/product/' +
-                                            product.image
-                                        "
-                                        [alt]="product.name"
-                                    />
-                                    <div class="product-name">
-                                        {{ product.name }}
-                                    </div>
-                                    <div class="product-description">
-                                        {{ product.description }}
-                                    </div>
-                                    <p-rating
-                                        [ngModel]="product.rating"
-                                        [readonly]="true"
-                                        [cancel]="false"
-                                    ></p-rating>
-                                </div>
-                                <div class="product-grid-item-bottom">
-                                    <span class="product-price"
-                                        >${{ product.price }}</span
-                                    >
-                                    <p-button
-                                        icon="pi pi-shopping-cart"
-                                        [disabled]="
-                                            product.inventoryStatus ===
-                                            'OUTOFSTOCK'
-                                        "
-                                    ></p-button>
-                                </div>
-                            </div>
-                        </div>
-                    </ng-template>
-                </p-dataView>
-            </div> -->
+                    </div> 
+                </ng-template>
+            </p-dataView>
         </div>
 
         <ng-template pTemplate="footer">
             <button
                 pButton
                 pRipple
-                label="Agregar"
+                label="Ingresar"
                 icon="pi pi-check"
                 class="p-button-text"
+                (click)="hideDialog()"
             ></button>
             <button
                 pButton
@@ -308,5 +136,5 @@
                 (click)="hideDialog()"
             ></button>
         </ng-template>
-    </p-dialog>
+    </p-dialog> -->
 </app-container-page>

@@ -54,6 +54,7 @@ export class ActividadRowComponent implements OnInit {
     public accionesActividad: MenuItem[] | undefined
 
     ngOnInit() {
+        // todo: cambiar acciones por actividad y no en general
         this.accionesActividad = [
             {
                 label: 'Editar',

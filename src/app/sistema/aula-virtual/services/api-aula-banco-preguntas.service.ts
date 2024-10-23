@@ -1,14 +1,12 @@
 import { environment } from '@/environments/environment.template'
 import { HttpClient } from '@angular/common/http'
 import { inject, Injectable } from '@angular/core'
-import { map, Observable, tap } from 'rxjs'
-import { mapData } from '../../evaluaciones/sub-evaluaciones/banco-preguntas/models/pregunta-data-transformer'
-import { iPreguntaAula } from '../../evaluaciones/sub-evaluaciones/banco-preguntas/models/pregunta-aula.model'
+import { map, Observable } from 'rxjs'
 import {
-    mapAlternativa,
-    mapEncabezado,
-    mapPregunta,
-} from '../utils/map-pregunta'
+    mapData,
+    mapItemsBancoToEre,
+} from '../../evaluaciones/sub-evaluaciones/banco-preguntas/models/pregunta-data-transformer'
+import { iPreguntaAula } from '../../evaluaciones/sub-evaluaciones/banco-preguntas/models/pregunta-aula.model'
 
 @Injectable({
     providedIn: 'root',
@@ -37,20 +35,8 @@ export class ApiAulaBancoPreguntasService {
             .pipe(
                 map((resp) => resp['data']),
                 map((data) => {
-                    return data.map((item) => {
-                        if (item.idEncabPregId == -1) {
-                            const alternativas = item.alternativas?.map(
-                                (alt) => {
-                                    return mapAlternativa(alt)
-                                }
-                            )
-                            return mapPregunta(item, alternativas)
-                        } else {
-                            return mapEncabezado(item)
-                        }
-                    })
+                    return mapItemsBancoToEre(data)
                 }),
-                tap((data) => console.log(data)),
                 map((data) => mapData(data))
             )
     }
@@ -85,10 +71,18 @@ export class ApiAulaBancoPreguntasService {
 
     // preguntas
     guardarActualizarPreguntaConAlternativas(data) {
-        return this._http.post(
-            `${this.baseUrlApi}/evaluaciones/banco-preguntas/guardarActualizarPreguntaConAlternativas`,
-            data
-        )
+        return this._http
+            .post(
+                `${this.baseUrlApi}/evaluaciones/banco-preguntas/guardarActualizarPreguntaConAlternativas`,
+                data
+            )
+            .pipe(
+                map((resp) => resp['data']),
+                map((data) => {
+                    return mapItemsBancoToEre(data)
+                }),
+                map((data) => mapData(data))
+            )
     }
 
     eliminarPreguntaById(id) {

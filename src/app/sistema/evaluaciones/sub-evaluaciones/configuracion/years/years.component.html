@@ -1,0 +1,13 @@
+<app-container-page
+    title="Datos del año escolar"
+    [actions]="actionsContainer"
+    (accionBtnItem)="navigateToRegistro()"
+>
+
+    <app-table-primeng
+    [actions]="actions"
+    [columnas]="columns"
+    (accionBtnItem)="actionBtn('resumen')"
+    [data]= "data"
+    ></app-table-primeng>
+</app-container-page>

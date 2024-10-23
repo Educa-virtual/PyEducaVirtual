@@ -1,0 +1,23 @@
+<form [formGroup]="form">
+    <div>
+        <p-floatLabel>
+            <p-calendar [style]="{'width':'100%'}" [inputStyle]="{'width':'100%'}" formControlName="fechaVigente" [showIcon]="true" view="year" dateFormat="yy"  inputId="yearToRegister" />
+            <label for="yearToRegister">Año vigente </label>
+        </p-floatLabel>
+    </div>
+    <div>
+        <p-floatLabel>
+            <p-calendar [style]="{'width':'100%'}" [inputStyle]="{'width':'100%'}" formControlName="fechaInicio" [showIcon]="true" inputId="yearInicio" />
+            <label for="yearInicio">Año inicio</label>
+        </p-floatLabel>
+        <p-floatLabel>
+            <p-calendar [style]="{'width':'100%'}" [inputStyle]="{'width':'100%'}" formControlName="fechaFin" [showIcon]="true" inputId="yearFin" />
+            <label for="yearFin">Año fin</label>
+        </p-floatLabel>
+    </div>
+
+    <div class="navigator">
+        <p-button [disabled]="!form.valid" label="Siguiente" (onClick)="nextPage()" />
+    </div>
+</form>
+

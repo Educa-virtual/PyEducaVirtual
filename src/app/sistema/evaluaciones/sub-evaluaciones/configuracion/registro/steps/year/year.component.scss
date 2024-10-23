@@ -1,0 +1,24 @@
+form{
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+  justify-content: center;
+  margin-inline: 12rem;
+  margin-block: 5rem;
+}
+
+p-calendar,
+p-floatlabel
+{
+  width: 100%;
+}
+
+div{
+  display: flex;
+  gap: 2rem;
+}
+
+.navigator {
+  display: flex;
+  justify-content: end;
+}

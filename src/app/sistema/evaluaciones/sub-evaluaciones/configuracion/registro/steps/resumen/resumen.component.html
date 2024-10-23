@@ -1,0 +1,14 @@
+<div class="container">
+    <app-table-primeng
+    [showCaption]="false"
+    [columnas]="columns"
+    [actions]="actions"
+    [showPaginator]="false"
+    [data]="resumen"
+    >
+    </app-table-primeng>
+    <div class="navigator">
+        <p-button label="Regresar" (onClick)="prevPage()" />
+        <p-button label="Guardar" (onClick)="nextPage()" />
+    </div>
+</div>

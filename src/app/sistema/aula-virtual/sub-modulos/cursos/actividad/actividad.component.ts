@@ -6,11 +6,17 @@ import { matCalendarMonth } from '@ng-icons/material-icons/baseline'
 import { TareaRoomComponent } from '../../actividades/actividad-tarea/tarea-room/tarea-room.component'
 import { EvaluacionRoomComponent } from '../../actividades/actividad-evaluacion/evaluacion-room/evaluacion-room.component'
 import { tipoActividadesKeys } from '../../../interfaces/actividad.interface'
+import { ForoRoomComponent } from '../../actividades/actividad-foro/foro-room/foro-room.component'
 
 @Component({
     selector: 'app-actividad',
     standalone: true,
-    imports: [CommonModule, TareaRoomComponent, EvaluacionRoomComponent],
+    imports: [
+        CommonModule,
+        TareaRoomComponent,
+        EvaluacionRoomComponent,
+        ForoRoomComponent,
+    ],
     templateUrl: './actividad.component.html',
     styleUrl: './actividad.component.scss',
     providers: [provideIcons({ matCalendarMonth })],

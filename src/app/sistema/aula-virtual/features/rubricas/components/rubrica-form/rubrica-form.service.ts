@@ -12,7 +12,7 @@ export class RubricaFormService {
         this.rubricaForm = this._formBuilder.group({
             iInstrumentoId: [0],
             cInstrumentoNombre: [null, [Validators.required]],
-            cInstrumentoDescripcion: ['', [Validators.required]],
+            cInstrumentoDescripcion: [''],
             criterios: this._formBuilder.array([]),
         })
     }
@@ -77,10 +77,7 @@ export class RubricaFormService {
                 [Validators.required],
             ],
             cCriterioNombre: [criterio?.cCriterioNombre, [Validators.required]],
-            cCriterioDescripcion: [
-                criterio?.cCriterioDescripcion ?? '',
-                [Validators.required],
-            ],
+            cCriterioDescripcion: [criterio?.cCriterioDescripcion ?? ''],
             niveles: this._formBuilder.array(criterio?.niveles ?? []),
         })
     }

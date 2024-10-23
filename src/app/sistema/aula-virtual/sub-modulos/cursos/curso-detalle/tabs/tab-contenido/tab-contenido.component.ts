@@ -199,18 +199,16 @@ export class TabContenidoComponent implements OnInit {
             {
                 ...MODAL_CONFIG,
                 data: {
-                    iContenidoSemId: this.semanaSeleccionada
-                        ? this.semanaSeleccionada.iContenidoSemId
-                        : null,
+                    contenidoSemana: this.semanaSeleccionada,
                     iActTipoId: actividad.iActTipoId,
                     actividad: actividad,
-                    action: action,
+                    action: action === 'EDITAR' ? 'ACTUALIZAR' : 'GUARDAR',
                 },
-                header: action === 'EDITAR' ? 'Editar Tarea' : 'Crear Tarea',
+                header:
+                    action === 'EDITAR' ? 'Actualizar Tarea' : 'Crear Tarea',
             }
         )
         ref.onClose.subscribe((result) => {
-            this.getData()
             if (result) {
                 console.log('Formulario enviado', result)
             } else {

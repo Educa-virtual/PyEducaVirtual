@@ -48,7 +48,6 @@ export class RubricaFormComponent implements OnInit, OnDestroy {
 
     patchValues() {
         this._rubricaFormService.patchRubricaForm(this.rubrica)
-        console.log(this.rubricaForm.value)
     }
 
     getData() {
@@ -75,6 +74,11 @@ export class RubricaFormComponent implements OnInit, OnDestroy {
     }
 
     guardarActualizarRubrica() {
+        // validar formulario
+        if (this.rubricaForm.invalid) {
+            this.rubricaForm.markAllAsTouched()
+            return
+        }
         const data = this.rubricaForm.value
         data.iDocenteId = this._params.iDocenteId
         data.iCredId = this._constantesService.iCredId

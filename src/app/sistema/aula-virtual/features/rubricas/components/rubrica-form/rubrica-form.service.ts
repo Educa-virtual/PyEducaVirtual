@@ -11,7 +11,7 @@ export class RubricaFormService {
     initRubricaForm() {
         this.rubricaForm = this._formBuilder.group({
             iInstrumentoId: [0],
-            cInstrumentoNombre: ['', [Validators.required]],
+            cInstrumentoNombre: [null, [Validators.required]],
             cInstrumentoDescripcion: ['', [Validators.required]],
             criterios: this._formBuilder.array([]),
         })
@@ -69,13 +69,19 @@ export class RubricaFormService {
         criterios.removeAt(index)
     }
 
-    criterioForm(): FormGroup {
+    criterioForm(criterio?): FormGroup {
         return this._formBuilder.group({
-            iCriterioId: [0, Validators.required],
-            iInstrumentoId: [0, [Validators.required]],
-            cCriterioNombre: [null, [Validators.required]],
-            cCriterioDescripcion: ['', [Validators.required]],
-            niveles: this._formBuilder.array([this.nivelForm()]),
+            iCriterioId: [criterio?.iCriterioId ?? 0, Validators.required],
+            iInstrumentoId: [
+                criterio?.iInstrumentoId ?? 0,
+                [Validators.required],
+            ],
+            cCriterioNombre: [criterio?.cCriterioNombre, [Validators.required]],
+            cCriterioDescripcion: [
+                criterio?.cCriterioDescripcion ?? '',
+                [Validators.required],
+            ],
+            niveles: this._formBuilder.array(criterio?.niveles ?? []),
         })
     }
 
@@ -92,10 +98,6 @@ export class RubricaFormService {
                 'niveles'
             ) as FormArray
 
-            while (nivelesFormArray.length) {
-                nivelesFormArray.removeAt(0)
-            }
-
             niveles.forEach((nivel) => {
                 const nivelFormGroup = this.nivelForm()
                 nivelFormGroup.patchValue(nivel)
@@ -105,5 +107,17 @@ export class RubricaFormService {
             criterioFormGroup.patchValue(criterio)
             criteriosFormArray.push(criterioFormGroup)
         })
+    }
+
+    duplicarCriterioToForm(index: number) {
+        const criterios = this.rubricaForm.get('criterios') as FormArray
+        const duplicado = criterios.at(index).value
+        duplicado.iCriterioId = 0
+
+        duplicado.niveles.map((nivel) => {
+            nivel.iNivelEvaId = 0
+        })
+
+        this.patchCriterioForm([duplicado])
     }
 }

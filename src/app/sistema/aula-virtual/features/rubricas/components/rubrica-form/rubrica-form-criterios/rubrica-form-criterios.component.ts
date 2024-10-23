@@ -47,7 +47,7 @@ export class RubricaFormCriteriosComponent implements OnDestroy {
     }
 
     duplicarCriterio() {
-        console.log(this.criterioIndex, 'index a duplicar')
+        this._rubricaFormService.duplicarCriterioToForm(this.criterioIndex)
     }
 
     eliminarCriterioLocal() {
@@ -56,10 +56,15 @@ export class RubricaFormCriteriosComponent implements OnDestroy {
 
     confirmarEliminar() {
         const item = this.criterios.at(this.criterioIndex).value
+        const esLocal = item.iCriterioId === 0
         this._confirmService.openConfirm({
             header: '¿Esta seguro de eliminar este criterio?',
             accept: () => {
-                this.eliminarCriterio(item)
+                if (esLocal) {
+                    this.eliminarCriterioLocal()
+                } else {
+                    this.eliminarCriterio(item)
+                }
             },
         })
     }

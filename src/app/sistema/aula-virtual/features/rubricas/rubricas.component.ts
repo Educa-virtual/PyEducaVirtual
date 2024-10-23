@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, OnDestroy } from '@angular/core'
+import { Component, inject, OnInit, OnDestroy, Input } from '@angular/core'
 import { RubricasModule } from './rubricas.module'
 import {
     IActionTable,
@@ -11,6 +11,14 @@ import { ApiEvaluacionesService } from '@/app/sistema/evaluaciones/services/api-
 import { Subject, takeUntil } from 'rxjs'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 
+const SELECTION_ACTION: IActionTable = {
+    labelTooltip: 'Seleccionar',
+    icon: 'pi pi-check',
+    accion: 'seleccionar',
+    type: 'item',
+    class: 'p-button-rounded p-button-primary p-button-text',
+}
+
 @Component({
     selector: 'app-rubricas',
     standalone: true,
@@ -19,6 +27,7 @@ import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmatio
     styleUrl: './rubricas.component.scss',
 })
 export class RubricasComponent implements OnInit, OnDestroy {
+    @Input() mode: 'SELECTION' | 'NORMAL' = 'NORMAL'
     public columnasTabla: IColumn[] = [
         {
             type: 'text',
@@ -47,13 +56,6 @@ export class RubricasComponent implements OnInit, OnDestroy {
     ]
     public accionesTabla: IActionTable[] = [
         {
-            labelTooltip: 'Seleccionar',
-            icon: 'pi pi-check',
-            accion: 'seleccionar',
-            type: 'item',
-            class: 'p-button-rounded p-button-primary p-button-text',
-        },
-        {
             labelTooltip: 'Eliminar',
             icon: 'pi pi-trash',
             accion: 'eliminar',
@@ -77,6 +79,9 @@ export class RubricasComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.getData()
+        if (this.mode === 'SELECTION') {
+            this.accionesTabla.unshift(SELECTION_ACTION)
+        }
     }
 
     getData() {
@@ -114,7 +119,6 @@ export class RubricasComponent implements OnInit, OnDestroy {
     }
 
     public onActionBtn({ accion, item }) {
-        console.log(accion, item)
         if (accion === 'seleccionar') {
             this.agregarActualizarEvaluacionModal(item)
         }

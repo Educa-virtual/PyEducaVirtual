@@ -1,81 +1,95 @@
 <div [formGroup]="criterioForm" class="flex flex-column gap-4">
     <span class="text-xl">Niveles</span>
-    <div formArrayName="niveles" class="niveles">
-        @for (nivel of nivelesFormArray.controls; track j; let j = $index) {
-            <div
-                class="bg-white border-round-sm p-3 relative border-1 border-gray-200"
-                [formGroupName]="j"
-            >
-                <app-common-input
-                    [controlKey]="'cNivelEvaNombre'"
-                    class="field col-12 w-full"
-                    label="Titulo"
-                ></app-common-input>
-                <div class="field flex flex-column col-12">
-                    <label class="align-self-start" for="tipo-pregunta"
-                        >Escala Calificativa</label
-                    >
-                    <p-dropdown
-                        styleClass="w-full"
-                        optionValue="iEscalaCalifId"
-                        formControlName="iEscalaCalifId"
-                        [options]="escalasCalificativas"
-                        optionLabel="cEscalaCalifNombre"
-                        [styleClass]="
-                            nivel.get('iEscalaCalifId')?.invalid &&
+    @if (nivelesFormArray.controls.length > 0) {
+        <div formArrayName="niveles" class="niveles">
+            @for (nivel of nivelesFormArray.controls; track j; let j = $index) {
+                <div
+                    class="bg-white border-round-sm p-3 relative border-1 border-gray-200"
+                    [formGroupName]="j"
+                >
+                    <app-common-input
+                        [controlKey]="'cNivelEvaNombre'"
+                        class="field col-12 w-full"
+                        label="Titulo"
+                    ></app-common-input>
+                    <div class="field flex flex-column col-12">
+                        <label class="align-self-start" for="tipo-pregunta"
+                            >Escala Calificativa</label
+                        >
+                        <p-dropdown
+                            styleClass="w-full"
+                            optionValue="iEscalaCalifId"
+                            formControlName="iEscalaCalifId"
+                            [options]="escalasCalificativas"
+                            optionLabel="cEscalaCalifNombre"
+                            [styleClass]="
+                                nivel.get('iEscalaCalifId')?.invalid &&
+                                nivel.get('iEscalaCalifId')?.touched
+                                    ? 'w-full ng-dirty ng-invalid p-invalid'
+                                    : 'w-full'
+                            "
+                        />
+                        @if (
+                            nivel.get('iEscalaCalifId').hasError('required') &&
                             nivel.get('iEscalaCalifId')?.touched
-                                ? 'w-full ng-dirty ng-invalid p-invalid'
-                                : 'w-full'
-                        "
-                    />
-                    @if (
-                        nivel.get('iEscalaCalifId').hasError('required') &&
-                        nivel.get('iEscalaCalifId')?.touched
-                    ) {
-                        <small class="text-red-500">
-                            Este campo es requerido
-                        </small>
+                        ) {
+                            <small class="text-red-500">
+                                Este campo es requerido
+                            </small>
+                        }
+                    </div>
+                    <div class="field flex flex-column col-12">
+                        <label class="align-self-start" for="descripcion"
+                            >Descripción</label
+                        >
+                        <textarea
+                            rows="2"
+                            cols="30"
+                            placeholder="Descripción"
+                            formControlName="cNivelEvaDescripcion"
+                            [autoResize]="true"
+                            pInputTextarea
+                            id="descripcion"
+                        ></textarea>
+                    </div>
+                    @if (j === nivelesFormArray.controls.length - 1) {
+                        <button
+                            pButton
+                            pRipple
+                            type="button"
+                            label=""
+                            size="small"
+                            icon="pi pi-plus"
+                            class="p-button-rounded nivel__add-button"
+                            (click)="agregarNivel()"
+                        ></button>
                     }
+                    <div class="field flex mb-0 justify-content-end">
+                        <button
+                            pButton
+                            pRipple
+                            type="button"
+                            label=""
+                            size="small"
+                            icon="pi pi-trash"
+                            class="p-button-rounded p-button-danger"
+                            (click)="confirmarEliminar(j)"
+                        ></button>
+                    </div>
                 </div>
-                <div class="field flex flex-column col-12">
-                    <label class="align-self-start" for="descripcion"
-                        >Descripción</label
-                    >
-                    <textarea
-                        rows="2"
-                        cols="30"
-                        placeholder="Descripción"
-                        formControlName="cNivelEvaDescripcion"
-                        [autoResize]="true"
-                        pInputTextarea
-                        id="descripcion"
-                    ></textarea>
-                </div>
-                @if (j === nivelesFormArray.controls.length - 1) {
-                    <button
-                        pButton
-                        pRipple
-                        type="button"
-                        label=""
-                        size="small"
-                        icon="pi pi-plus"
-                        class="p-button-rounded nivel__add-button"
-                        (click)="agregarNivel()"
-                    ></button>
-                }
-                <div class="field flex mb-0 justify-content-end">
-                    <button
-                        pButton
-                        pRipple
-                        type="button"
-                        label=""
-                        size="small"
-                        icon="pi pi-trash"
-                        class="p-button-rounded p-button-danger"
-                        (click)="confirmarEliminar(j)"
-                    ></button>
-                </div>
+            }
+        </div>
+    } @else {
+        <app-empty-section [message]="'Sin Niveles asignados'">
+            <div class="flex justify-content-center">
+                <button
+                    pButton
+                    label="Agregar Nivel"
+                    icon="pi pi-plus"
+                    size="small"
+                    (click)="agregarNivel()"
+                ></button>
             </div>
-        }
-    </div>
+        </app-empty-section>
+    }
 </div>

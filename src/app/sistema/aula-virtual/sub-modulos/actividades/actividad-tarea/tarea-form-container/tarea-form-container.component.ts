@@ -23,14 +23,20 @@ import { ConstantesService } from '@/app/servicios/constantes.service'
 export class TareaFormContainerComponent {
     @ViewChild(TareaFormComponent) tareaFormComponent: TareaFormComponent
     actividad: IActividad | undefined
-
+    tarea
+    action: string
     private ref = inject(DynamicDialogRef)
     private _aulaService = inject(ApiAulaService)
     private _constantsService = inject(ConstantesService)
-    constructor(private dialogConfig: DynamicDialogConfig) {}
+    constructor(private dialogConfig: DynamicDialogConfig) {
+        this.tarea = this.dialogConfig.data.actividad.iTareaId
+            ? this.dialogConfig.data.actividad
+            : null
+        this.action = this.dialogConfig.data.action
+    }
 
     submitFormulario(data) {
-        console.log('form', data)
+        data.opcion = this.action
         data.iDocenteId = 1
         data.iActTipoId = this.dialogConfig.data.iActTipoId
         data.iContenidoSemId = this.dialogConfig.data.iContenidoSemId
@@ -43,10 +49,12 @@ export class TareaFormContainerComponent {
     }
 
     cancelar() {
+        this.tarea = null
         this.ref.close(null)
     }
 
     closeModal() {
+        this.tarea = null
         this.ref.close(null)
     }
 }

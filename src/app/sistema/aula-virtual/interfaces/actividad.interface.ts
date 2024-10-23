@@ -43,7 +43,7 @@ export const actividadesConfig: Record<
         'bg-color': 'bg-blue-500 text-white',
         icon: 'matAssignment',
         iProgActId: '0',
-        cActTipoNombre: 'Actividad',
+        cActTipoNombre: 'Tarea',
         iActTipoId: TAREA,
     },
     [FORO]: {
@@ -59,7 +59,7 @@ export const actividadesConfig: Record<
         'bg-color': 'bg-yellow-500 text-white',
         icon: 'matQuiz',
         iProgActId: '2',
-        cActTipoNombre: 'Evaluación',
+        cActTipoNombre: 'Evaluación Formativa',
         iActTipoId: EVALUACION,
     },
     [VIDEO_CONFERENCIA]: {

@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core'
 import { LocalStoreService } from './local-store.service'
 const store = new LocalStoreService()
-const modulo = store.getItem('dremoModulo')
+// const modulo = store.getItem('dremoModulo')
+const perfil = store.getItem('dremoPerfil')
 const verificado = store.getItem('dremoPerfilVerificado')
 const user = store.getItem('dremoUser')
 
@@ -53,33 +54,28 @@ const estudiante = [
         items: [inicio],
     },
 ]
-const especialista_ugel = [
-    {
-        items: [
-            inicio,
-            {
-                label: 'Perfiel',
-                icon: 'pi pi-user',
-                routerLink: ['/especialista-ugel'],
-            },
-            {
-                label: 'Evaluaciones',
-                icon: 'pi pi-fw pi-calendar',
-                routerLink: ['/evaluaciones/evaluaciones'],
-            },
-            {
-                label: 'Ver evaluaciones',
-                icon: 'pi pi-fw pi-calendar',
-                routerLink: ['/especialista-ugel/ver-evaluacion'],
-            },
-            {
-                label: 'Mis Áreas Curriculares',
-                icon: 'pi pi-fw pi-folder',
-                routerLink: ['/evaluaciones/areas'],
-            },
-        ],
-    },
-]
+// const especialista_ugel = [
+//     {
+//         items: [
+//             inicio,
+//             {
+//                 label: 'Perfiel',
+//                 icon: 'pi pi-user',
+//                 routerLink: ['/especialista-ugel'],
+//             },
+//             {
+//                 label: 'Evaluaciones',
+//                 icon: 'pi pi-fw pi-calendar',
+//                 routerLink: ['/evaluaciones/evaluaciones'],
+//             },
+//             {
+//                 label: 'Mis Áreas Curriculares',
+//                 icon: 'pi pi-fw pi-folder',
+//                 routerLink: ['/evaluaciones/areas'],
+//             },
+//         ],
+//     },
+// ]
 const aula_virtual = [
     {
         items: [
@@ -516,11 +512,11 @@ const registro_asistencia = [
     },
 ]
 
-const seguridad = [
-    {
-        items: [inicio],
-    },
-]
+// const seguridad = [
+//     {
+//         items: [inicio],
+//     },
+// ]
 
 const bienestar = [
     {
@@ -528,23 +524,23 @@ const bienestar = [
     },
 ]
 
-const comunicado = [
-    {
-        items: [inicio],
-    },
-]
+// const comunicado = [
+//     {
+//         items: [inicio],
+//     },
+// ]
 
-const concurso_docente = [
-    {
-        items: [inicio],
-    },
-]
+// const concurso_docente = [
+//     {
+//         items: [inicio],
+//     },
+// ]
 
-const apoderados = [
-    {
-        items: [inicio],
-    },
-]
+// const apoderados = [
+//     {
+//         items: [inicio],
+//     },
+// ]
 
 const first = [
     {
@@ -561,36 +557,60 @@ export class ConstantesService {
 
     nav = this.getMenu()
     getMenu() {
-        if (!modulo) return first
-        switch (Number(modulo.iModuloId)) {
+        if (!perfil) return first
+        console.log('perfiles', perfil)
+        switch (Number(perfil.iPerfilId)) {
             case 1:
                 return aula_virtual
             case 2:
                 return docente
             case 3:
-                return estudiante
-            case 4:
                 return notas_evaluaciones
+            case 4:
+                return estudiante
             case 5:
                 return registro_asistencia
             case 6:
                 return administrador
             case 7:
-                return seguridad
+                return docente
             case 8:
                 return bienestar
-            case 9:
-                return comunicado
-            case 10:
-                return concurso_docente
-            case 11:
-                return apoderados
-            case 12:
-                return especialista_ugel
             default:
                 return first
         }
     }
+    // getMenu() {
+    //     if (!modulo) return first
+    //     switch (Number(modulo.iModuloId)) {
+    //         case 1:
+    //             return aula_virtual
+    //         case 2:
+    //             return docente
+    //         case 3:
+    //             return estudiante
+    //         case 4:
+    //             return notas_evaluaciones
+    //         case 5:
+    //             return registro_asistencia
+    //         case 6:
+    //             return administrador
+    //         case 7:
+    //             return seguridad
+    //         case 8:
+    //             return bienestar
+    //         case 9:
+    //             return comunicado
+    //         case 10:
+    //             return concurso_docente
+    //         case 11:
+    //             return apoderados
+    //         case 12:
+    //             return especialista_ugel
+    //         default:
+    //             return first
+    //     }
+    // }
     verificado = verificado
 
     nombres = user

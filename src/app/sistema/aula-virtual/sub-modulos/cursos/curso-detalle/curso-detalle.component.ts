@@ -20,7 +20,6 @@ import { ConstantesService } from '@/app/servicios/constantes.service'
 import { GeneralService } from '@/app/servicios/general.service'
 import { TabInicioComponent } from './tabs/tab-inicio/tab-inicio.component'
 import { AulaBancoPreguntasComponent } from '../../aula-banco-preguntas/aula-banco-preguntas/aula-banco-preguntas.component'
-import { RubricasComponent } from '../../../features/rubricas/rubricas.component'
 
 @Component({
     selector: 'app-curso-detalle',
@@ -40,7 +39,6 @@ import { RubricasComponent } from '../../../features/rubricas/rubricas.component
         TabResultadosComponent,
         TabInicioComponent,
         AulaBancoPreguntasComponent,
-        RubricasComponent,
     ],
     templateUrl: './curso-detalle.component.html',
     styleUrl: './curso-detalle.component.scss',

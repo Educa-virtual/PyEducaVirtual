@@ -59,7 +59,7 @@ export const actividadesConfig: Record<
         'bg-color': 'bg-yellow-500 text-white',
         icon: 'matQuiz',
         iProgActId: '2',
-        cActTipoNombre: 'Evaluación Formativa',
+        cActTipoNombre: 'Evaluación',
         iActTipoId: EVALUACION,
     },
     [VIDEO_CONFERENCIA]: {

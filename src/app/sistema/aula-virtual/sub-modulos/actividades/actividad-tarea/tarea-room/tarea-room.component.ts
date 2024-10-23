@@ -9,7 +9,7 @@ import {
 } from '@/app/sistema/aula-virtual/sub-modulos/actividades/components/leyenda-tareas/leyenda-item/leyenda-item.component'
 import { LeyendaTareasComponent } from '@/app/sistema/aula-virtual/sub-modulos/actividades/components/leyenda-tareas/leyenda-tareas.component'
 import { CommonModule } from '@angular/common'
-import { Component, inject } from '@angular/core'
+import { Component, inject, OnInit } from '@angular/core'
 import { provideIcons } from '@ng-icons/core'
 import { matListAlt, matPeople } from '@ng-icons/material-icons/baseline'
 import { ButtonModule } from 'primeng/button'
@@ -20,6 +20,7 @@ import { MODAL_CONFIG } from '@/app/shared/constants/modal.config'
 import { PrimengModule } from '@/app/primeng.module'
 import { FileUploadPrimengComponent } from '../../../../../../shared/file-upload-primeng/file-upload-primeng.component'
 import { FormGrupoComponent } from '../form-grupo/form-grupo.component'
+import { GeneralService } from '@/app/servicios/general.service'
 
 @Component({
     selector: 'app-tarea-room',
@@ -40,8 +41,9 @@ import { FormGrupoComponent } from '../form-grupo/form-grupo.component'
     styleUrl: './tarea-room.component.scss',
     providers: [provideIcons({ matListAlt, matPeople }), DialogService],
 })
-export class TareaRoomComponent {
+export class TareaRoomComponent implements OnInit {
     private _dialogService = inject(DialogService)
+    private GeneralService = inject(GeneralService)
     showModal: boolean = false
     public leyendaTareas: ILeyendaItem[] = [
         {
@@ -105,6 +107,41 @@ export class TareaRoomComponent {
             type: 'actions',
         },
     ]
+
+    estudiantes1: any[] = []
+    ngOnInit() {
+        this.getEstudiantesMatricula()
+    }
+    getEstudiantesMatricula() {
+        const params = {
+            petition: 'post',
+            group: 'aula-virtual',
+            prefix: 'matricula',
+            ruta: 'list',
+            data: {
+                opcion: 'CONSULTAR-ESTUDIANTESxiSemAcadIdxiYAcadIdxiCurrId',
+                iSemAcadId:
+                    '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+                iYAcadId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+                iCurrId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            },
+            params: { skipSuccessMessage: true },
+        }
+        console.log(this.getInformation)
+
+        this.getInformation(params)
+    }
+    getInformation(params) {
+        this.GeneralService.getGralPrefix(params).subscribe({
+            next: (response) => {
+                this.estudiantes = response.data
+            },
+            complete: () => {},
+            error: (error) => {
+                console.log(error)
+            },
+        })
+    }
 
     public estudiantes = [
         {

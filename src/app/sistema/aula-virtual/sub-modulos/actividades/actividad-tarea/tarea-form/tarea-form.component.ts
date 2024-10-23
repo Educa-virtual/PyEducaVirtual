@@ -220,6 +220,7 @@ export class TareaFormComponent implements OnInit {
                     size: item.file.size,
                     ruta: item.name,
                 })
+
                 break
         }
     }

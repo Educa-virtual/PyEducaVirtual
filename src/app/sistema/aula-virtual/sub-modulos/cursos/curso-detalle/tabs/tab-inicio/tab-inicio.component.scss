@@ -20,3 +20,14 @@ button {
 p {
     margin: bottom 40px; /* Añade un margen inferior de 40px */
 }
+
+/* order-list.component.css */
+:host {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+p-orderList {
+    flex-grow: 1; /* Para que el componente crezca ocupando el espacio disponible */
+}

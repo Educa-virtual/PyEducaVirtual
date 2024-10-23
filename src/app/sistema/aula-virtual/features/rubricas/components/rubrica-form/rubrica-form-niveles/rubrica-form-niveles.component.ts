@@ -24,7 +24,8 @@ export class RubricaFormNivelesComponent implements OnDestroy {
     constructor(private _rubricaFormService: RubricaFormService) {}
 
     get nivelesFormArray() {
-        return this.criterioForm.get('niveles') as FormArray
+        const niveles = this.criterioForm.get('niveles') as FormArray
+        return niveles
     }
 
     agregarNivel() {

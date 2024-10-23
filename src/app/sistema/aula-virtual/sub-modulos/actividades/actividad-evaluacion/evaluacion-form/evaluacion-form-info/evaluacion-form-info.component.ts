@@ -1,6 +1,6 @@
 import { CommonInputComponent } from '@/app/shared/components/common-input/common-input.component'
 import { CommonModule } from '@angular/common'
-import { Component, Input, OnInit } from '@angular/core'
+import { Component, Input } from '@angular/core'
 import { FormGroup, ReactiveFormsModule } from '@angular/forms'
 import { DropdownModule } from 'primeng/dropdown'
 import { CalendarModule } from 'primeng/calendar'
@@ -23,7 +23,7 @@ import { BaseDatePickerDirective } from '@/app/shared/directives/base-date-picke
     templateUrl: './evaluacion-form-info.component.html',
     styleUrl: './evaluacion-form-info.component.scss',
 })
-export class EvaluacionFormInfoComponent implements OnInit {
+export class EvaluacionFormInfoComponent {
     @Input() public evaluacionInfoForm: FormGroup
 
     @Input() public tipoEvaluaciones = []
@@ -32,9 +32,5 @@ export class EvaluacionFormInfoComponent implements OnInit {
 
     get invalidForm() {
         return true
-    }
-
-    ngOnInit() {
-        console.log(this.currentTime)
     }
 }

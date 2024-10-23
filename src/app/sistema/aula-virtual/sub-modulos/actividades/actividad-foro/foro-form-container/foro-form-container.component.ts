@@ -15,6 +15,7 @@ import { EditorModule } from 'primeng/editor'
 import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
 import { CalendarModule } from 'primeng/calendar'
 import { BaseDatePickerDirective } from '@/app/shared/directives/base-date-picker.directive'
+import { SelectButtonModule } from 'primeng/selectbutton'
 @Component({
     selector: 'app-foro-form-container',
     standalone: true,
@@ -28,6 +29,7 @@ import { BaseDatePickerDirective } from '@/app/shared/directives/base-date-picke
         EditorModule,
         CalendarModule,
         BaseDatePickerDirective,
+        SelectButtonModule,
     ],
     templateUrl: './foro-form-container.component.html',
     styleUrl: './foro-form-container.component.scss',
@@ -40,16 +42,23 @@ export class ForoFormContainerComponent implements OnInit {
 
     categorias: any[] = []
 
+    estado: any[] = [
+        { label: 'Activo', value: 1 },
+        { label: 'Desactivo', value: 2 },
+    ]
+
     selectCategorias: any = {}
 
     public foroForm: FormGroup = this._formBuilder.group({
         cForoTitulo: ['', [Validators.required]],
         cForoDescripcion: ['', [Validators.required]],
-        categoria: [0, [Validators.required]],
+        iForoCatId: [0, [Validators.required]],
         dtForoInicio: [''],
+        iEstado: [0, Validators.required],
         dtForoPublicacion: ['dtForoInicio'],
         dtForoFin: [],
     })
+
     ngOnInit(): void {
         this.mostrarCategorias()
     }
@@ -58,7 +67,7 @@ export class ForoFormContainerComponent implements OnInit {
         const userId = 1
         this._aulaService.guardarForo(userId).subscribe((Data) => {
             this.categorias = Data['data']
-            //console.log('Datos mit', this.categorias)
+            console.log('Datos mit', this.categorias)
         })
     }
 

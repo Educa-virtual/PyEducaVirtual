@@ -41,6 +41,11 @@ export class TareaFormContainerComponent {
             : data.iProgActId
               ? data.cTareaTitulo.cTareaTitulo
               : data.cTareaTitulo
+        data.cProgActTituloLeccion = !data.bReutilizarTarea
+            ? data.cTareaTitulo
+            : data.iProgActId
+              ? data.cTareaTitulo.cTareaTitulo
+              : data.cTareaTitulo
         data.opcion = this.action + 'xProgActxiTarea'
         data.iDocenteId = this._constantsService.iDocenteId
         data.iActTipoId = this.dialogConfig.data.iActTipoId

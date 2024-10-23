@@ -54,6 +54,7 @@ export class TablePrimengComponent implements OnChanges, OnInit {
         new EventEmitter()
     @Output() selectedRowDataChange = new EventEmitter()
 
+    @Input() selectionMode: 'single' | 'multiple' | null = null
     @Input() expandedRowKeys = {}
     @Input() dataKey: string
 
@@ -67,7 +68,7 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     @Input() data = []
     @Input() tableStyle: {
         [klass: string]: unknown
-    } = { 'min-width': '50rem' }
+    } = {}
 
     @ContentChild('rowExpansionTemplate', { static: false })
     rowExpansionTemplate: TemplateRef<unknown>

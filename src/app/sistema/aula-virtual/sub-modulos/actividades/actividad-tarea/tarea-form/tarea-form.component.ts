@@ -1,259 +1,153 @@
-import { CommonInputComponent } from '@/app/shared/components/common-input/common-input.component'
-import { CommonModule } from '@angular/common'
 import {
     Component,
     EventEmitter,
     inject,
     Output,
-    OnInit,
     Input,
+    OnChanges,
 } from '@angular/core'
-import { DropdownModule } from 'primeng/dropdown'
-import {
-    FormBuilder,
-    ReactiveFormsModule,
-    Validators,
-    FormsModule,
-} from '@angular/forms'
-import { EditorModule } from 'primeng/editor'
+import { FormBuilder, Validators } from '@angular/forms'
 import { DisponibilidadFormComponent } from '../../components/disponibilidad-form/disponibilidad-form.component'
-import { CountryService } from '@/app/demo/service/country.service'
-import { CalendarModule } from 'primeng/calendar'
-import { DialogModule } from 'primeng/dialog'
-import { TableModule } from 'primeng/table'
-import { CheckboxModule } from 'primeng/checkbox'
-import { FileUploadModule } from 'primeng/fileupload'
-import { DynamicDialogRef } from 'primeng/dynamicdialog'
 import { GeneralService } from '@/app/servicios/general.service'
 import { FileUploadPrimengComponent } from '../../../../../../shared/file-upload-primeng/file-upload-primeng.component'
-import { PickListModule } from 'primeng/picklist'
-import { ToggleButtonModule } from 'primeng/togglebutton'
-import { DataViewModule } from 'primeng/dataview'
-import { InputTextModule } from 'primeng/inputtext'
+import { PrimengModule } from '@/app/primeng.module'
+import { CommonInputComponent } from '@/app/shared/components/common-input/common-input.component'
+import { Message } from 'primeng/api'
+import { ConstantesService } from '@/app/servicios/constantes.service'
+import { AutoCompleteCompleteEvent } from 'primeng/autocomplete'
+import { DatePipe } from '@angular/common'
+import { ModalPrimengComponent } from '@/app/shared/modal-primeng/modal-primeng.component'
 
 @Component({
     selector: 'app-tarea-form',
     standalone: true,
     imports: [
-        CommonModule,
-        InputTextModule,
-        ToggleButtonModule,
-        ReactiveFormsModule,
-        PickListModule,
         CommonInputComponent,
-        FormsModule,
-        EditorModule,
-        DropdownModule,
+        PrimengModule,
         DisponibilidadFormComponent,
-        CalendarModule,
-        DialogModule,
-        TableModule,
-        CheckboxModule,
-        FileUploadModule,
         FileUploadPrimengComponent,
-        DataViewModule,
+        ModalPrimengComponent,
     ],
     templateUrl: './tarea-form.component.html',
     styleUrl: './tarea-form.component.scss',
 })
-export class TareaFormComponent implements OnInit {
+export class TareaFormComponent implements OnChanges {
+    pipe = new DatePipe('en-ES')
+    date = new Date()
+
     @Output() submitEvent = new EventEmitter<any>()
     @Output() cancelEvent = new EventEmitter<void>()
 
-    @Input() tarea
+    @Input() contenidoSemana
 
-    checked: boolean = false
-    FilesTareas: any[] = []
-    FilesInstrumentos: any[] = []
+    semana: Message[] = []
+    tareas = []
+    filteredTareas: any[] | undefined
+    FilesTareas = []
+    nameEnlace: string = ''
+    titleFileTareas: string = ''
 
     private _formBuilder = inject(FormBuilder)
     private GeneralService = inject(GeneralService)
+    private ConstantesService = inject(ConstantesService)
 
-    private ref = inject(DynamicDialogRef)
-    selectedState: unknown = null
-    cities: any[]
-    countries: any[] = []
-    value10: any
-    constructor(private countryService: CountryService) {
-        this.cities = [
-            { name: 'New York', code: 'NY' },
-            { name: 'Rome', code: 'RM' },
-            { name: 'London', code: 'LDN' },
-            { name: 'Istanbul', code: 'IST' },
-            { name: 'Paris', code: 'PRS' },
-        ]
-    }
-
-    estudiantes: any[] = []
-
-    // nota
-    puntajeArray: { name: string; code: string }[] = []
-
-    //
-    itemtareas: any[] = [{ label: 'Nuevo', value: 1 }]
-    selectedTarea: any
-
-    ngOnInit() {
-        this.getEstudiantesMatricula()
-
-        this.countryService.getCountries().then((countries) => {
-            this.countries = countries
-        })
-
-        for (let i = 1; i <= 20; i++) {
-            this.puntajeArray.push({ name: `${i}`, code: `${i}` })
-        }
-    }
-    onToggleChange(event: any) {
-        console.log('Estado del ToggleButton:', event)
-    }
-
-    ngOnChanges(changes) {
-        if (changes.tarea?.currentValue) {
-            this.tarea = changes.tarea.currentValue
-            this.tareaForm.patchValue(this.tarea)
-
-            this.FilesTareas =
-                this.tareaForm.value.cTareaArchivoAdjunto !== ''
-                    ? JSON.parse(this.tareaForm.value.cTareaArchivoAdjunto)
-                    : []
+    ngOnChanges(changes): void {
+        if (changes.contenidoSemana?.currentValue) {
+            this.contenidoSemana = changes.contenidoSemana.currentValue
+            this.semana = [
+                {
+                    severity: 'info',
+                    detail:
+                        this.contenidoSemana.cContenidoSemNumero +
+                        ' SEMANA - ' +
+                        this.contenidoSemana.cContenidoSemTitulo,
+                },
+            ]
         }
     }
 
-    onTareaSelected(event: any) {
-        const selectedTarea = event.value
-        if (selectedTarea) {
-            this.showModalDialog9(selectedTarea)
-        }
-    }
-    showModalDialog9(tarea: any) {
-        console.log('Mostrando modal para la tarea:', tarea)
-        // Aquí puedes implementar la lógica para mostrar el modal, como usar un servicio de PrimeNG o ng-bootstrap
-        // por ejemplo, puedes activar un modal o caja de diálogo si ya lo tienes implementado.
-    }
+    public formTareas = this._formBuilder.group({
+        bReutilizarTarea: [false],
+        dtInicio: [this.date, Validators.required],
+        dtFin: [this.date, Validators.required],
 
-    public tareaForm = this._formBuilder.group({
         iTareaId: [''],
         cTareaTitulo: ['', [Validators.required]],
         cTareaDescripcion: ['', [Validators.required]],
+
+        dtTareaInicio: ['', [Validators.required]],
+        dtTareaFin: ['', [Validators.required]],
+
+        //
         cTareaArchivoAdjunto: [],
         cTareaIndicaciones: [''],
         dFechaEvaluacionPublicacion: [''],
         tHoraEvaluacionPublicacion: [''],
-        dFechaEvaluacionPublicacionInicio: [''],
+        dFechaEvaluacionPublicacionInicio: [],
         tHoraEvaluacionPublicacionInicio: [''],
-        dFechaEvaluacionPublicacionFin: [''],
+        dFechaEvaluacionPublicacionFin: [],
         tHoraEvaluacionPublicacionFin: [''],
 
-        iActTipoId: [],
+        //TABLA: PROGRACION_ACTIVIDADES
+        iProgActId: [],
         iContenidoSemId: [],
+        iActTipoId: [],
+        dtProgActInicio: [],
+        dtProgActFin: [],
+        cProgActTituloLeccion: [''],
+        cProgActDescripcion: [''],
+        dtProgActPublicacion: [],
     })
-    displayModal: boolean = false
 
-    mostrarModal() {
-        this.displayModal = true
-    }
-
-    linkDialogVisible: boolean = false
-    link: string = ''
-    linkToShow: string = ''
-
-    openLinkDialog() {
-        this.linkDialogVisible = true
-    }
-
-    addLink() {
-        console.log('Enlace agregado: ', this.link)
-        this.linkToShow = this.link
-        this.linkDialogVisible = false
-        this.link = ''
-    }
-
-    cerrarModal() {
-        this.displayModal = false
-    }
-
-    niveldelogrosDropdownItems = [
-        { name: '01', code: 'A' },
-        { name: '02', code: 'B' },
-        { name: '03', code: 'C' },
-        { name: '04', code: 'C' },
-    ]
-
-    submit() {
-        this.tareaForm.controls.cTareaArchivoAdjunto.setValue(
-            JSON.stringify(this.FilesTareas)
-        )
-        const value = this.tareaForm.value
-
-        if (this.tareaForm.invalid) {
-            this.tareaForm.markAllAsTouched()
-            return
-        }
-        this.submitEvent.emit(value)
-    }
-
-    cancel() {
-        this.tareaForm.reset()
-        this.cancelEvent.emit()
-    }
-    guardarDatos() {
-        this.tareaForm.reset()
-        this.cancelEvent.emit()
-    }
-
-    handleAction(elemento): void {
-        const { accion } = elemento
-        const { item } = elemento
-
-        switch (accion) {
-            case 'subir-archivo-tareas':
-                this.FilesTareas.push({
-                    name: item.file.name,
-                    size: item.file.size,
-                    ruta: item.name,
-                })
-                break
-            case 'subir-archivo-instrumentos':
-                this.FilesInstrumentos.push({
-                    name: item.file.name,
-                    size: item.file.size,
-                    ruta: item.name,
-                })
-
-                break
+    getTareasxiCursoId() {
+        if (this.formTareas.value.bReutilizarTarea) {
+            const params = {
+                petition: 'post',
+                group: 'aula-virtual',
+                prefix: 'tareas',
+                ruta: 'getTareasxiCursoId',
+                data: {
+                    opcion: 'CONSULTAR-TAREASxiCursoId',
+                    iCredId: this.ConstantesService.iCredId,
+                    iCursoId: this.contenidoSemana.iCursoId,
+                },
+                params: { skipSuccessMessage: true },
+            }
+            this.getInformation(params, 'get_tareas_reutilizadas')
         }
     }
 
-    getEstudiantesMatricula() {
-        const params = {
-            petition: 'post',
-            group: 'aula-virtual',
-            prefix: 'matricula',
-            ruta: 'list',
-            data: {
-                opcion: 'CONSULTAR-ESTUDIANTESxiSemAcadIdxiYAcadIdxiCurrId',
-                iSemAcadId:
-                    '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-                iYAcadId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-                iCurrId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-            },
-            params: { skipSuccessMessage: true },
+    filterTareas(event: AutoCompleteCompleteEvent) {
+        const filtered: any[] = []
+        const query = event.query
+        for (let i = 0; i < (this.tareas as any[]).length; i++) {
+            const tareas = (this.tareas as any[])[i]
+            if (
+                tareas.cTareaTitulo
+                    .toLowerCase()
+                    .indexOf(query.toLowerCase()) == 0
+            ) {
+                filtered.push(tareas)
+            }
         }
-        console.log(this.getInformation)
-
-        this.getInformation(params)
+        this.filteredTareas = filtered
     }
 
-    // obtenerEstudiantes(){
-    //     const userId = 1;
-    //     this.getEstudiantesMatricula(params).subscribe((Data) => this.estudiantes = Data['data'])
-    // }
+    getFilterIndicaciones(event) {
+        if (event) {
+            this.formTareas.controls.cTareaDescripcion.setValue(
+                event.cTareaDescripcion ? event.cTareaDescripcion : ''
+            )
+            this.formTareas.controls.iProgActId.setValue(
+                event.iProgActId ? event.iProgActId : null
+            )
+        }
+    }
 
-    getInformation(params) {
+    getInformation(params, accion) {
         this.GeneralService.getGralPrefix(params).subscribe({
             next: (response) => {
-                this.estudiantes = response.data
+                this.accionBtnItem({ accion, item: response?.data })
             },
             complete: () => {},
             error: (error) => {
@@ -261,8 +155,125 @@ export class TareaFormComponent implements OnInit {
             },
         })
     }
-    showModalDialog(event: any) {
-        this.displayModal = true
-        console.log('Estado del ToggleButton:', event)
+
+    accionBtnItem(elemento): void {
+        const { accion } = elemento
+        const { item } = elemento
+        // let params
+        switch (accion) {
+            case 'get_tareas_reutilizadas':
+                this.tareas = item
+                this.filteredTareas = item
+                break
+            case 'close-modal':
+                this.showModal = false
+                break
+            case 'subir-archivo-tareas':
+                this.FilesTareas.push({
+                    type: 1, //1->file
+                    nameType: 'file',
+                    name: item.file.name,
+                    size: item.file.size,
+                    ruta: item.name,
+                })
+                this.showModal = false
+                break
+            case 'subir-url':
+                if (item === '') return
+                this.FilesTareas.push({
+                    type: 2, //2->url
+                    nameType: 'url',
+                    name: item,
+                    size: '',
+                    ruta: item,
+                })
+                this.showModal = false
+                this.nameEnlace = ''
+                break
+            case 'subir-youtube':
+                if (item === '') return
+                this.FilesTareas.push({
+                    type: 3, //3->youtube
+                    nameType: 'youtube',
+                    name: item,
+                    size: '',
+                    ruta: item,
+                })
+                this.showModal = false
+                this.nameEnlace = ''
+                break
+        }
     }
+
+    submit() {
+        let horaInicio =
+            this.pipe.transform(
+                this.formTareas.value.dtInicio,
+                'YYYY-MM-dd HH:MM'
+            ) + ':00.000Z'
+        let horaFin =
+            this.pipe.transform(
+                this.formTareas.value.dtFin,
+                'YYYY-MM-dd HH:MM'
+            ) + ':00.000Z'
+        horaInicio = horaInicio.replace(' ', 'T')
+        horaFin = horaFin.replace(' ', 'T')
+        this.formTareas.controls.dtTareaInicio.setValue(horaInicio)
+        this.formTareas.controls.dtTareaFin.setValue(horaFin)
+        this.formTareas.controls.dtProgActInicio.setValue(horaInicio)
+        this.formTareas.controls.dtProgActFin.setValue(
+            this.formTareas.value.dtTareaFin
+        )
+        this.formTareas.controls.cProgActTituloLeccion.setValue(
+            this.formTareas.value.cTareaTitulo
+        )
+        this.formTareas.controls.cProgActDescripcion.setValue(
+            this.formTareas.value.cTareaDescripcion
+        )
+        this.formTareas.controls.dtProgActPublicacion.setValue(horaFin)
+        this.formTareas.controls.cTareaArchivoAdjunto.setValue(
+            JSON.stringify(this.FilesTareas)
+        )
+        const value = this.formTareas.value
+
+        if (this.formTareas.invalid) {
+            this.formTareas.markAllAsTouched()
+            return
+        }
+        this.submitEvent.emit(value)
+    }
+    showModal: boolean = false
+    typeUpload: string
+    openUpload(type) {
+        this.showModal = true
+        this.typeUpload = type
+        this.titleFileTareas = ''
+        switch (type) {
+            case 'file':
+                this.titleFileTareas = 'Añadir Archivo Local'
+                break
+            case 'url':
+                this.titleFileTareas = 'Añadir Enlace URL'
+                break
+            case 'youtube':
+                this.titleFileTareas = 'Añadir Enlace de Youtube'
+                break
+            case 'recursos':
+                this.titleFileTareas = 'Añadir Archivo de mis Recursos'
+                break
+            default:
+                this.showModal = false
+                this.typeUpload = null
+                break
+        }
+    }
+
+    // cancel() {
+    //     this.formTareas.reset()
+    //     this.cancelEvent.emit()
+    // }
+    // guardarDatos() {
+    //     this.formTareas.reset()
+    //     this.cancelEvent.emit()
+    // }
 }

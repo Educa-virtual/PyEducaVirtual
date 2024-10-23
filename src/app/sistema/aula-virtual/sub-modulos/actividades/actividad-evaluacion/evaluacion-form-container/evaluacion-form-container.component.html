@@ -13,6 +13,14 @@
             ></app-evaluacion-form-info>
         }
         @case (1) {
+            <app-evaluacion-form-calificacion
+                [calificacionForm]="calificacionForm"
+                [tituloEvaluacion]="tituloEvulacion"
+                (rubricaSelectedChange)="rubricaSelected = $event"
+                [rubricaSelected]="rubricaSelected"
+            ></app-evaluacion-form-calificacion>
+        }
+        @case (2) {
             <app-evaluacion-form-preguntas
                 [tituloEvaluacion]="tituloEvulacion"
                 [preguntas]="preguntasSeleccionadas"
@@ -20,12 +28,6 @@
                     preguntasSeleccionadasChange($event)
                 "
             ></app-evaluacion-form-preguntas>
-        }
-        @case (2) {
-            <app-evaluacion-form-calificacion
-                [calificacionForm]="calificacionForm"
-                [tituloEvaluacion]="tituloEvulacion"
-            ></app-evaluacion-form-calificacion>
         }
         @default {}
     }

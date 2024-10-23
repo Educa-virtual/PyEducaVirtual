@@ -17,11 +17,11 @@
     </div>
 
     @if (calificacionForm.get('usaInstrumentoEvaluacion')?.value === 2) {
-        <app-table-primeng
-            [showCaption]="false"
-            [showPaginator]="false"
-            [data]="instrumentosEvaluacion"
-        >
-        </app-table-primeng>
+        <app-rubricas
+            [title]="'Rubricas'"
+            (rubricaSelectedChange)="rubricaSelectedChange.emit($event)"
+            [mode]="'SELECTION'"
+            [rubricaSelected]="rubricaSelected"
+        ></app-rubricas>
     }
 </form>

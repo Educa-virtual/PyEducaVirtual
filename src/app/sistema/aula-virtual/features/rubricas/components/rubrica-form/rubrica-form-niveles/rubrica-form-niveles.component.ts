@@ -16,6 +16,24 @@ export class RubricaFormNivelesComponent implements OnDestroy {
     @Input() escalasCalificativas = []
     @Input() criterioForm: FormGroup
 
+    carouselResponsiveOptions = [
+        {
+            breakpoint: '1400px',
+            numVisible: 3,
+            numScroll: 3,
+        },
+        {
+            breakpoint: '1220px',
+            numVisible: 2,
+            numScroll: 2,
+        },
+        {
+            breakpoint: '1100px',
+            numVisible: 1,
+            numScroll: 1,
+        },
+    ]
+
     public rubricaFormGroup: FormGroup
     private _apiEvaluacionesService = inject(ApiEvaluacionesService)
     private _confirmService = inject(ConfirmationModalService)
@@ -24,7 +42,8 @@ export class RubricaFormNivelesComponent implements OnDestroy {
     constructor(private _rubricaFormService: RubricaFormService) {}
 
     get nivelesFormArray() {
-        return this.criterioForm.get('niveles') as FormArray
+        const niveles = this.criterioForm.get('niveles') as FormArray
+        return niveles
     }
 
     agregarNivel() {

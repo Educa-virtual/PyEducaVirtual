@@ -1,4 +1,12 @@
-import { Component, inject, OnInit, OnDestroy, Input } from '@angular/core'
+import {
+    Component,
+    inject,
+    OnInit,
+    OnDestroy,
+    Input,
+    Output,
+    EventEmitter,
+} from '@angular/core'
 import { RubricasModule } from './rubricas.module'
 import {
     IActionTable,
@@ -27,7 +35,10 @@ const SELECTION_ACTION: IActionTable = {
     styleUrl: './rubricas.component.scss',
 })
 export class RubricasComponent implements OnInit, OnDestroy {
+    @Output() rubricaSelectedChange = new EventEmitter()
+    @Input() public rubricaSelected = null
     @Input() mode: 'SELECTION' | 'NORMAL' = 'NORMAL'
+    @Input() title: string = 'Rubricas'
     public columnasTabla: IColumn[] = [
         {
             type: 'text',
@@ -120,7 +131,7 @@ export class RubricasComponent implements OnInit, OnDestroy {
 
     public onActionBtn({ accion, item }) {
         if (accion === 'seleccionar') {
-            this.agregarActualizarEvaluacionModal(item)
+            this.seleccionarItem(item)
         }
         if (accion === 'eliminar') {
             this.confirmarEliminar(item)
@@ -128,6 +139,11 @@ export class RubricasComponent implements OnInit, OnDestroy {
         if (accion === 'editar') {
             this.agregarActualizarEvaluacionModal(item)
         }
+    }
+
+    seleccionarItem(item) {
+        this.rubricaSelected = item
+        this.rubricaSelectedChange.emit(item)
     }
 
     confirmarEliminar(item) {

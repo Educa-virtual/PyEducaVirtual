@@ -1,7 +1,9 @@
 import { inject, Injectable } from '@angular/core'
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms'
 
-@Injectable()
+@Injectable({
+    providedIn: 'root',
+})
 export class RubricaFormService {
     rubricaForm: FormGroup
     private _formBuilder = inject(FormBuilder)

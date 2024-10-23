@@ -217,6 +217,7 @@ export class TareaRoomComponent implements OnInit {
     ]
 
     estadoCheckbox: boolean = false
+
     changeEstadoCheckbox() {
         this.estadoCheckbox = !this.estadoCheckbox
         this.estudiantes.map((i) => (i.iCheckbox = this.estadoCheckbox))

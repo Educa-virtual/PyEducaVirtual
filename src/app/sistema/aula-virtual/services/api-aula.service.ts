@@ -28,6 +28,13 @@ export class ApiAulaService {
         )
     }
 
+    obtenerCategorias(data) {
+        return this._http.post(
+            `${this.baseUrlApi}/aula-virtual/contenidos/foro/obtenerCategorias`,
+            data
+        )
+    }
+
     eliminarActividad(data) {
         return this._http.delete(
             `${this.baseUrlApi}/aula-virtual/contenidos/actividad/eliminarActividad`,

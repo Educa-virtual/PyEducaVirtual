@@ -194,6 +194,35 @@ const notas_evaluaciones = [
                                             '/especialista-ugel/institucion-educativa',
                                         ],
                                     },
+                                    {
+                                        label: 'Distritos',
+                                        icon: 'pi pi-fw pi-user',
+                                        routerLink: [
+                                            '/especialista-ugel/distritos-informe',
+                                        ],
+                                    },
+                                    {
+                                        label: 'Respuesta',
+                                        icon: 'pi pi-fw pi-user',
+                                        routerLink: [
+                                            '/especialista-ugel/respuesta-evaluacion',
+                                        ],
+                                    },
+
+                                    {
+                                        label: 'Est. Archivos',
+                                        icon: 'pi pi-fw pi-user',
+                                        routerLink: [
+                                            '/especialista-ugel/estado-archivos',
+                                        ],
+                                    },
+                                    {
+                                        label: 'Proc. Archivo',
+                                        icon: 'pi pi-fw pi-user',
+                                        routerLink: [
+                                            '/especialista-ugel/procesar-archivos',
+                                        ],
+                                    },
                                 ],
                             },
                         ],

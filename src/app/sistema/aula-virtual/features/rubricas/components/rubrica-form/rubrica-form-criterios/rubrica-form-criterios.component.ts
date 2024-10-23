@@ -1,16 +1,19 @@
-import { Component, Input } from '@angular/core'
+import { Component, inject, Input, OnDestroy } from '@angular/core'
 import { FormArray, FormGroup } from '@angular/forms'
 import { RubricaFormService } from '../rubrica-form.service'
 import { MenuItem } from 'primeng/api'
+import { ApiEvaluacionesService } from '@/app/sistema/evaluaciones/services/api-evaluaciones.service'
+import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
+import { Subject, takeUntil } from 'rxjs'
 
 @Component({
     selector: 'app-rubrica-form-criterios',
     templateUrl: './rubrica-form-criterios.component.html',
     styleUrl: './rubrica-form-criterios.component.scss',
 })
-export class RubricaFormCriteriosComponent {
+export class RubricaFormCriteriosComponent implements OnDestroy {
     @Input() rubricaForm: FormGroup
-
+    @Input() escalasCalificativas = []
     public criterioIndex = -1
     public accionesCriterio: MenuItem[] = [
         {
@@ -24,26 +27,61 @@ export class RubricaFormCriteriosComponent {
             label: 'Eliminar',
             icon: 'pi pi-trash',
             command: () => {
-                this.eliminarCriterioLocal()
+                this.confirmarEliminar()
             },
         },
     ]
 
+    private _apiEvaluacionesService = inject(ApiEvaluacionesService)
+    private _confirmService = inject(ConfirmationModalService)
+    private _unsubscribe$ = new Subject<boolean>()
+
+    constructor(private _rubricaFormService: RubricaFormService) {}
+
     get criterios() {
         return this.rubricaForm.get('criterios') as FormArray
     }
-
-    constructor(private _rubricaFormService: RubricaFormService) {}
 
     agregarCriterio() {
         this._rubricaFormService.addCriterioToForm()
     }
 
     duplicarCriterio() {
-        console.log(this.criterioIndex, 'index a duplicar')
+        this._rubricaFormService.duplicarCriterioToForm(this.criterioIndex)
     }
 
     eliminarCriterioLocal() {
         this._rubricaFormService.eliminarCriteriofromForm(this.criterioIndex)
+    }
+
+    confirmarEliminar() {
+        const item = this.criterios.at(this.criterioIndex).value
+        const esLocal = item.iCriterioId === 0
+        this._confirmService.openConfirm({
+            header: '¿Esta seguro de eliminar este criterio?',
+            accept: () => {
+                if (esLocal) {
+                    this.eliminarCriterioLocal()
+                } else {
+                    this.eliminarCriterio(item)
+                }
+            },
+        })
+    }
+
+    eliminarCriterio(item) {
+        this._apiEvaluacionesService
+            .eliminarRubrica({ id: item.iCriterioId, tipo: 'CRITERIO' })
+            .pipe(takeUntil(this._unsubscribe$))
+            .subscribe({
+                next: () => {
+                    this.eliminarCriterioLocal()
+                },
+            })
+    }
+
+    ngOnDestroy() {
+        this._unsubscribe$.next(true)
+        this._unsubscribe$.complete()
     }
 }

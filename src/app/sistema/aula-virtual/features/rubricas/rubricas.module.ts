@@ -9,6 +9,7 @@ import { DialogService } from 'primeng/dynamicdialog'
 import { MessageService } from 'primeng/api'
 import { CommonInputComponent } from '@/app/shared/components/common-input/common-input.component'
 import { RubricaFormService } from './components/rubrica-form/rubrica-form.service'
+import { EmptySectionComponent } from '@/app/shared/components/empty-section/empty-section.component'
 
 @NgModule({
     declarations: [
@@ -17,8 +18,13 @@ import { RubricaFormService } from './components/rubrica-form/rubrica-form.servi
         RubricaFormCriteriosComponent,
         RubricaFormComponent,
     ],
-    imports: [TablePrimengComponent, PrimengModule, CommonInputComponent],
-    exports: [TablePrimengComponent, PrimengModule],
+    imports: [
+        TablePrimengComponent,
+        PrimengModule,
+        CommonInputComponent,
+        EmptySectionComponent,
+    ],
+    exports: [TablePrimengComponent, PrimengModule, EmptySectionComponent],
     providers: [DialogService, MessageService, RubricaFormService],
 })
 export class RubricasModule {}

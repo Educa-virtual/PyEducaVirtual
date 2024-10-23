@@ -1,63 +1,80 @@
 <form [formGroup]="rubricaForm" class="flex flex-column gap-4">
     <span class="text-xl">Criterios</span>
-    <ng-container formArrayName="criterios">
-        @for (criterioForm of criterios.controls; track $index) {
-            <div
-                class="bg-gray-100 border-round-sm p-3 formgrid grid"
-                [formGroupName]="$index"
-            >
+    @if (criterios.controls.length > 0) {
+        <ng-container formArrayName="criterios">
+            @for (criterioForm of criterios.controls; track $index) {
                 <div
-                    class="flex flex-column sm:flex-row justify-content-between field col-12 flex-wrap gap-2"
+                    class="bg-gray-100 border-round-sm p-3 formgrid grid"
+                    [formGroupName]="$index"
                 >
-                    <app-common-input
-                        [controlKey]="'cCriterioNombre'"
-                        class="w-full md:w-9"
-                        label="Criterio"
-                    ></app-common-input>
-                    <div class="flex flex-column gap-2">
-                        <button
-                            pButton
-                            class="p-button-primary gap-2"
-                            (click)="
-                                menuAccionesCriterio.toggle($event);
-                                criterioIndex = $index
-                            "
-                            size="small"
+                    <div
+                        class="flex flex-column sm:flex-row justify-content-between field col-12 flex-wrap gap-2"
+                    >
+                        <app-common-input
+                            [controlKey]="'cCriterioNombre'"
+                            class="w-full md:w-9"
+                            label="Criterio"
+                        ></app-common-input>
+                        <div class="flex flex-column gap-2">
+                            <button
+                                pButton
+                                class="p-button-primary gap-2"
+                                (click)="
+                                    menuAccionesCriterio.toggle($event);
+                                    criterioIndex = $index
+                                "
+                                size="small"
+                            >
+                                <span class="text-md">Acciones</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="field flex flex-column col-12">
+                        <label class="align-self-start" for="descripcion"
+                            >Descripción</label
                         >
-                            <span class="text-md">Acciones</span>
-                        </button>
+                        <textarea
+                            rows="2"
+                            cols="30"
+                            placeholder="Descripción"
+                            pInputTextarea
+                            [autoResize]="true"
+                            formControlName="cCriterioDescripcion"
+                            id="descripcion"
+                        ></textarea>
+                    </div>
+                    <div class="field col-12">
+                        <app-rubrica-form-niveles
+                            [escalasCalificativas]="escalasCalificativas"
+                            [criterioForm]="$any(criterioForm)"
+                            [index]="$index"
+                        ></app-rubrica-form-niveles>
                     </div>
                 </div>
-                <div class="field flex flex-column col-12">
-                    <label class="align-self-start" for="descripcion"
-                        >Descripción</label
-                    >
-                    <textarea
-                        rows="2"
-                        cols="30"
-                        placeholder="Descripción"
-                        pInputTextarea
-                        id="descripcion"
-                    ></textarea>
+                <div class="flex justify-content-center">
+                    <button
+                        pButton
+                        label="Agregar Criterio"
+                        icon="pi pi-plus"
+                        size="small"
+                        (click)="agregarCriterio()"
+                    ></button>
                 </div>
-                <div class="field col-12">
-                    <app-rubrica-form-niveles
-                        [criterioForm]="$any(criterioForm)"
-                        [index]="$index"
-                    ></app-rubrica-form-niveles>
-                </div>
+            }
+        </ng-container>
+    } @else {
+        <app-empty-section [message]="'Sin criterios asignados'">
+            <div class="flex justify-content-center">
+                <button
+                    pButton
+                    label="Agregar Criterio"
+                    icon="pi pi-plus"
+                    size="small"
+                    (click)="agregarCriterio()"
+                ></button>
             </div>
-        }
-    </ng-container>
-    <div class="flex justify-content-center">
-        <button
-            pButton
-            label="Agregar Criterio"
-            icon="pi pi-plus"
-            size="small"
-            (click)="agregarCriterio()"
-        ></button>
-    </div>
+        </app-empty-section>
+    }
 </form>
 <p-menu
     #menuAccionesCriterio

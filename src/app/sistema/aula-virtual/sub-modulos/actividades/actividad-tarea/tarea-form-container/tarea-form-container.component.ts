@@ -9,8 +9,8 @@ import {
     DynamicDialogConfig,
     DynamicDialogRef,
 } from 'primeng/dynamicdialog'
-import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
 import { ConstantesService } from '@/app/servicios/constantes.service'
+import { GeneralService } from '@/app/servicios/general.service'
 
 @Component({
     selector: 'app-tarea-form-container',
@@ -23,24 +23,44 @@ import { ConstantesService } from '@/app/servicios/constantes.service'
 export class TareaFormContainerComponent {
     @ViewChild(TareaFormComponent) tareaFormComponent: TareaFormComponent
     actividad: IActividad | undefined
-    tarea
     action: string
+    contenidoSemana = []
+
     private ref = inject(DynamicDialogRef)
-    private _aulaService = inject(ApiAulaService)
+    private _generalService = inject(GeneralService)
     private _constantsService = inject(ConstantesService)
     constructor(private dialogConfig: DynamicDialogConfig) {
-        this.tarea = this.dialogConfig.data.actividad.iTareaId
-            ? this.dialogConfig.data.actividad
-            : null
+        this.contenidoSemana = this.dialogConfig.data.contenidoSemana
         this.action = this.dialogConfig.data.action
     }
 
     submitFormulario(data) {
-        data.opcion = this.action
-        data.iDocenteId = 1
+        //OPCION: ACTUALIZAR O GUARDAR +xProgActxiTarea
+        data.cTareaTitulo = !data.bReutilizarTarea
+            ? data.cTareaTitulo
+            : data.iProgActId
+              ? data.cTareaTitulo.cTareaTitulo
+              : data.cTareaTitulo
+        data.opcion = this.action + 'xProgActxiTarea'
+        data.iDocenteId = this._constantsService.iDocenteId
         data.iActTipoId = this.dialogConfig.data.iActTipoId
-        data.iContenidoSemId = this.dialogConfig.data.iContenidoSemId
-        this._aulaService.guardarActividad(data).subscribe({
+        data.iContenidoSemId =
+            this.dialogConfig.data.contenidoSemana.iContenidoSemId
+
+        const params = {
+            petition: 'post',
+            group: 'aula-virtual',
+            prefix: !data.bReutilizarTarea
+                ? 'programacion-actividades'
+                : !data.iProgActId
+                  ? 'programacion-actividades'
+                  : 'tareas',
+            ruta: 'store',
+            data: data,
+            params: { skipSuccessMessage: true },
+        }
+
+        this._generalService.getGralPrefix(params).subscribe({
             next: (resp) => {
                 console.log(resp)
                 this.closeModal()
@@ -49,12 +69,12 @@ export class TareaFormContainerComponent {
     }
 
     cancelar() {
-        this.tarea = null
+        // this.tarea = null
         this.ref.close(null)
     }
 
     closeModal() {
-        this.tarea = null
+        // this.tarea = null
         this.ref.close(null)
     }
 }

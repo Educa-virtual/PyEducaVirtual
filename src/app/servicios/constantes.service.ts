@@ -549,6 +549,7 @@ const first = [
 export class ConstantesService {
     iPersId = user ? user.iPersId : null
     iCredId = user ? user.iCredId : null
+    iDocenteId = user ? user.iDocenteId : null
 
     nav = this.getMenu()
     getMenu() {

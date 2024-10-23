@@ -3,7 +3,6 @@
         [rubricaForm]="rubricaForm"
     ></app-rubrica-form-header>
     <app-rubrica-form-criterios
-        [escalasCalificativas]="escalasCalificativas"
         [rubricaForm]="rubricaForm"
     ></app-rubrica-form-criterios>
 </div>
@@ -17,7 +16,7 @@
         class="p-button-secondary"
         type="button"
         size="small"
-        (click)="closeModal(null)"
+        (click)="closeModal()"
     ></button>
     <button
         pButton

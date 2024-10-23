@@ -1,4 +1,3 @@
-import { ApiResponse } from '@/app/shared/interfaces/api-response.model'
 import { environment } from '@/environments/environment.template'
 import { HttpClient } from '@angular/common/http'
 import { inject, Injectable } from '@angular/core'
@@ -41,48 +40,5 @@ export class ApiEvaluacionesService {
         return this.http.delete<any>(
             `${this.baseUrlApi}/evaluaciones/evaluacion/eliminarPreguntaEvulacion/${ids}`
         )
-    }
-
-    // Rubricas
-
-    obtenerRubricas(params) {
-        return this.http
-            .get<ApiResponse>(
-                `${this.baseUrlApi}/evaluaciones/instrumento-evaluaciones/rubrica`,
-                { params }
-            )
-            .pipe(map((resp) => resp.data))
-    }
-
-    guardarActualizarRubrica(data) {
-        return this.http
-            .post<ApiResponse>(
-                `${this.baseUrlApi}/evaluaciones/instrumento-evaluaciones/rubrica`,
-                data
-            )
-            .pipe(map((resp) => resp.data))
-    }
-
-    eliminarRubrica({
-        id,
-        tipo,
-    }: {
-        id: number
-        tipo: 'INSTRUMENTO' | 'CRITERIO' | 'NIVEL'
-    }) {
-        return this.http
-            .delete<ApiResponse>(
-                `${this.baseUrlApi}/evaluaciones/instrumento-evaluaciones/rubrica/${id}`,
-                { params: { cTipo: tipo } }
-            )
-            .pipe(map((resp) => resp.data))
-    }
-
-    // escala calificaciones
-
-    obtenerEscalaCalificaciones() {
-        return this.http
-            .get<any>(`${this.baseUrlApi}/evaluaciones/escala-calificaciones`)
-            .pipe(map((resp) => resp.data))
     }
 }

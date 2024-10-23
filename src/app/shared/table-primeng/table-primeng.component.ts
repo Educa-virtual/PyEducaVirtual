@@ -54,7 +54,7 @@ export class TablePrimengComponent implements OnChanges, OnInit {
         new EventEmitter()
     @Output() selectedRowDataChange = new EventEmitter()
 
-    @Input() selectionMode: 'single' | 'multiple' = 'multiple'
+    @Input() selectionMode: 'single' | 'multiple' | null = null
     @Input() expandedRowKeys = {}
     @Input() dataKey: string
 

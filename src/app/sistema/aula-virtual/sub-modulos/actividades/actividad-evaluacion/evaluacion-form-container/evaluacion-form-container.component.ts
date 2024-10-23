@@ -88,7 +88,7 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
 
         const actividad = this._config.data.actividad
 
-        if (actividad !== null) {
+        if (actividad?.ixActivadadId != undefined) {
             this.mode = 'EDITAR'
             this._paramsData.iContenidoSemId = actividad.iContenidoSemId
             this._paramsData.ixActivadadId = actividad.ixActivadadId

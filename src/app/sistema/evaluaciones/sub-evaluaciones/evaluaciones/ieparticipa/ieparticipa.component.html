@@ -28,20 +28,20 @@
         <p-button label="Submit" (onClick)="seleccionados()" />
     </div>
 </div>
-
+<br />
 <p-pickList
     [source]="sourceProducts"
     [target]="targetProducts"
-    sourceHeader="I.E disponibles"
-    targetHeader="I.E seleccionados"
-    [dragdrop]="true"
-    [responsive]="true"
-    [sourceStyle]="{ height: '30rem' }"
-    [targetStyle]="{ height: '30rem' }"
+    sourceHeader="I.E No participan"
+    targetHeader="I.E Participan"
+    dragdrop="true"
+    [responsive]="false"
+    [sourceStyle]="{ height: '300px' }"
+    [targetStyle]="{ height: '300px' }"
     filterBy="cIieeNombre"
     sourceFilterPlaceholder="Buscar por nombre de I.E"
     targetFilterPlaceholder="Buscar por nombre de I.E"
-    breakpoint="1400px"
+    breakpoint="1200px"
 >
     <ng-template let-product pTemplate="item">
         <div class="flex flex-wrap p-2 align-items-center gap-3">

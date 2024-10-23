@@ -68,6 +68,11 @@ const especialista_ugel = [
                 routerLink: ['/evaluaciones/evaluaciones'],
             },
             {
+                label: 'Ver evaluaciones',
+                icon: 'pi pi-fw pi-calendar',
+                routerLink: ['/especialista-ugel/ver-evaluacion'],
+            },
+            {
                 label: 'Mis Áreas Curriculares',
                 icon: 'pi pi-fw pi-folder',
                 routerLink: ['/evaluaciones/areas'],
@@ -150,58 +155,87 @@ const notas_evaluaciones = [
         items: [
             inicio,
             {
-                label: 'Dashboard',
+                label: 'Sincronizar SIAGIE',
                 icon: 'pi pi-fw pi-book',
                 routerLink: ['/evaluaciones'],
             },
             {
-                label: 'Evaluaciones',
-                icon: 'pi pi-fw pi-calendar',
-                routerLink: ['/evaluaciones/evaluaciones'],
-            },
-            {
-                label: 'Mis Áreas Curriculares',
-                icon: 'pi pi-fw pi-folder',
-                routerLink: ['/evaluaciones/areas'],
-            },
-            {
-                label: 'Preguntas',
-                icon: 'pi pi-fw pi-user',
-                items: [
-                    {
-                        label: 'Banco de preguntas',
-                        icon: 'pi pi-fw pi-sign-in',
-                        routerLink: ['/evaluaciones/banco-preguntas'],
-                    },
-                    {
-                        label: 'Preguntas activas',
-                        icon: 'pi pi-fw pi-times-circle',
-                        routerLink: ['/evaluaciones/preguntas-activas'],
-                    },
-                ],
+                label: 'Configurar Modulo',
+                icon: 'pi pi-fw pi-book',
+                routerLink: ['/evaluaciones'],
             },
 
             {
-                label: 'Configuración',
+                label: 'Pruebas Escolares',
                 icon: 'pi pi-fw pi-user',
                 items: [
                     {
-                        label: 'Competencias',
+                        label: 'ERE',
                         icon: 'pi pi-fw pi-sign-in',
-                        routerLink: ['/evaluaciones/competencias'],
+                        //routerLink: ['/especialista-ugel/ver-evaluacion'],
+                        items: [
+                            {
+                                label: 'Evaluaciones',
+                                icon: 'pi pi-fw pi-calendar',
+                                routerLink: ['/evaluaciones/evaluaciones'],
+                            },
+                            {
+                                label: 'Dashboard',
+                                icon: 'pi pi-fw pi-user',
+                                routerLink: [
+                                    '/especialista-ugel/ver-evaluacion',
+                                ],
+                            },
+                            {
+                                label: 'Informes',
+                                icon: 'pi pi-fw pi-sign-in',
+                                //routerLink: ['/especialista-ugel/ver-evaluacion'],
+                                items: [
+                                    {
+                                        label: 'I.E',
+                                        icon: 'pi pi-fw pi-user',
+                                        routerLink: [
+                                            '/especialista-ugel/institucion-educativa',
+                                        ],
+                                    },
+                                ],
+                            },
+                        ],
                     },
                     {
-                        label: 'Capacidades',
-                        icon: 'pi pi-fw pi-times-circle',
-                        routerLink: ['/evaluaciones/preguntas-activas'],
-                    },
-                    {
-                        label: 'Desempeños',
+                        label: 'Prueba ECE',
                         icon: 'pi pi-fw pi-times-circle',
                         routerLink: ['/evaluaciones/preguntas-activas'],
                     },
                 ],
             },
+            //Borrar
+            // {
+            //     label: 'Mis Áreas Curriculares',
+            //     icon: 'pi pi-fw pi-folder',
+            //     routerLink: ['/evaluaciones/areas'],
+            // },
+            // {
+            //     label: 'Configuración',
+            //     icon: 'pi pi-fw pi-user',
+            //     items: [
+            //         {
+            //             label: 'Competencias',
+            //             icon: 'pi pi-fw pi-sign-in',
+            //             routerLink: ['/evaluaciones/competencias'],
+            //         },
+            //         {
+            //             label: 'Capacidades',
+            //             icon: 'pi pi-fw pi-times-circle',
+            //             routerLink: ['/evaluaciones/preguntas-activas'],
+            //         },
+            //         {
+            //             label: 'Desempeños',
+            //             icon: 'pi pi-fw pi-times-circle',
+            //             routerLink: ['/evaluaciones/preguntas-activas'],
+            //         },
+            //     ],
+            // },
         ],
     },
 ]

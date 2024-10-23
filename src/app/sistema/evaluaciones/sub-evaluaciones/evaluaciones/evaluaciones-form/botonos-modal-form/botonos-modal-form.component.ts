@@ -37,6 +37,6 @@ export class BotonosModalFormComponent {
         this.ref.close(data)
     }
     guardarEvaluacion() {
-        alert('guardar evalución')
+        alert('guardar evaluciónasdsad')
     }
 }

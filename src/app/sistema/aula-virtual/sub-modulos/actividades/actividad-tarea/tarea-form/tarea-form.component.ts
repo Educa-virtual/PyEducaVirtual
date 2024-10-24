@@ -32,13 +32,14 @@ import { ModalPrimengComponent } from '@/app/shared/modal-primeng/modal-primeng.
     styleUrl: './tarea-form.component.scss',
 })
 export class TareaFormComponent implements OnChanges {
-    pipe = new DatePipe('en-ES')
+    pipe = new DatePipe('es-ES')
     date = new Date()
 
     @Output() submitEvent = new EventEmitter<any>()
     @Output() cancelEvent = new EventEmitter<void>()
 
     @Input() contenidoSemana
+    @Input() tarea
 
     semana: Message[] = []
     tareas = []
@@ -64,6 +65,19 @@ export class TareaFormComponent implements OnChanges {
                 },
             ]
         }
+        if (changes.tarea?.currentValue) {
+            this.tarea = changes.tarea.currentValue
+            this.formTareas.patchValue(this.tarea)
+            this.FilesTareas = this.formTareas.value.cTareaArchivoAdjunto
+                ? JSON.parse(this.formTareas.value.cTareaArchivoAdjunto)
+                : []
+            this.formTareas.controls.dtFin.setValue(
+                new Date(this.formTareas.value.dtTareaFin)
+            )
+            this.formTareas.controls.dtInicio.setValue(
+                new Date(this.formTareas.value.dtTareaInicio)
+            )
+        }
     }
 
     public formTareas = this._formBuilder.group({
@@ -71,7 +85,7 @@ export class TareaFormComponent implements OnChanges {
         dtInicio: [this.date, Validators.required],
         dtFin: [this.date, Validators.required],
 
-        iTareaId: [''],
+        iTareaId: [],
         cTareaTitulo: ['', [Validators.required]],
         cTareaDescripcion: ['', [Validators.required]],
 
@@ -206,24 +220,19 @@ export class TareaFormComponent implements OnChanges {
     }
 
     submit() {
-        let horaInicio =
-            this.pipe.transform(
-                this.formTareas.value.dtInicio,
-                'YYYY-MM-dd HH:MM'
-            ) + ':00.000Z'
-        let horaFin =
-            this.pipe.transform(
-                this.formTareas.value.dtFin,
-                'YYYY-MM-dd HH:MM'
-            ) + ':00.000Z'
-        horaInicio = horaInicio.replace(' ', 'T')
-        horaFin = horaFin.replace(' ', 'T')
+        let horaInicio = this.formTareas.value.dtInicio.toLocaleString(
+            'en-GB',
+            { timeZone: 'America/Lima' }
+        )
+        let horaFin = this.formTareas.value.dtFin.toLocaleString('en-GB', {
+            timeZone: 'America/Lima',
+        })
+        horaInicio = horaInicio.replace(',', '')
+        horaFin = horaFin.replace(',', '')
         this.formTareas.controls.dtTareaInicio.setValue(horaInicio)
         this.formTareas.controls.dtTareaFin.setValue(horaFin)
         this.formTareas.controls.dtProgActInicio.setValue(horaInicio)
-        this.formTareas.controls.dtProgActFin.setValue(
-            this.formTareas.value.dtTareaFin
-        )
+        this.formTareas.controls.dtProgActFin.setValue(horaFin)
         this.formTareas.controls.cProgActTituloLeccion.setValue(
             this.formTareas.value.cTareaTitulo
         )

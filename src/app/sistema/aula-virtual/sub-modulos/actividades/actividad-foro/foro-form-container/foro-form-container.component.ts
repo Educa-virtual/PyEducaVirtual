@@ -42,6 +42,8 @@ export class ForoFormContainerComponent implements OnInit {
 
     categorias: any[] = []
 
+    selectProgramaAct = 0
+
     estado: any[] = [
         { label: 'Activo', value: 1 },
         { label: 'Desactivo', value: 2 },
@@ -65,7 +67,7 @@ export class ForoFormContainerComponent implements OnInit {
 
     mostrarCategorias() {
         const userId = 1
-        this._aulaService.guardarForo(userId).subscribe((Data) => {
+        this._aulaService.obtenerCategorias(userId).subscribe((Data) => {
             this.categorias = Data['data']
             console.log('Datos mit', this.categorias)
         })
@@ -77,5 +79,10 @@ export class ForoFormContainerComponent implements OnInit {
     submit() {
         const value = this.foroForm.value
         console.log('Guardar Foros', value)
+
+        // this._aulaService.guardarForo(value).subscribe((Data) => {
+        //     // this.categorias = Data['data']
+        //     // console.log('Datos mit', this.categorias)
+        // })
     }
 }

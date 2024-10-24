@@ -12,6 +12,7 @@ import { PersonalComponent } from './personal/personal.component'
 import { SesionAprendizajeComponent } from './sesion-aprendizaje/sesion-aprendizaje.component'
 import { GestionarSilaboComponent } from './areas-estudios/components/gestionar-silabo/gestionar-silabo.component'
 import { PerfilComponent } from './perfil/perfil.component'
+import { ActividadesNoLectivasComponent } from './actividades-no-lectivas/actividades-no-lectivas.component'
 
 @NgModule({
     imports: [
@@ -26,7 +27,7 @@ import { PerfilComponent } from './perfil/perfil.component'
             { path: 'ficha-actividades', component: FichaActividadesComponent },
             { path: 'silabo', component: SilaboComponent },
             {
-                path: 'asistencia/:iCursoId/:cCursoNombre',
+                path: 'asistencia/:iCursoId/:cCursoNombre/:iGradoId/:iSeccionId',
                 component: AsistenciaComponent,
             },
             {
@@ -45,6 +46,10 @@ import { PerfilComponent } from './perfil/perfil.component'
             {
                 path: 'perfil',
                 component: PerfilComponent,
+            },
+            {
+                path: 'actividades-no-lectivas',
+                component: ActividadesNoLectivasComponent,
             },
         ]),
     ],

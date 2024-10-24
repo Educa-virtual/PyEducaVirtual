@@ -16,6 +16,8 @@ import { DropdownModule } from 'primeng/dropdown'
 
 import { IeparticipaComponent } from '../ieparticipa/ieparticipa.component'
 
+import { EvaluacionAreasComponent } from './../evaluacion-areas/evaluacion-areas.component'
+
 import { ApiEvaluacionesRService } from '../../../services/api-evaluaciones-r.service'
 import { Subject, takeUntil } from 'rxjs'
 import { DynamicDialogRef } from 'primeng/dynamicdialog'
@@ -50,6 +52,7 @@ interface NivelEvaluacion {
         DropdownModule,
         CommonInputComponent,
         ReactiveFormsModule,
+        EvaluacionAreasComponent,
     ],
     templateUrl: './evaluaciones-form.component.html',
     styleUrl: './evaluaciones-form.component.scss',

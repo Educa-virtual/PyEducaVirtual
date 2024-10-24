@@ -51,7 +51,7 @@ export class TareaFormContainerComponent {
         data.iActTipoId = this.dialogConfig.data.iActTipoId
         data.iContenidoSemId =
             this.dialogConfig.data.contenidoSemana.iContenidoSemId
-
+        console.log(data)
         const params = {
             petition: 'post',
             group: 'aula-virtual',
@@ -68,7 +68,7 @@ export class TareaFormContainerComponent {
         this._generalService.getGralPrefix(params).subscribe({
             next: (resp) => {
                 console.log(resp)
-                this.closeModal()
+                //this.closeModal()
             },
         })
     }

@@ -89,12 +89,12 @@ export const routes: Routes = [
             },
         ],
     },
-    {
-        path: 'especialista-ugel',
+    // {
+    //     path: 'especialista-ugel',
 
-        loadChildren: () =>
-            import('./sistema/especialista-ugel/especialista-ugel.routes'),
-    },
+    //     loadChildren: () =>
+    //         import('./sistema/especialista-ugel/especialista-ugel.routes'),
+    // },
 
     { path: 'login', component: LoginComponent },
 

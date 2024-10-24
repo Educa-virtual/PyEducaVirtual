@@ -1,0 +1,16 @@
+<div class="grid">
+    <p-toolbar class="col-12">
+        <div class="p-toolbar-group-start">
+            <h4 class="text-primary font-bold">ACTIVIDADES NO LECTIVAS</h4>
+        </div>
+    </p-toolbar>
+    <div class="col-12">
+        <p-messages
+            [(value)]="mensaje"
+            [enableService]="false"
+            [closable]="false"
+        />
+    </div>
+    <div class="col-4"></div>
+    <div class="col-8"><app-full-calendar></app-full-calendar></div>
+</div>

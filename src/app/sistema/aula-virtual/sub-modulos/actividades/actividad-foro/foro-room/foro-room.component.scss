@@ -80,7 +80,10 @@
 :host ::ng-deep .list .p-orderlist-list-container {
     height: 100%;
 }
-
+//sticky-header ng-star-inserted
+:host ::ng-deep .sticky-header {
+    background-color: #0056b3;
+}
 /**********************************/
 .comment-container {
     display: flex;

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core'
+import { Component, inject, OnInit } from '@angular/core'
 import { IconComponent } from '@/app/shared/icon/icon.component'
 import {
     matAccessTime,
@@ -14,7 +14,7 @@ import { provideIcons } from '@ng-icons/core'
 import { TabViewModule } from 'primeng/tabview'
 import { OrderListModule } from 'primeng/orderlist'
 import { PrimengModule } from '@/app/primeng.module'
-import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
+import { GeneralService } from '@/app/servicios/general.service'
 
 @Component({
     selector: 'app-foro-room',
@@ -40,10 +40,45 @@ import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.ser
         }),
     ],
 })
-export class ForoRoomComponent {
-    private _aulaService = inject(ApiAulaService)
-    constructor() {}
+export class ForoRoomComponent implements OnInit {
+    private GeneralService = inject(GeneralService)
+    // variables
+    estudiantes: any[] = []
 
+    constructor() {}
+    ngOnInit() {
+        this.getEstudiantesMatricula()
+    }
+    getEstudiantesMatricula() {
+        const params = {
+            petition: 'post',
+            group: 'aula-virtual',
+            prefix: 'matricula',
+            ruta: 'list',
+            data: {
+                opcion: 'CONSULTAR-ESTUDIANTESxiSemAcadIdxiYAcadIdxiCurrId',
+                iSemAcadId:
+                    '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+                iYAcadId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+                iCurrId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            },
+            params: { skipSuccessMessage: true },
+        }
+        console.log(this.getInformation)
+
+        this.getInformation(params)
+    }
+    getInformation(params) {
+        this.GeneralService.getGralPrefix(params).subscribe({
+            next: (response) => {
+                this.estudiantes = response.data
+            },
+            complete: () => {},
+            error: (error) => {
+                console.log(error)
+            },
+        })
+    }
     // ngOnInit() { implements OnInit
     // }
     //   obtenerForo() {

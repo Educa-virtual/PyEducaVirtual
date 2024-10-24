@@ -151,6 +151,11 @@ const notas_evaluaciones = [
                 routerLink: ['/evaluaciones'],
             },
             {
+                label: 'Mis Áreas Curriculares',
+                icon: 'pi pi-fw pi-folder',
+                routerLink: ['/evaluaciones/areas'],
+            },
+            {
                 label: 'Configurar Modulo',
                 icon: 'pi pi-fw pi-book',
                 routerLink: ['/evaluaciones'],

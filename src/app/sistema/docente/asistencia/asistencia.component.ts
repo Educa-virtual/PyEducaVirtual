@@ -27,7 +27,7 @@ interface Data {
 })
 export class AsistenciaComponent implements OnInit {
     @Input() iCursoId: string
-    @Input() iGradoId: string
+    @Input() iNivelGradoId: string
     @Input() iSeccionId: string
 
     private unsubscribe$ = new Subject<boolean>()

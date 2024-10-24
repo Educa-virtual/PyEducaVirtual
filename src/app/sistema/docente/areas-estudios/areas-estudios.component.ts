@@ -168,7 +168,7 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
                             ''
                         ) +
                         '/' +
-                        this.selectedData['iGradoId'] +
+                        this.selectedData['iNivelGradoId'] +
                         '/' +
                         this.selectedData['iSeccionId']
                 )

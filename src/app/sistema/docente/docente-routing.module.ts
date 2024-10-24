@@ -27,7 +27,7 @@ import { ActividadesNoLectivasComponent } from './actividades-no-lectivas/activi
             { path: 'ficha-actividades', component: FichaActividadesComponent },
             { path: 'silabo', component: SilaboComponent },
             {
-                path: 'asistencia/:iCursoId/:cCursoNombre/:iGradoId/:iSeccionId',
+                path: 'asistencia/:iCursoId/:cCursoNombre/:iNivelGradoId/:iSeccionId',
                 component: AsistenciaComponent,
             },
             {

@@ -6,13 +6,15 @@
                 [enableService]="false"
                 [closable]="false"
             />
-            <div class="flex align-items-center justify-content-end mb-2">
-                ¿Deseas reutilizar tarea? &nbsp;&nbsp;
-                <p-inputSwitch
-                    (ngModelChange)="getTareasxiCursoId()"
-                    formControlName="bReutilizarTarea"
-                />
-            </div>
+            @if (!formTareas.value.iTareaId) {
+                <div class="flex align-items-center justify-content-end mb-2">
+                    ¿Deseas reutilizar tarea? &nbsp;&nbsp;
+                    <p-inputSwitch
+                        (ngModelChange)="getTareasxiCursoId()"
+                        formControlName="bReutilizarTarea"
+                    />
+                </div>
+            }
             <p-inputGroup>
                 <p-inputGroupAddon> Título </p-inputGroupAddon>
                 @if (this.formTareas.value.bReutilizarTarea) {

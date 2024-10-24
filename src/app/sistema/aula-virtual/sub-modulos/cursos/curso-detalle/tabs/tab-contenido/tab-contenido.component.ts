@@ -209,8 +209,8 @@ export class TabContenidoComponent implements OnInit {
             }
         )
         ref.onClose.subscribe((result) => {
-            this.getData()
             if (result) {
+                this.getData()
                 console.log('Formulario enviado', result)
             } else {
                 console.log('Formulario cancelado')

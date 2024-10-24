@@ -1,4 +1,4 @@
-@for (actividad of actividades; track actividad.iProgActId) {
+@for (actividad of actividades; track $index) {
     <app-actividad-row
         [actividad]="actividad"
         class="actividad"

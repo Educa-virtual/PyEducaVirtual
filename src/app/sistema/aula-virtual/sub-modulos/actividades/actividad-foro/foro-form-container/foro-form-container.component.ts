@@ -76,13 +76,13 @@ export class ForoFormContainerComponent implements OnInit {
     closeModal(data) {
         this.ref.close(data)
     }
-    // submit() {
-    //     const value = this.foroForm.value
-    //     console.log('Guardar Foros', value)
+    submit() {
+        const value = this.foroForm.value
+        console.log('Guardar Foros', value)
 
-    //     this._aulaService.guardarForo(value).subscribe((Data) => {
-    //         // this.categorias = Data['data']
-    //         // console.log('Datos mit', this.categorias)
-    //     })
-    // }
+        // this._aulaService.guardarForo(value).subscribe((Data) => {
+        //     // this.categorias = Data['data']
+        //     // console.log('Datos mit', this.categorias)
+        // })
+    }
 }

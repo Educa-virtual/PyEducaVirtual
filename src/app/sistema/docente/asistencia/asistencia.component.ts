@@ -42,6 +42,7 @@ export class AsistenciaComponent implements OnInit {
     }
     ngOnInit() {
         this.getObtenerAsitencias()
+        this.getFechasImportantes()
     }
     formatoFecha: Date = new Date()
     fechaActual =
@@ -51,25 +52,41 @@ export class AsistenciaComponent implements OnInit {
         '-' +
         this.formatoFecha.getDate()
 
+    dataFechas = []
     calendarOptions: CalendarOptions = {
         plugins: [dayGridPlugin, interactionPlugin],
         initialView: 'dayGridMonth',
         locales: [esLocale],
         weekends: true,
+        height: '100%',
+        eventShortHeight: 30,
         dateClick: (item) => this.handleDateClick(item),
         headerToolbar: {
             end: 'dayGridMonth,dayGridWeek,dayGridDay',
             center: 'title',
             start: 'prev,next today',
         },
-        events: [{ title: 'Meeting', start: new Date() }],
+        events: null,
     }
+
+    // [{ title: 'Meeting', start: new Date() }]
     handleDateClick(item) {
-        // console.log(item.dateStr)
         this.verAsistencia(item.dateStr)
         this.fechaActual = item.dateStr
-        // this.fechaActual=item.dateStr
-        // console.log(this.fechaActual)
+    }
+    getFechasImportantes() {
+        const params = {
+            petition: 'post',
+            group: 'docente',
+            prefix: 'fechas_importantes',
+            ruta: 'list',
+            data: {
+                opcion: 'CONSULTAR_FECHAS_IMPORTANTES',
+            },
+            params: { skipSuccessMessage: true },
+        }
+        this.getInformation(params, 'get_fecha_importante')
+        console.log(this.dataFechas)
     }
     verAsistencia(fechas: string) {
         const params = {
@@ -84,12 +101,16 @@ export class AsistenciaComponent implements OnInit {
             },
             params: { skipSuccessMessage: true },
         }
-        this.getInformation(params, 'get_asistencia_fecha')
+        this.getInformation(params, 'get_asistencia')
     }
     visible: boolean = false
 
     fechas = [
-        { nombre: 'Feriados Nacionales', cantidad: 5, color: 'var(--red-400)' },
+        {
+            nombre: 'Feriados Nacionales',
+            cantidad: 5,
+            color: 'var(--red-400)',
+        },
         {
             nombre: 'Feriados Recuperables',
             cantidad: 5,
@@ -105,8 +126,16 @@ export class AsistenciaComponent implements OnInit {
             cantidad: 5,
             color: 'var(--bluegray-400)',
         },
-        { nombre: 'Dias de Gestion', cantidad: 5, color: 'var(--gray-400)' },
-        { nombre: 'Mis Actividades', cantidad: 5, color: 'var(--teal-400)' },
+        {
+            nombre: 'Dias de Gestion',
+            cantidad: 5,
+            color: 'var(--gray-400)',
+        },
+        {
+            nombre: 'Mis Actividades',
+            cantidad: 5,
+            color: 'var(--teal-400)',
+        },
     ]
 
     valSelect1: string = ''
@@ -180,8 +209,12 @@ export class AsistenciaComponent implements OnInit {
             case 'get_asistencia':
                 this.data = item
                 break
-            case 'get_asistencia_fecha':
-                this.data = item
+            // case 'get_asistencia_fecha':
+            //     this.data = item
+            //     break
+            case 'get_fecha_importante':
+                this.calendarOptions.events = item
+                //this.getCalendario()
                 break
             default:
                 break
@@ -197,6 +230,7 @@ export class AsistenciaComponent implements OnInit {
             data: {
                 opcion: 'CONSULTAR_ASISTENCIA_FECHA',
                 iCursoId: this.iCursoId,
+                dtCtrlAsistencia: this.fechaActual,
             },
             params: { skipSuccessMessage: true },
         }

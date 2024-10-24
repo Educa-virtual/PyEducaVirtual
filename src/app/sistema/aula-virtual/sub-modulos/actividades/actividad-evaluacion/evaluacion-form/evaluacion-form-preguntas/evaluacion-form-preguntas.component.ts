@@ -1,6 +1,13 @@
 import { BancoPreguntaListaComponent } from '@/app/sistema/evaluaciones/sub-evaluaciones/banco-preguntas/components/banco-pregunta-lista/banco-pregunta-lista.component'
 import { CommonModule } from '@angular/common'
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core'
+import {
+    Component,
+    EventEmitter,
+    inject,
+    Input,
+    Output,
+    OnDestroy,
+} from '@angular/core'
 import { MenuItem } from 'primeng/api'
 import { ButtonModule } from 'primeng/button'
 import { MenuModule } from 'primeng/menu'
@@ -16,6 +23,11 @@ import {
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { ApiEvaluacionesService } from '@/app/sistema/evaluaciones/services/api-evaluaciones.service'
 import { generarIdAleatorio } from '@/app/shared/utils/random-id'
+import { provideIcons } from '@ng-icons/core'
+import { matWorkspacePremium } from '@ng-icons/material-icons/baseline'
+import { MODAL_CONFIG } from '@/app/shared/constants/modal.config'
+import { EvaluacionLogrosComponent } from '../../evaluacion-logros/evaluacion-logros.component'
+import { Subject, takeUntil } from 'rxjs'
 
 @Component({
     selector: 'app-evaluacion-form-preguntas',
@@ -31,9 +43,13 @@ import { generarIdAleatorio } from '@/app/shared/utils/random-id'
     ],
     templateUrl: './evaluacion-form-preguntas.component.html',
     styleUrl: './evaluacion-form-preguntas.component.scss',
-    providers: [DialogService, AulaBancoPreguntasService],
+    providers: [
+        DialogService,
+        AulaBancoPreguntasService,
+        provideIcons({ matWorkspacePremium }),
+    ],
 })
-export class EvaluacionFormPreguntasComponent {
+export class EvaluacionFormPreguntasComponent implements OnDestroy {
     @Input() tituloEvaluacion: string = 'Sin título de evaluación'
     @Input() preguntas: any[] = []
 
@@ -48,6 +64,8 @@ export class EvaluacionFormPreguntasComponent {
     private _confirmationService = inject(ConfirmationModalService)
     private _aulaBancoPreguntasService = inject(AulaBancoPreguntasService)
     private _evaluacionService = inject(ApiEvaluacionesService)
+    private _dialogService = inject(DialogService)
+    private _unsubscribe$ = new Subject<boolean>()
 
     tiposAgrecacionPregunta: MenuItem[] = [
         {
@@ -112,6 +130,30 @@ export class EvaluacionFormPreguntasComponent {
                 },
             })
         }
+
+        if (accion === 'agregar-logros') {
+            this.handleLogrosPregunta(item)
+        }
+    }
+
+    handleLogrosPregunta(item) {
+        console.log(item)
+
+        const ref = this._dialogService.open(EvaluacionLogrosComponent, {
+            ...MODAL_CONFIG,
+            header: 'Gestionar Logros',
+            data: {
+                iEvaluacionId: item.iEvaluacionId,
+                iEvalPregId: item.iEvalPregId,
+                logros: item.logros ?? [],
+            },
+        })
+        ref.onClose.pipe(takeUntil(this._unsubscribe$)).subscribe((result) => {
+            if (!result) return
+
+            // this.data[logroInData] = result
+            // this.data = [...this.data]
+        })
     }
 
     quitarPreguntaEvulacion(item) {
@@ -169,5 +211,10 @@ export class EvaluacionFormPreguntasComponent {
         this.closeModalBancoPreguntas()
         this.preguntas.push(...this.preguntasSeleccionadas)
         this.preguntasSeleccionadasChange.emit(this.preguntas)
+    }
+
+    ngOnDestroy() {
+        this._unsubscribe$.next(true)
+        this._unsubscribe$.complete()
     }
 }

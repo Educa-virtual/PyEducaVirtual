@@ -71,12 +71,14 @@ export class TareaFormComponent implements OnChanges {
             this.FilesTareas = this.formTareas.value.cTareaArchivoAdjunto
                 ? JSON.parse(this.formTareas.value.cTareaArchivoAdjunto)
                 : []
-            this.formTareas.controls.dtFin.setValue(
-                new Date(this.formTareas.value.dtTareaFin)
-            )
-            this.formTareas.controls.dtInicio.setValue(
-                new Date(this.formTareas.value.dtTareaInicio)
-            )
+            if (this.tarea.iTareaId) {
+                this.formTareas.controls.dtFin.setValue(
+                    new Date(this.formTareas.value.dtTareaFin)
+                )
+                this.formTareas.controls.dtInicio.setValue(
+                    new Date(this.formTareas.value.dtTareaInicio)
+                )
+            }
         }
     }
 

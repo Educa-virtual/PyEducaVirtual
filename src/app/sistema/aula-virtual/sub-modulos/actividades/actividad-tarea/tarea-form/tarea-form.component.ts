@@ -39,6 +39,7 @@ export class TareaFormComponent implements OnChanges {
     @Output() cancelEvent = new EventEmitter<void>()
 
     @Input() contenidoSemana
+    @Input() tarea
 
     semana: Message[] = []
     tareas = []
@@ -64,6 +65,19 @@ export class TareaFormComponent implements OnChanges {
                 },
             ]
         }
+        if (changes.tarea?.currentValue) {
+            this.tarea = changes.tarea.currentValue
+            this.formTareas.patchValue(this.tarea)
+            this.FilesTareas = this.formTareas.value.cTareaArchivoAdjunto
+                ? JSON.parse(this.formTareas.value.cTareaArchivoAdjunto)
+                : []
+            this.formTareas.controls.dtFin.setValue(
+                new Date(this.formTareas.value.dtTareaFin)
+            )
+            this.formTareas.controls.dtInicio.setValue(
+                new Date(this.formTareas.value.dtTareaInicio)
+            )
+        }
     }
 
     public formTareas = this._formBuilder.group({
@@ -71,7 +85,7 @@ export class TareaFormComponent implements OnChanges {
         dtInicio: [this.date, Validators.required],
         dtFin: [this.date, Validators.required],
 
-        iTareaId: [''],
+        iTareaId: [],
         cTareaTitulo: ['', [Validators.required]],
         cTareaDescripcion: ['', [Validators.required]],
 

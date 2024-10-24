@@ -26,12 +26,19 @@ export class TareaFormContainerComponent {
     action: string
     contenidoSemana = []
 
+    tarea = []
+
     private ref = inject(DynamicDialogRef)
     private _generalService = inject(GeneralService)
     private _constantsService = inject(ConstantesService)
     constructor(private dialogConfig: DynamicDialogConfig) {
         this.contenidoSemana = this.dialogConfig.data.contenidoSemana
         this.action = this.dialogConfig.data.action
+        this.actividad = this.dialogConfig.data.actividad
+
+        if (this.actividad?.ixActivadadId && this.action === 'ACTUALIZAR') {
+            this.getTareasxiTareaId(this.actividad.ixActivadadId)
+        }
     }
 
     submitFormulario(data) {
@@ -49,17 +56,24 @@ export class TareaFormContainerComponent {
         data.opcion = this.action + 'xProgActxiTarea'
         data.iDocenteId = this._constantsService.iDocenteId
         data.iActTipoId = this.dialogConfig.data.iActTipoId
-        data.iContenidoSemId =
-            this.dialogConfig.data.contenidoSemana.iContenidoSemId
+
+        let prefix = ''
+        if (this.action === 'GUARDAR') {
+            data.iContenidoSemId =
+                this.dialogConfig.data.contenidoSemana.iContenidoSemId
+            prefix = !data.bReutilizarTarea
+                ? 'programacion-actividades'
+                : !data.iProgActId
+                  ? 'programacion-actividades'
+                  : 'tareas'
+        } else {
+            prefix = 'tareas'
+        }
 
         const params = {
             petition: 'post',
             group: 'aula-virtual',
-            prefix: !data.bReutilizarTarea
-                ? 'programacion-actividades'
-                : !data.iProgActId
-                  ? 'programacion-actividades'
-                  : 'tareas',
+            prefix: prefix,
             ruta: 'store',
             data: data,
             params: { skipSuccessMessage: true },
@@ -67,8 +81,8 @@ export class TareaFormContainerComponent {
 
         this._generalService.getGralPrefix(params).subscribe({
             next: (resp) => {
-                console.log(resp)
-                this.closeModal()
+                console.log(resp.validated)
+                this.closeModal(resp.validated)
             },
         })
     }
@@ -78,8 +92,29 @@ export class TareaFormContainerComponent {
         this.ref.close(null)
     }
 
-    closeModal() {
+    closeModal(resp: boolean) {
         // this.tarea = null
-        this.ref.close(null)
+        this.ref.close(resp)
+    }
+
+    getTareasxiTareaId(iTareaId) {
+        const params = {
+            petition: 'post',
+            group: 'aula-virtual',
+            prefix: 'tareas',
+            ruta: 'list',
+            data: {
+                opcion: 'CONSULTARxiTareaId',
+                iTareaId: iTareaId,
+            },
+            params: { skipSuccessMessage: true },
+        }
+        this._generalService.getGralPrefix(params).subscribe({
+            next: (resp) => {
+                this.tarea = resp.data.length
+                    ? resp.data[0]
+                    : this.closeModal(resp.validated)
+            },
+        })
     }
 }

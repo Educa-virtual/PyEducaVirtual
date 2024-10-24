@@ -6,13 +6,15 @@
                 [enableService]="false"
                 [closable]="false"
             />
-            <div class="flex align-items-center justify-content-end mb-2">
-                ¿Deseas reutilizar tarea? &nbsp;&nbsp;
-                <p-inputSwitch
-                    (ngModelChange)="getTareasxiCursoId()"
-                    formControlName="bReutilizarTarea"
-                />
-            </div>
+            @if (!formTareas.value.iTareaId) {
+                <div class="flex align-items-center justify-content-end mb-2">
+                    ¿Deseas reutilizar tarea? &nbsp;&nbsp;
+                    <p-inputSwitch
+                        (ngModelChange)="getTareasxiCursoId()"
+                        formControlName="bReutilizarTarea"
+                    />
+                </div>
+            }
             <p-inputGroup>
                 <p-inputGroupAddon> Título </p-inputGroupAddon>
                 @if (this.formTareas.value.bReutilizarTarea) {
@@ -75,7 +77,6 @@
                     [showTime]="true"
                     [hourFormat]="'24'"
                     inputId="dtInicio"
-                    [appendTo]="'body'"
                 />
             </p-inputGroup>
         </div>
@@ -90,7 +91,6 @@
                     [showTime]="true"
                     [hourFormat]="'24'"
                     inputId="dtFin"
-                    [appendTo]="'body'"
                 />
             </p-inputGroup>
         </div>
@@ -148,12 +148,12 @@
                         pRipple
                         type="button"
                         class="p-button-rounded p-button-outlined mx-2"
-                        (click)="openUpload('recursos')"
+                        (click)="openUpload('file')"
                     >
                         <i
-                            class="pi pi-folder my-2"
+                            class="pi pi-upload my-2"
                             style="color: #ffd04b; font-size: 3rem"
-                            pTooltip="Subir de mis Recursos"
+                            pTooltip="Subir Recursos"
                             tooltipPosition="bottom"
                         ></i>
                     </button>

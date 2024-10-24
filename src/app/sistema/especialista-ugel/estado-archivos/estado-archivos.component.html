@@ -4,13 +4,16 @@
 </div>
 <p-divider type="solid"></p-divider>
 <div class="card flex">
-    <div style="width: 70%; margin: auto">
+    <div style="width: 100%; margin: auto">
         <div class="flex">
             <div class="p-card p-m-2" style="flex: 1 1 calc(50% - 1rem)">
                 <p>UGEL ILO</p>
                 <p-divider type="solid" />
                 <div>
-                    <p-table [tableStyle]="{ 'min-width': '20.7' }">
+                    <p-table
+                        [value]="products"
+                        [tableStyle]="{ 'min-width': '20.7' }"
+                    >
                         <ng-template pTemplate="header" let-columns>
                             <tr>
                                 <th>Name</th>
@@ -18,11 +21,15 @@
                                 <th>Category</th>
                             </tr>
                         </ng-template>
-                        <ng-template>
+                        <ng-template
+                            pTemplate="body"
+                            let-product
+                            let-columns="columns"
+                        >
                             <tr>
-                                <td>name</td>
-                                <td>precio</td>
-                                <td>categoria</td>
+                                <td style="text-align: center">ASD</td>
+                                <td style="text-align: center">ASD</td>
+                                <td style="text-align: center">ASD</td>
                             </tr>
                         </ng-template>
                     </p-table>
@@ -30,22 +37,59 @@
             </div>
             <p-divider layout="vertical" />
             <div class="p-card p-m-2" style="flex: 1 1 calc(50% - 1rem)">
-                <p>UGEL ILO</p>
+                <p>UGEL MOQUEGUA</p>
                 <p-divider type="solid" />
                 <div>
-                    <p-table [tableStyle]="{ 'min-width': '20.7' }">
+                    <p-table
+                        [value]="products"
+                        [tableStyle]="{ 'min-width': '20.7' }"
+                    >
                         <ng-template pTemplate="header" let-columns>
                             <tr>
-                                <th>Name</th>
-                                <th>Price</th>
-                                <th>Category</th>
+                                <th style="text-align: center">Name</th>
+                                <th style="text-align: center">Price</th>
+                                <th style="text-align: center">Category</th>
                             </tr>
                         </ng-template>
-                        <ng-template>
+                        <ng-template
+                            pTemplate="body"
+                            let-product
+                            let-columns="columns"
+                        >
                             <tr>
-                                <td>name</td>
-                                <td>precio</td>
-                                <td>categoria</td>
+                                <td style="text-align: center">name</td>
+                                <td style="text-align: center">precio</td>
+                                <td style="text-align: center">categoria</td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+            </div>
+            <p-divider layout="vertical" />
+            <div class="p-card p-m-2" style="flex: 1 1 calc(50% - 1rem)">
+                <p>UGEL MOQUEGUA</p>
+                <p-divider type="solid" />
+                <div>
+                    <p-table
+                        [value]="products"
+                        [tableStyle]="{ 'min-width': '20.7' }"
+                    >
+                        <ng-template pTemplate="header" let-columns>
+                            <tr>
+                                <th style="text-align: center">Name</th>
+                                <th style="text-align: center">Price</th>
+                                <th style="text-align: center">Category</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template
+                            pTemplate="body"
+                            let-product
+                            let-columns="columns"
+                        >
+                            <tr>
+                                <td style="text-align: center">name</td>
+                                <td style="text-align: center">precio</td>
+                                <td style="text-align: center">categoria</td>
                             </tr>
                         </ng-template>
                     </p-table>
@@ -55,22 +99,29 @@
         <p-divider />
         <div class="flex">
             <div class="p-card p-m-2" style="flex: 1 1 calc(50% - 1rem)">
-                <p>UGEL ILO</p>
+                <p>SANCHEZ CERRO</p>
                 <p-divider type="solid" />
                 <div>
-                    <p-table [tableStyle]="{ 'min-width': '20.7' }">
+                    <p-table
+                        [value]="products"
+                        [tableStyle]="{ 'min-width': '20.7' }"
+                    >
                         <ng-template pTemplate="header" let-columns>
                             <tr>
-                                <th>Name</th>
-                                <th>Price</th>
-                                <th>Category</th>
+                                <th style="text-align: center">Name</th>
+                                <th style="text-align: center">Price</th>
+                                <th style="text-align: center">Category</th>
                             </tr>
                         </ng-template>
-                        <ng-template>
+                        <ng-template
+                            pTemplate="body"
+                            let-product
+                            let-columns="columns"
+                        >
                             <tr>
-                                <td>name</td>
-                                <td>precio</td>
-                                <td>categoria</td>
+                                <td style="text-align: center">name</td>
+                                <td style="text-align: center">precio</td>
+                                <td style="text-align: center">categoria</td>
                             </tr>
                         </ng-template>
                     </p-table>
@@ -78,22 +129,29 @@
             </div>
             <p-divider layout="vertical" />
             <div class="p-card p-m-2" style="flex: 1 1 calc(50% - 1rem)">
-                <p>UGEL ILO</p>
+                <p>UGEL MARISCAL NIETO</p>
                 <p-divider type="solid" />
                 <div>
-                    <p-table [tableStyle]="{ 'min-width': '20.7' }">
+                    <p-table
+                        [value]="products"
+                        [tableStyle]="{ 'min-width': '20.7' }"
+                    >
                         <ng-template pTemplate="header" let-columns>
                             <tr>
-                                <th>Name</th>
-                                <th>Price</th>
-                                <th>Category</th>
+                                <th style="text-align: center">Name</th>
+                                <th style="text-align: center">Price</th>
+                                <th style="text-align: center">Category</th>
                             </tr>
                         </ng-template>
-                        <ng-template>
+                        <ng-template
+                            pTemplate="body"
+                            let-product
+                            let-columns="columns"
+                        >
                             <tr>
-                                <td>name</td>
-                                <td>precio</td>
-                                <td>categoria</td>
+                                <td style="text-align: center">name</td>
+                                <td style="text-align: center">precio</td>
+                                <td style="text-align: center">categoria</td>
                             </tr>
                         </ng-template>
                     </p-table>
@@ -103,212 +161,43 @@
         <p-divider />
         <div class="flex">
             <div class="p-card p-m-2" style="flex: 1 1 calc(50% - 1rem)">
-                <p>UGEL ILO</p>
-                <p-divider type="solid" />
-                <div>
-                    <p-table [tableStyle]="{ 'min-width': '20.7' }">
-                        <ng-template pTemplate="header" let-columns>
-                            <tr>
-                                <th>Name</th>
-                                <th>Price</th>
-                                <th>Category</th>
-                            </tr>
-                        </ng-template>
-                        <ng-template>
-                            <tr>
-                                <td>name</td>
-                                <td>precio</td>
-                                <td>categoria</td>
-                            </tr>
-                        </ng-template>
-                    </p-table>
-                </div>
-            </div>
-            <p-divider layout="vertical" />
-            <div class="p-card p-m-2" style="flex: 1 1 calc(50% - 1rem)">
-                <p>UGEL ILO</p>
-                <p-divider type="solid" />
-                <div>
-                    <p-table [tableStyle]="{ 'min-width': '20.7' }">
-                        <ng-template pTemplate="header" let-columns>
-                            <tr>
-                                <th>Name</th>
-                                <th>Price</th>
-                                <th>Category</th>
-                            </tr>
-                        </ng-template>
-                        <ng-template>
-                            <tr>
-                                <td>name</td>
-                                <td>precio</td>
-                                <td>categoria</td>
-                            </tr>
-                        </ng-template>
-                    </p-table>
-                </div>
+                <p>Leyenda</p>
+                <p-divider />
+                <p-table [value]="leyendas">
+                    <ng-template pTemplate="header"> </ng-template>
+                    <ng-template pTemplate="body" let-product>
+                        <tr>
+                            <td style="text-align: center; font-weight: bold">
+                                {{ product.name }}
+                            </td>
+
+                            <td style="text-align: justify">
+                                {{ product.category }}
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
             </div>
         </div>
     </div>
-
-    <!-- <div style="width: 70%">
-        <div class="flex">
-            <div class="card">
-                <p>UGEL ILO</p>
-                <p-divider type="solid" />
-                <div class="p-card p-m-2" style="flex: 1 1 calc(50% - 1rem)">
-                    <p-table
-                        [tableStyle]="{
-                            'min-width': '20.625rem',
-                            'max-width': '40rem',
-                        }"
-                    >
-                        <ng-template pTemplate="header" let-columns>
-                            <tr>
-                                <th>Name</th>
-                                <th>Price</th>
-                                <th>Category</th>
-                            </tr>
-                        </ng-template>
-                        <ng-template>
-                            <tr>
-                                <td>name</td>
-                                <td>precio</td>
-                                <td>categoria</td>
-                            </tr>
-                        </ng-template>
-                    </p-table>
-                </div>
-            </div>
-            <p-divider layout="vertical" />
-            <div class="card">
-                <p>UGEL ILO</p>
-                <p-divider type="solid" />
-                <div class="p-card p-m-2" style="flex: 1 1 calc(50% - 1rem)">
-                    <p-table
-                        [tableStyle]="{
-                            'min-width': '20.625rem',
-                            'max-width': '40rem',
-                        }"
-                    >
-                        <ng-template pTemplate="header" let-columns>
-                            <tr>
-                                <th>Name</th>
-                                <th>Price</th>
-                                <th>Category</th>
-                            </tr>
-                        </ng-template>
-                        <ng-template>
-                            <tr>
-                                <td>name</td>
-                                <td>precio</td>
-                                <td>categoria</td>
-                            </tr>
-                        </ng-template>
-                    </p-table>
-                </div>
-            </div>
-        </div>
-        <p-divider />
-        <div class="flex">
-            <div class="card">
-                <p>UGEL ILO</p>
-                <p-divider type="solid" />
-                <div class="p-card p-m-2" style="flex: 1 1 calc(50% - 1rem)">
-                    <p-table [tableStyle]="{ 'min-width': '20.7' }">
-                        <ng-template pTemplate="header" let-columns>
-                            <tr>
-                                <th>Name</th>
-                                <th>Price</th>
-                                <th>Category</th>
-                            </tr>
-                        </ng-template>
-                        <ng-template>
-                            <tr>
-                                <td>name</td>
-                                <td>precio</td>
-                                <td>categoria</td>
-                            </tr>
-                        </ng-template>
-                    </p-table>
-                </div>
-            </div>
-            <p-divider layout="vertical" />
-            <div class="card">
-                <p>UGEL ILO</p>
-                <p-divider type="solid" />
-                <div class="p-card p-m-2" style="flex: 1 1 calc(50% - 1rem)">
-                    <p-table [tableStyle]="{ 'min-width': '20.7' }">
-                        <ng-template pTemplate="header" let-columns>
-                            <tr>
-                                <th>Name</th>
-                                <th>Price</th>
-                                <th>Category</th>
-                            </tr>
-                        </ng-template>
-                        <ng-template>
-                            <tr>
-                                <td>name</td>
-                                <td>precio</td>
-                                <td>categoria</td>
-                            </tr>
-                        </ng-template>
-                    </p-table>
-                </div>
-            </div>
-        </div>
-        <p-divider />
-        <div class="flex">
-            <div class="card">
-                <p>UGEL ILO</p>
-                <p-divider type="solid" />
-                <div class="p-card p-m-2" style="flex: 1 1 calc(50% - 1rem)">
-                    <p-table [tableStyle]="{ 'min-width': '20.7' }">
-                        <ng-template pTemplate="header" let-columns>
-                            <tr>
-                                <th>Name</th>
-                                <th>Price</th>
-                                <th>Category</th>
-                            </tr>
-                        </ng-template>
-                        <ng-template>
-                            <tr>
-                                <td>name</td>
-                                <td>precio</td>
-                                <td>categoria</td>
-                            </tr>
-                        </ng-template>
-                    </p-table>
-                </div>
-            </div>
-            <p-divider layout="vertical" />
-            <div class="card">
-                <p>UGEL ILO</p>
-                <p-divider type="solid" />
-                <div class="p-card p-m-2" style="flex: 1 1 calc(50% - 1rem)">
-                    <p-table [tableStyle]="{ 'min-width': '20.7' }">
-                        <ng-template pTemplate="header" let-columns>
-                            <tr>
-                                <th>Name</th>
-                                <th>Price</th>
-                                <th>Category</th>
-                            </tr>
-                        </ng-template>
-                        <ng-template>
-                            <tr>
-                                <td>name</td>
-                                <td>precio</td>
-                                <td>categoria</td>
-                            </tr>
-                        </ng-template>
-                    </p-table>
-                </div>
-            </div>
-        </div>
-    </div> -->
     <p-divider layout="vertical" />
-    <div style="width: 30%">
+    <!-- <div style="width: 30%">
         <p>Leyenda</p>
         <p-divider />
-        <p>hola</p>
-    </div>
+
+        <p-table [value]="products" [tableStyle]="{ 'min-width': '50rem' }">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Code</th>
+                    <th>Name</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-product>
+                <tr>
+                    <td>{{ product.code }}</td>
+                    <td>{{ product.name }}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div> -->
 </div>

@@ -171,6 +171,11 @@ const notas_evaluaciones = [
                         //routerLink: ['/especialista-ugel/ver-evaluacion'],
                         items: [
                             {
+                                label: 'Banco de Preguntas',
+                                icon: 'pi pi-fw pi-folder',
+                                routerLink: ['/evaluaciones/areas'],
+                            },
+                            {
                                 label: 'Evaluaciones',
                                 icon: 'pi pi-fw pi-calendar',
                                 routerLink: ['/evaluaciones/evaluaciones'],
@@ -217,7 +222,7 @@ const notas_evaluaciones = [
                                         ],
                                     },
                                     {
-                                        label: 'Proc. Archivo',
+                                        label: 'Proc. Archivo. DRE',
                                         icon: 'pi pi-fw pi-user',
                                         routerLink: [
                                             '/especialista-ugel/procesar-archivos',

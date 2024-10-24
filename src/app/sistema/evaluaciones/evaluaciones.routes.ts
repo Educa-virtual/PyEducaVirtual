@@ -49,13 +49,6 @@ const routes: Routes = [
             ).then((c) => c.CompetenciasComponent),
     },
 
-    {
-        path: 'configuracion',
-        loadChildren: () =>
-            import(
-                './sub-evaluaciones/configuracion/configuracion.module'
-            ).then((c) => c.ConfiguracionModule),
-    },
 ]
 
 export default routes

@@ -1,41 +1,42 @@
 import { Component, OnInit, OnChanges, OnDestroy } from '@angular/core'
+
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
+
 import { httpService } from '../../../http/httpService'
 import { ButtonModule } from 'primeng/button'
 import { TicketService } from '../../service/ticketservice'
 import { Router } from '@angular/router'
 
-
 @Component({
-    selector: 'app-turnos',
+    selector: 'app-modalidades',
     standalone: true,
-    imports: [
-        TablePrimengComponent,
-        ButtonModule
-    ],
-    templateUrl: './turnos.component.html',
-    styleUrl: './turnos.component.scss',
+    imports: [ButtonModule, TablePrimengComponent],
+    templateUrl: './modalidades.component.html',
+    styleUrl: './modalidades.component.scss',
 })
-export class TurnosComponent implements OnInit, OnChanges {
-
-    turnos: {
-        iTurnoId: string
-        cTurnoNombre: string
+export class ModalidadesComponent implements OnInit, OnChanges {
+    modalidades: {
+        iModalServId: string
+        cModalServNombre: string
     }[]
 
-    turnosInformation
-    constructor(private httpService: httpService,         public ticketService: TicketService,
-        private router: Router) {}
+    modalidadesInformation
+    constructor(
+        private httpService: httpService,
+        public ticketService: TicketService,
+        private router: Router
+    ) {}
 
     nextPage() {
-        this.ticketService.registroInformation.stepTurnos = this.turnosInformation;
+        this.ticketService.registroInformation.stepModalidades =
+            this.modalidadesInformation
         this.router.navigate([
-            'evaluaciones/configuracion/registro/modalidades',
+            'configuracion/configuracion/registro/periodosAcademicos',
         ])
     }
 
     prevPage() {
-        this.router.navigate(['evaluaciones/configuracion/registro/diasLaborales'])
+        this.router.navigate(['configuracion/configuracion/registro/turnos'])
     }
 
     ngOnInit() {
@@ -43,19 +44,18 @@ export class TurnosComponent implements OnInit, OnChanges {
             .postData('administracion/dias', {
                 json: JSON.stringify({
                     jmod: 'acad',
-                    jtable: 'turnos',
+                    jtable: 'modalidad_servicios',
                 }),
                 _opcion: 'getConsulta',
             })
             .subscribe({
                 next: (data: any) => {
-                    this.turnos = data.data
+                    this.modalidades = data.data
 
-                    console.log(this.turnos);
-                    
+                    console.log(this.modalidades)
                 },
                 error: (error) => {
-                    console.error('Error fetching turnos:', error)
+                    console.error('Error fetching modalidades:', error)
                 },
                 complete: () => {
                     console.log('Request completed')
@@ -77,7 +77,7 @@ export class TurnosComponent implements OnInit, OnChanges {
         {
             type: 'text',
             width: '5rem',
-            field: 'iTurnoId',
+            field: 'iModalServId',
             header: 'Nro',
             text_header: 'center',
             text: 'center',
@@ -85,8 +85,8 @@ export class TurnosComponent implements OnInit, OnChanges {
         {
             type: 'text',
             width: '5rem',
-            field: 'cTurnoNombre',
-            header: 'Turno',
+            field: 'cModalServNombre',
+            header: 'Modalidad',
             text_header: 'center',
             text: 'center',
         },

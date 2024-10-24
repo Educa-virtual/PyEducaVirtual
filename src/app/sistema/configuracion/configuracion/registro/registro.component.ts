@@ -80,7 +80,7 @@ export class RegistroComponent implements OnInit, OnChanges {
     }
 
     navigateToYears() {
-        this.router.navigate(['evaluaciones/configuracion/years']); // Navega a YearsComponent
+        this.router.navigate(['configuracion/configuracion/years']); // Navega a YearsComponent
     }
 
 

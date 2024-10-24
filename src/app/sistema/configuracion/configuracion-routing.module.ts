@@ -6,6 +6,14 @@ import { PersonasComponent } from './personas/personas.component'
     imports: [
         RouterModule.forChild([
             { path: 'personas', component: PersonasComponent },
+            
+            {
+                path: 'configuracion',
+                loadChildren: () =>
+                    import(
+                        './configuracion/configuracion.module'
+                    ).then((c) => c.ConfiguracionModule),
+            }
         ]),
     ],
     exports: [RouterModule],

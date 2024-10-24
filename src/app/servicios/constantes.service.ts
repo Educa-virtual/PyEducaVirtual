@@ -112,6 +112,17 @@ const administrador = [
                 routerLink: ['/configuracion/personas'],
             },
             {
+                label: 'Administracion de la I.E',
+                icon: 'pi pi-fw pi-cog',
+                items: [
+                    {
+                        label: 'Registro de año escolar',
+                        icon: 'pi pi-fw pi-cog',
+                        routerLink: ['/configuracion/configuracion'],
+                    },
+                ],
+            },
+            {
                 label: 'Calendario Académico',
                 icon: 'pi pi-fw pi-desktop',
                 routerLink: ['/'],

@@ -1,11 +1,11 @@
 import { Component, OnInit, OnChanges, OnDestroy } from '@angular/core'
 import { TableModule } from 'primeng/table'
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
+import { IColumn, IActionTable } from '@/app/shared/table-primeng/table-primeng.component'
 import { httpService } from '../../../http/httpService'
 import { ButtonModule } from 'primeng/button'
 import { TicketService } from '../../service/ticketservice'
 import { Router } from '@angular/router'
-
 @Component({
     selector: 'app-diasLaborales',
     standalone: true,
@@ -28,13 +28,13 @@ export class DiasLaboralesComponent implements OnInit, OnChanges {
     nextPage() {
         this.ticketService.registroInformation.stepYear = this.diasInformation;
         this.router.navigate([
-            'evaluaciones/configuracion/registro/turnos',
+            'configuracion/configuracion/registro/turnos',
         ])
     }
 
 
     prevPage() {
-        this.router.navigate(['evaluaciones/configuracion/registro/year'])
+        this.router.navigate(['configuracion/configuracion/registro/year'])
     }
 
     ngOnInit() {
@@ -62,17 +62,20 @@ export class DiasLaboralesComponent implements OnInit, OnChanges {
             })
     }
 
-    actions = [
+    actions: IActionTable[] = [
         {
-            labelTooltip: 'Marcar',
-            icon: '',
-            accion: 'toogleValue',
+            labelTooltip: 'Asignar Matriz',
+            icon: {
+                name: 'matGroupWork',
+                size: 'xs',
+            },
+            accion: 'asignar',
             type: 'item',
-            class: '',
+            class: 'p-button-rounded p-button-primary p-button-text',
         },
     ]
 
-    columns = [
+    columns: IColumn[] = [
         {
             type: 'text',
             width: '5rem',
@@ -93,17 +96,17 @@ export class DiasLaboralesComponent implements OnInit, OnChanges {
             type: 'text',
             width: '5rem',
             field: 'cDiaNombre',
-            header: 'Día',
+            header: 'Días',
             text_header: 'center',
             text: 'center',
         },
         {
-            type: 'actions',
-            width: '3rem',
-            field: 'actions',
-            header: 'Estado',
-            text_header: 'center',
-            text: 'center',
+            field: 'checked',
+            header: '',
+            type: 'checkbox',
+            width: '5rem',
+            text: 'left',
+            text_header: '',
         },
     ]
     ngOnChanges(changes) {}

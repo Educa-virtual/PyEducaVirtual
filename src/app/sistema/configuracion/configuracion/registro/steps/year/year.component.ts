@@ -57,7 +57,7 @@ export class YearComponent implements OnInit, OnChanges {
     nextPage() {
         this.ticketService.registroInformation.stepYear = this.yearInformation;
         this.router.navigate([
-            'evaluaciones/configuracion/registro/diasLaborales',
+            'configuracion/configuracion/registro/diasLaborales',
         ])
     }
     // prevPage() {

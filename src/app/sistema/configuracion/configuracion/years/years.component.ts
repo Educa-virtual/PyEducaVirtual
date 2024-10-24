@@ -105,10 +105,10 @@ export class YearsComponent implements OnInit {
     ]
 
     navigateToRegistro() {
-        this.router.navigate(['evaluaciones/configuracion/registro']);
+        this.router.navigate(['configuracion/configuracion/registro']);
     }
     
     navigateToResumen(){
-        this.router.navigate(['/evaluaciones/configuracion/registro']);
+        this.router.navigate(['/configuracion/configuracion/registro']);
     }
 }

@@ -26,12 +26,12 @@ export class ResumenComponent implements OnInit, OnChanges {
     nextPage() {
         this.ticketService.registroInformation.stepTurnos = this.resumenInformation;
         this.router.navigate([
-            'evaluaciones/configuracion/registro/periodos',
+            'configuracion/configuracion/registro/periodos',
         ])
     }
 
     prevPage() {
-        this.router.navigate(['evaluaciones/configuracion/registro/periodosAcademicos'])
+        this.router.navigate(['configuracion/configuracion/registro/periodosAcademicos'])
     }
 
     ngOnInit() {

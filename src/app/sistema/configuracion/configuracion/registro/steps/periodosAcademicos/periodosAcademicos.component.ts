@@ -1,5 +1,4 @@
 import { Component, OnInit, OnChanges, OnDestroy } from '@angular/core'
-
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
 
 import { httpService } from '../../../http/httpService'
@@ -7,20 +6,27 @@ import { ButtonModule } from 'primeng/button'
 import { TicketService } from '../../service/ticketservice'
 import { Router } from '@angular/router'
 
+
 @Component({
-    selector: 'app-modalidades',
+    selector: 'app-periodosAcademicos',
     standalone: true,
-    imports: [ButtonModule, TablePrimengComponent],
-    templateUrl: './modalidades.component.html',
-    styleUrl: './modalidades.component.scss',
+    imports: [
+        TablePrimengComponent,
+        ButtonModule,
+    ],
+    templateUrl: './periodosAcademicos.component.html',
+    styleUrl: './periodosAcademicos.component.scss',
 })
-export class ModalidadesComponent implements OnInit, OnChanges {
-    modalidades: {
-        iModalServId: string
-        cModalServNombre: string
+export class PeriodosAcademicosComponent implements OnInit, OnChanges {
+
+    periodos: {
+        iPeriodoEvalId: string
+        cPeriodoEvalNombre: string
+        cPeriodoEvalLetra: string
+        cPeriodoEvalCantidad: string
     }[]
 
-    modalidadesInformation
+    periodosInformation
     constructor(
         private httpService: httpService,
         public ticketService: TicketService,
@@ -29,14 +35,14 @@ export class ModalidadesComponent implements OnInit, OnChanges {
 
     nextPage() {
         this.ticketService.registroInformation.stepModalidades =
-            this.modalidadesInformation
+            this.periodosInformation
         this.router.navigate([
-            'evaluaciones/configuracion/registro/periodosAcademicos',
+            'configuracion/configuracion/registro/resumen',
         ])
     }
 
     prevPage() {
-        this.router.navigate(['evaluaciones/configuracion/registro/turnos'])
+        this.router.navigate(['configuracion/configuracion/registro/modalidades'])
     }
 
     ngOnInit() {
@@ -44,15 +50,15 @@ export class ModalidadesComponent implements OnInit, OnChanges {
             .postData('administracion/dias', {
                 json: JSON.stringify({
                     jmod: 'acad',
-                    jtable: 'modalidad_servicios',
+                    jtable: 'periodo_evaluaciones',
                 }),
                 _opcion: 'getConsulta',
             })
             .subscribe({
                 next: (data: any) => {
-                    this.modalidades = data.data
+                    this.periodos = data.data
 
-                    console.log(this.modalidades)
+                    console.log(this.periodos)
                 },
                 error: (error) => {
                     console.error('Error fetching modalidades:', error)
@@ -77,7 +83,7 @@ export class ModalidadesComponent implements OnInit, OnChanges {
         {
             type: 'text',
             width: '5rem',
-            field: 'iModalServId',
+            field: 'iPeriodoEvalId',
             header: 'Nro',
             text_header: 'center',
             text: 'center',
@@ -85,8 +91,32 @@ export class ModalidadesComponent implements OnInit, OnChanges {
         {
             type: 'text',
             width: '5rem',
+            field: 'cPeriodoEvalNombre',
+            header: 'Periodo evaluaciones formativas',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'text',
+            width: '5rem',
             field: 'cModalServNombre',
-            header: 'Modalidad',
+            header: 'Fecha inicio',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'text',
+            width: '5rem',
+            field: 'cModalServNombre',
+            header: 'Fecha fin',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'text',
+            width: '5rem',
+            field: 'cModalServNombre',
+            header: 'Ciclo académico',
             text_header: 'center',
             text: 'center',
         },
@@ -99,6 +129,5 @@ export class ModalidadesComponent implements OnInit, OnChanges {
             text: 'center',
         },
     ]
-
     ngOnChanges(changes) {}
 }

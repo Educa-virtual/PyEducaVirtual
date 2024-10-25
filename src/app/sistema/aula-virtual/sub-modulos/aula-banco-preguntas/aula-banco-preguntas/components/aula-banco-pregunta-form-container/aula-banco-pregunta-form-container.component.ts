@@ -1,3 +1,4 @@
+import { ConstantesService } from '@/app/servicios/constantes.service'
 import { ApiAulaBancoPreguntasService } from '@/app/sistema/aula-virtual/services/api-aula-banco-preguntas.service'
 import { sinEncabezadoObj } from '@/app/sistema/evaluaciones/sub-evaluaciones/banco-preguntas/components/banco-pregunta-encabezado-form/banco-pregunta-encabezado-form.component'
 import {
@@ -21,7 +22,8 @@ export class AulaBancoPreguntaFormContainerComponent implements OnInit {
     private _config = inject(DynamicDialogConfig)
     private _ref = inject(DynamicDialogRef)
     private _aulaBancoPreguntasService = inject(ApiAulaBancoPreguntasService)
-
+    private iEvaluacionId = null
+    private _constantesService = inject(ConstantesService)
     private unsubscribe$: Subject<boolean> = new Subject()
 
     public encabezados = []
@@ -59,9 +61,8 @@ export class AulaBancoPreguntaFormContainerComponent implements OnInit {
     obtenerEncabezados() {
         const params = {
             iCursoId: this._config.data.iCursoId,
-            iNivelCicloId: 1,
-            iEspecialistaId: 1,
-            iDocenteId: 1,
+            iNivelCicloId: this._constantesService.iNivelCicloId,
+            iDocenteId: this._constantesService.iDocenteId,
         }
         this._aulaBancoPreguntasService
             .obtenerEncabezadosPreguntas(params)

@@ -16,6 +16,7 @@ import { FloatLabelModule } from 'primeng/floatlabel'
 import { ConfirmationService, MessageService } from 'primeng/api'
 import { ConfirmDialogModule } from 'primeng/confirmdialog'
 import { ToastModule } from 'primeng/toast'
+import { FormControl } from '@angular/forms'
 @Component({
     selector: 'app-year',
     standalone: true,
@@ -37,6 +38,7 @@ export class YearComponent implements OnInit, OnChanges {
     form: FormGroup
     minDate: Date
     visible: boolean = false
+    fechaVigenteFetch
 
     maxDate: Date
 
@@ -51,32 +53,69 @@ export class YearComponent implements OnInit, OnChanges {
         private fb: FormBuilder
     ) {}
     ngOnInit() {
-        let service = this.ticketService.getTicketInformation()?.stepYear
-
-        if(this.ticketService.registroInformation?.stepYear){
-            this.form = this.fb.group({
-                fechaVigente: [service.fechaVigente ||''],
-                fechaInicio: [service.fechaFin || ''],
-                fechaFin: [service.fechaFin || ''],
+        this.httpService
+            .postData('acad/calendarioAcademico/addCalAcademico', {
+                json: JSON.stringify({}),
+                _opcion: 'getCalendarioAno',
             })
-        } else {
+            .subscribe({
+                next: (data: any) => {
+                    this.fechaVigenteFetch = data.data[0]["JSON_F52E2B61-18A1-11d1-B105-00805F49916B"];
+                    console.log(JSON.parse(this.fechaVigenteFetch));
+    
+                    this.fechaVigenteFetch = JSON.parse(this.fechaVigenteFetch);
+    
+                    if (!this.ticketService.registroInformation) {
+                        this.ticketService.registroInformation = {};
+                    }
+    
+                    let fechaCurrent = this.fechaVigenteFetch.map((fecha) => ({
+                        idFechaVigente: fecha.iYAcadId,
+                        fechaVigente: fecha.cYAcadNombre,
+                        fechaInicio: new Date(fecha.dtYAcadInicio),
+                        fechaFin: new Date(fecha.dYAcadFin),
+                    }));
+    
+                    this.ticketService.setTicketInformation(fechaCurrent[0], "stepYear");
+                    this.yearInformation = fechaCurrent[0];
+    
+                    // Configurar el formulario aquí una vez que `yearInformation` esté definido
+                    
+                },
+                error: (error) => {
+                    console.error('Error fetching turnos:', error);
+                },
+                complete: () => {
+                    console.log('Request completed');
+
+                    console.log(this.yearInformation)
+
+                    this.form.setValue({
+                        fechaVigente: this.yearInformation.fechaVigente,
+                        fechaInicio: this.yearInformation.fechaInicio,
+                        fechaFin: this.yearInformation.fechaFin,
+                    });
+
+                    this.form.get('fechaVigente').disable()
+                },
+            });
+
             this.form = this.fb.group({
                 fechaVigente: [''],
-                fechaInicio: [ ''],
-                fechaFin: [ ''],
-            })
-        }
+                fechaInicio: [''],
+                fechaFin: [''],
+            });
 
-
-        this.form.valueChanges.subscribe((value) => {
-            // this.ticketService.setTicketInformation(value, "stepYear")
-            this.yearInformation = {
-                fechaVigente: value.fechaVigente,
-                fechaInicio: value.fechaInicio,
-                fechaFin: value.fechaFin,
-            }
-        })
+            // Suscribirse a los cambios del formulario después de la inicialización
+            this.form.valueChanges.subscribe((value) => {
+                this.yearInformation = {
+                    ...this.yearInformation,
+                    fechaInicio: value.fechaInicio,
+                    fechaFin: value.fechaFin,
+                };
+            });
     }
+    
 
     confirm() {
         this.confirmationService.confirm({
@@ -121,12 +160,36 @@ export class YearComponent implements OnInit, OnChanges {
             yearCurrent = this.ticketService.getTicketInformation().stepYear
         }
 
-        yearCurrent = this.yearInformation
+        console.log(this.yearInformation);
 
-        this.ticketService.setTicketInformation(yearCurrent, 'stepYear')
+        this.httpService
+            .postData('acad/calendarioAcademico/addCalAcademico', {
+                json: JSON.stringify({
+                    iYAcadId: this.yearInformation.idFechaVigente,
+                    dtCalAcadInicio: this.yearInformation.fechaFin,
+                    dtCalAcadFin: this.yearInformation.fechaFin,
+                }),
+                _opcion: 'addCalAcademico',
+            })
+            .subscribe({
+                next: (data: any) => {
+                    console.log(data)
+                },
+                error: (error) => {
+                    console.error('Error fetching turnos:', error);
+                },
+                complete: () => {
+                    console.log('Request completed');
 
-        console.log(this.ticketService.registroInformation.stepYear)
-        console.log('Guardando informacion')
+                    this.form.setValue({
+                        fechaVigente: this.yearInformation.fechaVigente,
+                        fechaInicio: this.yearInformation.fechaInicio,
+                        fechaFin: this.yearInformation.fechaFin,
+                    });
+
+                    this.form.get('fechaVigente').disable()
+                },
+            });
 
         // this.httpService
         //     .postData('acad/calendarioAcademico/addCalAcademico', {

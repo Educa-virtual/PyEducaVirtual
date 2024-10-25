@@ -28,7 +28,8 @@ import {
     Validators,
 } from '@angular/forms'
 import { CommonInputComponent } from '@/app/shared/components/common-input/common-input.component'
-
+import { StepperModule } from 'primeng/stepper'
+import { Product } from 'src/app/demo/api/product'
 interface TipoEvaluacion {
     idTipoEvalId: number
     cTipoEvalDescripcion: string
@@ -53,6 +54,7 @@ interface NivelEvaluacion {
         CommonInputComponent,
         ReactiveFormsModule,
         EvaluacionAreasComponent,
+        StepperModule,
     ],
     templateUrl: './evaluaciones-form.component.html',
     styleUrl: './evaluaciones-form.component.scss',
@@ -64,14 +66,14 @@ export class EvaluacionesFormComponent implements OnInit {
     public evaluacionFormGroup = this._formBuilder.group({
         idTipoEvalId: [null, [Validators.required]],
         iNivelEvalId: [null, [Validators.required]],
-        cEvaluacionDescripcion: [null],
-        cEvaluacionUrlDrive: [null],
-        cEvaluacionUrlPlantilla: [null],
-        cEvaluacionUrlManual: [null],
-        cEvaluacionUrlMatriz: [null],
-        dtEvaluacionLiberarMatriz: [null],
-        dtEvaluacionLiberarCuadernillo: [null],
-        dtEvaluacionLiberarResultados: [null],
+        cEvaluacionDescripcion: [null, [Validators.required]],
+        cEvaluacionUrlDrive: [null, [Validators.required]],
+        cEvaluacionUrlPlantilla: [null, [Validators.required]],
+        cEvaluacionUrlManual: [null, [Validators.required]],
+        cEvaluacionUrlMatriz: [null, [Validators.required]],
+        dtEvaluacionLiberarMatriz: [null, [Validators.required]],
+        dtEvaluacionLiberarCuadernillo: [null, [Validators.required]],
+        dtEvaluacionLiberarResultados: [null, [Validators.required]],
         dtEvaluacionCreacion: [null, Validators.required],
 
         cEvaluacionNombre: [null, Validators.required],
@@ -170,5 +172,24 @@ export class EvaluacionesFormComponent implements OnInit {
         } else {
             console.log('Formulario de evaluación no válido')
         }
+    }
+
+    // prueba
+
+    selectedInstituciones: Product[] = [] // Aquí se almacenan los seleccionados
+
+    onSelectedItems(items: Product[]) {
+        console.log('Items recibidos en el padre:', items)
+        this.selectedInstituciones = items
+    }
+
+    handleNext(nextCallback: any) {
+        // Puedes usar this.selectedInstituciones para lo que necesites en el siguiente paso
+        console.log(
+            'Continuando al siguiente paso con:',
+            this.selectedInstituciones
+        )
+
+        nextCallback.emit() // Emitir el callback para continuar
     }
 }

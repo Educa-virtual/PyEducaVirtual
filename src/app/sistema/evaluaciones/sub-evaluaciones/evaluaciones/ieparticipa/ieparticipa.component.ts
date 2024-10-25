@@ -1,4 +1,11 @@
-import { Component, ChangeDetectorRef, inject, OnInit } from '@angular/core'
+import {
+    Component,
+    ChangeDetectorRef,
+    inject,
+    OnInit,
+    Output,
+    EventEmitter,
+} from '@angular/core'
 /*import { Product } from '@domain/product';
 import { ProductService } from '@service/productservice';*/
 import { Product } from 'src/app/demo/api/product'
@@ -121,12 +128,19 @@ export class IeparticipaComponent implements OnInit {
                 },
             })
     }
-    seleccionados() {
-        // alert(JSON.stringify(this.targetProducts))
-    }
+    // seleccionados() {
+    //     // alert(JSON.stringify(this.targetProducts))
+    //     console.log('Seleccionados:', this.targetProducts)
+    // }
     onChange() {
         //alert(v)
         // alert(JSON.stringify(event))
         //this.verSeleccion = this.opcionSeleccionado;
+    }
+    @Output() selectedItems = new EventEmitter<Product[]>()
+
+    seleccionados() {
+        console.log('Seleccionados antes de emitir:', this.targetProducts)
+        this.selectedItems.emit(this.targetProducts)
     }
 }

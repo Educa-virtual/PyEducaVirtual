@@ -43,7 +43,6 @@ export class DiasLaboralesComponent implements OnInit, OnChanges {
     ) {}
 
     nextPage() {
-        this.ticketService.registroInformation.stepDiasLaborales = this.diasInformation
         this.router.navigate(['configuracion/configuracion/registro/turnos'])
     }
 
@@ -108,6 +107,30 @@ export class DiasLaboralesComponent implements OnInit, OnChanges {
 
     saveInformation(){
         console.log(this.diasInformation)
+
+        let dias = this.diasInformation.map((dia) => ({
+            iDiaId: dia.iDiaId,
+            iCalAcadId: 3,
+        }))
+
+
+        this.httpService
+            .postData('acad/calendarioAcademico/addCalAcademico', {
+                json: JSON.stringify(dias),
+                _opcion: 'addDiasLaborales',
+            })
+            .subscribe({
+                next: (data: any) => {
+                    console.log(data)
+                },
+                error: (error) => {
+                    console.error('Error fetching turnos:', error);
+                },
+                complete: () => {
+                    console.log('Request completed');
+                },
+            });
+
     }
 
     actions: IActionTable[] = [

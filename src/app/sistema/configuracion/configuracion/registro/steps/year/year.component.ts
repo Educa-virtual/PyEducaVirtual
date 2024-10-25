@@ -181,14 +181,6 @@ export class YearComponent implements OnInit, OnChanges {
                 },
                 complete: () => {
                     console.log('Request completed');
-
-                    this.form.setValue({
-                        fechaVigente: this.yearInformation.fechaVigente,
-                        fechaInicio: this.yearInformation.fechaInicio,
-                        fechaFin: this.yearInformation.fechaFin,
-                    });
-
-                    this.form.get('fechaVigente').disable()
                 },
             });
 

@@ -6,6 +6,7 @@ import {
     mapData,
     mapItemsBancoToEre,
 } from '../../evaluaciones/sub-evaluaciones/banco-preguntas/models/pregunta-data-transformer'
+import { ApiResponse } from '@/app/shared/interfaces/api-response.model'
 
 @Injectable({
     providedIn: 'root',
@@ -67,5 +68,13 @@ export class ApiAulaService {
                     return data
                 })
             )
+    }
+
+    obtenerTipoActividades() {
+        return this._http
+            .get<ApiResponse>(
+                `${this.baseUrlApi}/aula-virtual/contenidos/tipo-actividad`
+            )
+            .pipe(map((resp) => resp.data))
     }
 }

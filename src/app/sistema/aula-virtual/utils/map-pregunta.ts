@@ -20,6 +20,8 @@ export const mapPregunta = (pregunta, alternativas) => {
         cTipoPregDescripcion: pregunta.cTipoPregDescripcion,
         iEvalPregId: pregunta.iEvalPregId,
         isLocal: false,
+        iEvaluacionId: pregunta.iEvaluacionId,
+        logros: pregunta.logros ?? [],
     }
 }
 
@@ -36,14 +38,21 @@ export const mapAlternativa = (alternativa) => {
 export const mapEncabezado = (encabezado) => {
     encabezado.cPreguntaNoHTML = removeHTML(encabezado.cPregunta)
     encabezado.iEncabPregId = encabezado.idEncabPregId
+    encabezado.logros = []
     const ids = []
+    const idsEvaluacionPreg = []
     encabezado.preguntas = encabezado.preguntas.map((subPregunta) => {
         ids.push(subPregunta.iBancoId)
-        const alternativas = subPregunta.alternativas?.map((alt) => {
+        idsEvaluacionPreg.push(subPregunta.iEvalPregId)
+        const alternativas = subPregunta.alternativas?.map((alt, index) => {
+            if (index === 0) {
+                encabezado.logros = alt.logros ?? []
+            }
             return mapAlternativa(alt)
         })
         return mapPregunta(subPregunta, alternativas)
     })
     encabezado.iPreguntaId = ids.join(',')
+    encabezado.iEvalPregId = idsEvaluacionPreg.join(',')
     return encabezado
 }

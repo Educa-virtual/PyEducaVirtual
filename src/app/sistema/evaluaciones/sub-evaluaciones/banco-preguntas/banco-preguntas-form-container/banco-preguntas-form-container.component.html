@@ -1,0 +1,11 @@
+<app-banco-preguntas-form
+    (closeModalChange)="closeModal($event)"
+    [bancoPreguntasForm]="bancoPreguntasForm"
+    (submitChange)="guardarBancoPreguntas($event)"
+    [encabezados]="encabezados"
+    [modePregunta]="modePregunta"
+    [encabezadoMode]="encabezadoMode"
+    [pregunta]="pregunta"
+    [tipoPreguntas]="tipoPreguntas"
+    (encabezadoChange)="obtenerPreguntasPorEncabezado($event)"
+/>

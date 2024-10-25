@@ -1,0 +1,138 @@
+:host {
+    display: block;
+}
+
+:host ::ng-deep .actividad-tabs .p-tabview-nav {
+    display: flex;
+    justify-content: space-between;
+}
+
+:host ::ng-deep .actividad-tabs .p-tabview-nav li {
+    flex: 1;
+}
+
+:host ::ng-deep .actividad-tabs .p-tabview-nav li a {
+    text-align: center;
+    width: 100%;
+    display: block;
+    color: inherit;
+}
+
+:host ::ng-deep .actividad-tabs .p-tabview-nav li.p-highlight a {
+    color: var(--primary-color);
+}
+
+:host ::ng-deep .p-tabview .p-tabview-panels {
+    background-color: transparent;
+    padding-inline: 0;
+    padding-block-end: 0;
+}
+/************************/
+.container {
+    display: flex;
+    gap: 20px; /* Espacio entre las columnas */
+    height: 420px;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+.card1 {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 20px;
+    width: 58%; /* Para que ambas columnas ocupen igual espacio */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    height: 100%;
+}
+.card2 {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 20px;
+    width: 40%; /* Para que ambas columnas ocupen igual espacio */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    height: 100%;
+}
+.card3 {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 20px;
+    width: 100%; /* Para que ambas columnas ocupen igual espacio */
+    height: 100%;
+}
+@media (max-width: 768px) {
+    .card1 {
+        width: 100%;
+    }
+    .card2 {
+        width: 100%;
+    }
+    .card3 {
+        width: 100%;
+    }
+}
+.list {
+    height: 1000px;
+}
+:host ::ng-deep .list .p-orderlist-controls {
+    display: none;
+    height: 100%;
+}
+
+:host ::ng-deep .list .p-orderlist-list-container {
+    height: 100%;
+}
+//sticky-header ng-star-inserted
+:host ::ng-deep .sticky-header {
+    background-color: #0056b3;
+}
+/**********************************/
+.comment-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 100%; /* Ancho máximo de la barra */
+    padding: 10px;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.comment-input {
+    flex: 1; /* Toma el máximo espacio disponible */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 10px;
+    font-size: 16px;
+}
+.send-button {
+    flex: 1;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.send-button:hover {
+    background-color: #0056b3; /* Color al hacer hover */
+}
+
+/* Adaptabilidad para pantallas pequeñas */
+@media (max-width: 600px) {
+    .comment-container {
+        flex-direction: column;
+    }
+    .comment-input {
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+}
+
+:host ::ng-deep .btCalificacion .p-ripple {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

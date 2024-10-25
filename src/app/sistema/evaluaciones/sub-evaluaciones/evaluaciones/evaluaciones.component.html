@@ -1,0 +1,17 @@
+<app-container-page
+    [title]="'Evaluaciones'"
+    [actions]="accionesPrincipal"
+    (accionBtnItem)="accionBtnItem($event)"
+>
+    <div class="card">
+        <app-table-primeng
+            [columnas]="columnas"
+            [data]="data"
+            (accionBtnItem)="accionBtnItemTable($event)"
+            [(selectedRowData)]="selectedItems"
+            [actions]="accionesTabla"
+        >
+            <ng-container slot="caption-content"> </ng-container>
+        </app-table-primeng>
+    </div>
+</app-container-page>

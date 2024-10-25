@@ -1,0 +1,298 @@
+<form [formGroup]="formTareas">
+    <div class="grid">
+        <div class="col-12">
+            <p-messages
+                [(value)]="semana"
+                [enableService]="false"
+                [closable]="false"
+            />
+            @if (!formTareas.value.iTareaId) {
+                <div class="flex align-items-center justify-content-end mb-2">
+                    ¿Deseas reutilizar tarea? &nbsp;&nbsp;
+                    <p-inputSwitch
+                        (ngModelChange)="getTareasxiCursoId()"
+                        formControlName="bReutilizarTarea"
+                    />
+                </div>
+            }
+            <p-inputGroup>
+                <p-inputGroupAddon> Título </p-inputGroupAddon>
+                @if (this.formTareas.value.bReutilizarTarea) {
+                    <p-autoComplete
+                        formControlName="cTareaTitulo"
+                        [dropdown]="
+                            this.formTareas.value.bReutilizarTarea
+                                ? true
+                                : false
+                        "
+                        [showClear]="
+                            this.formTareas.value.bReutilizarTarea
+                                ? true
+                                : false
+                        "
+                        optionLabel="cTareaTitulo"
+                        [style]="{ width: '100%' }"
+                        [inputStyle]="{ width: '87%' }"
+                        [suggestions]="filteredTareas"
+                        (completeMethod)="filterTareas($event)"
+                        [showClear]="true"
+                        [emptyMessage]="' '"
+                        (ngModelChange)="getFilterIndicaciones($event)"
+                    >
+                        <ng-template let-item pTemplate="item">
+                            <div>{{ item.cTareaTitulo }}</div>
+                        </ng-template>
+                    </p-autoComplete>
+                } @else {
+                    <input
+                        pInputText
+                        class="flex-auto w-full"
+                        formControlName="cTareaTitulo"
+                    />
+                }
+            </p-inputGroup>
+        </div>
+
+        <div class="col-12">
+            <label for="descripcion" class="mt-1"
+                >Descripción
+                <span class="text-red-500 text-xs">(*) Obligatorio</span></label
+            >
+            <div class="mt-2">
+                <p-editor
+                    id="descripcion"
+                    formControlName="cTareaDescripcion"
+                    [style]="{ height: '150px' }"
+                />
+            </div>
+        </div>
+        <div class="col-12 md:col-6">
+            <p-inputGroup>
+                <p-inputGroupAddon> Fecha - Hora de Inicio </p-inputGroupAddon>
+                <p-calendar
+                    formControlName="dtInicio"
+                    [iconDisplay]="'input'"
+                    styleClass="w-full"
+                    [showIcon]="true"
+                    [showTime]="true"
+                    [hourFormat]="'24'"
+                    inputId="dtInicio"
+                />
+            </p-inputGroup>
+        </div>
+        <div class="col-12 md:col-6">
+            <p-inputGroup>
+                <p-inputGroupAddon> Fecha - Hora de Entrega </p-inputGroupAddon>
+                <p-calendar
+                    formControlName="dtFin"
+                    [iconDisplay]="'input'"
+                    styleClass="w-full"
+                    [showIcon]="true"
+                    [showTime]="true"
+                    [hourFormat]="'24'"
+                    inputId="dtFin"
+                />
+            </p-inputGroup>
+        </div>
+        <div class="col-12 mt-1">
+            <div class="card">
+                <label for="" class="mt-1">Adjuntar</label>
+                <div class="d-flex align-items-center text-center mt-1">
+                    <button
+                        pButton
+                        pRipple
+                        type="button"
+                        class="p-button-rounded p-button-outlined mx-2"
+                        (click)="openUpload('file')"
+                    >
+                        <i
+                            class="pi pi-upload my-2"
+                            style="color: #333437; font-size: 3rem"
+                            pTooltip="Subir Archivo"
+                            tooltipPosition="bottom"
+                        ></i>
+                    </button>
+
+                    <button
+                        pButton
+                        pRipple
+                        type="button"
+                        class="p-button-rounded p-button-outlined mx-2"
+                        (click)="openUpload('url')"
+                    >
+                        <i
+                            class="pi pi-link my-2"
+                            style="color: #333437; font-size: 3rem"
+                            pTooltip="Subir Enlace"
+                            tooltipPosition="bottom"
+                        ></i>
+                    </button>
+
+                    <button
+                        pButton
+                        pRipple
+                        type="button"
+                        class="p-button-rounded p-button-outlined mx-2"
+                        (click)="openUpload('youtube')"
+                    >
+                        <i
+                            class="pi pi-youtube my-2"
+                            style="color: #c4302b; font-size: 3rem"
+                            pTooltip="Subir Enlace Youtube"
+                            tooltipPosition="bottom"
+                        ></i>
+                    </button>
+
+                    <button
+                        pButton
+                        pRipple
+                        type="button"
+                        class="p-button-rounded p-button-outlined mx-2"
+                        (click)="openUpload('file')"
+                    >
+                        <i
+                            class="pi pi-upload my-2"
+                            style="color: #ffd04b; font-size: 3rem"
+                            pTooltip="Subir Recursos"
+                            tooltipPosition="bottom"
+                        ></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        @if (FilesTareas.length) {
+            <div class="col-12">
+                <label for="" class="mt-2">Lista de Adjuntos</label>
+
+                @for (item of FilesTareas; track item; let idx = $index) {
+                    <p-inputGroup class="mt-1">
+                        <p-inputGroupAddon>
+                            @switch (item.type) {
+                                @case (1) {
+                                    <i
+                                        class="pi pi-upload"
+                                        style="color: #333437"
+                                    ></i>
+                                }
+                                @case (2) {
+                                    <i
+                                        class="pi pi-link"
+                                        style="color: #333437"
+                                    ></i>
+                                }
+                                @case (3) {
+                                    <i
+                                        class="pi pi-youtube"
+                                        style="color: #c4302b"
+                                    ></i>
+                                }
+                                @case (4) {
+                                    <i
+                                        class="pi pi-folder"
+                                        style="color: #ffd04b"
+                                    ></i>
+                                }
+                            }
+                        </p-inputGroupAddon>
+                        <input
+                            type="text"
+                            pInputText
+                            [placeholder]="item.name"
+                            disabled
+                        />
+                        <button
+                            type="button"
+                            pButton
+                            icon="pi pi-trash"
+                            (click)="FilesTareas.splice(idx, 1)"
+                            class="p-button-danger"
+                        >
+                            &nbsp;
+                        </button>
+                    </p-inputGroup>
+                }
+            </div>
+        }
+    </div>
+</form>
+
+<app-modal-primeng
+    [title]="titleFileTareas"
+    [showModal]="showModal"
+    [width]="'35rem'"
+    (accionBtnItem)="accionBtnItem($event)"
+>
+    <div class="grid">
+        @if (typeUpload === 'file') {
+            <div class="col-12 text-center">
+                <app-file-upload-primeng
+                    [nameFile]="'tareas'"
+                    [nameOption]="'tareas'"
+                    (actionFileUpload)="accionBtnItem($event)"
+                ></app-file-upload-primeng>
+            </div>
+        }
+        @if (typeUpload === 'url') {
+            <div class="col-12">
+                <p-inputGroup>
+                    <p-inputGroupAddon>
+                        <i class="pi pi-link"></i>
+                    </p-inputGroupAddon>
+                    <input
+                        type="text"
+                        pInputText
+                        placeholder="Pegar la URL"
+                        [(ngModel)]="nameEnlace"
+                    />
+                    <button
+                        type="button"
+                        pButton
+                        icon="pi pi-check"
+                        (click)="
+                            accionBtnItem({
+                                accion: 'subir-url',
+                                item: this.nameEnlace,
+                            })
+                        "
+                        class="p-button-succes"
+                    >
+                        &nbsp;
+                    </button>
+                </p-inputGroup>
+            </div>
+        }
+        @if (typeUpload === 'youtube') {
+            <div class="col-12">
+                <p-inputGroup>
+                    <p-inputGroupAddon>
+                        <i class="pi pi-youtube" style="color: #c4302b"></i>
+                    </p-inputGroupAddon>
+                    <input
+                        type="text"
+                        pInputText
+                        placeholder="Buscaer en Youtube o pegar la URL"
+                        [(ngModel)]="nameEnlace"
+                    />
+                    <button
+                        type="button"
+                        pButton
+                        icon="pi pi-check"
+                        (click)="
+                            accionBtnItem({
+                                accion: 'subir-youtube',
+                                item: this.nameEnlace,
+                            })
+                        "
+                        class="p-button-danger"
+                    >
+                        &nbsp;
+                    </button>
+                </p-inputGroup>
+            </div>
+        }
+
+        @if (typeUpload === 'recursos') {
+            <div class="col-12"></div>
+        }
+    </div>
+</app-modal-primeng>

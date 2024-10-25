@@ -1,0 +1,183 @@
+<form [formGroup]="foroForm" class="flex flex-column gap-3 w-full">
+    <div class="grid">
+        <div class="col-12">
+            <p-messages
+                [(value)]="semana"
+                [enableService]="false"
+                [closable]="false"
+            />
+        </div>
+        <!-- Mostrar el título -->
+        <div class="col-4 w-5 flex flex-column gap-2">
+            <app-common-input [controlKey]="'cForoTitulo'" label="Título" />
+        </div>
+        <!-- Mostrar las Categorias en un Select -->
+        <div class="col-4 w-3 flex flex-column gap-2">
+            <label for="categoria">Categoría</label>
+            <p-dropdown
+                [options]="categorias"
+                formControlName="iForoCatId"
+                styleClass="w-full"
+                optionValue="iForoCatId"
+                optionLabel="cForoCatDescripcion"
+                placeholder="Seleccione una categoría"
+            />
+        </div>
+        <!-- Mostrar el estado -->
+        <div class="col-4 flex flex-column gap-2">
+            <label for="">Estado</label>
+            <p-selectButton
+                [options]="estado"
+                formControlName="iEstado"
+                optionLabel="label"
+                optionValue="value"
+                class="buttonmit"
+            />
+        </div>
+        <!-- Mostrar descripción -->
+        <div class="col-12">
+            <label for="descripcion" class="mt-1"
+                >Descripción
+                <span class="text-red-500 text-xs">(*) Obligatorio</span></label
+            >
+            <div class="mt-2">
+                <p-editor
+                    id="descripcion"
+                    formControlName="cForoDescripcion"
+                    [style]="{ height: '150px' }"
+                />
+            </div>
+        </div>
+        <!-- Asignar Los times -->
+        <div class="col-12 md:col-6 gap-3">
+            <p-inputGroup>
+                <p-inputGroupAddon> Fecha - Hora de Inicio </p-inputGroupAddon>
+                <p-calendar
+                    formControlName="dtForoInicio"
+                    [iconDisplay]="'input'"
+                    styleClass="w-full"
+                    [showIcon]="true"
+                    [showTime]="true"
+                    [hourFormat]="'24'"
+                    inputId="dtForoInicio"
+                    [appendTo]="'body'"
+                />
+            </p-inputGroup>
+        </div>
+        <div class="col-12 md:col-6 gap-3">
+            <p-inputGroup>
+                <p-inputGroupAddon> Fecha - Hora de Entrega </p-inputGroupAddon>
+                <p-calendar
+                    formControlName="dtForoFin"
+                    [iconDisplay]="'input'"
+                    styleClass="w-full"
+                    [showIcon]="true"
+                    [showTime]="true"
+                    [hourFormat]="'24'"
+                    inputId="dtForoFin"
+                    [appendTo]="'body'"
+                />
+            </p-inputGroup>
+        </div>
+    </div>
+    <!-- <div class="col-12 mt-1">
+        <div class="card">
+            <label for="" class="mt-1">Adjuntar</label>
+            <div class="d-flex align-items-center text-center mt-1">
+                <button
+                    pButton
+                    pRipple
+                    type="button"
+                    class="p-button-rounded p-button-outlined mx-2"
+                    (click)="openUpload('file')"
+                >
+                    <i
+                        class="pi pi-upload my-2"
+                        style="color: #333437; font-size: 3rem"
+                        pTooltip="Subir Archivo"
+                        tooltipPosition="bottom"
+                    ></i>
+                </button>
+
+                <button
+                    pButton
+                    pRipple
+                    type="button"
+                    class="p-button-rounded p-button-outlined mx-2"
+                    (click)="openUpload('url')"
+                >
+                    <i
+                        class="pi pi-link my-2"
+                        style="color: #333437; font-size: 3rem"
+                        pTooltip="Subir Enlace"
+                        tooltipPosition="bottom"
+                    ></i>
+                </button>
+
+            </div>
+        </div>
+    </div>
+    @if (FilesTareas.length) {
+        <div class="col-12">
+            <label for="" class="mt-2">Adjuntar Material</label>
+
+            @for (item of FilesTareas; track item; let idx = $index) {
+                <p-inputGroup class="mt-1">
+                    <p-inputGroupAddon>
+                        @switch (item.type) {
+                            @case (1) {
+                                <i
+                                    class="pi pi-upload"
+                                    style="color: #333437"
+                                ></i>
+                            }
+                            @case (2) {
+                                <i
+                                    class="pi pi-link"
+                                    style="color: #333437"
+                                ></i>
+                            }
+                        }
+                    </p-inputGroupAddon>
+                    <input
+                        type="text"
+                        pInputText
+                        [placeholder]="item.name"
+                        disabled
+                    />
+                    <button
+                        type="button"
+                        pButton
+                        icon="pi pi-trash"
+                        (click)="FilesTareas.splice(idx, 1)"
+                        class="p-button-danger"
+                    >
+                        &nbsp;
+                    </button>
+                </p-inputGroup>
+            }
+        </div>
+    } -->
+</form>
+
+<div class="flex justify-content-end gap-2 pt-3">
+    <button
+        pButton
+        pRipple
+        label="Cancelar"
+        icon="pi pi-times"
+        class="p-button-secondary"
+        type="button"
+        size="small"
+        (click)="closeModal(null)"
+    ></button>
+    <button
+        pButton
+        pRipple
+        label="Guardar"
+        icon="pi pi-check"
+        size="small"
+        class="p-button-primary"
+        (click)="submit()"
+    ></button>
+</div>

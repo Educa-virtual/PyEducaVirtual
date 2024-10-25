@@ -1,0 +1,22 @@
+<div class="flex flex-column gap-4">
+    <div class="flex justify-content-between">
+        <h3>{{ title }}</h3>
+        <button
+            pButton
+            size="small"
+            class="primary"
+            icon="pi pi-plus"
+            label="Agregar Rúbrica"
+            (click)="agregarInstrumentoEvaluacion()"
+        ></button>
+    </div>
+    <app-table-primeng
+        [selectionMode]="'single'"
+        [dataKey]="'iInstrumentoId'"
+        [selectedRowData]="rubricaSelected"
+        [data]="data"
+        [columnas]="columnasTabla"
+        (accionBtnItem)="onActionBtn($event)"
+        [actions]="accionesTabla"
+    ></app-table-primeng>
+</div>

@@ -1,0 +1,12 @@
+@if (!bCredVerificado) {
+    <router-outlet></router-outlet>
+} @else {
+    @if (!isLoggedIn) {
+        <div class="container-fluid">
+            <router-outlet></router-outlet>
+        </div>
+    } @else {
+        <app-layout></app-layout>
+        <router-outlet></router-outlet>
+    }
+}

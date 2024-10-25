@@ -1,0 +1,81 @@
+<div class="login d-flex justify-content-center align-items-center">
+    <div class="login__banner">
+        <img src="assets/images/login.gif" alt="logo" width="100%" />
+    </div>
+    <div class="login__form">
+        <div class="p-4">
+            <div class="login_card">
+                <div class="p-4 border-1 border-round-2xl border-gray-300">
+                    <div class="text-center">
+                        <h4 class="text-center mb-4 text-danger">
+                            <b>Dirección Regional de Educación Moquegua</b>
+                        </h4>
+                        <img
+                            src="assets/images/logo.png"
+                            alt="logo"
+                            width="60%"
+                        />
+                    </div>
+                    <!-- <h5 class="text-center"><b>Proyecto Virtual</b></h5> -->
+                    <h5 class="text-center text-primary">Iniciar Sesión</h5>
+                    <form class="flex flex-column" [formGroup]="formLogin">
+                        <div class="mb-3 flex flex-column gap-2">
+                            <label for="usuario">Usuario</label>
+                            <input
+                                type="text"
+                                pInputText
+                                placeholder="Ingresar su Usuario"
+                                name="usuario"
+                                formControlName="user"
+                            />
+                        </div>
+
+                        <div class="mb-5 flex flex-column gap-2">
+                            <label for="clave">Contraseña</label>
+                            <div class="flex">
+                                <input
+                                    pInputText
+                                    [type]="!showPassword ? 'password' : 'text'"
+                                    class="flex-1 border-noround-right"
+                                    [placeholder]="
+                                        !showPassword ? '********' : ''
+                                    "
+                                    formControlName="pass"
+                                />
+                                <button
+                                    class="p-button-outlined p-button-secondary border-noround-left"
+                                    type="button"
+                                    pButton
+                                    (click)="showPassword = !showPassword"
+                                >
+                                    @if (showPassword) {
+                                        <i class="pi pi-eye"></i>
+                                    } @else {
+                                        <i class="pi pi-eye-slash"></i>
+                                    }
+                                </button>
+                            </div>
+                        </div>
+                        <p class="small">
+                            <a class="text-primary" href="forget-password.html"
+                                >¿Has olvidado tu contraseña?</a
+                            >
+                        </p>
+                        <button
+                            pButton
+                            size="small"
+                            label="Iniciar Sesión"
+                            [loading]="loading"
+                            (click)="onSubmit()"
+                        ></button>
+                    </form>
+                    <!-- <div class="mt-3">
+                            <p class="mb-0  text-center">¿No tienes una cuenta?<a href=""
+                                class="text-primary fw-bold">Inscríbete</a></p>
+                        </div> -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<p-toast />

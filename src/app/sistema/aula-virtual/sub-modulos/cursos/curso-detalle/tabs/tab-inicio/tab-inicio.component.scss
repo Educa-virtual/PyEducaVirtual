@@ -1,0 +1,33 @@
+:host {
+    display: block;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    margin: 100;
+    padding: 20px;
+}
+
+button {
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin-right: 30px;
+    cursor: pointer;
+}
+p {
+    margin: bottom 40px; /* Añade un margen inferior de 40px */
+}
+
+/* order-list.component.css */
+:host {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+p-orderList {
+    flex-grow: 1; /* Para que el componente crezca ocupando el espacio disponible */
+}

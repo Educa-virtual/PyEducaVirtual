@@ -1,0 +1,183 @@
+<h2 class="text-2xl font-bold">Información</h2>
+
+<form [formGroup]="evaluacionInfoForm">
+    <div class="formgrid grid">
+        <div class="field flex flex-column col-12 md:col-6">
+            <app-common-input
+                [label]="'Nombre de la evaluación'"
+                [controlKey]="'cEvaluacionTitulo'"
+            />
+        </div>
+        <div class="field flex flex-column col-12 md:col-6">
+            <label class="align-self-start" for="tipo-pregunta"
+                >Tipo evaluación</label
+            >
+            <p-dropdown
+                styleClass="w-full"
+                optionValue="iTipoEvalId"
+                formControlName="iTipoEvalId"
+                [options]="tipoEvaluaciones"
+                optionLabel="cTipoEvalNombre"
+                [styleClass]="
+                    evaluacionInfoForm.get('iTipoEvalId')?.invalid &&
+                    evaluacionInfoForm.get('iTipoEvalId')?.touched
+                        ? 'w-full ng-dirty ng-invalid p-invalid'
+                        : 'w-full'
+                "
+            />
+            @if (
+                evaluacionInfoForm.get('iTipoEvalId').hasError('required') &&
+                evaluacionInfoForm.get('iTipoEvalId')?.touched
+            ) {
+                <small class="text-red-500"> Este campo es requerido </small>
+            }
+        </div>
+    </div>
+
+    <h3 class="text-lg mt-0">Disponibilidad</h3>
+
+    <div class="formgrid grid">
+        <div class="field flex flex-column col-12 md:col-6">
+            <label class="align-self-start" for="dFechaEvaluacionPublicacion"
+                >Fecha publicación</label
+            >
+            <p-calendar
+                formControlName="dFechaEvaluacionPublicacion"
+                appBaseDatePicker
+                [ngClass]="{
+                    'ng-invalid ng-dirty':
+                        evaluacionInfoForm.get('dFechaEvaluacionPublicacion')
+                            ?.invalid &&
+                        evaluacionInfoForm.get('dFechaEvaluacionPublicacion')
+                            ?.touched,
+                }"
+                inputId="dFechaEvaluacionPublicacion"
+            />
+            @if (
+                evaluacionInfoForm
+                    .get('dFechaEvaluacionPublicacion')
+                    .hasError('required') &&
+                evaluacionInfoForm.get('dFechaEvaluacionPublicacion')?.touched
+            ) {
+                <small class="text-red-500"> Este campo es requerido. </small>
+            }
+        </div>
+        <div class="field flex flex-column col-12 md:col-6">
+            <label class="align-self-start" for="tHoraEvaluacionPublicacion"
+                >Hora publicación</label
+            >
+            <p-calendar
+                [timeOnly]="true"
+                appBaseDatePicker
+                [ngClass]="{
+                    'ng-invalid ng-dirty':
+                        evaluacionInfoForm.get('tHoraEvaluacionPublicacion')
+                            ?.invalid &&
+                        evaluacionInfoForm.get('tHoraEvaluacionPublicacion')
+                            ?.touched,
+                }"
+                formControlName="tHoraEvaluacionPublicacion"
+                inputId="tHoraEvaluacionPublicacion"
+            >
+                <ng-template
+                    pTemplate="inputicon"
+                    let-clickCallBack="clickCallBack"
+                >
+                    <i
+                        class="pi pi-clock pointer-events-none"
+                    ></i> </ng-template
+            ></p-calendar>
+            @if (
+                evaluacionInfoForm
+                    .get('tHoraEvaluacionPublicacion')
+                    .hasError('required') &&
+                evaluacionInfoForm.get('tHoraEvaluacionPublicacion')?.touched
+            ) {
+                <small class="text-red-500"> Este campo es requerido. </small>
+            }
+        </div>
+    </div>
+
+    <div class="formgrid grid">
+        <div class="field flex flex-column col-12 md:col-6">
+            <label class="align-self-start" for="dFechaEvaluacionInico"
+                >Fecha inicio evaluación</label
+            >
+            <p-calendar
+                appBaseDatePicker
+                formControlName="dFechaEvaluacionInico"
+                inputId="dFechaEvaluacionInico"
+            />
+        </div>
+        <div class="field flex flex-column col-12 md:col-6">
+            <label class="align-self-start" for="tHoraEvaluacionInico"
+                >Hora inicio evaluación</label
+            >
+            <p-calendar
+                [timeOnly]="true"
+                appBaseDatePicker
+                formControlName="tHoraEvaluacionInico"
+                inputId="tHoraEvaluacionInico"
+            >
+                <ng-template
+                    pTemplate="inputicon"
+                    let-clickCallBack="clickCallBack"
+                >
+                    <i
+                        class="pi pi-clock pointer-events-none"
+                    ></i> </ng-template
+            ></p-calendar>
+        </div>
+    </div>
+
+    <div class="formgrid grid">
+        <div class="field flex flex-column col-12 md:col-6">
+            <label class="align-self-start" for="dFechaEvaluacionFin"
+                >Fecha fin evaluación</label
+            >
+            <p-calendar
+                formControlName="dFechaEvaluacionFin"
+                appBaseDatePicker
+                inputId="dFechaEvaluacionFin"
+            />
+        </div>
+        <div class="field flex flex-column col-12 md:col-6">
+            <label class="align-self-start" for="tHoraEvaluacionFin"
+                >Hora fin evaluación</label
+            >
+            <p-calendar
+                appBaseDatePicker
+                [timeOnly]="true"
+                formControlName="tHoraEvaluacionFin"
+                inputId="tHoraEvaluacionFin"
+            >
+                <ng-template
+                    pTemplate="inputicon"
+                    let-clickCallBack="clickCallBack"
+                >
+                    <i class="pi pi-clock pointer-events-none"></i>
+                </ng-template>
+            </p-calendar>
+        </div>
+    </div>
+
+    <div class="formgrid grid">
+        <div class="field flex flex-column col-12">
+            <label class="align-self-start" for="cEvaluacionDescripcion"
+                >Descripción o Instrucciones</label
+            >
+            <p-editor
+                styleClass="w-full"
+                formControlName="cEvaluacionDescripcion"
+            />
+            @if (
+                evaluacionInfoForm
+                    .get('cEvaluacionDescripcion')
+                    .hasError('required') &&
+                evaluacionInfoForm.get('cEvaluacionDescripcion')?.touched
+            ) {
+                <small class="text-red-500"> Este campo es requerido. </small>
+            }
+        </div>
+    </div>
+</form>

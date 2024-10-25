@@ -1,0 +1,22 @@
+<p-panel header="Detalles y Acciones">
+    <ul class="flex lg:flex-row flex-column gap-2 p-0">
+        @for (item of items; track item.tab) {
+            <li class="list-none">
+                <button
+                    pButton
+                    class="p-button-link text-primary displey flex align-items-center hover:bg-primary hover:text-white w-full flex gap-2 align-items-start cursor-pointer"
+                    [ngClass]="{
+                        'bg-primary text-white': actualTab === item.tab,
+                    }"
+                    (click)="updateTab(item.tab)"
+                >
+                    <i class="pi pt-1" [ngClass]="item.icon"></i>
+                    <div class="flex gap-2 flex-column">
+                        <span class="text-left">{{ item.title }}</span>
+                        <!-- <span class="text-primary">subtitle</span> -->
+                    </div>
+                </button>
+            </li>
+        }
+    </ul>
+</p-panel>

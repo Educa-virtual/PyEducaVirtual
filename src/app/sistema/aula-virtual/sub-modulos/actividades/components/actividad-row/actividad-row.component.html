@@ -1,0 +1,120 @@
+<p-panel
+    #panelActividad
+    [toggleable]="true"
+    collapsed="true"
+    expandIcon="pi pi-angle-down"
+    collapseIcon="pi pi-angle-right"
+    class="cursor-pointer panel-actividad-detalle"
+    toggler="header"
+>
+    <ng-template pTemplate="header">
+        <div class="flex flex-column w-full">
+            <div class="flex gap-4 font-normal">
+                <app-icon
+                    [name]="actividad.iActTipoId | appActividadConfig: 'icon'"
+                    [color]="
+                        actividad.iActTipoId | appActividadConfig: 'icon-color'
+                    "
+                />
+                <div
+                    class="flex flex-column gap-2 align-items-start text-primary"
+                >
+                    <span class="text-xl">{{
+                        actividad.cProgActTituloLeccion
+                    }}</span>
+                    <span
+                        class="text-sm customer-badge"
+                        [ngClass]="
+                            actividad.iActTipoId
+                                | appActividadConfig: 'bg-color'
+                        "
+                        >{{ actividad.cActTipoNombre }}</span
+                    >
+                </div>
+            </div>
+            <div class="flex align-items-end flex-column gap-1">
+                <div
+                    class="font-medium text-sm text-gray-500 gap-1 flex align-items-center"
+                >
+                    <i class="pi pi-calendar text-primary"></i>
+                    <span>
+                        Publicación:
+                        {{
+                            actividad['dtProgActPublicacion']
+                                | date: 'dd/MM/yyyy'
+                        }}
+                    </span>
+                </div>
+                <div
+                    class="font-medium text-sm text-gray-500 gap-1 flex align-items-center"
+                >
+                    <i class="pi pi-clock text-primary"></i>
+                    {{ actividad['dtProgActPublicacion'] | date: 'h:mm a' }}
+                </div>
+            </div>
+        </div>
+    </ng-template>
+    <ng-template pTemplate="icons">
+        <p-menu #menuActividad [model]="accionesActividad" [popup]="true" />
+        <button
+            class="p-link ml-auto mr-2 text-primary"
+            (click)="$event.stopPropagation(); menuActividad.toggle($event)"
+        >
+            <span class="pi pi-cog"></span>
+        </button>
+    </ng-template>
+    <ng-content>
+        <div class="flex flex-column gap-2">
+            @if (
+                actividad['dtProgActInicio'] !== null &&
+                actividad['dtProgActInicio'] !== undefined
+            ) {
+                <div
+                    class="font-medium text-sm text-gray-500 gap-1 flex align-items-center"
+                >
+                    <i class="pi pi-calendar text-primary"></i>
+                    <span>
+                        Fecha Inicio:
+                        {{ actividad['dtProgActInicio'] | date: 'dd/MM/yyyy' }}
+                        <i class="pi pi-clock text-primary"></i>
+                        Hora:
+                        {{ actividad['dtProgActInicio'] | date: 'h:mm a' }}
+                    </span>
+                </div>
+            }
+            @if (
+                actividad['dtProgActFin'] !== null &&
+                actividad['dtProgActFin'] !== undefined
+            ) {
+                <div
+                    class="font-medium text-sm text-gray-500 gap-1 flex align-items-center"
+                >
+                    <i class="pi pi-calendar text-primary"></i>
+                    <span>
+                        Fecha Cierre:
+                        {{ actividad['dtProgActFin'] | date: 'dd/MM/yyyy' }}
+                        Hora:
+                        <i class="pi pi-clock text-primary"></i>
+                        {{ actividad['dtProgActFin'] | date: 'h:mm a' }}
+                    </span>
+                </div>
+            }
+            <div class="flex justify-content-end">
+                <a
+                    pButton
+                    size="small"
+                    class="p-button-primary text-white flex gap-2"
+                    [routerLink]="[
+                        '../',
+                        'actividad',
+                        actividad.ixActivadadId,
+                        actividad.iActTipoId,
+                    ]"
+                >
+                    <i class="pi pi-eye"></i>
+                    Ver {{ actividad.cActTipoNombre }}
+                </a>
+            </div>
+        </div>
+    </ng-content>
+</p-panel>

@@ -1,0 +1,18 @@
+@switch (iActTopId) {
+    <!-- tarea -->
+    @case (1) {
+        <app-tarea-room></app-tarea-room>
+    }
+    <!-- Foro -->
+    @case (2) {
+        <app-foro-room></app-foro-room>
+    }
+    <!-- evaluacion -->
+    @case (3) {
+        <app-evaluacion-room
+            [ixActivadadId]="ixActivadadId"
+            [iActTopId]="iActTopId"
+        ></app-evaluacion-room>
+    }
+    @default {}
+}

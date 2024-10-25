@@ -1,0 +1,54 @@
+:host {
+    display: block;
+}
+
+:host ::ng-deep .actividad-tabs .p-tabview-nav {
+    display: flex;
+    justify-content: space-between;
+}
+
+:host ::ng-deep .actividad-tabs .p-tabview-nav li {
+    flex: 1;
+}
+
+:host ::ng-deep .actividad-tabs .p-tabview-nav li a {
+    text-align: center;
+    width: 100%;
+    display: block;
+    color: inherit;
+}
+
+:host ::ng-deep .actividad-tabs .p-tabview-nav li.p-highlight a {
+    color: var(--primary-color);
+}
+
+:host ::ng-deep .p-tabview .p-tabview-panels {
+    background-color: transparent;
+    padding-inline: 0;
+    padding-block-end: 0;
+}
+
+.leyenda-tareas {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.hoverTable {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px;
+    cursor: pointer;
+}
+.hoverTable tr th {
+    background-color: var(--primary-color) !important;
+    color: white;
+}
+.hoverTable tr {
+    font-size: small;
+}
+.hoverTable tr:hover {
+    background-color: #e3f7ff;
+    border-left: 8px solid #4a47e2 !important;
+}

@@ -1,0 +1,21 @@
+<div
+    class="flex flex-column align-items-start gap-2"
+    [formGroup]="parentFormGroup"
+>
+    @if (label !== null && label !== undefined) {
+        <label [for]="id">{{ label }}</label>
+    }
+    <input
+        pInputText
+        [id]="id"
+        [formControlName]="controlKey"
+        [type]="type"
+        class="w-full"
+        [ngClass]="{ 'ng-invalid ng-dirty': campoInvalido }"
+    />
+    <small>
+        @if (campoInvalido) {
+            <span class="text-red-500"> {{ errorMessage }} </span>
+        }
+    </small>
+</div>

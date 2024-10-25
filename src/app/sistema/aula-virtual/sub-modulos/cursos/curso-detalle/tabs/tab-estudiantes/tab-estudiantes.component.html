@@ -1,0 +1,46 @@
+<div>
+    <p-table [value]="estudiantes" paginator="true" [rows]="10">
+        <ng-template pTemplate="header">
+            <tr class="sticky-header">
+                <td>Nº</td>
+                <th>Nombres</th>
+                <th>Apellido Paterno</th>
+                <th>Apellido Materno</th>
+                <th>Acciones</th>
+                <!-- Columna de acciones -->
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-estudiante let-rowIndex="rowIndex">
+            <tr>
+                <!-- <td>
+                        <p-checkbox [(ngModel)]="estudiante.selected"></p-checkbox>
+                    </td> -->
+                <td class="justify-content-center">{{ rowIndex + 1 }}</td>
+                <!-- Muestra el número de la fila -->
+                <td>{{ estudiante.cPersNombre }}</td>
+                <td>{{ estudiante.cPersPaterno }}</td>
+                <td>{{ estudiante.cPersMaterno }}</td>
+                <td>
+                    <!-- Botón de editar -->
+                    <button
+                        pButton
+                        icon="pi pi-pencil"
+                        class="p-button-rounded p-button-info"
+                        (click)="onEdit(estudiante)"
+                    >
+                        &nbsp;
+                    </button>
+                    <!-- Botón de eliminar -->
+                    <button
+                        pButton
+                        icon="pi pi-trash"
+                        class="p-button-rounded p-button-danger"
+                        (click)="onDelete(estudiante)"
+                    >
+                        &nbsp;
+                    </button>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>

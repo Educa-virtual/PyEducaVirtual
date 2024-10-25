@@ -36,7 +36,7 @@ export class ResumenComponent implements OnInit, OnChanges {
 
     ngOnInit() {
         this.httpService
-            .postData('administracion/dias', {
+            .postData('acad/calendarioAcademico/addCalAcademico', {
                 json: JSON.stringify({
                     jmod: 'acad',
                     jtable: 'turnos',

@@ -1,17 +1,27 @@
 import { Component, OnInit, OnChanges, OnDestroy } from '@angular/core'
 import { TableModule } from 'primeng/table'
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
-import { IColumn, IActionTable } from '@/app/shared/table-primeng/table-primeng.component'
+import {
+    IColumn,
+    IActionTable,
+} from '@/app/shared/table-primeng/table-primeng.component'
 import { httpService } from '../../../http/httpService'
 import { ButtonModule } from 'primeng/button'
 import { TicketService } from '../../service/ticketservice'
 import { Router } from '@angular/router'
-import { ToastModule } from 'primeng/toast';
-
+import { ConfirmationService, MessageService } from 'primeng/api'
+import { ConfirmDialogModule } from 'primeng/confirmdialog'
+import { ToastModule } from 'primeng/toast'
 @Component({
     selector: 'app-diasLaborales',
     standalone: true,
-    imports: [TableModule, TablePrimengComponent, ButtonModule, ToastModule],
+    imports: [
+        TableModule,
+        TablePrimengComponent,
+        ButtonModule,
+        ConfirmDialogModule,
+        ToastModule,
+    ],
     templateUrl: './diasLaborales.component.html',
     styleUrl: './diasLaborales.component.scss',
 })
@@ -24,16 +34,18 @@ export class DiasLaboralesComponent implements OnInit, OnChanges {
     }[]
 
     diasInformation
-    constructor(private httpService: httpService,         public ticketService: TicketService,
-        private router: Router) {}
+    constructor(
+        private httpService: httpService,
+        public ticketService: TicketService,
+        private confirmationService: ConfirmationService, 
+        private messageService: MessageService,
+        private router: Router
+    ) {}
 
     nextPage() {
-        this.ticketService.registroInformation.stepYear = this.diasInformation;
-        this.router.navigate([
-            'configuracion/configuracion/registro/turnos',
-        ])
+        this.ticketService.registroInformation.stepDiasLaborales = this.diasInformation
+        this.router.navigate(['configuracion/configuracion/registro/turnos'])
     }
-
 
     prevPage() {
         this.router.navigate(['configuracion/configuracion/registro/year'])
@@ -41,7 +53,7 @@ export class DiasLaboralesComponent implements OnInit, OnChanges {
 
     ngOnInit() {
         this.httpService
-            .postData('administracion/dias', {
+            .postData('acad/calendarioAcademico/addCalAcademico', {
                 json: JSON.stringify({
                     jmod: 'grl',
                     jtable: 'dias',
@@ -51,9 +63,6 @@ export class DiasLaboralesComponent implements OnInit, OnChanges {
             .subscribe({
                 next: (data: any) => {
                     this.dias = data.data
-
-                    console.log(this.dias);
-                    
                 },
                 error: (error) => {
                     console.error('Error fetching dias:', error)
@@ -62,6 +71,43 @@ export class DiasLaboralesComponent implements OnInit, OnChanges {
                     console.log('Request completed')
                 },
             })
+    }
+
+    confirm() {
+        this.confirmationService.confirm({
+            header: 'Confirmar',
+            message: 'Por favor, confirme para continuar.',
+            acceptIcon: 'pi pi-check mr-2',
+            rejectIcon: 'pi pi-times mr-2',
+            rejectButtonStyleClass: 'p-button-sm',
+            acceptButtonStyleClass: 'p-button-outlined p-button-sm',
+            accept: () => {
+                this.messageService.add({ severity: 'info', summary: 'Confirmado', detail: 'Usted ha aceptado', life: 3000 });
+
+                this.saveInformation()
+
+                this.nextPage()
+            },
+            reject: () => {
+                this.messageService.add({ severity: 'error', summary: 'Rechazado', detail: 'Has rechazado', life: 3000 });
+            }
+        });
+    }
+
+    onSelectionChange(columnsChecked: Array<object>) {
+
+        this.diasInformation = columnsChecked
+
+        // columnsChecked.map((column) => {
+        //     // let day = column.
+
+        //     // this.ticketService.registroInformation.stepDiasLaborales.
+        // })
+
+    }
+
+    saveInformation(){
+        console.log(this.diasInformation)
     }
 
     actions: IActionTable[] = [

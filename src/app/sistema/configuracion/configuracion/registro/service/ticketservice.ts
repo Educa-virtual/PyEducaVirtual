@@ -3,33 +3,34 @@ import { Subject } from 'rxjs'
 
 @Injectable()
 export class TicketService {
-    registroInformation = {
-        stepYear: {
-            fechaVigente: new Date(),
-            fechaInicio: new Date(),
-            fechaFin: new Date(),
+    registroInformation: {
+        stepYear?: {
+            fechaVigente: Date
+            fechaInicio: Date
+            fechaFin: Date
         },
-        stepDiasLaborales: {
-            lunes: false,
-            martes: false,
-            miercoles: false,
-            jueves: false,
-            viernes: false,
-            sabado: false,
-            domingo: false,
-        },
-        stepTurnos: [{turno: '',horaInicio: '', horaFin: '',},],
-        stepModalidades: [{modalidad: ''},],
-
-        periodosAcademicos: [{
-            periodoAcademico: '',
-            ciclos: [{ciclo: '', fechaInicio: '', fechaFin: ''}],
-        }],
-        resumen: {
-            toRegister: '',
-            start: '',
-            end: null,
-        },
+        stepDiasLaborales?: {
+            iDiaId: string
+            iDia: string
+            cDiaNombre: string
+            cDiaAbreviado: string
+        }[],
+        stepTurnos?: {
+            turno: string
+            horaInicio: Date
+            horaFin: Date
+        }[],
+        stepModalidades?: {
+            modalidad: string
+        }[],
+        stepPeriodosAcademicos?: {
+            periodoAcademico: string
+            ciclos?: {
+                ciclo: string,
+                fechaInicio: Date,
+                fechaFin: Date,
+            }[]
+        }[],
     }
 
     private registrationComplete = new Subject<any>()
@@ -40,7 +41,10 @@ export class TicketService {
         return this.registroInformation
     }
 
-    setTicketInformation(registroInformation, key: keyof typeof this.registroInformation) {
+    setTicketInformation(
+        registroInformation,
+        key: keyof typeof this.registroInformation
+    ) {
         this.registroInformation[key] = registroInformation
     }
 

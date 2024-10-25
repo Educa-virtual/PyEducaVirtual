@@ -1,4 +1,4 @@
-import { Component, OnInit, OnChanges, ChangeDetectorRef } from '@angular/core'
+import { Component, OnInit, OnChanges } from '@angular/core'
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
 import {
     IColumn,
@@ -9,11 +9,25 @@ import { ButtonModule } from 'primeng/button'
 import { TicketService } from '../../service/ticketservice'
 import { Router } from '@angular/router'
 import { DialogModule } from 'primeng/dialog'
+import { DropdownModule } from 'primeng/dropdown'
+import { CalendarModule } from 'primeng/calendar'
+import { FloatLabelModule } from 'primeng/floatlabel'
+import { FormsModule } from '@angular/forms'
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms'
 
 @Component({
     selector: 'app-turnos',
     standalone: true,
-    imports: [TablePrimengComponent, ButtonModule, DialogModule],
+    imports: [
+        TablePrimengComponent,
+        ButtonModule,
+        DialogModule,
+        CalendarModule,
+        DropdownModule,
+        FloatLabelModule,
+        ReactiveFormsModule,
+        FormsModule,
+    ],
     templateUrl: './turnos.component.html',
     styleUrl: './turnos.component.scss',
 })
@@ -23,20 +37,24 @@ export class TurnosComponent implements OnInit, OnChanges {
         cTurnoNombre: string
     }[]
 
-    visible: boolean = false;
+    form: FormGroup
 
+    visible: boolean = false
 
+    turnosFetch: { name: string }[]
+
+    turnosModal: { turno: string; horaInicio: Date; horaFin: Date }
     turnosInformation
+
     constructor(
         private httpService: httpService,
         public ticketService: TicketService,
         private router: Router,
-        private cdr: ChangeDetectorRef,
+        private fb: FormBuilder
     ) {}
 
     nextPage() {
-        this.ticketService.registroInformation.stepTurnos =
-            this.turnosInformation
+
         this.router.navigate([
             'configuracion/configuracion/registro/modalidades',
         ])
@@ -48,12 +66,78 @@ export class TurnosComponent implements OnInit, OnChanges {
         ])
     }
 
+    saveInformation() {
+        let turnosCurrent
+
+        // Asegura que `registroInformation` esté inicializado
+        if (!this.ticketService.registroInformation) {
+            this.ticketService.registroInformation = {}
+        }
+
+        // Verifica la existencia de `stepYear` y continúa con `stepTurnos`
+        if ('stepTurnos' in this.ticketService.registroInformation) {
+            turnosCurrent = this.ticketService.getTicketInformation().stepTurnos
+        } else {
+            // Agrega `stepTurnos` si no existe
+            this.ticketService.registroInformation = {
+                ...this.ticketService.registroInformation,
+                stepTurnos: [],
+            }
+            turnosCurrent = this.ticketService.registroInformation.stepTurnos
+        }
+
+        turnosCurrent.push(this.turnosModal)
+        this.ticketService.setTicketInformation(turnosCurrent, 'stepTurnos')
+
+        this.turnosInformation = this.ticketService
+            .getTicketInformation()
+            .stepTurnos.map((turno, index) => ({
+                index: (index + 1),
+                turno: turno.turno,
+                horaInicio: this.formatFechas(turno.horaInicio),
+                horaFin: this.formatFechas(turno.horaFin),
+            }))
+
+        console.log(this.ticketService.getTicketInformation().stepTurnos)
+
+        this.visible = false
+    }
+
+    formatFechas(fecha) {
+        const date = new Date(fecha)
+
+        const day = String(date.getDate()).padStart(2, '0')
+        const month = String(date.getMonth() + 1).padStart(2, '0')
+        const year = date.getFullYear()
+
+        const hours = String(date.getHours()).padStart(2, '0')
+        const minutes = String(date.getMinutes()).padStart(2, '0')
+
+        return `${hours}:${minutes}`
+
+        // return `${day}/${month}/${year}`
+    }
+
     showDialog() {
-        this.visible = true;
+        this.visible = true
     }
     ngOnInit() {
+        this.form = this.fb.group({
+            turno: [''],
+            horaInicio: [''],
+            horaFin: [''],
+        })
+
+        this.form.valueChanges.subscribe((value) => {
+            this.turnosModal = {
+                turno: value.turno.name,
+                horaInicio: value.horaInicio,
+                horaFin: value.horaFin,
+            }
+        })
+
         this.httpService
-            .postData('administracion/dias', {
+            .postData('acad/calendarioAcademico/addCalAcademico', {
                 json: JSON.stringify({
                     jmod: 'acad',
                     jtable: 'turnos',
@@ -64,18 +148,9 @@ export class TurnosComponent implements OnInit, OnChanges {
                 next: (data: any) => {
                     this.turnos = data.data
 
-                    this.columns = this.columns.map((column) => {
-                        if (column.type === 'select') {
-                            // Cambiar la referencia de column con spread operator y mapear las opciones de turnos
-                            return {
-                                ...column,
-                                options: this.turnos.map((turno) => ({
-                                    nombre: turno.cTurnoNombre,
-                                })),
-                            }
-                        }
-                        return { ...column } // Siempre devuelve una nueva referencia de la columna
-                    })
+                    this.turnosFetch = this.turnos.map((turno) => ({
+                        name: turno.cTurnoNombre,
+                    }))
 
                     // console.log(this.turnos);
                 },
@@ -83,10 +158,21 @@ export class TurnosComponent implements OnInit, OnChanges {
                     console.error('Error fetching turnos:', error)
                 },
                 complete: () => {
-                    this.cdr.detectChanges();
                     console.log('Request completed')
                 },
             })
+
+            if(this.ticketService.registroInformation.stepTurnos){
+                this.turnosInformation = this.ticketService
+                .getTicketInformation()
+                .stepTurnos.map((turno, index) => ({
+                    index: (index + 1),
+                    turno: turno.turno,
+                    horaInicio: this.formatFechas(turno.horaInicio),
+                    horaFin: this.formatFechas(turno.horaFin),
+                }))
+            }
+
     }
 
     actions: IActionTable[] = [
@@ -110,7 +196,7 @@ export class TurnosComponent implements OnInit, OnChanges {
         {
             type: 'text',
             width: '5rem',
-            field: 'iTurnoId',
+            field: 'index',
             header: 'Nro',
             text_header: 'center',
             text: 'center',
@@ -118,7 +204,7 @@ export class TurnosComponent implements OnInit, OnChanges {
         {
             type: 'text',
             width: '5rem',
-            field: 'cTurnoNombre',
+            field: 'turno',
             header: 'Turno',
             text_header: 'center',
             text: 'center',
@@ -126,7 +212,7 @@ export class TurnosComponent implements OnInit, OnChanges {
         {
             type: 'text',
             width: '8rem',
-            field: 'cHoraInicio',
+            field: 'horaInicio',
             header: 'Hora inicio',
             text_header: 'Hora inicio',
             text: 'left',
@@ -134,7 +220,7 @@ export class TurnosComponent implements OnInit, OnChanges {
         {
             type: 'text',
             width: '8rem',
-            field: 'cHoraFin',
+            field: 'horaFin',
             header: 'Hora fin',
             text_header: 'center',
             text: 'center',

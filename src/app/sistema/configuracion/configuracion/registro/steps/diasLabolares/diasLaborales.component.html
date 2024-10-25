@@ -1,11 +1,12 @@
 <div class="container">
     <app-table-primeng
-        [showCaption]="false"
-        [columnas]="columns"
-        [actions]="actions"
-        [showPaginator]="false"
-        [data]="dias"
-        (selectedRowDataChange)="onSelectionChange($event)"
+    [showCaption]="false"
+    [columnas]="columns"
+    [actions]="actions"
+    [showPaginator]="false"
+    [data]="dias"
+    (selectedRowDataChange)="onSelectionChange($event)"
+
     >
     </app-table-primeng>
 
@@ -26,4 +27,5 @@
         </p-confirmDialog>
         <p-button (onClick)="confirm()" label="Siguiente" />
     </div>
+
 </div>

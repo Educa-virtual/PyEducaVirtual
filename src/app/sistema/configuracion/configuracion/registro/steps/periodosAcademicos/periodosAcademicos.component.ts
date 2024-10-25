@@ -47,7 +47,7 @@ export class PeriodosAcademicosComponent implements OnInit, OnChanges {
 
     ngOnInit() {
         this.httpService
-            .postData('administracion/dias', {
+            .postData('acad/calendarioAcademico/addCalAcademico', {
                 json: JSON.stringify({
                     jmod: 'acad',
                     jtable: 'periodo_evaluaciones',

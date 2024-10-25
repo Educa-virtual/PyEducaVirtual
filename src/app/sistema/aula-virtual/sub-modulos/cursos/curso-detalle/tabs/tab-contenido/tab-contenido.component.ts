@@ -43,7 +43,7 @@ import { GeneralService } from '@/app/servicios/general.service'
 import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
 import { Subject, takeUntil } from 'rxjs'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
-import { Router } from '@angular/router'
+import { ActivatedRoute, Router } from '@angular/router'
 import { DynamicDialogModule } from 'primeng/dynamicdialog'
 
 @Component({
@@ -111,7 +111,8 @@ export class TabContenidoComponent implements OnInit {
 
     constructor(
         private _dialogService: DialogService,
-        private router: Router
+        private router: Router,
+        private _activatedRoute: ActivatedRoute
     ) {}
 
     ngOnInit(): void {
@@ -354,6 +355,20 @@ export class TabContenidoComponent implements OnInit {
                     )
                 },
             })
+        }
+
+        if (action === 'VER') {
+            this.router.navigate(
+                [
+                    '../',
+                    'actividad',
+                    actividad.ixActivadadId,
+                    actividad.iActTipoId,
+                ],
+                {
+                    relativeTo: this._activatedRoute,
+                }
+            )
         }
     }
 

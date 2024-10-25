@@ -18,6 +18,11 @@ export type tipoActividadesKeys = keyof typeof TIPO_ACTIVIDADES
 //     return Object.keys(TIPO_ACTIVIDADES).includes(tab)
 // }
 
+export interface IActivadadTipo {
+    iActTipoId: number
+    cActTipoNombre: string
+}
+
 export interface IActividad {
     iProgActId: string
     cProgActTituloLeccion: string
@@ -28,7 +33,7 @@ export interface IActividad {
     [key: string]: any
 }
 
-interface IActividadConfig extends Partial<IActividad> {
+interface IActividadConfig extends Partial<IActivadadTipo> {
     'icon-color': string
     'bg-color': string
     icon: string
@@ -42,7 +47,6 @@ export const actividadesConfig: Record<
         'icon-color': 'text-blue-500',
         'bg-color': 'bg-blue-500 text-white',
         icon: 'matAssignment',
-        iProgActId: '0',
         cActTipoNombre: 'Tarea',
         iActTipoId: TAREA,
     },
@@ -50,7 +54,6 @@ export const actividadesConfig: Record<
         'icon-color': 'text-green-500',
         'bg-color': 'bg-green-500 text-white',
         icon: 'matForum',
-        iProgActId: '1',
         cActTipoNombre: 'Foro',
         iActTipoId: FORO,
     },
@@ -58,7 +61,6 @@ export const actividadesConfig: Record<
         'icon-color': 'text-yellow-500',
         'bg-color': 'bg-yellow-500 text-white',
         icon: 'matQuiz',
-        iProgActId: '2',
         cActTipoNombre: 'Evaluación Formativa',
         iActTipoId: EVALUACION,
     },
@@ -66,7 +68,6 @@ export const actividadesConfig: Record<
         'icon-color': 'text-pink-500',
         'bg-color': 'bg-pink-500 text-white',
         icon: 'matVideocam',
-        iProgActId: '3',
         cActTipoNombre: 'Video Conferencia',
         iActTipoId: VIDEO_CONFERENCIA,
     },
@@ -74,7 +75,6 @@ export const actividadesConfig: Record<
         'icon-color': 'text-indigo-500',
         'bg-color': 'bg-indigo-500 text-white',
         icon: 'matDescription',
-        iProgActId: '4',
         cActTipoNombre: 'Material',
         iActTipoId: MATERIAL,
     },

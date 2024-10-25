@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core'
+import { Component, inject, OnInit, Input } from '@angular/core'
 import { IconComponent } from '@/app/shared/icon/icon.component'
 import {
     matAccessTime,
@@ -17,6 +17,9 @@ import { OrderListModule } from 'primeng/orderlist'
 import { PrimengModule } from '@/app/primeng.module'
 import { GeneralService } from '@/app/servicios/general.service'
 import { CommonInputComponent } from '@/app/shared/components/common-input/common-input.component'
+import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
+import { tipoActividadesKeys } from '@/app/sistema/aula-virtual/interfaces/actividad.interface'
+import { Subject, takeUntil } from 'rxjs'
 
 @Component({
     selector: 'app-foro-room',
@@ -44,18 +47,21 @@ import { CommonInputComponent } from '@/app/shared/components/common-input/commo
     ],
 })
 export class ForoRoomComponent implements OnInit {
+    @Input() ixActivadadId: string
+    @Input() iActTopId: tipoActividadesKeys
+
     private GeneralService = inject(GeneralService)
     private _formBuilder = inject(FormBuilder)
+    private _aulaService = inject(ApiAulaService)
     //private ref = inject(DynamicDialogRef)
     // variables
     estudiantes: any[] = []
-    calificacion: any[] = [
-        { label: 'AD', value: 1 },
-        { label: 'A', value: 2 },
-        { label: 'B', value: 3 },
-        { label: 'C', value: 4 },
-    ]
+    calificacion: any[] = []
     modalCalificacion: boolean = false
+    estudianteSelect = null
+    private unsbscribe$ = new Subject<boolean>()
+
+    public foro
 
     public foroForm: FormGroup = this._formBuilder.group({
         cForoTitulo: ['', [Validators.required]],
@@ -66,20 +72,45 @@ export class ForoRoomComponent implements OnInit {
         dtForoPublicacion: ['dtForoInicio'],
         dtForoFin: [],
     })
-
     constructor() {}
     ngOnInit() {
+        console.log('HolaMit', this.ixActivadadId, this.iActTopId)
         this.getEstudiantesMatricula()
+        this.mostrarCalificacion()
+        this.obtenerForo()
+        console.log('Obtener Datos', this.obtenerForo())
     }
     // closeModal(data) {
     //     this.ref.close(data)
     // }
-    openModal() {
+    openModal(estudiante) {
         this.modalCalificacion = true
+        this.estudianteSelect = estudiante
     }
     submit() {
         const value = this.foroForm.value
         console.log('Guardar Calificacion', value)
+    }
+    mostrarCalificacion() {
+        const userId = 1
+        this._aulaService.obtenerCalificacion(userId).subscribe((Data) => {
+            this.calificacion = Data['data']
+            //console.log('Mostrar escala',this.calificacion)
+        })
+    }
+    obtenerForo() {
+        this._aulaService
+            .obtenerForo({
+                iActTipoId: this.iActTopId,
+                ixActivadadId: this.ixActivadadId,
+            })
+            .pipe(takeUntil(this.unsbscribe$))
+            .subscribe({
+                next: (resp) => {
+                    this.foro = resp
+                },
+            })
+        //console.log('Obtener Foros',this._aulaService)
     }
     getEstudiantesMatricula() {
         const params = {

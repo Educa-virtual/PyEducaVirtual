@@ -382,7 +382,7 @@
                                     <td>A</td>
                                     <td style="text-align: center">
                                         <p-button
-                                            (click)="openModal()"
+                                            (click)="openModal(estudiante)"
                                             class="btCalificacion"
                                             icon="pi pi-folder-open"
                                             rounded="true"
@@ -421,7 +421,7 @@
 <p-dialog
     [(visible)]="modalCalificacion"
     [style]="{ width: '1000px' }"
-    header="Calificar las Respuestas"
+    header="Calificar las Respuestas de: {{ estudianteSelect?.cPersNombre }}"
     [modal]="true"
     class="p-fluid"
 >
@@ -441,14 +441,14 @@
                     label="Comentario"
                 />
             </div>
-            <div class="col-4 w-3 flex flex-column gap-2">
-                <label for="categoria">Calificación</label>
+            <div class="col-4 flex flex-column gap-2">
+                <label for="calificacion">Calificación</label>
                 <p-dropdown
                     [options]="calificacion"
-                    formControlName="iForoCatId"
+                    formControlName="iEscalaCalifId"
                     styleClass="w-full"
-                    optionValue="value"
-                    optionLabel="label"
+                    optionValue="iEscalaCalifId"
+                    optionLabel="cEscalaCalifNombre"
                     placeholder="Seleccione una Calificación"
                 />
             </div>

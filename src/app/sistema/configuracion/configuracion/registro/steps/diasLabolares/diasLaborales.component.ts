@@ -6,10 +6,12 @@ import { httpService } from '../../../http/httpService'
 import { ButtonModule } from 'primeng/button'
 import { TicketService } from '../../service/ticketservice'
 import { Router } from '@angular/router'
+import { ToastModule } from 'primeng/toast';
+
 @Component({
     selector: 'app-diasLaborales',
     standalone: true,
-    imports: [TableModule, TablePrimengComponent, ButtonModule],
+    imports: [TableModule, TablePrimengComponent, ButtonModule, ToastModule],
     templateUrl: './diasLaborales.component.html',
     styleUrl: './diasLaborales.component.scss',
 })

@@ -165,6 +165,7 @@ export class YearComponent implements OnInit, OnChanges {
         this.httpService
             .postData('acad/calendarioAcademico/addCalAcademico', {
                 json: JSON.stringify({
+                    iSedeId: 3,
                     iYAcadId: this.yearInformation.idFechaVigente,
                     dtCalAcadInicio: this.yearInformation.fechaFin,
                     dtCalAcadFin: this.yearInformation.fechaFin,

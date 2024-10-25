@@ -139,13 +139,15 @@ export class EvaluacionFormPreguntasComponent implements OnDestroy {
     handleLogrosPregunta(item) {
         console.log(item)
 
+        let preguntas = [item]
+        if (item.preguntas != null) {
+            preguntas = item.preguntas
+        }
         const ref = this._dialogService.open(EvaluacionLogrosComponent, {
             ...MODAL_CONFIG,
             header: 'Gestionar Logros',
             data: {
-                iEvaluacionId: item.iEvaluacionId,
-                iEvalPregId: item.iEvalPregId,
-                logros: item.logros ?? [],
+                preguntas: preguntas,
             },
         })
         ref.onClose.pipe(takeUntil(this._unsubscribe$)).subscribe((result) => {

@@ -8,7 +8,7 @@ import {
 } from '@/app/shared/table-primeng/table-primeng.component'
 import { ApiEvaluacionesService } from '@/app/sistema/evaluaciones/services/api-evaluaciones.service'
 import { CommonModule } from '@angular/common'
-import { Component, inject, OnInit, OnDestroy, Optional } from '@angular/core'
+import { Component, inject, OnInit, OnDestroy } from '@angular/core'
 import {
     DialogService,
     DynamicDialogConfig,
@@ -16,22 +16,35 @@ import {
 } from 'primeng/dynamicdialog'
 import { Subject, takeUntil } from 'rxjs'
 import { LogroFormComponent } from './logro-form/logro-form.component'
+import { BancoPreguntaPreviewItemComponent } from '../../../../../evaluaciones/sub-evaluaciones/banco-preguntas/components/banco-pregunta-preview/banco-pregunta-preview-item/banco-pregunta-preview-item.component'
+import { RemoveHTMLPipe } from '@/app/shared/pipes/remove-html.pipe'
 
 @Component({
     selector: 'app-evaluacion-logros',
     standalone: true,
-    imports: [CommonModule, PrimengModule, TablePrimengComponent],
+    imports: [
+        CommonModule,
+        PrimengModule,
+        TablePrimengComponent,
+        BancoPreguntaPreviewItemComponent,
+        RemoveHTMLPipe,
+    ],
     templateUrl: './evaluacion-logros.component.html',
     styleUrl: './evaluacion-logros.component.scss',
     providers: [DialogService],
 })
 export class EvaluacionLogrosComponent implements OnInit, OnDestroy {
     title = ''
-    logrosSeleccionados = []
-    iEvaluacionId: number
-    iEvalPregId: number
 
-    isDialog: boolean = false
+    public preguntas = [
+        {
+            logros: [],
+            iEvaluacionId: null,
+            iEvalPregId: null,
+        },
+    ]
+
+    public preguntaSelectedIndex
 
     public columnasTabla: IColumn[] = [
         {
@@ -67,7 +80,6 @@ export class EvaluacionLogrosComponent implements OnInit, OnDestroy {
             class: 'p-button-rounded p-button-warning p-button-text',
         },
     ]
-    public data = []
 
     private _dialogService = inject(DialogService)
     private _evaluacionApiService = inject(ApiEvaluacionesService)
@@ -75,22 +87,14 @@ export class EvaluacionLogrosComponent implements OnInit, OnDestroy {
     private _confirmService = inject(ConfirmationModalService)
 
     constructor(
-        @Optional() private _ref: DynamicDialogRef,
-        @Optional() private _config: DynamicDialogConfig
+        private _ref: DynamicDialogRef,
+        private _config: DynamicDialogConfig
     ) {
-        if (this._config) {
-            this.isDialog = true
-            this.iEvalPregId = this._config.data.iEvalPregId
-            this.iEvaluacionId = this._config.data.iEvaluacionId
-            this.logrosSeleccionados = this._config.data.logros
-            this.title = this._config.data.title
-        }
+        this.preguntas = this._config.data.preguntas
+        this.title = this._config.data.title
     }
 
     public onActionBtn({ accion, item }) {
-        if (accion === 'seleccionar') {
-            this.handleSeleccionarLogro(item)
-        }
         if (accion === 'editar') {
             this.crearActualizarLogro(item)
         }
@@ -101,26 +105,24 @@ export class EvaluacionLogrosComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         console.log(this._config.data)
-
-        this.getData()
     }
 
-    getData() {
-        this.obtenerLogros()
+    setPreguntaSeleccionada(index) {
+        this.preguntaSelectedIndex = index
     }
 
-    obtenerLogros() {
-        this._evaluacionApiService
-            .obtenerLogros({
-                iEvalPregId: this.iEvalPregId,
-            })
-            .pipe(takeUntil(this._unsubscribe$))
-            .subscribe({
-                next: (data) => {
-                    this.data = data
-                },
-            })
-    }
+    // obtenerLogros() {
+    //     this._evaluacionApiService
+    //         .obtenerLogros({
+    //             iEvalPregId: this.iEvalPregId,
+    //         })
+    //         .pipe(takeUntil(this._unsubscribe$))
+    //         .subscribe({
+    //             next: (data) => {
+    //                 this.data = data
+    //             },
+    //         })
+    // }
 
     confirmEliminarLogro(item) {
         this._confirmService.openConfirm({
@@ -142,50 +144,46 @@ export class EvaluacionLogrosComponent implements OnInit, OnDestroy {
     }
 
     eliminarLogroLocal(iNivelLogroEvaId: number) {
-        this.data = [
-            ...this.data.filter(
+        this.preguntas[this.preguntaSelectedIndex].logros = [
+            ...this.preguntas[this.preguntaSelectedIndex].logros.filter(
                 (item) => item.iNivelLogroEvaId != iNivelLogroEvaId
             ),
         ]
     }
 
-    crearActualizarLogro(item) {
+    crearActualizarLogro({ iEvalPregId, logro }) {
         const ref = this._dialogService.open(LogroFormComponent, {
             ...MODAL_CONFIG,
-            header: item == null ? 'Crear Logro' : 'Editar Logro',
+            header: logro == null ? 'Crear Logro' : 'Editar Logro',
             data: {
-                logro: item,
-                iEvalPregId: this.iEvalPregId,
+                logro: logro,
+                iEvalPregId: iEvalPregId,
             },
         })
         ref.onClose.pipe(takeUntil(this._unsubscribe$)).subscribe((result) => {
             if (!result) return
-            console.log(result)
+            const preguntaSelected = this.preguntas[this.preguntaSelectedIndex]
 
-            const logroInData = this.data.findIndex(
+            const logroInData = preguntaSelected.logros.findIndex(
                 (logro) => logro.iNivelLogroEvalId == result.iNivelLogroEvalId
             )
-            console.log({
-                logroInData,
-                iNivelLogroEvalId: result.iNivelLogroEvalId,
-            })
-
             if (logroInData == -1) {
-                this.data = [...this.data, result]
+                this.preguntas[this.preguntaSelectedIndex].logros = [
+                    ...this.preguntas[this.preguntaSelectedIndex].logros,
+                    result,
+                ]
             } else {
-                this.data[logroInData] = result
-                this.data = [...this.data]
+                this.preguntas[this.preguntaSelectedIndex].logros[logroInData] =
+                    result
+                this.preguntas[this.preguntaSelectedIndex].logros = [
+                    ...this.preguntas[this.preguntaSelectedIndex].logros,
+                ]
             }
         })
     }
 
-    handleSeleccionarLogro(item) {
-        this.logrosSeleccionados = item
-        console.log(this.logrosSeleccionados)
-    }
-
     asignarLogrosPregunta() {
-        this.closeModal(this.logrosSeleccionados)
+        this.closeModal(this.preguntas)
     }
 
     closeModal(data) {

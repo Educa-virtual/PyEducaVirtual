@@ -42,8 +42,6 @@ export class LogroFormComponent implements OnDestroy, OnInit {
 
     ngOnInit() {
         this.data = this._config.data ?? { logro: null, iEvalPregId: null }
-        console.log(this.data)
-
         this.initForm(this.data.logro)
     }
 
@@ -67,7 +65,7 @@ export class LogroFormComponent implements OnDestroy, OnInit {
             .subscribe({
                 next: (resp) => {
                     this.logroForm.reset()
-                    data.iNivelLogroEvalId = resp.id
+                    data.iNivelLogroEvaId = resp.id
                     this.closeModal(data)
                 },
             })

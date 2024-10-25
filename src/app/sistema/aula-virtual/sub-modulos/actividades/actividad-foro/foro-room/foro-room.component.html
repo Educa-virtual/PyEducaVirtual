@@ -373,7 +373,7 @@
                                         ></p-checkbox> -->
                                         {{ rowIndex + 1 }}
                                     </td>
-                                    <td>
+                                    <td class="w-5">
                                         {{ estudiante.cPersNombre }}
                                         {{ estudiante.cPersPaterno }}
                                     </td>
@@ -381,7 +381,16 @@
                                     <td>A</td>
                                     <td>A</td>
                                     <td style="text-align: center">
-                                        <div
+                                        <p-button
+                                            (click)="openModal()"
+                                            class="btCalificacion"
+                                            icon="pi pi-folder-open"
+                                            rounded="true"
+                                            severity="secondary"
+                                            [style]="{ 'margin-right': '.5em' }"
+                                        />
+
+                                        <!-- <div
                                             class="w-1rem h-1rem border-circle ml-3"
                                             [ngClass]="
                                                 estudiante.cEstado === 'F'
@@ -390,7 +399,7 @@
                                                       ? 'bg-yellow-500'
                                                       : 'bg-green-500'
                                             "
-                                        ></div>
+                                        ></div> -->
                                     </td>
                                 </tr>
                             </ng-template>
@@ -409,3 +418,78 @@
         </p-tabPanel>
     </p-tabView>
 </section>
+<p-dialog
+    [(visible)]="modalCalificacion"
+    [style]="{ width: '1000px' }"
+    header="Calificar las Respuestas"
+    [modal]="true"
+    class="p-fluid"
+>
+    <form [formGroup]="foroForm" class="flex flex-column gap-3 w-full">
+        <div class="grid">
+            <!-- <div class="col-12">
+                <p-messages
+                    [(value)]="semana"
+                    [enableService]="false"
+                    [closable]="false"
+                />
+            </div> -->
+            <!-- Mostrar el título -->
+            <div class="col-8 flex flex-column gap-2">
+                <app-common-input
+                    [controlKey]="'cForoTitulo'"
+                    label="Comentario"
+                />
+            </div>
+            <div class="col-4 w-3 flex flex-column gap-2">
+                <label for="categoria">Calificación</label>
+                <p-dropdown
+                    [options]="calificacion"
+                    formControlName="iForoCatId"
+                    styleClass="w-full"
+                    optionValue="value"
+                    optionLabel="label"
+                    placeholder="Seleccione una Calificación"
+                />
+            </div>
+            <!-- Mostrar descripción -->
+            <div class="col-12">
+                <label for="descripcion" class="mt-1"
+                    >Descripción
+                    <span class="text-red-500 text-xs"
+                        >(*) Obligatorio</span
+                    ></label
+                >
+                <div class="mt-2">
+                    <p-editor
+                        id="descripcion"
+                        formControlName="cForoDescripcion"
+                        [style]="{ height: '150px' }"
+                    />
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div class="flex justify-content-end gap-2 pt-3">
+        <button
+            pButton
+            pRipple
+            label="Cancelar"
+            icon="pi pi-times"
+            class="p-button-secondary"
+            type="button"
+            size="small"
+        ></button>
+        <!-- (click)="closeModal(null)" -->
+        <button
+            pButton
+            pRipple
+            label="Guardar"
+            icon="pi pi-check"
+            size="small"
+            class="p-button-primary"
+            (click)="submit()"
+        ></button>
+    </div>
+</p-dialog>

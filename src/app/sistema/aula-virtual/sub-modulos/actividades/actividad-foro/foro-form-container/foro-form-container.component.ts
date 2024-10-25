@@ -86,76 +86,11 @@ export class ForoFormContainerComponent implements OnInit {
         const value = this.foroForm.value
         console.log('Guardar Foros', value)
 
-        //this._aulaService.guardarForo(value).subscribe((Data) => {})
+        this._aulaService.guardarForo(value).subscribe(() => {})
         //     // this.categorias = Data['data']
         //     // console.log('Datos mit', this.categorias)
         // })
     }
     showModal: boolean = false
     typeUpload: string
-    // openUpload(type) {
-    //     this.showModal = true
-    //     this.typeUpload = type
-    //     this.titleFileTareas = ''
-    //     switch (type) {
-    //         case 'file':
-    //             this.titleFileTareas = 'Añadir Archivo Local'
-    //             break
-    //         case 'url':
-    //             this.titleFileTareas = 'Añadir Enlace URL'
-    //             break
-    //         default:
-    //             this.showModal = false
-    //             this.typeUpload = null
-    //             break
-    //     }
-    // }
-    // accionBtnItem(elemento): void {
-    //     const { accion } = elemento
-    //     const { item } = elemento
-    //     // let params
-    //     switch (accion) {
-    //         case 'get_tareas_reutilizadas':
-    //             this.tareas = item
-    //             this.filteredTareas = item
-    //             break
-    //         case 'close-modal':
-    //             this.showModal = false
-    //             break
-    //         case 'subir-archivo-tareas':
-    //             this.FilesTareas.push({
-    //                 type: 1, //1->file
-    //                 nameType: 'file',
-    //                 name: item.file.name,
-    //                 size: item.file.size,
-    //                 ruta: item.name,
-    //             })
-    //             this.showModal = false
-    //             break
-    //         case 'subir-url':
-    //             if (item === '') return
-    //             this.FilesTareas.push({
-    //                 type: 2, //2->url
-    //                 nameType: 'url',
-    //                 name: item,
-    //                 size: '',
-    //                 ruta: item,
-    //             })
-    //             this.showModal = false
-    //             this.nameEnlace = ''
-    //             break
-    //         case 'subir-youtube':
-    //             if (item === '') return
-    //             this.FilesTareas.push({
-    //                 type: 3, //3->youtube
-    //                 nameType: 'youtube',
-    //                 name: item,
-    //                 size: '',
-    //                 ruta: item,
-    //             })
-    //             this.showModal = false
-    //             this.nameEnlace = ''
-    //             break
-    //     }
-    // }
 }

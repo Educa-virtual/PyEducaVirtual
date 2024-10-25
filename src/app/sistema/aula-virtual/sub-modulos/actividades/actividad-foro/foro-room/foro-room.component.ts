@@ -9,12 +9,14 @@ import {
     matRule,
     matStar,
 } from '@ng-icons/material-icons/baseline'
+import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
 import { provideIcons } from '@ng-icons/core'
 import { TabViewModule } from 'primeng/tabview'
 import { OrderListModule } from 'primeng/orderlist'
 import { PrimengModule } from '@/app/primeng.module'
 import { GeneralService } from '@/app/servicios/general.service'
+import { CommonInputComponent } from '@/app/shared/components/common-input/common-input.component'
 
 @Component({
     selector: 'app-foro-room',
@@ -23,6 +25,7 @@ import { GeneralService } from '@/app/servicios/general.service'
     styleUrls: ['./foro-room.component.scss'],
     imports: [
         IconComponent,
+        CommonInputComponent,
         TablePrimengComponent,
         TabViewModule,
         OrderListModule,
@@ -42,12 +45,41 @@ import { GeneralService } from '@/app/servicios/general.service'
 })
 export class ForoRoomComponent implements OnInit {
     private GeneralService = inject(GeneralService)
+    private _formBuilder = inject(FormBuilder)
+    //private ref = inject(DynamicDialogRef)
     // variables
     estudiantes: any[] = []
+    calificacion: any[] = [
+        { label: 'AD', value: 1 },
+        { label: 'A', value: 2 },
+        { label: 'B', value: 3 },
+        { label: 'C', value: 4 },
+    ]
+    modalCalificacion: boolean = false
+
+    public foroForm: FormGroup = this._formBuilder.group({
+        cForoTitulo: ['', [Validators.required]],
+        cForoDescripcion: ['', [Validators.required]],
+        iForoCatId: [0, [Validators.required]],
+        dtForoInicio: [''],
+        iEstado: [0, Validators.required],
+        dtForoPublicacion: ['dtForoInicio'],
+        dtForoFin: [],
+    })
 
     constructor() {}
     ngOnInit() {
         this.getEstudiantesMatricula()
+    }
+    // closeModal(data) {
+    //     this.ref.close(data)
+    // }
+    openModal() {
+        this.modalCalificacion = true
+    }
+    submit() {
+        const value = this.foroForm.value
+        console.log('Guardar Calificacion', value)
     }
     getEstudiantesMatricula() {
         const params = {
@@ -64,7 +96,7 @@ export class ForoRoomComponent implements OnInit {
             },
             params: { skipSuccessMessage: true },
         }
-        console.log(this.getInformation)
+        //console.log(this.getInformation)
 
         this.getInformation(params)
     }

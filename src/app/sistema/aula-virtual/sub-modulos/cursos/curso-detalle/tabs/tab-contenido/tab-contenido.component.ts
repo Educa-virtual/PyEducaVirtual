@@ -121,12 +121,22 @@ export class TabContenidoComponent implements OnInit {
 
         this.rangeDates = [today, nextWeek]
 
-        this.generarAccionesContenido()
+        // this.generarAccionesContenido()
         this.getData()
     }
 
     private getData() {
+        this.obtenerTipoActivadad()
         this.obtenerContenidoSemanas()
+    }
+
+    obtenerTipoActivadad() {
+        this._aulaService.obtenerTipoActividades().subscribe({
+            next: (tipoActivadeds) => {
+                this.tipoActivadedes = tipoActivadeds
+                this.generarAccionesContenido()
+            },
+        })
     }
 
     private obtenerContenidoSemanas() {
@@ -149,15 +159,18 @@ export class TabContenidoComponent implements OnInit {
     // genera las acciones de contenido segun la configuracion de las actividades
     generarAccionesContenido() {
         this.accionesContenido = Object.keys(actividadesConfig).map((key) => {
-            const actividad = actividadesConfig[key]
+            const tipoActividadLocal = actividadesConfig[key]
+            const tipoActividad = this.tipoActivadedes.find(
+                (act) => act.iActTipoId == tipoActividadLocal.iActTipoId
+            )
             return {
-                label: actividad.cActTipoNombre,
-                icon: actividad.icon,
+                label: tipoActividad.cActTipoNombre,
+                icon: tipoActividadLocal.icon,
                 command: () => {
                     const actionHandler =
-                        this.handleActionsMap[actividad.iActTipoId]
+                        this.handleActionsMap[tipoActividadLocal.iActTipoId]
                     if (actionHandler) {
-                        actionHandler('CREAR', actividad)
+                        actionHandler('CREAR', tipoActividadLocal)
                     }
                 },
             }

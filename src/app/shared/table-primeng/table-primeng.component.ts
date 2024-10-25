@@ -15,8 +15,22 @@ import { IconComponent } from '../icon/icon.component'
 import { isIIcon } from '../utils/is-icon-object'
 import { IsIconTypePipe } from '../pipes/is-icon-type.pipe'
 
+type TColumnType =
+    | 'actions'
+    | 'item'
+    | 'checkbox'
+    | 'expansion'
+    | 'p-editor'
+    | 'text'
+    | 'radio'
+    | 'trim'
+    | 'icon-tooltip'
+    | 'estado'
+    | string
+
 export interface IColumn {
-    type: string
+    type: TColumnType
+
     width: string
     field: string
     header: string

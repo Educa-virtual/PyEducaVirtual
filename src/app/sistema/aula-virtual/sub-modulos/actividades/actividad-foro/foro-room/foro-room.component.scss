@@ -130,3 +130,9 @@
         margin-bottom: 10px;
     }
 }
+
+:host ::ng-deep .btCalificacion .p-ripple {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

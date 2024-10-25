@@ -85,4 +85,30 @@ export class ApiEvaluacionesService {
             .get<any>(`${this.baseUrlApi}/evaluaciones/escala-calificaciones`)
             .pipe(map((resp) => resp.data))
     }
+
+    // logros
+    obtenerLogros(params) {
+        return this.http
+            .get<ApiResponse>(
+                `${this.baseUrlApi}/evaluaciones/evaluacion/logros`,
+                { params }
+            )
+            .pipe(map((resp) => resp.data))
+    }
+
+    guardarActualizarLogros(data) {
+        return this.http
+            .post<ApiResponse>(
+                `${this.baseUrlApi}/evaluaciones/evaluacion/logros`,
+                data
+            )
+            .pipe(map((resp) => resp.data))
+    }
+    eliminarLogroPregunta(id) {
+        return this.http
+            .delete<ApiResponse>(
+                `${this.baseUrlApi}/evaluaciones/evaluacion/logros/${id}`
+            )
+            .pipe(map((resp) => resp.data))
+    }
 }

@@ -94,7 +94,7 @@ export class TabContenidoComponent implements OnInit {
     private _aulaService = inject(ApiAulaService)
     private semanaSeleccionada
     private _unsubscribe$ = new Subject<boolean>()
-
+    tipoActivadedes = []
     @Input({ required: true }) private _iSilaboId: string
 
     // lista de acciones base para la semana

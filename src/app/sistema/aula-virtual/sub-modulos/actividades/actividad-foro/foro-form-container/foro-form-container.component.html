@@ -1,5 +1,12 @@
 <form [formGroup]="foroForm" class="flex flex-column gap-3 w-full">
     <div class="grid">
+        <div class="col-12">
+            <p-messages
+                [(value)]="semana"
+                [enableService]="false"
+                [closable]="false"
+            />
+        </div>
         <!-- Mostrar el título -->
         <div class="col-4 w-5 flex flex-column gap-2">
             <app-common-input [controlKey]="'cForoTitulo'" label="Título" />
@@ -28,70 +35,132 @@
             />
         </div>
         <!-- Mostrar descripción -->
-        <div class="col-8 flex-column gap-4 pt-9">
-            <label for="cForoDescripcion">Descripción</label>
-            <p-editor
-                [style]="{ height: '220px' }"
-                id="descripcion"
-                formControlName="cForoDescripcion"
-            />
+        <div class="col-12">
+            <label for="descripcion" class="mt-1"
+                >Descripción
+                <span class="text-red-500 text-xs">(*) Obligatorio</span></label
+            >
+            <div class="mt-2">
+                <p-editor
+                    id="descripcion"
+                    formControlName="cForoDescripcion"
+                    [style]="{ height: '150px' }"
+                />
+            </div>
         </div>
         <!-- Asignar Los times -->
-        <div class="col-4">
-            <div class="formgrid grid">
-                <!-- <span>Disponibilidad</span> -->
-                <div class="formgrid grid">
-                    <!-- Mostrar fechas -->
-                    <div class="field flex flex-column col-12 md:col-6 gap-2">
-                        <label for="">Fecha Inicio</label>
-                        <p-calendar
-                            appBaseDatePicker
-                            formControlName="dtForoInicio"
-                            [iconDisplay]="'input'"
-                            [showIcon]="true"
-                            tabindex=""
-                            inputId=""
-                        />
-                    </div>
-                    <div class="field flex flex-column col-12 md:col-6 gap-2">
-                        <label for="hora">Hora</label>
-                        <p-calendar [showIcon]="true" [timeOnly]="true">
-                            <ng-template
-                                pTemplate="inputicon"
-                                let-clickCallBack="clickCallBack"
-                            >
-                                <i class="pi pi-clock pointer-events-none"></i>
-                            </ng-template>
-                        </p-calendar>
-                    </div>
-                    <div class="field flex flex-column col-12 md:col-6 gap-2">
-                        <label for="">Fecha Fin</label>
-                        <p-calendar
-                            appBaseDatePicker
-                            formControlName="dtForoFin"
-                            [iconDisplay]="'input'"
-                            [showIcon]="true"
-                            inputId=""
-                        />
-                    </div>
-                    <div class="field flex flex-column col-12 md:col-6 gap-2">
-                        <label for="hora">Hora</label>
-                        <p-calendar [showIcon]="true" [timeOnly]="true">
-                            <ng-template
-                                pTemplate="inputicon"
-                                let-clickCallBack="clickCallBack"
-                            >
-                                <i class="pi pi-clock pointer-events-none"></i>
-                            </ng-template>
-                        </p-calendar>
-                    </div>
-                </div>
+        <div class="col-12 md:col-6 gap-3">
+            <p-inputGroup>
+                <p-inputGroupAddon> Fecha - Hora de Inicio </p-inputGroupAddon>
+                <p-calendar
+                    formControlName="dtForoInicio"
+                    [iconDisplay]="'input'"
+                    styleClass="w-full"
+                    [showIcon]="true"
+                    [showTime]="true"
+                    [hourFormat]="'24'"
+                    inputId="dtForoInicio"
+                    [appendTo]="'body'"
+                />
+            </p-inputGroup>
+        </div>
+        <div class="col-12 md:col-6 gap-3">
+            <p-inputGroup>
+                <p-inputGroupAddon> Fecha - Hora de Entrega </p-inputGroupAddon>
+                <p-calendar
+                    formControlName="dtForoFin"
+                    [iconDisplay]="'input'"
+                    styleClass="w-full"
+                    [showIcon]="true"
+                    [showTime]="true"
+                    [hourFormat]="'24'"
+                    inputId="dtForoFin"
+                    [appendTo]="'body'"
+                />
+            </p-inputGroup>
+        </div>
+    </div>
+    <!-- <div class="col-12 mt-1">
+        <div class="card">
+            <label for="" class="mt-1">Adjuntar</label>
+            <div class="d-flex align-items-center text-center mt-1">
+                <button
+                    pButton
+                    pRipple
+                    type="button"
+                    class="p-button-rounded p-button-outlined mx-2"
+                    (click)="openUpload('file')"
+                >
+                    <i
+                        class="pi pi-upload my-2"
+                        style="color: #333437; font-size: 3rem"
+                        pTooltip="Subir Archivo"
+                        tooltipPosition="bottom"
+                    ></i>
+                </button>
+
+                <button
+                    pButton
+                    pRipple
+                    type="button"
+                    class="p-button-rounded p-button-outlined mx-2"
+                    (click)="openUpload('url')"
+                >
+                    <i
+                        class="pi pi-link my-2"
+                        style="color: #333437; font-size: 3rem"
+                        pTooltip="Subir Enlace"
+                        tooltipPosition="bottom"
+                    ></i>
+                </button>
+
             </div>
         </div>
     </div>
+    @if (FilesTareas.length) {
+        <div class="col-12">
+            <label for="" class="mt-2">Adjuntar Material</label>
+
+            @for (item of FilesTareas; track item; let idx = $index) {
+                <p-inputGroup class="mt-1">
+                    <p-inputGroupAddon>
+                        @switch (item.type) {
+                            @case (1) {
+                                <i
+                                    class="pi pi-upload"
+                                    style="color: #333437"
+                                ></i>
+                            }
+                            @case (2) {
+                                <i
+                                    class="pi pi-link"
+                                    style="color: #333437"
+                                ></i>
+                            }
+                        }
+                    </p-inputGroupAddon>
+                    <input
+                        type="text"
+                        pInputText
+                        [placeholder]="item.name"
+                        disabled
+                    />
+                    <button
+                        type="button"
+                        pButton
+                        icon="pi pi-trash"
+                        (click)="FilesTareas.splice(idx, 1)"
+                        class="p-button-danger"
+                    >
+                        &nbsp;
+                    </button>
+                </p-inputGroup>
+            }
+        </div>
+    } -->
 </form>
 
-<div class="flex justify-content-center gap-2 pt-3">
+<div class="flex justify-content-end gap-2 pt-3">
     <button
         pButton
         pRipple

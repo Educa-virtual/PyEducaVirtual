@@ -230,7 +230,7 @@ export class TabContenidoComponent implements OnInit {
                         },
                         header:
                             action === 'EDITAR'
-                                ? 'Actualizar Tarea'
+                                ? 'Editar Tarea'
                                 : 'Crear Tarea',
                     }
                 )

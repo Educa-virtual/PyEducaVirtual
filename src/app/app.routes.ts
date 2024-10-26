@@ -87,14 +87,17 @@ export const routes: Routes = [
                 loadChildren: () =>
                     import('./sistema/evaluaciones/evaluaciones.routes'),
             },
+            // Ruta de Especialista
+            {
+                path: 'especialista-ugel',
+
+                loadChildren: () =>
+                    import(
+                        './sistema/especialista-ugel/especialista-ugel.routes'
+                    ),
+            },
         ],
     },
-    // {
-    //     path: 'especialista-ugel',
-
-    //     loadChildren: () =>
-    //         import('./sistema/especialista-ugel/especialista-ugel.routes'),
-    // },
 
     { path: 'login', component: LoginComponent },
 

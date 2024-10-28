@@ -27,6 +27,9 @@ interface Data {
 })
 export class AsistenciaComponent implements OnInit {
     @Input() iCursoId: string
+    @Input() iNivelGradoId: string
+    @Input() iSeccionId: string
+
     private unsubscribe$ = new Subject<boolean>()
 
     cCursoNombre: string
@@ -42,46 +45,76 @@ export class AsistenciaComponent implements OnInit {
     }
     ngOnInit() {
         this.getObtenerAsitencias()
+        this.getFechasImportantes()
     }
+    formatoFecha: Date = new Date()
+    fechaActual =
+        this.formatoFecha.getFullYear() +
+        '-' +
+        (this.formatoFecha.getMonth() + 1) +
+        '-' +
+        this.formatoFecha.getDate()
 
+    dataFechas = []
     calendarOptions: CalendarOptions = {
         plugins: [dayGridPlugin, interactionPlugin],
         initialView: 'dayGridMonth',
         locales: [esLocale],
         weekends: true,
+        height: '100%',
+        selectable: true,
+        eventShortHeight: 30,
         dateClick: (item) => this.handleDateClick(item),
         headerToolbar: {
             end: 'dayGridMonth,dayGridWeek,dayGridDay',
             center: 'title',
             start: 'prev,next today',
         },
-        events: [{ title: 'Meeting', start: new Date() }],
+        events: null,
     }
+
+    // [{ title: 'Meeting', start: new Date() }]
     handleDateClick(item) {
-        console.log(item)
-        // alert('date click! ' + item.dateStr)
+        this.verAsistencia(item.dateStr)
+        this.fechaActual = item.dateStr
+    }
+    getFechasImportantes() {
+        const params = {
+            petition: 'post',
+            group: 'docente',
+            prefix: 'fechas_importantes',
+            ruta: 'list',
+            data: {
+                opcion: 'CONSULTAR_FECHAS_IMPORTANTES',
+            },
+            params: { skipSuccessMessage: true },
+        }
+        this.getInformation(params, 'get_fecha_importante')
+        console.log(this.dataFechas)
+    }
+    verAsistencia(fechas: string) {
+        const params = {
+            petition: 'post',
+            group: 'docente',
+            prefix: 'asistencia',
+            ruta: 'list',
+            data: {
+                opcion: 'CONSULTAR_ASISTENCIA_FECHA',
+                iCursoId: this.iCursoId,
+                dtCtrlAsistencia: fechas,
+            },
+            params: { skipSuccessMessage: true },
+        }
+        this.getInformation(params, 'get_asistencia')
     }
     visible: boolean = false
 
-    tipoAsistencias = [
-        { id: '1', letra: 'A' },
-        { id: '2', letra: 'T' },
-        { id: '3', letra: 'N' },
-        { id: '4', letra: 'J' },
-    ]
-    marcarAsistencia() {}
-    // cols = [
-
-    //     { field: 'iAsistencia', header: 'Asistencia', width: '100px' },
-    //     { field: 'iInasistencia', header: 'Inasistencia', width: '100px' },
-    //     { field: 'iInasistenciaJustif', header: 'Inasistencia Justificada', width: '100px' },
-    //     { field: 'iTardanzas', header: 'Tardanzas', width: '100px' },
-    //     { field: 'iTardanzasJustif', header: 'Tardanzas Justificada', width: '100px' },
-    //     { field: 'cEstudiante', header: 'Estudiante', width: '300px' },
-
-    // ];
     fechas = [
-        { nombre: 'Feriados Nacionales', cantidad: 5, color: 'var(--red-400)' },
+        {
+            nombre: 'Feriados Nacionales',
+            cantidad: 5,
+            color: 'var(--red-400)',
+        },
         {
             nombre: 'Feriados Recuperables',
             cantidad: 5,
@@ -97,66 +130,68 @@ export class AsistenciaComponent implements OnInit {
             cantidad: 5,
             color: 'var(--bluegray-400)',
         },
-        { nombre: 'Dias de Gestion', cantidad: 5, color: 'var(--gray-400)' },
-        { nombre: 'Mis Actividades', cantidad: 5, color: 'var(--teal-400)' },
+        {
+            nombre: 'Dias de Gestion',
+            cantidad: 5,
+            color: 'var(--gray-400)',
+        },
+        {
+            nombre: 'Mis Actividades',
+            cantidad: 5,
+            color: 'var(--teal-400)',
+        },
     ]
-
-    dates = [
-        { dtFecha: 'ENERO' },
-        { dtFecha: 'FEBRERO' },
-        { dtFecha: 'MARZO' },
-        { dtFecha: 'ABRIL' },
-        { dtFecha: 'MAYO' },
-        { dtFecha: 'JUNIO' },
-        { dtFecha: 'JULIO' },
-        { dtFecha: 'AGOSTO' },
-        { dtFecha: 'SETIEMBRE' },
-        { dtFecha: 'OCTUBRE' },
-        { dtFecha: 'NOBIEMBRE' },
-        { dtFecha: 'DICIEMBRE' },
-    ]
-
-    mes = new Date().getMonth()
 
     valSelect1: string = ''
     valSelect2: number = 0
-    carouselResponsiveOptions = [
-        {
-            breakpoint: '1024px',
-            numVisible: 3,
-            numScroll: 3,
-        },
-        {
-            breakpoint: '768px',
-            numVisible: 2,
-            numScroll: 2,
-        },
-        {
-            breakpoint: '560px',
-            numVisible: 1,
-            numScroll: 1,
-        },
+
+    data = []
+
+    tipoMarcado = [
+        { iTipoAsiId: '7', cTipoAsiLetra: '-' },
+        { iTipoAsiId: '1', cTipoAsiLetra: 'A' },
+        { iTipoAsiId: '2', cTipoAsiLetra: 'T' },
+        { iTipoAsiId: '3', cTipoAsiLetra: 'N' },
+        { iTipoAsiId: '4', cTipoAsiLetra: 'J' },
     ]
-    data = [
-        // {
-        //     iEstudId: '1',
-        //     cEstudiante: 'Jhoand Velasquez Durand',
-        //     iAsistencia: '5',
-        //     iInasistencia: '2',
-        //     iInasistenciaJustif: '1',
-        //     iTardanzas: '6',
-        //     iTardanzasJustif: '2',
-        // },
-        // {
-        //     iEstudId: '2',
-        //     cEstudiante: 'Diana Luque Figueroa',
-        //     iAsistencia: '15',
-        //     iInasistencia: '3',
-        //     iInasistenciaJustif: '2',
-        //     iTardanzas: '2',
-        //     iTardanzasJustif: '0',
-        // },
-    ]
+
+    iTipoAsiId = 0
+    indice = 0
+    marcarAsistencia(index) {
+        if (this.data[index]['iTipoAsiId'] == null) {
+            this.data[index]['iTipoAsiId'] = this.tipoMarcado[0]['iTipoAsiId']
+            this.data[index]['cTipoAsiLetra'] =
+                this.tipoMarcado[0]['cTipoAsiLetra']
+        }
+
+        this.iTipoAsiId = this.tipoMarcado.findIndex(
+            (tipo) => tipo.iTipoAsiId == this.data[index]['iTipoAsiId']
+        )
+        this.indice = (this.iTipoAsiId + 6) % 5
+        this.data[index]['iTipoAsiId'] =
+            this.tipoMarcado[this.indice]['iTipoAsiId']
+        this.data[index]['cTipoAsiLetra'] =
+            this.tipoMarcado[this.indice]['cTipoAsiLetra']
+        this.data[index]['dtCtrlAsistencia'] = this.fechaActual
+    }
+
+    guardarAsistencia() {
+        const params = {
+            petition: 'post',
+            group: 'docente',
+            prefix: 'asistencia',
+            ruta: 'list',
+            data: {
+                opcion: 'GUARDAR_ASISTENCIA_ESTUDIANTE',
+                iCursoId: this.iCursoId,
+                asistencia_json: JSON.stringify(this.data),
+                dtCtrlAsistencia: this.fechaActual,
+            },
+            params: { skipSuccessMessage: true },
+        }
+
+        this.getInformation(params, 'get_data')
+    }
 
     goAreasEstudio() {
         this.router.navigate(['aula-virtual/areas-curriculares'])
@@ -165,11 +200,25 @@ export class AsistenciaComponent implements OnInit {
     accionBtnItem(elemento): void {
         const { accion } = elemento
         const { item } = elemento
-        console.log(item)
-        console.log(accion)
+        // console.log(item)
+        // console.log(accion)
+
         switch (accion) {
             case 'ingresar':
                 this.router.navigate(['./docente/detalle-asistencia'])
+                break
+            case 'get_data':
+                this.getObtenerAsitencias()
+                break
+            case 'get_asistencia':
+                this.data = item
+                break
+            // case 'get_asistencia_fecha':
+            //     this.data = item
+            //     break
+            case 'get_fecha_importante':
+                this.calendarOptions.events = item
+                //this.getCalendario()
                 break
             default:
                 break
@@ -183,24 +232,20 @@ export class AsistenciaComponent implements OnInit {
             prefix: 'asistencia',
             ruta: 'list',
             data: {
-                opcion: 'CONSULTAR_ESTUDIANTES_CURSO',
+                opcion: 'CONSULTAR_ASISTENCIA_FECHA',
                 iCursoId: this.iCursoId,
+                dtCtrlAsistencia: this.fechaActual,
             },
             params: { skipSuccessMessage: true },
         }
-        this.getInformation(params, false)
+        this.getInformation(params, 'get_asistencia')
     }
-    getInformation(params, api) {
+    getInformation(params, accion) {
         this.GeneralService.getGralPrefix(params)
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
                 next: (response: Data) => {
-                    if (api) {
-                        this.showModal = false
-                        this.getObtenerAsitencias()
-                    } else {
-                        this.data = response.data
-                    }
+                    this.accionBtnItem({ accion, item: response?.data })
                 },
                 complete: () => {},
             })

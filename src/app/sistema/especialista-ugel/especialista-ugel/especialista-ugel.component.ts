@@ -1,4 +1,4 @@
-import { Component } from '@angular/core'
+import { Component, OnInit } from '@angular/core'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
 
@@ -8,7 +8,7 @@ import { LocalStoreService } from '@/app/servicios/local-store.service'
     templateUrl: './especialista-ugel.component.html',
     styleUrls: ['./especialista-ugel.component.scss'],
 })
-export class EspecialistaUgelComponent {
+export class EspecialistaUgelComponent implements OnInit {
     // constructor() {}
     name: string
     name1: string

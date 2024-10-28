@@ -9,39 +9,10 @@
             alternativa of pregunta.alternativas;
             track alternativa.iAlternativaId
         ) {
-            <div class="flex gap-2 flex-wrap">
-                <!-- AlternativaLetra -->
-                <span>{{ alternativa.cAlternativaLetra }} )</span>
-                <!-- input o checkbox dependiendo del tipo pregunta -->
-                <div
-                    class="flex gap-2"
-                    [ngClass]="
-                        pregunta.iTipoPregId === 1
-                            ? 'field-radiobutton'
-                            : 'field-checkbox'
-                    "
-                >
-                    <!-- input o checkbox dependiendo del tipo pregunta -->
-                    @if (pregunta.iTipoPregId === 1) {
-                        <p-radioButton
-                            [name]="pregunta.iPreguntaId"
-                            [value]="alternativa.cAlternativaLetra"
-                            [(ngModel)]="pregunta.alternativaCorrecta"
-                            disabled="true"
-                        ></p-radioButton>
-                    }
-                    @if (pregunta.iTipoPregId === 2) {
-                        <p-checkbox
-                            disabled="true"
-                            [name]="pregunta.iPreguntaId"
-                            [value]="alternativa.cAlternativaLetra"
-                            [(ngModel)]="pregunta.alternativaCorrecta"
-                        />
-                    }
-                </div>
-                <!-- AlternativaContenido -->
-                <div [innerHTML]="alternativa.cAlternativaDescripcion"></div>
-            </div>
+            <app-banco-pregunta-alternativa
+                [alternativa]="alternativa"
+                [pregunta]="pregunta"
+            />
         }
     </div>
 }

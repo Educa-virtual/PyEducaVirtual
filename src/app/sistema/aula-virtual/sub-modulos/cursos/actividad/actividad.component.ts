@@ -32,6 +32,5 @@ export class ActividadComponent implements OnInit {
         const keyTab = this._activatedRoute.snapshot.params['iActTopId']
         const tab = parseInt(keyTab)
         this.iActTopId = tab as tipoActividadesKeys
-        console.log(this.ixActivadadId)
     }
 }

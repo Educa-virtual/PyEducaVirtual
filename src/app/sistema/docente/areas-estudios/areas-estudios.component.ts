@@ -158,6 +158,7 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
                 this.router.navigateByUrl('docente/sesion-aprendizaje')
                 break
             case 'asistencia':
+                console.log(this.selectedData)
                 this.router.navigateByUrl(
                     'docente/asistencia/' +
                         this.selectedData['iCursoId'] +
@@ -165,7 +166,11 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
                         this.selectedData['cCursoNombre'].replace(
                             /[\^*@!"#$%&/()=?¡!¿':\\]/gi,
                             ''
-                        )
+                        ) +
+                        '/' +
+                        this.selectedData['iNivelGradoId'] +
+                        '/' +
+                        this.selectedData['iSeccionId']
                 )
                 break
         }

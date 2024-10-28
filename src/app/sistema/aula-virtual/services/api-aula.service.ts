@@ -6,6 +6,7 @@ import {
     mapData,
     mapItemsBancoToEre,
 } from '../../evaluaciones/sub-evaluaciones/banco-preguntas/models/pregunta-data-transformer'
+import { ApiResponse } from '@/app/shared/interfaces/api-response.model'
 
 @Injectable({
     providedIn: 'root',
@@ -21,6 +22,7 @@ export class ApiAulaService {
             data
         )
     }
+    // Foros
     guardarForo(data) {
         return this._http.post(
             `${this.baseUrlApi}/aula-virtual/contenidos/foro/guardarForo`,
@@ -34,7 +36,30 @@ export class ApiAulaService {
             data
         )
     }
-
+    obtenerCalificacion(data) {
+        return this._http.post(
+            `${this.baseUrlApi}/aula-virtual/contenidos/foro/obtenerCalificacion`,
+            data
+        )
+    }
+    obtenerForo(params: { iActTipoId; ixActivadadId }) {
+        return this._http
+            .get<any>(
+                `${this.baseUrlApi}/aula-virtual/contenidos/foro/obtenerForo`,
+                { params }
+            )
+            .pipe(
+                map((resp) => resp.data),
+                map((data) => {
+                    if (data.iActTipoId == 2) {
+                        const preguntas = mapItemsBancoToEre(data.preguntas)
+                        data.preguntas = mapData(preguntas)
+                    }
+                    return data
+                })
+            )
+    }
+    // fin de foro
     eliminarActividad(data) {
         return this._http.delete(
             `${this.baseUrlApi}/aula-virtual/contenidos/actividad/eliminarActividad`,
@@ -67,5 +92,13 @@ export class ApiAulaService {
                     return data
                 })
             )
+    }
+
+    obtenerTipoActividades() {
+        return this._http
+            .get<ApiResponse>(
+                `${this.baseUrlApi}/aula-virtual/contenidos/tipo-actividad`
+            )
+            .pipe(map((resp) => resp.data))
     }
 }

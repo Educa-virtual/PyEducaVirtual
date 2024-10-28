@@ -43,6 +43,8 @@ import { GeneralService } from '@/app/servicios/general.service'
 import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
 import { Subject, takeUntil } from 'rxjs'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
+import { ActivatedRoute, Router } from '@angular/router'
+import { DynamicDialogModule } from 'primeng/dynamicdialog'
 
 @Component({
     selector: 'app-tab-contenido',
@@ -62,6 +64,7 @@ import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmatio
         TareaFormContainerComponent,
         VideoconferenciaContainerFormComponent,
         IconComponent,
+        DynamicDialogModule,
     ],
     templateUrl: './tab-contenido.component.html',
     styleUrl: './tab-contenido.component.scss',
@@ -91,7 +94,7 @@ export class TabContenidoComponent implements OnInit {
     private _aulaService = inject(ApiAulaService)
     private semanaSeleccionada
     private _unsubscribe$ = new Subject<boolean>()
-
+    tipoActivadedes = []
     @Input({ required: true }) private _iSilaboId: string
 
     // lista de acciones base para la semana
@@ -106,7 +109,11 @@ export class TabContenidoComponent implements OnInit {
         [MATERIAL]: this.handleMaterialAction.bind(this),
     }
 
-    constructor(private _dialogService: DialogService) {}
+    constructor(
+        private _dialogService: DialogService,
+        private router: Router,
+        private _activatedRoute: ActivatedRoute
+    ) {}
 
     ngOnInit(): void {
         const today = new Date()
@@ -115,12 +122,22 @@ export class TabContenidoComponent implements OnInit {
 
         this.rangeDates = [today, nextWeek]
 
-        this.generarAccionesContenido()
+        // this.generarAccionesContenido()
         this.getData()
     }
 
     private getData() {
+        this.obtenerTipoActivadad()
         this.obtenerContenidoSemanas()
+    }
+
+    obtenerTipoActivadad() {
+        this._aulaService.obtenerTipoActividades().subscribe({
+            next: (tipoActivadeds) => {
+                this.tipoActivadedes = tipoActivadeds
+                this.generarAccionesContenido()
+            },
+        })
     }
 
     private obtenerContenidoSemanas() {
@@ -143,15 +160,18 @@ export class TabContenidoComponent implements OnInit {
     // genera las acciones de contenido segun la configuracion de las actividades
     generarAccionesContenido() {
         this.accionesContenido = Object.keys(actividadesConfig).map((key) => {
-            const actividad = actividadesConfig[key]
+            const tipoActividadLocal = actividadesConfig[key]
+            const tipoActividad = this.tipoActivadedes.find(
+                (act) => act.iActTipoId == tipoActividadLocal.iActTipoId
+            )
             return {
-                label: actividad.cActTipoNombre,
-                icon: actividad.icon,
+                label: tipoActividad.cActTipoNombre,
+                icon: tipoActividadLocal.icon,
                 command: () => {
                     const actionHandler =
-                        this.handleActionsMap[actividad.iActTipoId]
+                        this.handleActionsMap[tipoActividadLocal.iActTipoId]
                     if (actionHandler) {
-                        actionHandler('CREAR', actividad)
+                        actionHandler('CREAR', tipoActividadLocal)
                     }
                 },
             }
@@ -194,28 +214,58 @@ export class TabContenidoComponent implements OnInit {
     }
 
     handleTareaAction(action: TActividadActions, actividad: IActividad) {
-        const ref: DynamicDialogRef = this._dialogService.open(
-            TareaFormContainerComponent,
-            {
-                ...MODAL_CONFIG,
-                data: {
-                    contenidoSemana: this.semanaSeleccionada,
-                    iActTipoId: actividad.iActTipoId,
-                    actividad: actividad,
-                    action: action === 'EDITAR' ? 'ACTUALIZAR' : 'GUARDAR',
-                },
-                header:
-                    action === 'EDITAR' ? 'Actualizar Tarea' : 'Crear Tarea',
-            }
-        )
-        ref.onClose.subscribe((result) => {
-            if (result) {
-                this.getData()
-                console.log('Formulario enviado', result)
-            } else {
-                console.log('Formulario cancelado')
-            }
-        })
+        switch (action) {
+            case 'CREAR':
+            case 'EDITAR':
+                const ref: DynamicDialogRef = this._dialogService.open(
+                    TareaFormContainerComponent,
+                    {
+                        ...MODAL_CONFIG,
+                        data: {
+                            contenidoSemana: this.semanaSeleccionada,
+                            iActTipoId: actividad.iActTipoId,
+                            actividad: actividad,
+                            action:
+                                action === 'EDITAR' ? 'ACTUALIZAR' : 'GUARDAR',
+                        },
+                        header:
+                            action === 'EDITAR'
+                                ? 'Editar Tarea'
+                                : 'Crear Tarea',
+                    }
+                )
+                ref.onClose.subscribe((result) => {
+                    if (result) {
+                        this.getData()
+                        console.log('Formulario enviado', result)
+                    } else {
+                        console.log('Formulario cancelado')
+                    }
+                })
+                break
+            case 'ELIMINAR':
+                console.log(actividad)
+                this._confirmService.openConfirm({
+                    header:
+                        '¿Esta seguro de eliminar la tarea ' +
+                        actividad['cTareaTitulo'] +
+                        ' ?',
+                    accept: () => {
+                        this.deleteTareaxiTareaid(actividad)
+                    },
+                })
+                break
+            case 'VER':
+                this.router.navigate([
+                    'aula-virtual/areas-curriculares/' +
+                        'actividad' +
+                        '/' +
+                        actividad.ixActivadadId +
+                        '/' +
+                        actividad.iActTipoId,
+                ])
+                break
+        }
     }
 
     handleVideoconferenciaAction(
@@ -306,6 +356,20 @@ export class TabContenidoComponent implements OnInit {
                 },
             })
         }
+
+        if (action === 'VER') {
+            this.router.navigate(
+                [
+                    '../',
+                    'actividad',
+                    actividad.ixActivadadId,
+                    actividad.iActTipoId,
+                ],
+                {
+                    relativeTo: this._activatedRoute,
+                }
+            )
+        }
     }
 
     private eliminarActividad(iProgActId, iActTipoId, ixActivadadId) {
@@ -317,5 +381,25 @@ export class TabContenidoComponent implements OnInit {
                     this.obtenerContenidoSemanas()
                 },
             })
+    }
+
+    deleteTareaxiTareaid(actividad) {
+        actividad.opcion = 'ELIMINARxiTareaid'
+        actividad.iTareaId = actividad.ixActivadadId
+        const params = {
+            petition: 'post',
+            group: 'aula-virtual',
+            prefix: 'tareas',
+            ruta: 'delete',
+            data: actividad,
+            params: { skipSuccessMessage: true },
+        }
+        this._generalService.getGralPrefix(params).subscribe({
+            next: (resp) => {
+                if (resp.validated) {
+                    this.obtenerContenidoSemanas()
+                }
+            },
+        })
     }
 }

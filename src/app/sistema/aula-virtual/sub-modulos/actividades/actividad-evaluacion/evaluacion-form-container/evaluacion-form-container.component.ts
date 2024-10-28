@@ -82,7 +82,6 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.getData()
         this.initFormGroup()
-        console.log(this._config.data.semana)
         this._paramsData.iContenidoSemId =
             this._config.data.semana?.iContenidoSemId
 

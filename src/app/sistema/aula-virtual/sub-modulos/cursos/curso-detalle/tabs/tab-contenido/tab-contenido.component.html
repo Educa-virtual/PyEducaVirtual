@@ -52,6 +52,7 @@
                         {{ fecha.fecha | date: "EEEE, d 'de' MMMM 'de' yyyy" }}
                     </h3>
                     <hr />
+
                     <app-actividad-lista
                         [actividades]="fecha.actividades"
                         (actionSelected)="actionSelected($event)"

@@ -10,6 +10,18 @@ export const accionesPreguntasEvaluacion: IActionTable[] = [
     //     type: 'item',
     //     class: 'p-button-rounded p-button-warning p-button-text',
     // },
+
+    {
+        labelTooltip: 'Agregar Logros',
+        accion: 'agregar-logros',
+        type: 'item',
+        icon: {
+            size: 'xs',
+            color: 'text-yellow-600',
+            name: 'matWorkspacePremium',
+        },
+        class: 'p-button-rounded p-button-warning p-button-text',
+    },
     {
         labelTooltip: 'Quitar Pregunta',
         icon: 'pi pi-trash',

@@ -52,6 +52,7 @@ import { Subject, takeUntil } from 'rxjs'
 export class EvaluacionFormPreguntasComponent implements OnDestroy {
     @Input() tituloEvaluacion: string = 'Sin título de evaluación'
     @Input() preguntas: any[] = []
+    // se guarda en evaluaciones_preguntas si se envia iEvaluacionId
     @Input() iEvaluacionId: number
     @Output() preguntasSeleccionadasChange = new EventEmitter()
 

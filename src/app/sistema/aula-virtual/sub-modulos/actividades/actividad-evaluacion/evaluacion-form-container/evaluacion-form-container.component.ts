@@ -75,7 +75,6 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
     public preguntasSeleccionadas = []
     private _paramsData = {
         iContenidoSemId: 0,
-        iEvaluacionId: 0,
         ixActivadadId: '',
     }
 

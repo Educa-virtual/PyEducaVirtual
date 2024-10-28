@@ -101,8 +101,12 @@ export class CursoDetalleComponent implements OnInit {
             iCursoId: '1',
             iSilaboId: this.iSilaboId,
         }
+        console.log(tab)
+
         if (isValidTabKey(tab)) {
             this.updateTab(tab)
+        } else {
+            this.updateTab('inicio')
         }
     }
 

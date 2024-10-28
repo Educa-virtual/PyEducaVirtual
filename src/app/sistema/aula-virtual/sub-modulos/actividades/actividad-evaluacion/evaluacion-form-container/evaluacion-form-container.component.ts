@@ -20,6 +20,7 @@ import { EVALUACION } from '@/app/sistema/aula-virtual/interfaces/actividad.inte
 import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
 import { convertStringToDate } from '@/app/sistema/aula-virtual/utils/date'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
+import { ConstantesService } from '@/app/servicios/constantes.service'
 
 @Component({
     selector: 'app-evaluacion-form-container-',
@@ -64,6 +65,7 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
     public mode: 'CREAR' | 'EDITAR' = 'CREAR'
 
     private unsubscribe$: Subject<boolean> = new Subject()
+    private _constantesService = inject(ConstantesService)
     private _formBuilder = inject(FormBuilder)
     private _evaluacionService = inject(ApiEvaluacionesService)
     private _aulaVirtualService = inject(ApiAulaService)
@@ -240,7 +242,7 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
 
     private guardarActualizarFormInfo() {
         const data = this.evaluacionInfoForm.getRawValue()
-        data.iDocenteId = 1
+        data.iDocenteId = this._constantesService.iDocenteId
         data.iActTipoId = EVALUACION
         data.iContenidoSemId = this._paramsData.iContenidoSemId
 

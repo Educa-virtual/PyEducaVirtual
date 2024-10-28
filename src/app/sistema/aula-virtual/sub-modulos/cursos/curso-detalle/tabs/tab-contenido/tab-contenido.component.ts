@@ -122,7 +122,6 @@ export class TabContenidoComponent implements OnInit {
 
         this.rangeDates = [today, nextWeek]
 
-        // this.generarAccionesContenido()
         this.getData()
     }
 

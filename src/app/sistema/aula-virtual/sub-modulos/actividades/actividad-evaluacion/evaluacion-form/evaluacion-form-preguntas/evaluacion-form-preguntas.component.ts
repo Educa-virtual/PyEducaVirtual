@@ -52,7 +52,7 @@ import { Subject, takeUntil } from 'rxjs'
 export class EvaluacionFormPreguntasComponent implements OnDestroy {
     @Input() tituloEvaluacion: string = 'Sin título de evaluación'
     @Input() preguntas: any[] = []
-
+    @Input() iEvaluacionId: number
     @Output() preguntasSeleccionadasChange = new EventEmitter()
 
     public acciones = accionesPreguntasEvaluacion
@@ -99,6 +99,7 @@ export class EvaluacionFormPreguntasComponent implements OnDestroy {
             pregunta,
             iCursoId: 1,
             tipoPreguntas: [],
+            iEvaluacionId: this.iEvaluacionId,
         })
         refModal.onClose.subscribe((result) => {
             if (result) {

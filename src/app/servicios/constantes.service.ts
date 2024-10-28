@@ -588,9 +588,9 @@ const first = [
 export class ConstantesService {
     iPersId = user ? user.iPersId : null
     iCredId = user ? user.iCredId : null
-    iDocenteId = user ? user.iDocenteId : null
-    iNivelCicloId = user.iNivelCicloId ?? 1
-    iEspecialistaId = user.iEspecialistaId ?? 1
+    iDocenteId = user ? user?.iDocenteId : null
+    iNivelCicloId = user?.iNivelCicloId ?? 1
+    iEspecialistaId = user?.iEspecialistaId ?? 1
     nav = this.getMenu()
     getMenu() {
         if (!perfil) return first

@@ -13,11 +13,16 @@ export class ApiEvaluacionesRService {
     private http = inject(HttpClient)
     constructor() {}
 
+    // obtenerEvaluacion(params) {
+    //     return this.http.get(
+    //         `${this.baseUrl}/ere/Evaluaciones/obtenerEvaluaciones`,
+    //         { params }
+    //     )
+    // }
     obtenerEvaluacion(params) {
-        return this.http.get(
-            `${this.baseUrl}/ere/Evaluaciones/obtenerEvaluaciones`,
-            { params }
-        )
+        return this.http.get(`${this.baseUrl}/ere/Evaluaciones/obtener`, {
+            params,
+        })
     }
 
     obtenerTipoPreguntas() {
@@ -54,7 +59,12 @@ export class ApiEvaluacionesRService {
             { params }
         )
     }
+    // insert_Code_New
+    guardarEvaluacion(data: any) {
+        return this.http.post(`${this.baseUrl}/ere/Evaluaciones/guardar`, data)
+    }
 
+    //Top
     guardarActualizarPreguntaConAlternativas(data) {
         return this.http.post(
             `${this.baseUrl}/ere/preguntas/guardarActualizarPreguntaConAlternativas`,

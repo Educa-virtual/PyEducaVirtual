@@ -29,7 +29,8 @@ import {
 } from '@angular/forms'
 import { CommonInputComponent } from '@/app/shared/components/common-input/common-input.component'
 import { StepperModule } from 'primeng/stepper'
-import { Product } from 'src/app/demo/api/product'
+import { CommonModule } from '@angular/common'
+
 interface TipoEvaluacion {
     idTipoEvalId: number
     cTipoEvalDescripcion: string
@@ -55,6 +56,7 @@ interface NivelEvaluacion {
         ReactiveFormsModule,
         EvaluacionAreasComponent,
         StepperModule,
+        CommonModule,
     ],
     templateUrl: './evaluaciones-form.component.html',
     styleUrl: './evaluaciones-form.component.scss',
@@ -64,6 +66,7 @@ export class EvaluacionesFormComponent implements OnInit {
     private _ref = inject(DynamicDialogRef)
 
     public evaluacionFormGroup = this._formBuilder.group({
+        iEvaluacionId: [null, [Validators.required]], //borrar
         idTipoEvalId: [null, [Validators.required]],
         iNivelEvalId: [null, [Validators.required]],
         cEvaluacionDescripcion: [null, [Validators.required]],
@@ -71,6 +74,7 @@ export class EvaluacionesFormComponent implements OnInit {
         cEvaluacionUrlPlantilla: [null, [Validators.required]],
         cEvaluacionUrlManual: [null, [Validators.required]],
         cEvaluacionUrlMatriz: [null, [Validators.required]],
+        cEvaluacionObs: [null, [Validators.required]],
         dtEvaluacionLiberarMatriz: [null, [Validators.required]],
         dtEvaluacionLiberarCuadernillo: [null, [Validators.required]],
         dtEvaluacionLiberarResultados: [null, [Validators.required]],
@@ -90,6 +94,8 @@ export class EvaluacionesFormComponent implements OnInit {
     private _apiEre = inject(ApiEvaluacionesRService)
     tipoEvaluacion: TipoEvaluacion[] | undefined
 
+    iEvaluacionId: any
+
     selectedTipoEvaluacion: TipoEvaluacion | undefined
 
     nivelEvaluacion: NivelEvaluacion[] | undefined
@@ -107,6 +113,64 @@ export class EvaluacionesFormComponent implements OnInit {
         this.obtenerNivelEvaluacion()
     }
 
+    guardarEvaluacion() {
+        const data = {
+            iEvaluacionId: this.evaluacionFormGroup.get('iEvaluacionId').value, //borrar
+            idTipoEvalId: this.evaluacionFormGroup.get('idTipoEvalId').value,
+            iNivelEvalId: this.evaluacionFormGroup.get('iNivelEvalId').value,
+            //cambios desde aqui
+            dtEvaluacionCreacion: this.evaluacionFormGroup.get(
+                'dtEvaluacionCreacion'
+            ).value,
+            // cEvaluacionNombre:
+            //     this.evaluacionFormGroup.get('cEvaluacionNombre').value,
+            // cEvaluacionDescripcion: this.evaluacionFormGroup.get(
+            //     'cEvaluacionDescripcion'
+            // ).value,
+            // cEvaluacionUrlDrive: this.evaluacionFormGroup.get(
+            //     'cEvaluacionUrlDrive'
+            // ).value,
+            // cEvaluacionUrlPlantilla: this.evaluacionFormGroup.get(
+            //     'cEvaluacionUrlPlantilla'
+            // ).value,
+            // cEvaluacionUrlManual: this.evaluacionFormGroup.get(
+            //     'cEvaluacionUrlManual'
+            // ).value,
+            // cEvaluacionUrlMatriz: this.evaluacionFormGroup.get(
+            //     'cEvaluacionUrlMatriz'
+            // ).value,
+            // cEvaluacionObs:
+            //     this.evaluacionFormGroup.get('cEvaluacionObs').value,
+            // dtEvaluacionLiberarMatriz: this.evaluacionFormGroup.get(
+            //     'dtEvaluacionLiberarMatriz'
+            // ).value,
+            // dtEvaluacionLiberarCuadernillo: this.evaluacionFormGroup.get(
+            //     'dtEvaluacionLiberarCuadernillo'
+            // ).value,
+            // dtEvaluacionLiberarResultados: this.evaluacionFormGroup.get(
+            //     'dtEvaluacionLiberarResultados'
+            // ).value,
+        }
+        console.log(data)
+
+        this._apiEre
+            .guardarEvaluacion(data)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+                next: (resp: unknown) => {
+                    /*.competencias = resp['data']
+                    this.competencias.unshift({
+                        iCompentenciaId: 0,
+                        cCompetenciaDescripcion: 'Todos',
+                    })*/
+
+                    this.iEvaluacionId = resp['data'][0]['iEvaluacionId']
+
+                    //alert(JSON.stringify(this.data))
+                    //this.sourceProducts = this.data
+                },
+            })
+    }
     obtenerTipoEvaluacion() {
         this._apiEre
             .obtenerTipoEvaluacion(this.params)
@@ -157,39 +221,48 @@ export class EvaluacionesFormComponent implements OnInit {
         this.evaluacionFormGroup.reset()
     }
 
-    guardarActualizarAlternativa() {
-        // if (this.evaluacionFormGroup.invalid) {
-        //     this.evaluacionFormGroup.markAllAsTouched()
-        //     return
-        // }
-        // alert('guardar')
-        if (this.evaluacionFormGroup.valid) {
-            console.log(
-                'Datos del formulario deasdasd evaluación guardados:',
-                this.evaluacionFormGroup.value
-            )
-            // Lógica para guardar el formulario (puede enviar los datos a Laravel, por ejemplo)
-        } else {
-            console.log('Formulario de evaluación no válido')
-        }
-    }
+    // notaInsertEvaluacion guardaractualizaralternativa es el verdadero
+    // guardarActualizarAlternativa() {
+    //     // if (this.evaluacionFormGroup.invalid) {
+    //     //     this.evaluacionFormGroup.markAllAsTouched()
+    //     //     return
+    //     // }
+    //     // alert('guardar')
+    //     if (this.evaluacionFormGroup.valid) {
+    //         console.log(
+    //             'Datos del formulario de evaluación guardados:',
+    //             this.evaluacionFormGroup.value
+    //         )
+    //         // Lógica para guardar el formulario (puede enviar los datos a Laravel, por ejemplo)
+    //     } else {
+    //         console.log('Formulario de evaluación no válido')
+    //     }
+    // }
+    // guardarActualizarAlternativa() {
+    //     if (this.evaluacionFormGroup.valid) {
+    //         console.log(
+    //             'Datos del formulario de evaluación guardados:',
+    //             this.evaluacionFormGroup.value
+    //         )
 
-    // prueba
-
-    selectedInstituciones: Product[] = [] // Aquí se almacenan los seleccionados
-
-    onSelectedItems(items: Product[]) {
-        console.log('Items recibidos en el padre:', items)
-        this.selectedInstituciones = items
-    }
-
-    handleNext(nextCallback: any) {
-        // Puedes usar this.selectedInstituciones para lo que necesites en el siguiente paso
-        console.log(
-            'Continuando al siguiente paso con:',
-            this.selectedInstituciones
-        )
-
-        nextCallback.emit() // Emitir el callback para continuar
-    }
+    //         // Llama al método del servicio para guardar los datos en la base de datos
+    //         this._apiEre
+    //             .guardarEvaluacion(this.evaluacionFormGroup.value)
+    //             .pipe(takeUntil(this.unsubscribe$))
+    //             .subscribe({
+    //                 next: (response) => {
+    //                     console.log('Evaluación guardada con éxito:', response)
+    //                     // Aquí puedes agregar lógica adicional, como cerrar el modal o mostrar un mensaje de éxito
+    //                     this.closeModal(true)
+    //                 },
+    //                 error: (error) => {
+    //                     console.error('Error al guardar la evaluación:', error)
+    //                     // Aquí puedes manejar el error, como mostrar un mensaje de error
+    //                 },
+    //             })
+    //     } else {
+    //         console.log('Formulario de evaluación no válido')
+    //         this.evaluacionFormGroup.markAllAsTouched() // Resaltar todos los campos como tocados
+    //     }
+    // }
 }

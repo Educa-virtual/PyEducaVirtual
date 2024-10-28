@@ -102,7 +102,6 @@ export class EvaluacionesComponent implements OnInit {
             text: 'left',
             text_header: 'Tipo evaluación',
         },
-
         {
             field: 'cNivelEvalNombre',
             header: 'Nivel evaluación',
@@ -241,7 +240,6 @@ export class EvaluacionesComponent implements OnInit {
             }
         })
     }
-
     // manejar las acciones
     accionBtnItem(action) {
         if (action.accion === 'agregar') {

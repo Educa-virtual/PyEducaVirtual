@@ -1,6 +1,7 @@
 <app-tarea-form
     (cancelEvent)="cancelar()"
     (submitEvent)="submitFormulario($event)"
+    [contenidoSemana]="contenidoSemana"
     [tarea]="tarea"
 ></app-tarea-form>
 
@@ -13,14 +14,16 @@
         class="p-button-secondary"
         type="button"
         size="small"
-        (click)="closeModal()"
+        (click)="cancelar()"
     ></button>
     <button
         pButton
-        [label]="action === 'EDITAR' ? 'Actualizar Tarea' : 'Crear Tarea'"
+        [label]="action === 'ACTUALIZAR' ? 'Editar Tarea' : 'Crear Tarea'"
         icon="pi pi-check"
         size="small"
-        [class]="action === 'EDITAR' ? 'p-button-warning' : 'p-button-primary'"
+        [class]="
+            action === 'ACTUALIZAR' ? 'p-button-warning' : 'p-button-primary'
+        "
         (click)="tareaFormComponent.submit()"
     ></button>
 </div>

@@ -1,0 +1,39 @@
+<form [formGroup]="logroForm">
+    <div class="formgrid grid">
+        <div class="field flex flex-column col-12">
+            <label class="align-self-start" for="descripcion"
+                >Descripción</label
+            >
+            <textarea
+                rows="4"
+                cols="30"
+                placeholder="Descripción"
+                formControlName="cNivelLogroEvaDescripcion"
+                pInputTextarea
+                [autoResize]="true"
+                class="w-full"
+                id="descripcion"
+            ></textarea>
+        </div>
+    </div>
+</form>
+
+<div class="flex justify-content-end gap-2 pt-3">
+    <button
+        pButton
+        pRipple
+        label="Cancelar"
+        icon="pi pi-times"
+        class="p-button-secondary"
+        type="button"
+        size="small"
+        (click)="closeModal(null)"
+    ></button>
+    <button
+        pButton
+        [label]="'Guardar Cambios'"
+        icon="pi pi-check"
+        size="small"
+        (click)="guardarActualizarLogro()"
+    ></button>
+</div>

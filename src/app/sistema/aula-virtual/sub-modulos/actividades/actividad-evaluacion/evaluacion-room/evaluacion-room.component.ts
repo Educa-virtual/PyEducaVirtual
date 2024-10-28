@@ -57,8 +57,6 @@ export class EvaluacionRoomComponent implements OnInit {
     public evaluacion
 
     ngOnInit() {
-        console.log(this.ixActivadadId, this.iActTopId)
-
         this.obtenerEvaluacion()
     }
 

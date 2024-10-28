@@ -1,6 +1,6 @@
 import { CommonInputComponent } from '@/app/shared/components/common-input/common-input.component'
 import { CommonModule } from '@angular/common'
-import { Component, inject, OnInit } from '@angular/core'
+import { Component, inject, OnInit, Input } from '@angular/core'
 import {
     FormBuilder,
     FormGroup,
@@ -16,11 +16,14 @@ import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.ser
 import { CalendarModule } from 'primeng/calendar'
 import { BaseDatePickerDirective } from '@/app/shared/directives/base-date-picker.directive'
 import { SelectButtonModule } from 'primeng/selectbutton'
+import { PrimengModule } from '@/app/primeng.module'
+import { Message } from 'primeng/api'
 @Component({
     selector: 'app-foro-form-container',
     standalone: true,
     imports: [
         CommonModule,
+        PrimengModule,
         CommonInputComponent,
         ReactiveFormsModule,
         DisponibilidadFormComponent,
@@ -40,7 +43,12 @@ export class ForoFormContainerComponent implements OnInit {
     private _formBuilder = inject(FormBuilder)
     private ref = inject(DynamicDialogRef)
 
+    @Input() contenidoSemana
+
     categorias: any[] = []
+    semana: Message[] = []
+    selectProgramaAct = 0
+    titleFileTareas: string = ''
 
     estado: any[] = [
         { label: 'Activo', value: 1 },
@@ -65,7 +73,7 @@ export class ForoFormContainerComponent implements OnInit {
 
     mostrarCategorias() {
         const userId = 1
-        this._aulaService.guardarForo(userId).subscribe((Data) => {
+        this._aulaService.obtenerCategorias(userId).subscribe((Data) => {
             this.categorias = Data['data']
             console.log('Datos mit', this.categorias)
         })
@@ -77,5 +85,12 @@ export class ForoFormContainerComponent implements OnInit {
     submit() {
         const value = this.foroForm.value
         console.log('Guardar Foros', value)
+
+        this._aulaService.guardarForo(value).subscribe(() => {})
+        //     // this.categorias = Data['data']
+        //     // console.log('Datos mit', this.categorias)
+        // })
     }
+    showModal: boolean = false
+    typeUpload: string
 }

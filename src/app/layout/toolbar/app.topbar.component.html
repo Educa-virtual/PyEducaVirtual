@@ -29,10 +29,10 @@
             [selectedPerfil]="selectedPerfil"
             (actionTopBar)="actionTopBar($event)"
         />
+        <!-- [modulos]="modulos" agregar en la linea 36 muestra los modulos debajo del perfil -->
         <app-user-account
             class="mr-1"
             (actionTopBar)="actionTopBar($event)"
-            [modulos]="modulos"
             [selectedModulo]="selectedModulo"
         ></app-user-account>
     </div>

@@ -3,8 +3,10 @@ import { Subject } from 'rxjs'
 
 @Injectable()
 export class TicketService {
+
     registroInformation: {
         stepYear?: {
+            iSedeId: string
             fechaVigente: Date
             fechaInicio: Date
             fechaFin: Date
@@ -15,6 +17,14 @@ export class TicketService {
             cDiaNombre: string
             cDiaAbreviado: string
         }[],
+        stepFormasAtencion?:{
+            iModalServId: string
+            cModalServNombre: string
+            iTurnoId: string
+            cTurnoNombre: string
+            dtAperTurnoInicio: Date
+            dtAperTurnoFin: Date
+        }[]
         stepTurnos?: {
             turno: string
             horaInicio: Date

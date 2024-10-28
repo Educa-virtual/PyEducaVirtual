@@ -78,7 +78,7 @@ export class ForoRoomComponent implements OnInit {
         this.getEstudiantesMatricula()
         this.mostrarCalificacion()
         this.obtenerForo()
-        console.log('Obtener Datos', this.obtenerForo())
+        //console.log('Obtener Datos', this.obtenerForo())
     }
     // closeModal(data) {
     //     this.ref.close(data)

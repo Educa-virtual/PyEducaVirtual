@@ -81,6 +81,21 @@ export class TareaFormComponent implements OnChanges {
             }
         }
     }
+    onToggleChange(event: any) {
+        console.log('Estado del ToggleButton:', event)
+    }
+
+    onTareaSelected(event: any) {
+        const selectedTarea = event.value
+        if (selectedTarea) {
+            this.showModalDialog9(selectedTarea)
+        }
+    }
+    showModalDialog9(tarea: any) {
+        console.log('Mostrando modal para la tarea:', tarea)
+        // Aquí puedes implementar la lógica para mostrar el modal, como usar un servicio de PrimeNG o ng-bootstrap
+        // por ejemplo, puedes activar un modal o caja de diálogo si ya lo tienes implementado.
+    }
 
     public formTareas = this._formBuilder.group({
         bReutilizarTarea: [false],

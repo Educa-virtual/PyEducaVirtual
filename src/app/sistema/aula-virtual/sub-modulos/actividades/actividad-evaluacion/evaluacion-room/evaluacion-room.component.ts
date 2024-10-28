@@ -20,6 +20,7 @@ import { tipoActividadesKeys } from '@/app/sistema/aula-virtual/interfaces/activ
 import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
 import { Subject, takeUntil } from 'rxjs'
 import { EvaluacionFormPreguntasComponent } from '../evaluacion-form/evaluacion-form-preguntas/evaluacion-form-preguntas.component'
+import { EvaluacionRoomCalificacionComponent } from './evaluacion-room-calificacion/evaluacion-room-calificacion.component'
 
 @Component({
     selector: 'app-evaluacion-room',
@@ -32,6 +33,7 @@ import { EvaluacionFormPreguntasComponent } from '../evaluacion-form/evaluacion-
         TablePrimengComponent,
         LeyendaTareasComponent,
         EvaluacionFormPreguntasComponent,
+        EvaluacionRoomCalificacionComponent,
     ],
     templateUrl: './evaluacion-room.component.html',
     styleUrl: './evaluacion-room.component.scss',

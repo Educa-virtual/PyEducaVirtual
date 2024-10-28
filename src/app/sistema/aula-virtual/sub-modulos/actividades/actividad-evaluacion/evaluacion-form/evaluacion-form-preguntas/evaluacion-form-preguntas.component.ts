@@ -52,7 +52,8 @@ import { Subject, takeUntil } from 'rxjs'
 export class EvaluacionFormPreguntasComponent implements OnDestroy {
     @Input() tituloEvaluacion: string = 'Sin título de evaluación'
     @Input() preguntas: any[] = []
-
+    // se guarda en evaluaciones_preguntas si se envia iEvaluacionId
+    @Input() iEvaluacionId: number
     @Output() preguntasSeleccionadasChange = new EventEmitter()
 
     public acciones = accionesPreguntasEvaluacion
@@ -99,6 +100,7 @@ export class EvaluacionFormPreguntasComponent implements OnDestroy {
             pregunta,
             iCursoId: 1,
             tipoPreguntas: [],
+            iEvaluacionId: this.iEvaluacionId,
         })
         refModal.onClose.subscribe((result) => {
             if (result) {
@@ -137,8 +139,6 @@ export class EvaluacionFormPreguntasComponent implements OnDestroy {
     }
 
     handleLogrosPregunta(item) {
-        console.log(item)
-
         let preguntas = [item]
         if (item.preguntas != null) {
             preguntas = item.preguntas
@@ -152,9 +152,6 @@ export class EvaluacionFormPreguntasComponent implements OnDestroy {
         })
         ref.onClose.pipe(takeUntil(this._unsubscribe$)).subscribe((result) => {
             if (!result) return
-
-            // this.data[logroInData] = result
-            // this.data = [...this.data]
         })
     }
 

@@ -1,8 +1,4 @@
-import {
-    mapAlternativa,
-    mapEncabezado,
-    mapPregunta,
-} from '@/app/sistema/aula-virtual/utils/map-pregunta'
+import { mapAlternativa, mapEncabezado, mapPregunta } from './map-pregunta'
 
 export const formatTime = (hours, minutes, seconds) => {
     return `${hours}h ${minutes}m ${seconds}s`

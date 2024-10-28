@@ -45,10 +45,6 @@ export class RegistroComponent implements OnInit, OnChanges {
                 routerLink: 'turnos'
             },
             {
-                label: 'Modalidades',
-                routerLink: 'modalidades'
-            },
-            {
                 label: 'Periodos académicos',
                 routerLink: 'periodosAcademicos'
             },

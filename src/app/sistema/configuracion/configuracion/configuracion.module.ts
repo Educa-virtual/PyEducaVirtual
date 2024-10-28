@@ -51,7 +51,6 @@ import { YearsComponent } from './years/years.component'
                             { path: '', redirectTo: 'year', pathMatch: 'full' },
                             { path: 'year', component: YearComponent },
                             { path: 'diasLaborales', component: DiasLaboralesComponent },
-                            { path: 'modalidades', component: ModalidadesComponent },
                             { path: 'turnos', component: TurnosComponent },
                             {
                                 path: 'periodosAcademicos',

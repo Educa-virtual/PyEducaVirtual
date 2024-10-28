@@ -7,7 +7,7 @@
     <app-table-primeng
     [actions]="actions"
     [columnas]="columns"
-    (accionBtnItem)="actionBtn('resumen')"
-    [data]= "data"
+    (accionBtnItem)="handleActions($event)"
+    [data]= "fechasAcademicas"
     ></app-table-primeng>
 </app-container-page>

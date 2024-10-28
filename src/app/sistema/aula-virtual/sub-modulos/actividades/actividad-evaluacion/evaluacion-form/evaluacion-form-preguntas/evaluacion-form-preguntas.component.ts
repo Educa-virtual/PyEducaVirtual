@@ -137,8 +137,6 @@ export class EvaluacionFormPreguntasComponent implements OnDestroy {
     }
 
     handleLogrosPregunta(item) {
-        console.log(item)
-
         let preguntas = [item]
         if (item.preguntas != null) {
             preguntas = item.preguntas
@@ -152,9 +150,6 @@ export class EvaluacionFormPreguntasComponent implements OnDestroy {
         })
         ref.onClose.pipe(takeUntil(this._unsubscribe$)).subscribe((result) => {
             if (!result) return
-
-            // this.data[logroInData] = result
-            // this.data = [...this.data]
         })
     }
 

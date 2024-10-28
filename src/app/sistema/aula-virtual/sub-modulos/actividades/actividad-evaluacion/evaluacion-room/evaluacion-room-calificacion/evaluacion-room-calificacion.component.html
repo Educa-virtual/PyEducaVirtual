@@ -1,0 +1,102 @@
+<div class="flex flex-column mb-4">
+    <article class="card">
+        <h2>Calificación: {{ evaluacion?.cEvaluacionTitulo }}</h2>
+    </article>
+</div>
+
+<div class="flex flex-column gap-4 md:flex-row">
+    <div class="flex flex-column gap-2 card">
+        <div class="flex gap-4 align-items-center flex-wrap mx-auto">
+            <app-leyenda
+                [total]="2"
+                text="Revisados"
+                [size]="'md'"
+                colorClass="bg-green-500"
+            ></app-leyenda>
+            <app-leyenda
+                [total]="3"
+                text="En proceso"
+                [size]="'md'"
+                colorClass="bg-yellow-500"
+            ></app-leyenda>
+            <app-leyenda
+                [total]="10"
+                text="Pendientes"
+                [size]="'md'"
+                colorClass="bg-red-500"
+            ></app-leyenda>
+        </div>
+        <div class="w-full">
+            <p-iconField iconPosition="left" class="w-full">
+                <p-inputIcon styleClass="pi pi-search" />
+                <input
+                    type="text"
+                    pInputText
+                    placeholder="Search"
+                    class="w-full"
+                />
+            </p-iconField>
+        </div>
+        <p-table
+            [value]="evaluacionesEstudiantes"
+            selectionMode="single"
+            [(selection)]="evaluacionSeleccionada"
+        >
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Nombre y Apellidos</th>
+                    <th>Estado</th>
+                    <th>Notal Final</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-estudiante>
+                <tr [pSelectableRow]="estudiante">
+                    <td>
+                        {{ estudiante.cEstNombres }} <br />
+                        {{ estudiante.cEstPaterno }}
+                        {{ estudiante.cEstMaterno }}
+                    </td>
+                    <td>
+                        <span
+                            class="block w-1rem h-1rem bg-red-500 border-circle"
+                        ></span>
+                    </td>
+                    <td></td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+
+    <div class="flex flex-column flex-1">
+        @if (!!evaluacionSeleccionada) {
+            <app-evaluacion-info
+                [evaluacion]="evaluacionSeleccionada"
+            ></app-evaluacion-info>
+
+            <div class="flex flex-column gap-4">
+                <p-accordion [multiple]="true">
+                    @for (
+                        pregunta of evaluacionSeleccionada.preguntas;
+                        track $index
+                    ) {
+                        <p-accordionTab [selected]="true">
+                            <ng-template pTemplate="header">
+                                <span class="truncate-text">
+                                    {{ pregunta['cPregunta'] | removeHTML }}
+                                </span>
+                            </ng-template>
+                            <app-banco-pregunta-preview-item
+                                [pregunta]="pregunta"
+                                class="mb-4"
+                            ></app-banco-pregunta-preview-item>
+                        </p-accordionTab>
+                    }
+                </p-accordion>
+            </div>
+        } @else {
+            <app-empty-section
+                [message]="'Ningun Estudiante seleccionado'"
+            ></app-empty-section>
+        }
+    </div>
+</div>

@@ -118,26 +118,6 @@
                                 evaluacion?.iEvaluacionNroPreguntas ?? 0
                             }}</span>
                         </div>
-                        <!-- <div class="col-12 md:col-6 gap-2 flex flex-column">
-                            <div
-                                class="bg-yellow-100 p-2 border-round h-8rem flex gap-2 flex-column flex-column justify-content-between"
-                            >
-                                <div class="flex gap-2 flex">
-                                    <app-icon
-                                        name="matStar"
-                                        size="sm"
-                                        class="text-primary"
-                                    />
-                                    <span class="text-xl">Puntuación</span>
-                                </div>
-                                <p class="text-3xl font-bold">
-                                    Totaldel puntaje 0/35
-                                    <span class="text-sm font-normal"
-                                        >calificación máxima</span
-                                    >
-                                </p>
-                            </div>
-                        </div> -->
                     </div>
 
                     <div class="flex gap-2 flex-wrap align-items-center mb-4">
@@ -247,6 +227,9 @@
                     </span>
                 </div>
             </ng-template>
+            <app-evaluacion-room-calificacion
+                [evaluacion]="evaluacion"
+            ></app-evaluacion-room-calificacion>
         </p-tabPanel>
     </p-tabView>
 </section>

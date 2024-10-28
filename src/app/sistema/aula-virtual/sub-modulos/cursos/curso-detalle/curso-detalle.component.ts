@@ -60,7 +60,6 @@ export class CursoDetalleComponent implements OnInit {
     public estudiantes: IEstudiante[] = []
 
     ngOnInit() {
-        console.log(this.iSilaboId)
         this.getData()
 
         this.listenParams()

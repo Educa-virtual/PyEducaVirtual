@@ -13,7 +13,12 @@ export class AulaBancoPreguntasService {
     }
 
     // Función para abrir el modal
-    openPreguntaModal(data: { pregunta; iCursoId; tipoPreguntas }) {
+    openPreguntaModal(data: {
+        pregunta
+        iCursoId
+        tipoPreguntas
+        iEvaluacionId
+    }) {
         const refModal = this._dialogService.open(
             AulaBancoPreguntaFormContainerComponent,
             {

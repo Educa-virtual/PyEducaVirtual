@@ -60,7 +60,6 @@ export class CursoDetalleComponent implements OnInit {
     public estudiantes: IEstudiante[] = []
 
     ngOnInit() {
-        console.log(this.iSilaboId)
         this.getData()
 
         this.listenParams()
@@ -102,8 +101,12 @@ export class CursoDetalleComponent implements OnInit {
             iCursoId: '1',
             iSilaboId: this.iSilaboId,
         }
+        console.log(tab)
+
         if (isValidTabKey(tab)) {
             this.updateTab(tab)
+        } else {
+            this.updateTab('inicio')
         }
     }
 

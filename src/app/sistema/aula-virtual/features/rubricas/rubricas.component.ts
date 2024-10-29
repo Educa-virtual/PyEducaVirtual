@@ -18,6 +18,7 @@ import { MODAL_CONFIG } from '@/app/shared/constants/modal.config'
 import { ApiEvaluacionesService } from '@/app/sistema/evaluaciones/services/api-evaluaciones.service'
 import { Subject, takeUntil } from 'rxjs'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
+import { ConstantesService } from '@/app/servicios/constantes.service'
 
 const SELECTION_ACTION: IActionTable = {
     labelTooltip: 'Seleccionar',
@@ -39,6 +40,7 @@ export class RubricasComponent implements OnInit, OnDestroy {
     @Input() public rubricaSelected = null
     @Input() mode: 'SELECTION' | 'NORMAL' = 'NORMAL'
     @Input() title: string = 'Rubricas'
+
     public columnasTabla: IColumn[] = [
         {
             type: 'text',
@@ -83,12 +85,22 @@ export class RubricasComponent implements OnInit, OnDestroy {
     ]
 
     public data = []
+    private params = {
+        iCursoId: null,
+        iDocenteId: null,
+        idDocCursoId: null,
+    }
     private _dialogService = inject(DialogService)
     private _evaluacionApiService = inject(ApiEvaluacionesService)
     private _unsubscribe$ = new Subject<boolean>()
     private _confirmService = inject(ConfirmationModalService)
+    private _constantesService = inject(ConstantesService)
 
     ngOnInit() {
+        this.params.iCursoId = this._constantesService.iCursoId
+        this.params.idDocCursoId = this._constantesService.idDocCursoId
+        this.params.iDocenteId = this._constantesService.iDocenteId
+
         this.getData()
         if (this.mode === 'SELECTION') {
             this.accionesTabla.unshift(SELECTION_ACTION)
@@ -101,7 +113,7 @@ export class RubricasComponent implements OnInit, OnDestroy {
 
     obtenerRubricas() {
         this._evaluacionApiService
-            .obtenerRubricas({})
+            .obtenerRubricas(this.params)
             .pipe(takeUntil(this._unsubscribe$))
             .subscribe({
                 next: (data) => {

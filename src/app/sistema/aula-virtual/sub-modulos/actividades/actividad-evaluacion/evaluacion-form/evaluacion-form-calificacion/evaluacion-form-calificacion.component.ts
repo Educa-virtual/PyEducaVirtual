@@ -19,10 +19,11 @@ import { DropdownModule } from 'primeng/dropdown'
     styleUrl: './evaluacion-form-calificacion.component.scss',
 })
 export class EvaluacionFormCalificacionComponent {
+    @Output() rubricaSelectedChange = new EventEmitter()
     @Input() tituloEvaluacion: string = 'Sin título de evaluación'
     @Input() calificacionForm: FormGroup
     @Input() rubricaSelected = null
-    @Output() rubricaSelectedChange = new EventEmitter()
+
     public instrumentosEvaluacion = []
     public instrumentoEvaluacionOpciones = [
         {

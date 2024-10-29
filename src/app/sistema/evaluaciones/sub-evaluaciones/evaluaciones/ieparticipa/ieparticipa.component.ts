@@ -1,3 +1,11 @@
+// import {
+//     Component,
+//     ChangeDetectorRef,
+//     inject,
+//     OnInit,
+//     Output,
+//     EventEmitter,
+// }
 import { Component, ChangeDetectorRef, inject, OnInit } from '@angular/core'
 /*import { Product } from '@domain/product';
 import { ProductService } from '@service/productservice';*/
@@ -123,6 +131,7 @@ export class IeparticipaComponent implements OnInit {
     }
     seleccionados() {
         // alert(JSON.stringify(this.targetProducts))
+        console.log('Seleccionados:', this.targetProducts)
     }
     onChange() {
         //alert(v)

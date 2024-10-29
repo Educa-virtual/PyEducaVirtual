@@ -298,7 +298,7 @@ export class TabContenidoComponent implements OnInit {
             this._dialogService.open(ForoFormContainerComponent, {
                 ...MODAL_CONFIG,
                 header: 'Crear Foro',
-                data: null,
+                data: actividad,
             })
         }
     }

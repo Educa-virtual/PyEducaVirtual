@@ -78,7 +78,7 @@ export class ForoRoomComponent implements OnInit {
         this.getEstudiantesMatricula()
         this.mostrarCalificacion()
         this.obtenerForo()
-        //console.log('Obtener Datos', this.obtenerForo())
+        console.log('Obtener Datos', this.getEstudiantesMatricula())
     }
     // closeModal(data) {
     //     this.ref.close(data)
@@ -118,6 +118,8 @@ export class ForoRoomComponent implements OnInit {
             group: 'aula-virtual',
             prefix: 'matricula',
             ruta: 'list',
+            //Undefined property: stdClass::$iSemAcadId
+            //Undefined property: stdClass::$iYAcadId
             data: {
                 opcion: 'CONSULTAR-ESTUDIANTESxiSemAcadIdxiYAcadIdxiCurrId',
                 iSemAcadId:
@@ -127,7 +129,7 @@ export class ForoRoomComponent implements OnInit {
             },
             params: { skipSuccessMessage: true },
         }
-        //console.log(this.getInformation)
+        console.log(this.getInformation)
 
         this.getInformation(params)
     }
@@ -141,6 +143,7 @@ export class ForoRoomComponent implements OnInit {
                 console.log(error)
             },
         })
+        //console.log('Datos estudiante', this.GeneralService)
     }
     // ngOnInit() { implements OnInit
     // }

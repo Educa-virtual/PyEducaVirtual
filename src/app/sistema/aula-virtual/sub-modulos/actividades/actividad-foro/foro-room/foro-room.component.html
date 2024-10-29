@@ -241,7 +241,7 @@
             </ng-template>
             <div class="flex flex-column gap-4">
                 <div class="card">
-                    <div>Título de Foro:</div>
+                    <div>Título de Foro: {{ foro?.cForoTitulo }}</div>
                 </div>
                 <!-- Recursos y Comentarios -->
                 <div class="container">
@@ -380,8 +380,7 @@
                                         {{ rowIndex + 1 }}
                                     </td>
                                     <td class="w-5">
-                                        {{ estudiante.cPersNombre }}
-                                        {{ estudiante.cPersPaterno }}
+                                        {{ estudiante?.nombrecompleto }}
                                     </td>
                                     <td class="">f</td>
                                     <td>A</td>

@@ -50,8 +50,8 @@ export class ForoFormContainerComponent implements OnInit {
     titleFileTareas: string = ''
 
     estado: any[] = [
+        { label: 'Desactivo', value: 0 },
         { label: 'Activo', value: 1 },
-        { label: 'Desactivo', value: 2 },
     ]
 
     selectCategorias: any = {}

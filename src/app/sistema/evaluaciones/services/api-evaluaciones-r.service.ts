@@ -20,9 +20,12 @@ export class ApiEvaluacionesRService {
     //     )
     // }
     obtenerEvaluacion(params) {
-        return this.http.get(`${this.baseUrl}/ere/Evaluaciones/obtener`, {
-            params,
-        })
+        return this.http.get(
+            `${this.baseUrl}/ere/Evaluaciones/ereObtenerEvaluacion`,
+            {
+                params,
+            }
+        )
     }
 
     obtenerTipoPreguntas() {

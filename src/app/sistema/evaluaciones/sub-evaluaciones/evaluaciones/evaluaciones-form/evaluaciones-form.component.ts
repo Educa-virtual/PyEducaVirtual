@@ -115,13 +115,16 @@ export class EvaluacionesFormComponent implements OnInit {
 
     guardarEvaluacion() {
         const data = {
-            iEvaluacionId: this.evaluacionFormGroup.get('iEvaluacionId').value, //borrar
+            //iEvaluacionId: this.evaluacionFormGroup.get('iEvaluacionId').value, //borrar
             idTipoEvalId: this.evaluacionFormGroup.get('idTipoEvalId').value,
             iNivelEvalId: this.evaluacionFormGroup.get('iNivelEvalId').value,
             //cambios desde aqui
-            dtEvaluacionCreacion: this.evaluacionFormGroup.get(
-                'dtEvaluacionCreacion'
-            ).value,
+            // dtEvaluacionCreacion: this.evaluacionFormGroup.get(
+            //     'dtEvaluacionCreacion'
+            // ).value,
+            // dtEvaluacionCreacion: this.formatDate(
+            //     this.evaluacionFormGroup.get('dtEvaluacionCreacion').value
+            // ),
             // cEvaluacionNombre:
             //     this.evaluacionFormGroup.get('cEvaluacionNombre').value,
             // cEvaluacionDescripcion: this.evaluacionFormGroup.get(
@@ -150,6 +153,17 @@ export class EvaluacionesFormComponent implements OnInit {
             // dtEvaluacionLiberarResultados: this.evaluacionFormGroup.get(
             //     'dtEvaluacionLiberarResultados'
             // ).value,
+            // dtEvaluacionLiberarMatriz: this.formatDate(
+            //     this.evaluacionFormGroup.get('dtEvaluacionLiberarMatriz').value
+            // ),
+            // dtEvaluacionLiberarCuadernillo: this.formatDate(
+            //     this.evaluacionFormGroup.get('dtEvaluacionLiberarCuadernillo')
+            //         .value
+            // ),
+            // dtEvaluacionLiberarResultados: this.formatDate(
+            //     this.evaluacionFormGroup.get('dtEvaluacionLiberarResultados')
+            //         .value
+            // ),
         }
         console.log(data)
 
@@ -157,19 +171,33 @@ export class EvaluacionesFormComponent implements OnInit {
             .guardarEvaluacion(data)
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
-                next: (resp: unknown) => {
+                next: (resp: any) => {
                     /*.competencias = resp['data']
                     this.competencias.unshift({
                         iCompentenciaId: 0,
                         cCompetenciaDescripcion: 'Todos',
                     })*/
-
+                    this.iEvaluacionId = resp['data'][0]['iEvaluacionId'] // Captura el ID generado
+                    console.log(
+                        'ID de Evaluación guardado:',
+                        this.iEvaluacionId
+                    )
                     this.iEvaluacionId = resp['data'][0]['iEvaluacionId']
 
                     //alert(JSON.stringify(this.data))
                     //this.sourceProducts = this.data
                 },
+                error: (error) => {
+                    console.error('Error al guardar la evaluación:', error) // Captura el error aquí
+                    alert('Error en el servidor: ' + JSON.stringify(error))
+                },
             })
+    }
+    //Formatao del Año,Mes,Dia -> para SQL SERVER
+    formatDate(dateString: string): string {
+        // Convierte a formato YYYY-MM-DD
+        const date = new Date(dateString)
+        return date.toISOString().split('T')[0] // Devuelve solo la parte de la fecha
     }
     obtenerTipoEvaluacion() {
         this._apiEre

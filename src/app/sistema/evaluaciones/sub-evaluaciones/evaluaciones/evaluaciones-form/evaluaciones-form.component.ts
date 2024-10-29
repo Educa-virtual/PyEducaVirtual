@@ -119,51 +119,40 @@ export class EvaluacionesFormComponent implements OnInit {
             idTipoEvalId: this.evaluacionFormGroup.get('idTipoEvalId').value,
             iNivelEvalId: this.evaluacionFormGroup.get('iNivelEvalId').value,
             //cambios desde aqui
-            // dtEvaluacionCreacion: this.evaluacionFormGroup.get(
-            //     'dtEvaluacionCreacion'
-            // ).value,
+            dtEvaluacionCreacion: this.evaluacionFormGroup.get(
+                'dtEvaluacionCreacion'
+            ).value,
             // dtEvaluacionCreacion: this.formatDate(
             //     this.evaluacionFormGroup.get('dtEvaluacionCreacion').value
             // ),
-            // cEvaluacionNombre:
-            //     this.evaluacionFormGroup.get('cEvaluacionNombre').value,
-            // cEvaluacionDescripcion: this.evaluacionFormGroup.get(
-            //     'cEvaluacionDescripcion'
-            // ).value,
-            // cEvaluacionUrlDrive: this.evaluacionFormGroup.get(
-            //     'cEvaluacionUrlDrive'
-            // ).value,
-            // cEvaluacionUrlPlantilla: this.evaluacionFormGroup.get(
-            //     'cEvaluacionUrlPlantilla'
-            // ).value,
-            // cEvaluacionUrlManual: this.evaluacionFormGroup.get(
-            //     'cEvaluacionUrlManual'
-            // ).value,
-            // cEvaluacionUrlMatriz: this.evaluacionFormGroup.get(
-            //     'cEvaluacionUrlMatriz'
-            // ).value,
-            // cEvaluacionObs:
-            //     this.evaluacionFormGroup.get('cEvaluacionObs').value,
-            // dtEvaluacionLiberarMatriz: this.evaluacionFormGroup.get(
-            //     'dtEvaluacionLiberarMatriz'
-            // ).value,
-            // dtEvaluacionLiberarCuadernillo: this.evaluacionFormGroup.get(
-            //     'dtEvaluacionLiberarCuadernillo'
-            // ).value,
-            // dtEvaluacionLiberarResultados: this.evaluacionFormGroup.get(
-            //     'dtEvaluacionLiberarResultados'
-            // ).value,
-            // dtEvaluacionLiberarMatriz: this.formatDate(
-            //     this.evaluacionFormGroup.get('dtEvaluacionLiberarMatriz').value
-            // ),
-            // dtEvaluacionLiberarCuadernillo: this.formatDate(
-            //     this.evaluacionFormGroup.get('dtEvaluacionLiberarCuadernillo')
-            //         .value
-            // ),
-            // dtEvaluacionLiberarResultados: this.formatDate(
-            //     this.evaluacionFormGroup.get('dtEvaluacionLiberarResultados')
-            //         .value
-            // ),
+            cEvaluacionNombre:
+                this.evaluacionFormGroup.get('cEvaluacionNombre').value,
+            cEvaluacionDescripcion: this.evaluacionFormGroup.get(
+                'cEvaluacionDescripcion'
+            ).value,
+            cEvaluacionUrlDrive: this.evaluacionFormGroup.get(
+                'cEvaluacionUrlDrive'
+            ).value,
+            cEvaluacionUrlPlantilla: this.evaluacionFormGroup.get(
+                'cEvaluacionUrlPlantilla'
+            ).value,
+            cEvaluacionUrlManual: this.evaluacionFormGroup.get(
+                'cEvaluacionUrlManual'
+            ).value,
+            cEvaluacionUrlMatriz: this.evaluacionFormGroup.get(
+                'cEvaluacionUrlMatriz'
+            ).value,
+            cEvaluacionObs:
+                this.evaluacionFormGroup.get('cEvaluacionObs').value,
+            dtEvaluacionLiberarMatriz: this.evaluacionFormGroup.get(
+                'dtEvaluacionLiberarMatriz'
+            ).value,
+            dtEvaluacionLiberarCuadernillo: this.evaluacionFormGroup.get(
+                'dtEvaluacionLiberarCuadernillo'
+            ).value,
+            dtEvaluacionLiberarResultados: this.evaluacionFormGroup.get(
+                'dtEvaluacionLiberarResultados'
+            ).value,
         }
         console.log(data)
 

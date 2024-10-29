@@ -134,6 +134,12 @@ export const actividadesConfig: Record<
                 class: '',
                 label: 'Ver',
             },
+            {
+                icon: 'pi pi-send',
+                accion: 'PUBLICAR',
+                class: '',
+                label: 'Publicar',
+            },
         ],
     },
     [VIDEO_CONFERENCIA]: {

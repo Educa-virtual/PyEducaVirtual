@@ -45,6 +45,7 @@ import { Subject, takeUntil } from 'rxjs'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { ActivatedRoute, Router } from '@angular/router'
 import { DynamicDialogModule } from 'primeng/dynamicdialog'
+import { ApiEvaluacionesService } from '@/app/sistema/evaluaciones/services/api-evaluaciones.service'
 
 @Component({
     selector: 'app-tab-contenido',
@@ -92,6 +93,7 @@ export class TabContenidoComponent implements OnInit {
     private _generalService = inject(GeneralService)
     private _confirmService = inject(ConfirmationModalService)
     private _aulaService = inject(ApiAulaService)
+    private _evalService = inject(ApiEvaluacionesService)
     private semanaSeleccionada
     private _unsubscribe$ = new Subject<boolean>()
     tipoActivadedes = []
@@ -184,8 +186,6 @@ export class TabContenidoComponent implements OnInit {
         actividad: IActividad
         action: string
     }) {
-        console.log(actividad, action)
-
         this.actividadSelected = actividad
         this.accionSeleccionada = action
 
@@ -368,6 +368,24 @@ export class TabContenidoComponent implements OnInit {
                 }
             )
         }
+        if (action === 'PUBLICAR') {
+            this._confirmService.openConfirm({
+                header: '¿Esta seguro de publicar la evaluación?',
+                accept: () => {
+                    this.publicarEvaluacion(actividad)
+                },
+            })
+        }
+    }
+
+    publicarEvaluacion(actividad: IActividad) {
+        const data = {
+            iEvaluacionId: actividad.ixActivadadId,
+        }
+        this._evalService
+            .publicarEvaluacion(data)
+            .pipe(takeUntil(this._unsubscribe$))
+            .subscribe({ next: () => {} })
     }
 
     private eliminarActividad(iProgActId, iActTipoId, ixActivadadId) {

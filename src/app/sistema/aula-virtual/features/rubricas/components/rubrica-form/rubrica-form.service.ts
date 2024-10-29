@@ -42,6 +42,7 @@ export class RubricaFormService {
             iNivelEvaId: [0, [Validators.required]],
             cNivelEvaNombre: ['', [Validators.required]],
             iEscalaCalifId: [0, [Validators.required]],
+            iNivelEvaValor: [0],
             cNivelEvaDescripcion: [''],
         })
     }

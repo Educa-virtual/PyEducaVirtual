@@ -111,4 +111,11 @@ export class ApiEvaluacionesService {
             )
             .pipe(map((resp) => resp.data))
     }
+
+    publicarEvaluacion(data) {
+        return this.http.post<ApiResponse>(
+            `${this.baseUrlApi}/evaluaciones/evaluacion/publicar`,
+            data
+        )
+    }
 }

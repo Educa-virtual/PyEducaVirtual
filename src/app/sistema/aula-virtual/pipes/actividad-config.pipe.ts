@@ -6,7 +6,7 @@ import { actividadesConfig } from '../interfaces/actividad.interface'
     standalone: true,
 })
 export class ActividadConfigPipe implements PipeTransform {
-    transform(value: number, key: string): string {
+    transform(value: number, key: string): any {
         return actividadesConfig[value][key]
     }
 }

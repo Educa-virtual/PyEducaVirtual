@@ -1,28 +1,18 @@
 import { PrimengModule } from '@/app/primeng.module'
-import { environment } from '@/environments/environment'
-import { HttpClient, HttpEventType } from '@angular/common/http'
 import { Component } from '@angular/core'
-import { Message } from 'primeng/api'
 import { throwError } from 'rxjs'
 import { map, catchError } from 'rxjs/operators'
-
+import { environment } from '@/environments/environment'
+import { HttpClient, HttpEventType } from '@angular/common/http'
 @Component({
-    selector: 'app-perfil',
+    selector: 'app-image-upload-primeng',
     standalone: true,
     imports: [PrimengModule],
-    templateUrl: './perfil.component.html',
-    styleUrl: './perfil.component.scss',
+    templateUrl: './image-upload-primeng.component.html',
 })
-export class PerfilComponent {
+export class ImageUploadPrimengComponent {
     private backendApi = environment.backendApi
     constructor(private http: HttpClient) {}
-    mensaje: Message[] = [
-        {
-            severity: 'info',
-            detail: 'En esta sección podrá actualizar su información básica',
-        },
-    ]
-    date = new Date()
     iProgress
     async onUploadChange(evt: any) {
         this.iProgress = 1

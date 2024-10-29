@@ -8,9 +8,9 @@ import { StepsModule } from 'primeng/steps'
 import { CalendarModule } from 'primeng/calendar'
 import { Subscription } from 'rxjs';
 import { MenuItem, MessageService } from 'primeng/api';
-import { TicketService } from './service/ticketservice';
 import { Output, EventEmitter } from '@angular/core';
-
+import { GeneralService } from '@/app/servicios/general.service';
+import { TicketService } from './service/ticketservice';
 @Component({
     selector: 'app-registro',
     standalone: true,
@@ -18,7 +18,7 @@ import { Output, EventEmitter } from '@angular/core';
         ContainerPageComponent,
         StepsModule,
     ],
-    providers: [MessageService, TicketService],
+    providers: [MessageService],
     templateUrl: './registro.component.html',
     styleUrl: './registro.component.scss',
 })
@@ -27,7 +27,7 @@ export class RegistroComponent implements OnInit, OnChanges {
     subscription: Subscription;
     items: MenuItem[];
 
-    constructor(public messageService: MessageService, public ticketService: TicketService, private router: Router) {}
+    constructor(public messageService: MessageService, public ticketService: TicketService, private router: Router, ) {}
 
 
     ngOnInit() {
@@ -75,7 +75,15 @@ export class RegistroComponent implements OnInit, OnChanges {
         this.emitMode.emit(mode)
     }
 
+    validateYear(){
+
+    }
+
     navigateToYears() {
+        this.ticketService.registroInformation = {
+            mode: 'create'
+        }
+    
         this.router.navigate(['configuracion/configuracion/years']); // Navega a YearsComponent
     }
 

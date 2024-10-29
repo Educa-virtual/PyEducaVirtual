@@ -7,6 +7,7 @@ import { Output, EventEmitter } from '@angular/core'
 import { Router } from '@angular/router'
 import { httpService } from '../http/httpService'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
+import { TicketService } from '../registro/service/ticketservice'
 
 @Component({
     selector: 'app-years',
@@ -14,6 +15,7 @@ import { LocalStoreService } from '@/app/servicios/local-store.service'
     imports: [ContainerPageComponent, TablePrimengComponent],
     templateUrl: './years.component.html',
     styleUrl: './years.component.scss',
+    providers: [],
 })
 export class YearsComponent implements OnInit {
     fechasAcademicas
@@ -22,12 +24,11 @@ export class YearsComponent implements OnInit {
     constructor(
         private router: Router,
         private httpService: httpService,
-        private localService: LocalStoreService
+        private localService: LocalStoreService,
+        private ticketService: TicketService
     ) {}
 
     ngOnInit(): void {
-
-
         this.httpService
             .postData('acad/calendarioAcademico/addCalAcademico', {
                 json: JSON.stringify({
@@ -38,10 +39,11 @@ export class YearsComponent implements OnInit {
             .subscribe({
                 next: (data: any) => {
                     // console.log(data.data)
-                    console.log(JSON.parse(data.data[0]["calendarioAcademico"]))
+                    console.log(JSON.parse(data.data[0]['calendarioAcademico']))
 
-
-                    this.fechasAcademicas = JSON.parse(data.data[0]["calendarioAcademico"]).map((fecha) => ({
+                    this.fechasAcademicas = JSON.parse(
+                        data.data[0]['calendarioAcademico']
+                    ).map((fecha) => ({
                         fechaVigente: this.formatFechas(
                             fecha.dtCalAcadInicio,
                             'YYYY'
@@ -104,7 +106,19 @@ export class YearsComponent implements OnInit {
                     })
                     .subscribe({
                         next: (data: any) => {
-                            console.log(data)
+                            this.ticketService.registroInformation = {
+                                mode: 'edit',
+                            }
+
+                            this.ticketService.setTicketInformation(
+                                {
+                                    iCalAcadId: row.iCalAcadId,
+                                    iYAcadId: row.iYAcadId,
+                                },
+                                'calendar'
+                            )
+
+                            this.navigateToRegistro()
                         },
                         error: (error) => {
                             console.error('Error fetching turnos:', error)

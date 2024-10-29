@@ -14,6 +14,7 @@ import { CalendarModule } from 'primeng/calendar'
 import { FloatLabelModule } from 'primeng/floatlabel'
 import { FormsModule } from '@angular/forms'
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms'
+import { GeneralService } from '@/app/servicios/general.service'
 
 @Component({
     selector: 'app-turnos',
@@ -60,7 +61,8 @@ export class TurnosComponent implements OnInit, OnChanges {
         private httpService: httpService,
         public ticketService: TicketService,
         private router: Router,
-        private fb: FormBuilder
+        private fb: FormBuilder,
+        private generalService: GeneralService
     ) {}
 
     nextPage() {
@@ -76,10 +78,6 @@ export class TurnosComponent implements OnInit, OnChanges {
     }
 
     saveState() {
-        // Asegura que `registroInformation` esté inicializado
-        if (!this.ticketService.registroInformation) {
-            this.ticketService.registroInformation = {}
-        }
 
         // Verifica la existencia de `stepYear` y continúa con `stepTurnos`
         if ('stepFormasAtencion' in this.ticketService.registroInformation) {
@@ -190,15 +188,7 @@ export class TurnosComponent implements OnInit, OnChanges {
             console.log(value)
         })
 
-        this.httpService
-            .postData('acad/calendarioAcademico/addCalAcademico', {
-                json: JSON.stringify({
-                    jmod: 'acad',
-                    jtable: 'modalidad_servicios',
-                }),
-                _opcion: 'getConsulta',
-            })
-            .subscribe({
+        this.generalService.getModalidad().subscribe({
                 next: (data: any) => {
                     this.modalidades = data.data
                 },
@@ -210,15 +200,7 @@ export class TurnosComponent implements OnInit, OnChanges {
                 },
             })
 
-        this.httpService
-            .postData('acad/calendarioAcademico/addCalAcademico', {
-                json: JSON.stringify({
-                    jmod: 'acad',
-                    jtable: 'turnos',
-                }),
-                _opcion: 'getConsulta',
-            })
-            .subscribe({
+        this.generalService.getTurno().subscribe({
                 next: (data: any) => {
                     this.turnos = data.data
                     // console.log(this.turnos);

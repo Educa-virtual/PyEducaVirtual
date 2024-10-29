@@ -84,7 +84,7 @@ export class GeneralService {
         return this.http.post(
             `${baseUrl}/acad/calendarioAcademico/addCalAcademico`,
             {
-                json: JSON.stringify({ jmod: 'grl', jtable: 'turno' }),
+                json: JSON.stringify({ jmod: 'acad', jtable: 'turnos' }),
                 _opcion: 'getConsulta',
             }
         )

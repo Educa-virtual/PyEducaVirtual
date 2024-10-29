@@ -16,7 +16,6 @@ import { FormsModule } from '@angular/forms';
 
 import { RegistroComponent } from './registro/registro.component'
 import { DiasLaboralesComponent } from './registro/steps/diasLabolares/diasLaborales.component'
-import { ModalidadesComponent } from './registro/steps/modalidades/modalidades.component'
 import { ResumenComponent } from './resumen/resumen.component'
 import { ResumenComponent as StepResumenComponent } from './registro/steps/resumen/resumen.component'
 import { PeriodosAcademicosComponent } from './registro/steps/periodosAcademicos/periodosAcademicos.component'

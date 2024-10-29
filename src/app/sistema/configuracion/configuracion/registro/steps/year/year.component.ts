@@ -16,6 +16,8 @@ import { FloatLabelModule } from 'primeng/floatlabel'
 import { ConfirmationService, MessageService } from 'primeng/api'
 import { ConfirmDialogModule } from 'primeng/confirmdialog'
 import { ToastModule } from 'primeng/toast'
+import { LocalStoreService } from '@/app/servicios/local-store.service'
+
 import { FormControl } from '@angular/forms'
 @Component({
     selector: 'app-year',
@@ -36,13 +38,19 @@ import { FormControl } from '@angular/forms'
 })
 export class YearComponent implements OnInit, OnChanges {
     form: FormGroup
+
+    fechas: {
+        fechaVigente: string,
+        fechaInicio: string,
+        fechaFin: string,
+    }
+
     minDate: Date
     visible: boolean = false
     fechaVigenteFetch
 
     maxDate: Date
 
-    yearInformation
 
     constructor(
         public ticketService: TicketService,
@@ -50,72 +58,113 @@ export class YearComponent implements OnInit, OnChanges {
         private httpService: httpService,
         private confirmationService: ConfirmationService,
         private messageService: MessageService,
-        private fb: FormBuilder
+        private fb: FormBuilder,
+        private localService: LocalStoreService
     ) {}
     ngOnInit() {
-        this.httpService
-            .postData('acad/calendarioAcademico/addCalAcademico', {
-                json: JSON.stringify({}),
-                _opcion: 'getCalendarioAno',
-            })
-            .subscribe({
-                next: (data: any) => {
-                    this.fechaVigenteFetch = data.data[0]["JSON_F52E2B61-18A1-11d1-B105-00805F49916B"];
-                    console.log(JSON.parse(this.fechaVigenteFetch));
-    
-                    this.fechaVigenteFetch = JSON.parse(this.fechaVigenteFetch);
-    
-                    if (!this.ticketService.registroInformation) {
-                        this.ticketService.registroInformation = {};
-                    }
-    
-                    let fechaCurrent = this.fechaVigenteFetch.map((fecha) => ({
-                        idFechaVigente: fecha.iYAcadId,
-                        fechaVigente: fecha.cYAcadNombre,
-                        fechaInicio: new Date(fecha.dtYAcadInicio),
-                        fechaFin: new Date(fecha.dYAcadFin),
-                    }));
-    
-                    this.ticketService.setTicketInformation(fechaCurrent[0], "stepYear");
-                    this.yearInformation = fechaCurrent[0];
-    
-                    // Configurar el formulario aquí una vez que `yearInformation` esté definido
-                    
-                },
-                error: (error) => {
-                    console.error('Error fetching turnos:', error);
-                },
-                complete: () => {
-                    console.log('Request completed');
+        if (this.ticketService.registroInformation?.mode === 'create') {
+            this.httpService
+                .postData('acad/calendarioAcademico/addCalAcademico', {
+                    json: JSON.stringify({}),
+                    _opcion: 'getCalendarioAno',
+                })
+                .subscribe({
+                    next: (data: any) => {
+                        let filterYearActive = JSON.parse(data.data[0][
+                            'JSON_F52E2B61-18A1-11d1-B105-00805F49916B'
+                        ][0])
 
-                    console.log(this.yearInformation)
+                        console.log(filterYearActive)
 
-                    this.form.setValue({
-                        fechaVigente: this.yearInformation.fechaVigente,
-                        fechaInicio: this.yearInformation.fechaInicio,
-                        fechaFin: this.yearInformation.fechaFin,
-                    });
+                        let fechaCurrent = filterYearActive.map(
+                            (fecha) => ({
+                                fechaVigente: fecha.cYAcadNombre,
+                                fechaInicio: new Date(fecha.dtYAcadInicio),
+                                fechaFin: new Date(fecha.dYAcadFin),
+                            })
+                        )
 
-                    this.form.get('fechaVigente').disable()
-                },
-            });
+                        // this.ticketService.setTicketInformation(
+                        //     ,
+                        //     'stepYear'
+                        // )
+                    },
+                    error: (error) => {
+                        console.error('Error fetching turnos:', error)
+                    },
+                    complete: () => {
+                        console.log('Request completed')
 
-            this.form = this.fb.group({
-                fechaVigente: [''],
-                fechaInicio: [''],
-                fechaFin: [''],
-            });
+                        this.form.setValue({
+                            fechaVigente: this.ticketService.registroInformation.stepYear.fechaVigente,
+                            fechaInicio: this.ticketService.registroInformation.stepYear.fechaInicio,
+                            fechaFin: this.ticketService.registroInformation.stepYear.fechaFin,
+                        })
 
-            // Suscribirse a los cambios del formulario después de la inicialización
-            this.form.valueChanges.subscribe((value) => {
-                this.yearInformation = {
-                    ...this.yearInformation,
-                    fechaInicio: value.fechaInicio,
-                    fechaFin: value.fechaFin,
-                };
-            });
+                        this.form.get('fechaVigente').disable()
+                    },
+                })
+        }
+        if (this.ticketService.registroInformation?.mode == 'edit') {
+            this.httpService
+                .postData('acad/calendarioAcademico/addCalAcademico', {
+                    json: JSON.stringify({
+                        iSedeId:
+                            this.localService.getItem('dremoPerfil').iSedeId,
+                        // iYAcadId: this.ticketService.registroInformation.stepYear.,
+                        iCalAcadId:
+                            this.ticketService.registroInformation.calendar
+                                .iCalAcadId,
+                    }),
+                    _opcion: 'getCalendarioIESede',
+                })
+                .subscribe({
+                    next: (data: any) => {
+
+                        let filterCalendar = JSON.parse(
+                            data.data[0]['calendarioAcademico']).find((calendario) => 
+                                calendario.iYAcadId == 3
+                            )
+
+                        this.ticketService.setTicketInformation({
+                            fechaVigente: this.ticketService.formatFechas(filterCalendar.dtCalAcadInicio, 'YY'),
+                            fechaInicio: new Date(filterCalendar.dtCalAcadInicio),
+                            fechaFin: new Date(filterCalendar.dtCalAcadFin),
+                        }, "stepYear")
+
+                    },
+                    error: (error) => {
+                        console.error('Error fetching turnos:', error)
+                    },
+                    complete: () => {
+                        console.log('Request completed')
+
+                        this.form.setValue({
+                            fechaVigente: this.ticketService.registroInformation.stepYear.fechaVigente,
+                            fechaInicio: this.ticketService.registroInformation.stepYear.fechaInicio,
+                            fechaFin: this.ticketService.registroInformation.stepYear.fechaFin,
+                        })
+
+                        this.form.get('fechaVigente').disable()
+                    },
+                })
+        }
+
+        this.form = this.fb.group({
+            fechaVigente: [''],
+            fechaInicio: [''],
+            fechaFin: [''],
+        })
+
+        // Suscribirse a los cambios del formulario después de la inicialización
+        this.form.valueChanges.subscribe((value) => {
+            this.ticketService.registroInformation.stepYear = {
+                ...this.ticketService.registroInformation.stepYear,
+                fechaInicio: value.fechaInicio,
+                fechaFin: value.fechaFin,
+            }
+        })
     }
-    
 
     confirm() {
         this.confirmationService.confirm({
@@ -149,26 +198,15 @@ export class YearComponent implements OnInit, OnChanges {
     }
 
     saveInformation() {
-        let yearCurrent
-
-        if (!this.ticketService.registroInformation) {
-            this.ticketService.registroInformation = {}
-        }
-
         // Verifica la existencia de `stepYear` y continúa con `stepTurnos`
-        if ('stepYear' in this.ticketService.registroInformation) {
-            yearCurrent = this.ticketService.getTicketInformation().stepYear
-        }
-
-        console.log(this.yearInformation);
-
+            
         this.httpService
             .postData('acad/calendarioAcademico/addCalAcademico', {
                 json: JSON.stringify({
-                    iSedeId: 3,
-                    iYAcadId: this.yearInformation.idFechaVigente,
-                    dtCalAcadInicio: this.yearInformation.fechaFin,
-                    dtCalAcadFin: this.yearInformation.fechaFin,
+                    iSedeId: this.localService.getItem('dremoPerfil').iSedeId,
+                    iYAcadId: this.ticketService.registroInformation.calendar.iCalAcadId,
+                    dtCalAcadInicio: this.ticketService.registroInformation.stepYear.fechaInicio,
+                    dtCalAcadFin: this.ticketService.registroInformation.stepYear.fechaFin,
                 }),
                 _opcion: 'addCalAcademico',
             })
@@ -177,38 +215,15 @@ export class YearComponent implements OnInit, OnChanges {
                     console.log(data)
                 },
                 error: (error) => {
-                    console.error('Error fetching turnos:', error);
+                    console.error('Error fetching turnos:', error)
                 },
                 complete: () => {
-                    console.log('Request completed');
+                    console.log('Request completed')
                 },
-            });
-
-        // this.httpService
-        //     .postData('acad/calendarioAcademico/addCalAcademico', {
-        //         json: JSON.stringify({
-        //             jmod: 'grl',
-        //             jtable: 'dias',
-        //         }),
-        //         _opcion: 'getConsulta',
-        //     })
-        //     .subscribe({
-        //         next: (data: any) => {
-        //             this.dias = data.data
-
-        //             console.log(this.dias)
-        //         },
-        //         error: (error) => {
-        //             console.error('Error fetching dias:', error)
-        //         },
-        //         complete: () => {
-        //             console.log('Request completed')
-        //         },
-        //     })
+            })
     }
 
     nextPage() {
-        this.ticketService.registroInformation.stepYear = this.yearInformation
         this.router.navigate([
             'configuracion/configuracion/registro/diasLaborales',
         ])
@@ -216,15 +231,5 @@ export class YearComponent implements OnInit, OnChanges {
     // prevPage() {
     //     this.router.navigate(['steps/year'])
     // }
-    ngOnChanges() {
-        // this.form.valueChanges.subscribe(value => {
-        //     this.ticketService.setTicketInformation(value, "stepYear")
-        //     console.log(this.ticketService.getTicketInformation().stepYear);
-        //     this.minDate = new Date(Number(this.yearInformation.fechaVigente), 0, 1); // 0 es enero y 1 es el primer día
-        //     console.log(new Date(Number(this.yearInformation.fechaVigente), 0, 1));
-        //     this.maxDate = new Date(Number(this.yearInformation.fechaVigente), 11, 31);
-        //     console.log(new Date(Number(this.yearInformation.fechaVigente), 11, 31));
-        // });
-        // Definir el último día del año
-    }
+    ngOnChanges() {}
 }

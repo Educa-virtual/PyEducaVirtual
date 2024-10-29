@@ -9,7 +9,7 @@ import { StepsModule } from 'primeng/steps'
 
 import { Router } from '@angular/router';
 
-
+import { TicketService } from './registro/service/ticketservice'
 
 @Component({
     selector: 'app-configuracion',
@@ -17,6 +17,7 @@ import { Router } from '@angular/router';
     imports: [ContainerPageComponent, TablePrimengComponent, RegistroComponent, YearsComponent, ResumenComponent, StepsModule],
     templateUrl: './configuracion.component.html',
     styleUrl: './configuracion.component.scss',
+    providers: [TicketService]
 })
 export class ConfiguracionComponent implements OnInit, OnChanges, OnDestroy {
 

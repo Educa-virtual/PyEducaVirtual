@@ -12,6 +12,8 @@ import { Router } from '@angular/router'
 import { ConfirmationService, MessageService } from 'primeng/api'
 import { ConfirmDialogModule } from 'primeng/confirmdialog'
 import { ToastModule } from 'primeng/toast'
+import { GeneralService } from '@/app/servicios/general.service'
+import { LocalStoreService } from '@/app/servicios/local-store.service'
 @Component({
     selector: 'app-diasLaborales',
     standalone: true,
@@ -39,7 +41,9 @@ export class DiasLaboralesComponent implements OnInit, OnChanges {
         public ticketService: TicketService,
         private confirmationService: ConfirmationService, 
         private messageService: MessageService,
-        private router: Router
+        private router: Router,
+        private generalService: GeneralService,
+        private localService: LocalStoreService
     ) {}
 
     nextPage() {
@@ -51,15 +55,8 @@ export class DiasLaboralesComponent implements OnInit, OnChanges {
     }
 
     ngOnInit() {
-        this.httpService
-            .postData('acad/calendarioAcademico/addCalAcademico', {
-                json: JSON.stringify({
-                    jmod: 'grl',
-                    jtable: 'dias',
-                }),
-                _opcion: 'getConsulta',
-            })
-            .subscribe({
+
+        this.generalService.getDias().subscribe({
                 next: (data: any) => {
                     this.dias = data.data
                 },

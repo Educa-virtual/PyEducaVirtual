@@ -84,6 +84,7 @@ export class IeparticipaComponent implements OnInit {
             this.cdr.markForCheck()
         })
         this.targetProducts = []
+
         this.obtenerIE()
         this.obtenerNivelTipo()
 
@@ -104,10 +105,13 @@ export class IeparticipaComponent implements OnInit {
                         iCompentenciaId: 0,
                         cCompetenciaDescripcion: 'Todos',
                     })*/
-
+                    console.log('Datos obtenidos de obtenerIE:', resp) // Imprime la respuesta completa
                     this.data = resp['data']
-                    //alert(JSON.stringify(this.data))
+                    console.log('Data asignada a this.data:', this.data) // Imprime los datos asignados
                     this.sourceProducts = this.data
+                    //is.data = resp['data'] //aqui recueprar
+                    //alert(JSON.stringify(this.data))
+                    //this.sourceProducts = this.data //aqui recuperar
                 },
             })
     }
@@ -122,12 +126,50 @@ export class IeparticipaComponent implements OnInit {
                       iCompentenciaId: 0,
                       cCompetenciaDescripcion: 'Todos',
                   })*/
-
+                    console.log('Datos obtenidos de obtenerNivelTipo:', resp) // Imprime la respuesta completa
                     this.nivelTipo = resp['data']
+                    console.log(
+                        'Nivel tipo asignado a this.nivelTipo:',
+                        this.nivelTipo
+                    ) // Imprime los datos asignados
+                    // Asegúrate de que esto sea correcto; probablemente no debas sobrescribir sourceProducts aquí.
+                    //this.nivelTipo = resp['data'] //aqui recuperar
                     // alert(JSON.stringify(this.data))
-                    this.sourceProducts = this.data
+                    // this.sourceProducts = this.data //aqui recuperar
                 },
             })
+    }
+    IEnoparticipan(event: any) {
+        // Obtener los elementos movidos
+        const itemsMoved = event.items
+        console.log(
+            'Elementos movidos de IEnoparticipan a IEparticipan:',
+            itemsMoved
+        )
+    }
+    IEparticipan(event: any) {
+        // Obtener los elementos movidos
+        const itemsMoved = event.items
+        console.log(
+            'Elementos movidos de IEpertenece a IEnopertenece :',
+            itemsMoved
+        )
+    }
+    IEnoparticipanall(event: any) {
+        // Obtener los elementos movidos
+        const itemsMoved = event.items
+        console.log(
+            'Elementos movidos de IEnoparticipan a IEparticipan:',
+            itemsMoved
+        )
+    }
+    IEparticipanall(event: any) {
+        // Obtener los elementos movidos
+        const itemsMoved = event.items
+        console.log(
+            'Elementos movidos de IEpertenece a IEnopertenece :',
+            itemsMoved
+        )
     }
     seleccionados() {
         // alert(JSON.stringify(this.targetProducts))

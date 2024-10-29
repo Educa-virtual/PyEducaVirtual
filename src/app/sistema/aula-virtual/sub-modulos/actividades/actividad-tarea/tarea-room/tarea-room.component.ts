@@ -9,7 +9,7 @@ import {
 } from '@/app/sistema/aula-virtual/sub-modulos/actividades/components/leyenda-tareas/leyenda-item/leyenda-item.component'
 import { LeyendaTareasComponent } from '@/app/sistema/aula-virtual/sub-modulos/actividades/components/leyenda-tareas/leyenda-tareas.component'
 import { CommonModule } from '@angular/common'
-import { Component, inject, OnInit } from '@angular/core'
+import { Component, inject, Input } from '@angular/core'
 import { provideIcons } from '@ng-icons/core'
 import { matListAlt, matPeople } from '@ng-icons/material-icons/baseline'
 import { ButtonModule } from 'primeng/button'
@@ -41,7 +41,9 @@ import { GeneralService } from '@/app/servicios/general.service'
     styleUrl: './tarea-room.component.scss',
     providers: [provideIcons({ matListAlt, matPeople }), DialogService],
 })
-export class TareaRoomComponent implements OnInit {
+export class TareaRoomComponent {
+    @Input() iTareaId: string
+
     private _dialogService = inject(DialogService)
     private GeneralService = inject(GeneralService)
     showModal: boolean = false
@@ -109,9 +111,12 @@ export class TareaRoomComponent implements OnInit {
     ]
 
     estudiantes1: any[] = []
-    ngOnInit() {
-        this.getEstudiantesMatricula()
-    }
+
+    tareaAsignar: number
+    tareaOptions = [
+        { name: 'Individual', value: 0 },
+        { name: 'Grupal', value: 1 },
+    ]
     getEstudiantesMatricula() {
         const params = {
             petition: 'post',
@@ -129,12 +134,12 @@ export class TareaRoomComponent implements OnInit {
         }
         console.log(this.getInformation)
 
-        this.getInformation(params)
+        this.getInformation(params, 'get-estudiantes')
     }
-    getInformation(params) {
+    getInformation(params, condition) {
         this.GeneralService.getGralPrefix(params).subscribe({
             next: (response) => {
-                this.estudiantes = response.data
+                this.accionBtnItem({ accion: condition, item: response.data })
             },
             complete: () => {},
             error: (error) => {
@@ -242,7 +247,7 @@ export class TareaRoomComponent implements OnInit {
 
     public accionBtnItem(elemento) {
         const { accion } = elemento
-        // const { item } = elemento
+        const { item } = elemento
         switch (accion) {
             case 'calificar':
                 this._dialogService.open(CalificarTareaFormComponent, {
@@ -252,6 +257,19 @@ export class TareaRoomComponent implements OnInit {
                 break
             case 'close-modal':
                 this.showModal = false
+                break
+            case 'get-estudiantes':
+                this.estudiantes = item
+                break
+            case 'update-tareas':
+                this.tareaAsignar
+                    ? this.getTareaEstudiantes()
+                    : this.getTareaCabeceraGrupos()
+                //this.getEstudiantesMatricula()
+                break
+            case 'get-tarea-estudiantes':
+                break
+            case 'get-tarea-cabecera-grupos':
                 break
             default:
                 break
@@ -264,5 +282,51 @@ export class TareaRoomComponent implements OnInit {
     getTareaRealizada(item) {
         console.log(item)
         this.estudianteSeleccionado = item.id
+    }
+
+    updateTareas() {
+        const params = {
+            petition: 'post',
+            group: 'aula-virtual',
+            prefix: 'tareas',
+            ruta: 'updatexiTareaId',
+            data: {
+                opcion: 'ACTUALIZARxiTareaId',
+                iTareaId: this.iTareaId,
+                bTareaEsGrupal: this.tareaAsignar ? true : false,
+            },
+            params: { skipSuccessMessage: true },
+        }
+        this.getInformation(params, 'update-tarea')
+    }
+
+    getTareaEstudiantes() {
+        const params = {
+            petition: 'post',
+            group: 'aula-virtual',
+            prefix: 'tarea-estudiantes',
+            ruta: 'list',
+            data: {
+                opcion: 'CONSULTAR-ASIGNACIONxiTareaId',
+                iTareaId: this.iTareaId,
+            },
+            params: { skipSuccessMessage: true },
+        }
+        this.getInformation(params, 'get-' + params.prefix)
+    }
+
+    getTareaCabeceraGrupos() {
+        const params = {
+            petition: 'post',
+            group: 'aula-virtual',
+            prefix: 'tarea-cabecera-grupos',
+            ruta: 'list',
+            data: {
+                opcion: 'CONSULTAR-ASIGNACIONxiTareaId',
+                iTareaId: this.iTareaId,
+            },
+            params: { skipSuccessMessage: true },
+        }
+        this.getInformation(params, 'get-' + params.prefix)
     }
 }

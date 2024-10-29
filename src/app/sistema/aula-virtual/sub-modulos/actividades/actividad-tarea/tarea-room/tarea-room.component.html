@@ -137,6 +137,16 @@
                                     Asignar a:
                                 </h4>
                             </div>
+                            <div class="p-toolbar-group-center">
+                                <p-selectButton
+                                    [options]="tareaOptions"
+                                    [(ngModel)]="tareaAsignar"
+                                    [multiple]="false"
+                                    optionLabel="name"
+                                    optionValue="value"
+                                    (onChange)="updateTareas()"
+                                />
+                            </div>
                             <div class="p-toolbar-group-end">
                                 <p-button
                                     icon="pi pi-sync"
@@ -149,370 +159,460 @@
                             </div>
                         </p-toolbar>
                         <p-divider></p-divider>
-                        <p-accordion [activeIndex]="0">
-                            <p-accordionTab header="Individual">
-                                <div class="grid">
-                                    <div class="col-4 leyenda-tareas">
-                                        <div class="flex align-items-center">
-                                            <div
-                                                class="w-1rem h-1rem border-circle"
-                                                [ngClass]="'bg-red-500'"
-                                            ></div>
-                                            <div>
-                                                <b style="font-size: 1.5rem"
-                                                    >&nbsp;25</b
-                                                ><small>&nbsp; Falta</small>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-4 leyenda-tareas">
-                                        <div class="flex align-items-center">
-                                            <div
-                                                class="w-1rem h-1rem border-circle"
-                                                [ngClass]="'bg-yellow-500'"
-                                            ></div>
-                                            <div>
-                                                <b style="font-size: 1.5rem"
-                                                    >&nbsp;25</b
-                                                ><small>&nbsp; Proceso</small>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-4 leyenda-tareas">
-                                        <div class="flex align-items-center">
-                                            <div
-                                                class="w-1rem h-1rem border-circle"
-                                                [ngClass]="'bg-green-500'"
-                                            ></div>
-                                            <div>
-                                                <b style="font-size: 1.5rem"
-                                                    >&nbsp;25</b
-                                                ><small>&nbsp; Culminado</small>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <span class="p-input-icon-left">
-                                            <i class="pi pi-search"></i>
-                                            <input
-                                                pInputText
-                                                placeholder="Buscar estudiante"
-                                                style="width: 250px"
-                                            />
-                                        </span>
-                                    </div>
-                                    <div class="col-6 text-right">
-                                        <p-button
-                                            (onClick)="changeEstadoCheckbox()"
-                                            [severity]="
-                                                !estadoCheckbox
-                                                    ? 'info'
-                                                    : 'danger'
-                                            "
-                                            [label]="
-                                                !estadoCheckbox
-                                                    ? 'Seleccionar Todos'
-                                                    : 'Desmarcar todo'
-                                            "
-                                            [icon]="
-                                                !estadoCheckbox
-                                                    ? 'pi pi-check-square'
-                                                    : 'pi pi-times-circle'
-                                            "
-                                            iconPos="left"
-                                        />
-                                    </div>
-                                    <p-table
-                                        #dv
-                                        class="col-12 hoverTable"
-                                        [value]="estudiantes"
-                                        paginator="false"
-                                        styleClass="p-datatable-sm"
-                                    >
-                                        <ng-template pTemplate="header">
-                                            <tr>
-                                                <!-- incio -->
-                                                <p-table
-                                                    [value]="estudiantes"
-                                                    [scrollable]="true"
-                                                    scrollHeight="500px"
+                        @if (tareaAsignar !== undefined) {
+                            <p-accordion [activeIndex]="0">
+                                @if (!tareaAsignar) {
+                                    <p-accordionTab header="Individual">
+                                        <div class="grid">
+                                            <div class="col-4 leyenda-tareas">
+                                                <div
+                                                    class="flex align-items-center"
                                                 >
-                                                    <ng-template
-                                                        pTemplate="header"
-                                                    >
-                                                        <tr
-                                                            class="sticky-header"
+                                                    <div
+                                                        class="w-1rem h-1rem border-circle"
+                                                        [ngClass]="'bg-red-500'"
+                                                    ></div>
+                                                    <div>
+                                                        <b
+                                                            style="
+                                                                font-size: 1.5rem;
+                                                            "
+                                                            >&nbsp;25</b
+                                                        ><small
+                                                            >&nbsp; Falta</small
                                                         >
-                                                            <th>#</th>
-                                                            <th>Nombres</th>
-                                                            <th>Apellidos</th>
-                                                            <th>Estado</th>
-                                                        </tr>
-                                                    </ng-template>
-                                                    <ng-template
-                                                        pTemplate="body"
-                                                        let-estudiante
-                                                        let-rowIndex="rowIndex"
-                                                    >
-                                                        <tr>
-                                                            <!-- <td>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-4 leyenda-tareas">
+                                                <div
+                                                    class="flex align-items-center"
+                                                >
+                                                    <div
+                                                        class="w-1rem h-1rem border-circle"
+                                                        [ngClass]="
+                                                            'bg-yellow-500'
+                                                        "
+                                                    ></div>
+                                                    <div>
+                                                        <b
+                                                            style="
+                                                                font-size: 1.5rem;
+                                                            "
+                                                            >&nbsp;25</b
+                                                        ><small
+                                                            >&nbsp;
+                                                            Proceso</small
+                                                        >
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-4 leyenda-tareas">
+                                                <div
+                                                    class="flex align-items-center"
+                                                >
+                                                    <div
+                                                        class="w-1rem h-1rem border-circle"
+                                                        [ngClass]="
+                                                            'bg-green-500'
+                                                        "
+                                                    ></div>
+                                                    <div>
+                                                        <b
+                                                            style="
+                                                                font-size: 1.5rem;
+                                                            "
+                                                            >&nbsp;25</b
+                                                        ><small
+                                                            >&nbsp;
+                                                            Culminado</small
+                                                        >
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <span class="p-input-icon-left">
+                                                    <i class="pi pi-search"></i>
+                                                    <input
+                                                        pInputText
+                                                        placeholder="Buscar estudiante"
+                                                        style="width: 250px"
+                                                    />
+                                                </span>
+                                            </div>
+                                            <div class="col-6 text-right">
+                                                <p-button
+                                                    (onClick)="
+                                                        changeEstadoCheckbox()
+                                                    "
+                                                    [severity]="
+                                                        !estadoCheckbox
+                                                            ? 'info'
+                                                            : 'danger'
+                                                    "
+                                                    [label]="
+                                                        !estadoCheckbox
+                                                            ? 'Seleccionar Todos'
+                                                            : 'Desmarcar todo'
+                                                    "
+                                                    [icon]="
+                                                        !estadoCheckbox
+                                                            ? 'pi pi-check-square'
+                                                            : 'pi pi-times-circle'
+                                                    "
+                                                    iconPos="left"
+                                                />
+                                            </div>
+                                            <p-table
+                                                #dv
+                                                class="col-12 hoverTable"
+                                                [value]="estudiantes"
+                                                paginator="false"
+                                                styleClass="p-datatable-sm"
+                                            >
+                                                <ng-template pTemplate="header">
+                                                    <tr>
+                                                        <!-- incio -->
+                                                        <p-table
+                                                            [value]="
+                                                                estudiantes
+                                                            "
+                                                            [scrollable]="true"
+                                                            scrollHeight="500px"
+                                                        >
+                                                            <ng-template
+                                                                pTemplate="header"
+                                                            >
+                                                                <tr
+                                                                    class="sticky-header"
+                                                                >
+                                                                    <th>#</th>
+                                                                    <th>
+                                                                        Nombres
+                                                                    </th>
+                                                                    <th>
+                                                                        Apellidos
+                                                                    </th>
+                                                                    <th>
+                                                                        Nota
+                                                                    </th>
+                                                                    <th>
+                                                                        Estado
+                                                                    </th>
+                                                                </tr>
+                                                            </ng-template>
+                                                            <ng-template
+                                                                pTemplate="body"
+                                                                let-estudiante
+                                                                let-rowIndex="rowIndex"
+                                                            >
+                                                                <tr>
+                                                                    <!-- <td>
                                                             <p-checkbox
                                                                 [(ngModel)]="estudiante.selected"
                                                             ></p-checkbox>
                                                         </td> -->
-                                                            <td>
-                                                                {{
-                                                                    rowIndex + 1
-                                                                }}
-                                                            </td>
-                                                            <td>
-                                                                {{
-                                                                    estudiante?.nombrecompleto
-                                                                }}
-                                                            </td>
-                                                            <td>
-                                                                {{
-                                                                    estudiante.cPersPaterno
-                                                                }}
-                                                            </td>
-                                                            <td
-                                                                style="
-                                                                    text-align: center;
-                                                                "
-                                                            >
-                                                                <div
-                                                                    class="w-1rem h-1rem border-circle ml-3"
-                                                                    [ngClass]="
-                                                                        estudiante.cEstado ===
-                                                                        'F'
-                                                                            ? 'bg-red-500'
-                                                                            : estudiante.cEstado ===
-                                                                                'P'
-                                                                              ? 'bg-yellow-500'
-                                                                              : 'bg-green-500'
-                                                                    "
-                                                                ></div>
-                                                            </td>
-                                                        </tr>
-                                                    </ng-template>
-                                                </p-table>
-                                                <!-- incio -->
-                                            </tr></ng-template
-                                        >
-                                        <ng-template
-                                            pTemplate="emptymessage"
-                                            let-columns
-                                        >
-                                            <tr>
-                                                <td [attr.colspan]="8">
-                                                    No se encontraron
-                                                    resultados.
-                                                </td>
-                                            </tr>
-                                        </ng-template>
-                                    </p-table>
-                                </div>
-                            </p-accordionTab>
-                            <p-accordionTab header="Grupal">
-                                <div class="grid text-center">
-                                    <div class="col-4 leyenda-tareas">
-                                        <div class="flex align-items-center">
-                                            <div
-                                                class="w-1rem h-1rem border-circle"
-                                                [ngClass]="'bg-red-500'"
-                                            ></div>
-                                            <div>
-                                                <b style="font-size: 1.5rem"
-                                                    >&nbsp;25</b
-                                                ><small>&nbsp; Falta</small>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-4 leyenda-tareas">
-                                        <div class="flex align-items-center">
-                                            <div
-                                                class="w-1rem h-1rem border-circle"
-                                                [ngClass]="'bg-yellow-500'"
-                                            ></div>
-                                            <div>
-                                                <b style="font-size: 1.5rem"
-                                                    >&nbsp;25</b
-                                                ><small>&nbsp; Proceso</small>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-4 leyenda-tareas">
-                                        <div class="flex align-items-center">
-                                            <div
-                                                class="w-1rem h-1rem border-circle"
-                                                [ngClass]="'bg-green-500'"
-                                            ></div>
-                                            <div>
-                                                <b style="font-size: 1.5rem"
-                                                    >&nbsp;25</b
-                                                ><small>&nbsp; Culminado</small>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <span class="p-input-icon-left">
-                                            <i class="pi pi-search"></i>
-                                            <input
-                                                pInputText
-                                                placeholder="Buscar estudiante"
-                                                style="width: 250px"
-                                            />
-                                        </span>
-                                    </div>
-                                    <div class="col-6 text-right">
-                                        <p-button
-                                            severity="info"
-                                            label="Crear Grupo"
-                                            icon="pi pi-plus"
-                                            (onClick)="showModal = true"
-                                            iconPos="left"
-                                        />
-                                    </div>
-                                    <p-table
-                                        #dv
-                                        class="col-12 hoverTable"
-                                        [value]="estudiantes"
-                                        paginator="false"
-                                        styleClass="p-datatable-sm"
-                                    >
-                                        <ng-template pTemplate="header">
-                                            <tr>
-                                                <!-- incio -->
-                                                <p-table
-                                                    [value]="estudiantes"
-                                                    [scrollable]="true"
-                                                    scrollHeight="500px"
+                                                                    <td>
+                                                                        {{
+                                                                            rowIndex +
+                                                                                1
+                                                                        }}
+                                                                    </td>
+                                                                    <td>
+                                                                        {{
+                                                                            estudiante?.nombrecompleto
+                                                                        }}
+                                                                    </td>
+                                                                    <td>
+                                                                        {{
+                                                                            estudiante.cPersPaterno
+                                                                        }}
+                                                                    </td>
+                                                                    <td></td>
+                                                                    <td
+                                                                        style="
+                                                                            text-align: center;
+                                                                        "
+                                                                    >
+                                                                        <div
+                                                                            class="w-1rem h-1rem border-circle ml-3"
+                                                                            [ngClass]="
+                                                                                estudiante.cEstado ===
+                                                                                'F'
+                                                                                    ? 'bg-red-500'
+                                                                                    : estudiante.cEstado ===
+                                                                                        'P'
+                                                                                      ? 'bg-yellow-500'
+                                                                                      : 'bg-green-500'
+                                                                            "
+                                                                        ></div>
+                                                                    </td>
+                                                                </tr>
+                                                            </ng-template>
+                                                        </p-table>
+                                                        <!-- incio -->
+                                                    </tr></ng-template
                                                 >
-                                                    <ng-template
-                                                        pTemplate="header"
-                                                    >
-                                                        <tr
-                                                            class="sticky-header"
-                                                        >
-                                                            <th>#</th>
-                                                            <th>Nombres</th>
-                                                            <th>Apellidos</th>
-                                                            <th>Estado</th>
-                                                        </tr>
-                                                    </ng-template>
-                                                    <ng-template
-                                                        pTemplate="body"
-                                                        let-estudiante
-                                                        let-rowIndex="rowIndex"
-                                                    >
-                                                        <tr>
-                                                            <!-- <td>
-                                                            <p-checkbox
-                                                                [(ngModel)]="estudiante.selected"
-                                                            ></p-checkbox>
-                                                        </td> -->
-                                                            <td>
-                                                                {{
-                                                                    rowIndex + 1
-                                                                }}
-                                                            </td>
-                                                            <td>
-                                                                {{
-                                                                    estudiante.nombrecompleto
-                                                                }}
-                                                            </td>
-                                                            <td>
-                                                                {{
-                                                                    estudiante.cPersPaterno
-                                                                }}
-                                                            </td>
-                                                            <td
-                                                                style="
-                                                                    text-align: center;
-                                                                "
-                                                            >
-                                                                <div
-                                                                    class="w-1rem h-1rem border-circle ml-3"
-                                                                    [ngClass]="
-                                                                        estudiante.cEstado ===
-                                                                        'F'
-                                                                            ? 'bg-red-500'
-                                                                            : estudiante.cEstado ===
-                                                                                'P'
-                                                                              ? 'bg-yellow-500'
-                                                                              : 'bg-green-500'
-                                                                    "
-                                                                ></div>
-                                                            </td>
-                                                        </tr>
-                                                    </ng-template>
-                                                </p-table>
-
-                                                <p-panel
-                                                    header="Grupo: Grupo 1"
-                                                    class="group-panel"
+                                                <ng-template
+                                                    pTemplate="emptymessage"
+                                                    let-columns
                                                 >
-                                                    <p-button
-                                                        label="Crear Grupo"
-                                                        icon="pi pi-plus"
-                                                        class="p-button-success p-mb-2"
-                                                    ></p-button>
-
+                                                    <tr>
+                                                        <td [attr.colspan]="8">
+                                                            No se encontraron
+                                                            resultados.
+                                                        </td>
+                                                    </tr>
+                                                </ng-template>
+                                            </p-table>
+                                        </div>
+                                    </p-accordionTab>
+                                } @else {
+                                    <p-accordionTab header="Grupal">
+                                        <div class="grid text-center">
+                                            <div class="col-4 leyenda-tareas">
+                                                <div
+                                                    class="flex align-items-center"
+                                                >
                                                     <div
-                                                        class="group-content p-mt-3"
-                                                    >
-                                                        <span
-                                                            class="p-badge p-badge-secondary"
+                                                        class="w-1rem h-1rem border-circle"
+                                                        [ngClass]="'bg-red-500'"
+                                                    ></div>
+                                                    <div>
+                                                        <b
+                                                            style="
+                                                                font-size: 1.5rem;
+                                                            "
+                                                            >&nbsp;25</b
+                                                        ><small
+                                                            >&nbsp; Falta</small
                                                         >
-                                                            <i
-                                                                class="pi pi-users"
-                                                            ></i>
-                                                            0
-                                                        </span>
-
-                                                        <p-button
-                                                            label="Añadir"
-                                                            icon="pi pi-plus"
-                                                            class="p-button-success p-mb-2"
-                                                        ></p-button>
-                                                        <p-button
-                                                            label="Quitar"
-                                                            icon="pi pi-trash"
-                                                            class="p-button-danger p-mb-2"
-                                                        ></p-button>
-                                                        <p-button
-                                                            label="Tarea"
-                                                            icon="pi pi-eye"
-                                                            class="p-button-info p-mb-2"
-                                                        ></p-button>
                                                     </div>
-
+                                                </div>
+                                            </div>
+                                            <div class="col-4 leyenda-tareas">
+                                                <div
+                                                    class="flex align-items-center"
+                                                >
                                                     <div
-                                                        class="group-footer p-mt-3"
-                                                    >
-                                                        <p>
-                                                            No hay integrantes
-                                                            en este grupo
-                                                        </p>
+                                                        class="w-1rem h-1rem border-circle"
+                                                        [ngClass]="
+                                                            'bg-yellow-500'
+                                                        "
+                                                    ></div>
+                                                    <div>
+                                                        <b
+                                                            style="
+                                                                font-size: 1.5rem;
+                                                            "
+                                                            >&nbsp;25</b
+                                                        ><small
+                                                            >&nbsp;
+                                                            Proceso</small
+                                                        >
                                                     </div>
-                                                </p-panel>
-                                            </tr></ng-template
-                                        >
-                                        <ng-template
-                                            pTemplate="emptymessage"
-                                            let-columns
-                                        >
-                                            <tr>
-                                                <td [attr.colspan]="8">
-                                                    No se encontraron
-                                                    resultados.
-                                                </td>
-                                            </tr>
-                                        </ng-template>
-                                    </p-table>
-                                </div>
-                            </p-accordionTab>
-                        </p-accordion>
+                                                </div>
+                                            </div>
+                                            <div class="col-4 leyenda-tareas">
+                                                <div
+                                                    class="flex align-items-center"
+                                                >
+                                                    <div
+                                                        class="w-1rem h-1rem border-circle"
+                                                        [ngClass]="
+                                                            'bg-green-500'
+                                                        "
+                                                    ></div>
+                                                    <div>
+                                                        <b
+                                                            style="
+                                                                font-size: 1.5rem;
+                                                            "
+                                                            >&nbsp;25</b
+                                                        ><small
+                                                            >&nbsp;
+                                                            Culminado</small
+                                                        >
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <span class="p-input-icon-left">
+                                                    <i class="pi pi-search"></i>
+                                                    <input
+                                                        pInputText
+                                                        placeholder="Buscar estudiante"
+                                                        style="width: 250px"
+                                                    />
+                                                </span>
+                                            </div>
+                                            <div class="col-6 text-right">
+                                                <p-button
+                                                    severity="info"
+                                                    label="Crear Grupo"
+                                                    icon="pi pi-plus"
+                                                    (onClick)="showModal = true"
+                                                    iconPos="left"
+                                                />
+                                            </div>
+                                            <div class="col-12">
+                                                <p-accordion [activeIndex]="0">
+                                                    @for (
+                                                        item of estudiantes;
+                                                        track item.id;
+                                                        let idx = $index
+                                                    ) {
+                                                        <p-accordionTab>
+                                                            <ng-template
+                                                                pTemplate="header"
+                                                            >
+                                                                <span
+                                                                    class="flex align-items-center gap-2 w-full"
+                                                                >
+                                                                    Grupo: Grupo
+                                                                    {{
+                                                                        idx + 1
+                                                                    }}
+                                                                </span>
+                                                                <span
+                                                                    class="flex align-items-end gap-2 w-full"
+                                                                >
+                                                                    <div
+                                                                        class="flex align-items-center"
+                                                                    >
+                                                                        <b
+                                                                            >Nota:</b
+                                                                        >
+                                                                        18
+                                                                        <div
+                                                                            class="w-1rem h-1rem border-circle ml-3"
+                                                                            [ngClass]="
+                                                                                item.cEstado ===
+                                                                                'F'
+                                                                                    ? 'bg-red-500'
+                                                                                    : item.cEstado ===
+                                                                                        'P'
+                                                                                      ? 'bg-yellow-500'
+                                                                                      : 'bg-green-500'
+                                                                            "
+                                                                        ></div>
+                                                                        &nbsp;
+                                                                        &nbsp;
+                                                                        <span
+                                                                            class="pi pi-pencil"
+                                                                        ></span>
+                                                                    </div>
+                                                                </span>
+                                                            </ng-template>
+
+                                                            <div>
+                                                                <p-table
+                                                                    #dv
+                                                                    class="col-12 hoverTable"
+                                                                    [value]="
+                                                                        estudiantes
+                                                                    "
+                                                                    paginator="false"
+                                                                    styleClass="p-datatable-sm"
+                                                                >
+                                                                    <ng-template
+                                                                        pTemplate="header"
+                                                                    >
+                                                                        <tr
+                                                                            class="sticky-header"
+                                                                        >
+                                                                            <th>
+                                                                                #
+                                                                            </th>
+                                                                            <th>
+                                                                                Nombres
+                                                                            </th>
+                                                                            <th>
+                                                                                Apellidos
+                                                                            </th>
+                                                                        </tr>
+                                                                    </ng-template>
+                                                                    <ng-template
+                                                                        pTemplate="body"
+                                                                        let-estudiante
+                                                                        let-rowIndex="rowIndex"
+                                                                    >
+                                                                        <tr>
+                                                                            <td>
+                                                                                {{
+                                                                                    rowIndex +
+                                                                                        1
+                                                                                }}
+                                                                            </td>
+                                                                            <td>
+                                                                                {{
+                                                                                    estudiante?.nombrecompleto
+                                                                                }}
+                                                                            </td>
+                                                                            <td>
+                                                                                {{
+                                                                                    estudiante.cPersPaterno
+                                                                                }}
+                                                                            </td>
+                                                                        </tr>
+                                                                    </ng-template>
+                                                                    <ng-template
+                                                                        pTemplate="emptymessage"
+                                                                        let-columns
+                                                                    >
+                                                                        <tr>
+                                                                            <td
+                                                                                [attr.colspan]="
+                                                                                    3
+                                                                                "
+                                                                            >
+                                                                                No
+                                                                                se
+                                                                                encontraron
+                                                                                resultados.
+                                                                            </td>
+                                                                        </tr>
+                                                                    </ng-template>
+                                                                </p-table>
+                                                            </div>
+                                                        </p-accordionTab>
+                                                    }
+                                                </p-accordion>
+
+                                                <!-- <p-panel [toggleable]="true">
+                                            <ng-template pTemplate="header">
+                                                <div class="flex align-items-center gap-2">
+                                                    <span class="font-bold">
+                                                        Grupo: Grupo {{idx+1}}
+                                                    </span>
+                                                </div>
+                                            </ng-template>
+                                            <ng-template pTemplate="icons">
+                                                <div class="flex align-items-center">
+                                                    <b>Nota:</b> 18
+                                                    <div class="w-1rem h-1rem border-circle ml-3" [ngClass]="
+                                                    item.cEstado ===
+                                                    'F'
+                                                        ? 'bg-red-500'
+                                                        : item.cEstado ===
+                                                            'P'
+                                                          ? 'bg-yellow-500'
+                                                          : 'bg-green-500'
+                                                "></div>
+                                                    <button class="p-panel-header-icon mr-2">
+                                                        <span class="pi pi-pencil"></span>
+                                                    </button>
+                                                </div>
+
+                                            </ng-template>
+                                           
+                                        </p-panel> -->
+                                            </div>
+                                        </div>
+                                    </p-accordionTab>
+                                }
+                            </p-accordion>
+                        }
                     </div>
                     <div class="col-12 md:col-7">
                         <p-toolbar>

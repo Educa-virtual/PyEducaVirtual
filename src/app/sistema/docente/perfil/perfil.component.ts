@@ -1,21 +1,20 @@
 import { PrimengModule } from '@/app/primeng.module'
-import { environment } from '@/environments/environment'
-import { HttpClient, HttpEventType } from '@angular/common/http'
-import { Component } from '@angular/core'
+import { Component, inject, OnInit } from '@angular/core'
 import { Message } from 'primeng/api'
-import { throwError } from 'rxjs'
-import { map, catchError } from 'rxjs/operators'
+import { ImageUploadPrimengComponent } from '../../../shared/image-upload-primeng/image-upload-primeng.component'
+import { ConstantesService } from '@/app/servicios/constantes.service'
+import { GeneralService } from '@/app/servicios/general.service'
 
 @Component({
     selector: 'app-perfil',
     standalone: true,
-    imports: [PrimengModule],
+    imports: [PrimengModule, ImageUploadPrimengComponent],
     templateUrl: './perfil.component.html',
     styleUrl: './perfil.component.scss',
 })
-export class PerfilComponent {
-    private backendApi = environment.backendApi
-    constructor(private http: HttpClient) {}
+export class PerfilComponent implements OnInit {
+    private _ConstantesService = inject(ConstantesService)
+    private _GeneralService = inject(GeneralService)
     mensaje: Message[] = [
         {
             severity: 'info',
@@ -23,59 +22,41 @@ export class PerfilComponent {
         },
     ]
     date = new Date()
-    iProgress
-    async onUploadChange(evt: any) {
-        this.iProgress = 1
 
-        const file = evt.target.files[0]
-
-        if (file) {
-            const dataFile = await this.objectToFormData({
-                file: file,
-                nameFile: 'users',
-                params: { skipSuccessMessage: true },
-            })
-            this.http
-                .post(`${this.backendApi}/general/subir-archivo`, dataFile, {
-                    reportProgress: true,
-                    observe: 'events',
-                })
-                .pipe(
-                    map((event: any) => {
-                        if (event.body) {
-                            const imagen = event.body
-                            const data = { imagen: imagen }
-                            // this.accionBtn('imagen', data);
-                            console.log(data)
-                        }
-                        if (event.type == HttpEventType.UploadProgress) {
-                            this.iProgress = Math.round(
-                                (100 / event.total) * event.loaded
-                            )
-                        }
-                        // else if (event.type == HttpEventType.Response) {
-                        //   this.iProgress = null;
-                        // }
-                    }),
-                    catchError((err: any) => {
-                        this.iProgress = null
-                        // constimagen = null;
-                        // alert(err.message);
-                        return throwError(err.message)
-                    })
-                )
-                .toPromise()
+    ngOnInit() {
+        this.getPersonasxiPersId()
+    }
+    accionBtnItem(elemento): void {
+        const { accion } = elemento
+        const { item } = elemento
+        switch (accion) {
+            case 'subir-archivo-users':
+                console.log(item.imagen.data)
+                break
         }
     }
+    getPersonasxiPersId() {
+        const params = {
+            petition: 'post',
+            group: 'grl',
+            prefix: 'personas',
+            ruta: 'list',
+            seleccion: 1,
+            data: {
+                opcion: 'CONSULTARxiPersId',
+                iPersId: this._ConstantesService.iPersId,
+            },
+            params: { skipSuccessMessage: true },
+        }
 
-    objectToFormData(obj: any) {
-        const formData = new FormData()
-        Object.keys(obj).forEach((key) => {
-            if (obj[key] !== '') {
-                formData.append(key, obj[key])
-            }
+        this._GeneralService.getGralPrefix(params).subscribe({
+            next: (response) => {
+                console.log(response)
+            },
+            complete: () => {},
+            error: (error) => {
+                console.log(error)
+            },
         })
-
-        return formData
     }
 }

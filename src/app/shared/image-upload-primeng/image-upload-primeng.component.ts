@@ -1,5 +1,5 @@
 import { PrimengModule } from '@/app/primeng.module'
-import { Component } from '@angular/core'
+import { Component, EventEmitter, Input, Output } from '@angular/core'
 import { throwError } from 'rxjs'
 import { map, catchError } from 'rxjs/operators'
 import { environment } from '@/environments/environment'
@@ -9,11 +9,17 @@ import { HttpClient, HttpEventType } from '@angular/common/http'
     standalone: true,
     imports: [PrimengModule],
     templateUrl: './image-upload-primeng.component.html',
+    styleUrl: './image-upload-primeng.component.scss',
 })
 export class ImageUploadPrimengComponent {
+    @Output() actionImageUpload = new EventEmitter()
+    @Input() label: string
+
+    public iProgress
+
     private backendApi = environment.backendApi
     constructor(private http: HttpClient) {}
-    iProgress
+
     async onUploadChange(evt: any) {
         this.iProgress = 1
 
@@ -23,34 +29,40 @@ export class ImageUploadPrimengComponent {
             const dataFile = await this.objectToFormData({
                 file: file,
                 nameFile: 'users',
-                params: { skipSuccessMessage: true },
             })
             this.http
-                .post(`${this.backendApi}/general/subir-archivo`, dataFile, {
-                    reportProgress: true,
-                    observe: 'events',
-                })
+                .post(
+                    `${this.backendApi}/general/subir-archivo?` +
+                        'skipSuccessMessage=true',
+                    dataFile,
+                    {
+                        reportProgress: true,
+                        observe: 'events',
+                    }
+                )
                 .pipe(
                     map((event: any) => {
                         if (event.body) {
                             const imagen = event.body
-                            const data = { imagen: imagen }
-                            // this.accionBtn('imagen', data);
-                            console.log(data)
+                            const data = {
+                                accion: 'subir-archivo-users',
+                                item: {
+                                    imagen: imagen,
+                                },
+                            }
+                            this.actionImageUpload.emit(data)
                         }
                         if (event.type == HttpEventType.UploadProgress) {
                             this.iProgress = Math.round(
                                 (100 / event.total) * event.loaded
                             )
+                        } else if (event.type == HttpEventType.Response) {
+                            this.iProgress = null
                         }
-                        // else if (event.type == HttpEventType.Response) {
-                        //   this.iProgress = null;
-                        // }
                     }),
                     catchError((err: any) => {
                         this.iProgress = null
-                        // constimagen = null;
-                        // alert(err.message);
+                        console.log(err.message)
                         return throwError(err.message)
                     })
                 )

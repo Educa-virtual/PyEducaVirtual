@@ -45,6 +45,7 @@ import { Subject, takeUntil } from 'rxjs'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { ActivatedRoute, Router } from '@angular/router'
 import { DynamicDialogModule } from 'primeng/dynamicdialog'
+import { ApiEvaluacionesService } from '@/app/sistema/evaluaciones/services/api-evaluaciones.service'
 
 @Component({
     selector: 'app-tab-contenido',
@@ -84,7 +85,7 @@ export class TabContenidoComponent implements OnInit {
     public rangeDates: Date[] | undefined
     public accionesContenido: MenuItem[]
     public actividadSelected: IActividad | undefined
-    public accionSeleccionada: TActividadActions | undefined
+    public accionSeleccionada: string | undefined
     public contenidoSemanas = []
     // public actividades = actividadesConfigList
 
@@ -92,6 +93,7 @@ export class TabContenidoComponent implements OnInit {
     private _generalService = inject(GeneralService)
     private _confirmService = inject(ConfirmationModalService)
     private _aulaService = inject(ApiAulaService)
+    private _evalService = inject(ApiEvaluacionesService)
     private semanaSeleccionada
     private _unsubscribe$ = new Subject<boolean>()
     tipoActivadedes = []
@@ -182,7 +184,7 @@ export class TabContenidoComponent implements OnInit {
         action,
     }: {
         actividad: IActividad
-        action: TActividadActions
+        action: string
     }) {
         this.actividadSelected = actividad
         this.accionSeleccionada = action
@@ -212,7 +214,7 @@ export class TabContenidoComponent implements OnInit {
         }
     }
 
-    handleTareaAction(action: TActividadActions, actividad: IActividad) {
+    handleTareaAction(action: string, actividad: IActividad) {
         switch (action) {
             case 'CREAR':
             case 'EDITAR':
@@ -267,10 +269,7 @@ export class TabContenidoComponent implements OnInit {
         }
     }
 
-    handleVideoconferenciaAction(
-        action: TActividadActions,
-        actividad: IActividad
-    ) {
+    handleVideoconferenciaAction(action: string, actividad: IActividad) {
         if (action === 'EDITAR' || action === 'CREAR') {
             let data = null
             let header = 'Crear Videoconferencia'
@@ -286,7 +285,7 @@ export class TabContenidoComponent implements OnInit {
         }
     }
 
-    handleForoAction(action: TActividadActions, actividad: IActividad) {
+    handleForoAction(action: string, actividad: IActividad) {
         if (action === 'EDITAR') {
             this._dialogService.open(ForoFormContainerComponent, {
                 ...MODAL_CONFIG,
@@ -317,7 +316,7 @@ export class TabContenidoComponent implements OnInit {
         }
     }
 
-    handleEvaluacionAction(action: TActividadActions, actividad: IActividad) {
+    handleEvaluacionAction(action: string, actividad: IActividad) {
         if (action === 'CREAR' || action === 'EDITAR') {
             const ref = this._dialogService.open(
                 EvaluacionFormContainerComponent,
@@ -369,6 +368,24 @@ export class TabContenidoComponent implements OnInit {
                 }
             )
         }
+        if (action === 'PUBLICAR') {
+            this._confirmService.openConfirm({
+                header: '¿Esta seguro de publicar la evaluación?',
+                accept: () => {
+                    this.publicarEvaluacion(actividad)
+                },
+            })
+        }
+    }
+
+    publicarEvaluacion(actividad: IActividad) {
+        const data = {
+            iEvaluacionId: actividad.ixActivadadId,
+        }
+        this._evalService
+            .publicarEvaluacion(data)
+            .pipe(takeUntil(this._unsubscribe$))
+            .subscribe({ next: () => {} })
     }
 
     private eliminarActividad(iProgActId, iActTipoId, ixActivadadId) {

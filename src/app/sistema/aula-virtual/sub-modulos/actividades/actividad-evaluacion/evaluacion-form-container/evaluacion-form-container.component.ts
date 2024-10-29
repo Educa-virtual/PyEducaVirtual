@@ -73,7 +73,9 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
     private _confirmDialogService = inject(ConfirmationModalService)
     private _ref = inject(DynamicDialogRef)
     public preguntasSeleccionadas = []
-    private _paramsData = {
+    public paramsData = {
+        idDocCursoId: '1',
+        iCursoId: '1',
         iContenidoSemId: 0,
         ixActivadadId: '',
     }
@@ -83,17 +85,21 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.getData()
         this.initFormGroup()
-        this._paramsData.iContenidoSemId =
+        this.paramsData.iContenidoSemId =
             this._config.data.semana?.iContenidoSemId
 
         const actividad = this._config.data.actividad
 
         if (actividad?.ixActivadadId != undefined) {
             this.mode = 'EDITAR'
-            this._paramsData.iContenidoSemId = actividad.iContenidoSemId
-            this._paramsData.ixActivadadId = actividad.ixActivadadId
+            this.paramsData.iContenidoSemId = actividad.iContenidoSemId
+            this.paramsData.ixActivadadId = actividad.ixActivadadId
             this.obtenerEvaluacion()
         }
+
+        // emitir params Evaluacion
+        this._constantesService.iCursoId = this.paramsData.iCursoId
+        this._constantesService.idDocCursoId = this.paramsData.idDocCursoId
     }
 
     getData() {
@@ -104,7 +110,7 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
         this._aulaVirtualService
             .obtenerActividad({
                 iActTipoId: EVALUACION,
-                ixActivadadId: this._paramsData.ixActivadadId,
+                ixActivadadId: this.paramsData.ixActivadadId,
             })
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
@@ -243,7 +249,7 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
         const data = this.evaluacionInfoForm.getRawValue()
         data.iDocenteId = this._constantesService.iDocenteId
         data.iActTipoId = EVALUACION
-        data.iContenidoSemId = this._paramsData.iContenidoSemId
+        data.iContenidoSemId = this.paramsData.iContenidoSemId
 
         if (this.evaluacionInfoForm.invalid) {
             this.evaluacionInfoForm.markAllAsTouched()

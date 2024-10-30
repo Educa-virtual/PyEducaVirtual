@@ -35,11 +35,18 @@ export class DiasLaboralesComponent implements OnInit, OnChanges {
         cDiaAbreviado: string
     }[]
 
+    diasSelection: {
+        iDiaId: string
+        iDia: string
+        cDiaNombre: string
+        cDiaAbreviado: string
+    }[]
+
     diasInformation
     constructor(
         private httpService: httpService,
         public ticketService: TicketService,
-        private confirmationService: ConfirmationService, 
+        private confirmationService: ConfirmationService,
         private messageService: MessageService,
         private router: Router,
         private generalService: GeneralService,
@@ -55,18 +62,51 @@ export class DiasLaboralesComponent implements OnInit, OnChanges {
     }
 
     ngOnInit() {
-
         this.generalService.getDias().subscribe({
-                next: (data: any) => {
-                    this.dias = data.data
-                },
-                error: (error) => {
-                    console.error('Error fetching dias:', error)
-                },
-                complete: () => {
-                    console.log('Request completed')
-                },
-            })
+            next: (data: any) => {
+                this.dias = data.data
+            },
+            error: (error) => {
+                console.error('Error fetching dias:', error)
+            },
+            complete: () => {
+                console.log('Request completed')
+            },
+        })
+
+        if (this.ticketService.registroInformation?.mode == 'edit') {
+            this.httpService
+                .postData('acad/calendarioAcademico/addCalAcademico', {
+                    json: JSON.stringify({
+                        iCalAcadId:
+                            this.ticketService.registroInformation.calendar
+                                .iCalAcadId,
+                    }),
+                    _opcion: 'getCalendarioDiasLaborables',
+                })
+                .subscribe({
+                    next: (data: any) => {
+
+                        let filterDiasLaborales = JSON.parse(data.data[0]["calDiasDatos"]).map((dia)=> ({
+                            iDiaId: String(dia.iDiaId),
+                            iDia: String(dia.iDiaId),
+                            cDiaNombre: dia.cDiaNombre,
+                            cDiaAbreviado: dia.cDiaAbreviado,
+                        }))
+
+                        this.ticketService.setTicketInformation(filterDiasLaborales, 'stepDiasLaborales')
+
+                        this.diasSelection = this.ticketService.registroInformation.stepDiasLaborales
+                    },
+                    error: (error) => {
+                        console.error('Error fetching turnos:', error)
+                    },
+                    complete: () => {
+                        console.log('Request completed')
+                        
+                    },
+                })
+        }
     }
 
     confirm() {
@@ -78,56 +118,88 @@ export class DiasLaboralesComponent implements OnInit, OnChanges {
             rejectButtonStyleClass: 'p-button-sm',
             acceptButtonStyleClass: 'p-button-outlined p-button-sm',
             accept: () => {
-                this.messageService.add({ severity: 'info', summary: 'Confirmado', detail: 'Usted ha aceptado', life: 3000 });
+                this.messageService.add({
+                    severity: 'info',
+                    summary: 'Confirmado',
+                    detail: 'Usted ha aceptado',
+                    life: 3000,
+                })
 
                 this.saveInformation()
 
                 this.nextPage()
             },
             reject: () => {
-                this.messageService.add({ severity: 'error', summary: 'Rechazado', detail: 'Has rechazado', life: 3000 });
-            }
-        });
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Rechazado',
+                    detail: 'Has rechazado',
+                    life: 3000,
+                })
+            },
+        })
     }
 
-    onSelectionChange(columnsChecked: Array<object>) {
+    onSelectionChange(columnsChecked: typeof this.ticketService.registroInformation.stepDiasLaborales) {
+        console.log(columnsChecked);
+        
 
-        this.diasInformation = columnsChecked
-
-        // columnsChecked.map((column) => {
-        //     // let day = column.
-
-        //     // this.ticketService.registroInformation.stepDiasLaborales.
-        // })
-
+        this.ticketService.setTicketInformation(columnsChecked, 'stepDiasLaborales')
     }
 
-    saveInformation(){
-        console.log(this.diasInformation)
+    saveInformation() {
 
-        let dias = this.diasInformation.map((dia) => ({
+        if (this.ticketService.registroInformation?.mode == 'create') {
+            this.createDiasLaborales()
+        }
+        if (this.ticketService.registroInformation?.mode == 'edit') {
+            this.updateDiasLaborales()
+        }
+    }
+
+    createDiasLaborales(){
+        this.httpService
+        .postData('acad/calendarioAcademico/addCalAcademico', {
+            json: JSON.stringify(this.ticketService.registroInformation.stepDiasLaborales),
+            _opcion: 'addDiasLaborales',
+        })
+        .subscribe({
+            next: (data: any) => {
+                console.log(data)
+            },
+            error: (error) => {
+                console.error('Error fetching turnos:', error)
+            },
+            complete: () => {
+                console.log('Request completed')
+            },
+        })
+    }
+
+    updateDiasLaborales(){
+        let update = this.ticketService.registroInformation.stepDiasLaborales.map((dia) => ({
+            iDiaLabId: dia.iDiaId,
+            iCalAcadId: this.ticketService.registroInformation.calendar.iCalAcadId,
             iDiaId: dia.iDiaId,
-            iCalAcadId: 3,
         }))
 
 
         this.httpService
-            .postData('acad/calendarioAcademico/addCalAcademico', {
-                json: JSON.stringify(dias),
-                _opcion: 'addDiasLaborales',
-            })
-            .subscribe({
-                next: (data: any) => {
-                    console.log(data)
-                },
-                error: (error) => {
-                    console.error('Error fetching turnos:', error);
-                },
-                complete: () => {
-                    console.log('Request completed');
-                },
-            });
-
+        .postData('acad/calendarioAcademico/addCalAcademico', {
+            json: JSON.stringify(update),
+            _opcion: 'updateDiasLaborales',
+        })
+        .subscribe({
+            next: (data: any) => {
+                console.log(data)
+            },
+            error: (error) => {
+                console.error('Error fetching turnos:', error)
+            },
+            complete: () => {
+                console.log('Request completed')
+            },
+        })
     }
 
     actions: IActionTable[] = [

@@ -44,15 +44,15 @@ export class YearsComponent implements OnInit {
                     this.fechasAcademicas = JSON.parse(
                         data.data[0]['calendarioAcademico']
                     ).map((fecha) => ({
-                        fechaVigente: this.formatFechas(
+                        fechaVigente: this.ticketService.toVisualFechasFormat(
                             fecha.dtCalAcadInicio,
                             'YYYY'
                         ),
-                        dtCalAcadInicio: this.formatFechas(
+                        dtCalAcadInicio: this.ticketService.toVisualFechasFormat(
                             fecha.dtCalAcadInicio,
                             'DD/MM/YY'
                         ),
-                        dtCalAcadFin: this.formatFechas(
+                        dtCalAcadFin: this.ticketService.toVisualFechasFormat(
                             fecha.dtCalAcadFin,
                             'DD/MM/YY'
                         ),
@@ -94,13 +94,13 @@ export class YearsComponent implements OnInit {
             editar: () => {
                 // Lógica para la acción "editar"
                 console.log('Editando')
-
+                console.log(row.item.iYAcadId)
                 this.httpService
                     .postData('acad/calendarioAcademico/addCalAcademico', {
                         json: JSON.stringify({
-                            iSedeId: row.iSedeId,
-                            iYAcadId: row.iYAcadId,
-                            iCalAcadId: row.iCalAcadId,
+                            iSedeId: row.item.iSedeId,
+                            iYAcadId: row.item.iYAcadId,
+                            iCalAcadId: row.item.iCalAcadId,
                         }),
                         _opcion: 'getCalendarioIE',
                     })
@@ -112,8 +112,8 @@ export class YearsComponent implements OnInit {
 
                             this.ticketService.setTicketInformation(
                                 {
-                                    iCalAcadId: row.iCalAcadId,
-                                    iYAcadId: row.iYAcadId,
+                                    iCalAcadId: row.item.iCalAcadId,
+                                    iYAcadId: row.item.iYAcadId,
                                 },
                                 'calendar'
                             )
@@ -140,26 +140,6 @@ export class YearsComponent implements OnInit {
         } else {
             console.log(`Acción desconocida: ${row.action}`)
         }
-    }
-
-    formatFechas(fecha, typeFormat = 'DD/MM/YY hh:mm') {
-        const date = new Date(fecha)
-
-        const replacements = {
-            DD: String(date.getDate()).padStart(2, '0'),
-            MM: String(date.getMonth() + 1).padStart(2, '0'),
-            YY: String(date.getFullYear()).slice(-2),
-            YYYY: date.getFullYear(),
-            hh: String(date.getHours()).padStart(2, '0'),
-            mm: String(date.getMinutes()).padStart(2, '0'),
-            ss: String(date.getSeconds()).padStart(2, '0'),
-        }
-
-        // Reemplaza cada formato en el string de typeFormat usando el objeto replacements
-        return typeFormat.replace(
-            /DD|MM|YYYY|YY|hh|mm|ss/g,
-            (match) => replacements[match]
-        )
     }
 
     actions = [

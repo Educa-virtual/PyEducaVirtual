@@ -12,11 +12,13 @@ export class TicketService {
         }
 
         stepYear?: {
-            fechaVigente: Date
+            fechaVigente: string
             fechaInicio: Date
             fechaFin: Date
         }
+
         stepDiasLaborales?: {
+            iDiaLabId?: string
             iDiaId: string
             iDia: string
             cDiaNombre: string
@@ -56,9 +58,9 @@ export class TicketService {
         return this.registroInformation
     }
 
-    setTicketInformation(
-        registroInformation,
-        key: keyof typeof this.registroInformation
+    setTicketInformation<K extends keyof typeof this.registroInformation>(
+        registroInformation: typeof this.registroInformation[K],
+        key: K
     ) {
         this.registroInformation[key] = registroInformation
     }
@@ -72,7 +74,7 @@ export class TicketService {
      * @param {string} typeFormat DD/MM/YY hh:mm:ss - use YYYY for full year
      * @returns {string}  
      */
-    formatFechas(fecha, typeFormat = 'DD/MM/YY hh:mm') {
+    toVisualFechasFormat(fecha, typeFormat = 'DD/MM/YY hh:mm') {
         const date = new Date(fecha)
 
         const replacements = {
@@ -91,4 +93,14 @@ export class TicketService {
             (match) => replacements[match]
         )
     }
+
+    toSQLDatetimeFormat(fecha: Date) {
+        const date = new Date(fecha);
+    
+        const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+        const formattedTime = `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`;
+    
+        return `${formattedDate} ${formattedTime}`;
+    }
+    
 }

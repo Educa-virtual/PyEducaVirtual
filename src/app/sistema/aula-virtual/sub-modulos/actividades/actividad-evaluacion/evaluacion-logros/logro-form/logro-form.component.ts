@@ -1,4 +1,4 @@
-import { ApiEvaluacionesService } from '@/app/sistema/evaluaciones/services/api-evaluaciones.service'
+import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-evaluaciones.service'
 import { CommonModule } from '@angular/common'
 import { Component, inject, OnDestroy, OnInit } from '@angular/core'
 import {

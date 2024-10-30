@@ -38,7 +38,7 @@ import { Subject, takeUntil } from 'rxjs'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { ActivatedRoute, Router } from '@angular/router'
 import { DynamicDialogModule } from 'primeng/dynamicdialog'
-import { ApiEvaluacionesService } from '@/app/sistema/evaluaciones/services/api-evaluaciones.service'
+import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-evaluaciones.service'
 import { PrimengModule } from '@/app/primeng.module'
 import { actividadesConfig } from '@/app/sistema/aula-virtual/constants/aula-virtual'
 

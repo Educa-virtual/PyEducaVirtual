@@ -3,18 +3,22 @@
 }
 
 :host ::ng-deep .evaluacion-info .p-datatable-header {
-    background-color: var(--blue-50);
+    background-color: var(--highlight-bg);
     text-align: center;
     font-weight: 500;
+    color: var(--highlight-text-color);
 }
 
-:host ::ng-deep .evaluacion-info .p-datatable-thead > tr > th:nth-child(1) {
-    background-color: var(--blue-50);
+:host ::ng-deep .evaluacion-info .p-datatable-thead > tr > th:nth-child(1n) {
+    background-color: var(--highlight-bg);
     text-align: right;
     font-weight: 400;
+    color: var(--highlight-text-color);
 }
 
-:host ::ng-deep .evaluacion-info .p-datatable-thead > tr > th:nth-child(2) {
+:host ::ng-deep .evaluacion-info .p-datatable-thead > tr > th:nth-child(2n) {
     font-weight: 400;
     background-color: #fff;
+    text-align: left;
+    color: var(--surface-700);
 }

@@ -6,7 +6,7 @@ import {
     IColumn,
     TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component'
-import { ApiEvaluacionesService } from '@/app/sistema/evaluaciones/services/api-evaluaciones.service'
+import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-evaluaciones.service'
 import { CommonModule } from '@angular/common'
 import { Component, inject, OnInit, OnDestroy } from '@angular/core'
 import {

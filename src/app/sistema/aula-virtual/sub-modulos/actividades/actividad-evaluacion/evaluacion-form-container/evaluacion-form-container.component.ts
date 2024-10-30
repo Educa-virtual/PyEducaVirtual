@@ -13,7 +13,7 @@ import { EvaluacionFormCalificacionComponent } from '../evaluacion-form/evaluaci
 import { StepperModule } from 'primeng/stepper'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { MenuItem } from 'primeng/api'
-import { ApiEvaluacionesService } from '@/app/sistema/evaluaciones/services/api-evaluaciones.service'
+import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-evaluaciones.service'
 import { Subject, takeUntil } from 'rxjs'
 import dayjs from 'dayjs'
 import { EVALUACION } from '@/app/sistema/aula-virtual/interfaces/actividad.interface'

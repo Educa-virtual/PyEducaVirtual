@@ -1,6 +1,6 @@
 import { LeyendaComponent } from '@/app/shared/components/leyenda/leyenda.component'
 import { CommonModule } from '@angular/common'
-import { Component, Input } from '@angular/core'
+import { Component, inject, Input, OnInit } from '@angular/core'
 import { IconFieldModule } from 'primeng/iconfield'
 import { InputIconModule } from 'primeng/inputicon'
 import { InputTextModule } from 'primeng/inputtext'
@@ -10,6 +10,8 @@ import { EmptySectionComponent } from '@/app/shared/components/empty-section/emp
 import { AccordionModule } from 'primeng/accordion'
 import { BancoPreguntaPreviewItemComponent } from '@/app/sistema/evaluaciones/sub-evaluaciones/banco-preguntas/components/banco-pregunta-preview/banco-pregunta-preview-item/banco-pregunta-preview-item.component'
 import { RemoveHTMLPipe } from '@/app/shared/pipes/remove-html.pipe'
+import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-evaluaciones.service'
+import { Subject, takeUntil } from 'rxjs'
 
 @Component({
     selector: 'app-evaluacion-room-calificacion',
@@ -30,8 +32,9 @@ import { RemoveHTMLPipe } from '@/app/shared/pipes/remove-html.pipe'
     templateUrl: './evaluacion-room-calificacion.component.html',
     styleUrl: './evaluacion-room-calificacion.component.scss',
 })
-export class EvaluacionRoomCalificacionComponent {
+export class EvaluacionRoomCalificacionComponent implements OnInit {
     @Input({ required: true }) evaluacion
+    @Input({ required: true }) iEvaluacionId: string
     @Input() evaluacionesEstudiantes = [
         {
             iEvalPromId: 1,
@@ -56,7 +59,30 @@ export class EvaluacionRoomCalificacionComponent {
         },
     ]
 
+    private _evaluacionesService = inject(ApiEvaluacionesService)
+    private _unsubscribe$ = new Subject<boolean>()
+
     public evaluacionSeleccionada = null
+
+    ngOnInit() {
+        this.getData()
+    }
+
+    getData() {
+        this.obtenerEstudiantesEvaluacion()
+    }
+
+    obtenerEstudiantesEvaluacion() {
+        const params = { iEvaluacionId: this.iEvaluacionId }
+        this._evaluacionesService
+            .obtenerEstudiantesEvaluación(params)
+            .pipe(takeUntil(this._unsubscribe$))
+            .subscribe({
+                next: (resp) => {
+                    this.evaluacionesEstudiantes = resp
+                },
+            })
+    }
 
     public seleccionarEvaluacion(evaluacion) {
         this.evaluacionSeleccionada = evaluacion

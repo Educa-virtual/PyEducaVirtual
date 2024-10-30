@@ -21,7 +21,7 @@ import {
     columnasPreguntasEvaluacion,
 } from './evaluacion-form-preguntas'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
-import { ApiEvaluacionesService } from '@/app/sistema/evaluaciones/services/api-evaluaciones.service'
+import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-evaluaciones.service'
 import { generarIdAleatorio } from '@/app/shared/utils/random-id'
 import { provideIcons } from '@ng-icons/core'
 import { matWorkspacePremium } from '@ng-icons/material-icons/baseline'

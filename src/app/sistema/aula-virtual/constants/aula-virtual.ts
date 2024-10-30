@@ -78,7 +78,6 @@ export const actividadesConfig: Record<
                 accion: 'EDITAR',
                 class: '',
                 label: 'Editar',
-                disabled: true,
             },
             {
                 icon: 'pi pi-trash',

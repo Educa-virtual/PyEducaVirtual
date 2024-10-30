@@ -222,90 +222,104 @@
                 </article>
             </div>
         </p-tabPanel>
+        <!-- Ver Comentarios de los Foros -->
         <p-tabPanel>
-            <ng-template pTemplate="header">
-                <div class="flex align-items-center flex-column gap-2">
-                    <app-icon name="matRule"></app-icon>
-                    <span class="font-bold white-space-nowrap m-0">
-                        Ver Foro
-                    </span>
-                </div>
-            </ng-template>
-            <div class="flex flex-column gap-4">
-                <div class="card">
-                    <div>Título de Foro: {{ foro?.cForoTitulo }}</div>
-                </div>
-                <!-- Recursos y Comentarios -->
-                <div class="container">
-                    <div class="card1">
-                        <div class=" ">
-                            <b>
-                                <label class="text-lg" for="">Recursos:</label>
-                            </b>
-                            <div></div>
-                        </div>
+            <form
+                [formGroup]="foroFormComnt"
+                class="flex flex-column gap-3 w-full"
+            >
+                <ng-template pTemplate="header">
+                    <div class="flex align-items-center flex-column gap-2">
+                        <app-icon name="matRule"></app-icon>
+                        <span class="font-bold white-space-nowrap m-0">
+                            Ver Foro
+                        </span>
                     </div>
-                    <div class="card2">
-                        <b>
-                            <label class="text-lg" for="">Comentarios:</label>
-                        </b>
-                        <div>
-                            <p-orderList class="list">
-                                <ng-template let-perfiles pTemplate="listItem">
-                                    <p-button
-                                        [text]="true"
-                                        severity="secondary"
-                                        class="p-col-12"
+                </ng-template>
+                <div class="flex flex-column gap-4">
+                    <div class="card">
+                        <div>Título de Foro: {{ foro?.cForoTitulo }}</div>
+                    </div>
+                    <!-- Recursos y Comentarios -->
+                    <div class="container">
+                        <div class="card1">
+                            <div class=" ">
+                                <b>
+                                    <label class="text-lg" for=""
+                                        >Recursos:</label
                                     >
-                                        <div
-                                            class="perfiles-list-item text-left"
-                                            tabindex="0"
-                                        >
-                                            <img
-                                                src="assets/demo/images/matemit/avatar.png"
-                                                [alt]="perfiles.name"
-                                                class="w-4rem min-h-9 shadow-2 flex-shrink-0 border-round"
-                                            />
-                                            <!-- <div class="perfiles-list-detail">
-                                    <div class="perfil-name">
-                                        {{ perfiles.cPerfilNombre }}
-                                    </div>
-                                    <div class="perfil-name">IE: {{ null }}</div>
-                                    <div class="perfil-description">
-                                        Cod. Modular:{{ null }}
-                                    </div>
-                                    <div class="perfil-description">Nivel: {{ null }}</div>
-                                    <div class="perfil-description">
-                                        {{ perfiles.cEntNombreLargo }}
-                                    </div>
-                                </div> -->
-                                        </div>
-                                    </p-button>
-                                </ng-template>
-                            </p-orderList>
-                            <div class="comment-container">
-                                <input
-                                    type="text"
-                                    class="comment-input"
-                                    placeholder="Escribe un comentario..."
-                                    id="commentText"
-                                />
-                                <button
-                                    class="send-button"
-                                    onclick="sendComment()"
+                                </b>
+                                <div></div>
+                            </div>
+                        </div>
+                        <div class="card2">
+                            <b>
+                                <label class="text-lg" for=""
+                                    >Comentarios:</label
                                 >
-                                    Enviar
-                                </button>
+                            </b>
+                            <div>
+                                <p-orderList class="list">
+                                    <ng-template
+                                        let-perfiles
+                                        pTemplate="listItem"
+                                    >
+                                        <p-button
+                                            [text]="true"
+                                            severity="secondary"
+                                            class="p-col-12"
+                                        >
+                                            <div
+                                                class="perfiles-list-item text-left"
+                                                tabindex="0"
+                                            >
+                                                <img
+                                                    src="assets/demo/images/matemit/avatar.png"
+                                                    [alt]="perfiles.name"
+                                                    class="w-4rem min-h-9 shadow-2 flex-shrink-0 border-round"
+                                                />
+                                                <!-- <div class="perfiles-list-detail">
+                                        <div class="perfil-name">
+                                            {{ perfiles.cPerfilNombre }}
+                                        </div>
+                                        <div class="perfil-name">IE: {{ null }}</div>
+                                        <div class="perfil-description">
+                                            Cod. Modular:{{ null }}
+                                        </div>
+                                        <div class="perfil-description">Nivel: {{ null }}</div>
+                                        <div class="perfil-description">
+                                            {{ perfiles.cEntNombreLargo }}
+                                        </div>
+                                    </div> -->
+                                            </div>
+                                        </p-button>
+                                    </ng-template>
+                                </p-orderList>
+                                <div class="comment-container">
+                                    <input
+                                        type="text"
+                                        class="comment-input"
+                                        placeholder="Escribe un comentario..."
+                                        id="commentText"
+                                        formControlName="cForoRptaRespuesta"
+                                    />
+                                    <button
+                                        class="send-button"
+                                        (click)="sendComment()"
+                                    >
+                                        Enviar
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
+                    <!-- <div class="card3">
+                        <div>
+                            <h1>footer</h1>
+                        </div>
+                    </div> -->
                 </div>
-                <!-- <div class="card3">
-                    <div>
-                        <h1>footer</h1>
-                    </div>
-                </div> -->
-            </div>
+            </form>
         </p-tabPanel>
         <p-tabPanel>
             <ng-template pTemplate="header">

@@ -245,27 +245,21 @@
                                                 </span>
                                             </div>
                                             <div class="col-6 text-right">
-                                                <p-button
-                                                    (onClick)="
+                                                <!-- <p-button (onClick)="
                                                         changeEstadoCheckbox()
-                                                    "
-                                                    [severity]="
+                                                    " [severity]="
                                                         !estadoCheckbox
                                                             ? 'info'
                                                             : 'danger'
-                                                    "
-                                                    [label]="
+                                                    " [label]="
                                                         !estadoCheckbox
                                                             ? 'Seleccionar Todos'
                                                             : 'Desmarcar todo'
-                                                    "
-                                                    [icon]="
+                                                    " [icon]="
                                                         !estadoCheckbox
                                                             ? 'pi pi-check-square'
                                                             : 'pi pi-times-circle'
-                                                    "
-                                                    iconPos="left"
-                                                />
+                                                    " iconPos="left" /> -->
                                             </div>
                                             <p-table
                                                 #dv
@@ -275,88 +269,65 @@
                                                 styleClass="p-datatable-sm"
                                             >
                                                 <ng-template pTemplate="header">
-                                                    <tr>
-                                                        <!-- incio -->
-                                                        <p-table
-                                                            [value]="
-                                                                estudiantes
-                                                            "
-                                                            [scrollable]="true"
-                                                            scrollHeight="500px"
-                                                        >
-                                                            <ng-template
-                                                                pTemplate="header"
-                                                            >
-                                                                <tr
-                                                                    class="sticky-header"
-                                                                >
-                                                                    <th>#</th>
-                                                                    <th>
-                                                                        Nombres
-                                                                    </th>
-                                                                    <th>
-                                                                        Apellidos
-                                                                    </th>
-                                                                    <th>
-                                                                        Nota
-                                                                    </th>
-                                                                    <th>
-                                                                        Estado
-                                                                    </th>
-                                                                </tr>
-                                                            </ng-template>
-                                                            <ng-template
-                                                                pTemplate="body"
-                                                                let-estudiante
-                                                                let-rowIndex="rowIndex"
-                                                            >
-                                                                <tr>
-                                                                    <!-- <td>
-                                                            <p-checkbox
-                                                                [(ngModel)]="estudiante.selected"
-                                                            ></p-checkbox>
-                                                        </td> -->
-                                                                    <td>
-                                                                        {{
-                                                                            rowIndex +
-                                                                                1
-                                                                        }}
-                                                                    </td>
-                                                                    <td>
-                                                                        {{
-                                                                            estudiante?.nombrecompleto
-                                                                        }}
-                                                                    </td>
-                                                                    <td>
-                                                                        {{
-                                                                            estudiante.cPersPaterno
-                                                                        }}
-                                                                    </td>
-                                                                    <td></td>
-                                                                    <td
-                                                                        style="
-                                                                            text-align: center;
-                                                                        "
-                                                                    >
-                                                                        <div
-                                                                            class="w-1rem h-1rem border-circle ml-3"
-                                                                            [ngClass]="
-                                                                                estudiante.cEstado ===
-                                                                                'F'
-                                                                                    ? 'bg-red-500'
-                                                                                    : estudiante.cEstado ===
-                                                                                        'P'
-                                                                                      ? 'bg-yellow-500'
-                                                                                      : 'bg-green-500'
-                                                                            "
-                                                                        ></div>
-                                                                    </td>
-                                                                </tr>
-                                                            </ng-template>
-                                                        </p-table>
-                                                        <!-- incio -->
-                                                    </tr></ng-template
+                                                    <tr class="sticky-header">
+                                                        <th>#</th>
+                                                        <th>Nombres</th>
+                                                        <th>Apellidos</th>
+                                                        <th>Nota</th>
+                                                        <th>Estado</th>
+                                                    </tr>
+                                                </ng-template>
+                                                <ng-template
+                                                    pTemplate="body"
+                                                    let-estudiante
+                                                    let-rowIndex="rowIndex"
                                                 >
+                                                    <tr>
+                                                        <td>
+                                                            {{ rowIndex + 1 }}
+                                                        </td>
+                                                        <td
+                                                            (click)="
+                                                                getTareaRealizada(
+                                                                    estudiante
+                                                                )
+                                                            "
+                                                        >
+                                                            {{
+                                                                estudiante?.cPersNombre
+                                                            }}
+                                                        </td>
+                                                        <td>
+                                                            {{
+                                                                estudiante.cPersPaterno
+                                                            }}
+
+                                                            {{
+                                                                estudiante.cPersMaterno
+                                                            }}
+                                                        </td>
+                                                        <td></td>
+                                                        <td
+                                                            style="
+                                                                text-align: center;
+                                                            "
+                                                        >
+                                                            <div
+                                                                class="w-1rem h-1rem border-circle ml-3"
+                                                                [ngClass]="
+                                                                    estudiante.cEstado ===
+                                                                    '0'
+                                                                        ? 'bg-red-500'
+                                                                        : estudiante.cEstado ===
+                                                                            '2'
+                                                                          ? 'bg-yellow-500'
+                                                                          : 'bg-green-500'
+                                                                "
+                                                            ></div>
+                                                        </td>
+                                                    </tr>
+                                                </ng-template>
+
                                                 <ng-template
                                                     pTemplate="emptymessage"
                                                     let-columns
@@ -462,7 +433,7 @@
                                             <div class="col-12">
                                                 <p-accordion [activeIndex]="0">
                                                     @for (
-                                                        item of estudiantes;
+                                                        item of grupos;
                                                         track item.id;
                                                         let idx = $index
                                                     ) {
@@ -473,9 +444,9 @@
                                                                 <span
                                                                     class="flex align-items-center gap-2 w-full"
                                                                 >
-                                                                    Grupo: Grupo
+                                                                    Grupo:
                                                                     {{
-                                                                        idx + 1
+                                                                        item.cTareaGrupoNombre
                                                                     }}
                                                                 </span>
                                                                 <span
@@ -487,15 +458,18 @@
                                                                         <b
                                                                             >Nota:</b
                                                                         >
-                                                                        18
+                                                                        {{
+                                                                            item.nTareaGrupoNota ||
+                                                                                ' -'
+                                                                        }}
                                                                         <div
                                                                             class="w-1rem h-1rem border-circle ml-3"
                                                                             [ngClass]="
                                                                                 item.cEstado ===
-                                                                                'F'
+                                                                                '0'
                                                                                     ? 'bg-red-500'
                                                                                     : item.cEstado ===
-                                                                                        'P'
+                                                                                        '2'
                                                                                       ? 'bg-yellow-500'
                                                                                       : 'bg-green-500'
                                                                             "
@@ -514,7 +488,7 @@
                                                                     #dv
                                                                     class="col-12 hoverTable"
                                                                     [value]="
-                                                                        estudiantes
+                                                                        item.json_estudiantes
                                                                     "
                                                                     paginator="false"
                                                                     styleClass="p-datatable-sm"
@@ -543,20 +517,22 @@
                                                                     >
                                                                         <tr>
                                                                             <td>
-                                                                                hola
-                                                                                <!-- {{
+                                                                                {{
                                                                                     rowIndex +
                                                                                         1
-                                                                                }} -->
+                                                                                }}
                                                                             </td>
                                                                             <td>
                                                                                 {{
-                                                                                    estudiante?.nombrecompleto
+                                                                                    estudiante?.cPersNombre
                                                                                 }}
                                                                             </td>
                                                                             <td>
                                                                                 {{
                                                                                     estudiante.cPersPaterno
+                                                                                }}
+                                                                                {{
+                                                                                    estudiante.cPersMaterno
                                                                                 }}
                                                                             </td>
                                                                         </tr>
@@ -642,7 +618,7 @@
                         </p-toolbar>
                         <p-divider></p-divider>
                         <div>
-                            @if (estudianteSeleccionado === null) {
+                            @if (!estudianteSeleccionado) {
                                 <div align="center">
                                     <span
                                         class="pi pi-folder-open"
@@ -929,7 +905,7 @@
     </p-tabView>
 
     <app-form-grupo
-        [data]="estudiantes"
+        [iTareaId]="iTareaId"
         [showModal]="showModal"
         (accionBtnItem)="accionBtnItem($event)"
     ></app-form-grupo>

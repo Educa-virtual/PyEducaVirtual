@@ -54,6 +54,8 @@ export class TareaRoomComponent {
         }
     }
     showModal: boolean = false
+    estudiantes = []
+    grupos = []
     public leyendaTareas: ILeyendaItem[] = [
         {
             color: 'bg-red-100',
@@ -118,7 +120,7 @@ export class TareaRoomComponent {
     ]
 
     data
-    estudiantes1: any[] = []
+
     cTareaDescripcion: string
     tareaAsignar: number
     FilesTareas = []
@@ -126,25 +128,7 @@ export class TareaRoomComponent {
         { name: 'Individual', value: 0 },
         { name: 'Grupal', value: 1 },
     ]
-    getEstudiantesMatricula() {
-        const params = {
-            petition: 'post',
-            group: 'aula-virtual',
-            prefix: 'matricula',
-            ruta: 'list',
-            data: {
-                opcion: 'CONSULTAR-ESTUDIANTESxiSemAcadIdxiYAcadIdxiCurrId',
-                iSemAcadId:
-                    '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-                iYAcadId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-                iCurrId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-            },
-            params: { skipSuccessMessage: true },
-        }
-        console.log(this.getInformation)
 
-        this.getInformation(params, 'get-estudiantes')
-    }
     getInformation(params, condition) {
         this.GeneralService.getGralPrefix(params).subscribe({
             next: (response) => {
@@ -157,84 +141,11 @@ export class TareaRoomComponent {
         })
     }
 
-    public estudiantes = [
-        {
-            id: 0,
-            nombre: 'Pedro Perez',
-            iGrupo: '1',
-            cEstado: 'F',
-            iCheckbox: false,
-        },
-        {
-            id: 1,
-            nombre: 'Luis Alvarez',
-            iGrupo: '-',
-            cEstado: 'C',
-            iCheckbox: false,
-        },
-        {
-            id: 2,
-            nombre: 'Hermione Salazar',
-            iGrupo: '1',
-            cEstado: 'C',
-            iCheckbox: false,
-        },
-        {
-            id: 3,
-            nombre: 'Henrry Velasquez',
-            iGrupo: '-',
-            cEstado: 'P',
-            iCheckbox: false,
-        },
-        {
-            id: 4,
-            nombre: 'Karla Casas',
-            iGrupo: '1',
-            cEstado: 'F',
-            iCheckbox: false,
-        },
-        {
-            id: 5,
-            nombre: 'Danica Lobo',
-            iGrupo: '2',
-            cEstado: 'F',
-            iCheckbox: false,
-        },
-        {
-            id: 6,
-            nombre: 'Alexander Jaramillo',
-            iGrupo: '1',
-            cEstado: 'F',
-            iCheckbox: false,
-        },
-        {
-            id: 7,
-            nombre: 'Mariley Cruz',
-            iGrupo: '2',
-            cEstado: 'P',
-            iCheckbox: false,
-        },
-        {
-            id: 8,
-            nombre: 'Ernesto Paúcar',
-            iGrupo: '1',
-            cEstado: 'F',
-            iCheckbox: false,
-        },
-        {
-            id: 9,
-            nombre: 'Stefano Rebagliati',
-            iGrupo: '-',
-            cEstado: 'C',
-            iCheckbox: false,
-        },
-    ]
-
     estadoCheckbox: boolean = false
 
     changeEstadoCheckbox() {
         this.estadoCheckbox = !this.estadoCheckbox
-        this.estudiantes.map((i) => (i.iCheckbox = this.estadoCheckbox))
+        //this.estudiantes.map((i) => (i.iCheckbox = this.estadoCheckbox))
     }
 
     documentos = [
@@ -267,18 +178,29 @@ export class TareaRoomComponent {
             case 'close-modal':
                 this.showModal = false
                 break
-            case 'get-estudiantes':
+            case 'get-tarea-estudiantes':
+                console.log(item)
                 this.estudiantes = item
                 break
             case 'update-tareas':
-                this.tareaAsignar
+                !this.tareaAsignar
                     ? this.getTareaEstudiantes()
                     : this.getTareaCabeceraGrupos()
-                //this.getEstudiantesMatricula()
-                break
-            case 'get-tarea-estudiantes':
+
                 break
             case 'get-tarea-cabecera-grupos':
+                this.grupos = item
+                this.grupos.forEach((i) => {
+                    i.json_estudiantes = i.json_estudiantes
+                        ? JSON.parse(i.json_estudiantes)
+                        : []
+                })
+                break
+            case 'save-tarea-cabecera-grupos':
+                this.showModal = false
+                !this.tareaAsignar
+                    ? this.getTareaEstudiantes()
+                    : this.getTareaCabeceraGrupos()
                 break
             case 'get-tareas':
                 this.data = item.length ? item[0] : []
@@ -294,10 +216,10 @@ export class TareaRoomComponent {
 
     ngOninit() {}
 
-    estudianteSeleccionado: number = null
+    estudianteSeleccionado
     getTareaRealizada(item) {
         console.log(item)
-        this.estudianteSeleccionado = item.id
+        this.estudianteSeleccionado = item
     }
 
     updateTareas() {
@@ -313,7 +235,7 @@ export class TareaRoomComponent {
             },
             params: { skipSuccessMessage: true },
         }
-        this.getInformation(params, 'update-tarea')
+        this.getInformation(params, 'update-tareas')
     }
 
     getTareaEstudiantes() {

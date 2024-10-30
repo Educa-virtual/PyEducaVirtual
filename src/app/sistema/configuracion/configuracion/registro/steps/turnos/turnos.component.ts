@@ -6,7 +6,7 @@ import {
 } from '@/app/shared/table-primeng/table-primeng.component'
 import { httpService } from '../../../http/httpService'
 import { ButtonModule } from 'primeng/button'
-import { TicketService } from '../../service/ticketservice'
+import { TicketService, type ArrayElement } from '../../service/ticketservice'
 import { Router } from '@angular/router'
 import { DialogModule } from 'primeng/dialog'
 import { DropdownModule } from 'primeng/dropdown'
@@ -38,6 +38,9 @@ export class TurnosComponent implements OnInit, OnChanges {
         cTurnoNombre: string
     }[]
 
+    labelSaveModal
+    modalidadServicio: typeof this.ticketService.registroInformation.stepFormasAtencion
+
     modalidades: {
         iModalServId: string
         cModalServNombre: string
@@ -46,14 +49,8 @@ export class TurnosComponent implements OnInit, OnChanges {
 
     visible: boolean = false
 
-    formasAtencionModal: {
-        iModalServId: string
-        cModalServNombre: string
-        iTurnoId: string
-        cTurnoNombre: string
-        dtAperTurnoInicio: Date
-        dtAperTurnoFin: Date
-    }
+    formasAtencionModal: ArrayElement<typeof this.ticketService.registroInformation.stepFormasAtencion>;
+
 
     formasAtencionInformation
 
@@ -63,7 +60,14 @@ export class TurnosComponent implements OnInit, OnChanges {
         private router: Router,
         private fb: FormBuilder,
         private generalService: GeneralService
-    ) {}
+    ) {
+        this.form = this.fb.group({
+            turno: [''],
+            modalidad: [''],
+            horaInicio: [''],
+            horaFin: [''],
+        })
+    }
 
     nextPage() {
         this.router.navigate([
@@ -77,55 +81,111 @@ export class TurnosComponent implements OnInit, OnChanges {
         ])
     }
 
-    saveState() {
+    handleActions(row) {
+        console.log(row)
+        const actions = {
+            ver: () => {
+                // Lógica para la acción "ver"
+                console.log('Viendo')
+            },
+            editar: () => {
+                // Lógica para la acción "editar"
+                console.log('Editando')
+                console.log(row.item)
 
-        // Verifica la existencia de `stepYear` y continúa con `stepTurnos`
-        if ('stepFormasAtencion' in this.ticketService.registroInformation) {
-            this.formasAtencionInformation =
-                this.ticketService.getTicketInformation().stepFormasAtencion
-        } else {
-            // Agrega `stepTurnos` si no existe
-            this.ticketService.registroInformation = {
-                ...this.ticketService.registroInformation,
-                stepFormasAtencion: [],
-            }
-            this.formasAtencionInformation =
-                this.ticketService.registroInformation.stepFormasAtencion
+                this.showDialog()
+
+                this.formasAtencionModal = {
+                    ...this.formasAtencionModal,
+                    iCalTurnoId: row.item.iCalTurnoId,
+
+                }
+
+                this.form.setValue({
+                    turno: {
+                        iTurnoId: row.item.iTurnoId,
+                        cTurnoNombre: row.item.cTurnoNombre,
+                    },
+                    modalidad: {
+                        iModalServId: row.item.iModalServId,
+                        cModalServNombre: row.item.cModalServNombre,
+                    },
+                    horaInicio: row.item.dtAperTurnoInicio,
+                    horaFin: row.item.dtAperTurnoFin,
+                })
+            },
+            eliminar: () => {
+                // Lógica para la acción "eliminar"
+                console.log('Eliminando')
+            },
         }
 
-        this.formasAtencionInformation.push(this.formasAtencionModal)
-        this.ticketService.setTicketInformation(
-            this.formasAtencionInformation,
-            'stepFormasAtencion'
-        )
+        const action = actions[row.accion]
+        if (action) {
+            action()
+        } else {
+            console.log(`Acción desconocida: ${row.action}`)
+        }
     }
 
-    indexColumns(){
+    indexColumns() {
         this.formasAtencionInformation = this.ticketService
             .getTicketInformation()
             .stepFormasAtencion.map((turno, index) => ({
                 ...turno,
                 index: index + 1,
-                dtAperTurnoInicio: this.ticketService.toVisualFechasFormat(turno.dtAperTurnoInicio),
-                dtAperTurnoFin: this.ticketService.toVisualFechasFormat(turno.dtAperTurnoFin),
+                cModalServNombre: this.ticketService.capitalize(
+                    turno.cModalServNombre
+                ),
+                dtAperTurnoInicio: this.ticketService.toVisualFechasFormat(
+                    turno.dtAperTurnoInicio,
+                    'hh:mm'
+                ),
+                dtAperTurnoFin: this.ticketService.toVisualFechasFormat(
+                    turno.dtAperTurnoFin,
+                    'hh:mm'
+                ),
             }))
 
-        console.log(
-            this.ticketService.getTicketInformation().stepFormasAtencion
-        )
     }
 
     saveInformation() {
-        this.saveState()
         this.indexColumns()
 
+        if(this.ticketService.registroInformation.modal == 'create'){
+            this.createFormasAtencion()
+            this.hiddenDialog()
+            return;
+        }
+
+        if (this.ticketService.registroInformation.mode == 'create') {
+            this.createFormasAtencion()
+        }
+
+        if (this.ticketService.registroInformation.mode == 'edit') {
+            this.updateFormasAtencion()
+        }
+
+        this.hiddenDialog()
+    }
+
+    showModeCreateDialog(){
+        this.ticketService.setTicketInformation('create','modal')
+
+        this.showDialog()
+    }
+
+    createFormasAtencion() {
         this.httpService
             .postData('acad/calendarioAcademico/addCalAcademico', {
                 json: JSON.stringify({
                     iTurnoId: this.formasAtencionModal.iTurnoId,
                     iModalServId: this.formasAtencionModal.iModalServId,
-                    iCalAcadId: 3,
-                    dtAperTurnoInicio: this.formasAtencionModal.dtAperTurnoInicio,
+                    iCalAcadId:
+                        this.ticketService.registroInformation.calendar
+                            .iCalAcadId,
+                    dtAperTurnoInicio:
+                        this.formasAtencionModal.dtAperTurnoInicio,
                     dtAperTurnoFin: this.formasAtencionModal.dtAperTurnoFin,
                 }),
                 _opcion: 'addCalTurno',
@@ -133,6 +193,8 @@ export class TurnosComponent implements OnInit, OnChanges {
             .subscribe({
                 next: (data: any) => {
                     // this.modalidades = data.data
+
+                    this.getFormasAtencion()
                 },
                 error: (error) => {
                     console.error('Error fetching turnos:', error)
@@ -141,27 +203,115 @@ export class TurnosComponent implements OnInit, OnChanges {
                     console.log('Request completed')
                 },
             })
+    }
 
-        this.hiddenDialog()
+    updateFormasAtencion() {
+
+        console.log(this.formasAtencionModal)
+
+        let formasAtencion =
+            this.ticketService.registroInformation.stepFormasAtencion.map(
+                (formaAtencion) => ({
+                    iCalTurnoId: this.formasAtencionModal.iCalTurnoId,
+                    iTurnoId: this.formasAtencionModal.iTurnoId,
+                    iModalServId: this.formasAtencionModal.iModalServId,
+                    iCalAcadId:
+                        this.ticketService.registroInformation.calendar
+                            .iCalAcadId,
+                    dtAperTurnoInicio: this.ticketService.convertToSQLDateTime(this.formasAtencionModal.dtAperTurnoInicio),
+                    dtAperTurnoFin: this.ticketService.convertToSQLDateTime(this.formasAtencionModal.dtAperTurnoFin),
+                })
+            )
+
+        this.httpService
+            .postData('acad/calendarioAcademico/addCalAcademico', {
+                json: JSON.stringify(formasAtencion),
+                _opcion: 'updateCalTurno',
+            })
+            .subscribe({
+                next: (data: any) => {
+                    // this.modalidades = data.data
+
+                },
+                error: (error) => {
+                    console.error('Error fetching turnos:', error)
+                    // ? Mover cuando la consulta no de errores
+                    this.getFormasAtencion()
+                },
+                complete: () => {
+                    console.log('Request completed')
+                },
+            })
+
+
+
     }
 
     showDialog() {
         this.visible = true
     }
 
-    hiddenDialog(){
+    hiddenDialog() {
         this.visible = false
     }
+
+    getFormasAtencion() {
+        this.httpService
+            .postData('acad/calendarioAcademico/addCalAcademico', {
+                json: JSON.stringify({
+                    iCalAcadId:
+                        this.ticketService.registroInformation.calendar
+                            .iCalAcadId,
+                }),
+                _opcion: 'getCalendarioTurnos',
+            })
+            .subscribe({
+                next: (data: any) => {
+                    console.log(data)
+
+                    this.ticketService.setTicketInformation(
+                        data.data.map((turno) => ({
+                            iCalTurnoId: turno.iCalTurnoId,
+                            iTurnoId: turno.iTurnoId,
+                            iModalServId: turno.iModalServId,
+                            iCalAcadId: turno.iCalAcadId,
+                            dtTurnoInicia: turno.dtTurnoInicia,
+                            dtTurnoFin: turno.dtTurnoFin,
+                            cModalServNombre: turno.cModalServNombre,
+                            cTurnoNombre: turno.cTurnoNombre,
+                            dtAperTurnoInicio: turno.dtAperTurnoInicio,
+                            dtAperTurnoFin: turno.dtAperTurnoFin,
+                        })),
+                        'stepFormasAtencion'
+                    )
+
+                    this.indexColumns()
+
+                    console.log(this.ticketService.registroInformation.stepFormasAtencion)
+                },
+
+                error: (error) => {
+                    console.error('Error fetching turnos:', error)
+                },
+                complete: () => {
+                    console.log('Request completed')
+                },
+            })
+    }
+
     ngOnInit() {
-        this.form = this.fb.group({
-            modalidad: [''],
-            turno: [''],
-            horaInicio: [''],
-            horaFin: [''],
-        })
+        if (!this.ticketService.registroInformation) {
+            this.router.navigate(['configuracion/configuracion/years'])
+
+            return
+        }
+        if (!this.ticketService.registroInformation.stepFormasAtencion) {
+            this.ticketService.registroInformation.stepFormasAtencion = []
+        }
 
         this.form.valueChanges.subscribe((value) => {
             this.formasAtencionModal = {
+                ...this.formasAtencionModal,
                 iModalServId: value.modalidad.iModalServId,
                 cModalServNombre: value.modalidad.cModalServNombre,
                 iTurnoId: value.turno.iTurnoId,
@@ -174,42 +324,45 @@ export class TurnosComponent implements OnInit, OnChanges {
         })
 
         this.generalService.getModalidad().subscribe({
-                next: (data: any) => {
-                    this.modalidades = data.data
-                },
-                error: (error) => {
-                    console.error('Error fetching turnos:', error)
-                },
-                complete: () => {
-                    console.log('Request completed')
-                },
-            })
+            next: (data: any) => {
+                this.modalidades = data.data.map((modalidad) => ({
+                    iModalServId: modalidad.iModalServId,
+                    cModalServNombre: this.ticketService.capitalize(
+                        modalidad.cModalServNombre
+                    ),
+                }))
+            },
+            error: (error) => {
+                console.error('Error fetching turnos:', error)
+            },
+            complete: () => {
+                console.log('Request completed')
+            },
+        })
 
         this.generalService.getTurno().subscribe({
-                next: (data: any) => {
-                    this.turnos = data.data
-                    // console.log(this.turnos);
-                },
-                error: (error) => {
-                    console.error('Error fetching turnos:', error)
-                },
-                complete: () => {
-                    console.log('Request completed')
-                },
-            })
-
-        if (this.ticketService.registroInformation?.stepFormasAtencion) {
-            this.formasAtencionInformation = this.ticketService
-                .getTicketInformation()
-                .stepFormasAtencion.map((turno, index) => ({
-                    ...turno,
-                    index: index + 1,
-                    dtAperTurnoInicio: this.ticketService.toVisualFechasFormat(
-                        turno.dtAperTurnoInicio
+            next: (data: any) => {
+                this.turnos = data.data.map((turno) => ({
+                    iTurnoId: turno.iTurnoId,
+                    cTurnoNombre: this.ticketService.capitalize(
+                        turno.cTurnoNombre
                     ),
-                    dtAperTurnoFin: this.ticketService.toVisualFechasFormat(turno.dtAperTurnoFin),
                 }))
+                // console.log(this.turnos);
+            },
+            error: (error) => {
+                console.error('Error fetching turnos:', error)
+            },
+            complete: () => {
+                console.log('Request completed')
+            },
+        })
+
+        if (this.ticketService.registroInformation?.mode == 'edit') {
+            this.getFormasAtencion()
         }
+
+        this.indexColumns()
     }
 
     actions: IActionTable[] = [

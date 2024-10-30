@@ -1,10 +1,13 @@
 import { Injectable } from '@angular/core'
 import { Subject } from 'rxjs'
 
+export type ArrayElement<ArrayType extends readonly unknown[]> = ArrayType extends readonly (infer ElementType)[] ? ElementType : never;
+
 @Injectable()
 export class TicketService {
     registroInformation: {
         mode: 'create' | 'edit'
+        modal?: 'create' | 'edit'
 
         calendar?: {
             iCalAcadId: string
@@ -25,6 +28,9 @@ export class TicketService {
             cDiaAbreviado: string
         }[]
         stepFormasAtencion?: {
+            iCalTurnoId?: string
+            dtTurnoInicia?: Date
+            dtTurnoFin?: Date
             iModalServId: string
             cModalServNombre: string
             iTurnoId: string
@@ -59,7 +65,7 @@ export class TicketService {
     }
 
     setTicketInformation<K extends keyof typeof this.registroInformation>(
-        registroInformation: typeof this.registroInformation[K],
+        registroInformation: (typeof this.registroInformation)[K],
         key: K
     ) {
         this.registroInformation[key] = registroInformation
@@ -70,9 +76,9 @@ export class TicketService {
     }
 
     /**
-     * @param {string} fecha 
+     * @param {string} fecha
      * @param {string} typeFormat DD/MM/YY hh:mm:ss - use YYYY for full year
-     * @returns {string}  
+     * @returns {string}
      */
     toVisualFechasFormat(fecha, typeFormat = 'DD/MM/YY hh:mm') {
         const date = new Date(fecha)
@@ -95,12 +101,43 @@ export class TicketService {
     }
 
     toSQLDatetimeFormat(fecha: Date) {
-        const date = new Date(fecha);
-    
-        const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-        const formattedTime = `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`;
-    
-        return `${formattedDate} ${formattedTime}`;
+        const date = new Date(fecha)
+
+        const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+        const formattedTime = `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`
+
+        return `${formattedDate} ${formattedTime}`
     }
+
+    capitalize(text) {
+        if (!text) return ''
+        return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase()
+    }
+
+    convertToSQLDateTime(input) {
+        // Verifica si el input contiene solo una hora o una fecha completa
+        const timeOnlyPattern = /^\d{2}:\d{2}$/;
+        let dateObject;
+        
+        if (timeOnlyPattern.test(input)) {
+            // Si es solo hora, combínala con la fecha actual
+            const currentDate = new Date().toISOString().slice(0, 10);
+            dateObject = new Date(`${currentDate}T${input}:00`);
+        } else {
+            // Si es una fecha completa, intenta convertirla a Date
+            dateObject = new Date(input);
+        }
+    
+        // Formatea la fecha y hora al formato SQL 'YYYY-MM-DD HH:mm:ss'
+        const year = dateObject.getFullYear();
+        const month = String(dateObject.getMonth() + 1).padStart(2, '0');
+        const day = String(dateObject.getDate()).padStart(2, '0');
+        const hours = String(dateObject.getHours()).padStart(2, '0');
+        const minutes = String(dateObject.getMinutes()).padStart(2, '0');
+        const seconds = String(dateObject.getSeconds()).padStart(2, '0');
+    
+        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    }
+    
     
 }

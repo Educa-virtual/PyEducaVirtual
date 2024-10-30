@@ -1,6 +1,6 @@
 <div class="container">
     <div class="opciones">
-        <p-button label="Agregar turno" (onClick)="showDialog()" />
+        <p-button label="Agregar turno" (onClick)="showModeCreateDialog()" />
     </div>
     <app-table-primeng
         [showCaption]="false"
@@ -8,6 +8,7 @@
         [actions]="actions"
         [showPaginator]="false"
         [data]="formasAtencionInformation"
+        (accionBtnItem)="handleActions($event)"
     >
     </app-table-primeng>
     <div class="navigator">
@@ -24,6 +25,7 @@
                 <p-dropdown
                     [style]="{ width: '100%' }"
                     [options]="turnos"
+                    [selectOnFocus]="1"
                     optionLabel="cTurnoNombre"
                     placeholder="Seleccione un turno"
                     formControlName="turno"
@@ -64,7 +66,7 @@
                     severity="secondary"
                     (onClick)="visible = false"
                 />
-                <p-button label="Crear" (onClick)="saveInformation()" />
+                <p-button label="Guardar" (onClick)="saveInformation()" />
             </div>
         </form>
     </p-dialog>

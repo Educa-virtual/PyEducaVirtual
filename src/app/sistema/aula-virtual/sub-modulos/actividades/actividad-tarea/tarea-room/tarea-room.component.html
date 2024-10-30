@@ -11,8 +11,7 @@
             </ng-template>
             <div class="flex flex-column gap-4">
                 <article class="card">
-                    <h2>Actividad de Aprendizaje</h2>
-
+                    <h2>Tarea: {{ data?.cTareaTitulo }}</h2>
                     <div class="grid">
                         <div class="col-12 md:col-6 flex flex-column gap-2">
                             <span class="font-bold text-xl flex gap-2">
@@ -24,9 +23,10 @@
                                 Fecha inicio</span
                             >
                             <p>
-                                Doming 15 de marzo de 2025
+                                {{ data?.dtTareaInicio | date }}
+
                                 <span class="font-bold">Hora Limite: </span>
-                                5:00 p.m.
+                                {{ data?.dtTareaInicio | date: 'shortTime' }}
                             </p>
                         </div>
                         <div class="col-12 md:col-6 flex flex-column gap-2">
@@ -39,55 +39,59 @@
                                 Fecha de Entrega</span
                             >
                             <p>
-                                Doming 15 de marzo de 2025
+                                {{ data?.dtTareaFin | date }}
                                 <span class="font-bold">Hora Limite: </span>
-                                5:00 p.m.
+                                {{ data?.dtTareaFin | date: 'shortTime' }}
                             </p>
+                        </div>
+                    </div>
+                    <p-inputGroup>
+                        <p-inputGroupAddon>Título</p-inputGroupAddon>
+                        <input
+                            type="text"
+                            pInputText
+                            [value]="data?.cTareaTitulo"
+                            disabled
+                        />
+                    </p-inputGroup>
+                    <div class="col-12">
+                        <label for="descripcion" class="mt-1"
+                            >Descripción
+                            <span class="text-red-500 text-xs"
+                                >(*) Obligatorio</span
+                            ></label
+                        >
+                        <div class="mt-2">
+                            <p-editor
+                                [(ngModel)]="cTareaDescripcion"
+                                id="descripcion"
+                                [style]="{ height: '150px' }"
+                                disabled
+                            />
                         </div>
                     </div>
                 </article>
                 <article class="card">
                     <h2>Recursos</h2>
                     <ul class="list-none p-0 m-0">
-                        <li
-                            class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap"
-                        >
-                            <div class="flex gap-2 align-items-center">
-                                <i class="pi pi-file text-lg text-primary"></i>
-                                <span class="font-medium text-lg"
-                                    >Recurso.pdf</span
-                                >
-                                <span class="text-gray-500"
-                                    >tamaño(319.532KB)</span
-                                >
-                            </div>
-                        </li>
-                        <li
-                            class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap"
-                        >
-                            <div class="flex gap-2 align-items-center">
-                                <i class="pi pi-file text-lg text-primary"></i>
-                                <span class="font-medium text-lg"
-                                    >Recurso.pdf</span
-                                >
-                                <span class="text-gray-500"
-                                    >tamaño(319.532KB)</span
-                                >
-                            </div>
-                        </li>
-                        <li
-                            class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap"
-                        >
-                            <div class="flex gap-2 align-items-center">
-                                <i class="pi pi-file text-lg text-primary"></i>
-                                <span class="font-medium text-lg"
-                                    >Recurso.pdf</span
-                                >
-                                <span class="text-gray-500"
-                                    >tamaño(319.532KB)</span
-                                >
-                            </div>
-                        </li>
+                        @for (
+                            item of FilesTareas;
+                            track item;
+                            let idx = $index
+                        ) {
+                            <li
+                                class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap"
+                            >
+                                <div class="flex gap-2 align-items-center">
+                                    <i
+                                        class="pi pi-file text-lg text-primary"
+                                    ></i>
+                                    <span class="font-medium text-lg">{{
+                                        item.name
+                                    }}</span>
+                                </div>
+                            </li>
+                        }
                     </ul>
                 </article>
 
@@ -539,10 +543,11 @@
                                                                     >
                                                                         <tr>
                                                                             <td>
-                                                                                {{
+                                                                                hola
+                                                                                <!-- {{
                                                                                     rowIndex +
                                                                                         1
-                                                                                }}
+                                                                                }} -->
                                                                             </td>
                                                                             <td>
                                                                                 {{
@@ -605,7 +610,7 @@
                                                 </div>
 
                                             </ng-template>
-                                           
+
                                         </p-panel> -->
                                             </div>
                                         </div>

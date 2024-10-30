@@ -46,6 +46,13 @@ export class TareaRoomComponent {
 
     private _dialogService = inject(DialogService)
     private GeneralService = inject(GeneralService)
+
+    ngOnChanges(changes) {
+        if (changes.iTareaId?.currentValue) {
+            this.iTareaId = changes.iTareaId.currentValue
+            this.getTareasxiTareaid()
+        }
+    }
     showModal: boolean = false
     public leyendaTareas: ILeyendaItem[] = [
         {
@@ -110,9 +117,11 @@ export class TareaRoomComponent {
         },
     ]
 
+    data
     estudiantes1: any[] = []
-
+    cTareaDescripcion: string
     tareaAsignar: number
+    FilesTareas = []
     tareaOptions = [
         { name: 'Individual', value: 0 },
         { name: 'Grupal', value: 1 },
@@ -271,6 +280,13 @@ export class TareaRoomComponent {
                 break
             case 'get-tarea-cabecera-grupos':
                 break
+            case 'get-tareas':
+                this.data = item.length ? item[0] : []
+                this.cTareaDescripcion = this.data?.cTareaDescripcion
+                this.FilesTareas = this.data?.cTareaArchivoAdjunto
+                    ? JSON.parse(this.data?.cTareaArchivoAdjunto)
+                    : []
+                break
             default:
                 break
         }
@@ -323,6 +339,21 @@ export class TareaRoomComponent {
             ruta: 'list',
             data: {
                 opcion: 'CONSULTAR-ASIGNACIONxiTareaId',
+                iTareaId: this.iTareaId,
+            },
+            params: { skipSuccessMessage: true },
+        }
+        this.getInformation(params, 'get-' + params.prefix)
+    }
+
+    getTareasxiTareaid() {
+        const params = {
+            petition: 'post',
+            group: 'aula-virtual',
+            prefix: 'tareas',
+            ruta: 'list',
+            data: {
+                opcion: 'CONSULTARxiTareaId',
                 iTareaId: this.iTareaId,
             },
             params: { skipSuccessMessage: true },

@@ -1,14 +1,9 @@
 import { CommonModule } from '@angular/common'
 import { Component, inject, Input, OnInit } from '@angular/core'
 import { FormsModule } from '@angular/forms'
-import { AccordionModule } from 'primeng/accordion'
 import { CalendarModule } from 'primeng/calendar'
-import { IconFieldModule } from 'primeng/iconfield'
-import { InputIconModule } from 'primeng/inputicon'
-import { InputTextModule } from 'primeng/inputtext'
 import { ActividadRowComponent } from '@/app/sistema/aula-virtual/sub-modulos/actividades/components/actividad-row/actividad-row.component'
 import {
-    actividadesConfig,
     EVALUACION,
     FORO,
     IActividad,
@@ -17,8 +12,6 @@ import {
     VIDEO_CONFERENCIA,
 } from '@/app/sistema/aula-virtual/interfaces/actividad.interface'
 import { TActividadActions } from '@/app/sistema/aula-virtual/interfaces/actividad-actions.iterface'
-import { DialogModule } from 'primeng/dialog'
-import { MenuModule } from 'primeng/menu'
 import { MenuItem } from 'primeng/api'
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog'
 import { IconComponent } from '@/app/shared/icon/icon.component'
@@ -46,26 +39,23 @@ import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmatio
 import { ActivatedRoute, Router } from '@angular/router'
 import { DynamicDialogModule } from 'primeng/dynamicdialog'
 import { ApiEvaluacionesService } from '@/app/sistema/evaluaciones/services/api-evaluaciones.service'
+import { PrimengModule } from '@/app/primeng.module'
+import { actividadesConfig } from '@/app/sistema/aula-virtual/constants/aula-virtual'
 
 @Component({
     selector: 'app-tab-contenido',
     standalone: true,
     imports: [
         CommonModule,
-        IconFieldModule,
-        InputIconModule,
-        InputTextModule,
         CalendarModule,
         FormsModule,
-        AccordionModule,
         ActividadRowComponent,
         ActividadListaComponent,
-        DialogModule,
-        MenuModule,
         TareaFormContainerComponent,
         VideoconferenciaContainerFormComponent,
         IconComponent,
         DynamicDialogModule,
+        PrimengModule,
     ],
     templateUrl: './tab-contenido.component.html',
     styleUrl: './tab-contenido.component.scss',
@@ -381,11 +371,22 @@ export class TabContenidoComponent implements OnInit {
     publicarEvaluacion(actividad: IActividad) {
         const data = {
             iEvaluacionId: actividad.ixActivadadId,
+            iCursoId: 1,
+            iSeccionId: 2,
+            iYAcadId: 3,
+            iSemAcadId: 3,
+            iNivelGradoId: 1,
+            iCurrId: 1,
+            iEstado: 2,
         }
         this._evalService
             .publicarEvaluacion(data)
             .pipe(takeUntil(this._unsubscribe$))
-            .subscribe({ next: () => {} })
+            .subscribe({
+                next: () => {
+                    this.obtenerContenidoSemanas()
+                },
+            })
     }
 
     private eliminarActividad(iProgActId, iActTipoId, ixActivadadId) {

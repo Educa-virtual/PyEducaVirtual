@@ -72,6 +72,8 @@ import { actividadesConfig } from '@/app/sistema/aula-virtual/constants/aula-vir
     ],
 })
 export class TabContenidoComponent implements OnInit {
+    @Input({ required: true }) private _iSilaboId: string
+
     public rangeDates: Date[] | undefined
     public accionesContenido: MenuItem[]
     public actividadSelected: IActividad | undefined
@@ -79,15 +81,16 @@ export class TabContenidoComponent implements OnInit {
     public contenidoSemanas = []
     // public actividades = actividadesConfigList
 
+    // injeccion de dependencias
     private _constantesService = inject(ConstantesService)
     private _generalService = inject(GeneralService)
     private _confirmService = inject(ConfirmationModalService)
     private _aulaService = inject(ApiAulaService)
     private _evalService = inject(ApiEvaluacionesService)
+
     private semanaSeleccionada
     private _unsubscribe$ = new Subject<boolean>()
     tipoActivadedes = []
-    @Input({ required: true }) private _iSilaboId: string
 
     // lista de acciones base para la semana
     private handleActionsMap: Record<
@@ -169,6 +172,7 @@ export class TabContenidoComponent implements OnInit {
         })
     }
 
+    // maneja las acciones de las segun el tipo de actividad
     actionSelected({
         actividad,
         action,
@@ -204,6 +208,7 @@ export class TabContenidoComponent implements OnInit {
         }
     }
 
+    // maneja las acciones de las tareas
     handleTareaAction(action: string, actividad: IActividad) {
         switch (action) {
             case 'CREAR':
@@ -306,6 +311,7 @@ export class TabContenidoComponent implements OnInit {
         }
     }
 
+    // maneja las acciones de las evaluaciones
     handleEvaluacionAction(action: string, actividad: IActividad) {
         if (action === 'CREAR' || action === 'EDITAR') {
             const ref = this._dialogService.open(
@@ -368,6 +374,7 @@ export class TabContenidoComponent implements OnInit {
         }
     }
 
+    // todo usar valores reales
     publicarEvaluacion(actividad: IActividad) {
         const data = {
             iEvaluacionId: actividad.ixActivadadId,

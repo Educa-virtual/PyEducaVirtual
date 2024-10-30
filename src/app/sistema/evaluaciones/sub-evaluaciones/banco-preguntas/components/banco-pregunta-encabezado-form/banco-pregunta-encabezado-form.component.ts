@@ -48,7 +48,9 @@ export class BancoPreguntaEncabezadoFormComponent implements OnInit {
 
     @Output() encabezadoChange = new EventEmitter()
 
+    // injeccion de dependencias
     private parentContainer = inject(ControlContainer)
+
     public formGroup!: FormGroup
     public encabezadosFiltered = []
 
@@ -60,7 +62,7 @@ export class BancoPreguntaEncabezadoFormComponent implements OnInit {
         }
     }
 
-    // obtiene el formulario padre
+    // obtiene el formulario padre usando ControlContainer
     get parentFormGroup() {
         return this.parentContainer.control?.get(this.controlKey) as FormGroup
     }

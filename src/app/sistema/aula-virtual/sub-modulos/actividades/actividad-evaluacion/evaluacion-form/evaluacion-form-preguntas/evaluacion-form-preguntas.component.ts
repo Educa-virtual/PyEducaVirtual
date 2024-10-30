@@ -62,10 +62,12 @@ export class EvaluacionFormPreguntasComponent implements OnDestroy {
 
     preguntasSeleccionadas = []
 
+    // injeccion de depedencias
     private _confirmationService = inject(ConfirmationModalService)
     private _aulaBancoPreguntasService = inject(AulaBancoPreguntasService)
     private _evaluacionService = inject(ApiEvaluacionesService)
     private _dialogService = inject(DialogService)
+
     private _unsubscribe$ = new Subject<boolean>()
 
     tiposAgrecacionPregunta: MenuItem[] = [
@@ -202,6 +204,7 @@ export class EvaluacionFormPreguntasComponent implements OnDestroy {
         })
     }
 
+    // agrega preguntas al formulario
     agregarPreguntas() {
         this.preguntasSeleccionadas.map((item) => {
             item = this.mapLocalPregunta(item)
@@ -212,6 +215,7 @@ export class EvaluacionFormPreguntasComponent implements OnDestroy {
         this.preguntasSeleccionadasChange.emit(this.preguntas)
     }
 
+    // desuscribe los observables cuando se destruye el componente
     ngOnDestroy() {
         this._unsubscribe$.next(true)
         this._unsubscribe$.complete()

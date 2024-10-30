@@ -59,7 +59,9 @@ export class EvaluacionRoomCalificacionComponent implements OnInit {
         },
     ]
 
+    // injeccion de dependencias
     private _evaluacionesService = inject(ApiEvaluacionesService)
+
     private _unsubscribe$ = new Subject<boolean>()
 
     public evaluacionSeleccionada = null

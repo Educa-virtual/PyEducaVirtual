@@ -81,9 +81,11 @@ export class EvaluacionLogrosComponent implements OnInit, OnDestroy {
         },
     ]
 
+    private _unsubscribe$ = new Subject<boolean>()
+
+    // injeccion de dependencias
     private _dialogService = inject(DialogService)
     private _evaluacionApiService = inject(ApiEvaluacionesService)
-    private _unsubscribe$ = new Subject<boolean>()
     private _confirmService = inject(ConfirmationModalService)
 
     constructor(
@@ -111,19 +113,6 @@ export class EvaluacionLogrosComponent implements OnInit, OnDestroy {
         this.preguntaSelectedIndex = index
     }
 
-    // obtenerLogros() {
-    //     this._evaluacionApiService
-    //         .obtenerLogros({
-    //             iEvalPregId: this.iEvalPregId,
-    //         })
-    //         .pipe(takeUntil(this._unsubscribe$))
-    //         .subscribe({
-    //             next: (data) => {
-    //                 this.data = data
-    //             },
-    //         })
-    // }
-
     confirmEliminarLogro(item) {
         this._confirmService.openConfirm({
             header: '¿Esta seguro de quitar la rubrica?',
@@ -143,6 +132,7 @@ export class EvaluacionLogrosComponent implements OnInit, OnDestroy {
             })
     }
 
+    // elimina el logro de forma local
     eliminarLogroLocal(iNivelLogroEvaId: number) {
         this.preguntas[this.preguntaSelectedIndex].logros = [
             ...this.preguntas[this.preguntaSelectedIndex].logros.filter(
@@ -190,6 +180,7 @@ export class EvaluacionLogrosComponent implements OnInit, OnDestroy {
         this._ref.close(data)
     }
 
+    // desuscribe de los observables
     ngOnDestroy() {
         this._unsubscribe$.next(true)
         this._unsubscribe$.complete()

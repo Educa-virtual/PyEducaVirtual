@@ -1,5 +1,6 @@
 import { removeHTML } from '@/app/shared/utils/remove-html'
 
+// convierte los datos de las preguntas
 export const mapPregunta = (pregunta, alternativas) => {
     return {
         iPreguntaId: pregunta.iBancoId,
@@ -25,6 +26,7 @@ export const mapPregunta = (pregunta, alternativas) => {
     }
 }
 
+// mapea los datos de las alternativas
 export const mapAlternativa = (alternativa) => {
     return {
         iAlternativaId: alternativa.iBancoAltId,
@@ -35,6 +37,7 @@ export const mapAlternativa = (alternativa) => {
     }
 }
 
+// mapea los datos de la pregunta encabezado
 export const mapEncabezado = (encabezado) => {
     encabezado.cPreguntaNoHTML = removeHTML(encabezado.cPregunta)
     encabezado.iEncabPregId = encabezado.idEncabPregId

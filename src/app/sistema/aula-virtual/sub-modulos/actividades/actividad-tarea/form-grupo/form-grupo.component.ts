@@ -23,15 +23,35 @@ export class FormGrupoComponent implements OnChanges {
     private GeneralService = inject(GeneralService)
 
     @Input() iTareaId: string
-    @Input() showModal: boolean = true
+    @Input() showModal: boolean
+    @Input() data
 
     estudiantes = []
+    iTareaCabGrupoId
     cTareaGrupoNombre: string
+    opcion: string
 
     ngOnChanges(changes) {
         if (changes.iTareaId?.currentValue) {
             this.iTareaId = changes.iTareaId.currentValue
+        }
+        if (changes.data?.currentValue) {
+            this.data = changes.data.currentValue
+        }
+        if (!this.data?.cTareaGrupoNombre && this.iTareaId) {
+            this.opcion = 'GUARDAR'
+            this.cTareaGrupoNombre = null
+            this.estudiantes = []
+            this.iTareaCabGrupoId = null
             this.getTareaCabeceraGruposEstudiantes()
+        } else {
+            this.opcion = 'ACTUALIZAR'
+            this.iTareaCabGrupoId = this.data?.iTareaCabGrupoId
+            this.cTareaGrupoNombre = this.data?.cTareaGrupoNombre
+            this.estudiantes = this.data?.json_estudiantes_respaldo
+            this.estudiantes.forEach(
+                (i) => (i.bAsignado = i.bAsignado ? true : false)
+            )
         }
     }
     getTareaCabeceraGruposEstudiantes() {
@@ -50,21 +70,17 @@ export class FormGrupoComponent implements OnChanges {
     }
 
     saveTareaCabeceraGrupos() {
-        // let data
-        // this.estudiantes.forEach((i)=>{data.push({
-        //     bAsignado:i.bAsignado,
-
-        // })})
         const params = {
             petition: 'post',
             group: 'aula-virtual',
             prefix: 'tarea-cabecera-grupos',
             ruta: 'store',
             data: {
-                opcion: 'GUARDAR-ESTUDIANTESxiTareaId',
+                opcion: this.opcion + '-ESTUDIANTESxiTareaId',
                 iTareaId: this.iTareaId,
                 cTareaGrupoNombre: this.cTareaGrupoNombre,
                 valorBusqueda: JSON.stringify(this.estudiantes),
+                iTareaCabGrupoId: this.iTareaCabGrupoId,
             },
             params: { skipSuccessMessage: true },
         }

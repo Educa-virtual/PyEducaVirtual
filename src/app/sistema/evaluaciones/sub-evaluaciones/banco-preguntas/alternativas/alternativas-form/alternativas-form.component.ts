@@ -13,7 +13,7 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog'
 import { CommonInputComponent } from '@/app/shared/components/common-input/common-input.component'
 import { ButtonModule } from 'primeng/button'
 import { EditorModule } from 'primeng/editor'
-import { filterPreguntasUsadas } from '../pregunta-letra.model'
+import { filtrarPreguntasUsadas } from '../pregunta-letra.model'
 import { DropdownModule } from 'primeng/dropdown'
 import { generarIdAleatorio } from '@/app/shared/utils/random-id'
 @Component({
@@ -62,7 +62,7 @@ export class AlternativasFormComponent implements OnInit {
 
         // editando alternativa
         if (this.alternativa != null) {
-            this.letrasDisponiblesPreguntaSeleccionada = filterPreguntasUsadas(
+            this.letrasDisponiblesPreguntaSeleccionada = filtrarPreguntasUsadas(
                 letrasUsadas,
                 this.alternativa.cAlternativaLetra
             )
@@ -75,10 +75,11 @@ export class AlternativasFormComponent implements OnInit {
                 )
         } else {
             this.letrasDisponiblesPreguntaSeleccionada =
-                filterPreguntasUsadas(letrasUsadas)
+                filtrarPreguntasUsadas(letrasUsadas)
         }
     }
 
+    // construye el formulario de alternativa
     buildForm() {
         this.alternativaFormGroup = this._formBuilder.group({
             iAlternativaId: new FormControl<number | string>(
@@ -101,7 +102,7 @@ export class AlternativasFormComponent implements OnInit {
         })
     }
 
-    getNewAlternativas(alternativa) {
+    obtenerNuevaAlternativas(alternativa) {
         const newAlternativas = [...this.alternativas]
         alternativa.bAlternativaCorrecta = alternativa.bAlternativaCorrecta
             ? 1

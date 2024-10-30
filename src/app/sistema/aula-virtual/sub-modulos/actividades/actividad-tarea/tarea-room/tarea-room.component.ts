@@ -21,6 +21,7 @@ import { PrimengModule } from '@/app/primeng.module'
 import { FileUploadPrimengComponent } from '../../../../../../shared/file-upload-primeng/file-upload-primeng.component'
 import { FormGrupoComponent } from '../form-grupo/form-grupo.component'
 import { GeneralService } from '@/app/servicios/general.service'
+import { ModalPrimengComponent } from '../../../../../../shared/modal-primeng/modal-primeng.component'
 
 @Component({
     selector: 'app-tarea-room',
@@ -36,6 +37,7 @@ import { GeneralService } from '@/app/servicios/general.service'
         PrimengModule,
         FileUploadPrimengComponent,
         FormGrupoComponent,
+        ModalPrimengComponent,
     ],
     templateUrl: './tarea-room.component.html',
     styleUrl: './tarea-room.component.scss',
@@ -120,7 +122,7 @@ export class TareaRoomComponent {
     ]
 
     data
-
+    grupoSeleccionado
     cTareaDescripcion: string
     tareaAsignar: number
     FilesTareas = []
@@ -194,7 +196,15 @@ export class TareaRoomComponent {
                     i.json_estudiantes = i.json_estudiantes
                         ? JSON.parse(i.json_estudiantes)
                         : []
+                    i.json_estudiantes_respaldo = i.json_estudiantes
                 })
+
+                this.grupos.forEach((i) => {
+                    i.json_estudiantes = i.json_estudiantes.filter(
+                        (j) => j.bAsignado === 1
+                    )
+                })
+
                 break
             case 'save-tarea-cabecera-grupos':
                 this.showModal = false

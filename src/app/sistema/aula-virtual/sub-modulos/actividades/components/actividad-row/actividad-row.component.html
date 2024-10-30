@@ -61,24 +61,26 @@
             [popup]="true"
         >
             <ng-template pTemplate="item" let-item>
-                <button
-                    pButton
-                    class="gap-2 w-full flex p-button-text p-button-plain"
-                    (click)="
-                        onAction(item.accion, $event); menuActividad.hide()
-                    "
-                >
-                    @if (item.icon | isIconType) {
-                        <app-icon
-                            [name]="item.icon.name"
-                            [color]="item.icon.color"
-                            [size]="item.icon.size"
-                        ></app-icon>
-                    } @else {
-                        <i class="{{ item.icon }}"></i>
-                    }
-                    <span>{{ item.label }}</span>
-                </button>
+                @if (item.isVisible ? item.isVisible(actividad) : true) {
+                    <button
+                        pButton
+                        class="gap-2 w-full flex p-button-text p-button-plain"
+                        (click)="
+                            onAction(item.accion, $event); menuActividad.hide()
+                        "
+                    >
+                        @if (item.icon | isIconType) {
+                            <app-icon
+                                [name]="item.icon.name"
+                                [color]="item.icon.color"
+                                [size]="item.icon.size"
+                            ></app-icon>
+                        } @else {
+                            <i class="{{ item.icon }}"></i>
+                        }
+                        <span>{{ item.label }}</span>
+                    </button>
+                }
             </ng-template>
         </p-menu>
         <button

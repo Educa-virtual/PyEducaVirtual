@@ -1,3 +1,6 @@
+import { IIcon } from '@/app/shared/icon/icon.interface'
+import { MenuItem } from 'primeng/api'
+
 export const TAREA = 1
 export const FORO = 2
 export const EVALUACION = 3
@@ -12,6 +15,14 @@ export const TIPO_ACTIVIDADES = {
     [MATERIAL]: 'MATERIAL',
 }
 
+export interface IActionContenido extends Omit<MenuItem, 'icon'> {
+    icon: string | IIcon
+    accion: string
+    class: string
+    isVisible?: (row) => boolean
+    isDisabled?: (row) => boolean
+}
+
 export type tipoActividadesKeys = keyof typeof TIPO_ACTIVIDADES
 
 // export function isValidTabKey(tab: string): tab is tipoActividadesKeys {
@@ -21,6 +32,7 @@ export type tipoActividadesKeys = keyof typeof TIPO_ACTIVIDADES
 export interface IActivadadTipo {
     iActTipoId: number
     cActTipoNombre: string
+    acciones: IActionContenido[]
 }
 
 export interface IActividad {
@@ -49,6 +61,26 @@ export const actividadesConfig: Record<
         icon: 'matAssignment',
         cActTipoNombre: 'Tarea',
         iActTipoId: TAREA,
+        acciones: [
+            {
+                icon: 'pi pi-pencil',
+                accion: 'EDITAR',
+                class: '',
+                label: 'Editar',
+            },
+            {
+                icon: 'pi pi-trash',
+                accion: 'ELIMINAR',
+                class: '',
+                label: 'Eliminar',
+            },
+            {
+                icon: 'pi pi-eye',
+                accion: 'VER',
+                class: '',
+                label: 'Ver',
+            },
+        ],
     },
     [FORO]: {
         'icon-color': 'text-green-500',
@@ -56,6 +88,26 @@ export const actividadesConfig: Record<
         icon: 'matForum',
         cActTipoNombre: 'Foro',
         iActTipoId: FORO,
+        acciones: [
+            {
+                icon: 'pi pi-pencil',
+                accion: 'EDITAR',
+                class: '',
+                label: 'Editar',
+            },
+            {
+                icon: 'pi pi-trash',
+                accion: 'ELIMINAR',
+                class: '',
+                label: 'Eliminar',
+            },
+            {
+                icon: 'pi pi-eye',
+                accion: 'VER',
+                class: '',
+                label: 'Ver',
+            },
+        ],
     },
     [EVALUACION]: {
         'icon-color': 'text-yellow-500',
@@ -63,6 +115,32 @@ export const actividadesConfig: Record<
         icon: 'matQuiz',
         cActTipoNombre: 'Evaluación Formativa',
         iActTipoId: EVALUACION,
+        acciones: [
+            {
+                icon: 'pi pi-pencil',
+                accion: 'EDITAR',
+                class: '',
+                label: 'Editar',
+            },
+            {
+                icon: 'pi pi-trash',
+                accion: 'ELIMINAR',
+                class: '',
+                label: 'Eliminar',
+            },
+            {
+                icon: 'pi pi-eye',
+                accion: 'VER',
+                class: '',
+                label: 'Ver',
+            },
+            {
+                icon: 'pi pi-send',
+                accion: 'PUBLICAR',
+                class: '',
+                label: 'Publicar',
+            },
+        ],
     },
     [VIDEO_CONFERENCIA]: {
         'icon-color': 'text-pink-500',

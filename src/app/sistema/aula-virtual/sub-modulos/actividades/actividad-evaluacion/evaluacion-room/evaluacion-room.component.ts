@@ -2,8 +2,6 @@ import { IconComponent } from '@/app/shared/icon/icon.component'
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
 import { CommonModule } from '@angular/common'
 import { Component, inject, Input, OnInit, OnDestroy } from '@angular/core'
-import { ButtonModule } from 'primeng/button'
-import { TabViewModule } from 'primeng/tabview'
 import { LeyendaTareasComponent } from '../../components/leyenda-tareas/leyenda-tareas.component'
 import { provideIcons } from '@ng-icons/core'
 import {
@@ -21,6 +19,8 @@ import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.ser
 import { Subject, takeUntil } from 'rxjs'
 import { EvaluacionFormPreguntasComponent } from '../evaluacion-form/evaluacion-form-preguntas/evaluacion-form-preguntas.component'
 import { EvaluacionRoomCalificacionComponent } from './evaluacion-room-calificacion/evaluacion-room-calificacion.component'
+import { PrimengModule } from '@/app/primeng.module'
+import { EditorNoToolbarDirective } from '@/app/shared/directives/editor-no-toolbar.directive'
 
 @Component({
     selector: 'app-evaluacion-room',
@@ -28,12 +28,12 @@ import { EvaluacionRoomCalificacionComponent } from './evaluacion-room-calificac
     imports: [
         CommonModule,
         IconComponent,
-        TabViewModule,
-        ButtonModule,
         TablePrimengComponent,
+        PrimengModule,
         LeyendaTareasComponent,
         EvaluacionFormPreguntasComponent,
         EvaluacionRoomCalificacionComponent,
+        EditorNoToolbarDirective,
     ],
     templateUrl: './evaluacion-room.component.html',
     styleUrl: './evaluacion-room.component.scss',
@@ -60,6 +60,7 @@ export class EvaluacionRoomComponent implements OnInit, OnDestroy {
     private unsbscribe$ = new Subject<boolean>()
     public iPerfilId = 1
     public evaluacion
+    public cEvaluacionInstrucciones
 
     ngOnInit() {
         this.obtenerEvaluacion()
@@ -76,6 +77,8 @@ export class EvaluacionRoomComponent implements OnInit, OnDestroy {
             .subscribe({
                 next: (resp) => {
                     this.evaluacion = resp
+                    this.cEvaluacionInstrucciones =
+                        this.evaluacion.cEvaluacionDescripcion
                 },
             })
     }

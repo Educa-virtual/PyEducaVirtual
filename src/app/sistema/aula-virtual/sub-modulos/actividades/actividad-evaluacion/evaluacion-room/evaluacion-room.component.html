@@ -132,10 +132,10 @@
                     <div
                         class="bg-gray-100 p-1 border-round min-h-10rem flex gap-2 flex-column"
                     >
-                        <div
-                            class="ql-editor"
-                            [innerHTML]="evaluacion?.cEvaluacionDescripcion"
-                        ></div>
+                        <p-editor
+                            appEditorNoToolbar
+                            [(ngModel)]="cEvaluacionInstrucciones"
+                        ></p-editor>
                     </div>
                 </article>
                 <article class="card">

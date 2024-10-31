@@ -120,7 +120,6 @@ export class TareaRoomComponent {
             type: 'actions',
         },
     ]
-
     data
     grupoSeleccionado
     cTareaDescripcion: string

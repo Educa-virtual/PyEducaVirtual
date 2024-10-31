@@ -87,13 +87,16 @@ export const routes: Routes = [
                 loadChildren: () =>
                     import('./sistema/evaluaciones/evaluaciones.routes'),
             },
-        ],
-    },
-    {
-        path: 'especialista-ugel',
+            // Ruta de Especialista
+            {
+                path: 'especialista-ugel',
 
-        loadChildren: () =>
-            import('./sistema/especialista-ugel/especialista-ugel.routes'),
+                loadChildren: () =>
+                    import(
+                        './sistema/especialista-ugel/especialista-ugel.routes'
+                    ),
+            },
+        ],
     },
     {
         path: 'especialista-ugel',

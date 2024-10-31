@@ -73,6 +73,7 @@ export class IeparticipaComponent implements OnInit {
 
     Ugeles: Ugeles[] | undefined
     selectedUgeles: Ugeles | undefined
+    itemsToDelete: any
 
     constructor(
         private carService: ProductService,
@@ -146,29 +147,13 @@ export class IeparticipaComponent implements OnInit {
                 },
             })
     }
-    IEnoparticipan(event: any) {
-        // Obtener los elementos movidos
-        const itemsMoved = event.items
-        console.log(
-            'Elementos movidos de IEnoparticipan a IEparticipan:',
-            itemsMoved
-        )
-    }
-    // IEparticipan(event: any) {
-    //     // Obtener los elementos movidos
-    //     const itemsMoved = event.items
-    //     console.log(
-    //         'Elementos movidos de IEpertenece a IEnopertenece :',
-    //         itemsMoved
-    //     )
-    // }
     // Cuando se mueve un elemento a "Participan"
     IEparticipan(event: any) {
         const itemsMoved = event.items
         console.log('Moviendo a Participan:', itemsMoved)
         const payload = {
             items: itemsMoved.map((item) => ({
-                iEvaluacionId: 107, //!ESTA EN MODO MANUAL; CAMBIAR POR EL ID DE LA EVALUACION
+                iEvaluacionId: 106, //!ESTA EN MODO MANUAL; CAMBIAR POR EL ID DE LA EVALUACION
                 iIieeId: item.iIieeId,
             })),
         }
@@ -179,14 +164,22 @@ export class IeparticipaComponent implements OnInit {
     }
 
     // Cuando se mueve un elemento a "No participan"
-    // IEnoparticipan(event: any) {
-    //     const itemsMoved = event.items
-    //     console.log('Moviendo a No participan:', itemsMoved)
-    //     this._apiEre.eliminarParticipacion(itemsMoved).subscribe(
-    //         (response) => console.log('Eliminación exitosa:', response),
-    //         (error) => console.error('Error al eliminar:', error)
-    //     )
-    // }
+    IEnoparticipan(event: any) {
+        const itemsMoved = event.items
+        console.log('Moviendo a No Participan:', itemsMoved)
+
+        itemsMoved.forEach((item) => {
+            console.log('Item:', item) // Verifica la estructura
+            console.log('ID a eliminar:', item.iIieeId) // Verifica el ID que se va a enviar
+            console.log('Nombre a eliminar:', item.cIieeNombre)
+            console.log('Codigo Modular a eliminar:', item.iIeeParticipaId)
+            this._apiEre.eliminarParticipacion(item.iIieeId).subscribe(
+                (response) => console.log('Eliminación exitosa:', response),
+                (error) => console.error('Error al eliminar:', error)
+            )
+        })
+        console.log('Moviendo a No Participan:', itemsMoved)
+    }
 
     IEnoparticipanall(event: any) {
         // Obtener los elementos movidos

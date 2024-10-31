@@ -17,28 +17,9 @@
                 <div
                     class="col-12 md:col-5 flex flex-column align-items-center"
                 >
-                    <img
-                        src="https://img.freepik.com/premium-photo/man-with-glasses-shirt-that-says-i-am-man_1040335-134710.jpg"
-                        alt=""
-                        width="300vw%"
-                        height="300vh"
-                        class="perfil-redondo"
-                    />
-                    <div style="margin-top: -0.5rem">
-                        <button
-                            pButton
-                            pRipple
-                            type="button"
-                            severity="danger"
-                            class="p-button-outlined w-full btn-file-image mt-1 mb-3"
-                        >
-                            <i class="pi pi-camera"></i>&nbsp; Subir Foto de
-                            Perfil<input
-                                type="file"
-                                accept=".png, .jpg, .jpeg, "
-                            />
-                        </button>
-                    </div>
+                    <app-image-upload-primeng
+                        (actionImageUpload)="accionBtnItem($event)"
+                    ></app-image-upload-primeng>
                 </div>
                 <div class="col-12 md:col-7">
                     <div class="grid">

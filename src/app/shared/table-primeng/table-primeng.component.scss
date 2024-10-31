@@ -7,7 +7,7 @@
     background-color: #e6e6ee;
 }
 .hoverTable tr:hover {
-    background-color: #d1e7f0;
+    background-color: var(--highlight-bg);
 }
 tr {
     font-size: 0.75rem;

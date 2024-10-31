@@ -4,7 +4,9 @@
     </article>
 </div>
 
-<div class="flex flex-column gap-4 md:flex-row">
+<div
+    class="flex flex-column gap-4 md:flex-row md:align-items-start align-items-stretch"
+>
     <div class="flex flex-column gap-2 card">
         <div class="flex gap-4 align-items-center flex-wrap mx-auto">
             <app-leyenda
@@ -41,6 +43,7 @@
             [value]="evaluacionesEstudiantes"
             selectionMode="single"
             [(selection)]="evaluacionSeleccionada"
+            (onRowSelect)="seleccionarEvaluacion()"
         >
             <ng-template pTemplate="header">
                 <tr>
@@ -67,13 +70,17 @@
         </p-table>
     </div>
 
-    <div class="flex flex-column flex-1">
+    <div class="flex flex-column flex-1 gap-4">
         @if (!!evaluacionSeleccionada) {
             <app-evaluacion-info
                 [evaluacion]="evaluacionSeleccionada"
             ></app-evaluacion-info>
 
-            <div class="flex flex-column gap-4">
+            <div>
+                <h3>Preguntas</h3>
+                <hr />
+            </div>
+            <div class="flex flex-column gap-4 preguntas-container">
                 <p-accordion [multiple]="true">
                     @for (
                         pregunta of evaluacionSeleccionada.preguntas;
@@ -81,9 +88,11 @@
                     ) {
                         <p-accordionTab [selected]="true">
                             <ng-template pTemplate="header">
-                                <span class="truncate-text">
-                                    {{ pregunta['cPregunta'] | removeHTML }}
-                                </span>
+                                <div class="ellipsis">
+                                    <span class="">
+                                        {{ pregunta['cPregunta'] | removeHTML }}
+                                    </span>
+                                </div>
                             </ng-template>
                             <app-banco-pregunta-preview-item
                                 [pregunta]="pregunta"
@@ -95,6 +104,7 @@
             </div>
         } @else {
             <app-empty-section
+                class="w-full"
                 [message]="'Ningun Estudiante seleccionado'"
             ></app-empty-section>
         }

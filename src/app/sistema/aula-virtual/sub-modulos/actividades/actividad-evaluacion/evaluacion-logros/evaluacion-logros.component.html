@@ -3,9 +3,11 @@
         @for (pregunta of preguntas; track $index) {
             <p-accordionTab [selected]="true">
                 <ng-template pTemplate="header">
-                    <span class="truncate-text">
-                        {{ pregunta['cPregunta'] | removeHTML }}
-                    </span>
+                    <div class="ellipsis">
+                        <span>
+                            {{ pregunta['cPregunta'] | removeHTML }}
+                        </span>
+                    </div>
                 </ng-template>
                 <app-banco-pregunta-preview-item
                     [pregunta]="pregunta"

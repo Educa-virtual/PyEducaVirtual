@@ -86,7 +86,23 @@ export class EvaluacionRoomCalificacionComponent implements OnInit {
             })
     }
 
-    public seleccionarEvaluacion(evaluacion) {
-        this.evaluacionSeleccionada = evaluacion
+    private obtenerEvaluacionRespuestasEstudiante() {
+        const params = {
+            iEvaluacionId: this.iEvaluacionId,
+            iEstudianteId: this.evaluacionSeleccionada.iEstudianteId,
+        }
+        this._evaluacionesService
+            .obtenerEvaluacionRespuestasEstudiante(params)
+            .pipe(takeUntil(this._unsubscribe$))
+            .subscribe({
+                next: (resp) => {
+                    this.evaluacionSeleccionada.preguntas = resp
+                    console.log(this.evaluacionSeleccionada.preguntas)
+                },
+            })
+    }
+
+    public seleccionarEvaluacion() {
+        this.obtenerEvaluacionRespuestasEstudiante()
     }
 }

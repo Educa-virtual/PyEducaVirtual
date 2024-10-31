@@ -9,7 +9,7 @@ import {
 } from '@/app/sistema/aula-virtual/sub-modulos/actividades/components/leyenda-tareas/leyenda-item/leyenda-item.component'
 import { LeyendaTareasComponent } from '@/app/sistema/aula-virtual/sub-modulos/actividades/components/leyenda-tareas/leyenda-tareas.component'
 import { CommonModule } from '@angular/common'
-import { Component, inject, Input } from '@angular/core'
+import { Component, inject, Input, OnChanges } from '@angular/core'
 import { provideIcons } from '@ng-icons/core'
 import { matListAlt, matPeople } from '@ng-icons/material-icons/baseline'
 import { ButtonModule } from 'primeng/button'
@@ -22,6 +22,7 @@ import { FileUploadPrimengComponent } from '../../../../../../shared/file-upload
 import { FormGrupoComponent } from '../form-grupo/form-grupo.component'
 import { GeneralService } from '@/app/servicios/general.service'
 import { ModalPrimengComponent } from '../../../../../../shared/modal-primeng/modal-primeng.component'
+import { environment } from '@/environments/environment.template'
 
 @Component({
     selector: 'app-tarea-room',
@@ -39,16 +40,20 @@ import { ModalPrimengComponent } from '../../../../../../shared/modal-primeng/mo
         FormGrupoComponent,
         ModalPrimengComponent,
     ],
+
     templateUrl: './tarea-room.component.html',
     styleUrl: './tarea-room.component.scss',
     providers: [provideIcons({ matListAlt, matPeople }), DialogService],
 })
-export class TareaRoomComponent {
+export class TareaRoomComponent implements OnChanges {
     @Input() iTareaId: string
 
     private _dialogService = inject(DialogService)
     private GeneralService = inject(GeneralService)
 
+    ngOnInit() {
+        this.obtenerEscalaCalificaciones()
+    }
     ngOnChanges(changes) {
         if (changes.iTareaId?.currentValue) {
             this.iTareaId = changes.iTareaId.currentValue
@@ -122,6 +127,8 @@ export class TareaRoomComponent {
     ]
     data
     grupoSeleccionado
+    iTareaEstudianteId
+    cTareaTitulo: string
     cTareaDescripcion: string
     tareaAsignar: number
     FilesTareas = []
@@ -129,7 +136,9 @@ export class TareaRoomComponent {
         { name: 'Individual', value: 0 },
         { name: 'Grupal', value: 1 },
     ]
-
+    escalaCalificaciones = []
+    iEscalaCalifId
+    cTareaEstudianteComentarioDocente
     getInformation(params, condition) {
         this.GeneralService.getGralPrefix(params).subscribe({
             next: (response) => {
@@ -165,7 +174,8 @@ export class TareaRoomComponent {
             class: 'p-button-rounded p-button-primary p-button-text',
         },
     ]
-
+    tareasFalta: number = 0
+    tareasCulminado: number = 0
     public accionBtnItem(elemento) {
         const { accion } = elemento
         const { item } = elemento
@@ -180,8 +190,15 @@ export class TareaRoomComponent {
                 this.showModal = false
                 break
             case 'get-tarea-estudiantes':
-                console.log(item)
                 this.estudiantes = item
+                const falta = this.estudiantes.filter((i) => i.cEstado === '0')
+                const culminado = this.estudiantes.filter(
+                    (i) => i.cEstado === '1'
+                )
+
+                this.tareasFalta = falta.length
+                this.tareasCulminado = culminado.length
+
                 break
             case 'update-tareas':
                 !this.tareaAsignar
@@ -213,25 +230,51 @@ export class TareaRoomComponent {
                 break
             case 'get-tareas':
                 this.data = item.length ? item[0] : []
+                this.cTareaTitulo = this.data?.cTareaTitulo
                 this.cTareaDescripcion = this.data?.cTareaDescripcion
                 this.FilesTareas = this.data?.cTareaArchivoAdjunto
                     ? JSON.parse(this.data?.cTareaArchivoAdjunto)
                     : []
+                this.tareaAsignar = Number(this.data?.bTareaEsGrupal)
+                this.tareaAsignar !== null
+                    ? this.accionBtnItem({
+                          accion: 'save-tarea-cabecera-grupos',
+                          item: [],
+                      })
+                    : null
+
+                break
+            case 'get-escala-calificaciones':
+                this.escalaCalificaciones = item
+                break
+            case 'guardar-calificacion-docente':
+                this.tareaAsignar !== null
+                    ? this.accionBtnItem({
+                          accion: 'save-tarea-cabecera-grupos',
+                          item: [],
+                      })
+                    : null
                 break
             default:
                 break
         }
     }
 
-    ngOninit() {}
-
     estudianteSeleccionado
+    cTareaEstudianteUrlEstudiante
     getTareaRealizada(item) {
-        console.log(item)
         this.estudianteSeleccionado = item
+        this.cTareaEstudianteUrlEstudiante = item.cTareaEstudianteUrlEstudiante
+            ? JSON.parse(item.cTareaEstudianteUrlEstudiante)
+            : []
+        this.iTareaEstudianteId = item.iTareaEstudianteId
+        this.iEscalaCalifId = item.iEscalaCalifId
+        this.cTareaEstudianteComentarioDocente =
+            item.cTareaEstudianteComentarioDocente
     }
 
     updateTareas() {
+        this.estudianteSeleccionado = null
         const params = {
             petition: 'post',
             group: 'aula-virtual',
@@ -290,5 +333,40 @@ export class TareaRoomComponent {
             params: { skipSuccessMessage: true },
         }
         this.getInformation(params, 'get-' + params.prefix)
+    }
+
+    obtenerEscalaCalificaciones() {
+        const params = {
+            petition: 'post',
+            group: 'evaluaciones',
+            prefix: 'escala-calificaciones',
+            ruta: 'list',
+            data: {
+                opcion: 'CONSULTAR',
+            },
+            params: { skipSuccessMessage: true },
+        }
+        this.getInformation(params, 'get-' + params.prefix)
+    }
+    guardarTareaEstudiantesxDocente() {
+        const params = {
+            petition: 'post',
+            group: 'aula-virtual',
+            prefix: 'tarea-estudiantes',
+            ruta: 'guardar-calificacion-docente',
+            data: {
+                opcion: 'GUARDAR-CALIFICACION-DOCENTE',
+                iTareaEstudianteId: this.iTareaEstudianteId,
+                iEscalaCalifId: this.iEscalaCalifId,
+                cTareaEstudianteComentarioDocente:
+                    this.cTareaEstudianteComentarioDocente,
+                nTareaEstudianteNota: 0,
+            },
+        }
+        this.getInformation(params, 'guardar-calificacion-docente')
+    }
+    goLinkDocumento(ruta: string) {
+        const backend = environment.backend
+        window.open(backend + '/' + ruta, '_blank')
     }
 }

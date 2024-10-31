@@ -39,6 +39,7 @@ import { ModalPrimengComponent } from '../../../../../../shared/modal-primeng/mo
         FormGrupoComponent,
         ModalPrimengComponent,
     ],
+
     templateUrl: './tarea-room.component.html',
     styleUrl: './tarea-room.component.scss',
     providers: [provideIcons({ matListAlt, matPeople }), DialogService],
@@ -298,4 +299,13 @@ export class TareaRoomComponent implements OnChanges {
         }
         this.getInformation(params, 'get-' + params.prefix)
     }
+
+    selectedGrade: any
+    gradeScale = [
+        { label: 'Selecciona una opción', value: '' },
+        { label: 'AD - Logro destacado', value: 'AD' },
+        { label: 'A - Logro esperado', value: 'A' },
+        { label: 'B - En proceso de logro', value: 'B' },
+        { label: 'C - En inicio de logro', value: 'C' },
+    ]
 }

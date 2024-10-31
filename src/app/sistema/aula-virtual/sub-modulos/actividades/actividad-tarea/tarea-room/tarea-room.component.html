@@ -5,7 +5,7 @@
                 <div class="flex align-items-center flex-column gap-2">
                     <app-icon name="matListAlt"></app-icon>
                     <span class="font-bold white-space-nowrap m-0">
-                        Instrucciones
+                        Tarea
                     </span>
                 </div>
             </ng-template>
@@ -96,7 +96,7 @@
                 </article>
                 <article class="card col-6">
                     <div class="p-card p-p-3">
-                        <h2>Trabajo Estudiante : {{ null }}</h2>
+                        <h2>Tarea Estudiante: {{ null }}</h2>
 
                         <!-- Campo de entrada de texto para tarea -->
 
@@ -126,8 +126,6 @@
                                     justify-content: center;
                                 "
                             >
-                                <h2>Tarea: {{ null }}</h2>
-
                                 <div
                                     style="
                                         display: flex;
@@ -629,96 +627,14 @@
                                             <p-inputGroup>
                                                 <p-inputGroupAddon
                                                     class="text-sm"
-                                                    >Comentario:</p-inputGroupAddon
+                                                    >Titulo
+                                                    Tarea:</p-inputGroupAddon
                                                 >
                                                 <textarea
                                                     rows="2"
                                                     pInputText
                                                     class="flex-auto w-full"
                                                 ></textarea>
-                                            </p-inputGroup>
-                                        </div>
-                                        <div class="field col-12 md:col-12">
-                                            <p-inputGroup>
-                                                <p-table
-                                                    #dv
-                                                    class="col-12 hoverTable"
-                                                    [value]="documentos"
-                                                    paginator="false"
-                                                    styleClass="p-datatable-sm"
-                                                >
-                                                    <ng-template
-                                                        pTemplate="header"
-                                                    >
-                                                        <tr>
-                                                            <th
-                                                                style="
-                                                                    width: 10rem;
-                                                                "
-                                                            >
-                                                                Documento
-                                                                Adjunto
-                                                            </th>
-                                                            <th
-                                                                style="
-                                                                    width: 0.5rem;
-                                                                    text-align: center;
-                                                                "
-                                                            >
-                                                                Acción
-                                                            </th>
-                                                        </tr>
-                                                    </ng-template>
-                                                    <ng-template
-                                                        pTemplate="emptymessage"
-                                                        let-columns
-                                                    >
-                                                        <tr>
-                                                            <td
-                                                                [attr.colspan]="
-                                                                    documentos.length
-                                                                "
-                                                            >
-                                                                No se
-                                                                encontraron
-                                                                resultados.
-                                                            </td>
-                                                        </tr>
-                                                    </ng-template>
-                                                    <ng-template
-                                                        pTemplate="body"
-                                                        let-item
-                                                        let-rowIndex="rowIndex"
-                                                    >
-                                                        <tr>
-                                                            <td
-                                                                class="font-bold"
-                                                            >
-                                                                {{
-                                                                    item.cDocumento
-                                                                }}
-                                                            </td>
-                                                            <td
-                                                                style="
-                                                                    text-align: center;
-                                                                "
-                                                            >
-                                                                <p-button
-                                                                    icon="pi pi-eye"
-                                                                    pTooltip="Ver Documento"
-                                                                    tooltipPosition="top"
-                                                                    [rounded]="
-                                                                        true
-                                                                    "
-                                                                    [text]="
-                                                                        true
-                                                                    "
-                                                                    severity="info"
-                                                                />
-                                                            </td>
-                                                        </tr>
-                                                    </ng-template>
-                                                </p-table>
                                             </p-inputGroup>
                                         </div>
                                     </div>
@@ -729,61 +645,23 @@
                                     [toggleable]="true"
                                 >
                                     <div class="formgrid grid">
-                                        <div class="field col-12 md:col-8">
-                                            <p-inputGroup>
+                                        <div class="w-full">
+                                            <p-inputGroup class="w-full">
                                                 <p-inputGroupAddon
                                                     class="text-sm"
-                                                    >Nivel
-                                                    Logro</p-inputGroupAddon
-                                                >
-                                                <textarea
-                                                    rows="1"
-                                                    pInputText
-                                                    class="flex-auto w-full"
-                                                ></textarea>
-                                            </p-inputGroup>
-                                        </div>
-                                        <div class="field col-12 md:col-4">
-                                            <p-inputGroup>
-                                                <p-inputGroupAddon
-                                                    class="text-sm"
-                                                    >Puntaje</p-inputGroupAddon
+                                                    >Escala de
+                                                    calificación</p-inputGroupAddon
                                                 >
                                                 <p-dropdown
-                                                    styleClass="flex-auto w-full"
-                                                    [options]="[]"
-                                                    placeholder="Seleccionar Calificación"
-                                                    optionLabel="cCalificacion"
-                                                    optionValue="cCalificacionId"
-                                                />
+                                                    [(ngModel)]="gradeScale"
+                                                    [options]="gradeScale"
+                                                    optionLabel="label"
+                                                    placeholder="Seleccione calificación"
+                                                    class="w-full"
+                                                ></p-dropdown>
                                             </p-inputGroup>
                                         </div>
-                                        <div class="field col-12 md:col-12">
-                                            <p-inputGroup>
-                                                <p-inputGroupAddon
-                                                    class="text-sm"
-                                                    >Observación</p-inputGroupAddon
-                                                >
-                                                <textarea
-                                                    rows="2"
-                                                    pInputText
-                                                    class="flex-auto w-full"
-                                                ></textarea>
-                                            </p-inputGroup>
-                                        </div>
-                                        <div class="field col-12 md:col-12">
-                                            <p-inputGroup>
-                                                <p-inputGroupAddon
-                                                    class="text-sm"
-                                                    >Documento
-                                                    Adjunto</p-inputGroupAddon
-                                                >
-                                                <app-file-upload-primeng
-                                                    [nameFile]="'tareas'"
-                                                    [nameOption]="'tareas'"
-                                                ></app-file-upload-primeng>
-                                            </p-inputGroup>
-                                        </div>
+
                                         <div class="field col-12 md:col-12">
                                             <p-table
                                                 #dv
@@ -863,18 +741,30 @@
                                         </div>
                                     </div>
                                 </p-fieldset>
+                                <div class="field col-12 md:col-12">
+                                    <p-inputGroup>
+                                        <p-inputGroupAddon class="text-sm"
+                                            >Documento
+                                            Adjunto</p-inputGroupAddon
+                                        >
+                                        <app-file-upload-primeng
+                                            [nameFile]="'tareas'"
+                                            [nameOption]="'tareas'"
+                                        ></app-file-upload-primeng>
+                                    </p-inputGroup>
+                                </div>
                                 <p-divider></p-divider>
                                 <div class="grid">
                                     <div class="col-12 text-right">
-                                        <p-button
+                                        <!-- <p-button
                                             severity="danger"
                                             label="Devolver Tarea"
                                             icon="pi pi-chevron-left"
                                             iconPos="left"
-                                        />&nbsp;&nbsp;
+                                        />&nbsp;&nbsp; -->
                                         <p-button
                                             severity="success"
-                                            label="Guardar Calificación"
+                                            label="Guardar"
                                             icon="pi pi-plus"
                                             iconPos="left"
                                         />

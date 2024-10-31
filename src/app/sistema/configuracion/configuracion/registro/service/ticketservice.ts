@@ -19,6 +19,13 @@ export class TicketService {
             fechaVigente: string
             fechaInicio: Date
             fechaFin: Date
+            matriculaInicio?: Date
+            matriculaFin?: Date,
+            fasesPromocionales?: {
+                iFasePromId: string, 
+                cFasePromNombre: string,
+                faseStatus?: boolean
+            }[]
         }
 
         stepDiasLaborales?: {
@@ -42,7 +49,7 @@ export class TicketService {
         stepPeriodosAcademicos?: {
             iPeriodoEvalAperId?: string
             iPeriodoEvalId: string
-            cPeriodoEvalNombre: string
+            cPeriodoEvalNombre: 'semestral' | 'trimestral' | 'bimestral'
             cPeriodoEvalLetra: string
             iPeriodoEvalCantidad: string
             ciclosAcademicos?: {
@@ -136,4 +143,60 @@ export class TicketService {
 
         return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
     }
+    
+
+    periodosDuracion = {
+        bimestral: 60,
+        trimestral: 90,
+        semestral: 180,
+    };
+    
+    calcularFechaPeriodos(inicio, fin, tipo) {
+        // Verifica si el tipo es válido
+        const periodos = [];
+        const fechaInicio = new Date(inicio);
+        const fechaFin = new Date(fin);
+        const duracion = this.periodosDuracion[tipo];
+    
+        // Calcular la fecha de cada periodo
+        let contador = 1; // Contador para los períodos
+        let key;
+
+        for (const [clave, valor] of Object.entries(this.periodosDuracion)) {
+            if (tipo === 'trimestral') {
+                key = 'trimestre'; // Retorna la clave si el valor coincide
+            }
+            if (tipo === 'semestral') {
+                key = 'semestre'; // Retorna la clave si el valor coincide
+            }
+            if (tipo === 'bimestral') {
+                key = 'bimestre'; // Retorna la clave si el valor coincide
+            }
+        }
+    
+    
+        while (fechaInicio < fechaFin) {
+            // Clonar fecha de inicio para calcular la fecha de fin del período
+            const fechaFinPeriodo = new Date(fechaInicio.getTime());
+            fechaFinPeriodo.setDate(fechaFinPeriodo.getDate() + duracion);
+    
+            // Añadir el período al array
+            periodos.push({
+                fechaInicio: new Date(fechaInicio),
+                fechaFin: fechaFinPeriodo > fechaFin ? new Date(fechaFin) : fechaFinPeriodo,
+                descripcion: `${contador}° ${key}`,
+            });
+    
+            // Avanzar el inicio para el próximo período
+            fechaInicio.setDate(fechaInicio.getDate() + duracion);
+            contador++;
+        }
+    
+    
+    
+        return periodos;
+    }
+    
+    
+    
 }

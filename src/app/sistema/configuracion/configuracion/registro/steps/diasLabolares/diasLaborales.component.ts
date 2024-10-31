@@ -32,6 +32,8 @@ export class DiasLaboralesComponent implements OnInit, OnChanges {
 
     diasSelection: typeof this.ticketService.registroInformation.stepDiasLaborales
 
+    diasFetch: typeof this.ticketService.registroInformation.stepDiasLaborales
+
     constructor(
         private httpService: httpService,
         public ticketService: TicketService,
@@ -77,6 +79,8 @@ export class DiasLaboralesComponent implements OnInit, OnChanges {
                 })
                 .subscribe({
                     next: (data: any) => {
+                        console.log('Dias Laborales')
+                        console.log(JSON.parse(data.data[0]["calDiasDatos"]))
 
 
                         let filterDiasLaborales = JSON.parse(data.data[0]["calDiasDatos"]).map((dia)=> ({
@@ -87,6 +91,8 @@ export class DiasLaboralesComponent implements OnInit, OnChanges {
                             cDiaAbreviado: dia.cDiaAbreviado,
 
                         }))
+
+                        this.diasFetch = filterDiasLaborales
 
                         const resultado = this.dias.map(diaOption => {
                             const coincidencia = filterDiasLaborales.find(diaSelect => diaSelect.iDiaId === diaOption.iDiaId);
@@ -149,7 +155,6 @@ export class DiasLaboralesComponent implements OnInit, OnChanges {
     }
 
     onSelectionChange(columnsChecked: typeof this.ticketService.registroInformation.stepDiasLaborales) {
-        console.log(columnsChecked);
         
 
         this.ticketService.setTicketInformation(columnsChecked, 'stepDiasLaborales')
@@ -161,7 +166,7 @@ export class DiasLaboralesComponent implements OnInit, OnChanges {
             this.createDiasLaborales()
         }
         if (this.ticketService.registroInformation?.mode == 'edit') {
-            this.updateDiasLaborales()
+            this.deleteDiasLaborales()
         }
     }
 
@@ -184,12 +189,15 @@ export class DiasLaboralesComponent implements OnInit, OnChanges {
         })
     }
 
-    updateDiasLaborales(){
+    deleteDiasLaborales(){
+        console.log(this.ticketService.registroInformation.stepDiasLaborales)
+
         let create = this.ticketService.registroInformation.stepDiasLaborales.filter((dia) => !dia.iDiaLabId).map((dia) => ({
             iCalAcadId: this.ticketService.registroInformation.calendar.iCalAcadId,
             iDiaId: dia.iDiaId,
         }))
 
+        console.log('creando')
         console.log(create)
         
         this.httpService
@@ -210,18 +218,24 @@ export class DiasLaboralesComponent implements OnInit, OnChanges {
         })
 
         
-        let update = this.ticketService.registroInformation.stepDiasLaborales.filter((dia) => dia.iDiaLabId).map((dia) => ({
-            iDiaLabId: dia.iDiaLabId,
-            iCalAcadId: this.ticketService.registroInformation.calendar.iCalAcadId,
-            iDiaId: dia.iDiaId,
-        }))
+        const diasLaboralesIds = new Set(this.ticketService.registroInformation.stepDiasLaborales.map(dia => dia.iDiaLabId));
+
+        // Filtra y mapea los días de diasFetch que no están en el Set de IDs
+        let update = this.diasFetch
+            .filter(dia => !diasLaboralesIds.has(dia.iDiaLabId))
+            .map(dia => ({
+                iDiaLabId: dia.iDiaLabId,
+                cDiaNombre: dia.cDiaNombre
+            }));
         
+        
+        console.log('Eliminando')
         console.log(update)
 
         this.httpService
         .postData('acad/calendarioAcademico/addCalAcademico', {
             json: JSON.stringify(update),
-            _opcion: 'updateDiasLaborales',
+            _opcion: 'deleteDiasLaborales',
         })
         .subscribe({
             next: (data: any) => {

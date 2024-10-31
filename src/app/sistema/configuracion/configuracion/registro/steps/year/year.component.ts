@@ -17,7 +17,7 @@ import { ConfirmationService, MessageService } from 'primeng/api'
 import { ConfirmDialogModule } from 'primeng/confirmdialog'
 import { ToastModule } from 'primeng/toast'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
-
+import { CheckboxModule } from 'primeng/checkbox'
 import { FormControl } from '@angular/forms'
 @Component({
     selector: 'app-year',
@@ -32,6 +32,7 @@ import { FormControl } from '@angular/forms'
         ReactiveFormsModule,
         ConfirmDialogModule,
         ToastModule,
+        CheckboxModule,
     ],
     templateUrl: './year.component.html',
     styleUrl: './year.component.scss',
@@ -59,12 +60,18 @@ export class YearComponent implements OnInit, OnChanges {
         private messageService: MessageService,
         private fb: FormBuilder,
         private localService: LocalStoreService
-    ) {}
+    ) {
+        this.form = this.fb.group({
+            fechaVigente: [''],
+            fechaInicio: [''],
+            fechaFin: [''],
+            fechaMatriculaInicio: [''],
+            fechaMatriculaFin: [''],
+            regular: false,
+            recuperacion: false,
+        })
+    }
     ngOnInit() {
-        console.log('inicialización');
-        console.log(this.ticketService.registroInformation);
-        
-
         if (this.ticketService.registroInformation?.mode === 'create') {
             this.httpService
                 .postData('acad/calendarioAcademico/addCalAcademico', {
@@ -78,9 +85,6 @@ export class YearComponent implements OnInit, OnChanges {
                                 'JSON_F52E2B61-18A1-11d1-B105-00805F49916B'
                             ]
                         )[0]
-                        console.log('creando')
-
-                        console.log(filterYearActive)
 
                         this.ticketService.setTicketInformation(
                             {
@@ -92,19 +96,6 @@ export class YearComponent implements OnInit, OnChanges {
                             },
                             'stepYear'
                         )
-
-                        // let fechaCurrent = filterYearActive.map(
-                        //     (fecha) => ({
-                        //         fechaVigente: fecha.cYAcadNombre,
-                        //         fechaInicio: new Date(fecha.dtYAcadInicio),
-                        //         fechaFin: new Date(fecha.dYAcadFin),
-                        //     })
-                        // )
-
-                        // this.ticketService.setTicketInformation(
-                        //     ,
-                        //     'stepYear'
-                        // )
                     },
                     error: (error) => {
                         console.error('Error fetching turnos:', error)
@@ -112,7 +103,7 @@ export class YearComponent implements OnInit, OnChanges {
                     complete: () => {
                         console.log('Request completed')
 
-                        this.form.setValue({
+                        this.form.patchValue({
                             fechaVigente:
                                 this.ticketService.registroInformation.stepYear
                                     .fechaVigente,
@@ -145,8 +136,14 @@ export class YearComponent implements OnInit, OnChanges {
                     next: (data: any) => {
                         let filterCalendar = JSON.parse(
                             data.data[0]['calendarioAcademico']
-                        ).find((calendario) => calendario.iCalAcadId == this.ticketService.registroInformation.calendar
-                        .iCalAcadId)
+                        ).find(
+                            (calendario) =>
+                                calendario.iCalAcadId ==
+                                this.ticketService.registroInformation.calendar
+                                    .iCalAcadId
+                        )
+
+                        console.log(filterCalendar)
 
                         this.ticketService.setTicketInformation(
                             {
@@ -159,6 +156,13 @@ export class YearComponent implements OnInit, OnChanges {
                                     filterCalendar.dtCalAcadInicio
                                 ),
                                 fechaFin: new Date(filterCalendar.dtCalAcadFin),
+                                matriculaInicio: new Date(
+                                    filterCalendar.dtCalAcadMatriculaInicio
+                                ),
+                                matriculaFin: new Date(
+                                    filterCalendar.dtCalAcadMatriculaFin
+                                ),
+                                // fasesPromocionales: filterCalendar.bCalAcadFaseRegular,
                             },
                             'stepYear'
                         )
@@ -169,7 +173,7 @@ export class YearComponent implements OnInit, OnChanges {
                     complete: () => {
                         console.log('Request completed')
 
-                        this.form.setValue({
+                        this.form.patchValue({
                             fechaVigente:
                                 this.ticketService.registroInformation.stepYear
                                     .fechaVigente,
@@ -179,18 +183,56 @@ export class YearComponent implements OnInit, OnChanges {
                             fechaFin:
                                 this.ticketService.registroInformation.stepYear
                                     .fechaFin,
+                            fechaMatriculaInicio:
+                                this.ticketService.registroInformation.stepYear
+                                    .matriculaInicio,
+                            fechaMatriculaFin:
+                                this.ticketService.registroInformation.stepYear
+                                    .matriculaFin,
+                            // regular:
+                            //     this.ticketService.registroInformation.stepYear
+                            //         .faseRegular,
+                            // recuperacion:
+                            //     this.ticketService.registroInformation.stepYear
+                            //         .faseRecuperacion,
                         })
 
                         this.form.get('fechaVigente').disable()
                     },
                 })
-        }
 
-        this.form = this.fb.group({
-            fechaVigente: [''],
-            fechaInicio: [''],
-            fechaFin: [''],
-        })
+
+            this.httpService
+                .postData('acad/calendarioAcademico/addCalAcademico', {
+                    json: JSON.stringify({
+                        jmod: 'acad',
+                        jtable: 'fases_promocionales',
+                    }),
+                    _opcion: 'getConsulta',
+                })
+                .subscribe({
+                    next: (data: any) => {
+                        console.log(data)
+                    },
+                    error: (error) => {
+                        console.error('Error fetching turnos:', error)
+                    },
+                    complete: () => {
+                        console.log('Request completed')
+
+                        // this.form.patchValue({
+                        //     regular:
+                        //         this.ticketService.registroInformation.stepYear
+                        //             .faseRegular,
+                        //     recuperacion:
+                        //         this.ticketService.registroInformation.stepYear
+                        //             .faseRecuperacion,
+                        // })
+
+                        this.form.get('fechaVigente').disable()
+                    },
+                })
+        }
 
         // Suscribirse a los cambios del formulario después de la inicialización
         this.form.valueChanges.subscribe((value) => {
@@ -198,7 +240,12 @@ export class YearComponent implements OnInit, OnChanges {
                 ...this.ticketService.registroInformation.stepYear,
                 fechaInicio: value.fechaInicio,
                 fechaFin: value.fechaFin,
+                // faseRecuperacion: value.recuperacion,
+                // faseRegular: value.regular,
+                matriculaFin: value.fechaMatriculaFin,
+                matriculaInicio: value.fechaMatriculaInicio,
             }
+            console.log(value)
         })
     }
 
@@ -257,6 +304,8 @@ export class YearComponent implements OnInit, OnChanges {
                     dtCalAcadFin:
                         this.ticketService.registroInformation.stepYear
                             .fechaFin,
+                    bCalAcadFaseRegular: 1,
+                    bCalAcadFaseRecuperacion: 1,
                 }),
                 _opcion: 'addCalAcademico',
             })
@@ -274,9 +323,9 @@ export class YearComponent implements OnInit, OnChanges {
     }
 
     updateCalendario() {
-        console.log(this.ticketService.registroInformation);
-        
-    
+        console.log(this.ticketService.registroInformation.stepYear)
+        console.log(this.ticketService.registroInformation)
+
         this.httpService
             .postData('acad/calendarioAcademico/addCalAcademico', {
                 json: JSON.stringify({
@@ -294,6 +343,18 @@ export class YearComponent implements OnInit, OnChanges {
                     dtCalAcadFin:
                         this.ticketService.registroInformation.stepYear
                             .fechaFin,
+                    dtCalAcadMatriculaInicio:
+                        this.ticketService.registroInformation.stepYear
+                            .matriculaInicio,
+                    dtCalAcadMatriculaFin:
+                        this.ticketService.registroInformation.stepYear
+                            .matriculaFin,
+                    // bCalAcadFaseRegular:
+                    //     this.ticketService.registroInformation.stepYear
+                    //         .faseRegular,
+                    // bCalAcadFaseRecuperacion:
+                    //     this.ticketService.registroInformation.stepYear
+                    //         .faseRecuperacion,
                 }),
                 _opcion: 'updateCalAcademico',
             })

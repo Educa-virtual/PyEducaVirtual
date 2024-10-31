@@ -118,6 +118,7 @@ export class TurnosComponent implements OnInit, OnChanges {
             eliminar: () => {
                 // Lógica para la acción "eliminar"
                 console.log('Eliminando')
+                console.log(row.item)
             },
         }
 

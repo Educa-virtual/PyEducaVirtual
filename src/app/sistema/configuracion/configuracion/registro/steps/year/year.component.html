@@ -22,7 +22,7 @@
                 [showIcon]="true"
                 inputId="yearInicio"
             />
-            <label for="yearInicio">Año inicio</label>
+            <label for="yearInicio">Fecha inicio de año</label>
         </p-floatLabel>
         <p-floatLabel>
             <p-calendar
@@ -32,8 +32,42 @@
                 [showIcon]="true"
                 inputId="yearFin"
             />
-            <label for="yearFin">Año fin</label>
+            <label for="yearFin">Fecha fin de año</label>
         </p-floatLabel>
+    </div>
+    <div>
+        <p-floatLabel>
+            <p-calendar
+                [style]="{ width: '100%' }"
+                [inputStyle]="{ width: '100%' }"
+                formControlName="fechaMatriculaInicio"
+                [showIcon]="true"
+                inputId="matriculaInicio"
+            />
+            <label for="matriculaInicio">Fecha matricula inicio</label>
+        </p-floatLabel>
+        <p-floatLabel>
+            <p-calendar
+                [style]="{ width: '100%' }"
+                [inputStyle]="{ width: '100%' }"
+                formControlName="fechaMatriculaFin"
+                [showIcon]="true"
+                inputId="matriculaFin"
+            />
+            <label for="matriculaFin">Fecha matricula fin</label>
+        </p-floatLabel>
+    </div>
+    <div>
+        <p-checkbox 
+        binary="true"
+        formControlName="regular"
+        label="Fase regular"
+        />
+    <p-checkbox 
+        binary="true"
+        formControlName="recuperacion"
+        label="Fase de recuperación"
+        />
     </div>
 
     <div class="navigator">

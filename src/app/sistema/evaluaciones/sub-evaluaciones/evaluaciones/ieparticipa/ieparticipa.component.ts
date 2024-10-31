@@ -87,6 +87,7 @@ export class IeparticipaComponent implements OnInit {
 
         this.obtenerIE()
         this.obtenerNivelTipo()
+        this.obtenerugel()
 
         this.nivelTipo = [
             { cNivelTipoNombre: 'Primaria', iNivelTipoId: 'NY' },
@@ -121,21 +122,27 @@ export class IeparticipaComponent implements OnInit {
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
                 next: (resp: unknown) => {
-                    /*.competencias = resp['data']
-                  this.competencias.unshift({
-                      iCompentenciaId: 0,
-                      cCompetenciaDescripcion: 'Todos',
-                  })*/
                     console.log('Datos obtenidos de obtenerNivelTipo:', resp) // Imprime la respuesta completa
                     this.nivelTipo = resp['data']
                     console.log(
                         'Nivel tipo asignado a this.nivelTipo:',
                         this.nivelTipo
-                    ) // Imprime los datos asignados
-                    // Asegúrate de que esto sea correcto; probablemente no debas sobrescribir sourceProducts aquí.
-                    //this.nivelTipo = resp['data'] //aqui recuperar
-                    // alert(JSON.stringify(this.data))
-                    // this.sourceProducts = this.data //aqui recuperar
+                    )
+                },
+            })
+    }
+    obtenerugel() {
+        this._apiEre
+            .obtenerUgeles(this.params)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+                next: (resp: unknown) => {
+                    console.log('Datos obtenidos de Ugel:', resp) // Imprime la respuesta completa
+                    this.Ugeles = resp['data']
+                    console.log(
+                        'Nivel tipo asignado a this.ugel:',
+                        this.nivelTipo
+                    )
                 },
             })
     }
@@ -147,14 +154,40 @@ export class IeparticipaComponent implements OnInit {
             itemsMoved
         )
     }
+    // IEparticipan(event: any) {
+    //     // Obtener los elementos movidos
+    //     const itemsMoved = event.items
+    //     console.log(
+    //         'Elementos movidos de IEpertenece a IEnopertenece :',
+    //         itemsMoved
+    //     )
+    // }
+    // Cuando se mueve un elemento a "Participan"
     IEparticipan(event: any) {
-        // Obtener los elementos movidos
         const itemsMoved = event.items
-        console.log(
-            'Elementos movidos de IEpertenece a IEnopertenece :',
-            itemsMoved
+        console.log('Moviendo a Participan:', itemsMoved)
+        const payload = {
+            items: itemsMoved.map((item) => ({
+                iEvaluacionId: 107, //!ESTA EN MODO MANUAL; CAMBIAR POR EL ID DE LA EVALUACION
+                iIieeId: item.iIieeId,
+            })),
+        }
+        this._apiEre.guardarParticipacion(payload).subscribe(
+            (response) => console.log('Guardado exitoso:', response),
+            (error) => console.error('Error al guardar:', error)
         )
     }
+
+    // Cuando se mueve un elemento a "No participan"
+    // IEnoparticipan(event: any) {
+    //     const itemsMoved = event.items
+    //     console.log('Moviendo a No participan:', itemsMoved)
+    //     this._apiEre.eliminarParticipacion(itemsMoved).subscribe(
+    //         (response) => console.log('Eliminación exitosa:', response),
+    //         (error) => console.error('Error al eliminar:', error)
+    //     )
+    // }
+
     IEnoparticipanall(event: any) {
         // Obtener los elementos movidos
         const itemsMoved = event.items
@@ -164,11 +197,17 @@ export class IeparticipaComponent implements OnInit {
         )
     }
     IEparticipanall(event: any) {
-        // Obtener los elementos movidos
         const itemsMoved = event.items
-        console.log(
-            'Elementos movidos de IEpertenece a IEnopertenece :',
-            itemsMoved
+        console.log('Moviendo a Participan:', itemsMoved)
+        const payload = {
+            items: itemsMoved.map((item) => ({
+                iEvaluacionId: 107, //!ESTA EN MODO MANUAL; CAMBIAR POR EL ID DE LA EVALUACION
+                iIieeId: item.iIieeId,
+            })),
+        }
+        this._apiEre.guardarParticipacion(payload).subscribe(
+            (response) => console.log('Guardado exitoso:', response),
+            (error) => console.error('Error al guardar:', error)
         )
     }
     seleccionados() {

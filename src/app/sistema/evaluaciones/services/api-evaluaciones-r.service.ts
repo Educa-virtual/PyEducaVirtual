@@ -74,6 +74,24 @@ export class ApiEvaluacionesRService {
             data
         )
     }
+    guardarParticipacion(data) {
+        return this.http.post(
+            `${this.baseUrl}/ere/Evaluaciones/guardarParticipacion`,
+            data
+        )
+    }
+    IEparticipanall(data) {
+        return this.http.post(
+            `${this.baseUrl}/ere/Evaluaciones/IEparticipanall`,
+            data
+        )
+    }
+    // eliminarParticipacion(data) {
+    //     return this.http.post(
+    //         `${this.baseUrl}/ere/evaluaciones/eliminarParticipacion`,
+    //         data
+    //     )
+    // }
 
     generarWordByPreguntasIds(baseParams) {
         const url = `${this.baseUrlBackend}/generarWordBancoPreguntasSeleccionadas`

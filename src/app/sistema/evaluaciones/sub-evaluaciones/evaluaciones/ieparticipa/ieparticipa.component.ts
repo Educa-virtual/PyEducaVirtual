@@ -87,6 +87,7 @@ export class IeparticipaComponent implements OnInit {
 
         this.obtenerIE()
         this.obtenerNivelTipo()
+        this.obtenerugel()
 
         this.nivelTipo = [
             { cNivelTipoNombre: 'Primaria', iNivelTipoId: 'NY' },
@@ -121,21 +122,27 @@ export class IeparticipaComponent implements OnInit {
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
                 next: (resp: unknown) => {
-                    /*.competencias = resp['data']
-                  this.competencias.unshift({
-                      iCompentenciaId: 0,
-                      cCompetenciaDescripcion: 'Todos',
-                  })*/
                     console.log('Datos obtenidos de obtenerNivelTipo:', resp) // Imprime la respuesta completa
                     this.nivelTipo = resp['data']
                     console.log(
                         'Nivel tipo asignado a this.nivelTipo:',
                         this.nivelTipo
-                    ) // Imprime los datos asignados
-                    // Asegúrate de que esto sea correcto; probablemente no debas sobrescribir sourceProducts aquí.
-                    //this.nivelTipo = resp['data'] //aqui recuperar
-                    // alert(JSON.stringify(this.data))
-                    // this.sourceProducts = this.data //aqui recuperar
+                    )
+                },
+            })
+    }
+    obtenerugel() {
+        this._apiEre
+            .obtenerUgeles(this.params)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+                next: (resp: unknown) => {
+                    console.log('Datos obtenidos de Ugel:', resp) // Imprime la respuesta completa
+                    this.Ugeles = resp['data']
+                    console.log(
+                        'Nivel tipo asignado a this.ugel:',
+                        this.nivelTipo
+                    )
                 },
             })
     }

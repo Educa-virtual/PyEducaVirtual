@@ -2,39 +2,29 @@ import { removeHTML } from '@/app/shared/utils/remove-html'
 
 // convierte los datos de las preguntas
 export const mapPregunta = (pregunta, alternativas) => {
-    return {
-        iPreguntaId: pregunta.iBancoId,
-        cPregunta: pregunta.cBancoPregunta,
-        cPreguntaNoHTML: removeHTML(pregunta.cBancoPregunta),
-        iCursoId: pregunta.iCursoId,
-        iDocenteId: pregunta.iDocenteId,
-        iTipoPregId: pregunta.iTipoPregId,
-        iEncabPregId: pregunta.idEncabPregId,
-        iPreguntaPeso: pregunta.nBancoPuntaje,
-        cEncabPregTitulo: pregunta.cEncabPregTitulo,
-        cEncabPregContenido: pregunta.cTipoPregDescripcion,
-        alternativas: alternativas,
-        iHoras: pregunta.iHoras,
-        iMinutos: pregunta.iMinutos,
-        iSegundos: pregunta.iSegundos,
-        cPreguntaTextoAyuda: pregunta.cBancoTextoAyuda,
-        cTipoPregDescripcion: pregunta.cTipoPregDescripcion,
-        iEvalPregId: pregunta.iEvalPregId,
-        isLocal: false,
-        iEvaluacionId: pregunta.iEvaluacionId,
-        logros: pregunta.logros ?? [],
-    }
+    pregunta.iPreguntaId = pregunta.iBancoId
+    pregunta.cPregunta = pregunta.cBancoPregunta
+    pregunta.cPreguntaNoHTML = removeHTML(pregunta.cBancoPregunta)
+    pregunta.iEncabPregId = pregunta.idEncabPregId
+    pregunta.iPreguntaPeso = pregunta.nBancoPuntaje
+    pregunta.cEncabPregContenido = pregunta.cTipoPregDescripcion
+    pregunta.alternativas = alternativas
+    pregunta.cPreguntaTextoAyuda = pregunta.cBancoTextoAyuda
+    pregunta.isLocal = false
+    pregunta.logros = pregunta.logros ?? []
+    pregunta.jEvalRptaEstudiante =
+        pregunta.jEvalRptaEstudiante && JSON.parse(pregunta.jEvalRptaEstudiante)
+    return pregunta
 }
 
 // mapea los datos de las alternativas
 export const mapAlternativa = (alternativa) => {
-    return {
-        iAlternativaId: alternativa.iBancoAltId,
-        cAlternativaDescripcion: alternativa.cBancoAltDescripcion,
-        cAlternativaLetra: alternativa.cBancoAltLetra,
-        bAlternativaCorrecta: alternativa.bBancoAltRptaCorrecta ? 1 : 0,
-        cAlternativaExplicacion: alternativa.cBancoAltExplicacionRpta,
-    }
+    alternativa.iAlternativaId = alternativa.iBancoAltId
+    alternativa.cAlternativaDescripcion = alternativa.cBancoAltDescripcion
+    alternativa.cAlternativaLetra = alternativa.cBancoAltLetra
+    alternativa.bAlternativaCorrecta = alternativa.bBancoAltRptaCorrecta ? 1 : 0
+    alternativa.cAlternativaExplicacion = alternativa.cBancoAltExplicacionRpta
+    return alternativa
 }
 
 // mapea los datos de la pregunta encabezado

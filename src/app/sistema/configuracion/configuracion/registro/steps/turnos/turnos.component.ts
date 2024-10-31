@@ -92,6 +92,7 @@ export class TurnosComponent implements OnInit, OnChanges {
                 // Lógica para la acción "editar"
                 console.log('Editando')
                 console.log(row.item)
+                this.ticketService.setTicketInformation('edit','modal')
 
                 this.showDialog()
 
@@ -185,8 +186,8 @@ export class TurnosComponent implements OnInit, OnChanges {
                         this.ticketService.registroInformation.calendar
                             .iCalAcadId,
                     dtAperTurnoInicio:
-                        this.formasAtencionModal.dtAperTurnoInicio,
-                    dtAperTurnoFin: this.formasAtencionModal.dtAperTurnoFin,
+                        this.ticketService.convertToSQLDateTime(this.formasAtencionModal.dtAperTurnoInicio),
+                    dtAperTurnoFin: this.ticketService.convertToSQLDateTime(this.formasAtencionModal.dtAperTurnoFin),
                 }),
                 _opcion: 'addCalTurno',
             })
@@ -194,10 +195,11 @@ export class TurnosComponent implements OnInit, OnChanges {
                 next: (data: any) => {
                     // this.modalidades = data.data
 
-                    this.getFormasAtencion()
                 },
                 error: (error) => {
                     console.error('Error fetching turnos:', error)
+                    // ? Mover hasta que la consulta no de error
+                    this.getFormasAtencion()
                 },
                 complete: () => {
                     console.log('Request completed')

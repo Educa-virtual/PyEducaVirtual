@@ -24,7 +24,6 @@ export class ResumenComponent implements OnInit, OnChanges {
         private router: Router) {}
 
     nextPage() {
-        this.ticketService.registroInformation.stepTurnos = this.resumenInformation;
         this.router.navigate([
             'configuracion/configuracion/registro/periodos',
         ])

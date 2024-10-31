@@ -4,10 +4,10 @@
     </div>
     <app-table-primeng
         [showCaption]="false"
-        [columnas]="columns"
+        [columnas]="columnsPeriodosAcademicos"
         [actions]="actions"
         [showPaginator]="false"
-        [data]="periodos"
+        [data]="periodosAcademicos"
     >
     </app-table-primeng>
     <div class="navigator">
@@ -16,7 +16,7 @@
     </div>
 
     <p-dialog
-        header="Periodo academico"
+        header="Periodo académico"
         [(visible)]="visible"
         [style]="{ width: '56rem' }"
     >
@@ -26,7 +26,8 @@
             >
             <div class="flex align-items-center gap-3 mb-5">
                 <p-dropdown
-                    [options]="periodos"
+                    (onChange)="calculandoCicloAcademico()"
+                    [options]="periodosAcademicos"
                     optionLabel="cPeriodoEvalNombre"
                     placeholder="Seleccione un periodo"
                     formControlName="periodo"
@@ -38,7 +39,7 @@
                     [columnas]="columnasCicloAcademico"
                     [actions]="actions"
                     [showPaginator]="false"
-                    [data]="periodos"
+                    [data]="cicloAcademicoModal?.ciclosAcademicos ?? []"
                     (accionBtnItem)="handleActions($event)"
                 >
                 </app-table-primeng>

@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core'
 import { Subject } from 'rxjs'
 
-export type ArrayElement<ArrayType extends readonly unknown[]> = ArrayType extends readonly (infer ElementType)[] ? ElementType : never;
+export type ArrayElement<ArrayType extends readonly unknown[]> =
+    ArrayType extends readonly (infer ElementType)[] ? ElementType : never
 
 @Injectable()
 export class TicketService {
@@ -38,20 +39,17 @@ export class TicketService {
             dtAperTurnoInicio: Date
             dtAperTurnoFin: Date
         }[]
-        stepTurnos?: {
-            turno: string
-            horaInicio: Date
-            horaFin: Date
-        }[]
-        stepModalidades?: {
-            modalidad: string
-        }[]
         stepPeriodosAcademicos?: {
-            periodoAcademico: string
-            ciclos?: {
-                ciclo: string
-                fechaInicio: Date
-                fechaFin: Date
+            iPeriodoEvalAperId?: string
+            iPeriodoEvalId: string
+            cPeriodoEvalNombre: string
+            cPeriodoEvalLetra: string
+            iPeriodoEvalCantidad: string
+            ciclosAcademicos?: {
+                PeriodType: string
+                iPeriodoEvalId: string
+                StartDate: string
+                EndDate: string
             }[]
         }[]
     }
@@ -116,28 +114,26 @@ export class TicketService {
 
     convertToSQLDateTime(input) {
         // Verifica si el input contiene solo una hora o una fecha completa
-        const timeOnlyPattern = /^\d{2}:\d{2}$/;
-        let dateObject;
-        
+        const timeOnlyPattern = /^\d{2}:\d{2}$/
+        let dateObject
+
         if (timeOnlyPattern.test(input)) {
             // Si es solo hora, combínala con la fecha actual
-            const currentDate = new Date().toISOString().slice(0, 10);
-            dateObject = new Date(`${currentDate}T${input}:00`);
+            const currentDate = new Date().toISOString().slice(0, 10)
+            dateObject = new Date(`${currentDate}T${input}:00`)
         } else {
             // Si es una fecha completa, intenta convertirla a Date
-            dateObject = new Date(input);
+            dateObject = new Date(input)
         }
-    
+
         // Formatea la fecha y hora al formato SQL 'YYYY-MM-DD HH:mm:ss'
-        const year = dateObject.getFullYear();
-        const month = String(dateObject.getMonth() + 1).padStart(2, '0');
-        const day = String(dateObject.getDate()).padStart(2, '0');
-        const hours = String(dateObject.getHours()).padStart(2, '0');
-        const minutes = String(dateObject.getMinutes()).padStart(2, '0');
-        const seconds = String(dateObject.getSeconds()).padStart(2, '0');
-    
-        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+        const year = dateObject.getFullYear()
+        const month = String(dateObject.getMonth() + 1).padStart(2, '0')
+        const day = String(dateObject.getDate()).padStart(2, '0')
+        const hours = String(dateObject.getHours()).padStart(2, '0')
+        const minutes = String(dateObject.getMinutes()).padStart(2, '0')
+        const seconds = String(dateObject.getSeconds()).padStart(2, '0')
+
+        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
     }
-    
-    
 }

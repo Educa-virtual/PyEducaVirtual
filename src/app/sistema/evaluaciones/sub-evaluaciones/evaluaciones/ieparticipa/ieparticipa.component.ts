@@ -6,6 +6,8 @@
 //     Output,
 //     EventEmitter,
 // }
+//Agregar Servicio de Evaluacion
+import { CompartirIdEvaluacionService } from './../../../services/ereEvaluaciones/compartir-id-evaluacion.service'
 import { Component, ChangeDetectorRef, inject, OnInit } from '@angular/core'
 /*import { Product } from '@domain/product';
 import { ProductService } from '@service/productservice';*/
@@ -77,7 +79,8 @@ export class IeparticipaComponent implements OnInit {
 
     constructor(
         private carService: ProductService,
-        private cdr: ChangeDetectorRef
+        private cdr: ChangeDetectorRef,
+        private compartirIdEvaluacionService: CompartirIdEvaluacionService
     ) {}
     ngOnInit() {
         this.carService.getProductsSmall().then((products) => {
@@ -153,7 +156,8 @@ export class IeparticipaComponent implements OnInit {
         console.log('Moviendo a Participan:', itemsMoved)
         const payload = {
             items: itemsMoved.map((item) => ({
-                iEvaluacionId: 106, //!ESTA EN MODO MANUAL; CAMBIAR POR EL ID DE LA EVALUACION
+                iEvaluacionId: this.compartirIdEvaluacionService.iEvaluacionId,
+                //!ESTA EN MODO MANUAL; CAMBIAR POR EL ID DE LA EVALUACION
                 iIieeId: item.iIieeId,
             })),
         }
@@ -182,19 +186,30 @@ export class IeparticipaComponent implements OnInit {
     }
 
     IEnoparticipanall(event: any) {
-        // Obtener los elementos movidos
         const itemsMoved = event.items
         console.log(
             'Elementos movidos de IEnoparticipan a IEparticipan:',
             itemsMoved
         )
+
+        itemsMoved.forEach((item) => {
+            console.log('ID a eliminar:', item.iIieeId)
+            console.log('Nombre a eliminar:', item.cIieeNombre)
+            console.log('Codigo Modular a eliminar:', item.iIeeParticipaId)
+
+            this._apiEre.eliminarParticipacion(item.iIieeId).subscribe(
+                (response) => console.log('Eliminación exitosa:', response),
+                (error) => console.error('Error al eliminar:', error)
+            )
+        })
     }
     IEparticipanall(event: any) {
         const itemsMoved = event.items
         console.log('Moviendo a Participan:', itemsMoved)
         const payload = {
             items: itemsMoved.map((item) => ({
-                iEvaluacionId: 107, //!ESTA EN MODO MANUAL; CAMBIAR POR EL ID DE LA EVALUACION
+                //!ESTA EN MODO MANUAL; CAMBIAR POR EL ID DE LA EVALUACION
+                iEvaluacionId: this.compartirIdEvaluacionService.iEvaluacionId,
                 iIieeId: item.iIieeId,
             })),
         }

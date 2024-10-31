@@ -1,3 +1,5 @@
+//Agregar Servicio de Evaluacion
+import { CompartirIdEvaluacionService } from './../../../services/ereEvaluaciones/compartir-id-evaluacion.service'
 import { Component, inject, OnInit } from '@angular/core'
 
 /*BOTONES */
@@ -103,6 +105,10 @@ export class EvaluacionesFormComponent implements OnInit {
     fecha: string
     visible: boolean = false
     value!: string
+    //Agregar Servicio de Evaluacion
+    constructor(
+        private compartirIdEvaluacionService: CompartirIdEvaluacionService
+    ) {} // Inyección del servicio
 
     ngOnInit() {
         /*this.tipoEvaluacion = [
@@ -115,16 +121,11 @@ export class EvaluacionesFormComponent implements OnInit {
 
     guardarEvaluacion() {
         const data = {
-            //iEvaluacionId: this.evaluacionFormGroup.get('iEvaluacionId').value, //borrar
             idTipoEvalId: this.evaluacionFormGroup.get('idTipoEvalId').value,
             iNivelEvalId: this.evaluacionFormGroup.get('iNivelEvalId').value,
-            //cambios desde aqui
             dtEvaluacionCreacion: this.evaluacionFormGroup.get(
                 'dtEvaluacionCreacion'
             ).value,
-            // dtEvaluacionCreacion: this.formatDate(
-            //     this.evaluacionFormGroup.get('dtEvaluacionCreacion').value
-            // ),
             cEvaluacionNombre:
                 this.evaluacionFormGroup.get('cEvaluacionNombre').value,
             cEvaluacionDescripcion: this.evaluacionFormGroup.get(
@@ -155,44 +156,35 @@ export class EvaluacionesFormComponent implements OnInit {
             ).value,
         }
         console.log(data)
-
-        // this._apiEre
-        //     .guardarEvaluacion(data)
-        //     .pipe(takeUntil(this.unsubscribe$))
-        //     .subscribe({
-        //         next: (resp: any) => {
-        //             this.iEvaluacionId = resp['data'][0]['iEvaluacionId'] // Captura el ID generado
-        //             console.log(
-        //                 'ID de Evaluación guardado:',
-        //                 this.iEvaluacionId
-        //             )
-        //             this.iEvaluacionId = resp['data'][0]['iEvaluacionId']
-
-        //             //alert(JSON.stringify(this.data))
-        //             //this.sourceProducts = this.data
-        //         },
-        //         error: (error) => {
-        //             console.error('Error al guardar la evaluación:', error) // Captura el error aquí
-        //             alert('Error en el servidor: ' + JSON.stringify(error))
-        //         },
-        //     })
+        this._apiEre
+            .guardarEvaluacion(data)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+                next: (resp: any) => {
+                    this.iEvaluacionId = resp['data'][0]['iEvaluacionId'] // Captura el ID generado
+                    this.compartirIdEvaluacionService.iEvaluacionId =
+                        this.iEvaluacionId // Guardar en el servicio
+                    console.log(
+                        'ID de Evaluación guardado:',
+                        this.iEvaluacionId
+                    )
+                    this.iEvaluacionId = resp['data'][0]['iEvaluacionId']
+                    //alert(JSON.stringify(this.data))
+                    //this.sourceProducts = this.data
+                },
+                error: (error) => {
+                    console.error('Error al guardar la evaluación:', error) // Captura el error aquí
+                    alert('Error en el servidor: ' + JSON.stringify(error))
+                },
+            })
     }
-
     obtenerTipoEvaluacion() {
         this._apiEre
             .obtenerTipoEvaluacion(this.params)
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
                 next: (resp: unknown) => {
-                    /*.competencias = resp['data']
-                    this.competencias.unshift({
-                        iCompentenciaId: 0,
-                        cCompetenciaDescripcion: 'Todos',
-                    })*/
-
                     this.tipoEvaluacion = resp['data']
-                    //alert(JSON.stringify(this.data))
-                    //this.sourceProducts = this.data
                 },
             })
     }
@@ -203,15 +195,7 @@ export class EvaluacionesFormComponent implements OnInit {
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
                 next: (resp: unknown) => {
-                    /*.competencias = resp['data']
-                    this.competencias.unshift({
-                        iCompentenciaId: 0,
-                        cCompetenciaDescripcion: 'Todos',
-                    })*/
-
                     this.nivelEvaluacion = resp['data']
-                    //alert(JSON.stringify(this.data))
-                    //this.sourceProducts = this.data
                 },
             })
     }
@@ -227,49 +211,4 @@ export class EvaluacionesFormComponent implements OnInit {
         // Resetear el formulario si es necesario
         this.evaluacionFormGroup.reset()
     }
-
-    // notaInsertEvaluacion guardaractualizaralternativa es el verdadero
-    // guardarActualizarAlternativa() {
-    //     // if (this.evaluacionFormGroup.invalid) {
-    //     //     this.evaluacionFormGroup.markAllAsTouched()
-    //     //     return
-    //     // }
-    //     // alert('guardar')
-    //     if (this.evaluacionFormGroup.valid) {
-    //         console.log(
-    //             'Datos del formulario de evaluación guardados:',
-    //             this.evaluacionFormGroup.value
-    //         )
-    //         // Lógica para guardar el formulario (puede enviar los datos a Laravel, por ejemplo)
-    //     } else {
-    //         console.log('Formulario de evaluación no válido')
-    //     }
-    // }
-    // guardarActualizarAlternativa() {
-    //     if (this.evaluacionFormGroup.valid) {
-    //         console.log(
-    //             'Datos del formulario de evaluación guardados:',
-    //             this.evaluacionFormGroup.value
-    //         )
-
-    //         // Llama al método del servicio para guardar los datos en la base de datos
-    //         this._apiEre
-    //             .guardarEvaluacion(this.evaluacionFormGroup.value)
-    //             .pipe(takeUntil(this.unsubscribe$))
-    //             .subscribe({
-    //                 next: (response) => {
-    //                     console.log('Evaluación guardada con éxito:', response)
-    //                     // Aquí puedes agregar lógica adicional, como cerrar el modal o mostrar un mensaje de éxito
-    //                     this.closeModal(true)
-    //                 },
-    //                 error: (error) => {
-    //                     console.error('Error al guardar la evaluación:', error)
-    //                     // Aquí puedes manejar el error, como mostrar un mensaje de error
-    //                 },
-    //             })
-    //     } else {
-    //         console.log('Formulario de evaluación no válido')
-    //         this.evaluacionFormGroup.markAllAsTouched() // Resaltar todos los campos como tocados
-    //     }
-    // }
 }

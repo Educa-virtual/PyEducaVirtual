@@ -22,7 +22,8 @@ import { EvaluacionAreasComponent } from './../evaluacion-areas/evaluacion-areas
 
 import { ApiEvaluacionesRService } from '../../../services/api-evaluaciones-r.service'
 import { Subject, takeUntil } from 'rxjs'
-import { DynamicDialogRef } from 'primeng/dynamicdialog'
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog'
+
 import {
     FormBuilder,
     FormsModule,
@@ -68,7 +69,7 @@ export class EvaluacionesFormComponent implements OnInit {
     private _ref = inject(DynamicDialogRef)
 
     public evaluacionFormGroup = this._formBuilder.group({
-        iEvaluacionId: [null, [Validators.required]], //borrar
+        iEvaluacionId: [null, [Validators.required]],
         idTipoEvalId: [null, [Validators.required]],
         iNivelEvalId: [null, [Validators.required]],
         cEvaluacionDescripcion: [null, [Validators.required]],
@@ -95,11 +96,8 @@ export class EvaluacionesFormComponent implements OnInit {
     public data = []
     private _apiEre = inject(ApiEvaluacionesRService)
     tipoEvaluacion: TipoEvaluacion[] | undefined
-
     iEvaluacionId: any
-
     selectedTipoEvaluacion: TipoEvaluacion | undefined
-
     nivelEvaluacion: NivelEvaluacion[] | undefined
     selectedNivelEvaluacion: TipoEvaluacion | undefined
     fecha: string
@@ -107,16 +105,64 @@ export class EvaluacionesFormComponent implements OnInit {
     value!: string
     //Agregar Servicio de Evaluacion
     constructor(
-        private compartirIdEvaluacionService: CompartirIdEvaluacionService
-    ) {} // Inyección del servicio
-
+        private _config: DynamicDialogConfig, // Inyección de configuración
+        private compartirIdEvaluacionService: CompartirIdEvaluacionService // Inyección del servicio
+    ) {
+        this.evaluacionFormGroup = this._formBuilder.group({
+            iEvaluacionId: [null],
+            idTipoEvalId: [null, [Validators.required]],
+            iNivelEvalId: [null, [Validators.required]],
+            cEvaluacionNombre: [null, [Validators.required]],
+            cEvaluacionDescripcion: [null, [Validators.required]],
+            cEvaluacionUrlDrive: [null, [Validators.required]],
+            cEvaluacionUrlPlantilla: [null, [Validators.required]],
+            cEvaluacionUrlManual: [null, [Validators.required]],
+            cEvaluacionUrlMatriz: [null, [Validators.required]],
+            cEvaluacionObs: [null],
+            dtEvaluacionCreacion: [null, Validators.required],
+            dtEvaluacionLiberarMatriz: [null, Validators.required],
+            dtEvaluacionLiberarCuadernillo: [null, Validators.required],
+            dtEvaluacionLiberarResultados: [null, Validators.required],
+        })
+    }
+    convertToDate(dateString: string | null): Date | null {
+        if (!dateString) return null // Manejar null
+        const [day, month, year] = dateString.split('/') // Asumiendo que el formato es 'dd/MM/yyyy'
+        return new Date(+year, +month - 1, +day) // Recuerda que los meses son indexados desde 0
+    }
     ngOnInit() {
-        /*this.tipoEvaluacion = [
-            { nombre: 'New York', id: 1 },
-            { nombre: 'Rome', id: 1 }
-        ];*/
         this.obtenerTipoEvaluacion()
         this.obtenerNivelEvaluacion()
+
+        const evaluacionData = this._config.data.evaluacion // Obtener los datos del modal
+
+        if (evaluacionData) {
+            console.log(evaluacionData)
+            this.evaluacionFormGroup.patchValue({
+                iEvaluacionId: evaluacionData.iEvaluacionId,
+                idTipoEvalId: evaluacionData.idTipoEvalId,
+                iNivelEvalId: evaluacionData.iNivelEvalId,
+                cEvaluacionNombre: evaluacionData.cEvaluacionNombre,
+                cEvaluacionDescripcion: evaluacionData.cEvaluacionDescripcion,
+                cEvaluacionUrlDrive: evaluacionData.cEvaluacionUrlDrive,
+                cEvaluacionUrlPlantilla: evaluacionData.cEvaluacionUrlPlantilla,
+                cEvaluacionUrlManual: evaluacionData.cEvaluacionUrlManual,
+                cEvaluacionUrlMatriz: evaluacionData.cEvaluacionUrlMatriz,
+                cEvaluacionObs: evaluacionData.cEvaluacionObs,
+                // dtEvaluacionCreacion: this.convertToDate(
+                //     evaluacionData.dtEvaluacionCreacion
+                // ),
+                // dtEvaluacionLiberarMatriz: this.convertToDate(
+                //     evaluacionData.dtEvaluacionLiberarMatriz
+                // ),
+                // dtEvaluacionLiberarCuadernillo: this.convertToDate(
+                //     evaluacionData.dtEvaluacionLiberarCuadernillo
+                // ),
+                // dtEvaluacionLiberarResultados: this.convertToDate(
+                //     evaluacionData.dtEvaluacionLiberarResultados
+                // ),
+            })
+        }
     }
 
     guardarEvaluacion() {

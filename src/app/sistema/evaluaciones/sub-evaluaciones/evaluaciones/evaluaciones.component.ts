@@ -210,15 +210,34 @@ export class EvaluacionesComponent implements OnInit {
             // this.asignarPreguntas()
         }
         if (accion === 'editar') {
-            this.agregarEditarPregunta(item)
+            //this.agregarEditarPregunta(item)
         }
 
         if (accion === 'ver') {
             /// alert(item.iEvaluacionId)
+            this.verEreEvaluacion(item)
             // this.eliminarPregunta(item)
         }
     }
+    verEreEvaluacion(evaluacion) {
+        alert('iEvaluacionId' + evaluacion.iEvaluacionId)
+        const refModal = this._dialogService.open(EvaluacionesFormComponent, {
+            ...MODAL_CONFIG,
+            data: {
+                evaluacion: evaluacion,
+            },
+            header:
+                evaluacion?.iEvaluacionId == 0
+                    ? 'Nueva evaluación'
+                    : 'Editar evaluación',
+        })
 
+        refModal.onClose.subscribe((result) => {
+            if (result) {
+                this.obtenerEvaluacion() // Vuelve a obtener la evaluación si se realizó algún cambio
+            }
+        })
+    }
     // abrir el modal para agregar una nueva pregunta
     agregarEditarPregunta(evaluacion) {
         alert('iEvaluacionId' + evaluacion.iEvaluacionId)

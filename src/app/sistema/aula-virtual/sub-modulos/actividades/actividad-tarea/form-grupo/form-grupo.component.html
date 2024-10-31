@@ -1,5 +1,5 @@
 <app-modal-primeng
-    [title]="'Crear/Actualizar Grupo'"
+    [title]="opcion === 'GUARDAR' ? 'Crear Grupo' : 'Actualizar Grupo'"
     [showModal]="showModal"
     [width]="'35rem'"
     (accionBtnItem)="accionBtn($event)"
@@ -41,6 +41,7 @@
                                 [(ngModel)]="item.bAsignado"
                                 [binary]="true"
                                 inputId="binary"
+                                [disabled]="item.disabled"
                             />
                         </td>
                         <td>
@@ -59,9 +60,6 @@
             severity="secondary"
             (onClick)="accionBtn({ accion: 'close-modal', item: [] })"
         />
-        <p-button
-            [label]="'Crear/Actualizar'"
-            (onClick)="saveTareaCabeceraGrupos()"
-        />
+        <p-button [label]="opcion" (onClick)="saveTareaCabeceraGrupos()" />
     </div>
 </app-modal-primeng>

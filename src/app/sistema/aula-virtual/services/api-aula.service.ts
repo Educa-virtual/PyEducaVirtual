@@ -59,6 +59,12 @@ export class ApiAulaService {
                 })
             )
     }
+    guardarRespuesta(data) {
+        return this._http.post(
+            `${this.baseUrlApi}/aula-virtual/contenidos/foro/guardarRespuesta`,
+            data
+        )
+    }
     // fin de foro
     eliminarActividad(data) {
         return this._http.delete(

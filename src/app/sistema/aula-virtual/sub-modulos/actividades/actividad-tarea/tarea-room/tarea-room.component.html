@@ -9,11 +9,11 @@
                     </span>
                 </div>
             </ng-template>
-            <div class="flex flex-column gap-4">
+            <div class="flex flex-col-6">
                 <article class="card">
                     <h2>Tarea: {{ data?.cTareaTitulo }}</h2>
                     <div class="grid">
-                        <div class="col-12 md:col-6 flex flex-column gap-2">
+                        <div class="col-6 md:col-6 flex flex-column gap-2">
                             <span class="font-bold text-xl flex gap-2">
                                 <app-icon
                                     name="matCalendarMonth"
@@ -70,56 +70,103 @@
                             />
                         </div>
                     </div>
+                    <article>
+                        <h2>Recursos:</h2>
+                        <ul class="list-none p-0 m-0">
+                            @for (
+                                item of FilesTareas;
+                                track item;
+                                let idx = $index
+                            ) {
+                                <li
+                                    class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap"
+                                >
+                                    <div class="flex gap-2 align-items-center">
+                                        <i
+                                            class="pi pi-file text-lg text-primary"
+                                        ></i>
+                                        <span class="font-medium text-lg">{{
+                                            item.name
+                                        }}</span>
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    </article>
                 </article>
-                <article class="card">
-                    <h2>Recursos</h2>
-                    <ul class="list-none p-0 m-0">
-                        @for (
-                            item of FilesTareas;
-                            track item;
-                            let idx = $index
-                        ) {
-                            <li
-                                class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap"
+                <article class="card col-6">
+                    <div class="p-card p-p-3">
+                        <h2>Trabajo Estudiante : {{ null }}</h2>
+
+                        <!-- Campo de entrada de texto para tarea -->
+
+                        <input
+                            type="text"
+                            pInputText
+                            style="width: 100%"
+                            placeholder="Trabajo subido PPT EXPO.pdf "
+                        />
+
+                        <p-fileUpload
+                            name="myfile[]"
+                            url="./upload.php"
+                            multiple="multiple"
+                            accept="image/*"
+                            chooseLabel="Entregar trabajo"
+                        ></p-fileUpload>
+
+                        <!-- Información de entrega de trabajo  -->
+                        <article class="card">
+                            <div
+                                class="grid"
+                                style="
+                                    display: flex;
+                                    flex-direction: column;
+                                    align-items: center;
+                                    justify-content: center;
+                                "
                             >
-                                <div class="flex gap-2 align-items-center">
-                                    <i
-                                        class="pi pi-file text-lg text-primary"
-                                    ></i>
-                                    <span class="font-medium text-lg">{{
-                                        item.name
+                                <h2>Tarea: {{ null }}</h2>
+
+                                <div
+                                    style="
+                                        display: flex;
+                                        flex-direction: column;
+                                        align-items: center;
+                                        justify-content: center;
+                                        height: 100px;
+                                    "
+                                >
+                                    <app-icon
+                                        name="matCalendarMonth"
+                                        class="text-primary mr-2"
+                                        size="sm"
+                                    ></app-icon>
+                                    <p>Fecha y Hora de Entrega:</p>
+                                    <span>{{
+                                        data?.dtTareaFin | date: 'shortTime'
                                     }}</span>
                                 </div>
-                            </li>
-                        }
-                    </ul>
-                </article>
+                            </div>
+                        </article>
 
-                <article class="card flex flex-column gap-4">
-                    <h2>Tu Actividad</h2>
-
-                    <div class="flex justify-content-between gap-2 flex-wrap">
-                        <button pButton class="p-button-primary mx-auto">
-                            <p-fileUpload
-                                name="myFiles[]"
-                                url="YOUR_API_URL"
-                                multiple="true"
-                                chooseLabel="Seleccionar Actividad"
-                            ></p-fileUpload>
-                        </button>
+                        <!-- Nota de la tarea -->
+                        <div
+                            class="p-card p-mt-3 p-p-2"
+                            style="
+                                display: flex;
+                                flex-direction: column;
+                                align-items: center;
+                                justify-content: center;
+                                height: 100px;
+                            "
+                        >
+                            <h2 class="p-text-bold">Nota</h2>
+                            <h3>20</h3>
+                            <p>{{ null }}</p>
+                            <!-- Asegúrate de tener una variable llamada valorDinamico en tu componente -->
+                        </div>
                     </div>
-
-                    <!-- <div
-                        class="flex flex-column justify-content-center align-content-center border-2 border-dashed surface-border border-round surface-card h-10rem"
-                    >
-                        <p class="text-center">
-                            Arrastra o da Click para subir
-                        </p>
-                    </div> -->
-
-                    <!-- <button pButton class="p-button-primary mx-auto">
-                        Marcar como actividad completada
-                    </button> -->
                 </article>
             </div>
         </p-tabPanel>
@@ -168,7 +215,7 @@
                                 @if (!tareaAsignar) {
                                     <p-accordionTab header="Individual">
                                         <div class="grid">
-                                            <div class="col-4 leyenda-tareas">
+                                            <div class="col-6 leyenda-tareas">
                                                 <div
                                                     class="flex align-items-center"
                                                 >
@@ -188,30 +235,8 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-4 leyenda-tareas">
-                                                <div
-                                                    class="flex align-items-center"
-                                                >
-                                                    <div
-                                                        class="w-1rem h-1rem border-circle"
-                                                        [ngClass]="
-                                                            'bg-yellow-500'
-                                                        "
-                                                    ></div>
-                                                    <div>
-                                                        <b
-                                                            style="
-                                                                font-size: 1.5rem;
-                                                            "
-                                                            >&nbsp;25</b
-                                                        ><small
-                                                            >&nbsp;
-                                                            Proceso</small
-                                                        >
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-4 leyenda-tareas">
+
+                                            <div class="col-6 leyenda-tareas">
                                                 <div
                                                     class="flex align-items-center"
                                                 >
@@ -244,23 +269,7 @@
                                                     />
                                                 </span>
                                             </div>
-                                            <div class="col-6 text-right">
-                                                <!-- <p-button (onClick)="
-                                                        changeEstadoCheckbox()
-                                                    " [severity]="
-                                                        !estadoCheckbox
-                                                            ? 'info'
-                                                            : 'danger'
-                                                    " [label]="
-                                                        !estadoCheckbox
-                                                            ? 'Seleccionar Todos'
-                                                            : 'Desmarcar todo'
-                                                    " [icon]="
-                                                        !estadoCheckbox
-                                                            ? 'pi pi-check-square'
-                                                            : 'pi pi-times-circle'
-                                                    " iconPos="left" /> -->
-                                            </div>
+                                            <div class="col-6 text-right"></div>
                                             <p-table
                                                 #dv
                                                 class="col-12 hoverTable"
@@ -345,7 +354,7 @@
                                 } @else {
                                     <p-accordionTab header="Grupal">
                                         <div class="grid text-center">
-                                            <div class="col-4 leyenda-tareas">
+                                            <div class="col-6 leyenda-tareas">
                                                 <div
                                                     class="flex align-items-center"
                                                 >
@@ -365,30 +374,8 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-4 leyenda-tareas">
-                                                <div
-                                                    class="flex align-items-center"
-                                                >
-                                                    <div
-                                                        class="w-1rem h-1rem border-circle"
-                                                        [ngClass]="
-                                                            'bg-yellow-500'
-                                                        "
-                                                    ></div>
-                                                    <div>
-                                                        <b
-                                                            style="
-                                                                font-size: 1.5rem;
-                                                            "
-                                                            >&nbsp;25</b
-                                                        ><small
-                                                            >&nbsp;
-                                                            Proceso</small
-                                                        >
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-4 leyenda-tareas">
+
+                                            <div class="col-6 leyenda-tareas">
                                                 <div
                                                     class="flex align-items-center"
                                                 >
@@ -426,7 +413,11 @@
                                                     severity="info"
                                                     label="Crear Grupo"
                                                     icon="pi pi-plus"
-                                                    (onClick)="showModal = true"
+                                                    (onClick)="
+                                                        grupoSeleccionado =
+                                                            null;
+                                                        showModal = true
+                                                    "
                                                     iconPos="left"
                                                 />
                                             </div>
@@ -434,8 +425,7 @@
                                                 <p-accordion [activeIndex]="0">
                                                     @for (
                                                         item of grupos;
-                                                        track item.id;
-                                                        let idx = $index
+                                                        track item
                                                     ) {
                                                         <p-accordionTab>
                                                             <ng-template
@@ -474,11 +464,21 @@
                                                                                       : 'bg-green-500'
                                                                             "
                                                                         ></div>
-                                                                        &nbsp;
-                                                                        &nbsp;
-                                                                        <span
-                                                                            class="pi pi-pencil"
-                                                                        ></span>
+                                                                        <p-button
+                                                                            icon="pi pi-pencil"
+                                                                            [rounded]="
+                                                                                true
+                                                                            "
+                                                                            [text]="
+                                                                                true
+                                                                            "
+                                                                            severity="info"
+                                                                            (onClick)="
+                                                                                grupoSeleccionado =
+                                                                                    item;
+                                                                                showModal = true
+                                                                            "
+                                                                        />
                                                                     </div>
                                                                 </span>
                                                             </ng-template>
@@ -508,6 +508,9 @@
                                                                             <th>
                                                                                 Apellidos
                                                                             </th>
+                                                                            <th>
+                                                                                Transferir
+                                                                            </th>
                                                                         </tr>
                                                                     </ng-template>
                                                                     <ng-template
@@ -515,27 +518,43 @@
                                                                         let-estudiante
                                                                         let-rowIndex="rowIndex"
                                                                     >
-                                                                        <tr>
-                                                                            <td>
-                                                                                {{
-                                                                                    rowIndex +
-                                                                                        1
-                                                                                }}
-                                                                            </td>
-                                                                            <td>
-                                                                                {{
-                                                                                    estudiante?.cPersNombre
-                                                                                }}
-                                                                            </td>
-                                                                            <td>
-                                                                                {{
-                                                                                    estudiante.cPersPaterno
-                                                                                }}
-                                                                                {{
-                                                                                    estudiante.cPersMaterno
-                                                                                }}
-                                                                            </td>
-                                                                        </tr>
+                                                                        @if (
+                                                                            estudiante.bAsignado
+                                                                        ) {
+                                                                            <tr>
+                                                                                <td>
+                                                                                    {{
+                                                                                        rowIndex +
+                                                                                            1
+                                                                                    }}
+                                                                                </td>
+                                                                                <td>
+                                                                                    {{
+                                                                                        estudiante?.cPersNombre
+                                                                                    }}
+                                                                                </td>
+                                                                                <td>
+                                                                                    {{
+                                                                                        estudiante.cPersPaterno
+                                                                                    }}
+                                                                                    {{
+                                                                                        estudiante.cPersMaterno
+                                                                                    }}
+                                                                                </td>
+                                                                                <td>
+                                                                                    <p-button
+                                                                                        icon="pi pi-reply"
+                                                                                        [rounded]="
+                                                                                            true
+                                                                                        "
+                                                                                        [text]="
+                                                                                            true
+                                                                                        "
+                                                                                        severity="danger"
+                                                                                    />
+                                                                                </td>
+                                                                            </tr>
+                                                                        }
                                                                     </ng-template>
                                                                     <ng-template
                                                                         pTemplate="emptymessage"
@@ -544,7 +563,7 @@
                                                                         <tr>
                                                                             <td
                                                                                 [attr.colspan]="
-                                                                                    3
+                                                                                    4
                                                                                 "
                                                                             >
                                                                                 No
@@ -559,35 +578,6 @@
                                                         </p-accordionTab>
                                                     }
                                                 </p-accordion>
-
-                                                <!-- <p-panel [toggleable]="true">
-                                            <ng-template pTemplate="header">
-                                                <div class="flex align-items-center gap-2">
-                                                    <span class="font-bold">
-                                                        Grupo: Grupo {{idx+1}}
-                                                    </span>
-                                                </div>
-                                            </ng-template>
-                                            <ng-template pTemplate="icons">
-                                                <div class="flex align-items-center">
-                                                    <b>Nota:</b> 18
-                                                    <div class="w-1rem h-1rem border-circle ml-3" [ngClass]="
-                                                    item.cEstado ===
-                                                    'F'
-                                                        ? 'bg-red-500'
-                                                        : item.cEstado ===
-                                                            'P'
-                                                          ? 'bg-yellow-500'
-                                                          : 'bg-green-500'
-                                                "></div>
-                                                    <button class="p-panel-header-icon mr-2">
-                                                        <span class="pi pi-pencil"></span>
-                                                    </button>
-                                                </div>
-
-                                            </ng-template>
-
-                                        </p-panel> -->
                                             </div>
                                         </div>
                                     </p-accordionTab>
@@ -635,12 +625,6 @@
                                     [toggleable]="true"
                                 >
                                     <div class="formgrid grid">
-                                        <!-- <div class="field col-12">
-                                        <p-inputGroup>
-                                            <p-inputGroupAddon>Descripción</p-inputGroupAddon>
-                                            <textarea rows="2" pInputText class="flex-auto w-full" disabled></textarea>
-                                        </p-inputGroup>
-                                    </div> -->
                                         <div class="field col-12 md:col-12">
                                             <p-inputGroup>
                                                 <p-inputGroupAddon
@@ -906,6 +890,7 @@
 
     <app-form-grupo
         [iTareaId]="iTareaId"
+        [data]="grupoSeleccionado"
         [showModal]="showModal"
         (accionBtnItem)="accionBtnItem($event)"
     ></app-form-grupo>

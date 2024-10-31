@@ -23,15 +23,38 @@ export class FormGrupoComponent implements OnChanges {
     private GeneralService = inject(GeneralService)
 
     @Input() iTareaId: string
-    @Input() showModal: boolean = true
+    @Input() showModal: boolean
+    @Input() data
 
     estudiantes = []
+    iTareaCabGrupoId
     cTareaGrupoNombre: string
+    opcion: string
 
     ngOnChanges(changes) {
         if (changes.iTareaId?.currentValue) {
             this.iTareaId = changes.iTareaId.currentValue
+        }
+        if (changes.data?.currentValue) {
+            this.data = changes.data.currentValue
+        }
+        if (!this.data?.cTareaGrupoNombre && this.iTareaId) {
+            this.opcion = 'GUARDAR'
+            this.cTareaGrupoNombre = null
+            this.estudiantes = []
+            this.iTareaCabGrupoId = null
             this.getTareaCabeceraGruposEstudiantes()
+        } else {
+            this.opcion = 'ACTUALIZAR'
+            this.iTareaCabGrupoId = this.data?.iTareaCabGrupoId
+            this.cTareaGrupoNombre = this.data?.cTareaGrupoNombre
+            this.estudiantes = this.data?.json_estudiantes_respaldo
+            this.estudiantes.forEach((i) => {
+                Number(i.bAsignado) === 1
+                    ? (i.bAsignado = true)
+                    : (i.bAsignado = false)
+                i.disabled = i.bAsignado
+            })
         }
     }
     getTareaCabeceraGruposEstudiantes() {
@@ -50,24 +73,23 @@ export class FormGrupoComponent implements OnChanges {
     }
 
     saveTareaCabeceraGrupos() {
-        // let data
-        // this.estudiantes.forEach((i)=>{data.push({
-        //     bAsignado:i.bAsignado,
-
-        // })})
         const params = {
             petition: 'post',
             group: 'aula-virtual',
             prefix: 'tarea-cabecera-grupos',
             ruta: 'store',
             data: {
-                opcion: 'GUARDAR-ESTUDIANTESxiTareaId',
+                opcion: this.opcion + '-ESTUDIANTESxiTareaId',
                 iTareaId: this.iTareaId,
                 cTareaGrupoNombre: this.cTareaGrupoNombre,
-                valorBusqueda: JSON.stringify(this.estudiantes),
+                valorBusqueda: JSON.stringify(
+                    this.estudiantes.filter((i) => !i.disabled)
+                ),
+                iTareaCabGrupoId: this.iTareaCabGrupoId,
             },
             params: { skipSuccessMessage: true },
         }
+
         this.getInformation(params, 'save-' + params.prefix)
     }
 
@@ -93,9 +115,14 @@ export class FormGrupoComponent implements OnChanges {
                 break
             case 'get-tarea-cabecera-grupos':
                 this.estudiantes = item
+                this.estudiantes.forEach((i) => {
+                    Number(i.bAsignado) === 1
+                        ? (i.bAsignado = true)
+                        : (i.bAsignado = false)
+                    i.disabled = i.bAsignado
+                })
                 break
             case 'save-tarea-cabecera-grupos':
-                console.log(item)
                 this.accionBtnItem.emit({ accion, item })
                 break
             default:

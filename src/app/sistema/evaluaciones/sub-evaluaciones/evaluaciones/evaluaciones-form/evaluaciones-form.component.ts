@@ -105,10 +105,6 @@ export class EvaluacionesFormComponent implements OnInit {
     value!: string
 
     ngOnInit() {
-        /*this.tipoEvaluacion = [
-            { nombre: 'New York', id: 1 },
-            { nombre: 'Rome', id: 1 }
-        ];*/
         this.obtenerTipoEvaluacion()
         this.obtenerNivelEvaluacion()
     }
@@ -122,9 +118,6 @@ export class EvaluacionesFormComponent implements OnInit {
             dtEvaluacionCreacion: this.evaluacionFormGroup.get(
                 'dtEvaluacionCreacion'
             ).value,
-            // dtEvaluacionCreacion: this.formatDate(
-            //     this.evaluacionFormGroup.get('dtEvaluacionCreacion').value
-            // ),
             cEvaluacionNombre:
                 this.evaluacionFormGroup.get('cEvaluacionNombre').value,
             cEvaluacionDescripcion: this.evaluacionFormGroup.get(

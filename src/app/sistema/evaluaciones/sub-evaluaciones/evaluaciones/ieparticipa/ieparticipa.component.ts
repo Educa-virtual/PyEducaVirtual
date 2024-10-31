@@ -154,14 +154,40 @@ export class IeparticipaComponent implements OnInit {
             itemsMoved
         )
     }
+    // IEparticipan(event: any) {
+    //     // Obtener los elementos movidos
+    //     const itemsMoved = event.items
+    //     console.log(
+    //         'Elementos movidos de IEpertenece a IEnopertenece :',
+    //         itemsMoved
+    //     )
+    // }
+    // Cuando se mueve un elemento a "Participan"
     IEparticipan(event: any) {
-        // Obtener los elementos movidos
         const itemsMoved = event.items
-        console.log(
-            'Elementos movidos de IEpertenece a IEnopertenece :',
-            itemsMoved
+        console.log('Moviendo a Participan:', itemsMoved)
+        const payload = {
+            items: itemsMoved.map((item) => ({
+                iEvaluacionId: 107, //!ESTA EN MODO MANUAL; CAMBIAR POR EL ID DE LA EVALUACION
+                iIieeId: item.iIieeId,
+            })),
+        }
+        this._apiEre.guardarParticipacion(payload).subscribe(
+            (response) => console.log('Guardado exitoso:', response),
+            (error) => console.error('Error al guardar:', error)
         )
     }
+
+    // Cuando se mueve un elemento a "No participan"
+    // IEnoparticipan(event: any) {
+    //     const itemsMoved = event.items
+    //     console.log('Moviendo a No participan:', itemsMoved)
+    //     this._apiEre.eliminarParticipacion(itemsMoved).subscribe(
+    //         (response) => console.log('Eliminación exitosa:', response),
+    //         (error) => console.error('Error al eliminar:', error)
+    //     )
+    // }
+
     IEnoparticipanall(event: any) {
         // Obtener los elementos movidos
         const itemsMoved = event.items
@@ -171,11 +197,17 @@ export class IeparticipaComponent implements OnInit {
         )
     }
     IEparticipanall(event: any) {
-        // Obtener los elementos movidos
         const itemsMoved = event.items
-        console.log(
-            'Elementos movidos de IEpertenece a IEnopertenece :',
-            itemsMoved
+        console.log('Moviendo a Participan:', itemsMoved)
+        const payload = {
+            items: itemsMoved.map((item) => ({
+                iEvaluacionId: 107, //!ESTA EN MODO MANUAL; CAMBIAR POR EL ID DE LA EVALUACION
+                iIieeId: item.iIieeId,
+            })),
+        }
+        this._apiEre.guardarParticipacion(payload).subscribe(
+            (response) => console.log('Guardado exitoso:', response),
+            (error) => console.error('Error al guardar:', error)
         )
     }
     seleccionados() {

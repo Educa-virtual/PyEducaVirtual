@@ -118,4 +118,13 @@ export class ApiEvaluacionesService {
             data
         )
     }
+
+    obtenerEstudiantesEvaluación(params) {
+        return this.http
+            .get<ApiResponse>(
+                `${this.baseUrlApi}/evaluaciones/evaluacion/estudiantes`,
+                { params }
+            )
+            .pipe(map((resp) => resp.data))
+    }
 }

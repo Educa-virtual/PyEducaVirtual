@@ -1,33 +1,34 @@
-<section class="flex flex-column gap-4">
-    <p-tabView styleClass="actividad-tabs">
-        <p-tabPanel>
-            <ng-template pTemplate="header">
-                <div class="flex align-items-center flex-column gap-2">
-                    <app-icon name="matListAlt"></app-icon>
-                    <span class="font-bold white-space-nowrap m-0">
-                        Instrucciones
-                    </span>
-                </div>
-            </ng-template>
-            <div class="flex flex-column gap-4">
-                <article class="card">
-                    <!-- <h2>Evaluación: {{ evaluacion?.cEvaluacionTitulo }}</h2> -->
-                    <hr />
+<form [formGroup]="foroFormComnt" class="flex flex-column gap-3 w-full">
+    <section class="flex flex-column gap-4">
+        <p-tabView styleClass="actividad-tabs">
+            <p-tabPanel>
+                <ng-template pTemplate="header">
+                    <div class="flex align-items-center flex-column gap-2">
+                        <app-icon name="matListAlt"></app-icon>
+                        <span class="font-bold white-space-nowrap m-0">
+                            Instrucciones
+                        </span>
+                    </div>
+                </ng-template>
+                <div class="flex flex-column gap-4">
+                    <article class="card">
+                        <!-- <h2>Evaluación: {{ evaluacion?.cEvaluacionTitulo }}</h2> -->
+                        <hr />
 
-                    <div class="grid mb-4">
-                        <div
-                            class="col-12 md:col-6 flex flex-column gap-2 align-items-start"
-                        >
-                            <span class="font-bold text-xl flex gap-2">
-                                <app-icon
-                                    name="matCalendarMonth"
-                                    class="text-primary"
-                                    size="sm"
-                                ></app-icon>
-                                Título del Foro:</span
+                        <div class="grid mb-4">
+                            <div
+                                class="col-12 md:col-6 flex flex-column gap-2 align-items-start"
                             >
-                            {{ foro?.cForoTitulo }}
-                            <!-- <p>
+                                <span class="font-bold text-xl flex gap-2">
+                                    <app-icon
+                                        name="matCalendarMonth"
+                                        class="text-primary"
+                                        size="sm"
+                                    ></app-icon>
+                                    Título del Foro:</span
+                                >
+                                {{ foro?.cForoTitulo }}
+                                <!-- <p>
                               {{
                                   evaluacion?.dtEvaluacionPublicacion
                                       | date: "EEEE, d 'de' MMMM 'de' yyyy"
@@ -38,71 +39,81 @@
                                       | date: 'h:mm a'
                               }}
                           </p> -->
+                            </div>
+                            <div class="col-12 md:col-6 gap-2 flex flex-column">
+                                <span class="font-bold text-xl"
+                                    >Catergoria:</span
+                                >
+                                {{ foro.cForoCatDescripcion }}
+                            </div>
                         </div>
-                        <div class="col-12 md:col-6 gap-2 flex flex-column">
-                            <span class="font-bold text-xl">Catergoria:</span>
-                            {{ foro.cForoCatDescripcion }}
-                        </div>
-                    </div>
 
-                    <div class="grid mb-4">
-                        <div class="col-12 md:col-6 flex flex-column gap-2">
-                            <span class="font-bold text-xl flex gap-2">
-                                <app-icon
-                                    name="matCalendarMonth"
-                                    class="text-primary"
-                                    size="sm"
-                                ></app-icon>
-                                Inicio de Foro:
-                            </span>
-                            <!-- {{ foro.dtForoInicio }} -->
-                            <p class="flex gap-2 flex-wrap">
-                                {{
-                                    foro?.dtForoInicio
-                                        | date: "EEEE, d 'de' MMMM 'de' yyyy"
-                                }}
-
-                                <span class="flex gap-2">
+                        <div class="grid mb-4">
+                            <div class="col-12 md:col-6 flex flex-column gap-2">
+                                <span class="font-bold text-xl flex gap-2">
                                     <app-icon
-                                        name="matAccessTime"
+                                        name="matCalendarMonth"
                                         class="text-primary"
                                         size="sm"
                                     ></app-icon>
-                                    <span class="font-bold">Hora Limite:</span>
-                                    {{ foro?.dtForoInicio | date: 'h:mm a' }}
+                                    Inicio de Foro:
                                 </span>
-                            </p>
-                        </div>
-                        <div class="col-12 md:col-6 flex flex-column gap-2">
-                            <span class="font-bold text-xl flex gap-2">
-                                <app-icon
-                                    name="matCalendarMonth"
-                                    class="text-primary"
-                                    size="sm"
-                                ></app-icon>
-                                Cierre de Foro
-                            </span>
-                            <!-- {{ foro.dtForoFin }} -->
-                            <p class="flex gap-2 flex-wrap">
-                                {{
-                                    foro?.dtForoFin
-                                        | date: "EEEE, d 'de' MMMM 'de' yyyy"
-                                }}
+                                <!-- {{ foro.dtForoInicio }} -->
+                                <p class="flex gap-2 flex-wrap">
+                                    {{
+                                        foro?.dtForoInicio
+                                            | date
+                                                : "EEEE, d 'de' MMMM 'de' yyyy"
+                                    }}
 
-                                <span class="flex gap-2">
+                                    <span class="flex gap-2">
+                                        <app-icon
+                                            name="matAccessTime"
+                                            class="text-primary"
+                                            size="sm"
+                                        ></app-icon>
+                                        <span class="font-bold"
+                                            >Hora Limite:</span
+                                        >
+                                        {{
+                                            foro?.dtForoInicio | date: 'h:mm a'
+                                        }}
+                                    </span>
+                                </p>
+                            </div>
+                            <div class="col-12 md:col-6 flex flex-column gap-2">
+                                <span class="font-bold text-xl flex gap-2">
                                     <app-icon
-                                        name="matAccessTime"
+                                        name="matCalendarMonth"
                                         class="text-primary"
                                         size="sm"
                                     ></app-icon>
-                                    <span class="font-bold">Hora Limite:</span>
-                                    {{ foro?.dtForoFin | date: 'h:mm a' }}
+                                    Cierre de Foro
                                 </span>
-                            </p>
-                        </div>
-                    </div>
+                                <!-- {{ foro.dtForoFin }} -->
+                                <p class="flex gap-2 flex-wrap">
+                                    {{
+                                        foro?.dtForoFin
+                                            | date
+                                                : "EEEE, d 'de' MMMM 'de' yyyy"
+                                    }}
 
-                    <!-- <div class="grid mb-4">
+                                    <span class="flex gap-2">
+                                        <app-icon
+                                            name="matAccessTime"
+                                            class="text-primary"
+                                            size="sm"
+                                        ></app-icon>
+                                        <span class="font-bold"
+                                            >Hora Limite:</span
+                                        >
+                                        {{ foro?.dtForoFin | date: 'h:mm a' }}
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- <div class="grid mb-4">
                       <div
                           class="col-12 md:col-6 flex flex-column gap-2 align-items-start"
                       >
@@ -136,59 +147,65 @@
                       </div>
                   </div> -->
 
-                    <div class="flex gap-2 flex-wrap align-items-center mb-4">
-                        <app-icon
-                            name="matMessage"
-                            color="text-primary"
-                            size="sm"
-                        />
-                        <h3 class="text-lg m-0">Descripción:</h3>
-                        {{ foro['cForoDescripcion'] | removeHTML }}
-                    </div>
+                        <div
+                            class="flex gap-2 flex-wrap align-items-center mb-4"
+                        >
+                            <app-icon
+                                name="matMessage"
+                                color="text-primary"
+                                size="sm"
+                            />
+                            <h3 class="text-lg m-0">Descripción:</h3>
+                            {{ foro['cForoDescripcion'] | removeHTML }}
+                        </div>
 
-                    <div
-                        class="bg-gray-100 p-1 border-round min-h-10rem flex gap-2 flex-column"
-                    >
-                        <!-- <div
+                        <div
+                            class="bg-gray-100 p-1 border-round min-h-10rem flex gap-2 flex-column"
+                        >
+                            <!-- <div
                           class="ql-editor"
                           [innerHTML]="evaluacion?.cEvaluacionDescripcion"
                       ></div> -->
-                    </div>
-                </article>
-                <article class="card">
-                    <h2>Recursos:</h2>
-                    <ul class="list-none p-0 m-0">
-                        <li
-                            class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap"
-                        >
-                            <div class="flex gap-2 align-items-center">
-                                <i class="pi pi-file text-lg text-primary"></i>
-                                <span class="font-medium text-lg"
-                                    >Recurso.pdf</span
-                                >
-                                <span class="text-gray-500"
-                                    >tamaño(319.532KB)</span
-                                >
-                            </div>
-                        </li>
-                        <li
-                            class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap"
-                        >
-                            <div class="flex gap-2 align-items-center">
-                                <i class="pi pi-file text-lg text-primary"></i>
-                                <span class="font-medium text-lg"
-                                    >Recurso.pdf</span
-                                >
-                                <span class="text-gray-500"
-                                    >tamaño(319.532KB)</span
-                                >
-                            </div>
-                        </li>
-                    </ul>
-                </article>
+                        </div>
+                    </article>
+                    <article class="card">
+                        <h2>Recursos:</h2>
+                        <ul class="list-none p-0 m-0">
+                            <li
+                                class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap"
+                            >
+                                <div class="flex gap-2 align-items-center">
+                                    <i
+                                        class="pi pi-file text-lg text-primary"
+                                    ></i>
+                                    <span class="font-medium text-lg"
+                                        >Recurso.pdf</span
+                                    >
+                                    <span class="text-gray-500"
+                                        >tamaño(319.532KB)</span
+                                    >
+                                </div>
+                            </li>
+                            <li
+                                class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap"
+                            >
+                                <div class="flex gap-2 align-items-center">
+                                    <i
+                                        class="pi pi-file text-lg text-primary"
+                                    ></i>
+                                    <span class="font-medium text-lg"
+                                        >Recurso.pdf</span
+                                    >
+                                    <span class="text-gray-500"
+                                        >tamaño(319.532KB)</span
+                                    >
+                                </div>
+                            </li>
+                        </ul>
+                    </article>
 
-                <article class="card flex flex-column gap-4">
-                    <!-- <div class="flex justify-content-between flex-wrap gap-2">
+                    <article class="card flex flex-column gap-4">
+                        <!-- <div class="flex justify-content-between flex-wrap gap-2">
                       <h2>Preguntas</h2>
                       <button
                           pButton
@@ -200,7 +217,7 @@
                       </button>
                   </div> -->
 
-                    <!-- @if (
+                        <!-- @if (
                       evaluacion?.preguntas === null ||
                       evaluacion?.preguntas === undefined ||
                       evaluacion?.preguntas.length === 0
@@ -219,183 +236,195 @@
                           [preguntas]="evaluacion?.preguntas ?? []"
                       ></app-evaluacion-form-preguntas>
                   } -->
-                </article>
-            </div>
-        </p-tabPanel>
-        <p-tabPanel>
-            <ng-template pTemplate="header">
-                <div class="flex align-items-center flex-column gap-2">
-                    <app-icon name="matRule"></app-icon>
-                    <span class="font-bold white-space-nowrap m-0">
-                        Ver Foro
-                    </span>
+                    </article>
                 </div>
-            </ng-template>
-            <div class="flex flex-column gap-4">
-                <div class="card">
-                    <div>Título de Foro: {{ foro?.cForoTitulo }}</div>
-                </div>
-                <!-- Recursos y Comentarios -->
-                <div class="container">
-                    <div class="card1">
-                        <div class=" ">
-                            <b>
-                                <label class="text-lg" for="">Recursos:</label>
-                            </b>
-                            <div></div>
-                        </div>
+            </p-tabPanel>
+            <!-- Ver Comentarios de los Foros -->
+            <p-tabPanel>
+                <ng-template pTemplate="header">
+                    <div class="flex align-items-center flex-column gap-2">
+                        <app-icon name="matRule"></app-icon>
+                        <span class="font-bold white-space-nowrap m-0">
+                            Ver Foro
+                        </span>
                     </div>
-                    <div class="card2">
-                        <b>
-                            <label class="text-lg" for="">Comentarios:</label>
-                        </b>
-                        <div>
-                            <p-orderList class="list">
-                                <ng-template let-perfiles pTemplate="listItem">
-                                    <p-button
-                                        [text]="true"
-                                        severity="secondary"
-                                        class="p-col-12"
+                </ng-template>
+                <div class="flex flex-column gap-4">
+                    <div class="card">
+                        <div>Título de Foro: {{ foro?.cForoTitulo }}</div>
+                    </div>
+                    <!-- Recursos y Comentarios -->
+                    <div class="container">
+                        <div class="card1">
+                            <div class=" ">
+                                <b>
+                                    <label class="text-lg" for=""
+                                        >Recursos:</label
                                     >
-                                        <div
-                                            class="perfiles-list-item text-left"
-                                            tabindex="0"
-                                        >
-                                            <img
-                                                src="assets/demo/images/matemit/avatar.png"
-                                                [alt]="perfiles.name"
-                                                class="w-4rem min-h-9 shadow-2 flex-shrink-0 border-round"
-                                            />
-                                            <!-- <div class="perfiles-list-detail">
-                                    <div class="perfil-name">
-                                        {{ perfiles.cPerfilNombre }}
-                                    </div>
-                                    <div class="perfil-name">IE: {{ null }}</div>
-                                    <div class="perfil-description">
-                                        Cod. Modular:{{ null }}
-                                    </div>
-                                    <div class="perfil-description">Nivel: {{ null }}</div>
-                                    <div class="perfil-description">
-                                        {{ perfiles.cEntNombreLargo }}
-                                    </div>
-                                </div> -->
-                                        </div>
-                                    </p-button>
-                                </ng-template>
-                            </p-orderList>
-                            <div class="comment-container">
-                                <input
-                                    type="text"
-                                    class="comment-input"
-                                    placeholder="Escribe un comentario..."
-                                    id="commentText"
-                                />
-                                <button
-                                    class="send-button"
-                                    onclick="sendComment()"
+                                </b>
+                                <div></div>
+                            </div>
+                        </div>
+                        <div class="card2">
+                            <b>
+                                <label class="text-lg" for=""
+                                    >Comentarios:</label
                                 >
-                                    Enviar
-                                </button>
+                            </b>
+                            <div>
+                                <p-orderList class="list">
+                                    <ng-template
+                                        let-perfiles
+                                        pTemplate="listItem"
+                                    >
+                                        <p-button
+                                            [text]="true"
+                                            severity="secondary"
+                                            class="p-col-12"
+                                        >
+                                            <div
+                                                class="perfiles-list-item text-left"
+                                                tabindex="0"
+                                            >
+                                                <img
+                                                    src="assets/demo/images/matemit/avatar.png"
+                                                    [alt]="perfiles.name"
+                                                    class="w-4rem min-h-9 shadow-2 flex-shrink-0 border-round"
+                                                />
+                                                <!-- <div class="perfiles-list-detail">
+                                        <div class="perfil-name">
+                                            {{ perfiles.cPerfilNombre }}
+                                        </div>
+                                        <div class="perfil-name">IE: {{ null }}</div>
+                                        <div class="perfil-description">
+                                            Cod. Modular:{{ null }}
+                                        </div>
+                                        <div class="perfil-description">Nivel: {{ null }}</div>
+                                        <div class="perfil-description">
+                                            {{ perfiles.cEntNombreLargo }}
+                                        </div>
+                                    </div> -->
+                                            </div>
+                                        </p-button>
+                                    </ng-template>
+                                </p-orderList>
+                                <div class="comment-container">
+                                    <input
+                                        type="text"
+                                        class="comment-input"
+                                        placeholder="Escribe un comentario..."
+                                        id="commentText"
+                                        formControlName="cForoRptaRespuesta"
+                                    />
+                                    <button
+                                        class="send-button"
+                                        (click)="sendComment()"
+                                    >
+                                        Enviar
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
+                    <!-- <div class="card3">
+                        <div>
+                            <h1>footer</h1>
+                        </div>
+                    </div> -->
                 </div>
-                <!-- <div class="card3">
-                    <div>
-                        <h1>footer</h1>
+            </p-tabPanel>
+            <!-- Calificar Foro -->
+            <p-tabPanel>
+                <ng-template pTemplate="header">
+                    <div class="flex align-items-center flex-column gap-2">
+                        <app-icon name="matRule"></app-icon>
+                        <span class="font-bold white-space-nowrap m-0">
+                            Calificar Foro
+                        </span>
                     </div>
-                </div> -->
-            </div>
-        </p-tabPanel>
-        <p-tabPanel>
-            <ng-template pTemplate="header">
-                <div class="flex align-items-center flex-column gap-2">
-                    <app-icon name="matRule"></app-icon>
-                    <span class="font-bold white-space-nowrap m-0">
-                        Calificar Foro
-                    </span>
-                </div>
-            </ng-template>
-            <div class="card">
-                <div
-                    class="col-12 md:col-6 flex flex-column gap-2 align-items-start"
-                >
-                    <span class="font-bold text-xl flex gap-2">
+                </ng-template>
+                <div class="card">
+                    <div
+                        class="col-12 md:col-6 flex flex-column gap-2 align-items-start"
+                    >
+                        <span class="font-bold text-xl flex gap-2">
+                            <app-icon
+                                name="matCalendarMonth"
+                                class="text-primary"
+                                size="sm"
+                            />
+                            <h3 class="text-lg m-0">Título del Foro:</h3>
+                        </span>
+                        {{ foro?.cForoTitulo }}
+                    </div>
+                    <div class="flex gap-2 flex-wrap align-items-center mb-4">
                         <app-icon
-                            name="matCalendarMonth"
-                            class="text-primary"
+                            name="matMessage"
+                            color="text-primary"
                             size="sm"
                         />
-                        <h3 class="text-lg m-0">Título del Foro:</h3>
-                    </span>
-                    {{ foro?.cForoTitulo }}
-                </div>
-                <div class="flex gap-2 flex-wrap align-items-center mb-4">
-                    <app-icon
-                        name="matMessage"
-                        color="text-primary"
-                        size="sm"
-                    />
-                    <h3 class="text-lg m-0">Descripción:</h3>
+                        <h3 class="text-lg m-0">Descripción:</h3>
 
-                    {{ foro['cForoDescripcion'] | removeHTML }}
+                        {{ foro['cForoDescripcion'] | removeHTML }}
+                    </div>
                 </div>
-            </div>
 
-            <p-table
-                #dv
-                class="col-12 hoverTable"
-                [value]="estudiantes"
-                paginator="false"
-                styleClass="p-datatable-sm"
-            >
-                <ng-template pTemplate="header">
-                    <tr>
-                        <!-- incio -->
-                        <p-table
-                            [value]="estudiantes"
-                            [scrollable]="true"
-                            scrollHeight="500px"
-                        >
-                            <ng-template pTemplate="header">
-                                <tr class="sticky-header">
-                                    <th>#</th>
-                                    <th>Nombre Estudiante</th>
-                                    <th>Respuesta</th>
-                                    <th>Calificación</th>
-                                    <th>Descripción</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </ng-template>
-                            <ng-template
-                                pTemplate="body"
-                                let-estudiante
-                                let-rowIndex="rowIndex"
+                <p-table
+                    #dv
+                    class="col-12 hoverTable"
+                    [value]="estudiantes"
+                    paginator="false"
+                    styleClass="p-datatable-sm"
+                >
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <!-- incio -->
+                            <p-table
+                                [value]="estudiantes"
+                                [scrollable]="true"
+                                scrollHeight="500px"
                             >
-                                <tr>
-                                    <td>
-                                        <!-- <p-checkbox
+                                <ng-template pTemplate="header">
+                                    <tr class="sticky-header">
+                                        <th>#</th>
+                                        <th>Nombre Estudiante</th>
+                                        <th>Respuesta</th>
+                                        <th>Calificación</th>
+                                        <th>Descripción</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template
+                                    pTemplate="body"
+                                    let-estudiante
+                                    let-rowIndex="rowIndex"
+                                >
+                                    <tr>
+                                        <td>
+                                            <!-- <p-checkbox
                                             [(ngModel)]="estudiante.selected"
                                         ></p-checkbox> -->
-                                        {{ rowIndex + 1 }}
-                                    </td>
-                                    <td class="w-5">
-                                        {{ estudiante?.nombrecompleto }}
-                                    </td>
-                                    <td class="">f</td>
-                                    <td>A</td>
-                                    <td>A</td>
-                                    <td style="text-align: center">
-                                        <p-button
-                                            (click)="openModal(estudiante)"
-                                            class="btCalificacion"
-                                            icon="pi pi-folder-open"
-                                            rounded="true"
-                                            severity="secondary"
-                                            [style]="{ 'margin-right': '.5em' }"
-                                        />
+                                            {{ rowIndex + 1 }}
+                                        </td>
+                                        <td class="w-5">
+                                            {{ estudiante?.nombrecompleto }}
+                                        </td>
+                                        <td class="">f</td>
+                                        <td>A</td>
+                                        <td>A</td>
+                                        <td style="text-align: center">
+                                            <p-button
+                                                (click)="openModal(estudiante)"
+                                                class="btCalificacion"
+                                                icon="pi pi-folder-open"
+                                                rounded="true"
+                                                severity="secondary"
+                                                [style]="{
+                                                    'margin-right': '.5em',
+                                                }"
+                                            />
 
-                                        <!-- <div
+                                            <!-- <div
                                             class="w-1rem h-1rem border-circle ml-3"
                                             [ngClass]="
                                                 estudiante.cEstado === 'F'
@@ -405,24 +434,25 @@
                                                       : 'bg-green-500'
                                             "
                                         ></div> -->
-                                    </td>
-                                </tr>
-                            </ng-template>
-                        </p-table>
-                        <!-- incio -->
-                    </tr></ng-template
-                >
-                <ng-template pTemplate="emptymessage" let-columns>
-                    <tr>
-                        <td [attr.colspan]="8">
-                            No se encontraron resultados.
-                        </td>
-                    </tr>
-                </ng-template>
-            </p-table>
-        </p-tabPanel>
-    </p-tabView>
-</section>
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                            </p-table>
+                            <!-- incio -->
+                        </tr></ng-template
+                    >
+                    <ng-template pTemplate="emptymessage" let-columns>
+                        <tr>
+                            <td [attr.colspan]="8">
+                                No se encontraron resultados.
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </p-tabPanel>
+        </p-tabView>
+    </section>
+</form>
 
 <p-dialog
     [(visible)]="modalCalificacion"

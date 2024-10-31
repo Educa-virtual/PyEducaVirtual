@@ -1,7 +1,7 @@
 import { IconComponent } from '@/app/shared/icon/icon.component'
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
 import { CommonModule } from '@angular/common'
-import { Component, inject, Input, OnInit } from '@angular/core'
+import { Component, inject, Input, OnInit, OnDestroy } from '@angular/core'
 import { ButtonModule } from 'primeng/button'
 import { TabViewModule } from 'primeng/tabview'
 import { LeyendaTareasComponent } from '../../components/leyenda-tareas/leyenda-tareas.component'
@@ -49,11 +49,14 @@ import { EvaluacionRoomCalificacionComponent } from './evaluacion-room-calificac
         }),
     ],
 })
-export class EvaluacionRoomComponent implements OnInit {
+export class EvaluacionRoomComponent implements OnInit, OnDestroy {
     @Input() ixActivadadId: string
     @Input() iActTopId: tipoActividadesKeys
+
+    // injeccion de dependencias
     private _route = inject(ActivatedRoute)
     private _aulaService = inject(ApiAulaService)
+
     private unsbscribe$ = new Subject<boolean>()
     public iPerfilId = 1
     public evaluacion
@@ -62,6 +65,7 @@ export class EvaluacionRoomComponent implements OnInit {
         this.obtenerEvaluacion()
     }
 
+    // obtiene la evalución
     obtenerEvaluacion() {
         this._aulaService
             .obtenerActividad({
@@ -74,5 +78,11 @@ export class EvaluacionRoomComponent implements OnInit {
                     this.evaluacion = resp
                 },
             })
+    }
+
+    // desuscribe los observables al eliminarse el componente
+    ngOnDestroy() {
+        this.unsbscribe$.next(true)
+        this.unsbscribe$.complete()
     }
 }

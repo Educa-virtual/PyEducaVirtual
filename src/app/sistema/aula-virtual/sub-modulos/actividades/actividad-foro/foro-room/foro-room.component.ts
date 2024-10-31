@@ -65,6 +65,8 @@ export class ForoRoomComponent implements OnInit {
 
     public foro
 
+    commentForoM: string = ''
+
     public foroForm: FormGroup = this._formBuilder.group({
         cForoTitulo: ['', [Validators.required]],
         cForoDescripcion: ['', [Validators.required]],
@@ -74,13 +76,16 @@ export class ForoRoomComponent implements OnInit {
         dtForoPublicacion: ['dtForoInicio'],
         dtForoFin: [],
     })
+    public foroFormComnt: FormGroup = this._formBuilder.group({
+        cForoRptaRespuesta: ['', [Validators.required]],
+    })
     constructor() {}
     ngOnInit() {
-        console.log('HolaMit', this.ixActivadadId, this.iActTopId)
+        //console.log('HolaMit', this.ixActivadadId, this.iActTopId)
         this.getEstudiantesMatricula()
         this.mostrarCalificacion()
         this.obtenerForo()
-        console.log('Obtener Datos', this.getEstudiantesMatricula())
+        //console.log('Obtener Datos', this.getEstudiantesMatricula())
     }
     // closeModal(data) {
     //     this.ref.close(data)
@@ -92,6 +97,14 @@ export class ForoRoomComponent implements OnInit {
     submit() {
         const value = this.foroForm.value
         console.log('Guardar Calificacion', value)
+    }
+    sendComment() {
+        const comment = this.foroFormComnt.value
+        //this.commentForo = this.commentForoM
+        this._aulaService.guardarRespuesta(comment).subscribe(() => {})
+        console.log('Comentario:', comment)
+
+        //this.cForoRptaRespuesta = '';
     }
     mostrarCalificacion() {
         const userId = 1
@@ -146,11 +159,6 @@ export class ForoRoomComponent implements OnInit {
             },
         })
         //console.log('Datos estudiante', this.GeneralService)
-    }
-    stripHTML(html) {
-        const tempDiv = document.createElement('div')
-        tempDiv.innerHTML = html
-        return tempDiv.textContent || tempDiv.innerText || ''
     }
     // ngOnInit() { implements OnInit
     // }

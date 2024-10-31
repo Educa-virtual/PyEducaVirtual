@@ -30,6 +30,7 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
     private _apiEvaluacionesR = inject(ApiEvaluacionesRService)
     private _confirmationModalService = inject(ConfirmationModalService)
     private _route = inject(ActivatedRoute)
+
     private unsubscribe$: Subject<boolean> = new Subject()
 
     public area = {

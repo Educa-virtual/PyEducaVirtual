@@ -1,5 +1,5 @@
 import { Pipe, type PipeTransform } from '@angular/core'
-import { actividadesConfig } from '../interfaces/actividad.interface'
+import { actividadesConfig } from '../constants/aula-virtual'
 
 @Pipe({
     name: 'appActividadConfig',

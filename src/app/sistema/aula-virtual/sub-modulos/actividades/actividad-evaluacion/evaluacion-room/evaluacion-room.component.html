@@ -218,7 +218,7 @@
                 </article>
             </div>
         </p-tabPanel>
-        <p-tabPanel>
+        <p-tabPanel [disabled]="evaluacion?.iEstado === 1">
             <ng-template pTemplate="header">
                 <div class="flex align-items-center flex-column gap-2">
                     <app-icon name="matRule"></app-icon>
@@ -228,6 +228,7 @@
                 </div>
             </ng-template>
             <app-evaluacion-room-calificacion
+                [iEvaluacionId]="ixActivadadId"
                 [evaluacion]="evaluacion"
             ></app-evaluacion-room-calificacion>
         </p-tabPanel>

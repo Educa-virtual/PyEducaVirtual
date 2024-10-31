@@ -1,4 +1,4 @@
-import { ApiEvaluacionesService } from '@/app/sistema/evaluaciones/services/api-evaluaciones.service'
+import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-evaluaciones.service'
 import { CommonModule } from '@angular/common'
 import { Component, inject, OnDestroy, OnInit } from '@angular/core'
 import {
@@ -32,10 +32,12 @@ export class LogroFormComponent implements OnDestroy, OnInit {
         iEvalPregId: null,
     }
 
+    // injeccion de depedencias
     private _formBuilder = inject(FormBuilder)
     private _ref = inject(DynamicDialogRef)
     private _config = inject(DynamicDialogConfig)
     private _evaluacionApiService = inject(ApiEvaluacionesService)
+
     private _unsubscribe$ = new Subject<boolean>()
 
     constructor() {}
@@ -75,6 +77,7 @@ export class LogroFormComponent implements OnDestroy, OnInit {
         this._ref.close(data)
     }
 
+    // desuscribe de los observables
     ngOnDestroy() {
         this._unsubscribe$.next(true)
         this._unsubscribe$.complete()

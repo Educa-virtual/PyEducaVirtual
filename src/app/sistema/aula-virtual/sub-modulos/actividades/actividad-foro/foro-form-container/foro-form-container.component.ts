@@ -14,13 +14,19 @@ import { SelectButtonModule } from 'primeng/selectbutton'
 import { PrimengModule } from '@/app/primeng.module'
 import { Message } from 'primeng/api'
 import { DatePipe } from '@angular/common'
+import { ModalPrimengComponent } from '@/app/shared/modal-primeng/modal-primeng.component'
+import { DialogModule } from 'primeng/dialog'
+import { FileUploadPrimengComponent } from '../../../../../../shared/file-upload-primeng/file-upload-primeng.component'
 @Component({
     selector: 'app-foro-form-container',
     standalone: true,
     imports: [
         CommonModule,
+        ModalPrimengComponent,
         PrimengModule,
+        DialogModule,
         CommonInputComponent,
+        FileUploadPrimengComponent,
         ReactiveFormsModule,
         DisponibilidadFormComponent,
         DropdownModule,
@@ -43,11 +49,15 @@ export class ForoFormContainerComponent implements OnInit {
     private ref = inject(DynamicDialogRef)
 
     @Input() contenidoSemana
-
+    tareas = []
+    filteredTareas: any[] | undefined
+    FilesTareas = []
+    nameEnlace: string = ''
+    titleFileTareas: string = ''
     categorias: any[] = []
     semana: Message[] = []
     selectProgramaAct = 0
-    titleFileTareas: string = ''
+    //titleFileTareas: string = ''
 
     estado: any[] = [
         { label: 'Desactivo', value: 0 },
@@ -107,6 +117,73 @@ export class ForoFormContainerComponent implements OnInit {
         //     // console.log('Datos mit', this.categorias)
         // })
     }
+    // acciones para subir los archivos
+
+    accionBtnItem(elemento): void {
+        const { accion } = elemento
+        const { item } = elemento
+        // let params
+        switch (accion) {
+            case 'get_tareas_reutilizadas':
+                this.tareas = item
+                this.filteredTareas = item
+                break
+            case 'close-modal':
+                this.showModal = false
+                break
+            case 'subir-archivo-tareas':
+                this.FilesTareas.push({
+                    type: 1, //1->file
+                    nameType: 'file',
+                    name: item.file.name,
+                    size: item.file.size,
+                    ruta: item.name,
+                })
+                this.showModal = false
+                break
+            case 'subir-url':
+                if (item === '') return
+                this.FilesTareas.push({
+                    type: 2, //2->url
+                    nameType: 'url',
+                    name: item,
+                    size: '',
+                    ruta: item,
+                })
+                this.showModal = false
+                this.nameEnlace = ''
+                break
+            case 'subir-youtube':
+                if (item === '') return
+                this.FilesTareas.push({
+                    type: 3, //3->youtube
+                    nameType: 'youtube',
+                    name: item,
+                    size: '',
+                    ruta: item,
+                })
+                this.showModal = false
+                this.nameEnlace = ''
+                break
+        }
+    }
     showModal: boolean = false
     typeUpload: string
+    openUpload(type) {
+        this.showModal = true
+        this.typeUpload = type
+        this.titleFileTareas = ''
+        switch (type) {
+            case 'file':
+                this.titleFileTareas = 'Añadir Archivo Local'
+                break
+            case 'url':
+                this.titleFileTareas = 'Añadir Enlace URL'
+                break
+            default:
+                this.showModal = false
+                this.typeUpload = null
+                break
+        }
+    }
 }

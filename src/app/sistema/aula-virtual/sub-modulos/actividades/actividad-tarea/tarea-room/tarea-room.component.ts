@@ -9,7 +9,7 @@ import {
 } from '@/app/sistema/aula-virtual/sub-modulos/actividades/components/leyenda-tareas/leyenda-item/leyenda-item.component'
 import { LeyendaTareasComponent } from '@/app/sistema/aula-virtual/sub-modulos/actividades/components/leyenda-tareas/leyenda-tareas.component'
 import { CommonModule } from '@angular/common'
-import { Component, inject, Input } from '@angular/core'
+import { Component, inject, Input, OnChanges } from '@angular/core'
 import { provideIcons } from '@ng-icons/core'
 import { matListAlt, matPeople } from '@ng-icons/material-icons/baseline'
 import { ButtonModule } from 'primeng/button'
@@ -21,6 +21,7 @@ import { PrimengModule } from '@/app/primeng.module'
 import { FileUploadPrimengComponent } from '../../../../../../shared/file-upload-primeng/file-upload-primeng.component'
 import { FormGrupoComponent } from '../form-grupo/form-grupo.component'
 import { GeneralService } from '@/app/servicios/general.service'
+import { ModalPrimengComponent } from '../../../../../../shared/modal-primeng/modal-primeng.component'
 
 @Component({
     selector: 'app-tarea-room',
@@ -36,12 +37,13 @@ import { GeneralService } from '@/app/servicios/general.service'
         PrimengModule,
         FileUploadPrimengComponent,
         FormGrupoComponent,
+        ModalPrimengComponent,
     ],
     templateUrl: './tarea-room.component.html',
     styleUrl: './tarea-room.component.scss',
     providers: [provideIcons({ matListAlt, matPeople }), DialogService],
 })
-export class TareaRoomComponent {
+export class TareaRoomComponent implements OnChanges {
     @Input() iTareaId: string
 
     private _dialogService = inject(DialogService)
@@ -118,9 +120,8 @@ export class TareaRoomComponent {
             type: 'actions',
         },
     ]
-
     data
-
+    grupoSeleccionado
     cTareaDescripcion: string
     tareaAsignar: number
     FilesTareas = []
@@ -179,7 +180,6 @@ export class TareaRoomComponent {
                 this.showModal = false
                 break
             case 'get-tarea-estudiantes':
-                console.log(item)
                 this.estudiantes = item
                 break
             case 'update-tareas':
@@ -194,7 +194,15 @@ export class TareaRoomComponent {
                     i.json_estudiantes = i.json_estudiantes
                         ? JSON.parse(i.json_estudiantes)
                         : []
+                    i.json_estudiantes_respaldo = i.json_estudiantes
                 })
+
+                this.grupos.forEach((i) => {
+                    i.json_estudiantes = i.json_estudiantes.filter(
+                        (j) => j.bAsignado === 1
+                    )
+                })
+
                 break
             case 'save-tarea-cabecera-grupos':
                 this.showModal = false
@@ -208,6 +216,14 @@ export class TareaRoomComponent {
                 this.FilesTareas = this.data?.cTareaArchivoAdjunto
                     ? JSON.parse(this.data?.cTareaArchivoAdjunto)
                     : []
+                this.tareaAsignar = Number(this.data?.bTareaEsGrupal)
+                this.tareaAsignar !== null
+                    ? this.accionBtnItem({
+                          accion: 'save-tarea-cabecera-grupos',
+                          item: [],
+                      })
+                    : null
+
                 break
             default:
                 break

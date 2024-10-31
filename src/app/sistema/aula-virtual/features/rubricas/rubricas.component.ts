@@ -15,10 +15,11 @@ import {
 import { DialogService } from 'primeng/dynamicdialog'
 import { RubricaFormComponent } from './components/rubrica-form/rubrica-form.component'
 import { MODAL_CONFIG } from '@/app/shared/constants/modal.config'
-import { ApiEvaluacionesService } from '@/app/sistema/evaluaciones/services/api-evaluaciones.service'
+
 import { Subject, takeUntil } from 'rxjs'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { ConstantesService } from '@/app/servicios/constantes.service'
+import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-evaluaciones.service'
 
 const SELECTION_ACTION: IActionTable = {
     labelTooltip: 'Seleccionar',

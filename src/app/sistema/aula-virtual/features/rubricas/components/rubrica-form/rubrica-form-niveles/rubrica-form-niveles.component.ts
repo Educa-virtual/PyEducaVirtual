@@ -1,7 +1,7 @@
 import { Component, inject, Input, OnDestroy } from '@angular/core'
 import { FormArray, FormGroup } from '@angular/forms'
 import { RubricaFormService } from '../rubrica-form.service'
-import { ApiEvaluacionesService } from '@/app/sistema/evaluaciones/services/api-evaluaciones.service'
+import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-evaluaciones.service'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { Subject, takeUntil } from 'rxjs'
 

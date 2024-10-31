@@ -80,6 +80,7 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
     @Input() public accionesPreguntas = accionesTablaListaPreguntaForm
     private _pregunta
 
+    // si envia la pregunta se hace el patch del formulario
     @Input()
     set pregunta(pregunta) {
         if (pregunta === undefined) {
@@ -145,7 +146,7 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
     public preguntasEliminar = []
 
     ngOnInit() {
-        // escuchar cambio tip pregunta
+        // escuchar cambio tipo pregunta
         this.listenTipoPregunta()
         // Llenar el formulario paso 1 basado en la seleccion de la cabecera.
         this.bancoPreguntasForm
@@ -182,6 +183,7 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
         return this.bancoPreguntasForm.get('0')
     }
 
+    // escuchar cambio tipo pregunta
     private listenTipoPregunta() {
         this.formPreguntaInfo
             .get('iTipoPregId')
@@ -200,12 +202,14 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
             })
     }
 
+    // agrega o quita la pregunta única
     private handleSinEncabezado() {
         this.agregarQuitarValidacionesFormPregunta('AGREGAR')
         this.agregarQuitarValidacionesEncabezado('QUITAR')
         this.agregarQuitarAlternativasPaso('AGREGAR')
     }
 
+    // agrega o quita el paso alternativas
     private handleConEncabezado() {
         this.agregarQuitarAlternativasPaso('QUITAR')
         this.agregarQuitarValidacionesEncabezado('AGREGAR')

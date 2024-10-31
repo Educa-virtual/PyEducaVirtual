@@ -132,6 +132,15 @@ export const routes: Routes = [
             ),
     },
 
+    {
+        path: 'gestion-institucional',
+
+        loadChildren: () =>
+            import(
+                './sistema/gestion-institucional/gestion-institucional.module'
+            ).then((m) => m.GestionInstitucionalModule),
+    },
+
     { path: 'notfound', component: NotfoundComponent },
 
     { path: '**', redirectTo: '/notfound' },

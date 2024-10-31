@@ -61,6 +61,13 @@ export class GeneralService {
         return this.http.post(`${baseUrl}/general/subir-archivo`, data)
     }
 
+    addYear(data) {
+        //para almacenar calendario academico
+        return this.http.post(
+            `${baseUrl}/acad/calendarioAcademico/addCalAcademico`,
+            data
+        )
+    }
     getDias() {
         return this.http.get(
             `${baseUrl}/acad/calendarioAcademico/selCalAcademico?json={"jmod": "grl", "jtable": "dias"}&_opcion=getConsulta`
@@ -87,6 +94,57 @@ export class GeneralService {
                 json: JSON.stringify({ jmod: 'acad', jtable: 'turnos' }),
                 _opcion: 'getConsulta',
             }
+        )
+    }
+    getPeriodos() {
+        return this.http.post(
+            `${baseUrl}/acad/calendarioAcademico/addCalAcademico`,
+            {
+                json: JSON.stringify({
+                    jmod: 'acad',
+                    jtable: 'periodo_evaluaciones',
+                }),
+                _opcion: 'getConsulta',
+            }
+        )
+    }
+    getYearAcademicos() {
+        return this.http.post(
+            `${baseUrl}/acad/calendarioAcademico/addCalAcademico`,
+            {
+                json: JSON.stringify({
+                    jmod: 'acad',
+                    jtable: 'year_academicos',
+                }),
+                _opcion: 'getConsulta',
+            }
+        )
+    }
+
+    getYear() {
+        return this.http.post(
+            `${baseUrl}/acad/calendarioAcademico/addCalAcademico`,
+            {
+                json: JSON.stringify({
+                    jmod: 'grl',
+                    jtable: 'years',
+                }),
+                _opcion: 'getConsulta',
+            }
+        )
+    }
+
+    addAno(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/calendarioAcademico/addYear`,
+            data
+        )
+    }
+
+    searchCalAcademico(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/calendarioAcademico/searchCalAcademico`,
+            data
         )
     }
 }

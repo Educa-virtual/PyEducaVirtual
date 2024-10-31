@@ -185,6 +185,29 @@
                         >
                         </p-tag>
                     }
+                    @if (col.type === 'estado-activo') {
+                        <div [style.text-align]="col.text">
+                            @if (rowData[col.field] === '1') {
+                                <i
+                                    class="pi pi-check-circle"
+                                    style="color: green"
+                                    [pTooltip]="
+                                        rowData[col.field] + ' - Habilitado'
+                                    "
+                                    tooltipPosition="top"
+                                ></i>
+                            } @else {
+                                <i
+                                    class="pi pi-times-circle"
+                                    style="color: red"
+                                    [pTooltip]="
+                                        rowData[col.field] + ' - Deshabilitado'
+                                    "
+                                    tooltipPosition="top"
+                                ></i>
+                            }
+                        </div>
+                    }
                 </td>
             }
         </tr>

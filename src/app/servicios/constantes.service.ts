@@ -107,6 +107,20 @@ const administrador = [
         items: [
             inicio,
             {
+                label: 'Administracion del Sistema',
+                icon: 'pi pi-fw pi-cog',
+                items: [
+                    {
+                        label: 'Registro Calendario Escolar',
+                        icon: 'pi pi-fw pi-cog',
+                        routerLink: [
+                            '/gestion-institucional/calendarioAcademico',
+                        ],
+                    },
+                ],
+            },
+
+            {
                 label: 'Personas',
                 icon: 'pi pi-fw pi-desktop',
                 routerLink: ['/configuracion/personas'],
@@ -223,6 +237,34 @@ const notas_evaluaciones = [
                         routerLink: ['/evaluaciones/preguntas-activas'],
                     },
                 ],
+            },
+        ],
+    },
+]
+
+const director = [
+    {
+        items: [
+            inicio,
+            {
+                label: 'Mis Áreas Curriculares',
+                icon: 'pi pi-fw pi-book',
+                routerLink: ['/aula-virtual/areas-curriculares'],
+            },
+            {
+                label: 'Calendario',
+                icon: 'pi pi-fw pi-calendar',
+                routerLink: ['/aula-virtual/calendario'],
+            },
+            {
+                label: 'Recursos',
+                icon: 'pi pi-fw pi-folder',
+                routerLink: ['/aula-virtual/recursos'],
+            },
+            {
+                label: 'DashBoard',
+                icon: 'pi pi-fw pi-chart-bar',
+                routerLink: ['/aula-virtual'],
             },
         ],
     },
@@ -575,6 +617,9 @@ export class ConstantesService {
                 return apoderados
             case 12:
                 return especialista_ugel
+            case 13:
+                return director
+
             default:
                 return first
         }

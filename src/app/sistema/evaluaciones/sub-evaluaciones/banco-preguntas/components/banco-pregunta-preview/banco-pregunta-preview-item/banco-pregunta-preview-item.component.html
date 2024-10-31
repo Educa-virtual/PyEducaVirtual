@@ -3,16 +3,27 @@
 <!-- Pregunta texto ayuda -->
 <div [innerHTML]="pregunta.cPreguntaTextoAyuda"></div>
 
-@if (pregunta.alternativas !== undefined && pregunta.alternativas.length > 0) {
-    <div class="flex flex-column gap-2">
-        @for (
-            alternativa of pregunta.alternativas;
-            track alternativa.iAlternativaId
-        ) {
-            <app-banco-pregunta-alternativa
-                [alternativa]="alternativa"
-                [pregunta]="pregunta"
-            />
-        }
-    </div>
+@if (pregunta.iTipoPregId === 1 || pregunta.iTipoPregId === 2) {
+    @if (
+        pregunta.alternativas !== undefined && pregunta.alternativas.length > 0
+    ) {
+        <div class="flex flex-column gap-2">
+            @for (
+                alternativa of pregunta.alternativas;
+                track alternativa.iAlternativaId
+            ) {
+                <app-banco-pregunta-alternativa
+                    [alternativa]="alternativa"
+                    [pregunta]="pregunta"
+                />
+            }
+        </div>
+    }
+}
+
+@if (pregunta.iTipoPregId === 3) {
+    <app-banco-pregunta-alternativa
+        [alternativa]="null"
+        [pregunta]="pregunta"
+    />
 }

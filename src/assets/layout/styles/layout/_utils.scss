@@ -37,3 +37,13 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+.quill-only-view {
+    .p-editor-container .p-editor-content.ql-snow {
+        border: none;
+    }
+
+    .p-editor-container .p-editor-content .ql-editor {
+        background-color: transparent;
+    }
+}

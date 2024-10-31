@@ -215,7 +215,7 @@
                                 @if (!tareaAsignar) {
                                     <p-accordionTab header="Individual">
                                         <div class="grid">
-                                            <div class="col-4 leyenda-tareas">
+                                            <div class="col-6 leyenda-tareas">
                                                 <div
                                                     class="flex align-items-center"
                                                 >
@@ -236,7 +236,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-4 leyenda-tareas">
+                                            <div class="col-6 leyenda-tareas">
                                                 <div
                                                     class="flex align-items-center"
                                                 >
@@ -354,7 +354,7 @@
                                 } @else {
                                     <p-accordionTab header="Grupal">
                                         <div class="grid text-center">
-                                            <div class="col-4 leyenda-tareas">
+                                            <div class="col-6 leyenda-tareas">
                                                 <div
                                                     class="flex align-items-center"
                                                 >
@@ -375,7 +375,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-4 leyenda-tareas">
+                                            <div class="col-6 leyenda-tareas">
                                                 <div
                                                     class="flex align-items-center"
                                                 >
@@ -465,24 +465,20 @@
                                                                             "
                                                                         ></div>
                                                                         <p-button
-                                                                            severity="info"
                                                                             icon="pi pi-pencil"
+                                                                            [rounded]="
+                                                                                true
+                                                                            "
+                                                                            [text]="
+                                                                                true
+                                                                            "
+                                                                            severity="info"
                                                                             (onClick)="
                                                                                 grupoSeleccionado =
                                                                                     item;
                                                                                 showModal = true
                                                                             "
-                                                                            iconPos="left"
                                                                         />
-                                                                        <!--                                                &nbsp;
-                                                                        <span
-
-                                                                            class="pi pi-pencil"
-                                                                            severity="info"
-                                                                            (click)="grupoSeleccionado = item; showModal = true"
-                                                                            iconPos="left"
-
-                                                                        ></span>-->
                                                                     </div>
                                                                 </span>
                                                             </ng-template>
@@ -504,10 +500,16 @@
                                                                             class="sticky-header"
                                                                         >
                                                                             <th>
+                                                                                #
+                                                                            </th>
+                                                                            <th>
                                                                                 Nombres
                                                                             </th>
                                                                             <th>
                                                                                 Apellidos
+                                                                            </th>
+                                                                            <th>
+                                                                                Transferir
                                                                             </th>
                                                                         </tr>
                                                                     </ng-template>
@@ -539,6 +541,18 @@
                                                                                         estudiante.cPersMaterno
                                                                                     }}
                                                                                 </td>
+                                                                                <td>
+                                                                                    <p-button
+                                                                                        icon="pi pi-reply"
+                                                                                        [rounded]="
+                                                                                            true
+                                                                                        "
+                                                                                        [text]="
+                                                                                            true
+                                                                                        "
+                                                                                        severity="danger"
+                                                                                    />
+                                                                                </td>
                                                                             </tr>
                                                                         }
                                                                     </ng-template>
@@ -549,7 +563,7 @@
                                                                         <tr>
                                                                             <td
                                                                                 [attr.colspan]="
-                                                                                    3
+                                                                                    4
                                                                                 "
                                                                             >
                                                                                 No

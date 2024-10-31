@@ -49,9 +49,12 @@ export class FormGrupoComponent implements OnChanges {
             this.iTareaCabGrupoId = this.data?.iTareaCabGrupoId
             this.cTareaGrupoNombre = this.data?.cTareaGrupoNombre
             this.estudiantes = this.data?.json_estudiantes_respaldo
-            this.estudiantes.forEach(
-                (i) => (i.bAsignado = i.bAsignado ? true : false)
-            )
+            this.estudiantes.forEach((i) => {
+                Number(i.bAsignado) === 1
+                    ? (i.bAsignado = true)
+                    : (i.bAsignado = false)
+                i.disabled = i.bAsignado
+            })
         }
     }
     getTareaCabeceraGruposEstudiantes() {
@@ -79,11 +82,14 @@ export class FormGrupoComponent implements OnChanges {
                 opcion: this.opcion + '-ESTUDIANTESxiTareaId',
                 iTareaId: this.iTareaId,
                 cTareaGrupoNombre: this.cTareaGrupoNombre,
-                valorBusqueda: JSON.stringify(this.estudiantes),
+                valorBusqueda: JSON.stringify(
+                    this.estudiantes.filter((i) => !i.disabled)
+                ),
                 iTareaCabGrupoId: this.iTareaCabGrupoId,
             },
             params: { skipSuccessMessage: true },
         }
+
         this.getInformation(params, 'save-' + params.prefix)
     }
 
@@ -109,9 +115,14 @@ export class FormGrupoComponent implements OnChanges {
                 break
             case 'get-tarea-cabecera-grupos':
                 this.estudiantes = item
+                this.estudiantes.forEach((i) => {
+                    Number(i.bAsignado) === 1
+                        ? (i.bAsignado = true)
+                        : (i.bAsignado = false)
+                    i.disabled = i.bAsignado
+                })
                 break
             case 'save-tarea-cabecera-grupos':
-                console.log(item)
                 this.accionBtnItem.emit({ accion, item })
                 break
             default:

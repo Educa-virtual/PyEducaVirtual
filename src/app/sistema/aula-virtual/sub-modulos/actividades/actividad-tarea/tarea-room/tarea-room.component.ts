@@ -9,7 +9,7 @@ import {
 } from '@/app/sistema/aula-virtual/sub-modulos/actividades/components/leyenda-tareas/leyenda-item/leyenda-item.component'
 import { LeyendaTareasComponent } from '@/app/sistema/aula-virtual/sub-modulos/actividades/components/leyenda-tareas/leyenda-tareas.component'
 import { CommonModule } from '@angular/common'
-import { Component, inject, Input } from '@angular/core'
+import { Component, inject, Input, OnChanges } from '@angular/core'
 import { provideIcons } from '@ng-icons/core'
 import { matListAlt, matPeople } from '@ng-icons/material-icons/baseline'
 import { ButtonModule } from 'primeng/button'
@@ -43,7 +43,7 @@ import { ModalPrimengComponent } from '../../../../../../shared/modal-primeng/mo
     styleUrl: './tarea-room.component.scss',
     providers: [provideIcons({ matListAlt, matPeople }), DialogService],
 })
-export class TareaRoomComponent {
+export class TareaRoomComponent implements OnChanges {
     @Input() iTareaId: string
 
     private _dialogService = inject(DialogService)
@@ -180,7 +180,6 @@ export class TareaRoomComponent {
                 this.showModal = false
                 break
             case 'get-tarea-estudiantes':
-                console.log(item)
                 this.estudiantes = item
                 break
             case 'update-tareas':
@@ -217,6 +216,14 @@ export class TareaRoomComponent {
                 this.FilesTareas = this.data?.cTareaArchivoAdjunto
                     ? JSON.parse(this.data?.cTareaArchivoAdjunto)
                     : []
+                this.tareaAsignar = Number(this.data?.bTareaEsGrupal)
+                this.tareaAsignar !== null
+                    ? this.accionBtnItem({
+                          accion: 'save-tarea-cabecera-grupos',
+                          item: [],
+                      })
+                    : null
+
                 break
             default:
                 break

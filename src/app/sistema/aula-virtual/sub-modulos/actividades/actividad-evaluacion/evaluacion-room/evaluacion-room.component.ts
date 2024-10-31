@@ -20,7 +20,7 @@ import { Subject, takeUntil } from 'rxjs'
 import { EvaluacionFormPreguntasComponent } from '../evaluacion-form/evaluacion-form-preguntas/evaluacion-form-preguntas.component'
 import { EvaluacionRoomCalificacionComponent } from './evaluacion-room-calificacion/evaluacion-room-calificacion.component'
 import { PrimengModule } from '@/app/primeng.module'
-import { EditorNoToolbarDirective } from '@/app/shared/directives/editor-no-toolbar.directive'
+import { EditorOnlyViewDirective } from '@/app/shared/directives/editor-only-view.directive'
 
 @Component({
     selector: 'app-evaluacion-room',
@@ -33,7 +33,7 @@ import { EditorNoToolbarDirective } from '@/app/shared/directives/editor-no-tool
         LeyendaTareasComponent,
         EvaluacionFormPreguntasComponent,
         EvaluacionRoomCalificacionComponent,
-        EditorNoToolbarDirective,
+        EditorOnlyViewDirective,
     ],
     templateUrl: './evaluacion-room.component.html',
     styleUrl: './evaluacion-room.component.scss',

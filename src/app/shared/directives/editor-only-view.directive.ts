@@ -2,10 +2,10 @@ import { Directive, ElementRef, Host, inject } from '@angular/core'
 import { Editor } from 'primeng/editor'
 
 @Directive({
-    selector: '[appEditorNoToolbar]',
+    selector: '[appEditorOnlyView]',
     standalone: true,
 })
-export class EditorNoToolbarDirective {
+export class EditorOnlyViewDirective {
     private readonly elementRef: ElementRef<HTMLElement> = inject(ElementRef)
 
     editorModules = {
@@ -15,11 +15,7 @@ export class EditorNoToolbarDirective {
     constructor(@Host() private pEditor: Editor) {
         if (this.pEditor) {
             this.pEditor.readonly = true
-
             this.pEditor.modules = this.editorModules
         }
-        const parentElement = this.elementRef.nativeElement.parentElement
-
-        console.log(parentElement)
     }
 }

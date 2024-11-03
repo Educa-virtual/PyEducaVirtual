@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common'
 import { Component, inject, Input, OnInit } from '@angular/core'
 import { FormsModule } from '@angular/forms'
-import { CalendarModule } from 'primeng/calendar'
 import { ActividadRowComponent } from '@/app/sistema/aula-virtual/sub-modulos/actividades/components/actividad-row/actividad-row.component'
 import {
     EVALUACION,
@@ -26,7 +25,6 @@ import {
 } from '@ng-icons/material-icons/baseline'
 import { MODAL_CONFIG } from '@/app/shared/constants/modal.config'
 import { ActividadListaComponent } from '../../../../actividades/components/actividad-lista/actividad-lista.component'
-import { TareaFormContainerComponent } from '../../../../actividades/actividad-tarea/tarea-form-container/tarea-form-container.component'
 import { VideoconferenciaContainerFormComponent } from '../../../../actividades/actividad-videoconferencia/videoconferencia-container-form/videoconferencia-container-form.component'
 import { ForoFormContainerComponent } from '../../../../actividades/actividad-foro/foro-form-container/foro-form-container.component'
 import { ActividadFormComponent } from '../../../../actividades/components/actividad-form/actividad-form.component'
@@ -41,21 +39,23 @@ import { DynamicDialogModule } from 'primeng/dynamicdialog'
 import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-evaluaciones.service'
 import { PrimengModule } from '@/app/primeng.module'
 import { actividadesConfig } from '@/app/sistema/aula-virtual/constants/aula-virtual'
+import { FullCalendarModule } from '@fullcalendar/angular'
+import { TareaFormContainerComponent } from '../../../../actividades/actividad-tarea/tarea-form-container/tarea-form-container.component'
 
 @Component({
     selector: 'app-tab-contenido',
     standalone: true,
     imports: [
         CommonModule,
-        CalendarModule,
+        FullCalendarModule,
         FormsModule,
         ActividadRowComponent,
         ActividadListaComponent,
-        TareaFormContainerComponent,
         VideoconferenciaContainerFormComponent,
         IconComponent,
         DynamicDialogModule,
         PrimengModule,
+        TareaFormContainerComponent,
     ],
     templateUrl: './tab-contenido.component.html',
     styleUrl: './tab-contenido.component.scss',

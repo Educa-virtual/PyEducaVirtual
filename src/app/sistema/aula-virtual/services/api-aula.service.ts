@@ -65,6 +65,12 @@ export class ApiAulaService {
             data
         )
     }
+    obtenerRespuestaForo(data) {
+        return this._http.get(
+            `${this.baseUrlApi}/aula-virtual/contenidos/foro/obtenerRespuestaForo`,
+            data
+        )
+    }
     // fin de foro
     eliminarActividad(data) {
         return this._http.delete(

@@ -284,7 +284,12 @@ export class TabContenidoComponent implements OnInit {
         if (action === 'EDITAR') {
             this._dialogService.open(ForoFormContainerComponent, {
                 ...MODAL_CONFIG,
-                data: actividad,
+                data: {
+                    contenidoSemana: this.semanaSeleccionada,
+                    iActTipoId: actividad.iActTipoId,
+                    actividad: actividad,
+                    action: action === 'EDITAR' ? 'ACTUALIZAR' : 'GUARDAR',
+                },
                 header: 'Editar Foro',
             })
         }

@@ -21,7 +21,6 @@ import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.ser
 import { tipoActividadesKeys } from '@/app/sistema/aula-virtual/interfaces/actividad.interface'
 import { Subject, takeUntil } from 'rxjs'
 import { RemoveHTMLPipe } from '@/app/shared/pipes/remove-html.pipe'
-
 @Component({
     selector: 'app-foro-room',
     standalone: true,
@@ -59,6 +58,7 @@ export class ForoRoomComponent implements OnInit {
     // variables
     estudiantes: any[] = []
     calificacion: any[] = []
+    respuestasForo: any[] = []
     modalCalificacion: boolean = false
     estudianteSelect = null
     private unsbscribe$ = new Subject<boolean>()
@@ -82,17 +82,20 @@ export class ForoRoomComponent implements OnInit {
     constructor() {}
     ngOnInit() {
         //console.log('HolaMit', this.ixActivadadId, this.iActTopId)
+        //this.foroFormComnt.get('cForoRptaRespuesta').disable()
         this.getEstudiantesMatricula()
         this.mostrarCalificacion()
         this.obtenerForo()
+        this.getRespuestaF()
         //console.log('Obtener Datos', this.getEstudiantesMatricula())
     }
     // closeModal(data) {
     //     this.ref.close(data)
     // }
-    openModal(estudiante) {
+    openModal(respuestasForo) {
         this.modalCalificacion = true
-        this.estudianteSelect = estudiante
+        this.estudianteSelect = respuestasForo
+        this.foroFormComnt.patchValue(respuestasForo)
     }
     submit() {
         const value = this.foroForm.value
@@ -127,6 +130,15 @@ export class ForoRoomComponent implements OnInit {
             })
         //console.log('Obtener Foros',this._aulaService)
     }
+    //getRespuestasForo
+    getRespuestaF() {
+        const userd = 1
+        this._aulaService.obtenerRespuestaForo(userd).subscribe((Data) => {
+            this.respuestasForo = Data['data']
+            console.log('respuesta foro', this.respuestasForo)
+        })
+    }
+
     getEstudiantesMatricula() {
         const params = {
             petition: 'post',

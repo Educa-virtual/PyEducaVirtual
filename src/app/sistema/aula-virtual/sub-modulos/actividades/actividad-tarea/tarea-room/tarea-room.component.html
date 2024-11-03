@@ -5,7 +5,7 @@
                 <div class="flex align-items-center flex-column gap-2">
                     <app-icon name="matListAlt"></app-icon>
                     <span class="font-bold white-space-nowrap m-0">
-                        Instrucciones
+                        Tarea
                     </span>
                 </div>
             </ng-template>
@@ -96,9 +96,7 @@
                 </article>
                 <article class="card col-6">
                     <div class="p-card p-p-3">
-                        <h2>Trabajo Estudiante : {{ null }}</h2>
-
-                        <!-- Campo de entrada de texto para tarea -->
+                        <h2>Tarea Estudiante: {{ null }}</h2>
 
                         <input
                             type="text"
@@ -115,7 +113,6 @@
                             chooseLabel="Entregar trabajo"
                         ></p-fileUpload>
 
-                        <!-- Información de entrega de trabajo  -->
                         <article class="card">
                             <div
                                 class="grid"
@@ -126,8 +123,6 @@
                                     justify-content: center;
                                 "
                             >
-                                <h2>Tarea: {{ null }}</h2>
-
                                 <div
                                     style="
                                         display: flex;
@@ -150,7 +145,6 @@
                             </div>
                         </article>
 
-                        <!-- Nota de la tarea -->
                         <div
                             class="p-card p-mt-3 p-p-2"
                             style="
@@ -164,7 +158,6 @@
                             <h2 class="p-text-bold">Nota</h2>
                             <h3>20</h3>
                             <p>{{ null }}</p>
-                            <!-- Asegúrate de tener una variable llamada valorDinamico en tu componente -->
                         </div>
                     </div>
                 </article>
@@ -228,7 +221,9 @@
                                                             style="
                                                                 font-size: 1.5rem;
                                                             "
-                                                            >&nbsp;25</b
+                                                            >&nbsp;{{
+                                                                tareasFalta
+                                                            }}</b
                                                         ><small
                                                             >&nbsp; Falta</small
                                                         >
@@ -251,11 +246,12 @@
                                                             style="
                                                                 font-size: 1.5rem;
                                                             "
-                                                            >&nbsp;25</b
+                                                            >&nbsp;{{
+                                                                tareasCulminado
+                                                            }}</b
                                                         ><small
-                                                            >&nbsp;
-                                                            Culminado</small
-                                                        >
+                                                            >&nbsp;Culminado
+                                                        </small>
                                                     </div>
                                                 </div>
                                             </div>
@@ -291,17 +287,17 @@
                                                     let-estudiante
                                                     let-rowIndex="rowIndex"
                                                 >
-                                                    <tr>
+                                                    <tr
+                                                        (click)="
+                                                            getTareaRealizada(
+                                                                estudiante
+                                                            )
+                                                        "
+                                                    >
                                                         <td>
                                                             {{ rowIndex + 1 }}
                                                         </td>
-                                                        <td
-                                                            (click)="
-                                                                getTareaRealizada(
-                                                                    estudiante
-                                                                )
-                                                            "
-                                                        >
+                                                        <td>
                                                             {{
                                                                 estudiante?.cPersNombre
                                                             }}
@@ -621,262 +617,137 @@
                                 </p>
                             } @else {
                                 <p-fieldset
-                                    legend="Nombre de la tarea"
+                                    [legend]="cTareaTitulo"
                                     [toggleable]="true"
                                 >
-                                    <div class="formgrid grid">
-                                        <div class="field col-12 md:col-12">
-                                            <p-inputGroup>
-                                                <p-inputGroupAddon
-                                                    class="text-sm"
-                                                    >Comentario:</p-inputGroupAddon
+                                    <div class="grid">
+                                        @if (
+                                            cTareaEstudianteUrlEstudiante.length
+                                        ) {
+                                            <div class="col-12">
+                                                <label for="" class="mt-2"
+                                                    >Lista de Adjuntos</label
                                                 >
-                                                <textarea
-                                                    rows="2"
-                                                    pInputText
-                                                    class="flex-auto w-full"
-                                                ></textarea>
-                                            </p-inputGroup>
-                                        </div>
-                                        <div class="field col-12 md:col-12">
-                                            <p-inputGroup>
-                                                <p-table
-                                                    #dv
-                                                    class="col-12 hoverTable"
-                                                    [value]="documentos"
-                                                    paginator="false"
-                                                    styleClass="p-datatable-sm"
-                                                >
-                                                    <ng-template
-                                                        pTemplate="header"
-                                                    >
-                                                        <tr>
-                                                            <th
-                                                                style="
-                                                                    width: 10rem;
-                                                                "
-                                                            >
-                                                                Documento
-                                                                Adjunto
-                                                            </th>
-                                                            <th
-                                                                style="
-                                                                    width: 0.5rem;
-                                                                    text-align: center;
-                                                                "
-                                                            >
-                                                                Acción
-                                                            </th>
-                                                        </tr>
-                                                    </ng-template>
-                                                    <ng-template
-                                                        pTemplate="emptymessage"
-                                                        let-columns
-                                                    >
-                                                        <tr>
-                                                            <td
-                                                                [attr.colspan]="
-                                                                    documentos.length
-                                                                "
-                                                            >
-                                                                No se
-                                                                encontraron
-                                                                resultados.
-                                                            </td>
-                                                        </tr>
-                                                    </ng-template>
-                                                    <ng-template
-                                                        pTemplate="body"
-                                                        let-item
-                                                        let-rowIndex="rowIndex"
-                                                    >
-                                                        <tr>
-                                                            <td
-                                                                class="font-bold"
-                                                            >
-                                                                {{
-                                                                    item.cDocumento
-                                                                }}
-                                                            </td>
-                                                            <td
-                                                                style="
-                                                                    text-align: center;
-                                                                "
-                                                            >
-                                                                <p-button
-                                                                    icon="pi pi-eye"
-                                                                    pTooltip="Ver Documento"
-                                                                    tooltipPosition="top"
-                                                                    [rounded]="
-                                                                        true
-                                                                    "
-                                                                    [text]="
-                                                                        true
-                                                                    "
-                                                                    severity="info"
-                                                                />
-                                                            </td>
-                                                        </tr>
-                                                    </ng-template>
-                                                </p-table>
-                                            </p-inputGroup>
-                                        </div>
+
+                                                @for (
+                                                    item of cTareaEstudianteUrlEstudiante;
+                                                    track item;
+                                                    let idx = $index
+                                                ) {
+                                                    <p-inputGroup class="mt-1">
+                                                        <p-inputGroupAddon>
+                                                            @switch (
+                                                                item.type
+                                                            ) {
+                                                                @case (1) {
+                                                                    <i
+                                                                        class="pi pi-upload"
+                                                                        style="
+                                                                            color: #333437;
+                                                                        "
+                                                                    ></i>
+                                                                }
+                                                                @case (2) {
+                                                                    <i
+                                                                        class="pi pi-link"
+                                                                        style="
+                                                                            color: #333437;
+                                                                        "
+                                                                    ></i>
+                                                                }
+                                                                @case (3) {
+                                                                    <i
+                                                                        class="pi pi-youtube"
+                                                                        style="
+                                                                            color: #c4302b;
+                                                                        "
+                                                                    ></i>
+                                                                }
+                                                                @case (4) {
+                                                                    <i
+                                                                        class="pi pi-folder"
+                                                                        style="
+                                                                            color: #ffd04b;
+                                                                        "
+                                                                    ></i>
+                                                                }
+                                                            }
+                                                        </p-inputGroupAddon>
+                                                        <input
+                                                            type="text"
+                                                            pInputText
+                                                            [placeholder]="
+                                                                item.name
+                                                            "
+                                                            disabled
+                                                        />
+                                                        <button
+                                                            type="button"
+                                                            pButton
+                                                            icon="pi pi-eye"
+                                                            (click)="
+                                                                goLinkDocumento(
+                                                                    item.ruta
+                                                                )
+                                                            "
+                                                            class="p-button-info"
+                                                        >
+                                                            &nbsp;
+                                                        </button>
+                                                    </p-inputGroup>
+                                                }
+                                            </div>
+                                        }
                                     </div>
                                 </p-fieldset>
-                                <p-divider></p-divider>
                                 <p-fieldset
                                     legend="Calificación"
                                     [toggleable]="true"
                                 >
-                                    <div class="formgrid grid">
-                                        <div class="field col-12 md:col-8">
+                                    <div class="grid">
+                                        <div class="col-12">
                                             <p-inputGroup>
                                                 <p-inputGroupAddon
-                                                    class="text-sm"
-                                                    >Nivel
-                                                    Logro</p-inputGroupAddon
-                                                >
-                                                <textarea
-                                                    rows="1"
-                                                    pInputText
-                                                    class="flex-auto w-full"
-                                                ></textarea>
-                                            </p-inputGroup>
-                                        </div>
-                                        <div class="field col-12 md:col-4">
-                                            <p-inputGroup>
-                                                <p-inputGroupAddon
-                                                    class="text-sm"
-                                                    >Puntaje</p-inputGroupAddon
+                                                    >Escala de
+                                                    calificación</p-inputGroupAddon
                                                 >
                                                 <p-dropdown
-                                                    styleClass="flex-auto w-full"
-                                                    [options]="[]"
-                                                    placeholder="Seleccionar Calificación"
-                                                    optionLabel="cCalificacion"
-                                                    optionValue="cCalificacionId"
-                                                />
+                                                    [(ngModel)]="iEscalaCalifId"
+                                                    [options]="
+                                                        escalaCalificaciones
+                                                    "
+                                                    optionValue="iEscalaCalifId"
+                                                    optionLabel="cEscalaCalifNombre"
+                                                    placeholder="Seleccione calificación"
+                                                    [style]="{ width: '100%' }"
+                                                ></p-dropdown>
                                             </p-inputGroup>
                                         </div>
-                                        <div class="field col-12 md:col-12">
+                                        <div class="col-12">
                                             <p-inputGroup>
-                                                <p-inputGroupAddon
-                                                    class="text-sm"
-                                                    >Observación</p-inputGroupAddon
-                                                >
+                                                <p-inputGroupAddon>
+                                                    Comentario
+                                                </p-inputGroupAddon>
                                                 <textarea
-                                                    rows="2"
                                                     pInputText
-                                                    class="flex-auto w-full"
+                                                    [(ngModel)]="
+                                                        cTareaEstudianteComentarioDocente
+                                                    "
                                                 ></textarea>
                                             </p-inputGroup>
-                                        </div>
-                                        <div class="field col-12 md:col-12">
-                                            <p-inputGroup>
-                                                <p-inputGroupAddon
-                                                    class="text-sm"
-                                                    >Documento
-                                                    Adjunto</p-inputGroupAddon
-                                                >
-                                                <app-file-upload-primeng
-                                                    [nameFile]="'tareas'"
-                                                    [nameOption]="'tareas'"
-                                                ></app-file-upload-primeng>
-                                            </p-inputGroup>
-                                        </div>
-                                        <div class="field col-12 md:col-12">
-                                            <p-table
-                                                #dv
-                                                class="col-12 hoverTable"
-                                                [value]="documentos"
-                                                paginator="false"
-                                                styleClass="p-datatable-sm"
-                                            >
-                                                <ng-template pTemplate="header">
-                                                    <tr>
-                                                        <th
-                                                            style="width: 10rem"
-                                                        >
-                                                            Nombre del Documento
-                                                        </th>
-                                                        <th
-                                                            style="
-                                                                width: 0.5rem;
-                                                                text-align: center;
-                                                            "
-                                                        >
-                                                            Acción
-                                                        </th>
-                                                    </tr>
-                                                </ng-template>
-                                                <ng-template
-                                                    pTemplate="emptymessage"
-                                                    let-columns
-                                                >
-                                                    <tr>
-                                                        <td
-                                                            [attr.colspan]="
-                                                                documentos.length
-                                                            "
-                                                        >
-                                                            No se encontraron
-                                                            resultados.
-                                                        </td>
-                                                    </tr>
-                                                </ng-template>
-                                                <ng-template
-                                                    pTemplate="body"
-                                                    let-item
-                                                    let-rowIndex="rowIndex"
-                                                >
-                                                    <tr>
-                                                        <td class="font-bold">
-                                                            {{
-                                                                item.cDocumento
-                                                            }}
-                                                        </td>
-                                                        <td
-                                                            style="
-                                                                text-align: center;
-                                                            "
-                                                        >
-                                                            <p-button
-                                                                icon="pi pi-eye"
-                                                                pTooltip="Ver Documento"
-                                                                tooltipPosition="top"
-                                                                [rounded]="true"
-                                                                [text]="true"
-                                                                severity="info"
-                                                            />
-                                                            <p-button
-                                                                icon="pi pi-trash"
-                                                                pTooltip="Eliminar Documento"
-                                                                tooltipPosition="top"
-                                                                [rounded]="true"
-                                                                [text]="true"
-                                                                severity="danger"
-                                                            />
-                                                        </td>
-                                                    </tr>
-                                                </ng-template>
-                                            </p-table>
                                         </div>
                                     </div>
                                 </p-fieldset>
-                                <p-divider></p-divider>
                                 <div class="grid">
-                                    <div class="col-12 text-right">
-                                        <p-button
-                                            severity="danger"
-                                            label="Devolver Tarea"
-                                            icon="pi pi-chevron-left"
-                                            iconPos="left"
-                                        />&nbsp;&nbsp;
+                                    <div class="col-12 text-right text-center">
                                         <p-button
                                             severity="success"
-                                            label="Guardar Calificación"
+                                            label="Guardar"
                                             icon="pi pi-plus"
                                             iconPos="left"
+                                            (onClick)="
+                                                guardarTareaEstudiantesxDocente()
+                                            "
                                         />
                                     </div>
                                 </div>

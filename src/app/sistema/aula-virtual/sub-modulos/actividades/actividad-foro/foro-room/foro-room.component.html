@@ -1,6 +1,7 @@
 <form [formGroup]="foroFormComnt" class="flex flex-column gap-3 w-full">
     <section class="flex flex-column gap-4">
         <p-tabView styleClass="actividad-tabs">
+            <!-- Mostrar informacion general del foro -->
             <p-tabPanel>
                 <ng-template pTemplate="header">
                     <div class="flex align-items-center flex-column gap-2">
@@ -12,14 +13,22 @@
                 </ng-template>
                 <div class="flex flex-column gap-4">
                     <article class="card">
-                        <!-- <h2>Evaluación: {{ evaluacion?.cEvaluacionTitulo }}</h2> -->
+                        <h2>Foro: {{ foro?.cForoTitulo }}</h2>
                         <hr />
 
                         <div class="grid mb-4">
                             <div
                                 class="col-12 md:col-6 flex flex-column gap-2 align-items-start"
                             >
-                                <span class="font-bold text-xl flex gap-2">
+                                <div
+                                    class="col-12 md:col-6 gap-2 flex flex-column"
+                                >
+                                    <span class="font-bold text-xl"
+                                        >Catergoria:</span
+                                    >
+                                    {{ foro.cForoCatDescripcion }}
+                                </div>
+                                <!-- <span class="font-bold text-xl flex gap-2">
                                     <app-icon
                                         name="matCalendarMonth"
                                         class="text-primary"
@@ -27,7 +36,7 @@
                                     ></app-icon>
                                     Título del Foro:</span
                                 >
-                                {{ foro?.cForoTitulo }}
+                                {{ foro?.cForoTitulo }} -->
                                 <!-- <p>
                               {{
                                   evaluacion?.dtEvaluacionPublicacion
@@ -39,12 +48,6 @@
                                       | date: 'h:mm a'
                               }}
                           </p> -->
-                            </div>
-                            <div class="col-12 md:col-6 gap-2 flex flex-column">
-                                <span class="font-bold text-xl"
-                                    >Catergoria:</span
-                                >
-                                {{ foro.cForoCatDescripcion }}
                             </div>
                         </div>
 
@@ -122,7 +125,7 @@
                           </span>
                           <span>{{
                               evaluacion?.iEvaluacionNroPreguntas ?? 0 }}
-                            
+
                           </span>
                       </div>
                       <div class="col-12 md:col-6 gap-2 flex flex-column">
@@ -251,7 +254,7 @@
                 </ng-template>
                 <div class="flex flex-column gap-4">
                     <div class="card">
-                        <div>Título de Foro: {{ foro?.cForoTitulo }}</div>
+                        <h2>Foro: {{ foro?.cForoTitulo }}</h2>
                     </div>
                     <!-- Recursos y Comentarios -->
                     <div class="container">
@@ -262,19 +265,61 @@
                                         >Recursos:</label
                                     >
                                 </b>
-                                <div></div>
+                                <ul class="list-none p-0 m-0">
+                                    <li
+                                        class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap"
+                                    >
+                                        <div
+                                            class="flex gap-2 align-items-center"
+                                        >
+                                            <i
+                                                class="pi pi-file text-lg text-primary"
+                                            ></i>
+                                            <span class="font-medium text-lg"
+                                                >Recurso.pdf</span
+                                            >
+                                            <span class="text-gray-500"
+                                                >tamaño(319.532KB)</span
+                                            >
+                                        </div>
+                                    </li>
+                                    <li
+                                        class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap"
+                                    >
+                                        <div
+                                            class="flex gap-2 align-items-center"
+                                        >
+                                            <i
+                                                class="pi pi-file text-lg text-primary"
+                                            ></i>
+                                            <span class="font-medium text-lg"
+                                                >Recurso.pdf</span
+                                            >
+                                            <span class="text-gray-500"
+                                                >tamaño(319.532KB)</span
+                                            >
+                                        </div>
+                                    </li>
+                                </ul>
+                                <div>
+                                    <!-- <ngx-extended-pdf-viewer [src]="'pdf/TL7 75 Español.pdf'" useBrowserLocale="true" height="100px" width="900px" ></ngx-extended-pdf-viewer> -->
+                                </div>
                             </div>
                         </div>
                         <div class="card2">
-                            <b>
+                            <!-- <b>
                                 <label class="text-lg" for=""
                                     >Comentarios:</label
                                 >
-                            </b>
+                            </b> -->
                             <div>
-                                <p-orderList class="list">
+                                <p-orderList
+                                    class="list"
+                                    [value]="respuestasForo"
+                                    header="Comentarios:"
+                                >
                                     <ng-template
-                                        let-perfiles
+                                        let-respuestas
                                         pTemplate="listItem"
                                     >
                                         <p-button
@@ -288,22 +333,35 @@
                                             >
                                                 <img
                                                     src="assets/demo/images/matemit/avatar.png"
-                                                    [alt]="perfiles.name"
+                                                    [alt]="respuestas.name"
                                                     class="w-4rem min-h-9 shadow-2 flex-shrink-0 border-round"
                                                 />
-                                                <!-- <div class="perfiles-list-detail">
-                                        <div class="perfil-name">
-                                            {{ perfiles.cPerfilNombre }}
-                                        </div>
-                                        <div class="perfil-name">IE: {{ null }}</div>
-                                        <div class="perfil-description">
-                                            Cod. Modular:{{ null }}
-                                        </div>
-                                        <div class="perfil-description">Nivel: {{ null }}</div>
-                                        <div class="perfil-description">
-                                            {{ perfiles.cEntNombreLargo }}
-                                        </div>
-                                    </div> -->
+                                                <div
+                                                    class="perfiles-list-detail"
+                                                >
+                                                    <div class="perfil-name">
+                                                        {{
+                                                            respuestas?.cNombreEstudiante
+                                                        }}
+                                                    </div>
+                                                    <div
+                                                        class="perfil-description"
+                                                    >
+                                                        Fecha:{{
+                                                            respuestas?.dtCreado
+                                                        }}
+                                                    </div>
+                                                    <div class="perfil-name">
+                                                        comentario:
+                                                        {{
+                                                            respuestas?.cForoRptaRespuesta
+                                                        }}
+                                                    </div>
+                                                    <!-- <div class="perfil-description">Nivel: {{ null }}</div>
+                                                <div class="perfil-description">
+                                                    {{ perfiles.cEntNombreLargo }}
+                                                </div> -->
+                                                </div>
                                             </div>
                                         </p-button>
                                     </ng-template>
@@ -314,7 +372,7 @@
                                         class="comment-input"
                                         placeholder="Escribe un comentario..."
                                         id="commentText"
-                                        formControlName="cForoRptaRespuesta"
+                                        formControlName="cForoRptaRespuestar"
                                     />
                                     <button
                                         class="send-button"
@@ -344,19 +402,8 @@
                     </div>
                 </ng-template>
                 <div class="card">
-                    <div
-                        class="col-12 md:col-6 flex flex-column gap-2 align-items-start"
-                    >
-                        <span class="font-bold text-xl flex gap-2">
-                            <app-icon
-                                name="matCalendarMonth"
-                                class="text-primary"
-                                size="sm"
-                            />
-                            <h3 class="text-lg m-0">Título del Foro:</h3>
-                        </span>
-                        {{ foro?.cForoTitulo }}
-                    </div>
+                    <h2>Foro: {{ foro?.cForoTitulo }}</h2>
+                    <hr />
                     <div class="flex gap-2 flex-wrap align-items-center mb-4">
                         <app-icon
                             name="matMessage"
@@ -380,7 +427,7 @@
                         <tr>
                             <!-- incio -->
                             <p-table
-                                [value]="estudiantes"
+                                [value]="respuestasForo"
                                 [scrollable]="true"
                                 scrollHeight="500px"
                             >
@@ -396,7 +443,7 @@
                                 </ng-template>
                                 <ng-template
                                     pTemplate="body"
-                                    let-estudiante
+                                    let-respuestas
                                     let-rowIndex="rowIndex"
                                 >
                                     <tr>
@@ -407,16 +454,18 @@
                                             {{ rowIndex + 1 }}
                                         </td>
                                         <td class="w-5">
-                                            {{ estudiante?.nombrecompleto }}
+                                            {{ respuestas?.cNombreEstudiante }}
                                         </td>
-                                        <td class="">f</td>
-                                        <td>A</td>
-                                        <td>A</td>
+                                        <td class="">
+                                            {{ respuestas?.cForoRptaRespuesta }}
+                                        </td>
+                                        <td>C</td>
+                                        <td>Ninguna</td>
                                         <td style="text-align: center">
                                             <p-button
-                                                (click)="openModal(estudiante)"
+                                                (click)="openModal(respuestas)"
                                                 class="btCalificacion"
-                                                icon="pi pi-folder-open"
+                                                icon="pi pi-book"
                                                 rounded="true"
                                                 severity="secondary"
                                                 [style]="{
@@ -457,11 +506,13 @@
 <p-dialog
     [(visible)]="modalCalificacion"
     [style]="{ width: '1000px' }"
-    header="Calificar las Respuestas de: {{ estudianteSelect?.nombrecompleto }}"
+    header="Calificar las Respuestas de: {{
+        estudianteSelect?.cNombreEstudiante
+    }}"
     [modal]="true"
     class="p-fluid"
 >
-    <form [formGroup]="foroForm" class="flex flex-column gap-3 w-full">
+    <form [formGroup]="foroFormComnt" class="flex flex-column gap-3 w-full">
         <div class="grid">
             <!-- <div class="col-12">
                 <p-messages
@@ -473,7 +524,7 @@
             <!-- Mostrar el título -->
             <div class="col-8 flex flex-column gap-2">
                 <app-common-input
-                    [controlKey]="'cForoTitulo'"
+                    [controlKey]="'cForoRptaRespuesta'"
                     label="Comentario"
                 />
             </div>

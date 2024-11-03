@@ -20,15 +20,17 @@
         class="flex-1"
         (onChange)="onChange()"
     />
-    <p-iconField iconPosition="left">
+    <!-- <p-iconField iconPosition="left">
         <p-inputIcon styleClass="pi pi-search" />
         <input pInputText type="text" placeholder="Buscar por nombre de I.E" />
-    </p-iconField>
-    <div class="padding:20px 40px 20px 30px">
+    </p-iconField> -->
+    <!-- <div class="padding:20px 40px 20px 30px">
         <p-button label="Submit" (onClick)="seleccionados()" />
-    </div>
+    </div> -->
 </div>
 <br />
+<!-- onMoveToTarget envia los datos a onMoveToSource -->
+<!-- onMoveAllToTarget envia todos los datos a onMoveAllToSource -->
 <p-pickList
     [source]="sourceProducts"
     [target]="targetProducts"

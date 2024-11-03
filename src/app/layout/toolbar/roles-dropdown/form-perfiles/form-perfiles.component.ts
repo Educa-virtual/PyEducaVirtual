@@ -18,19 +18,25 @@ export class FormPerfilesComponent {
     perfiles = []
     perfilSeleccionado: any = {}
     name: string
+    name1: string
     constructor(
         private store: LocalStoreService,
         private ConstantesService: ConstantesService,
-        private tokenStorageService: TokenStorageService
+        private tokenStorageService: TokenStorageService,
+        private ls: LocalStoreService
     ) {
         this.name = this.ConstantesService.nombres
+        this.name1 = this.ConstantesService.nombre
         const user = this.store.getItem('dremoUser')
         this.perfiles = user ? user.perfiles : this.logout()
     }
 
-    changePerfil(perfiles): void {
+    changePerfil(perfiles: any): void {
+        const found = (this.perfilSeleccionado = perfiles)
+        this.ls.setItem('dremoPerfil', found)
         this.store.setItem('dremoModalPerfil', false)
-        this.store.setItem('dremoPerfil', perfiles)
+        // this.store.setItem('dremoPerfil', perfiles)
+        console.log('Datos de perfil', found)
         setTimeout(() => {
             window.location.reload()
         }, 200)

@@ -7,11 +7,11 @@
     (onHide)="closeModal()"
 >
     <p-orderList
-        class=""
+        class="list"
         [value]="perfiles"
         header="Hola. {{
-            name | uppercase
-        }} seleccione el rol que desea ingresar:"
+            name1 | uppercase
+        }} seleccione el rol que desea ingresar: "
     >
         <ng-template let-perfiles pTemplate="listItem">
             <p-button

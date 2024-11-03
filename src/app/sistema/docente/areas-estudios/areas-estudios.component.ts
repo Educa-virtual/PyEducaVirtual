@@ -83,7 +83,7 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
             },
 
             {
-                label: 'Sessiones de Aprendizaje',
+                label: 'Sesiones de Aprendizaje',
                 icon: 'pi pi-angle-right',
                 command: () => {
                     this.goSection('sesion-aprendizaje')

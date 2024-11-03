@@ -55,8 +55,6 @@ export class AlternativasFormComponent implements OnInit {
 
         this.buildForm()
         const letrasUsadas = this.alternativas.map((x) => x.cAlternativaLetra)
-        this.letrasDisponiblesPreguntaSeleccionada =
-            filterPreguntasUsadas(letrasUsadas)
 
         this.alternativaFormGroup
             .get('iPreguntaId')
@@ -64,12 +62,20 @@ export class AlternativasFormComponent implements OnInit {
 
         // editando alternativa
         if (this.alternativa != null) {
+            this.letrasDisponiblesPreguntaSeleccionada = filterPreguntasUsadas(
+                letrasUsadas,
+                this.alternativa.cAlternativaLetra
+            )
+
             this.alternativaFormGroup.patchValue(this.alternativa)
             this.alternativaFormGroup
                 .get('bAlternativaCorrecta')
                 .setValue(
                     this.alternativa.bAlternativaCorrecta == 1 ? true : false
                 )
+        } else {
+            this.letrasDisponiblesPreguntaSeleccionada =
+                filterPreguntasUsadas(letrasUsadas)
         }
     }
 

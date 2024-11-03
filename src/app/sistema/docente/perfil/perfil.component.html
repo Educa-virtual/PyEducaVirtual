@@ -1,1 +1,96 @@
-<p>Página de Perfil en desarrollo</p>
+<div class="grid">
+    <p-toolbar class="col-12">
+        <div class="p-toolbar-group-start">
+            <h4 class="text-primary font-bold">MI PERFIL</h4>
+        </div>
+    </p-toolbar>
+    <div class="col-12">
+        <p-messages
+            [(value)]="mensaje"
+            [enableService]="false"
+            [closable]="false"
+        />
+    </div>
+    <div class="col-12">
+        <div class="card">
+            <div class="grid">
+                <div
+                    class="col-12 md:col-5 flex flex-column align-items-center"
+                >
+                    <app-image-upload-primeng
+                        (actionImageUpload)="accionBtnItem($event)"
+                    ></app-image-upload-primeng>
+                </div>
+                <div class="col-12 md:col-7">
+                    <div class="grid">
+                        <div class="col-12">
+                            <h3>Datos Personales</h3>
+                            <p-divider></p-divider>
+                        </div>
+                        <div class="col-12">
+                            <p-inputGroup>
+                                <p-inputGroupAddon>
+                                    Nombres y Apellidos
+                                </p-inputGroupAddon>
+                                <input pInputText />
+                            </p-inputGroup>
+                        </div>
+                        <div class="col-12">
+                            <p-inputGroup>
+                                <p-inputGroupAddon>
+                                    Dirección
+                                </p-inputGroupAddon>
+                                <input pInputText />
+                            </p-inputGroup>
+                        </div>
+                        <div class="col-12">
+                            <p-inputGroup>
+                                <p-inputGroupAddon>
+                                    <i class="pi pi-at"></i>
+                                </p-inputGroupAddon>
+                                <input pInputText />
+                            </p-inputGroup>
+                        </div>
+                        <div class="col-7">
+                            <p-inputGroup>
+                                <p-inputGroupAddon>
+                                    Fecha de Nacimiento</p-inputGroupAddon
+                                >
+                                <p-calendar
+                                    [(ngModel)]="date"
+                                    [showIcon]="true"
+                                    [hourFormat]="'24'"
+                                    [showTime]="false"
+                                />
+                            </p-inputGroup>
+                        </div>
+                        <div class="col-5">
+                            <p-inputGroup>
+                                <p-inputGroupAddon> Celular </p-inputGroupAddon>
+                                <input pInputText />
+                            </p-inputGroup>
+                        </div>
+                        <div class="col-7">
+                            <p-inputGroup>
+                                <p-inputGroupAddon
+                                    >Contraseña</p-inputGroupAddon
+                                >
+                                <input pInputText type="password" />
+                            </p-inputGroup>
+                        </div>
+                        <div class="col-5">
+                            <button
+                                pButton
+                                pRipple
+                                type="button"
+                                class="p-button-primary"
+                            >
+                                <i class="pi pi-check"></i>&nbsp; Guardar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

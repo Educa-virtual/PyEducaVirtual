@@ -4,10 +4,10 @@
             <label for="">Buscar</label>
             <p-iconField iconPosition="left" class="p-iconfield">
                 <p-inputIcon styleClass="pi pi-search" />
-                <input pInputText type="text" placeholder="Buscar..." />
+                <input pInputText type="text" placeholder="Buscarrr..." />
             </p-iconField>
         </div>
-        <div class="flex flex-column gap-2">
+        <!-- <div class="flex flex-column gap-2">
             <label for="">Rango de fechas</label>
             <p-calendar
                 [iconDisplay]="'input'"
@@ -16,7 +16,7 @@
                 selectionMode="range"
                 [readonlyInput]="true"
             />
-        </div>
+        </div> -->
     </div>
 </div>
 
@@ -52,6 +52,7 @@
                         {{ fecha.fecha | date: "EEEE, d 'de' MMMM 'de' yyyy" }}
                     </h3>
                     <hr />
+
                     <app-actividad-lista
                         [actividades]="fecha.actividades"
                         (actionSelected)="actionSelected($event)"
@@ -65,7 +66,7 @@
 <p-menu #menuContenido [model]="accionesContenido" [popup]="true">
     <ng-template pTemplate="item" let-item>
         <a pRipple class="flex align-items-center gap-2 p-2 px-3 text-color">
-            <!-- <app-icon [name]="item.icon" size="sm" /> -->
+            <!-- <app-icon [name]="item.icon" size="sm" />  -->
             <span>
                 {{ item.label }}
             </span>

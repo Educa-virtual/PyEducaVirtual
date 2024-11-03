@@ -1,5 +1,5 @@
 <div class="flex flex-column md:flex-row gap-2 justify-content-between mb-4">
-    <h2 class="text-2xl font-bold">Preguntas - {{ tituloEvaluacion }}</h2>
+    <h2 class="text-2xl font-bold">Preguntas {{ tituloEvaluacion }}</h2>
     <button
         pButton
         class="p-button-primary gap-2"
@@ -16,6 +16,8 @@
     [showCaption]="false"
     [showPaginator]="false"
     [accionesTabla]="acciones"
+    (accionBtnItemTable)="accionBtnItemTable($event)"
+    [columnas]="columnasEvaluacionLista"
 ></app-banco-pregunta-lista>
 
 <p-menu
@@ -33,7 +35,7 @@
     [(visible)]="showModalBancoPreguntas"
     [position]="'top'"
     [maximizable]="true"
-    [style]="{ width: '75vw' }"
+    [style]="{ width: '100%' }"
 >
     @defer (when showModalBancoPreguntas) {
         <!-- las preguntas seleccionadas -->

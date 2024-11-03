@@ -16,6 +16,8 @@ import { DropdownModule } from 'primeng/dropdown'
 
 import { IeparticipaComponent } from '../ieparticipa/ieparticipa.component'
 
+import { EvaluacionAreasComponent } from './../evaluacion-areas/evaluacion-areas.component'
+
 import { ApiEvaluacionesRService } from '../../../services/api-evaluaciones-r.service'
 import { Subject, takeUntil } from 'rxjs'
 import { DynamicDialogRef } from 'primeng/dynamicdialog'
@@ -50,6 +52,7 @@ interface NivelEvaluacion {
         DropdownModule,
         CommonInputComponent,
         ReactiveFormsModule,
+        EvaluacionAreasComponent,
     ],
     templateUrl: './evaluaciones-form.component.html',
     styleUrl: './evaluaciones-form.component.scss',
@@ -146,13 +149,26 @@ export class EvaluacionesFormComponent implements OnInit {
 
     closeModal(data) {
         this._ref.close(data)
+        console.log('Formulario de evaluación cancelado')
+
+        // Resetear el formulario si es necesario
+        this.evaluacionFormGroup.reset()
     }
 
     guardarActualizarAlternativa() {
-        if (this.evaluacionFormGroup.invalid) {
-            this.evaluacionFormGroup.markAllAsTouched()
-            return
+        // if (this.evaluacionFormGroup.invalid) {
+        //     this.evaluacionFormGroup.markAllAsTouched()
+        //     return
+        // }
+        // alert('guardar')
+        if (this.evaluacionFormGroup.valid) {
+            console.log(
+                'Datos del formulario deasdasd evaluación guardados:',
+                this.evaluacionFormGroup.value
+            )
+            // Lógica para guardar el formulario (puede enviar los datos a Laravel, por ejemplo)
+        } else {
+            console.log('Formulario de evaluación no válido')
         }
-        alert('guardar')
     }
 }

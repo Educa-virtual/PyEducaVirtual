@@ -18,6 +18,7 @@
     class="hoverTable"
     [dataKey]="dataKey"
     [expandedRowKeys]="expandedRowKeys"
+    [selectionMode]="selectionMode"
 >
     @if (showCaption) {
         <ng-template pTemplate="caption">
@@ -122,6 +123,11 @@
                         <p-tableRadioButton
                             [value]="rowData"
                         ></p-tableRadioButton>
+                    }
+                    @if (col.type === 'trim') {
+                        <p class="truncate-text">
+                            {{ rowData[col.field] }}
+                        </p>
                     }
                     @if (col.type === 'icon-tooltip') {
                         <div [style.text-align]="col.text">

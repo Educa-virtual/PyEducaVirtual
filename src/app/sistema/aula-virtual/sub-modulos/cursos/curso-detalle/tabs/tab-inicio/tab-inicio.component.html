@@ -7,67 +7,62 @@
         <p><strong>Grado:</strong> 4to</p>
         <p><strong>Sección:</strong> H</p>
         <p><strong>Ciclo:</strong> VI</p>
-        <p><strong>Tiempo:</strong> 45:23:00</p>
     </div>
+
     <div class="col-9">
-        <label for="Anuncia algo aquí"
+        <label for="cTareaDescripcion"
             >Anuncia algo aquí Para toda la clase</label
         >
-        <p-editor id="cTareaDescripcion" formControlName="cTareaDescripcion" />
+        <p-editor
+            id="cTareaDescripcion"
+            formControlName="cTareaDescripcion"
+        ></p-editor>
         <br />
         <button pButton type="button" label="Link" icon="pi pi-link"></button>
         <button
             pButton
             type="button"
             label="Cancelar"
-            class="pi pi-times"
+            icon="pi pi-times"
+            class="p-button-danger"
         ></button>
         <button
             pButton
             type="button"
             label="Publicar"
-            class="pi pi-users"
+            icon="pi pi-users"
+            class="p-button-success"
         ></button>
     </div>
-    <!-- listar a qui el anuncio-->
-    <div class="col-12">
-        <p-pickList
-            showSourceControls="false"
-            showTargetControls="false"
-            sourceHeader="Anuncios de la actividad"
-            targetHeader="Listando Anuncios"
-            [dragdrop]="true"
-            [responsive]="true"
-            [sourceStyle]="{ height: '30rem' }"
-            [targetStyle]="{ height: '30rem' }"
-            filterBy="cIieeNombre"
-            targetFilterPlaceholder="Buscar Anuncio"
-            breakpoint="1400px"
-        >
-            <ng-template let-product pTemplate="item">
-                <div class="flex flex-wrap p-2 align-items-center gap-3">
-                    <div class="flex-1 flex flex-column gap-2">
-                        <span class="font-bold">
-                            Docente:
-                            <p><strong>Docente:</strong> Carlos Jose</p>
-                            {{ product.cIieeNombre }}
+
+    <p-orderList
+        [value]="null"
+        [listStyle]="{ 'max-height': '10rem' }"
+        header="List anuncio aqui"
+        [dragdrop]="false"
+    >
+        <ng-template let-product pTemplate="item">
+            <div class="flex flex-wrap p-12 align-items-center gap-12">
+                <img
+                    src="https://primefaces.org/cdn/primeng/images/demo/product/{{
+                        product.image
+                    }}"
+                    [alt]="product.name"
+                    class="w-4rem shadow-2 flex-shrink-0 border-round"
+                />
+                <div class="flex-1 flex flex-column gap-2">
+                    <span class="font-bold">{{ product.name }}</span>
+                    <div class="flex align-items-center gap-2">
+                        <i class="pi pi-tag text-sm"></i>
+                        <span>
+                            {{ product.category }}
                         </span>
-                        <div class="flex align-products-center gap-2">
-                            <i class="pi pi-tag text-sm"></i>
-                            <span>
-                                Mensaje:
-                                {{ product.cIieeCodigoModular }}
-                            </span>
-                            <span>
-                                <b>
-                                    Fecha:
-                                    {{ product.cNivelTipoNombre }}</b
-                                >
-                            </span>
-                        </div>
                     </div>
                 </div>
-            </ng-template>
-        </p-pickList>
-    </div>
+                <span class="font-bold text-900">
+                    {{ '$' + product.price }}
+                </span>
+            </div>
+        </ng-template>
+    </p-orderList>
 </div>

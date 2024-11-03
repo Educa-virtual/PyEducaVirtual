@@ -63,6 +63,7 @@ export class AsistenciaComponent implements OnInit {
         locales: [esLocale],
         weekends: true,
         height: '100%',
+        selectable: true,
         eventShortHeight: 30,
         dateClick: (item) => this.handleDateClick(item),
         headerToolbar: {

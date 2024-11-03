@@ -1,260 +1,298 @@
-<form [formGroup]="tareaForm" class="flex flex-column gap-3">
+<form [formGroup]="formTareas">
     <div class="grid">
-        <div class="col-8 flex flex-column gap-2">
-            <app-common-input [controlKey]="'cTareaTitulo'" label="Título" />
+        <div class="col-12">
+            <p-messages
+                [(value)]="semana"
+                [enableService]="false"
+                [closable]="false"
+            />
+            @if (!formTareas.value.iTareaId) {
+                <div class="flex align-items-center justify-content-end mb-2">
+                    ¿Deseas reutilizar tarea? &nbsp;&nbsp;
+                    <p-inputSwitch
+                        (ngModelChange)="getTareasxiCursoId()"
+                        formControlName="bReutilizarTarea"
+                    />
+                </div>
+            }
+            <p-inputGroup>
+                <p-inputGroupAddon> Título </p-inputGroupAddon>
+                @if (this.formTareas.value.bReutilizarTarea) {
+                    <p-autoComplete
+                        formControlName="cTareaTitulo"
+                        [dropdown]="
+                            this.formTareas.value.bReutilizarTarea
+                                ? true
+                                : false
+                        "
+                        [showClear]="
+                            this.formTareas.value.bReutilizarTarea
+                                ? true
+                                : false
+                        "
+                        optionLabel="cTareaTitulo"
+                        [style]="{ width: '100%' }"
+                        [inputStyle]="{ width: '87%' }"
+                        [suggestions]="filteredTareas"
+                        (completeMethod)="filterTareas($event)"
+                        [showClear]="true"
+                        [emptyMessage]="' '"
+                        (ngModelChange)="getFilterIndicaciones($event)"
+                    >
+                        <ng-template let-item pTemplate="item">
+                            <div>{{ item.cTareaTitulo }}</div>
+                        </ng-template>
+                    </p-autoComplete>
+                } @else {
+                    <input
+                        pInputText
+                        class="flex-auto w-full"
+                        formControlName="cTareaTitulo"
+                    />
+                }
+            </p-inputGroup>
+        </div>
 
-            <div class="flex flex-column gap-2">
-                <label for="indicaciones">Descripción</label>
+        <div class="col-12">
+            <label for="descripcion" class="mt-1"
+                >Descripción
+                <span class="text-red-500 text-xs">(*) Obligatorio</span></label
+            >
+            <div class="mt-2">
                 <p-editor
-                    id="cTareaDescripcion"
+                    id="descripcion"
                     formControlName="cTareaDescripcion"
+                    [style]="{ height: '150px' }"
                 />
-            </div>
-
-            <div class="flex flex-column gap-2">
-                <label for="indicaciones">Indicaciones</label>
-                <p-editor
-                    id="indicaciones"
-                    formControlName="cTareaIndicaciones"
-                />
-            </div>
-            <div class="card flex flex-column gap-4">
-                <p>Adjuntar</p>
-
-                <div>
-                    <p>{{ linkToShow }}</p>
-                </div>
-                <div class="flex grid">
-                    <div class="col-6">
-                        <app-file-upload-primeng
-                            [nameFile]="'tareas'"
-                            [nameOption]="'tareas'"
-                            (actionFileUpload)="handleAction($event)"
-                        >
-                        </app-file-upload-primeng>
-                        <ul *ngIf="FilesTareas.length">
-                            <li *ngFor="let file of FilesTareas">
-                                {{ file.name }}
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="col-6">
-                        <button
-                            icon="pi pi-link"
-                            pButton
-                            class="p-button-primary mx-auto"
-                            (click)="openLinkDialog()"
-                        >
-                            Enlace
-                        </button>
-                    </div>
-                </div>
             </div>
         </div>
-        <div class="col-4">
-            <div class="field grid">
-                <div class="field flex flex-column col-12 md:col-12">
+        <div class="col-12 md:col-6">
+            <p-inputGroup>
+                <p-inputGroupAddon> Fecha - Hora de Inicio </p-inputGroupAddon>
+                <p-calendar
+                    formControlName="dtInicio"
+                    [iconDisplay]="'input'"
+                    styleClass="w-full"
+                    [showIcon]="true"
+                    [showTime]="true"
+                    [hourFormat]="'24'"
+                    inputId="dtInicio"
+                />
+            </p-inputGroup>
+        </div>
+        <div class="col-12 md:col-6">
+            <p-inputGroup>
+                <p-inputGroupAddon> Fecha - Hora de Entrega </p-inputGroupAddon>
+                <p-calendar
+                    formControlName="dtFin"
+                    [iconDisplay]="'input'"
+                    styleClass="w-full"
+                    [showIcon]="true"
+                    [showTime]="true"
+                    [hourFormat]="'24'"
+                    inputId="dtFin"
+                />
+            </p-inputGroup>
+        </div>
+        <div class="col-12 mt-1">
+            <div class="card">
+                <label for="" class="mt-1">Adjuntar</label>
+                <div class="d-flex align-items-center text-center mt-1">
                     <button
                         pButton
-                        class="pi pi-users"
-                        (click)="mostrarModal()"
+                        pRipple
+                        type="button"
+                        class="p-button-rounded p-button-outlined mx-2"
+                        (click)="openUpload('file')"
                     >
-                        Toda la clase
+                        <i
+                            class="pi pi-upload my-2"
+                            style="color: #333437; font-size: 3rem"
+                            pTooltip="Subir Archivo"
+                            tooltipPosition="bottom"
+                        ></i>
+                    </button>
+
+                    <button
+                        pButton
+                        pRipple
+                        type="button"
+                        class="p-button-rounded p-button-outlined mx-2"
+                        (click)="openUpload('url')"
+                    >
+                        <i
+                            class="pi pi-link my-2"
+                            style="color: #333437; font-size: 3rem"
+                            pTooltip="Subir Enlace"
+                            tooltipPosition="bottom"
+                        ></i>
+                    </button>
+
+                    <button
+                        pButton
+                        pRipple
+                        type="button"
+                        class="p-button-rounded p-button-outlined mx-2"
+                        (click)="openUpload('youtube')"
+                    >
+                        <i
+                            class="pi pi-youtube my-2"
+                            style="color: #c4302b; font-size: 3rem"
+                            pTooltip="Subir Enlace Youtube"
+                            tooltipPosition="bottom"
+                        ></i>
+                    </button>
+
+                    <button
+                        pButton
+                        pRipple
+                        type="button"
+                        class="p-button-rounded p-button-outlined mx-2"
+                        (click)="openUpload('file')"
+                    >
+                        <i
+                            class="pi pi-upload my-2"
+                            style="color: #ffd04b; font-size: 3rem"
+                            pTooltip="Subir Recursos"
+                            tooltipPosition="bottom"
+                        ></i>
                     </button>
                 </div>
             </div>
-            <!-- fecha hora de Inicio -->
-            <div class="formgrid grid">
-                <div class="field flex flex-column col-12 md:col-6">
-                    <label for="dFechaEvaluacionPublicacion"
-                        >Fecha de Inicio</label
-                    >
-                    <p-calendar
-                        formControlName="dFechaEvaluacionPublicacionInicio"
-                        [iconDisplay]="'input'"
-                        styleClass="w-full"
-                        [showIcon]="true"
-                        inputId="dFechaEvaluacionPublicacionInicio"
-                        [appendTo]="'body'"
-                    />
-                </div>
-                <div class="field flex flex-column col-12 md:col-6">
-                    <label for="tHoraEvaluacionPublicacionInicio"
-                        >Hora de Inicio</label
-                    >
-                    <p-calendar
-                        [timeOnly]="true"
-                        styleClass="w-full"
-                        [showIcon]="true"
-                        iconDisplay="input"
-                        formControlName="tHoraEvaluacionPublicacionInicio"
-                        inputId="tHoraEvaluacionPublicacionInicio"
-                        [appendTo]="'body'"
-                    >
-                        <ng-template
-                            pTemplate="inputicon"
-                            let-clickCallBack="clickCallBack"
-                        >
-                            <i class="pi pi-clock pointer-events-none"></i>
-                        </ng-template>
-                    </p-calendar>
-                </div>
-            </div>
-            <br />
-
-            <!-- fecha y hora fin -->
-            <div class="formgrid grid">
-                <div class="field flex flex-column col-12 md:col-6">
-                    <label for="dFechaEvaluacionPublicacionFin"
-                        >Fecha de finalizacion</label
-                    >
-                    <p-calendar
-                        formControlName="dFechaEvaluacionPublicacionFin"
-                        [iconDisplay]="'input'"
-                        styleClass="w-full"
-                        [showIcon]="true"
-                        inputId="dFechaEvaluacionPublicacionFin"
-                        [appendTo]="'body'"
-                    />
-                </div>
-                <div class="field flex flex-column col-12 md:col-6">
-                    <label for="tHoraEvaluacionPublicacionFin"
-                        >Hora finalizacion</label
-                    >
-                    <p-calendar
-                        [timeOnly]="true"
-                        styleClass="w-full"
-                        [showIcon]="true"
-                        iconDisplay="input"
-                        formControlName="tHoraEvaluacionPublicacionFin"
-                        inputId="tHoraEvaluacionPublicacionFin"
-                        [appendTo]="'body'"
-                    >
-                        <ng-template
-                            pTemplate="inputicon"
-                            let-clickCallBack="clickCallBack"
-                        >
-                            <i class="pi pi-clock pointer-events-none"></i>
-                        </ng-template>
-                    </p-calendar>
-                </div>
-            </div>
-            <br />
-            <div class="formgrid grid">
-                <!-- Columna para Nivel de logro -->
-                <div class="field col-12 md:col-6">
-                    <label htmlFor="state">Nivel de logro</label>
-                    <p-dropdown
-                        [options]="niveldelogrosDropdownItems"
-                        class="col-12"
-                        optionLabel="name"
-                        placeholder="Selecciona"
-                    ></p-dropdown>
-                </div>
-
-                <!-- Columna para Puntaje -->
-                <div class="field col-12 md:col-6">
-                    <label htmlFor="state">Puntaje</label>
-                    <p-dropdown
-                        [options]="puntajeArray"
-                        class="col-12"
-                        optionLabel="name"
-                        placeholder="Selecciona"
-                    ></p-dropdown>
-                </div>
-            </div>
-
-            <!-- Columna para instrumentos de evalaucion -->
-            <div class="flex justify-content-between gap-2 flex-wrap">
-                <p>Instrumento de Evaluación</p>
-                <app-file-upload-primeng
-                    [nameFile]="'instrumentos'"
-                    [nameOption]="'instrumentos'"
-                    (actionFileUpload)="handleAction($event)"
-                ></app-file-upload-primeng>
-
-                <ul *ngIf="FilesInstrumentos.length">
-                    <li *ngFor="let file of FilesInstrumentos">
-                        {{ file.name }}
-                    </li>
-                </ul>
-            </div>
         </div>
+        @if (FilesTareas.length) {
+            <div class="col-12">
+                <label for="" class="mt-2">Lista de Adjuntos</label>
+
+                @for (item of FilesTareas; track item; let idx = $index) {
+                    <p-inputGroup class="mt-1">
+                        <p-inputGroupAddon>
+                            @switch (item.type) {
+                                @case (1) {
+                                    <i
+                                        class="pi pi-upload"
+                                        style="color: #333437"
+                                    ></i>
+                                }
+                                @case (2) {
+                                    <i
+                                        class="pi pi-link"
+                                        style="color: #333437"
+                                    ></i>
+                                }
+                                @case (3) {
+                                    <i
+                                        class="pi pi-youtube"
+                                        style="color: #c4302b"
+                                    ></i>
+                                }
+                                @case (4) {
+                                    <i
+                                        class="pi pi-folder"
+                                        style="color: #ffd04b"
+                                    ></i>
+                                }
+                            }
+                        </p-inputGroupAddon>
+                        <input
+                            type="text"
+                            pInputText
+                            [placeholder]="item.name"
+                            disabled
+                        />
+                        <button
+                            type="button"
+                            pButton
+                            icon="pi pi-trash"
+                            (click)="FilesTareas.splice(idx, 1)"
+                            class="p-button-danger"
+                        >
+                            &nbsp;
+                        </button>
+                    </p-inputGroup>
+                }
+            </div>
+        }
     </div>
 </form>
 
-<p-dialog
-    header="Agregar Enlace"
-    [(visible)]="linkDialogVisible"
-    modal="modal"
-    [draggable]="false"
+<app-modal-primeng
+    [title]="titleFileTareas"
+    [showModal]="showModal"
+    [width]="'35rem'"
+    (accionBtnItem)="accionBtnItem($event)"
 >
-    <div>
-        <input
-            pInputText
-            type="text"
-            placeholder="Ingrese el enlace"
-            [(ngModel)]="link"
-        />
-        <button class="p-button-primary mx-auto" (click)="addLink()">
-            Agregar
-        </button>
-    </div>
-</p-dialog>
+    <div class="grid">
+        @if (typeUpload === 'file') {
+            <div class="col-12 text-center">
+                <app-file-upload-primeng
+                    [nameFile]="'tareas'"
+                    [nameOption]="'tareas'"
+                    (actionFileUpload)="accionBtnItem($event)"
+                ></app-file-upload-primeng>
+            </div>
+        }
+        @if (typeUpload === 'url') {
+            <div class="col-12">
+                <p-inputGroup>
+                    <p-inputGroupAddon>
+                        <i class="pi pi-link"></i>
+                    </p-inputGroupAddon>
+                    <input
+                        type="text"
+                        pInputText
+                        placeholder="Pegar la URL"
+                        [(ngModel)]="nameEnlace"
+                    />
+                    <button
+                        type="button"
+                        pButton
+                        icon="pi pi-check"
+                        (click)="
+                            accionBtnItem({
+                                accion: 'subir-url',
+                                item: this.nameEnlace,
+                            })
+                        "
+                        class="p-button-succes"
+                    >
+                        &nbsp;
+                    </button>
+                </p-inputGroup>
+            </div>
+        }
+        @if (typeUpload === 'youtube') {
+            <div class="col-12">
+                <p-inputGroup>
+                    <p-inputGroupAddon>
+                        <i class="pi pi-youtube" style="color: #c4302b"></i>
+                    </p-inputGroupAddon>
+                    <input
+                        type="text"
+                        pInputText
+                        placeholder="Buscaer en Youtube o pegar la URL"
+                        [(ngModel)]="nameEnlace"
+                    />
+                    <button
+                        type="button"
+                        pButton
+                        icon="pi pi-check"
+                        (click)="
+                            accionBtnItem({
+                                accion: 'subir-youtube',
+                                item: this.nameEnlace,
+                            })
+                        "
+                        class="p-button-danger"
+                    >
+                        &nbsp;
+                    </button>
+                </p-inputGroup>
+            </div>
+        }
 
-<p-dialog
-    header="Asignar a"
-    [(visible)]="displayModal"
-    [modal]="true"
-    [closable]="false"
-    [draggable]="false"
->
-    <div>
-        <p-table [value]="estudiantes">
-            <ng-template pTemplate="header">
-                <tr>
-                    <th></th>
-                    <th>Nombres</th>
-                    <th>Apellido Paterno</th>
-                    <th>Apellido Materno</th>
-                </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-estudiante>
-                <tr>
-                    <td>
-                        <p-checkbox
-                            [(ngModel)]="estudiante.selected"
-                        ></p-checkbox>
-                    </td>
-                    <td>{{ estudiante.cPersNombre }}</td>
-                    <td>
-                        {{ estudiante.cPersPaterno }}
-                    </td>
-                    <td>
-                        {{ estudiante.cPersMaterno }}
-                    </td>
-                </tr>
-            </ng-template>
-        </p-table>
+        @if (typeUpload === 'recursos') {
+            <div class="col-12"></div>
+        }
     </div>
-    <footer>
-        <div class="col text-left">
-            <button
-                pButton
-                label="Cerrar"
-                class="p-button-label ql-color"
-                icon="pi pi-times"
-                (click)="cerrarModal()"
-            ></button>
-        </div>
-        <div class="col text-right">
-            <button
-                pButton
-                class="p-button-label ql-color"
-                label="Guardar"
-                icon="pi pi-save"
-                (click)="guardarDatos()"
-            ></button>
-        </div>
-    </footer>
-</p-dialog>
+</app-modal-primeng>

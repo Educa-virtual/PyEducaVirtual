@@ -13,6 +13,7 @@
             ],
             "rules": {
                 "@typescript-eslint/no-explicit-any": "off",
+                "no-case-declarations": "off",
                 "@angular-eslint/directive-selector": [
                     "error",
                     {

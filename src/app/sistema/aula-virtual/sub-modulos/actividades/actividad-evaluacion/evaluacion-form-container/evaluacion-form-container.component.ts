@@ -18,10 +18,8 @@ import { Subject, takeUntil } from 'rxjs'
 import dayjs from 'dayjs'
 import { EVALUACION } from '@/app/sistema/aula-virtual/interfaces/actividad.interface'
 import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
-import {
-    convertStringToDate,
-    getTimeFromDatetime,
-} from '@/app/sistema/aula-virtual/utils/date'
+import { convertStringToDate } from '@/app/sistema/aula-virtual/utils/date'
+import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 
 @Component({
     selector: 'app-evaluacion-form-container-',
@@ -44,6 +42,7 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
     public evaluacionInfoForm: FormGroup
     public calificacionForm: FormGroup
     public activeStepper = 0
+    public rubricaSelected = null
     public evaluacionFormPasos: MenuItem[] = [
         {
             id: '0',
@@ -52,12 +51,12 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
         },
         {
             id: '1',
-            label: 'Preguntas',
+            label: 'Calificación',
             icon: 'pi-list-check',
         },
         {
             id: '2',
-            label: 'Calificación',
+            label: 'Preguntas',
             icon: 'pi-list-check',
         },
     ]
@@ -69,45 +68,13 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
     private _evaluacionService = inject(ApiEvaluacionesService)
     private _aulaVirtualService = inject(ApiAulaService)
     private _config = inject(DynamicDialogConfig)
+    private _confirmDialogService = inject(ConfirmationModalService)
     private _ref = inject(DynamicDialogRef)
-    public preguntasSeleccionadas = [
-        {
-            iPreguntaId: 49,
-            cPregunta: '<p>3</p>',
-            iCursoId: 1,
-            iDocenteId: 1,
-            iTipoPregId: 1,
-            iEncabPregId: -1,
-            iPreguntaPeso: 3,
-            cEncabPregTitulo: 'Sin Encabezado',
-            cEncabPregContenido: 'Opcion Unica',
-            alternativas: [
-                {
-                    iAlternativaId: 58,
-                    cAlternativaDescripcion: '<p>333</p>',
-                    cAlternativaLetra: 'a',
-                    bAlternativaCorrecta: false,
-                    cAlternativaExplicacion: '',
-                },
-                {
-                    iAlternativaId: 59,
-                    cAlternativaDescripcion: '<p>33</p>',
-                    cAlternativaLetra: 'b',
-                    bAlternativaCorrecta: true,
-                    cAlternativaExplicacion: '',
-                },
-            ],
-            iHoras: 0,
-            iMinutos: 0,
-            iSegundos: 0,
-            cTipoPregDescripcion: 'Opcion Unica',
-            time: '0h 0m 0s',
-            alternativaCorrecta: 'b',
-        },
-    ]
+    public preguntasSeleccionadas = []
     private _paramsData = {
         iContenidoSemId: 0,
         iEvaluacionId: 0,
+        ixActivadadId: '',
     }
 
     constructor() {}
@@ -115,14 +82,15 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.getData()
         this.initFormGroup()
-
         this._paramsData.iContenidoSemId =
             this._config.data.semana?.iContenidoSemId
 
         const actividad = this._config.data.actividad
-        if (actividad !== null) {
+
+        if (actividad?.ixActivadadId != undefined) {
             this.mode = 'EDITAR'
             this._paramsData.iContenidoSemId = actividad.iContenidoSemId
+            this._paramsData.ixActivadadId = actividad.ixActivadadId
             this.obtenerEvaluacion()
         }
     }
@@ -132,11 +100,10 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
     }
 
     obtenerEvaluacion() {
-        const ixActivadadId = this.evaluacionInfoForm.get('iEvaluacionId').value
         this._aulaVirtualService
             .obtenerActividad({
                 iActTipoId: EVALUACION,
-                ixActivadadId,
+                ixActivadadId: this._paramsData.ixActivadadId,
             })
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
@@ -148,29 +115,39 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
 
     patchData(data) {
         this.patchEvaluacionInfo(data)
+        this.patchCalificacionForm(data)
         this.preguntasSeleccionadas = data.preguntas
+    }
+
+    patchCalificacionForm(data) {
+        this.calificacionForm.patchValue({
+            usaInstrumentoEvaluacion: data.iInstrumentoId == null ? 1 : 2,
+        })
+        const nuevaRubrica = { iInstrumentoId: data.iInstrumentoId }
+        this.rubricaSelected = { ...nuevaRubrica }
     }
 
     patchEvaluacionInfo(data: any) {
         const dFechaEvaluacionPublicacion = convertStringToDate(
             data.dtEvaluacionPublicacion
         )
-        const tHoraEvaluacionPublicacion = getTimeFromDatetime(
+        const tHoraEvaluacionPublicacion = convertStringToDate(
             data.dtEvaluacionPublicacion
         )
         const dFechaEvaluacionInico = convertStringToDate(
             data.dtEvaluacionInicio
         )
-        const tHoraEvaluacionInico = getTimeFromDatetime(
+        const tHoraEvaluacionInico = convertStringToDate(
             data.dtEvaluacionInicio
         )
         const dFechaEvaluacionFin = convertStringToDate(data.dtEvaluacionFin)
-        const tHoraEvaluacionFin = getTimeFromDatetime(data.dtEvaluacionFin)
+        const tHoraEvaluacionFin = convertStringToDate(data.dtEvaluacionFin)
 
         this.evaluacionInfoForm.patchValue({
             iProgActId: data.iProgActId,
             iEvaluacionId: data.iEvaluacionId,
             iTipoEvalId: data.iTipoEvalId,
+            iInstrumentoId: data.iInstrumentoId,
             cEvaluacionTitulo: data.cEvaluacionTitulo,
             cEvaluacionDescripcion: data.cEvaluacionDescripcion,
             dFechaEvaluacionPublicacion,
@@ -180,7 +157,6 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
             dFechaEvaluacionFin,
             tHoraEvaluacionFin,
         })
-        console.log(this.evaluacionInfoForm.value)
     }
 
     obtenerTipoEvaluaciones() {
@@ -201,9 +177,10 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
     initFormGroup() {
         this.evaluacionInfoForm = this._formBuilder.group({
             iProgActId: [0],
-            iEvaluacionId: [17],
+            iEvaluacionId: [0],
             iTipoEvalId: [null, Validators.required],
-            cEvaluacionDescripcion: [null, Validators.required],
+            iInstrumentoId: [null],
+            cEvaluacionDescripcion: [''],
             cEvaluacionTitulo: [null, Validators.required],
             dFechaEvaluacionPublicacion: [null, Validators.required],
             tHoraEvaluacionPublicacion: [null, Validators.required],
@@ -211,10 +188,6 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
             tHoraEvaluacionInico: [null],
             dFechaEvaluacionFin: [null],
             tHoraEvaluacionFin: [null],
-        })
-
-        this.calificacionForm = this._formBuilder.group({
-            usaInstrumentoEvaluacion: [0, Validators.required],
         })
 
         this.calificacionForm = this._formBuilder.group({
@@ -247,11 +220,11 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
             return
         }
 
-        if (this.activeStepper === 1) {
+        if (this.activeStepper === 2) {
             this.guardarActualizarPreguntas()
         }
 
-        if (this.activeStepper === 2) {
+        if (this.activeStepper === 1) {
             this.guardarActualizarCalificacion()
         }
     }
@@ -266,31 +239,33 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
     }
 
     private guardarActualizarFormInfo() {
-        const data = this.evaluacionInfoForm.value
+        const data = this.evaluacionInfoForm.getRawValue()
         data.iDocenteId = 1
         data.iActTipoId = EVALUACION
         data.iContenidoSemId = this._paramsData.iContenidoSemId
-        console.log(data)
 
         if (this.evaluacionInfoForm.invalid) {
             this.evaluacionInfoForm.markAllAsTouched()
             return
         }
 
-        if (data.dFechaEvaluacionPublicacion) {
+        if (
+            data.dFechaEvaluacionPublicacion &&
+            data.tHoraEvaluacionPublicacion
+        ) {
             data.dtEvaluacionPublicacion = this.addTimeToDate(
                 data.dFechaEvaluacionPublicacion,
                 data.tHoraEvaluacionPublicacion
             )
         }
-        if (data.dtEvaluacionInicio) {
+        if (data.dFechaEvaluacionInico && data.tHoraEvaluacionInico) {
             data.dtEvaluacionInicio = this.addTimeToDate(
                 data.dFechaEvaluacionInico,
-                data.dFechaEvaluacionFin
+                data.tHoraEvaluacionInico
             )
         }
 
-        if (data.dtEvaluacionFin) {
+        if (data.dFechaEvaluacionFin && data.tHoraEvaluacionFin) {
             data.dtEvaluacionFin = this.addTimeToDate(
                 data.dFechaEvaluacionFin,
                 data.tHoraEvaluacionFin
@@ -312,24 +287,82 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
     }
 
     private guardarActualizarPreguntas() {
-        console.log(this.preguntasSeleccionadas)
+        const preguntas = this.preguntasSeleccionadas.reduce((acc, item) => {
+            if (item.preguntas == null) {
+                acc.push(item)
+            } else {
+                acc.push(...item.preguntas)
+            }
+            return acc
+        }, [])
+
         const data = {
             iEvaluacionId: this.evaluacionInfoForm.value.iEvaluacionId,
-            preguntas: this.preguntasSeleccionadas,
+            preguntas,
         }
+
         this._evaluacionService
             .guardarActualizarPreguntasEvaluacion(data)
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
-                next: () => {
-                    this.goStep('next')
+                next: (resp) => {
+                    this.closeModal(resp)
+                    // this.preguntasSeleccionadas =
+                    //     this.preguntasSeleccionadas.map((pregunta) => {
+                    //         if (pregunta.preguntas == null) {
+                    //             const preguntaResp = resp.find(
+                    //                 (item) =>
+                    //                     item.iEvalPregId == pregunta.iEvalPregId
+                    //             )
+
+                    //             pregunta.iEvalPregId = preguntaResp.newId
+                    //             pregunta.isLocal = false
+                    //         } else {
+                    //             pregunta.preguntas = pregunta.preguntas.map(
+                    //                 (item) => {
+                    //                     const preguntaResp = resp.find(
+                    //                         (item2) =>
+                    //                             item2.iEvalPregId ==
+                    //                             item.iEvalPregId
+                    //                     )
+                    //                     item.iEvalPregId = preguntaResp.newId
+                    //                     item.isLocal = false
+                    //                     return item
+                    //                 }
+                    //             )
+                    //         }
+                    //         return pregunta
+                    //     })
+                    // console.log(this.preguntasSeleccionadas)
+
+                    // this.goStep('next')
                 },
             })
     }
 
     guardarActualizarCalificacion() {
         const data = this.calificacionForm.value
-        this.closeModal(data)
+        if (this.calificacionForm.invalid) {
+            this.calificacionForm.markAllAsTouched()
+            return
+        }
+        if (
+            data.usaInstrumentoEvaluacion === 2 &&
+            this.rubricaSelected?.iInstrumentoId == null
+        ) {
+            this._confirmDialogService.openAlert({
+                header: 'Debe seleccionar una rúbrica',
+            })
+            return
+        }
+        if (data.usaInstrumentoEvaluacion === 2) {
+            this.evaluacionInfoForm
+                .get('iInstrumentoId')
+                .setValue(this.rubricaSelected.iInstrumentoId)
+        } else {
+            this.evaluacionInfoForm.get('iInstrumentoId').setValue(null)
+        }
+        this.guardarActualizarFormInfo()
     }
 
     public preguntasSeleccionadasChange(event) {

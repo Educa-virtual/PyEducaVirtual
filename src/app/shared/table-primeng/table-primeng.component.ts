@@ -15,8 +15,22 @@ import { IconComponent } from '../icon/icon.component'
 import { isIIcon } from '../utils/is-icon-object'
 import { IsIconTypePipe } from '../pipes/is-icon-type.pipe'
 
+type TColumnType =
+    | 'actions'
+    | 'item'
+    | 'checkbox'
+    | 'expansion'
+    | 'p-editor'
+    | 'text'
+    | 'radio'
+    | 'trim'
+    | 'icon-tooltip'
+    | 'estado'
+    | string
+
 export interface IColumn {
-    type: string
+    type: TColumnType
+
     width: string
     field: string
     header: string
@@ -50,9 +64,11 @@ export interface IActionTable {
     ],
 })
 export class TablePrimengComponent implements OnChanges, OnInit {
-    @Output() accionBtnItem = new EventEmitter()
+    @Output() accionBtnItem: EventEmitter<{ accion: any; item: any }> =
+        new EventEmitter()
     @Output() selectedRowDataChange = new EventEmitter()
 
+    @Input() selectionMode: 'single' | 'multiple' | null = null
     @Input() expandedRowKeys = {}
     @Input() dataKey: string
 
@@ -66,7 +82,7 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     @Input() data = []
     @Input() tableStyle: {
         [klass: string]: unknown
-    } = { 'min-width': '50rem' }
+    } = {}
 
     @ContentChild('rowExpansionTemplate', { static: false })
     rowExpansionTemplate: TemplateRef<unknown>

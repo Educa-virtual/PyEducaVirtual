@@ -10,6 +10,24 @@ import { AppMenuitemComponent } from './app.menuitem.component'
     templateUrl: './app.menu.component.html',
     standalone: true,
     imports: [NgFor, NgIf, AppMenuitemComponent],
+    styles: [
+        `
+            .footer {
+                position: absolute;
+                bottom: 70px;
+                @media (max-width: 780px) {
+                    height: 110px;
+                }
+            }
+            .footer img {
+                width: 200px;
+            }
+
+            .footer img.logo {
+                object-fit: fill;
+            }
+        `,
+    ],
 })
 export class AppMenuComponent implements OnInit {
     model = []

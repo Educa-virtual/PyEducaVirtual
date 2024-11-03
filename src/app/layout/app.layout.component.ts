@@ -8,6 +8,7 @@ import { NgClass } from '@angular/common'
 import { AppConfigComponent } from './config/app.config.component'
 import { GlobalLoaderComponent } from '../shared/interceptors/global-loader/global-loader.component'
 import { ConfirmModalComponent } from '../shared/confirm-modal/confirm-modal/confirm-modal.component'
+import { BreadcrumbPrimengComponent } from '../shared/breadcrumb-primeng/breadcrumb-primeng.component'
 
 @Component({
     selector: 'app-layout',
@@ -21,6 +22,7 @@ import { ConfirmModalComponent } from '../shared/confirm-modal/confirm-modal/con
         AppConfigComponent,
         GlobalLoaderComponent,
         ConfirmModalComponent,
+        BreadcrumbPrimengComponent,
     ],
 })
 export class AppLayoutComponent implements OnDestroy {

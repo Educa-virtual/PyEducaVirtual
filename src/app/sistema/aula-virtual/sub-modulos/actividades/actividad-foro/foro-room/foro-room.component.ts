@@ -21,7 +21,6 @@ import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.ser
 import { tipoActividadesKeys } from '@/app/sistema/aula-virtual/interfaces/actividad.interface'
 import { Subject, takeUntil } from 'rxjs'
 import { RemoveHTMLPipe } from '@/app/shared/pipes/remove-html.pipe'
-import { PdfViewerModule } from 'ng2-pdf-viewer'
 @Component({
     selector: 'app-foro-room',
     standalone: true,
@@ -29,7 +28,6 @@ import { PdfViewerModule } from 'ng2-pdf-viewer'
     styleUrls: ['./foro-room.component.scss'],
     imports: [
         IconComponent,
-        PdfViewerModule,
         RemoveHTMLPipe,
         CommonInputComponent,
         TablePrimengComponent,

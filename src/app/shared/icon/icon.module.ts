@@ -1,14 +1,11 @@
 import { NgModule } from '@angular/core'
 import { provideIcons } from '@ng-icons/core'
-import {
-    matCancelScheduleSendOutline,
-    matSendOutline,
-} from '@ng-icons/material-icons/outline'
+import { ICONS } from './icons'
 
 @NgModule({
     imports: [],
     exports: [],
     declarations: [],
-    providers: [provideIcons({ matSendOutline, matCancelScheduleSendOutline })],
+    providers: [provideIcons(ICONS)],
 })
 export class IconModule {}

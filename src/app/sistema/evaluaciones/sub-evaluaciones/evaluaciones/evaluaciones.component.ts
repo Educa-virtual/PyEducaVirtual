@@ -1,8 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core'
 
 /*GRILLA */
-import { Customer } from 'src/app/demo/api/customer'
-import { CustomerService } from 'src/app/demo/service/customer.service'
 
 import { TableModule } from 'primeng/table'
 import { CommonModule } from '@angular/common'
@@ -61,7 +59,7 @@ export class EvaluacionesComponent implements OnInit {
     public data = []
     private _dialogService = inject(DialogService)
     private _apiEre = inject(ApiEvaluacionesRService)
-    customers!: Customer[]
+    customers!: any
     visible: boolean = false
 
     accionesPrincipal: IActionContainer[] = [
@@ -161,12 +159,9 @@ export class EvaluacionesComponent implements OnInit {
         },
     ]
 
-    constructor(private customerService: CustomerService) {}
+    constructor() {}
 
     ngOnInit() {
-        this.customerService
-            .getCustomersLarge()
-            .then((customers) => (this.customers = customers))
         this.obtenerEvaluacion()
     }
     showDialog() {

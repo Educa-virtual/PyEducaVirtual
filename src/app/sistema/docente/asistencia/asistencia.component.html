@@ -74,37 +74,34 @@
                     severity="success"
                 />
             </div>
-            <div class="card flex">
-                <div class="flex flex-column gap-2">
-                    <h5>MIS CALENDARIOS</h5>
-                    <div
-                        *ngFor="let category of categories"
-                        class="field-checkbox"
-                    >
-                        <p-checkbox
-                            [(ngModel)]="selectedCategories"
-                            id="calendario"
-                            (onChange)="
-                                actualizarCalendario(category, category.valor)
-                            "
-                            [label]="category.name"
-                            name="group"
-                            [value]="category"
-                        />
-                    </div>
+        </div>
+        <div class="card flex">
+            <div class="flex flex-column gap-2">
+                <h5>MIS CALENDARIOS</h5>
+                <div *ngFor="let category of categories" class="field-checkbox">
+                    <p-checkbox
+                        [(ngModel)]="category.mostrar"
+                        id="calendario"
+                        (onChange)="
+                            actualizarCalendario(category, category.valor)
+                        "
+                        [label]="category.name"
+                        name="group"
+                        [value]="category"
+                        [binary]="true"
+                    />
                 </div>
             </div>
         </div>
-        <div class="col-9">
-            <full-calendar [options]="calendarOptions">
-                <ng-template #eventContent let-arg>
-                    <!-- <b>{{ arg.timeText }}</b> -->
-                    <i>{{ arg.event.title }}</i>
-                </ng-template>
-            </full-calendar>
-        </div>
     </div>
-
+    <div class="col-9">
+        <full-calendar #calendar [options]="calendarOptions">
+            <ng-template #eventContent let-arg>
+                <!-- <b>{{ arg.timeText }}</b> -->
+                <i>{{ arg.event.title }}</i>
+            </ng-template>
+        </full-calendar>
+    </div>
     <p-dialog
         header="Header"
         [modal]="true"

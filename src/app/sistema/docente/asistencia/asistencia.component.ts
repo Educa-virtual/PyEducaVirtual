@@ -7,6 +7,7 @@ import { ActivatedRoute, Router } from '@angular/router'
 import { Subject, takeUntil } from 'rxjs'
 import { CalendarOptions } from '@fullcalendar/core'
 import dayGridPlugin from '@fullcalendar/daygrid'
+import timeGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import esLocale from '@fullcalendar/core/locales/es'
 interface Data {
@@ -26,6 +27,7 @@ interface Data {
     styleUrl: './asistencia.component.scss',
 })
 export class AsistenciaComponent implements OnInit {
+    public events: any[] = []
     @Input() iCursoId: string
     @Input() iNivelGradoId: string
     @Input() iSeccionId: string
@@ -56,39 +58,37 @@ export class AsistenciaComponent implements OnInit {
         this.formatoFecha.getDate()
 
     dataFechas = []
-    events: any[] = []
+
     calendarOptions: CalendarOptions = {
-        plugins: [dayGridPlugin, interactionPlugin],
+        plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
         initialView: 'dayGridMonth',
         locales: [esLocale],
         weekends: true,
         height: '100%',
         selectable: true,
-        eventShortHeight: 30,
+        // eventShortHeight: 30,
         dateClick: (item) => this.handleDateClick(item),
         headerToolbar: {
             end: 'dayGridMonth,dayGridWeek,dayGridDay',
             center: 'title',
             start: 'prev,next today',
         },
-        events: this.events,
+        editable: false,
+        // events: this.events,
     }
     actualizarCalendario(checkbox: any, valor: any) {
-        console.log(checkbox)
-        console.log(valor)
         this.events.filter((evento) => {
-            evento.display = 'block'
-            // if( evento.grupo==valor && checkbox.mostrar==true ){
-            //     evento.display='none'
-            // }
-            // if( evento.grupo==valor && checkbox.mostrar==false ){
-            //     evento.display='block'
-            // }
+            if (evento.grupo == valor && checkbox.mostrar == true) {
+                evento.display = 'block'
+            }
+            if (evento.grupo == valor && checkbox.mostrar == false) {
+                evento.display = 'none'
+            }
         })
-        //checkbox.mostrar=!checkbox.mostrar
-        this.calendarOptions.events = this.events
-        //console.log(this.events)
-        console.log(this.calendarOptions.events)
+        // this.calendarOptions.events=null
+
+        this.calendarOptions.events = Object.assign([], this.events)
+        // console.log(this.calendarOptions.events)
     }
     handleDateClick(item) {
         this.verAsistencia(item.dateStr)
@@ -123,8 +123,6 @@ export class AsistenciaComponent implements OnInit {
         this.getInformation(params, 'get_asistencia')
     }
 
-    selectedCategories: any[] = []
-
     categories: any[] = [
         { name: 'Asistencias', valor: 'asistencias', id: 1, mostrar: true },
         { name: 'Festividades', valor: 'festividades', id: 2, mostrar: true },
@@ -136,39 +134,6 @@ export class AsistenciaComponent implements OnInit {
         },
     ]
     visible: boolean = false
-
-    fechas = [
-        {
-            nombre: 'Feriados Nacionales',
-            cantidad: 5,
-            color: 'var(--red-400)',
-        },
-        {
-            nombre: 'Feriados Recuperables',
-            cantidad: 5,
-            color: 'var(--yellow-400)',
-        },
-        {
-            nombre: 'Fechas de Recuperacion',
-            cantidad: 5,
-            color: 'var(--green-400)',
-        },
-        {
-            nombre: 'Fechas Especiales I.E.',
-            cantidad: 5,
-            color: 'var(--bluegray-400)',
-        },
-        {
-            nombre: 'Dias de Gestion',
-            cantidad: 5,
-            color: 'var(--gray-400)',
-        },
-        {
-            nombre: 'Mis Actividades',
-            cantidad: 5,
-            color: 'var(--teal-400)',
-        },
-    ]
 
     valSelect1: string = ''
     valSelect2: number = 0
@@ -237,6 +202,7 @@ export class AsistenciaComponent implements OnInit {
                 break
             case 'get_data':
                 this.getObtenerAsitencias()
+                this.getFechasImportantes()
                 break
             case 'get_asistencia':
                 this.data = item

@@ -9,6 +9,9 @@ import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-
 import { Subject, takeUntil } from 'rxjs'
 import { EvaluacionPreguntaComponent } from '../components/evaluacion-pregunta/evaluacion-pregunta.component'
 import { PrimengModule } from '@/app/primeng.module'
+import { DialogService } from 'primeng/dynamicdialog'
+import { EvaluacionPreguntaCalificacionComponent } from '../evaluacion-pregunta-calificacion/evaluacion-pregunta-calificacion.component'
+import { MODAL_CONFIG } from '@/app/shared/constants/modal.config'
 
 @Component({
     selector: 'app-evaluacion-room-calificacion',
@@ -25,6 +28,7 @@ import { PrimengModule } from '@/app/primeng.module'
     ],
     templateUrl: './evaluacion-room-calificacion.component.html',
     styleUrl: './evaluacion-room-calificacion.component.scss',
+    providers: [DialogService],
 })
 export class EvaluacionRoomCalificacionComponent implements OnInit {
     @Input({ required: true }) evaluacion
@@ -55,7 +59,7 @@ export class EvaluacionRoomCalificacionComponent implements OnInit {
 
     // injeccion de dependencias
     private _evaluacionesService = inject(ApiEvaluacionesService)
-
+    private _dialogService = inject(DialogService)
     private _unsubscribe$ = new Subject<boolean>()
 
     public evaluacionSeleccionada = null
@@ -129,6 +133,18 @@ export class EvaluacionRoomCalificacionComponent implements OnInit {
                 pregunta.jEvalRptaEstudiante.rptaAbierta
         }
         return pregunta
+    }
+
+    public calificarPregunta(pregunta) {
+        this._dialogService.open(EvaluacionPreguntaCalificacionComponent, {
+            ...MODAL_CONFIG,
+            data: {
+                evaluacion: this.evaluacionSeleccionada,
+                pregunta: pregunta,
+            },
+            header: 'Calificar Pregunta',
+        })
+        console.log(pregunta)
     }
 
     public seleccionarEvaluacion() {

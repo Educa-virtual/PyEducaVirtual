@@ -95,6 +95,9 @@
                                 </div>
                             </ng-template>
                             <app-evaluacion-pregunta
+                                (calificarPreguntaChange)="
+                                    calificarPregunta($event)
+                                "
                                 [pregunta]="pregunta"
                             ></app-evaluacion-pregunta>
                         </p-accordionTab>

@@ -9,23 +9,29 @@
     ></app-evaluacion-pregunta-alternativa>
 </ng-template>
 
+<ng-template #footerPregunta let-pregunta="pregunta">
+    <footer class="flex justify-content-end mt-2">
+        @if (pregunta.iTipoPregId === 3 && !hideButton) {
+            <button
+                pButton
+                label="Calificar Pregunta"
+                type="button"
+                size="small"
+                icon="pi pi-check"
+                (click)="calificarPreguntaChange.emit(pregunta)"
+            ></button>
+        }
+        @if (pregunta.iTipoPregId === 2 || pregunta.iTipoPregId === 1) {
+            <p-tag
+                value="Pregunta Correcta Configurada"
+                styleClass="bg-yellow-100 text-gray-600"
+            />
+        }
+    </footer>
+</ng-template>
+
 <app-banco-pregunta-preview
     [customAlternativeTemplate]="customAlternative"
+    [footerPreguntaTemplate]="footerPregunta"
     [pregunta]="pregunta"
 ></app-banco-pregunta-preview>
-
-<footer class="flex justify-content-end mt-2">
-    @if (pregunta.iTipoPregId === 3) {
-        <button
-            pButton
-            label="Calificar Pregunta"
-            type="button"
-            size="small"
-        ></button>
-    } @else {
-        <p-tag
-            value="Pregunta Correcta Configurada"
-            styleClass="bg-yellow-100 text-gray-600"
-        />
-    }
-</footer>

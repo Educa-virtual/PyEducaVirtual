@@ -12,4 +12,5 @@ import { BancoPreguntaAlternativaComponent } from '../banco-pregunta-alternativa
 export class BancoPreguntaPreviewItemComponent {
     @Input({ required: true }) pregunta
     @Input() customAlternativeTemplate: TemplateRef<any> | null = null
+    @Input() footerPreguntaTemplate: TemplateRef<any> | null = null
 }

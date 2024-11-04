@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common'
-import { Component, Input } from '@angular/core'
+import { Component, EventEmitter, Input, Output } from '@angular/core'
 import { EvaluacionPreguntaAlternativaComponent } from './evaluacion-pregunta-alternativa/evaluacion-pregunta-alternativa.component'
 import { BancoPreguntaPreviewComponent } from '@/app/sistema/evaluaciones/sub-evaluaciones/banco-preguntas/components/banco-pregunta-preview/banco-pregunta-preview.component'
 import { PrimengModule } from '@/app/primeng.module'
@@ -17,5 +17,7 @@ import { PrimengModule } from '@/app/primeng.module'
     styleUrl: './evaluacion-pregunta.component.scss',
 })
 export class EvaluacionPreguntaComponent {
+    @Output() calificarPreguntaChange = new EventEmitter()
     @Input({ required: true }) pregunta
+    @Input() hideButton = false
 }

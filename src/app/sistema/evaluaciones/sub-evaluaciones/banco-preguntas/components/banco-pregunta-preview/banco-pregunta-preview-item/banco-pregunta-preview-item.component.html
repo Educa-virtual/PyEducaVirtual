@@ -32,6 +32,14 @@
                     ></app-banco-pregunta-alternativa>
                 </ng-template>
             }
+            <ng-container *ngIf="footerPreguntaTemplate">
+                <ng-container
+                    *ngTemplateOutlet="
+                        footerPreguntaTemplate;
+                        context: { pregunta: pregunta }
+                    "
+                ></ng-container>
+            </ng-container>
         </div>
     }
 }
@@ -51,4 +59,12 @@
             [pregunta]="pregunta"
         ></app-banco-pregunta-alternativa>
     </ng-template>
+    <ng-container *ngIf="footerPreguntaTemplate">
+        <ng-container
+            *ngTemplateOutlet="
+                footerPreguntaTemplate;
+                context: { pregunta: pregunta }
+            "
+        ></ng-container>
+    </ng-container>
 }

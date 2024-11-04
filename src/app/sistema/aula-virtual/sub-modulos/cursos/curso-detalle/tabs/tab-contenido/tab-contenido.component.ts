@@ -1,14 +1,8 @@
 import { CommonModule } from '@angular/common'
 import { Component, inject, Input, OnInit } from '@angular/core'
 import { FormsModule } from '@angular/forms'
-import { AccordionModule } from 'primeng/accordion'
-import { CalendarModule } from 'primeng/calendar'
-import { IconFieldModule } from 'primeng/iconfield'
-import { InputIconModule } from 'primeng/inputicon'
-import { InputTextModule } from 'primeng/inputtext'
 import { ActividadRowComponent } from '@/app/sistema/aula-virtual/sub-modulos/actividades/components/actividad-row/actividad-row.component'
 import {
-    actividadesConfig,
     EVALUACION,
     FORO,
     IActividad,
@@ -17,8 +11,6 @@ import {
     VIDEO_CONFERENCIA,
 } from '@/app/sistema/aula-virtual/interfaces/actividad.interface'
 import { TActividadActions } from '@/app/sistema/aula-virtual/interfaces/actividad-actions.iterface'
-import { DialogModule } from 'primeng/dialog'
-import { MenuModule } from 'primeng/menu'
 import { MenuItem } from 'primeng/api'
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog'
 import { IconComponent } from '@/app/shared/icon/icon.component'
@@ -33,7 +25,6 @@ import {
 } from '@ng-icons/material-icons/baseline'
 import { MODAL_CONFIG } from '@/app/shared/constants/modal.config'
 import { ActividadListaComponent } from '../../../../actividades/components/actividad-lista/actividad-lista.component'
-import { TareaFormContainerComponent } from '../../../../actividades/actividad-tarea/tarea-form-container/tarea-form-container.component'
 import { VideoconferenciaContainerFormComponent } from '../../../../actividades/actividad-videoconferencia/videoconferencia-container-form/videoconferencia-container-form.component'
 import { ForoFormContainerComponent } from '../../../../actividades/actividad-foro/foro-form-container/foro-form-container.component'
 import { ActividadFormComponent } from '../../../../actividades/components/actividad-form/actividad-form.component'
@@ -45,26 +36,26 @@ import { Subject, takeUntil } from 'rxjs'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { ActivatedRoute, Router } from '@angular/router'
 import { DynamicDialogModule } from 'primeng/dynamicdialog'
+import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-evaluaciones.service'
+import { PrimengModule } from '@/app/primeng.module'
+import { actividadesConfig } from '@/app/sistema/aula-virtual/constants/aula-virtual'
+import { FullCalendarModule } from '@fullcalendar/angular'
+import { TareaFormContainerComponent } from '../../../../actividades/actividad-tarea/tarea-form-container/tarea-form-container.component'
 
 @Component({
     selector: 'app-tab-contenido',
     standalone: true,
     imports: [
         CommonModule,
-        IconFieldModule,
-        InputIconModule,
-        InputTextModule,
-        CalendarModule,
+        FullCalendarModule,
         FormsModule,
-        AccordionModule,
         ActividadRowComponent,
         ActividadListaComponent,
-        DialogModule,
-        MenuModule,
-        TareaFormContainerComponent,
         VideoconferenciaContainerFormComponent,
         IconComponent,
         DynamicDialogModule,
+        PrimengModule,
+        TareaFormContainerComponent,
     ],
     templateUrl: './tab-contenido.component.html',
     styleUrl: './tab-contenido.component.scss',
@@ -81,21 +72,25 @@ import { DynamicDialogModule } from 'primeng/dynamicdialog'
     ],
 })
 export class TabContenidoComponent implements OnInit {
+    @Input({ required: true }) private _iSilaboId: string
+
     public rangeDates: Date[] | undefined
     public accionesContenido: MenuItem[]
     public actividadSelected: IActividad | undefined
-    public accionSeleccionada: TActividadActions | undefined
+    public accionSeleccionada: string | undefined
     public contenidoSemanas = []
     // public actividades = actividadesConfigList
 
+    // injeccion de dependencias
     private _constantesService = inject(ConstantesService)
     private _generalService = inject(GeneralService)
     private _confirmService = inject(ConfirmationModalService)
     private _aulaService = inject(ApiAulaService)
+    private _evalService = inject(ApiEvaluacionesService)
+
     private semanaSeleccionada
     private _unsubscribe$ = new Subject<boolean>()
     tipoActivadedes = []
-    @Input({ required: true }) private _iSilaboId: string
 
     // lista de acciones base para la semana
     private handleActionsMap: Record<
@@ -122,7 +117,6 @@ export class TabContenidoComponent implements OnInit {
 
         this.rangeDates = [today, nextWeek]
 
-        // this.generarAccionesContenido()
         this.getData()
     }
 
@@ -178,12 +172,13 @@ export class TabContenidoComponent implements OnInit {
         })
     }
 
+    // maneja las acciones de las segun el tipo de actividad
     actionSelected({
         actividad,
         action,
     }: {
         actividad: IActividad
-        action: TActividadActions
+        action: string
     }) {
         this.actividadSelected = actividad
         this.accionSeleccionada = action
@@ -213,7 +208,8 @@ export class TabContenidoComponent implements OnInit {
         }
     }
 
-    handleTareaAction(action: TActividadActions, actividad: IActividad) {
+    // maneja las acciones de las tareas
+    handleTareaAction(action: string, actividad: IActividad) {
         switch (action) {
             case 'CREAR':
             case 'EDITAR':
@@ -268,10 +264,7 @@ export class TabContenidoComponent implements OnInit {
         }
     }
 
-    handleVideoconferenciaAction(
-        action: TActividadActions,
-        actividad: IActividad
-    ) {
+    handleVideoconferenciaAction(action: string, actividad: IActividad) {
         if (action === 'EDITAR' || action === 'CREAR') {
             let data = null
             let header = 'Crear Videoconferencia'
@@ -287,11 +280,16 @@ export class TabContenidoComponent implements OnInit {
         }
     }
 
-    handleForoAction(action: TActividadActions, actividad: IActividad) {
+    handleForoAction(action: string, actividad: IActividad) {
         if (action === 'EDITAR') {
             this._dialogService.open(ForoFormContainerComponent, {
                 ...MODAL_CONFIG,
-                data: actividad,
+                data: {
+                    contenidoSemana: this.semanaSeleccionada,
+                    iActTipoId: actividad.iActTipoId,
+                    actividad: actividad,
+                    action: action === 'EDITAR' ? 'ACTUALIZAR' : 'GUARDAR',
+                },
                 header: 'Editar Foro',
             })
         }
@@ -299,7 +297,7 @@ export class TabContenidoComponent implements OnInit {
             this._dialogService.open(ForoFormContainerComponent, {
                 ...MODAL_CONFIG,
                 header: 'Crear Foro',
-                data: null,
+                data: actividad,
             })
         }
     }
@@ -318,7 +316,8 @@ export class TabContenidoComponent implements OnInit {
         }
     }
 
-    handleEvaluacionAction(action: TActividadActions, actividad: IActividad) {
+    // maneja las acciones de las evaluaciones
+    handleEvaluacionAction(action: string, actividad: IActividad) {
         if (action === 'CREAR' || action === 'EDITAR') {
             const ref = this._dialogService.open(
                 EvaluacionFormContainerComponent,
@@ -370,6 +369,36 @@ export class TabContenidoComponent implements OnInit {
                 }
             )
         }
+        if (action === 'PUBLICAR') {
+            this._confirmService.openConfirm({
+                header: '¿Esta seguro de publicar la evaluación?',
+                accept: () => {
+                    this.publicarEvaluacion(actividad)
+                },
+            })
+        }
+    }
+
+    // todo usar valores reales
+    publicarEvaluacion(actividad: IActividad) {
+        const data = {
+            iEvaluacionId: actividad.ixActivadadId,
+            iCursoId: 1,
+            iSeccionId: 2,
+            iYAcadId: 3,
+            iSemAcadId: 3,
+            iNivelGradoId: 1,
+            iCurrId: 1,
+            iEstado: 2,
+        }
+        this._evalService
+            .publicarEvaluacion(data)
+            .pipe(takeUntil(this._unsubscribe$))
+            .subscribe({
+                next: () => {
+                    this.obtenerContenidoSemanas()
+                },
+            })
     }
 
     private eliminarActividad(iProgActId, iActTipoId, ixActivadadId) {

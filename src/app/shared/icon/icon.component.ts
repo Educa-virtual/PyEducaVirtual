@@ -1,5 +1,6 @@
 import { Component, HostBinding, Input } from '@angular/core'
 import { IconName, NgIconComponent } from '@ng-icons/core'
+import { IconModule } from './icon.module'
 
 export type IconSize = 'xs' | 'sm' | 'base' | 'lg' | 'xl' | 'none'
 
@@ -15,7 +16,7 @@ const impactClasses: Record<NonNullable<IconSize>, string> = {
 @Component({
     selector: 'app-icon',
     standalone: true,
-    imports: [NgIconComponent],
+    imports: [NgIconComponent, IconModule],
     templateUrl: './icon.component.html',
     styleUrl: './icon.component.scss',
 })

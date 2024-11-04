@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup } from '@angular/forms'
 import { RubricaFormService } from './rubrica-form.service'
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog'
 import { ConstantesService } from '@/app/servicios/constantes.service'
-import { ApiEvaluacionesService } from '@/app/sistema/evaluaciones/services/api-evaluaciones.service'
+import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-evaluaciones.service'
 import { Subject, takeUntil } from 'rxjs'
 
 @Component({
@@ -28,12 +28,13 @@ export class RubricaFormComponent implements OnInit, OnDestroy {
     private _params = {
         iCursoId: 1,
         idDocCursoId: 1,
-        iDocenteId: 1,
     }
     constructor(private _rubricaFormService: RubricaFormService) {}
 
     ngOnInit() {
         this.rubrica = this._config.data.rubrica
+        this._params.iCursoId = this._config.data.iCursoId
+        this._params.idDocCursoId = this._config.data.idDocCursoId
         this.initForm()
         this.getData()
         this.handleMode()
@@ -80,10 +81,10 @@ export class RubricaFormComponent implements OnInit, OnDestroy {
             return
         }
         const data = this.rubricaForm.value
-        data.iDocenteId = this._params.iDocenteId
+        data.iDocenteId = this._constantesService.iDocenteId
         data.iCredId = this._constantesService.iCredId
-        data.idDocCursoId = this._params.idDocCursoId
-        data.iCursoId = this._params.iCursoId
+        data.idDocCursoId = this._constantesService.idDocCursoId
+        data.iCursoId = this._constantesService.iCursoId
 
         this._apiEvaluacionesServ
             .guardarActualizarRubrica(data)

@@ -56,6 +56,7 @@ export class AsistenciaComponent implements OnInit {
         this.formatoFecha.getDate()
 
     dataFechas = []
+    events: any[] = []
     calendarOptions: CalendarOptions = {
         plugins: [dayGridPlugin, interactionPlugin],
         initialView: 'dayGridMonth',
@@ -70,10 +71,25 @@ export class AsistenciaComponent implements OnInit {
             center: 'title',
             start: 'prev,next today',
         },
-        events: null,
+        events: this.events,
     }
-
-    // [{ title: 'Meeting', start: new Date() }]
+    actualizarCalendario(checkbox: any, valor: any) {
+        console.log(checkbox)
+        console.log(valor)
+        this.events.filter((evento) => {
+            evento.display = 'block'
+            // if( evento.grupo==valor && checkbox.mostrar==true ){
+            //     evento.display='none'
+            // }
+            // if( evento.grupo==valor && checkbox.mostrar==false ){
+            //     evento.display='block'
+            // }
+        })
+        //checkbox.mostrar=!checkbox.mostrar
+        this.calendarOptions.events = this.events
+        //console.log(this.events)
+        console.log(this.calendarOptions.events)
+    }
     handleDateClick(item) {
         this.verAsistencia(item.dateStr)
         this.fechaActual = item.dateStr
@@ -90,7 +106,6 @@ export class AsistenciaComponent implements OnInit {
             params: { skipSuccessMessage: true },
         }
         this.getInformation(params, 'get_fecha_importante')
-        console.log(this.dataFechas)
     }
     verAsistencia(fechas: string) {
         const params = {
@@ -107,6 +122,19 @@ export class AsistenciaComponent implements OnInit {
         }
         this.getInformation(params, 'get_asistencia')
     }
+
+    selectedCategories: any[] = []
+
+    categories: any[] = [
+        { name: 'Asistencias', valor: 'asistencias', id: 1, mostrar: true },
+        { name: 'Festividades', valor: 'festividades', id: 2, mostrar: true },
+        {
+            name: 'Programacion de Actividades',
+            valor: 'actividades',
+            id: 3,
+            mostrar: true,
+        },
+    ]
     visible: boolean = false
 
     fechas = [
@@ -213,10 +241,8 @@ export class AsistenciaComponent implements OnInit {
             case 'get_asistencia':
                 this.data = item
                 break
-            // case 'get_asistencia_fecha':
-            //     this.data = item
-            //     break
             case 'get_fecha_importante':
+                this.events = item
                 this.calendarOptions.events = item
                 //this.getCalendario()
                 break

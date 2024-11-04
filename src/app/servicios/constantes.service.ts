@@ -586,6 +586,9 @@ const first = [
     providedIn: 'root',
 })
 export class ConstantesService {
+    public idDocCursoId: string = ''
+    public iCursoId: string = ''
+
     iPersId = user ? user.iPersId : null
     iCredId = user ? user.iCredId : null
     iDocenteId = user ? user?.iDocenteId : null

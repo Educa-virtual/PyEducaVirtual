@@ -31,7 +31,7 @@ export type TLetra = keyof typeof Letras
 export const letras: TLetra[] = Object.keys(Letras) as TLetra[]
 
 // filtrar preguntas usadas
-export const filterPreguntasUsadas = (
+export const filtrarPreguntasUsadas = (
     letrasUsadas: TLetra[],
     exception?: TLetra
 ) => {

@@ -3,6 +3,7 @@ import { environment } from '@/environments/environment.template'
 import { HttpClient } from '@angular/common/http'
 import { inject, Injectable } from '@angular/core'
 import { map } from 'rxjs'
+import { mapItemsBancoToEre } from '../../evaluaciones/sub-evaluaciones/banco-preguntas/models/pregunta-data-transformer'
 
 @Injectable({
     providedIn: 'root',
@@ -110,5 +111,33 @@ export class ApiEvaluacionesService {
                 `${this.baseUrlApi}/evaluaciones/evaluacion/logros/${id}`
             )
             .pipe(map((resp) => resp.data))
+    }
+
+    publicarEvaluacion(data) {
+        return this.http.post<ApiResponse>(
+            `${this.baseUrlApi}/evaluaciones/evaluacion/publicar`,
+            data
+        )
+    }
+
+    obtenerEstudiantesEvaluación(params) {
+        return this.http
+            .get<ApiResponse>(
+                `${this.baseUrlApi}/evaluaciones/evaluacion/estudiantes`,
+                { params }
+            )
+            .pipe(map((resp) => resp.data))
+    }
+
+    obtenerEvaluacionRespuestasEstudiante(params) {
+        return this.http
+            .get<ApiResponse>(
+                `${this.baseUrlApi}/evaluaciones/evaluacion/estudiantes/obtenerEvaluacionRespuestasEstudiante`,
+                { params }
+            )
+            .pipe(
+                map((resp) => resp.data),
+                map((data) => mapItemsBancoToEre(data))
+            )
     }
 }

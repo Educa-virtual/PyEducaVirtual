@@ -26,14 +26,16 @@ export class BancoPreguntaInformacionFormComponent implements OnInit {
     @Input() tipoPreguntas = []
     @Input({ required: true }) controlKey = ''
 
+    // injeccion de dependencias
     private parentContainer = inject(ControlContainer)
+
     formGroup!: FormGroup
 
     ngOnInit(): void {
         this.formGroup = this.parentFormGroup
     }
 
-    // obtiene el formulario padre
+    // obtiene el formulario padre usando ControlContainer
     get parentFormGroup() {
         return this.parentContainer.control?.get(this.controlKey) as FormGroup
     }

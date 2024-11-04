@@ -20,7 +20,7 @@ import { CommonInputComponent } from '@/app/shared/components/common-input/commo
 import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
 import { tipoActividadesKeys } from '@/app/sistema/aula-virtual/interfaces/actividad.interface'
 import { Subject, takeUntil } from 'rxjs'
-
+import { RemoveHTMLPipe } from '@/app/shared/pipes/remove-html.pipe'
 @Component({
     selector: 'app-foro-room',
     standalone: true,
@@ -28,6 +28,7 @@ import { Subject, takeUntil } from 'rxjs'
     styleUrls: ['./foro-room.component.scss'],
     imports: [
         IconComponent,
+        RemoveHTMLPipe,
         CommonInputComponent,
         TablePrimengComponent,
         TabViewModule,
@@ -57,11 +58,14 @@ export class ForoRoomComponent implements OnInit {
     // variables
     estudiantes: any[] = []
     calificacion: any[] = []
+    respuestasForo: any[] = []
     modalCalificacion: boolean = false
     estudianteSelect = null
     private unsbscribe$ = new Subject<boolean>()
 
     public foro
+
+    commentForoM: string = ''
 
     public foroForm: FormGroup = this._formBuilder.group({
         cForoTitulo: ['', [Validators.required]],
@@ -72,24 +76,38 @@ export class ForoRoomComponent implements OnInit {
         dtForoPublicacion: ['dtForoInicio'],
         dtForoFin: [],
     })
+    public foroFormComnt: FormGroup = this._formBuilder.group({
+        cForoRptaRespuesta: ['', [Validators.required]],
+    })
     constructor() {}
     ngOnInit() {
-        console.log('HolaMit', this.ixActivadadId, this.iActTopId)
+        //console.log('HolaMit', this.ixActivadadId, this.iActTopId)
+        //this.foroFormComnt.get('cForoRptaRespuesta').disable()
         this.getEstudiantesMatricula()
         this.mostrarCalificacion()
         this.obtenerForo()
-        console.log('Obtener Datos', this.obtenerForo())
+        this.getRespuestaF()
+        //console.log('Obtener Datos', this.getEstudiantesMatricula())
     }
     // closeModal(data) {
     //     this.ref.close(data)
     // }
-    openModal(estudiante) {
+    openModal(respuestasForo) {
         this.modalCalificacion = true
-        this.estudianteSelect = estudiante
+        this.estudianteSelect = respuestasForo
+        this.foroFormComnt.patchValue(respuestasForo)
     }
     submit() {
         const value = this.foroForm.value
         console.log('Guardar Calificacion', value)
+    }
+    sendComment() {
+        const comment = this.foroFormComnt.value
+        //this.commentForo = this.commentForoM
+        this._aulaService.guardarRespuesta(comment).subscribe(() => {})
+        console.log('Comentario:', comment)
+
+        //this.cForoRptaRespuesta = '';
     }
     mostrarCalificacion() {
         const userId = 1
@@ -112,12 +130,23 @@ export class ForoRoomComponent implements OnInit {
             })
         //console.log('Obtener Foros',this._aulaService)
     }
+    //getRespuestasForo
+    getRespuestaF() {
+        const userd = 1
+        this._aulaService.obtenerRespuestaForo(userd).subscribe((Data) => {
+            this.respuestasForo = Data['data']
+            console.log('respuesta foro', this.respuestasForo)
+        })
+    }
+
     getEstudiantesMatricula() {
         const params = {
             petition: 'post',
             group: 'aula-virtual',
             prefix: 'matricula',
             ruta: 'list',
+            //Undefined property: stdClass::$iSemAcadId
+            //Undefined property: stdClass::$iYAcadId
             data: {
                 opcion: 'CONSULTAR-ESTUDIANTESxiSemAcadIdxiYAcadIdxiCurrId',
                 iSemAcadId:
@@ -127,7 +156,7 @@ export class ForoRoomComponent implements OnInit {
             },
             params: { skipSuccessMessage: true },
         }
-        //console.log(this.getInformation)
+        console.log(this.getInformation)
 
         this.getInformation(params)
     }
@@ -141,6 +170,7 @@ export class ForoRoomComponent implements OnInit {
                 console.log(error)
             },
         })
+        //console.log('Datos estudiante', this.GeneralService)
     }
     // ngOnInit() { implements OnInit
     // }

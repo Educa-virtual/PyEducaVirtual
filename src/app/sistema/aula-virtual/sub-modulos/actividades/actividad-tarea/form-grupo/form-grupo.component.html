@@ -1,5 +1,5 @@
 <app-modal-primeng
-    [title]="'Crear/Actualizar Grupo'"
+    [title]="opcion === 'GUARDAR' ? 'Crear Grupo' : 'Actualizar Grupo'"
     [showModal]="showModal"
     [width]="'35rem'"
     (accionBtnItem)="accionBtn($event)"
@@ -7,13 +7,17 @@
     <div class="grid">
         <div class="field col-12 md:col-12">
             <label for="">Nombre del grupo</label>
-            <input pInputText class="flex-auto w-full" />
+            <input
+                pInputText
+                class="flex-auto w-full"
+                [(ngModel)]="cTareaGrupoNombre"
+            />
         </div>
         <div class="field col-12 md:col-12">
             <p-table
                 #dv
                 class="col-12 hoverTable"
-                [value]="data"
+                [value]="estudiantes"
                 paginator="false"
                 styleClass="p-datatable-sm"
             >
@@ -25,7 +29,7 @@
                 </ng-template>
                 <ng-template pTemplate="emptymessage" let-columns>
                     <tr>
-                        <td [attr.colspan]="8">
+                        <td [attr.colspan]="2">
                             No se encontraron resultados.
                         </td>
                     </tr>
@@ -34,13 +38,15 @@
                     <tr>
                         <td class="justify-content-center">
                             <p-checkbox
-                                [(ngModel)]="item.iCheckbox"
+                                [(ngModel)]="item.bAsignado"
                                 [binary]="true"
                                 inputId="binary"
+                                [disabled]="item.disabled"
                             />
                         </td>
-                        <td class="font-bold">
+                        <td>
                             {{ item.cPersNombre }} {{ item.cPersPaterno }}
+                            {{ item.cPersMaterno }}
                         </td>
                     </tr>
                 </ng-template>
@@ -54,9 +60,6 @@
             severity="secondary"
             (onClick)="accionBtn({ accion: 'close-modal', item: [] })"
         />
-        <p-button
-            [label]="'Crear/Actualizar'"
-            (onClick)="accionBtn({ accion: 'close-modal', item: [] })"
-        />
+        <p-button [label]="opcion" (onClick)="saveTareaCabeceraGrupos()" />
     </div>
 </app-modal-primeng>

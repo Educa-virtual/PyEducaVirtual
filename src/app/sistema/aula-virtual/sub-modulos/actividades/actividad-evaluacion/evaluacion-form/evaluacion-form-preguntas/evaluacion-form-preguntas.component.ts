@@ -21,7 +21,7 @@ import {
     columnasPreguntasEvaluacion,
 } from './evaluacion-form-preguntas'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
-import { ApiEvaluacionesService } from '@/app/sistema/evaluaciones/services/api-evaluaciones.service'
+import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-evaluaciones.service'
 import { generarIdAleatorio } from '@/app/shared/utils/random-id'
 import { provideIcons } from '@ng-icons/core'
 import { matWorkspacePremium } from '@ng-icons/material-icons/baseline'
@@ -52,7 +52,8 @@ import { Subject, takeUntil } from 'rxjs'
 export class EvaluacionFormPreguntasComponent implements OnDestroy {
     @Input() tituloEvaluacion: string = 'Sin título de evaluación'
     @Input() preguntas: any[] = []
-
+    // se guarda en evaluaciones_preguntas si se envia iEvaluacionId
+    @Input() iEvaluacionId: number
     @Output() preguntasSeleccionadasChange = new EventEmitter()
 
     public acciones = accionesPreguntasEvaluacion
@@ -61,10 +62,12 @@ export class EvaluacionFormPreguntasComponent implements OnDestroy {
 
     preguntasSeleccionadas = []
 
+    // injeccion de depedencias
     private _confirmationService = inject(ConfirmationModalService)
     private _aulaBancoPreguntasService = inject(AulaBancoPreguntasService)
     private _evaluacionService = inject(ApiEvaluacionesService)
     private _dialogService = inject(DialogService)
+
     private _unsubscribe$ = new Subject<boolean>()
 
     tiposAgrecacionPregunta: MenuItem[] = [
@@ -99,6 +102,7 @@ export class EvaluacionFormPreguntasComponent implements OnDestroy {
             pregunta,
             iCursoId: 1,
             tipoPreguntas: [],
+            iEvaluacionId: this.iEvaluacionId,
         })
         refModal.onClose.subscribe((result) => {
             if (result) {
@@ -137,8 +141,6 @@ export class EvaluacionFormPreguntasComponent implements OnDestroy {
     }
 
     handleLogrosPregunta(item) {
-        console.log(item)
-
         let preguntas = [item]
         if (item.preguntas != null) {
             preguntas = item.preguntas
@@ -152,9 +154,6 @@ export class EvaluacionFormPreguntasComponent implements OnDestroy {
         })
         ref.onClose.pipe(takeUntil(this._unsubscribe$)).subscribe((result) => {
             if (!result) return
-
-            // this.data[logroInData] = result
-            // this.data = [...this.data]
         })
     }
 
@@ -205,6 +204,7 @@ export class EvaluacionFormPreguntasComponent implements OnDestroy {
         })
     }
 
+    // agrega preguntas al formulario
     agregarPreguntas() {
         this.preguntasSeleccionadas.map((item) => {
             item = this.mapLocalPregunta(item)
@@ -215,6 +215,7 @@ export class EvaluacionFormPreguntasComponent implements OnDestroy {
         this.preguntasSeleccionadasChange.emit(this.preguntas)
     }
 
+    // desuscribe los observables cuando se destruye el componente
     ngOnDestroy() {
         this._unsubscribe$.next(true)
         this._unsubscribe$.complete()

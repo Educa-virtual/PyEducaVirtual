@@ -13,13 +13,14 @@ import { EvaluacionFormCalificacionComponent } from '../evaluacion-form/evaluaci
 import { StepperModule } from 'primeng/stepper'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { MenuItem } from 'primeng/api'
-import { ApiEvaluacionesService } from '@/app/sistema/evaluaciones/services/api-evaluaciones.service'
+import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-evaluaciones.service'
 import { Subject, takeUntil } from 'rxjs'
 import dayjs from 'dayjs'
 import { EVALUACION } from '@/app/sistema/aula-virtual/interfaces/actividad.interface'
 import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
 import { convertStringToDate } from '@/app/sistema/aula-virtual/utils/date'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
+import { ConstantesService } from '@/app/servicios/constantes.service'
 
 @Component({
     selector: 'app-evaluacion-form-container-',
@@ -64,16 +65,21 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
     public mode: 'CREAR' | 'EDITAR' = 'CREAR'
 
     private unsubscribe$: Subject<boolean> = new Subject()
+
+    // injeccion de dependencias
+    private _constantesService = inject(ConstantesService)
     private _formBuilder = inject(FormBuilder)
     private _evaluacionService = inject(ApiEvaluacionesService)
     private _aulaVirtualService = inject(ApiAulaService)
     private _config = inject(DynamicDialogConfig)
     private _confirmDialogService = inject(ConfirmationModalService)
     private _ref = inject(DynamicDialogRef)
+
     public preguntasSeleccionadas = []
-    private _paramsData = {
+    public paramsData = {
+        idDocCursoId: '1',
+        iCursoId: '1',
         iContenidoSemId: 0,
-        iEvaluacionId: 0,
         ixActivadadId: '',
     }
 
@@ -82,17 +88,22 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.getData()
         this.initFormGroup()
-        this._paramsData.iContenidoSemId =
+        this.paramsData.iContenidoSemId =
             this._config.data.semana?.iContenidoSemId
 
         const actividad = this._config.data.actividad
 
+        // si se esta editando
         if (actividad?.ixActivadadId != undefined) {
             this.mode = 'EDITAR'
-            this._paramsData.iContenidoSemId = actividad.iContenidoSemId
-            this._paramsData.ixActivadadId = actividad.ixActivadadId
+            this.paramsData.iContenidoSemId = actividad.iContenidoSemId
+            this.paramsData.ixActivadadId = actividad.ixActivadadId
             this.obtenerEvaluacion()
         }
+
+        // emitir params Evaluacion
+        this._constantesService.iCursoId = this.paramsData.iCursoId
+        this._constantesService.idDocCursoId = this.paramsData.idDocCursoId
     }
 
     getData() {
@@ -103,7 +114,7 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
         this._aulaVirtualService
             .obtenerActividad({
                 iActTipoId: EVALUACION,
-                ixActivadadId: this._paramsData.ixActivadadId,
+                ixActivadadId: this.paramsData.ixActivadadId,
             })
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
@@ -127,6 +138,7 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
         this.rubricaSelected = { ...nuevaRubrica }
     }
 
+    // coloca los valores en el form
     patchEvaluacionInfo(data: any) {
         const dFechaEvaluacionPublicacion = convertStringToDate(
             data.dtEvaluacionPublicacion
@@ -195,6 +207,7 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
         })
     }
 
+    // avanza los pasos del formulario
     goStep(opcion: string) {
         switch (opcion) {
             case 'next':
@@ -214,6 +227,7 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
         return this.evaluacionInfoForm.get('cEvaluacionTitulo')?.value
     }
 
+    // guarda los cambios segun el paso del stepper
     public guardarCambios() {
         if (this.activeStepper === 0) {
             this.guardarActualizarFormInfo()
@@ -229,6 +243,7 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
         }
     }
 
+    // agrega el tiempo a la fecha
     private addTimeToDate(date, time) {
         const dateActual = dayjs(date)
         const timeActual = dayjs(time, 'HH:mm:ss')
@@ -238,11 +253,12 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
         return dateTime.format('YYYY-DD-MM HH:mm:ss')
     }
 
+    // guarda o actualiza los datos del form1
     private guardarActualizarFormInfo() {
         const data = this.evaluacionInfoForm.getRawValue()
-        data.iDocenteId = 1
+        data.iDocenteId = this._constantesService.iDocenteId
         data.iActTipoId = EVALUACION
-        data.iContenidoSemId = this._paramsData.iContenidoSemId
+        data.iContenidoSemId = this.paramsData.iContenidoSemId
 
         if (this.evaluacionInfoForm.invalid) {
             this.evaluacionInfoForm.markAllAsTouched()
@@ -286,6 +302,7 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
             })
     }
 
+    // guarda o actualiza las preguntas
     private guardarActualizarPreguntas() {
         const preguntas = this.preguntasSeleccionadas.reduce((acc, item) => {
             if (item.preguntas == null) {
@@ -307,39 +324,11 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
             .subscribe({
                 next: (resp) => {
                     this.closeModal(resp)
-                    // this.preguntasSeleccionadas =
-                    //     this.preguntasSeleccionadas.map((pregunta) => {
-                    //         if (pregunta.preguntas == null) {
-                    //             const preguntaResp = resp.find(
-                    //                 (item) =>
-                    //                     item.iEvalPregId == pregunta.iEvalPregId
-                    //             )
-
-                    //             pregunta.iEvalPregId = preguntaResp.newId
-                    //             pregunta.isLocal = false
-                    //         } else {
-                    //             pregunta.preguntas = pregunta.preguntas.map(
-                    //                 (item) => {
-                    //                     const preguntaResp = resp.find(
-                    //                         (item2) =>
-                    //                             item2.iEvalPregId ==
-                    //                             item.iEvalPregId
-                    //                     )
-                    //                     item.iEvalPregId = preguntaResp.newId
-                    //                     item.isLocal = false
-                    //                     return item
-                    //                 }
-                    //             )
-                    //         }
-                    //         return pregunta
-                    //     })
-                    // console.log(this.preguntasSeleccionadas)
-
-                    // this.goStep('next')
                 },
             })
     }
 
+    // guarda o actualiza el instrumento de calificación
     guardarActualizarCalificacion() {
         const data = this.calificacionForm.value
         if (this.calificacionForm.invalid) {
@@ -373,6 +362,7 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
         this._ref.close(data)
     }
 
+    // desusbcribe los observables cuando se destruye el componente
     ngOnDestroy() {
         this.unsubscribe$.next(true)
         this.unsubscribe$.complete()

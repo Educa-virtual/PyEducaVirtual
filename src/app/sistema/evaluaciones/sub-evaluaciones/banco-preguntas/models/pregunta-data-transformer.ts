@@ -1,15 +1,11 @@
-import {
-    mapAlternativa,
-    mapEncabezado,
-    mapPregunta,
-} from '@/app/sistema/aula-virtual/utils/map-pregunta'
+import { mapAlternativa, mapEncabezado, mapPregunta } from './map-pregunta'
 
 export const formatTime = (hours, minutes, seconds) => {
     return `${hours}h ${minutes}m ${seconds}s`
 }
 
-export const findCorrectAlternativeSingle = (alternatives) => {
-    return alternatives?.find((alt) => alt.bAlternativaCorrecta)
+export const findCorrectAlternativeSingle = (alternativas) => {
+    return alternativas?.find((alt) => alt.bAlternativaCorrecta)
         ?.cAlternativaLetra
 }
 

@@ -31,7 +31,7 @@
 .container {
     display: flex;
     gap: 20px; /* Espacio entre las columnas */
-    height: 420px;
+    height: 500px;
     flex-wrap: wrap;
     justify-content: space-between;
 }
@@ -50,6 +50,7 @@
     width: 40%; /* Para que ambas columnas ocupen igual espacio */
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     height: 100%;
+    overflow: hidden;
 }
 .card3 {
     border: 1px solid #ddd;
@@ -57,8 +58,9 @@
     padding: 20px;
     width: 100%; /* Para que ambas columnas ocupen igual espacio */
     height: 100%;
+    overflow: hidden;
 }
-@media (max-width: 768px) {
+@media (max-width: 1116px) {
     .card1 {
         width: 100%;
     }
@@ -135,4 +137,133 @@
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+// ----------------------------------------------
+//
+:host ::ng-deep .list .p-orderlist-controls {
+    display: none;
+}
+:host ::ng-deep .p-orderlist-list {
+    max-height: 300px; /* Define la altura máxima deseada */
+    overflow-y: auto; /* Agrega la barra de desplazamiento en el eje vertical */
+}
+
+:host ::ng-deep .list .p-orderlist-header {
+    background-color: #f8f9fa;
+    font-weight: bold;
+    padding: 4%;
+    position: sticky;
+    top: 0;
+    z-index: 1000; /* Asegúrate de que la cabecera esté por encima de los elementos */
+    border-bottom: 1px solid #ddd;
+}
+:host ::ng-deep .list .p-ripple {
+    height: 110px;
+}
+//p-element p-ripple ng-tns-c1946505645-2 p-dialog-header-icon p-dialog-header-close p-link p-button p-component ng-star-insertedp-element p-icon-wrapper ng-tns-c1946505645-2 ng-star-inserted
+
+:host ::ng-deep {
+    .p-dropdown {
+        width: 10rem;
+        font-weight: normal;
+    }
+
+    .perfil-name {
+        font-size: 0.9rem;
+        font-weight: bold;
+    }
+
+    .perfil-description {
+        font-size: 0.8rem;
+        margin: 0 0 0.2rem 0;
+    }
+
+    .product-category-icon {
+        vertical-align: middle;
+        margin-right: 0.5rem;
+    }
+
+    .product-category {
+        font-weight: 600;
+        vertical-align: middle;
+    }
+
+    .perfiles-list-item {
+        display: flex;
+        align-items: center;
+        padding: 1rem;
+        width: 100%;
+
+        img {
+            width: 150px;
+            box-shadow:
+                0 3px 6px rgba(0, 0, 0, 0.16),
+                0 3px 6px rgba(0, 0, 0, 0.23);
+            margin-right: 2rem;
+        }
+
+        .product-list-detail {
+            flex: 1 1 0;
+        }
+
+        .p-rating {
+            margin: 0 0 0.5rem 0;
+        }
+
+        .product-price {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            align-self: flex-end;
+        }
+
+        .product-list-action {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .p-button {
+            margin-bottom: 0.5rem;
+        }
+    }
+}
+
+@media screen and (max-width: 576px) {
+    :host ::ng-deep .product-list-item {
+        flex-direction: column;
+        align-items: center;
+
+        img {
+            width: 75%;
+            margin: 2rem 0;
+        }
+
+        .product-list-detail {
+            text-align: center;
+        }
+
+        .product-price {
+            align-self: center;
+        }
+
+        .product-list-action {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-list-action {
+            margin-top: 2rem;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+    }
+}
+
+:host ::ng-deep .p-button:focus {
+    outline: 0 none;
+    outline-offset: 0px;
+    box-shadow: none;
 }

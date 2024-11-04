@@ -2,12 +2,12 @@ import { PrimengModule } from '@/app/primeng.module'
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
 import { GeneralService } from '@/app/servicios/general.service'
-import { Component, OnInit, Input } from '@angular/core'
+import { Component, OnInit, Input, inject } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
 import { Subject, takeUntil } from 'rxjs'
 import { CalendarOptions } from '@fullcalendar/core'
 import dayGridPlugin from '@fullcalendar/daygrid'
-import timeGridPlugin from '@fullcalendar/daygrid'
+import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import esLocale from '@fullcalendar/core/locales/es'
 interface Data {
@@ -31,12 +31,12 @@ export class AsistenciaComponent implements OnInit {
     @Input() iCursoId: string
     @Input() iNivelGradoId: string
     @Input() iSeccionId: string
-
+    private GeneralService = inject(GeneralService)
     private unsubscribe$ = new Subject<boolean>()
 
     cCursoNombre: string
     constructor(
-        private GeneralService: GeneralService,
+        //private GeneralService: GeneralService,
         private activatedRoute: ActivatedRoute,
         private router: Router
     ) {
@@ -45,10 +45,15 @@ export class AsistenciaComponent implements OnInit {
             this.cCursoNombre = params['cCursoNombre']
         })
     }
+
     ngOnInit() {
         this.getObtenerAsitencias()
         this.getFechasImportantes()
     }
+
+    /**
+     * @param fechaActual Guarda la fecha actual para la asistencia
+     */
     formatoFecha: Date = new Date()
     fechaActual =
         this.formatoFecha.getFullYear() +
@@ -57,11 +62,16 @@ export class AsistenciaComponent implements OnInit {
         '-' +
         this.formatoFecha.getDate()
 
-    dataFechas = []
-
+    /**
+     * calendarOptions
+     * * Se encarga de mostrar el calendario
+     * @param locales Traduce el calendario a español
+     * @param events Se encarga de mostrar las actividades programadas por hora y fecha
+     */
     calendarOptions: CalendarOptions = {
         plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
-        initialView: 'dayGridMonth',
+        slotLabelFormat: { hour: 'numeric', minute: '2-digit', hour12: true },
+        initialView: 'timeGridWeek',
         locales: [esLocale],
         weekends: true,
         height: '100%',
@@ -69,14 +79,18 @@ export class AsistenciaComponent implements OnInit {
         // eventShortHeight: 30,
         dateClick: (item) => this.handleDateClick(item),
         headerToolbar: {
-            end: 'dayGridMonth,dayGridWeek,dayGridDay',
+            right: 'dayGridMonth,timeGridWeek,timeGridDay',
             center: 'title',
             start: 'prev,next today',
         },
-        editable: false,
-        // events: this.events,
     }
-    actualizarCalendario(checkbox: any, valor: any) {
+
+    /**
+     *
+     * @param checkbox Muestra si el estado del checkbox es true or false
+     * @param valor Se encarga de enviar el tipo de filtro que se aplique en el calendario
+     */
+    filterCalendario(checkbox: any, valor: any) {
         this.events.filter((evento) => {
             if (evento.grupo == valor && checkbox.mostrar == true) {
                 evento.display = 'block'
@@ -85,15 +99,21 @@ export class AsistenciaComponent implements OnInit {
                 evento.display = 'none'
             }
         })
-        // this.calendarOptions.events=null
-
         this.calendarOptions.events = Object.assign([], this.events)
-        // console.log(this.calendarOptions.events)
     }
+
+    // * Se encarga de seleccionar la fecha de Asistencia
     handleDateClick(item) {
-        this.verAsistencia(item.dateStr)
+        this.getAsistencia(item.dateStr)
         this.fechaActual = item.dateStr
     }
+
+    /**
+     * * Se encarga de Obtener de mostras lo siguientes actividades:
+     * * Fechas de actividades Escolares
+     * * Asistencia del Año escolar
+     * * Actividades Programadas
+     */
     getFechasImportantes() {
         const params = {
             petition: 'post',
@@ -107,7 +127,8 @@ export class AsistenciaComponent implements OnInit {
         }
         this.getInformation(params, 'get_fecha_importante')
     }
-    verAsistencia(fechas: string) {
+
+    getAsistencia(fechas) {
         const params = {
             petition: 'post',
             group: 'docente',
@@ -123,6 +144,9 @@ export class AsistenciaComponent implements OnInit {
         this.getInformation(params, 'get_asistencia')
     }
 
+    /**
+     * @param categories Muestra los datos del checkbox
+     */
     categories: any[] = [
         { name: 'Asistencias', valor: 'asistencias', id: 1, mostrar: true },
         { name: 'Festividades', valor: 'festividades', id: 2, mostrar: true },
@@ -140,6 +164,10 @@ export class AsistenciaComponent implements OnInit {
 
     data = []
 
+    /**
+     * * Esta funcion cambia los estados de asistencia del alumno
+     * @param tipoMarcado guarda los estados del boton de asistencia
+     */
     tipoMarcado = [
         { iTipoAsiId: '7', cTipoAsiLetra: '-' },
         { iTipoAsiId: '1', cTipoAsiLetra: 'A' },
@@ -150,6 +178,7 @@ export class AsistenciaComponent implements OnInit {
 
     iTipoAsiId = 0
     indice = 0
+
     marcarAsistencia(index) {
         if (this.data[index]['iTipoAsiId'] == null) {
             this.data[index]['iTipoAsiId'] = this.tipoMarcado[0]['iTipoAsiId']
@@ -168,7 +197,8 @@ export class AsistenciaComponent implements OnInit {
         this.data[index]['dtCtrlAsistencia'] = this.fechaActual
     }
 
-    guardarAsistencia() {
+    // * Registro de asistencia del alumno
+    storeAsistencia() {
         const params = {
             petition: 'post',
             group: 'docente',
@@ -193,8 +223,6 @@ export class AsistenciaComponent implements OnInit {
     accionBtnItem(elemento): void {
         const { accion } = elemento
         const { item } = elemento
-        // console.log(item)
-        // console.log(accion)
 
         switch (accion) {
             case 'ingresar':
@@ -210,13 +238,30 @@ export class AsistenciaComponent implements OnInit {
             case 'get_fecha_importante':
                 this.events = item
                 this.calendarOptions.events = item
-                //this.getCalendario()
                 break
             default:
                 break
         }
     }
-    showModal = false
+
+    // * Obtiene el reporte de asistnecia (Mensual, semana y diario)
+    getReportePdf(opcion) {
+        console.log(opcion)
+        const params = {
+            petition: 'get',
+            group: 'docente',
+            prefix: 'reporte_mensual',
+            ruta: 'report',
+            data: {
+                opcion: 'REPORTE_MENSUAL',
+                iCursoId: this.iCursoId,
+                dtCtrlAsistencia: this.fechaActual,
+            },
+            params: { skipSuccessMessage: true },
+        }
+        this.GeneralService.getGralReporte(params)
+    }
+
     getObtenerAsitencias() {
         const params = {
             petition: 'post',

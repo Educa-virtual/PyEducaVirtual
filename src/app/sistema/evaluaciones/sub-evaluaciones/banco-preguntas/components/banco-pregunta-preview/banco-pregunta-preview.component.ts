@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common'
-import { Component, Input } from '@angular/core'
+import { Component, Input, TemplateRef } from '@angular/core'
 import { BancoPreguntaPreviewItemComponent } from './banco-pregunta-preview-item/banco-pregunta-preview-item.component'
 
 @Component({
@@ -11,4 +11,5 @@ import { BancoPreguntaPreviewItemComponent } from './banco-pregunta-preview-item
 })
 export class BancoPreguntaPreviewComponent {
     @Input({ required: true }) pregunta
+    @Input() customAlternativeTemplate: TemplateRef<any> | null = null
 }

@@ -30,6 +30,7 @@ import { AulaBancoPreguntaFormContainerComponent } from './components/aula-banco
 })
 export class AulaBancoPreguntasComponent implements OnInit, OnDestroy {
     @Input() public mode: 'SELECTION' | 'NORMAL' = 'NORMAL'
+    @Input() iEvaluacionId: number
     @Output() public selectedRowDataChange = new EventEmitter()
     public actionsTable = actionsTable
     public actionsContainer = actionsContainer
@@ -42,7 +43,6 @@ export class AulaBancoPreguntasComponent implements OnInit, OnDestroy {
 
     private _aulaBancoApiService = inject(ApiAulaBancoPreguntasService)
     private _dialogService = inject(DialogService)
-    private _confirmationModalService = inject(ConfirmationModalService)
 
     public params = {
         iCursoId: 1,
@@ -51,11 +51,13 @@ export class AulaBancoPreguntasComponent implements OnInit, OnDestroy {
         iNivelCicloId: 1,
         busqueda: '',
         iTipoPregId: 0,
+        iEvaluacionId: 0,
     }
 
     private _confirmService = inject(ConfirmationModalService)
 
     ngOnInit() {
+        this.params.iEvaluacionId = this.iEvaluacionId
         this.getData()
         this.setupConfig()
     }
@@ -135,6 +137,7 @@ export class AulaBancoPreguntasComponent implements OnInit, OnDestroy {
                     tipoPreguntas: this.tipoPreguntas,
                     pregunta: pregunta,
                     iCursoId: this.params.iCursoId,
+                    iEvaluacionId: this.iEvaluacionId,
                 },
                 header:
                     pregunta.iPreguntaId == 0

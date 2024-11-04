@@ -41,6 +41,7 @@
         <!-- las preguntas seleccionadas -->
         <app-aula-banco-preguntas
             [mode]="'SELECTION'"
+            [iEvaluacionId]="iEvaluacionId"
             (selectedRowDataChange)="selectedRowDataChange($event)"
         />
     }

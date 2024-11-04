@@ -35,15 +35,29 @@ export class PeriodosAcademicosComponent implements OnInit, OnChanges {
         cPeriodoEvalLetra: string
         cPeriodoEvalCantidad: string
     }[]
-    
-    fasesPromocionales = [{
-        iFaseId: this.ticketService.registroInformation.stepYear.fases_promocional.iFaseId,
-        cFasePromNombre: this.ticketService.registroInformation.stepYear.fases_promocional.cFasePromNombre,
-        dtFaseInicio: this.ticketService.toVisualFechasFormat(this.ticketService.registroInformation.stepYear.fases_promocional.dtFaseInicio, 'DD/MM/YYYY'),
-        dtFaseFin: this.ticketService.toVisualFechasFormat(this.ticketService.registroInformation.stepYear.fases_promocional.dtFaseFin, 'DD/MM/YYYY'),
-        iPeriodoEvalId: '',
-        cPeriodoEvalNombre: null,
-    }]
+
+    fasesPromocionales = [
+        {
+            iFaseId:
+                this.ticketService.registroInformation.stepYear
+                    .fases_promocional.iFaseId,
+            cFasePromNombre:
+                this.ticketService.registroInformation.stepYear
+                    .fases_promocional.cFasePromNombre,
+            dtFaseInicio: this.ticketService.toVisualFechasFormat(
+                this.ticketService.registroInformation.stepYear
+                    .fases_promocional.dtFaseInicio,
+                'DD/MM/YYYY'
+            ),
+            dtFaseFin: this.ticketService.toVisualFechasFormat(
+                this.ticketService.registroInformation.stepYear
+                    .fases_promocional.dtFaseFin,
+                'DD/MM/YYYY'
+            ),
+            iPeriodoEvalId: '',
+            cPeriodoEvalNombre: null,
+        },
+    ]
 
     ciclosAcademicos
 
@@ -75,40 +89,133 @@ export class PeriodosAcademicosComponent implements OnInit, OnChanges {
         this.router.navigate(['configuracion/configuracion/registro/turnos'])
     }
 
-    saveInformation() {}
+
+    saveInformation() {
+        if (this.ticketService.registroInformation.mode == 'create') {
+            this.createPeriodosAcademicos()
+        }
+
+        if (this.ticketService.registroInformation.mode == 'edit') {
+            this.updatePeriodosAcademicos()
+        }
+    }
+
+    createPeriodosAcademicos() {
+        
+        let periodosAcademicos = this.cicloAcademicoModal.ciclosAcademicos.map(
+            (ciclo) => ({
+                iFaseId: this.ticketService.registroInformation.stepYear.fases_promocional.iFaseId,
+                iPeriodoEvalId: ciclo.iPeriodoEvalId,
+                dtPeriodoEvalAperInicio: this.ticketService.toSQLDatetimeFormat(ciclo.StartDate),
+                dtPeriodoEvalAperFin: this.ticketService.toSQLDatetimeFormat(ciclo.EndDate),
+            })
+        )
+
+        console.log(periodosAcademicos)
+
+        this.httpService
+            .postData('acad/calendarioAcademico/addCalAcademico', {
+                json: JSON.stringify(periodosAcademicos),
+                _opcion: 'addCalPeriodoEval',
+            })
+            .subscribe({
+                next: (data: any) => {},
+                error: (error) => {
+                    console.error('Error fetching modalidades:', error)
+                },
+                complete: () => {
+                    console.log('Request completed')
+                },
+            })
+    }
+
+    updatePeriodosAcademicos(){
+
+        this.periodosInformation.map((periodo) => {
+            this.httpService
+        .postData('acad/calendarioAcademico/addCalAcademico', {
+            json: JSON.stringify({
+                iPeriodoEvalAperId: periodo.iPeriodoEvalAperId,
+            }),
+            _opcion: 'deleteCalPeriodo',
+        })
+        .subscribe({
+            next: (data: any) => {
+
+            },
+            error: (error) => {
+                console.error('Error fetching modalidades:', error)
+            },
+            complete: () => {
+                console.log('Request completed')
+            },
+        })
+        })
+
+
+        this.createPeriodosAcademicos()
+        this.getCalendarioPeriodosAcademicos()
+        this.hiddenDialog()
+    }
+
+    // updatePeriodosAcademicos() {
+
+    //     let periodosAcademicos = this.cicloAcademicoModal.ciclosAcademicos.map((ciclo) => ({
+    //         iFaseId: this.ticketService.registroInformation.stepYear.fases_promocional.iFaseId, 
+    //         iPeriodoEvalId: ciclo.iPeriodoEvalId, 
+    //         dtPeriodoEvalAperInicio: ciclo.StartDate, 
+    //         dtPeriodoEvalAperFin: ciclo.EndDate,		
+
+    //     }))
+
+    //     console.log('Editando')
+    //     console.log(this.cicloAcademicoModal)
+    //     this.httpService
+    //     .postData('acad/calendarioAcademico/addCalAcademico', {
+    //         json: JSON.stringify({
+    //             iCalAcadId:
+    //                 this.ticketService.registroInformation.calendar
+    //                     .iCalAcadId,
+    //         }),
+    //         _opcion: 'updateCalPeriodoEval',
+    //     })
+    //     .subscribe({
+    //         next: (data: any) => {
+
+    //         },
+    //         error: (error) => {
+    //             console.error('Error fetching modalidades:', error)
+    //         },
+    //         complete: () => {
+    //             console.log('Request completed')
+    //         },
+    //     })
+    // }
 
     showDialog() {
         this.visible = true
     }
 
+    hiddenDialog(){
+        this.visible = false
+    }
+
     indexColumns() {
-        this.cicloAcademicoModal.ciclosAcademicos =
-            this.cicloAcademicoModal.ciclosAcademicos.map((ciclo, index) => ({
-                index: index + 1,
-                ...ciclo,
-                StartDate: this.ticketService.toVisualFechasFormat(
-                    '2024-03-01 00:00:00.000',
-                    'DD/MM/YYYY'
-                ),
-                EndDate: this.ticketService.toVisualFechasFormat(
-                    '2024-12-01 00:00:00.000',
-                    'DD/MM/YYYY'
-                ),
-            }))
+
     }
 
     calculandoCicloAcademico(value) {
-
         console.log('Calculando')
         console.log(value)
 
         this.fasesPromocionales[0].iPeriodoEvalId = value.iPeriodoEvalId
         this.fasesPromocionales[0].cPeriodoEvalNombre = value.cPeriodoEvalNombre
 
-
         let periodosCalculados = this.ticketService.calcularFechaPeriodos(
-            this.ticketService.registroInformation.stepYear.fechaInicio,
-            this.ticketService.registroInformation.stepYear.fechaFin,
+            this.ticketService.registroInformation.stepYear.fases_promocional
+                .dtFaseInicio,
+            this.ticketService.registroInformation.stepYear.fases_promocional
+                .dtFaseFin,
             this.cicloAcademicoModal.cPeriodoEvalNombre.toLocaleLowerCase()
         )
 
@@ -118,15 +225,22 @@ export class PeriodosAcademicosComponent implements OnInit, OnChanges {
                 index: index + 1,
                 StartDate: periodo.fechaInicio,
                 EndDate: periodo.fechaFin,
-                EndDateVisual: this.ticketService.toVisualFechasFormat(periodo.fechaFin, 'DD/MM/YYYY'),
-                StartDateVisual: this.ticketService.toVisualFechasFormat(periodo.fechaInicio, 'DD/MM/YYYY'),
+                EndDateVisual: this.ticketService.toVisualFechasFormat(
+                    periodo.fechaFin,
+                    'DD/MM/YYYY'
+                ),
+
+                StartDateVisual: this.ticketService.toVisualFechasFormat(
+                    periodo.fechaInicio,
+                    'DD/MM/YYYY'
+                ),
                 PeriodType: periodo.descripcion,
-                iPeriodoEvalId: '',
+                iPeriodoEvalId: value.iPeriodoEvalId,
             })),
         }
     }
 
-    getPeriodosAcademicos() {
+    getCalendarioPeriodosAcademicos() {
         this.httpService
             .postData('acad/calendarioAcademico/addCalAcademico', {
                 json: JSON.stringify({
@@ -138,24 +252,19 @@ export class PeriodosAcademicosComponent implements OnInit, OnChanges {
             })
             .subscribe({
                 next: (data: any) => {
-                    let periodosAcademicos: Array<any> = JSON.parse(
-                        data.data[0]['calPeriodos']
-                    )
+                    // let periodosAcademicos: Array<any> = JSON.parse(
+                    //     data.data[0]['calPeriodos']
+                    // )
+                    console.log('Periodos');
 
-                    console.log(
-                        !periodosAcademicos.some(
-                            (periodo) => periodo.Message === 'false'
-                        )
-                    )
+                    let filterFasePeriodo = data.data[0]
 
-                    if (
-                        !periodosAcademicos.some(
-                            (periodo) => periodo.Message === 'false'
-                        )
-                    ) {
-                    }
+                    this.periodosInformation = JSON.parse(filterFasePeriodo["periodo"])
+                    
+                    // this.fasesPromocionales[0].cPeriodoEvalNombre = ""
 
-                    console.log(periodosAcademicos)
+
+
                 },
                 error: (error) => {
                     console.error('Error fetching modalidades:', error)
@@ -213,7 +322,7 @@ export class PeriodosAcademicosComponent implements OnInit, OnChanges {
             })
 
         if (this.ticketService.registroInformation.mode == 'edit') {
-            this.getPeriodosAcademicos()
+            this.getCalendarioPeriodosAcademicos()
         }
     }
 

@@ -59,8 +59,8 @@ export class TicketService {
             ciclosAcademicos?: {
                 PeriodType: string
                 iPeriodoEvalId: string
-                StartDate: string
-                EndDate: string
+                StartDate: Date
+                EndDate: Date
             }[]
         }[]
     }

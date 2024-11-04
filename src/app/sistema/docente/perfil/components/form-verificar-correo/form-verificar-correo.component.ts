@@ -1,5 +1,6 @@
 import { PrimengModule } from '@/app/primeng.module'
 import { ConstantesService } from '@/app/servicios/constantes.service'
+import { GeneralService } from '@/app/servicios/general.service'
 import { TokenStorageService } from '@/app/servicios/token.service'
 import { ModalPrimengComponent } from '@/app/shared/modal-primeng/modal-primeng.component'
 import {
@@ -22,6 +23,7 @@ import { Router } from '@angular/router'
 export class FormVerificarCorreoComponent implements OnChanges {
     @Output() accionBtnItem = new EventEmitter()
     @Input() showModalVerificarCorreo: boolean = false
+    @Input() iPersConId
 
     formVerificar!: FormGroup
     loading: boolean
@@ -30,21 +32,52 @@ export class FormVerificarCorreoComponent implements OnChanges {
         private tokenStorage: TokenStorageService,
         private router: Router,
         private fb: FormBuilder,
-        private ConstantesService: ConstantesService
+        private ConstantesService: ConstantesService,
+        private GeneralService: GeneralService
     ) {
         this.formVerificar = this.fb.group({
             cCodeVerif: ['', Validators.required],
             iPersId: [this.ConstantesService.iPersId, Validators.required],
+            iPersConId: [],
         })
     }
 
     ngOnChanges(changes) {
-        if (changes.showModal?.currentValue) {
-            this.showModalVerificarCorreo = changes.showModal.currentValue
+        if (changes.showModalVerificarCorreo?.currentValue) {
+            this.showModalVerificarCorreo =
+                changes.showModalVerificarCorreo.currentValue
+        }
+        if (changes.iPersConId?.currentValue) {
+            console.log(this.iPersConId)
+            this.iPersConId = changes.iPersConId.currentValue
+            this.formVerificar.controls['iPersConId'].setValue(this.iPersConId)
         }
     }
 
-    verificarCodigoCorreo() {}
+    verificarCodigoCorreo() {
+        const params = {
+            petition: 'post',
+            group: 'grl',
+            prefix: 'personas-contactos',
+            ruta: 'verificarCodVerificarCorreo',
+            data: this.formVerificar.value,
+        }
+
+        this.GeneralService.getGralPrefix(params).subscribe({
+            next: (response) => {
+                if (response.validated) {
+                    this.accionBtnItem.emit({
+                        accion: 'close-modal',
+                        item: [],
+                    })
+                }
+            },
+            complete: () => {},
+            error: (error) => {
+                console.log(error)
+            },
+        })
+    }
 
     accionBtn(elemento): void {
         const { accion } = elemento

@@ -54,6 +54,7 @@ export class PerfilComponent implements OnInit {
     accionBtnItem(elemento): void {
         const { accion } = elemento
         const { item } = elemento
+        console.log
         switch (accion) {
             case 'subir-archivo-users':
                 this.formPersonas.controls.cPersFotografia.setValue(
@@ -62,6 +63,8 @@ export class PerfilComponent implements OnInit {
                 break
             case 'close-modal':
                 this.showModalVerificarCorreo = false
+                this.formPersonas.controls.cPersCorreoValidado.setValue(true)
+                this.guardarPersonasxDatosPersonales()
                 break
         }
     }
@@ -131,27 +134,30 @@ export class PerfilComponent implements OnInit {
                 },
             })
         } else {
-            this.showModalVerificarCorreo = true
             this.enviarCodVerificarCorreo()
         }
     }
-
+    iPersConId
     enviarCodVerificarCorreo() {
         const params = {
             petition: 'post',
             group: 'grl',
-            prefix: 'personas',
+            prefix: 'personas-contactos',
             ruta: 'enviarCodVerificarCorreo',
             data: {
                 iPersId: this._ConstantesService.iPersId,
                 cPersCorreo: this.formPersonas.value.cPersCorreo,
+                iTipoConId: 1,
+                iPersConId: null,
+                cPersConCodigoValidacion: null,
             },
         }
 
         this._GeneralService.getGralPrefix(params).subscribe({
             next: (response) => {
                 if (response.validated) {
-                    this.getPersonasxiPersId()
+                    this.iPersConId = response.data
+                    this.showModalVerificarCorreo = true
                 }
             },
             complete: () => {},

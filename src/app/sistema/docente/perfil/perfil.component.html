@@ -65,6 +65,9 @@
                                 <input
                                     pInputText
                                     formControlName="cPersCorreo"
+                                    (input)="
+                                        formPersonas.value.cPersCorreoValidado = false
+                                    "
                                 />
                                 <button
                                     type="button"
@@ -113,13 +116,13 @@
                                 <input
                                     pInputText
                                     type="password"
+                                    placeholder="*******"
                                     formControlName="cPersPassword"
                                 />
                             </p-inputGroup>
                         </div>
                         <div class="col-5">
                             <button
-                                disabled="formPersonas.value.cPersCorreoValidado"
                                 pButton
                                 pRipple
                                 type="button"
@@ -138,5 +141,6 @@
 
 <app-form-verificar-correo
     [showModalVerificarCorreo]="showModalVerificarCorreo"
+    [iPersConId]="iPersConId"
     (accionBtnItem)="accionBtnItem($event)"
 ></app-form-verificar-correo>

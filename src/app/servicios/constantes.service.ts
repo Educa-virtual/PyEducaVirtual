@@ -51,7 +51,29 @@ const docente = [
 
 const estudiante = [
     {
-        items: [inicio],
+        items: [
+            inicio,
+            {
+                label: 'Mis Áreas Curriculares',
+                icon: 'pi pi-fw pi-book',
+                routerLink: ['/aula-virtual/areas-curriculares'],
+            },
+            {
+                label: 'Calendario',
+                icon: 'pi pi-fw pi-book',
+                routerLink: ['/aula-virtual/areas-curriculares'],
+            },
+            {
+                label: 'Solicitudes y Tramites',
+                icon: 'pi pi-fw pi-book',
+                routerLink: ['/aula-virtual/areas-curriculares'],
+            },
+            {
+                label: 'Buzon de Sugerencias',
+                icon: 'pi pi-fw pi-book',
+                routerLink: ['/aula-virtual/areas-curriculares'],
+            },
+        ],
     },
 ]
 // const especialista_ugel = [
@@ -605,7 +627,7 @@ export class ConstantesService {
                 return docente
             case 3:
                 return notas_evaluaciones
-            case 4:
+            case 8:
                 return estudiante
             case 5:
                 return registro_asistencia
@@ -613,7 +635,7 @@ export class ConstantesService {
                 return administrador
             case 7:
                 return docente
-            case 8:
+            case 4:
                 return bienestar
             default:
                 return first

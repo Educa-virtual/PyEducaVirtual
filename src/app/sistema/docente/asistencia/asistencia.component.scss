@@ -22,3 +22,24 @@ th,
 td {
     font-size: 0.8rem;
 }
+
+:host ::ng-deep {
+    .pink-checkbox.p-checkbox {
+        .p-checkbox-box.p-highlight {
+            background: var(--pink-600);
+            border-color: var(--pink-600);
+        }
+    }
+    .cyan-checkbox.p-checkbox {
+        .p-checkbox-box.p-highlight {
+            background: var(--cyan-600);
+            border-color: var(--cyan-600);
+        }
+    }
+    .green-checkbox.p-checkbox {
+        .p-checkbox-box.p-highlight {
+            background: var(--green-600);
+            border-color: var(--green-600);
+        }
+    }
+}

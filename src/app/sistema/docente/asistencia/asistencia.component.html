@@ -12,6 +12,7 @@
                 [text]="true"
                 label="Mensual"
                 tooltipPosition="left"
+                (click)="getReportePdf(1)"
             />
             <p-button
                 icon="pi pi-file-pdf"
@@ -19,6 +20,7 @@
                 [text]="true"
                 label="Semanal"
                 tooltipPosition="left"
+                (click)="getReportePdf(2)"
             />
             <p-button
                 icon="pi pi-file-pdf"
@@ -26,10 +28,12 @@
                 [text]="true"
                 label="Diario"
                 tooltipPosition="left"
+                (click)="getReportePdf(3)"
             />
         </div>
     </p-toolbar>
     <div class="col-3">
+        <div class="text-center font-bold">{{ fechaActual }}</div>
         <p-table class="mt-1" [value]="data">
             <ng-template pTemplate="header">
                 <tr style="height: 13px">
@@ -52,13 +56,13 @@
                             *ngIf="item.cTipoAsiLetra; else noboton"
                             label="{{ item.cTipoAsiLetra }}"
                             size="small"
-                            (click)="marcarAsistencia(rowIndex)"
+                            (click)="changeAsistencia(rowIndex)"
                         />
                         <ng-template #noboton>
                             <p-button
                                 label="-"
                                 size="small"
-                                (click)="marcarAsistencia(rowIndex)"
+                                (click)="changeAsistencia(rowIndex)"
                             />
                         </ng-template>
                     </td>
@@ -70,7 +74,7 @@
                 <p-button
                     label="GUARDAR"
                     size="small"
-                    (click)="guardarAsistencia()"
+                    (click)="storeAsistencia()"
                     severity="success"
                 />
             </div>
@@ -82,32 +86,47 @@
                     <p-checkbox
                         [(ngModel)]="category.mostrar"
                         id="calendario"
-                        (onChange)="
-                            actualizarCalendario(category, category.valor)
-                        "
+                        (onChange)="filterCalendario(category, category.valor)"
                         [label]="category.name"
                         name="group"
-                        [value]="category"
                         [binary]="true"
+                        [styleClass]="category.estilo"
                     />
                 </div>
             </div>
         </div>
     </div>
     <div class="col-9">
-        <full-calendar #calendar [options]="calendarOptions">
+        <full-calendar [options]="calendarOptions">
             <ng-template #eventContent let-arg>
-                <!-- <b>{{ arg.timeText }}</b> -->
+                <b>{{ arg.timeText }}</b>
                 <i>{{ arg.event.title }}</i>
             </ng-template>
         </full-calendar>
     </div>
-    <p-dialog
-        header="Header"
-        [modal]="true"
-        [(visible)]="visible"
-        [style]="{ width: '50rem' }"
-        [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
-    >
-    </p-dialog>
 </div>
+
+<p-dialog
+    header="Edit Profile"
+    [modal]="true"
+    [(visible)]="visible"
+    [style]="{ width: '25rem' }"
+>
+    <span class="p-text-secondary block mb-5">Update your information.</span>
+    <div class="flex align-items-center gap-3 mb-3">
+        <label for="username" class="font-semibold w-6rem">Username</label>
+        <input pInputText id="username" class="flex-auto" autocomplete="off" />
+    </div>
+    <div class="flex align-items-center gap-3 mb-5">
+        <label for="email" class="font-semibold w-6rem">Email</label>
+        <input pInputText id="email" class="flex-auto" autocomplete="off" />
+    </div>
+    <div class="flex justify-content-end gap-2">
+        <p-button
+            label="Cancel"
+            severity="secondary"
+            (onClick)="visible = false"
+        />
+        <p-button label="Save" (onClick)="visible = false" />
+    </div>
+</p-dialog>

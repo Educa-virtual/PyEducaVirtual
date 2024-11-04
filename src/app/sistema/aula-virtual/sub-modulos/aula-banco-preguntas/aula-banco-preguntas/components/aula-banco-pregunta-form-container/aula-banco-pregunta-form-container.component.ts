@@ -115,8 +115,8 @@ export class AulaBancoPreguntaFormContainerComponent implements OnInit {
             .subscribe({
                 next: (data) => {
                     if (data.length > 0) {
-                        this.pregunta = undefined
-                        this.pregunta = data[0]
+                        this.pregunta = data
+                        console.log(data)
                     }
                 },
             })

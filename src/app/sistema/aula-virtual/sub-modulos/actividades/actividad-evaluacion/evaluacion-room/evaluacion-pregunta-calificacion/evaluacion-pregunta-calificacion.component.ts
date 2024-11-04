@@ -28,6 +28,6 @@ export class EvaluacionPreguntaCalificacionComponent implements OnInit {
     ngOnInit() {
         this.evaluacion = this._config.data.evaluacion
         this.pregunta = this._config.data.pregunta
-        console.log(this.evaluacion)
+        console.log(this.pregunta)
     }
 }

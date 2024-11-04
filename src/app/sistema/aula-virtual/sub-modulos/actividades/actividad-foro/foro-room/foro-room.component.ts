@@ -78,6 +78,12 @@ export class ForoRoomComponent implements OnInit {
     })
     public foroFormComnt: FormGroup = this._formBuilder.group({
         cForoRptaRespuesta: ['', [Validators.required]],
+        iEscalaCalifId: [],
+        iForoRptaId: [],
+        cForoRptaDocente: [],
+        nForoRptaNota: [],
+
+        cForoDescripcion: [],
     })
     constructor() {}
     ngOnInit() {
@@ -98,8 +104,14 @@ export class ForoRoomComponent implements OnInit {
         this.foroFormComnt.patchValue(respuestasForo)
     }
     submit() {
-        const value = this.foroForm.value
+        const value = this.foroFormComnt.value
         console.log('Guardar Calificacion', value)
+        this._aulaService.calificarForoDocente(value).subscribe((resp: any) => {
+            if (resp?.validated) {
+                this.modalCalificacion = false
+                this.getRespuestaF()
+            }
+        })
     }
     sendComment() {
         const comment = this.foroFormComnt.value

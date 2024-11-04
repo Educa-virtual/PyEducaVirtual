@@ -46,6 +46,13 @@ export class YearComponent implements OnInit, OnChanges {
         fechaFin: string
     }
 
+    fasesPromocionales: {
+        iFasePromId: string
+        cFasePromNombre: string
+        value: boolean
+    }[] = []
+
+
     minDate: Date
     visible: boolean = false
     fechaVigenteFetch
@@ -67,11 +74,13 @@ export class YearComponent implements OnInit, OnChanges {
             fechaFin: [''],
             fechaMatriculaInicio: [''],
             fechaMatriculaFin: [''],
-            regular: false,
-            recuperacion: false,
+            regular: [''],
+            recuperacion: [''],
         })
     }
     ngOnInit() {
+        this.getFasesPromocionales()
+
         if (this.ticketService.registroInformation?.mode === 'create') {
             this.httpService
                 .postData('acad/calendarioAcademico/addCalAcademico', {
@@ -143,8 +152,6 @@ export class YearComponent implements OnInit, OnChanges {
                                     .iCalAcadId
                         )
 
-                        console.log(filterCalendar)
-
                         this.ticketService.setTicketInformation(
                             {
                                 fechaVigente:
@@ -201,37 +208,7 @@ export class YearComponent implements OnInit, OnChanges {
                     },
                 })
 
-
-            this.httpService
-                .postData('acad/calendarioAcademico/addCalAcademico', {
-                    json: JSON.stringify({
-                        jmod: 'acad',
-                        jtable: 'fases_promocionales',
-                    }),
-                    _opcion: 'getConsulta',
-                })
-                .subscribe({
-                    next: (data: any) => {
-                        console.log(data)
-                    },
-                    error: (error) => {
-                        console.error('Error fetching turnos:', error)
-                    },
-                    complete: () => {
-                        console.log('Request completed')
-
-                        // this.form.patchValue({
-                        //     regular:
-                        //         this.ticketService.registroInformation.stepYear
-                        //             .faseRegular,
-                        //     recuperacion:
-                        //         this.ticketService.registroInformation.stepYear
-                        //             .faseRecuperacion,
-                        // })
-
-                        this.form.get('fechaVigente').disable()
-                    },
-                })
+            this.getCalendarioFasesPromocionales();
         }
 
         // Suscribirse a los cambios del formulario después de la inicialización
@@ -248,6 +225,75 @@ export class YearComponent implements OnInit, OnChanges {
             console.log(value)
         })
     }
+
+    getFasesPromocionales() {
+        this.httpService
+            .postData('acad/calendarioAcademico/addCalAcademico', {
+                json: JSON.stringify({
+                    jmod: 'acad',
+                    jtable: 'fases_promocionales',
+                }),
+                _opcion: 'getConsulta',
+            })
+            .subscribe({
+                next: (data: any) => {
+                    this.fasesPromocionales.push(...data.data)
+                },
+                error: (error) => {
+                    console.error('Error fetching turnos:', error)
+                },
+                complete: () => {
+                    console.log('Request completed')
+                },
+            })
+    }
+
+    getCalendarioFasesPromocionales() {
+        this.httpService
+            .postData('acad/calendarioAcademico/addCalAcademico', {
+                json: JSON.stringify({
+                    iCalAcadId: this.ticketService.registroInformation.calendar.iCalAcadId,
+                }),
+                _opcion: 'getCalendarioFases',
+            })
+            .subscribe({
+                next: (data: any) => {
+                    console.log(JSON.parse(data.data[0]["calFases"]));
+                    let calendarioFases = JSON.parse(data.data[0]["calFases"]) as Array<any>
+
+                    calendarioFases.forEach((faseCalendario) => {
+                        const index = this.fasesPromocionales.findIndex(fase => fase.iFasePromId == faseCalendario.iFasePromId)
+
+                        if (index != -1) {
+                            this.fasesPromocionales[index] = faseCalendario
+                        }
+                    })
+
+                },
+                error: (error) => {
+                    console.error('Error fetching turnos:', error)
+                },
+                complete: () => {
+                    console.log('Request completed')
+                },
+            })
+    }
+
+    toggleCheckbox(value) {
+
+        console.log(value)
+        // if (this.form.get('regular')) {
+        //     this.form.patchValue({
+        //         regular: this.form.get('regular').value ? this.fasesPromocionales[0] : false
+        //       });
+        // }
+        // if (this.form.get('regular').value) {
+        //     this.form.patchValue({
+        //         regular: this.form.get('regular').value ? this.fasesPromocionales[0] : false
+        //       });
+        // }
+      }
+      
 
     confirm() {
         this.confirmationService.confirm({
@@ -323,9 +369,6 @@ export class YearComponent implements OnInit, OnChanges {
     }
 
     updateCalendario() {
-        console.log(this.ticketService.registroInformation.stepYear)
-        console.log(this.ticketService.registroInformation)
-
         this.httpService
             .postData('acad/calendarioAcademico/addCalAcademico', {
                 json: JSON.stringify({

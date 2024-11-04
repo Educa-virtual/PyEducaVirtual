@@ -59,14 +59,18 @@
     </div>
     <div>
         <p-checkbox 
-        binary="true"
+        name="fasesPromocionales"
+        [value]="fasesPromocionales[0]"
         formControlName="regular"
         label="Fase regular"
+        (onChange)="toggleCheckbox(this.form.get('regular').value)"
         />
-    <p-checkbox 
-        binary="true"
+        <p-checkbox 
+        name="fasesPromocionales"
+        [value]="fasesPromocionales[1]"
         formControlName="recuperacion"
         label="Fase de recuperación"
+        (onChange)="toggleCheckbox(this.form.get('recuperacion').value)"
         />
     </div>
 

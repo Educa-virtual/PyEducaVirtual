@@ -21,11 +21,8 @@ export class TicketService {
             fechaFin: Date
             matriculaInicio?: Date
             matriculaFin?: Date,
-            fasesPromocionales?: {
-                iFasePromId: string, 
-                cFasePromNombre: string,
-                faseStatus?: boolean
-            }[]
+            bCalAcadFaseRegular?: boolean,
+            bCalAcadFaseRecuperacion?: boolean,
         }
 
         stepDiasLaborales?: {

@@ -58,19 +58,41 @@
         </p-floatLabel>
     </div>
     <div>
+        <p-floatLabel>
+            <p-calendar
+                [style]="{ width: '100%' }"
+                [inputStyle]="{ width: '100%' }"
+                formControlName="fechaFaseInicio"
+                [showIcon]="true"
+                inputId="faseInicio"
+            />
+            <label for="faseInicio">Fecha inicio fase</label>
+        </p-floatLabel>
+        <p-floatLabel>
+            <p-calendar
+                [style]="{ width: '100%' }"
+                [inputStyle]="{ width: '100%' }"
+                formControlName="fechaFaseFin"
+                [showIcon]="true"
+                inputId="faseFin"
+            />
+            <label for="faseFin">Fecha fin fase</label>
+        </p-floatLabel>
+    </div>
+    <div>
         <p-checkbox 
         name="fasesPromocionales"
         [value]="fasesPromocionales[0]"
         formControlName="regular"
         label="Fase regular"
-        (onChange)="toggleCheckbox(this.form.get('regular').value)"
+        (onChange)="toggleCheckboxRegular(this.form.get('regular').value)"
         />
         <p-checkbox 
         name="fasesPromocionales"
         [value]="fasesPromocionales[1]"
         formControlName="recuperacion"
         label="Fase de recuperación"
-        (onChange)="toggleCheckbox(this.form.get('recuperacion').value)"
+        (onChange)="toggleCheckboxRecuperacion(this.form.get('recuperacion').value)"
         />
     </div>
 

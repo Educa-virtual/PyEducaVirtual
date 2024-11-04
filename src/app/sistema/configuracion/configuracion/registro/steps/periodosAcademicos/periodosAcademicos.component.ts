@@ -35,6 +35,15 @@ export class PeriodosAcademicosComponent implements OnInit, OnChanges {
         cPeriodoEvalLetra: string
         cPeriodoEvalCantidad: string
     }[]
+    
+    fasesPromocionales = [{
+        iFaseId: this.ticketService.registroInformation.stepYear.fases_promocional.iFaseId,
+        cFasePromNombre: this.ticketService.registroInformation.stepYear.fases_promocional.cFasePromNombre,
+        dtFaseInicio: this.ticketService.toVisualFechasFormat(this.ticketService.registroInformation.stepYear.fases_promocional.dtFaseInicio, 'DD/MM/YYYY'),
+        dtFaseFin: this.ticketService.toVisualFechasFormat(this.ticketService.registroInformation.stepYear.fases_promocional.dtFaseFin, 'DD/MM/YYYY'),
+        iPeriodoEvalId: '',
+        cPeriodoEvalNombre: null,
+    }]
 
     ciclosAcademicos
 
@@ -88,8 +97,14 @@ export class PeriodosAcademicosComponent implements OnInit, OnChanges {
             }))
     }
 
-    calculandoCicloAcademico() {
+    calculandoCicloAcademico(value) {
+
         console.log('Calculando')
+        console.log(value)
+
+        this.fasesPromocionales[0].iPeriodoEvalId = value.iPeriodoEvalId
+        this.fasesPromocionales[0].cPeriodoEvalNombre = value.cPeriodoEvalNombre
+
 
         let periodosCalculados = this.ticketService.calcularFechaPeriodos(
             this.ticketService.registroInformation.stepYear.fechaInicio,
@@ -109,30 +124,6 @@ export class PeriodosAcademicosComponent implements OnInit, OnChanges {
                 iPeriodoEvalId: '',
             })),
         }
-        // this.httpService
-        //     .postData('acad/periodoAcademico/addPerAcademico', {
-        //         json: JSON.strinthisgify({
-        //             iCalAcadId: .ticketService.registroInformation.calendar.iCalAcadId
-        //         }),
-        //         _opcion: this.cicloAcademicoModal.cPeriodoEvalNombre,
-        //     })
-        //     .subscribe({
-        //         next: (data: any) => {
-
-        //             this.cicloAcademicoModal = {
-        //                 ...this.cicloAcademicoModal,
-        //                 ciclosAcademicos: data.data
-        //             }
-
-        //             this.indexColumns()
-        //         },
-        //         error: (error) => {
-        //             console.error('Error fetching modalidades:', error)
-        //         },
-        //         complete: () => {
-        //             console.log('Request completed')
-        //         },
-        //     })
     }
 
     getPeriodosAcademicos() {
@@ -251,7 +242,7 @@ export class PeriodosAcademicosComponent implements OnInit, OnChanges {
         {
             type: 'text',
             width: '5rem',
-            field: 'iPeriodoEvalId',
+            field: 'iFaseId',
             header: 'Nro',
             text_header: 'center',
             text: 'center',
@@ -259,7 +250,7 @@ export class PeriodosAcademicosComponent implements OnInit, OnChanges {
         {
             type: 'text',
             width: '5rem',
-            field: 'cPeriodoEvalNombre',
+            field: 'cFasePromNombre',
             header: 'Periodo evaluaciones formativas',
             text_header: 'center',
             text: 'center',
@@ -267,7 +258,7 @@ export class PeriodosAcademicosComponent implements OnInit, OnChanges {
         {
             type: 'text',
             width: '5rem',
-            field: 'cModalServNombre',
+            field: 'dtFaseInicio',
             header: 'Fecha inicio',
             text_header: 'center',
             text: 'center',
@@ -275,7 +266,7 @@ export class PeriodosAcademicosComponent implements OnInit, OnChanges {
         {
             type: 'text',
             width: '5rem',
-            field: 'cModalServNombre',
+            field: 'dtFaseFin',
             header: 'Fecha fin',
             text_header: 'center',
             text: 'center',
@@ -283,8 +274,8 @@ export class PeriodosAcademicosComponent implements OnInit, OnChanges {
         {
             type: 'text',
             width: '5rem',
-            field: 'cModalServNombre',
-            header: 'Ciclo académico',
+            field: 'cPeriodoEvalNombre',
+            header: 'Periodo académico',
             text_header: 'center',
             text: 'center',
         },

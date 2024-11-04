@@ -11,8 +11,6 @@ import { CompartirIdEvaluacionService } from './../../../services/ereEvaluacione
 import { Component, ChangeDetectorRef, inject, OnInit } from '@angular/core'
 /*import { Product } from '@domain/product';
 import { ProductService } from '@service/productservice';*/
-import { Product } from 'src/app/demo/api/product'
-import { ProductService } from 'src/app/demo/service/product.service'
 import { PickListModule } from 'primeng/picklist'
 
 import { ApiEvaluacionesRService } from '../../../services/api-evaluaciones-r.service'
@@ -53,7 +51,6 @@ interface Ugeles {
     ],
     templateUrl: './ieparticipa.component.html',
     styleUrl: './ieparticipa.component.scss',
-    providers: [ProductService],
 })
 export class IeparticipaComponent implements OnInit {
     private unsubscribe$: Subject<boolean> = new Subject()
@@ -66,9 +63,9 @@ export class IeparticipaComponent implements OnInit {
     public data = []
 
     private _apiEre = inject(ApiEvaluacionesRService)
-    sourceProducts!: Product[]
+    sourceProducts!: any
 
-    targetProducts!: Product[]
+    targetProducts!: any
 
     nivelTipo: NivelTipo[] | undefined
     selectedNivelTipo: NivelTipo | undefined
@@ -78,15 +75,10 @@ export class IeparticipaComponent implements OnInit {
     itemsToDelete: any
 
     constructor(
-        private carService: ProductService,
         private cdr: ChangeDetectorRef,
         private compartirIdEvaluacionService: CompartirIdEvaluacionService
     ) {}
     ngOnInit() {
-        this.carService.getProductsSmall().then((products) => {
-            this.sourceProducts = products
-            this.cdr.markForCheck()
-        })
         this.targetProducts = []
 
         this.obtenerIE()

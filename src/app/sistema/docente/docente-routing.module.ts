@@ -13,6 +13,7 @@ import { SesionAprendizajeComponent } from './sesion-aprendizaje/sesion-aprendiz
 import { GestionarSilaboComponent } from './areas-estudios/components/gestionar-silabo/gestionar-silabo.component'
 import { PerfilComponent } from './perfil/perfil.component'
 import { ActividadesNoLectivasComponent } from './actividades-no-lectivas/actividades-no-lectivas.component'
+import { MaterialEducativoComponent } from './material-educativo/material-educativo.component'
 
 @NgModule({
     imports: [
@@ -50,6 +51,10 @@ import { ActividadesNoLectivasComponent } from './actividades-no-lectivas/activi
             {
                 path: 'actividades-no-lectivas',
                 component: ActividadesNoLectivasComponent,
+            },
+            {
+                path: 'material-educativo/:idDocCursoId/:cCursoNombre',
+                component: MaterialEducativoComponent,
             },
         ]),
     ],

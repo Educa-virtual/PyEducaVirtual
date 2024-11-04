@@ -3,7 +3,10 @@ import { environment } from '@/environments/environment.template'
 import { HttpClient } from '@angular/common/http'
 import { inject, Injectable } from '@angular/core'
 import { map } from 'rxjs'
-import { mapItemsBancoToEre } from '../../evaluaciones/sub-evaluaciones/banco-preguntas/models/pregunta-data-transformer'
+import {
+    mapData,
+    mapItemsBancoToEre,
+} from '../../evaluaciones/sub-evaluaciones/banco-preguntas/models/pregunta-data-transformer'
 
 @Injectable({
     providedIn: 'root',
@@ -137,7 +140,8 @@ export class ApiEvaluacionesService {
             )
             .pipe(
                 map((resp) => resp.data),
-                map((data) => mapItemsBancoToEre(data))
+                map((data) => mapItemsBancoToEre(data)),
+                map((data) => mapData(data))
             )
     }
 }

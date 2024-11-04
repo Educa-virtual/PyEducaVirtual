@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core'
 import { environment } from '@/environments/environment.template'
 import { HttpClient } from '@angular/common/http'
-import { map } from 'rxjs'
+import { map, Observable } from 'rxjs'
 import { mapData } from '../sub-evaluaciones/banco-preguntas/models/pregunta-data-transformer'
 
 @Injectable({
@@ -80,18 +80,23 @@ export class ApiEvaluacionesRService {
             data
         )
     }
+    // eliminarParticipacion(data: any) {
+    //     return this.http.delete(
+    //         `${this.baseUrl}/ere/Evaluaciones/eliminarParticipacion`,
+    //         data
+    //     )
+    // }
+    eliminarParticipacion(id: any): Observable<any> {
+        return this.http.delete(
+            `${this.baseUrl}/ere/Evaluaciones/eliminarParticipacion/${id}`
+        )
+    }
     IEparticipanall(data) {
         return this.http.post(
             `${this.baseUrl}/ere/Evaluaciones/IEparticipanall`,
             data
         )
     }
-    // eliminarParticipacion(data) {
-    //     return this.http.post(
-    //         `${this.baseUrl}/ere/evaluaciones/eliminarParticipacion`,
-    //         data
-    //     )
-    // }
 
     generarWordByPreguntasIds(baseParams) {
         const url = `${this.baseUrlBackend}/generarWordBancoPreguntasSeleccionadas`

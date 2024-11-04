@@ -5,6 +5,29 @@
                 Asistencia del Curso: {{ cCursoNombre }}
             </h4>
         </div>
+        <div class="p-toolbar-group-end">
+            <p-button
+                icon="pi pi-file-pdf"
+                size="small"
+                [text]="true"
+                label="Mensual"
+                tooltipPosition="left"
+            />
+            <p-button
+                icon="pi pi-file-pdf"
+                size="small"
+                [text]="true"
+                label="Semanal"
+                tooltipPosition="left"
+            />
+            <p-button
+                icon="pi pi-file-pdf"
+                size="small"
+                [text]="true"
+                label="Diario"
+                tooltipPosition="left"
+            />
+        </div>
     </p-toolbar>
     <div class="col-3">
         <p-table class="mt-1" [value]="data">
@@ -43,47 +66,51 @@
             </ng-template>
         </p-table>
         <div class="flex justify-content-center p-1">
-            <p-button
-                label="GUARDAR"
-                size="small"
-                (click)="guardarAsistencia()"
-            />
+            <div class="flex justify-content-center p-1">
+                <p-button
+                    label="GUARDAR"
+                    size="small"
+                    (click)="guardarAsistencia()"
+                    severity="success"
+                />
+            </div>
+            <div class="card flex">
+                <div class="flex flex-column gap-2">
+                    <h5>MIS CALENDARIOS</h5>
+                    <div
+                        *ngFor="let category of categories"
+                        class="field-checkbox"
+                    >
+                        <p-checkbox
+                            [(ngModel)]="selectedCategories"
+                            id="calendario"
+                            (onChange)="
+                                actualizarCalendario(category, category.valor)
+                            "
+                            [label]="category.name"
+                            name="group"
+                            [value]="category"
+                        />
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="flex justify-content-center p-1">
-            <p-button label="REPORTE MENSUAL" size="small" />
-        </div>
-        <div class="flex justify-content-center p-1">
-            <p-button label="REPORTE SEMANAL" size="small" />
-        </div>
-        <div class="flex justify-content-center p-1">
-            <p-button label="REPORTE DIARIO" size="small" />
-        </div>
-        <h5>Fechas Especiales</h5>
-        <div *ngFor="let item of fechas" class="field-checkbox">
-            <p-checkbox
-                [ngStyle]="{ color: item.color }"
-                [label]="item.nombre + ' : ' + item.cantidad"
-                class="font-bold"
-                value="category"
-                name="group"
-            />
+        <div class="col-9">
+            <full-calendar [options]="calendarOptions">
+                <ng-template #eventContent let-arg>
+                    <!-- <b>{{ arg.timeText }}</b> -->
+                    <i>{{ arg.event.title }}</i>
+                </ng-template>
+            </full-calendar>
         </div>
     </div>
-    <div class="col-9">
-        <full-calendar [options]="calendarOptions">
-            <ng-template #eventContent let-arg>
-                <b>{{ arg.timeText }}</b>
-                <i>{{ arg.event.title }}</i>
-            </ng-template>
-        </full-calendar>
-    </div>
-</div>
 
-<p-dialog
-    header="Header"
-    [modal]="true"
-    [(visible)]="visible"
-    [style]="{ width: '50rem' }"
-    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
->
-</p-dialog>
+    <p-dialog
+        header="Header"
+        [modal]="true"
+        [(visible)]="visible"
+        [style]="{ width: '50rem' }"
+        [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+    >
+    </p-dialog>
+</div>

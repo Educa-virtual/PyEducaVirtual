@@ -616,11 +616,12 @@ export class ConstantesService {
     iDocenteId = user ? user?.iDocenteId : null
     iNivelCicloId = user?.iNivelCicloId ?? 1
     iEspecialistaId = user?.iEspecialistaId ?? 1
+    iEstudianteId = user ? user?.iEstudianteId : null
+    iPerfilId = perfil ? Number(perfil.iPerfilId) : null
     nav = this.getMenu()
     getMenu() {
         if (!perfil) return first
-        console.log('perfiles', perfil)
-        switch (Number(perfil.iPerfilId)) {
+        switch (this.iPerfilId) {
             case 1:
                 return aula_virtual
             case 2:

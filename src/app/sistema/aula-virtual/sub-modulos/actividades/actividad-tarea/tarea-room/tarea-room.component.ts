@@ -23,6 +23,7 @@ import { FormGrupoComponent } from '../form-grupo/form-grupo.component'
 import { GeneralService } from '@/app/servicios/general.service'
 import { ModalPrimengComponent } from '../../../../../../shared/modal-primeng/modal-primeng.component'
 import { environment } from '@/environments/environment.template'
+import { ConstantesService } from '@/app/servicios/constantes.service'
 
 @Component({
     selector: 'app-tarea-room',
@@ -50,8 +51,13 @@ export class TareaRoomComponent implements OnChanges {
 
     private _dialogService = inject(DialogService)
     private GeneralService = inject(GeneralService)
+    private _constantesService = inject(ConstantesService)
 
+    students: any
+
+    iPerfilId: number
     ngOnInit() {
+        this.iPerfilId = this._constantesService.iPerfilId
         this.obtenerEscalaCalificaciones()
     }
     ngOnChanges(changes) {
@@ -217,7 +223,7 @@ export class TareaRoomComponent implements OnChanges {
 
                 this.grupos.forEach((i) => {
                     i.json_estudiantes = i.json_estudiantes.filter(
-                        (j) => j.bAsignado === 1
+                        (j) => j.bAsignado === 0
                     )
                 })
 
@@ -368,5 +374,19 @@ export class TareaRoomComponent implements OnChanges {
     goLinkDocumento(ruta: string) {
         const backend = environment.backend
         window.open(backend + '/' + ruta, '_blank')
+    }
+    buscarEstudiante() {
+        const params = {
+            petition: 'get',
+            group: 'aula-virtual',
+            prefix: 'tareas',
+            ruta: 'list',
+            data: {
+                opcion: 'CONSULTARxiTareaId',
+                iTareaId: this.iTareaId,
+            },
+            params: { skipSuccessMessage: true },
+        }
+        this.getInformation(params, 'get-' + params.prefix)
     }
 }

@@ -210,7 +210,7 @@ export class EvaluacionesComponent implements OnInit {
             // this.asignarPreguntas()
         }
         if (accion === 'editar') {
-            //this.agregarEditarPregunta(item)
+            this.agregarEditarPregunta(item)
         }
 
         if (accion === 'ver') {
@@ -220,16 +220,14 @@ export class EvaluacionesComponent implements OnInit {
         }
     }
     verEreEvaluacion(evaluacion) {
-        alert('iEvaluacionId' + evaluacion.iEvaluacionId)
+        //alert('iEvaluacionId' + evaluacion.iEvaluacionId)
         const refModal = this._dialogService.open(EvaluacionesFormComponent, {
             ...MODAL_CONFIG,
             data: {
+                accion: 'ver',
                 evaluacion: evaluacion,
             },
-            header:
-                evaluacion?.iEvaluacionId == 0
-                    ? 'Nueva evaluación'
-                    : 'Editar evaluación',
+            header: 'Ver evaluacion',
         })
 
         refModal.onClose.subscribe((result) => {
@@ -240,11 +238,12 @@ export class EvaluacionesComponent implements OnInit {
     }
     // abrir el modal para agregar una nueva pregunta
     agregarEditarPregunta(evaluacion) {
-        alert('iEvaluacionId' + evaluacion.iEvaluacionId)
+        // alert('iEvaluacionId' + evaluacion.iEvaluacionId)
         const refModal = this._dialogService.open(EvaluacionesFormComponent, {
             ...MODAL_CONFIG,
             data: {
                 //tipoPreguntas: this.tipoPreguntas,
+                // accion: 'nuevo-editar',
                 evaluacion: evaluacion,
                 //iCursoId: this.params.iCursoId,
             },

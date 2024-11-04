@@ -68,23 +68,7 @@ export class EvaluacionesFormComponent implements OnInit {
     private _formBuilder = inject(FormBuilder)
     private _ref = inject(DynamicDialogRef)
 
-    public evaluacionFormGroup = this._formBuilder.group({
-        iEvaluacionId: [null, [Validators.required]],
-        idTipoEvalId: [null, [Validators.required]],
-        iNivelEvalId: [null, [Validators.required]],
-        cEvaluacionDescripcion: [null, [Validators.required]],
-        cEvaluacionUrlDrive: [null, [Validators.required]],
-        cEvaluacionUrlPlantilla: [null, [Validators.required]],
-        cEvaluacionUrlManual: [null, [Validators.required]],
-        cEvaluacionUrlMatriz: [null, [Validators.required]],
-        cEvaluacionObs: [null, [Validators.required]],
-        dtEvaluacionLiberarMatriz: [null, [Validators.required]],
-        dtEvaluacionLiberarCuadernillo: [null, [Validators.required]],
-        dtEvaluacionLiberarResultados: [null, [Validators.required]],
-        dtEvaluacionCreacion: [null, Validators.required],
-
-        cEvaluacionNombre: [null, Validators.required],
-    })
+    public evaluacionFormGroup: any
 
     private unsubscribe$: Subject<boolean> = new Subject()
     public params = {
@@ -103,11 +87,26 @@ export class EvaluacionesFormComponent implements OnInit {
     fecha: string
     visible: boolean = false
     value!: string
+    accion: string
     //Agregar Servicio de Evaluacion
     constructor(
         private _config: DynamicDialogConfig, // Inyección de configuración
         private compartirIdEvaluacionService: CompartirIdEvaluacionService // Inyección del servicio
-    ) {
+    ) {}
+    // convertToDate(dateString: string | null): Date | null {
+    //     if (!dateString) return null // Manejar null
+    //     const [day, month, year] = dateString.split('/') // Asumiendo que el formato es 'dd/MM/yyyy'
+    //     return new Date(+year, +month - 1, +day) // Recuerda que los meses son indexados desde 0
+    // }
+    ngOnInit() {
+        this.accion = this._config.data.accion
+
+        this.obtenerTipoEvaluacion()
+        this.obtenerNivelEvaluacion()
+        this.ereCrearFormulario()
+        this.ereVerEvaluacion()
+    }
+    ereCrearFormulario() {
         this.evaluacionFormGroup = this._formBuilder.group({
             iEvaluacionId: [null],
             idTipoEvalId: [null, [Validators.required]],
@@ -125,19 +124,11 @@ export class EvaluacionesFormComponent implements OnInit {
             dtEvaluacionLiberarResultados: [null, Validators.required],
         })
     }
-    convertToDate(dateString: string | null): Date | null {
-        if (!dateString) return null // Manejar null
-        const [day, month, year] = dateString.split('/') // Asumiendo que el formato es 'dd/MM/yyyy'
-        return new Date(+year, +month - 1, +day) // Recuerda que los meses son indexados desde 0
-    }
-    ngOnInit() {
-        this.obtenerTipoEvaluacion()
-        this.obtenerNivelEvaluacion()
-
+    ereVerEvaluacion() {
         const evaluacionData = this._config.data.evaluacion // Obtener los datos del modal
 
         if (evaluacionData) {
-            console.log(evaluacionData)
+            console.log(evaluacionData.dtEvaluacionCreacion)
             this.evaluacionFormGroup.patchValue({
                 iEvaluacionId: evaluacionData.iEvaluacionId,
                 idTipoEvalId: evaluacionData.idTipoEvalId,
@@ -149,22 +140,16 @@ export class EvaluacionesFormComponent implements OnInit {
                 cEvaluacionUrlManual: evaluacionData.cEvaluacionUrlManual,
                 cEvaluacionUrlMatriz: evaluacionData.cEvaluacionUrlMatriz,
                 cEvaluacionObs: evaluacionData.cEvaluacionObs,
-                // dtEvaluacionCreacion: this.convertToDate(
-                //     evaluacionData.dtEvaluacionCreacion
-                // ),
-                // dtEvaluacionLiberarMatriz: this.convertToDate(
-                //     evaluacionData.dtEvaluacionLiberarMatriz
-                // ),
-                // dtEvaluacionLiberarCuadernillo: this.convertToDate(
-                //     evaluacionData.dtEvaluacionLiberarCuadernillo
-                // ),
-                // dtEvaluacionLiberarResultados: this.convertToDate(
-                //     evaluacionData.dtEvaluacionLiberarResultados
-                // ),
+                dtEvaluacionCreacion: evaluacionData.dtEvaluacionCreacion,
+                dtEvaluacionLiberarMatriz:
+                    evaluacionData.dtEvaluacionLiberarMatriz,
+                dtEvaluacionLiberarCuadernillo:
+                    evaluacionData.dtEvaluacionLiberarCuadernillo,
+                dtEvaluacionLiberarResultados:
+                    evaluacionData.dtEvaluacionLiberarResultados,
             })
         }
     }
-
     guardarEvaluacion() {
         const data = {
             idTipoEvalId: this.evaluacionFormGroup.get('idTipoEvalId').value,

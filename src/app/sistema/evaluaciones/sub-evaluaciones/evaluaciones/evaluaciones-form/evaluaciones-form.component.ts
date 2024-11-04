@@ -100,11 +100,16 @@ export class EvaluacionesFormComponent implements OnInit {
     // }
     ngOnInit() {
         this.accion = this._config.data.accion
-
         this.obtenerTipoEvaluacion()
         this.obtenerNivelEvaluacion()
         this.ereCrearFormulario()
         this.ereVerEvaluacion()
+
+        //this.accion = this._config.data.accion // Inicializa la acción
+
+        if (this.accion === 'editar' || this.accion === 'ver') {
+            this.ereVerEvaluacion() // Carga los datos si está en modo ver o editar
+        }
     }
     ereCrearFormulario() {
         this.evaluacionFormGroup = this._formBuilder.group({
@@ -150,8 +155,68 @@ export class EvaluacionesFormComponent implements OnInit {
             })
         }
     }
+    // guardarEvaluacion() {
+    //     const data = {
+    //         idTipoEvalId: this.evaluacionFormGroup.get('idTipoEvalId').value,
+    //         iNivelEvalId: this.evaluacionFormGroup.get('iNivelEvalId').value,
+    //         dtEvaluacionCreacion: this.evaluacionFormGroup.get(
+    //             'dtEvaluacionCreacion'
+    //         ).value,
+    //         cEvaluacionNombre:
+    //             this.evaluacionFormGroup.get('cEvaluacionNombre').value,
+    //         cEvaluacionDescripcion: this.evaluacionFormGroup.get(
+    //             'cEvaluacionDescripcion'
+    //         ).value,
+    //         cEvaluacionUrlDrive: this.evaluacionFormGroup.get(
+    //             'cEvaluacionUrlDrive'
+    //         ).value,
+    //         cEvaluacionUrlPlantilla: this.evaluacionFormGroup.get(
+    //             'cEvaluacionUrlPlantilla'
+    //         ).value,
+    //         cEvaluacionUrlManual: this.evaluacionFormGroup.get(
+    //             'cEvaluacionUrlManual'
+    //         ).value,
+    //         cEvaluacionUrlMatriz: this.evaluacionFormGroup.get(
+    //             'cEvaluacionUrlMatriz'
+    //         ).value,
+    //         cEvaluacionObs:
+    //             this.evaluacionFormGroup.get('cEvaluacionObs').value,
+    //         dtEvaluacionLiberarMatriz: this.evaluacionFormGroup.get(
+    //             'dtEvaluacionLiberarMatriz'
+    //         ).value,
+    //         dtEvaluacionLiberarCuadernillo: this.evaluacionFormGroup.get(
+    //             'dtEvaluacionLiberarCuadernillo'
+    //         ).value,
+    //         dtEvaluacionLiberarResultados: this.evaluacionFormGroup.get(
+    //             'dtEvaluacionLiberarResultados'
+    //         ).value,
+    //     }
+    //     console.log(data)
+    //     this._apiEre
+    //         .guardarEvaluacion(data)
+    //         .pipe(takeUntil(this.unsubscribe$))
+    //         .subscribe({
+    //             next: (resp: any) => {
+    //                 this.iEvaluacionId = resp['data'][0]['iEvaluacionId'] // Captura el ID generado
+    //                 this.compartirIdEvaluacionService.iEvaluacionId =
+    //                     this.iEvaluacionId // Guardar en el servicio
+    //                 console.log(
+    //                     'ID de Evaluación guardado:',
+    //                     this.iEvaluacionId
+    //                 )
+    //                 this.iEvaluacionId = resp['data'][0]['iEvaluacionId']
+    //                 //alert(JSON.stringify(this.data))
+    //                 //this.sourceProducts = this.data
+    //             },
+    //             error: (error) => {
+    //                 console.error('Error al guardar la evaluación:', error) // Captura el error aquí
+    //                 alert('Error en el servidor: ' + JSON.stringify(error))
+    //             },
+    //         })
+    // }
     guardarEvaluacion() {
         const data = {
+            iEvaluacionId: this.evaluacionFormGroup.get('iEvaluacionId').value,
             idTipoEvalId: this.evaluacionFormGroup.get('idTipoEvalId').value,
             iNivelEvalId: this.evaluacionFormGroup.get('iNivelEvalId').value,
             dtEvaluacionCreacion: this.evaluacionFormGroup.get(
@@ -186,28 +251,76 @@ export class EvaluacionesFormComponent implements OnInit {
                 'dtEvaluacionLiberarResultados'
             ).value,
         }
-        console.log(data)
-        this._apiEre
-            .guardarEvaluacion(data)
-            .pipe(takeUntil(this.unsubscribe$))
-            .subscribe({
-                next: (resp: any) => {
-                    this.iEvaluacionId = resp['data'][0]['iEvaluacionId'] // Captura el ID generado
-                    this.compartirIdEvaluacionService.iEvaluacionId =
-                        this.iEvaluacionId // Guardar en el servicio
-                    console.log(
-                        'ID de Evaluación guardado:',
-                        this.iEvaluacionId
-                    )
-                    this.iEvaluacionId = resp['data'][0]['iEvaluacionId']
-                    //alert(JSON.stringify(this.data))
-                    //this.sourceProducts = this.data
+
+        // if (this.accion === 'editar') {
+        //     // Lógica para actualizar
+        //     this.iEvaluacionId =
+        //         this.evaluacionFormGroup.get('iEvaluacionId').value
+        //     console.log('aqui va las fechas', data)
+        //     console.log('aqui va el id', this.iEvaluacionId)
+        //     this._apiEre.actualizarEvaluacion(data).subscribe(
+        //         (resp: any) => {
+        //             console.log('Evaluación actualizada', resp)
+        //         },
+        //         (error) => {
+        //             console.error(
+        //                 'Error al actualizar la evaluación asdzxc:',
+        //                 error
+        //             )
+        //         }
+        //     )
+        // } else {
+        //     // Lógica para guardar una nueva evaluación
+        //     this._apiEre.guardarEvaluacion(data).subscribe(
+        //         (resp: any) => {
+        //             console.log('Nueva evaluación guardada', resp)
+        //         },
+        //         (error) => {
+        //             console.error('Error al guardar la evaluación:', error)
+        //         }
+        //     )
+        // }
+        if (this.accion === 'editar') {
+            // Lógica para actualizar
+            this.iEvaluacionId =
+                this.evaluacionFormGroup.get('iEvaluacionId').value
+            console.log('ID para actualizar:', this.iEvaluacionId)
+
+            if (!this.iEvaluacionId) {
+                console.error('El ID de evaluación es undefined o null')
+                return // Salir si el ID no es válido
+            }
+
+            // Agregar el ID al objeto data
+            data.iEvaluacionId = this.iEvaluacionId
+
+            console.log('Datos a enviar para actualización:', data)
+            this._apiEre.actualizarEvaluacion(data).subscribe(
+                (resp: any) => {
+                    console.log('Evaluación actualizada', resp)
                 },
-                error: (error) => {
-                    console.error('Error al guardar la evaluación:', error) // Captura el error aquí
-                    alert('Error en el servidor: ' + JSON.stringify(error))
+                (error) => {
+                    console.error('Error al actualizar la evaluación:', error)
+                    if (error.error) {
+                        console.error('Detalles del error:', error.error) // Captura detalles adicionales del error
+                    }
+                }
+            )
+        } else {
+            // Lógica para guardar una nueva evaluación
+            console.log('Datos a enviar para nueva evaluación:', data)
+            this._apiEre.guardarEvaluacion(data).subscribe(
+                (resp: any) => {
+                    console.log('Nueva evaluación guardada', resp)
                 },
-            })
+                (error) => {
+                    console.error('Error al guardar la evaluación:', error)
+                    if (error.error) {
+                        console.error('Detalles del error:', error.error) // Captura detalles adicionales del error
+                    }
+                }
+            )
+        }
     }
     obtenerTipoEvaluacion() {
         this._apiEre

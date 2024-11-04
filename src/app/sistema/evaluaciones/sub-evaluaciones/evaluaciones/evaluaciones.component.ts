@@ -238,14 +238,11 @@ export class EvaluacionesComponent implements OnInit {
     }
     // abrir el modal para agregar una nueva pregunta
     agregarEditarPregunta(evaluacion) {
-        // alert('iEvaluacionId' + evaluacion.iEvaluacionId)
         const refModal = this._dialogService.open(EvaluacionesFormComponent, {
             ...MODAL_CONFIG,
             data: {
-                //tipoPreguntas: this.tipoPreguntas,
-                // accion: 'nuevo-editar',
-                evaluacion: evaluacion,
-                //iCursoId: this.params.iCursoId,
+                accion: evaluacion?.iEvaluacionId ? 'editar' : 'nuevo', // Determina la acción
+                evaluacion: evaluacion, // Datos de la evaluación
             },
             header:
                 evaluacion?.iEvaluacionId == 0
@@ -254,7 +251,7 @@ export class EvaluacionesComponent implements OnInit {
         })
         refModal.onClose.subscribe((result) => {
             if (result) {
-                //this.obtenerBancoPreguntas()
+                this.obtenerEvaluacion() // Refresca la lista de evaluaciones
             }
         })
     }

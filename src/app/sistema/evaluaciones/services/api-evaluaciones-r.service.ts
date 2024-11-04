@@ -66,6 +66,14 @@ export class ApiEvaluacionesRService {
     guardarEvaluacion(data: any) {
         return this.http.post(`${this.baseUrl}/ere/Evaluaciones/guardar`, data)
     }
+    //editar evaluacion
+    // insert_Code_New
+    actualizarEvaluacion(data: any) {
+        return this.http.put(
+            `${this.baseUrl}/ere/Evaluaciones/actualizarEvaluacion/${data.iEvaluacionId}`,
+            data
+        )
+    }
 
     //Top
     guardarActualizarPreguntaConAlternativas(data) {

@@ -100,7 +100,6 @@ export class ForoFormContainerComponent implements OnInit {
 
     ngOnInit(): void {
         this.mostrarCategorias()
-        console.log(this.contenidoSemana)
     }
 
     mostrarCategorias() {

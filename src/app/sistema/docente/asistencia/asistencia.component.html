@@ -99,8 +99,8 @@
     <div class="col-9">
         <full-calendar [options]="calendarOptions">
             <ng-template #eventContent let-arg>
-                <b>{{ arg.timeText }}</b>
-                <i>{{ arg.event.title }}</i>
+                <div class="fc-event-time">{{ arg.timeText }}</div>
+                <div class="fc-event-title">{{ arg.event.title }}</div>
             </ng-template>
         </full-calendar>
     </div>

@@ -70,12 +70,13 @@ export class AsistenciaComponent implements OnInit {
      */
     calendarOptions: CalendarOptions = {
         plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
-        slotLabelFormat: { hour: 'numeric', minute: '2-digit', hour12: true },
-        initialView: 'timeGridWeek',
+        slotLabelFormat: { hour: 'numeric', minute: '2-digit', hour12: false },
+        initialView: 'dayGridMonth',
         locales: [esLocale],
         weekends: true,
         height: '100%',
         selectable: true,
+        dayMaxEvents: true,
         // eventShortHeight: 30,
         dateClick: (item) => this.handleDateClick(item),
         headerToolbar: {
@@ -106,10 +107,10 @@ export class AsistenciaComponent implements OnInit {
     handleDateClick(item) {
         this.getAsistencia(item.dateStr)
         this.fechaActual = item.dateStr
-        this.showDialog()
     }
 
-    showDialog() {
+    showDialog(id: number) {
+        console.log(id)
         this.visible = true
     }
 
@@ -176,6 +177,7 @@ export class AsistenciaComponent implements OnInit {
             estilo: 'green-checkbox',
         },
     ]
+
     visible: boolean = false
 
     valSelect1: string = ''

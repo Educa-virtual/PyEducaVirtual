@@ -61,10 +61,7 @@ export class RubricaFormComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this._unsubscribe$))
             .subscribe({
                 next: (data) => {
-                    this.escalasCalificativas = data.map((item) => {
-                        item.cEscalaCalifNombre = `${item.cEscalaCalifNombre ?? ''} ${item.cEscalaCalifDescripcion ?? ''} ${item.nEscalaCalifEquivalente ?? ''}`
-                        return item
-                    })
+                    this.escalasCalificativas = data
                 },
             })
     }

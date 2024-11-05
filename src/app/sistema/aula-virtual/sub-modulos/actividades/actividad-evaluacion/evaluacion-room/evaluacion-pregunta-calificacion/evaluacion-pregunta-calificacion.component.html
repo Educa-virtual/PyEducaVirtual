@@ -26,4 +26,8 @@
         <h3 class="text-xl">Calificación</h3>
         <hr />
     </div>
+    <app-evaluacion-pregunta-logro
+        [logrosCalificacion]="pregunta.logrosCalificacion ?? []"
+        [escalasCalificativas]="escalasCalificativas"
+    ></app-evaluacion-pregunta-logro>
 </div>

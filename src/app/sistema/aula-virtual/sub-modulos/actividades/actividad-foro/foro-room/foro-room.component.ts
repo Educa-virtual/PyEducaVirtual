@@ -79,7 +79,7 @@ export class ForoRoomComponent implements OnInit {
     public foroFormComnt: FormGroup = this._formBuilder.group({
         iEscalaCalifId: [],
         iForoRptaId: [],
-        cForoRptaDocente: [],
+        cForoRptaDocente: ['', [Validators.required]],
         nForoRptaNota: [],
         cForoDescripcion: [],
     })

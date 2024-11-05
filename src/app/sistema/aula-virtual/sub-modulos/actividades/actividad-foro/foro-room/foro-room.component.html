@@ -23,7 +23,7 @@
                                 <span class="font-bold text-xl"
                                     >Catergoria:</span
                                 >
-                                {{ foro.cForoCatDescripcion }}
+                                {{ foro?.cForoCatDescripcion }}
                             </div>
                             <!-- <span class="font-bold text-xl flex gap-2">
                                 <app-icon
@@ -146,7 +146,7 @@
                             size="sm"
                         />
                         <h3 class="text-lg m-0">Descripción:</h3>
-                        {{ foro['cForoDescripcion'] | removeHTML }}
+                        {{ foro?.cForoDescripcion | removeHTML }}
                     </div>
 
                     <div
@@ -246,59 +246,6 @@
                     <!-- Recursos y Comentarios -->
                     <div class="container">
                         <div class="card1">
-                            <div class=" ">
-                                <b>
-                                    <label class="text-lg" for=""
-                                        >Recursos:</label
-                                    >
-                                </b>
-                                <ul class="list-none p-0 m-0">
-                                    <li
-                                        class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap"
-                                    >
-                                        <div
-                                            class="flex gap-2 align-items-center"
-                                        >
-                                            <i
-                                                class="pi pi-file text-lg text-primary"
-                                            ></i>
-                                            <span class="font-medium text-lg"
-                                                >Recurso.pdf</span
-                                            >
-                                            <span class="text-gray-500"
-                                                >tamaño(319.532KB)</span
-                                            >
-                                        </div>
-                                    </li>
-                                    <li
-                                        class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap"
-                                    >
-                                        <div
-                                            class="flex gap-2 align-items-center"
-                                        >
-                                            <i
-                                                class="pi pi-file text-lg text-primary"
-                                            ></i>
-                                            <span class="font-medium text-lg"
-                                                >Recurso.pdf</span
-                                            >
-                                            <span class="text-gray-500"
-                                                >tamaño(319.532KB)</span
-                                            >
-                                        </div>
-                                    </li>
-                                </ul>
-                                <div>
-                                    <!-- <ngx-extended-pdf-viewer [src]="'pdf/TL7 75 Español.pdf'" useBrowserLocale="true" height="100px" width="900px" ></ngx-extended-pdf-viewer> -->
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card2">
-                            <!-- <b>
-                                <label class="text-lg" for=""
-                                    >Comentarios:</label
-                                >
-                            </b> -->
                             <div>
                                 <p-orderList
                                     class="list"
@@ -359,7 +306,7 @@
                                         class="comment-input"
                                         placeholder="Escribe un comentario..."
                                         id="commentText"
-                                        formControlName="cForoRptaRespuestaA"
+                                        formControlName="cForoRptaRespuesta"
                                     />
                                     <button
                                         class="send-button"
@@ -367,6 +314,59 @@
                                     >
                                         Enviar
                                     </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card2">
+                            <!-- <b>
+                                <label class="text-lg" for=""
+                                    >Comentarios:</label
+                                >
+                            </b> -->
+                            <div class=" ">
+                                <b>
+                                    <label class="text-lg" for=""
+                                        >Recursos:</label
+                                    >
+                                </b>
+                                <ul class="list-none p-0 m-0">
+                                    <li
+                                        class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap"
+                                    >
+                                        <div
+                                            class="flex gap-2 align-items-center"
+                                        >
+                                            <i
+                                                class="pi pi-file text-lg text-primary"
+                                            ></i>
+                                            <span class="font-medium text-lg"
+                                                >Recurso.pdf</span
+                                            >
+                                            <span class="text-gray-500"
+                                                >tamaño(319.532KB)</span
+                                            >
+                                        </div>
+                                    </li>
+                                    <li
+                                        class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap"
+                                    >
+                                        <div
+                                            class="flex gap-2 align-items-center"
+                                        >
+                                            <i
+                                                class="pi pi-file text-lg text-primary"
+                                            ></i>
+                                            <span class="font-medium text-lg"
+                                                >Recurso.pdf</span
+                                            >
+                                            <span class="text-gray-500"
+                                                >tamaño(319.532KB)</span
+                                            >
+                                        </div>
+                                    </li>
+                                </ul>
+                                <div>
+                                    <!-- <ngx-extended-pdf-viewer [src]="'pdf/TL7 75 Español.pdf'" useBrowserLocale="true" height="100px" width="900px" ></ngx-extended-pdf-viewer> -->
                                 </div>
                             </div>
                         </div>
@@ -404,7 +404,7 @@
                         />
                         <h3 class="text-lg m-0">Descripción:</h3>
 
-                        {{ foro['cForoDescripcion'] | removeHTML }}
+                        {{ foro?.cForoDescripcion ?? '' | removeHTML }}
                     </div>
                 </div>
 
@@ -454,7 +454,12 @@
                                         <td>
                                             {{ respuestas?.cEscalaCalifNombre }}
                                         </td>
-                                        <td>Ninguna</td>
+                                        <td>
+                                            {{
+                                                respuestas?.cForoRptaDocente ??
+                                                    '' | removeHTML
+                                            }}
+                                        </td>
                                         <td style="text-align: center">
                                             <p-button
                                                 (click)="openModal(respuestas)"
@@ -545,7 +550,7 @@
                 <div class="mt-2">
                     <p-editor
                         id="descripcion"
-                        formControlName="cForoDescripcion   "
+                        formControlName="cForoRptaDocente"
                         [style]="{ height: '150px' }"
                     />
                 </div>

@@ -82,7 +82,7 @@ export class ForoFormContainerComponent implements OnInit {
         dtFin: [this.date, Validators.required],
     })
     constructor(private dialogConfig: DynamicDialogConfig) {
-        //this.contenidoSemana = this.dialogConfig.data.contenidoSemana
+        this.contenidoSemana = this.dialogConfig.data.contenidoSemana
         const data = this.dialogConfig.data
         if (data.action == 'editar') {
             this.foroForm.patchValue({
@@ -100,6 +100,15 @@ export class ForoFormContainerComponent implements OnInit {
 
     ngOnInit(): void {
         this.mostrarCategorias()
+        this.semana = [
+            {
+                severity: 'info',
+                detail:
+                    this.contenidoSemana.cContenidoSemNumero +
+                    ' SEMANA - ' +
+                    this.contenidoSemana.cContenidoSemTitulo,
+            },
+        ]
     }
 
     mostrarCategorias() {

@@ -1,19 +1,15 @@
-import { Component, OnInit, OnChanges, OnDestroy } from '@angular/core'
-import { TableModule } from 'primeng/table'
-import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
-import {
-    IColumn,
-    IActionTable,
-} from '@/app/shared/table-primeng/table-primeng.component'
-import { httpService } from '../../../http/httpService'
-import { ButtonModule } from 'primeng/button'
-import { TicketService } from '../../service/ticketservice'
-import { Router } from '@angular/router'
-import { ConfirmDialogModule } from 'primeng/confirmdialog'
 import { StepConfirmationService, type informationMessage } from '@/app/servicios/confirm.service'
-import { ToastModule } from 'primeng/toast'
 import { GeneralService } from '@/app/servicios/general.service'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
+import { IActionTable, IColumn, TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
+import { Component, OnChanges, OnInit } from '@angular/core'
+import { Router } from '@angular/router'
+import { ButtonModule } from 'primeng/button'
+import { ConfirmDialogModule } from 'primeng/confirmdialog'
+import { TableModule } from 'primeng/table'
+import { ToastModule } from 'primeng/toast'
+import { httpService } from '../../../http/httpService'
+import { TicketService } from '../../service/ticketservice'
 
 @Component({
     selector: 'app-diasLaborales',

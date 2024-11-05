@@ -1,22 +1,17 @@
-import { Component, OnInit, OnChanges } from '@angular/core'
-import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
-import {
-    IColumn,
-    IActionTable,
-} from '@/app/shared/table-primeng/table-primeng.component'
-import { httpService } from '../../../http/httpService'
-import { ButtonModule } from 'primeng/button'
-import { TicketService, type ArrayElement } from '../../service/ticketservice'
+import { StepConfirmationService, type informationMessage } from '@/app/servicios/confirm.service'
+import { GeneralService } from '@/app/servicios/general.service'
+import { IActionTable, IColumn, TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
+import { Component, OnChanges, OnInit } from '@angular/core'
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { Router } from '@angular/router'
+import { ButtonModule } from 'primeng/button'
+import { CalendarModule } from 'primeng/calendar'
+import { ConfirmDialogModule } from 'primeng/confirmdialog'
 import { DialogModule } from 'primeng/dialog'
 import { DropdownModule } from 'primeng/dropdown'
-import { CalendarModule } from 'primeng/calendar'
 import { FloatLabelModule } from 'primeng/floatlabel'
-import { FormsModule } from '@angular/forms'
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms'
-import { GeneralService } from '@/app/servicios/general.service'
-import { StepConfirmationService, type informationMessage } from '@/app/servicios/confirm.service'
-import { ConfirmDialogModule } from 'primeng/confirmdialog'
+import { httpService } from '../../../http/httpService'
+import { TicketService, type ArrayElement } from '../../service/ticketservice'
 
 @Component({
     selector: 'app-turnos',

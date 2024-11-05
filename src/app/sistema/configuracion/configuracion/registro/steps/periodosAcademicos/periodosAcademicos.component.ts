@@ -1,18 +1,15 @@
-import { Component, OnInit, OnChanges, OnDestroy } from '@angular/core'
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
+import { Component, OnChanges, OnInit } from '@angular/core'
 
-import { httpService } from '../../../http/httpService'
-import { ButtonModule } from 'primeng/button'
-import { TicketService, type ArrayElement } from '../../service/ticketservice'
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { Router } from '@angular/router'
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms'
+import { ButtonModule } from 'primeng/button'
 import { DialogModule } from 'primeng/dialog'
 import { DropdownModule } from 'primeng/dropdown'
-import { FormsModule } from '@angular/forms'
+import { httpService } from '../../../http/httpService'
+import { TicketService, type ArrayElement } from '../../service/ticketservice'
 
 import { IActionTable } from '@/app/shared/table-primeng/table-primeng.component'
-import { CheckboxModule } from 'primeng/checkbox'
-import { IColumn } from '@/app/shared/table-primeng/table-primeng.component'
 
 @Component({
     selector: 'app-periodosAcademicos',

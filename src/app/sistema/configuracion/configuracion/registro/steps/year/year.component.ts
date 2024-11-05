@@ -1,26 +1,26 @@
-import { Component, OnInit, OnChanges, OnDestroy } from '@angular/core'
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
+import { Component, OnChanges, OnInit } from '@angular/core'
 
-import { TicketService } from '../../service/ticketservice'
 import { Router } from '@angular/router'
+import { TicketService } from '../../service/ticketservice'
 
+import { FormsModule } from '@angular/forms'
 import { ButtonModule } from 'primeng/button'
 import { CalendarModule } from 'primeng/calendar'
-import { FormsModule } from '@angular/forms'
 import { httpService } from '../../../http/httpService'
 
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms'
 
-import { FloatLabelModule } from 'primeng/floatlabel'
 import {
     StepConfirmationService,
     type informationMessage,
 } from '@/app/servicios/confirm.service'
-import { ConfirmDialogModule } from 'primeng/confirmdialog'
-import { ToastModule } from 'primeng/toast'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { CheckboxModule } from 'primeng/checkbox'
+import { ConfirmDialogModule } from 'primeng/confirmdialog'
+import { FloatLabelModule } from 'primeng/floatlabel'
+import { ToastModule } from 'primeng/toast'
 @Component({
     selector: 'app-year',
     standalone: true,

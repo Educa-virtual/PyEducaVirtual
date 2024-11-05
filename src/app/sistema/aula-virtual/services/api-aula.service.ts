@@ -65,11 +65,22 @@ export class ApiAulaService {
             data
         )
     }
-    obtenerRespuestaForo(data) {
-        return this._http.get(
-            `${this.baseUrlApi}/aula-virtual/contenidos/foro/obtenerRespuestaForo`,
-            data
-        )
+    obtenerRespuestaForo(params: { iActTipoId; ixActivadadId }) {
+        return this._http
+            .get<any>(
+                `${this.baseUrlApi}/aula-virtual/contenidos/foro/obtenerRespuestaForo`,
+                { params }
+            )
+            .pipe(
+                map((resp) => resp.data),
+                map((data) => {
+                    if (data.iActTipoId == 2) {
+                        const preguntas = mapItemsBancoToEre(data.preguntas)
+                        data.preguntas = mapData(preguntas)
+                    }
+                    return data
+                })
+            )
     }
     calificarForoDocente(data) {
         return this._http.post(

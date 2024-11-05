@@ -85,12 +85,11 @@ export class ForoRoomComponent implements OnInit {
     })
     public foroFormComntAl: FormGroup = this._formBuilder.group({
         cForoRptaRespuesta: ['', [Validators.required]],
+        //iEstudianteId: [],
+        iForoId: [''],
     })
     constructor() {}
     ngOnInit() {
-        //console.log('HolaMit', this.ixActivadadId, this.iActTopId)
-        //this.foroFormComnt.get('cForoRptaRespuesta').disable()
-        //this.getEstudiantesMatricula()
         this.mostrarCalificacion()
         this.obtenerForo()
         this.getRespuestaF()
@@ -115,11 +114,18 @@ export class ForoRoomComponent implements OnInit {
     }
     sendComment() {
         const comment = this.foroFormComntAl.value
-        //this.commentForo = this.commentForoM
-        this._aulaService.guardarRespuesta(comment).subscribe(() => {})
-        console.log('Comentario:', comment)
+        comment.iForoId = this.ixActivadadId
 
-        //this.cForoRptaRespuesta = '';
+        this._aulaService.guardarRespuesta(comment).subscribe(
+            (response) => {
+                console.log('Comentario Guardado:', response)
+
+                this.foroFormComntAl.get('cForoRptaRespuesta')?.reset()
+            },
+            (error) => {
+                console.error('Comentario:', error)
+            }
+        )
     }
     mostrarCalificacion() {
         const userId = 1
@@ -140,38 +146,22 @@ export class ForoRoomComponent implements OnInit {
                     this.foro = resp
                 },
             })
-        //console.log('Obtener Foros',this._aulaService)
     }
     //getRespuestasForo
     getRespuestaF() {
-        const userd = 1
-        this._aulaService.obtenerRespuestaForo(userd).subscribe((Data) => {
-            this.respuestasForo = Data['data']
-            console.log('respuesta foro', this.respuestasForo)
-        })
+        this._aulaService
+            .obtenerRespuestaForo({
+                iActTipoId: this.iActTopId,
+                ixActivadadId: this.ixActivadadId,
+            })
+            .pipe(takeUntil(this.unsbscribe$))
+            .subscribe({
+                next: (resp) => {
+                    this.respuestasForo = Object.values(resp)
+                    console.log('Comentarios de los Foros', this.respuestasForo)
+                },
+            })
     }
-
-    // getEstudiantesMatricula() {
-    //     const params = {
-    //         petition: 'post',
-    //         group: 'aula-virtual',
-    //         prefix: 'matricula',
-    //         ruta: 'list',
-    //         //Undefined property: stdClass::$iSemAcadId
-    //         //Undefined property: stdClass::$iYAcadId
-    //         data: {
-    //             opcion: 'CONSULTAR-ESTUDIANTESxiSemAcadIdxiYAcadIdxiCurrId',
-    //             iSemAcadId:
-    //                 '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //             iYAcadId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //             iCurrId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-    //         },
-    //         params: { skipSuccessMessage: true },
-    //     }
-    //     console.log(this.getInformation)
-
-    //     this.getInformation(params)
-    // }
     getInformation(params) {
         this.GeneralService.getGralPrefix(params).subscribe({
             next: (response) => {
@@ -184,26 +174,4 @@ export class ForoRoomComponent implements OnInit {
         })
         //console.log('Datos estudiante', this.GeneralService)
     }
-    // ngOnInit() { implements OnInit
-    // }
-    //   obtenerForo() {
-    //     this._aulaService
-    //         .obtenerActividad({
-    //             iActTipoId: this.iActTopId,
-    //             ixActivadadId: this.ixActivadadId,
-    //         })
-    //         .pipe(takeUntil(this.unsbscribe$))
-    //         .subscribe({
-    //             next: (resp) => {
-    //                 this.evaluacion = resp
-    //             },
-    //         })
-    //   }
-    //   mostrarCategorias() {
-    //     const userId = 1
-    //     this._aulaService.guardarForo(userId).subscribe((Data) => {
-    //         this.categorias = Data['data']
-    //         console.log('Datos mit', this.categorias)
-    //     })
-    // }
 }

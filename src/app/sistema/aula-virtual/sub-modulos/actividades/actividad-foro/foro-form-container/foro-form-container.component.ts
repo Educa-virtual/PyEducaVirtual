@@ -17,6 +17,7 @@ import { DatePipe } from '@angular/common'
 import { ModalPrimengComponent } from '@/app/shared/modal-primeng/modal-primeng.component'
 import { DialogModule } from 'primeng/dialog'
 import { FileUploadPrimengComponent } from '../../../../../../shared/file-upload-primeng/file-upload-primeng.component'
+import { DynamicDialogConfig } from 'primeng/dynamicdialog'
 @Component({
     selector: 'app-foro-form-container',
     standalone: true,
@@ -80,9 +81,34 @@ export class ForoFormContainerComponent implements OnInit {
         dtInicio: [this.date, Validators.required],
         dtFin: [this.date, Validators.required],
     })
+    constructor(private dialogConfig: DynamicDialogConfig) {
+        this.contenidoSemana = this.dialogConfig.data.contenidoSemana
+        const data = this.dialogConfig.data
+        if (data.action == 'editar') {
+            this.foroForm.patchValue({
+                cForoTitulo: data.actividad.cProgActTituloLeccion,
+                cForoDescripcion: data.actividad.cProgActDescripcion,
+                iForoCatId: 0,
+                dtForoInicio: '',
+                iEstado: 0,
+                dtForoPublicacion: '',
+                dtForoFin: '',
+                cForoCatDescripcion: '',
+            })
+        }
+    }
 
     ngOnInit(): void {
         this.mostrarCategorias()
+        this.semana = [
+            {
+                severity: 'info',
+                detail:
+                    this.contenidoSemana.cContenidoSemNumero +
+                    ' SEMANA - ' +
+                    this.contenidoSemana.cContenidoSemTitulo,
+            },
+        ]
     }
 
     mostrarCategorias() {
@@ -111,8 +137,8 @@ export class ForoFormContainerComponent implements OnInit {
 
         const value = this.foroForm.value
         console.log('Guardar Foros', value)
-
-        this._aulaService.guardarForo(value).subscribe(() => {})
+        this.ref.close(value)
+        //this._aulaService.guardarForo(value).subscribe(() => {})
         //     // this.categorias = Data['data']
         //     // console.log('Datos mit', this.categorias)
         // })

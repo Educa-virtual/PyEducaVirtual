@@ -73,7 +73,7 @@ export class CursosComponent implements OnDestroy, OnInit {
             default:
                 break
         }
-        this.getCursos()
+        this.obtenerPerfil()
     }
 
     public onFilter(dv: DataView, event: Event) {
@@ -89,9 +89,20 @@ export class CursosComponent implements OnDestroy, OnInit {
         }
     }
 
-    getCursos() {
+    obtenerPerfil() {
         const year = this.store.getItem('dremoYear')
+        const perfil = this.store.getItem('dremoPerfil')
+        switch (Number(perfil.iPerfilId)) {
+            case 7:
+                this.getCursosDocente(year)
+                break
+            case 8:
+                this.getCursosEstudiante(year)
+                break
+        }
+    }
 
+    getCursosDocente(year) {
         const params = {
             petition: 'post',
             group: 'docente',
@@ -106,6 +117,24 @@ export class CursosComponent implements OnDestroy, OnInit {
             },
             params: { skipSuccessMessage: true },
         }
+        this.obtenerCursos(params)
+    }
+    getCursosEstudiante(year) {
+        const params = {
+            petition: 'post',
+            group: 'acad',
+            prefix: 'estudiantes',
+            ruta: 'obtenerCursosXEstudianteAnioSemestre',
+            data: {
+                iEstudianteId: this._constantesService.iEstudianteId,
+                iYearId: year,
+            },
+            params: { skipSuccessMessage: true },
+        }
+        this.obtenerCursos(params)
+    }
+
+    obtenerCursos(params) {
         this._generalService
             .getGralPrefix(params)
             .pipe(takeUntil(this.unsubscribe$))

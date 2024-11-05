@@ -21,7 +21,10 @@
         </tr>
         <tr>
             <th>Iniciado el</th>
-            <th colspan="3">Jueves 5 de marzo de 2025, 9:00</th>
+            <th colspan="3">
+                {{ evaluacion.dtEvalPromInicio | fullDate }}
+                {{ evaluacion?.dtEvalPromInicio | date: 'h:mm a' }}
+            </th>
         </tr>
         <tr>
             <th>Estado</th>
@@ -29,13 +32,16 @@
         </tr>
         <tr>
             <th>Finalizado el</th>
-            <th colspan="3">Jueves 5 de marzo de 2025, 11:00</th>
+            <th colspan="3">
+                {{ evaluacion.dtEvalPromFin | fullDate }}
+                {{ evaluacion.dtEvalPromFin | fullTime }}
+            </th>
         </tr>
         <tr>
             <th>Tiempo empleado</th>
-            <th>120 minutos</th>
+            <th>{{ evaluacion.iTotalMinutos ?? 0 }} minutos</th>
             <th>Nota</th>
-            <th>A</th>
+            <th></th>
         </tr>
-        <tr></tr> </ng-template
-></p-table>
+    </ng-template>
+</p-table>

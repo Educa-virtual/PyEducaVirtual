@@ -282,23 +282,71 @@ export class TabContenidoComponent implements OnInit {
 
     handleForoAction(action: string, actividad: IActividad) {
         if (action === 'EDITAR') {
+            console.log('Editar', actividad)
             this._dialogService.open(ForoFormContainerComponent, {
                 ...MODAL_CONFIG,
                 data: {
                     contenidoSemana: this.semanaSeleccionada,
                     iActTipoId: actividad.iActTipoId,
                     actividad: actividad,
-                    action: action === 'EDITAR' ? 'ACTUALIZAR' : 'GUARDAR',
+                    action: 'editar',
                 },
                 header: 'Editar Foro',
             })
         }
         if (action === 'CREAR') {
-            this._dialogService.open(ForoFormContainerComponent, {
-                ...MODAL_CONFIG,
-                header: 'Crear Foro',
-                data: actividad,
+            this._dialogService
+                .open(ForoFormContainerComponent, {
+                    ...MODAL_CONFIG,
+                    header: 'Crear Foro',
+                    data: {
+                        contenidoSemana: this.semanaSeleccionada,
+                        iActTipoId: actividad.iActTipoId,
+                        actividad: actividad,
+                        action: 'guardar',
+                    },
+                })
+                .onClose.subscribe((result) => {
+                    console.log(result)
+                    if (result) {
+                        const data = {
+                            ...result,
+                            iContenidoSemId:
+                                this.semanaSeleccionada.iContenidoSemId,
+                        }
+                        console.log('Formulario enviado', data)
+                        this._aulaService.guardarForo(data).subscribe(() => {
+                            this.getData()
+                        })
+                    } else {
+                        console.log('Formulario cancelado')
+                    }
+                })
+        }
+        if (action === 'ELIMINAR') {
+            this._confirmService.openConfirm({
+                header: '¿Esta seguro de eliminar la evaluación?',
+                accept: () => {
+                    this.eliminarActividad(
+                        actividad.iProgActId,
+                        actividad.iActTipoId,
+                        actividad.ixActivadadId
+                    )
+                },
             })
+        }
+        if (action === 'VER') {
+            this.router.navigate(
+                [
+                    '../',
+                    'actividad',
+                    actividad.ixActivadadId,
+                    actividad.iActTipoId,
+                ],
+                {
+                    relativeTo: this._activatedRoute,
+                }
+            )
         }
     }
 

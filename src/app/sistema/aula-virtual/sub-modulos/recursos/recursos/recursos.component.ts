@@ -1,11 +1,8 @@
 import { Component, OnInit } from '@angular/core'
-import { NodeService } from 'src/app/demo/service/node.service'
 import { TreeNode, PrimeTemplate, MessageService } from 'primeng/api'
 import { TreeModule } from 'primeng/tree'
 import { TreeTableModule } from 'primeng/treetable'
 import { NgFor, NgIf, CurrencyPipe } from '@angular/common'
-import { Product } from 'src/app/demo/api/product'
-
 import { DropdownModule } from 'primeng/dropdown'
 import { IconFieldModule } from 'primeng/iconfield'
 import { InputIconModule } from 'primeng/inputicon'
@@ -63,27 +60,27 @@ export class RecursoComponent implements OnInit {
 
     submitted: boolean = false
 
-    products: Product[] = []
+    products: any = []
 
-    product: Product = {}
+    product: any = {}
 
     cols: unknown[] = []
 
     productDialog: boolean = false
 
-    constructor(private nodeService: NodeService) {}
+    constructor() {}
 
     ngOnInit() {
-        this.nodeService.getFiles().then((files) => (this.files1 = files))
-        this.nodeService.getFilesystem().then((files) => (this.files2 = files))
-        this.nodeService.getFiles().then((files) => {
-            this.files3 = [
-                {
-                    label: 'Root',
-                    children: files,
-                },
-            ]
-        })
+        // this.nodeService.getFiles().then((files) => (this.files1 = files))
+        // this.nodeService.getFilesystem().then((files) => (this.files2 = files))
+        // this.nodeService.getFiles().then((files) => {
+        //     this.files3 = [
+        //         {
+        //             label: 'Root',
+        //             children: files,
+        //         },
+        //     ]
+        // })
 
         this.cols = [
             { field: 'name', header: 'name' },

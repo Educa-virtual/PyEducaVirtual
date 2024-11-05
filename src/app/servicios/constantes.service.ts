@@ -51,7 +51,29 @@ const docente = [
 
 const estudiante = [
     {
-        items: [inicio],
+        items: [
+            inicio,
+            {
+                label: 'Mis Áreas Curriculares',
+                icon: 'pi pi-fw pi-book',
+                routerLink: ['/aula-virtual/areas-curriculares'],
+            },
+            {
+                label: 'Calendario',
+                icon: 'pi pi-fw pi-book',
+                routerLink: ['/aula-virtual/areas-curriculares'],
+            },
+            {
+                label: 'Solicitudes y Tramites',
+                icon: 'pi pi-fw pi-book',
+                routerLink: ['/aula-virtual/areas-curriculares'],
+            },
+            {
+                label: 'Buzon de Sugerencias',
+                icon: 'pi pi-fw pi-book',
+                routerLink: ['/aula-virtual/areas-curriculares'],
+            },
+        ],
     },
 ]
 // const especialista_ugel = [
@@ -594,18 +616,19 @@ export class ConstantesService {
     iDocenteId = user ? user?.iDocenteId : null
     iNivelCicloId = user?.iNivelCicloId ?? 1
     iEspecialistaId = user?.iEspecialistaId ?? 1
+    iEstudianteId = user ? user?.iEstudianteId : null
+    iPerfilId = perfil ? Number(perfil.iPerfilId) : null
     nav = this.getMenu()
     getMenu() {
         if (!perfil) return first
-        console.log('perfiles', perfil)
-        switch (Number(perfil.iPerfilId)) {
+        switch (this.iPerfilId) {
             case 1:
                 return aula_virtual
             case 2:
                 return docente
             case 3:
                 return notas_evaluaciones
-            case 4:
+            case 8:
                 return estudiante
             case 5:
                 return registro_asistencia
@@ -613,7 +636,7 @@ export class ConstantesService {
                 return administrador
             case 7:
                 return docente
-            case 8:
+            case 4:
                 return bienestar
             default:
                 return first

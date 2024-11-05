@@ -185,6 +185,18 @@
                 </article>
 
                 <article class="card flex flex-column gap-4">
+                    <!-- <div class="flex justify-content-between flex-wrap gap-2">
+                        <h2>Preguntas</h2>
+                        <button
+                            pButton
+                            icon="pi pi-plus"
+                            size="small"
+                            class="flex gap-2"
+                        >
+                            Agregar Pregunta
+                        </button>
+                    </div> -->
+
                     @if (
                         evaluacion?.preguntas === null ||
                         evaluacion?.preguntas === undefined ||
@@ -202,7 +214,6 @@
                         <app-evaluacion-form-preguntas
                             [tituloEvaluacion]="''"
                             [preguntas]="evaluacion?.preguntas ?? []"
-                            [iEvaluacionId]="evaluacion.iEvaluacionId"
                         ></app-evaluacion-form-preguntas>
                     }
                 </article>

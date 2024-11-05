@@ -71,6 +71,12 @@ export class ApiAulaService {
             data
         )
     }
+    calificarForoDocente(data) {
+        return this._http.post(
+            `${this.baseUrlApi}/aula-virtual/contenidos/foro/calificarForoDocente`,
+            data
+        )
+    }
     // fin de foro
     eliminarActividad(data) {
         return this._http.delete(

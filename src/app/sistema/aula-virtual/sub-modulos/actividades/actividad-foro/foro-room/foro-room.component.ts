@@ -77,17 +77,23 @@ export class ForoRoomComponent implements OnInit {
         dtForoFin: [],
     })
     public foroFormComnt: FormGroup = this._formBuilder.group({
+        iEscalaCalifId: [],
+        iForoRptaId: [],
+        cForoRptaDocente: ['', [Validators.required]],
+        nForoRptaNota: [],
+        cForoDescripcion: [],
+    })
+    public foroFormComntAl: FormGroup = this._formBuilder.group({
         cForoRptaRespuesta: ['', [Validators.required]],
     })
     constructor() {}
     ngOnInit() {
         //console.log('HolaMit', this.ixActivadadId, this.iActTopId)
         //this.foroFormComnt.get('cForoRptaRespuesta').disable()
-        this.getEstudiantesMatricula()
+        //this.getEstudiantesMatricula()
         this.mostrarCalificacion()
         this.obtenerForo()
         this.getRespuestaF()
-        //console.log('Obtener Datos', this.getEstudiantesMatricula())
     }
     // closeModal(data) {
     //     this.ref.close(data)
@@ -98,11 +104,17 @@ export class ForoRoomComponent implements OnInit {
         this.foroFormComnt.patchValue(respuestasForo)
     }
     submit() {
-        const value = this.foroForm.value
+        const value = this.foroFormComnt.value
         console.log('Guardar Calificacion', value)
+        this._aulaService.calificarForoDocente(value).subscribe((resp: any) => {
+            if (resp?.validated) {
+                this.modalCalificacion = false
+                this.getRespuestaF()
+            }
+        })
     }
     sendComment() {
-        const comment = this.foroFormComnt.value
+        const comment = this.foroFormComntAl.value
         //this.commentForo = this.commentForoM
         this._aulaService.guardarRespuesta(comment).subscribe(() => {})
         console.log('Comentario:', comment)
@@ -139,27 +151,27 @@ export class ForoRoomComponent implements OnInit {
         })
     }
 
-    getEstudiantesMatricula() {
-        const params = {
-            petition: 'post',
-            group: 'aula-virtual',
-            prefix: 'matricula',
-            ruta: 'list',
-            //Undefined property: stdClass::$iSemAcadId
-            //Undefined property: stdClass::$iYAcadId
-            data: {
-                opcion: 'CONSULTAR-ESTUDIANTESxiSemAcadIdxiYAcadIdxiCurrId',
-                iSemAcadId:
-                    '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-                iYAcadId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-                iCurrId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-            },
-            params: { skipSuccessMessage: true },
-        }
-        console.log(this.getInformation)
+    // getEstudiantesMatricula() {
+    //     const params = {
+    //         petition: 'post',
+    //         group: 'aula-virtual',
+    //         prefix: 'matricula',
+    //         ruta: 'list',
+    //         //Undefined property: stdClass::$iSemAcadId
+    //         //Undefined property: stdClass::$iYAcadId
+    //         data: {
+    //             opcion: 'CONSULTAR-ESTUDIANTESxiSemAcadIdxiYAcadIdxiCurrId',
+    //             iSemAcadId:
+    //                 '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+    //             iYAcadId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+    //             iCurrId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+    //         },
+    //         params: { skipSuccessMessage: true },
+    //     }
+    //     console.log(this.getInformation)
 
-        this.getInformation(params)
-    }
+    //     this.getInformation(params)
+    // }
     getInformation(params) {
         this.GeneralService.getGralPrefix(params).subscribe({
             next: (response) => {

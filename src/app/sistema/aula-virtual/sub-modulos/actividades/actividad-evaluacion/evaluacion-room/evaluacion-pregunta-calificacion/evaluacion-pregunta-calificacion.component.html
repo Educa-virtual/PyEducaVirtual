@@ -1,0 +1,29 @@
+<div class="flex flex-column gap-2">
+    <app-evaluacion-info
+        class="mb-2"
+        [evaluacion]="evaluacion"
+    ></app-evaluacion-info>
+    <div>
+        <h3 class="text-xl">Pregunta</h3>
+        <hr />
+    </div>
+    <p-accordion [multiple]="true">
+        <p-accordionTab [selected]="true">
+            <ng-template pTemplate="header">
+                <div class="ellipsis">
+                    <span class="">
+                        {{ pregunta.cPregunta | removeHTML }}
+                    </span>
+                </div>
+            </ng-template>
+            <app-evaluacion-pregunta
+                [hideButton]="true"
+                [pregunta]="pregunta"
+            ></app-evaluacion-pregunta>
+        </p-accordionTab>
+    </p-accordion>
+    <div>
+        <h3 class="text-xl">Calificación</h3>
+        <hr />
+    </div>
+</div>

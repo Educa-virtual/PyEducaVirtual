@@ -56,6 +56,7 @@ export class ForoRoomComponent implements OnInit {
     private _aulaService = inject(ApiAulaService)
     //private ref = inject(DynamicDialogRef)
     // variables
+    FilesTareas = []
     estudiantes: any[] = []
     calificacion: any[] = []
     respuestasForo: any[] = []

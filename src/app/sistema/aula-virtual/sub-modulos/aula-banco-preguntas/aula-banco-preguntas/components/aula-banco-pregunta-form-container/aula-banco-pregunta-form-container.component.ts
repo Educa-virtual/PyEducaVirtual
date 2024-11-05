@@ -108,6 +108,8 @@ export class AulaBancoPreguntaFormContainerComponent implements OnInit {
     obtenerPreguntasPorEncabezado(iEncabPregId) {
         const params = {
             iEncabPregId,
+            iCursoId: this.params.iCursoId,
+            iDocenteId: this._constantesService.iDocenteId,
         }
         this._aulaBancoPreguntasService
             .obtenerBancoPreguntas(params)

@@ -37,7 +37,8 @@
                     [data]="pregunta.logros"
                     [columnas]="columnasTabla"
                     (accionBtnItem)="
-                        setPreguntaSeleccionada($index); onActionBtn($event)
+                        setPreguntaSeleccionada($index);
+                        onActionBtn($event, pregunta)
                     "
                     [actions]="accionesTabla"
                 ></app-table-primeng>

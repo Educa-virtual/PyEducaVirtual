@@ -44,6 +44,7 @@ export class LogroFormComponent implements OnDestroy, OnInit {
 
     ngOnInit() {
         this.data = this._config.data ?? { logro: null, iEvalPregId: null }
+
         this.initForm(this.data.logro)
     }
 

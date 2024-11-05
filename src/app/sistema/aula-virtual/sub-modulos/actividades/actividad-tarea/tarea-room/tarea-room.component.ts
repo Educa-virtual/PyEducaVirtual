@@ -9,7 +9,7 @@ import {
 } from '@/app/sistema/aula-virtual/sub-modulos/actividades/components/leyenda-tareas/leyenda-item/leyenda-item.component'
 import { LeyendaTareasComponent } from '@/app/sistema/aula-virtual/sub-modulos/actividades/components/leyenda-tareas/leyenda-tareas.component'
 import { CommonModule } from '@angular/common'
-import { Component, inject, Input, OnChanges } from '@angular/core'
+import { Component, inject, Input, OnChanges, OnInit } from '@angular/core'
 import { provideIcons } from '@ng-icons/core'
 import { matListAlt, matPeople } from '@ng-icons/material-icons/baseline'
 import { ButtonModule } from 'primeng/button'
@@ -24,6 +24,7 @@ import { GeneralService } from '@/app/servicios/general.service'
 import { ModalPrimengComponent } from '../../../../../../shared/modal-primeng/modal-primeng.component'
 import { environment } from '@/environments/environment.template'
 import { ConstantesService } from '@/app/servicios/constantes.service'
+import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { InputTextModule } from 'primeng/inputtext'
 import { CardModule } from 'primeng/card'
 
@@ -50,12 +51,12 @@ import { CardModule } from 'primeng/card'
     styleUrl: './tarea-room.component.scss',
     providers: [provideIcons({ matListAlt, matPeople }), DialogService],
 })
-export class TareaRoomComponent implements OnChanges {
+export class TareaRoomComponent implements OnChanges, OnInit {
     @Input() iTareaId: string
     private _dialogService = inject(DialogService)
     private GeneralService = inject(GeneralService)
     private _constantesService = inject(ConstantesService)
-
+    private _confirmService = inject(ConfirmationModalService)
     students: any
 
     iPerfilId: number
@@ -229,7 +230,6 @@ export class TareaRoomComponent implements OnChanges {
                         (j) => j.bAsignado === 0
                     )
                 })
-
                 break
             case 'save-tarea-cabecera-grupos':
                 this.showModal = false
@@ -257,12 +257,17 @@ export class TareaRoomComponent implements OnChanges {
                 this.escalaCalificaciones = item
                 break
             case 'guardar-calificacion-docente':
-                this.tareaAsignar !== null
-                    ? this.accionBtnItem({
-                          accion: 'save-tarea-cabecera-grupos',
-                          item: [],
-                      })
-                    : null
+                this.iEscalaCalifId = null
+                this.estudianteSeleccionado = null
+                this.getTareaEstudiantes()
+                break
+            case 'eliminar-tarea-cabecera-grupos':
+                this.getTareaCabeceraGrupos()
+                break
+            case 'guardar-calificacion-tarea-cabecera-grupos-docente':
+                this.iEscalaCalifId = null
+                this.grupoSeleccionadoCalificar = []
+                this.getTareaCabeceraGrupos()
                 break
             default:
                 break
@@ -392,40 +397,60 @@ export class TareaRoomComponent implements OnChanges {
         }
         this.getInformation(params, 'get-' + params.prefix)
     }
+    eliminarTareaCabeceraGrupos(item) {
+        this._confirmService.openConfirm({
+            header:
+                '¿Esta seguro de eliminar el grupo ' +
+                item.cTareaGrupoNombre +
+                ' ?',
+            accept: () => {
+                const params = {
+                    petition: 'post',
+                    group: 'aula-virtual',
+                    prefix: 'tarea-cabecera-grupos',
+                    ruta: 'eliminarTareaCabeceraGrupos',
+                    data: item,
+                    params: { skipSuccessMessage: true },
+                }
+                this.getInformation(params, 'eliminar-' + params.prefix)
+            },
+        })
+    }
+    iTareaCabGrupoId
+    cTareaGrupoUrl
+    cTareaGrupoComentarioDocente
+    grupoSeleccionadoCalificar = []
+    nTareaGrupoNota
 
-    cargararchivo(): void {}
-    uploadedFileName: string = ''
-    deliveryTime: string | null = null
-    grade: number | null = 20 // Puedes cambiar este valor para representar la nota
+    seleccionarGrupo(item) {
+        this.grupoSeleccionadoCalificar = []
+        console.log(item)
+        this.grupoSeleccionadoCalificar.push(item)
+        this.iTareaCabGrupoId = item.iTareaCabGrupoId
+        this.cTareaGrupoUrl = item.cTareaGrupoUrl
+            ? JSON.parse(item.cTareaGrupoUrl)
+            : []
+        this.iEscalaCalifId = item.iEscalaCalifId
+        this.cTareaGrupoComentarioDocente = item.cTareaGrupoComentarioDocente
+    }
 
-    // Maneja el evento de selección de archivo
-    onFileSelected(event: Event): void {
-        const fileInput = event.target as HTMLInputElement
-        if (fileInput.files && fileInput.files.length > 0) {
-            this.uploadedFileName = fileInput.files[0].name
+    guardarTareaCabeceraGruposxDocente() {
+        const params = {
+            petition: 'post',
+            group: 'aula-virtual',
+            prefix: 'tarea-cabecera-grupos',
+            ruta: 'guardarCalificacionTareaCabeceraGruposDocente',
+            data: {
+                opcion: 'GUARDAR-CALIFICACION-DOCENTE',
+                iTareaCabGrupoId: this.iTareaCabGrupoId,
+                iEscalaCalifId: this.iEscalaCalifId,
+                cTareaGrupoComentarioDocente: this.cTareaGrupoComentarioDocente,
+                nTareaGrupoNota: 0,
+            },
         }
-    }
-
-    // Dispara la carga de archivo
-    triggerFileUpload(): void {
-        const fileInput = document.getElementById(
-            'fileUpload'
-        ) as HTMLInputElement
-        fileInput.click()
-    }
-
-    // Entrega el trabajo
-    onSubmit(): void {
-        if (this.uploadedFileName) {
-            this.deliveryTime = new Date().toLocaleTimeString()
-            alert('Trabajo entregado con éxito.')
-            // Aquí puedes manejar la lógica para enviar el archivo al servidor
-        }
-    }
-
-    // Cancela la subida del archivo
-    onCancel(): void {
-        this.uploadedFileName = ''
-        this.deliveryTime = null
+        this.getInformation(
+            params,
+            'guardar-calificacion-tarea-cabecera-grupos-docente'
+        )
     }
 }

@@ -106,7 +106,6 @@
                             <div class="p-field">
                                 <input
                                     type="text"
-                                    [(ngModel)]="uploadedFileName"
                                     placeholder="Trabajo subido"
                                     readonly
                                     class="p-inputtext p-d-block col-12"
@@ -119,43 +118,34 @@
                                     pButton
                                     type="button"
                                     label="Entregar trabajo"
-                                    (click)="onSubmit()"
-                                    [disabled]="!uploadedFileName"
                                     class="p-button-success p-mr-2"
                                 ></button>
-                                <input
-                                    type="file"
-                                    id="fileUpload"
-                                    (change)="onFileSelected($event)"
-                                    hidden
-                                />
+                                <input type="file" id="fileUpload" hidden />
                                 <button
                                     pButton
                                     type="button"
                                     label="Subir"
-                                    (click)="triggerFileUpload()"
                                     class="p-button-info p-mr-2 mx-2"
                                 ></button>
                                 <button
                                     pButton
                                     type="button"
                                     label="Cancelar"
-                                    (click)="onCancel()"
                                     class="p-button-secondary"
                                 ></button>
                             </div>
 
                             <!-- Información de entrega -->
-                            <div *ngIf="deliveryTime" class="p-mt-3">
+                            <!-- <div *ngIf="deliveryTime" class="p-mt-3">
                                 <p><strong>Fecha y Hora de Entrega:</strong></p>
                                 <p>{{ deliveryTime }}</p>
-                            </div>
+                            </div> -->
 
                             <!-- Nota -->
-                            <div *ngIf="grade !== null" class="p-mt-3">
+                            <!-- <div *ngIf="grade !== null" class="p-mt-3">
                                 <h4>Nota</h4>
                                 <p>{{ grade }}</p>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                 </div>
@@ -454,65 +444,87 @@
                                                 <div class="col-12">
                                                     <p-accordion
                                                         [activeIndex]="0"
+                                                        class="w-full"
+                                                        expandIcon="pi pi-plus"
+                                                        collapseIcon="pi pi-minus"
                                                     >
                                                         @for (
                                                             item of grupos;
                                                             track item
                                                         ) {
-                                                            <p-accordionTab>
+                                                            <p-accordionTab
+                                                                (click)="
+                                                                    seleccionarGrupo(
+                                                                        item
+                                                                    )
+                                                                "
+                                                            >
                                                                 <ng-template
                                                                     pTemplate="header"
                                                                 >
-                                                                    <span
+                                                                    <div
                                                                         class="flex align-items-center gap-2 w-full"
                                                                     >
                                                                         Grupo:
                                                                         {{
                                                                             item.cTareaGrupoNombre
                                                                         }}
-                                                                    </span>
-                                                                    <span
-                                                                        class="flex align-items-end gap-2 w-full"
+                                                                    </div>
+                                                                    <div
+                                                                        class="flex align-items-center"
                                                                     >
+                                                                        <b
+                                                                            >Nota:
+                                                                        </b>
+                                                                        {{
+                                                                            item.nTareaGrupoNota ||
+                                                                                ' -'
+                                                                        }}
                                                                         <div
-                                                                            class="flex align-items-center"
-                                                                        >
-                                                                            <b
-                                                                                >Nota:</b
-                                                                            >
-                                                                            {{
-                                                                                item.nTareaGrupoNota ||
-                                                                                    ' -'
-                                                                            }}
-                                                                            <div
-                                                                                class="w-1rem h-1rem border-circle ml-3"
-                                                                                [ngClass]="
-                                                                                    item.cEstado ===
-                                                                                    '0'
-                                                                                        ? 'bg-red-500'
-                                                                                        : item.cEstado ===
-                                                                                            '2'
-                                                                                          ? 'bg-yellow-500'
-                                                                                          : 'bg-green-500'
-                                                                                "
-                                                                            ></div>
-                                                                            <p-button
-                                                                                icon="pi pi-pencil"
-                                                                                [rounded]="
-                                                                                    true
-                                                                                "
-                                                                                [text]="
-                                                                                    true
-                                                                                "
-                                                                                severity="info"
-                                                                                (onClick)="
-                                                                                    grupoSeleccionado =
-                                                                                        item;
-                                                                                    showModal = true
-                                                                                "
-                                                                            />
-                                                                        </div>
-                                                                    </span>
+                                                                            class="w-1rem h-1rem border-circle ml-3"
+                                                                            [ngClass]="
+                                                                                item.cEstado ===
+                                                                                '0'
+                                                                                    ? 'bg-red-500'
+                                                                                    : item.cEstado ===
+                                                                                        '2'
+                                                                                      ? 'bg-yellow-500'
+                                                                                      : 'bg-green-500'
+                                                                            "
+                                                                        ></div>
+
+                                                                        <p-button
+                                                                            icon="pi pi-pencil"
+                                                                            [rounded]="
+                                                                                true
+                                                                            "
+                                                                            [text]="
+                                                                                true
+                                                                            "
+                                                                            class="ml-3"
+                                                                            severity="info"
+                                                                            (onClick)="
+                                                                                grupoSeleccionado =
+                                                                                    item;
+                                                                                showModal = true
+                                                                            "
+                                                                        />
+                                                                        <p-button
+                                                                            icon="pi pi-trash"
+                                                                            [rounded]="
+                                                                                true
+                                                                            "
+                                                                            [text]="
+                                                                                true
+                                                                            "
+                                                                            severity="danger"
+                                                                            (onClick)="
+                                                                                eliminarTareaCabeceraGrupos(
+                                                                                    item
+                                                                                )
+                                                                            "
+                                                                        />
+                                                                    </div>
                                                                 </ng-template>
 
                                                                 <div>
@@ -520,7 +532,7 @@
                                                                         #dv
                                                                         class="col-12 hoverTable"
                                                                         [value]="
-                                                                            item.json_estudiantes
+                                                                            item.json_estudiantes_respaldo
                                                                         "
                                                                         paginator="false"
                                                                         styleClass="p-datatable-sm"
@@ -531,9 +543,9 @@
                                                                             <tr
                                                                                 class="sticky-header"
                                                                             >
-                                                                                <th>
-                                                                                    #
-                                                                                </th>
+                                                                                <!-- <th>
+                                                                    #
+                                                                </th> -->
                                                                                 <th>
                                                                                     Nombres
                                                                                 </th>
@@ -554,12 +566,12 @@
                                                                                 estudiante.bAsignado
                                                                             ) {
                                                                                 <tr>
-                                                                                    <td>
-                                                                                        {{
-                                                                                            rowIndex +
-                                                                                                1
-                                                                                        }}
-                                                                                    </td>
+                                                                                    <!-- <td>
+                                                                    {{
+                                                                    rowIndex +
+                                                                    1
+                                                                    }}
+                                                                </td> -->
                                                                                     <td>
                                                                                         {{
                                                                                             estudiante?.cPersNombre
@@ -639,27 +651,195 @@
                                 </div>
                             </p-toolbar>
                             <p-divider></p-divider>
-                            <div>
-                                @if (!estudianteSeleccionado) {
-                                    <div align="center">
-                                        <span
-                                            class="pi pi-folder-open"
-                                            style="font-size: 8rem"
-                                        ></span>
-                                    </div>
-                                    <p class="text-center mt-2">
-                                        Seleccione un estudiante para ver el
-                                        desarrollo de su tarea
-                                    </p>
-                                } @else {
-                                    <p-fieldset
-                                        [legend]="cTareaTitulo"
-                                        [toggleable]="true"
-                                    >
+                            @if (this.tareaAsignar !== null) {
+                                <div [hidden]="this.tareaAsignar">
+                                    @if (!estudianteSeleccionado) {
+                                        <div align="center">
+                                            <span
+                                                class="pi pi-folder-open"
+                                                style="font-size: 8rem"
+                                            ></span>
+                                        </div>
+                                        <p class="text-center mt-2">
+                                            Seleccione un estudiante para ver el
+                                            desarrollo de su tarea
+                                        </p>
+                                    } @else {
+                                        <p-fieldset
+                                            [legend]="cTareaTitulo"
+                                            [toggleable]="true"
+                                        >
+                                            <div class="grid">
+                                                @if (
+                                                    cTareaEstudianteUrlEstudiante.length
+                                                ) {
+                                                    <div class="col-12">
+                                                        <label
+                                                            for=""
+                                                            class="mt-2"
+                                                            >Lista de
+                                                            Adjuntos</label
+                                                        >
+
+                                                        @for (
+                                                            item of cTareaEstudianteUrlEstudiante;
+                                                            track item;
+                                                            let idx = $index
+                                                        ) {
+                                                            <p-inputGroup
+                                                                class="mt-1"
+                                                            >
+                                                                <p-inputGroupAddon>
+                                                                    @switch (
+                                                                        item.type
+                                                                    ) {
+                                                                        @case (
+                                                                            1
+                                                                        ) {
+                                                                            <i
+                                                                                class="pi pi-upload"
+                                                                                style="
+                                                                                    color: #333437;
+                                                                                "
+                                                                            ></i>
+                                                                        }
+                                                                        @case (
+                                                                            2
+                                                                        ) {
+                                                                            <i
+                                                                                class="pi pi-link"
+                                                                                style="
+                                                                                    color: #333437;
+                                                                                "
+                                                                            ></i>
+                                                                        }
+                                                                        @case (
+                                                                            3
+                                                                        ) {
+                                                                            <i
+                                                                                class="pi pi-youtube"
+                                                                                style="
+                                                                                    color: #c4302b;
+                                                                                "
+                                                                            ></i>
+                                                                        }
+                                                                        @case (
+                                                                            4
+                                                                        ) {
+                                                                            <i
+                                                                                class="pi pi-folder"
+                                                                                style="
+                                                                                    color: #ffd04b;
+                                                                                "
+                                                                            ></i>
+                                                                        }
+                                                                    }
+                                                                </p-inputGroupAddon>
+                                                                <input
+                                                                    type="text"
+                                                                    pInputText
+                                                                    [placeholder]="
+                                                                        item.name
+                                                                    "
+                                                                    disabled
+                                                                />
+                                                                <button
+                                                                    type="button"
+                                                                    pButton
+                                                                    icon="pi pi-eye"
+                                                                    (click)="
+                                                                        goLinkDocumento(
+                                                                            item.ruta
+                                                                        )
+                                                                    "
+                                                                    class="p-button-info"
+                                                                >
+                                                                    &nbsp;
+                                                                </button>
+                                                            </p-inputGroup>
+                                                        }
+                                                    </div>
+                                                }
+                                            </div>
+                                        </p-fieldset>
+                                        <p-divider></p-divider>
+                                        <p-fieldset
+                                            legend="Calificación"
+                                            [toggleable]="true"
+                                        >
+                                            <div class="grid">
+                                                <div class="col-12">
+                                                    <p-inputGroup>
+                                                        <p-inputGroupAddon
+                                                            >Escala de
+                                                            calificación</p-inputGroupAddon
+                                                        >
+                                                        <p-dropdown
+                                                            [(ngModel)]="
+                                                                iEscalaCalifId
+                                                            "
+                                                            [options]="
+                                                                escalaCalificaciones
+                                                            "
+                                                            optionValue="iEscalaCalifId"
+                                                            optionLabel="cEscalaCalifNombre"
+                                                            placeholder="Seleccione calificación"
+                                                            [style]="{
+                                                                width: '100%',
+                                                            }"
+                                                        ></p-dropdown>
+                                                    </p-inputGroup>
+                                                </div>
+                                                <div class="col-12">
+                                                    <p-inputGroup>
+                                                        <p-inputGroupAddon>
+                                                            Comentario
+                                                        </p-inputGroupAddon>
+                                                        <textarea
+                                                            pInputText
+                                                            [(ngModel)]="
+                                                                cTareaEstudianteComentarioDocente
+                                                            "
+                                                        ></textarea>
+                                                    </p-inputGroup>
+                                                </div>
+                                            </div>
+                                        </p-fieldset>
                                         <div class="grid">
-                                            @if (
-                                                cTareaEstudianteUrlEstudiante.length
-                                            ) {
+                                            <div
+                                                class="col-12 text-right text-center"
+                                            >
+                                                <p-button
+                                                    severity="success"
+                                                    label="Guardar"
+                                                    icon="pi pi-plus"
+                                                    iconPos="left"
+                                                    (onClick)="
+                                                        guardarTareaEstudiantesxDocente()
+                                                    "
+                                                />
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                                <div [hidden]="!this.tareaAsignar">
+                                    @if (!grupoSeleccionadoCalificar.length) {
+                                        <div align="center">
+                                            <span
+                                                class="pi pi-folder-open"
+                                                style="font-size: 8rem"
+                                            ></span>
+                                        </div>
+                                        <p class="text-center mt-2">
+                                            Seleccione un grupo para ver el
+                                            desarrollo de su tarea
+                                        </p>
+                                    } @else {
+                                        <p-fieldset
+                                            [legend]="cTareaTitulo"
+                                            [toggleable]="true"
+                                        >
+                                            <div class="grid">
                                                 <div class="col-12">
                                                     <label for="" class="mt-2"
                                                         >Lista de
@@ -667,7 +847,7 @@
                                                     >
 
                                                     @for (
-                                                        item of cTareaEstudianteUrlEstudiante;
+                                                        item of cTareaGrupoUrl;
                                                         track item;
                                                         let idx = $index
                                                     ) {
@@ -736,68 +916,69 @@
                                                         </p-inputGroup>
                                                     }
                                                 </div>
-                                            }
-                                        </div>
-                                    </p-fieldset>
-                                    <p-fieldset
-                                        legend="Calificación"
-                                        [toggleable]="true"
-                                    >
-                                        <div class="grid">
-                                            <div class="col-12">
-                                                <p-inputGroup>
-                                                    <p-inputGroupAddon
-                                                        >Escala de
-                                                        calificación</p-inputGroupAddon
-                                                    >
-                                                    <p-dropdown
-                                                        [(ngModel)]="
-                                                            iEscalaCalifId
-                                                        "
-                                                        [options]="
-                                                            escalaCalificaciones
-                                                        "
-                                                        optionValue="iEscalaCalifId"
-                                                        optionLabel="cEscalaCalifNombre"
-                                                        placeholder="Seleccione calificación"
-                                                        [style]="{
-                                                            width: '100%',
-                                                        }"
-                                                    ></p-dropdown>
-                                                </p-inputGroup>
                                             </div>
-                                            <div class="col-12">
-                                                <p-inputGroup>
-                                                    <p-inputGroupAddon>
-                                                        Comentario
-                                                    </p-inputGroupAddon>
-                                                    <textarea
-                                                        pInputText
-                                                        [(ngModel)]="
-                                                            cTareaEstudianteComentarioDocente
-                                                        "
-                                                    ></textarea>
-                                                </p-inputGroup>
-                                            </div>
-                                        </div>
-                                    </p-fieldset>
-                                    <div class="grid">
-                                        <div
-                                            class="col-12 text-right text-center"
+                                        </p-fieldset>
+                                        <p-divider></p-divider>
+                                        <p-fieldset
+                                            legend="Calificación"
+                                            [toggleable]="true"
                                         >
-                                            <p-button
-                                                severity="success"
-                                                label="Guardar"
-                                                icon="pi pi-plus"
-                                                iconPos="left"
-                                                (onClick)="
-                                                    guardarTareaEstudiantesxDocente()
-                                                "
-                                            />
+                                            <div class="grid">
+                                                <div class="col-12">
+                                                    <p-inputGroup>
+                                                        <p-inputGroupAddon
+                                                            >Escala de
+                                                            calificación</p-inputGroupAddon
+                                                        >
+                                                        <p-dropdown
+                                                            [(ngModel)]="
+                                                                iEscalaCalifId
+                                                            "
+                                                            [options]="
+                                                                escalaCalificaciones
+                                                            "
+                                                            optionValue="iEscalaCalifId"
+                                                            optionLabel="cEscalaCalifNombre"
+                                                            placeholder="Seleccione calificación"
+                                                            [style]="{
+                                                                width: '100%',
+                                                            }"
+                                                        ></p-dropdown>
+                                                    </p-inputGroup>
+                                                </div>
+                                                <div class="col-12">
+                                                    <p-inputGroup>
+                                                        <p-inputGroupAddon>
+                                                            Comentario
+                                                        </p-inputGroupAddon>
+                                                        <textarea
+                                                            pInputText
+                                                            [(ngModel)]="
+                                                                cTareaGrupoComentarioDocente
+                                                            "
+                                                        ></textarea>
+                                                    </p-inputGroup>
+                                                </div>
+                                            </div>
+                                        </p-fieldset>
+                                        <div class="grid">
+                                            <div
+                                                class="col-12 text-right text-center"
+                                            >
+                                                <p-button
+                                                    severity="success"
+                                                    label="Guardar"
+                                                    icon="pi pi-plus"
+                                                    iconPos="left"
+                                                    (onClick)="
+                                                        guardarTareaCabeceraGruposxDocente()
+                                                    "
+                                                />
+                                            </div>
                                         </div>
-                                    </div>
-                                }
-                            </div>
+                                    }
+                                </div>
+                            }
                         </div>
                     </div>
                 </div>

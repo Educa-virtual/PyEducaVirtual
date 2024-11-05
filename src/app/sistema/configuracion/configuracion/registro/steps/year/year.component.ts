@@ -87,7 +87,7 @@ export class YearComponent implements OnInit, OnChanges {
     ngOnInit() {
         this.getFasesPromocionales()
 
-        if (this.ticketService.registroInformation?.mode === 'create') {
+        if (this.ticketService.registroInformation.mode === 'create') {
             this.httpService
                 .postData('acad/calendarioAcademico/addCalAcademico', {
                     json: JSON.stringify({}),
@@ -100,6 +100,8 @@ export class YearComponent implements OnInit, OnChanges {
                                 'JSON_F52E2B61-18A1-11d1-B105-00805F49916B'
                             ]
                         )[0]
+
+                        console.log(filterYearActive)
 
                         this.ticketService.setTicketInformation(
                             {
@@ -116,8 +118,6 @@ export class YearComponent implements OnInit, OnChanges {
                         console.error('Error fetching turnos:', error)
                     },
                     complete: () => {
-                        console.log('Request completed')
-
                         this.form.patchValue({
                             fechaVigente:
                                 this.ticketService.registroInformation.stepYear

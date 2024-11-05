@@ -206,6 +206,9 @@ export class YearsComponent implements OnInit {
     ]
 
     navigateToRegistro() {
+        this.ticketService.registroInformation = {
+            mode: 'create'
+        }
         this.router.navigate(['configuracion/configuracion/registro'])
     }
 

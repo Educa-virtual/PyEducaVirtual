@@ -98,69 +98,64 @@
                     </div>
                 </div>
                 <div class="card col-6" [hidden]="iPerfilId !== 8">
-                    <div class="p-card p-p-3">
-                        <h2>Tarea Estudiante: {{ null }}</h2>
+                    <div class="p-card p-p-6">
+                        <div class="tarea-estudiante">
+                            <h3>Tarea Estudiante:</h3>
 
-                        <input
-                            type="text"
-                            pInputText
-                            style="width: 100%"
-                            placeholder="Trabajo subido PPT EXPO.pdf "
-                        />
-
-                        <p-fileUpload
-                            name="myfile[]"
-                            url="./upload.php"
-                            multiple="multiple"
-                            accept="image/*"
-                            chooseLabel="Entregar trabajo"
-                        ></p-fileUpload>
-
-                        <div class="card">
-                            <div
-                                class="grid"
-                                style="
-                                    display: flex;
-                                    flex-direction: column;
-                                    align-items: center;
-                                    justify-content: center;
-                                "
-                            >
-                                <div
-                                    style="
-                                        display: flex;
-                                        flex-direction: column;
-                                        align-items: center;
-                                        justify-content: center;
-                                        height: 100px;
-                                    "
-                                >
-                                    <app-icon
-                                        name="matCalendarMonth"
-                                        class="text-primary mr-2"
-                                        size="sm"
-                                    ></app-icon>
-                                    <p>Fecha y Hora de Entrega:</p>
-                                    <span>{{
-                                        data?.dtTareaFin | date: 'shortTime'
-                                    }}</span>
-                                </div>
+                            <!-- Campo para mostrar el archivo subido -->
+                            <div class="p-field">
+                                <input
+                                    type="text"
+                                    [(ngModel)]="uploadedFileName"
+                                    placeholder="Trabajo subido"
+                                    readonly
+                                    class="p-inputtext p-d-block col-12"
+                                />
                             </div>
-                        </div>
 
-                        <div
-                            class="p-card p-mt-3 p-p-2"
-                            style="
-                                display: flex;
-                                flex-direction: column;
-                                align-items: center;
-                                justify-content: center;
-                                height: 100px;
-                            "
-                        >
-                            <h2 class="p-text-bold">Nota</h2>
-                            <h3>20</h3>
-                            <p>{{ null }}</p>
+                            <!-- Botones -->
+                            <div class="buttons p-mt-3 my-2">
+                                <button
+                                    pButton
+                                    type="button"
+                                    label="Entregar trabajo"
+                                    (click)="onSubmit()"
+                                    [disabled]="!uploadedFileName"
+                                    class="p-button-success p-mr-2"
+                                ></button>
+                                <input
+                                    type="file"
+                                    id="fileUpload"
+                                    (change)="onFileSelected($event)"
+                                    hidden
+                                />
+                                <button
+                                    pButton
+                                    type="button"
+                                    label="Subir"
+                                    (click)="triggerFileUpload()"
+                                    class="p-button-info p-mr-2 mx-2"
+                                ></button>
+                                <button
+                                    pButton
+                                    type="button"
+                                    label="Cancelar"
+                                    (click)="onCancel()"
+                                    class="p-button-secondary"
+                                ></button>
+                            </div>
+
+                            <!-- Información de entrega -->
+                            <div *ngIf="deliveryTime" class="p-mt-3">
+                                <p><strong>Fecha y Hora de Entrega:</strong></p>
+                                <p>{{ deliveryTime }}</p>
+                            </div>
+
+                            <!-- Nota -->
+                            <div *ngIf="grade !== null" class="p-mt-3">
+                                <h4>Nota</h4>
+                                <p>{{ grade }}</p>
+                            </div>
                         </div>
                     </div>
                 </div>

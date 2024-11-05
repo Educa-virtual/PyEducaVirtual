@@ -24,6 +24,8 @@ import { GeneralService } from '@/app/servicios/general.service'
 import { ModalPrimengComponent } from '../../../../../../shared/modal-primeng/modal-primeng.component'
 import { environment } from '@/environments/environment.template'
 import { ConstantesService } from '@/app/servicios/constantes.service'
+import { InputTextModule } from 'primeng/inputtext'
+import { CardModule } from 'primeng/card'
 
 @Component({
     selector: 'app-tarea-room',
@@ -40,6 +42,8 @@ import { ConstantesService } from '@/app/servicios/constantes.service'
         FileUploadPrimengComponent,
         FormGrupoComponent,
         ModalPrimengComponent,
+        InputTextModule,
+        CardModule,
     ],
 
     templateUrl: './tarea-room.component.html',
@@ -48,7 +52,6 @@ import { ConstantesService } from '@/app/servicios/constantes.service'
 })
 export class TareaRoomComponent implements OnChanges {
     @Input() iTareaId: string
-
     private _dialogService = inject(DialogService)
     private GeneralService = inject(GeneralService)
     private _constantesService = inject(ConstantesService)
@@ -388,5 +391,41 @@ export class TareaRoomComponent implements OnChanges {
             params: { skipSuccessMessage: true },
         }
         this.getInformation(params, 'get-' + params.prefix)
+    }
+
+    cargararchivo(): void {}
+    uploadedFileName: string = ''
+    deliveryTime: string | null = null
+    grade: number | null = 20 // Puedes cambiar este valor para representar la nota
+
+    // Maneja el evento de selección de archivo
+    onFileSelected(event: Event): void {
+        const fileInput = event.target as HTMLInputElement
+        if (fileInput.files && fileInput.files.length > 0) {
+            this.uploadedFileName = fileInput.files[0].name
+        }
+    }
+
+    // Dispara la carga de archivo
+    triggerFileUpload(): void {
+        const fileInput = document.getElementById(
+            'fileUpload'
+        ) as HTMLInputElement
+        fileInput.click()
+    }
+
+    // Entrega el trabajo
+    onSubmit(): void {
+        if (this.uploadedFileName) {
+            this.deliveryTime = new Date().toLocaleTimeString()
+            alert('Trabajo entregado con éxito.')
+            // Aquí puedes manejar la lógica para enviar el archivo al servidor
+        }
+    }
+
+    // Cancela la subida del archivo
+    onCancel(): void {
+        this.uploadedFileName = ''
+        this.deliveryTime = null
     }
 }

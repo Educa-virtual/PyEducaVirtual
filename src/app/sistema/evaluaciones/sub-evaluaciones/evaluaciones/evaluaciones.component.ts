@@ -33,7 +33,7 @@ import {
     ContainerPageComponent,
     IActionContainer,
 } from '@/app/shared/container-page/container-page.component'
-
+import { CompartirIdEvaluacionService } from './../../services/ereEvaluaciones/compartir-id-evaluacion.service'
 @Component({
     selector: 'app-evaluaciones',
     standalone: true,
@@ -161,7 +161,10 @@ export class EvaluacionesComponent implements OnInit {
         },
     ]
 
-    constructor(private customerService: CustomerService) {}
+    constructor(
+        private customerService: CustomerService,
+        private compartirIdEvaluacionService: CompartirIdEvaluacionService
+    ) {}
 
     ngOnInit() {
         this.customerService
@@ -215,6 +218,8 @@ export class EvaluacionesComponent implements OnInit {
 
         if (accion === 'ver') {
             /// alert(item.iEvaluacionId)
+            //console.log('Aqui: ' + item.iEvaluacionId)
+            this.compartirIdEvaluacionService.iEvaluacionId = item.iEvaluacionId
             this.verEreEvaluacion(item)
             // this.eliminarPregunta(item)
         }

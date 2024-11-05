@@ -56,6 +56,7 @@ interface Ugeles {
     providers: [ProductService],
 })
 export class IeparticipaComponent implements OnInit {
+    // @Input() iEvaluacionId: number
     private unsubscribe$: Subject<boolean> = new Subject()
     public params = {
         iCompentenciaId: 0,
@@ -92,7 +93,9 @@ export class IeparticipaComponent implements OnInit {
         this.obtenerIE()
         this.obtenerNivelTipo()
         this.obtenerugel()
-
+        this.obtenerParticipaciones(
+            this.compartirIdEvaluacionService.iEvaluacionId
+        )
         this.nivelTipo = [
             { cNivelTipoNombre: 'Primaria', iNivelTipoId: 'NY' },
             { cNivelTipoNombre: 'Secundaria', iNivelTipoId: 'RM' },
@@ -217,6 +220,29 @@ export class IeparticipaComponent implements OnInit {
     seleccionados() {
         // alert(JSON.stringify(this.targetProducts))
         console.log('Seleccionados:', this.targetProducts)
+    }
+    //iEvaluacionId: number
+    obtenerParticipaciones(iEvaluacionId: number) {
+        console.log(
+            'Valor de iEvaluacionId antes de la llamada:',
+            this.compartirIdEvaluacionService.iEvaluacionId
+        )
+        // const iEvaluacionId = this.compartirIdEvaluacionService.iEvaluacionId
+        console.log('ID de evaluación enviado:', iEvaluacionId)
+
+        this._apiEre
+            .obtenerParticipaciones(iEvaluacionId)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+                next: (resp: any) => {
+                    console.log('Participaciones obtenidas:', resp) // Check the response
+                    // Assign data to a component variable if needed
+                    this.data = resp.data
+                },
+                error: (error) => {
+                    console.error('Error al obtener participaciones:', error) // Handle errors
+                },
+            })
     }
     onChange() {
         //alert(v)

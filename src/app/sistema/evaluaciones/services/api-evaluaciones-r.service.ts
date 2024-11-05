@@ -73,6 +73,13 @@ export class ApiEvaluacionesRService {
             data
         )
     }
+    obtenerParticipaciones(iEvaluacionId: any): Observable<any> {
+        // Guardar el ID de evaluación
+        return this.http.get(
+            `${this.baseUrl}/ere/Evaluaciones/obtenerParticipaciones?iEvaluacionId=${iEvaluacionId}`
+        )
+    }
+
     guardarActualizarPreguntaConAlternativas(data) {
         return this.http.post(
             `${this.baseUrl}/ere/preguntas/guardarActualizarPreguntaConAlternativas`,

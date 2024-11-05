@@ -137,6 +137,11 @@ const administrador = [
                 ],
             },
             {
+                label: 'Gestión traslados',
+                icon: 'pi pi-fw pi-cog',
+                routerLink: ['/configuracion/gestion-traslados'],
+            },
+            {
                 label: 'Calendario Académico',
                 icon: 'pi pi-fw pi-desktop',
                 routerLink: ['/'],

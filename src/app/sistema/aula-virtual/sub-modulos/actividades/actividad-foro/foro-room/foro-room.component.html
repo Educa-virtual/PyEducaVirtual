@@ -25,26 +25,6 @@
                                 >
                                 {{ foro?.cForoCatDescripcion }}
                             </div>
-                            <!-- <span class="font-bold text-xl flex gap-2">
-                                <app-icon
-                                    name="matCalendarMonth"
-                                    class="text-primary"
-                                    size="sm"
-                                ></app-icon>
-                                Título del Foro:</span
-                            >
-                            {{ foro?.cForoTitulo }} -->
-                            <!-- <p>
-                            {{
-                                evaluacion?.dtEvaluacionPublicacion
-                                    | date: "EEEE, d 'de' MMMM 'de' yyyy"
-                            }}
-
-                            {{
-                                evaluacion?.dtEvaluacionPublicacion
-                                    | date: 'h:mm a'
-                            }}
-                        </p> -->
                         </div>
                     </div>
 
@@ -105,40 +85,6 @@
                         </div>
                     </div>
 
-                    <!-- <div class="grid mb-4">
-                    <div
-                        class="col-12 md:col-6 flex flex-column gap-2 align-items-start"
-                    >
-                        <span class="font-bold text-xl"
-                            >Total de Preguntas
-                        </span>
-                        <span>{{
-                            evaluacion?.iEvaluacionNroPreguntas ?? 0 }}
-
-                        </span>
-                    </div>
-                    <div class="col-12 md:col-6 gap-2 flex flex-column">
-                        <div
-                            class="bg-yellow-100 p-2 border-round h-8rem flex gap-2 flex-column flex-column justify-content-between"
-                        >
-                            <div class="flex gap-2 flex">
-                                <app-icon
-                                    name="matStar"
-                                    size="sm"
-                                    class="text-primary"
-                                />
-                                <span class="text-xl">Puntuación</span>
-                            </div>
-                            <p class="text-3xl font-bold">
-                                Totaldel puntaje 0/35
-                                <span class="text-sm font-normal"
-                                    >calificación máxima</span
-                                >
-                            </p>
-                        </div>
-                    </div>
-                </div> -->
-
                     <div class="flex gap-2 flex-wrap align-items-center mb-4">
                         <app-icon
                             name="matMessage"
@@ -160,31 +106,17 @@
                 </article>
                 <article class="card">
                     <h2>Recursos:</h2>
+                    {{ foro?.cForoUrl }}
                     <ul class="list-none p-0 m-0">
                         <li
+                            *ngFor="let item of FilesTareas; let idx = index"
                             class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap"
                         >
                             <div class="flex gap-2 align-items-center">
                                 <i class="pi pi-file text-lg text-primary"></i>
-                                <span class="font-medium text-lg"
-                                    >Recurso.pdf</span
-                                >
-                                <span class="text-gray-500"
-                                    >tamaño(319.532KB)</span
-                                >
-                            </div>
-                        </li>
-                        <li
-                            class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap"
-                        >
-                            <div class="flex gap-2 align-items-center">
-                                <i class="pi pi-file text-lg text-primary"></i>
-                                <span class="font-medium text-lg"
-                                    >Recurso.pdf</span
-                                >
-                                <span class="text-gray-500"
-                                    >tamaño(319.532KB)</span
-                                >
+                                <span class="font-medium text-lg">{{
+                                    item.name
+                                }}</span>
                             </div>
                         </li>
                     </ul>
@@ -451,9 +383,13 @@
                                         <td class="">
                                             {{ respuestas?.cForoRptaRespuesta }}
                                         </td>
-                                        <td>
-                                            {{ respuestas?.cEscalaCalifNombre }}
-                                        </td>
+                                        <b>
+                                            <td class="text-center">
+                                                {{
+                                                    respuestas?.cEscalaCalifNombre
+                                                }}
+                                            </td>
+                                        </b>
                                         <td>
                                             {{
                                                 respuestas?.cForoRptaDocente ??

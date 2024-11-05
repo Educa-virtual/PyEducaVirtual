@@ -48,7 +48,7 @@
                 />
             </div>
         </div>
-        <!-- <div class="col-12 mt-1">
+        <div class="col-12 mt-1">
             <div class="card">
                 <label for="" class="mt-1">Adjuntar</label>
                 <div class="d-flex align-items-center text-center mt-1">
@@ -81,6 +81,37 @@
                             tooltipPosition="bottom"
                         ></i>
                     </button>
+
+                    <button
+                        pButton
+                        pRipple
+                        type="button"
+                        class="p-button-rounded p-button-outlined mx-2"
+                        (click)="openUpload('youtube')"
+                    >
+                        <i
+                            class="pi pi-youtube my-2"
+                            style="color: #c4302b; font-size: 3rem"
+                            pTooltip="Subir Enlace Youtube"
+                            tooltipPosition="bottom"
+                        ></i>
+                    </button>
+
+                    <!-- Es para subir un recurso del mismo aula 
+                        <button
+                        pButton
+                        pRipple
+                        type="button"
+                        class="p-button-rounded p-button-outlined mx-2"
+                        (click)="openUpload('file')"
+                    >
+                        <i
+                            class="pi pi-upload my-2"
+                            style="color: #ffd04b; font-size: 3rem"
+                            pTooltip="Subir Rubrica"
+                            tooltipPosition="bottom"
+                        ></i>
+                    </button> -->
                 </div>
             </div>
         </div>
@@ -101,9 +132,21 @@
                                 @case (2) {
                                     <i
                                         class="pi pi-link"
-                                        style="color: #333437"
+                                        style="color: #ef0b0b"
                                     ></i>
                                 }
+                                @case (3) {
+                                    <i
+                                        class="pi pi-youtube"
+                                        style="color: #c4302b"
+                                    ></i>
+                                }
+                                <!-- @case (4) {
+                                    <i
+                                        class="pi pi-folder"
+                                        style="color: #ffd04b"
+                                    ></i>
+                                } -->
                             }
                         </p-inputGroupAddon>
                         <input
@@ -124,7 +167,7 @@
                     </p-inputGroup>
                 }
             </div>
-        } -->
+        }
 
         <!-- Asignar Los times -->
         <div class="col-12 md:col-6 gap-3">
@@ -159,7 +202,7 @@
         </div>
     </div>
 </form>
-
+<!-- button de cancelar y guardar -->
 <div class="flex justify-content-center gap-2 pt-3">
     <button
         pButton
@@ -181,7 +224,7 @@
         (click)="submit()"
     ></button>
 </div>
-
+<!-- Modal para adjuntar archivos -->
 <app-modal-primeng
     [title]="titleFileTareas"
     [showModal]="showModal"

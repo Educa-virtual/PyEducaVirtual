@@ -75,6 +75,7 @@ export class ForoFormContainerComponent implements OnInit {
         iEstado: [0, Validators.required],
         dtForoPublicacion: [''],
         dtForoFin: [],
+        cForoUrl: [],
         cForoCatDescripcion: [],
 
         //VARIABLES DE AYUDA QUE NO ESTÀN EN LA BD
@@ -134,6 +135,9 @@ export class ForoFormContainerComponent implements OnInit {
         this.foroForm.controls.dtForoInicio.setValue(horaInicio)
         this.foroForm.controls.dtForoFin.setValue(horaFin)
         this.foroForm.controls.dtForoPublicacion.setValue(horaFin)
+        this.foroForm.controls.cForoUrl.setValue(
+            JSON.stringify(this.FilesTareas)
+        )
 
         const value = this.foroForm.value
         console.log('Guardar Foros', value)
@@ -206,6 +210,12 @@ export class ForoFormContainerComponent implements OnInit {
             case 'url':
                 this.titleFileTareas = 'Añadir Enlace URL'
                 break
+            case 'youtube':
+                this.titleFileTareas = 'Añadir Enlace de Youtube'
+                break
+            // case 'recursos':
+            //     this.titleFileTareas = 'Añadir Archivo de mis Recursos'
+            //     break
             default:
                 this.showModal = false
                 this.typeUpload = null

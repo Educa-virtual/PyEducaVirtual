@@ -166,12 +166,10 @@ export class IeparticipaComponent implements OnInit {
             (error) => console.error('Error al guardar:', error)
         )
     }
-
     // Cuando se mueve un elemento a "No participan"
     IEnoparticipan(event: any) {
         const itemsMoved = event.items
         console.log('Moviendo a No Participan:', itemsMoved)
-
         itemsMoved.forEach((item) => {
             console.log('Item:', item) // Verifica la estructura
             console.log('ID a eliminar:', item.iIieeId) // Verifica el ID que se va a enviar
@@ -184,14 +182,12 @@ export class IeparticipaComponent implements OnInit {
         })
         console.log('Moviendo a No Participan:', itemsMoved)
     }
-
     IEnoparticipanall(event: any) {
         const itemsMoved = event.items
         console.log(
             'Elementos movidos de IEnoparticipan a IEparticipan:',
             itemsMoved
         )
-
         itemsMoved.forEach((item) => {
             console.log('ID a eliminar:', item.iIieeId)
             console.log('Nombre a eliminar:', item.cIieeNombre)

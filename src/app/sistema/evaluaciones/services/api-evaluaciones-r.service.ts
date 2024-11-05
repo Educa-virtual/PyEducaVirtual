@@ -73,7 +73,6 @@ export class ApiEvaluacionesRService {
             data
         )
     }
-    //Top
     guardarActualizarPreguntaConAlternativas(data) {
         return this.http.post(
             `${this.baseUrl}/ere/preguntas/guardarActualizarPreguntaConAlternativas`,

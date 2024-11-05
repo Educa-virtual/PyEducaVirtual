@@ -185,7 +185,7 @@
                                 "
                             />
                         </div> -->
-                        <div class="flex pt-4 justify-content-end">
+                        <!-- <div class="flex pt-4 justify-content-end">
                             <p-button
                                 *ngIf="!esModoEdicion"
                                 label="Guardar"
@@ -202,6 +202,34 @@
                                 (click)="
                                     actualizarEvaluacion(); nextCallback.emit()
                                 "
+                            ></p-button>
+                        </div> -->
+                        <div class="flex pt-4 justify-content-end">
+                            <!-- Botón Guardar para modo creación -->
+                            <p-button
+                                *ngIf="!esModoEdicion && accion !== 'ver'"
+                                label="Guardar"
+                                icon="pi pi-save"
+                                (click)="
+                                    guardarEvaluacion(); nextCallback.emit()
+                                "
+                            ></p-button>
+
+                            <!-- Botón Actualizar para modo edición -->
+                            <p-button
+                                *ngIf="esModoEdicion && accion !== 'ver'"
+                                label="Actualizar"
+                                icon="pi pi-refresh"
+                                (click)="
+                                    actualizarEvaluacion(); nextCallback.emit()
+                                "
+                            ></p-button>
+                            <!-- Botón Siguiente para modo ver -->
+                            <p-button
+                                *ngIf="accion === 'ver'"
+                                label="Siguiente"
+                                icon="pi pi-arrow-right"
+                                (click)="nextCallback.emit()"
                             ></p-button>
                         </div>
                     </form>

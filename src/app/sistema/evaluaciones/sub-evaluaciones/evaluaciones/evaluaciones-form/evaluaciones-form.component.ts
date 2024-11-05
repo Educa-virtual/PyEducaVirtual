@@ -67,9 +67,7 @@ interface NivelEvaluacion {
 export class EvaluacionesFormComponent implements OnInit {
     private _formBuilder = inject(FormBuilder)
     private _ref = inject(DynamicDialogRef)
-
     public evaluacionFormGroup: any
-
     private unsubscribe$: Subject<boolean> = new Subject()
     public params = {
         iCompentenciaId: 0,
@@ -93,25 +91,22 @@ export class EvaluacionesFormComponent implements OnInit {
         private _config: DynamicDialogConfig, // Inyección de configuración
         private compartirIdEvaluacionService: CompartirIdEvaluacionService // Inyección del servicio
     ) {}
-    // convertToDate(dateString: string | null): Date | null {
-    //     if (!dateString) return null // Manejar null
-    //     const [day, month, year] = dateString.split('/') // Asumiendo que el formato es 'dd/MM/yyyy'
-    //     return new Date(+year, +month - 1, +day) // Recuerda que los meses son indexados desde 0
-    // }
     esModoEdicion: boolean = false // Cambiar a true si estás en modo edición
-
     ngOnInit() {
         this.accion = this._config.data.accion
+
         this.obtenerTipoEvaluacion()
         this.obtenerNivelEvaluacion()
         this.ereCrearFormulario()
         this.ereVerEvaluacion()
-
-        //this.accion = this._config.data.accion // Inicializa la acción
-
+        this.esModoEdicion = this.accion === 'editar'
         // Aquí podrías establecer `esModoEdicion` en base a si ya hay un ID de evaluación
         if (this.evaluacionFormGroup.get('iEvaluacionId').value) {
             this.esModoEdicion = true
+        }
+        // Configura el formulario en modo solo lectura si está en "ver"
+        if (this.accion === 'ver') {
+            this.evaluacionFormGroup.disable()
         }
     }
     ereCrearFormulario() {

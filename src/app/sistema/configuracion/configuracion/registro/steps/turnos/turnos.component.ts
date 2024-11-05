@@ -15,7 +15,8 @@ import { FloatLabelModule } from 'primeng/floatlabel'
 import { FormsModule } from '@angular/forms'
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms'
 import { GeneralService } from '@/app/servicios/general.service'
-import { StepConfirmationService } from '@/app/sistema/configuracion/configuracion/registro/service/confirmService'
+import { StepConfirmationService, type informationMessage } from '@/app/servicios/confirm.service'
+import { ConfirmDialogModule } from 'primeng/confirmdialog'
 
 @Component({
     selector: 'app-turnos',
@@ -29,6 +30,7 @@ import { StepConfirmationService } from '@/app/sistema/configuracion/configuraci
         FloatLabelModule,
         ReactiveFormsModule,
         FormsModule,
+        ConfirmDialogModule,
     ],
     templateUrl: './turnos.component.html',
     styleUrl: './turnos.component.scss',
@@ -122,8 +124,27 @@ export class TurnosComponent implements OnInit, OnChanges {
                 // Lógica para la acción "eliminar"
                 console.log('Eliminando')
                 console.log(row.item)
-                this.deleteFormasAtencion(row.item.iCalTurnoId)
-                this.getFormasAtencion()
+                const message: informationMessage = {
+                    header: '¿Esta seguro de eliminar el turno?',
+                    message: 'Por favor, confirme para continuar.',
+                    accept: {
+                        severity: 'success',
+                        summary: 'Turno',
+                        detail: 'Se ha eliminado correctamente.',
+                        life: 3000,
+                    },
+                    reject: {
+                        severity: 'info',
+                        summary: 'Turno',
+                        detail: 'Se ha cancelado eliminar.',
+                        life: 3000,
+                    },
+                }
+        
+                this.stepConfirmationService.confirmAction(
+                    [() => this.deleteFormasAtencion(row.item.iCalTurnoId), () => this.getFormasAtencion()], message
+                )
+                
             },
         }
 

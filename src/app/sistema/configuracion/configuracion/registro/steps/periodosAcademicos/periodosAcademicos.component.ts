@@ -39,18 +39,18 @@ export class PeriodosAcademicosComponent implements OnInit, OnChanges {
     fasesPromocionales = [
         {
             iFaseId:
-                this.ticketService.registroInformation.stepYear
+                this.ticketService.registroInformation?.stepYear
                     .fases_promocional.iFaseId,
             cFasePromNombre:
-                this.ticketService.registroInformation.stepYear
+                this.ticketService.registroInformation?.stepYear
                     .fases_promocional.cFasePromNombre,
             dtFaseInicio: this.ticketService.toVisualFechasFormat(
-                this.ticketService.registroInformation.stepYear
+                this.ticketService.registroInformation?.stepYear
                     .fases_promocional.dtFaseInicio,
                 'DD/MM/YYYY'
             ),
             dtFaseFin: this.ticketService.toVisualFechasFormat(
-                this.ticketService.registroInformation.stepYear
+                this.ticketService.registroInformation?.stepYear
                     .fases_promocional.dtFaseFin,
                 'DD/MM/YYYY'
             ),
@@ -259,7 +259,10 @@ export class PeriodosAcademicosComponent implements OnInit, OnChanges {
 
                     let filterFasePeriodo = data.data[0]
 
+
                     this.periodosInformation = JSON.parse(filterFasePeriodo["periodo"])
+
+                    console.log(this.periodosInformation)
                     
                     // this.fasesPromocionales[0].cPeriodoEvalNombre = ""
 
@@ -326,8 +329,49 @@ export class PeriodosAcademicosComponent implements OnInit, OnChanges {
         }
     }
 
-    handleActions(actions) {
+    handleActionFase(actions) {
         console.log(actions)
+        const periodTypeMap = {
+            'trimestral': 'trimestre',
+            'semestral': 'semestre',
+            'bimestral': 'bimestre',
+            // Agrega más mapeos según sea necesario
+        };
+        
+        console.log('Periodos')
+        console.log(this.periodosInformation)
+        this.cicloAcademicoModal = {
+            ...this.cicloAcademicoModal,
+            ciclosAcademicos: this.periodosInformation.map((periodo, index) => ({
+                index: index + 1,
+                StartDate: periodo.dtPeriodoEvalAperInicio,
+                EndDate: periodo.dtPeriodoEvalAperFin,
+                EndDateVisual: this.ticketService.toVisualFechasFormat(
+                    periodo.dtPeriodoEvalAperFin, 
+                    'DD/MM/YYYY'
+                ),
+
+                StartDateVisual: this.ticketService.toVisualFechasFormat(
+                    periodo.dtPeriodoEvalAperInicio,
+                    'DD/MM/YYYY'
+                ),
+                PeriodType: (index + 1) + '° ' + this.ticketService.capitalize(
+                    periodTypeMap[
+                        this.periodosAcademicos.find((periodoList) => 
+                            periodo.iPeriodoEvalId == periodoList.iPeriodoEvalId
+                        )?.cPeriodoEvalNombre.toLowerCase() || ''
+                    ] || ''
+                ),
+                
+                iPeriodoEvalId: periodo.iPeriodoEvalId,
+            })),
+        }
+        this.showDialog()
+    }
+
+    handleActionPeriodos(actions) {
+        console.log(actions)
+        
     }
 
     actions: IActionTable[] = [

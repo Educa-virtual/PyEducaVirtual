@@ -8,6 +8,7 @@
         [actions]="actions"
         [showPaginator]="false"
         [data]="fasesPromocionales"
+        (accionBtnItem)="handleActionFase($event)"
     >
     </app-table-primeng>
     <div class="navigator">
@@ -40,7 +41,7 @@
                     [actions]="actions"
                     [showPaginator]="false"
                     [data]="cicloAcademicoModal?.ciclosAcademicos ?? []"
-                    (accionBtnItem)="handleActions($event)"
+                    (accionBtnItem)="handleActionPeriodos($event)"
                 >
                 </app-table-primeng>
             </div>

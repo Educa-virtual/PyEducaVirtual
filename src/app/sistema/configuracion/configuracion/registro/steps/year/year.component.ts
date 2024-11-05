@@ -113,6 +113,11 @@ export class YearComponent implements OnInit, OnChanges {
                             },
                             'stepYear'
                         )
+
+                        // this.ticketService.setTicketInformation({
+                        //     ...this.ticketService.registroInformation.calendar,
+                        //     iYAcadId: filterYearActive.iYAcadId
+                        // }, 'calendar')
                     },
                     error: (error) => {
                         console.error('Error fetching turnos:', error)

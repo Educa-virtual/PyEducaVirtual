@@ -110,6 +110,9 @@ export class YearsComponent implements OnInit {
                                 mode: 'edit',
                             }
 
+                            console.log('El calendario')
+                            console.log(data)
+
                             this.ticketService.setTicketInformation(
                                 {
                                     iCalAcadId: row.item.iCalAcadId,
@@ -206,8 +209,10 @@ export class YearsComponent implements OnInit {
     ]
 
     navigateToRegistro() {
-        this.ticketService.registroInformation = {
-            mode: 'create'
+        if(!this.ticketService.registroInformation.mode){
+            this.ticketService.registroInformation = {
+                mode: 'create'
+            }
         }
         this.router.navigate(['configuracion/configuracion/registro'])
     }

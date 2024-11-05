@@ -25,6 +25,8 @@ import { ModalPrimengComponent } from '../../../../../../shared/modal-primeng/mo
 import { environment } from '@/environments/environment.template'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
+import { InputTextModule } from 'primeng/inputtext'
+import { CardModule } from 'primeng/card'
 
 @Component({
     selector: 'app-tarea-room',
@@ -41,6 +43,8 @@ import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmatio
         FileUploadPrimengComponent,
         FormGrupoComponent,
         ModalPrimengComponent,
+        InputTextModule,
+        CardModule,
     ],
 
     templateUrl: './tarea-room.component.html',
@@ -49,7 +53,6 @@ import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmatio
 })
 export class TareaRoomComponent implements OnChanges, OnInit {
     @Input() iTareaId: string
-
     private _dialogService = inject(DialogService)
     private GeneralService = inject(GeneralService)
     private _constantesService = inject(ConstantesService)

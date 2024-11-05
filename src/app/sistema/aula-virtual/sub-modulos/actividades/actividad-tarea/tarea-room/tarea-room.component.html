@@ -380,7 +380,9 @@
                                                                 style="
                                                                     font-size: 1.5rem;
                                                                 "
-                                                                >&nbsp;25</b
+                                                                >&nbsp;{{
+                                                                    tareasFalta
+                                                                }}</b
                                                             ><small
                                                                 >&nbsp;
                                                                 Falta</small
@@ -406,7 +408,9 @@
                                                                 style="
                                                                     font-size: 1.5rem;
                                                                 "
-                                                                >&nbsp;25</b
+                                                                >&nbsp;{{
+                                                                    tareasCulminado
+                                                                }}</b
                                                             ><small
                                                                 >&nbsp;
                                                                 Culminado</small
@@ -595,6 +599,11 @@
                                                                                                 true
                                                                                             "
                                                                                             severity="danger"
+                                                                                            (onClick)="
+                                                                                                transferirEstudiante(
+                                                                                                    estudiante
+                                                                                                )
+                                                                                            "
                                                                                         />
                                                                                     </td>
                                                                                 </tr>
@@ -993,3 +1002,10 @@
         (accionBtnItem)="accionBtnItem($event)"
     ></app-form-grupo>
 </section>
+<app-form-transferir-grupo
+    [showModalTransferir]="showModalTransferir"
+    [grupos]="grupos"
+    [iTareaEstudianteId]="iTareaEstudianteIdGrupo"
+    [iEstudianteId]="iEstudianteIdGrupo"
+    (accionBtnItem)="accionBtnItem($event)"
+></app-form-transferir-grupo>

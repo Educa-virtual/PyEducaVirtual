@@ -41,7 +41,9 @@
                                 [(ngModel)]="item.bAsignado"
                                 [binary]="true"
                                 inputId="binary"
-                                [disabled]="item.disabled"
+                                [disabled]="
+                                    item.disabled && opcion === 'GUARDAR'
+                                "
                             />
                         </td>
                         <td>

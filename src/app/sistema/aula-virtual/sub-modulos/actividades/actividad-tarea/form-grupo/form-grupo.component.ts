@@ -82,9 +82,12 @@ export class FormGrupoComponent implements OnChanges {
                 opcion: this.opcion + '-ESTUDIANTESxiTareaId',
                 iTareaId: this.iTareaId,
                 cTareaGrupoNombre: this.cTareaGrupoNombre,
-                valorBusqueda: JSON.stringify(
-                    this.estudiantes.filter((i) => !i.disabled)
-                ),
+                valorBusqueda:
+                    this.opcion === 'GUARDAR'
+                        ? JSON.stringify(
+                              this.estudiantes.filter((i) => !i.disabled)
+                          )
+                        : JSON.stringify(this.estudiantes),
                 iTareaCabGrupoId: this.iTareaCabGrupoId,
             },
             params: { skipSuccessMessage: true },

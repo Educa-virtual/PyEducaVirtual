@@ -187,14 +187,21 @@
                         </div> -->
                         <div class="flex pt-4 justify-content-end">
                             <p-button
-                                [label]="
-                                    accion === 'editar'
-                                        ? 'Actualizar'
-                                        : 'Guardar'
-                                "
+                                *ngIf="!esModoEdicion"
+                                label="Guardar"
                                 icon="pi pi-save"
-                                iconPos="right"
-                                (click)="guardarEvaluacion()"
+                                (click)="
+                                    guardarEvaluacion(); nextCallback.emit()
+                                "
+                            ></p-button>
+
+                            <p-button
+                                *ngIf="esModoEdicion"
+                                label="Actualizar"
+                                icon="pi pi-refresh"
+                                (click)="
+                                    actualizarEvaluacion(); nextCallback.emit()
+                                "
                             ></p-button>
                         </div>
                     </form>

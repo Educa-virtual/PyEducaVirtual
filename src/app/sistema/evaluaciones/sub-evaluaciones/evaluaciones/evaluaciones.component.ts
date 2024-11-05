@@ -238,20 +238,22 @@ export class EvaluacionesComponent implements OnInit {
     }
     // abrir el modal para agregar una nueva pregunta
     agregarEditarPregunta(evaluacion) {
+        const accion = evaluacion?.iEvaluacionId ? 'editar' : 'nuevo'
+        const header =
+            accion === 'nuevo' ? 'Nueva evaluación' : 'Editar evaluación'
+
         const refModal = this._dialogService.open(EvaluacionesFormComponent, {
             ...MODAL_CONFIG,
             data: {
-                accion: evaluacion?.iEvaluacionId ? 'editar' : 'nuevo', // Determina la acción
-                evaluacion: evaluacion, // Datos de la evaluación
+                accion: accion,
+                evaluacion: evaluacion,
             },
-            header:
-                evaluacion?.iEvaluacionId == 0
-                    ? 'Nueva evaluación'
-                    : 'Editar evaluación',
+            header: header,
         })
+
         refModal.onClose.subscribe((result) => {
             if (result) {
-                this.obtenerEvaluacion() // Refresca la lista de evaluaciones
+                this.obtenerEvaluacion()
             }
         })
     }

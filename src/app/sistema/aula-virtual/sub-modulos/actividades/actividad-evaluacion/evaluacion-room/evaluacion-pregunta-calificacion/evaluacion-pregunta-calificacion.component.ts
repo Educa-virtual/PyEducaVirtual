@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common'
 import { Component, inject, OnInit, OnDestroy } from '@angular/core'
 import { EvaluacionInfoComponent } from '../components/evaluacion-info/evaluacion-info.component'
-import { DynamicDialogConfig } from 'primeng/dynamicdialog'
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog'
 import { EvaluacionPreguntaComponent } from '../components/evaluacion-pregunta/evaluacion-pregunta.component'
 import { PrimengModule } from '@/app/primeng.module'
 import { RemoveHTMLPipe } from '@/app/shared/pipes/remove-html.pipe'
@@ -33,6 +33,7 @@ export class EvaluacionPreguntaCalificacionComponent
     // injeccion de dependencias
     private _config = inject(DynamicDialogConfig)
     private _apiEvaluacionesServ = inject(ApiEvaluacionesService)
+    private _ref = inject(DynamicDialogRef)
 
     private _unsubscribe$ = new Subject<boolean>()
 
@@ -56,6 +57,10 @@ export class EvaluacionPreguntaCalificacionComponent
                     this.escalasCalificativas = data
                 },
             })
+    }
+
+    closeModal(data) {
+        this._ref.close(data)
     }
 
     ngOnDestroy() {

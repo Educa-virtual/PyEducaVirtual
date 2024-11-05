@@ -151,4 +151,15 @@ export class ApiEvaluacionesService {
                 map((data) => mapData(data))
             )
     }
+
+    // calificar logros estudiante
+
+    calificarLogros(data) {
+        return this.http
+            .post<ApiResponse>(
+                `${this.baseUrlApi}/evaluaciones/evaluacion/estudiantes/calificarLogros`,
+                data
+            )
+            .pipe(map((resp) => resp.data))
+    }
 }

@@ -136,15 +136,22 @@ export class EvaluacionRoomCalificacionComponent implements OnInit {
     }
 
     public calificarPregunta(pregunta) {
-        this._dialogService.open(EvaluacionPreguntaCalificacionComponent, {
-            ...MODAL_CONFIG,
-            data: {
-                evaluacion: this.evaluacionSeleccionada,
-                pregunta: pregunta,
-            },
-            header: 'Calificar Pregunta',
+        const refModal = this._dialogService.open(
+            EvaluacionPreguntaCalificacionComponent,
+            {
+                ...MODAL_CONFIG,
+                data: {
+                    evaluacion: this.evaluacionSeleccionada,
+                    pregunta: pregunta,
+                },
+                header: 'Calificar Pregunta',
+            }
+        )
+        refModal.onClose.subscribe((result) => {
+            if (result) {
+                this.obtenerEvaluacionRespuestasEstudiante()
+            }
         })
-        console.log(pregunta)
     }
 
     public seleccionarEvaluacion() {

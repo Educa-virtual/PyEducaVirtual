@@ -29,5 +29,6 @@
     <app-evaluacion-pregunta-logro
         [logrosCalificacion]="pregunta.logrosCalificacion ?? []"
         [escalasCalificativas]="escalasCalificativas"
+        (closeModalChange)="closeModal($event)"
     ></app-evaluacion-pregunta-logro>
 </div>

@@ -1,77 +1,158 @@
 <form [formGroup]="formEvaluacionLogro">
     <ng-container formArrayName="logrosCalificacion">
-        <p-table
-            [value]="logrosCalificacionFormArray.controls"
-            [tableStyle]="{ 'min-width': '50rem' }"
-        >
-            <ng-template pTemplate="header">
-                <tr>
-                    <th [style.width]="'10rem'">Logro</th>
-                    <th>Nota</th>
-                    <th [style.width]="'3rem'">Nota Numérica</th>
-                    <th [style.width]="'auto'">Conclusión</th>
-                    <th>Acciones</th>
-                </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-control let-i="rowIndex">
-                <tr [formGroupName]="i">
-                    <td>
-                        {{ control.get('cNivelLogroEvaDescripcion').value }}
-                    </td>
-                    <td>
-                        <p-dropdown
-                            styleClass="w-full"
-                            optionValue="iEscalaCalifId"
-                            formControlName="iEscalaCalifId"
-                            [options]="escalasCalificativas"
-                            optionLabel="cEscalaCalifNombre"
-                        />
-                    </td>
-                    <td>
-                        <p-inputNumber
-                            formControlName="nNnivelLogroAlcNota"
-                            inputId="minmaxfraction"
-                            mode="decimal"
-                            [min]="0"
-                            [max]="20"
-                        />
-                    </td>
-                    <td>
-                        <textarea
-                            rows="2"
-                            pInputTextarea
-                            [autoResize]="true"
-                            formControlName="cNivelLogroAlcConclusionDescriptiva"
-                        >
-                        </textarea>
-                    </td>
-                    <td>
-                        @if (control.get('estaEditando').value) {
-                            <button
-                                class="p-1 p-button-rounded p-button-success p-button-text"
-                                [rounded]="true"
-                                pButton
-                                pRipple
-                                icon="pi pi-check"
-                                [pTooltip]="'Confirmar Cambios'"
-                                tooltipPosition="top"
-                                (click)="guardarActualizarLogro(i)"
-                            ></button>
-                        } @else {
-                            <button
-                                class="p-1 p-button-rounded p-button-warning p-button-text"
-                                [rounded]="true"
-                                pButton
-                                pRipple
-                                icon="pi pi-pencil"
-                                [pTooltip]="'Editar Logro'"
-                                tooltipPosition="top"
-                                (click)="editarLogroRow(i)"
-                            ></button>
-                        }
-                    </td>
-                </tr>
-            </ng-template>
-        </p-table>
+        @for (
+            logroControl of logrosCalificacionFormArray.controls;
+            track $index
+        ) {
+            <div class="flex flex-column gap-3" [formGroupName]="$index">
+                <div class="flex flex-column gap-1">
+                    @if (logroControl.invalid && logroControl.touched) {
+                        <small class="ml-auto text-red-500">
+                            Existen campos requeridos por llenar.
+                        </small>
+                    }
+                    <p-accordion [multiple]="true">
+                        <p-accordionTab [selected]="$index === 0">
+                            <ng-template pTemplate="header">
+                                <div class="ellipsis">
+                                    <span class="">
+                                        {{
+                                            logroControl.get(
+                                                'cNivelLogroEvaDescripcion'
+                                            ).value
+                                        }}
+                                    </span>
+                                </div>
+                            </ng-template>
+                            <article class="formgrid grid">
+                                <div class="field flex flex-column col-12">
+                                    <label for="">Logro</label>
+                                    <p class="">
+                                        {{
+                                            logroControl.get(
+                                                'cNivelLogroEvaDescripcion'
+                                            ).value
+                                        }}
+                                    </p>
+                                </div>
+                                <div class="col-6 field flex flex-column">
+                                    <label
+                                        for="escala-calificativa-{{ $index }}"
+                                        >Nota</label
+                                    >
+                                    <p-dropdown
+                                        inputId="escala-calificativa-{{
+                                            $index
+                                        }}"
+                                        optionValue="iEscalaCalifId"
+                                        formControlName="iEscalaCalifId"
+                                        [options]="escalasCalificativas"
+                                        optionLabel="cEscalaCalifNombre"
+                                        [styleClass]="
+                                            logroControl.get('iEscalaCalifId')
+                                                ?.invalid &&
+                                            logroControl.get('iEscalaCalifId')
+                                                ?.touched
+                                                ? 'w-full ng-dirty ng-invalid p-invalid'
+                                                : 'w-full'
+                                        "
+                                    />
+                                    @if (
+                                        logroControl
+                                            .get('iEscalaCalifId')
+                                            .hasError('required') &&
+                                        logroControl.get('iEscalaCalifId')
+                                            ?.touched
+                                    ) {
+                                        <small class="text-red-500">
+                                            Este campo es requerido
+                                        </small>
+                                    }
+                                </div>
+                                <div class="col-6 field flex flex-column">
+                                    <label for="nota-numero-{{ $index }}"
+                                        >Nota Numérica</label
+                                    >
+                                    <p-inputNumber
+                                        formControlName="nNnivelLogroAlcNota"
+                                        inputId="nota-numero-{{ $index }}"
+                                        mode="decimal"
+                                        [min]="0"
+                                        [max]="20"
+                                        styleClass="w-full"
+                                        [class]="
+                                            logroControl.get(
+                                                'nNnivelLogroAlcNota'
+                                            )?.invalid &&
+                                            logroControl.get(
+                                                'nNnivelLogroAlcNota'
+                                            )?.touched
+                                                ? 'w-full ng-dirty ng-invalid p-invalid'
+                                                : 'w-full'
+                                        "
+                                    />
+                                    @if (
+                                        logroControl
+                                            .get('nNnivelLogroAlcNota')
+                                            .hasError('required') &&
+                                        logroControl.get('nNnivelLogroAlcNota')
+                                            ?.touched
+                                    ) {
+                                        <small class="text-red-500">
+                                            Este campo es requerido
+                                        </small>
+                                    }
+                                </div>
+                                <div class="col-12 field flex flex-column">
+                                    <label
+                                        for="conclusion-descriptiva-{{
+                                            $index
+                                        }}"
+                                    ></label>
+                                    <p-editor
+                                        id="conclusion-descriptiva-{{ $index }}"
+                                        formControlName="cNivelLogroAlcConclusionDescriptiva"
+                                    ></p-editor>
+                                    @if (
+                                        logroControl
+                                            .get(
+                                                'cNivelLogroAlcConclusionDescriptiva'
+                                            )
+                                            .hasError('required') &&
+                                        logroControl.get(
+                                            'cNivelLogroAlcConclusionDescriptiva'
+                                        )?.touched
+                                    ) {
+                                        <small class="text-red-500">
+                                            Este campo es requerido
+                                        </small>
+                                    }
+                                </div>
+                            </article>
+                        </p-accordionTab>
+                    </p-accordion>
+                </div>
+            </div>
+        }
     </ng-container>
 </form>
+
+<div class="flex justify-content-end gap-2 pt-3">
+    <button
+        pButton
+        pRipple
+        label="Cancelar"
+        icon="pi pi-times"
+        class="p-button-secondary"
+        type="button"
+        size="small"
+        (click)="closeModalChange.emit(null)"
+    ></button>
+    <button
+        pButton
+        [label]="'Guardar Cambios'"
+        icon="pi pi-check"
+        size="small"
+        (click)="guardarActualizarLogros()"
+    ></button>
+</div>

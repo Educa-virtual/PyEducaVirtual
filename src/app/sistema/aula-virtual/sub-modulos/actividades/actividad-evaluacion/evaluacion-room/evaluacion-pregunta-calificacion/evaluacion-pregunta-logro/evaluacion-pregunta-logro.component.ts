@@ -1,6 +1,15 @@
 import { PrimengModule } from '@/app/primeng.module'
+import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-evaluaciones.service'
 import { CommonModule } from '@angular/common'
-import { Component, inject, Input, OnInit } from '@angular/core'
+import {
+    Component,
+    EventEmitter,
+    inject,
+    Input,
+    OnInit,
+    Output,
+    OnDestroy,
+} from '@angular/core'
 import {
     FormArray,
     FormBuilder,
@@ -8,6 +17,7 @@ import {
     ReactiveFormsModule,
     Validators,
 } from '@angular/forms'
+import { Subject } from 'rxjs'
 
 @Component({
     selector: 'app-evaluacion-pregunta-logro',
@@ -16,12 +26,17 @@ import {
     templateUrl: './evaluacion-pregunta-logro.component.html',
     styleUrl: './evaluacion-pregunta-logro.component.scss',
 })
-export class EvaluacionPreguntaLogroComponent implements OnInit {
+export class EvaluacionPreguntaLogroComponent implements OnInit, OnDestroy {
     @Input() logrosCalificacion = []
     @Input() escalasCalificativas = []
+    @Input() iEvalRptaId = -1
+
+    @Output() closeModalChange = new EventEmitter()
     formEvaluacionLogro: FormGroup
 
     private _formBuilder = inject(FormBuilder)
+    private _apiEvalService = inject(ApiEvaluacionesService)
+    private _unsubscribe$ = new Subject<boolean>()
 
     public get logrosCalificacionFormArray(): FormArray {
         return this.formEvaluacionLogro.get('logrosCalificacion') as FormArray
@@ -50,28 +65,38 @@ export class EvaluacionPreguntaLogroComponent implements OnInit {
         return this._formBuilder.group({
             iNivelLogroAlcId: [logro.iNivelLogroAlcId],
             iEvalRptaId: [logro.iEvalRptaId],
-            iEscalaCalifId: [{ value: logro.iEscalaCalifId, disabled: true }],
-            nNnivelLogroAlcNota: [logro.nNnivelLogroAlcNota],
-            cNivelLogroAlcConclusionDescriptiva: [
-                logro.cNivelLogroAlcConclusionDescriptiva,
+            iEscalaCalifId: [logro.iEscalaCalifId, [Validators.required]],
+            nNnivelLogroAlcNota: [
+                logro.nNnivelLogroAlcNota,
                 [Validators.required],
             ],
-            iNivelEvaId: [logro.iNivelEvaId],
+            cNivelLogroAlcConclusionDescriptiva: [
+                logro.cNivelLogroAlcConclusionDescriptiva ?? null,
+                [Validators.required],
+            ],
             cNivelLogroEvaDescripcion: [logro.cNivelLogroEvaDescripcion],
-            estaEditando: [false],
+            iNivelLogroEvaId: [logro.iNivelLogroEvaId],
+            // estaEditando: [false],
         })
     }
 
-    public editarLogroRow(i) {
-        this.logrosCalificacionFormArray.at(i).get('iEscalaCalifId').enable()
-        this.logrosCalificacionFormArray.at(i).patchValue({
-            estaEditando: true,
+    public guardarActualizarLogros() {
+        if (this.formEvaluacionLogro.invalid) {
+            this.formEvaluacionLogro.markAllAsTouched()
+            return
+        }
+
+        const data = this.formEvaluacionLogro.value
+
+        this._apiEvalService.calificarLogros(data).subscribe({
+            next: (data) => {
+                this.closeModalChange.emit(data)
+            },
         })
     }
-    public guardarActualizarLogro(i) {
-        this.logrosCalificacionFormArray.at(i).get('iEscalaCalifId').disable()
-        this.logrosCalificacionFormArray.at(i).patchValue({
-            estaEditando: false,
-        })
+
+    ngOnDestroy() {
+        this._unsubscribe$.next(true)
+        this._unsubscribe$.complete()
     }
 }

@@ -27,6 +27,7 @@ import { ConstantesService } from '@/app/servicios/constantes.service'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { InputTextModule } from 'primeng/inputtext'
 import { CardModule } from 'primeng/card'
+import { FormTransferirGrupoComponent } from '../form-transferir-grupo/form-transferir-grupo.component'
 
 @Component({
     selector: 'app-tarea-room',
@@ -45,6 +46,7 @@ import { CardModule } from 'primeng/card'
         ModalPrimengComponent,
         InputTextModule,
         CardModule,
+        FormTransferirGrupoComponent,
     ],
 
     templateUrl: './tarea-room.component.html',
@@ -186,9 +188,13 @@ export class TareaRoomComponent implements OnChanges, OnInit {
     ]
     tareasFalta: number = 0
     tareasCulminado: number = 0
+    gruposFalta: number = 0
+    gruposCulminado: number = 0
     public accionBtnItem(elemento) {
         const { accion } = elemento
         const { item } = elemento
+        let falta
+        let culminado
         switch (accion) {
             case 'calificar':
                 this._dialogService.open(CalificarTareaFormComponent, {
@@ -201,10 +207,8 @@ export class TareaRoomComponent implements OnChanges, OnInit {
                 break
             case 'get-tarea-estudiantes':
                 this.estudiantes = item
-                const falta = this.estudiantes.filter((i) => i.cEstado === '0')
-                const culminado = this.estudiantes.filter(
-                    (i) => i.cEstado === '1'
-                )
+                falta = this.estudiantes.filter((i) => i.cEstado === '0')
+                culminado = this.estudiantes.filter((i) => i.cEstado === '1')
 
                 this.tareasFalta = falta.length
                 this.tareasCulminado = culminado.length
@@ -230,6 +234,12 @@ export class TareaRoomComponent implements OnChanges, OnInit {
                         (j) => j.bAsignado === 0
                     )
                 })
+
+                falta = this.grupos.filter((i) => i.cEstado === '0')
+                culminado = this.grupos.filter((i) => i.cEstado === '1')
+
+                this.tareasFalta = falta.length
+                this.tareasCulminado = culminado.length
                 break
             case 'save-tarea-cabecera-grupos':
                 this.showModal = false
@@ -262,11 +272,19 @@ export class TareaRoomComponent implements OnChanges, OnInit {
                 this.getTareaEstudiantes()
                 break
             case 'eliminar-tarea-cabecera-grupos':
+                this.grupoSeleccionadoCalificar = []
                 this.getTareaCabeceraGrupos()
                 break
             case 'guardar-calificacion-tarea-cabecera-grupos-docente':
                 this.iEscalaCalifId = null
                 this.grupoSeleccionadoCalificar = []
+                this.getTareaCabeceraGrupos()
+                break
+            case 'close-modal-transferir':
+                this.showModalTransferir = false
+                break
+            case 'save-modal-transferir':
+                this.showModalTransferir = false
                 this.getTareaCabeceraGrupos()
                 break
             default:
@@ -424,7 +442,6 @@ export class TareaRoomComponent implements OnChanges, OnInit {
 
     seleccionarGrupo(item) {
         this.grupoSeleccionadoCalificar = []
-        console.log(item)
         this.grupoSeleccionadoCalificar.push(item)
         this.iTareaCabGrupoId = item.iTareaCabGrupoId
         this.cTareaGrupoUrl = item.cTareaGrupoUrl
@@ -452,5 +469,26 @@ export class TareaRoomComponent implements OnChanges, OnInit {
             params,
             'guardar-calificacion-tarea-cabecera-grupos-docente'
         )
+    }
+    grupoTransferir
+    showModalTransferir: boolean = false
+    iTareaEstudianteIdGrupo
+    iEstudianteIdGrupo
+    transferirEstudiante(item) {
+        this.iTareaEstudianteIdGrupo = item.iTareaEstudianteId
+        this.iEstudianteIdGrupo = item.iEstudianteId
+        this.grupos.forEach((i) => {
+            i.json_estudiantes_respaldo.filter((j) => {
+                if (j.iEstudianteId == item.iEstudianteId) {
+                    const iTareaCabGrupoId = i.iTareaCabGrupoId
+
+                    this.grupoTransferir = this.grupos.filter(
+                        (k) => k.iTareaCabGrupoId !== iTareaCabGrupoId
+                    )
+                }
+            })
+        })
+        this.showModalTransferir = true
+        //console.log(this.grupoTransferir)
     }
 }

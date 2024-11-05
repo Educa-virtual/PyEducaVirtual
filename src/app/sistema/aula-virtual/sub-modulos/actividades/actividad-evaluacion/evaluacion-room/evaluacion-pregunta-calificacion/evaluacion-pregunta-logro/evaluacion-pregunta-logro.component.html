@@ -1,2 +1,77 @@
-<form [formGroup]="formEvaluacionLogro"></form>
-<p-table></p-table>
+<form [formGroup]="formEvaluacionLogro">
+    <ng-container formArrayName="logrosCalificacion">
+        <p-table
+            [value]="logrosCalificacionFormArray.controls"
+            [tableStyle]="{ 'min-width': '50rem' }"
+        >
+            <ng-template pTemplate="header">
+                <tr>
+                    <th [style.width]="'10rem'">Logro</th>
+                    <th>Nota</th>
+                    <th [style.width]="'3rem'">Nota Numérica</th>
+                    <th [style.width]="'auto'">Conclusión</th>
+                    <th>Acciones</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-control let-i="rowIndex">
+                <tr [formGroupName]="i">
+                    <td>
+                        {{ control.get('cNivelLogroEvaDescripcion').value }}
+                    </td>
+                    <td>
+                        <p-dropdown
+                            styleClass="w-full"
+                            optionValue="iEscalaCalifId"
+                            formControlName="iEscalaCalifId"
+                            [options]="escalasCalificativas"
+                            optionLabel="cEscalaCalifNombre"
+                        />
+                    </td>
+                    <td>
+                        <p-inputNumber
+                            formControlName="nNnivelLogroAlcNota"
+                            inputId="minmaxfraction"
+                            mode="decimal"
+                            [min]="0"
+                            [max]="20"
+                        />
+                    </td>
+                    <td>
+                        <textarea
+                            rows="2"
+                            pInputTextarea
+                            [autoResize]="true"
+                            formControlName="cNivelLogroAlcConclusionDescriptiva"
+                        >
+                        </textarea>
+                    </td>
+                    <td>
+                        @if (control.get('estaEditando').value) {
+                            <button
+                                class="p-1 p-button-rounded p-button-success p-button-text"
+                                [rounded]="true"
+                                pButton
+                                pRipple
+                                icon="pi pi-check"
+                                [pTooltip]="'Confirmar Cambios'"
+                                tooltipPosition="top"
+                                (click)="guardarActualizarLogro(i)"
+                            ></button>
+                        } @else {
+                            <button
+                                class="p-1 p-button-rounded p-button-warning p-button-text"
+                                [rounded]="true"
+                                pButton
+                                pRipple
+                                icon="pi pi-pencil"
+                                [pTooltip]="'Editar Logro'"
+                                tooltipPosition="top"
+                                (click)="editarLogroRow(i)"
+                            ></button>
+                        }
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </ng-container>
+</form>

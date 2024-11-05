@@ -87,7 +87,14 @@ export class ApiEvaluacionesService {
     obtenerEscalaCalificaciones() {
         return this.http
             .get<any>(`${this.baseUrlApi}/evaluaciones/escala-calificaciones`)
-            .pipe(map((resp) => resp.data))
+            .pipe(
+                map((resp) =>
+                    resp.data.map((item) => {
+                        item.cEscalaCalifNombreDetalles = `${item.cEscalaCalifNombre ?? ''} ${item.cEscalaCalifDescripcion ?? ''} ${item.nEscalaCalifEquivalente ?? ''}`
+                        return item
+                    })
+                )
+            )
     }
 
     // logros

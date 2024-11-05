@@ -9,11 +9,12 @@ import { httpService } from '../../../http/httpService'
 import { ButtonModule } from 'primeng/button'
 import { TicketService } from '../../service/ticketservice'
 import { Router } from '@angular/router'
-import { ConfirmationService, MessageService } from 'primeng/api'
 import { ConfirmDialogModule } from 'primeng/confirmdialog'
+import { StepConfirmationService, type informationMessage } from '@/app/servicios/confirm.service'
 import { ToastModule } from 'primeng/toast'
 import { GeneralService } from '@/app/servicios/general.service'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
+
 @Component({
     selector: 'app-diasLaborales',
     standalone: true,
@@ -37,8 +38,7 @@ export class DiasLaboralesComponent implements OnInit, OnChanges {
     constructor(
         private httpService: httpService,
         public ticketService: TicketService,
-        private confirmationService: ConfirmationService,
-        private messageService: MessageService,
+        private stepConfirmationService: StepConfirmationService,
         private router: Router,
         private generalService: GeneralService,
         private localService: LocalStoreService
@@ -80,88 +80,91 @@ export class DiasLaboralesComponent implements OnInit, OnChanges {
                 .subscribe({
                     next: (data: any) => {
                         console.log('Dias Laborales')
-                        console.log(JSON.parse(data.data[0]["calDiasDatos"]))
+                        console.log(JSON.parse(data.data[0]['calDiasDatos']))
 
-
-                        let filterDiasLaborales = JSON.parse(data.data[0]["calDiasDatos"]).map((dia)=> ({
+                        let filterDiasLaborales = JSON.parse(
+                            data.data[0]['calDiasDatos']
+                        ).map((dia) => ({
                             iDiaLabId: String(dia.iDiaLabId),
                             iDiaId: String(dia.iDiaId),
                             iDia: String(dia.iDiaId),
                             cDiaNombre: dia.cDiaNombre,
                             cDiaAbreviado: dia.cDiaAbreviado,
-
                         }))
 
                         this.diasFetch = filterDiasLaborales
 
-                        const resultado = this.dias.map(diaOption => {
-                            const coincidencia = filterDiasLaborales.find(diaSelect => diaSelect.iDiaId === diaOption.iDiaId);
-                            return coincidencia || diaOption;
-                          });
-                          
-                          filterDiasLaborales.forEach(diaSelect => {
-                            const existeEnResultado = resultado.some(item => item.iDiaId === diaSelect.iDiaId);
+                        const resultado = this.dias.map((diaOption) => {
+                            const coincidencia = filterDiasLaborales.find(
+                                (diaSelect) =>
+                                    diaSelect.iDiaId === diaOption.iDiaId
+                            )
+                            return coincidencia || diaOption
+                        })
+
+                        filterDiasLaborales.forEach((diaSelect) => {
+                            const existeEnResultado = resultado.some(
+                                (item) => item.iDiaId === diaSelect.iDiaId
+                            )
                             if (!existeEnResultado) {
-                              resultado.push(diaSelect);
+                                resultado.push(diaSelect)
                             }
-                          });
-                                                
+                        })
+
                         this.dias = resultado
 
-                        this.ticketService.setTicketInformation(filterDiasLaborales, 'stepDiasLaborales')
+                        this.ticketService.setTicketInformation(
+                            filterDiasLaborales,
+                            'stepDiasLaborales'
+                        )
 
-                        this.diasSelection = this.ticketService.registroInformation.stepDiasLaborales
+                        this.diasSelection =
+                            this.ticketService.registroInformation.stepDiasLaborales
                     },
                     error: (error) => {
                         console.error('Error fetching turnos:', error)
                     },
                     complete: () => {
                         console.log('Request completed')
-                        
                     },
                 })
         }
     }
 
     confirm() {
-        this.confirmationService.confirm({
+        console.log('confirmando')
+        const message: informationMessage = {
             header: 'Confirmar',
             message: 'Por favor, confirme para continuar.',
-            acceptIcon: 'pi pi-check mr-2',
-            rejectIcon: 'pi pi-times mr-2',
-            rejectButtonStyleClass: 'p-button-sm',
-            acceptButtonStyleClass: 'p-button-outlined p-button-sm',
-            accept: () => {
-                this.messageService.add({
-                    severity: 'info',
-                    summary: 'Confirmado',
-                    detail: 'Usted ha aceptado',
-                    life: 3000,
-                })
-
-                this.saveInformation()
-
-                this.nextPage()
+            accept: {
+                severity: 'info',
+                summary: 'Confirmado',
+                detail: 'Usted ha aceptado',
+                life: 3000,
             },
-            reject: () => {
-                this.messageService.add({
-                    severity: 'error',
-                    summary: 'Rechazado',
-                    detail: 'Has rechazado',
-                    life: 3000,
-                })
+            reject: {
+                severity: 'info',
+                summary: 'Confirmado',
+                detail: 'Usted ha aceptado',
+                life: 3000,
             },
-        })
+        }
+
+        this.stepConfirmationService.confirmAction(
+            [() => this.saveInformation(), () => this.nextPage()], message
+        )
     }
 
-    onSelectionChange(columnsChecked: typeof this.ticketService.registroInformation.stepDiasLaborales) {
-        
-
-        this.ticketService.setTicketInformation(columnsChecked, 'stepDiasLaborales')
+    onSelectionChange(
+        columnsChecked: typeof this.ticketService.registroInformation.stepDiasLaborales
+    ) {
+        this.ticketService.setTicketInformation(
+            columnsChecked,
+            'stepDiasLaborales'
+        )
     }
 
     saveInformation() {
-
         if (this.ticketService.registroInformation?.mode == 'create') {
             this.createDiasLaborales()
         }
@@ -170,84 +173,91 @@ export class DiasLaboralesComponent implements OnInit, OnChanges {
         }
     }
 
-    createDiasLaborales(){
+    createDiasLaborales() {
         this.httpService
-        .postData('acad/calendarioAcademico/addCalAcademico', {
-            json: JSON.stringify(this.ticketService.registroInformation.stepDiasLaborales),
-            _opcion: 'addDiasLaborales',
-        })
-        .subscribe({
-            next: (data: any) => {
-                console.log(data)
-            },
-            error: (error) => {
-                console.error('Error fetching turnos:', error)
-            },
-            complete: () => {
-                console.log('Request completed')
-            },
-        })
+            .postData('acad/calendarioAcademico/addCalAcademico', {
+                json: JSON.stringify(
+                    this.ticketService.registroInformation.stepDiasLaborales
+                ),
+                _opcion: 'addDiasLaborales',
+            })
+            .subscribe({
+                next: (data: any) => {
+                    console.log(data)
+                },
+                error: (error) => {
+                    console.error('Error fetching turnos:', error)
+                },
+                complete: () => {
+                    console.log('Request completed')
+                },
+            })
     }
 
-    deleteDiasLaborales(){
+    deleteDiasLaborales() {
         console.log(this.ticketService.registroInformation.stepDiasLaborales)
 
-        let create = this.ticketService.registroInformation.stepDiasLaborales.filter((dia) => !dia.iDiaLabId).map((dia) => ({
-            iCalAcadId: this.ticketService.registroInformation.calendar.iCalAcadId,
-            iDiaId: dia.iDiaId,
-        }))
+        let create = this.ticketService.registroInformation.stepDiasLaborales
+            .filter((dia) => !dia.iDiaLabId)
+            .map((dia) => ({
+                iCalAcadId:
+                    this.ticketService.registroInformation.calendar.iCalAcadId,
+                iDiaId: dia.iDiaId,
+            }))
 
         console.log('creando')
         console.log(create)
-        
-        this.httpService
-        .postData('acad/calendarioAcademico/addCalAcademico', {
-            json: JSON.stringify(create),
-            _opcion: 'addDiasLaborales',
-        })
-        .subscribe({
-            next: (data: any) => {
-                console.log(data)
-            },
-            error: (error) => {
-                console.error('Error fetching turnos:', error)
-            },
-            complete: () => {
-                console.log('Request completed')
-            },
-        })
 
-        
-        const diasLaboralesIds = new Set(this.ticketService.registroInformation.stepDiasLaborales.map(dia => dia.iDiaLabId));
+        this.httpService
+            .postData('acad/calendarioAcademico/addCalAcademico', {
+                json: JSON.stringify(create),
+                _opcion: 'addDiasLaborales',
+            })
+            .subscribe({
+                next: (data: any) => {
+                    console.log(data)
+                },
+                error: (error) => {
+                    console.error('Error fetching turnos:', error)
+                },
+                complete: () => {
+                    console.log('Request completed')
+                },
+            })
+
+        const diasLaboralesIds = new Set(
+            this.ticketService.registroInformation.stepDiasLaborales.map(
+                (dia) => dia.iDiaLabId
+            )
+        )
 
         // Filtra y mapea los días de diasFetch que no están en el Set de IDs
         let update = this.diasFetch
-            .filter(dia => !diasLaboralesIds.has(dia.iDiaLabId))
-            .map(dia => ({
+            .filter((dia) => !diasLaboralesIds.has(dia.iDiaLabId))
+            .map((dia) => ({
                 iDiaLabId: dia.iDiaLabId,
-                cDiaNombre: dia.cDiaNombre
-            }));
-        
-        
+                cDiaNombre: dia.cDiaNombre,
+            }))
+
         console.log('Eliminando')
         console.log(update)
 
         this.httpService
-        .postData('acad/calendarioAcademico/addCalAcademico', {
-            json: JSON.stringify(update),
-            _opcion: 'deleteDiasLaborales',
-        })
-        .subscribe({
-            next: (data: any) => {
-                console.log(data)
-            },
-            error: (error) => {
-                console.error('Error fetching turnos:', error)
-            },
-            complete: () => {
-                console.log('Request completed')
-            },
-        })
+            .postData('acad/calendarioAcademico/addCalAcademico', {
+                json: JSON.stringify(update),
+                _opcion: 'deleteDiasLaborales',
+            })
+            .subscribe({
+                next: (data: any) => {
+                    console.log(data)
+                },
+                error: (error) => {
+                    console.error('Error fetching turnos:', error)
+                },
+                complete: () => {
+                    console.log('Request completed')
+                },
+            })
     }
 
     actions: IActionTable[] = [

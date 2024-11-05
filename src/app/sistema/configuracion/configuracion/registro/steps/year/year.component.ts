@@ -13,13 +13,14 @@ import { httpService } from '../../../http/httpService'
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms'
 
 import { FloatLabelModule } from 'primeng/floatlabel'
-import { ConfirmationService, MessageService } from 'primeng/api'
+import {
+    StepConfirmationService,
+    type informationMessage,
+} from '@/app/servicios/confirm.service'
 import { ConfirmDialogModule } from 'primeng/confirmdialog'
 import { ToastModule } from 'primeng/toast'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { CheckboxModule } from 'primeng/checkbox'
-import { FormControl } from '@angular/forms'
-import { filter } from 'rxjs'
 @Component({
     selector: 'app-year',
     standalone: true,
@@ -67,8 +68,7 @@ export class YearComponent implements OnInit, OnChanges {
         public ticketService: TicketService,
         private router: Router,
         private httpService: httpService,
-        private confirmationService: ConfirmationService,
-        private messageService: MessageService,
+        private stepConfirmationService: StepConfirmationService,
         private fb: FormBuilder,
         private localService: LocalStoreService
     ) {
@@ -323,13 +323,17 @@ export class YearComponent implements OnInit, OnChanges {
                                 .fases_promocional.dtFaseFin,
                     })
 
-                    if(this.ticketService.registroInformation.stepYear.fases_promocional.bCalAcadFaseRegular){
+                    if (
+                        this.ticketService.registroInformation.stepYear
+                            .fases_promocional.bCalAcadFaseRegular
+                    ) {
                         this.form.patchValue({
                             regular: [
                                 {
                                     iFasePromId: String(
                                         this.ticketService.registroInformation
-                                            .stepYear.fases_promocional.iFasePromId
+                                            .stepYear.fases_promocional
+                                            .iFasePromId
                                     ),
                                     cFasePromNombre:
                                         this.ticketService.registroInformation
@@ -337,14 +341,15 @@ export class YearComponent implements OnInit, OnChanges {
                                             .cFasePromNombre,
                                 },
                             ],
-                        }) 
+                        })
                     }
-                    
-                    if(this.ticketService.registroInformation.stepYear.fases_promocional.bCalAcadFaseRecuperacion){
+
+                    if (
+                        this.ticketService.registroInformation.stepYear
+                            .fases_promocional.bCalAcadFaseRecuperacion
+                    ) {
                         this.form.patchValue({
-                            recuperacion: [
-                                this.fasesPromocionales[1]
-                            ],
+                            recuperacion: [this.fasesPromocionales[1]],
                         })
                     }
                 },
@@ -376,34 +381,28 @@ export class YearComponent implements OnInit, OnChanges {
     }
 
     confirm() {
-        this.confirmationService.confirm({
-            header: 'Confirmar',
+        console.log('confirmando')
+        const message: informationMessage = {
+            header: '¿Desea guardar información?',
             message: 'Por favor, confirme para continuar.',
-            acceptIcon: 'pi pi-check mr-2',
-            rejectIcon: 'pi pi-times mr-2',
-            rejectButtonStyleClass: 'p-button-sm',
-            acceptButtonStyleClass: 'p-button-outlined p-button-sm',
-            accept: () => {
-                this.messageService.add({
-                    severity: 'info',
-                    summary: 'Confirmado',
-                    detail: 'Usted ha aceptado',
-                    life: 3000,
-                })
-
-                this.saveInformation()
-
-                this.nextPage()
+            accept: {
+                severity: 'success',
+                summary: 'Año',
+                detail: 'Se ha guardado correctamente.',
+                life: 6000,
             },
-            reject: () => {
-                this.messageService.add({
-                    severity: 'error',
-                    summary: 'Rechazado',
-                    detail: 'Has rechazado',
-                    life: 3000,
-                })
+            reject: {
+                severity: 'warn',
+                summary: 'Año',
+                detail: 'Se ha cancelado guardar la información.',
+                life: 3000,
             },
-        })
+        }
+
+        this.stepConfirmationService.confirmAction(
+            [() => this.saveInformation(), () => this.nextPage()],
+            message
+        )
     }
 
     saveInformation() {
@@ -510,7 +509,8 @@ export class YearComponent implements OnInit, OnChanges {
                             .fases_promocional.dtFaseInicio
                     ),
                     dtFaseFin: this.ticketService.toSQLDatetimeFormat(
-                        this.ticketService.registroInformation.stepYear.fases_promocional.dtFaseFin
+                        this.ticketService.registroInformation.stepYear
+                            .fases_promocional.dtFaseFin
                     ),
                 }),
                 _opcion: 'updateCalFase',

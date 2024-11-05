@@ -15,6 +15,7 @@ import { FloatLabelModule } from 'primeng/floatlabel'
 import { FormsModule } from '@angular/forms'
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms'
 import { GeneralService } from '@/app/servicios/general.service'
+import { StepConfirmationService } from '@/app/sistema/configuracion/configuracion/registro/service/confirmService'
 
 @Component({
     selector: 'app-turnos',
@@ -57,6 +58,8 @@ export class TurnosComponent implements OnInit, OnChanges {
     constructor(
         private httpService: httpService,
         public ticketService: TicketService,
+        private stepConfirmationService: StepConfirmationService,
+
         private router: Router,
         private fb: FormBuilder,
         private generalService: GeneralService
@@ -119,6 +122,8 @@ export class TurnosComponent implements OnInit, OnChanges {
                 // Lógica para la acción "eliminar"
                 console.log('Eliminando')
                 console.log(row.item)
+                this.deleteFormasAtencion(row.item.iCalTurnoId)
+                this.getFormasAtencion()
             },
         }
 
@@ -245,9 +250,32 @@ export class TurnosComponent implements OnInit, OnChanges {
                     console.log('Request completed')
                 },
             })
+    }
+
+    deleteFormasAtencion(iCalTurnoId){
 
 
+        this.httpService
+            .postData('acad/calendarioAcademico/addCalAcademico', {
+                json: JSON.stringify({
+                    iCalTurnoId: iCalTurnoId
+                }),
+                _opcion: 'deleteCalTurno',
+            })
+            .subscribe({
+                next: (data: any) => {
+                    // this.modalidades = data.data
 
+                },
+                error: (error) => {
+                    console.error('Error fetching turnos:', error)
+                    // ? Mover cuando la consulta no de errores
+                    this.getFormasAtencion()
+                },
+                complete: () => {
+                    console.log('Request completed')
+                },
+            })
     }
 
     showDialog() {
@@ -270,6 +298,7 @@ export class TurnosComponent implements OnInit, OnChanges {
             })
             .subscribe({
                 next: (data: any) => {
+                    console.log('Formas de atencion')
                     console.log(data)
 
                     this.ticketService.setTicketInformation(

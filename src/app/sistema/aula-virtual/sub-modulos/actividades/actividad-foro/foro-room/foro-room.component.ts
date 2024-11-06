@@ -21,6 +21,7 @@ import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.ser
 import { tipoActividadesKeys } from '@/app/sistema/aula-virtual/interfaces/actividad.interface'
 import { Subject, takeUntil } from 'rxjs'
 import { RemoveHTMLPipe } from '@/app/shared/pipes/remove-html.pipe'
+import { NgFor } from '@angular/common'
 @Component({
     selector: 'app-foro-room',
     standalone: true,
@@ -34,6 +35,7 @@ import { RemoveHTMLPipe } from '@/app/shared/pipes/remove-html.pipe'
         TabViewModule,
         OrderListModule,
         PrimengModule,
+        NgFor,
     ],
     providers: [
         provideIcons({
@@ -60,6 +62,7 @@ export class ForoRoomComponent implements OnInit {
     estudiantes: any[] = []
     calificacion: any[] = []
     respuestasForo: any[] = []
+    comentarios: any[] = []
     modalCalificacion: boolean = false
     estudianteSelect = null
     private unsbscribe$ = new Subject<boolean>()
@@ -119,6 +122,7 @@ export class ForoRoomComponent implements OnInit {
 
         this._aulaService.guardarRespuesta(comment).subscribe(
             (response) => {
+                this.comentarios.push(comment)
                 console.log('Comentario Guardado:', response)
 
                 this.foroFormComntAl.get('cForoRptaRespuesta')?.reset()
@@ -135,6 +139,7 @@ export class ForoRoomComponent implements OnInit {
             //console.log('Mostrar escala',this.calificacion)
         })
     }
+    foroRespaldo = []
     obtenerForo() {
         this._aulaService
             .obtenerForo({
@@ -145,6 +150,9 @@ export class ForoRoomComponent implements OnInit {
             .subscribe({
                 next: (resp) => {
                     this.foro = resp
+                    this.FilesTareas = this.foro?.cForoUrl
+                        ? JSON.parse(this.foro?.cForoUrl)
+                        : []
                 },
             })
     }
@@ -174,5 +182,8 @@ export class ForoRoomComponent implements OnInit {
             },
         })
         //console.log('Datos estudiante', this.GeneralService)
+    }
+    abrirPDF(url: any) {
+        window.open(url, '_blank')
     }
 }

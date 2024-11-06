@@ -5,7 +5,7 @@ const store = new LocalStoreService()
 const perfil = store.getItem('dremoPerfil')
 const verificado = store.getItem('dremoPerfilVerificado')
 const user = store.getItem('dremoUser')
-
+const iYAcadId = store.getItem('dremoYear')
 const inicio = {
     label: 'Inicio',
     icon: 'pi pi-fw pi-home',
@@ -618,6 +618,8 @@ export class ConstantesService {
     iEspecialistaId = user?.iEspecialistaId ?? 1
     iEstudianteId = user ? user?.iEstudianteId : null
     iPerfilId = perfil ? Number(perfil.iPerfilId) : null
+    iYAcadId = iYAcadId
+
     nav = this.getMenu()
     getMenu() {
         if (!perfil) return first

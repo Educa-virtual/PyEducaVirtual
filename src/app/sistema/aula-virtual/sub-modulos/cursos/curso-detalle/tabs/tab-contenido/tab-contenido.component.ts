@@ -364,6 +364,16 @@ export class TabContenidoComponent implements OnInit {
         }
     }
 
+    anularPublicacionEvaluacion({ iEvaluacionId }) {
+        this._evalService
+            .anularPublicacionEvaluacion({ iEvaluacionId })
+            .subscribe({
+                next: () => {
+                    this.obtenerContenidoSemanas()
+                },
+            })
+    }
+
     // maneja las acciones de las evaluaciones
     handleEvaluacionAction(action: string, actividad: IActividad) {
         if (action === 'CREAR' || action === 'EDITAR') {
@@ -425,6 +435,16 @@ export class TabContenidoComponent implements OnInit {
                 },
             })
         }
+        if (action === 'ANULAR_PUBLICACION') {
+            this._confirmService.openConfirm({
+                header: '¿Esta seguro de anular la publicación de la evaluación?',
+                accept: () => {
+                    this.anularPublicacionEvaluacion({
+                        iEvaluacionId: actividad.ixActivadadId,
+                    })
+                },
+            })
+        }
     }
 
     // todo usar valores reales
@@ -433,12 +453,13 @@ export class TabContenidoComponent implements OnInit {
             iEvaluacionId: actividad.ixActivadadId,
             iCursoId: 1,
             iSeccionId: 2,
-            iYAcadId: 3,
+            iYAcadId: this._constantesService.iYAcadId,
             iSemAcadId: 3,
             iNivelGradoId: 1,
             iCurrId: 1,
             iEstado: 2,
         }
+
         this._evalService
             .publicarEvaluacion(data)
             .pipe(takeUntil(this._unsubscribe$))

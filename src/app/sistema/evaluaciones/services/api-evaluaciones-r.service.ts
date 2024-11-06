@@ -8,6 +8,10 @@ import { mapData } from '../sub-evaluaciones/banco-preguntas/models/pregunta-dat
     providedIn: 'root',
 })
 export class ApiEvaluacionesRService {
+    //MOVI AQUI
+    // ereVerEvaluacion(iEvaluacionId: number) {
+    //     throw new Error('Method not implemented.')
+    // }
     private baseUrl = environment.backendApi
     private baseUrlBackend = environment.backend
     private http = inject(HttpClient)
@@ -73,12 +77,13 @@ export class ApiEvaluacionesRService {
             data
         )
     }
-    obtenerParticipaciones(iEvaluacionId: any): Observable<any> {
-        // Guardar el ID de evaluación
-        return this.http.get(
-            `${this.baseUrl}/ere/Evaluaciones/obtenerParticipaciones?iEvaluacionId=${iEvaluacionId}`
-        )
-    }
+    //MOVI AQUI
+    // obtenerParticipaciones(iEvaluacionId: any): Observable<any> {
+    //     // Guardar el ID de evaluación
+    //     return this.http.get(
+    //         `${this.baseUrl}/ere/Evaluaciones/obtenerParticipaciones?iEvaluacionId=${iEvaluacionId}`
+    //     )
+    // }
 
     guardarActualizarPreguntaConAlternativas(data) {
         return this.http.post(

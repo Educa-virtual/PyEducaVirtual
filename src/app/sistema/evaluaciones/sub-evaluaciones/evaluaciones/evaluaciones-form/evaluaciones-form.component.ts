@@ -99,6 +99,8 @@ export class EvaluacionesFormComponent implements OnInit {
         this.obtenerNivelEvaluacion()
         this.ereCrearFormulario()
         this.ereVerEvaluacion()
+        //alert(this.accion)
+        //alert(this.esModoEdicion)
         this.esModoEdicion = this.accion === 'editar'
         // Aquí podrías establecer `esModoEdicion` en base a si ya hay un ID de evaluación
         if (this.evaluacionFormGroup.get('iEvaluacionId').value) {

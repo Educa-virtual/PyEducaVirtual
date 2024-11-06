@@ -83,9 +83,10 @@ export class IeparticipaComponent implements OnInit {
         this.obtenerIE()
         this.obtenerNivelTipo()
         this.obtenerugel()
-        this.obtenerParticipaciones(
-            this.compartirIdEvaluacionService.iEvaluacionId
-        )
+        //MOVI AQUI
+        // this.obtenerParticipaciones(
+        //     this.compartirIdEvaluacionService.iEvaluacionId
+        // )
         this.nivelTipo = [
             { cNivelTipoNombre: 'Primaria', iNivelTipoId: 'NY' },
             { cNivelTipoNombre: 'Secundaria', iNivelTipoId: 'RM' },
@@ -232,46 +233,47 @@ export class IeparticipaComponent implements OnInit {
     //         })
     // }
     //CAMBIOS
-    obtenerParticipaciones(iEvaluacionId: number) {
-        console.log('ID de evaluación enviado:', iEvaluacionId)
+    //MOVI AQUI
+    // obtenerParticipaciones(iEvaluacionId: number) {
+    //     console.log('ID de evaluación enviado:', iEvaluacionId)
 
-        this._apiEre
-            .obtenerParticipaciones(iEvaluacionId)
-            .pipe(takeUntil(this.unsubscribe$))
-            .subscribe({
-                next: (resp: any) => {
-                    // Verifica la estructura de la respuesta completa
-                    console.log('Estructura completa de resp:', resp)
-                    // Asegúrate de que `resp.data` tiene los datos esperados
-                    console.log('Datos en resp.data:', resp.data)
+    //     this._apiEre
+    //         .obtenerParticipaciones(iEvaluacionId)
+    //         .pipe(takeUntil(this.unsubscribe$))
+    //         .subscribe({
+    //             next: (resp: any) => {
+    //                 // Verifica la estructura de la respuesta completa
+    //                 console.log('Estructura completa de resp:', resp)
+    //                 // Asegúrate de que `resp.data` tiene los datos esperados
+    //                 console.log('Datos en resp.data:', resp.data)
 
-                    // Dividir datos en base a `participa`
-                    this.targetProducts = resp.data
-                        .filter((item: any) => !item.participa) // IE no participan
-                        .map((item: any) => ({
-                            ...item,
-                            cIieeNombre: item.cIieeNombre,
-                            cIieeCodigoModular: item.cIieeCodigoModular,
-                            cNivelTipoNombre: item.cNivelTipoNombre,
-                        }))
+    //                 // Dividir datos en base a `participa`
+    //                 this.targetProducts = resp.data
+    //                     .filter((item: any) => !item.participa) // IE no participan
+    //                     .map((item: any) => ({
+    //                         ...item,
+    //                         cIieeNombre: item.cIieeNombre,
+    //                         cIieeCodigoModular: item.cIieeCodigoModular,
+    //                         cNivelTipoNombre: item.cNivelTipoNombre,
+    //                     }))
 
-                    this.sourceProducts = resp.data
-                        .filter((item: any) => item.participa) // IE participan
-                        .map((item: any) => ({
-                            ...item,
-                            cIieeNombre: item.cIieeNombre,
-                            cIieeCodigoModular: item.cIieeCodigoModular,
-                            cNivelTipoNombre: item.cNivelTipoNombre,
-                        }))
+    //                 this.sourceProducts = resp.data
+    //                     .filter((item: any) => item.participa) // IE participan
+    //                     .map((item: any) => ({
+    //                         ...item,
+    //                         cIieeNombre: item.cIieeNombre,
+    //                         cIieeCodigoModular: item.cIieeCodigoModular,
+    //                         cNivelTipoNombre: item.cNivelTipoNombre,
+    //                     }))
 
-                    console.log('IE No participan:', this.sourceProducts)
-                    console.log('IE Participan:', this.targetProducts)
-                },
-                error: (error) => {
-                    console.error('Error al obtener participaciones:', error)
-                },
-            })
-    }
+    //                 console.log('IE No participan:', this.sourceProducts)
+    //                 console.log('IE Participan:', this.targetProducts)
+    //             },
+    //             error: (error) => {
+    //                 console.error('Error al obtener participaciones:', error)
+    //             },
+    //         })
+    // }
     onChange() {
         //alert(v)
         // alert(JSON.stringify(event))

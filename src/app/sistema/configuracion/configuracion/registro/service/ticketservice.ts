@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core'
 import { Subject } from 'rxjs'
+import { httpService } from '../../http/httpService'
 
 export type ArrayElement<ArrayType extends readonly unknown[]> =
     ArrayType extends readonly (infer ElementType)[] ? ElementType : never
@@ -20,15 +21,15 @@ export class TicketService {
             fechaInicio: Date
             fechaFin: Date
             matriculaInicio?: Date
-            matriculaFin?: Date,
+            matriculaFin?: Date
             fases_promocional?: {
-                iFaseId?: string,
-                iFasePromId?: string,
-                cFasePromNombre?: string,
-                dtFaseInicio?: Date,
-                dtFaseFin?: Date,
-                bCalAcadFaseRegular?: boolean,
-                bCalAcadFaseRecuperacion?: boolean,
+                iFaseId?: string
+                iFasePromId?: string
+                cFasePromNombre?: string
+                dtFaseInicio?: Date
+                dtFaseFin?: Date
+                bCalAcadFaseRegular?: boolean
+                bCalAcadFaseRecuperacion?: boolean
             }
         }
 
@@ -68,6 +69,8 @@ export class TicketService {
     private registrationComplete = new Subject<any>()
 
     registrationComplete$ = this.registrationComplete.asObservable()
+
+    constructor(private httpService: httpService) {}
 
     getTicketInformation() {
         return this.registroInformation
@@ -147,60 +150,173 @@ export class TicketService {
 
         return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
     }
-    
 
     periodosDuracion = {
         bimestral: 60,
         trimestral: 90,
         semestral: 180,
-    };
-    
+    }
+
     calcularFechaPeriodos(inicio, fin, tipo) {
         // Verifica si el tipo es válido
-        const periodos = [];
-        const fechaInicio = new Date(inicio);
-        const fechaFin = new Date(fin);
-        const duracion = this.periodosDuracion[tipo];
-    
+        const periodos = []
+        const fechaInicio = new Date(inicio)
+        const fechaFin = new Date(fin)
+        const duracion = this.periodosDuracion[tipo]
+
         // Calcular la fecha de cada periodo
-        let contador = 1; // Contador para los períodos
-        let key;
+        let contador = 1 // Contador para los períodos
+        let key
 
         for (const [clave, valor] of Object.entries(this.periodosDuracion)) {
             if (tipo === 'trimestral') {
-                key = 'trimestre'; // Retorna la clave si el valor coincide
+                key = 'trimestre' // Retorna la clave si el valor coincide
             }
             if (tipo === 'semestral') {
-                key = 'semestre'; // Retorna la clave si el valor coincide
+                key = 'semestre' // Retorna la clave si el valor coincide
             }
             if (tipo === 'bimestral') {
-                key = 'bimestre'; // Retorna la clave si el valor coincide
+                key = 'bimestre' // Retorna la clave si el valor coincide
             }
         }
-    
-    
+
         while (fechaInicio < fechaFin) {
             // Clonar fecha de inicio para calcular la fecha de fin del período
-            const fechaFinPeriodo = new Date(fechaInicio.getTime());
-            fechaFinPeriodo.setDate(fechaFinPeriodo.getDate() + duracion);
-    
+            const fechaFinPeriodo = new Date(fechaInicio.getTime())
+            fechaFinPeriodo.setDate(fechaFinPeriodo.getDate() + duracion)
+
             // Añadir el período al array
             periodos.push({
                 fechaInicio: new Date(fechaInicio),
-                fechaFin: fechaFinPeriodo > fechaFin ? new Date(fechaFin) : fechaFinPeriodo,
+                fechaFin:
+                    fechaFinPeriodo > fechaFin
+                        ? new Date(fechaFin)
+                        : fechaFinPeriodo,
                 descripcion: `${contador}° ${key}`,
-            });
-    
+            })
+
             // Avanzar el inicio para el próximo período
-            fechaInicio.setDate(fechaInicio.getDate() + duracion);
-            contador++;
+            fechaInicio.setDate(fechaInicio.getDate() + duracion)
+            contador++
         }
-    
-    
-    
-        return periodos;
+
+        return periodos
     }
-    
-    
-    
+
+    setModeSteps(mode: typeof this.registroInformation.mode) {
+        this.registroInformation = {
+            mode: mode,
+        }
+    }
+
+    getCalendar(
+        {
+            iSedeId,
+            iYAcadId,
+            iCalAcadId,
+        }: { iSedeId: string; iYAcadId: string; iCalAcadId: string },
+        onNextCallbacks: (() => void)[] = []
+    ) {
+        this.httpService
+            .postData('acad/calendarioAcademico/addCalAcademico', {
+                json: JSON.stringify({
+                    iSedeId: iSedeId,
+                    iYAcadId: iYAcadId,
+                    iCalAcadId: iCalAcadId,
+                }),
+                _opcion: 'getCalendarioIE',
+            })
+            .subscribe({
+                next: (data: any) => {
+                    this.setTicketInformation(
+                        {
+                            iCalAcadId: iCalAcadId,
+                            iYAcadId: iYAcadId,
+                        },
+                        'calendar'
+                    )
+
+                    onNextCallbacks.forEach((callback) => callback())
+                },
+                error: (error) => {
+                    console.error('Error fetching turnos:', error)
+                },
+                complete: () => {
+                    console.log('Request completed')
+                },
+            })
+    }
+
+    // example ticket dia:
+    // {
+    //     iDiaLabId: '54'
+    //     iDiaId: '2'
+    //     iDia: '2'
+    //     cDiaNombre: 'MARTES'
+    //     cDiaAbreviado: 'MA'
+    // }
+
+    getDiasLaborales({ iCalAcadId }: { iCalAcadId: string }) {
+        this.httpService
+            .postData('acad/calendarioAcademico/addCalAcademico', {
+                json: JSON.stringify({
+                    iCalAcadId: iCalAcadId,
+                }),
+                _opcion: 'getCalendarioDiasLaborables',
+            })
+            .subscribe({
+                next: (data: any) => {
+                    console.log('Dias Laborales')
+                    console.log(JSON.parse(data.data[0]['calDiasDatos']))
+
+                    let filterDiasLaborales = JSON.parse(
+                        data.data[0]['calDiasDatos']
+                    ).map((dia) => ({
+                        iDiaLabId: String(dia.iDiaLabId),
+                        iDiaId: String(dia.iDiaId),
+                        iDia: String(dia.iDiaId),
+                        cDiaNombre: dia.cDiaNombre,
+                        cDiaAbreviado: dia.cDiaAbreviado,
+                    }))
+
+                    // this.diasFetch = filterDiasLaborales
+
+                    // const resultado = this.dias.map((diaOption) => {
+                    //     const coincidencia = filterDiasLaborales.find(
+                    //         (diaSelect) => diaSelect.iDiaId === diaOption.iDiaId
+                    //     )
+                    //     return coincidencia || diaOption
+                    // })
+
+                    // filterDiasLaborales.forEach((diaSelect) => {
+                    //     const existeEnResultado = resultado.some(
+                    //         (item) => item.iDiaId === diaSelect.iDiaId
+                    //     )
+                    //     if (!existeEnResultado) {
+                    //         resultado.push(diaSelect)
+                    //     }
+                    // })
+
+                    // this.dias = resultado
+
+                    // this.ticketService.setTicketInformation(
+                    //     filterDiasLaborales,
+                    //     'stepDiasLaborales'
+                    // )
+
+                    // this.diasSelection =
+                    //     this.ticketService.registroInformation.stepDiasLaborales
+                },
+                error: (error) => {
+                    console.error('Error fetching turnos:', error)
+                },
+                complete: () => {
+                    console.log('Request completed')
+                },
+            })
+    }
+
+    getFormasAtencion() {}
+
+    getPeriodosAcademicos() {}
 }

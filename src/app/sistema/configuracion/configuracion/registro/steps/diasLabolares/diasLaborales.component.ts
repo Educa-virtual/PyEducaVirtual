@@ -90,6 +90,8 @@ export class DiasLaboralesComponent implements OnInit, OnChanges {
 
                         this.diasFetch = filterDiasLaborales
 
+                        console.log(this.diasFetch)
+                        
                         const resultado = this.dias.map((diaOption) => {
                             const coincidencia = filterDiasLaborales.find(
                                 (diaSelect) =>
@@ -108,14 +110,15 @@ export class DiasLaboralesComponent implements OnInit, OnChanges {
                         })
 
                         this.dias = resultado
-
+                        
                         this.ticketService.setTicketInformation(
                             filterDiasLaborales,
                             'stepDiasLaborales'
                         )
-
+                        
                         this.diasSelection =
-                            this.ticketService.registroInformation.stepDiasLaborales
+                        this.ticketService.registroInformation.stepDiasLaborales
+                        console.log(this.diasSelection)
                     },
                     error: (error) => {
                         console.error('Error fetching turnos:', error)
@@ -154,6 +157,9 @@ export class DiasLaboralesComponent implements OnInit, OnChanges {
     onSelectionChange(
         columnsChecked: typeof this.ticketService.registroInformation.stepDiasLaborales
     ) {
+        console.log(columnsChecked);
+        
+
         this.ticketService.setTicketInformation(
             columnsChecked,
             'stepDiasLaborales'

@@ -48,10 +48,11 @@ export class YearsComponent implements OnInit {
                             fecha.dtCalAcadInicio,
                             'YYYY'
                         ),
-                        dtCalAcadInicio: this.ticketService.toVisualFechasFormat(
-                            fecha.dtCalAcadInicio,
-                            'DD/MM/YY'
-                        ),
+                        dtCalAcadInicio:
+                            this.ticketService.toVisualFechasFormat(
+                                fecha.dtCalAcadInicio,
+                                'DD/MM/YY'
+                            ),
                         dtCalAcadFin: this.ticketService.toVisualFechasFormat(
                             fecha.dtCalAcadFin,
                             'DD/MM/YY'
@@ -95,41 +96,19 @@ export class YearsComponent implements OnInit {
                 // Lógica para la acción "editar"
                 console.log('Editando')
                 console.log(row.item.iYAcadId)
-                this.httpService
-                    .postData('acad/calendarioAcademico/addCalAcademico', {
-                        json: JSON.stringify({
-                            iSedeId: row.item.iSedeId,
-                            iYAcadId: row.item.iYAcadId,
-                            iCalAcadId: row.item.iCalAcadId,
-                        }),
-                        _opcion: 'getCalendarioIE',
-                    })
-                    .subscribe({
-                        next: (data: any) => {
-                            this.ticketService.registroInformation = {
-                                mode: 'edit',
-                            }
+                this.ticketService.setModeSteps('edit')
 
-                            console.log('El calendario')
-                            console.log(data)
+                this.ticketService.getCalendar(
+                    {
+                        iSedeId: row.item.iSedeId,
+                        iYAcadId: row.item.iYAcadId,
+                        iCalAcadId: row.item.iCalAcadId,
+                    },
+                    [() => this.navigateToRegistro()]
+                    // []
+                )
 
-                            this.ticketService.setTicketInformation(
-                                {
-                                    iCalAcadId: row.item.iCalAcadId,
-                                    iYAcadId: row.item.iYAcadId,
-                                },
-                                'calendar'
-                            )
-
-                            this.navigateToRegistro()
-                        },
-                        error: (error) => {
-                            console.error('Error fetching turnos:', error)
-                        },
-                        complete: () => {
-                            console.log('Request completed')
-                        },
-                    })
+                this.ticketService.getDiasLaborales({iCalAcadId: row.item.iCalAcadId})
             },
             eliminar: () => {
                 // Lógica para la acción "eliminar"
@@ -209,9 +188,9 @@ export class YearsComponent implements OnInit {
     ]
 
     navigateToRegistro() {
-        if(!this.ticketService.registroInformation.mode){
+        if (!this.ticketService.registroInformation.mode) {
             this.ticketService.registroInformation = {
-                mode: 'create'
+                mode: 'create',
             }
         }
         this.router.navigate(['configuracion/configuracion/registro'])

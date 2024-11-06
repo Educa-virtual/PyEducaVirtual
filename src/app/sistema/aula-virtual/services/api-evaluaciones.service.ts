@@ -130,6 +130,13 @@ export class ApiEvaluacionesService {
         )
     }
 
+    anularPublicacionEvaluacion(data) {
+        return this.http.post<ApiResponse>(
+            `${this.baseUrlApi}/evaluaciones/evaluacion/anular-publicacion`,
+            data
+        )
+    }
+
     obtenerEstudiantesEvaluación(params) {
         return this.http
             .get<ApiResponse>(

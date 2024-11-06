@@ -364,6 +364,16 @@ export class TabContenidoComponent implements OnInit {
         }
     }
 
+    anularPublicacionEvaluacion({ iEvaluacionId }) {
+        this._evalService
+            .anularPublicacionEvaluacion({ iEvaluacionId })
+            .subscribe({
+                next: () => {
+                    this.obtenerContenidoSemanas()
+                },
+            })
+    }
+
     // maneja las acciones de las evaluaciones
     handleEvaluacionAction(action: string, actividad: IActividad) {
         if (action === 'CREAR' || action === 'EDITAR') {
@@ -422,6 +432,16 @@ export class TabContenidoComponent implements OnInit {
                 header: '¿Esta seguro de publicar la evaluación?',
                 accept: () => {
                     this.publicarEvaluacion(actividad)
+                },
+            })
+        }
+        if (action === 'ANULAR_PUBLICACION') {
+            this._confirmService.openConfirm({
+                header: '¿Esta seguro de anular la publicación de la evaluación?',
+                accept: () => {
+                    this.anularPublicacionEvaluacion({
+                        iEvaluacionId: actividad.ixActivadadId,
+                    })
                 },
             })
         }

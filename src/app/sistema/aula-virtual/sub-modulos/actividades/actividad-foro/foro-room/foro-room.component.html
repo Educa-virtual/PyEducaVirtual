@@ -106,7 +106,6 @@
                 </article>
                 <article class="card">
                     <h2>Recursos:</h2>
-                    {{ foro?.cForoUrl }}
                     <ul class="list-none p-0 m-0">
                         <li
                             *ngFor="let item of FilesTareas; let idx = index"
@@ -118,42 +117,17 @@
                                     item.name
                                 }}</span>
                             </div>
+                            <div style="margin-left: auto">
+                                <p-button
+                                    label="Ver pdf"
+                                    [raised]="true"
+                                    severity="danger"
+                                    ico="pi pi-eye"
+                                    (click)="abrirPDF(item.url)"
+                                />
+                            </div>
                         </li>
                     </ul>
-                </article>
-
-                <article class="card flex flex-column gap-4">
-                    <!-- <div class="flex justify-content-between flex-wrap gap-2">
-                    <h2>Preguntas</h2>
-                    <button
-                        pButton
-                        icon="pi pi-plus"
-                        size="small"
-                        class="flex gap-2"
-                    >
-                        Agregar Pregunta
-                    </button>
-                </div> -->
-
-                    <!-- @if (
-                    evaluacion?.preguntas === null ||
-                    evaluacion?.preguntas === undefined ||
-                    evaluacion?.preguntas.length === 0
-                ) {
-                    <div
-                        class="bg-indigo-200 p-2 border-round h-10rem flex justify-content-center align-items-center gap-2 flex-column"
-                    >
-                        <app-icon name="matHideSource" size="xl"></app-icon>
-                        <p class="text-2xl">
-                            No se Encontraron Preguntas en esta Evaluacion
-                        </p>
-                    </div>
-                } @else {
-                    <app-evaluacion-form-preguntas
-                        [tituloEvaluacion]="''"
-                        [preguntas]="evaluacion?.preguntas ?? []"
-                    ></app-evaluacion-form-preguntas>
-                } -->
                 </article>
             </div>
         </p-tabPanel>
@@ -186,6 +160,8 @@
                                 >
                                     <ng-template
                                         let-respuestas
+                                        of
+                                        comentarios
                                         pTemplate="listItem"
                                     >
                                         <p-button
@@ -223,10 +199,6 @@
                                                             respuestas?.cForoRptaRespuesta
                                                         }}
                                                     </div>
-                                                    <!-- <div class="perfil-description">Nivel: {{ null }}</div>
-                                                <div class="perfil-description">
-                                                    {{ perfiles.cEntNombreLargo }}
-                                                </div> -->
                                                 </div>
                                             </div>
                                         </p-button>
@@ -240,6 +212,7 @@
                                         id="commentText"
                                         formControlName="cForoRptaRespuesta"
                                     />
+
                                     <button
                                         class="send-button"
                                         (click)="sendComment()"
@@ -263,6 +236,10 @@
                                 </b>
                                 <ul class="list-none p-0 m-0">
                                     <li
+                                        *ngFor="
+                                            let item of FilesTareas;
+                                            let idx = index
+                                        "
                                         class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap"
                                     >
                                         <div
@@ -271,29 +248,18 @@
                                             <i
                                                 class="pi pi-file text-lg text-primary"
                                             ></i>
-                                            <span class="font-medium text-lg"
-                                                >Recurso.pdf</span
-                                            >
-                                            <span class="text-gray-500"
-                                                >tamaño(319.532KB)</span
-                                            >
+                                            <span class="font-medium text-lg">{{
+                                                item.name
+                                            }}</span>
                                         </div>
-                                    </li>
-                                    <li
-                                        class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap"
-                                    >
-                                        <div
-                                            class="flex gap-2 align-items-center"
-                                        >
-                                            <i
-                                                class="pi pi-file text-lg text-primary"
-                                            ></i>
-                                            <span class="font-medium text-lg"
-                                                >Recurso.pdf</span
-                                            >
-                                            <span class="text-gray-500"
-                                                >tamaño(319.532KB)</span
-                                            >
+                                        <div style="margin-left: auto">
+                                            <p-button
+                                                label="Ver pdf"
+                                                [raised]="true"
+                                                severity="danger"
+                                                ico="pi pi-eye"
+                                                (click)="abrirPDF(item.url)"
+                                            />
                                         </div>
                                     </li>
                                 </ul>

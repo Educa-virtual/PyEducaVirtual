@@ -8,8 +8,10 @@ import { DialogModule } from 'primeng/dialog'
 import { DropdownModule } from 'primeng/dropdown'
 import { httpService } from '../../../http/httpService'
 import { TicketService, type ArrayElement } from '../../service/ticketservice'
-
+import { FloatLabelModule } from 'primeng/floatlabel'
 import { IActionTable } from '@/app/shared/table-primeng/table-primeng.component'
+import { InputTextModule } from 'primeng/inputtext';
+import { CalendarModule } from 'primeng/calendar'
 
 @Component({
     selector: 'app-periodosAcademicos',
@@ -21,6 +23,9 @@ import { IActionTable } from '@/app/shared/table-primeng/table-primeng.component
         FormsModule,
         DialogModule,
         DropdownModule,
+        FloatLabelModule,
+        InputTextModule,
+        CalendarModule
     ],
     templateUrl: './periodosAcademicos.component.html',
     styleUrl: './periodosAcademicos.component.scss',
@@ -63,6 +68,9 @@ export class PeriodosAcademicosComponent implements OnInit, OnChanges {
     >
 
     form: FormGroup
+
+    visibleEditPeriodo: boolean = false
+    formPeriodo: FormGroup
     visible: boolean = false
 
     periodosInformation
@@ -75,6 +83,13 @@ export class PeriodosAcademicosComponent implements OnInit, OnChanges {
         this.form = this.fb.group({
             periodo: [''],
             cicloAcademico: [''],
+        })
+
+        this.formPeriodo = this.fb.group({
+            id: [''],
+            periodo: [''],
+            fechaInicio: [''],
+            fechaFin: [''],
         })
     }
 
@@ -192,9 +207,17 @@ export class PeriodosAcademicosComponent implements OnInit, OnChanges {
     showDialog() {
         this.visible = true
     }
-
+    
     hiddenDialog(){
         this.visible = false
+    }
+    
+    showDialogEditPeriodo(){
+        this.visibleEditPeriodo = true
+    }
+    
+    hiddenDialogEditPeriodo(){
+        this.visibleEditPeriodo = false
     }
 
     indexColumns() {
@@ -297,6 +320,11 @@ export class PeriodosAcademicosComponent implements OnInit, OnChanges {
             console.log(value)
         })
 
+        this.formPeriodo.valueChanges.subscribe((value) => {
+
+            console.log(value)
+        })
+
         this.httpService
             .postData('acad/calendarioAcademico/addCalAcademico', {
                 json: JSON.stringify({
@@ -341,6 +369,7 @@ export class PeriodosAcademicosComponent implements OnInit, OnChanges {
             ...this.cicloAcademicoModal,
             ciclosAcademicos: this.periodosInformation.map((periodo, index) => ({
                 index: index + 1,
+                iPeriodoEvalAperId: periodo.iPeriodoEvalAperId,
                 StartDate: periodo.dtPeriodoEvalAperInicio,
                 EndDate: periodo.dtPeriodoEvalAperFin,
                 EndDateVisual: this.ticketService.toVisualFechasFormat(
@@ -366,9 +395,72 @@ export class PeriodosAcademicosComponent implements OnInit, OnChanges {
         this.showDialog()
     }
 
-    handleActionPeriodos(actions) {
-        console.log(actions)
+    handleActionPeriodos(row) {
+        console.log(row)
+        const actions = {
+            ver: () => {
+                // Lógica para la acción "ver"
+                console.log('Viendo')
+            },
+            editar: () => {
+                // Lógica para la acción "editar"
+                console.log('Editando')
+                console.log(row.item)
+                this.showDialogEditPeriodo()
+                this.formPeriodo.patchValue({
+                    id: row.item.iPeriodoEvalAperId,
+                    periodo: row.item.PeriodType,
+                    fechaInicio: new Date(row.item.StartDate),
+                    fechaFin: new Date(row.item.EndDate),
+                })
+
+                this.formPeriodo.get('periodo').disable()
+
+                
+            },
+            eliminar: () => {
+                // Lógica para la acción "eliminar"
+                console.log('Eliminando')
+                console.log(row.item)
+
+                
+            },
+        }
+
+        const action = actions[row.accion]
+        if (action) {
+            action()
+        } else {
+            console.log(`Acción desconocida: ${row.action}`)
+        }
         
+    }
+
+    saveInformationEdit(){
+        this.httpService
+        .postData('acad/calendarioAcademico/addCalAcademico', {
+            json: JSON.stringify({
+                iFaseId: this.ticketService.registroInformation.stepYear.fases_promocional.iFaseId,
+                iPeriodoEvalAperId: String(this.formPeriodo.get('id').value),
+                dtPeriodoEvalAperInicio: this.ticketService.toSQLDatetimeFormat(this.formPeriodo.get('fechaInicio').value),
+                dtPeriodoEvalAperFin: this.ticketService.toSQLDatetimeFormat(this.formPeriodo.get('fechaFin').value),
+            }),
+            _opcion: 'updateCalPeriodoEval',
+        })
+        .subscribe({
+            next: (data: any) => {
+
+            },
+            error: (error) => {
+                console.error('Error fetching turnos:', error)
+                this.getCalendarioPeriodosAcademicos()
+            },
+            complete: () => {
+                console.log('Request completed')
+            },
+        })
+
+        this.hiddenDialogEditPeriodo()
     }
 
     actions: IActionTable[] = [

@@ -15,6 +15,14 @@ import { GestionTrasladosComponent } from './gestion-traslados/gestion-traslados
                         (c) => c.ConfiguracionModule
                     ),
             },
+
+            {
+                path: 'personal',
+                loadChildren: () =>
+                    import('./personal/personal.module').then(
+                        (c) => c.PersonalModule
+                    ),
+            },
             
             { path: 'gestion-traslados', component: GestionTrasladosComponent },
         ]),

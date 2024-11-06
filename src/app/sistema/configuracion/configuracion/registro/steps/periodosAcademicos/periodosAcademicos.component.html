@@ -55,4 +55,34 @@
             </div>
         </form>
     </p-dialog>
+
+    <p-dialog
+        header="Editando periodo de formación"
+        [(visible)]="visibleEditPeriodo"
+        [style]="{ width: '30rem', height: 'max-content', 'padding-block': '4rem' }"
+    >
+        <form [formGroup]="formPeriodo" class="flex flex-column gap-4">
+            <div class="flex flex-column gap-2">
+                <label for="periodo">Periodo de evaluación formativa</label>
+                <input pInputText id="periodo" formControlName="periodo" />
+            </div>
+            <div class="flex flex-column gap-2">
+                <label for="birth_date">Fecha inicio</label>
+                <p-calendar class="flex" appendTo="body" iputId="birth_date" [showIcon]="true" formControlName="fechaInicio" />
+            </div>
+            <div class="flex flex-column gap-2">
+                <label for="birth_date">Fecha fin</label>
+                <p-calendar appendTo="body" inputId="birth_date" 
+                [showIcon]="true" formControlName="fechaFin" />
+            </div>
+            <div class="flex justify-content-end gap-2">
+                <p-button
+                    label="Cancel"
+                    severity="secondary"
+                    (onClick)="visibleEditPeriodo = false"
+                />
+                <p-button label="Guardar" (onClick)="saveInformationEdit()" />
+            </div>
+        </form>
+    </p-dialog>
 </div>

@@ -134,6 +134,11 @@ const administrador = [
                         icon: 'pi pi-fw pi-cog',
                         routerLink: ['/configuracion/configuracion'],
                     },
+                    {
+                        label: 'Personal',
+                        icon: 'pi pi-fw pi-cog',
+                        routerLink: ['/configuracion/personal'],
+                    },
                 ],
             },
             {

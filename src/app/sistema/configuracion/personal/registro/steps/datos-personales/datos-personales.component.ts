@@ -1,15 +1,25 @@
 import { Component, OnInit, OnChanges, OnDestroy } from '@angular/core'
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
-
-import { Output, EventEmitter } from '@angular/core'
-
+import { CalendarModule } from 'primeng/calendar'
+import { InputTextModule } from 'primeng/inputtext'
+import { FloatLabelModule } from 'primeng/floatlabel'
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { Router } from '@angular/router'
 
 @Component({
     selector: 'app-datos-personales',
     standalone: true,
-    imports: [ContainerPageComponent, TablePrimengComponent],
+    imports: [
+        ContainerPageComponent,
+        TablePrimengComponent,
+        CalendarModule,
+        InputTextModule,
+        FloatLabelModule,
+        InputGroupModule,
+        InputGroupAddonModule
+    ],
     templateUrl: './datos-personales.component.html',
     styleUrl: './datos-personales.component.scss',
     providers: [],
@@ -17,15 +27,9 @@ import { Router } from '@angular/router'
 export class DatosPersonalesComponent implements OnInit {
     fechasAcademicas
 
-    @Output() emitMode = new EventEmitter()
-    constructor(
-        private router: Router,
+    constructor(private router: Router) {}
 
-    ) {}
-
-    ngOnInit(): void {
-        
-    }
+    ngOnInit(): void {}
 
     actionsContainer = [
         {
@@ -47,7 +51,6 @@ export class DatosPersonalesComponent implements OnInit {
             },
             editar: () => {
                 // Lógica para la acción "editar"
-                
             },
             eliminar: () => {
                 // Lógica para la acción "eliminar"
@@ -127,7 +130,6 @@ export class DatosPersonalesComponent implements OnInit {
     ]
 
     navigateToRegistro() {
-
         this.router.navigate(['configuracion/configuracion/registro'])
     }
 

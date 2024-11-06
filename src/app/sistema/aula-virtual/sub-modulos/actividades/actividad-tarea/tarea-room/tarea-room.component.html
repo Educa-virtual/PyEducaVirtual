@@ -102,7 +102,7 @@
                     @if (iEstadoEstudianteTarea !== null) {
                         <div
                             class="card-body m-3"
-                            [hidden]="iEstadoEstudianteTarea === 1"
+                            [hidden]="iEstadoEstudianteTarea"
                         >
                             <h4>Tu Trabajo</h4>
                             <p-divider></p-divider>
@@ -173,7 +173,7 @@
                         </div>
                         <div
                             class="card-body m-3"
-                            [hidden]="iEstadoEstudianteTarea === 0"
+                            [hidden]="!iEstadoEstudianteTarea"
                         >
                             <h4>Tu Trabajo ya ha sido evaluado</h4>
                             <p-divider></p-divider>

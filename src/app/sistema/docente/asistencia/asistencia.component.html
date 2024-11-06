@@ -79,10 +79,27 @@
                 />
             </div>
         </div>
-        <div class="card flex">
-            <div class="flex flex-column gap-2">
-                <h5>MIS CALENDARIOS</h5>
-                <div *ngFor="let category of categories" class="field-checkbox">
+    </div>
+    <div class="col-9">
+        <full-calendar [options]="calendarOptions">
+            <ng-template #eventContent let-arg>
+                <div class="fc-event-time">{{ arg.timeText }}</div>
+                @if (arg.event.extendedProps.grupo === 'actividades') {
+                    <p-button
+                        styleClass="agregar"
+                        severity="warning"
+                        (click)="editActividad(arg.event.id, arg.event.title)"
+                        >{{ arg.event.title }}
+                    </p-button>
+                } @else {
+                    <div class="fc-event-title">{{ arg.event.title }}</div>
+                }
+            </ng-template>
+        </full-calendar>
+        <div class="card mt-2">
+            <div class="flex font-bold pb-2">MIS CALENDARIOS</div>
+            <div class="flex">
+                <div *ngFor="let category of categories" class="flex mr-2">
                     <p-checkbox
                         [(ngModel)]="category.mostrar"
                         id="calendario"
@@ -94,39 +111,35 @@
                     />
                 </div>
             </div>
+            <div class="flex mt-2">
+                <div class="flex font-bold mr-1">LEYENDA:</div>
+                <div *ngFor="let lista of legenda" class="flex mr-1">
+                    [{{ lista.simbolo }}] {{ lista.significado }}
+                </div>
+            </div>
         </div>
-    </div>
-    <div class="col-9">
-        <full-calendar [options]="calendarOptions">
-            <ng-template #eventContent let-arg>
-                <div class="fc-event-time">{{ arg.timeText }}</div>
-                <div class="fc-event-title">{{ arg.event.title }}</div>
-            </ng-template>
-        </full-calendar>
     </div>
 </div>
 
 <p-dialog
-    header="Edit Profile"
+    header="Editar Programacion"
     [modal]="true"
     [(visible)]="visible"
     [style]="{ width: '25rem' }"
 >
-    <span class="p-text-secondary block mb-5">Update your information.</span>
+    <span class="p-text-secondary block mb-5">Programacion de Actividad</span>
     <div class="flex align-items-center gap-3 mb-3">
-        <label for="username" class="font-semibold w-6rem">Username</label>
-        <input pInputText id="username" class="flex-auto" autocomplete="off" />
-    </div>
-    <div class="flex align-items-center gap-3 mb-5">
-        <label for="email" class="font-semibold w-6rem">Email</label>
-        <input pInputText id="email" class="flex-auto" autocomplete="off" />
+        <label for="username" class="font-semibold w-6rem"
+            >Nombre de Actividad</label
+        >
+        <textarea rows="5" cols="30" pInputTextarea>{{ strTitulo }}</textarea>
     </div>
     <div class="flex justify-content-end gap-2">
         <p-button
             label="Cancel"
             severity="secondary"
-            (onClick)="visible = false"
+            (onClick)="escapeModal()"
         />
-        <p-button label="Save" (onClick)="visible = false" />
+        <p-button label="Guardar" (onClick)="updateActividad()" />
     </div>
 </p-dialog>

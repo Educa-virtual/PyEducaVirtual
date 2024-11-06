@@ -6,19 +6,12 @@ import { Component, OnInit, Input, inject } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
 import { Subject, takeUntil } from 'rxjs'
 import { CalendarOptions } from '@fullcalendar/core'
+import { Data } from '../interfaces/asistencia.interface' // * exportando intefaces
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
-import esLocale from '@fullcalendar/core/locales/es'
-interface Data {
-    accessToken: string
-    refreshToken: string
-    expires_in: number
-    msg?
-    data?
-    validated?: boolean
-    code?: number
-}
+import esLocale from '@fullcalendar/core/locales/es' // * traduce el Modulo de calendario a español
+
 @Component({
     selector: 'app-asistencia',
     standalone: true,
@@ -67,6 +60,7 @@ export class AsistenciaComponent implements OnInit {
      * * Se encarga de mostrar el calendario
      * @param locales Traduce el calendario a español
      * @param events Se encarga de mostrar las actividades programadas por hora y fecha
+     * @param dayMaxEvents limita los eventos del dia para que se desborden del calendario
      */
     calendarOptions: CalendarOptions = {
         plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
@@ -74,7 +68,6 @@ export class AsistenciaComponent implements OnInit {
         initialView: 'dayGridMonth',
         locales: [esLocale],
         weekends: true,
-        height: '100%',
         selectable: true,
         dayMaxEvents: true,
         // eventShortHeight: 30,
@@ -109,47 +102,35 @@ export class AsistenciaComponent implements OnInit {
         this.fechaActual = item.dateStr
     }
 
-    showDialog(id: number) {
-        console.log(id)
-        this.visible = true
-    }
-
     /**
-     * getFechasImportantes
-     * * Se encarga de Obtener de mostras lo siguientes actividades:
-     * * Fechas de actividades Escolares
-     * * Asistencia del Año escolar
-     * * Actividades Programadas
+     * updateActividad
+     * * Muestra una ventana Modal para poder cambiar el nombre de la programacion de actividad
      */
-    getFechasImportantes() {
-        const params = {
-            petition: 'post',
-            group: 'docente',
-            prefix: 'fechas_importantes',
-            ruta: 'list',
-            data: {
-                opcion: 'CONSULTAR_FECHAS_IMPORTANTES',
-            },
-            params: { skipSuccessMessage: true },
-        }
-        this.getInformation(params, 'get_fecha_importante')
+
+    visible: boolean = false // * Muestra la ventana modal
+    strId: string = '' // * Almacena el id de la actividad
+    strTitulo: string = '' // * Almacena el titulo de la actividad
+
+    editActividad(id: any, titulo: any) {
+        this.visible = true
+        this.strId = id
+        this.strTitulo = titulo
     }
 
-    getAsistencia(fechas) {
-        const params = {
-            petition: 'post',
-            group: 'docente',
-            prefix: 'asistencia',
-            ruta: 'list',
-            data: {
-                opcion: 'CONSULTAR_ASISTENCIA_FECHA',
-                iCursoId: this.iCursoId,
-                dtCtrlAsistencia: fechas,
-            },
-            params: { skipSuccessMessage: true },
-        }
-        this.getInformation(params, 'get_asistencia')
+    escapeModal() {
+        this.visible = false
+        this.strId = ''
+        this.strTitulo = ''
     }
+
+    legenda = [
+        { significado: 'Asistio', simbolo: 'X' },
+        { significado: 'Inasistencia', simbolo: 'I' },
+        { significado: 'Inasistencia justificada', simbolo: 'J' },
+        { significado: 'Tardanza', simbolo: 'T' },
+        { significado: 'Tardanza Justificada', simbolo: 'P' },
+        { significado: 'Sin Registro', simbolo: '-' },
+    ]
 
     /**
      * @param categories Muestra los datos del checkbox
@@ -178,8 +159,6 @@ export class AsistenciaComponent implements OnInit {
         },
     ]
 
-    visible: boolean = false
-
     valSelect1: string = ''
     valSelect2: number = 0
 
@@ -192,12 +171,14 @@ export class AsistenciaComponent implements OnInit {
      * @indice limite el cambio de los valores del boton
      * @iTipoAsiId extraemos el indice
      */
+
     tipoMarcado = [
         { iTipoAsiId: '7', cTipoAsiLetra: '-' },
-        { iTipoAsiId: '1', cTipoAsiLetra: 'A' },
+        { iTipoAsiId: '1', cTipoAsiLetra: 'X' },
         { iTipoAsiId: '2', cTipoAsiLetra: 'T' },
-        { iTipoAsiId: '3', cTipoAsiLetra: 'N' },
+        { iTipoAsiId: '3', cTipoAsiLetra: 'I' },
         { iTipoAsiId: '4', cTipoAsiLetra: 'J' },
+        { iTipoAsiId: '9', cTipoAsiLetra: 'P' },
     ]
 
     iTipoAsiId = 0
@@ -213,31 +194,12 @@ export class AsistenciaComponent implements OnInit {
         this.iTipoAsiId = this.tipoMarcado.findIndex(
             (tipo) => tipo.iTipoAsiId == this.data[index]['iTipoAsiId']
         )
-        this.indice = (this.iTipoAsiId + 6) % 5
+        this.indice = (this.iTipoAsiId + 7) % 6
         this.data[index]['iTipoAsiId'] =
             this.tipoMarcado[this.indice]['iTipoAsiId']
         this.data[index]['cTipoAsiLetra'] =
             this.tipoMarcado[this.indice]['cTipoAsiLetra']
         this.data[index]['dtCtrlAsistencia'] = this.fechaActual
-    }
-
-    // * Registro de asistencia del alumno
-    storeAsistencia() {
-        const params = {
-            petition: 'post',
-            group: 'docente',
-            prefix: 'asistencia',
-            ruta: 'list',
-            data: {
-                opcion: 'GUARDAR_ASISTENCIA_ESTUDIANTE',
-                iCursoId: this.iCursoId,
-                asistencia_json: JSON.stringify(this.data),
-                dtCtrlAsistencia: this.fechaActual,
-            },
-            params: { skipSuccessMessage: true },
-        }
-
-        this.getInformation(params, 'get_data')
     }
 
     goAreasEstudio() {
@@ -266,6 +228,93 @@ export class AsistenciaComponent implements OnInit {
             default:
                 break
         }
+    }
+
+    /**
+     * updateActividad
+     * * Se encarga de actualizar las tareas del calendario
+     * @param iTareaId Es el id de tareas
+     * @param cTareaTitulo Es el titulo de la tarea
+     */
+
+    updateActividad() {
+        const params = {
+            petition: 'post',
+            group: 'aula',
+            prefix: 'programa-actividad',
+            ruta: 'list',
+            data: {
+                opcion: 'UPDATE_ACTIVIDAD',
+                iTareaId: this.strId,
+                cTareaTitulo: this.strTitulo,
+            },
+            params: { skipSuccessMessage: true },
+        }
+
+        this.getInformation(params, 'get_data')
+    }
+
+    // * Registro de asistencia del alumno
+
+    storeAsistencia() {
+        const params = {
+            petition: 'post',
+            group: 'docente',
+            prefix: 'asistencia',
+            ruta: 'list',
+            data: {
+                opcion: 'GUARDAR_ASISTENCIA_ESTUDIANTE',
+                iCursoId: this.iCursoId,
+                asistencia_json: JSON.stringify(this.data),
+                dtCtrlAsistencia: this.fechaActual,
+            },
+            params: { skipSuccessMessage: true },
+        }
+
+        this.getInformation(params, 'get_data')
+    }
+
+    /**
+     * getFechasImportantes
+     * * Se encarga de Obtener de mostras lo siguientes actividades:
+     * * Fechas de actividades Escolares
+     * * Asistencia del Año escolar
+     * * Actividades Programadas
+     */
+
+    getFechasImportantes() {
+        const params = {
+            petition: 'post',
+            group: 'docente',
+            prefix: 'fechas_importantes',
+            ruta: 'list',
+            data: {
+                opcion: 'CONSULTAR_FECHAS_IMPORTANTES',
+            },
+            params: { skipSuccessMessage: true },
+        }
+        this.getInformation(params, 'get_fecha_importante')
+    }
+
+    /**
+     * getAsistencia
+     * * Se encarga de Obtener la asistencia por dia seleccionado
+     */
+
+    getAsistencia(fechas) {
+        const params = {
+            petition: 'post',
+            group: 'docente',
+            prefix: 'asistencia',
+            ruta: 'list',
+            data: {
+                opcion: 'CONSULTAR_ASISTENCIA_FECHA',
+                iCursoId: this.iCursoId,
+                dtCtrlAsistencia: fechas,
+            },
+            params: { skipSuccessMessage: true },
+        }
+        this.getInformation(params, 'get_asistencia')
     }
 
     /**

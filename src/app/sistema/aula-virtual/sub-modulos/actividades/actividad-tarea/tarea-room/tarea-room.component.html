@@ -97,57 +97,106 @@
                         </ul>
                     </div>
                 </div>
-                <div class="card col-6" [hidden]="iPerfilId !== 8">
-                    <div class="p-card p-p-6">
-                        <div class="tarea-estudiante">
-                            <h3>Tarea Estudiante:</h3>
 
-                            <!-- Campo para mostrar el archivo subido -->
-                            <div class="p-field">
-                                <input
-                                    type="text"
-                                    placeholder="Trabajo subido"
-                                    readonly
-                                    class="p-inputtext p-d-block col-12"
+                <div class="card col-6" [hidden]="iPerfilId !== 8">
+                    @if (iEstadoEstudianteTarea !== null) {
+                        <div
+                            class="card-body m-3"
+                            [hidden]="iEstadoEstudianteTarea === 1"
+                        >
+                            <h4>Tu Trabajo</h4>
+                            <p-divider></p-divider>
+                            <div class="text-center">
+                                <app-file-upload-primeng
+                                    [nameFile]="'tareas-estudiantes'"
+                                    [nameOption]="'tareas-estudiantes'"
+                                    (actionFileUpload)="accionBtnItem($event)"
+                                ></app-file-upload-primeng>
+                            </div>
+                            @if (FilesTareasEstudiantes.length) {
+                                <div class="col-12">
+                                    <label for="" class="mt-2"
+                                        >Lista de Adjuntos</label
+                                    >
+
+                                    @for (
+                                        item of FilesTareasEstudiantes;
+                                        track item;
+                                        let idx = $index
+                                    ) {
+                                        <p-inputGroup class="mt-1">
+                                            <p-inputGroupAddon>
+                                                @switch (item.type) {
+                                                    @case (1) {
+                                                        <i
+                                                            class="pi pi-upload"
+                                                            style="
+                                                                color: #333437;
+                                                            "
+                                                        ></i>
+                                                    }
+                                                }
+                                            </p-inputGroupAddon>
+                                            <input
+                                                type="text"
+                                                pInputText
+                                                [placeholder]="item.name"
+                                                disabled
+                                            />
+                                            <button
+                                                type="button"
+                                                pButton
+                                                icon="pi pi-trash"
+                                                (click)="
+                                                    FilesTareasEstudiantes.splice(
+                                                        idx,
+                                                        1
+                                                    )
+                                                "
+                                                class="p-button-danger"
+                                            >
+                                                &nbsp;
+                                            </button>
+                                        </p-inputGroup>
+                                    }
+                                </div>
+                            }
+                            <p-divider></p-divider>
+                            <div class="text-right">
+                                <p-button
+                                    label="Enviar Tarea"
+                                    icon="pi pi-check"
+                                    iconPos="right"
+                                    (onClick)="entregarEstudianteTarea()"
                                 />
                             </div>
-
-                            <!-- Botones -->
-                            <div class="buttons p-mt-3 my-2">
-                                <button
-                                    pButton
-                                    type="button"
-                                    label="Entregar trabajo"
-                                    class="p-button-success p-mr-2"
-                                ></button>
-                                <input type="file" id="fileUpload" hidden />
-                                <button
-                                    pButton
-                                    type="button"
-                                    label="Subir"
-                                    class="p-button-info p-mr-2 mx-2"
-                                ></button>
-                                <button
-                                    pButton
-                                    type="button"
-                                    label="Cancelar"
-                                    class="p-button-secondary"
-                                ></button>
-                            </div>
-
-                            <!-- Información de entrega -->
-                            <!-- <div *ngIf="deliveryTime" class="p-mt-3">
-                                <p><strong>Fecha y Hora de Entrega:</strong></p>
-                                <p>{{ deliveryTime }}</p>
-                            </div> -->
-
-                            <!-- Nota -->
-                            <!-- <div *ngIf="grade !== null" class="p-mt-3">
-                                <h4>Nota</h4>
-                                <p>{{ grade }}</p>
-                            </div> -->
                         </div>
-                    </div>
+                        <div
+                            class="card-body m-3"
+                            [hidden]="iEstadoEstudianteTarea === 0"
+                        >
+                            <h4>Tu Trabajo ya ha sido evaluado</h4>
+                            <p-divider></p-divider>
+                            <p-inputGroup>
+                                <p-inputGroupAddon> Nota </p-inputGroupAddon>
+                                <input
+                                    pInputText
+                                    [(ngModel)]="notaTareaEstudiante"
+                                />
+                            </p-inputGroup>
+                            <p-divider></p-divider>
+                            <p-inputGroup>
+                                <p-inputGroupAddon>
+                                    Comentario Docente
+                                </p-inputGroupAddon>
+                                <textarea
+                                    pInputText
+                                    rows="5"
+                                    [(ngModel)]="comentarioTareaEstudiante"
+                                ></textarea>
+                            </p-inputGroup>
+                        </div>
+                    }
                 </div>
             </div>
         </p-tabPanel>

@@ -57,6 +57,7 @@ interface Ugeles {
 })
 export class IeparticipaComponent implements OnInit {
     // @Input() iEvaluacionId: number
+
     private unsubscribe$: Subject<boolean> = new Subject()
     public params = {
         iCompentenciaId: 0,
@@ -222,12 +223,35 @@ export class IeparticipaComponent implements OnInit {
         console.log('Seleccionados:', this.targetProducts)
     }
     //iEvaluacionId: number
+    // obtenerParticipaciones(iEvaluacionId: number) {
+    //     console.log(
+    //         'Valor de iEvaluacionId antes de la llamada:',
+    //         this.compartirIdEvaluacionService.iEvaluacionId
+    //     )
+    //     console.log('ID de evaluación enviado:', iEvaluacionId)
+
+    //     this._apiEre
+    //         .obtenerParticipaciones(iEvaluacionId)
+    //         .pipe(takeUntil(this.unsubscribe$))
+    //         .subscribe({
+    //             next: (resp: any) => {
+    //                 console.log('Participaciones obtenidas:', resp)
+
+    //                 // Dividir los datos entre los que participan y no participan
+    //                 this.sourceProducts = resp.data.filter(
+    //                     (item: any) => !item.participa
+    //                 )
+    //                 this.targetProducts = resp.data.filter(
+    //                     (item: any) => item.participa
+    //                 )
+    //             },
+    //             error: (error) => {
+    //                 console.error('Error al obtener participaciones:', error)
+    //             },
+    //         })
+    // }
+    //CAMBIOS
     obtenerParticipaciones(iEvaluacionId: number) {
-        console.log(
-            'Valor de iEvaluacionId antes de la llamada:',
-            this.compartirIdEvaluacionService.iEvaluacionId
-        )
-        // const iEvaluacionId = this.compartirIdEvaluacionService.iEvaluacionId
         console.log('ID de evaluación enviado:', iEvaluacionId)
 
         this._apiEre
@@ -235,12 +259,32 @@ export class IeparticipaComponent implements OnInit {
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
                 next: (resp: any) => {
-                    console.log('Participaciones obtenidas:', resp) // Check the response
-                    // Assign data to a component variable if needed
-                    this.data = resp.data
+                    console.log('Participaciones obtenidas:', resp)
+
+                    // Dividir datos en base a `participa`
+                    this.sourceProducts = resp.data
+                        .filter((item: any) => item.participa)
+                        .map((item: any) => ({
+                            ...item,
+                            cIieeNombre: item.cIieeNombre,
+                            cIieeCodigoModular: item.cIieeCodigoModular,
+                            cNivelTipoNombre: item.cNivelTipoNombre,
+                        }))
+
+                    this.targetProducts = resp.data
+                        .filter((item: any) => !item.participa)
+                        .map((item: any) => ({
+                            ...item,
+                            cIieeNombre: item.cIieeNombre,
+                            cIieeCodigoModular: item.cIieeCodigoModular,
+                            cNivelTipoNombre: item.cNivelTipoNombre,
+                        }))
+
+                    console.log('IE No participan:', this.sourceProducts)
+                    console.log('IE Participan:', this.targetProducts)
                 },
                 error: (error) => {
-                    console.error('Error al obtener participaciones:', error) // Handle errors
+                    console.error('Error al obtener participaciones:', error)
                 },
             })
     }

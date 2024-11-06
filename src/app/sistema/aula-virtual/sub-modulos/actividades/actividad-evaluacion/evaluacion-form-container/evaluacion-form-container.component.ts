@@ -141,7 +141,7 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
 
     // coloca los valores en el form
     patchEvaluacionInfo(data: any) {
-        const files = JSON.parse(data.cEvaluacionArchivoAdjunto ?? '[]')
+        const files = data.cEvaluacionArchivoAdjunto ?? []
         this.files = [...files]
         const dFechaEvaluacionPublicacion = convertStringToDate(
             data.dtEvaluacionPublicacion

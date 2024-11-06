@@ -1,0 +1,31 @@
+<div class="flex flex-column gap-2">
+    @for (item of files; track item; let idx = $index) {
+        <p-inputGroup class="mt-1">
+            <p-inputGroupAddon>
+                @switch (item.type) {
+                    @case (1) {
+                        <i class="pi pi-upload" style="color: #333437"></i>
+                    }
+                    @case (2) {
+                        <i class="pi pi-link" style="color: #333437"></i>
+                    }
+                    @case (3) {
+                        <i class="pi pi-youtube" style="color: #c4302b"></i>
+                    }
+                    @case (4) {
+                        <i class="pi pi-folder" style="color: #ffd04b"></i>
+                    }
+                }
+            </p-inputGroupAddon>
+            <input type="text" pInputText [placeholder]="item.name" disabled />
+            <button
+                type="button"
+                pButton
+                icon="pi pi-external-link"
+                (click)="openLink(item)"
+                class="p-button-info"
+                label=""
+            ></button>
+        </p-inputGroup>
+    }
+</div>

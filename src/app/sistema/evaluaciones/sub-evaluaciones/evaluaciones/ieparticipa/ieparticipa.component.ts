@@ -1,35 +1,18 @@
-// import {
-//     Component,
-//     ChangeDetectorRef,
-//     inject,
-//     OnInit,
-//     Output,
-//     EventEmitter,
-// }
 //Agregar Servicio de Evaluacion
 import { CompartirIdEvaluacionService } from './../../../services/ereEvaluaciones/compartir-id-evaluacion.service'
 import { Component, ChangeDetectorRef, inject, OnInit } from '@angular/core'
-/*import { Product } from '@domain/product';
-import { ProductService } from '@service/productservice';*/
 import { Product } from 'src/app/demo/api/product'
 import { ProductService } from 'src/app/demo/service/product.service'
 import { PickListModule } from 'primeng/picklist'
-
 import { ApiEvaluacionesRService } from '../../../services/api-evaluaciones-r.service'
 import { Subject, takeUntil } from 'rxjs'
-//import dayjs from 'dayjs'
 import { FormsModule } from '@angular/forms'
 import { DropdownModule } from 'primeng/dropdown'
 import { IconFieldModule } from 'primeng/iconfield'
 import { InputIconModule } from 'primeng/inputicon'
 import { InputTextModule } from 'primeng/inputtext'
-
 import { ButtonModule } from 'primeng/button'
 
-/*interface City {
-  name: string;
-  code: string;
-}*/
 interface NivelTipo {
     cNivelTipoNombre: string
     iNivelTipoId: string
@@ -38,7 +21,6 @@ interface Ugeles {
     cUgelNombre: string
     iUgelId: string
 }
-
 @Component({
     selector: 'app-ieparticipa',
     standalone: true,
@@ -56,8 +38,6 @@ interface Ugeles {
     providers: [ProductService],
 })
 export class IeparticipaComponent implements OnInit {
-    // @Input() iEvaluacionId: number
-
     private unsubscribe$: Subject<boolean> = new Subject()
     public params = {
         iCompentenciaId: 0,
@@ -78,6 +58,8 @@ export class IeparticipaComponent implements OnInit {
     Ugeles: Ugeles[] | undefined
     selectedUgeles: Ugeles | undefined
     itemsToDelete: any
+    accion: string
+    esModoEdicion: string = ''
 
     constructor(
         private carService: ProductService,
@@ -85,6 +67,13 @@ export class IeparticipaComponent implements OnInit {
         private compartirIdEvaluacionService: CompartirIdEvaluacionService
     ) {}
     ngOnInit() {
+        // Asignar esModoEdicion dependiendo de la acción
+        this.esModoEdicion = this.accion === 'editar' ? 'editar' : 'ver' // Se asigna 'editar' o 'ver'
+
+        if (this.esModoEdicion === 'ver') {
+            this.sourceProducts = [] // Inicializa vacío o carga los datos de solo lectura
+            this.targetProducts = [] // Bloquea la edición en modo 'ver'
+        }
         this.carService.getProductsSmall().then((products) => {
             this.sourceProducts = products
             this.cdr.markForCheck()
@@ -109,18 +98,10 @@ export class IeparticipaComponent implements OnInit {
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
                 next: (resp: unknown) => {
-                    /*.competencias = resp['data']
-                    this.competencias.unshift({
-                        iCompentenciaId: 0,
-                        cCompetenciaDescripcion: 'Todos',
-                    })*/
                     console.log('Datos obtenidos de obtenerIE:', resp) // Imprime la respuesta completa
                     this.data = resp['data']
                     console.log('Data asignada a this.data:', this.data) // Imprime los datos asignados
                     this.sourceProducts = this.data
-                    //is.data = resp['data'] //aqui recueprar
-                    //alert(JSON.stringify(this.data))
-                    //this.sourceProducts = this.data //aqui recuperar
                 },
             })
     }
@@ -220,7 +201,7 @@ export class IeparticipaComponent implements OnInit {
     }
     seleccionados() {
         // alert(JSON.stringify(this.targetProducts))
-        console.log('Seleccionados:', this.targetProducts)
+        //console.log('Seleccionados:', this.targetProducts)
     }
     //iEvaluacionId: number
     // obtenerParticipaciones(iEvaluacionId: number) {
@@ -259,11 +240,14 @@ export class IeparticipaComponent implements OnInit {
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
                 next: (resp: any) => {
-                    console.log('Participaciones obtenidas:', resp)
+                    // Verifica la estructura de la respuesta completa
+                    console.log('Estructura completa de resp:', resp)
+                    // Asegúrate de que `resp.data` tiene los datos esperados
+                    console.log('Datos en resp.data:', resp.data)
 
                     // Dividir datos en base a `participa`
-                    this.sourceProducts = resp.data
-                        .filter((item: any) => item.participa)
+                    this.targetProducts = resp.data
+                        .filter((item: any) => !item.participa) // IE no participan
                         .map((item: any) => ({
                             ...item,
                             cIieeNombre: item.cIieeNombre,
@@ -271,8 +255,8 @@ export class IeparticipaComponent implements OnInit {
                             cNivelTipoNombre: item.cNivelTipoNombre,
                         }))
 
-                    this.targetProducts = resp.data
-                        .filter((item: any) => !item.participa)
+                    this.sourceProducts = resp.data
+                        .filter((item: any) => item.participa) // IE participan
                         .map((item: any) => ({
                             ...item,
                             cIieeNombre: item.cIieeNombre,

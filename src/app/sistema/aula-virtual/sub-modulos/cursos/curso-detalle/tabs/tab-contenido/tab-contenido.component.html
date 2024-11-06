@@ -7,16 +7,6 @@
                 <input pInputText type="text" placeholder="Buscarrr..." />
             </p-iconField>
         </div>
-        <!-- <div class="flex flex-column gap-2">
-            <label for="">Rango de fechas</label>
-            <p-calendar
-                [iconDisplay]="'input'"
-                [showIcon]="true"
-                [(ngModel)]="rangeDates"
-                selectionMode="range"
-                [readonlyInput]="true"
-            />
-        </div> -->
     </div>
 </div>
 
@@ -66,7 +56,6 @@
 <p-menu #menuContenido [model]="accionesContenido" [popup]="true">
     <ng-template pTemplate="item" let-item>
         <a pRipple class="flex align-items-center gap-2 p-2 px-3 text-color">
-            <!-- <app-icon [name]="item.icon" size="sm" />  -->
             <span>
                 {{ item.label }}
             </span>

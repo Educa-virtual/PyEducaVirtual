@@ -250,7 +250,6 @@ a {
     font-size: 0.857rem;
     text-transform: uppercase;
     font-weight: 700;
-    /*color: var(--surface-900);*/
     color: ffffff;
     margin: 0.75rem 0;
 }
@@ -294,7 +293,6 @@ a {
 }
 .layout-menu ul a.active-route {
     font-weight: 700;
-    /*color: var(--primary-color);*/
     color: var(--primary-color);
 }
 .layout-menu ul a:hover {

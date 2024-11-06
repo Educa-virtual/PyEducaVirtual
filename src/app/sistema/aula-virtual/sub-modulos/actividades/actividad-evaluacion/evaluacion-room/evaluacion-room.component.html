@@ -141,9 +141,18 @@
                 </article>
                 <article class="card">
                     <h2>Recursos</h2>
-                    <app-recursos-lista
-                        [files]="evaluacion?.cEvaluacionArchivoAdjunto ?? []"
-                    ></app-recursos-lista>
+                    @if (evaluacion?.cEvaluacionArchivoAdjunto.length === 0) {
+                        <app-empty-section
+                            class="w-full"
+                            [message]="'Sin recursos asignados'"
+                        ></app-empty-section>
+                    } @else {
+                        <app-recursos-lista
+                            [files]="
+                                evaluacion?.cEvaluacionArchivoAdjunto ?? []
+                            "
+                        ></app-recursos-lista>
+                    }
                 </article>
 
                 <article class="card flex flex-column gap-4">

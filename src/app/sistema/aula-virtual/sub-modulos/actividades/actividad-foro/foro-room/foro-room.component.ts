@@ -22,6 +22,7 @@ import { tipoActividadesKeys } from '@/app/sistema/aula-virtual/interfaces/activ
 import { Subject, takeUntil } from 'rxjs'
 import { RemoveHTMLPipe } from '@/app/shared/pipes/remove-html.pipe'
 import { NgFor } from '@angular/common'
+import { RecursosListaComponent } from '@/app/shared/components/recursos-lista/recursos-lista.component'
 @Component({
     selector: 'app-foro-room',
     standalone: true,
@@ -29,6 +30,7 @@ import { NgFor } from '@angular/common'
     styleUrls: ['./foro-room.component.scss'],
     imports: [
         IconComponent,
+        RecursosListaComponent,
         RemoveHTMLPipe,
         CommonInputComponent,
         TablePrimengComponent,

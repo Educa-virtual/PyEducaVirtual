@@ -106,28 +106,8 @@
                 </article>
                 <article class="card">
                     <h2>Recursos:</h2>
-                    <ul class="list-none p-0 m-0">
-                        <li
-                            *ngFor="let item of FilesTareas; let idx = index"
-                            class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap"
-                        >
-                            <div class="flex gap-2 align-items-center">
-                                <i class="pi pi-file text-lg text-primary"></i>
-                                <span class="font-medium text-lg">{{
-                                    item.name
-                                }}</span>
-                            </div>
-                            <div style="margin-left: auto">
-                                <p-button
-                                    label="Ver pdf"
-                                    [raised]="true"
-                                    severity="danger"
-                                    ico="pi pi-eye"
-                                    (click)="abrirPDF(item.url)"
-                                />
-                            </div>
-                        </li>
-                    </ul>
+                    <app-recursos-lista [files]="FilesTareas">
+                    </app-recursos-lista>
                 </article>
             </div>
         </p-tabPanel>

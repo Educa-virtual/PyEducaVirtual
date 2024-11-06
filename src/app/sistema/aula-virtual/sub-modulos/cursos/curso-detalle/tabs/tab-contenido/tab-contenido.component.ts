@@ -283,16 +283,30 @@ export class TabContenidoComponent implements OnInit {
     handleForoAction(action: string, actividad: IActividad) {
         if (action === 'EDITAR') {
             console.log('Editar', actividad)
-            this._dialogService.open(ForoFormContainerComponent, {
-                ...MODAL_CONFIG,
-                data: {
-                    contenidoSemana: this.semanaSeleccionada,
-                    iActTipoId: actividad.iActTipoId,
-                    actividad: actividad,
-                    action: 'editar',
-                },
-                header: 'Editar Foro',
-            })
+            this._dialogService
+                .open(ForoFormContainerComponent, {
+                    ...MODAL_CONFIG,
+                    data: {
+                        contenidoSemana: this.semanaSeleccionada,
+                        iActTipoId: actividad.iActTipoId,
+                        actividad: actividad,
+                        action: 'editar',
+                    },
+                    header: 'Editar Foro',
+                })
+                .onClose.subscribe((result) => {
+                    console.log(result)
+                    if (result) {
+                        const data = {
+                            ...result,
+                        }
+                        this._aulaService.actualizarForo(data).subscribe(() => {
+                            this.getData()
+                        })
+                    } else {
+                        console.log('Formulario cancelado')
+                    }
+                })
         }
         if (action === 'CREAR') {
             this._dialogService

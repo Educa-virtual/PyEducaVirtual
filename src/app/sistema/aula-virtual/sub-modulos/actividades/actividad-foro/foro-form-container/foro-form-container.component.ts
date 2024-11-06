@@ -18,6 +18,7 @@ import { ModalPrimengComponent } from '@/app/shared/modal-primeng/modal-primeng.
 import { DialogModule } from 'primeng/dialog'
 import { FileUploadPrimengComponent } from '../../../../../../shared/file-upload-primeng/file-upload-primeng.component'
 import { DynamicDialogConfig } from 'primeng/dynamicdialog'
+import { GeneralService } from '@/app/servicios/general.service'
 @Component({
     selector: 'app-foro-form-container',
     standalone: true,
@@ -48,6 +49,7 @@ export class ForoFormContainerComponent implements OnInit {
     private _aulaService = inject(ApiAulaService)
     private _formBuilder = inject(FormBuilder)
     private ref = inject(DynamicDialogRef)
+    private GeneralService = inject(GeneralService)
 
     @Input() contenidoSemana
     tareas = []
@@ -68,6 +70,7 @@ export class ForoFormContainerComponent implements OnInit {
     selectCategorias: any = {}
 
     public foroForm = this._formBuilder.group({
+        iForoId: [],
         cForoTitulo: ['', [Validators.required]],
         cForoDescripcion: ['', [Validators.required]],
         iForoCatId: [0, [Validators.required]],
@@ -82,34 +85,31 @@ export class ForoFormContainerComponent implements OnInit {
         dtInicio: [this.date, Validators.required],
         dtFin: [this.date, Validators.required],
     })
+
+    opcion: string = 'GUARDAR'
     constructor(private dialogConfig: DynamicDialogConfig) {
         this.contenidoSemana = this.dialogConfig.data.contenidoSemana
         const data = this.dialogConfig.data
         if (data.action == 'editar') {
-            this.foroForm.patchValue({
-                cForoTitulo: data.actividad.cProgActTituloLeccion,
-                cForoDescripcion: data.actividad.cProgActDescripcion,
-                iForoCatId: 0,
-                dtForoInicio: '',
-                iEstado: 0,
-                dtForoPublicacion: '',
-                dtForoFin: '',
-                cForoCatDescripcion: '',
-            })
+            this.opcion = 'ACTUALIZAR'
+            this.obtenerForoxiForoId(data.actividad.ixActivadadId)
+        } else {
+            this.opcion = 'GUARDAR'
         }
-    }
 
-    ngOnInit(): void {
-        this.mostrarCategorias()
         this.semana = [
             {
                 severity: 'info',
                 detail:
-                    this.contenidoSemana.cContenidoSemNumero +
+                    this.contenidoSemana?.cContenidoSemNumero +
                     ' SEMANA - ' +
-                    this.contenidoSemana.cContenidoSemTitulo,
+                    this.contenidoSemana?.cContenidoSemTitulo,
             },
         ]
+    }
+
+    ngOnInit(): void {
+        this.mostrarCategorias()
     }
 
     mostrarCategorias() {
@@ -146,6 +146,31 @@ export class ForoFormContainerComponent implements OnInit {
         //     // this.categorias = Data['data']
         //     // console.log('Datos mit', this.categorias)
         // })
+    }
+
+    obtenerForoxiForoId(iForoId: string) {
+        const params = {
+            petition: 'post',
+            group: 'aula-virtual',
+            prefix: 'foros',
+            ruta: 'obtenerForoxiForoId',
+            data: {
+                iForoId: iForoId,
+            },
+            params: { skipSuccessMessage: true },
+        }
+        this.getInformation(params, params.ruta)
+    }
+    getInformation(params, condition) {
+        this.GeneralService.getGralPrefix(params).subscribe({
+            next: (response) => {
+                this.accionBtnItem({ accion: condition, item: response.data })
+            },
+            complete: () => {},
+            error: (error) => {
+                console.log(error)
+            },
+        })
     }
     // acciones para subir los archivos
 
@@ -194,6 +219,13 @@ export class ForoFormContainerComponent implements OnInit {
                 })
                 this.showModal = false
                 this.nameEnlace = ''
+                break
+            case 'obtenerForoxiForoId':
+                const data = item.length ? item[0] : []
+                this.foroForm.patchValue(data)
+                this.FilesTareas = data.cForoUrl
+                    ? JSON.parse(data.cForoUrl)
+                    : []
                 break
         }
     }

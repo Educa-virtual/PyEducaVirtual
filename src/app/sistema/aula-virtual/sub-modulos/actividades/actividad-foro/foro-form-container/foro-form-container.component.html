@@ -1,6 +1,6 @@
 <form [formGroup]="foroForm" class="flex flex-column gap-3 w-full">
     <div class="grid">
-        <div class="col-12">
+        <div class="col-12" [hidden]="!contenidoSemana">
             <p-messages
                 [(value)]="semana"
                 [enableService]="false"
@@ -217,7 +217,7 @@
     <button
         pButton
         pRipple
-        label="Guardar"
+        [label]="opcion"
         icon="pi pi-check"
         size="small"
         class="p-button-primary"

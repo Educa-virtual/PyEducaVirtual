@@ -29,6 +29,12 @@ export class ApiAulaService {
             data
         )
     }
+    actualizarForo(data) {
+        return this._http.post(
+            `${this.baseUrlApi}/aula-virtual/foros/actualizarForo`,
+            data
+        )
+    }
 
     obtenerCategorias(data) {
         return this._http.post(

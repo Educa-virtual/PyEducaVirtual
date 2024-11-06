@@ -18,6 +18,7 @@ import { PersonalComponent as viewPersonal } from './personal/personal.component
 import { RegistroComponent } from './registro/registro.component'
 import { DatosPersonalesComponent } from './registro/steps/datos-personales/datos-personales.component'
 import { AsignacionCargoComponent } from './registro/steps/asignacion-cargo/asignacion-cargo.component'
+import { AsignacionAreasComponent } from './registro/steps/asignacion-areas/asignacion-areas.component'
 
 @NgModule({
     imports: [
@@ -61,6 +62,10 @@ import { AsignacionCargoComponent } from './registro/steps/asignacion-cargo/asig
                             {
                                 path: 'asignacion-cargo',
                                 component: AsignacionCargoComponent,
+                            },
+                            {
+                                path: 'asignacion-areas',
+                                component: AsignacionAreasComponent,
                             },
                         ],
                     },

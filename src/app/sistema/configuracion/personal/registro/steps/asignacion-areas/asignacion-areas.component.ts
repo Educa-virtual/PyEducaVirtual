@@ -2,31 +2,39 @@ import { Component, OnInit, OnChanges, OnDestroy } from '@angular/core'
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
 
-import { StepsModule } from 'primeng/steps'
-import { ConfirmationService, MessageService } from 'primeng/api'
-import { StepConfirmationService } from '@/app/servicios/confirm.service'
+import { Output, EventEmitter } from '@angular/core'
+
 import { Router } from '@angular/router'
-import { ToastModule } from 'primeng/toast'
 
 @Component({
-    selector: 'app-personal',
+    selector: 'app-asignacion-areas',
     standalone: true,
-    imports: [
-        ContainerPageComponent,
-        TablePrimengComponent,
-        StepsModule,
-        ToastModule,
-    ],
-    templateUrl: './personal.component.html',
-    styleUrl: './personal.component.scss',
-    providers: [StepConfirmationService, ConfirmationService, MessageService],
+    imports: [ContainerPageComponent, TablePrimengComponent],
+    templateUrl: './asignacion-areas.component.html',
+    styleUrl: './asignacion-areas.component.scss',
+    providers: [],
 })
-export class PersonalComponent implements OnInit, OnChanges, OnDestroy {
+export class AsignacionAreasComponent implements OnInit {
+    fechasAcademicas
 
-    personalInformation
+    @Output() emitMode = new EventEmitter()
+    constructor(
+        private router: Router,
+    ) {}
 
-    constructor(private router: Router) {}
-    ngOnInit() {}
+    ngOnInit(): void {
+        
+    }
+
+    actionsContainer = [
+        {
+            labelTooltip: 'Registrar año escolar',
+            text: 'Registrar año escolar',
+            icon: 'pi pi-plus',
+            accion: 'agregar',
+            class: 'p-button-primary',
+        },
+    ]
 
     handleActions(row) {
         console.log(row)
@@ -34,16 +42,17 @@ export class PersonalComponent implements OnInit, OnChanges, OnDestroy {
         const actions = {
             ver: () => {
                 // Lógica para la acción "ver"
+                console.log('Viendo')
             },
             editar: () => {
                 // Lógica para la acción "editar"
-
+                
             },
             eliminar: () => {
                 // Lógica para la acción "eliminar"
+                console.log('Eliminando')
             },
         }
-
 
         const action = actions[row.accion]
         if (action) {
@@ -52,17 +61,6 @@ export class PersonalComponent implements OnInit, OnChanges, OnDestroy {
             console.log(`Acción desconocida: ${row.action}`)
         }
     }
-
-
-    actionsContainer = [
-        {
-            labelTooltip: 'Agregar personal',
-            text: 'Agregar personal',
-            icon: 'pi pi-plus',
-            accion: 'agregar',
-            class: 'p-button-primary',
-        },
-    ]
 
     actions = [
         {
@@ -97,7 +95,7 @@ export class PersonalComponent implements OnInit, OnChanges, OnDestroy {
             type: 'text',
             width: '5rem',
             field: 'fechaVigente',
-            header: 'Documento de identidad',
+            header: 'Año vigente',
             text_header: 'center',
             text: 'center',
         },
@@ -105,7 +103,7 @@ export class PersonalComponent implements OnInit, OnChanges, OnDestroy {
             type: 'text',
             width: '5rem',
             field: 'dtCalAcadInicio',
-            header: 'Apellidos y nombres',
+            header: 'Fecha inicio',
             text_header: 'center',
             text: 'center',
         },
@@ -113,23 +111,7 @@ export class PersonalComponent implements OnInit, OnChanges, OnDestroy {
             type: 'text',
             width: '5rem',
             field: 'dtCalAcadFin',
-            header: 'Cargo',
-            text_header: 'center',
-            text: 'center',
-        },
-        {
-            type: 'text',
-            width: '5rem',
-            field: 'dtCalAcadFin',
-            header: 'Cargo',
-            text_header: 'center',
-            text: 'center',
-        },
-        {
-            type: 'text',
-            width: '5rem',
-            field: 'dtCalAcadFin',
-            header: 'Cargo',
+            header: 'Fecha fin',
             text_header: 'center',
             text: 'center',
         },
@@ -143,11 +125,12 @@ export class PersonalComponent implements OnInit, OnChanges, OnDestroy {
         },
     ]
 
-    navigateToRegistro(){
-        this.router.navigate(['/configuracion/personal/registro'])
+    navigateToRegistro() {
+  
+        this.router.navigate(['configuracion/configuracion/registro'])
     }
 
-    ngOnChanges(changes) {}
-
-    ngOnDestroy() {}
+    navigateToResumen() {
+        this.router.navigate(['/configuracion/configuracion/registro'])
+    }
 }

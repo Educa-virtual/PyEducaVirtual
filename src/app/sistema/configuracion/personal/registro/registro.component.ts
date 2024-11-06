@@ -36,6 +36,14 @@ export class RegistroComponent implements OnInit, OnChanges {
                 label: 'Datos personales',
                 routerLink: 'datos-personales'
             },
+            {
+                label: 'Asignación cargo',
+                routerLink: 'asignacion-cargo'
+            },
+            {
+                label: 'Asignación áreas',
+                routerLink: 'asignacion-areas'
+            },
         ]
 
     }
@@ -84,9 +92,9 @@ export class RegistroComponent implements OnInit, OnChanges {
 
     }
 
-    navigateToYears() {
+    navigateToAdministrarPersonal() {
         
-        this.router.navigate(['configuracion/configuracion/years']); // Navega a YearsComponent
+        this.router.navigate(['configuracion/personal/administrar']); 
     }
 
 

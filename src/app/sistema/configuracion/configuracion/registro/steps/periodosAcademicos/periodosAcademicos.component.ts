@@ -283,6 +283,7 @@ export class PeriodosAcademicosComponent implements OnInit, OnChanges {
                     this.periodosInformation = JSON.parse(filterFasePeriodo["periodo"])
 
                     console.log(this.periodosInformation)
+
                     
                     // this.fasesPromocionales[0].cPeriodoEvalNombre = ""
 
@@ -454,6 +455,7 @@ export class PeriodosAcademicosComponent implements OnInit, OnChanges {
             error: (error) => {
                 console.error('Error fetching turnos:', error)
                 this.getCalendarioPeriodosAcademicos()
+                this.handleActionFase("")
             },
             complete: () => {
                 console.log('Request completed')

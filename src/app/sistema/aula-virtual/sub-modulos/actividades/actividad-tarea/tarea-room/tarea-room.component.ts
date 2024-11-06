@@ -28,7 +28,8 @@ import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmatio
 import { InputTextModule } from 'primeng/inputtext'
 import { CardModule } from 'primeng/card'
 import { FormTransferirGrupoComponent } from '../form-transferir-grupo/form-transferir-grupo.component'
-
+import { FormBuilder, FormGroup } from '@angular/forms'
+import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
 @Component({
     selector: 'app-tarea-room',
     standalone: true,
@@ -59,12 +60,24 @@ export class TareaRoomComponent implements OnChanges, OnInit {
     private GeneralService = inject(GeneralService)
     private _constantesService = inject(ConstantesService)
     private _confirmService = inject(ConfirmationModalService)
+    private _formBuilder = inject(FormBuilder)
+    private _aulaService = inject(ApiAulaService)
     students: any
 
     iPerfilId: number
+    public entregarEstud: FormGroup = this._formBuilder.group({
+        cTareaEstudianteUrlEstudiante: [''],
+        //iEstudianteId: [],
+        iEstudianteId: [1],
+    })
+
     ngOnInit() {
         this.iPerfilId = this._constantesService.iPerfilId
-        this.obtenerEscalaCalificaciones()
+        if (Number(this.iPerfilId) == 8) {
+            this.obtenerTareaxiTareaidxiEstudianteId()
+        } else {
+            this.obtenerEscalaCalificaciones()
+        }
     }
     ngOnChanges(changes) {
         if (changes.iTareaId?.currentValue) {
@@ -190,6 +203,10 @@ export class TareaRoomComponent implements OnChanges, OnInit {
     tareasCulminado: number = 0
     gruposFalta: number = 0
     gruposCulminado: number = 0
+    FilesTareasEstudiantes = []
+    iEstadoEstudianteTarea: number = null
+    notaTareaEstudiante: string = ''
+    comentarioTareaEstudiante: string = ''
     public accionBtnItem(elemento) {
         const { accion } = elemento
         const { item } = elemento
@@ -286,6 +303,25 @@ export class TareaRoomComponent implements OnChanges, OnInit {
             case 'save-modal-transferir':
                 this.showModalTransferir = false
                 this.getTareaCabeceraGrupos()
+                break
+            case 'subir-archivo-tareas-estudiantes':
+                this.FilesTareasEstudiantes.push({
+                    type: 1, //1->file
+                    nameType: 'file',
+                    name: item.file.name,
+                    size: item.file.size,
+                    ruta: item.name,
+                })
+                break
+            case 'obtenerTareaxiTareaidxiEstudianteId':
+                const data = item.length ? item[0] : []
+                this.FilesTareasEstudiantes = data.cTareaEstudianteUrlEstudiante
+                    ? JSON.parse(data.cTareaEstudianteUrlEstudiante)
+                    : []
+                this.iEstadoEstudianteTarea = data.cEstado
+                this.notaTareaEstudiante = data.cEscalaCalifNombre
+                this.comentarioTareaEstudiante =
+                    data.cTareaEstudianteComentarioDocente
                 break
             default:
                 break
@@ -490,5 +526,51 @@ export class TareaRoomComponent implements OnChanges, OnInit {
         })
         this.showModalTransferir = true
         //console.log(this.grupoTransferir)
+    }
+
+    entregartaraeaestudiante() {
+        const comment = this.entregarEstud.value
+        comment.iTareaId = this.iTareaId
+        console.log('Enviar Tarea', comment)
+        this._aulaService.guardarRespuesta(comment).subscribe(
+            (response) => {
+                console.log('Comentario Guardado:', response)
+
+                this.entregarEstud.get('cForoRptaRespuesta')?.reset()
+            },
+            (error) => {
+                console.error('Comentario:', error)
+            }
+        )
+        //console.log(this.grupoTransferir)
+    }
+    entregarEstudianteTarea() {
+        const params = {
+            petition: 'post',
+            group: 'aula-virtual',
+            prefix: 'tarea-estudiantes',
+            ruta: 'entregarEstudianteTarea',
+            data: {
+                cTareaEstudianteUrlEstudiante: JSON.stringify(
+                    this.FilesTareasEstudiantes
+                ),
+                iTareaId: this.iTareaId,
+                iEstudianteId: this._constantesService.iEstudianteId,
+            },
+        }
+        this.getInformation(params, 'entregar-estudiante-tarea')
+    }
+    obtenerTareaxiTareaidxiEstudianteId() {
+        const params = {
+            petition: 'post',
+            group: 'aula-virtual',
+            prefix: 'tareas',
+            ruta: 'obtenerTareaxiTareaidxiEstudianteId',
+            data: {
+                iTareaId: this.iTareaId,
+                iEstudianteId: this._constantesService.iEstudianteId,
+            },
+        }
+        this.getInformation(params, params.ruta)
     }
 }

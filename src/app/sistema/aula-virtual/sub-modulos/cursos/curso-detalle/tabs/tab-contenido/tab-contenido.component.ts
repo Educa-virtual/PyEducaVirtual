@@ -453,12 +453,13 @@ export class TabContenidoComponent implements OnInit {
             iEvaluacionId: actividad.ixActivadadId,
             iCursoId: 1,
             iSeccionId: 2,
-            iYAcadId: 3,
+            iYAcadId: this._constantesService.iYAcadId,
             iSemAcadId: 3,
             iNivelGradoId: 1,
             iCurrId: 1,
             iEstado: 2,
         }
+
         this._evalService
             .publicarEvaluacion(data)
             .pipe(takeUntil(this._unsubscribe$))

@@ -10,6 +10,8 @@
             <app-evaluacion-form-info
                 [tipoEvaluaciones]="tipoEvaluaciones"
                 [evaluacionInfoForm]="evaluacionInfoForm"
+                [files]="files"
+                (filesChange)="files = $event"
             ></app-evaluacion-form-info>
         }
         @case (1) {

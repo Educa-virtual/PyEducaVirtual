@@ -57,9 +57,11 @@ export class GeneralService {
         }
     }
 
-    subirArchivo(data:any) {
-        return this.http.post(`${baseUrl}/general/subir-archivo`,
-          data
-        );
-      }
+    subirArchivo(data: any) {
+        return this.http.post(`${baseUrl}/general/subir-archivo`, data, {
+            params: {
+                skipSuccessMessage: true,
+            },
+        })
+    }
 }

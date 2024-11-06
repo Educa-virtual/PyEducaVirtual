@@ -44,6 +44,7 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
     public calificacionForm: FormGroup
     public activeStepper = 0
     public rubricaSelected = null
+    public files = []
     public evaluacionFormPasos: MenuItem[] = [
         {
             id: '0',
@@ -140,6 +141,8 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
 
     // coloca los valores en el form
     patchEvaluacionInfo(data: any) {
+        const files = JSON.parse(data.cEvaluacionArchivoAdjunto ?? '[]')
+        this.files = [...files]
         const dFechaEvaluacionPublicacion = convertStringToDate(
             data.dtEvaluacionPublicacion
         )
@@ -168,6 +171,7 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
             tHoraEvaluacionInico,
             dFechaEvaluacionFin,
             tHoraEvaluacionFin,
+            cEvaluacionArchivoAdjunto: data.cEvaluacionArchivoAdjunto,
         })
     }
 
@@ -259,7 +263,7 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
         data.iDocenteId = this._constantesService.iDocenteId
         data.iActTipoId = EVALUACION
         data.iContenidoSemId = this.paramsData.iContenidoSemId
-
+        data.cEvaluacionArchivoAdjunto = JSON.stringify(this.files)
         if (this.evaluacionInfoForm.invalid) {
             this.evaluacionInfoForm.markAllAsTouched()
             return

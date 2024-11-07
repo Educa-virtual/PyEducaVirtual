@@ -257,7 +257,7 @@ export class EvaluacionesFormComponent implements OnInit {
         this._apiEre.actualizarEvaluacion(data).subscribe({
             next: (resp) => {
                 console.log('Evaluación actualizada:', resp)
-                alert('Evaluación actualizada exitosamente')
+                //alert('Evaluación actualizada exitosamente')
             },
             error: (error) => {
                 console.error('Error al actualizar la evaluación:', error)

@@ -9,6 +9,7 @@
         styleClass="w-full"
         class="flex-1"
         (onChange)="onChange()"
+        [disabled]="accion === 'ver'"
     >
     </p-dropdown>
     <p-dropdown
@@ -19,6 +20,7 @@
         styleClass="w-full"
         class="flex-1"
         (onChange)="onChange()"
+        [disabled]="accion === 'ver'"
     />
 </div>
 <br />
@@ -68,6 +70,8 @@
     targetHeader="I.E Participan"
     (onMoveToTarget)="IEparticipan($event)"
     (onMoveToSource)="IEnoparticipan($event)"
+    (onMoveAllToTarget)="IEparticipanall($event)"
+    (onMoveAllToSource)="IEnoparticipanall($event)"
     dragdrop="true"
     [responsive]="false"
     [sourceStyle]="{ height: '300px' }"

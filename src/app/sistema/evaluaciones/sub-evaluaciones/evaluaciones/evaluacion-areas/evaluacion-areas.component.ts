@@ -13,7 +13,7 @@ import { ConstantesService } from '@/app/servicios/constantes.service'
 import { GeneralService } from '@/app/servicios/general.service'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { DataViewModule, DataView } from 'primeng/dataview'
-
+import { CompartirIdEvaluacionService } from '../../../services/ereEvaluaciones/compartir-id-evaluacion.service'
 export type Layout = 'list' | 'grid'
 @Component({
     selector: 'app-evaluacion-areas',
@@ -49,9 +49,14 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
     private _generalService = inject(GeneralService)
     private _store = inject(LocalStoreService)
 
-    constructor(private store: LocalStoreService) {}
+    constructor(
+        private store: LocalStoreService,
+        private compartirIdEvaluacionService: CompartirIdEvaluacionService
+    ) {}
 
     ngOnInit(): void {
+        console.log(this.compartirIdEvaluacionService.iEvaluacionId)
+        alert(this.compartirIdEvaluacionService.iEvaluacionId)
         const modulo = this._store.getItem('dremoModulo')
         switch (Number(modulo.iModuloId)) {
             case 2:
@@ -81,7 +86,6 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
 
     getCursos() {
         const year = this.store.getItem('dremoYear')
-
         const params = {
             petition: 'post',
             group: 'docente',

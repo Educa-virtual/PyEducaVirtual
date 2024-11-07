@@ -77,7 +77,6 @@ export class ApiEvaluacionesRService {
             data
         )
     }
-    //MOVI AQUI
     obtenerParticipaciones(iEvaluacionId: any): Observable<any> {
         console.log(
             'Servicio: Llamando obtenerParticipaciones con ID:',
@@ -85,6 +84,13 @@ export class ApiEvaluacionesRService {
         )
         return this.http.get(
             `${this.baseUrl}/ere/Evaluaciones/obtenerParticipaciones?iEvaluacionId=${iEvaluacionId}`
+        )
+    }
+    //Insertar Cursos
+    ereFunInsCursos(data: any) {
+        return this.http.post(
+            `${this.baseUrl}/ere/Evaluaciones/ereFunInsCursos`,
+            data
         )
     }
 
@@ -100,15 +106,10 @@ export class ApiEvaluacionesRService {
             data
         )
     }
-    // eliminarParticipacion(data: any) {
-    //     return this.http.delete(
-    //         `${this.baseUrl}/ere/Evaluaciones/eliminarParticipacion`,
-    //         data
-    //     )
-    // }
-    eliminarParticipacion(id: any): Observable<any> {
+    eliminarParticipacion(ids: any[]): Observable<any> {
         return this.http.delete(
-            `${this.baseUrl}/ere/Evaluaciones/eliminarParticipacion/${id}`
+            `${this.baseUrl}/ere/Evaluaciones/eliminarParticipacion`,
+            { body: { ids: ids } } // Aquí estamos enviando el array de IDs como cuerpo de la solicitud DELETE
         )
     }
     IEparticipanall(data) {

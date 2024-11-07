@@ -53,12 +53,6 @@ export class IeparticipaComponent implements OnInit {
     accion: string // Nueva propiedad para controlar la acción
     esModoEdicion: boolean = false // Para controlar el modo edición
     private _apiEre = inject(ApiEvaluacionesRService)
-    // sourceProducts!: Product[]
-
-    // targetProducts!: Product[]
-    // sourceProducts: Product[]
-
-    // targetProducts: Product[]
     public sourceProducts: any[] = [] // IEs no participantes
     public targetProducts: any[] = [] // IEs participantes
     nivelTipo: NivelTipo[] | undefined
@@ -74,13 +68,8 @@ export class IeparticipaComponent implements OnInit {
         private compartirIdEvaluacionService: CompartirIdEvaluacionService,
         private _config: DynamicDialogConfig // Inyectar configuración
     ) {}
-    //public sourceProducts: Product[] = []
-    //public targetProducts: Product[] = [] // Lista de IE que participan
     public allIEs: Product[] = [] // Lista completa de IE para filtrar los no participantes
     ngOnInit() {
-        // Obtener la acción del config
-        // this.accion = this._config.data?.accion || 'crear' // bien
-        // this.esModoEdicion = this.accion === 'editar'    //bien
         console.log('Iniciando componente con config:', this._config.data)
 
         // Determinar el modo
@@ -99,35 +88,6 @@ export class IeparticipaComponent implements OnInit {
         this.obtenerIE()
         this.obtenerNivelTipo()
         this.obtenerugel()
-
-        // console.log('Acción:', this.accion)
-        // console.log(
-        //     'ID Evaluación del config:',
-        //     this._config.data?.evaluacionId
-        // )
-        // console.log(
-        //     'ID Evaluación del servicio:',
-        //     this.compartirIdEvaluacionService.iEvaluacionId
-        // )
-
-        // // Si estamos en modo "ver", deshabilitamos las interacciones
-        // if (this.accion === 'ver') {
-        //     this.evaluacionFormGroup?.disable()
-        // }
-
-        // // Obtener participaciones solo si tenemos un ID válido
-        // const evaluacionId =
-        //     this._config.data?.evaluacionId ||
-        //     this.compartirIdEvaluacionService.iEvaluacionId
-        // if (evaluacionId) {
-        //     console.log(
-        //         'Llamando a obtenerParticipaciones con ID:',
-        //         evaluacionId
-        //     )
-        //     this.obtenerParticipaciones(evaluacionId)
-        // } else {
-        //     console.warn('No se encontró ID de evaluación válido')
-        // }
 
         // Inicializar según el modo
         if (this.accion === 'crear') {
@@ -164,44 +124,6 @@ export class IeparticipaComponent implements OnInit {
             this.obtenerParticipaciones(evaluacionId)
         }
     }
-    // obtenerIE() {
-    //     this._apiEre
-    //         .obtenerIE(this.params)
-    //         .pipe(takeUntil(this.unsubscribe$))
-    //         .subscribe({
-    //             // next: (resp: unknown) => {
-    //             next: (resp: any) => {
-    //                 console.log('Datos de IEs recibidos:', resp)
-    //                 // En modo crear, todos los IEs van a sourceProducts
-    //                 this.sourceProducts = resp.data.map((item: any) => ({
-    //                     ...item,
-    //                     iIieeId: item.iIieeId,
-    //                     cIieeNombre: item.cIieeNombre,
-    //                     cIieeCodigoModular: item.cIieeCodigoModular,
-    //                     cNivelTipoNombre: item.cNivelTipoNombre,
-    //                 }))
-    //                 this.targetProducts = [] // Mantener la lista destino vacía
-    //                 console.log(
-    //                     'Source Products actualizados:',
-    //                     this.sourceProducts
-    //                 )
-    //                 console.log('Target Products vacíos:', this.targetProducts)
-    //             },
-    //             error: (error) => {
-    //                 console.error('Error al obtener IEs:', error)
-
-    //                 // if (this.accion === 'crear') {
-    //                 //     // En modo crear, todos los IE van a sourceProducts
-    //                 //     this.sourceProducts = resp.data
-    //                 //     this.targetProducts = [] // Aseguramos que targetProducts esté vacío
-    //                 // }
-    //                 // console.log('Datos obtenidos de obtenerIE:', resp) // Imprime la respuesta completa
-    //                 // this.data = resp['data']
-    //                 // console.log('Data asignada a this.data:', this.data) // Imprime los datos asignados
-    //                 // this.sourceProducts = this.data
-    //             },
-    //         })
-    // }
 
     obtenerIE() {
         this._apiEre
@@ -299,21 +221,24 @@ export class IeparticipaComponent implements OnInit {
         console.log('Moviendo a No Participan:', itemsMoved)
     }
     IEnoparticipanall(event: any) {
-        const itemsMoved = event.items
+        const itemsMoved = event.items // Los elementos movidos de "No Participan"
         console.log(
             'Elementos movidos de IEnoparticipan a IEparticipan:',
             itemsMoved
         )
-        itemsMoved.forEach((item) => {
-            console.log('ID a eliminar:', item.iIieeId)
-            console.log('Nombre a eliminar:', item.cIieeNombre)
-            console.log('Codigo Modular a eliminar:', item.iIeeParticipaId)
 
-            this._apiEre.eliminarParticipacion(item.iIieeId).subscribe(
-                (response) => console.log('Eliminación exitosa:', response),
-                (error) => console.error('Error al eliminar:', error)
-            )
-        })
+        // Obtenemos los IDs de las participaciones para eliminarlas
+        const idsToDelete = itemsMoved.map((item) => item.iIieeId) // Extraemos solo los iIieeId
+
+        // Realizamos la eliminación en bloque (enviar un arreglo de IDs)
+        this._apiEre.eliminarParticipacion(idsToDelete).subscribe(
+            (response) => {
+                console.log('Eliminación exitosa:', response)
+            },
+            (error) => {
+                console.error('Error al eliminar:', error)
+            }
+        )
     }
     IEparticipanall(event: any) {
         const itemsMoved = event.items
@@ -334,134 +259,6 @@ export class IeparticipaComponent implements OnInit {
         // alert(JSON.stringify(this.targetProducts))
         //console.log('Seleccionados:', this.targetProducts)
     }
-    //iEvaluacionId: number
-    // obtenerParticipaciones(iEvaluacionId: number) {
-    //     console.log(
-    //         'Valor de iEvaluacionId antes de la llamada:',
-    //         this.compartirIdEvaluacionService.iEvaluacionId
-    //     )
-    //     console.log('ID de evaluación enviado:', iEvaluacionId)
-
-    //     this._apiEre
-    //         .obtenerParticipaciones(iEvaluacionId)
-    //         .pipe(takeUntil(this.unsubscribe$))
-    //         .subscribe({
-    //             next: (resp: any) => {
-    //                 console.log('Participaciones obtenidas:', resp)
-
-    //                 // Dividir los datos entre los que participan y no participan
-    //                 this.sourceProducts = resp.data.filter(
-    //                     (item: any) => !item.participa
-    //                 )
-    //                 this.targetProducts = resp.data.filter(
-    //                     (item: any) => item.participa
-    //                 )
-    //             },
-    //             error: (error) => {
-    //                 console.error('Error al obtener participaciones:', error)
-    //             },
-    //         })
-    // }
-    //CAMBIOS
-
-    //BIEN
-    // obtenerParticipaciones(iEvaluacionId: number) {
-    //     if (!iEvaluacionId) {
-    //         console.warn('obtenerParticipaciones llamado sin ID válido')
-    //         return
-    //     }
-    //     console.log('ID de evaluación enviado:', iEvaluacionId)
-
-    //     this._apiEre
-    //         .obtenerParticipaciones(iEvaluacionId)
-    //         .pipe(takeUntil(this.unsubscribe$))
-    //         .subscribe({
-    //             next: (resp: any) => {
-    //                 // Verifica la estructura de la respuesta completa
-    //                 console.log('Estructura completa de resp:', resp)
-    //                 // Asegúrate de que `resp.data` tiene los datos esperados
-    //                 console.log('Datos en resp.data:', resp.data)
-
-    //                 // Dividir datos en base a `participa`
-    //                 this.targetProducts = resp.data
-    //                     .filter((item: any) => !item.participa) // IE no participan
-    //                     .map((item: any) => ({
-    //                         ...item,
-    //                         cIieeNombre: item.cIieeNombre,
-    //                         cIieeCodigoModular: item.cIieeCodigoModular,
-    //                         cNivelTipoNombre: item.cNivelTipoNombre,
-    //                     }))
-
-    //                 this.sourceProducts = resp.data
-    //                     .filter((item: any) => item.participa) // IE participan
-    //                     .map((item: any) => ({
-    //                         ...item,
-    //                         cIieeNombre: item.cIieeNombre,
-    //                         cIieeCodigoModular: item.cIieeCodigoModular,
-    //                         cNivelTipoNombre: item.cNivelTipoNombre,
-    //                     }))
-
-    //                 console.log('IE No participan:', this.sourceProducts)
-    //                 console.log('IE Participan:', this.targetProducts)
-    //             },
-    //             error: (error) => {
-    //                 console.error('Error al obtener participaciones:', error)
-    //             },
-    //         })
-    // }
-
-    // obtenerParticipaciones(iEvaluacionId: number) {
-    //     console.log(
-    //         'Obteniendo participaciones para modo editar/ver, ID:',
-    //         iEvaluacionId
-    //     )
-    //     if (!iEvaluacionId) {
-    //         console.warn('ID de evaluación no válido')
-    //         return
-    //     }
-
-    //     this._apiEre
-    //         .obtenerParticipaciones(iEvaluacionId)
-    //         .pipe(takeUntil(this.unsubscribe$))
-    //         .subscribe({
-    //             next: (resp: any) => {
-    //                 console.log('Datos de participaciones recibidos:', resp)
-
-    //                 // Separar IEs que participan y no participan
-    //                 this.sourceProducts = resp.data
-    //                     .filter((item: any) => item.participa)
-    //                     .map((item: any) => ({
-    //                         ...item,
-    //                         iIieeId: item.iIieeId,
-    //                         cIieeNombre: item.cIieeNombre,
-    //                         cIieeCodigoModular: item.cIieeCodigoModular,
-    //                         cNivelTipoNombre: item.cNivelTipoNombre,
-    //                     }))
-
-    //                 this.targetProducts = resp.data
-    //                     .filter((item: any) => !item.participa)
-    //                     .map((item: any) => ({
-    //                         ...item,
-    //                         iIieeId: item.iIieeId,
-    //                         cIieeNombre: item.cIieeNombre,
-    //                         cIieeCodigoModular: item.cIieeCodigoModular,
-    //                         cNivelTipoNombre: item.cNivelTipoNombre,
-    //                     }))
-
-    //                 console.log(
-    //                     'Source Products actualizados:',
-    //                     this.sourceProducts
-    //                 )
-    //                 console.log(
-    //                     'Target Products actualizados:',
-    //                     this.targetProducts
-    //                 )
-    //             },
-    //             error: (error) => {
-    //                 console.error('Error al obtener participaciones:', error)
-    //             },
-    //         })
-    // }
 
     obtenerParticipaciones(evaluacionId: number) {
         this._apiEre

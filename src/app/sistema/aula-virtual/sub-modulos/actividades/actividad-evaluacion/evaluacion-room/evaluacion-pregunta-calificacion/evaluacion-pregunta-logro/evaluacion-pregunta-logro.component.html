@@ -103,16 +103,23 @@
                                         </small>
                                     }
                                 </div>
-                                <div class="col-12 field flex flex-column">
+                                <div
+                                    class="col-12 field flex flex-column gap-2"
+                                >
                                     <label
                                         for="conclusion-descriptiva-{{
                                             $index
                                         }}"
-                                    ></label>
-                                    <p-editor
+                                        >Conclusión Descriptiva</label
+                                    >
+                                    <textarea
                                         id="conclusion-descriptiva-{{ $index }}"
+                                        rows="5"
+                                        cols="30"
+                                        pInputTextarea
                                         formControlName="cNivelLogroAlcConclusionDescriptiva"
-                                    ></p-editor>
+                                        [autoResize]="true"
+                                    ></textarea>
                                     @if (
                                         logroControl
                                             .get(

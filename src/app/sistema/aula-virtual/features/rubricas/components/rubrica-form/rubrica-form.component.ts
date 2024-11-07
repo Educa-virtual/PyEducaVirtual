@@ -13,7 +13,7 @@ import { Subject, takeUntil } from 'rxjs'
 })
 export class RubricaFormComponent implements OnInit, OnDestroy {
     public rubricaForm: FormGroup
-    public mode: 'EDITAR' | 'CREAR' = 'CREAR'
+    public mode: 'EDITAR' | 'CREAR' | 'VIEW' = 'CREAR'
 
     public escalasCalificativas: any[] = []
 

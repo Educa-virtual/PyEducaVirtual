@@ -1,7 +1,7 @@
 <div class="flex flex-column gap-2">
     <app-evaluacion-info
         class="mb-2"
-        [evaluacion]="evaluacion"
+        [evaluacionEstudiante]="evaluacionEstudiante"
     ></app-evaluacion-info>
     <div>
         <h3 class="text-xl">Pregunta</h3>
@@ -23,12 +23,27 @@
         </p-accordionTab>
     </p-accordion>
     <div>
-        <h3 class="text-xl">Calificación</h3>
+        <hr />
+        <h3 class="text-xl">
+            Calificación
+            {{
+                pregunta.logrosCalificacion?.length > 0
+                    ? 'por logros'
+                    : 'por rúbrica'
+            }}
+        </h3>
         <hr />
     </div>
-    <app-evaluacion-pregunta-logro
-        [logrosCalificacion]="pregunta.logrosCalificacion ?? []"
-        [escalasCalificativas]="escalasCalificativas"
-        (closeModalChange)="closeModal($event)"
-    ></app-evaluacion-pregunta-logro>
+    @if (pregunta.logrosCalificacion?.length > 0) {
+        <app-evaluacion-pregunta-logro
+            [logrosCalificacion]="pregunta.logrosCalificacion ?? []"
+            [escalasCalificativas]="escalasCalificativas"
+            (closeModalChange)="closeModal($event)"
+        ></app-evaluacion-pregunta-logro>
+    } @else {
+        <app-evaluacion-pregunta-rubrica
+            [escalasCalificativas]="escalasCalificativas"
+            [rubrica]="rubrica"
+        ></app-evaluacion-pregunta-rubrica>
+    }
 </div>

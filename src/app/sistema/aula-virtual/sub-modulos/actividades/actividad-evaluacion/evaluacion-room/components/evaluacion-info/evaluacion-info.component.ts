@@ -12,5 +12,5 @@ import { Component, Input } from '@angular/core'
     styleUrl: './evaluacion-info.component.scss',
 })
 export class EvaluacionInfoComponent {
-    @Input({ required: true }) evaluacion
+    @Input({ required: true }) evaluacionEstudiante
 }

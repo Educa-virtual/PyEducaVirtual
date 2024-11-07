@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core'
 import { Subject } from 'rxjs'
 import { httpService } from '../../http/httpService'
+import { tap, catchError } from 'rxjs/operators';
+import { throwError, EMPTY, Observable } from 'rxjs';
+
 
 export type ArrayElement<ArrayType extends readonly unknown[]> =
     ArrayType extends readonly (infer ElementType)[] ? ElementType : never
@@ -14,6 +17,7 @@ export class TicketService {
         calendar?: {
             iCalAcadId: string
             iYAcadId: string
+            iSedeId: string
         }
 
         stepYear?: {
@@ -209,114 +213,168 @@ export class TicketService {
         }
     }
 
+    setCalendar({
+        iSedeId,
+        iYAcadId,
+        iCalAcadId,
+    }: {
+        iSedeId: string
+        iYAcadId: string
+        iCalAcadId: string
+    }) {
+        this.registroInformation.calendar = {
+            iCalAcadId: iCalAcadId,
+            iSedeId: iSedeId,
+            iYAcadId: iYAcadId,
+        }
+    }
+
     getCalendar(
         {
             iSedeId,
             iYAcadId,
             iCalAcadId,
         }: { iSedeId: string; iYAcadId: string; iCalAcadId: string },
-        onNextCallbacks: (() => void)[] = []
-    ) {
-        this.httpService
-            .postData('acad/calendarioAcademico/addCalAcademico', {
-                json: JSON.stringify({
-                    iSedeId: iSedeId,
-                    iYAcadId: iYAcadId,
-                    iCalAcadId: iCalAcadId,
-                }),
-                _opcion: 'getCalendarioIE',
+        onNextCallbacks: (() => void)[] = [],
+        returnObservable: boolean = true
+    ): Observable<any> {
+        const request$ = this.httpService.postData('acad/calendarioAcademico/addCalAcademico', {
+            json: JSON.stringify({
+                iSedeId: iSedeId,
+                iYAcadId: iYAcadId,
+                iCalAcadId: iCalAcadId,
+            }),
+            _opcion: 'getCalendarioIE',
+        }).pipe(
+            tap((data: any) => {
+                onNextCallbacks.forEach((callback) => callback());
+            }),
+            catchError((error) => {
+                console.error('Error fetching turnos:', error);
+                return throwError(() => error);
             })
-            .subscribe({
-                next: (data: any) => {
-                    this.setTicketInformation(
-                        {
-                            iCalAcadId: iCalAcadId,
-                            iYAcadId: iYAcadId,
-                        },
-                        'calendar'
-                    )
+        );
+    
+        // Devuelve el Observable solo si returnObservable es true
+        if (returnObservable) {
+            return request$;
+        } else {
+            // Ejecuta la suscripción internamente y retorna un Observable vacío
+            request$.subscribe();
+            return EMPTY;
+        }
+    }
+    
+    
 
-                    onNextCallbacks.forEach((callback) => callback())
-                },
-                error: (error) => {
-                    console.error('Error fetching turnos:', error)
-                },
-                complete: () => {
-                    console.log('Request completed')
-                },
+    getDiasLaborales(
+        { iCalAcadId }: { iCalAcadId: string },
+        returnObservable: boolean = true
+    ): Observable<any> {
+        const request$ = this.httpService.postData('acad/calendarioAcademico/addCalAcademico', {
+            json: JSON.stringify({
+                iCalAcadId: iCalAcadId,
+            }),
+            _opcion: 'getCalendarioDiasLaborables',
+        }).pipe(
+            tap((data: any) => {
+                const filterDiasLaborales = JSON.parse(data.data[0]['calDiasDatos']).map((dia) => ({
+                    iDiaLabId: String(dia.iDiaLabId),
+                    iDiaId: String(dia.iDiaId),
+                    iDia: String(dia.iDiaId),
+                    cDiaNombre: dia.cDiaNombre,
+                    cDiaAbreviado: dia.cDiaAbreviado,
+                }));
+    
+            }),
+            catchError((error) => {
+                console.error('Error fetching turnos:', error);
+                return throwError(() => error);
             })
+        );
+    
+        // Devuelve el Observable solo si returnObservable es true
+        if (returnObservable) {
+            return request$;
+        } else {
+            // Ejecuta la suscripción internamente y retorna un Observable vacío
+            request$.subscribe();
+            return EMPTY;
+        }
+    }
+    
+
+    getFormasAtencion(
+        { iCalAcadId }: { iCalAcadId: string },
+        returnObservable: boolean = true
+    ): Observable<any> {
+        const request$ = this.httpService.postData('acad/calendarioAcademico/addCalAcademico', {
+            json: JSON.stringify({
+                iCalAcadId: iCalAcadId,
+            }),
+            _opcion: 'getCalendarioTurnos',
+        }).pipe(
+            tap((data: any) => {
+    
+                this.setTicketInformation(
+                    data.data.map((turno) => ({
+                        iCalTurnoId: turno.iCalTurnoId,
+                        iTurnoId: turno.iTurnoId,
+                        iModalServId: turno.iModalServId,
+                        iCalAcadId: turno.iCalAcadId,
+                        dtTurnoInicia: turno.dtTurnoInicia,
+                        dtTurnoFin: turno.dtTurnoFin,
+                        cModalServNombre: turno.cModalServNombre,
+                        cTurnoNombre: turno.cTurnoNombre,
+                        dtAperTurnoInicio: turno.dtAperTurnoInicio,
+                        dtAperTurnoFin: turno.dtAperTurnoFin,
+                    })),
+                    'stepFormasAtencion'
+                );
+            }),
+            catchError((error) => {
+                console.error('Error fetching turnos:', error);
+                return throwError(() => error);
+            })
+        );
+    
+        // Devuelve el Observable solo si returnObservable es true
+        if (returnObservable) {
+            return request$;
+        } else {
+            // Ejecuta la suscripción internamente y retorna un Observable vacío
+            request$.subscribe();
+            return EMPTY;
+        }
     }
 
-    // example ticket dia:
-    // {
-    //     iDiaLabId: '54'
-    //     iDiaId: '2'
-    //     iDia: '2'
-    //     cDiaNombre: 'MARTES'
-    //     cDiaAbreviado: 'MA'
-    // }
-
-    getDiasLaborales({ iCalAcadId }: { iCalAcadId: string }) {
-        this.httpService
-            .postData('acad/calendarioAcademico/addCalAcademico', {
-                json: JSON.stringify({
-                    iCalAcadId: iCalAcadId,
-                }),
-                _opcion: 'getCalendarioDiasLaborables',
+    getPeriodosAcademicos(
+        { iCalAcadId }: { iCalAcadId: string },
+        returnObservable: boolean = true
+    ): Observable<any> {
+        const request$ = this.httpService.postData('acad/calendarioAcademico/addCalAcademico', {
+            json: JSON.stringify({
+                iCalAcadId: iCalAcadId,
+            }),
+            _opcion: 'getCalendarioPeriodos',
+        }).pipe(
+            tap((data: any) => {
+    
+            }),
+            catchError((error) => {
+                console.error('Error fetching modalidades:', error);
+                return throwError(() => error);
             })
-            .subscribe({
-                next: (data: any) => {
-                    console.log('Dias Laborales')
-                    console.log(JSON.parse(data.data[0]['calDiasDatos']))
-
-                    let filterDiasLaborales = JSON.parse(
-                        data.data[0]['calDiasDatos']
-                    ).map((dia) => ({
-                        iDiaLabId: String(dia.iDiaLabId),
-                        iDiaId: String(dia.iDiaId),
-                        iDia: String(dia.iDiaId),
-                        cDiaNombre: dia.cDiaNombre,
-                        cDiaAbreviado: dia.cDiaAbreviado,
-                    }))
-
-                    // this.diasFetch = filterDiasLaborales
-
-                    // const resultado = this.dias.map((diaOption) => {
-                    //     const coincidencia = filterDiasLaborales.find(
-                    //         (diaSelect) => diaSelect.iDiaId === diaOption.iDiaId
-                    //     )
-                    //     return coincidencia || diaOption
-                    // })
-
-                    // filterDiasLaborales.forEach((diaSelect) => {
-                    //     const existeEnResultado = resultado.some(
-                    //         (item) => item.iDiaId === diaSelect.iDiaId
-                    //     )
-                    //     if (!existeEnResultado) {
-                    //         resultado.push(diaSelect)
-                    //     }
-                    // })
-
-                    // this.dias = resultado
-
-                    // this.ticketService.setTicketInformation(
-                    //     filterDiasLaborales,
-                    //     'stepDiasLaborales'
-                    // )
-
-                    // this.diasSelection =
-                    //     this.ticketService.registroInformation.stepDiasLaborales
-                },
-                error: (error) => {
-                    console.error('Error fetching turnos:', error)
-                },
-                complete: () => {
-                    console.log('Request completed')
-                },
-            })
+        );
+    
+        // Devuelve el Observable si returnObservable es true
+        if (returnObservable) {
+            return request$;
+        } else {
+            // Ejecuta la suscripción internamente y retorna un Observable vacío
+            request$.subscribe();
+            return EMPTY;
+        }
     }
-
-    getFormasAtencion() {}
-
-    getPeriodosAcademicos() {}
+    
 }

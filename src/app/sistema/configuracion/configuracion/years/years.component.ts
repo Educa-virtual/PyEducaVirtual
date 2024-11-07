@@ -97,6 +97,11 @@ export class YearsComponent implements OnInit {
                 console.log('Editando')
                 console.log(row.item.iYAcadId)
                 this.ticketService.setModeSteps('edit')
+                this.ticketService.setCalendar({
+                    iSedeId: row.item.iSedeId,
+                    iYAcadId: row.item.iYAcadId,
+                    iCalAcadId: row.item.iCalAcadId,
+                })
 
                 this.ticketService.getCalendar(
                     {
@@ -104,11 +109,20 @@ export class YearsComponent implements OnInit {
                         iYAcadId: row.item.iYAcadId,
                         iCalAcadId: row.item.iCalAcadId,
                     },
-                    [() => this.navigateToRegistro()]
+                    [() => this.navigateToRegistro()],
+                    false
                     // []
                 )
 
-                this.ticketService.getDiasLaborales({iCalAcadId: row.item.iCalAcadId})
+                // this.ticketService.getDiasLaborales({
+                //     iCalAcadId: row.item.iCalAcadId,
+                // })
+                // this.ticketService.getFormasAtencion({
+                //     iCalAcadId: row.item.iCalAcadId,
+                // })
+                // this.ticketService.getPeriodosAcademicos({
+                //     iCalAcadId: row.item.iCalAcadId,
+                // })
             },
             eliminar: () => {
                 // Lógica para la acción "eliminar"

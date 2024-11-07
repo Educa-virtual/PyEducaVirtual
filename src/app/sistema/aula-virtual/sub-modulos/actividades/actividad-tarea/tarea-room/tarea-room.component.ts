@@ -204,7 +204,7 @@ export class TareaRoomComponent implements OnChanges, OnInit {
     gruposFalta: number = 0
     gruposCulminado: number = 0
     FilesTareasEstudiantes = []
-    iEstadoEstudianteTarea: number = null
+    iEstadoEstudianteTarea: boolean = null
     notaTareaEstudiante: string = ''
     comentarioTareaEstudiante: string = ''
     public accionBtnItem(elemento) {
@@ -318,7 +318,8 @@ export class TareaRoomComponent implements OnChanges, OnInit {
                 this.FilesTareasEstudiantes = data.cTareaEstudianteUrlEstudiante
                     ? JSON.parse(data.cTareaEstudianteUrlEstudiante)
                     : []
-                this.iEstadoEstudianteTarea = data.cEstado
+                this.iEstadoEstudianteTarea =
+                    data.cEstado === '1' ? true : false
                 this.notaTareaEstudiante = data.cEscalaCalifNombre
                 this.comentarioTareaEstudiante =
                     data.cTareaEstudianteComentarioDocente

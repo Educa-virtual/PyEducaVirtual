@@ -14,6 +14,12 @@ import { GeneralService } from '@/app/servicios/general.service'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { DataViewModule, DataView } from 'primeng/dataview'
 import { CompartirIdEvaluacionService } from '../../../services/ereEvaluaciones/compartir-id-evaluacion.service'
+import { CheckboxModule } from 'primeng/checkbox'
+import { ApiEvaluacionesRService } from '../../../services/api-evaluaciones-r.service'
+interface NivelCurso {
+    //iCursoId: int
+    cCursoNombre: string
+}
 export type Layout = 'list' | 'grid'
 @Component({
     selector: 'app-evaluacion-areas',
@@ -29,13 +35,15 @@ export type Layout = 'list' | 'grid'
         //Subject,
         //ConstantesService,
         DataViewModule,
+        CheckboxModule,
     ],
     templateUrl: './evaluacion-areas.component.html',
     styleUrl: './evaluacion-areas.component.scss',
 })
 export class EvaluacionAreasComponent implements OnDestroy, OnInit {
-    public cursos: ICurso[] = []
+    public cursos: any[] = [] // Asegúrate de tener esta variable declarada en tu componente
     public data: ICurso[] = []
+    NivelCurso: any = [] // Inicializa la propiedad como un array o con el valor adecuado
 
     public sortField: string = ''
     public sortOrder: number = 0
@@ -48,7 +56,14 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
     private _constantesService = inject(ConstantesService)
     private _generalService = inject(GeneralService)
     private _store = inject(LocalStoreService)
-
+    private _apiEre = inject(ApiEvaluacionesRService)
+    public params = {
+        iCompentenciaId: 0,
+        iCapacidadId: 0,
+        iDesempenioId: 0,
+        bPreguntaEstado: -1,
+    }
+    selectedCursos: NivelCurso | undefined
     constructor(
         private store: LocalStoreService,
         private compartirIdEvaluacionService: CompartirIdEvaluacionService
@@ -69,8 +84,22 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
                 break
         }
         this.getCursos()
+        this.obtenerCursos()
     }
-
+    obtenerCursos(): void {
+        this._apiEre
+            .obtenerCursos(this.params)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+                next: (resp: any) => {
+                    console.log('Datos obtenidos de Cursos:', resp) // Verifica la respuesta
+                    this.cursos = resp.data // Asigna los cursos a la variable 'cursos'
+                },
+                error: (err) => {
+                    console.error('Error al obtener cursos:', err)
+                },
+            })
+    }
     public onFilter(dv: DataView, event: Event) {
         const text = (event.target as HTMLInputElement).value
         this.cursos = this.data

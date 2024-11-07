@@ -66,49 +66,27 @@
 </app-container-page> -->
 
 <div class="card">
-    <div class="flex justify-content-center">
-        <div class="flex flex-column gap-2">
-            <label for="username">Nombre</label>
-            <input pInputText id="username" aria-describedby="username-help" />
-        </div>
-        <p-divider layout="vertical" />
-        <div class="flex flex-column gap-2">
-            <label for="username">Credito Teoria</label>
-            <input pInputText id="username" aria-describedby="username-help" />
-        </div>
-        <p-divider layout="vertical" />
-        <div class="flex flex-column gap-2">
-            <label for="username">Credito Practica</label>
-            <input pInputText id="username" aria-describedby="username-help" />
-        </div>
-    </div>
     <p-divider type="solid" />
-    <div class="flex justify-content-center">
+    <div>
+        <label for="cursoSelect">Seleccionar Curso:</label>
+        <select id="cursoSelect" class="field-checkbox">
+            <option *ngFor="let curso of cursos" [value]="curso.iCursoId">
+                {{ curso.cCursoNombre }}
+            </option>
+        </select>
+    </div>
+
+    <div class="card flex justify-content-center">
         <div class="flex flex-column gap-2">
-            <label for="username">Descripcion</label>
-            <input pInputText id="username" aria-describedby="username-help" />
-        </div>
-        <p-divider layout="vertical" />
-        <div class="flex flex-column gap-2">
-            <label for="username">Total Credito</label>
-            <input pInputText id="username" aria-describedby="username-help" />
-        </div>
-        <p-divider layout="vertical" />
-        <div class="flex flex-column gap-2">
-            <label for="username">Perfil Docente</label>
-            <input pInputText id="username" aria-describedby="username-help" />
+            <div *ngFor="let curso of cursos" class="field-checkbox">
+                <p-checkbox
+                    [(ngModel)]="NivelCurso"
+                    [label]="curso.cCursoNombre"
+                    [value]="curso"
+                />
+            </div>
         </div>
     </div>
+
     <p-divider type="solid" />
-    <div class="flex justify-content-center">
-        <div class="flex flex-column gap-2">
-            <label for="username">Total Horas</label>
-            <input pInputText id="username" aria-describedby="username-help" />
-        </div>
-        <p-divider layout="vertical" />
-        <div class="flex flex-column gap-2">
-            <label for="username">Estado</label>
-            <input pInputText id="username" aria-describedby="username-help" />
-        </div>
-    </div>
 </div>

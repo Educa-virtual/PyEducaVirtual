@@ -54,6 +54,15 @@ export class ApiEvaluacionesRService {
             params,
         })
     }
+    //Tengo estos cursos en el backend
+    obtenerCursos(params) {
+        return this.http.post(
+            `${this.baseUrl}/ere/Evaluaciones/obtenerCursos`,
+            {
+                params,
+            }
+        )
+    }
     obtenerTipoEvaluacion(params) {
         return this.http.get(
             `${this.baseUrl}/ere/tipoEvaluacion/obtenerTipoEvaluacion`,
@@ -84,13 +93,6 @@ export class ApiEvaluacionesRService {
         )
         return this.http.get(
             `${this.baseUrl}/ere/Evaluaciones/obtenerParticipaciones?iEvaluacionId=${iEvaluacionId}`
-        )
-    }
-    //Insertar Cursos
-    ereFunInsCursos(data: any) {
-        return this.http.post(
-            `${this.baseUrl}/ere/Evaluaciones/ereFunInsCursos`,
-            data
         )
     }
 

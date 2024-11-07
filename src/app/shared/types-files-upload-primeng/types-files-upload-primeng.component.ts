@@ -24,6 +24,7 @@ export class TypesFilesUploadPrimengComponent implements OnChanges {
     @Output() actionTypesFileUpload = new EventEmitter()
     @Input() nameFile: string
     @Input() nameOption: string
+    @Input() filesUrl = []
     @Input() typesFiles = {
         file: true,
         url: true,
@@ -40,7 +41,13 @@ export class TypesFilesUploadPrimengComponent implements OnChanges {
         if (changes.typesFiles?.currentValue) {
             this.typesFiles = changes.typesFiles.currentValue
         }
+        if (changes.filesUrl?.currentValue) {
+            this.filesUrl = changes.filesUrl.currentValue
+        }
     }
+
+    urlName: string
+    youtubeName: string
 
     openUpload(type) {
         this.typeUpload = type
@@ -91,7 +98,7 @@ export class TypesFilesUploadPrimengComponent implements OnChanges {
                             name: resp.data,
                         },
                     }
-                    console.log(data)
+                    this.actionTypesFileUpload.emit(data)
                 },
                 complete: () => {},
                 error: (error) => {
@@ -116,8 +123,33 @@ export class TypesFilesUploadPrimengComponent implements OnChanges {
         const { accion } = elemento
         //const { item } = elemento
         // let params
+        let data
         switch (accion) {
             case 'close-modal':
+                this.showModal = false
+                break
+            case 'subir-url':
+                data = {
+                    accion: 'url-' + this.nameOption,
+                    item: {
+                        name: this.urlName,
+                        ruta: this.urlName,
+                    },
+                }
+                this.actionTypesFileUpload.emit(data)
+                this.urlName = null
+                this.showModal = false
+                break
+            case 'subir-youtube':
+                data = {
+                    accion: 'youtube-' + this.nameOption,
+                    item: {
+                        name: this.youtubeName,
+                        ruta: this.youtubeName,
+                    },
+                }
+                this.actionTypesFileUpload.emit(data)
+                this.youtubeName = null
                 this.showModal = false
                 break
         }

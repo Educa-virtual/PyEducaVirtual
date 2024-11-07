@@ -143,6 +143,7 @@ export class MaterialEducativoComponent implements OnInit {
                 break
             case 'list-material-educativo-docentes':
                 this.data = item
+                // this.data.forEach((i)=>i.cMatEduUrl = )
                 break
             case 'delete-material-educativo-docentes':
                 this.obtenerMaterialEducativoDocentes()

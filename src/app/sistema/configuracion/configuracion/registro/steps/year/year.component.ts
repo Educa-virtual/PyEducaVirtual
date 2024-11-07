@@ -87,57 +87,28 @@ export class YearComponent implements OnInit, OnChanges {
     ngOnInit() {
         this.getFasesPromocionales()
 
+        console.log('Objeto')
+        console.log(this.ticketService.registroInformation)
+
+        this.ticketService.getCalendarioIESede()
+        this.ticketService.getCalendar({iCalAcadId: "23", iSedeId: '1', iYAcadId: "3"})
+
         if (this.ticketService.registroInformation.mode === 'create') {
-            this.httpService
-                .postData('acad/calendarioAcademico/addCalAcademico', {
-                    json: JSON.stringify({}),
-                    _opcion: 'getCalendarioAno',
-                })
-                .subscribe({
-                    next: (data: any) => {
-                        let filterYearActive = JSON.parse(
-                            data.data[0][
-                                'JSON_F52E2B61-18A1-11d1-B105-00805F49916B'
-                            ]
-                        )[0]
-
-                        console.log(filterYearActive)
-
-                        this.ticketService.setTicketInformation(
-                            {
-                                fechaVigente: filterYearActive.cYAcadNombre,
-                                fechaInicio: new Date(
-                                    filterYearActive.dtYAcadInicio
-                                ),
-                                fechaFin: new Date(filterYearActive.dYAcadFin),
-                            },
-                            'stepYear'
-                        )
-
-                        // this.ticketService.setTicketInformation({
-                        //     ...this.ticketService.registroInformation.calendar,
-                        //     iYAcadId: filterYearActive.iYAcadId
-                        // }, 'calendar')
-                    },
-                    error: (error) => {
-                        console.error('Error fetching turnos:', error)
-                    },
-                    complete: () => {
-                        this.form.patchValue({
-                            fechaVigente:
-                                this.ticketService.registroInformation.stepYear
-                                    .fechaVigente,
-                            fechaInicio:
-                                this.ticketService.registroInformation.stepYear
-                                    .fechaInicio,
-                            fechaFin:
-                                this.ticketService.registroInformation.stepYear
-                                    .fechaFin,
-                        })
-
-                        this.form.get('fechaVigente').disable()
-                    },
-                })
+            this.ticketService.setFechaVigente([
+                () =>
+                    this.form.patchValue({
+                        fechaVigente:
+                            this.ticketService.registroInformation.stepYear
+                                .fechaVigente,
+                        fechaInicio:
+                            this.ticketService.registroInformation.stepYear
+                                .fechaInicio,
+                        fechaFin:
+                            this.ticketService.registroInformation.stepYear
+                                .fechaFin,
+                    }),
+                () => this.form.get('fechaVigente').disable()
+            ])
         }
         if (this.ticketService.registroInformation?.mode == 'edit') {
             this.httpService
@@ -386,12 +357,11 @@ export class YearComponent implements OnInit, OnChanges {
     }
 
     confirm() {
-        console.log('confirmando')
         const message: informationMessage = {
             header: '¿Desea guardar información?',
             message: 'Por favor, confirme para continuar.',
             accept: {
-                severity: 'success',
+                severity: 'contrast',
                 summary: 'Año',
                 detail: 'Se ha guardado correctamente.',
                 life: 6000,

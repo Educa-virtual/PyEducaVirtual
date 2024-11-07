@@ -80,6 +80,7 @@ export class GeneralService {
             }*/
         )
     }
+    
 
     getModalidad() {
         return this.http.get(

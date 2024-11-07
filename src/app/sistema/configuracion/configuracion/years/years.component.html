@@ -1,7 +1,7 @@
 <app-container-page
     title="Datos del año escolar"
     [actions]="actionsContainer"
-    (accionBtnItem)="navigateToRegistro()"
+    (accionBtnItem)="handleActions($event)"
 >
 
     <app-table-primeng

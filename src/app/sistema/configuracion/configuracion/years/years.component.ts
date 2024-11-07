@@ -1,9 +1,6 @@
 import { Component, OnInit, OnChanges, OnDestroy } from '@angular/core'
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
-
-import { Output, EventEmitter } from '@angular/core'
-
 import { Router } from '@angular/router'
 import { httpService } from '../http/httpService'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
@@ -20,7 +17,6 @@ import { TicketService } from '../registro/service/ticketservice'
 export class YearsComponent implements OnInit {
     fechasAcademicas
 
-    @Output() emitMode = new EventEmitter()
     constructor(
         private router: Router,
         private httpService: httpService,
@@ -79,7 +75,7 @@ export class YearsComponent implements OnInit {
             labelTooltip: 'Registrar año escolar',
             text: 'Registrar año escolar',
             icon: 'pi pi-plus',
-            accion: 'agregar',
+            accion: 'crear',
             class: 'p-button-primary',
         },
     ]
@@ -92,11 +88,19 @@ export class YearsComponent implements OnInit {
                 // Lógica para la acción "ver"
                 console.log('Viendo')
             },
+            crear: () => {
+                this.ticketService.setModeSteps('create')
+                console.log('Año vigente')
+                this.navigateToRegistro()
+            },
             editar: () => {
                 // Lógica para la acción "editar"
                 console.log('Editando')
                 console.log(row.item.iYAcadId)
                 this.ticketService.setModeSteps('edit')
+
+                console.log('Modo?')
+                console.log(this.ticketService.registroInformation.mode)
                 this.ticketService.setCalendar({
                     iSedeId: row.item.iSedeId,
                     iYAcadId: row.item.iYAcadId,
@@ -202,11 +206,6 @@ export class YearsComponent implements OnInit {
     ]
 
     navigateToRegistro() {
-        if (!this.ticketService.registroInformation.mode) {
-            this.ticketService.registroInformation = {
-                mode: 'create',
-            }
-        }
         this.router.navigate(['configuracion/configuracion/registro'])
     }
 

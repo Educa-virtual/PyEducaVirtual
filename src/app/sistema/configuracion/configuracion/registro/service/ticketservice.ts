@@ -15,7 +15,7 @@ export class TicketService {
         modal?: 'create' | 'edit'
 
         calendar?: {
-            iCalAcadId: string
+            iCalAcadId?: string
             iYAcadId: string
             iSedeId: string
         }
@@ -213,6 +213,48 @@ export class TicketService {
         }
     }
 
+    setFechaVigente(onCompleteCallbacks: (() => void)[] = []): Observable<any> | void {
+        this.httpService.postData('acad/calendarioAcademico/addCalAcademico', {
+            json: JSON.stringify({}),
+            _opcion: 'getCalendarioAno',
+        }).subscribe({
+            next: (data) => {
+                const filterYearActive = JSON.parse(
+                            data.data[0]['JSON_F52E2B61-18A1-11d1-B105-00805F49916B']
+                        )[0];
+            
+                        console.log('Fecha vigente');
+                        console.log(filterYearActive);
+        
+                        this.setTicketInformation({
+                            iSedeId: JSON.parse(localStorage.getItem('dremoPerfil')).iSedeId,
+                            iYAcadId: filterYearActive.iYAcadId
+                        }, 'calendar')
+        
+                        this.setTicketInformation({
+                            fechaInicio: new Date(filterYearActive.dtYAcadInicio),
+                            fechaFin: new Date(filterYearActive.dYAcadFin),
+                            fechaVigente: filterYearActive.cYAcadNombre
+                        },'stepYear')
+            },
+
+            error: () => {
+
+            },
+
+            complete: () => {
+                onCompleteCallbacks.forEach((callback) => callback());
+            },
+
+        }
+
+        );
+
+
+    
+        
+    }
+
     setCalendar({
         iSedeId,
         iYAcadId,
@@ -247,6 +289,9 @@ export class TicketService {
             _opcion: 'getCalendarioIE',
         }).pipe(
             tap((data: any) => {
+                console.log('getCalendarioIE')
+                console.log(data)
+
                 onNextCallbacks.forEach((callback) => callback());
             }),
             catchError((error) => {
@@ -264,9 +309,37 @@ export class TicketService {
             return EMPTY;
         }
     }
-    
-    
 
+    getCalendarioIESede(){
+        this.httpService
+        .postData('acad/calendarioAcademico/addCalAcademico', {
+            json: JSON.stringify({
+                iSedeId:
+                    JSON.parse(localStorage.getItem('dremoPerfil')).iSedeId,
+                // iYAcadId: this.ticketService.registroInformation.stepYear.,
+                iCalAcadId: "23",
+            }),
+            _opcion: 'getCalendarioIESede',
+        })
+        .subscribe({
+            next: (data: any) => {
+                let filterCalendar = JSON.parse(
+                    data.data[0]['calendarioAcademico']
+                )
+
+                console.log('getCalendarioIESede')
+                console.log(filterCalendar)
+            },
+            error: (error) => {
+                console.error('Error fetching turnos:', error)
+            },
+            complete: () => {
+
+            },
+        })
+
+    }
+    
     getDiasLaborales(
         { iCalAcadId }: { iCalAcadId: string },
         returnObservable: boolean = true

@@ -11,6 +11,7 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import esLocale from '@fullcalendar/core/locales/es' // * traduce el Modulo de calendario a español
+import { MessageService } from 'primeng/api'
 
 @Component({
     selector: 'app-asistencia',
@@ -28,6 +29,7 @@ export class AsistenciaComponent implements OnInit {
 
     cCursoNombre: string
     constructor(
+        private messageService: MessageService,
         //private GeneralService: GeneralService,
         private activatedRoute: ActivatedRoute,
         private router: Router
@@ -46,13 +48,22 @@ export class AsistenciaComponent implements OnInit {
     /**
      * @param fechaActual Guarda la fecha actual para la asistencia
      */
+
     formatoFecha: Date = new Date()
-    fechaActual =
-        this.formatoFecha.getFullYear() +
-        '-' +
-        (this.formatoFecha.getMonth() + 1) +
-        '-' +
-        this.formatoFecha.getDate()
+    fechaActual = this.formatoFecha.toISOString().split('T')[0]
+    limitado = this.formatoFecha.getDay()
+
+    confFecha: any = {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+    }
+
+    fechaEspecifica = this.formatoFecha.toLocaleDateString(
+        'es-PE',
+        this.confFecha
+    )
 
     /**
      * calendarOptions
@@ -61,6 +72,7 @@ export class AsistenciaComponent implements OnInit {
      * @param events Se encarga de mostrar las actividades programadas por hora y fecha
      * @param dayMaxEvents limita los eventos del dia para que se desborden del calendario
      */
+
     events: any[] = []
     calendarOptions: CalendarOptions = {
         plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
@@ -70,7 +82,7 @@ export class AsistenciaComponent implements OnInit {
         weekends: true,
         selectable: true,
         dayMaxEvents: true,
-        // eventShortHeight: 30,
+        height: 600,
         dateClick: (item) => this.handleDateClick(item),
         headerToolbar: {
             right: 'dayGridMonth,timeGridWeek,timeGridDay',
@@ -100,8 +112,13 @@ export class AsistenciaComponent implements OnInit {
 
     // * Se encarga de seleccionar la fecha de Asistencia
     handleDateClick(item) {
-        this.getAsistencia(item.dateStr)
         this.fechaActual = item.dateStr
+        const dia = new Date(this.fechaActual + 'T00:00:00')
+        this.limitado = dia.getDay()
+        this.fechaEspecifica = dia.toLocaleDateString('es-PE', this.confFecha)
+        if (this.limitado != 6 && this.limitado != 0) {
+            this.getAsistencia(item.dateStr)
+        }
     }
 
     /**
@@ -260,21 +277,29 @@ export class AsistenciaComponent implements OnInit {
     // * Registro de asistencia del alumno
 
     storeAsistencia() {
-        const params = {
-            petition: 'post',
-            group: 'docente',
-            prefix: 'asistencia',
-            ruta: 'list',
-            data: {
-                opcion: 'GUARDAR_ASISTENCIA_ESTUDIANTE',
-                iCursoId: this.iCursoId,
-                asistencia_json: JSON.stringify(this.data),
-                dtCtrlAsistencia: this.fechaActual,
-            },
-            params: { skipSuccessMessage: true },
-        }
+        if (this.limitado != 6 && this.limitado != 0) {
+            const params = {
+                petition: 'post',
+                group: 'docente',
+                prefix: 'asistencia',
+                ruta: 'list',
+                data: {
+                    opcion: 'GUARDAR_ASISTENCIA_ESTUDIANTE',
+                    iCursoId: this.iCursoId,
+                    asistencia_json: JSON.stringify(this.data),
+                    dtCtrlAsistencia: this.fechaActual,
+                },
+                params: { skipSuccessMessage: true },
+            }
 
-        this.getInformation(params, 'get_data')
+            this.getInformation(params, 'get_data')
+        } else {
+            this.messageService.add({
+                severity: 'info',
+                summary: 'Mensaje',
+                detail: 'Fecha no habilitada',
+            })
+        }
     }
 
     /**

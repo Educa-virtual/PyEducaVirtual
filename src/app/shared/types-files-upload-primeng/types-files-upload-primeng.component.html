@@ -1,0 +1,137 @@
+<div class="card">
+    <label for="" class="mt-1">Adjuntar</label>
+    <div class="d-flex align-items-center text-center mt-1">
+        <button
+            *ngIf="typesFiles.file"
+            pButton
+            pRipple
+            type="button"
+            class="p-button-rounded p-button-outlined mx-2 btn-file-image"
+        >
+            <i
+                class="pi pi-upload my-2"
+                style="color: #333437; font-size: 3rem"
+                pTooltip="Subir Archivo"
+                tooltipPosition="bottom"
+            ></i
+            ><input
+                type="file"
+                accept=".pdf, "
+                (change)="onUploadChange($event)"
+            />
+        </button>
+
+        <button
+            *ngIf="typesFiles.url"
+            pButton
+            pRipple
+            type="button"
+            class="p-button-rounded p-button-outlined mx-2"
+            (click)="openUpload('url')"
+        >
+            <i
+                class="pi pi-link my-2"
+                style="color: #333437; font-size: 3rem"
+                pTooltip="Subir Enlace"
+                tooltipPosition="bottom"
+            ></i>
+        </button>
+
+        <button
+            *ngIf="typesFiles.youtube"
+            pButton
+            pRipple
+            type="button"
+            class="p-button-rounded p-button-outlined mx-2"
+            (click)="openUpload('youtube')"
+        >
+            <i
+                class="pi pi-youtube my-2"
+                style="color: #c4302b; font-size: 3rem"
+                pTooltip="Subir Enlace Youtube"
+                tooltipPosition="bottom"
+            ></i>
+        </button>
+
+        <button
+            *ngIf="typesFiles.repository"
+            pButton
+            pRipple
+            type="button"
+            class="p-button-rounded p-button-outlined mx-2"
+            (click)="openUpload('repository')"
+        >
+            <i
+                class="pi pi-upload my-2"
+                style="color: #ffd04b; font-size: 3rem"
+                pTooltip="Subir Rubrica"
+                tooltipPosition="bottom"
+            ></i>
+        </button>
+        <button
+            *ngIf="typesFiles.image"
+            pButton
+            pRipple
+            type="button"
+            class="p-button-rounded p-button-outlined mx-2"
+            (click)="openUpload('image')"
+        >
+            <i
+                class="pi pi-images my-2"
+                style="color: #ff844b; font-size: 3rem"
+                pTooltip="Subir Foto"
+                tooltipPosition="bottom"
+            ></i>
+        </button>
+    </div>
+</div>
+
+<app-modal-primeng
+    [title]="titleFileTareas"
+    [showModal]="showModal"
+    [width]="'35rem'"
+    (accionBtnItem)="accionBtnItem($event)"
+>
+    <div class="grid">
+        @if (typeUpload === 'url') {
+            <div class="col-12">
+                <p-inputGroup>
+                    <p-inputGroupAddon>
+                        <i class="pi pi-link"></i>
+                    </p-inputGroupAddon>
+                    <input type="text" pInputText placeholder="Pegar la URL" />
+                    <button
+                        type="button"
+                        pButton
+                        icon="pi pi-check"
+                        class="p-button-succes"
+                    >
+                        &nbsp;
+                    </button>
+                </p-inputGroup>
+            </div>
+        }
+        @if (typeUpload === 'youtube') {
+            <div class="col-12">
+                <p-inputGroup>
+                    <p-inputGroupAddon>
+                        <i class="pi pi-youtube" style="color: #c4302b"></i>
+                    </p-inputGroupAddon>
+                    <input
+                        type="text"
+                        pInputText
+                        placeholder="Buscaer en Youtube o pegar la URL"
+                    />
+                    <button
+                        type="button"
+                        pButton
+                        icon="pi pi-check"
+                        class="p-button-danger"
+                    >
+                        &nbsp;
+                    </button>
+                </p-inputGroup>
+            </div>
+        }
+    </div>
+</app-modal-primeng>

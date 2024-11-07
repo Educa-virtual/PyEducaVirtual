@@ -1,5 +1,6 @@
 import { Component, inject, OnInit, Input } from '@angular/core'
 import { IconComponent } from '@/app/shared/icon/icon.component'
+//import { LeyendaComponent } from '@/app/shared/components/leyenda/leyenda.component'
 import {
     matAccessTime,
     matCalendarMonth,
@@ -23,6 +24,7 @@ import { Subject, takeUntil } from 'rxjs'
 import { RemoveHTMLPipe } from '@/app/shared/pipes/remove-html.pipe'
 import { NgFor } from '@angular/common'
 import { RecursosListaComponent } from '@/app/shared/components/recursos-lista/recursos-lista.component'
+import { ConstantesService } from '@/app/servicios/constantes.service'
 @Component({
     selector: 'app-foro-room',
     standalone: true,
@@ -58,6 +60,7 @@ export class ForoRoomComponent implements OnInit {
     private GeneralService = inject(GeneralService)
     private _formBuilder = inject(FormBuilder)
     private _aulaService = inject(ApiAulaService)
+    private _constantesService = inject(ConstantesService)
     //private ref = inject(DynamicDialogRef)
     // variables
     FilesTareas = []
@@ -70,6 +73,8 @@ export class ForoRoomComponent implements OnInit {
     private unsbscribe$ = new Subject<boolean>()
 
     public foro
+    iPerfilId: number
+    iEstudianteId: number
 
     commentForoM: string = ''
 
@@ -91,11 +96,12 @@ export class ForoRoomComponent implements OnInit {
     })
     public foroFormComntAl: FormGroup = this._formBuilder.group({
         cForoRptaRespuesta: ['', [Validators.required]],
-        //iEstudianteId: [],
+        iEstudianteId: [],
         iForoId: [''],
     })
     constructor() {}
     ngOnInit() {
+        this.obtenerIdPerfil()
         this.mostrarCalificacion()
         this.obtenerForo()
         this.getRespuestaF()
@@ -103,6 +109,12 @@ export class ForoRoomComponent implements OnInit {
     // closeModal(data) {
     //     this.ref.close(data)
     // }
+    //ver si mi perfil esta llegando (borrar)
+    obtenerIdPerfil() {
+        this.iEstudianteId = this._constantesService.iEstudianteId
+        this.iPerfilId = this._constantesService.iPerfilId
+        console.log('mi id perfil', this.iEstudianteId)
+    }
     openModal(respuestasForo) {
         this.modalCalificacion = true
         this.estudianteSelect = respuestasForo
@@ -119,8 +131,10 @@ export class ForoRoomComponent implements OnInit {
         })
     }
     sendComment() {
+        this.iEstudianteId = this._constantesService.iEstudianteId
         const comment = this.foroFormComntAl.value
         comment.iForoId = this.ixActivadadId
+        comment.iEstudianteId = this.iEstudianteId
 
         this._aulaService.guardarRespuesta(comment).subscribe(
             (response) => {
@@ -188,4 +202,26 @@ export class ForoRoomComponent implements OnInit {
     abrirPDF(url: any) {
         window.open(url, '_blank')
     }
+
+    comments = [
+        {
+            profilePicture: 'path/to/profile.jpg',
+            author: 'Jhon Doe',
+            time: new Date(),
+            text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit...',
+        },
+        // Más comentarios
+    ]
+
+    // replyToComment(respuestasForo: any) {
+    //     // Lógica para responder al comentario
+    // }
+
+    // editComment(respuestasForo: any) {
+    //     // Lógica para editar el comentario
+    // }
+
+    // deleteComment(respuestasForo: any) {
+    //     // Lógica para borrar el comentario
+    // }
 }

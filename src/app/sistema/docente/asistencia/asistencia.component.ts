@@ -20,7 +20,6 @@ import esLocale from '@fullcalendar/core/locales/es' // * traduce el Modulo de c
     styleUrl: './asistencia.component.scss',
 })
 export class AsistenciaComponent implements OnInit {
-    public events: any[] = []
     @Input() iCursoId: string
     @Input() iNivelGradoId: string
     @Input() iSeccionId: string
@@ -62,6 +61,7 @@ export class AsistenciaComponent implements OnInit {
      * @param events Se encarga de mostrar las actividades programadas por hora y fecha
      * @param dayMaxEvents limita los eventos del dia para que se desborden del calendario
      */
+    events: any[] = []
     calendarOptions: CalendarOptions = {
         plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
         slotLabelFormat: { hour: 'numeric', minute: '2-digit', hour12: false },
@@ -85,12 +85,14 @@ export class AsistenciaComponent implements OnInit {
      * @param valor Se encarga de enviar el tipo de filtro que se aplique en el calendario
      */
     filterCalendario(checkbox: any, valor: any) {
-        this.events.filter((evento) => {
+        this.events.map((evento) => {
             if (evento.grupo == valor && checkbox.mostrar == true) {
                 evento.display = 'block'
+                console.log(evento)
             }
             if (evento.grupo == valor && checkbox.mostrar == false) {
                 evento.display = 'none'
+                console.log(evento)
             }
         })
         this.calendarOptions.events = Object.assign([], this.events)
@@ -123,10 +125,10 @@ export class AsistenciaComponent implements OnInit {
         this.strTitulo = ''
     }
 
-    legenda = [
+    leyenda = [
         { significado: 'Asistio', simbolo: 'X' },
         { significado: 'Inasistencia', simbolo: 'I' },
-        { significado: 'Inasistencia justificada', simbolo: 'J' },
+        { significado: 'Inasistencia Justificada', simbolo: 'J' },
         { significado: 'Tardanza', simbolo: 'T' },
         { significado: 'Tardanza Justificada', simbolo: 'P' },
         { significado: 'Sin Registro', simbolo: '-' },
@@ -139,21 +141,18 @@ export class AsistenciaComponent implements OnInit {
         {
             name: 'Asistencias',
             valor: 'asistencias',
-            id: 1,
             mostrar: true,
             estilo: 'cyan-checkbox',
         },
         {
             name: 'Festividades',
             valor: 'festividades',
-            id: 2,
             mostrar: true,
             estilo: 'pink-checkbox',
         },
         {
             name: 'Programacion de Actividades',
             valor: 'actividades',
-            id: 3,
             mostrar: true,
             estilo: 'green-checkbox',
         },
@@ -222,8 +221,8 @@ export class AsistenciaComponent implements OnInit {
                 this.data = item
                 break
             case 'get_fecha_importante':
-                this.events = item
                 this.calendarOptions.events = item
+                this.events = item
                 break
             default:
                 break
@@ -240,11 +239,11 @@ export class AsistenciaComponent implements OnInit {
     updateActividad() {
         const params = {
             petition: 'post',
-            group: 'aula',
-            prefix: 'programa-actividad',
-            ruta: 'list',
+            group: 'aula-virtual',
+            prefix: 'tareas',
+            ruta: 'update',
             data: {
-                opcion: 'UPDATE_ACTIVIDAD',
+                opcion: 'ACTUALIZAR_TITULO_TAREA',
                 iTareaId: this.strId,
                 cTareaTitulo: this.strTitulo,
             },
@@ -252,6 +251,10 @@ export class AsistenciaComponent implements OnInit {
         }
 
         this.getInformation(params, 'get_data')
+
+        this.strId = ''
+        this.strTitulo = ''
+        this.visible = false
     }
 
     // * Registro de asistencia del alumno

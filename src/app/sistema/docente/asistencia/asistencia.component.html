@@ -88,7 +88,12 @@
                     <p-button
                         styleClass="agregar"
                         severity="warning"
-                        (click)="editActividad(arg.event.id, arg.event.title)"
+                        (click)="
+                            editActividad(
+                                arg.event.extendedProps.ident,
+                                arg.event.title
+                            )
+                        "
                         >{{ arg.event.title }}
                     </p-button>
                 } @else {
@@ -102,7 +107,6 @@
                 <div *ngFor="let category of categories" class="flex mr-2">
                     <p-checkbox
                         [(ngModel)]="category.mostrar"
-                        id="calendario"
                         (onChange)="filterCalendario(category, category.valor)"
                         [label]="category.name"
                         name="group"
@@ -113,7 +117,7 @@
             </div>
             <div class="flex mt-2">
                 <div class="flex font-bold mr-1">LEYENDA:</div>
-                <div *ngFor="let lista of legenda" class="flex mr-1">
+                <div *ngFor="let lista of leyenda" class="flex mr-1">
                     [{{ lista.simbolo }}] {{ lista.significado }}
                 </div>
             </div>
@@ -132,7 +136,12 @@
         <label for="username" class="font-semibold w-6rem"
             >Nombre de Actividad</label
         >
-        <textarea rows="5" cols="30" pInputTextarea>{{ strTitulo }}</textarea>
+        <textarea
+            rows="5"
+            cols="30"
+            [(ngModel)]="strTitulo"
+            pInputTextarea
+        ></textarea>
     </div>
     <div class="flex justify-content-end gap-2">
         <p-button

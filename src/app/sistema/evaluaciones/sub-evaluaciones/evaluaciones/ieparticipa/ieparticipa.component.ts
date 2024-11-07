@@ -21,6 +21,7 @@ interface Ugeles {
     cUgelNombre: string
     iUgelId: string
 }
+
 @Component({
     selector: 'app-ieparticipa',
     standalone: true,
@@ -39,6 +40,7 @@ interface Ugeles {
 })
 export class IeparticipaComponent implements OnInit {
     public evaluacionFormGroup: any
+
     private unsubscribe$: Subject<boolean> = new Subject()
 
     public params = {
@@ -54,10 +56,11 @@ export class IeparticipaComponent implements OnInit {
     // sourceProducts!: Product[]
 
     // targetProducts!: Product[]
-    sourceProducts: Product[]
+    // sourceProducts: Product[]
 
-    targetProducts: Product[]
-
+    // targetProducts: Product[]
+    public sourceProducts: any[] = [] // IEs no participantes
+    public targetProducts: any[] = [] // IEs participantes
     nivelTipo: NivelTipo[] | undefined
     selectedNivelTipo: NivelTipo | undefined
 
@@ -71,7 +74,9 @@ export class IeparticipaComponent implements OnInit {
         private compartirIdEvaluacionService: CompartirIdEvaluacionService,
         private _config: DynamicDialogConfig // Inyectar configuración
     ) {}
-
+    //public sourceProducts: Product[] = []
+    //public targetProducts: Product[] = [] // Lista de IE que participan
+    public allIEs: Product[] = [] // Lista completa de IE para filtrar los no participantes
     ngOnInit() {
         // Obtener la acción del config
         // this.accion = this._config.data?.accion || 'crear' // bien
@@ -123,6 +128,7 @@ export class IeparticipaComponent implements OnInit {
         // } else {
         //     console.warn('No se encontró ID de evaluación válido')
         // }
+
         // Inicializar según el modo
         if (this.accion === 'crear') {
             console.log('Inicializando en modo crear')
@@ -158,42 +164,76 @@ export class IeparticipaComponent implements OnInit {
             this.obtenerParticipaciones(evaluacionId)
         }
     }
+    // obtenerIE() {
+    //     this._apiEre
+    //         .obtenerIE(this.params)
+    //         .pipe(takeUntil(this.unsubscribe$))
+    //         .subscribe({
+    //             // next: (resp: unknown) => {
+    //             next: (resp: any) => {
+    //                 console.log('Datos de IEs recibidos:', resp)
+    //                 // En modo crear, todos los IEs van a sourceProducts
+    //                 this.sourceProducts = resp.data.map((item: any) => ({
+    //                     ...item,
+    //                     iIieeId: item.iIieeId,
+    //                     cIieeNombre: item.cIieeNombre,
+    //                     cIieeCodigoModular: item.cIieeCodigoModular,
+    //                     cNivelTipoNombre: item.cNivelTipoNombre,
+    //                 }))
+    //                 this.targetProducts = [] // Mantener la lista destino vacía
+    //                 console.log(
+    //                     'Source Products actualizados:',
+    //                     this.sourceProducts
+    //                 )
+    //                 console.log('Target Products vacíos:', this.targetProducts)
+    //             },
+    //             error: (error) => {
+    //                 console.error('Error al obtener IEs:', error)
+
+    //                 // if (this.accion === 'crear') {
+    //                 //     // En modo crear, todos los IE van a sourceProducts
+    //                 //     this.sourceProducts = resp.data
+    //                 //     this.targetProducts = [] // Aseguramos que targetProducts esté vacío
+    //                 // }
+    //                 // console.log('Datos obtenidos de obtenerIE:', resp) // Imprime la respuesta completa
+    //                 // this.data = resp['data']
+    //                 // console.log('Data asignada a this.data:', this.data) // Imprime los datos asignados
+    //                 // this.sourceProducts = this.data
+    //             },
+    //         })
+    // }
+
     obtenerIE() {
         this._apiEre
             .obtenerIE(this.params)
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
-                // next: (resp: unknown) => {
                 next: (resp: any) => {
-                    console.log('Datos de IEs recibidos:', resp)
-                    // En modo crear, todos los IEs van a sourceProducts
-                    this.sourceProducts = resp.data.map((item: any) => ({
-                        ...item,
+                    this.allIEs = resp.data.map((item: any) => ({
                         iIieeId: item.iIieeId,
                         cIieeNombre: item.cIieeNombre,
                         cIieeCodigoModular: item.cIieeCodigoModular,
                         cNivelTipoNombre: item.cNivelTipoNombre,
                     }))
-                    this.targetProducts = [] // Mantener la lista destino vacía
+
+                    // Filtra las IE que no están en `targetProducts`
+                    this.sourceProducts = this.allIEs.filter(
+                        (ie) =>
+                            !this.targetProducts.some(
+                                (participa) => participa.iIieeId === ie.iIieeId
+                            )
+                    )
+
                     console.log(
-                        'Source Products actualizados:',
+                        'Instituciones participantes:',
+                        this.targetProducts
+                    )
+                    console.log(
+                        'Instituciones no participantes:',
                         this.sourceProducts
                     )
-                    console.log('Target Products vacíos:', this.targetProducts)
                 },
-                error: (error) => {
-                    console.error('Error al obtener IEs:', error)
-
-                    // if (this.accion === 'crear') {
-                    //     // En modo crear, todos los IE van a sourceProducts
-                    //     this.sourceProducts = resp.data
-                    //     this.targetProducts = [] // Aseguramos que targetProducts esté vacío
-                    // }
-                    // console.log('Datos obtenidos de obtenerIE:', resp) // Imprime la respuesta completa
-                    // this.data = resp['data']
-                    // console.log('Data asignada a this.data:', this.data) // Imprime los datos asignados
-                    // this.sourceProducts = this.data
-                },
+                error: (error) => console.error('Error al obtener IEs:', error),
             })
     }
     obtenerNivelTipo() {
@@ -370,56 +410,77 @@ export class IeparticipaComponent implements OnInit {
     //         })
     // }
 
-    obtenerParticipaciones(iEvaluacionId: number) {
-        console.log(
-            'Obteniendo participaciones para modo editar/ver, ID:',
-            iEvaluacionId
-        )
-        if (!iEvaluacionId) {
-            console.warn('ID de evaluación no válido')
-            return
-        }
+    // obtenerParticipaciones(iEvaluacionId: number) {
+    //     console.log(
+    //         'Obteniendo participaciones para modo editar/ver, ID:',
+    //         iEvaluacionId
+    //     )
+    //     if (!iEvaluacionId) {
+    //         console.warn('ID de evaluación no válido')
+    //         return
+    //     }
 
+    //     this._apiEre
+    //         .obtenerParticipaciones(iEvaluacionId)
+    //         .pipe(takeUntil(this.unsubscribe$))
+    //         .subscribe({
+    //             next: (resp: any) => {
+    //                 console.log('Datos de participaciones recibidos:', resp)
+
+    //                 // Separar IEs que participan y no participan
+    //                 this.sourceProducts = resp.data
+    //                     .filter((item: any) => item.participa)
+    //                     .map((item: any) => ({
+    //                         ...item,
+    //                         iIieeId: item.iIieeId,
+    //                         cIieeNombre: item.cIieeNombre,
+    //                         cIieeCodigoModular: item.cIieeCodigoModular,
+    //                         cNivelTipoNombre: item.cNivelTipoNombre,
+    //                     }))
+
+    //                 this.targetProducts = resp.data
+    //                     .filter((item: any) => !item.participa)
+    //                     .map((item: any) => ({
+    //                         ...item,
+    //                         iIieeId: item.iIieeId,
+    //                         cIieeNombre: item.cIieeNombre,
+    //                         cIieeCodigoModular: item.cIieeCodigoModular,
+    //                         cNivelTipoNombre: item.cNivelTipoNombre,
+    //                     }))
+
+    //                 console.log(
+    //                     'Source Products actualizados:',
+    //                     this.sourceProducts
+    //                 )
+    //                 console.log(
+    //                     'Target Products actualizados:',
+    //                     this.targetProducts
+    //                 )
+    //             },
+    //             error: (error) => {
+    //                 console.error('Error al obtener participaciones:', error)
+    //             },
+    //         })
+    // }
+
+    obtenerParticipaciones(evaluacionId: number) {
         this._apiEre
-            .obtenerParticipaciones(iEvaluacionId)
+            .obtenerParticipaciones(evaluacionId)
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
                 next: (resp: any) => {
-                    console.log('Datos de participaciones recibidos:', resp)
+                    this.targetProducts = resp.data.map((item: any) => ({
+                        iIieeId: item.iIieeId,
+                        cIieeNombre: item.cIieeNombre,
+                        cIieeCodigoModular: item.cIieeCodigoModular,
+                        cNivelTipoNombre: item.cNivelTipoNombre,
+                    }))
 
-                    // Separar IEs que participan y no participan
-                    this.sourceProducts = resp.data
-                        .filter((item: any) => item.participa)
-                        .map((item: any) => ({
-                            ...item,
-                            iIieeId: item.iIieeId,
-                            cIieeNombre: item.cIieeNombre,
-                            cIieeCodigoModular: item.cIieeCodigoModular,
-                            cNivelTipoNombre: item.cNivelTipoNombre,
-                        }))
-
-                    this.targetProducts = resp.data
-                        .filter((item: any) => !item.participa)
-                        .map((item: any) => ({
-                            ...item,
-                            iIieeId: item.iIieeId,
-                            cIieeNombre: item.cIieeNombre,
-                            cIieeCodigoModular: item.cIieeCodigoModular,
-                            cNivelTipoNombre: item.cNivelTipoNombre,
-                        }))
-
-                    console.log(
-                        'Source Products actualizados:',
-                        this.sourceProducts
-                    )
-                    console.log(
-                        'Target Products actualizados:',
-                        this.targetProducts
-                    )
+                    // Llama a obtenerIE para filtrar las IE no participantes
+                    this.obtenerIE()
                 },
-                error: (error) => {
-                    console.error('Error al obtener participaciones:', error)
-                },
+                error: (error) =>
+                    console.error('Error al obtener participaciones:', error),
             })
     }
     onChange() {

@@ -1,88 +1,48 @@
 <app-modal-primeng
-    [title]="'CREAR MATERIAL EDUCATIVO'"
+    [title]="titulo"
     [showModal]="showModal"
     [width]="'55rem'"
     (accionBtnItem)="accionBtn($event)"
+    *ngIf="formMaterialEducativoDocentes"
 >
-    <div class="grid">
-        <div class="col-12">
-            <p-inputGroup>
-                <p-inputGroupAddon>
-                    Nombre del Material Educativo
-                </p-inputGroupAddon>
-                <input pInputText />
-            </p-inputGroup>
-        </div>
-        <div class="col-12 mt-1">
-            <div class="card">
-                <label for="" class="mt-1">Adjuntar</label>
-                <div class="d-flex align-items-center text-center mt-1">
-                    <button
-                        pButton
-                        pRipple
-                        type="button"
-                        class="p-button-rounded p-button-outlined mx-2"
-                    >
-                        <i
-                            class="pi pi-upload my-2"
-                            style="color: #333437; font-size: 3rem"
-                            pTooltip="Subir Archivo"
-                            tooltipPosition="bottom"
-                        ></i>
-                    </button>
-
-                    <button
-                        pButton
-                        pRipple
-                        type="button"
-                        class="p-button-rounded p-button-outlined mx-2"
-                    >
-                        <i
-                            class="pi pi-link my-2"
-                            style="color: #333437; font-size: 3rem"
-                            pTooltip="Subir Enlace"
-                            tooltipPosition="bottom"
-                        ></i>
-                    </button>
-
-                    <button
-                        pButton
-                        pRipple
-                        type="button"
-                        class="p-button-rounded p-button-outlined mx-2"
-                    >
-                        <i
-                            class="pi pi-youtube my-2"
-                            style="color: #c4302b; font-size: 3rem"
-                            pTooltip="Subir Enlace Youtube"
-                            tooltipPosition="bottom"
-                        ></i>
-                    </button>
-                    <!--5: Image-->
-                    <button
-                        pButton
-                        pRipple
-                        type="button"
-                        class="p-button-rounded p-button-outlined mx-2"
-                    >
-                        <i
-                            class="pi pi-images my-2"
-                            style="color: #ff844b; font-size: 3rem"
-                            pTooltip="Subir Fotos"
-                            tooltipPosition="bottom"
-                        ></i>
-                    </button>
-                </div>
+    <form [formGroup]="formMaterialEducativoDocentes">
+        <div class="grid">
+            <div class="col-12">
+                <p-inputGroup>
+                    <p-inputGroupAddon>
+                        Título del Material Educativo
+                    </p-inputGroupAddon>
+                    <input pInputText formControlName="cMatEduTitulo" />
+                </p-inputGroup>
+            </div>
+            <div class="col-12">
+                <p-inputGroup>
+                    <p-inputGroupAddon> Descripción </p-inputGroupAddon>
+                    <textarea
+                        pInputText
+                        formControlName="cMatEduDescripcion"
+                    ></textarea>
+                </p-inputGroup>
+            </div>
+            <div class="col-12 mt-1">
+                <app-types-files-upload-primeng
+                    [nameFile]="'material-educativo-docentes'"
+                    [nameOption]="'material-educativo-docentes'"
+                    [typesFiles]="typesFiles"
+                ></app-types-files-upload-primeng>
             </div>
         </div>
-    </div>
-
+    </form>
     <div class="flex justify-content-end gap-2">
         <p-button
             label="Cancelar"
             severity="secondary"
             (onClick)="showModal = false"
         />
-        <p-button [label]="'GUARDAR'" (onClick)="showModal = false" />
+        <p-button
+            [label]="opcion"
+            [disabled]="!this.formMaterialEducativoDocentes.valid"
+            (onClick)="accionBtn({ accion: opcion, item: [] })"
+        />
     </div>
 </app-modal-primeng>

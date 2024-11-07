@@ -64,7 +64,15 @@ export class FormMaterialEducativoComponent implements OnChanges {
         if (changes.data?.currentValue) {
             this.data = changes.data.currentValue
             if (this.formMaterialEducativoDocentes) {
-                this.formMaterialEducativoDocentes.patchValue(this.data)
+                this.opcion === 'ACTUALIZAR'
+                    ? this.formMaterialEducativoDocentes.patchValue(this.data)
+                    : this.formMaterialEducativoDocentes.reset()
+                this.formMaterialEducativoDocentes.controls['opcion'].setValue(
+                    this.opcion
+                )
+                const files =
+                    this.formMaterialEducativoDocentes.value.cMatEduUrl
+                this.filesUrl = files ? JSON.parse(files) : []
             }
         }
     }
@@ -80,7 +88,7 @@ export class FormMaterialEducativoComponent implements OnChanges {
                 this.formMaterialEducativoDocentes.controls[
                     'cMatEduUrl'
                 ].setValue(
-                    this.filesUrl.length ? JSON.stringify(this.filesUrl) : []
+                    this.filesUrl.length ? JSON.stringify(this.filesUrl) : null
                 )
                 this.accionBtnItem.emit({
                     accion,

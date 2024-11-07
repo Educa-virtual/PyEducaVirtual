@@ -2,7 +2,7 @@ import { FormGroup, Validators, FormControl } from '@angular/forms'
 const iCredId = null
 
 export const storeMaterialEducativoDocentes: any = new FormGroup({
-    opcion: new FormControl('GUARDAR', Validators.required),
+    opcion: new FormControl('', Validators.required),
     valorBusqueda: new FormControl(''),
 
     iMatEduDocId: new FormControl(''),
@@ -20,7 +20,7 @@ export const storeMaterialEducativoDocentes: any = new FormGroup({
 })
 
 export const updateMaterialEducativoDocentes: any = new FormGroup({
-    opcion: new FormControl('ACTUALIZAR', Validators.required),
+    opcion: new FormControl('', Validators.required),
     valorBusqueda: new FormControl(''),
 
     iMatEduDocId: new FormControl('', Validators.required),

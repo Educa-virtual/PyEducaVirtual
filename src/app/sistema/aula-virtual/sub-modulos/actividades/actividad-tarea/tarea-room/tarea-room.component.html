@@ -106,7 +106,9 @@
                         >
                             <h4>Tu Trabajo</h4>
                             <p-divider></p-divider>
-                            <div class="text-center">
+                            <div
+                                class="flex align-items-center justify-content-center"
+                            >
                                 <app-file-upload-primeng
                                     [nameFile]="'tareas-estudiantes'"
                                     [nameOption]="'tareas-estudiantes'"
@@ -162,13 +164,15 @@
                                 </div>
                             }
                             <p-divider></p-divider>
-                            <div class="text-right">
+                            <div
+                                class="flex align-items-center justify-content-center"
+                            >
                                 <p-button
                                     label="Enviar Tarea"
                                     icon="pi pi-check"
                                     iconPos="right"
                                     (onClick)="entregarEstudianteTarea()"
-                                />
+                                ></p-button>
                             </div>
                         </div>
                         <div

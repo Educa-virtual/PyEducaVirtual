@@ -220,6 +220,7 @@ export class EvaluacionesComponent implements OnInit {
             /// alert(item.iEvaluacionId)
             //console.log('Aqui: ' + item.iEvaluacionId)
             this.compartirIdEvaluacionService.iEvaluacionId = item.iEvaluacionId
+            alert(this.compartirIdEvaluacionService.iEvaluacionId)
             this.verEreEvaluacion(item)
             // this.eliminarPregunta(item)
         }

@@ -12,7 +12,7 @@ import { IconFieldModule } from 'primeng/iconfield'
 import { InputIconModule } from 'primeng/inputicon'
 import { InputTextModule } from 'primeng/inputtext'
 import { ButtonModule } from 'primeng/button'
-
+import { DynamicDialogConfig } from 'primeng/dynamicdialog'
 interface NivelTipo {
     cNivelTipoNombre: string
     iNivelTipoId: string
@@ -38,7 +38,9 @@ interface Ugeles {
     providers: [ProductService],
 })
 export class IeparticipaComponent implements OnInit {
+    public evaluacionFormGroup: any
     private unsubscribe$: Subject<boolean> = new Subject()
+
     public params = {
         iCompentenciaId: 0,
         iCapacidadId: 0,
@@ -46,11 +48,15 @@ export class IeparticipaComponent implements OnInit {
         bPreguntaEstado: -1,
     }
     public data = []
-
+    accion: string // Nueva propiedad para controlar la acción
+    esModoEdicion: boolean = false // Para controlar el modo edición
     private _apiEre = inject(ApiEvaluacionesRService)
-    sourceProducts!: Product[]
+    // sourceProducts!: Product[]
 
-    targetProducts!: Product[]
+    // targetProducts!: Product[]
+    sourceProducts: Product[]
+
+    targetProducts: Product[]
 
     nivelTipo: NivelTipo[] | undefined
     selectedNivelTipo: NivelTipo | undefined
@@ -58,51 +64,135 @@ export class IeparticipaComponent implements OnInit {
     Ugeles: Ugeles[] | undefined
     selectedUgeles: Ugeles | undefined
     itemsToDelete: any
-    accion: string
-    esModoEdicion: string = ''
 
     constructor(
         private carService: ProductService,
         private cdr: ChangeDetectorRef,
-        private compartirIdEvaluacionService: CompartirIdEvaluacionService
+        private compartirIdEvaluacionService: CompartirIdEvaluacionService,
+        private _config: DynamicDialogConfig // Inyectar configuración
     ) {}
-    ngOnInit() {
-        // Asignar esModoEdicion dependiendo de la acción
-        this.esModoEdicion = this.accion === 'editar' ? 'editar' : 'ver' // Se asigna 'editar' o 'ver'
 
-        if (this.esModoEdicion === 'ver') {
-            this.sourceProducts = [] // Inicializa vacío o carga los datos de solo lectura
-            this.targetProducts = [] // Bloquea la edición en modo 'ver'
-        }
+    ngOnInit() {
+        // Obtener la acción del config
+        // this.accion = this._config.data?.accion || 'crear' // bien
+        // this.esModoEdicion = this.accion === 'editar'    //bien
+        console.log('Iniciando componente con config:', this._config.data)
+
+        // Determinar el modo
+        this.accion = this._config.data?.accion || 'crear'
+        this.esModoEdicion = this.accion === 'editar'
+
+        console.log('Modo actual:', this.accion)
+        console.log('Es modo edición:', this.esModoEdicion)
+
         this.carService.getProductsSmall().then((products) => {
             this.sourceProducts = products
             this.cdr.markForCheck()
         })
-        this.targetProducts = []
+        //this.targetProducts = []
 
         this.obtenerIE()
         this.obtenerNivelTipo()
         this.obtenerugel()
-        //MOVI AQUI
-        // this.obtenerParticipaciones(
+
+        // console.log('Acción:', this.accion)
+        // console.log(
+        //     'ID Evaluación del config:',
+        //     this._config.data?.evaluacionId
+        // )
+        // console.log(
+        //     'ID Evaluación del servicio:',
         //     this.compartirIdEvaluacionService.iEvaluacionId
         // )
+
+        // // Si estamos en modo "ver", deshabilitamos las interacciones
+        // if (this.accion === 'ver') {
+        //     this.evaluacionFormGroup?.disable()
+        // }
+
+        // // Obtener participaciones solo si tenemos un ID válido
+        // const evaluacionId =
+        //     this._config.data?.evaluacionId ||
+        //     this.compartirIdEvaluacionService.iEvaluacionId
+        // if (evaluacionId) {
+        //     console.log(
+        //         'Llamando a obtenerParticipaciones con ID:',
+        //         evaluacionId
+        //     )
+        //     this.obtenerParticipaciones(evaluacionId)
+        // } else {
+        //     console.warn('No se encontró ID de evaluación válido')
+        // }
+        // Inicializar según el modo
+        if (this.accion === 'crear') {
+            console.log('Inicializando en modo crear')
+            this.targetProducts = [] // Asegurar que la lista destino esté vacía
+            this.obtenerIE() // Solo obtener la lista de IEs disponibles
+        } else if (this.accion === 'editar' || this.accion === 'ver') {
+            console.log('Inicializando en modo editar/ver')
+            const evaluacionId =
+                this._config.data?.evaluacionId ||
+                this.compartirIdEvaluacionService.iEvaluacionId
+            if (evaluacionId) {
+                this.obtenerParticipaciones(evaluacionId)
+            }
+        }
         this.nivelTipo = [
             { cNivelTipoNombre: 'Primaria', iNivelTipoId: 'NY' },
             { cNivelTipoNombre: 'Secundaria', iNivelTipoId: 'RM' },
         ]
     }
 
+    private initializeCreateMode() {
+        // En modo crear, solo obtenemos la lista completa de IE
+        this.obtenerIE()
+        // Inicializamos targetProducts como vacío ya que es una nueva selección
+        this.targetProducts = []
+    }
+
+    private initializeEditMode() {
+        const evaluacionId =
+            this._config.data?.evaluacionId ||
+            this.compartirIdEvaluacionService.iEvaluacionId
+        if (evaluacionId) {
+            this.obtenerParticipaciones(evaluacionId)
+        }
+    }
     obtenerIE() {
         this._apiEre
             .obtenerIE(this.params)
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
-                next: (resp: unknown) => {
-                    console.log('Datos obtenidos de obtenerIE:', resp) // Imprime la respuesta completa
-                    this.data = resp['data']
-                    console.log('Data asignada a this.data:', this.data) // Imprime los datos asignados
-                    this.sourceProducts = this.data
+                // next: (resp: unknown) => {
+                next: (resp: any) => {
+                    console.log('Datos de IEs recibidos:', resp)
+                    // En modo crear, todos los IEs van a sourceProducts
+                    this.sourceProducts = resp.data.map((item: any) => ({
+                        ...item,
+                        iIieeId: item.iIieeId,
+                        cIieeNombre: item.cIieeNombre,
+                        cIieeCodigoModular: item.cIieeCodigoModular,
+                        cNivelTipoNombre: item.cNivelTipoNombre,
+                    }))
+                    this.targetProducts = [] // Mantener la lista destino vacía
+                    console.log(
+                        'Source Products actualizados:',
+                        this.sourceProducts
+                    )
+                    console.log('Target Products vacíos:', this.targetProducts)
+                },
+                error: (error) => {
+                    console.error('Error al obtener IEs:', error)
+
+                    // if (this.accion === 'crear') {
+                    //     // En modo crear, todos los IE van a sourceProducts
+                    //     this.sourceProducts = resp.data
+                    //     this.targetProducts = [] // Aseguramos que targetProducts esté vacío
+                    // }
+                    // console.log('Datos obtenidos de obtenerIE:', resp) // Imprime la respuesta completa
+                    // this.data = resp['data']
+                    // console.log('Data asignada a this.data:', this.data) // Imprime los datos asignados
+                    // this.sourceProducts = this.data
                 },
             })
     }
@@ -233,8 +323,13 @@ export class IeparticipaComponent implements OnInit {
     //         })
     // }
     //CAMBIOS
-    //MOVI AQUI
+
+    //BIEN
     // obtenerParticipaciones(iEvaluacionId: number) {
+    //     if (!iEvaluacionId) {
+    //         console.warn('obtenerParticipaciones llamado sin ID válido')
+    //         return
+    //     }
     //     console.log('ID de evaluación enviado:', iEvaluacionId)
 
     //     this._apiEre
@@ -274,6 +369,59 @@ export class IeparticipaComponent implements OnInit {
     //             },
     //         })
     // }
+
+    obtenerParticipaciones(iEvaluacionId: number) {
+        console.log(
+            'Obteniendo participaciones para modo editar/ver, ID:',
+            iEvaluacionId
+        )
+        if (!iEvaluacionId) {
+            console.warn('ID de evaluación no válido')
+            return
+        }
+
+        this._apiEre
+            .obtenerParticipaciones(iEvaluacionId)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+                next: (resp: any) => {
+                    console.log('Datos de participaciones recibidos:', resp)
+
+                    // Separar IEs que participan y no participan
+                    this.sourceProducts = resp.data
+                        .filter((item: any) => item.participa)
+                        .map((item: any) => ({
+                            ...item,
+                            iIieeId: item.iIieeId,
+                            cIieeNombre: item.cIieeNombre,
+                            cIieeCodigoModular: item.cIieeCodigoModular,
+                            cNivelTipoNombre: item.cNivelTipoNombre,
+                        }))
+
+                    this.targetProducts = resp.data
+                        .filter((item: any) => !item.participa)
+                        .map((item: any) => ({
+                            ...item,
+                            iIieeId: item.iIieeId,
+                            cIieeNombre: item.cIieeNombre,
+                            cIieeCodigoModular: item.cIieeCodigoModular,
+                            cNivelTipoNombre: item.cNivelTipoNombre,
+                        }))
+
+                    console.log(
+                        'Source Products actualizados:',
+                        this.sourceProducts
+                    )
+                    console.log(
+                        'Target Products actualizados:',
+                        this.targetProducts
+                    )
+                },
+                error: (error) => {
+                    console.error('Error al obtener participaciones:', error)
+                },
+            })
+    }
     onChange() {
         //alert(v)
         // alert(JSON.stringify(event))

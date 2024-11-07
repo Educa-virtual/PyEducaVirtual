@@ -76,6 +76,8 @@
     sourceFilterPlaceholder="Buscar por nombre de I.E"
     targetFilterPlaceholder="Buscar por nombre de I.E"
     [disabled]="accion === 'ver'"
+    [showSourceControls]="accion !== 'ver'"
+    [showTargetControls]="accion !== 'ver'"
 >
     <ng-template let-product pTemplate="item">
         <div class="flex flex-wrap p-2 align-items-center gap-3">

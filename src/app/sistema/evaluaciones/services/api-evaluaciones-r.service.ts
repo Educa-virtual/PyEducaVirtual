@@ -78,12 +78,15 @@ export class ApiEvaluacionesRService {
         )
     }
     //MOVI AQUI
-    // obtenerParticipaciones(iEvaluacionId: any): Observable<any> {
-    //     // Guardar el ID de evaluación
-    //     return this.http.get(
-    //         `${this.baseUrl}/ere/Evaluaciones/obtenerParticipaciones?iEvaluacionId=${iEvaluacionId}`
-    //     )
-    // }
+    obtenerParticipaciones(iEvaluacionId: any): Observable<any> {
+        console.log(
+            'Servicio: Llamando obtenerParticipaciones con ID:',
+            iEvaluacionId
+        )
+        return this.http.get(
+            `${this.baseUrl}/ere/Evaluaciones/obtenerParticipaciones?iEvaluacionId=${iEvaluacionId}`
+        )
+    }
 
     guardarActualizarPreguntaConAlternativas(data) {
         return this.http.post(

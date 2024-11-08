@@ -212,7 +212,7 @@ export class EvaluacionRoomCalificacionComponent implements OnInit {
                 ...MODAL_CONFIG,
                 data: {
                     evaluacion: this.evaluacion,
-                    evaluacionEstudiante: this._state().evaluacionEstudiante,
+                    evaluacionEstudiante: this.selectedEstudiante(),
                     pregunta: pregunta,
                 },
                 header: 'Calificar Pregunta',

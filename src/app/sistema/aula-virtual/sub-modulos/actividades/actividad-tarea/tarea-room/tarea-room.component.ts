@@ -547,6 +547,7 @@ export class TareaRoomComponent implements OnChanges, OnInit {
         //console.log(this.grupoTransferir)
     }
     entregarEstudianteTarea() {
+        if (!this.FilesTareasEstudiantes.length) return
         const params = {
             petition: 'post',
             group: 'aula-virtual',

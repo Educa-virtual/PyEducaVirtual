@@ -82,6 +82,27 @@
         </div>
     </div>
     <div class="col-9">
+        <div class="card mb-2">
+            <div class="flex font-bold pb-2">MIS CALENDARIOS</div>
+            <div class="flex">
+                <div *ngFor="let category of categories" class="flex mr-2">
+                    <p-checkbox
+                        [(ngModel)]="category.mostrar"
+                        (onChange)="filterCalendario(category, category.valor)"
+                        [label]="category.name"
+                        name="group"
+                        [binary]="true"
+                        [styleClass]="category.estilo"
+                    />
+                </div>
+            </div>
+            <div class="flex mt-2">
+                <div class="flex font-bold mr-1">LEYENDA:</div>
+                <div *ngFor="let lista of leyenda" class="flex mr-1">
+                    [{{ lista.simbolo }}] {{ lista.significado }}
+                </div>
+            </div>
+        </div>
         <full-calendar [options]="calendarOptions">
             <ng-template #eventContent let-arg>
                 <div class="fc-event-time">{{ arg.timeText }}</div>
@@ -103,27 +124,6 @@
                 <div class="fc-event-title">{{ arg.event.title }}</div>
             </ng-template>
         </full-calendar>
-        <div class="card mt-2">
-            <div class="flex font-bold pb-2">MIS CALENDARIOS</div>
-            <div class="flex">
-                <div *ngFor="let category of categories" class="flex mr-2">
-                    <p-checkbox
-                        [(ngModel)]="category.mostrar"
-                        (onChange)="filterCalendario(category, category.valor)"
-                        [label]="category.name"
-                        name="group"
-                        [binary]="true"
-                        [styleClass]="category.estilo"
-                    />
-                </div>
-            </div>
-            <div class="flex mt-2">
-                <div class="flex font-bold mr-1">LEYENDA:</div>
-                <div *ngFor="let lista of leyenda" class="flex mr-1">
-                    [{{ lista.simbolo }}] {{ lista.significado }}
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 

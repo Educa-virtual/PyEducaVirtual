@@ -12,6 +12,8 @@ import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import esLocale from '@fullcalendar/core/locales/es' // * traduce el Modulo de calendario a español
 import { MessageService } from 'primeng/api'
+import { LocalStoreService } from '@/app/servicios/local-store.service'
+import { ConstantesService } from '@/app/servicios/constantes.service'
 
 @Component({
     selector: 'app-asistencia',
@@ -26,6 +28,8 @@ export class AsistenciaComponent implements OnInit {
     @Input() iSeccionId: string
     private GeneralService = inject(GeneralService)
     private unsubscribe$ = new Subject<boolean>()
+    private _LocalStoreService = inject(LocalStoreService)
+    private _ConstantesService = inject(ConstantesService)
 
     cCursoNombre: string
     constructor(
@@ -351,6 +355,7 @@ export class AsistenciaComponent implements OnInit {
      */
 
     getReportePdf(tipoReporte: number) {
+        const iYearId = this._LocalStoreService.getItem('dremoYear')
         const params = {
             petition: 'get',
             group: 'docente',
@@ -359,7 +364,10 @@ export class AsistenciaComponent implements OnInit {
             data: {
                 opcion: 'REPORTE_MENSUAL',
                 iCursoId: this.iCursoId,
-                dtCtrlAsistencia: this.fechaActual,
+                iYearId: iYearId,
+                iSeccionId: this.iSeccionId,
+                iNivelGradoId: this.iNivelGradoId,
+                iDocenteId: this._ConstantesService.iDocenteId,
                 tipoReporte: tipoReporte,
             },
             params: { skipSuccessMessage: true },

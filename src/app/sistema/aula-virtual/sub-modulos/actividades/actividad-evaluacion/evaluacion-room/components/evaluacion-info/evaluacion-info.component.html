@@ -9,21 +9,22 @@
         <tr>
             <th>Código Estudiante</th>
             <th colspan="3">
-                {{ evaluacion.cEstCodigo }}
+                {{ evaluacionEstudiante.cEstCodigo }}
             </th>
         </tr>
         <tr>
             <th>Estudiante</th>
             <th colspan="3">
-                {{ evaluacion.cEstNombres }} {{ evaluacion.cEstPaterno }}
-                {{ evaluacion.cEstMaterno }}
+                {{ evaluacionEstudiante.cEstNombres }}
+                {{ evaluacionEstudiante.cEstPaterno }}
+                {{ evaluacionEstudiante.cEstMaterno }}
             </th>
         </tr>
         <tr>
             <th>Iniciado el</th>
             <th colspan="3">
-                {{ evaluacion.dtEvalPromInicio | fullDate }}
-                {{ evaluacion?.dtEvalPromInicio | date: 'h:mm a' }}
+                {{ evaluacionEstudiante.dtEvalPromInicio | fullDate }}
+                {{ evaluacionEstudiante?.dtEvalPromInicio | date: 'h:mm a' }}
             </th>
         </tr>
         <tr>
@@ -33,13 +34,13 @@
         <tr>
             <th>Finalizado el</th>
             <th colspan="3">
-                {{ evaluacion.dtEvalPromFin | fullDate }}
-                {{ evaluacion.dtEvalPromFin | fullTime }}
+                {{ evaluacionEstudiante.dtEvalPromFin | fullDate }}
+                {{ evaluacionEstudiante.dtEvalPromFin | fullTime }}
             </th>
         </tr>
         <tr>
             <th>Tiempo empleado</th>
-            <th>{{ evaluacion.iTotalMinutos ?? 0 }} minutos</th>
+            <th>{{ evaluacionEstudiante.iTotalMinutos ?? 0 }} minutos</th>
             <th>Nota</th>
             <th></th>
         </tr>

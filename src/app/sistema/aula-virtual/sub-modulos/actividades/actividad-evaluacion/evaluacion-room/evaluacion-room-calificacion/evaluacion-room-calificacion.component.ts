@@ -62,7 +62,7 @@ export class EvaluacionRoomCalificacionComponent implements OnInit {
     private _dialogService = inject(DialogService)
     private _unsubscribe$ = new Subject<boolean>()
 
-    public evaluacionSeleccionada = null
+    public evaluacionEstudiante = null
 
     ngOnInit() {
         this.getData()
@@ -87,14 +87,14 @@ export class EvaluacionRoomCalificacionComponent implements OnInit {
     private obtenerEvaluacionRespuestasEstudiante() {
         const params = {
             iEvaluacionId: this.iEvaluacionId,
-            iEstudianteId: this.evaluacionSeleccionada.iEstudianteId,
+            iEstudianteId: this.evaluacionEstudiante.iEstudianteId,
         }
         this._evaluacionesService
             .obtenerEvaluacionRespuestasEstudiante(params)
             .pipe(takeUntil(this._unsubscribe$))
             .subscribe({
                 next: (resp) => {
-                    this.evaluacionSeleccionada.preguntas = resp.map(
+                    this.evaluacionEstudiante.preguntas = resp.map(
                         (pregunta) => {
                             if (pregunta.preguntas !== undefined) {
                                 pregunta.preguntas.map((subPregunta) => {
@@ -113,7 +113,7 @@ export class EvaluacionRoomCalificacionComponent implements OnInit {
                             return pregunta
                         }
                     )
-                    console.log(this.evaluacionSeleccionada.preguntas)
+                    console.log(this.evaluacionEstudiante.preguntas)
                 },
             })
     }
@@ -141,7 +141,8 @@ export class EvaluacionRoomCalificacionComponent implements OnInit {
             {
                 ...MODAL_CONFIG,
                 data: {
-                    evaluacion: this.evaluacionSeleccionada,
+                    evaluacion: this.evaluacion,
+                    evaluacionEstudiante: this.evaluacionEstudiante,
                     pregunta: pregunta,
                 },
                 header: 'Calificar Pregunta',

@@ -222,14 +222,29 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
     getSilaboPdf(iSilaboId) {
         if (!iSilaboId) return
         const params = {
-            petition: 'get',
+            petition: 'post',
             group: 'docente',
             prefix: 'silabus_reporte',
             ruta: 'report',
-            iSilaboId: iSilaboId,
-            params: { skipSuccessMessage: true },
+            data: {
+                iSilaboId: iSilaboId,
+            },
         }
-        this._generalService.getGralReporte(params)
+        this._generalService.generarPdf(params).subscribe({
+            next: (response) => {
+                const blob = new Blob([response], { type: 'application/pdf' })
+                const url = window.URL.createObjectURL(blob)
+                const a = document.createElement('a')
+                a.href = url
+                a.download = 'archivo.pdf'
+                a.click()
+                window.URL.revokeObjectURL(url)
+            },
+            complete: () => {},
+            error: (error) => {
+                console.log(error)
+            },
+        })
     }
     ngOnDestroy() {
         this.unsubscribe$.next(true)

@@ -169,6 +169,7 @@ export class MaterialEducativoComponent implements OnInit {
     }
     GuardarActualizarMaterialEducativoDocentes(item) {
         item.iDocenteId = this._ConstantesService.iDocenteId
+        item.valorBusqueda = this.idDocCursoId
         const params = {
             petition: 'post',
             group: 'docente',

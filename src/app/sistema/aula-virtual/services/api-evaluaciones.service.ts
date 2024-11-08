@@ -169,13 +169,4 @@ export class ApiEvaluacionesService {
             )
             .pipe(map((resp) => resp.data))
     }
-
-    calificarLogrosRubrica(data) {
-        return this.http
-            .post<ApiResponse>(
-                `${this.baseUrlApi}/evaluaciones/evaluacion/estudiantes/calificarLogrosRubrica`,
-                data
-            )
-            .pipe(map((resp) => resp.data))
-    }
 }

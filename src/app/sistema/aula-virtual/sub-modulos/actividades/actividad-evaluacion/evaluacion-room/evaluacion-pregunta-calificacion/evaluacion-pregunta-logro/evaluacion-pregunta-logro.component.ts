@@ -29,7 +29,6 @@ import { Subject } from 'rxjs'
 export class EvaluacionPreguntaLogroComponent implements OnInit, OnDestroy {
     @Input() logrosCalificacion = []
     @Input() escalasCalificativas = []
-    @Input() iEvalRptaId = -1
     @Input() pregunta
 
     @Output() closeModalChange = new EventEmitter()
@@ -88,6 +87,7 @@ export class EvaluacionPreguntaLogroComponent implements OnInit, OnDestroy {
         }
 
         const data = this.formEvaluacionLogro.value
+        data.iEvalRptaId = this.pregunta.iEvalRptaId
 
         this._apiEvalService.calificarLogros(data).subscribe({
             next: (data) => {

@@ -188,9 +188,10 @@ export class EvaluacionPreguntaRubricaComponent implements OnInit, OnDestroy {
         const data = {
             iEvalRptaId: this.pregunta.iEvalRptaId,
             logrosCalificacion: logrosCalificacion,
+            esRubrica: true,
         }
         this._apiEvalService
-            .calificarLogrosRubrica(data)
+            .calificarLogros(data)
             .pipe(takeUntil(this._unsubscribe$))
             .subscribe({
                 next: (response) => {

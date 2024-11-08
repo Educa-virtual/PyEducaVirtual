@@ -30,6 +30,7 @@ export class EvaluacionPreguntaLogroComponent implements OnInit, OnDestroy {
     @Input() logrosCalificacion = []
     @Input() escalasCalificativas = []
     @Input() iEvalRptaId = -1
+    @Input() pregunta
 
     @Output() closeModalChange = new EventEmitter()
     formEvaluacionLogro: FormGroup

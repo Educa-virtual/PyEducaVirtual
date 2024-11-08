@@ -31,6 +31,7 @@ export class EvaluacionPreguntaRubricaComponent implements OnInit, OnDestroy {
             this.setCriterios(this.rubrica?.criterios || [])
         }
     }
+    @Input() pregunta
 
     private _unsubscribe$ = new Subject<boolean>()
 
@@ -185,6 +186,7 @@ export class EvaluacionPreguntaRubricaComponent implements OnInit, OnDestroy {
         }
 
         const data = {
+            iEvalRptaId: this.pregunta.iEvalRptaId,
             logrosCalificacion: logrosCalificacion,
         }
         this._apiEvalService

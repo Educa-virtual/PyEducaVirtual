@@ -38,12 +38,14 @@
         <app-evaluacion-pregunta-logro
             [logrosCalificacion]="pregunta.logrosCalificacion ?? []"
             [escalasCalificativas]="escalasCalificativas"
+            [pregunta]="pregunta"
             (closeModalChange)="closeModal($event)"
         ></app-evaluacion-pregunta-logro>
     } @else {
         <app-evaluacion-pregunta-rubrica
             [escalasCalificativas]="escalasCalificativas"
             [rubrica]="rubrica"
+            [pregunta]="pregunta"
             (closeModalChange)="closeModal($event)"
         ></app-evaluacion-pregunta-rubrica>
     }

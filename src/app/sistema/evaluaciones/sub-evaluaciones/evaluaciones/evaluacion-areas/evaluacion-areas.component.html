@@ -8,6 +8,7 @@
                     [label]="curso.cCursoNombre"
                     [value]="curso.iCursoId"
                     [(ngModel)]="curso.isSelected"
+                    [disabled]="!esModoEdicion"
                 ></p-checkbox>
             </div>
         </div>

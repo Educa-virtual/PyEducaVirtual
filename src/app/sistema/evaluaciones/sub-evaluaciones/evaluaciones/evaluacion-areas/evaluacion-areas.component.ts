@@ -59,6 +59,8 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
     NivelCurso: any = [] // Inicializa la propiedad como un array o con el valor adecuado
     // selectedCursos: any[] = [] // Para almacenar los cursos seleccionados
     public selectedCursos: any[] = []
+    accion: string // Nueva propiedad para controlar la acción
+    esModoEdicion: boolean = false // Para controlar el modo edición
 
     private _ref = inject(DynamicDialogRef)
     public sortField: string = ''
@@ -86,9 +88,21 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
         private _config: DynamicDialogConfig, // Inyección de configuración
         private cdRef: ChangeDetectorRef
     ) {}
+    // ngOnInit(): void
     ngOnInit(): void {
         console.log(this.compartirIdEvaluacionService.iEvaluacionId)
         alert(this.compartirIdEvaluacionService.iEvaluacionId)
+        //***
+        console.log('Iniciando componente con config:', this._config.data)
+
+        // Determinar el modo
+        this.accion = this._config.data?.accion || 'crear'
+        this.esModoEdicion = this.accion === 'editar'
+
+        console.log('Modo actual:', this.accion)
+        console.log('Es modo edición:', this.esModoEdicion)
+        //***
+        //console.log('Iniciando componente con config:', this._config.data)
         const modulo = this._store.getItem('dremoModulo')
         switch (Number(modulo.iModuloId)) {
             case 2:
@@ -225,27 +239,49 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
     }
 
     // Función que maneja la selección o deselección de los cursos
+    // onCursoSelect(curso: any): void {
+    //     if (!curso.isSelected) {
+    //         // Si el curso está seleccionado, agrégalo al array de seleccionados
+    //         if (
+    //             !this.selectedCursos.some(
+    //                 (c) => c.cCursoNombre === curso.cCursoNombre
+    //             )
+    //         ) {
+    //             this.selectedCursos.push(curso)
+    //         }
+    //     } else {
+    //         // Si el curso está deseleccionado, elimínalo del array de seleccionados
+    //         const index = this.selectedCursos.findIndex(
+    //             (c) => c.cCursoNombre === curso.cCursoNombre
+    //         )
+    //         if (index !== -1) {
+    //             this.selectedCursos.splice(index, 1)
+    //         }
+    //     }
+
+    //     // Mostrar en consola el estado del array de cursos seleccionados
+    //     console.log('Cursos seleccionados:', this.selectedCursos)
+    // }
     onCursoSelect(curso: any): void {
-        if (!curso.isSelected) {
-            // Si el curso está seleccionado, agrégalo al array de seleccionados
-            if (
-                !this.selectedCursos.some(
+        if (this.esModoEdicion) {
+            // Solo permitir cambios si es modo edición
+            if (!curso.isSelected) {
+                if (
+                    !this.selectedCursos.some(
+                        (c) => c.cCursoNombre === curso.cCursoNombre
+                    )
+                ) {
+                    this.selectedCursos.push(curso)
+                }
+            } else {
+                const index = this.selectedCursos.findIndex(
                     (c) => c.cCursoNombre === curso.cCursoNombre
                 )
-            ) {
-                this.selectedCursos.push(curso)
-            }
-        } else {
-            // Si el curso está deseleccionado, elimínalo del array de seleccionados
-            const index = this.selectedCursos.findIndex(
-                (c) => c.cCursoNombre === curso.cCursoNombre
-            )
-            if (index !== -1) {
-                this.selectedCursos.splice(index, 1)
+                if (index !== -1) {
+                    this.selectedCursos.splice(index, 1)
+                }
             }
         }
-
-        // Mostrar en consola el estado del array de cursos seleccionados
         console.log('Cursos seleccionados:', this.selectedCursos)
     }
 
@@ -340,7 +376,6 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
                 },
             })
     }
-
     ngOnDestroy() {
         this.unsubscribe$.next(true)
     }

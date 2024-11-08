@@ -121,6 +121,7 @@ export class AsistenciaComponent implements OnInit {
         this.limitado = dia.getDay()
         this.fechaEspecifica = dia.toLocaleDateString('es-PE', this.confFecha)
         if (this.limitado != 6 && this.limitado != 0) {
+            this.visible = true
             this.getAsistencia(item.dateStr)
         }
     }
@@ -237,6 +238,7 @@ export class AsistenciaComponent implements OnInit {
             case 'get_data':
                 this.getObtenerAsitencias()
                 this.getFechasImportantes()
+                this.visible = false
                 break
             case 'get_asistencia':
                 this.data = item

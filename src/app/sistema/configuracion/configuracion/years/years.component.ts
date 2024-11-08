@@ -25,49 +25,49 @@ export class YearsComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        this.httpService
-            .postData('acad/calendarioAcademico/addCalAcademico', {
-                json: JSON.stringify({
-                    iSedeId: this.localService.getItem('dremoPerfil').iSedeId,
-                }),
-                _opcion: 'getCalendarioIESede',
-            })
-            .subscribe({
-                next: (data: any) => {
-                    // console.log(data.data)
-                    console.log(JSON.parse(data.data[0]['calendarioAcademico']))
+        // this.httpService
+        //     .postData('acad/calendarioAcademico/addCalAcademico', {
+        //         json: JSON.stringify({
+        //             iSedeId: this.localService.getItem('dremoPerfil').iSedeId,
+        //         }),
+        //         _opcion: 'getCalendarioIESede',
+        //     })
+        //     .subscribe({
+        //         next: (data: any) => {
+        //             // console.log(data.data)
+        //             console.log(JSON.parse(data.data[0]['calendarioAcademico']))
 
-                    this.fechasAcademicas = JSON.parse(
-                        data.data[0]['calendarioAcademico']
-                    ).map((fecha) => ({
-                        fechaVigente: this.ticketService.toVisualFechasFormat(
-                            fecha.dtCalAcadInicio,
-                            'YYYY'
-                        ),
-                        dtCalAcadInicio:
-                            this.ticketService.toVisualFechasFormat(
-                                fecha.dtCalAcadInicio,
-                                'DD/MM/YY'
-                            ),
-                        dtCalAcadFin: this.ticketService.toVisualFechasFormat(
-                            fecha.dtCalAcadFin,
-                            'DD/MM/YY'
-                        ),
-                        iSedeId: fecha.iSedeId,
-                        iYAcadId: fecha.iYAcadId,
-                        iCalAcadId: fecha.iCalAcadId,
-                        iEstado: fecha.iEstado,
-                    }))
+        //             this.fechasAcademicas = JSON.parse(
+        //                 data.data[0]['calendarioAcademico']
+        //             ).map((fecha) => ({
+        //                 fechaVigente: this.ticketService.toVisualFechasFormat(
+        //                     fecha.dtCalAcadInicio,
+        //                     'YYYY'
+        //                 ),
+        //                 dtCalAcadInicio:
+        //                     this.ticketService.toVisualFechasFormat(
+        //                         fecha.dtCalAcadInicio,
+        //                         'DD/MM/YY'
+        //                     ),
+        //                 dtCalAcadFin: this.ticketService.toVisualFechasFormat(
+        //                     fecha.dtCalAcadFin,
+        //                     'DD/MM/YY'
+        //                 ),
+        //                 iSedeId: fecha.iSedeId,
+        //                 iYAcadId: fecha.iYAcadId,
+        //                 iCalAcadId: fecha.iCalAcadId,
+        //                 iEstado: fecha.iEstado,
+        //             }))
 
-                    // console.log(this.fechasAcademicas)
-                },
-                error: (error) => {
-                    console.error('Error fetching turnos:', error)
-                },
-                complete: () => {
-                    console.log('Request completed')
-                },
-            })
+        //             // console.log(this.fechasAcademicas)
+        //         },
+        //         error: (error) => {
+        //             console.error('Error fetching turnos:', error)
+        //         },
+        //         complete: () => {
+        //             console.log('Request completed')
+        //         },
+        //     })
     }
 
     actionsContainer = [
@@ -89,16 +89,20 @@ export class YearsComponent implements OnInit {
                 console.log('Viendo')
             },
             crear: () => {
-                this.ticketService.setModeSteps('create')
+                // this.ticketService.setModeSteps('create')
                 console.log('Año vigente')
+                this.ticketService.setCalendar({
+                    iSedeId: "",
+                    iYAcadId: "",
+                    iCalAcadId: "",
+                })
                 this.navigateToRegistro()
+
             },
             editar: () => {
                 // Lógica para la acción "editar"
                 console.log('Editando')
                 console.log(row.item.iYAcadId)
-                this.ticketService.setModeSteps('edit')
-
                 console.log('Modo?')
                 console.log(this.ticketService.registroInformation.mode)
                 this.ticketService.setCalendar({

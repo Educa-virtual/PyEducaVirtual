@@ -39,26 +39,26 @@ export class PeriodosAcademicosComponent implements OnInit, OnChanges {
     }[]
 
     fasesPromocionales = [
-        {
-            iFaseId:
-                this.ticketService.registroInformation?.stepYear
-                    .fases_promocional.iFaseId,
-            cFasePromNombre:
-                this.ticketService.registroInformation?.stepYear
-                    .fases_promocional.cFasePromNombre,
-            dtFaseInicio: this.ticketService.toVisualFechasFormat(
-                this.ticketService.registroInformation?.stepYear
-                    .fases_promocional.dtFaseInicio,
-                'DD/MM/YYYY'
-            ),
-            dtFaseFin: this.ticketService.toVisualFechasFormat(
-                this.ticketService.registroInformation?.stepYear
-                    .fases_promocional.dtFaseFin,
-                'DD/MM/YYYY'
-            ),
-            iPeriodoEvalId: '',
-            cPeriodoEvalNombre: null,
-        },
+        // {
+        //     iFaseId:
+        //         this.ticketService.registroInformation?.stepYear
+        //             .fases_promocionales.iFaseId,
+        //     cFasePromNombre:
+        //         this.ticketService.registroInformation?.stepYear
+        //             .fases_promocionales.cFasePromNombre,
+        //     dtFaseInicio: this.ticketService.toVisualFechasFormat(
+        //         this.ticketService.registroInformation?.stepYear
+        //             .fases_promocionales.dtFaseInicio,
+        //         'DD/MM/YYYY'
+        //     ),
+        //     dtFaseFin: this.ticketService.toVisualFechasFormat(
+        //         this.ticketService.registroInformation?.stepYear
+        //             .fases_promocionales.dtFaseFin,
+        //         'DD/MM/YYYY'
+        //     ),
+        //     iPeriodoEvalId: '',
+        //     cPeriodoEvalNombre: null,
+        // },
     ]
 
     ciclosAcademicos
@@ -116,7 +116,7 @@ export class PeriodosAcademicosComponent implements OnInit, OnChanges {
         
         let periodosAcademicos = this.cicloAcademicoModal.ciclosAcademicos.map(
             (ciclo) => ({
-                iFaseId: this.ticketService.registroInformation.stepYear.fases_promocional.iFaseId,
+                // iFaseId: this.ticketService.registroInformation.stepYear.fases_promocionales.iFaseId,
                 iPeriodoEvalId: ciclo.iPeriodoEvalId,
                 dtPeriodoEvalAperInicio: this.ticketService.toSQLDatetimeFormat(ciclo.StartDate),
                 dtPeriodoEvalAperFin: this.ticketService.toSQLDatetimeFormat(ciclo.EndDate),
@@ -231,33 +231,33 @@ export class PeriodosAcademicosComponent implements OnInit, OnChanges {
         this.fasesPromocionales[0].iPeriodoEvalId = value.iPeriodoEvalId
         this.fasesPromocionales[0].cPeriodoEvalNombre = value.cPeriodoEvalNombre
 
-        let periodosCalculados = this.ticketService.calcularFechaPeriodos(
-            this.ticketService.registroInformation.stepYear.fases_promocional
-                .dtFaseInicio,
-            this.ticketService.registroInformation.stepYear.fases_promocional
-                .dtFaseFin,
-            this.cicloAcademicoModal.cPeriodoEvalNombre.toLocaleLowerCase()
-        )
+        // let periodosCalculados = this.ticketService.calcularFechaPeriodos(
+        //     this.ticketService.registroInformation.stepYear.fases_promocionales
+        //         .dtFaseInicio,
+        //     this.ticketService.registroInformation.stepYear.fases_promocionales
+        //         .dtFaseFin,
+        //     this.cicloAcademicoModal.cPeriodoEvalNombre.toLocaleLowerCase()
+        // )
 
-        this.cicloAcademicoModal = {
-            ...this.cicloAcademicoModal,
-            ciclosAcademicos: periodosCalculados.map((periodo, index) => ({
-                index: index + 1,
-                StartDate: periodo.fechaInicio,
-                EndDate: periodo.fechaFin,
-                EndDateVisual: this.ticketService.toVisualFechasFormat(
-                    periodo.fechaFin,
-                    'DD/MM/YYYY'
-                ),
+        // this.cicloAcademicoModal = {
+        //     ...this.cicloAcademicoModal,
+        //     ciclosAcademicos: periodosCalculados.map((periodo, index) => ({
+        //         index: index + 1,
+        //         StartDate: periodo.fechaInicio,
+        //         EndDate: periodo.fechaFin,
+        //         EndDateVisual: this.ticketService.toVisualFechasFormat(
+        //             periodo.fechaFin,
+        //             'DD/MM/YYYY'
+        //         ),
 
-                StartDateVisual: this.ticketService.toVisualFechasFormat(
-                    periodo.fechaInicio,
-                    'DD/MM/YYYY'
-                ),
-                PeriodType: periodo.descripcion,
-                iPeriodoEvalId: value.iPeriodoEvalId,
-            })),
-        }
+        //         StartDateVisual: this.ticketService.toVisualFechasFormat(
+        //             periodo.fechaInicio,
+        //             'DD/MM/YYYY'
+        //         ),
+        //         PeriodType: periodo.descripcion,
+        //         iPeriodoEvalId: value.iPeriodoEvalId,
+        //     })),
+        // }
     }
 
     getCalendarioPeriodosAcademicos() {
@@ -441,7 +441,7 @@ export class PeriodosAcademicosComponent implements OnInit, OnChanges {
         this.httpService
         .postData('acad/calendarioAcademico/addCalAcademico', {
             json: JSON.stringify({
-                iFaseId: this.ticketService.registroInformation.stepYear.fases_promocional.iFaseId,
+                // iFaseId: this.ticketService.registroInformation.stepYear.fases_promocionales.iFaseId,
                 iPeriodoEvalAperId: String(this.formPeriodo.get('id').value),
                 dtPeriodoEvalAperInicio: this.ticketService.toSQLDatetimeFormat(this.formPeriodo.get('fechaInicio').value),
                 dtPeriodoEvalAperFin: this.ticketService.toSQLDatetimeFormat(this.formPeriodo.get('fechaFin').value),

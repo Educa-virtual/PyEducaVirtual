@@ -85,30 +85,50 @@ export class YearComponent implements OnInit, OnChanges {
         })
     }
     ngOnInit() {
-        this.getFasesPromocionales()
+        // this.getFasesPromocionales()
 
-        console.log('Objeto')
-        console.log(this.ticketService.registroInformation)
+        // console.log('Objeto')
+        // console.log(this.ticketService.registroInformation)
 
-        this.ticketService.getCalendarioIESede()
-        this.ticketService.getCalendar({iCalAcadId: "23", iSedeId: '1', iYAcadId: "3"})
+        if (!this.ticketService.registroInformation?.calendar){
+            this.router.navigate([
+                'configuracion/configuracion/years',
+            ])   
+            return;
+        }
+
+        const { iSedeId = "", iYAcadId = "", iCalAcadId = ""} =
+                this.ticketService.registroInformation?.calendar
+
+        // this.ticketService.getCalendarioIESede()
+
+        /**
+         *  * Verificamos que exista un id de un calendario exista en el servicio
+         **/
+        if (iCalAcadId) {
+            this.ticketService.getCalendar({ iSedeId, iYAcadId, iCalAcadId })
+        } else {
+            this.ticketService.setFasesYear({
+                onCompleteCallbacks: [() => this.setValuesFormCalendar()],
+            })
+        }
 
         if (this.ticketService.registroInformation.mode === 'create') {
-            this.ticketService.setFechaVigente([
-                () =>
-                    this.form.patchValue({
-                        fechaVigente:
-                            this.ticketService.registroInformation.stepYear
-                                .fechaVigente,
-                        fechaInicio:
-                            this.ticketService.registroInformation.stepYear
-                                .fechaInicio,
-                        fechaFin:
-                            this.ticketService.registroInformation.stepYear
-                                .fechaFin,
-                    }),
-                () => this.form.get('fechaVigente').disable()
-            ])
+            // this.ticketService.setFechaVigente([
+            //     () =>
+            //         this.form.patchValue({
+            //             fechaVigente:
+            //                 this.ticketService.registroInformation.stepYear
+            //                     .fechaVigente,
+            //             fechaInicio:
+            //                 this.ticketService.registroInformation.stepYear
+            //                     .fechaInicio,
+            //             fechaFin:
+            //                 this.ticketService.registroInformation.stepYear
+            //                     .fechaFin,
+            //         }),
+            //     () => this.form.get('fechaVigente').disable()
+            // ])
         }
         if (this.ticketService.registroInformation?.mode == 'edit') {
             this.httpService
@@ -153,14 +173,14 @@ export class YearComponent implements OnInit, OnChanges {
                                 matriculaFin: new Date(
                                     filterCalendar.dtCalAcadMatriculaFin
                                 ),
-                                fases_promocional: {
-                                    ...(this.ticketService.registroInformation
-                                        .stepYear?.fases_promocional || {}),
-                                    bCalAcadFaseRegular:
-                                        filterCalendar.bCalAcadFaseRegular,
-                                    bCalAcadFaseRecuperacion:
-                                        filterCalendar.bCalAcadFaseRecuperacion,
-                                },
+                                // fases_promocionales: {
+                                //     ...(this.ticketService.registroInformation
+                                //         .stepYear?.fases_promocionales || {}),
+                                //     bCalAcadFaseRegular:
+                                //         filterCalendar.bCalAcadFaseRegular,
+                                //     bCalAcadFaseRecuperacion:
+                                //         filterCalendar.bCalAcadFaseRecuperacion,
+                                // },
 
                                 // fasesPromocionales: filterCalendar.bCalAcadFaseRegular,
                             },
@@ -203,7 +223,7 @@ export class YearComponent implements OnInit, OnChanges {
                     },
                 })
 
-            this.getCalendarioFasesPromocionales()
+            // this.getCalendarioFasesPromocionales()
         }
 
         // Suscribirse a los cambios del formulario después de la inicialización
@@ -216,12 +236,12 @@ export class YearComponent implements OnInit, OnChanges {
                 // faseRegular: value.regular,
                 matriculaFin: value.fechaMatriculaFin,
                 matriculaInicio: value.fechaMatriculaInicio,
-                fases_promocional: {
-                    ...this.ticketService.registroInformation.stepYear
-                        .fases_promocional,
-                    dtFaseInicio: value.fechaFaseInicio,
-                    dtFaseFin: value.fechaFaseFin,
-                },
+                // fases_promocionales: {
+                //     ...this.ticketService.registroInformation.stepYear
+                //         .fases_promocionales,
+                //     dtFaseInicio: value.fechaFaseInicio,
+                //     dtFaseFin: value.fechaFaseFin,
+                // },
             }
             console.log(value)
         })
@@ -230,116 +250,131 @@ export class YearComponent implements OnInit, OnChanges {
         console.log(this.form)
     }
 
-    getFasesPromocionales() {
-        this.httpService
-            .postData('acad/calendarioAcademico/addCalAcademico', {
-                json: JSON.stringify({
-                    jmod: 'acad',
-                    jtable: 'fases_promocionales',
-                }),
-                _opcion: 'getConsulta',
-            })
-            .subscribe({
-                next: (data: any) => {
-                    this.fasesPromocionales.push(...data.data)
-                },
-                error: (error) => {
-                    console.error('Error fetching turnos:', error)
-                },
-                complete: () => {
-                    console.log('Request completed')
-                },
-            })
+    // getFasesPromocionales() {
+    //     this.httpService
+    //         .postData('acad/calendarioAcademico/addCalAcademico', {
+    //             json: JSON.stringify({
+    //                 jmod: 'acad',
+    //                 jtable: 'fases_promocionales',
+    //             }),
+    //             _opcion: 'getConsulta',
+    //         })
+    //         .subscribe({
+    //             next: (data: any) => {
+    //                 this.fasesPromocionales.push(...data.data)
+    //             },
+    //             error: (error) => {
+    //                 console.error('Error fetching turnos:', error)
+    //             },
+    //             complete: () => {
+    //                 console.log('Request completed')
+    //             },
+    //         })
+    // }
+
+    setValuesFormCalendar() {
+
+        const { fechaVigente, fechaInicio, fechaFin, matriculaInicio, matriculaFin, bCalAcadFaseRegular, bCalAcadFaseRecuperacion, fases_promocionales } = this.ticketService.registroInformation.stepYear
+
+        this.form.patchValue({
+            fechaVigente: fechaVigente,
+            fechaInicio: fechaInicio,
+            fechaFin: fechaFin,
+            fechaMatriculaInicio: matriculaInicio,
+            fechaMatriculaFin: matriculaFin,
+            fechaFaseInicio: bCalAcadFaseRegular,
+            fechaFaseFin: bCalAcadFaseRecuperacion,
+            regular: bCalAcadFaseRegular,
+            recuperacion: bCalAcadFaseRecuperacion,
+        })
     }
 
-    getCalendarioFasesPromocionales() {
-        this.httpService
-            .postData('acad/calendarioAcademico/addCalAcademico', {
-                json: JSON.stringify({
-                    iCalAcadId:
-                        this.ticketService.registroInformation.calendar
-                            .iCalAcadId,
-                }),
-                _opcion: 'getCalendarioFases',
-            })
-            .subscribe({
-                next: (data: any) => {
-                    console.log(JSON.parse(data.data[0]['calFases'])[0])
-                    let calendarioFases = JSON.parse(
-                        data.data[0]['calFases']
-                    )[0]
+    // getCalendarioFasesPromocionales() {
+    //     this.httpService
+    //         .postData('acad/calendarioAcademico/addCalAcademico', {
+    //             json: JSON.stringify({
+    //                 iCalAcadId:
+    //                     this.ticketService.registroInformation.calendar
+    //                         .iCalAcadId,
+    //             }),
+    //             _opcion: 'getCalendarioFases',
+    //         })
+    //         .subscribe({
+    //             next: (data: any) => {
+    //                 console.log(JSON.parse(data.data[0]['calFases'])[0])
+    //                 let calendarioFases = JSON.parse(
+    //                     data.data[0]['calFases']
+    //                 )[0]
 
-                    this.ticketService.registroInformation.stepYear.fases_promocional =
-                        {
-                            ...this.ticketService.registroInformation.stepYear
-                                .fases_promocional,
+    //                 this.ticketService.registroInformation.stepYear.fases_promocionales =
+    //                     {
+    //                         ...this.ticketService.registroInformation.stepYear
+    //                             .fases_promocionales,
 
-                            iFaseId: calendarioFases.iFaseId,
-                            iFasePromId: calendarioFases.iFasePromId,
-                            cFasePromNombre: calendarioFases.cFasePromNombre,
-                            dtFaseInicio: new Date(
-                                calendarioFases.dtFaseInicio
-                            ),
-                            dtFaseFin: new Date(calendarioFases.dtFaseFin),
-                        }
-                },
-                error: (error) => {
-                    console.error('Error fetching turnos:', error)
-                },
-                complete: () => {
-                    console.log('regular')
-                    console.log(this.ticketService.registroInformation.stepYear)
+    //                         iFaseId: calendarioFases.iFaseId,
+    //                         iFasePromId: calendarioFases.iFasePromId,
+    //                         cFasePromNombre: calendarioFases.cFasePromNombre,
+    //                         dtFaseInicio: new Date(
+    //                             calendarioFases.dtFaseInicio
+    //                         ),
+    //                         dtFaseFin: new Date(calendarioFases.dtFaseFin),
+    //                     }
+    //             },
+    //             error: (error) => {
+    //                 console.error('Error fetching turnos:', error)
+    //             },
+    //             complete: () => {
+    //                 console.log('regular')
+    //                 console.log(this.ticketService.registroInformation.stepYear)
 
-                    this.form.patchValue({
-                        fechaFaseInicio:
-                            this.ticketService.registroInformation.stepYear
-                                .fases_promocional.dtFaseInicio,
-                        fechaFaseFin:
-                            this.ticketService.registroInformation.stepYear
-                                .fases_promocional.dtFaseFin,
-                    })
+    //                 this.form.patchValue({
+    //                     fechaFaseInicio:
+    //                         this.ticketService.registroInformation.stepYear
+    //                             .fases_promocionales.dtFaseInicio,
+    //                     fechaFaseFin:
+    //                         this.ticketService.registroInformation.stepYear
+    //                             .fases_promocionales.dtFaseFin,
+    //                 })
 
-                    if (
-                        this.ticketService.registroInformation.stepYear
-                            .fases_promocional.bCalAcadFaseRegular
-                    ) {
-                        this.form.patchValue({
-                            regular: [
-                                {
-                                    iFasePromId: String(
-                                        this.ticketService.registroInformation
-                                            .stepYear.fases_promocional
-                                            .iFasePromId
-                                    ),
-                                    cFasePromNombre:
-                                        this.ticketService.registroInformation
-                                            .stepYear.fases_promocional
-                                            .cFasePromNombre,
-                                },
-                            ],
-                        })
-                    }
+    //                 if (
+    //                     this.ticketService.registroInformation.stepYear
+    //                         .fases_promocionales.bCalAcadFaseRegular
+    //                 ) {
+    //                     this.form.patchValue({
+    //                         regular: [
+    //                             {
+    //                                 iFasePromId: String(
+    //                                     this.ticketService.registroInformation
+    //                                         .stepYear.fases_promocionales
+    //                                         .iFasePromId
+    //                                 ),
+    //                                 cFasePromNombre:
+    //                                     this.ticketService.registroInformation
+    //                                         .stepYear.fases_promocionales
+    //                                         .cFasePromNombre,
+    //                             },
+    //                         ],
+    //                     })
+    //                 }
 
-                    if (
-                        this.ticketService.registroInformation.stepYear
-                            .fases_promocional.bCalAcadFaseRecuperacion
-                    ) {
-                        this.form.patchValue({
-                            recuperacion: [this.fasesPromocionales[1]],
-                        })
-                    }
-                },
-            })
-    }
+    //                 if (
+    //                     this.ticketService.registroInformation.stepYear
+    //                         .fases_promocionales.bCalAcadFaseRecuperacion
+    //                 ) {
+    //                     this.form.patchValue({
+    //                         recuperacion: [this.fasesPromocionales[1]],
+    //                     })
+    //                 }
+    //             },
+    //         })
+    // }
 
     toggleCheckboxRegular(value) {
         console.log(value)
         if (value.length === 1 && value[0].cFasePromNombre == 'FASE REGULAR') {
-            this.ticketService.registroInformation.stepYear.fases_promocional.bCalAcadFaseRegular =
-                true
+            // this.ticketService.registroInformation.stepYear.fases_promocionales.bCalAcadFaseRegular =
         } else {
-            this.ticketService.registroInformation.stepYear.fases_promocional.bCalAcadFaseRegular =
-                false
+            // this.ticketService.registroInformation.stepYear.fases_promocionales.bCalAcadFaseRegular =
         }
     }
 
@@ -348,11 +383,9 @@ export class YearComponent implements OnInit, OnChanges {
             value.length === 1 &&
             value[0].cFasePromNombre == 'FASE DE RECUPERACIÓN'
         ) {
-            this.ticketService.registroInformation.stepYear.fases_promocional.bCalAcadFaseRecuperacion =
-                true
+            // this.ticketService.registroInformation.stepYear.fases_promocionales.bCalAcadFaseRecuperacion =
         } else {
-            this.ticketService.registroInformation.stepYear.fases_promocional.bCalAcadFaseRecuperacion =
-                false
+            // this.ticketService.registroInformation.stepYear.fases_promocionales.bCalAcadFaseRecuperacion =
         }
     }
 
@@ -386,7 +419,7 @@ export class YearComponent implements OnInit, OnChanges {
         }
 
         if (this.ticketService.registroInformation.mode == 'edit') {
-            this.updateCalendario()
+            // this.updateCalendario()
         }
     }
 
@@ -422,86 +455,86 @@ export class YearComponent implements OnInit, OnChanges {
             })
     }
 
-    updateCalendario() {
-        this.httpService
-            .postData('acad/calendarioAcademico/addCalAcademico', {
-                json: JSON.stringify({
-                    iSedeId: this.localService.getItem('dremoPerfil').iSedeId,
-                    iCalAcadId:
-                        this.ticketService.registroInformation.calendar
-                            .iCalAcadId,
-                    iYAcadId:
-                        this.ticketService.registroInformation.calendar
-                            .iYAcadId,
-                    dtCalAcadInicio: this.ticketService.toSQLDatetimeFormat(
-                        this.ticketService.registroInformation.stepYear
-                            .fechaInicio
-                    ),
-                    dtCalAcadFin:
-                        this.ticketService.registroInformation.stepYear
-                            .fechaFin,
-                    dtCalAcadMatriculaInicio:
-                        this.ticketService.registroInformation.stepYear
-                            .matriculaInicio,
-                    dtCalAcadMatriculaFin:
-                        this.ticketService.registroInformation.stepYear
-                            .matriculaFin,
-                    bCalAcadFaseRegular:
-                        this.ticketService.registroInformation.stepYear
-                            .fases_promocional.bCalAcadFaseRegular,
-                    bCalAcadFaseRecuperacion:
-                        this.ticketService.registroInformation.stepYear
-                            .fases_promocional.bCalAcadFaseRecuperacion,
-                }),
-                _opcion: 'updateCalAcademico',
-            })
-            .subscribe({
-                next: (data: any) => {
-                    console.log(data)
-                },
-                error: (error) => {
-                    console.error('Error fetching turnos:', error)
-                },
-                complete: () => {
-                    console.log('Request completed')
-                },
-            })
+    // updateCalendario() {
+    //     this.httpService
+    //         .postData('acad/calendarioAcademico/addCalAcademico', {
+    //             json: JSON.stringify({
+    //                 iSedeId: this.localService.getItem('dremoPerfil').iSedeId,
+    //                 iCalAcadId:
+    //                     this.ticketService.registroInformation.calendar
+    //                         .iCalAcadId,
+    //                 iYAcadId:
+    //                     this.ticketService.registroInformation.calendar
+    //                         .iYAcadId,
+    //                 dtCalAcadInicio: this.ticketService.toSQLDatetimeFormat(
+    //                     this.ticketService.registroInformation.stepYear
+    //                         .fechaInicio
+    //                 ),
+    //                 dtCalAcadFin:
+    //                     this.ticketService.registroInformation.stepYear
+    //                         .fechaFin,
+    //                 dtCalAcadMatriculaInicio:
+    //                     this.ticketService.registroInformation.stepYear
+    //                         .matriculaInicio,
+    //                 dtCalAcadMatriculaFin:
+    //                     this.ticketService.registroInformation.stepYear
+    //                         .matriculaFin,
+    //                 bCalAcadFaseRegular:
+    //                     this.ticketService.registroInformation.stepYear
+    //                         .fases_promocionales.bCalAcadFaseRegular,
+    //                 bCalAcadFaseRecuperacion:
+    //                     this.ticketService.registroInformation.stepYear
+    //                         .fases_promocionales.bCalAcadFaseRecuperacion,
+    //             }),
+    //             _opcion: 'updateCalAcademico',
+    //         })
+    //         .subscribe({
+    //             next: (data: any) => {
+    //                 console.log(data)
+    //             },
+    //             error: (error) => {
+    //                 console.error('Error fetching turnos:', error)
+    //             },
+    //             complete: () => {
+    //                 console.log('Request completed')
+    //             },
+    //         })
 
-        this.httpService
-            .postData('acad/calendarioAcademico/addCalAcademico', {
-                json: JSON.stringify({
-                    iFaseId:
-                        this.ticketService.registroInformation.stepYear
-                            .fases_promocional.iFaseId,
-                    iCalAcadId:
-                        this.ticketService.registroInformation.calendar
-                            .iCalAcadId,
-                    iFasePromId:
-                        this.ticketService.registroInformation.stepYear
-                            .fases_promocional.iFasePromId,
-                    dtFaseInicio: this.ticketService.toSQLDatetimeFormat(
-                        this.ticketService.registroInformation.stepYear
-                            .fases_promocional.dtFaseInicio
-                    ),
-                    dtFaseFin: this.ticketService.toSQLDatetimeFormat(
-                        this.ticketService.registroInformation.stepYear
-                            .fases_promocional.dtFaseFin
-                    ),
-                }),
-                _opcion: 'updateCalFase',
-            })
-            .subscribe({
-                next: (data: any) => {
-                    console.log(data)
-                },
-                error: (error) => {
-                    console.error('Error fetching turnos:', error)
-                },
-                complete: () => {
-                    console.log('Request completed')
-                },
-            })
-    }
+    //     this.httpService
+    //         .postData('acad/calendarioAcademico/addCalAcademico', {
+    //             json: JSON.stringify({
+    //                 iFaseId:
+    //                     this.ticketService.registroInformation.stepYear
+    //                         .fases_promocionales.iFaseId,
+    //                 iCalAcadId:
+    //                     this.ticketService.registroInformation.calendar
+    //                         .iCalAcadId,
+    //                 iFasePromId:
+    //                     this.ticketService.registroInformation.stepYear
+    //                         .fases_promocionales.iFasePromId,
+    //                 dtFaseInicio: this.ticketService.toSQLDatetimeFormat(
+    //                     this.ticketService.registroInformation.stepYear
+    //                         .fases_promocionales.dtFaseInicio
+    //                 ),
+    //                 dtFaseFin: this.ticketService.toSQLDatetimeFormat(
+    //                     this.ticketService.registroInformation.stepYear
+    //                         .fases_promocionales.dtFaseFin
+    //                 ),
+    //             }),
+    //             _opcion: 'updateCalFase',
+    //         })
+    //         .subscribe({
+    //             next: (data: any) => {
+    //                 console.log(data)
+    //             },
+    //             error: (error) => {
+    //                 console.error('Error fetching turnos:', error)
+    //             },
+    //             complete: () => {
+    //                 console.log('Request completed')
+    //             },
+    //         })
+    // }
 
     nextPage() {
         this.router.navigate([

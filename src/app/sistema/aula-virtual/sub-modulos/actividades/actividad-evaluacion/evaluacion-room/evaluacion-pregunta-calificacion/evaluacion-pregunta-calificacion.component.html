@@ -44,6 +44,7 @@
         <app-evaluacion-pregunta-rubrica
             [escalasCalificativas]="escalasCalificativas"
             [rubrica]="rubrica"
+            (closeModalChange)="closeModal($event)"
         ></app-evaluacion-pregunta-rubrica>
     }
 </div>

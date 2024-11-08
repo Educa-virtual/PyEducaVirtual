@@ -8,10 +8,14 @@
             <h3 class="text-lg">Criterios</h3>
         </div>
 
-        <span class="text-md">Niveles</span>
         <ng-container formArrayName="criterios">
             @for (criterio of criterios.controls; track i; let i = $index) {
                 <ng-container [formGroupName]="i">
+                    @if (criterio.get('niveles').hasError('noActiveGroup')) {
+                        <small class="ml-auto text-red-500">
+                            Debe activar al menos un nivel
+                        </small>
+                    }
                     <p-accordion [multiple]="true">
                         <p-accordionTab [selected]="true">
                             <ng-template pTemplate="header">
@@ -27,6 +31,8 @@
                             <p>
                                 {{ criterio.get('cCriterioDescripcion').value }}
                             </p>
+                            <span class="text-md mb-1">Niveles</span>
+
                             <div class="niveles" formArrayName="niveles">
                                 @for (
                                     nivel of niveles($index).controls;
@@ -38,7 +44,7 @@
                                         [ngClass]="{
                                             'bg-blue-100':
                                                 nivel.get('bActivo').value,
-                                            'bg-gray-50':
+                                            'bg-white':
                                                 !nivel.get('bActivo').value,
                                         }"
                                         [formGroupName]="j"
@@ -79,7 +85,7 @@
                                         </p>
                                         <div class="formgrid grid">
                                             <div
-                                                class="field col-12 flex flex-column gap-2"
+                                                class="field col-12 md:col-6 flex flex-column gap-2"
                                             >
                                                 <label for=""
                                                     >Escala Calificativa</label
@@ -91,8 +97,53 @@
                                                     [options]="
                                                         escalasCalificativas
                                                     "
-                                                    optionLabel="cEscalaCalifNombreDetalles"
+                                                    optionLabel="cEscalaCalifNombre"
                                                 />
+                                            </div>
+
+                                            <div
+                                                class="field col-12 md:col-6 flex flex-column gap-2"
+                                            >
+                                                <label
+                                                    for="nota-numero-{{ i }}-{{
+                                                        j
+                                                    }}"
+                                                    >Nota Numérica</label
+                                                >
+                                                <p-inputNumber
+                                                    formControlName="nNnivelLogroAlcNota"
+                                                    inputStyleClass="w-full"
+                                                    inputId="nota-numero-{{
+                                                        $index
+                                                    }}"
+                                                    mode="decimal"
+                                                    [min]="0"
+                                                    [max]="20"
+                                                    [class]="
+                                                        nivel.get(
+                                                            'nNnivelLogroAlcNota'
+                                                        )?.invalid &&
+                                                        nivel.get(
+                                                            'nNnivelLogroAlcNota'
+                                                        )?.touched
+                                                            ? 'w-full ng-dirty ng-invalid p-invalid'
+                                                            : 'w-full'
+                                                    "
+                                                />
+                                                @if (
+                                                    nivel
+                                                        .get(
+                                                            'nNnivelLogroAlcNota'
+                                                        )
+                                                        .hasError('required') &&
+                                                    nivel.get(
+                                                        'nNnivelLogroAlcNota'
+                                                    )?.touched
+                                                ) {
+                                                    <small class="text-red-500">
+                                                        Este campo es requerido
+                                                    </small>
+                                                }
                                             </div>
                                             <div
                                                 class="field col-12 flex flex-column gap-2"
@@ -104,20 +155,30 @@
                                                 <textarea
                                                     rows="5"
                                                     cols="30"
-                                                    formControlName="cNivelLogroAlcConclusiondescriptiva"
+                                                    formControlName="cNivelLogroAlcConclusionDescriptiva"
                                                     pInputTextarea
                                                     [autoResize]="true"
+                                                    [class]="
+                                                        nivel.get(
+                                                            'cNivelLogroAlcConclusionDescriptiva'
+                                                        )?.invalid &&
+                                                        nivel.get(
+                                                            'cNivelLogroAlcConclusionDescriptiva'
+                                                        )?.touched
+                                                            ? 'w-full ng-dirty ng-invalid p-invalid'
+                                                            : 'w-full'
+                                                    "
                                                 ></textarea>
                                                 @if (
                                                     nivel
                                                         .get(
-                                                            'cNivelLogroAlcConclusiondescriptiva'
+                                                            'cNivelLogroAlcConclusionDescriptiva'
                                                         )
                                                         ?.hasError(
                                                             'required'
                                                         ) &&
                                                     nivel.get(
-                                                        'cNivelLogroAlcConclusiondescriptiva'
+                                                        'cNivelLogroAlcConclusionDescriptiva'
                                                     )?.touched
                                                 ) {
                                                     <small class="text-red-500">

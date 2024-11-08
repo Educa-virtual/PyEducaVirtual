@@ -434,6 +434,7 @@ export class TareaRoomComponent implements OnChanges, OnInit {
         }
         this.getInformation(params, 'guardar-calificacion-docente')
     }
+
     goLinkDocumento(ruta: string) {
         const backend = environment.backend
         window.open(backend + '/' + ruta, '_blank')
@@ -546,6 +547,7 @@ export class TareaRoomComponent implements OnChanges, OnInit {
         //console.log(this.grupoTransferir)
     }
     entregarEstudianteTarea() {
+        if (!this.FilesTareasEstudiantes.length) return
         const params = {
             petition: 'post',
             group: 'aula-virtual',
@@ -573,5 +575,19 @@ export class TareaRoomComponent implements OnChanges, OnInit {
             },
         }
         this.getInformation(params, params.ruta)
+    }
+    validarEscalaCalifId(): void {
+        if (
+            this.iEscalaCalifId == 1 ||
+            this.iEscalaCalifId === '' ||
+            isNaN(this.iEscalaCalifId)
+        ) {
+            alert(
+                'Error: El ID de la escala de calificación no puede estar vacío y debe ser un número válido.'
+            )
+        } else {
+            console.log('El ID de la escala de calificación es válido.')
+            // Continúa con la lógica si la validación es exitosa
+        }
     }
 }

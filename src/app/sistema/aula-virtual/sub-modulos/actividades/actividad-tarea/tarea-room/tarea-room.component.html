@@ -54,7 +54,11 @@
                             type="text"
                             pInputText
                             [value]="data?.cTareaTitulo"
-                            disabled
+                            placeholder="Ingrese el título de la tarea"
+                            [disabled]="
+                                !data?.cTareaTitulo ||
+                                data.cTareaTitulo.trim() === ''
+                            "
                         />
                     </p-inputGroup>
                     <div class="col-12">
@@ -172,6 +176,8 @@
                                     icon="pi pi-check"
                                     iconPos="right"
                                     (onClick)="entregarEstudianteTarea()"
+                                    raised
+                                    severity="success"
                                 ></p-button>
                             </div>
                         </div>
@@ -487,7 +493,6 @@
                                                 </div>
                                                 <div class="col-6 text-right">
                                                     <p-button
-                                                        severity="info"
                                                         label="Crear Grupo"
                                                         icon="pi pi-plus"
                                                         (onClick)="

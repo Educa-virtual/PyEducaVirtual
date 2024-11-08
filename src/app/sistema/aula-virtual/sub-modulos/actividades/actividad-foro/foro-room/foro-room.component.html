@@ -121,8 +121,8 @@
                             ></div>
                         </article>
                     </div>
-                    <article class="card col-4" [hidden]="iPerfilId !== 8">
-                        <div class="card-body m-3" [hidden]="">
+                    <article class="card col-4">
+                        <div class="card-body m-3">
                             <h4>Mi Nota</h4>
                             <p-divider></p-divider>
                             <p-inputGroup>
@@ -218,7 +218,10 @@
                                         </p-button>
                                     </ng-template>
                                 </p-orderList>
-                                <div class="comment-container">
+                                <div
+                                    class="comment-container"
+                                    [hidden]="iPerfilId !== 8"
+                                >
                                     <input
                                         type="text"
                                         class="comment-input"

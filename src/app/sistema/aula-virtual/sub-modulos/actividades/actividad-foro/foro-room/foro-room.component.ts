@@ -113,7 +113,7 @@ export class ForoRoomComponent implements OnInit {
     obtenerIdPerfil() {
         this.iEstudianteId = this._constantesService.iEstudianteId
         this.iPerfilId = this._constantesService.iPerfilId
-        console.log('mi id perfil', this.iEstudianteId)
+        console.log('mi id perfil', this.iPerfilId)
     }
     openModal(respuestasForo) {
         this.modalCalificacion = true
@@ -132,21 +132,23 @@ export class ForoRoomComponent implements OnInit {
     }
     sendComment() {
         this.iEstudianteId = this._constantesService.iEstudianteId
-        const comment = this.foroFormComntAl.value
-        comment.iForoId = this.ixActivadadId
-        comment.iEstudianteId = this.iEstudianteId
-
-        this._aulaService.guardarRespuesta(comment).subscribe(
-            (response) => {
-                this.comentarios.push(comment)
-                console.log('Comentario Guardado:', response)
-
-                this.foroFormComntAl.get('cForoRptaRespuesta')?.reset()
+        const comment = {
+            ...this.foroFormComntAl.value,
+            iForoId: this.ixActivadadId,
+            iEstudianteId: this.iEstudianteId,
+        }
+        this._aulaService.guardarRespuesta(comment).subscribe({
+            next: (resp: any) => {
+                // para refrescar la pagina
+                if (resp?.validated) {
+                    this.getRespuestaF()
+                    this.foroFormComntAl.get('cForoRptaRespuesta')?.reset()
+                }
             },
-            (error) => {
+            error: (error) => {
                 console.error('Comentario:', error)
-            }
-        )
+            },
+        })
     }
     mostrarCalificacion() {
         const userId = 1

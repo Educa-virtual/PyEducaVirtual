@@ -186,6 +186,70 @@
                         >
                         </p-tag>
                     }
+                    @if (col.type === 'list_json_file') {
+                        @if (rowData[col.field].length) {
+                            <div class="flex">
+                                @for (
+                                    item of rowData[col.field];
+                                    track $index
+                                ) {
+                                    <div>
+                                        <p-button
+                                            [text]="true"
+                                            severity="secondary"
+                                            class="p-col-12"
+                                            (onClick)="openFile(item)"
+                                        >
+                                            @switch (item.type) {
+                                                @case (1) {
+                                                    <i
+                                                        [pTooltip]="item.name"
+                                                        tooltipPosition="top"
+                                                        class="pi pi-upload"
+                                                        style="color: #333437"
+                                                    ></i>
+                                                }
+                                                @case (2) {
+                                                    <i
+                                                        [pTooltip]="item.name"
+                                                        tooltipPosition="top"
+                                                        class="pi pi-link"
+                                                        style="color: #333437"
+                                                    ></i>
+                                                }
+                                                @case (3) {
+                                                    <i
+                                                        [pTooltip]="item.name"
+                                                        tooltipPosition="top"
+                                                        class="pi pi-youtube"
+                                                        style="color: #c4302b"
+                                                    ></i>
+                                                }
+                                                @case (4) {
+                                                    <i
+                                                        [pTooltip]="item.name"
+                                                        tooltipPosition="top"
+                                                        class="pi pi-folder"
+                                                        style="color: #ffd04b"
+                                                    ></i>
+                                                }
+                                                @case (5) {
+                                                    <i
+                                                        [pTooltip]="item.name"
+                                                        tooltipPosition="top"
+                                                        class="pi pi-images"
+                                                        style="color: #ff844b"
+                                                    ></i>
+                                                }
+                                            }
+                                        </p-button>
+                                    </div>
+                                }
+                            </div>
+                        } @else {
+                            -
+                        }
+                    }
                 </td>
             }
         </tr>

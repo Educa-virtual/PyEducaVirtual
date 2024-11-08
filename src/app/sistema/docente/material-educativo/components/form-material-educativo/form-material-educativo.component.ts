@@ -45,6 +45,7 @@ export class FormMaterialEducativoComponent implements OnChanges {
 
     date = new Date()
     formMaterialEducativoDocentes: FormGroup
+    filesUrl = []
 
     ngOnChanges(changes) {
         if (changes.showModal?.currentValue) {
@@ -63,7 +64,15 @@ export class FormMaterialEducativoComponent implements OnChanges {
         if (changes.data?.currentValue) {
             this.data = changes.data.currentValue
             if (this.formMaterialEducativoDocentes) {
-                this.formMaterialEducativoDocentes.patchValue(this.data)
+                this.opcion === 'ACTUALIZAR'
+                    ? this.formMaterialEducativoDocentes.patchValue(this.data)
+                    : this.formMaterialEducativoDocentes.reset()
+                this.formMaterialEducativoDocentes.controls['opcion'].setValue(
+                    this.opcion
+                )
+                const files =
+                    this.formMaterialEducativoDocentes.value.cMatEduUrl
+                this.filesUrl = files ? JSON.parse(files) : []
             }
         }
     }
@@ -76,9 +85,41 @@ export class FormMaterialEducativoComponent implements OnChanges {
                 this.accionBtnItem.emit({ accion, item })
                 break
             case this.opcion:
+                this.formMaterialEducativoDocentes.controls[
+                    'cMatEduUrl'
+                ].setValue(
+                    this.filesUrl.length ? JSON.stringify(this.filesUrl) : null
+                )
                 this.accionBtnItem.emit({
                     accion,
                     item: this.formMaterialEducativoDocentes.value,
+                })
+                break
+            case 'subir-archivo-material-educativo-docentes':
+                this.filesUrl.push({
+                    type: 1, //1->file
+                    nameType: 'file',
+                    name: item.file.name,
+                    size: item.file.size,
+                    ruta: item.name,
+                })
+                break
+            case 'url-material-educativo-docentes':
+                this.filesUrl.push({
+                    type: 2, //2->url
+                    nameType: 'url',
+                    name: item.name,
+                    size: '',
+                    ruta: item.ruta,
+                })
+                break
+            case 'youtube-material-educativo-docentes':
+                this.filesUrl.push({
+                    type: 3, //3->youtube
+                    nameType: 'youtube',
+                    name: item.name,
+                    size: '',
+                    ruta: item.ruta,
                 })
                 break
         }

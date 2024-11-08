@@ -14,6 +14,7 @@ import { IIcon } from '../icon/icon.interface'
 import { IconComponent } from '../icon/icon.component'
 import { isIIcon } from '../utils/is-icon-object'
 import { IsIconTypePipe } from '../pipes/is-icon-type.pipe'
+import { environment } from '@/environments/environment.template'
 
 type TColumnType =
     | 'actions'
@@ -247,5 +248,21 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     onSelectionChange(event) {
         this.selectedRowData = event
         this.selectedRowDataChange.emit(event)
+    }
+
+    openFile(item) {
+        const backend = environment.backend
+        switch (Number(item.type)) {
+            case 1:
+            case 4:
+            case 5:
+                window.open(backend + '/' + item.ruta, '_blank')
+                break
+            case 2:
+            case 3:
+                const ruta = item.ruta.includes('http')
+                window.open(ruta ? item.ruta : 'http://' + item.ruta, '_blank')
+                break
+        }
     }
 }

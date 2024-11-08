@@ -1,6 +1,6 @@
 //Agregar Servicio de Evaluacion
 import { CompartirIdEvaluacionService } from './../../../services/ereEvaluaciones/compartir-id-evaluacion.service'
-import { Component, inject, OnInit } from '@angular/core'
+import { Component, inject, OnInit, ViewChild } from '@angular/core'
 
 /*BOTONES */
 import { ButtonModule } from 'primeng/button'
@@ -290,6 +290,18 @@ export class EvaluacionesFormComponent implements OnInit {
     onchange() {
         //alert(JSON.stringify(this.selectedTipoEvaluacion))
         //alert(this.fecha)
+    }
+
+    @ViewChild(EvaluacionAreasComponent)
+    evaluacionAreasComponent: EvaluacionAreasComponent
+
+    // Este método será llamado cuando el evento closeModalEvent sea emitido desde el hijo
+    handleCloseModal(data: any): void {
+        console.log('Cerrar modal en el padre:', data)
+        this.evaluacionFormGroup.reset()
+        // Aquí puedes realizar acciones adicionales, como cerrar el modal, resetear campos, etc.
+        // Si tienes un modal, podrías hacer algo como:
+        // this.modalService.close(); // o algo similar para cerrar el modal
     }
 
     closeModal(data) {

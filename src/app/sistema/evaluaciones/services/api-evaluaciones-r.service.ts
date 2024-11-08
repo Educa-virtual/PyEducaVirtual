@@ -63,6 +63,19 @@ export class ApiEvaluacionesRService {
             }
         )
     }
+    //Insertar cursos
+    // Método para insertar cursos, enviando `data` al backend
+    insertarCursos(data: {
+        iEvaluacionId: number
+        selectedCursos: { iCursoId: number }[]
+    }): Observable<any> {
+        return this.http.post(
+            `${this.baseUrl}/ere/Evaluaciones/insertarCursos`,
+            data
+        )
+        // Esta URL `/insertarCursos` debe coincidir con el nombre de la ruta definida en Laravel
+    }
+
     obtenerTipoEvaluacion(params) {
         return this.http.get(
             `${this.baseUrl}/ere/tipoEvaluacion/obtenerTipoEvaluacion`,

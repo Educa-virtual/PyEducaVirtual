@@ -8,9 +8,11 @@ import {
     Input,
     OnInit,
     Output,
+    OnDestroy,
 } from '@angular/core'
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { Subject, takeUntil } from 'rxjs'
+import { almenosUnNivelActivo } from './validators'
 
 @Component({
     selector: 'app-evaluacion-pregunta-rubrica',
@@ -19,7 +21,7 @@ import { Subject, takeUntil } from 'rxjs'
     templateUrl: './evaluacion-pregunta-rubrica.component.html',
     styleUrl: './evaluacion-pregunta-rubrica.component.scss',
 })
-export class EvaluacionPreguntaRubricaComponent implements OnInit {
+export class EvaluacionPreguntaRubricaComponent implements OnInit, OnDestroy {
     @Output() closeModalChange = new EventEmitter()
     private _rubrica
     @Input() escalasCalificativas = []
@@ -29,6 +31,7 @@ export class EvaluacionPreguntaRubricaComponent implements OnInit {
             this.setCriterios(this.rubrica?.criterios || [])
         }
     }
+    @Input() pregunta
 
     private _unsubscribe$ = new Subject<boolean>()
 
@@ -60,8 +63,10 @@ export class EvaluacionPreguntaRubricaComponent implements OnInit {
         return this._formBuilder.group({
             cCriterioNombre: [criterio.cCriterioNombre],
             cCriterioDescripcion: [criterio.cCriterioDescripcion],
+            iNivelLogroAlcId: [criterio.iNivelLogroAlcId],
             niveles: this._formBuilder.array(
-                criterio.niveles.map((nivel) => this.createNivelGroup(nivel))
+                criterio.niveles.map((nivel) => this.createNivelGroup(nivel)),
+                almenosUnNivelActivo()
             ),
         })
     }
@@ -71,14 +76,28 @@ export class EvaluacionPreguntaRubricaComponent implements OnInit {
             cNivelEvaNombre: [nivel.cNivelEvaNombre],
             iNivelEvaValor: [nivel.iNivelEvaValor],
             cNivelEvaDescripcion: [nivel.cNivelEvaDescripcion],
-            iEscalaCalifId: [{ value: nivel.iEscalaCalifId, disabled: true }],
-            cNivelLogroAlcConclusiondescriptiva: [
+            iNivelEvaId: [nivel.iNivelEvaId],
+            iCriterioId: [nivel.iCriterioId],
+            iEvalRptaId: [nivel.iEvalRptaId],
+            iEscalaCalifId: [
                 {
-                    value: nivel.cNivelLogroAlcConclusiondescriptiva ?? null,
-                    disabled: true,
+                    value: nivel.iEscalaCalifId,
+                    disabled: !nivel.iNivelLogroAlcId, // desactivado si es null
                 },
             ],
-            bActivo: [false],
+            cNivelLogroAlcConclusionDescriptiva: [
+                {
+                    value: nivel.cNivelLogroAlcConclusionDescriptiva ?? null,
+                    disabled: !nivel.iNivelLogroAlcId, // desactivado si es null
+                },
+            ],
+            nNnivelLogroAlcNota: [
+                {
+                    value: nivel.nNnivelLogroAlcNota,
+                    disabled: !nivel.iNivelLogroAlcId, // desactivado si es null
+                },
+            ],
+            bActivo: [!!nivel.iNivelLogroAlcId], // activo si no es null
         })
         return nivelGroup
     }
@@ -98,70 +117,91 @@ export class EvaluacionPreguntaRubricaComponent implements OnInit {
             nivelesArray.controls.forEach((control, index) => {
                 if (index !== nivelIndex) {
                     control.patchValue({ bActivo: false }, { emitEvent: false })
-                    control.get('cNivelLogroAlcConclusiondescriptiva').disable()
-                    control
-                        .get('cNivelLogroAlcConclusiondescriptiva')
-                        .clearValidators()
-                    control.get('iEscalaCalifId').disable()
-                    control
-                        .get('cNivelLogroAlcConclusiondescriptiva')
-                        .updateValueAndValidity()
+                    this.activarDesactivarNivelControles(
+                        'disable',
+                        criterioIndex,
+                        index
+                    )
                 } else {
-                    control.get('iEscalaCalifId').enable()
-                    control.get('cNivelLogroAlcConclusiondescriptiva').enable()
-                    control
-                        .get('cNivelLogroAlcConclusiondescriptiva')
-                        .updateValueAndValidity()
-                    control
-                        .get('cNivelLogroAlcConclusiondescriptiva')
-                        .setValidators([Validators.required])
+                    this.activarDesactivarNivelControles(
+                        'enable',
+                        criterioIndex,
+                        index
+                    )
                 }
             })
         } else {
-            nivelesArray
-                .at(nivelIndex)
-                .get('cNivelLogroAlcConclusiondescriptiva')
-                .disable()
-            nivelesArray
-                .at(nivelIndex)
-                .get('cNivelLogroAlcConclusiondescriptiva')
-                .clearValidators()
-            nivelesArray
-                .at(nivelIndex)
-                .get('cNivelLogroAlcConclusiondescriptiva')
-                .updateValueAndValidity()
-            nivelesArray.at(nivelIndex).get('iEscalaCalifId').disable()
+            this.activarDesactivarNivelControles(
+                'disable',
+                criterioIndex,
+                nivelIndex
+            )
         }
         nivelesArray.at(nivelIndex).patchValue({ bActivo: event.checked })
     }
 
-    guardarActualizarLogrosRubrica() {
-        console.log(this.rubricaFormGroup)
+    activarDesactivarNivelControles(
+        accion: 'enable' | 'disable',
+        criterioIndex: number,
+        nivelIndex: number
+    ) {
+        const controles: string[] = [
+            'cNivelLogroAlcConclusionDescriptiva',
+            'nNnivelLogroAlcNota',
+            'iEscalaCalifId',
+        ]
+        const nivelesArray = this.niveles(criterioIndex)
+        controles.forEach((control) => {
+            const formControl = nivelesArray.at(nivelIndex).get(control)
+            if (formControl) {
+                if (accion === 'disable') {
+                    formControl.disable()
+                    formControl.clearValidators
+                    formControl.updateValueAndValidity()
+                } else {
+                    formControl.enable()
+                    formControl.setValidators([Validators.required])
+                    formControl.updateValueAndValidity()
+                }
+            }
+        })
+    }
 
-        if (this.rubricaFormGroup.valid) {
+    guardarActualizarLogrosRubrica() {
+        const criterios = this.rubricaFormGroup.get('criterios') as FormArray
+        let logrosCalificacion = criterios.controls.flatMap((criterio) => {
+            let niveles = criterio.get('niveles').getRawValue()
+            niveles = niveles.map((nivel) => {
+                nivel.iNivelLogroAlcId = criterio.get('iNivelLogroAlcId').value
+                return nivel
+            })
+
+            return niveles
+        })
+        logrosCalificacion = logrosCalificacion.filter((item) => item.bActivo)
+
+        if (this.rubricaFormGroup.invalid) {
             this.rubricaFormGroup.markAllAsTouched()
             return
         }
 
-        const criterios = this.rubricaFormGroup.get('criterios') as FormArray
-        const logrosCalificacion = criterios.controls.flatMap((criterio) => {
-            const niveles = criterio.get('niveles').value
-            return niveles
-        })
-        console.log(criterios)
-
-        return
         const data = {
-            ixColumn: 'iNivelEvaId',
+            iEvalRptaId: this.pregunta.iEvalRptaId,
             logrosCalificacion: logrosCalificacion,
+            esRubrica: true,
         }
         this._apiEvalService
             .calificarLogros(data)
             .pipe(takeUntil(this._unsubscribe$))
             .subscribe({
                 next: (response) => {
-                    console.log(response)
+                    this.closeModalChange.emit(response)
                 },
             })
+    }
+
+    ngOnDestroy() {
+        this._unsubscribe$.next(true)
+        this._unsubscribe$.complete()
     }
 }

@@ -45,8 +45,9 @@ export class EvaluacionPreguntaCalificacionComponent
         this.evaluacionEstudiante = this._config.data.evaluacionEstudiante
         this.pregunta = this._config.data.pregunta
         this.evaluacion = this._config.data.evaluacion
+        console.log(this.pregunta)
+
         this.getData()
-        console.log(this.pregunta, this.evaluacionEstudiante)
     }
 
     getData() {
@@ -68,34 +69,41 @@ export class EvaluacionPreguntaCalificacionComponent
             .subscribe({
                 next: (data) => {
                     const rubrica = data?.length > 0 ? data[0] : null
-                    console.log(data, rubrica)
-                    if (rubrica) {
-                        rubrica.criterios.map((criterio) => {
-                            criterio.niveles.map((nivel) => {
-                                const nivelLogro =
-                                    this.obtenerLogrosCalificacion(
-                                        nivel.iNivelEvaId
-                                    )
-                                if (nivelLogro) {
-                                    nivel.iNivelLogroAlcId
-                                    nivel.iEscalaCalifId
-                                    nivel.iEvalRptaId
-                                    nivel.nNnivelLogroAlcNota
-                                    nivel.cNivelLogroAlcConclusionDescriptiva
-                                    nivel.iNivelEvaId
-                                }
-                                return nivel
-                            })
-                            return criterio
+                    if (!rubrica) return
+                    // obtener las notas para presentarlas juento al nivel de rubrica
+                    rubrica.criterios = rubrica.criterios.map((criterio) => {
+                        criterio.niveles = criterio.niveles.map((nivel) => {
+                            const nivelLogro = this.obtenerLogrosCalificacion(
+                                nivel.iNivelEvaId
+                            )
+                            if (nivelLogro) {
+                                criterio.iNivelLogroAlcId =
+                                    nivelLogro.iNivelLogroAlcId
+                            }
+                            return this.asignarNivelLogro(nivel, nivelLogro)
                         })
-                    }
+                        return criterio
+                    })
                     this.rubrica = rubrica
                 },
             })
     }
 
+    private asignarNivelLogro(nivel, nivelLogro) {
+        if (nivelLogro) {
+            nivel.iNivelLogroAlcId = nivelLogro.iNivelLogroAlcId
+            nivel.iEscalaCalifId = nivelLogro.iEscalaCalifId
+            nivel.nNnivelLogroAlcNota = nivelLogro.nNnivelLogroAlcNota
+            nivel.cNivelLogroAlcConclusionDescriptiva =
+                nivelLogro.cNivelLogroAlcConclusionDescriptiva
+            nivel.iNivelEvaId = nivelLogro.iNivelEvaId
+        }
+        nivel.iEvalRptaId = this.pregunta.iEvalRptaId
+        return nivel
+    }
+
     obtenerLogrosCalificacion(iNivelEvaId) {
-        const logrosCalificacion = this.pregunta.logrosCalificacion ?? []
+        const logrosCalificacion = this.pregunta.nivelesLogrosAlcanzados ?? []
         const logroAlcanzado = logrosCalificacion.find(
             (logro) => logro.iNivelEvaId === iNivelEvaId
         )

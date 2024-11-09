@@ -60,12 +60,6 @@ export class ForoFormContainerComponent implements OnInit {
     categorias: any[] = []
     semana: Message[] = []
     selectProgramaAct = 0
-    //titleFileTareas: string = ''
-
-    estado: any[] = [
-        { label: 'Desactivo', value: 0 },
-        { label: 'Activo', value: 1 },
-    ]
 
     selectCategorias: any = {}
 
@@ -75,7 +69,7 @@ export class ForoFormContainerComponent implements OnInit {
         cForoDescripcion: ['', [Validators.required]],
         iForoCatId: [0, [Validators.required]],
         dtForoInicio: [''],
-        iEstado: [0, Validators.required],
+        iEstado: [false],
         dtForoPublicacion: [''],
         dtForoFin: [],
         cForoUrl: [],
@@ -139,13 +133,12 @@ export class ForoFormContainerComponent implements OnInit {
             JSON.stringify(this.FilesTareas)
         )
 
-        const value = this.foroForm.value
+        const value = {
+            ...this.foroForm.value,
+            iEstado: this.foroForm.controls.iEstado.value ? 1 : 0,
+        }
         console.log('Guardar Foros', value)
         this.ref.close(value)
-        //this._aulaService.guardarForo(value).subscribe(() => {})
-        //     // this.categorias = Data['data']
-        //     // console.log('Datos mit', this.categorias)
-        // })
     }
 
     obtenerForoxiForoId(iForoId: string) {

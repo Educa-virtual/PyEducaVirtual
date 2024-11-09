@@ -8,11 +8,11 @@
             />
         </div>
         <!-- Mostrar el título -->
-        <div class="col-4 w-5 flex flex-column gap-2">
+        <div class="col-6 flex flex-column gap-2">
             <app-common-input [controlKey]="'cForoTitulo'" label="Título" />
         </div>
         <!-- Mostrar las Categorias en un Select -->
-        <div class="col-4 w-3 flex flex-column gap-2">
+        <div class="col-4 flex flex-column gap-2">
             <label for="categoria">Categoría</label>
             <p-dropdown
                 [options]="categorias"
@@ -24,15 +24,9 @@
             />
         </div>
         <!-- Mostrar el estado -->
-        <div class="col-4 flex flex-column gap-2">
+        <div class="col-2 flex flex-column gap-2">
             <label for="">Estado</label>
-            <p-selectButton
-                [options]="estado"
-                formControlName="iEstado"
-                optionLabel="label"
-                optionValue="value"
-                class="buttonmit"
-            />
+            <p-inputSwitch class="align-self-start" formControlName="iEstado" />
         </div>
         <!-- Mostrar descripción -->
         <div class="col-12">
@@ -43,8 +37,9 @@
             <div class="mt-2">
                 <p-editor
                     id="descripcion"
+                    placeholder="Escribe una Descripción "
                     formControlName="cForoDescripcion"
-                    [style]="{ height: '150px' }"
+                    [style]="{ height: 'auto', overflow: 'hidden' }"
                 />
             </div>
         </div>

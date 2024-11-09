@@ -75,6 +75,7 @@ export class ForoRoomComponent implements OnInit {
     public foro
     iPerfilId: number
     iEstudianteId: number
+    iDocenteId: number
 
     commentForoM: string = ''
 
@@ -98,6 +99,7 @@ export class ForoRoomComponent implements OnInit {
         cForoRptaRespuesta: ['', [Validators.required]],
         iEstudianteId: [],
         iForoId: [''],
+        iDocenteId: [''],
     })
     constructor() {}
     ngOnInit() {
@@ -113,6 +115,7 @@ export class ForoRoomComponent implements OnInit {
     obtenerIdPerfil() {
         this.iEstudianteId = this._constantesService.iEstudianteId
         this.iPerfilId = this._constantesService.iPerfilId
+        this.iDocenteId = this._constantesService.iDocenteId
         console.log('mi id perfil', this.iPerfilId)
     }
     openModal(respuestasForo) {
@@ -131,24 +134,46 @@ export class ForoRoomComponent implements OnInit {
         })
     }
     sendComment() {
-        this.iEstudianteId = this._constantesService.iEstudianteId
-        const comment = {
-            ...this.foroFormComntAl.value,
-            iForoId: this.ixActivadadId,
-            iEstudianteId: this.iEstudianteId,
+        const perfil = (this.iPerfilId = this._constantesService.iPerfilId)
+        if (perfil == 8) {
+            this.iEstudianteId = this._constantesService.iEstudianteId
+            const comment = {
+                ...this.foroFormComntAl.value,
+                iForoId: this.ixActivadadId,
+                iEstudianteId: this.iEstudianteId,
+            }
+            this._aulaService.guardarRespuesta(comment).subscribe({
+                next: (resp: any) => {
+                    // para refrescar la pagina
+                    if (resp?.validated) {
+                        this.getRespuestaF()
+                        this.foroFormComntAl.get('cForoRptaRespuesta')?.reset()
+                    }
+                },
+                error: (error) => {
+                    console.error('Comentario:', error)
+                },
+            })
+        } else {
+            this.iDocenteId = this._constantesService.iDocenteId
+            const comment = {
+                ...this.foroFormComntAl.value,
+                iForoId: this.ixActivadadId,
+                iDocenteId: this.iDocenteId,
+            }
+            this._aulaService.guardarRespuesta(comment).subscribe({
+                next: (resp: any) => {
+                    // para refrescar la pagina
+                    if (resp?.validated) {
+                        this.getRespuestaF()
+                        this.foroFormComntAl.get('cForoRptaRespuesta')?.reset()
+                    }
+                },
+                error: (error) => {
+                    console.error('Comentario:', error)
+                },
+            })
         }
-        this._aulaService.guardarRespuesta(comment).subscribe({
-            next: (resp: any) => {
-                // para refrescar la pagina
-                if (resp?.validated) {
-                    this.getRespuestaF()
-                    this.foroFormComntAl.get('cForoRptaRespuesta')?.reset()
-                }
-            },
-            error: (error) => {
-                console.error('Comentario:', error)
-            },
-        })
     }
     mostrarCalificacion() {
         const userId = 1
@@ -199,31 +224,5 @@ export class ForoRoomComponent implements OnInit {
                 console.log(error)
             },
         })
-        //console.log('Datos estudiante', this.GeneralService)
     }
-    abrirPDF(url: any) {
-        window.open(url, '_blank')
-    }
-
-    comments = [
-        {
-            profilePicture: 'path/to/profile.jpg',
-            author: 'Jhon Doe',
-            time: new Date(),
-            text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit...',
-        },
-        // Más comentarios
-    ]
-
-    // replyToComment(respuestasForo: any) {
-    //     // Lógica para responder al comentario
-    // }
-
-    // editComment(respuestasForo: any) {
-    //     // Lógica para editar el comentario
-    // }
-
-    // deleteComment(respuestasForo: any) {
-    //     // Lógica para borrar el comentario
-    // }
 }

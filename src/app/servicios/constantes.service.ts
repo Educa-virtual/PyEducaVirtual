@@ -608,9 +608,6 @@ const first = [
     providedIn: 'root',
 })
 export class ConstantesService {
-    public idDocCursoId: string = ''
-    public iCursoId: string = ''
-
     iPersId = user ? user.iPersId : null
     iCredId = user ? user.iCredId : null
     iDocenteId = user ? user?.iDocenteId : null
@@ -618,6 +615,8 @@ export class ConstantesService {
     iEspecialistaId = user?.iEspecialistaId ?? 1
     iEstudianteId = user ? user?.iEstudianteId : null
     iPerfilId = perfil ? Number(perfil.iPerfilId) : null
+    // verificar si viene del usuario/perfil
+    iCurrContId = user?.iCurrContId ?? 1
     iYAcadId = iYAcadId
 
     nav = this.getMenu()

@@ -26,8 +26,8 @@ export class RubricaFormComponent implements OnInit, OnDestroy {
     private _config = inject(DynamicDialogConfig)
 
     private _params = {
-        iCursoId: 1,
-        idDocCursoId: 1,
+        iCursoId: null,
+        idDocCursoId: null,
     }
     constructor(private _rubricaFormService: RubricaFormService) {}
 
@@ -35,6 +35,14 @@ export class RubricaFormComponent implements OnInit, OnDestroy {
         this.rubrica = this._config.data.rubrica
         this._params.iCursoId = this._config.data.iCursoId
         this._params.idDocCursoId = this._config.data.idDocCursoId
+        if (!this._params.iCursoId) {
+            throw new Error('Error el iCursoId es requerido')
+        }
+
+        if (!this._params.idDocCursoId) {
+            throw new Error('Error el idDocCursoId es requerido')
+        }
+
         this.initForm()
         this.getData()
         this.handleMode()
@@ -80,8 +88,8 @@ export class RubricaFormComponent implements OnInit, OnDestroy {
         const data = this.rubricaForm.value
         data.iDocenteId = this._constantesService.iDocenteId
         data.iCredId = this._constantesService.iCredId
-        data.idDocCursoId = this._constantesService.idDocCursoId
-        data.iCursoId = this._constantesService.iCursoId
+        data.idDocCursoId = this._params.idDocCursoId
+        data.iCursoId = this._params.iCursoId
 
         this._apiEvaluacionesServ
             .guardarActualizarRubrica(data)

@@ -465,7 +465,7 @@ export class TabContenidoComponent implements OnInit {
     publicarEvaluacion(actividad: IActividad) {
         const data = {
             iEvaluacionId: actividad.ixActivadadId,
-            iCursoId: 1,
+            iCursoId: actividad['iCursoId'] ?? 1,
             iSeccionId: 2,
             iYAcadId: this._constantesService.iYAcadId,
             iSemAcadId: 3,

@@ -45,7 +45,10 @@
 
                     <app-actividad-lista
                         [actividades]="fecha.actividades"
-                        (actionSelected)="actionSelected($event)"
+                        (actionSelected)="
+                            setSemanaSeleccionada(semana);
+                            actionSelected($event)
+                        "
                     ></app-actividad-lista>
                 }
             </p-accordionTab>

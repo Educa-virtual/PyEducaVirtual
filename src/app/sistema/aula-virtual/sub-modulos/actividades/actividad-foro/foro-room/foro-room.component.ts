@@ -76,8 +76,11 @@ export class ForoRoomComponent implements OnInit {
     iPerfilId: number
     iEstudianteId: number
     iDocenteId: number
+    expanded: false
 
     commentForoM: string = ''
+    selectedCommentIndex: number | null = null // Para rastrear el comentario seleccionado para responder
+    respuestaInput: string = '' // Para almacenar la respuesta temporal
 
     public foroForm: FormGroup = this._formBuilder.group({
         cForoTitulo: ['', [Validators.required]],
@@ -132,6 +135,10 @@ export class ForoRoomComponent implements OnInit {
                 this.getRespuestaF()
             }
         })
+    }
+    startReply(index: number) {
+        this.selectedCommentIndex = index // Guarda el índice del comentario seleccionado
+        console.log('Comentario', this.selectedCommentIndex)
     }
     sendComment() {
         const perfil = (this.iPerfilId = this._constantesService.iPerfilId)
@@ -208,11 +215,22 @@ export class ForoRoomComponent implements OnInit {
             })
             .pipe(takeUntil(this.unsbscribe$))
             .subscribe({
-                next: (resp) => {
-                    this.respuestasForo = Object.values(resp)
+                next: (resp: Record<string, any>) => {
+                    this.respuestasForo = Object.values(resp).map(
+                        (comment) => ({
+                            ...comment,
+                            expanded: false,
+                        })
+                    )
                     console.log('Comentarios de los Foros', this.respuestasForo)
                 },
+                error: (err) => {
+                    console.error('Error al obtener respuestas del foro', err)
+                },
             })
+    }
+    toggleExpand(comment: any) {
+        comment.expanded = !comment.expanded
     }
     getInformation(params) {
         this.GeneralService.getGralPrefix(params).subscribe({

@@ -11,6 +11,12 @@
     flex: 1;
 }
 
+//cdk-drop-list p-orderlist-list
+
+:host ::ng-deep .cdk-drop-list {
+    max-height: 400px;
+}
+
 :host ::ng-deep .actividad-tabs .p-tabview-nav li a {
     text-align: center;
     width: 100%;
@@ -29,9 +35,9 @@
 }
 /************************/
 .container {
-    display: flex;
-    gap: 20px; /* Espacio entre las columnas */
-    height: 500px;
+    //display: flex;
+    //gap: 20px; /* Espacio entre las columnas */
+    height: 900px;
     flex-wrap: wrap;
     justify-content: space-between;
 }
@@ -145,14 +151,14 @@
     display: none;
 }
 :host ::ng-deep .p-orderlist-list {
-    max-height: 300px; /* Define la altura máxima deseada */
+    max-height: 365px; /* Define la altura máxima deseada */
     overflow-y: auto; /* Agrega la barra de desplazamiento en el eje vertical */
 }
 
 :host ::ng-deep .list .p-orderlist-header {
     background-color: #f8f9fa;
     font-weight: bold;
-    padding: 4%;
+    padding: 1%;
     position: sticky;
     top: 0;
     z-index: 1000; /* Asegúrate de que la cabecera esté por encima de los elementos */
@@ -266,4 +272,45 @@
     outline: 0 none;
     outline-offset: 0px;
     box-shadow: none;
+}
+/*---------------------------------------------*/
+.toggle-link {
+    color: #007bff;
+    cursor: pointer;
+    font-size: 0.9rem;
+    margin-left: 5px;
+}
+.reply-button {
+    margin-top: 0.5rem;
+    color: #007bff;
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-size: 0.9rem;
+}
+
+.reply-container {
+    display: flex;
+    align-items: center;
+    margin-top: 0.5rem;
+}
+
+.reply-container .comment-input {
+    flex: 1;
+    margin-right: 0.5rem;
+}
+
+.reply-container .send-button {
+    padding: 0.5rem 1rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.reply {
+    margin-left: 1rem;
+    font-size: 0.9rem;
+    color: #555;
 }

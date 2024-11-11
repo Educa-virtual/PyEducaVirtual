@@ -164,9 +164,16 @@
                     <div class="card">
                         <h2>Foro: {{ foro?.cForoTitulo }}</h2>
                     </div>
+                    <div class="card">
+                        <b>
+                            <label class="text-lg" for="">Recursos:</label>
+                        </b>
+                        <app-recursos-lista [files]="FilesTareas">
+                        </app-recursos-lista>
+                    </div>
                     <div class="container">
-                        <div class="card1">
-                            <div>
+                        <div class="card">
+                            <div class="">
                                 <p-orderList
                                     class="list"
                                     [value]="respuestasForo"
@@ -177,6 +184,7 @@
                                         of
                                         comentarios
                                         pTemplate="listItem"
+                                        let-i="index"
                                     >
                                         <p-button
                                             [text]="true"
@@ -195,29 +203,109 @@
                                                 <div
                                                     class="perfiles-list-detail"
                                                 >
-                                                    <div class="perfil-name">
-                                                        {{
-                                                            respuestas?.cNombreEstudiante
-                                                        }}
+                                                    <div>
+                                                        <div
+                                                            class="perfil-name"
+                                                        >
+                                                            {{
+                                                                respuestas?.cNombreEstudiante
+                                                            }}
+                                                            {{
+                                                                respuestas?.dtCreado
+                                                            }}
+                                                        </div>
                                                     </div>
-                                                    <div
+                                                    <!-- <div
                                                         class="perfil-description"
                                                     >
                                                         Fecha:{{
                                                             respuestas?.dtCreado
                                                         }}
+                                                    </div> -->
+                                                    <div class="">
+                                                        <div
+                                                            class="perfil-name"
+                                                        >
+                                                            Comentario:
+                                                        </div>
+                                                        <span
+                                                            *ngIf="
+                                                                !respuestas.expanded
+                                                            "
+                                                        >
+                                                            {{
+                                                                respuestas.cForoRptaRespuesta
+                                                                    | slice
+                                                                        : 0
+                                                                        : 250
+                                                            }}...
+                                                        </span>
+                                                        <span
+                                                            *ngIf="
+                                                                respuestas.expanded
+                                                            "
+                                                        >
+                                                            {{
+                                                                respuestas.cForoRptaRespuesta
+                                                            }}
+                                                        </span>
+                                                        <!-- <a (keypress)="toggleExpand(respuestas)" class="toggle-link">
+                                                        {{ respuestas.expanded ? 'Leer menos' : 'Leer más' }}
+                                                        </a> -->
                                                     </div>
-                                                    <div class="perfil-name">
-                                                        comentario:
-                                                        {{
-                                                            respuestas?.cForoRptaRespuesta
-                                                        }}
+                                                    <!-- startReply(i) -->
+                                                    <button
+                                                        (click)="startReply(i)"
+                                                        class="reply-button"
+                                                    >
+                                                        Responder
+                                                    </button>
+                                                    <div
+                                                        *ngIf="
+                                                            respuestas
+                                                                .respuestas
+                                                                ?.length
+                                                        "
+                                                    >
+                                                        <div
+                                                            *ngFor="
+                                                                let reply of respuestas.respuestas
+                                                            "
+                                                            class="reply"
+                                                        >
+                                                            <div
+                                                                class="perfil-name"
+                                                            >
+                                                                Respuesta:
+                                                                {{
+                                                                    reply.cForoRptaRespuesta
+                                                                }}
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </p-button>
                                     </ng-template>
                                 </p-orderList>
+                                <!-- Campo de respuesta y botón enviar -->
+                                <div
+                                    *ngIf="selectedCommentIndex !== null"
+                                    class="reply-container"
+                                >
+                                    <input
+                                        type="text"
+                                        [(ngModel)]="respuestaInput"
+                                        class="comment-input"
+                                        placeholder="Escribe tu respuesta..."
+                                    />
+                                    <button
+                                        class="send-button"
+                                        (click)="sendComment()"
+                                    >
+                                        Enviar Respuesta
+                                    </button>
+                                </div>
                                 <div
                                     class="comment-container"
                                     [hidden]="iPerfilId !== 8"
@@ -261,7 +349,7 @@
                                 
                             </div> -->
                         </div>
-                        <div class="card2">
+                        <!-- <div class="card2">
                             <div class=" ">
                                 <b>
                                     <label class="text-lg" for=""
@@ -271,7 +359,7 @@
                                 <app-recursos-lista [files]="FilesTareas">
                                 </app-recursos-lista>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </form>

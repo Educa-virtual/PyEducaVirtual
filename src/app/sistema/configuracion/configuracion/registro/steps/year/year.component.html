@@ -12,9 +12,9 @@
             />
             <label for="yearToRegister">Año vigente </label>
         </p-floatLabel>
-        <small class="text-red-300 absolute top-100" [hidden]="form.get('fechaVigente').valid" id="yearToRegister-help">
+        <!-- <small class="text-red-300 absolute top-100" [hidden]="form.get('fechaVigente').valid" id="yearToRegister-help">
             Enter your username to reset your password.
-        </small>
+        </small> -->
     </div>
     <div>
         <p-floatLabel>
@@ -65,37 +65,57 @@
             <p-calendar
                 [style]="{ width: '100%' }"
                 [inputStyle]="{ width: '100%' }"
-                formControlName="fechaFaseInicio"
+                formControlName="fechaFaseRegularInicio"
                 [showIcon]="true"
-                inputId="faseInicio"
+                inputId="faseRegularInicio"
             />
-            <label for="faseInicio">Fecha inicio fase</label>
+            <label for="faseRegularInicio">Fecha inicio fase regular</label>
         </p-floatLabel>
         <p-floatLabel>
             <p-calendar
                 [style]="{ width: '100%' }"
                 [inputStyle]="{ width: '100%' }"
-                formControlName="fechaFaseFin"
+                formControlName="fechaFaseRegularFin"
                 [showIcon]="true"
-                inputId="faseFin"
+                inputId="faseRegularFin"
             />
-            <label for="faseFin">Fecha fin fase</label>
+            <label for="faseRegularFin">Fecha fin fase regular</label>
+        </p-floatLabel>
+    </div>
+    <div>
+        <p-floatLabel>
+            <p-calendar
+                [style]="{ width: '100%' }"
+                [inputStyle]="{ width: '100%' }"
+                formControlName="fechaFaseRecuperacionInicio"
+                [showIcon]="true"
+                inputId="faseRecuperacionInicio"
+            />
+            <label for="faseRecuperacionInicio">Fecha inicio fase recuperación</label>
+        </p-floatLabel>
+        <p-floatLabel>
+            <p-calendar
+                [style]="{ width: '100%' }"
+                [inputStyle]="{ width: '100%' }"
+                formControlName="fechaFaseRecuperacionFin"
+                [showIcon]="true"
+                inputId="faseRecuperacionFin"
+            />
+            <label for="faseRecuperacionFin">Fecha fin fase recuperación</label>
         </p-floatLabel>
     </div>
     <div>
         <p-checkbox 
         name="fasesPromocionales"
-        [value]="fasesPromocionales[0]"
+        [value]="true"
         formControlName="regular"
         label="Fase regular"
-        (onChange)="toggleCheckboxRegular(this.form.get('regular').value)"
         />
         <p-checkbox 
         name="fasesPromocionales"
-        [value]="fasesPromocionales[1]"
+        [value]="true"
         formControlName="recuperacion"
         label="Fase de recuperación"
-        (onChange)="toggleCheckboxRecuperacion(this.form.get('recuperacion').value)"
         />
     </div>
 

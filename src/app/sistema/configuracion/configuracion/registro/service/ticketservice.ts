@@ -207,12 +207,14 @@ export class TicketService {
     }
 
     setFasesYear(
-        {onCompleteCallbacks = []} : {onCompleteCallbacks?: (() => void)[]} = {}
-    ): Observable<any> | void {
+        {onCompleteCallbacks = [], onNextCallbacks = []} : {onCompleteCallbacks?: (() => void)[], onNextCallbacks?: ((data: any) => void)[]} = {}
+    ) {
         this.httpService
             .getData('acad/calendarioAcademico/selFasesFechas')
             .subscribe({
                 next: (data) => {
+
+                    console.log(data)
 
                     this.setTicketInformation(
                         {
@@ -234,6 +236,7 @@ export class TicketService {
                         },
                         'stepYear'
                     )
+                    onNextCallbacks.forEach((callback) => callback(data.data))
                 },
 
                 error: () => {},
@@ -470,6 +473,120 @@ export class TicketService {
             request$.subscribe()
             return EMPTY
         }
+    }
+
+    insCalAcademico(calAcad, {
+        onNextCallbacks = [],
+        onCompleteCallbacks = [],
+    }: {
+        onNextCallbacks?: (() => void)[]
+        onCompleteCallbacks?: (() => void)[]
+    } = {}){
+        const { iSedeId, iYAcadId} = this.registroInformation.calendar
+
+        console.log(calAcad)
+
+        this.httpService
+        .postData('acad/calendarioAcademico/insCalAcademico', {
+            calAcad: JSON.stringify({
+                iSedeId: iSedeId,
+                iYAcadId: iYAcadId,
+                dtCalAcadInicio: this.toSQLDatetimeFormat(calAcad.fechaInicio),
+                dtCalAcadFin: this.toSQLDatetimeFormat(calAcad.fechaFin),
+                dtCalAcadMatriculaResagados: '',
+                dtCalAcadMatriculaInicio: this.toSQLDatetimeFormat(calAcad.fechaMatriculaInicio),
+                dtCalAcadMatriculaFin: this.toSQLDatetimeFormat(calAcad.fechaMatriculaFin),
+                bCalAcadFaseRegular: calAcad.regular.includes(true),
+                bCalAcadFaseRecuperacion: calAcad.recuperacion.includes(true),
+            })
+        })
+        .subscribe({
+            next: (data) => {
+                onNextCallbacks.forEach((callback) => callback())
+            },
+
+            error: () => {},
+
+            complete: () => {
+                onCompleteCallbacks.forEach((callback) => callback())
+            },
+        })
+    }
+
+    updCalFasesFechas({
+        onNextCallbacks = [],
+        onCompleteCallbacks = [],
+    }: {
+        onNextCallbacks?: (() => void)[]
+        onCompleteCallbacks?: (() => void)[]
+    } = {}){
+        this.httpService
+        .putData('acad/calendarioAcademico/updCalFasesFechas', {
+
+        })
+        .subscribe({
+            next: (data) => {
+
+                onNextCallbacks.forEach((callback) => callback())
+            },
+
+            error: () => {},
+
+            complete: () => {
+                onCompleteCallbacks.forEach((callback) => callback())
+            },
+        })
+    }
+
+    insCalFasesProm(insFasesProm, {
+        onNextCallbacks = [],
+        onCompleteCallbacks = [],
+    }: {
+        onNextCallbacks?: (() => void)[]
+        onCompleteCallbacks?: (() => void)[]
+    } = {}){
+        this.httpService
+        .postData('acad/calendarioAcademico/insCalFasesProm', {
+            iFasePromId: insFasesProm.iFasePromId,
+            cFasePromNombre: insFasesProm.cFasePromNombre,
+        })
+        .subscribe({
+            next: (data) => {
+
+                onNextCallbacks.forEach((callback) => callback())
+            },
+
+            error: () => {},
+
+            complete: () => {
+                onCompleteCallbacks.forEach((callback) => callback())
+            },
+        })
+    }
+
+    deleteCalFasesProm(deleteFasesProm, {
+        onNextCallbacks = [],
+        onCompleteCallbacks = [],
+    }: {
+        onNextCallbacks?: (() => void)[]
+        onCompleteCallbacks?: (() => void)[]
+    } = {}){
+        this.httpService
+        .deleteData('acad/calendarioAcademico/deleteCalFasesProm', {
+            iFaseId: deleteFasesProm.iFaseId
+        })
+        .subscribe({
+            next: (data) => {
+
+                onNextCallbacks.forEach((callback) => callback())
+            },
+
+            error: () => {},
+
+            complete: () => {
+                onCompleteCallbacks.forEach((callback) => callback())
+            },
+        })
     }
 
     add_CalendarioFaseAcad({

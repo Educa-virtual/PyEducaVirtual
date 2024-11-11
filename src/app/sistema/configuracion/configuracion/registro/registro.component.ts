@@ -34,24 +34,24 @@ export class RegistroComponent implements OnInit, OnChanges {
     ngOnInit() {
         this.items = [
             {
-                label: 'Año',
-                routerLink: 'year'
+                label: 'Fechas',
+                routerLink: this.ticketService.registroInformation.calendar?.iCalAcadId ? 'year' : ''
             },
             {
                 label: 'Días laborales',
-                routerLink: 'diasLaborales'
+                routerLink: this.ticketService.registroInformation.calendar?.iCalAcadId ? 'dias-laborales' : ''
             },
             {
                 label: 'Turnos',
-                routerLink: 'turnos'
+                routerLink: this.ticketService.registroInformation.calendar?.iCalAcadId ? 'turnos' : ''
             },
             {
                 label: 'Periodos académicos',
-                routerLink: 'periodosAcademicos'
+                routerLink: this.ticketService.registroInformation.calendar?.iCalAcadId ? 'periodos-academicos' : ''
             },
             {
                 label: 'Resumen',
-                routerLink: 'resumen'
+                routerLink: this.ticketService.registroInformation.calendar?.iCalAcadId ? 'resumen' : ''
             },
         ]
 

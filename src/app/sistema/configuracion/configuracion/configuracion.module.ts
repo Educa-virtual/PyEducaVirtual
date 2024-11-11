@@ -47,12 +47,12 @@ import { YearsComponent } from './years/years.component'
                         path: 'registro',
                         component: RegistroComponent,
                         children: [
-                            { path: '', redirectTo: 'year', pathMatch: 'full' },
-                            { path: 'year', component: YearComponent },
-                            { path: 'diasLaborales', component: DiasLaboralesComponent },
+                            { path: '', redirectTo: 'fechas', pathMatch: 'full' },
+                            { path: 'fechas', component: YearComponent },
+                            { path: 'dias-laborales', component: DiasLaboralesComponent },
                             { path: 'turnos', component: TurnosComponent },
                             {
-                                path: 'periodosAcademicos',
+                                path: 'periodos-academicos',
                                 component: PeriodosAcademicosComponent,
                             },
                             { path: 'resumen', component: StepResumenComponent },

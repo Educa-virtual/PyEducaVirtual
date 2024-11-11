@@ -10,6 +10,7 @@ import { ModalPrimengComponent } from '../modal-primeng/modal-primeng.component'
 import { PrimengModule } from '@/app/primeng.module'
 import { NgIf } from '@angular/common'
 import { GeneralService } from '@/app/servicios/general.service'
+import { environment } from '@/environments/environment'
 
 @Component({
     selector: 'app-types-files-upload-primeng',
@@ -20,6 +21,7 @@ import { GeneralService } from '@/app/servicios/general.service'
 })
 export class TypesFilesUploadPrimengComponent implements OnChanges {
     private _GeneralService = inject(GeneralService)
+    backend = environment.backend
 
     @Output() actionTypesFileUpload = new EventEmitter()
     @Input() nameFile: string
@@ -77,7 +79,7 @@ export class TypesFilesUploadPrimengComponent implements OnChanges {
         }
     }
 
-    async onUploadChange(evt) {
+    async onUploadChange(evt, type) {
         const filesToUpload = evt.target.files
 
         if (filesToUpload.length) {
@@ -92,7 +94,7 @@ export class TypesFilesUploadPrimengComponent implements OnChanges {
             this._GeneralService.subirArchivo(dataFile).subscribe({
                 next: (resp: any) => {
                     const data = {
-                        accion: 'subir-archivo-' + this.nameOption,
+                        accion: 'subir-' + type + '-' + this.nameOption,
                         item: {
                             file: archivoFile,
                             name: resp.data,
@@ -153,5 +155,9 @@ export class TypesFilesUploadPrimengComponent implements OnChanges {
                 this.showModal = false
                 break
         }
+    }
+
+    updateUrl(item) {
+        item.ruta = 'users/no-image.png'
     }
 }

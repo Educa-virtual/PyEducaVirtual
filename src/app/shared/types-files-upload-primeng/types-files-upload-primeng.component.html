@@ -17,7 +17,7 @@
             ><input
                 type="file"
                 accept=".pdf, "
-                (change)="onUploadChange($event)"
+                (change)="onUploadChange($event, 'file')"
             />
         </button>
 
@@ -73,7 +73,7 @@
             pButton
             pRipple
             type="button"
-            class="p-button-rounded p-button-outlined mx-2"
+            class="p-button-rounded p-button-outlined mx-2 btn-file-image"
             (click)="openUpload('image')"
         >
             <i
@@ -81,7 +81,12 @@
                 style="color: #ff844b; font-size: 3rem"
                 pTooltip="Subir Foto"
                 tooltipPosition="bottom"
-            ></i>
+            ></i
+            ><input
+                type="file"
+                accept=".png, .jpg, .jpeg, "
+                (change)="onUploadChange($event, 'image')"
+            />
         </button>
     </div>
     @if (filesUrl.length) {
@@ -114,6 +119,15 @@
                                     class="pi pi-folder"
                                     style="color: #ffd04b"
                                 ></i>
+                            }
+                            @case (5) {
+                                <p-image
+                                    [src]="backend + '/' + item.ruta"
+                                    alt="Image"
+                                    width="35"
+                                    [preview]="true"
+                                    (error)="updateUrl(item)"
+                                />
                             }
                         }
                     </p-inputGroupAddon>

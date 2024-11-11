@@ -65,6 +65,8 @@ export interface IActionTable {
     ],
 })
 export class TablePrimengComponent implements OnChanges, OnInit {
+    backend = environment.backend
+
     @Output() accionBtnItem: EventEmitter<{ accion: any; item: any }> =
         new EventEmitter()
     @Output() selectedRowDataChange = new EventEmitter()
@@ -251,12 +253,10 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     }
 
     openFile(item) {
-        const backend = environment.backend
         switch (Number(item.type)) {
             case 1:
             case 4:
-            case 5:
-                window.open(backend + '/' + item.ruta, '_blank')
+                window.open(this.backend + '/' + item.ruta, '_blank')
                 break
             case 2:
             case 3:
@@ -264,5 +264,8 @@ export class TablePrimengComponent implements OnChanges, OnInit {
                 window.open(ruta ? item.ruta : 'http://' + item.ruta, '_blank')
                 break
         }
+    }
+    updateUrl(item) {
+        item.ruta = 'users/no-image.png'
     }
 }

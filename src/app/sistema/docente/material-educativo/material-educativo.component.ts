@@ -6,7 +6,7 @@ import { FormMaterialEducativoComponent } from './components/form-material-educa
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { GeneralService } from '@/app/servicios/general.service'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
-export type Layout = 'list' | 'grid'
+
 @Component({
     selector: 'app-material-educativo',
     standalone: true,
@@ -35,9 +35,7 @@ export class MaterialEducativoComponent implements OnInit {
             detail: 'En esta sección podrá visualizar sus materiales educativos',
         },
     ]
-    options = ['list']
-    public layout: Layout = 'list'
-    date = new Date()
+
     showModal: boolean = false
 
     actions = [

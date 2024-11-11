@@ -234,12 +234,19 @@
                                                     ></i>
                                                 }
                                                 @case (5) {
-                                                    <i
-                                                        [pTooltip]="item.name"
-                                                        tooltipPosition="top"
-                                                        class="pi pi-images"
-                                                        style="color: #ff844b"
-                                                    ></i>
+                                                    <p-image
+                                                        [src]="
+                                                            backend +
+                                                            '/' +
+                                                            item.ruta
+                                                        "
+                                                        alt="Image"
+                                                        width="25"
+                                                        [preview]="true"
+                                                        (error)="
+                                                            updateUrl(item)
+                                                        "
+                                                    />
                                                 }
                                             }
                                         </p-button>

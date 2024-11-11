@@ -71,7 +71,7 @@ export class FormMaterialEducativoComponent implements OnChanges {
                     this.opcion
                 )
                 const files =
-                    this.formMaterialEducativoDocentes.value.cMatEduUrl
+                    this.formMaterialEducativoDocentes.value.cMatEducativoUrl
                 this.filesUrl = files ? JSON.parse(files) : []
             }
         }
@@ -86,7 +86,7 @@ export class FormMaterialEducativoComponent implements OnChanges {
                 break
             case this.opcion:
                 this.formMaterialEducativoDocentes.controls[
-                    'cMatEduUrl'
+                    'cMatEducativoUrl'
                 ].setValue(
                     this.filesUrl.length ? JSON.stringify(this.filesUrl) : null
                 )
@@ -95,7 +95,7 @@ export class FormMaterialEducativoComponent implements OnChanges {
                     item: this.formMaterialEducativoDocentes.value,
                 })
                 break
-            case 'subir-archivo-material-educativo-docentes':
+            case 'subir-archivo-material-educativos':
                 this.filesUrl.push({
                     type: 1, //1->file
                     nameType: 'file',
@@ -104,7 +104,7 @@ export class FormMaterialEducativoComponent implements OnChanges {
                     ruta: item.name,
                 })
                 break
-            case 'url-material-educativo-docentes':
+            case 'url-material-educativos':
                 this.filesUrl.push({
                     type: 2, //2->url
                     nameType: 'url',
@@ -113,7 +113,7 @@ export class FormMaterialEducativoComponent implements OnChanges {
                     ruta: item.ruta,
                 })
                 break
-            case 'youtube-material-educativo-docentes':
+            case 'youtube-material-educativos':
                 this.filesUrl.push({
                     type: 3, //3->youtube
                     nameType: 'youtube',

@@ -12,7 +12,7 @@
                     <p-inputGroupAddon>
                         Título del Material Educativo
                     </p-inputGroupAddon>
-                    <input pInputText formControlName="cMatEduTitulo" />
+                    <input pInputText formControlName="cMatEducativoTitulo" />
                 </p-inputGroup>
             </div>
             <div class="col-12">
@@ -20,14 +20,14 @@
                     <p-inputGroupAddon> Descripción </p-inputGroupAddon>
                     <textarea
                         pInputText
-                        formControlName="cMatEduDescripcion"
+                        formControlName="cMatEducativoDescripcion"
                     ></textarea>
                 </p-inputGroup>
             </div>
             <div class="col-12 mt-1">
                 <app-types-files-upload-primeng
-                    [nameFile]="'material-educativo-docentes'"
-                    [nameOption]="'material-educativo-docentes'"
+                    [nameFile]="'material-educativos'"
+                    [nameOption]="'material-educativos'"
                     [typesFiles]="typesFiles"
                     (actionTypesFileUpload)="accionBtn($event)"
                     [filesUrl]="filesUrl"

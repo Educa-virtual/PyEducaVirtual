@@ -73,7 +73,7 @@ export class MaterialEducativoComponent implements OnInit {
         {
             type: 'text',
             width: '7rem',
-            field: 'cMatEduTitulo',
+            field: 'cMatEducativoTitulo',
             header: 'Título Material Educativo',
             text_header: 'left',
             text: 'justify',
@@ -81,15 +81,15 @@ export class MaterialEducativoComponent implements OnInit {
         {
             type: 'text',
             width: '10rem',
-            field: 'cMatEduDescripcion',
+            field: 'cMatEducativoDescripcion',
             header: 'Descripción',
             text_header: 'left',
             text: 'justify',
         },
         {
             type: 'list_json_file',
-            width: '10rem',
-            field: 'cMatEduUrl',
+            width: '3rem',
+            field: 'cMatEducativoUrl',
             header: 'Archivos / Url',
             text_header: 'left',
             text: 'justify',
@@ -137,17 +137,19 @@ export class MaterialEducativoComponent implements OnInit {
                 this.showModal = false
                 this.GuardarActualizarMaterialEducativoDocentes(item)
                 break
-            case 'store-material-educativo-docentes':
-            case 'update-material-educativo-docentes':
+            case 'store-material-educativos':
+            case 'update-material-educativos':
                 this.obtenerMaterialEducativoDocentes()
                 break
-            case 'list-material-educativo-docentes':
+            case 'list-material-educativos':
                 this.data = item
                 this.data.forEach((i) => {
-                    i.cMatEduUrl = i.cMatEduUrl ? JSON.parse(i.cMatEduUrl) : []
+                    i.cMatEducativoUrl = i.cMatEducativoUrl
+                        ? JSON.parse(i.cMatEducativoUrl)
+                        : []
                 })
                 break
-            case 'delete-material-educativo-docentes':
+            case 'delete-material-educativos':
                 this.obtenerMaterialEducativoDocentes()
                 break
         }
@@ -156,7 +158,7 @@ export class MaterialEducativoComponent implements OnInit {
         const params = {
             petition: 'post',
             group: 'docente',
-            prefix: 'material-educativo-docentes',
+            prefix: 'material-educativos',
             ruta: 'list',
             data: {
                 opcion: 'CONSULTARxiDocenteIdxidDocCursoId',
@@ -173,7 +175,7 @@ export class MaterialEducativoComponent implements OnInit {
         const params = {
             petition: 'post',
             group: 'docente',
-            prefix: 'material-educativo-docentes',
+            prefix: 'material-educativos',
             ruta: item.opcion === 'GUARDAR' ? 'store' : 'update',
             data: item,
             // params: { skipSuccessMessage: true },
@@ -186,7 +188,7 @@ export class MaterialEducativoComponent implements OnInit {
         const params = {
             petition: 'post',
             group: 'docente',
-            prefix: 'material-educativo-docentes',
+            prefix: 'material-educativos',
             ruta: 'delete',
             data: item,
             // params: { skipSuccessMessage: true },

@@ -280,6 +280,8 @@ export class IeparticipaComponent implements OnInit {
                     console.error('Error al obtener participaciones:', error),
             })
     }
+    //PRUEBA BOTON
+
     onChange() {
         //alert(v)
         // alert(JSON.stringify(event))

@@ -1,26 +1,71 @@
 <div class="card">
     <p-divider type="solid" />
-    <!-- List of courses with checkboxes -->
     <div class="card flex justify-content-center">
         <div class="flex flex-column gap-2">
             <div *ngFor="let curso of cursos" class="field-checkbox">
                 <p-checkbox
+                    type="checkbox"
                     [label]="curso.cCursoNombre"
                     [value]="curso.iCursoId"
                     [(ngModel)]="curso.isSelected"
-                    [disabled]="!esModoEdicion"
-                    [disabled]="accion === 'ver'"
+                    [disabled]="!esModoEdicion || accion === 'ver'"
                 ></p-checkbox>
             </div>
         </div>
     </div>
-    <!-- Button "Guardar y Salir" to call insertarCursos function -->
     <p-button
         label="Guardar y Salir"
         icon="pi pi-times"
         iconPos="right"
         (click)="insertarCursos()"
         styleClass="p-button-danger"
+    ></p-button>
+    <p-divider type="solid" />
+</div>
+
+<!--
+<div *ngFor="let curso of cursos">
+    <label>
+        <input
+            type="checkbox"
+            [checked]="curso.isSelected"
+            (change)="toggleCursoSeleccionado(curso)"
+        />
+        {{ curso.nombre }}
+    </label>
+</div>
+<div *ngIf="accion === 'ver'" class="curso-view-container">
+    <h3>Ver cursos seleccionados</h3>
+    <div *ngFor="let curso of cursos" class="curso-item">
+        <div *ngIf="curso.isSelected">
+            <p>{{ curso.cCursoNombre }} (Registrado)</p>
+        </div>
+        <div *ngIf="!curso.isSelected">
+            <p>{{ curso.cCursoNombre }} (No registrado)</p>
+        </div>
+    </div>
+</div> -->
+<div class="card">
+    <p-divider type="solid" />
+    <div class="card flex justify-content-center">
+        <div class="flex flex-column gap-2">
+            <!-- Mostrar los cursos con checkbox -->
+            <div *ngFor="let curso of cursos" class="field-checkbox">
+                <!-- Mostrar un checkbox, si isSelected es true, el checkbox estará marcado -->
+                <input
+                    type="checkbox"
+                    [checked]="curso.isSelected"
+                    [disabled]="accion === 'ver'"
+                />
+                <span>{{ curso.cCursoNombre }}</span>
+            </div>
+        </div>
+    </div>
+    <p-button
+        label="Guardar y Salir"
+        icon="pi pi-times"
+        iconPos="right"
+        (click)="insertarCursos()"
     ></p-button>
     <p-divider type="solid" />
 </div>

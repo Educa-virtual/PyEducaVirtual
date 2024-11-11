@@ -24,45 +24,6 @@
     />
 </div>
 <br />
-<!-- onMoveToTarget envia los datos a onMoveToSource -->
-<!-- onMoveAllToTarget envia todos los datos a onMoveAllToSource -->
-<!-- <p-pickList
-    [source]="sourceProducts"
-    [target]="targetProducts"
-    sourceHeader="I.E No participan"
-    targetHeader="I.E Participan"
-    (onMoveToTarget)="IEparticipan($event)"
-    (onMoveToSource)="IEnoparticipan($event)"
-    (onMoveAllToTarget)="IEparticipanall($event)"
-    (onMoveAllToSource)="IEnoparticipanall($event)"
-    dragdrop="true"
-    [responsive]="false"
-    [sourceStyle]="{ height: '300px' }"
-    [targetStyle]="{ height: '300px' }"
-    filterBy="cIieeNombre"
-    sourceFilterPlaceholder="Buscar por nombre de I.E"
-    targetFilterPlaceholder="Buscar por nombre de I.E"
-    breakpoint="1200px"
->
-    <ng-template let-product pTemplate="item">
-        <div class="flex flex-wrap p-2 align-items-center gap-3">
-            <div class="flex-1 flex flex-column gap-2">
-                <span class="font-bold">
-                    {{ product.cIieeNombre }}
-                </span>
-                <div class="flex align-products-center gap-2">
-                    <i class="pi pi-tag text-sm"></i>
-                    <span>
-                        {{ product.cIieeCodigoModular }}
-                    </span>
-                    <span>
-                        <b>{{ product.cNivelTipoNombre }}</b>
-                    </span>
-                </div>
-            </div>
-        </div>
-    </ng-template>
-</p-pickList> -->
 <p-pickList
     [source]="sourceProducts"
     [target]="targetProducts"

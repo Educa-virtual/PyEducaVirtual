@@ -172,7 +172,7 @@
                         </app-recursos-lista>
                     </div>
                     <div class="container">
-                        <div class="card">
+                        <div class="card1">
                             <div class="">
                                 <p-orderList
                                     class="list"
@@ -208,20 +208,13 @@
                                                             class="perfil-name"
                                                         >
                                                             {{
-                                                                respuestas?.cNombreEstudiante
+                                                                respuestas.cNombreDocente
                                                             }}
                                                             {{
                                                                 respuestas?.dtCreado
                                                             }}
                                                         </div>
                                                     </div>
-                                                    <!-- <div
-                                                        class="perfil-description"
-                                                    >
-                                                        Fecha:{{
-                                                            respuestas?.dtCreado
-                                                        }}
-                                                    </div> -->
                                                     <div class="">
                                                         <div
                                                             class="perfil-name"
@@ -234,10 +227,10 @@
                                                             "
                                                         >
                                                             {{
-                                                                respuestas.cForoRptaRespuesta
+                                                                respuestas?.cForoRptaRespuesta
                                                                     | slice
                                                                         : 0
-                                                                        : 250
+                                                                        : 150
                                                             }}...
                                                         </span>
                                                         <span
@@ -246,7 +239,8 @@
                                                             "
                                                         >
                                                             {{
-                                                                respuestas.cForoRptaRespuesta
+                                                                respuestas?.cForoRptaRespuesta
+                                                                    | removeHTML
                                                             }}
                                                         </span>
                                                         <!-- <a (keypress)="toggleExpand(respuestas)" class="toggle-link">
@@ -289,77 +283,108 @@
                                     </ng-template>
                                 </p-orderList>
                                 <!-- Campo de respuesta y botón enviar -->
-                                <div
-                                    *ngIf="selectedCommentIndex !== null"
-                                    class="reply-container"
-                                >
-                                    <input
-                                        type="text"
-                                        [(ngModel)]="respuestaInput"
-                                        class="comment-input"
-                                        placeholder="Escribe tu respuesta..."
+                                <div *ngIf="selectedCommentIndex !== null">
+                                    <p-editor
+                                        id="descripcion"
+                                        placeholder="Escribe una Descripción "
+                                        formControlName="cForoRptaRespuesta"
                                     />
-                                    <button
-                                        class="send-button"
-                                        (click)="sendComment()"
-                                    >
-                                        Enviar Respuesta
-                                    </button>
+                                    <div class="reply-container">
+                                        <div class="button-container">
+                                            <button
+                                                icon="pi pi-times"
+                                                class="send-button"
+                                                type="button"
+                                            >
+                                                Cancelar
+                                            </button>
+                                            <button
+                                                class="send-button"
+                                                (click)="sendComment()"
+                                            >
+                                                Enviar
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div
                                     class="comment-container"
                                     [hidden]="iPerfilId !== 8"
                                 >
                                     <input
+                                        *ngIf="!showEditor"
                                         type="text"
                                         class="comment-input"
                                         placeholder="Escribe un comentario..."
                                         id="commentText"
                                         formControlName="cForoRptaRespuesta"
+                                        (click)="toggleEditor()"
                                     />
-
-                                    <button
-                                        class="send-button"
-                                        (click)="sendComment()"
-                                    >
-                                        Enviar
-                                    </button>
-                                </div>
-                            </div>
-                            <!-- <div>
-                                <div *ngFor="let respuestas of comentarios"  class="comment-container">
-                                    <div class="comment-header">
-                                        <img
-                                            src="assets/demo/images/matemit/avatar.png"
-                                            [alt]="respuestas.name"
-                                            class="w-4rem min-h-9 shadow-2 flex-shrink-0 border-round"
+                                    <div *ngIf="showEditor">
+                                        <p-editor
+                                            id="descripcion"
+                                            placeholder="Escribe una Descripción "
+                                            formControlName="cForoRptaRespuesta"
                                         />
-                                        <div class="comment-details">
-                                            <span class="comment-author">h</span>
-                                            <span class="comment-time">h</span>
+                                        <div class="reply-container">
+                                            <div class="button-container">
+                                                <button
+                                                    pButton
+                                                    pRipple
+                                                    label="Cancelar"
+                                                    icon="pi pi-times"
+                                                    class="p-button-secondary"
+                                                    type="button"
+                                                    size="small"
+                                                    (click)="closeEditor()"
+                                                ></button>
+                                                <button
+                                                    pButton
+                                                    pRipple
+                                                    type="button"
+                                                    label="Enviar"
+                                                    icon="pi pi-send"
+                                                    size="small"
+                                                    class="p-button-primary"
+                                                    (click)="sendComment()"
+                                                ></button>
+                                            </div>
                                         </div>
                                     </div>
-                                    <p class="comment-text">h</p>
-                                    <div class="comment-actions">
-                                        <button (click)="replyToComment(respuestasForo)">Responder</button>
-                                        <button (click)="editComment(respuestasForo)">Editar</button>
-                                        <button (click)="deleteComment(respuestasForo)">Borrar</button>
-                                    </div>
                                 </div>
-                                
-                            </div> -->
-                        </div>
-                        <!-- <div class="card2">
-                            <div class=" ">
-                                <b>
-                                    <label class="text-lg" for=""
-                                        >Recursos:</label
-                                    >
-                                </b>
-                                <app-recursos-lista [files]="FilesTareas">
-                                </app-recursos-lista>
                             </div>
-                        </div> -->
+                        </div>
+                        <!-- lista de participantes... -->
+                        <div class="card2">
+                            <p-orderList
+                                class="list"
+                                [value]="respuestasForo"
+                                header="Parcipantes:"
+                            >
+                                <ng-template
+                                    let-respuestas
+                                    of
+                                    comentarios
+                                    pTemplate="listItem"
+                                    let-i="index"
+                                >
+                                    <div
+                                        class="perfiles-list-item text-left"
+                                        tabindex="0"
+                                    >
+                                        <img
+                                            src="assets/demo/images/matemit/perfil.png"
+                                            [alt]="respuestas.name"
+                                            class="w-3rem"
+                                        />
+                                        <!--class="w-4rem min-h-9 shadow-2 flex-shrink-0 border-round"-->
+                                        <div class="perfil-name">
+                                            {{ respuestas.cNombreDocente }}
+                                        </div>
+                                    </div>
+                                </ng-template>
+                            </p-orderList>
+                        </div>
                     </div>
                 </div>
             </form>

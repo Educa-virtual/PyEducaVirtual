@@ -210,19 +210,9 @@ export class TicketService {
         {onCompleteCallbacks = []} : {onCompleteCallbacks?: (() => void)[]} = {}
     ): Observable<any> | void {
         this.httpService
-            .getData('acad/calendarioAcademico/selFasesYear')
+            .getData('acad/calendarioAcademico/selFasesFechas')
             .subscribe({
                 next: (data) => {
-
-                    console.log(data)
-                    // const filterYearActive = JSON.parse(
-                    //     data.data[0][
-                    //         'JSON_F52E2B61-18A1-11d1-B105-00805F49916B'
-                    //     ]
-                    // )[0]
-
-                    // console.log('Fecha vigente')
-                    // console.log(filterYearActive)
 
                     this.setTicketInformation(
                         {
@@ -342,30 +332,30 @@ export class TicketService {
         }
     }
 
-    getCalendarioIESede() {
+    getCalendarioIESede({
+        onNextCallbacks = [],
+        onCompleteCallbacks = [],
+    }: {
+        onNextCallbacks?: ((data: any) => void)[]
+        onCompleteCallbacks?: (() => void)[]
+    } = {}) {
         this.httpService
-            .postData('acad/calendarioAcademico/addCalAcademico', {
-                json: JSON.stringify({
-                    iSedeId: JSON.parse(localStorage.getItem('dremoPerfil'))
-                        .iSedeId,
-                    // iYAcadId: this.ticketService.registroInformation.stepYear.,
-                    iCalAcadId: '23',
-                }),
-                _opcion: 'getCalendarioIESede',
-            })
+            .getData(`acad/calendarioAcademico/selCalAcademicoSede?iSedeId=${JSON.parse(localStorage.getItem('dremoPerfil'))
+                .iSedeId}`)
             .subscribe({
                 next: (data: any) => {
-                    let filterCalendar = JSON.parse(
-                        data.data[0]['calendarioAcademico']
-                    )
+                    console.log('selCalAcademicoSede')
+                    console.log(data);
+                    
+                    onNextCallbacks.forEach((callback) => callback(data.data))
 
-                    console.log('getCalendarioIESede')
-                    console.log(filterCalendar)
                 },
                 error: (error) => {
                     console.error('Error fetching turnos:', error)
                 },
-                complete: () => {},
+                complete: () => {
+                    onCompleteCallbacks.forEach((callback) => callback())
+                },
             })
     }
 

@@ -15,7 +15,7 @@ import { TicketService } from '../registro/service/ticketservice'
     providers: [],
 })
 export class YearsComponent implements OnInit {
-    fechasAcademicas
+    calendariosAcademicosSede
 
     constructor(
         private router: Router,
@@ -25,49 +25,16 @@ export class YearsComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        // this.httpService
-        //     .postData('acad/calendarioAcademico/addCalAcademico', {
-        //         json: JSON.stringify({
-        //             iSedeId: this.localService.getItem('dremoPerfil').iSedeId,
-        //         }),
-        //         _opcion: 'getCalendarioIESede',
-        //     })
-        //     .subscribe({
-        //         next: (data: any) => {
-        //             // console.log(data.data)
-        //             console.log(JSON.parse(data.data[0]['calendarioAcademico']))
-
-        //             this.fechasAcademicas = JSON.parse(
-        //                 data.data[0]['calendarioAcademico']
-        //             ).map((fecha) => ({
-        //                 fechaVigente: this.ticketService.toVisualFechasFormat(
-        //                     fecha.dtCalAcadInicio,
-        //                     'YYYY'
-        //                 ),
-        //                 dtCalAcadInicio:
-        //                     this.ticketService.toVisualFechasFormat(
-        //                         fecha.dtCalAcadInicio,
-        //                         'DD/MM/YY'
-        //                     ),
-        //                 dtCalAcadFin: this.ticketService.toVisualFechasFormat(
-        //                     fecha.dtCalAcadFin,
-        //                     'DD/MM/YY'
-        //                 ),
-        //                 iSedeId: fecha.iSedeId,
-        //                 iYAcadId: fecha.iYAcadId,
-        //                 iCalAcadId: fecha.iCalAcadId,
-        //                 iEstado: fecha.iEstado,
-        //             }))
-
-        //             // console.log(this.fechasAcademicas)
-        //         },
-        //         error: (error) => {
-        //             console.error('Error fetching turnos:', error)
-        //         },
-        //         complete: () => {
-        //             console.log('Request completed')
-        //         },
-        //     })
+        this.ticketService.getCalendarioIESede({
+            onNextCallbacks: [(data) => {
+                this.calendariosAcademicosSede = data.map((calAcademico) => ({
+                        iCalAcadId: calAcademico.iCalAcadId,
+                        dtCalAcadInicio: this.ticketService.toVisualFechasFormat(calAcademico.dtCalAcadInicio, 'DD/MM/YYYY'),
+                        dtCalAcadFin: this.ticketService.toVisualFechasFormat(calAcademico.dtCalAcadFin, 'DD/MM/YYYY'),
+                        cYearNombre: calAcademico.cYearNombre,
+                }))
+            }]
+        })
     }
 
     actionsContainer = [
@@ -178,7 +145,7 @@ export class YearsComponent implements OnInit {
         {
             type: 'text',
             width: '5rem',
-            field: 'fechaVigente',
+            field: 'cYearNombre',
             header: 'Año vigente',
             text_header: 'center',
             text: 'center',

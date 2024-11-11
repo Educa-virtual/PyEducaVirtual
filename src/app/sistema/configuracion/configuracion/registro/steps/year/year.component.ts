@@ -10,7 +10,7 @@ import { ButtonModule } from 'primeng/button'
 import { CalendarModule } from 'primeng/calendar'
 import { httpService } from '../../../http/httpService'
 
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms'
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms'
 
 import {
     StepConfirmationService,
@@ -73,13 +73,13 @@ export class YearComponent implements OnInit, OnChanges {
         private localService: LocalStoreService
     ) {
         this.form = this.fb.group({
-            fechaVigente: [''],
-            fechaInicio: [''],
-            fechaFin: [''],
-            fechaMatriculaInicio: [''],
-            fechaMatriculaFin: [''],
-            fechaFaseInicio: [''],
-            fechaFaseFin: [''],
+            fechaVigente: ['', Validators.required],
+            fechaInicio: ['', Validators.required],
+            fechaFin: ['', Validators.required],
+            fechaMatriculaInicio: ['', Validators.required],
+            fechaMatriculaFin: ['', Validators.required],
+            fechaFaseInicio: ['', Validators.required],
+            fechaFaseFin: ['', Validators.required],
             regular: [[]],
             recuperacion: [[]],
         })

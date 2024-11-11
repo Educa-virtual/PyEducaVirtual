@@ -1,5 +1,5 @@
 <form [formGroup]="form">
-    <div>
+    <div class="flex flex-column gap-1 relative">
         <p-floatLabel>
             <p-calendar
                 [style]="{ width: '100%' }"
@@ -12,6 +12,9 @@
             />
             <label for="yearToRegister">Año vigente </label>
         </p-floatLabel>
+        <small class="text-red-300 absolute top-100" [hidden]="form.get('fechaVigente').valid" id="yearToRegister-help">
+            Enter your username to reset your password.
+        </small>
     </div>
     <div>
         <p-floatLabel>
@@ -109,6 +112,6 @@
                 </div>
             </ng-template>
         </p-confirmDialog>
-        <p-button (onClick)="confirm()" label="Siguiente" />
+        <p-button (onClick)="confirm()" [disabled]="!form.valid" label="Siguiente" />
     </div>
 </form>

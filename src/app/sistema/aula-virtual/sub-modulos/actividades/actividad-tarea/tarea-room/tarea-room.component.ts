@@ -30,11 +30,15 @@ import { CardModule } from 'primeng/card'
 import { FormTransferirGrupoComponent } from '../form-transferir-grupo/form-transferir-grupo.component'
 import { FormBuilder, FormGroup } from '@angular/forms'
 import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
+import { ToastModule } from 'primeng/toast'
+import { MessageService } from 'primeng/api'
+
 @Component({
     selector: 'app-tarea-room',
     standalone: true,
     imports: [
         CommonModule,
+        ToastModule,
         IconComponent,
         TabViewModule,
         ButtonModule,
@@ -62,9 +66,11 @@ export class TareaRoomComponent implements OnChanges, OnInit {
     private _confirmService = inject(ConfirmationModalService)
     private _formBuilder = inject(FormBuilder)
     private _aulaService = inject(ApiAulaService)
+
     students: any
 
     iPerfilId: number
+    constructor(private messageService: MessageService) {}
     public entregarEstud: FormGroup = this._formBuilder.group({
         cTareaEstudianteUrlEstudiante: [''],
         //iEstudianteId: [],
@@ -418,21 +424,34 @@ export class TareaRoomComponent implements OnChanges, OnInit {
         this.getInformation(params, 'get-' + params.prefix)
     }
     guardarTareaEstudiantesxDocente() {
-        const params = {
-            petition: 'post',
-            group: 'aula-virtual',
-            prefix: 'tarea-estudiantes',
-            ruta: 'guardar-calificacion-docente',
-            data: {
-                opcion: 'GUARDAR-CALIFICACION-DOCENTE',
-                iTareaEstudianteId: this.iTareaEstudianteId,
-                iEscalaCalifId: this.iEscalaCalifId,
-                cTareaEstudianteComentarioDocente:
-                    this.cTareaEstudianteComentarioDocente,
-                nTareaEstudianteNota: 0,
-            },
+        // Verifica que los datos requeridos estén completos antes de continuar
+        if (this.iTareaEstudianteId && this.iEscalaCalifId) {
+            const params = {
+                petition: 'post',
+                group: 'aula-virtual',
+                prefix: 'tarea-estudiantes',
+                ruta: 'guardar-calificacion-docente',
+                data: {
+                    opcion: 'GUARDAR-CALIFICACION-DOCENTE',
+                    iTareaEstudianteId: this.iTareaEstudianteId,
+                    iEscalaCalifId: this.iEscalaCalifId,
+                    cTareaEstudianteComentarioDocente:
+                        this.cTareaEstudianteComentarioDocente,
+                    nTareaEstudianteNota: 0,
+                },
+            }
+            // Llama a la función para enviar los datos
+            this.getInformation(params, 'guardar-calificacion-docente')
+        } else {
+            // Si los datos no son válidos, muestra un mensaje de error o realiza otra acción
+            console.error(
+                'Error: Debes proporcionar un ID de tarea y un ID de escala de calificación válidos.'
+            )
+            // Opcional: Podrías también mostrar una alerta al usuario en lugar de solo un console.error
+            alert(
+                'Por favor, completa todos los campos requeridos antes de guardar.'
+            )
         }
-        this.getInformation(params, 'guardar-calificacion-docente')
     }
 
     goLinkDocumento(ruta: string) {
@@ -490,6 +509,15 @@ export class TareaRoomComponent implements OnChanges, OnInit {
     }
 
     guardarTareaCabeceraGruposxDocente() {
+        if (!this.iEscalaCalifId) {
+            this.messageService.add({
+                severity: 'warn',
+                summary: 'Campo vacio',
+                detail: 'Seleccione una calaficación',
+            })
+            return
+        }
+
         const params = {
             petition: 'post',
             group: 'aula-virtual',
@@ -527,7 +555,7 @@ export class TareaRoomComponent implements OnChanges, OnInit {
             })
         })
         this.showModalTransferir = true
-        //console.log(this.grupoTransferir)
+        console.log(this.grupoTransferir)
     }
 
     entregartaraeaestudiante() {

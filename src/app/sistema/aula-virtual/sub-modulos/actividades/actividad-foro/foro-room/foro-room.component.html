@@ -296,7 +296,7 @@
                                     </ng-template>
                                 </p-orderList>
                                 <!-- Campo de respuesta y botón enviar -->
-                                <div *ngIf="selectedCommentIndex !=== null">
+                                <div *ngIf="selectedCommentIndex !== null">
                                     <p-editor
                                         id="descripcion"
                                         placeholder="Escribe una Descripción "
@@ -366,7 +366,7 @@
                             <!-- lista de participantes... -->
                             <div
                                 class="col-12 md:col-4"
-                                [hidden]="iPerfilId !=== 7"
+                                [hidden]="iPerfilId !== 7"
                             >
                                 <p-orderList
                                     class="list"
@@ -405,7 +405,7 @@
             </form>
         </p-tabPanel>
         <!-- Calificar Foro -->
-        @if (iPerfilId !=== 8) {
+        @if (iPerfilId !== 8) {
             <p-tabPanel>
                 <ng-template pTemplate="header">
                     <div class="flex align-items-center flex-column gap-2">

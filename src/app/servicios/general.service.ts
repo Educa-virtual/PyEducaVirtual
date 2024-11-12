@@ -20,7 +20,7 @@ export class GeneralService {
         }
         return this.url
     }
-    getGralP    refix(data) {
+    getGralPrefix(data) {
         switch (data.petition) {
             case 'post':
                 this.url = this.http.post(

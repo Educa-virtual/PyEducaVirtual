@@ -97,11 +97,12 @@ export class YearComponent implements OnInit {
 
         if (iCalAcadId) {
             this.ticketService.getCalendar({ iSedeId, iYAcadId, iCalAcadId })
-            this.ticketService.setFasesYear({
+            this.ticketService.setCalAcad({
                 onNextCallbacks: [(data) => this.setValuesFormCalendar(data)],
             })
+            this.ticketService.setCalFasesProm()
         } else {
-            this.ticketService.setFasesYear({
+            this.ticketService.setCalAcad({
                 onNextCallbacks: [(data) => this.setValuesFormCalendar(data)],
             })
         }
@@ -181,28 +182,43 @@ export class YearComponent implements OnInit {
     }
 
     saveInformation() {
-
-
-        if (this.ticketService.registroInformation.calendar.iCalAcadId) {
-            this.ticketService.updCalFasesFechas()
-        } else {
+        if (!this.ticketService.registroInformation.calendar.iCalAcadId) {
             this.ticketService.insCalAcademico(this.form.value)
-        }
+        } 
+        console.log(this.ticketService.registroInformation.calendar.iCalAcadId);
 
         const checkRegular = this.form.get('regular').value
         const checkRecuperacion = this.form.get('recuperacion').value
 
         if (checkRegular.includes(true)) {
-            console.log(checkRegular)
-            this.ticketService.insCalFasesProm(checkRegular[0])
-        } else{
-          this.ticketService.deleteCalFasesProm(checkRegular[0])
+            const { dtFaseRegularInicio, dtFaseRegularFin } = this.form.value
+            this.ticketService.insCalFasesProm({
+                form: {
+                    faseInicio: dtFaseRegularInicio,
+                    faseFinal: dtFaseRegularFin,
+                },
+                fase: checkRegular[0],
+            })
+        } else {
+            this.ticketService.deleteCalFasesProm(checkRegular[0])
         }
         if (checkRecuperacion.includes(true)) {
-            console.log(checkRecuperacion)
-            this.ticketService.insCalFasesProm(checkRecuperacion[0])
-        } else{
-          this.ticketService.deleteCalFasesProm(checkRecuperacion[0])
+            const { dtFaserecuperacionInicio, dtFaserecuperacionFin } =
+                this.form.value
+            this.ticketService.insCalFasesProm({
+                form: {
+                    faseInicio: dtFaserecuperacionInicio,
+                    faseFinal: dtFaserecuperacionFin,
+                },
+                fase: checkRecuperacion[0],
+            })
+        } else {
+            this.ticketService.deleteCalFasesProm(checkRecuperacion[0])
+        }
+
+        if (this.ticketService.registroInformation.calendar.iCalAcadId) {
+            console.log('Fases')
+            this.ticketService.setCalFasesProm()
         }
     }
 

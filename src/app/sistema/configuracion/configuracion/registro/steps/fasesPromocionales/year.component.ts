@@ -93,11 +93,11 @@ export class YearComponent implements OnInit, OnChanges {
 
         if (iCalAcadId) {
             this.ticketService.getCalendar({ iSedeId, iYAcadId, iCalAcadId })
-            this.ticketService.setFasesYear({
+            this.ticketService.setCalAcad({
                 onNextCallbacks: [(data) => this.setValuesFormCalendar(data)],
             })
         } else {
-            this.ticketService.setFasesYear({
+            this.ticketService.setCalAcad({
                 onNextCallbacks: [(data) => this.setValuesFormCalendar(data)],
             })
         }

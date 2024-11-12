@@ -3,6 +3,7 @@ import { Subject } from 'rxjs'
 import { httpService } from '../../http/httpService'
 import { tap, catchError } from 'rxjs/operators'
 import { throwError, EMPTY, Observable } from 'rxjs'
+import { BehaviorSubject } from 'rxjs'
 
 export type ArrayElement<ArrayType extends readonly unknown[]> =
     ArrayType extends readonly (infer ElementType)[] ? ElementType : never
@@ -79,11 +80,18 @@ export class TicketService {
         return this.registroInformation
     }
 
+    mergeRegistroInformation<T>(base: T, update: Partial<T>): T {
+        return { ...base, ...update }
+    }
+
     setTicketInformation<K extends keyof typeof this.registroInformation>(
-        registroInformation: (typeof this.registroInformation)[K],
+        registroInformation: Partial<(typeof this.registroInformation)[K]>,
         key: K
     ) {
-        this.registroInformation[key] = registroInformation
+        this.registroInformation[key] = this.mergeRegistroInformation(
+            this.registroInformation[key],
+            registroInformation
+        )
     }
 
     complete() {
@@ -206,14 +214,17 @@ export class TicketService {
         return periodos
     }
 
-    setFasesYear(
-        {onCompleteCallbacks = [], onNextCallbacks = []} : {onCompleteCallbacks?: (() => void)[], onNextCallbacks?: ((data: any) => void)[]} = {}
-    ) {
+    setCalAcad({
+        onCompleteCallbacks = [],
+        onNextCallbacks = [],
+    }: {
+        onCompleteCallbacks?: (() => void)[]
+        onNextCallbacks?: ((data: any) => void)[]
+    } = {}) {
         this.httpService
             .getData('acad/calendarioAcademico/selFasesFechas')
             .subscribe({
                 next: (data) => {
-
                     console.log(data)
 
                     this.setTicketInformation(
@@ -253,9 +264,9 @@ export class TicketService {
         iCalAcadId,
     }: typeof this.registroInformation.calendar) {
         if (!this.registroInformation) {
-            this.registroInformation = {}; // Inicializa el objeto si es necesario
+            this.registroInformation = {} // Inicializa el objeto si es necesario
         }
-    
+
         this.registroInformation.calendar = {
             iCalAcadId: iCalAcadId,
             iSedeId: iSedeId,
@@ -275,7 +286,8 @@ export class TicketService {
         this.httpService
             .postData('acad/calendarioAcademico/addCalAcademico', {
                 calAcad: JSON.stringify({
-                    iSedeId: JSON.parse(localStorage.getItem('dremoPerfil')).iSedeId,
+                    iSedeId: JSON.parse(localStorage.getItem('dremoPerfil'))
+                        .iSedeId,
                     iYAcadId: '',
                     dtCalAcadInicio: '',
                     dtCalAcadFin: '',
@@ -284,9 +296,7 @@ export class TicketService {
                     bCalAcadFaseRegular: '',
                     bCalAcadFaseRecuperacion: '',
                 }),
-                calFaseProm: JSON.stringify({
-
-                })
+                calFaseProm: JSON.stringify({}),
             })
             .subscribe({
                 next: (data: any) => {
@@ -343,15 +353,17 @@ export class TicketService {
         onCompleteCallbacks?: (() => void)[]
     } = {}) {
         this.httpService
-            .getData(`acad/calendarioAcademico/selCalAcademicoSede?iSedeId=${JSON.parse(localStorage.getItem('dremoPerfil'))
-                .iSedeId}`)
+            .getData(
+                `acad/calendarioAcademico/selCalAcademicoSede?iSedeId=${
+                    JSON.parse(localStorage.getItem('dremoPerfil')).iSedeId
+                }`
+            )
             .subscribe({
                 next: (data: any) => {
                     console.log('selCalAcademicoSede')
-                    console.log(data);
-                    
-                    onNextCallbacks.forEach((callback) => callback(data.data))
+                    console.log(data)
 
+                    onNextCallbacks.forEach((callback) => callback(data.data))
                 },
                 error: (error) => {
                     console.error('Error fetching turnos:', error)
@@ -475,42 +487,62 @@ export class TicketService {
         }
     }
 
-    insCalAcademico(calAcad, {
-        onNextCallbacks = [],
-        onCompleteCallbacks = [],
-    }: {
-        onNextCallbacks?: (() => void)[]
-        onCompleteCallbacks?: (() => void)[]
-    } = {}){
-        const { iSedeId, iYAcadId} = this.registroInformation.calendar
+    insCalAcademico(
+        calAcad,
+        {
+            onNextCallbacks = [],
+            onCompleteCallbacks = [],
+        }: {
+            onNextCallbacks?: (() => void)[]
+            onCompleteCallbacks?: (() => void)[]
+        } = {}
+    ) {
+        const { iSedeId, iYAcadId } = this.registroInformation.calendar
+        try {
+            this.httpService
+                .postData('acad/calendarioAcademico/insCalAcademico', {
+                    calAcad: JSON.stringify({
+                        iSedeId: iSedeId,
+                        iYAcadId: iYAcadId,
+                        dtCalAcadInicio: this.toSQLDatetimeFormat(
+                            calAcad.fechaInicio
+                        ),
+                        dtCalAcadFin: this.toSQLDatetimeFormat(
+                            calAcad.fechaFin
+                        ),
+                        dtCalAcadMatriculaResagados: '',
+                        dtCalAcadMatriculaInicio: this.toSQLDatetimeFormat(
+                            calAcad.fechaMatriculaInicio
+                        ),
+                        dtCalAcadMatriculaFin: this.toSQLDatetimeFormat(
+                            calAcad.fechaMatriculaFin
+                        ),
+                        bCalAcadFaseRegular: calAcad.regular.includes(true),
+                        bCalAcadFaseRecuperacion:
+                            calAcad.recuperacion.includes(true),
+                    }),
+                })
+                .subscribe({
+                    next: (data) => {
+                        this.setTicketInformation(
+                            {
+                                iCalAcadId: String(data.data[0].id),
+                            },
+                            'calendar'
+                        )
 
-        console.log(calAcad)
+                        onNextCallbacks.forEach((callback) => callback())
+                    },
 
-        this.httpService
-        .postData('acad/calendarioAcademico/insCalAcademico', {
-            calAcad: JSON.stringify({
-                iSedeId: iSedeId,
-                iYAcadId: iYAcadId,
-                dtCalAcadInicio: this.toSQLDatetimeFormat(calAcad.fechaInicio),
-                dtCalAcadFin: this.toSQLDatetimeFormat(calAcad.fechaFin),
-                dtCalAcadMatriculaResagados: '',
-                dtCalAcadMatriculaInicio: this.toSQLDatetimeFormat(calAcad.fechaMatriculaInicio),
-                dtCalAcadMatriculaFin: this.toSQLDatetimeFormat(calAcad.fechaMatriculaFin),
-                bCalAcadFaseRegular: calAcad.regular.includes(true),
-                bCalAcadFaseRecuperacion: calAcad.recuperacion.includes(true),
-            })
-        })
-        .subscribe({
-            next: (data) => {
-                onNextCallbacks.forEach((callback) => callback())
-            },
+                    error: () => {},
 
-            error: () => {},
-
-            complete: () => {
-                onCompleteCallbacks.forEach((callback) => callback())
-            },
-        })
+                    complete: () => {
+                        onCompleteCallbacks.forEach((callback) => callback())
+                    },
+                })
+        } catch (err) {
+            console.error('Error en insCalAcademico:', err)
+        }
     }
 
     updCalFasesFechas({
@@ -519,74 +551,105 @@ export class TicketService {
     }: {
         onNextCallbacks?: (() => void)[]
         onCompleteCallbacks?: (() => void)[]
-    } = {}){
+    } = {}) {
         this.httpService
-        .putData('acad/calendarioAcademico/updCalFasesFechas', {
+            .putData('acad/calendarioAcademico/updCalFasesFechas', {})
+            .subscribe({
+                next: (data) => {
+                    onNextCallbacks.forEach((callback) => callback())
+                },
 
-        })
-        .subscribe({
-            next: (data) => {
+                error: () => {},
 
-                onNextCallbacks.forEach((callback) => callback())
-            },
-
-            error: () => {},
-
-            complete: () => {
-                onCompleteCallbacks.forEach((callback) => callback())
-            },
-        })
+                complete: () => {
+                    onCompleteCallbacks.forEach((callback) => callback())
+                },
+            })
     }
 
-    insCalFasesProm(insFasesProm, {
+    setCalFasesProm({
         onNextCallbacks = [],
         onCompleteCallbacks = [],
     }: {
         onNextCallbacks?: (() => void)[]
         onCompleteCallbacks?: (() => void)[]
-    } = {}){
+    } = {}) {
         this.httpService
-        .postData('acad/calendarioAcademico/insCalFasesProm', {
-            iFasePromId: insFasesProm.iFasePromId,
-            cFasePromNombre: insFasesProm.cFasePromNombre,
-        })
-        .subscribe({
-            next: (data) => {
+            .getData(
+                `acad/calendarioAcademico/selCalFasesProm?iCalAcadId=${this.registroInformation.calendar.iCalAcadId}`
+            )
+            .subscribe({
+                next: (data) => {
+                    console.log(data)
 
-                onNextCallbacks.forEach((callback) => callback())
-            },
+                    onNextCallbacks.forEach((callback) => callback())
+                },
 
-            error: () => {},
+                error: () => {},
 
-            complete: () => {
-                onCompleteCallbacks.forEach((callback) => callback())
-            },
-        })
+                complete: () => {
+                    onCompleteCallbacks.forEach((callback) => callback())
+                },
+            })
     }
 
-    deleteCalFasesProm(deleteFasesProm, {
-        onNextCallbacks = [],
-        onCompleteCallbacks = [],
-    }: {
-        onNextCallbacks?: (() => void)[]
-        onCompleteCallbacks?: (() => void)[]
-    } = {}){
+    insCalFasesProm(
+        { form, fase },
+        {
+            onNextCallbacks = [],
+            onCompleteCallbacks = [],
+        }: {
+            onNextCallbacks?: (() => void)[]
+            onCompleteCallbacks?: (() => void)[]
+        } = {}
+    ) {
         this.httpService
-        .deleteData('acad/calendarioAcademico/deleteCalFasesProm', {
-            iFaseId: deleteFasesProm.iFaseId
-        })
-        .subscribe({
-            next: (data) => {
+            .postData('acad/calendarioAcademico/insCalFasesProm', {
+                calFasesProm: JSON.stringify({
+                    iCalAcadId: this.registroInformation.calendar.iCalAcadId,
+                    iFasePromId: fase.iFasePromId,
+                    dtFaseInicio: form.faseInicio,
+                    dtFaseFin: form.faseFinal,
+                }),
+            })
+            .subscribe({
+                next: (data) => {
+                    onNextCallbacks.forEach((callback) => callback())
+                },
 
-                onNextCallbacks.forEach((callback) => callback())
-            },
+                error: () => {},
 
-            error: () => {},
+                complete: () => {
+                    onCompleteCallbacks.forEach((callback) => callback())
+                },
+            })
+    }
 
-            complete: () => {
-                onCompleteCallbacks.forEach((callback) => callback())
-            },
-        })
+    deleteCalFasesProm(
+        deleteFasesProm,
+        {
+            onNextCallbacks = [],
+            onCompleteCallbacks = [],
+        }: {
+            onNextCallbacks?: (() => void)[]
+            onCompleteCallbacks?: (() => void)[]
+        } = {}
+    ) {
+        this.httpService
+            .deleteData('acad/calendarioAcademico/deleteCalFasesProm', {
+                iFaseId: deleteFasesProm.iFaseId,
+            })
+            .subscribe({
+                next: (data) => {
+                    onNextCallbacks.forEach((callback) => callback())
+                },
+
+                error: () => {},
+
+                complete: () => {
+                    onCompleteCallbacks.forEach((callback) => callback())
+                },
+            })
     }
 
     add_CalendarioFaseAcad({
@@ -599,16 +662,24 @@ export class TicketService {
         this.httpService
             .postData('acad/calendarioAcademico/addCalendarioFasesAcad', {
                 calAcad: JSON.stringify({
-                    iSedeId: JSON.parse(localStorage.getItem('dremoPerfil')).iSedeId,
+                    iSedeId: JSON.parse(localStorage.getItem('dremoPerfil'))
+                        .iSedeId,
                     iYAcadId: this.registroInformation.calendar.iYAcadId,
-                    dtCalAcadInicio: this.registroInformation.stepYear.fechaInicio,
+                    dtCalAcadInicio:
+                        this.registroInformation.stepYear.fechaInicio,
                     dtCalAcadFin: this.registroInformation.stepYear.fechaFin,
-                    dtCalAcadMatriculaInicio: this.registroInformation.stepYear.matriculaInicio,
+                    dtCalAcadMatriculaInicio:
+                        this.registroInformation.stepYear.matriculaInicio,
                     dtCalAcadMatriculaResagados: '',
-                    bCalAcadFaseRegular: this.registroInformation.stepYear.bCalAcadFaseRegular,
-                    bCalAcadFaseRecuperacion: this.registroInformation.stepYear.bCalAcadFaseRecuperacion,
+                    bCalAcadFaseRegular:
+                        this.registroInformation.stepYear.bCalAcadFaseRegular,
+                    bCalAcadFaseRecuperacion:
+                        this.registroInformation.stepYear
+                            .bCalAcadFaseRecuperacion,
                 }),
-                calFaseProm: JSON.stringify(this.registroInformation.stepYear.fases_promocionales),
+                calFaseProm: JSON.stringify(
+                    this.registroInformation.stepYear.fases_promocionales
+                ),
             })
             .subscribe({
                 next: (data) => {

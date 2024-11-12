@@ -461,18 +461,20 @@ export class TabContenidoComponent implements OnInit {
         }
     }
 
-    // todo usar valores reales
     publicarEvaluacion(actividad: IActividad) {
         const data = {
             iEvaluacionId: actividad.ixActivadadId,
             iCursoId: this.semanaSeleccionada.iCursoId,
+            // obtener iseccionId
             iSeccionId: 2,
             iYAcadId: this._constantesService.iYAcadId,
-            iSemAcadId: 3,
+            iSemAcadId: this.semanaSeleccionada.iSemAcadId,
             iNivelGradoId: this.semanaSeleccionada.iNivelGradoId,
             iCurrId: this.semanaSeleccionada.iCurrId,
             iEstado: 2,
         }
+        console.log(data)
+        return
 
         this._evalService
             .publicarEvaluacion(data)

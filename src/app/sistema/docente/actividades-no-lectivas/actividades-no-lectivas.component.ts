@@ -223,6 +223,9 @@ export class ActividadesNoLectivasComponent implements OnInit {
 
     eliminarDetalleCargaNoLectivas(item) {
         item.opcion = 'ELIMINARxiDetCargaNoLectId'
+        item.cDetCargaNoLectEvidencias = item.cDetCargaNoLectEvidencias
+            ? JSON.stringify(item.cDetCargaNoLectEvidencias)
+            : null
         const params = {
             petition: 'post',
             group: 'docente',

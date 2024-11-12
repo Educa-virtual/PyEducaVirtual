@@ -77,7 +77,7 @@ export class FormActividadesNoLectivasComponent implements OnChanges {
                 const files =
                     this.formDetalleCargaNoLectivas.value
                         .cDetCargaNoLectEvidencias
-                this.filesUrl = files
+                this.filesUrl = files ? files : []
             }
         }
     }

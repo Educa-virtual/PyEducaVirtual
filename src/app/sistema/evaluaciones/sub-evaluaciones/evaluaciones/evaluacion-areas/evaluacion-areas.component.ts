@@ -11,7 +11,7 @@ import { CardModule } from 'primeng/card'
 import { CommonModule } from '@angular/common'
 import { DividerModule } from 'primeng/divider'
 // abajo
-import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
+//import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import { Subject, takeUntil } from 'rxjs'
 //import { ICurso } from '../interfaces/curso.interface'
 import { ICurso } from '../../../../aula-virtual/sub-modulos/cursos/interfaces/curso.interface'
@@ -41,7 +41,7 @@ export type Layout = 'list' | 'grid'
         CardModule,
         CommonModule,
         DividerModule,
-        ContainerPageComponent,
+        //ContainerPageComponent,
         InputTextModule,
         //Subject,
         //ConstantesService,
@@ -117,8 +117,13 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
 
         if (this.accion === 'ver' || this.accion === 'editar') {
             this.obtenerCursosEvaluacion() // Muestra los cursos seleccionados
+        } else {
+            console.log('Inicializando en modo crear')
+            this.cursos = [] // Asegurar que la lista destino esté vacía
+            this.insertarCursos() // Solo obtener la lista de IEs disponibles
+            console.log('Cursos:', this.cursos)
+            console.log('LA ACCION SERIA ->', this.accion)
         }
-        this.obtenerCursosEvaluacion() // Llamar a la función al inicio
     }
     // Obtener los cursos
     obtenerCursos(): void {
@@ -144,20 +149,47 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
                 },
             })
     }
+    // onCursoSelect(curso: any): void {
+    //     if (this.esModoEdicion) {
+    //         // Solo permitir cambios si es modo edición
+    //         if (!curso.isSelected) {
+    //             if (
+    //                 !this.selectedCursos.some(
+    //                     (c) => c.cCursoNombre === curso.cCursoNombre
+    //                 )
+    //             ) {
+    //                 this.selectedCursos.push(curso)
+    //             }
+    //         } else {
+    //             const index = this.selectedCursos.findIndex(
+    //                 (c) => c.cCursoNombre === curso.cCursoNombre
+    //             )
+    //             if (index !== -1) {
+    //                 this.selectedCursos.splice(index, 1)
+    //             }
+    //         }
+    //     }
+    //     console.log('Cursos seleccionados:', this.selectedCursos)
+    // }
+
     onCursoSelect(curso: any): void {
         if (this.esModoEdicion) {
-            // Solo permitir cambios si es modo edición
-            if (!curso.isSelected) {
+            // Cambiar estado de isSelected al hacer click
+            curso.isSelected = !curso.isSelected
+
+            if (curso.isSelected) {
+                // Si es seleccionado, añadirlo a selectedCursos
                 if (
                     !this.selectedCursos.some(
-                        (c) => c.cCursoNombre === curso.cCursoNombre
+                        (c) => c.iCursoId === curso.iCursoId
                     )
                 ) {
                     this.selectedCursos.push(curso)
                 }
             } else {
+                // Si es deseleccionado, quitarlo de selectedCursos
                 const index = this.selectedCursos.findIndex(
-                    (c) => c.cCursoNombre === curso.cCursoNombre
+                    (c) => c.iCursoId === curso.iCursoId
                 )
                 if (index !== -1) {
                     this.selectedCursos.splice(index, 1)
@@ -166,49 +198,100 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
         }
         console.log('Cursos seleccionados:', this.selectedCursos)
     }
+
     // Función para enviar los cursos seleccionados al backend
+    // insertarCursos(): void {
+    //     const iEvaluacionId = this.compartirIdEvaluacionService.iEvaluacionId
+
+    //     // Filter out selected courses based on `isSelected` property
+    //     this.selectedCursos = this.cursos
+    //         .filter((curso) => curso.isSelected)
+    //         .map((curso) => ({ iCursoId: curso.iCursoId })) // Only include iCursoId
+
+    //     // Check the selected courses before sending to backend
+    //     console.log(
+    //         'Cursos seleccionados antes de enviar:',
+    //         this.selectedCursos
+    //     )
+
+    //     if (this.selectedCursos.length === 0) {
+    //         console.log('No hay cursos seleccionados')
+    //         return
+    //     }
+    //     console.log('iEvaluacionId:', iEvaluacionId)
+    //     // Send selected data to backend
+    //     this._apiEre
+    //         .insertarCursos({
+    //             iEvaluacionId,
+    //             selectedCursos: this.selectedCursos,
+    //         }) // Use one object
+    //         .pipe(takeUntil(this.unsubscribe$))
+    //         .subscribe({
+    //             next: (resp: any) => {
+    //                 console.log('Respuesta de la inserción de cursos:', resp)
+    //                 this.cursos = this.cursos.map((curso) => ({
+    //                     ...curso,
+    //                     isSelected: false, // Reset selection
+    //                 }))
+    //             },
+    //             error: (err) => {
+    //                 console.error('Error al insertar los cursos:', err)
+    //                 const errorMessage =
+    //                     err?.error?.message || 'Error desconocido'
+    //                 console.error('Mensaje de error:', errorMessage)
+    //             },
+    //         })
+    // }
+
     insertarCursos(): void {
         const iEvaluacionId = this.compartirIdEvaluacionService.iEvaluacionId
 
-        // Filter out selected courses based on `isSelected` property
-        this.selectedCursos = this.cursos
-            .filter((curso) => curso.isSelected)
-            .map((curso) => ({ iCursoId: curso.iCursoId })) // Only include iCursoId
+        // Filtrar los cursos seleccionados
+        const selectedCursos = this.cursos
+            .filter((curso) => curso.isSelected) // Solo los cursos seleccionados
+            .map((curso) => ({ iCursoId: curso.iCursoId })) // Incluye solo iCursoId
 
-        // Check the selected courses before sending to backend
-        console.log(
-            'Cursos seleccionados antes de enviar:',
-            this.selectedCursos
-        )
+        console.log('Cursos seleccionados antes de enviar:', selectedCursos)
 
-        if (this.selectedCursos.length === 0) {
+        // Si no hay cursos seleccionados, mostramos un mensaje y no hacemos nada
+        if (selectedCursos.length === 0) {
             console.log('No hay cursos seleccionados')
             return
         }
+
         console.log('iEvaluacionId:', iEvaluacionId)
-        // Send selected data to backend
+
+        // Enviar los datos seleccionados al backend
         this._apiEre
             .insertarCursos({
                 iEvaluacionId,
-                selectedCursos: this.selectedCursos,
-            }) // Use one object
+                selectedCursos: selectedCursos,
+            })
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
                 next: (resp: any) => {
                     console.log('Respuesta de la inserción de cursos:', resp)
+
+                    // Limpiar la selección de cursos después de insertar
                     this.cursos = this.cursos.map((curso) => ({
                         ...curso,
-                        isSelected: false, // Reset selection
+                        isSelected: false, // Resetear la selección
                     }))
+
+                    // Eliminar los cursos deseleccionados del frontend si es necesario
+                    this.cursos = this.cursos.filter(
+                        (curso) => curso.isSelected
+                    )
                 },
                 error: (err) => {
                     console.error('Error al insertar los cursos:', err)
                     const errorMessage =
                         err?.error?.message || 'Error desconocido'
-                    console.error('Mensaje de error:', errorMessage)
+                    alert(`Error al insertar los cursos: ${errorMessage}`)
                 },
             })
     }
+
     // Funcion para obtener los cursos seleccionados.
     // obtenerCursosEvaluacion(): void {
     //     const iEvaluacionId = this.compartirIdEvaluacionService.iEvaluacionId
@@ -325,10 +408,9 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
                 },
             })
     }
-
-    // toggleCursoSeleccionado(curso: any): void {
-    //     curso.isSelected = !curso.isSelected // Cambia el valor de isSelected
-    // }
+    trackByCursoId(index: number, curso: any): any {
+        return curso.iCursoId
+    }
     public onFilter(dv: DataView, event: Event) {
         const text = (event.target as HTMLInputElement).value
         this.cursos = this.data

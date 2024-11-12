@@ -84,12 +84,14 @@
 
             &.active-route {
                 text-decoration: none;
-                background: rgba(255, 255, 255, 0.2);
+                background: var(--surface-a);
+                color: var(--surface-menu);
             }
 
             &:hover {
                 color: var(--surface-menu);
-                background-color: var(--surface-a);
+                background-color: rgba(255, 255, 255, 0.2);
+                color: var(--surface-a);
             }
 
             &:focus {

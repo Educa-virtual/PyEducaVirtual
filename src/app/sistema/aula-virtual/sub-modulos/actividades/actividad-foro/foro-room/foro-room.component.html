@@ -365,7 +365,31 @@
                                         </p-button>
                                     </ng-template>
                                 </p-orderList>
-
+                                <!-- Campo de respuesta y botón enviar -->
+                                <div *ngIf="selectedCommentIndex !== null">
+                                    <p-editor
+                                        id="descripcion"
+                                        placeholder="Escribe una Descripción "
+                                        formControlName="cForoRptaRespuesta"
+                                    />
+                                    <div class="reply-container">
+                                        <div class="button-container">
+                                            <button
+                                                icon="pi pi-times"
+                                                class="send-button"
+                                                type="button"
+                                            >
+                                                Cancelar
+                                            </button>
+                                            <button
+                                                class="send-button"
+                                                (click)="sendComment()"
+                                            >
+                                                Enviar
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="comment-container">
                                     <input
                                         *ngIf="!showEditor"

@@ -22,3 +22,38 @@ th,
 td {
     font-size: 0.8rem;
 }
+
+/*
+    * * Modifica los siguientes elementos:
+    * * checkbox
+    * * vendana modal
+*/
+:host ::ng-deep {
+    .pink-checkbox.p-checkbox {
+        .p-checkbox-box.p-highlight {
+            background: var(--pink-600);
+            border-color: var(--pink-600);
+        }
+    }
+    .cyan-checkbox.p-checkbox {
+        .p-checkbox-box.p-highlight {
+            background: var(--cyan-600);
+            border-color: var(--cyan-600);
+        }
+    }
+    .green-checkbox.p-checkbox {
+        .p-checkbox-box.p-highlight {
+            background: var(--green-600);
+            border-color: var(--green-600);
+        }
+    }
+    .agregar.p-button {
+        width: 100%;
+        height: 20px;
+        font-size: 10px;
+        text-align: center;
+    }
+    .boton-width.p-button {
+        width: 100%;
+    }
+}

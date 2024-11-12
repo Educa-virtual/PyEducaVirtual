@@ -11,7 +11,7 @@
                 pButton
                 icon="pi pi-plus"
                 class="p-button-success"
-                (click)="showModal = true"
+                (click)="accionBtnItem({ accion: 'agregar', item: [] })"
             >
                 &nbsp;Agregar
             </button>
@@ -24,51 +24,23 @@
             [closable]="false"
         />
     </div>
-    <p-dataView
-        class="col-12"
-        #dv
-        [value]="[]"
-        [paginator]="false"
-        [rows]="100"
-        filterBy="cMatEducaNombre"
-        [sortField]="''"
-        [sortOrder]="0"
-        [layout]="layout"
-        [emptyMessage]="' '"
-    >
-        <ng-template pTemplate="header">
-            <div
-                class="flex flex-column md:flex-row md:justify-content-between"
-            >
-                @if (layout === 'list') {
-                    <p-inputGroup class="h-min w-full">
-                        <p-inputGroupAddon
-                            ><p-inputIcon styleClass="pi pi-search"
-                        /></p-inputGroupAddon>
-                        <input
-                            pInputText
-                            type="text"
-                            placeholder="Buscar por nombre"
-                        />
-                    </p-inputGroup>
-                    &nbsp;&nbsp;
-                }
-            </div>
-        </ng-template>
-        <ng-template let-item pTemplate="list">
-            <app-table-primeng
-                [columnas]="columns"
-                [actions]="actions"
-                [data]="data"
-                [showCaption]="false"
-                [tableStyle]="null"
-            ></app-table-primeng>
-        </ng-template>
-    </p-dataView>
+    <div class="col-12">
+        <app-table-primeng
+            [columnas]="columns"
+            [actions]="actions"
+            [data]="data"
+            [showCaption]="true"
+            [tableStyle]="null"
+            (accionBtnItem)="accionBtnItem($event)"
+        ></app-table-primeng>
+    </div>
 </div>
 
 <app-form-material-educativo
     [showModal]="showModal"
+    [data]="item"
+    [titulo]="titulo"
+    [opcion]="opcion"
     (accionBtnItem)="accionBtnItem($event)"
 >
 </app-form-material-educativo>

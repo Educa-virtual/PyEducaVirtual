@@ -22,7 +22,7 @@ import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.ser
 import { tipoActividadesKeys } from '@/app/sistema/aula-virtual/interfaces/actividad.interface'
 import { Subject, takeUntil } from 'rxjs'
 import { RemoveHTMLPipe } from '@/app/shared/pipes/remove-html.pipe'
-import { NgFor } from '@angular/common'
+import { NgFor, NgIf } from '@angular/common'
 import { RecursosListaComponent } from '@/app/shared/components/recursos-lista/recursos-lista.component'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 @Component({
@@ -40,6 +40,7 @@ import { ConstantesService } from '@/app/servicios/constantes.service'
         OrderListModule,
         PrimengModule,
         NgFor,
+        NgIf,
     ],
     providers: [
         provideIcons({

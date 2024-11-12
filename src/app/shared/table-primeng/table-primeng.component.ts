@@ -14,6 +14,7 @@ import { IIcon } from '../icon/icon.interface'
 import { IconComponent } from '../icon/icon.component'
 import { isIIcon } from '../utils/is-icon-object'
 import { IsIconTypePipe } from '../pipes/is-icon-type.pipe'
+import { environment } from '@/environments/environment.template'
 
 type TColumnType =
     | 'actions'
@@ -64,6 +65,8 @@ export interface IActionTable {
     ],
 })
 export class TablePrimengComponent implements OnChanges, OnInit {
+    backend = environment.backend
+
     @Output() accionBtnItem: EventEmitter<{ accion: any; item: any }> =
         new EventEmitter()
     @Output() selectedRowDataChange = new EventEmitter()
@@ -247,5 +250,22 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     onSelectionChange(event) {
         this.selectedRowData = event
         this.selectedRowDataChange.emit(event)
+    }
+
+    openFile(item) {
+        switch (Number(item.type)) {
+            case 1:
+            case 4:
+                window.open(this.backend + '/' + item.ruta, '_blank')
+                break
+            case 2:
+            case 3:
+                const ruta = item.ruta.includes('http')
+                window.open(ruta ? item.ruta : 'http://' + item.ruta, '_blank')
+                break
+        }
+    }
+    updateUrl(item) {
+        item.ruta = 'users/no-image.png'
     }
 }

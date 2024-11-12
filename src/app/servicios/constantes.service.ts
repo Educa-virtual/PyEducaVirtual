@@ -622,7 +622,8 @@ export class ConstantesService {
     nav = this.getMenu()
     getMenu() {
         if (!perfil) return first
-        switch (this.iPerfilId) {
+        // console.log('perfiles', perfil)
+        switch (Number(perfil.iPerfilId)) {
             case 1:
                 return aula_virtual
             case 2:

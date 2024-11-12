@@ -1,15 +1,17 @@
-import { Component } from '@angular/core'
-import { FullCalendarComponent } from '@/app/shared/full-calendar/full-calendar.component'
+import { Component, inject, OnInit } from '@angular/core'
 import { PrimengModule } from '@/app/primeng.module'
 import { Message } from 'primeng/api'
 import { TablePrimengComponent } from '../../../shared/table-primeng/table-primeng.component'
 import { FormActividadesNoLectivasComponent } from './components/form-actividades-no-lectivas/form-actividades-no-lectivas.component'
-export type Layout = 'list' | 'grid'
+import { ConstantesService } from '@/app/servicios/constantes.service'
+import { GeneralService } from '@/app/servicios/general.service'
+import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
+import { LocalStoreService } from '@/app/servicios/local-store.service'
+
 @Component({
     selector: 'app-actividades-no-lectivas',
     standalone: true,
     imports: [
-        FullCalendarComponent,
         PrimengModule,
         TablePrimengComponent,
         FormActividadesNoLectivasComponent,
@@ -17,15 +19,18 @@ export type Layout = 'list' | 'grid'
     templateUrl: './actividades-no-lectivas.component.html',
     styleUrl: './actividades-no-lectivas.component.scss',
 })
-export class ActividadesNoLectivasComponent {
+export class ActividadesNoLectivasComponent implements OnInit {
+    private _ConstantesService = inject(ConstantesService)
+    private _GeneralService = inject(GeneralService)
+    private _ConfirmationModalService = inject(ConfirmationModalService)
+    private _LocalStoreService = inject(LocalStoreService)
+
     mensaje: Message[] = [
         {
             severity: 'info',
-            detail: 'En esta sección podrá visualizar sus actividades no lectivas como también gestionar y subir evidencias, con un resumen en el calenario',
+            detail: 'En esta sección podrá visualizar sus actividades no lectivas como también gestionar y subir evidencias.',
         },
     ]
-    options = ['list', 'grid']
-    public layout: Layout = 'list'
     date = new Date()
     showModal: boolean = false
 
@@ -46,6 +51,11 @@ export class ActividadesNoLectivasComponent {
         },
     ]
     data = []
+    tiposCargaNoLectivas = []
+    item = []
+    titulo: string = ''
+    opcion: string = ''
+
     columns = [
         {
             type: 'item',
@@ -57,51 +67,35 @@ export class ActividadesNoLectivasComponent {
         },
         {
             type: 'text',
-            width: '8rem',
-            field: 'cTNombre',
-            header: 'Nombre de la Actividad',
+            width: '3rem',
+            field: 'cSemAcadNombre',
+            header: 'Semestre Académico',
             text_header: 'center',
             text: 'center',
         },
         {
             type: 'text',
             width: '10rem',
-            field: 'cTNombre2',
-            header: 'Descripción',
-            text_header: 'center',
-            text: 'center',
-        },
-        {
-            type: 'text',
-            width: '5rem',
-            field: 'cTNombre3',
-            header: 'Tipo de Actividad',
-            text_header: 'center',
-            text: 'center',
-        },
-        {
-            type: 'text',
-            width: '5rem',
-            field: 'cFecha',
-            header: 'Fecha y Duración',
-            text_header: 'center',
+            field: 'cTipoCargaNoLectNombre',
+            header: 'Nombre de la Actividad',
+            text_header: 'justify',
             text: 'justify',
         },
         {
             type: 'text',
-            width: '6rem',
-            field: 'cTNombre4',
-            header: 'Lugar',
+            width: '2rem',
+            field: 'nDetCargaNoLectHoras',
+            header: 'Duración Horas',
             text_header: 'center',
             text: 'center',
         },
         {
-            type: 'text',
-            width: '6rem',
-            field: 'cTNombre5',
+            type: 'list_json_file',
+            width: '8rem',
+            field: 'cDetCargaNoLectEvidencias',
             header: 'Evidencias',
             text_header: 'center',
-            text: 'center',
+            text: 'justify',
         },
         {
             type: 'actions',
@@ -113,52 +107,145 @@ export class ActividadesNoLectivasComponent {
         },
     ]
 
-    fechas = [
-        {
-            nombre: 'Actividades No Lectivas',
-            cantidad: 5,
-            color: 'var(--blue-400)',
-        },
-        {
-            nombre: 'Feriados Nacionales',
-            cantidad: 5,
-            color: 'var(--red-400)',
-        },
-        {
-            nombre: 'Feriados Recuperables',
-            cantidad: 5,
-            color: 'var(--yellow-400)',
-        },
-        {
-            nombre: 'Fechas de Recuperacion',
-            cantidad: 5,
-            color: 'var(--green-400)',
-        },
-        {
-            nombre: 'Fechas Especiales I.E.',
-            cantidad: 5,
-            color: 'var(--bluegray-400)',
-        },
-        {
-            nombre: 'Dias de Gestion',
-            cantidad: 5,
-            color: 'var(--gray-400)',
-        },
-        {
-            nombre: 'Mis Actividades',
-            cantidad: 5,
-            color: 'var(--teal-400)',
-        },
-    ]
-
+    ngOnInit() {
+        !this.tiposCargaNoLectivas.length
+            ? this.obtenerTiposCargaNoLectivas()
+            : null
+        this.obtenerCargaNoLectivas()
+    }
     accionBtnItem(elemento): void {
         const { accion } = elemento
-        //const { item } = elemento
+        const { item } = elemento
         switch (accion) {
             case 'close-modal':
                 this.showModal = false
-
+                break
+            case 'agregar':
+            case 'actualizar':
+                this.showModal = true
+                this.item = item
+                this.titulo =
+                    accion === 'agregar'
+                        ? 'AGREGAR CARGA NO LECTIVA'
+                        : 'ACTUALIZAR CARGA NO LECTIVA'
+                this.opcion = accion === 'agregar' ? 'GUARDAR' : 'ACTUALIZAR'
+                break
+            case 'eliminar':
+                this._ConfirmationModalService.openConfirm({
+                    header:
+                        '¿Esta seguro de eliminar la carga no lectiva ' +
+                        item['cTipoCargaNoLectNombre'] +
+                        ' ?',
+                    accept: () => {
+                        this.eliminarDetalleCargaNoLectivas(item)
+                    },
+                })
+                break
+            case 'GUARDAR':
+            case 'ACTUALIZAR':
+                this.showModal = false
+                this.GuardarActualizarDetalleCargaNoLectivas(item)
+                break
+            case 'store-carga-no-lectivas':
+            case 'update-carga-no-lectivas':
+            case 'update-detalle-carga-no-lectivas':
+                this.obtenerCargaNoLectivas()
+                break
+            case 'list-carga-no-lectivas':
+                this.data = item
+                this.data.forEach((i) => {
+                    i.cDetCargaNoLectEvidencias = i.cDetCargaNoLectEvidencias
+                        ? JSON.parse(i.cDetCargaNoLectEvidencias)
+                        : []
+                })
+                break
+            case 'list-tipos-carga-no-lectivas':
+                this.tiposCargaNoLectivas = item
+                break
+            case 'delete-detalle-carga-no-lectivas':
+                this.obtenerCargaNoLectivas()
                 break
         }
+    }
+
+    obtenerTiposCargaNoLectivas() {
+        const params = {
+            petition: 'post',
+            group: 'docente',
+            prefix: 'tipos-carga-no-lectivas',
+            ruta: 'list',
+            data: {
+                opcion: 'CONSULTAR',
+            },
+            params: { skipSuccessMessage: true },
+        }
+        this.getInformation(params, params.ruta + '-' + params.prefix)
+    }
+    obtenerCargaNoLectivas() {
+        const iYearId = this._LocalStoreService.getItem('dremoYear')
+        const params = {
+            petition: 'post',
+            group: 'docente',
+            prefix: 'carga-no-lectivas',
+            ruta: 'list',
+            data: {
+                opcion: 'CONSULTARxiDocenteIdxiYearId',
+                iDocenteId: this._ConstantesService.iDocenteId,
+                valorBusqueda: iYearId,
+            },
+            params: { skipSuccessMessage: true },
+        }
+        this.getInformation(params, params.ruta + '-' + params.prefix)
+    }
+    GuardarActualizarDetalleCargaNoLectivas(item) {
+        const iYearId = this._LocalStoreService.getItem('dremoYear')
+        item.iDocenteId = this._ConstantesService.iDocenteId
+        item.valorBusqueda = iYearId
+        const ruta = item.opcion === 'GUARDAR' ? 'store' : 'update'
+        const prefix =
+            item.opcion === 'GUARDAR'
+                ? 'carga-no-lectivas'
+                : 'detalle-carga-no-lectivas'
+        item.opcion =
+            item.opcion === 'GUARDAR'
+                ? item.opcion + 'xDetalleCargaNoLectiva'
+                : item.opcion + 'xiDetCargaNoLectId'
+        const params = {
+            petition: 'post',
+            group: 'docente',
+            prefix: prefix,
+            ruta: ruta,
+            data: item,
+            params: { skipSuccessMessage: true },
+        }
+        this.getInformation(params, params.ruta + '-' + params.prefix)
+    }
+
+    eliminarDetalleCargaNoLectivas(item) {
+        item.opcion = 'ELIMINARxiDetCargaNoLectId'
+        item.cDetCargaNoLectEvidencias = item.cDetCargaNoLectEvidencias
+            ? JSON.stringify(item.cDetCargaNoLectEvidencias)
+            : null
+        const params = {
+            petition: 'post',
+            group: 'docente',
+            prefix: 'detalle-carga-no-lectivas',
+            ruta: 'delete',
+            data: item,
+            params: { skipSuccessMessage: true },
+        }
+        this.getInformation(params, params.ruta + '-' + params.prefix)
+    }
+
+    getInformation(params, accion) {
+        this._GeneralService.getGralPrefix(params).subscribe({
+            next: (response) => {
+                this.accionBtnItem({ accion, item: response?.data })
+            },
+            complete: () => {},
+            error: (error) => {
+                console.log(error)
+            },
+        })
     }
 }

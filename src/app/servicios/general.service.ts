@@ -33,7 +33,6 @@ export class GeneralService {
                     data.data,
                     { params: data.params }
                 )
-
                 break
             default:
                 break
@@ -58,10 +57,16 @@ export class GeneralService {
     }
 
     subirArchivo(data: any) {
-        return this.http.post(`${baseUrl}/general/subir-archivo`, data, {
-            params: {
-                skipSuccessMessage: true,
-            },
-        })
+        return this.http.post(`${baseUrl}/general/subir-archivo`, data)
+    }
+
+    generarPdf(data: any) {
+        return this.http.post(
+            `${baseUrl}/${data.group}/${data.prefix}/${data.ruta}`,
+            data.data,
+            {
+                responseType: 'blob',
+            }
+        )
     }
 }

@@ -179,7 +179,7 @@
                             <!-- Botón Guardar para modo creación -->
                             <p-button
                                 *ngIf="!esModoEdicion && accion !== 'ver'"
-                                label="Guardar"
+                                label="Siguiente"
                                 icon="pi pi-save"
                                 (click)="
                                     guardarEvaluacion(); nextCallback.emit()
@@ -189,7 +189,7 @@
                             <!-- Botón Actualizar para modo edición -->
                             <p-button
                                 *ngIf="esModoEdicion && accion !== 'ver'"
-                                label="Actualizar"
+                                label="Siguiente"
                                 icon="pi pi-refresh"
                                 (click)="
                                     actualizarEvaluacion(); nextCallback.emit()
@@ -215,12 +215,12 @@
                     <app-ieparticipa></app-ieparticipa>
                     <div class="flex pt-4 justify-content-between">
                         <p-button
-                            label="Back"
+                            label="Atras"
                             icon="pi pi-arrow-left"
                             (onClick)="prevCallback.emit()"
                         />
                         <p-button
-                            label="Next"
+                            label="Siguiente"
                             icon="pi pi-arrow-right"
                             iconPos="right"
                             (onClick)="nextCallback.emit()"
@@ -236,7 +236,7 @@
                     <app-evaluacion-areas></app-evaluacion-areas>
                     <div class="flex pt-4 justify-content-between">
                         <p-button
-                            label="Back"
+                            label="Atras"
                             icon="pi pi-arrow-left"
                             (onClick)="prevCallback.emit()"
                         />

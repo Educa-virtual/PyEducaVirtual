@@ -91,6 +91,21 @@ export class ApiEvaluacionesRService {
             }
         )
     }
+    //Evaluacion de Copia
+    // obtenerEvaluacionesCopia(): Observable<any> {
+    //     console.log('Ejecutando obtenerEvaluaciones', this.baseUrl)
+    //     return this.http.get(
+    //         `${this.baseUrl}/ere/Evaluaciones/obtenerEvaluacionCopia2`
+    //     )
+    // }
+    obtenerEvaluacionesCopia(params) {
+        return this.http.get(
+            `${this.baseUrl}/ere/Evaluaciones/obtenerEvaluacionCopia2`,
+            {
+                params,
+            }
+        )
+    }
     obtenerTipoEvaluacion(params) {
         return this.http.get(
             `${this.baseUrl}/ere/tipoEvaluacion/obtenerTipoEvaluacion`,

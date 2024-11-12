@@ -23,8 +23,29 @@
         [disabled]="accion === 'ver'"
     />
 </div>
+<br />
+<div
+    class="flex flex-column md:flex-row md:justify-content-between gap-2 padding:100px"
+>
+    <p-dropdown
+        [options]="EvaluacionCopia"
+        [(ngModel)]="selectedEvaluacionCopia"
+        optionLabel="cEvaluacionNombre"
+        placeholder="Seleccione un nivel"
+        styleClass="w-full"
+        class="flex-1"
+        (onChange)="onChange()"
+    />
+    <button
+        pButton
+        type="button"
+        label="Copiar y Guardar Participantes"
+        (click)="copiarParticipantes()"
+    ></button>
+</div>
 
 <br />
+
 <p-pickList
     [source]="sourceProducts"
     [target]="targetProducts"

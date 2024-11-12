@@ -21,6 +21,10 @@ interface Ugeles {
     cUgelNombre: string
     iUgelId: string
 }
+interface EvaluacionCopia {
+    iEvaluacionId: number
+    cEvaluacionNombre: string
+}
 @Component({
     selector: 'app-ieparticipa',
     standalone: true,
@@ -58,13 +62,19 @@ export class IeparticipaComponent implements OnInit {
     selectedNivelTipo: NivelTipo | undefined
     Ugeles: Ugeles[] | undefined
     selectedUgeles: Ugeles | undefined
-    itemsToDelete: any
+    EvaluacionCopia: EvaluacionCopia[] | undefined
+    selectedEvaluacionCopia: EvaluacionCopia | number
 
+    itemsToDelete: any
+    //Evaluaciones Copia
+    evaluaciones: any[] = [] // Array para almacenar las evaluaciones obtenidas del API
+    selectedEvaluacionId: number // ID de la evaluación seleccionada en el dropdown
     constructor(
         private carService: ProductService,
         private cdr: ChangeDetectorRef,
         private compartirIdEvaluacionService: CompartirIdEvaluacionService,
-        private _config: DynamicDialogConfig // Inyectar configuración
+        private _config: DynamicDialogConfig, // Inyectar configuración
+        private evaluacionesService: ApiEvaluacionesRService // Inyecta el servicio -> Evaliacion Copiar
     ) {}
     public allIEs: Product[] = [] // Lista completa de IE para filtrar los no participantes
     ngOnInit() {
@@ -100,6 +110,8 @@ export class IeparticipaComponent implements OnInit {
                 this.obtenerParticipaciones(evaluacionId)
             }
         }
+        // Llamamos al servicio para obtener las evaluaciones
+        this.obtenerEvaluacionesCopia()
 
         this.nivelTipo = [
             { cNivelTipoNombre: 'Primaria', iNivelTipoId: 'NY' },
@@ -258,27 +270,154 @@ export class IeparticipaComponent implements OnInit {
         //console.log('Seleccionados:', this.targetProducts)
     }
 
-    obtenerParticipaciones(evaluacionId: number) {
-        this._apiEre
-            .obtenerParticipaciones(evaluacionId)
-            .pipe(takeUntil(this.unsubscribe$))
-            .subscribe({
-                next: (resp: any) => {
-                    this.targetProducts = resp.data.map((item: any) => ({
-                        iIieeId: item.iIieeId,
-                        cIieeNombre: item.cIieeNombre,
-                        cIieeCodigoModular: item.cIieeCodigoModular,
-                        cNivelTipoNombre: item.cNivelTipoNombre,
-                    }))
+    // obtenerParticipaciones(evaluacionId: number, modoCopia: boolean = false) {
+    //     this._apiEre
+    //         .obtenerParticipaciones(evaluacionId)
+    //         .pipe(takeUntil(this.unsubscribe$))
+    //         .subscribe({
+    //             next: (resp: any) => {
+    //                 // this.targetProducts = resp.data.map((item: any) => ({
+    //                 //     iIieeId: item.iIieeId,
+    //                 //     cIieeNombre: item.cIieeNombre,
+    //                 //     cIieeCodigoModular: item.cIieeCodigoModular,
+    //                 //     cNivelTipoNombre: item.cNivelTipoNombre,
+    //                 // }))
+    //                 const participantes = resp.data.map((item: any) => ({
+    //                     iIieeId: item.iIieeId,
+    //                     cIieeNombre: item.cIieeNombre,
+    //                     cIieeCodigoModular: item.cIieeCodigoModular,
+    //                     cNivelTipoNombre: item.cNivelTipoNombre,
+    //                 }))
+    //                 // Cambcio
+    //                 if (modoCopia) {
+    //                     // Si estamos copiando, setear targetProducts con los participantes copiados
+    //                     this.targetProducts = participantes
+    //                     this.obtenerIE() // Filtrar los no participantes
+    //                     console.log(
+    //                         'Participantes copiados para nueva evaluación:',
+    //                         this.targetProducts
+    //                     )
+    //                 } else {
+    //                     // Para edición/ver sin copiar, cargar los participantes normalmente
+    //                     this.targetProducts = participantes
+    //                     this.obtenerIE()
+    //                 }
+    //                 // cambio
+    //                 // Llama a obtenerIE para filtrar las IE no participantes
+    //                 this.obtenerIE()
+    //             },
+    //             error: (error) =>
+    //                 console.error('Error al obtener participaciones:', error),
+    //         })
+    // }
+    obtenerParticipaciones(
+        evaluacionId: number,
+        modoCopia: boolean = false
+    ): Promise<any[]> {
+        return new Promise((resolve, reject) => {
+            this._apiEre
+                .obtenerParticipaciones(evaluacionId)
+                .pipe(takeUntil(this.unsubscribe$))
+                .subscribe({
+                    next: (resp: any) => {
+                        const participantes = resp.data.map((item: any) => ({
+                            iIieeId: item.iIieeId,
+                            cIieeNombre: item.cIieeNombre,
+                            cIieeCodigoModular: item.cIieeCodigoModular,
+                            cNivelTipoNombre: item.cNivelTipoNombre,
+                        }))
+                        if (modoCopia) {
+                            this.targetProducts = participantes
+                            this.obtenerIE()
+                            console.log(
+                                'Participantes copiados para nueva evaluación:',
+                                this.targetProducts
+                            )
+                        } else {
+                            this.targetProducts = participantes
+                            this.obtenerIE()
+                        }
+                        resolve(participantes)
+                    },
+                    error: (error) => {
+                        console.error(
+                            'Error al obtener participaciones:',
+                            error
+                        )
+                        reject(error)
+                    },
+                })
+        })
+    }
 
-                    // Llama a obtenerIE para filtrar las IE no participantes
-                    this.obtenerIE()
-                },
-                error: (error) =>
-                    console.error('Error al obtener participaciones:', error),
+    // copiarParticipaciones() {
+    //     if (this.selectedEvaluacionCopia) {
+    //         const evaluacionId = this.selectedEvaluacionCopia.iEvaluacionId
+    //         this.obtenerParticipaciones(evaluacionId, true) // Modo copia activado
+    //     } else {
+    //         console.warn(
+    //             'Seleccione una evaluación para copiar las participaciones.'
+    //         )
+    //     }
+    // }
+    copiarParticipantes(): void {
+        if (
+            !this.selectedEvaluacionCopia ||
+            typeof this.selectedEvaluacionCopia === 'number'
+        ) {
+            console.error('No se ha seleccionado una evaluación para copiar')
+            return
+        }
+
+        const evaluacionIdCopiar = this.selectedEvaluacionCopia.iEvaluacionId
+
+        this.obtenerParticipaciones(evaluacionIdCopiar, true)
+            .then((participantes) => {
+                this.targetProducts = participantes
+                const payload = {
+                    items: this.targetProducts.map((participante) => ({
+                        iEvaluacionId:
+                            this.compartirIdEvaluacionService.iEvaluacionId,
+                        iIieeId: participante.iIieeId,
+                    })),
+                }
+                this._apiEre.guardarParticipacion(payload).subscribe(
+                    (response) => console.log('Guardado exitoso:', response),
+                    (error) => console.error('Error al guardar:', error)
+                )
+            })
+            .catch((error) => {
+                console.error('Error al copiar participantes:', error)
             })
     }
-    //PRUEBA BOTON
+
+    // Evaluaciones Copia
+    obtenerEvaluacionesCopia(): void {
+        this._apiEre
+            .obtenerEvaluacionesCopia(this.params)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+                next: (resp: unknown) => {
+                    console.log('DATOS OBTENIDOS DE EVALUACIONES:', resp) // Imprime la respuesta completa
+                    this.EvaluacionCopia = resp['data']
+                    console.log(
+                        'Nivel tipo asignado a this.ugel:',
+                        this.nivelTipo
+                    )
+                },
+            })
+
+        // console.log('Ejecutando obtenerEvaluaciones')
+        // this.evaluacionesService.obtenerEvaluacionesCopia().subscribe(
+        //     (response) => {
+        //         console.log('EVALUACIONES OBTENIDAS:', response)
+        //         this.evaluaciones = response // Asignamos el array directamente
+        //     },
+        //     (error) => {
+        //         console.error('Error al obtener las evaluaciones', error)
+        //     }
+        // )
+    }
 
     onChange() {
         //alert(v)

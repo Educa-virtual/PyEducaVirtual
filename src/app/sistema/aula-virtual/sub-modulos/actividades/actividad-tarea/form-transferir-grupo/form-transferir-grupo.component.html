@@ -1,0 +1,50 @@
+<app-modal-primeng
+    [title]="'Transferencia de Grupo'"
+    [showModal]="showModalTransferir"
+    [width]="'35rem'"
+    (accionBtnItem)="accionBtn($event)"
+>
+    <div class="grid">
+        @if (grupos) {
+            @if (grupos.length) {
+                <div class="col-12">
+                    <p-inputGroup>
+                        <p-inputGroupAddon>
+                            Nombre del grupo
+                        </p-inputGroupAddon>
+                        <p-dropdown
+                            [(ngModel)]="iTareaCabGrupoId"
+                            [options]="grupos"
+                            optionValue="iTareaCabGrupoId"
+                            optionLabel="cTareaGrupoNombre"
+                            placeholder="Seleccione grupo"
+                            [style]="{ width: '100%' }"
+                        ></p-dropdown>
+                    </p-inputGroup>
+                </div>
+            } @else {
+                <p-messages severity="warning">
+                    <ng-template pTemplate>
+                        <div class="ml-2">
+                            No puede transferir. Cree otro grupo
+                        </div>
+                    </ng-template>
+                </p-messages>
+            }
+        }
+    </div>
+
+    <div class="flex justify-content-end gap-2">
+        <p-button
+            label="Cancelar"
+            severity="secondary"
+            (onClick)="
+                accionBtn({ accion: 'close-modal-transferir', item: [] })
+            "
+        />
+        <p-button
+            [label]="'Transferir'"
+            (onClick)="transferenciaTareaCabeceraGrupos()"
+        />
+    </div>
+</app-modal-primeng>

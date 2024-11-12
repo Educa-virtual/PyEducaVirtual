@@ -52,3 +52,11 @@
     background-color: #e3f7ff;
     border-left: 8px solid #4a47e2 !important;
 }
+.btn-cancelar {
+    background-color: red;
+    border: 0;
+    padding: 5px;
+}
+.grupal ::ng-deep .p-accordion-header-link {
+    background-color: var(--green-100) !important; //your choice colour
+}

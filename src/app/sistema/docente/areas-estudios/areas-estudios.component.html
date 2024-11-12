@@ -39,106 +39,174 @@
     >
         <ng-template pTemplate="header">
             <tr>
-                <th style="width: 1rem">#</th>
-                <th style="width: 15rem">Nombre del Área Curricular</th>
-                <th style="width: 2rem; text-align: center">
-                    Total Estudiantes
-                </th>
-                <th style="width: 2rem; text-align: center">Grado</th>
-                <th style="width: 2rem; text-align: center">Sección</th>
-                <th style="width: 10rem; text-align: center">Avances %</th>
-                <th style="width: 8rem; text-align: center">Acción</th>
-                <th style="width: 2rem; text-align: center">Aula Virtual</th>
+                @switch (iPerfilId) {
+                    @case (7) {
+                        <th style="width: 1rem">#</th>
+                        <th style="width: 15rem">Nombre del Área Curricular</th>
+                        <th style="width: 2rem; text-align: center">
+                            Total Estudiantes
+                        </th>
+                        <th style="width: 2rem; text-align: center">Grado</th>
+                        <th style="width: 2rem; text-align: center">Sección</th>
+                        <th style="width: 10rem; text-align: center">
+                            Avances %
+                        </th>
+                        <th style="width: 8rem; text-align: center">Acción</th>
+                        <th style="width: 2rem; text-align: center">
+                            Aula Virtual
+                        </th>
+                    }
+                    @case (8) {
+                        <th style="width: 1rem">#</th>
+                        <th style="width: 15rem">Nombre del Área Curricular</th>
+                        <th style="width: 2rem; text-align: center">Grado</th>
+                        <th style="width: 2rem; text-align: center">Sección</th>
+                        <th style="width: 2rem; text-align: center">
+                            Aula Virtual
+                        </th>
+                    }
+                }
             </tr>
         </ng-template>
         <ng-template pTemplate="emptymessage" let-columns>
             <tr>
-                <td [attr.colspan]="8">No se encontraron resultados.</td>
+                @switch (iPerfilId) {
+                    @case (7) {
+                        <td [attr.colspan]="8">
+                            No se encontraron resultados.
+                        </td>
+                    }
+                    @case (8) {
+                        <td [attr.colspan]="5">
+                            No se encontraron resultados.
+                        </td>
+                    }
+                }
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
             <tr>
-                <td class="justify-content-center">{{ rowIndex + 1 }}</td>
-                <td class="font-bold">
-                    {{ item.cCursoNombre }}
-                </td>
-                <td style="text-align: center">{{ item.iEstudiantes }}</td>
-                <td style="text-align: center">{{ item.cGradoAbreviacion }}</td>
-                <td style="text-align: center">{{ item.cSeccion }}</td>
-                <td style="text-align: center">
-                    <div class="align-items-center align-content-center">
-                        <button
-                            pButton
-                            pRipple
-                            class="p-1 mx-1 p-button-warning"
-                        >
-                            {{ item.iAvanceSilabo + '%' }}
-                        </button>
-                        <button
-                            pButton
-                            pRipple
-                            class="p-1 mx-1 p-button-success"
-                        >
-                            {{ item.iAvanceAsistencia + '%' }}
-                        </button>
-                        <button
-                            pButton
-                            pRipple
-                            class="p-1 mx-1 p-button-danger"
-                        >
-                            {{ item.iAvanceNotas + '%' }}
-                        </button>
-                    </div>
-                </td>
-                <td style="text-align: center">
-                    <div class="align-items-center align-content-center">
-                        <button
-                            pTooltip="Gestionar Área Curricular"
-                            [rounded]="true"
-                            pButton
-                            pRipple
-                            class="p-1 mx-1 p-button-rounded p-button-primary p-button-text"
-                            (click)="
-                                this.selectedData = item; menu.toggle($event)
-                            "
-                        >
-                            <i class="pi pi-chevron-down"></i>
-                        </button>
-                        <button
-                            pTooltip="Descargar Lista de Estudiantes"
-                            tooltipPosition="top"
-                            [rounded]="true"
-                            pButton
-                            pRipple
-                            class="p-1 mx-1 p-button-rounded p-button-success p-button-text"
-                        >
-                            <i class="pi pi-file-excel"></i>
-                        </button>
-                        <button
-                            pTooltip="Descargar Programación Curricular"
-                            tooltipPosition="top"
-                            [rounded]="true"
-                            pButton
-                            pRipple
-                            class="p-1 mx-1 p-button-rounded p-button-danger p-button-text"
-                            (click)="this.getSilaboPdf(item.iSilaboId)"
-                        >
-                            <i class="pi pi-file-pdf"></i>
-                        </button>
-                    </div>
-                </td>
-                <td style="text-align: center">
-                    <p-button
-                        severity="success"
-                        [routerLink]="['./', item.iSilaboId]"
-                        [queryParams]="{
-                            cCursoNombre: item.cCursoNombre,
-                        }"
-                        label="Acceder"
-                        icon="pi pi-arrow-right"
-                        iconPos="right"
-                    />
-                </td>
+                @switch (iPerfilId) {
+                    @case (7) {
+                        <td class="justify-content-center">
+                            {{ rowIndex + 1 }}
+                        </td>
+                        <td class="font-bold">
+                            {{ item.cCursoNombre }}
+                        </td>
+                        <td style="text-align: center">
+                            {{ item.iEstudiantes }}
+                        </td>
+                        <td style="text-align: center">
+                            {{ item.cGradoAbreviacion }}
+                        </td>
+                        <td style="text-align: center">{{ item.cSeccion }}</td>
+                        <td style="text-align: center">
+                            <div
+                                class="align-items-center align-content-center"
+                            >
+                                <button
+                                    pButton
+                                    pRipple
+                                    class="p-1 mx-1 p-button-warning"
+                                >
+                                    {{ item.iAvanceSilabo + '%' }}
+                                </button>
+                                <button
+                                    pButton
+                                    pRipple
+                                    class="p-1 mx-1 p-button-success"
+                                >
+                                    {{ item.iAvanceAsistencia + '%' }}
+                                </button>
+                                <button
+                                    pButton
+                                    pRipple
+                                    class="p-1 mx-1 p-button-danger"
+                                >
+                                    {{ item.iAvanceNotas + '%' }}
+                                </button>
+                            </div>
+                        </td>
+                        <td style="text-align: center">
+                            <div
+                                class="align-items-center align-content-center"
+                            >
+                                <button
+                                    pTooltip="Gestionar Área Curricular"
+                                    [rounded]="true"
+                                    pButton
+                                    pRipple
+                                    class="p-1 mx-1 p-button-rounded p-button-primary p-button-text"
+                                    (click)="
+                                        this.selectedData = item;
+                                        menu.toggle($event)
+                                    "
+                                >
+                                    <i class="pi pi-chevron-down"></i>
+                                </button>
+                                <button
+                                    pTooltip="Descargar Lista de Estudiantes"
+                                    tooltipPosition="top"
+                                    [rounded]="true"
+                                    pButton
+                                    pRipple
+                                    class="p-1 mx-1 p-button-rounded p-button-success p-button-text"
+                                >
+                                    <i class="pi pi-file-excel"></i>
+                                </button>
+                                <button
+                                    pTooltip="Descargar Programación Curricular"
+                                    tooltipPosition="top"
+                                    [rounded]="true"
+                                    pButton
+                                    pRipple
+                                    class="p-1 mx-1 p-button-rounded p-button-danger p-button-text"
+                                    (click)="this.getSilaboPdf(item.iSilaboId)"
+                                >
+                                    <i class="pi pi-file-pdf"></i>
+                                </button>
+                            </div>
+                        </td>
+                        <td style="text-align: center">
+                            <p-button
+                                severity="success"
+                                [routerLink]="['./', item.iSilaboId]"
+                                [queryParams]="{
+                                    cCursoNombre: item.cCursoNombre,
+                                }"
+                                label="Acceder"
+                                icon="pi pi-arrow-right"
+                                iconPos="right"
+                            />
+                        </td>
+                    }
+
+                    @case (8) {
+                        <td class="justify-content-center">
+                            {{ rowIndex + 1 }}
+                        </td>
+                        <td class="font-bold">
+                            {{ item.cCursoNombre }}
+                        </td>
+                        <td style="text-align: center">
+                            {{ item.cGradoAbreviacion }}
+                        </td>
+                        <td style="text-align: center">{{ item.cSeccion }}</td>
+                        <td style="text-align: center">
+                            <p-button
+                                severity="success"
+                                [routerLink]="['./', item.iSilaboId]"
+                                [queryParams]="{
+                                    cCursoNombre: item.cCursoNombre,
+                                }"
+                                label="Acceder"
+                                icon="pi pi-arrow-right"
+                                iconPos="right"
+                            />
+                        </td>
+                    }
+                }
             </tr>
         </ng-template>
     </p-table>

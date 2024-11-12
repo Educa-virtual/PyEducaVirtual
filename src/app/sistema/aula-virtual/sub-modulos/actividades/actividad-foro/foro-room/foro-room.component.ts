@@ -1,5 +1,6 @@
 import { Component, inject, OnInit, Input } from '@angular/core'
 import { IconComponent } from '@/app/shared/icon/icon.component'
+//import { LeyendaComponent } from '@/app/shared/components/leyenda/leyenda.component'
 import {
     matAccessTime,
     matCalendarMonth,
@@ -21,6 +22,9 @@ import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.ser
 import { tipoActividadesKeys } from '@/app/sistema/aula-virtual/interfaces/actividad.interface'
 import { Subject, takeUntil } from 'rxjs'
 import { RemoveHTMLPipe } from '@/app/shared/pipes/remove-html.pipe'
+import { NgFor } from '@angular/common'
+import { RecursosListaComponent } from '@/app/shared/components/recursos-lista/recursos-lista.component'
+import { ConstantesService } from '@/app/servicios/constantes.service'
 @Component({
     selector: 'app-foro-room',
     standalone: true,
@@ -28,12 +32,14 @@ import { RemoveHTMLPipe } from '@/app/shared/pipes/remove-html.pipe'
     styleUrls: ['./foro-room.component.scss'],
     imports: [
         IconComponent,
+        RecursosListaComponent,
         RemoveHTMLPipe,
         CommonInputComponent,
         TablePrimengComponent,
         TabViewModule,
         OrderListModule,
         PrimengModule,
+        NgFor,
     ],
     providers: [
         provideIcons({
@@ -54,18 +60,30 @@ export class ForoRoomComponent implements OnInit {
     private GeneralService = inject(GeneralService)
     private _formBuilder = inject(FormBuilder)
     private _aulaService = inject(ApiAulaService)
+    // private ref = inject(DynamicDialogRef)
+    private _constantesService = inject(ConstantesService)
     //private ref = inject(DynamicDialogRef)
     // variables
+    showEditor = false // variable          para ocultar el p-editor
+    FilesTareas = []
     estudiantes: any[] = []
     calificacion: any[] = []
     respuestasForo: any[] = []
+    comentarios: any[] = []
     modalCalificacion: boolean = false
     estudianteSelect = null
     private unsbscribe$ = new Subject<boolean>()
 
     public foro
+    iPerfilId: number
+    iEstudianteId: number
+    iDocenteId: number
+    expanded: false
 
     commentForoM: string = ''
+    selectedCommentIndex: number | null = null // Para rastrear el comentario seleccionado para responder
+    selectedComentario: number | null = null
+    respuestaInput: string = '' // Para almacenar la respuesta temporal
 
     public foroForm: FormGroup = this._formBuilder.group({
         cForoTitulo: ['', [Validators.required]],
@@ -77,37 +95,103 @@ export class ForoRoomComponent implements OnInit {
         dtForoFin: [],
     })
     public foroFormComnt: FormGroup = this._formBuilder.group({
+        iEscalaCalifId: [],
+        iForoRptaId: [],
+        cForoRptaDocente: ['', [Validators.required]],
+        nForoRptaNota: [],
+        cForoDescripcion: [],
+    })
+    public foroFormComntAl: FormGroup = this._formBuilder.group({
         cForoRptaRespuesta: ['', [Validators.required]],
+        iEstudianteId: [],
+        iForoId: [''],
+        iDocenteId: [''],
     })
     constructor() {}
     ngOnInit() {
-        //console.log('HolaMit', this.ixActivadadId, this.iActTopId)
-        //this.foroFormComnt.get('cForoRptaRespuesta').disable()
-        this.getEstudiantesMatricula()
+        this.obtenerIdPerfil()
         this.mostrarCalificacion()
         this.obtenerForo()
         this.getRespuestaF()
-        //console.log('Obtener Datos', this.getEstudiantesMatricula())
     }
     // closeModal(data) {
     //     this.ref.close(data)
     // }
+    //ver si mi perfil esta llegando (borrar)
+    obtenerIdPerfil() {
+        this.iEstudianteId = this._constantesService.iEstudianteId
+        this.iPerfilId = this._constantesService.iPerfilId
+        this.iDocenteId = this._constantesService.iDocenteId
+        console.log('mi id perfil', this.iPerfilId)
+    }
     openModal(respuestasForo) {
         this.modalCalificacion = true
         this.estudianteSelect = respuestasForo
         this.foroFormComnt.patchValue(respuestasForo)
     }
-    submit() {
-        const value = this.foroForm.value
-        console.log('Guardar Calificacion', value)
+    toggleEditor() {
+        this.showEditor = true
     }
-    sendComment() {
-        const comment = this.foroFormComnt.value
-        //this.commentForo = this.commentForoM
-        this._aulaService.guardarRespuesta(comment).subscribe(() => {})
-        console.log('Comentario:', comment)
+    closeEditor() {
+        this.showEditor = false
+    }
+    submit() {
+        const value = this.foroFormComnt.value
+        console.log('Guardar Calificacion', value)
+        this._aulaService.calificarForoDocente(value).subscribe((resp: any) => {
+            if (resp?.validated) {
+                this.modalCalificacion = false
+                this.getRespuestaF()
+            }
+        })
+    }
+    startReply(index: number) {
+        this.selectedCommentIndex = index // Guarda el índice del comentario seleccionado
+        console.log('Comentario', this.selectedCommentIndex)
+    }
 
-        //this.cForoRptaRespuesta = '';
+    sendComment() {
+        const perfil = (this.iPerfilId = this._constantesService.iPerfilId)
+        if (perfil == 8) {
+            this.iEstudianteId = this._constantesService.iEstudianteId
+            const comment = {
+                ...this.foroFormComntAl.value,
+                iForoId: this.ixActivadadId,
+                iEstudianteId: this.iEstudianteId,
+            }
+            console.log('comentarios: ', comment)
+            this._aulaService.guardarRespuesta(comment).subscribe({
+                next: (resp: any) => {
+                    // para refrescar la pagina
+                    if (resp?.validated) {
+                        this.getRespuestaF()
+                        this.foroFormComntAl.get('cForoRptaRespuesta')?.reset()
+                    }
+                },
+                error: (error) => {
+                    console.error('Comentario:', error)
+                },
+            })
+        } else {
+            this.iDocenteId = this._constantesService.iDocenteId
+            const comment = {
+                ...this.foroFormComntAl.value,
+                iForoId: this.ixActivadadId,
+                iDocenteId: this.iDocenteId,
+            }
+            this._aulaService.guardarRespuesta(comment).subscribe({
+                next: (resp: any) => {
+                    // para refrescar la pagina
+                    if (resp?.validated) {
+                        this.getRespuestaF()
+                        this.foroFormComntAl.get('cForoRptaRespuesta')?.reset()
+                    }
+                },
+                error: (error) => {
+                    console.error('Comentario:', error)
+                },
+            })
+        }
     }
     mostrarCalificacion() {
         const userId = 1
@@ -116,6 +200,7 @@ export class ForoRoomComponent implements OnInit {
             //console.log('Mostrar escala',this.calificacion)
         })
     }
+    foroRespaldo = []
     obtenerForo() {
         this._aulaService
             .obtenerForo({
@@ -126,39 +211,37 @@ export class ForoRoomComponent implements OnInit {
             .subscribe({
                 next: (resp) => {
                     this.foro = resp
+                    this.FilesTareas = this.foro?.cForoUrl
+                        ? JSON.parse(this.foro?.cForoUrl)
+                        : []
                 },
             })
-        //console.log('Obtener Foros',this._aulaService)
     }
     //getRespuestasForo
     getRespuestaF() {
-        const userd = 1
-        this._aulaService.obtenerRespuestaForo(userd).subscribe((Data) => {
-            this.respuestasForo = Data['data']
-            console.log('respuesta foro', this.respuestasForo)
-        })
+        this._aulaService
+            .obtenerRespuestaForo({
+                iActTipoId: this.iActTopId,
+                ixActivadadId: this.ixActivadadId,
+            })
+            .pipe(takeUntil(this.unsbscribe$))
+            .subscribe({
+                next: (resp: Record<string, any>) => {
+                    this.respuestasForo = Object.values(resp).map(
+                        (comment) => ({
+                            ...comment,
+                            expanded: false,
+                        })
+                    )
+                    console.log('Comentarios de los Foros', this.respuestasForo)
+                },
+                error: (err) => {
+                    console.error('Error al obtener respuestas del foro', err)
+                },
+            })
     }
-
-    getEstudiantesMatricula() {
-        const params = {
-            petition: 'post',
-            group: 'aula-virtual',
-            prefix: 'matricula',
-            ruta: 'list',
-            //Undefined property: stdClass::$iSemAcadId
-            //Undefined property: stdClass::$iYAcadId
-            data: {
-                opcion: 'CONSULTAR-ESTUDIANTESxiSemAcadIdxiYAcadIdxiCurrId',
-                iSemAcadId:
-                    '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-                iYAcadId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-                iCurrId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-            },
-            params: { skipSuccessMessage: true },
-        }
-        console.log(this.getInformation)
-
-        this.getInformation(params)
+    toggleExpand(comment: any) {
+        comment.expanded = !comment.expanded
     }
     getInformation(params) {
         this.GeneralService.getGralPrefix(params).subscribe({
@@ -170,28 +253,5 @@ export class ForoRoomComponent implements OnInit {
                 console.log(error)
             },
         })
-        //console.log('Datos estudiante', this.GeneralService)
     }
-    // ngOnInit() { implements OnInit
-    // }
-    //   obtenerForo() {
-    //     this._aulaService
-    //         .obtenerActividad({
-    //             iActTipoId: this.iActTopId,
-    //             ixActivadadId: this.ixActivadadId,
-    //         })
-    //         .pipe(takeUntil(this.unsbscribe$))
-    //         .subscribe({
-    //             next: (resp) => {
-    //                 this.evaluacion = resp
-    //             },
-    //         })
-    //   }
-    //   mostrarCategorias() {
-    //     const userId = 1
-    //     this._aulaService.guardarForo(userId).subscribe((Data) => {
-    //         this.categorias = Data['data']
-    //         console.log('Datos mit', this.categorias)
-    //     })
-    // }
 }

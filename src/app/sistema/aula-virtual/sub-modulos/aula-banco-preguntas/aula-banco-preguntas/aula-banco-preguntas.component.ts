@@ -20,6 +20,7 @@ import { Subject, takeUntil } from 'rxjs'
 import { MODAL_CONFIG } from '@/app/shared/constants/modal.config'
 import { DialogService } from 'primeng/dynamicdialog'
 import { AulaBancoPreguntaFormContainerComponent } from './components/aula-banco-pregunta-form-container/aula-banco-pregunta-form-container.component'
+import { ConstantesService } from '@/app/servicios/constantes.service'
 
 @Component({
     selector: 'app-aula-banco-preguntas',
@@ -29,8 +30,12 @@ import { AulaBancoPreguntaFormContainerComponent } from './components/aula-banco
     styleUrl: './aula-banco-preguntas.component.scss',
 })
 export class AulaBancoPreguntasComponent implements OnInit, OnDestroy {
-    @Input() public mode: 'SELECTION' | 'NORMAL' = 'NORMAL'
     @Output() public selectedRowDataChange = new EventEmitter()
+    @Input() public mode: 'SELECTION' | 'NORMAL' = 'NORMAL'
+    @Input() iEvaluacionId: number
+    @Input({ required: true }) set iCursoId(value) {
+        this.params.iCursoId = value
+    }
     public actionsTable = actionsTable
     public actionsContainer = actionsContainer
     public columnas = columns
@@ -42,20 +47,25 @@ export class AulaBancoPreguntasComponent implements OnInit, OnDestroy {
 
     private _aulaBancoApiService = inject(ApiAulaBancoPreguntasService)
     private _dialogService = inject(DialogService)
-    private _confirmationModalService = inject(ConfirmationModalService)
+    private _constantesService = inject(ConstantesService)
 
     public params = {
-        iCursoId: 1,
-        iDocenteId: 1,
-        iCurrContId: 1,
-        iNivelCicloId: 1,
+        iCursoId: null,
+        iDocenteId: null,
+        iCurrContId: null,
+        iNivelCicloId: null,
         busqueda: '',
         iTipoPregId: 0,
+        iEvaluacionId: 0,
     }
 
     private _confirmService = inject(ConfirmationModalService)
 
     ngOnInit() {
+        this.params.iEvaluacionId = this.iEvaluacionId
+        this.params.iDocenteId = this._constantesService.iDocenteId
+        this.params.iNivelCicloId = this._constantesService.iNivelCicloId
+        this.params.iCurrContId = this._constantesService.iCurrContId
         this.getData()
         this.setupConfig()
     }
@@ -135,6 +145,7 @@ export class AulaBancoPreguntasComponent implements OnInit, OnDestroy {
                     tipoPreguntas: this.tipoPreguntas,
                     pregunta: pregunta,
                     iCursoId: this.params.iCursoId,
+                    iEvaluacionId: this.params.iEvaluacionId,
                 },
                 header:
                     pregunta.iPreguntaId == 0

@@ -96,9 +96,12 @@ export class EvaluacionLogrosComponent implements OnInit, OnDestroy {
         this.title = this._config.data.title
     }
 
-    public onActionBtn({ accion, item }) {
+    public onActionBtn({ accion, item }, pregunta) {
         if (accion === 'editar') {
-            this.crearActualizarLogro(item)
+            this.crearActualizarLogro({
+                iEvalPregId: pregunta.iEvalPregId,
+                logro: item,
+            })
         }
         if (accion === 'eliminar') {
             this.confirmEliminarLogro(item)
@@ -153,9 +156,8 @@ export class EvaluacionLogrosComponent implements OnInit, OnDestroy {
         ref.onClose.pipe(takeUntil(this._unsubscribe$)).subscribe((result) => {
             if (!result) return
             const preguntaSelected = this.preguntas[this.preguntaSelectedIndex]
-
             const logroInData = preguntaSelected.logros.findIndex(
-                (logro) => logro.iNivelLogroEvalId == result.iNivelLogroEvalId
+                (logro) => logro.iNivelLogroEvaId == result.iNivelLogroEvaId
             )
             if (logroInData == -1) {
                 this.preguntas[this.preguntaSelectedIndex].logros = [

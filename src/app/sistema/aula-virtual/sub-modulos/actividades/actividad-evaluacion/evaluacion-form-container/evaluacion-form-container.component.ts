@@ -44,6 +44,7 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
     public calificacionForm: FormGroup
     public activeStepper = 0
     public rubricaSelected = null
+    public files = []
     public evaluacionFormPasos: MenuItem[] = [
         {
             id: '0',
@@ -77,10 +78,11 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
 
     public preguntasSeleccionadas = []
     public paramsData = {
-        idDocCursoId: '1',
-        iCursoId: '1',
-        iContenidoSemId: 0,
-        ixActivadadId: '',
+        iCursoId: null,
+        iContenidoSemId: null,
+        ixActivadadId: null,
+        idDocCursoId: null,
+        iDocenteId: null,
     }
 
     constructor() {}
@@ -89,7 +91,19 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
         this.getData()
         this.initFormGroup()
         this.paramsData.iContenidoSemId =
-            this._config.data.semana?.iContenidoSemId
+            this._config.data.semana.iContenidoSemId
+        this.paramsData.iCursoId = this._config.data.semana.iCursoId
+        this.paramsData.idDocCursoId = this._config.data.semana.idDocCursoId
+        this.paramsData.iDocenteId = this._constantesService.iDocenteId
+        if (!this.paramsData.iContenidoSemId) {
+            throw new Error('Error el iContenidoSemId es requerido')
+        }
+        if (!this.paramsData.iCursoId) {
+            throw new Error('Error el iCursoId es requerido')
+        }
+        if (!this.paramsData.idDocCursoId) {
+            throw new Error('Error el iCursoId es requerido')
+        }
 
         const actividad = this._config.data.actividad
 
@@ -100,10 +114,6 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
             this.paramsData.ixActivadadId = actividad.ixActivadadId
             this.obtenerEvaluacion()
         }
-
-        // emitir params Evaluacion
-        this._constantesService.iCursoId = this.paramsData.iCursoId
-        this._constantesService.idDocCursoId = this.paramsData.idDocCursoId
     }
 
     getData() {
@@ -140,6 +150,8 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
 
     // coloca los valores en el form
     patchEvaluacionInfo(data: any) {
+        const files = data.cEvaluacionArchivoAdjunto ?? []
+        this.files = [...files]
         const dFechaEvaluacionPublicacion = convertStringToDate(
             data.dtEvaluacionPublicacion
         )
@@ -168,6 +180,7 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
             tHoraEvaluacionInico,
             dFechaEvaluacionFin,
             tHoraEvaluacionFin,
+            cEvaluacionArchivoAdjunto: data.cEvaluacionArchivoAdjunto,
         })
     }
 
@@ -259,7 +272,7 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
         data.iDocenteId = this._constantesService.iDocenteId
         data.iActTipoId = EVALUACION
         data.iContenidoSemId = this.paramsData.iContenidoSemId
-
+        data.cEvaluacionArchivoAdjunto = JSON.stringify(this.files)
         if (this.evaluacionInfoForm.invalid) {
             this.evaluacionInfoForm.markAllAsTouched()
             return

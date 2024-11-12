@@ -3,7 +3,10 @@ import { environment } from '@/environments/environment.template'
 import { HttpClient } from '@angular/common/http'
 import { inject, Injectable } from '@angular/core'
 import { map } from 'rxjs'
-import { mapItemsBancoToEre } from '../../evaluaciones/sub-evaluaciones/banco-preguntas/models/pregunta-data-transformer'
+import {
+    mapData,
+    mapItemsBancoToEre,
+} from '../../evaluaciones/sub-evaluaciones/banco-preguntas/models/pregunta-data-transformer'
 
 @Injectable({
     providedIn: 'root',
@@ -84,7 +87,14 @@ export class ApiEvaluacionesService {
     obtenerEscalaCalificaciones() {
         return this.http
             .get<any>(`${this.baseUrlApi}/evaluaciones/escala-calificaciones`)
-            .pipe(map((resp) => resp.data))
+            .pipe(
+                map((resp) =>
+                    resp.data.map((item) => {
+                        item.cEscalaCalifNombreDetalles = `${item.cEscalaCalifNombre ?? ''} ${item.cEscalaCalifDescripcion ?? ''} ${item.nEscalaCalifEquivalente ?? ''}`
+                        return item
+                    })
+                )
+            )
     }
 
     // logros
@@ -120,6 +130,13 @@ export class ApiEvaluacionesService {
         )
     }
 
+    anularPublicacionEvaluacion(data) {
+        return this.http.post<ApiResponse>(
+            `${this.baseUrlApi}/evaluaciones/evaluacion/anular-publicacion`,
+            data
+        )
+    }
+
     obtenerEstudiantesEvaluación(params) {
         return this.http
             .get<ApiResponse>(
@@ -137,7 +154,19 @@ export class ApiEvaluacionesService {
             )
             .pipe(
                 map((resp) => resp.data),
-                map((data) => mapItemsBancoToEre(data))
+                map((data) => mapItemsBancoToEre(data)),
+                map((data) => mapData(data))
             )
+    }
+
+    // calificar logros estudiante
+
+    calificarLogros(data) {
+        return this.http
+            .post<ApiResponse>(
+                `${this.baseUrlApi}/evaluaciones/evaluacion/estudiantes/calificarLogros`,
+                data
+            )
+            .pipe(map((resp) => resp.data))
     }
 }

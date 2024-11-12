@@ -11,6 +11,12 @@
     flex: 1;
 }
 
+//cdk-drop-list p-orderlist-list
+
+:host ::ng-deep .cdk-drop-list {
+    max-height: 400px;
+}
+
 :host ::ng-deep .actividad-tabs .p-tabview-nav li a {
     text-align: center;
     width: 100%;
@@ -27,49 +33,19 @@
     padding-inline: 0;
     padding-block-end: 0;
 }
+//perfiles-list-item text-left ng-star-inserted
+:host ::ng-deep .perfiles-list-item .img {
+    border-radius: 100px;
+    background-color: red;
+}
+
 /************************/
 .container {
     display: flex;
-    gap: 20px; /* Espacio entre las columnas */
-    height: 500px;
+    //gap: 20px; /* Espacio entre las columnas */
+    height: 900px;
     flex-wrap: wrap;
     justify-content: space-between;
-}
-.card1 {
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    padding: 20px;
-    width: 58%; /* Para que ambas columnas ocupen igual espacio */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    height: 100%;
-}
-.card2 {
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    padding: 20px;
-    width: 40%; /* Para que ambas columnas ocupen igual espacio */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    height: 100%;
-    overflow: hidden;
-}
-.card3 {
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    padding: 20px;
-    width: 100%; /* Para que ambas columnas ocupen igual espacio */
-    height: 100%;
-    overflow: hidden;
-}
-@media (max-width: 1116px) {
-    .card1 {
-        width: 100%;
-    }
-    .card2 {
-        width: 100%;
-    }
-    .card3 {
-        width: 100%;
-    }
 }
 .list {
     height: 1000px;
@@ -145,22 +121,24 @@
     display: none;
 }
 :host ::ng-deep .p-orderlist-list {
-    max-height: 300px; /* Define la altura máxima deseada */
+    max-height: 365px; /* Define la altura máxima deseada */
     overflow-y: auto; /* Agrega la barra de desplazamiento en el eje vertical */
 }
 
 :host ::ng-deep .list .p-orderlist-header {
     background-color: #f8f9fa;
     font-weight: bold;
-    padding: 4%;
+    padding: 1%;
     position: sticky;
     top: 0;
     z-index: 1000; /* Asegúrate de que la cabecera esté por encima de los elementos */
     border-bottom: 1px solid #ddd;
 }
 :host ::ng-deep .list .p-ripple {
-    height: 110px;
+    height: auto;
 }
+//class="p-ripple p-element cdk-drag p-orderlist-item cdk-drag-disabled ng-star-inserted p-highlight p-focus"
+
 //p-element p-ripple ng-tns-c1946505645-2 p-dialog-header-icon p-dialog-header-close p-link p-button p-component ng-star-insertedp-element p-icon-wrapper ng-tns-c1946505645-2 ng-star-inserted
 
 :host ::ng-deep {
@@ -266,4 +244,58 @@
     outline: 0 none;
     outline-offset: 0px;
     box-shadow: none;
+}
+/*---------------------------------------------*/
+.toggle-link {
+    color: #007bff;
+    cursor: pointer;
+    font-size: 0.9rem;
+    margin-left: 5px;
+}
+.reply-button {
+    margin-top: 0.5rem;
+    color: #007bff;
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-size: 0.9rem;
+}
+
+.reply-container {
+    display: flex;
+    align-items: center;
+    margin-top: 0.5rem;
+    flex-direction: column;
+    align-items: flex-end; /* Alinea elementos al inicio horizontalmente */
+}
+
+.reply-container .comment-input {
+    flex: 1;
+    margin-right: 0.5rem;
+}
+
+.reply-container .send-button {
+    padding: 0.5rem 1rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    align-self: flex-start; /* Alinea el botón a la izquierda */
+}
+.button-container {
+    margin-top: 10px; /* Espacio entre el editor y el botón */
+}
+
+.reply {
+    margin-left: 1rem;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+/*texto enriquecido*/
+
+//class="p-editor-container"
+:host ::ng-deep .p-editor-container {
+    width: 100%;
 }

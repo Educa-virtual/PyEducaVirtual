@@ -64,8 +64,9 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
             detail: 'En esta sección podrá visualizar las áreas curriculares asignadas para el periodo seleccionado, así como la institución educativa a la que pertenece.',
         },
     ]
-
+    iPerfilId: number
     ngOnInit() {
+        this.iPerfilId = this._constantesService.iPerfilId
         this.items = [
             {
                 label: 'Fichas de Aprendizaje',

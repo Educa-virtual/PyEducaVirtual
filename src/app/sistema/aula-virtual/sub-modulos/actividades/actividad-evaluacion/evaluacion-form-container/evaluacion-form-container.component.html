@@ -20,6 +20,11 @@
                 [tituloEvaluacion]="tituloEvulacion"
                 (rubricaSelectedChange)="rubricaSelected = $event"
                 [rubricaSelected]="rubricaSelected"
+                [params]="{
+                    iCursoId: paramsData.iCursoId,
+                    iDocenteId: paramsData.iDocenteId,
+                    idDocCursoId: paramsData.idDocCursoId,
+                }"
             ></app-evaluacion-form-calificacion>
         }
         @case (2) {
@@ -30,6 +35,7 @@
                 (preguntasSeleccionadasChange)="
                     preguntasSeleccionadasChange($event)
                 "
+                [iCursoId]="paramsData.iCursoId"
             ></app-evaluacion-form-preguntas>
         }
         @default {}

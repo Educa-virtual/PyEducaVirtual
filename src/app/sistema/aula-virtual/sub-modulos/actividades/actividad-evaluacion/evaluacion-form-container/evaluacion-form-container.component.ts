@@ -78,10 +78,11 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
 
     public preguntasSeleccionadas = []
     public paramsData = {
-        idDocCursoId: '1',
-        iCursoId: '1',
-        iContenidoSemId: 0,
-        ixActivadadId: '',
+        iCursoId: null,
+        iContenidoSemId: null,
+        ixActivadadId: null,
+        idDocCursoId: null,
+        iDocenteId: null,
     }
 
     constructor() {}
@@ -90,7 +91,19 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
         this.getData()
         this.initFormGroup()
         this.paramsData.iContenidoSemId =
-            this._config.data.semana?.iContenidoSemId
+            this._config.data.semana.iContenidoSemId
+        this.paramsData.iCursoId = this._config.data.semana.iCursoId
+        this.paramsData.idDocCursoId = this._config.data.semana.idDocCursoId
+        this.paramsData.iDocenteId = this._constantesService.iDocenteId
+        if (!this.paramsData.iContenidoSemId) {
+            throw new Error('Error el iContenidoSemId es requerido')
+        }
+        if (!this.paramsData.iCursoId) {
+            throw new Error('Error el iCursoId es requerido')
+        }
+        if (!this.paramsData.idDocCursoId) {
+            throw new Error('Error el iCursoId es requerido')
+        }
 
         const actividad = this._config.data.actividad
 
@@ -101,10 +114,6 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
             this.paramsData.ixActivadadId = actividad.ixActivadadId
             this.obtenerEvaluacion()
         }
-
-        // emitir params Evaluacion
-        this._constantesService.iCursoId = this.paramsData.iCursoId
-        this._constantesService.idDocCursoId = this.paramsData.idDocCursoId
     }
 
     getData() {

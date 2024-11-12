@@ -41,6 +41,11 @@ export class RubricasComponent implements OnInit, OnDestroy {
     @Input() public rubricaSelected = null
     @Input() mode: 'SELECTION' | 'NORMAL' = 'NORMAL'
     @Input() title: string = 'Rubricas'
+    @Input({ required: true }) params = {
+        iCursoId: null,
+        iDocenteId: null,
+        idDocCursoId: null,
+    }
 
     public columnasTabla: IColumn[] = [
         {
@@ -86,11 +91,7 @@ export class RubricasComponent implements OnInit, OnDestroy {
     ]
 
     public data = []
-    private params = {
-        iCursoId: null,
-        iDocenteId: null,
-        idDocCursoId: null,
-    }
+
     private _dialogService = inject(DialogService)
     private _evaluacionApiService = inject(ApiEvaluacionesService)
     private _unsubscribe$ = new Subject<boolean>()
@@ -98,8 +99,6 @@ export class RubricasComponent implements OnInit, OnDestroy {
     private _constantesService = inject(ConstantesService)
 
     ngOnInit() {
-        this.params.iCursoId = this._constantesService.iCursoId
-        this.params.idDocCursoId = this._constantesService.idDocCursoId
         this.params.iDocenteId = this._constantesService.iDocenteId
 
         this.getData()
@@ -133,6 +132,8 @@ export class RubricasComponent implements OnInit, OnDestroy {
             ...MODAL_CONFIG,
             header,
             data: {
+                iCursoId: this.params.iCursoId,
+                idDocCursoId: this.params.idDocCursoId,
                 rubrica: item,
             },
         })

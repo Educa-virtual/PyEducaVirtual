@@ -33,9 +33,15 @@
     padding-inline: 0;
     padding-block-end: 0;
 }
+//perfiles-list-item text-left ng-star-inserted
+:host ::ng-deep .perfiles-list-item .img {
+    border-radius: 100px;
+    background-color: red;
+}
+
 /************************/
 .container {
-    //display: flex;
+    display: flex;
     //gap: 20px; /* Espacio entre las columnas */
     height: 900px;
     flex-wrap: wrap;
@@ -47,7 +53,8 @@
     padding: 20px;
     width: 68%; /* Para que ambas columnas ocupen igual espacio */
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    height: 100%;
+    height: auto;
+    overflow: hidden;
 }
 .card2 {
     border: 1px solid #ddd;
@@ -165,8 +172,10 @@
     border-bottom: 1px solid #ddd;
 }
 :host ::ng-deep .list .p-ripple {
-    height: 110px;
+    height: auto;
 }
+//class="p-ripple p-element cdk-drag p-orderlist-item cdk-drag-disabled ng-star-inserted p-highlight p-focus"
+
 //p-element p-ripple ng-tns-c1946505645-2 p-dialog-header-icon p-dialog-header-close p-link p-button p-component ng-star-insertedp-element p-icon-wrapper ng-tns-c1946505645-2 ng-star-inserted
 
 :host ::ng-deep {
@@ -293,6 +302,8 @@
     display: flex;
     align-items: center;
     margin-top: 0.5rem;
+    flex-direction: column;
+    align-items: flex-end; /* Alinea elementos al inicio horizontalmente */
 }
 
 .reply-container .comment-input {
@@ -307,10 +318,21 @@
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    align-self: flex-start; /* Alinea el botón a la izquierda */
+}
+.button-container {
+    margin-top: 10px; /* Espacio entre el editor y el botón */
 }
 
 .reply {
     margin-left: 1rem;
     font-size: 0.9rem;
     color: #555;
+}
+
+/*texto enriquecido*/
+
+//class="p-editor-container"
+:host ::ng-deep .p-editor-container {
+    width: 100%;
 }

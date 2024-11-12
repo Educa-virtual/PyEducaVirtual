@@ -60,9 +60,11 @@ export class ForoRoomComponent implements OnInit {
     private GeneralService = inject(GeneralService)
     private _formBuilder = inject(FormBuilder)
     private _aulaService = inject(ApiAulaService)
+    // private ref = inject(DynamicDialogRef)
     private _constantesService = inject(ConstantesService)
     //private ref = inject(DynamicDialogRef)
     // variables
+    showEditor = false // variable          para ocultar el p-editor
     FilesTareas = []
     estudiantes: any[] = []
     calificacion: any[] = []
@@ -80,6 +82,7 @@ export class ForoRoomComponent implements OnInit {
 
     commentForoM: string = ''
     selectedCommentIndex: number | null = null // Para rastrear el comentario seleccionado para responder
+    selectedComentario: number | null = null
     respuestaInput: string = '' // Para almacenar la respuesta temporal
 
     public foroForm: FormGroup = this._formBuilder.group({
@@ -126,6 +129,12 @@ export class ForoRoomComponent implements OnInit {
         this.estudianteSelect = respuestasForo
         this.foroFormComnt.patchValue(respuestasForo)
     }
+    toggleEditor() {
+        this.showEditor = true
+    }
+    closeEditor() {
+        this.showEditor = false
+    }
     submit() {
         const value = this.foroFormComnt.value
         console.log('Guardar Calificacion', value)
@@ -140,6 +149,7 @@ export class ForoRoomComponent implements OnInit {
         this.selectedCommentIndex = index // Guarda el índice del comentario seleccionado
         console.log('Comentario', this.selectedCommentIndex)
     }
+
     sendComment() {
         const perfil = (this.iPerfilId = this._constantesService.iPerfilId)
         if (perfil == 8) {
@@ -149,6 +159,7 @@ export class ForoRoomComponent implements OnInit {
                 iForoId: this.ixActivadadId,
                 iEstudianteId: this.iEstudianteId,
             }
+            console.log('comentarios: ', comment)
             this._aulaService.guardarRespuesta(comment).subscribe({
                 next: (resp: any) => {
                     // para refrescar la pagina

@@ -33,8 +33,8 @@ export class AulaBancoPreguntaFormContainerComponent implements OnInit {
     public modePregunta: 'CREAR' | 'EDITAR' = 'CREAR'
     public encabezadoMode: 'COMPLETADO' | 'EDITAR' = 'EDITAR'
     private params = {
-        iCursoId: 1,
-        iCurrContId: 1,
+        iCursoId: null,
+        iCurrContId: null,
         iEvaluacionId: 0,
     }
 
@@ -48,6 +48,8 @@ export class AulaBancoPreguntaFormContainerComponent implements OnInit {
             return item.iTipoPregId !== 0
         })
         this.params.iEvaluacionId = this._config.data.iEvaluacionId ?? 0
+        this.params.iCursoId = this._config.data.iCursoId
+        this.params.iCurrContId = this._constantesService.iCurrContId
 
         if (this._config.data.pregunta.iPreguntaId == 0) {
             this.modePregunta = 'CREAR'
@@ -125,11 +127,11 @@ export class AulaBancoPreguntaFormContainerComponent implements OnInit {
     }
 
     guardarBancoPreguntas(data) {
-        // todo usar valores reales
         data.iNivelCicloId = this._constantesService.iNivelCicloId
         data.iDocenteId = this._constantesService.iDocenteId
         data.iCursoId = this.params.iCursoId
         data.iCurrContId = this.params.iCurrContId
+        // el iEvaluacionId es usado para agregrarlo directamntee a eval.preguntas si no es 0
         data.iEvaluacionId = this.params.iEvaluacionId
         this._aulaBancoPreguntasService
             .guardarActualizarPreguntaConAlternativas(data)

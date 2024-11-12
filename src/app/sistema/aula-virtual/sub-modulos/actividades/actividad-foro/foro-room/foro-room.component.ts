@@ -103,6 +103,7 @@ export class ForoRoomComponent implements OnInit {
     })
     public foroFormComntAl: FormGroup = this._formBuilder.group({
         cForoRptaRespuesta: ['', [Validators.required]],
+        cForoRptaPadre: [''],
         iEstudianteId: [],
         iForoId: [''],
         iDocenteId: [''],
@@ -148,6 +149,15 @@ export class ForoRoomComponent implements OnInit {
     startReply(index: number) {
         this.selectedCommentIndex = index // Guarda el índice del comentario seleccionado
         console.log('Comentario', this.selectedCommentIndex)
+    }
+    cancelarEdicion() {
+        this.selectedCommentIndex = null // Desactiva el editor al hacer clic en "Cancelar"
+    }
+    sendCommentPadre() {
+        // guardar el comentario
+        this.iEstudianteId = this._constantesService.iEstudianteId
+        this.foroFormComntAl.value
+        console.log('rptaPadre', this.foroFormComntAl)
     }
 
     sendComment() {

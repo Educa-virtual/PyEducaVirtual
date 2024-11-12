@@ -152,7 +152,7 @@ export class PeriodosAcademicosComponent implements OnInit, OnChanges {
             _opcion: 'deleteCalPeriodo',
         })
         .subscribe({
-            next: (data: any) => {
+            next: () => {
 
             },
             error: (error) => {

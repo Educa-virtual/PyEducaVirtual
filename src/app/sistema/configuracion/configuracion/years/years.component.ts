@@ -1,9 +1,7 @@
-import { Component, OnInit, OnChanges, OnDestroy } from '@angular/core'
+import { Component, OnInit } from '@angular/core'
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
 import { Router } from '@angular/router'
-import { httpService } from '../http/httpService'
-import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { TicketService } from '../registro/service/ticketservice'
 
 @Component({
@@ -19,8 +17,6 @@ export class YearsComponent implements OnInit {
 
     constructor(
         private router: Router,
-        private httpService: httpService,
-        private localService: LocalStoreService,
         private ticketService: TicketService
     ) {}
 

@@ -1,13 +1,12 @@
-import { Component, OnInit, OnChanges, OnDestroy } from '@angular/core'
-import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
-import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
+import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component';
+import { Component, onDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 
-import { StepsModule } from 'primeng/steps'
+import { EventEmitter, Output } from '@angular/core';
+import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
+import { StepsModule } from 'primeng/steps';
 import { Subscription } from 'rxjs';
-import { MenuItem, MessageService, ConfirmationService } from 'primeng/api';
-import { Output, EventEmitter } from '@angular/core';
 import { TicketService } from './service/ticketservice';
 
 @Component({
@@ -21,7 +20,7 @@ import { TicketService } from './service/ticketservice';
     templateUrl: './registro.component.html',
     styleUrl: './registro.component.scss',
 })
-export class RegistroComponent implements OnInit, OnChanges {
+export class RegistroComponent implements OnInit, onDestroy {
     @Output() emitMode = new EventEmitter();
     subscription: Subscription;
     items: MenuItem[];
@@ -60,9 +59,6 @@ export class RegistroComponent implements OnInit, OnChanges {
         });
 
     }
-
-    ngOnChanges(changes) {}
-
     actionsContainer = [
         {
             labelTooltip: 'Regresar',

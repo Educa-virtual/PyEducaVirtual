@@ -178,16 +178,14 @@ export class TicketService {
         let contador = 1 // Contador para los períodos
         let key
 
-        for (const [clave, valor] of Object.entries(this.periodosDuracion)) {
-            if (tipo === 'trimestral') {
-                key = 'trimestre' // Retorna la clave si el valor coincide
-            }
-            if (tipo === 'semestral') {
-                key = 'semestre' // Retorna la clave si el valor coincide
-            }
-            if (tipo === 'bimestral') {
-                key = 'bimestre' // Retorna la clave si el valor coincide
-            }
+        if (tipo === 'trimestral') {
+            key = 'trimestre' // Retorna la clave si el valor coincide
+        }
+        if (tipo === 'semestral') {
+            key = 'semestre' // Retorna la clave si el valor coincide
+        }
+        if (tipo === 'bimestral') {
+            key = 'bimestre' // Retorna la clave si el valor coincide
         }
 
         while (fechaInicio < fechaFin) {
@@ -230,7 +228,8 @@ export class TicketService {
 
         let data: any
 
-        const id = (this.registroInformation.calendar?.iCalAcadId || iCalAcadId) ?? ''
+        const id =
+            (this.registroInformation.calendar?.iCalAcadId || iCalAcadId) ?? ''
 
         if (id) {
             data = await firstValueFrom(
@@ -478,18 +477,26 @@ export class TicketService {
     ) {
         try {
             const { iCalAcadId, iSedeId } = this.registroInformation.calendar
-            
+
             const data = await firstValueFrom(
                 this.httpService.putData(
                     'acad/calendarioAcademico/updCalAcademico',
                     {
                         calAcad: JSON.stringify({
-                            dtCalAcadInicio: this.toSQLDatetimeFormat(calAcad.fechaInicio),
-                            dtCalAcadFin: this.toSQLDatetimeFormat(calAcad.fechaFin),
-                            dtCalAcadMatriculaInicio: this.toSQLDatetimeFormat(calAcad.fechaMatriculaInicio),
-                            dtCalAcadMatriculaFin: this.toSQLDatetimeFormat(calAcad.fechaMatriculaFin),
+                            dtCalAcadInicio: this.toSQLDatetimeFormat(
+                                calAcad.fechaInicio
+                            ),
+                            dtCalAcadFin: this.toSQLDatetimeFormat(
+                                calAcad.fechaFin
+                            ),
+                            dtCalAcadMatriculaInicio: this.toSQLDatetimeFormat(
+                                calAcad.fechaMatriculaInicio
+                            ),
+                            dtCalAcadMatriculaFin: this.toSQLDatetimeFormat(
+                                calAcad.fechaMatriculaFin
+                            ),
                         }),
-                        iCalAcadId: iCalAcadId
+                        iCalAcadId: iCalAcadId,
                     }
                 )
             )

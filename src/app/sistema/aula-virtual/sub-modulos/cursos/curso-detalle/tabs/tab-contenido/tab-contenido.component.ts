@@ -110,7 +110,9 @@ export class TabContenidoComponent implements OnInit {
         private _activatedRoute: ActivatedRoute
     ) {}
 
+    iPerfilId: number = null
     ngOnInit(): void {
+        this.iPerfilId = this._constantesService.iPerfilId
         const today = new Date()
         const nextWeek = new Date()
         nextWeek.setDate(today.getDate() + 7)

@@ -428,6 +428,14 @@ export class TareaRoomComponent implements OnChanges, OnInit {
         this.getInformation(params, 'get-' + params.prefix)
     }
     guardarTareaEstudiantesxDocente() {
+        if (!this.iEscalaCalifId) {
+            this.messageService.add({
+                severity: 'warn',
+                summary: 'Campo vacio',
+                detail: 'Seleccione una calaficación',
+            })
+            return
+        }
         // Verifica que los datos requeridos estén completos antes de continuar
         if (this.iTareaEstudianteId && this.iEscalaCalifId) {
             const params = {
@@ -444,17 +452,7 @@ export class TareaRoomComponent implements OnChanges, OnInit {
                     nTareaEstudianteNota: 0,
                 },
             }
-            // Llama a la función para enviar los datos
             this.getInformation(params, 'guardar-calificacion-docente')
-        } else {
-            // Si los datos no son válidos, muestra un mensaje de error o realiza otra acción
-            console.error(
-                'Error: Debes proporcionar un ID de tarea y un ID de escala de calificación válidos.'
-            )
-            // Opcional: Podrías también mostrar una alerta al usuario en lugar de solo un console.error
-            alert(
-                'Por favor, completa todos los campos requeridos antes de guardar.'
-            )
         }
     }
 

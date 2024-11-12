@@ -78,41 +78,30 @@
                         </div>
                     </div>
                     <div>
+                        <!-- Título para la sección de recursos -->
                         <h2>Recursos:</h2>
-                        <ul class="list-none p-0 m-0">
-                            @for (
-                                item of FilesTareas;
-                                track item;
-                                let idx = $index
-                            ) {
-                                <li
-                                    class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap"
-                                >
-                                    <div class="flex gap-2 align-items-center">
-                                        <i
-                                            class="pi pi-file text-lg text-primary"
-                                        ></i>
-                                        <span class="font-medium text-lg">{{
-                                            item.name
-                                        }}</span>
-                                    </div>
-                                </li>
-                            }
-                        </ul>
+                        <!-- Componente personalizado de Angular que muestra una lista de recursos -->
+                        <app-recursos-lista [files]="FilesTareas">
+                        </app-recursos-lista>
                     </div>
                 </div>
-
+                <!-- Esta tarjeta se muestra solo si iPerfilId es 8, lo que indica que solo ciertos usuarios pueden ver este contenido -->
                 <div class="card col-6" [hidden]="iPerfilId !== 8">
+                    <!-- Verifica si hay una tarea individual para el estudiante y no es una tarea grupal -->
+
                     @if (
                         iEstadoEstudianteTarea !== '' &&
                         !iEstadoEstudianteTareaGrupal
                     ) {
+                        <!-- Esta sección solo se muestra si iEstadoEstudianteTarea es '0', lo que indica que la tarea no se ha entregado aún -->
                         <div
                             class="card-body m-3"
                             [hidden]="iEstadoEstudianteTarea !== '0'"
                         >
                             <h4>Tu Trabajo</h4>
                             <p-divider></p-divider>
+                            <!-- Componente para subir archivos, configurado para recibir los archivos de tareas de estudiantes -->
+
                             <div
                                 class="flex align-items-center justify-content-center"
                             >
@@ -122,11 +111,13 @@
                                     (actionFileUpload)="accionBtnItem($event)"
                                 ></app-file-upload-primeng>
                             </div>
+                            <!-- Lista de archivos adjuntos si existen archivos en FilesTareasEstudiantes -->
                             @if (FilesTareasEstudiantes.length) {
                                 <div class="col-12">
                                     <label for="" class="mt-2"
                                         >Lista de Adjuntos</label
                                     >
+                                    <!-- Itera sobre cada archivo adjunto en FilesTareasEstudiantes -->
 
                                     @for (
                                         item of FilesTareasEstudiantes;
@@ -135,6 +126,8 @@
                                     ) {
                                         <p-inputGroup class="mt-1">
                                             <p-inputGroupAddon>
+                                                <!-- Verifica el tipo de archivo y muestra un ícono -->
+
                                                 @switch (item.type) {
                                                     @case (1) {
                                                         <i
@@ -146,6 +139,7 @@
                                                     }
                                                 }
                                             </p-inputGroupAddon>
+                                            <!-- Muestra el nombre del archivo, deshabilitado para no ser editable -->
                                             <input
                                                 type="text"
                                                 pInputText
@@ -165,12 +159,15 @@
                                                 class="p-button-danger"
                                             >
                                                 &nbsp;
+                                                <!-- Botón para eliminar el archivo del array FilesTareasEstudiantes -->
                                             </button>
                                         </p-inputGroup>
                                     }
                                 </div>
                             }
                             <p-divider></p-divider>
+
+                            <!-- Botón para enviar la tarea -->
                             <div
                                 class="flex align-items-center justify-content-center"
                             >
@@ -184,34 +181,47 @@
                                 ></p-button>
                             </div>
                         </div>
+                        <!-- Muestra mensaje de tarea evaluada si el estado de la tarea es '1' -->
+
                         <div
                             class="card-body m-3"
                             [hidden]="iEstadoEstudianteTarea !== '1'"
                         >
-                            <h4>Tu Trabajo ya ha sido evaluado</h4>
-                            <p-divider></p-divider>
-                            <p-inputGroup>
-                                <p-inputGroupAddon>
-                                    Calificación
-                                </p-inputGroupAddon>
+                            <h4 class="mb-3">Tu Trabajo ya ha sido evaluado</h4>
+
+                            <p-divider class="mb-3"></p-divider>
+                            <!-- Campo de texto para mostrar la calificación -->
+                            <div class="p-field p-fluid mb-3">
+                                <label for="notaEstudiante"
+                                    >Escala Calificación</label
+                                >
                                 <input
+                                    id="notaEstudiante"
+                                    type="text"
                                     pInputText
                                     [(ngModel)]="notaTareaEstudiante"
+                                    class="p-inputtext-lg"
+                                    placeholder="Aqui muestra la calificación"
                                 />
-                            </p-inputGroup>
-                            <p-divider></p-divider>
-                            <p-inputGroup>
-                                <p-inputGroupAddon>
-                                    Comentario Docente
-                                </p-inputGroupAddon>
+                            </div>
+                            <p-divider class="mb-3"></p-divider>
+                            <!-- Campo de texto para el comentario del docente -->
+                            <div class="p-field p-fluid mb-3">
+                                <label for="comentarioDocente"
+                                    >Comentario Docente</label
+                                >
                                 <textarea
-                                    pInputText
+                                    id="comentarioDocente"
+                                    pInputTextarea
                                     rows="5"
                                     [(ngModel)]="comentarioTareaEstudiante"
+                                    class="p-inputtextarea-lg"
+                                    placeholder="Muestra Comentario Docente"
                                 ></textarea>
-                            </p-inputGroup>
+                            </div>
                         </div>
                     }
+                    <!-- Si no hay tarea individual y existe una tarea grupal -->
                     @if (
                         !iEstadoEstudianteTarea &&
                         iEstadoEstudianteTareaGrupal !== ''
@@ -220,8 +230,11 @@
                             class="card-body m-3"
                             [hidden]="iEstadoEstudianteTareaGrupal !== '0'"
                         >
-                            <h4>Trabajo Grupal</h4>
+                            <!-- Esta sección es para la entrega de tarea grupal y se muestra si el estado es '0' -->
+
+                            <h3>Trabajo Grupal</h3>
                             <p-divider></p-divider>
+                            <!-- Componente de subida de archivos para tareas grupales -->
                             <div
                                 class="flex align-items-center justify-content-center"
                             >
@@ -231,12 +244,13 @@
                                     (actionFileUpload)="accionBtnItem($event)"
                                 ></app-file-upload-primeng>
                             </div>
+                            <!-- Lista de archivos adjuntos para la tarea grupal -->
                             @if (FilesTareasEstudiantesGrupal.length) {
                                 <div class="col-12">
                                     <label for="" class="mt-2"
                                         >Lista de Adjuntos</label
                                     >
-
+                                    <!-- Itera sobre cada archivo adjunto en FilesTareasEstudiantesGrupal -->
                                     @for (
                                         item of FilesTareasEstudiantesGrupal;
                                         track item;
@@ -244,6 +258,7 @@
                                     ) {
                                         <p-inputGroup class="mt-1">
                                             <p-inputGroupAddon>
+                                                <!-- Muestra un ícono basado en el tipo de archivo -->
                                                 @switch (item.type) {
                                                     @case (1) {
                                                         <i
@@ -254,6 +269,7 @@
                                                         ></i>
                                                     }
                                                 }
+                                                <!-- Muestra el nombre del archivo y un botón para eliminarlo -->
                                             </p-inputGroupAddon>
                                             <input
                                                 type="text"
@@ -261,6 +277,7 @@
                                                 [placeholder]="item.name"
                                                 disabled
                                             />
+                                            <!-- Botón para enviar la tarea grupal -->
                                             <button
                                                 type="button"
                                                 pButton
@@ -453,7 +470,7 @@
                                                             <th>#</th>
                                                             <th>Nombres</th>
                                                             <th>Apellidos</th>
-                                                            <th>Nota</th>
+                                                            <!-- <th>Nota</th> -->
                                                             <th>Estado</th>
                                                         </tr>
                                                     </ng-template>

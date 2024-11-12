@@ -18,6 +18,7 @@ import { FormTransferirGrupoComponent } from '../form-transferir-grupo/form-tran
 import { FormBuilder, FormGroup } from '@angular/forms'
 import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
 import { ConfirmationService, MessageService } from 'primeng/api'
+import { RecursosListaComponent } from '@/app/shared/components/recursos-lista/recursos-lista.component'
 
 @Component({
     selector: 'app-tarea-room',
@@ -28,6 +29,7 @@ import { ConfirmationService, MessageService } from 'primeng/api'
         FileUploadPrimengComponent,
         FormGrupoComponent,
         FormTransferirGrupoComponent,
+        RecursosListaComponent,
     ],
 
     templateUrl: './tarea-room.component.html',

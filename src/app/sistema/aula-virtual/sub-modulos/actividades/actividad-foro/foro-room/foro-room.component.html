@@ -11,7 +11,7 @@
                 </div>
             </ng-template>
             <div class="flex flex-column gap-4">
-                <div class="displey flex">
+                <div class="card grid">
                     <div [class]="iPerfilId !== 8 ? 'col-12' : 'col-8'">
                         <article class="card">
                             <h2>Foro: {{ foro?.cForoTitulo }}</h2>
@@ -121,23 +121,27 @@
                             ></div>
                         </article>
                     </div>
-                    <article class="card col-4">
-                        <div class="card-body m-3">
-                            <h4>Mi Nota</h4>
-                            <p-divider></p-divider>
-                            <p-inputGroup>
-                                <p-inputGroupAddon> Nota </p-inputGroupAddon>
-                                <input pInputText />
-                            </p-inputGroup>
-                            <p-divider></p-divider>
-                            <p-inputGroup>
-                                <p-inputGroupAddon>
-                                    Comentario Docente
-                                </p-inputGroupAddon>
-                                <textarea pInputText rows="5"></textarea>
-                            </p-inputGroup>
-                        </div>
-                    </article>
+                    <div class="col-12 md: col-4" [hidden]="iPerfilId! === 7">
+                        <article class="card col-4">
+                            <div class="card-body m-3">
+                                <h4>Mi Nota</h4>
+                                <p-divider></p-divider>
+                                <p-inputGroup>
+                                    <p-inputGroupAddon>
+                                        Nota
+                                    </p-inputGroupAddon>
+                                    <input pInputText />
+                                </p-inputGroup>
+                                <p-divider></p-divider>
+                                <p-inputGroup>
+                                    <p-inputGroupAddon>
+                                        Comentario Docente
+                                    </p-inputGroupAddon>
+                                    <textarea pInputText rows="5"></textarea>
+                                </p-inputGroup>
+                            </div>
+                        </article>
+                    </div>
                 </div>
                 <article class="card">
                     <h2>Recursos:</h2>
@@ -172,8 +176,17 @@
                         </app-recursos-lista>
                     </div>
                     <div class="container">
-                        <div class="card1">
-                            <div class="">
+                        <!-- [class]="iPerfilId !== 8 ? 'col-12' : 'col-8'"> -->
+
+                        <div class="card grid">
+                            <!-- listar comentarios -->
+                            <div
+                                [class]="
+                                    iPerfilId === 7
+                                        ? 'col-12 md:col-8'
+                                        : 'col-12'
+                                "
+                            >
                                 <p-orderList
                                     class="list"
                                     [value]="respuestasForo"
@@ -208,7 +221,7 @@
                                                             class="perfil-name"
                                                         >
                                                             {{
-                                                                respuestas.cNombreDocente
+                                                                respuestas.cNombreEstudiante
                                                             }}
                                                             {{
                                                                 respuestas?.dtCreado
@@ -243,7 +256,7 @@
                                                                     | removeHTML
                                                             }}
                                                         </span>
-                                                        <!-- <a (keypress)="toggleExpand(respuestas)" class="toggle-link">
+                                                        <!-- <a (click)="toggleExpand(respuestas)" class="toggle-link">
                                                         {{ respuestas.expanded ? 'Leer menos' : 'Leer más' }}
                                                         </a> -->
                                                     </div>
@@ -283,7 +296,7 @@
                                     </ng-template>
                                 </p-orderList>
                                 <!-- Campo de respuesta y botón enviar -->
-                                <div *ngIf="selectedCommentIndex !== null">
+                                <div *ngIf="selectedCommentIndex !=== null">
                                     <p-editor
                                         id="descripcion"
                                         placeholder="Escribe una Descripción "
@@ -307,10 +320,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div
-                                    class="comment-container"
-                                    [hidden]="iPerfilId !== 8"
-                                >
+                                <div class="comment-container">
                                     <input
                                         *ngIf="!showEditor"
                                         type="text"
@@ -333,7 +343,7 @@
                                                     pRipple
                                                     label="Cancelar"
                                                     icon="pi pi-times"
-                                                    class="p-button-secondary"
+                                                    class="p-button-secondary mx-3"
                                                     type="button"
                                                     size="small"
                                                     (click)="closeEditor()"
@@ -353,44 +363,49 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <!-- lista de participantes... -->
-                        <div class="card2">
-                            <p-orderList
-                                class="list"
-                                [value]="respuestasForo"
-                                header="Parcipantes:"
+                            <!-- lista de participantes... -->
+                            <div
+                                class="col-12 md:col-4"
+                                [hidden]="iPerfilId !=== 7"
                             >
-                                <ng-template
-                                    let-respuestas
-                                    of
-                                    comentarios
-                                    pTemplate="listItem"
-                                    let-i="index"
+                                <p-orderList
+                                    class="list"
+                                    [value]="respuestasForo"
+                                    header="Parcipantes:"
                                 >
-                                    <div
-                                        class="perfiles-list-item text-left"
-                                        tabindex="0"
+                                    <ng-template
+                                        let-respuestas
+                                        of
+                                        comentarios
+                                        pTemplate="listItem"
+                                        let-i="index"
                                     >
-                                        <img
-                                            src="assets/demo/images/matemit/perfil.png"
-                                            [alt]="respuestas.name"
-                                            class="w-3rem"
-                                        />
-                                        <!--class="w-4rem min-h-9 shadow-2 flex-shrink-0 border-round"-->
-                                        <div class="perfil-name">
-                                            {{ respuestas.cNombreDocente }}
+                                        <div
+                                            class="perfiles-list-item text-left"
+                                            tabindex="0"
+                                        >
+                                            <img
+                                                src="assets/demo/images/matemit/perfil.png"
+                                                [alt]="respuestas.name"
+                                                class="w-3rem"
+                                            />
+                                            <!--class="w-4rem min-h-9 shadow-2 flex-shrink-0 border-round"-->
+                                            <div class="perfil-name">
+                                                {{
+                                                    respuestas.cNombreEstudiante
+                                                }}
+                                            </div>
                                         </div>
-                                    </div>
-                                </ng-template>
-                            </p-orderList>
+                                    </ng-template>
+                                </p-orderList>
+                            </div>
                         </div>
                     </div>
                 </div>
             </form>
         </p-tabPanel>
         <!-- Calificar Foro -->
-        @if (iPerfilId !== 8) {
+        @if (iPerfilId !=== 8) {
             <p-tabPanel>
                 <ng-template pTemplate="header">
                     <div class="flex align-items-center flex-column gap-2">

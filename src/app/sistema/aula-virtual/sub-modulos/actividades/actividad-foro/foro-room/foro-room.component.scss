@@ -47,43 +47,6 @@
     flex-wrap: wrap;
     justify-content: space-between;
 }
-.card1 {
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    padding: 20px;
-    width: 68%; /* Para que ambas columnas ocupen igual espacio */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    height: auto;
-    overflow: hidden;
-}
-.card2 {
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    padding: 20px;
-    width: 30%; /* Para que ambas columnas ocupen igual espacio */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    height: 100%;
-    overflow: hidden;
-}
-.card3 {
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    padding: 20px;
-    width: 100%; /* Para que ambas columnas ocupen igual espacio */
-    height: 100%;
-    overflow: hidden;
-}
-@media (max-width: 1116px) {
-    .card1 {
-        width: 100%;
-    }
-    .card2 {
-        width: 100%;
-    }
-    .card3 {
-        width: 100%;
-    }
-}
 .list {
     height: 1000px;
 }

@@ -103,10 +103,13 @@
                 </div>
 
                 <div class="card col-6" [hidden]="iPerfilId !== 8">
-                    @if (iEstadoEstudianteTarea !== null) {
+                    @if (
+                        iEstadoEstudianteTarea !== '' &&
+                        !iEstadoEstudianteTareaGrupal
+                    ) {
                         <div
                             class="card-body m-3"
-                            [hidden]="iEstadoEstudianteTarea"
+                            [hidden]="iEstadoEstudianteTarea !== '0'"
                         >
                             <h4>Tu Trabajo</h4>
                             <p-divider></p-divider>
@@ -183,12 +186,14 @@
                         </div>
                         <div
                             class="card-body m-3"
-                            [hidden]="!iEstadoEstudianteTarea"
+                            [hidden]="iEstadoEstudianteTarea !== '1'"
                         >
                             <h4>Tu Trabajo ya ha sido evaluado</h4>
                             <p-divider></p-divider>
                             <p-inputGroup>
-                                <p-inputGroupAddon> Nota </p-inputGroupAddon>
+                                <p-inputGroupAddon>
+                                    Calificación
+                                </p-inputGroupAddon>
                                 <input
                                     pInputText
                                     [(ngModel)]="notaTareaEstudiante"
@@ -203,6 +208,117 @@
                                     pInputText
                                     rows="5"
                                     [(ngModel)]="comentarioTareaEstudiante"
+                                ></textarea>
+                            </p-inputGroup>
+                        </div>
+                    }
+                    @if (
+                        !iEstadoEstudianteTarea &&
+                        iEstadoEstudianteTareaGrupal !== ''
+                    ) {
+                        <div
+                            class="card-body m-3"
+                            [hidden]="iEstadoEstudianteTareaGrupal !== '0'"
+                        >
+                            <h4>Trabajo Grupal</h4>
+                            <p-divider></p-divider>
+                            <div
+                                class="flex align-items-center justify-content-center"
+                            >
+                                <app-file-upload-primeng
+                                    [nameFile]="'tarea-cabecera-grupos'"
+                                    [nameOption]="'tarea-cabecera-grupos'"
+                                    (actionFileUpload)="accionBtnItem($event)"
+                                ></app-file-upload-primeng>
+                            </div>
+                            @if (FilesTareasEstudiantesGrupal.length) {
+                                <div class="col-12">
+                                    <label for="" class="mt-2"
+                                        >Lista de Adjuntos</label
+                                    >
+
+                                    @for (
+                                        item of FilesTareasEstudiantesGrupal;
+                                        track item;
+                                        let idx = $index
+                                    ) {
+                                        <p-inputGroup class="mt-1">
+                                            <p-inputGroupAddon>
+                                                @switch (item.type) {
+                                                    @case (1) {
+                                                        <i
+                                                            class="pi pi-upload"
+                                                            style="
+                                                                color: #333437;
+                                                            "
+                                                        ></i>
+                                                    }
+                                                }
+                                            </p-inputGroupAddon>
+                                            <input
+                                                type="text"
+                                                pInputText
+                                                [placeholder]="item.name"
+                                                disabled
+                                            />
+                                            <button
+                                                type="button"
+                                                pButton
+                                                icon="pi pi-trash"
+                                                (click)="
+                                                    FilesTareasEstudiantesGrupal.splice(
+                                                        idx,
+                                                        1
+                                                    )
+                                                "
+                                                class="p-button-danger"
+                                            >
+                                                &nbsp;
+                                            </button>
+                                        </p-inputGroup>
+                                    }
+                                </div>
+                            }
+                            <p-divider></p-divider>
+                            <div
+                                class="flex align-items-center justify-content-center"
+                            >
+                                <p-button
+                                    label="Enviar Tarea"
+                                    icon="pi pi-check"
+                                    iconPos="right"
+                                    (onClick)="entregarEstudianteTareaGrupal()"
+                                    raised
+                                    severity="success"
+                                ></p-button>
+                            </div>
+                        </div>
+                        <div
+                            class="card-body m-3"
+                            [hidden]="iEstadoEstudianteTareaGrupal !== '1'"
+                        >
+                            <h4>El Trabajo grupal ya ha sido evaluado</h4>
+                            <p-divider></p-divider>
+                            <p-inputGroup>
+                                <p-inputGroupAddon>
+                                    Calificación
+                                </p-inputGroupAddon>
+                                <input
+                                    pInputText
+                                    [(ngModel)]="notaTareaEstudianteGrupal"
+                                />
+                            </p-inputGroup>
+                            <p-divider></p-divider>
+                            <p-inputGroup>
+                                <p-inputGroupAddon>
+                                    Comentario Docente
+                                </p-inputGroupAddon>
+                                <textarea
+                                    pInputText
+                                    rows="5"
+                                    [(ngModel)]="
+                                        comentarioTareaEstudianteGrupal
+                                    "
                                 ></textarea>
                             </p-inputGroup>
                         </div>
@@ -240,14 +356,8 @@
                                     />
                                 </div>
                                 <div class="p-toolbar-group-end">
-                                    <p-button
-                                        icon="pi pi-sync"
-                                        pTooltip="Refrescar Listas"
-                                        tooltipPosition="top"
-                                        [rounded]="true"
-                                        [text]="true"
-                                        severity="danger"
-                                    />
+                                    <!-- <p-button icon="pi pi-sync" pTooltip="Refrescar Listas" tooltipPosition="top"
+                                    [rounded]="true" [text]="true" severity="danger" /> -->
                                 </div>
                             </p-toolbar>
                             <p-divider></p-divider>
@@ -356,7 +466,15 @@
                                                             (click)="
                                                                 getTareaRealizada(
                                                                     estudiante
-                                                                )
+                                                                );
+                                                                nEstudiante =
+                                                                    rowIndex
+                                                            "
+                                                            [class]="
+                                                                nEstudiante ===
+                                                                rowIndex
+                                                                    ? 'bg-green-200'
+                                                                    : ''
                                                             "
                                                         >
                                                             <td>
@@ -512,14 +630,22 @@
                                                     >
                                                         @for (
                                                             item of grupos;
-                                                            track item
+                                                            track item;
+                                                            let idx = $index
                                                         ) {
                                                             <p-accordionTab
                                                                 (click)="
                                                                     seleccionarGrupo(
                                                                         item
-                                                                    )
+                                                                    );
+                                                                    nGrupal =
+                                                                        idx
                                                                 "
+                                                                [ngClass]="{
+                                                                    grupal:
+                                                                        nGrupal ===
+                                                                        idx,
+                                                                }"
                                                             >
                                                                 <ng-template
                                                                     pTemplate="header"
@@ -531,17 +657,16 @@
                                                                         {{
                                                                             item.cTareaGrupoNombre
                                                                         }}
+                                                                        &nbsp;
                                                                     </div>
                                                                     <div
                                                                         class="flex align-items-center"
                                                                     >
-                                                                        <b
-                                                                            >Nota:
-                                                                        </b>
-                                                                        {{
-                                                                            item.nTareaGrupoNota ||
-                                                                                ' -'
-                                                                        }}
+                                                                        <!-- <b>Calif: </b>
+                                                        {{
+                                                        item.cEscalaCalifNombre ||
+                                                        '-'
+                                                        }} -->
                                                                         <div
                                                                             class="w-1rem h-1rem border-circle ml-3"
                                                                             [ngClass]="
@@ -594,7 +719,7 @@
                                                                         #dv
                                                                         class="col-12 hoverTable"
                                                                         [value]="
-                                                                            item.json_estudiantes_respaldo
+                                                                            item.json_estudiantes_asignado
                                                                         "
                                                                         paginator="false"
                                                                         styleClass="p-datatable-sm"
@@ -605,9 +730,9 @@
                                                                             <tr
                                                                                 class="sticky-header"
                                                                             >
-                                                                                <!-- <th>
-                                                                    #
-                                                                </th> -->
+                                                                                <th>
+                                                                                    #
+                                                                                </th>
                                                                                 <th>
                                                                                     Nombres
                                                                                 </th>
@@ -628,12 +753,12 @@
                                                                                 estudiante.bAsignado
                                                                             ) {
                                                                                 <tr>
-                                                                                    <!-- <td>
-                                                                    {{
-                                                                    rowIndex +
-                                                                    1
-                                                                    }}
-                                                                </td> -->
+                                                                                    <td>
+                                                                                        {{
+                                                                                            rowIndex +
+                                                                                                1
+                                                                                        }}
+                                                                                    </td>
                                                                                     <td>
                                                                                         {{
                                                                                             estudiante?.cPersNombre
@@ -648,8 +773,18 @@
                                                                                         }}
                                                                                     </td>
                                                                                     <td>
+                                                                                        <!-- <p-button icon="pi pi-reply" [rounded]="
+                                                                                                true
+                                                                                            " [text]="
+                                                                                                true
+                                                                                            " severity="danger"
+                                                                        (onClick)="
+                                                                                                transferirEstudiante(
+                                                                                                    estudiante
+                                                                                                )
+                                                                                            " /> -->
                                                                                         <p-button
-                                                                                            icon="pi pi-reply"
+                                                                                            icon="pi pi-times"
                                                                                             [rounded]="
                                                                                                 true
                                                                                             "
@@ -658,7 +793,7 @@
                                                                                             "
                                                                                             severity="danger"
                                                                                             (onClick)="
-                                                                                                transferirEstudiante(
+                                                                                                eliminarEstudiante(
                                                                                                     estudiante
                                                                                                 )
                                                                                             "
@@ -707,20 +842,14 @@
                                     </h4>
                                 </div>
                                 <!-- codigo de prueba -->
-                                {{ cTareaEstudianteUrlEstudiante }}
+                                <!-- {{ cTareaEstudianteUrlEstudiante }}
 
-                                Nombre de estudiante
+                            Nombre de estudiante -->
                                 <!-- fin codigo de prueba -->
 
                                 <div class="p-toolbar-group-end">
-                                    <p-button
-                                        icon="pi pi-sync"
-                                        pTooltip="Refrescar Tarea"
-                                        tooltipPosition="top"
-                                        [rounded]="true"
-                                        [text]="true"
-                                        severity="danger"
-                                    />
+                                    <!-- <p-button icon="pi pi-sync" pTooltip="Refrescar Tarea" tooltipPosition="top"
+                                    [rounded]="true" [text]="true" severity="danger" /> -->
                                 </div>
                             </p-toolbar>
                             <p-divider></p-divider>
@@ -738,6 +867,19 @@
                                             desarrollo de su tarea
                                         </p>
                                     } @else {
+                                        <p-message
+                                            severity="info"
+                                            [text]="
+                                                'Estudiante: ' +
+                                                estudianteSeleccionado.cPersNombre +
+                                                ' ' +
+                                                estudianteSeleccionado.cPersPaterno +
+                                                ' ' +
+                                                estudianteSeleccionado.cPersMaterno
+                                            "
+                                            styleClass="p-mr-2 w-full"
+                                        ></p-message>
+                                        <p-divider></p-divider>
                                         <p-fieldset
                                             [legend]="cTareaTitulo"
                                             [toggleable]="true"
@@ -901,6 +1043,7 @@
                                     }
                                 </div>
                                 <div [hidden]="!this.tareaAsignar">
+                                    <!-- {{grupoSeleccionadoCalificar  | json}} -->
                                     @if (!grupoSeleccionadoCalificar.length) {
                                         <div align="center">
                                             <span
@@ -913,87 +1056,132 @@
                                             desarrollo de su tarea
                                         </p>
                                     } @else {
+                                        <p-message
+                                            severity="info"
+                                            [text]="
+                                                grupoSeleccionadoCalificar[0]
+                                                    .cTareaGrupoNombre
+                                            "
+                                            styleClass="p-mr-2 w-full"
+                                        ></p-message>
+                                        <div class="mt-1">
+                                            <b>Integrantes:</b>
+                                        </div>
+                                        @for (
+                                            item of grupoSeleccionadoCalificar[0]
+                                                .json_estudiantes;
+                                            track item
+                                        ) {
+                                            @if (item.bAsignado) {
+                                                <div>
+                                                    - {{ item.cPersNombre }}
+                                                    {{ item.cPersPaterno }}
+                                                    {{ item.cPersMaterno }}
+                                                </div>
+                                            }
+                                            <!-- <p-message severity="info"
+                                [text]="'Estudiante: '+ item.cPersNombre +' '+ item.cPersPaterno +' '+ item.cPersMaterno"
+                                styleClass="p-mr-2"></p-message> -->
+                                        }
+                                        <p-divider></p-divider>
                                         <p-fieldset
                                             [legend]="cTareaTitulo"
                                             [toggleable]="true"
                                         >
                                             <div class="grid">
-                                                <div class="col-12">
-                                                    <label for="" class="mt-2"
-                                                        >Lista de
-                                                        Adjuntos</label
-                                                    >
-
-                                                    @for (
-                                                        item of cTareaGrupoUrl;
-                                                        track item;
-                                                        let idx = $index
-                                                    ) {
-                                                        <p-inputGroup
-                                                            class="mt-1"
+                                                @if (cTareaGrupoUrl.length) {
+                                                    <div class="col-12">
+                                                        <label
+                                                            for=""
+                                                            class="mt-2"
+                                                            >Lista de
+                                                            Adjuntos</label
                                                         >
-                                                            <p-inputGroupAddon>
-                                                                @switch (
-                                                                    item.type
-                                                                ) {
-                                                                    @case (1) {
-                                                                        <i
-                                                                            class="pi pi-upload"
-                                                                            style="
-                                                                                color: #333437;
-                                                                            "
-                                                                        ></i>
-                                                                    }
-                                                                    @case (2) {
-                                                                        <i
-                                                                            class="pi pi-link"
-                                                                            style="
-                                                                                color: #333437;
-                                                                            "
-                                                                        ></i>
-                                                                    }
-                                                                    @case (3) {
-                                                                        <i
-                                                                            class="pi pi-youtube"
-                                                                            style="
-                                                                                color: #c4302b;
-                                                                            "
-                                                                        ></i>
-                                                                    }
-                                                                    @case (4) {
-                                                                        <i
-                                                                            class="pi pi-folder"
-                                                                            style="
-                                                                                color: #ffd04b;
-                                                                            "
-                                                                        ></i>
-                                                                    }
-                                                                }
-                                                            </p-inputGroupAddon>
-                                                            <input
-                                                                type="text"
-                                                                pInputText
-                                                                [placeholder]="
-                                                                    item.name
-                                                                "
-                                                                disabled
-                                                            />
-                                                            <button
-                                                                type="button"
-                                                                pButton
-                                                                icon="pi pi-eye"
-                                                                (click)="
-                                                                    goLinkDocumento(
-                                                                        item.ruta
-                                                                    )
-                                                                "
-                                                                class="p-button-info"
+
+                                                        @for (
+                                                            item of cTareaGrupoUrl;
+                                                            track item;
+                                                            let idx = $index
+                                                        ) {
+                                                            <p-inputGroup
+                                                                class="mt-1"
                                                             >
-                                                                &nbsp;
-                                                            </button>
-                                                        </p-inputGroup>
-                                                    }
-                                                </div>
+                                                                <p-inputGroupAddon>
+                                                                    @switch (
+                                                                        item.type
+                                                                    ) {
+                                                                        @case (
+                                                                            1
+                                                                        ) {
+                                                                            <i
+                                                                                class="pi pi-upload"
+                                                                                style="
+                                                                                    color: #333437;
+                                                                                "
+                                                                            ></i>
+                                                                        }
+                                                                        @case (
+                                                                            2
+                                                                        ) {
+                                                                            <i
+                                                                                class="pi pi-link"
+                                                                                style="
+                                                                                    color: #333437;
+                                                                                "
+                                                                            ></i>
+                                                                        }
+                                                                        @case (
+                                                                            3
+                                                                        ) {
+                                                                            <i
+                                                                                class="pi pi-youtube"
+                                                                                style="
+                                                                                    color: #c4302b;
+                                                                                "
+                                                                            ></i>
+                                                                        }
+                                                                        @case (
+                                                                            4
+                                                                        ) {
+                                                                            <i
+                                                                                class="pi pi-folder"
+                                                                                style="
+                                                                                    color: #ffd04b;
+                                                                                "
+                                                                            ></i>
+                                                                        }
+                                                                    }
+                                                                </p-inputGroupAddon>
+                                                                <input
+                                                                    type="text"
+                                                                    pInputText
+                                                                    [placeholder]="
+                                                                        item.name
+                                                                    "
+                                                                    disabled
+                                                                />
+                                                                <button
+                                                                    type="button"
+                                                                    pButton
+                                                                    icon="pi pi-eye"
+                                                                    (click)="
+                                                                        goLinkDocumento(
+                                                                            item.ruta
+                                                                        )
+                                                                    "
+                                                                    class="p-button-info"
+                                                                >
+                                                                    &nbsp;
+                                                                </button>
+                                                            </p-inputGroup>
+                                                        }
+                                                    </div>
+                                                } @else {
+                                                    <p class="text-danger">
+                                                        Todavía el grupo no ha
+                                                        entregado su tarea
+                                                    </p>
+                                                }
                                             </div>
                                         </p-fieldset>
                                         <p-divider></p-divider>
@@ -1080,3 +1268,4 @@
     [iEstudianteId]="iEstudianteIdGrupo"
     (accionBtnItem)="accionBtnItem($event)"
 ></app-form-transferir-grupo>
+<p-confirmDialog />

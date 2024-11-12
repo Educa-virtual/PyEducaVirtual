@@ -21,7 +21,10 @@ interface Ugeles {
     cUgelNombre: string
     iUgelId: string
 }
-
+interface City {
+    name: string
+    code: string
+}
 @Component({
     selector: 'app-ieparticipa',
     standalone: true,
@@ -61,6 +64,10 @@ export class IeparticipaComponent implements OnInit {
     Ugeles: Ugeles[] | undefined
     selectedUgeles: Ugeles | undefined
     itemsToDelete: any
+
+    cities: City[] | undefined
+
+    selectedCity: City | undefined
 
     constructor(
         private carService: ProductService,
@@ -103,6 +110,11 @@ export class IeparticipaComponent implements OnInit {
                 this.obtenerParticipaciones(evaluacionId)
             }
         }
+
+        this.cities = [
+            { name: 'Normal', code: 'NOR' },
+            { name: 'Especial(Discapacitados)', code: 'ESP' },
+        ]
         this.nivelTipo = [
             { cNivelTipoNombre: 'Primaria', iNivelTipoId: 'NY' },
             { cNivelTipoNombre: 'Secundaria', iNivelTipoId: 'RM' },
@@ -280,6 +292,8 @@ export class IeparticipaComponent implements OnInit {
                     console.error('Error al obtener participaciones:', error),
             })
     }
+    //PRUEBA BOTON
+
     onChange() {
         //alert(v)
         // alert(JSON.stringify(event))

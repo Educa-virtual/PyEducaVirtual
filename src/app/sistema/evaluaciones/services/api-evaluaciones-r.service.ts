@@ -63,8 +63,14 @@ export class ApiEvaluacionesRService {
             }
         )
     }
+    //Tengo estos cursos seleccionados del backend
+    obtenerCursosEvaluacion(iEvaluacionId: number): Observable<any> {
+        return this.http.get(
+            `${this.baseUrl}/ere/Evaluaciones/evaluaciones/${iEvaluacionId}/cursos`
+        )
+        //Evaluaciones/evaluaciones
+    }
     //Insertar cursos
-    // Método para insertar cursos, enviando `data` al backend
     insertarCursos(data: {
         iEvaluacionId: number
         selectedCursos: { iCursoId: number }[]

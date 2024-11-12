@@ -57,7 +57,6 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
     public cursos: any[] = [] // Asegúrate de tener esta variable declarada en tu componente
     public data: ICurso[] = []
     NivelCurso: any = [] // Inicializa la propiedad como un array o con el valor adecuado
-    // selectedCursos: any[] = [] // Para almacenar los cursos seleccionados
     public selectedCursos: any[] = []
     accion: string // Nueva propiedad para controlar la acción
     esModoEdicion: boolean = false // Para controlar el modo edición
@@ -81,7 +80,6 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
         iDesempenioId: 0,
         bPreguntaEstado: -1,
     }
-    //selectedCursos: NivelCurso | undefined
     constructor(
         private store: LocalStoreService,
         private compartirIdEvaluacionService: CompartirIdEvaluacionService,
@@ -112,6 +110,26 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
         }
         this.getCursos()
         this.obtenerCursos()
+        if (this.accion === 'crear') {
+            console.log('INICIAMOS CREANDO UNO NUEVO CURSO')
+            //this.targetProducts = [] // Asegurar que la lista destino esté vacía
+            this.obtenerCursos() // Solo obtener la lista de IEs disponibles
+        } else if (this.accion === 'editar' || this.accion === 'ver') {
+            console.log('Inicializando en modo editar/ver')
+            const evaluacionId =
+                this._config.data?.evaluacionId ||
+                this.compartirIdEvaluacionService.iEvaluacionId
+            if (evaluacionId) {
+                console.log(
+                    'Obteniendo cursos para evaluación con ID:',
+                    evaluacionId
+                )
+                this.obtenerCursosEvaluacion()
+            } else {
+                console.warn('EvaluacionId no está definido')
+            }
+        }
+        this.obtenerCursosEvaluacion()
     }
     // Función para obtener los cursos
     // obtenerCursos(): void {
@@ -212,7 +230,6 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
     // }
 
     // Obtener los cursos
-    // Obtener los cursos
     obtenerCursos(): void {
         console.log('Ejecutando obtenerCursos') // Para verificar si se está llamando
         this._apiEre
@@ -224,13 +241,10 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
                         'Datos obtenidos de Cursos de ObtenerCursos:',
                         resp
                     )
-                    // Asignar los cursos a la propiedad 'cursos', asegurando que cada uno tenga 'isSelected'
                     this.cursos = resp.data.map((curso: any) => ({
                         ...curso,
-                        isSelected: curso.isSelected || false, // Establecer un valor predeterminado
+                        isSelected: curso.isSelected || false,
                     }))
-                    // Forzar la detección de cambios
-                    //this.cdRef.detectChanges()
                 },
                 error: (err) => {
                     console.error('Error al obtener cursos:', err)
@@ -239,102 +253,33 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
     }
 
     // Función que maneja la selección o deselección de los cursos
-    // onCursoSelect(curso: any): void {
-    //     if (!curso.isSelected) {
-    //         // Si el curso está seleccionado, agrégalo al array de seleccionados
-    //         if (
-    //             !this.selectedCursos.some(
-    //                 (c) => c.cCursoNombre === curso.cCursoNombre
-    //             )
-    //         ) {
-    //             this.selectedCursos.push(curso)
-    //         }
-    //     } else {
-    //         // Si el curso está deseleccionado, elimínalo del array de seleccionados
-    //         const index = this.selectedCursos.findIndex(
-    //             (c) => c.cCursoNombre === curso.cCursoNombre
-    //         )
-    //         if (index !== -1) {
-    //             this.selectedCursos.splice(index, 1)
-    //         }
-    //     }
-
-    //     // Mostrar en consola el estado del array de cursos seleccionados
-    //     console.log('Cursos seleccionados:', this.selectedCursos)
-    // }
     onCursoSelect(curso: any): void {
-        if (this.esModoEdicion) {
-            // Cambiar estado de isSelected al hacer click
-            curso.isSelected = !curso.isSelected
-
-            if (curso.isSelected) {
-                // Si es seleccionado, añadirlo a selectedCursos
-                if (
-                    !this.selectedCursos.some(
-                        (c) => c.iCursoId === curso.iCursoId
-                    )
-                ) {
-                    this.selectedCursos.push(curso)
-                }
-            } else {
-                // Si es deseleccionado, quitarlo de selectedCursos
-                const index = this.selectedCursos.findIndex(
-                    (c) => c.iCursoId === curso.iCursoId
+        if (!curso.isSelected) {
+            // Si el curso está seleccionado, agrégalo al array de seleccionados
+            if (
+                !this.selectedCursos.some(
+                    (c) => c.cCursoNombre === curso.cCursoNombre
                 )
-                if (index !== -1) {
-                    this.selectedCursos.splice(index, 1)
-                }
+            ) {
+                this.selectedCursos.push(curso)
+            }
+        } else {
+            // Si el curso está deseleccionado, elimínalo del array de seleccionados
+            const index = this.selectedCursos.findIndex(
+                (c) => c.cCursoNombre === curso.cCursoNombre
+            )
+            if (index !== -1) {
+                this.selectedCursos.splice(index, 1)
             }
         }
+
+        // Mostrar en consola el estado del array de cursos seleccionados
         console.log('Cursos seleccionados:', this.selectedCursos)
     }
+
     // Función para enviar los cursos seleccionados al backend
-    // insertarCursos(): void {
-    //     const iEvaluacionId = this.compartirIdEvaluacionService.iEvaluacionId
-
-    //     // Filter out selected courses based on `isSelected` property
-    //     this.selectedCursos = this.cursos
-    //         .filter((curso) => curso.isSelected)
-    //         .map((curso) => ({ iCursoId: curso.iCursoId })) // Only include iCursoId
-
-    //     // Check the selected courses before sending to backend
-    //     console.log(
-    //         'Cursos seleccionados antes de enviar:',
-    //         this.selectedCursos
-    //     )
-
-    //     if (this.selectedCursos.length === 0) {
-    //         console.log('No hay cursos seleccionados')
-    //         return
-    //     }
-    //     console.log('iEvaluacionId:', iEvaluacionId)
-    //     // Send selected data to backend
-    //     this._apiEre
-    //         .insertarCursos({
-    //             iEvaluacionId,
-    //             selectedCursos: this.selectedCursos,
-    //         }) // Use one object
-    //         .pipe(takeUntil(this.unsubscribe$))
-    //         .subscribe({
-    //             next: (resp: any) => {
-    //                 console.log('Respuesta de la inserción de cursos:', resp)
-    //                 this.cursos = this.cursos.map((curso) => ({
-    //                     ...curso,
-    //                     isSelected: false, // Reset selection
-    //                 }))
-    //             },
-    //             error: (err) => {
-    //                 console.error('Error al insertar los cursos:', err)
-    //                 const errorMessage =
-    //                     err?.error?.message || 'Error desconocido'
-    //                 console.error('Mensaje de error:', errorMessage)
-    //             },
-    //         })
-    // }
-
     insertarCursos(): void {
         const iEvaluacionId = this.compartirIdEvaluacionService.iEvaluacionId
-
         // Filter out selected courses based on `isSelected` property
         this.selectedCursos = this.cursos
             .filter((curso) => curso.isSelected)
@@ -351,7 +296,6 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
             return
         }
         console.log('iEvaluacionId:', iEvaluacionId)
-
         // Send selected data to backend
         this._apiEre
             .insertarCursos({
@@ -362,137 +306,48 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
             .subscribe({
                 next: (resp: any) => {
                     console.log('Respuesta de la inserción de cursos:', resp)
-
-                    // Limpiar la selección de cursos después de insertar
                     this.cursos = this.cursos.map((curso) => ({
                         ...curso,
                         isSelected: false, // Reset selection
                     }))
-
-                    // Eliminar los cursos deseleccionados del frontend si es necesario
-                    this.cursos = this.cursos.filter(
-                        (curso) => curso.isSelected
-                    )
                 },
                 error: (err) => {
                     console.error('Error al insertar los cursos:', err)
                     const errorMessage =
                         err?.error?.message || 'Error desconocido'
-                    alert(`Error al insertar los cursos: ${errorMessage}`)
+                    console.error('Mensaje de error:', errorMessage)
                 },
             })
     }
 
-    // Funcion para obtener los cursos seleccionados.
-    // obtenerCursosEvaluacion(): void {
-    //     const iEvaluacionId = this.compartirIdEvaluacionService.iEvaluacionId
-    //     this._apiEre
-    //         .obtenerCursosEvaluacion(iEvaluacionId)
-    //         .pipe(takeUntil(this.unsubscribe$))
-    //         .subscribe({
-    //             next: (resp: any) => {
-    //                 // Mostrar los cursos registrados y no registrados por separado
-    //                 console.log('Cursos registrados:', resp.registrados)
-    //                 console.log('Cursos no registrados:', resp.no_registrados)
-    //             },
-    //             error: (err) => {
-    //                 console.error('Error al obtener cursos:', err)
-    //             },
-    //         })
-    // }
-    // Obtener los cursos registrados y no registrados
-    // obtenerCursosEvaluacion(): void {
-    //     const iEvaluacionId = this.compartirIdEvaluacionService.iEvaluacionId
-    //     this._apiEre
-    //         .obtenerCursosEvaluacion(iEvaluacionId)
-    //         .pipe(takeUntil(this.unsubscribe$))
-    //         .subscribe({
-    //             next: (resp: any) => {
-    //                 console.log('Cursos registrados:', resp.registrados)
-    //                 console.log('Cursos no registrados:', resp.no_registrados)
-
-    //                 // Combinamos cursos registrados y no registrados en un solo array
-    //                 this.cursos = [
-    //                     ...resp.registrados.map((curso: any) => ({
-    //                         ...curso,
-    //                         isSelected: true, // Los cursos registrados están seleccionados
-    //                     })),
-    //                     ...resp.no_registrados.map((curso: any) => ({
-    //                         ...curso,
-    //                         isSelected: false, // Los cursos no registrados no están seleccionados
-    //                     })),
-    //                 ]
-    //                 this.cdRef.markForCheck() // Marca el componente para la detección de cambios
-    //                 // Verifica el valor de isSelected de cada curso
-    //                 console.log('Cursos con isSelected:', this.cursos)
-
-    //                 //this.cdRef.detectChanges() // Asegúrate de que Angular detecte los cambios
-    //             },
-    //             error: (err) => {
-    //                 console.error('Error al obtener cursos:', err)
-    //             },
-    //         })
-    // }
-    // obtenerCursosEvaluacion(): void {
-    //     const iEvaluacionId = this.compartirIdEvaluacionService.iEvaluacionId
-    //     this._apiEre
-    //         .obtenerCursosEvaluacion(iEvaluacionId)
-    //         .pipe(takeUntil(this.unsubscribe$))
-    //         .subscribe({
-    //             next: (resp: any) => {
-    //                 // Solo loguear los datos que llegan del backend
-    //                 console.log('Datos del backend:', resp)
-    //             },
-    //             error: (err) => {
-    //                 console.error('Error al obtener cursos:', err)
-    //             },
-    //         })
-    // }
-    // obtenerCursosEvaluacion(): void {
-    //     const iEvaluacionId = this.compartirIdEvaluacionService.iEvaluacionId
-    //     this._apiEre
-    //         .obtenerCursosEvaluacion(iEvaluacionId)
-    //         .pipe(takeUntil(this.unsubscribe$))
-    //         .subscribe({
-    //             next: (resp: any) => {
-    //                 // Loguear los datos para ver qué llega del backend
-    //                 console.log('Datos del backend:', resp)
-
-    //                 // Almacenar los cursos en la variable de clase
-    //                 this.cursos = resp.cursos
-    //             },
-    //             error: (err) => {
-    //                 console.error('Error al obtener cursos:', err)
-    //             },
-    //         })
-    // }
+    //Obtener los cursos registrados y no registrados
+    // Función para obtener los cursos en modo 'ver' o 'editar'
     obtenerCursosEvaluacion(): void {
         const iEvaluacionId = this.compartirIdEvaluacionService.iEvaluacionId
+        console.log(
+            'AQUI ESTA EL ID DE OBTENER CURSOS EVALAUCOIN',
+            iEvaluacionId
+        )
         this._apiEre
-            .obtenerCursosEvaluacion(iEvaluacionId)
+            .obtenerCursosEvaluacion(iEvaluacionId) // Llamada al backend con el ID de evaluación
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
                 next: (resp: any) => {
-                    console.log('Datos del backend:', resp)
-
-                    // Convertir valores de isSelected a booleanos (true/false) si son cadenas "1" y "0"
-                    this.cursos = resp.cursos.map((curso: any) => {
-                        console.log(
-                            'Valor de isSelected antes de la conversión:',
-                            curso.isSelected
-                        )
-
-                        // Convertimos la cadena "1" a true y "0" a false
-                        curso.isSelected = curso.isSelected === '1' // Si isSelected es "1", será true, sino false
-
-                        console.log('Curso después de la conversión:', curso) // Verificar el resultado
-                        return curso
-                    })
-
                     console.log(
-                        'Cursos con isSelected convertido:',
-                        this.cursos
+                        'Cursos obtenidos desde el backend:',
+                        resp.cursos
                     )
+                    // Establecemos el array de cursos con los datos del backend
+                    // this.cursos = resp.cursos.map((curso: any) => ({
+                    //     ...curso,
+                    //     isSelected: Boolean(curso.isSelected === '1'), // Asegura la conversión de '1' a true y '0' a false
+                    // }))
+                    this.cursos = resp.cursos.map((curso: any) => ({
+                        ...curso,
+                        isSelected: curso.isSelected === '1' ? true : false, // Asegúrate de convertir '1' a true y '0' a false
+                    }))
+                    // Forzar detección de cambios para que se actualice la vista si es necesario
+                    this.cdRef.markForCheck()
                 },
                 error: (err) => {
                     console.error('Error al obtener cursos:', err)

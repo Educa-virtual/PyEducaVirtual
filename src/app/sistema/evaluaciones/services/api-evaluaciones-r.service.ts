@@ -68,7 +68,6 @@ export class ApiEvaluacionesRService {
         return this.http.get(
             `${this.baseUrl}/ere/Evaluaciones/evaluaciones/${iEvaluacionId}/cursos`
         )
-        //Evaluaciones/evaluaciones
     }
     //Insertar cursos
     insertarCursos(data: {
@@ -79,9 +78,19 @@ export class ApiEvaluacionesRService {
             `${this.baseUrl}/ere/Evaluaciones/insertarCursos`,
             data
         )
-        // Esta URL `/insertarCursos` debe coincidir con el nombre de la ruta definida en Laravel
     }
-
+    //Actualizar Cursos COMENTADO
+    actualizarCursosEvaluacion(
+        iEvaluacionId: number,
+        cursosSeleccionados: number[]
+    ): Observable<any> {
+        return this.http.post<any>(
+            `${this.baseUrl}/ere/Evaluaciones/evaluaciones/${iEvaluacionId}/actualizarCursos`,
+            {
+                cursosSeleccionados: cursosSeleccionados,
+            }
+        )
+    }
     obtenerTipoEvaluacion(params) {
         return this.http.get(
             `${this.baseUrl}/ere/tipoEvaluacion/obtenerTipoEvaluacion`,

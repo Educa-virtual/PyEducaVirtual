@@ -21,10 +21,6 @@ interface Ugeles {
     cUgelNombre: string
     iUgelId: string
 }
-interface City {
-    name: string
-    code: string
-}
 @Component({
     selector: 'app-ieparticipa',
     standalone: true,
@@ -60,14 +56,9 @@ export class IeparticipaComponent implements OnInit {
     public targetProducts: any[] = [] // IEs participantes
     nivelTipo: NivelTipo[] | undefined
     selectedNivelTipo: NivelTipo | undefined
-
     Ugeles: Ugeles[] | undefined
     selectedUgeles: Ugeles | undefined
     itemsToDelete: any
-
-    cities: City[] | undefined
-
-    selectedCity: City | undefined
 
     constructor(
         private carService: ProductService,
@@ -90,7 +81,6 @@ export class IeparticipaComponent implements OnInit {
             this.sourceProducts = products
             this.cdr.markForCheck()
         })
-        //this.targetProducts = []
 
         this.obtenerIE()
         this.obtenerNivelTipo()
@@ -111,10 +101,6 @@ export class IeparticipaComponent implements OnInit {
             }
         }
 
-        this.cities = [
-            { name: 'Normal', code: 'NOR' },
-            { name: 'Especial(Discapacitados)', code: 'ESP' },
-        ]
         this.nivelTipo = [
             { cNivelTipoNombre: 'Primaria', iNivelTipoId: 'NY' },
             { cNivelTipoNombre: 'Secundaria', iNivelTipoId: 'RM' },

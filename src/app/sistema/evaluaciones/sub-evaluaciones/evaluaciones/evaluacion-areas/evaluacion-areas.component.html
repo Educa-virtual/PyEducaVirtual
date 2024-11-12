@@ -3,86 +3,44 @@
     <div class="card flex justify-content-center">
         <div class="flex flex-column gap-2">
             <div *ngFor="let curso of cursos" class="field-checkbox">
+                <p>{{ curso.cCursoNombre }} - {{ curso.isSelected }}</p>
                 <p-checkbox
                     type="checkbox"
                     [label]="curso.cCursoNombre"
-                    [value]="curso.iCursoId"
-                    [(ngModel)]="curso.isSelected"
-                    [disabled]="!esModoEdicion || accion === 'ver'"
+                    [disabled]="accion === 'ver'"
                 ></p-checkbox>
             </div>
         </div>
     </div>
-    <p-button
-        label="Guardar y Salir"
-        icon="pi pi-times"
-        iconPos="right"
-        (click)="insertarCursos()"
-        styleClass="p-button-danger"
-    ></p-button>
     <p-divider type="solid" />
-</div>
+</div> -->
 
+<br />
 <div class="card">
-    <p-divider type="solid"></p-divider>
-    <div class="card">
-        <div>
-            <div
-                *ngFor="let curso of cursos; trackBy: trackByCursoId"
-                class="field-checkbox"
-            >
-                <input
-                    type="checkbox"
-                    [checked]="curso.isSelected"
-                    [disabled]="accion === 'ver'"
-                    (change)="onCursoSelect(curso)"
-                />
-                <span>{{ curso.cCursoNombre }}</span>
+    <div class="divider"></div>
+
+    <div class="card flex justify-content-center">
+        <div class="flex flex-column gap-2">
+            <div *ngFor="let curso of cursos" class="field-checkbox">
+                <label class="custom-checkbox">
+                    <input
+                        type="checkbox"
+                        [(ngModel)]="curso.isSelected"
+                        name="curso{{ curso.cCursoNombre }}"
+                        [disabled]="accion === 'ver'"
+                    />
+                    <span class="checkmark"></span>
+                    {{ curso.cCursoNombre }}
+                </label>
             </div>
         </div>
     </div>
-
     <p-button
-        *ngIf="accion !== 'ver'"
         label="Guardar y Salir"
         icon="pi pi-times"
         iconPos="right"
         (click)="insertarCursos()"
         styleClass="p-button-danger"
     ></p-button>
-    <p-divider type="solid"></p-divider>
-</div> -->
-
-<!-- <div class="card">
-    <p-divider type="solid"></p-divider>
-    <div class="card">
-        <div>
-           
-            <div
-                *ngFor="let curso of cursos; trackBy: trackByCursoId"
-                class="field-checkbox"
-            >
-              
-                <input
-                    type="checkbox"
-                    [checked]="curso.isSelected"
-                    [disabled]="accion === 'ver'"
-                    (change)="onCursoSelect(curso)"
-                />
-                <span>{{ curso.cCursoNombre }}</span>
-                
-            </div>
-        </div>
-    </div>
-
-    
-    <p-button
-        *ngIf="accion !== 'ver'"
-        label="Guardar y Salir"
-        icon="pi pi-times"
-        iconPos="right"
-        (click)="insertarCursos()"
-        styleClass="p-button-danger"
-    ></p-button>
-    <p-divider type="solid"></p-divider>
-</div> -->
+    <div class="divider"></div>
+</div>

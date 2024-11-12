@@ -473,8 +473,6 @@ export class TabContenidoComponent implements OnInit {
             iCurrId: this.semanaSeleccionada.iCurrId,
             iEstado: 2,
         }
-        console.log(data)
-        return
 
         this._evalService
             .publicarEvaluacion(data)

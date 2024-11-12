@@ -35,12 +35,14 @@
         styleClass="w-full"
         class="flex-1"
         (onChange)="onChange()"
+        [disabled]="accion === 'ver'"
     />
     <button
         pButton
         type="button"
         label="Copiar y Guardar Participantes"
         (click)="copiarParticipantes()"
+        [disabled]="accion === 'ver'"
     ></button>
 </div>
 

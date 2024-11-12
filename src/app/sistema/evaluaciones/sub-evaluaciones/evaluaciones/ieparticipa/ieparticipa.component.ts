@@ -214,41 +214,35 @@ export class IeparticipaComponent implements OnInit {
             (error) => console.error('Error al guardar:', error)
         )
     }
-    // Cuando se mueve un elemento a "No participan"
+
     IEnoparticipan(event: any) {
         const itemsMoved = event.items
-        console.log('Moviendo a No Participan:', itemsMoved)
-        itemsMoved.forEach((item) => {
-            console.log('Item:', item) // Verifica la estructura
-            console.log('ID a eliminar:', item.iIieeId) // Verifica el ID que se va a enviar
-            console.log('Nombre a eliminar:', item.cIieeNombre)
-            console.log('Codigo Modular a eliminar:', item.iIeeParticipaId)
-            this._apiEre.eliminarParticipacion(item.iIieeId).subscribe(
-                (response) => console.log('Eliminación exitosa:', response),
-                (error) => console.error('Error al eliminar:', error)
-            )
-        })
-        console.log('Moviendo a No Participan:', itemsMoved)
-    }
-    IEnoparticipanall(event: any) {
-        const itemsMoved = event.items // Los elementos movidos de "No Participan"
         console.log(
             'Elementos movidos de IEnoparticipan a IEparticipan:',
             itemsMoved
         )
 
-        // Obtenemos los IDs de las participaciones para eliminarlas
-        const idsToDelete = itemsMoved.map((item) => item.iIieeId) // Extraemos solo los iIieeId
+        // Obtenemos los objetos con iIieeId e iEvaluacionId para eliminarlos
+        const participacionesToDelete = itemsMoved.map((item) => ({
+            iIieeId: item.iIieeId,
+            iEvaluacionId: this.compartirIdEvaluacionService.iEvaluacionId, // Asumiendo que iEvaluacionId está disponible en el componente
+        }))
 
-        // Realizamos la eliminación en bloque (enviar un arreglo de IDs)
-        this._apiEre.eliminarParticipacion(idsToDelete).subscribe(
-            (response) => {
-                console.log('Eliminación exitosa:', response)
-            },
-            (error) => {
-                console.error('Error al eliminar:', error)
-            }
-        )
+        if (participacionesToDelete.length > 0) {
+            // Realizamos la eliminación en bloque enviando los objetos necesarios
+            this._apiEre
+                .eliminarParticipacion(participacionesToDelete)
+                .subscribe(
+                    (response) => {
+                        console.log('Eliminación exitosa:', response)
+                    },
+                    (error) => {
+                        console.error('Error al eliminar:', error)
+                    }
+                )
+        } else {
+            console.warn('No hay elementos para eliminar.')
+        }
     }
     IEparticipanall(event: any) {
         const itemsMoved = event.items
@@ -265,51 +259,39 @@ export class IeparticipaComponent implements OnInit {
             (error) => console.error('Error al guardar:', error)
         )
     }
+    IEnoparticipanall(event: any) {
+        const itemsMoved = event.items
+        console.log(
+            'Elementos movidos de IEnoparticipan a IEparticipan:',
+            itemsMoved
+        )
+
+        // Obtenemos los objetos con iIieeId e iEvaluacionId para eliminarlos
+        const participacionesToDelete = itemsMoved.map((item) => ({
+            iIieeId: item.iIieeId,
+            iEvaluacionId: this.compartirIdEvaluacionService.iEvaluacionId, // Asumiendo que iEvaluacionId está disponible en el componente
+        }))
+
+        if (participacionesToDelete.length > 0) {
+            // Realizamos la eliminación en bloque enviando los objetos necesarios
+            this._apiEre
+                .eliminarParticipacion(participacionesToDelete)
+                .subscribe(
+                    (response) => {
+                        console.log('Eliminación exitosa:', response)
+                    },
+                    (error) => {
+                        console.error('Error al eliminar:', error)
+                    }
+                )
+        } else {
+            console.warn('No hay elementos para eliminar.')
+        }
+    }
     seleccionados() {
         // alert(JSON.stringify(this.targetProducts))
         //console.log('Seleccionados:', this.targetProducts)
     }
-
-    // obtenerParticipaciones(evaluacionId: number, modoCopia: boolean = false) {
-    //     this._apiEre
-    //         .obtenerParticipaciones(evaluacionId)
-    //         .pipe(takeUntil(this.unsubscribe$))
-    //         .subscribe({
-    //             next: (resp: any) => {
-    //                 // this.targetProducts = resp.data.map((item: any) => ({
-    //                 //     iIieeId: item.iIieeId,
-    //                 //     cIieeNombre: item.cIieeNombre,
-    //                 //     cIieeCodigoModular: item.cIieeCodigoModular,
-    //                 //     cNivelTipoNombre: item.cNivelTipoNombre,
-    //                 // }))
-    //                 const participantes = resp.data.map((item: any) => ({
-    //                     iIieeId: item.iIieeId,
-    //                     cIieeNombre: item.cIieeNombre,
-    //                     cIieeCodigoModular: item.cIieeCodigoModular,
-    //                     cNivelTipoNombre: item.cNivelTipoNombre,
-    //                 }))
-    //                 // Cambcio
-    //                 if (modoCopia) {
-    //                     // Si estamos copiando, setear targetProducts con los participantes copiados
-    //                     this.targetProducts = participantes
-    //                     this.obtenerIE() // Filtrar los no participantes
-    //                     console.log(
-    //                         'Participantes copiados para nueva evaluación:',
-    //                         this.targetProducts
-    //                     )
-    //                 } else {
-    //                     // Para edición/ver sin copiar, cargar los participantes normalmente
-    //                     this.targetProducts = participantes
-    //                     this.obtenerIE()
-    //                 }
-    //                 // cambio
-    //                 // Llama a obtenerIE para filtrar las IE no participantes
-    //                 this.obtenerIE()
-    //             },
-    //             error: (error) =>
-    //                 console.error('Error al obtener participaciones:', error),
-    //         })
-    // }
     obtenerParticipaciones(
         evaluacionId: number,
         modoCopia: boolean = false
@@ -349,17 +331,6 @@ export class IeparticipaComponent implements OnInit {
                 })
         })
     }
-
-    // copiarParticipaciones() {
-    //     if (this.selectedEvaluacionCopia) {
-    //         const evaluacionId = this.selectedEvaluacionCopia.iEvaluacionId
-    //         this.obtenerParticipaciones(evaluacionId, true) // Modo copia activado
-    //     } else {
-    //         console.warn(
-    //             'Seleccione una evaluación para copiar las participaciones.'
-    //         )
-    //     }
-    // }
     copiarParticipantes(): void {
         if (
             !this.selectedEvaluacionCopia ||
@@ -368,9 +339,7 @@ export class IeparticipaComponent implements OnInit {
             console.error('No se ha seleccionado una evaluación para copiar')
             return
         }
-
         const evaluacionIdCopiar = this.selectedEvaluacionCopia.iEvaluacionId
-
         this.obtenerParticipaciones(evaluacionIdCopiar, true)
             .then((participantes) => {
                 this.targetProducts = participantes
@@ -390,7 +359,6 @@ export class IeparticipaComponent implements OnInit {
                 console.error('Error al copiar participantes:', error)
             })
     }
-
     // Evaluaciones Copia
     obtenerEvaluacionesCopia(): void {
         this._apiEre
@@ -406,17 +374,6 @@ export class IeparticipaComponent implements OnInit {
                     )
                 },
             })
-
-        // console.log('Ejecutando obtenerEvaluaciones')
-        // this.evaluacionesService.obtenerEvaluacionesCopia().subscribe(
-        //     (response) => {
-        //         console.log('EVALUACIONES OBTENIDAS:', response)
-        //         this.evaluaciones = response // Asignamos el array directamente
-        //     },
-        //     (error) => {
-        //         console.error('Error al obtener las evaluaciones', error)
-        //     }
-        // )
     }
 
     onChange() {

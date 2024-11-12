@@ -151,10 +151,11 @@ export class ApiEvaluacionesRService {
             data
         )
     }
-    eliminarParticipacion(ids: any[]): Observable<any> {
+
+    eliminarParticipacion(participaciones: any[]): Observable<any> {
         return this.http.delete(
             `${this.baseUrl}/ere/Evaluaciones/eliminarParticipacion`,
-            { body: { ids: ids } } // Aquí estamos enviando el array de IDs como cuerpo de la solicitud DELETE
+            { body: { participaciones: participaciones } } // Enviamos un array de objetos con iIieeId e iEvaluacionId
         )
     }
     IEparticipanall(data) {

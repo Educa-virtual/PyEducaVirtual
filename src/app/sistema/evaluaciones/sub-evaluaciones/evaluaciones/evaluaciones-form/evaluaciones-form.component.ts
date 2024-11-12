@@ -23,6 +23,8 @@ import { EvaluacionAreasComponent } from './../evaluacion-areas/evaluacion-areas
 import { ApiEvaluacionesRService } from '../../../services/api-evaluaciones-r.service'
 import { Subject, takeUntil } from 'rxjs'
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog'
+//Uso para separar y poner en vertical o horizonal
+import { DividerModule } from 'primeng/divider'
 
 import {
     FormBuilder,
@@ -60,6 +62,7 @@ interface NivelEvaluacion {
         EvaluacionAreasComponent,
         StepperModule,
         CommonModule,
+        DividerModule,
     ],
     templateUrl: './evaluaciones-form.component.html',
     styleUrl: './evaluaciones-form.component.scss',

@@ -337,11 +337,6 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
                         'Cursos obtenidos desde el backend:',
                         resp.cursos
                     )
-                    // Establecemos el array de cursos con los datos del backend
-                    // this.cursos = resp.cursos.map((curso: any) => ({
-                    //     ...curso,
-                    //     isSelected: Boolean(curso.isSelected === '1'), // Asegura la conversión de '1' a true y '0' a false
-                    // }))
                     this.cursos = resp.cursos.map((curso: any) => ({
                         ...curso,
                         isSelected: curso.isSelected === '1' ? true : false, // Asegúrate de convertir '1' a true y '0' a false

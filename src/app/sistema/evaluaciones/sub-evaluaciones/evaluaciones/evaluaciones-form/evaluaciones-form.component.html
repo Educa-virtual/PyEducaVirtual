@@ -7,14 +7,13 @@
                     let-nextCallback="nextCallback"
                 >
                     <form [formGroup]="evaluacionFormGroup">
-                        <div class="card flex"></div>
-                        <div class="formgrid grid">
-                            <div class="field flex flex-column col-12 md:col-6">
+                        <div class="formgrid grid flex">
+                            <!-- Tipo Evaluación -->
+                            <div class="field flex flex-column col-12 md:col-4">
                                 <label for="tipo-pregunta"
                                     >Tipo evaluación</label
                                 >
                                 <p-dropdown
-                                    [readonly]="accion === 'ver' ? true : false"
                                     styleClass="w-full"
                                     optionValue="idTipoEvalId"
                                     formControlName="idTipoEvalId"
@@ -26,9 +25,7 @@
                                         evaluacionFormGroup.get('idTipoEvalId')
                                             ?.touched
                                             ? 'w-full ng-dirty ng-invalid p-invalid'
-                                            : 'w-full ' && accion === 'ver'
-                                              ? 'bg-gray-400'
-                                              : ''
+                                            : 'w-full '
                                     "
                                 />
                                 <small
@@ -44,10 +41,10 @@
                                     Este campo es requerido
                                 </small>
                             </div>
-                        </div>
-                        <div class="formgrid grid">
-                            <div class="field flex flex-column col-12 md:col-6">
-                                <label for="tipo-pregunta"
+
+                            <!-- Nivel Evaluación -->
+                            <div class="field flex flex-column col-12 md:col-4">
+                                <label for="nivel-pregunta"
                                     >Nivel evaluación</label
                                 >
                                 <p-dropdown
@@ -78,9 +75,9 @@
                                     Este campo es requerido
                                 </small>
                             </div>
-                        </div>
-                        <div class="formgrid grid">
-                            <div class="field col">
+
+                            <!-- Fecha de creación -->
+                            <div class="field col-12 md:col-4">
                                 <app-common-input
                                     controlKey="dtEvaluacionCreacion"
                                     type="date"
@@ -88,7 +85,6 @@
                                 />
                             </div>
                         </div>
-                        <!-- AQUI 3  -->
                         <div class="formgrid grid">
                             <div class="field col">
                                 <app-common-input
@@ -105,38 +101,39 @@
                                 />
                             </div>
                         </div>
-                        <div class="formgrid grid">
-                            <div class="field col">
+                        <div class="formgrid grid flex">
+                            <!-- URL Drive -->
+                            <div class="field col-12 md:col-6">
                                 <app-common-input
                                     controlKey="cEvaluacionUrlDrive"
                                     label="URL DRIVE"
                                 />
                             </div>
-                        </div>
-                        <div class="formgrid grid">
-                            <div class="field col">
+
+                            <!-- URL Plantilla -->
+                            <div class="field col-12 md:col-6">
                                 <app-common-input
                                     controlKey="cEvaluacionUrlPlantilla"
                                     label="URL Plantilla"
                                 />
                             </div>
                         </div>
+
                         <div class="formgrid grid">
-                            <div class="field col">
+                            <div class="field col-12 md:col-6">
                                 <app-common-input
                                     controlKey="cEvaluacionUrlManual"
                                     label="URL Manual"
                                 />
                             </div>
-                        </div>
-                        <div class="formgrid grid">
-                            <div class="field col">
+                            <div class="field col-12 md:col-6">
                                 <app-common-input
                                     controlKey="cEvaluacionUrlMatriz"
                                     label="URL Matriz"
                                 />
                             </div>
                         </div>
+
                         <div class="formgrid grid">
                             <div class="field col">
                                 <label for="explicacion">Observación</label>
@@ -150,26 +147,22 @@
                                 ></textarea>
                             </div>
                         </div>
-                        <div class="formgrid grid">
-                            <div class="field col">
+                        <div class="formgrid grid flex">
+                            <div class="field flex flex-column col-12 md:col-4">
                                 <app-common-input
                                     type="date"
                                     controlKey="dtEvaluacionLiberarMatriz"
                                     label="Fecha Liberar matriz"
                                 />
                             </div>
-                        </div>
-                        <div class="formgrid grid">
-                            <div class="field col">
+                            <div class="field flex flex-column col-12 md:col-4">
                                 <app-common-input
                                     type="date"
                                     controlKey="dtEvaluacionLiberarCuadernillo"
                                     label="Fecha Liberar cuadernillo"
                                 />
                             </div>
-                        </div>
-                        <div class="formgrid grid">
-                            <div class="field col">
+                            <div class="field flex flex-column col-12 md:col-4">
                                 <app-common-input
                                     type="date"
                                     controlKey="dtEvaluacionLiberarResultados"
@@ -177,6 +170,7 @@
                                 />
                             </div>
                         </div>
+
                         <div class="flex pt-4 justify-content-end">
                             <!-- Botón Guardar para modo creación -->
                             <p-button

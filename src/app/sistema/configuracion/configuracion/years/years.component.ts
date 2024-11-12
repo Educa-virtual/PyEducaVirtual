@@ -56,38 +56,15 @@ export class YearsComponent implements OnInit {
                 console.log('Viendo')
             },
             crear: () => {
-                // this.ticketService.setModeSteps('create')
-                console.log('Año vigente')
-                this.ticketService.setCalendar({
-                    iSedeId: "",
-                    iYAcadId: "",
-                    iCalAcadId: "",
-                })
                 this.navigateToRegistro()
-
             },
             editar: () => {
-                // Lógica para la acción "editar"
-                console.log('Editando')
-                console.log(row.item.iYAcadId)
-                console.log('Modo?')
-                console.log(this.ticketService.registroInformation.mode)
                 this.ticketService.setCalendar({
                     iSedeId: row.item.iSedeId,
                     iYAcadId: row.item.iYAcadId,
                     iCalAcadId: row.item.iCalAcadId,
-                })
+                }, {onCompleteCallbacks:  [() => this.navigateToRegistro()]})
 
-                this.ticketService.getCalendar(
-                    {
-                        iSedeId: row.item.iSedeId,
-                        iYAcadId: row.item.iYAcadId,
-                        iCalAcadId: row.item.iCalAcadId,
-                    },
-                    [() => this.navigateToRegistro()],
-                    false
-                    // []
-                )
 
                 // this.ticketService.getDiasLaborales({
                 //     iCalAcadId: row.item.iCalAcadId,

@@ -84,27 +84,27 @@ export class YearComponent implements OnInit {
             recuperacion: [[], Validators.required],
         })
     }
-    ngOnInit() {
-        if (!this.ticketService.registroInformation?.calendar) {
-            this.router.navigate(['configuracion/configuracion/years'])
-            return
-        }
+    async ngOnInit() {
+        await this.ticketService.setCalendar(
+            { iYAcadId:'', iCalAcadId: '' },
+            {
+                onCompleteCallbacks: [
+                    (data) => this.setValuesFormCalendar(data),
+                ],
+            }
+        )
+
         const {
-            iSedeId = '',
-            iYAcadId = '',
             iCalAcadId = '',
         } = this.ticketService.registroInformation?.calendar
 
+        // if (!this.ticketService.registroInformation?.calendar) {
+        //     this.router.navigate(['configuracion/configuracion/years'])
+        //     return
+        // }
+
         if (iCalAcadId) {
-            this.ticketService.getCalendar({ iSedeId, iYAcadId, iCalAcadId })
-            this.ticketService.setCalAcad({
-                onNextCallbacks: [(data) => this.setValuesFormCalendar(data)],
-            })
             this.ticketService.setCalFasesProm()
-        } else {
-            this.ticketService.setCalAcad({
-                onNextCallbacks: [(data) => this.setValuesFormCalendar(data)],
-            })
         }
 
         // Suscribirse a los cambios del formulario después de la inicialización
@@ -152,9 +152,11 @@ export class YearComponent implements OnInit {
             fechaMatriculaFin: matriculaFin,
             fechaFaseInicio: bCalAcadFaseRegular,
             fechaFaseFin: bCalAcadFaseRecuperacion,
-            regular: [data.fasesProm[0]],
-            recuperacion: [data.fasesProm[1]],
+            regular: [fases_promocionales[0]],
+            recuperacion: [fases_promocionales[1]],
         })
+
+        this.form.get('fechaVigente').disable()
     }
 
     confirm() {
@@ -162,7 +164,7 @@ export class YearComponent implements OnInit {
             header: '¿Desea guardar información?',
             message: 'Por favor, confirme para continuar.',
             accept: {
-                severity: 'contrast',
+                severity: 'success',
                 summary: 'Año',
                 detail: 'Se ha guardado correctamente.',
                 life: 6000,
@@ -181,18 +183,20 @@ export class YearComponent implements OnInit {
         )
     }
 
-    saveInformation() {
+    async saveInformation() {
         if (!this.ticketService.registroInformation.calendar.iCalAcadId) {
-            this.ticketService.insCalAcademico(this.form.value)
-        } 
-        console.log(this.ticketService.registroInformation.calendar.iCalAcadId);
+            await this.ticketService.insCalAcademico(this.form.value)
+        } else {
+            await this.ticketService.updCalAcademico(this.form.value)
+        }
+        console.log(this.ticketService.registroInformation.calendar.iCalAcadId)
 
         const checkRegular = this.form.get('regular').value
         const checkRecuperacion = this.form.get('recuperacion').value
 
         if (checkRegular.includes(true)) {
             const { dtFaseRegularInicio, dtFaseRegularFin } = this.form.value
-            this.ticketService.insCalFasesProm({
+            await this.ticketService.insCalFasesProm({
                 form: {
                     faseInicio: dtFaseRegularInicio,
                     faseFinal: dtFaseRegularFin,
@@ -200,12 +204,12 @@ export class YearComponent implements OnInit {
                 fase: checkRegular[0],
             })
         } else {
-            this.ticketService.deleteCalFasesProm(checkRegular[0])
+            await this.ticketService.deleteCalFasesProm(checkRegular[0])
         }
         if (checkRecuperacion.includes(true)) {
             const { dtFaserecuperacionInicio, dtFaserecuperacionFin } =
                 this.form.value
-            this.ticketService.insCalFasesProm({
+            await this.ticketService.insCalFasesProm({
                 form: {
                     faseInicio: dtFaserecuperacionInicio,
                     faseFinal: dtFaserecuperacionFin,
@@ -213,13 +217,10 @@ export class YearComponent implements OnInit {
                 fase: checkRecuperacion[0],
             })
         } else {
-            this.ticketService.deleteCalFasesProm(checkRecuperacion[0])
+            await this.ticketService.deleteCalFasesProm(checkRecuperacion[0])
         }
 
-        if (this.ticketService.registroInformation.calendar.iCalAcadId) {
-            console.log('Fases')
-            this.ticketService.setCalFasesProm()
-        }
+        await this.ticketService.setCalendar()
     }
 
     nextPage() {

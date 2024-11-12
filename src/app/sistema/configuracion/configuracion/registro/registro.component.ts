@@ -35,23 +35,23 @@ export class RegistroComponent implements OnInit, OnChanges {
         this.items = [
             {
                 label: 'Fechas',
-                routerLink: this.ticketService.registroInformation.calendar?.iCalAcadId ? 'year' : ''
+                routerLink: this.ticketService.registroInformation?.calendar?.iCalAcadId ? 'fechas' : ''
             },
             {
                 label: 'Días laborales',
-                routerLink: this.ticketService.registroInformation.calendar?.iCalAcadId ? 'dias-laborales' : ''
+                routerLink: this.ticketService.registroInformation?.calendar?.iCalAcadId ? 'dias-laborales' : ''
             },
             {
                 label: 'Turnos',
-                routerLink: this.ticketService.registroInformation.calendar?.iCalAcadId ? 'turnos' : ''
+                routerLink: this.ticketService.registroInformation?.calendar?.iCalAcadId ? 'turnos' : ''
             },
             {
                 label: 'Periodos académicos',
-                routerLink: this.ticketService.registroInformation.calendar?.iCalAcadId ? 'periodos-academicos' : ''
+                routerLink: this.ticketService.registroInformation?.calendar?.iCalAcadId ? 'periodos-academicos' : ''
             },
             {
                 label: 'Resumen',
-                routerLink: this.ticketService.registroInformation.calendar?.iCalAcadId ? 'resumen' : ''
+                routerLink: this.ticketService.registroInformation?.calendar?.iCalAcadId ? 'resumen' : ''
             },
         ]
 

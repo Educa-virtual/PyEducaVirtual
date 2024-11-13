@@ -80,16 +80,16 @@ export class ApiEvaluacionesRService {
         )
     }
     //Actualizar Cursos COMENTADO
-    actualizarCursosEvaluacion(
-        iEvaluacionId: number,
-        cursosSeleccionados: number[]
+    actualizarCursosExamen(
+        evaluacionId: number,
+        cursos: { id: number; is_selected: boolean }[]
     ): Observable<any> {
-        return this.http.post<any>(
-            `${this.baseUrl}/ere/Evaluaciones/evaluaciones/${iEvaluacionId}/actualizarCursos`,
-            {
-                cursosSeleccionados: cursosSeleccionados,
-            }
-        )
+        const body = {
+            evaluacion_id: evaluacionId,
+            cursos: cursos,
+        }
+
+        return this.http.put(this.baseUrl, body)
     }
     //Evaluacion de Copia
     // obtenerEvaluacionesCopia(): Observable<any> {

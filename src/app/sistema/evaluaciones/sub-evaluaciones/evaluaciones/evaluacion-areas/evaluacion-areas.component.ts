@@ -232,6 +232,7 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
     // Obtener los cursos
     obtenerCursos(): void {
         console.log('Ejecutando obtenerCursos') // Para verificar si se está llamando
+
         this._apiEre
             .obtenerCursos(this.params)
             .pipe(takeUntil(this.unsubscribe$))
@@ -395,6 +396,42 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
                 },
             })
     }
+
+    // // Método para actualizar cursos en el backend
+    // actualizarCursosExamen(): void {
+    //     const iEvaluacionId = this.compartirIdEvaluacionService.iEvaluacionId
+
+    //     // Filtra los cursos seleccionados (solo envía `iCursoId`)
+    //     this.selectedCursos = this.cursos
+    //         .filter((curso) => curso.isSelected)
+    //         .map((curso) => ({ iCursoId: curso.iCursoId }))
+
+    //     // Verifica que haya cursos seleccionados
+    //     if (this.selectedCursos.length === 0) {
+    //         console.log('No hay cursos seleccionados para actualizar')
+    //         return
+    //     }
+
+    //     console.log(
+    //         'Cursos seleccionados para actualizar:',
+    //         this.selectedCursos
+    //     )
+
+    //     // Llama al servicio para actualizar cursos
+    //     this._apiEre
+    //         .actualizarCursosExamen(iEvaluacionId, this.selectedCursos)
+    //         .pipe(takeUntil(this.unsubscribe$))
+    //         .subscribe({
+    //             next: (resp) => {
+    //                 console.log('Cursos actualizados correctamente:', resp)
+    //                 // Aquí podrías agregar alguna lógica adicional, como notificaciones al usuario
+    //             },
+    //             error: (err) => {
+    //                 console.error('Error al actualizar los cursos:', err)
+    //             },
+    //         })
+    // }
+
     ngOnDestroy() {
         this.unsubscribe$.next(true)
     }

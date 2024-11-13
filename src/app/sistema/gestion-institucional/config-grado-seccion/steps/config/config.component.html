@@ -1,0 +1,178 @@
+<app-container-page
+    title="Registro de Institución Educativa"
+    [actions]="accionesPrincipal"
+    (accionBtnItem)="accionBtnItemTable($event)"
+>
+    <div class="card">
+        <p-steps [model]="items" [readonly]="false"></p-steps>
+    </div>
+
+    <form [formGroup]="form">
+        <div class="grid p-fluid mt-3">
+            <div class="field col-12 md:col-3">
+                <span class="p-float-label">
+                    <input
+                        type="hidden"
+                        formControlName="iConfigId"
+                        aria-describedby="iConfigId-help"
+                    />
+                    <input
+                        pInputText
+                        formControlName="cYAcadNombre"
+                        readOnly="false"
+                        aria-describedby="cYAcadNombre-help"
+                    />
+
+                    <label for="cYAcadNombre">Año escolar:</label>
+                </span>
+            </div>
+
+            <div class="field col-12 md:col-3">
+                <span class="p-float-label">
+                    <input
+                        pInputText
+                        formControlName="cModalServId"
+                        readOnly="false"
+                        aria-describedby="cModalServId-help"
+                    />
+                    <label for="iModalServId">Modalidad educativa</label>
+                </span>
+            </div>
+
+            <div class="field col-12 md:col-6">
+                <span class="p-float-label">
+                    <input
+                        pInputText
+                        formControlName="cNivelTipoNombre"
+                        readOnly="false"
+                        aria-describedby="cNivelTipoNombre-help"
+                    />
+
+                    <input
+                        type="hidden"
+                        formControlName="iNivelTipoId"
+                        aria-describedby="iNivelTipoId-help"
+                    />
+
+                    <label for="cNivelTipoNombre">Niveles Modulares</label>
+                </span>
+            </div>
+
+            <div class="field col-12 md:col-6">
+                <span class="p-float-label">
+                    <p-dropdown
+                        [options]="serv_atencion"
+                        formControlName="iServEdId"
+                        optionLabel="cServEdNombre"
+                        [checkmark]="true"
+                        optionValue="iServEdId"
+                        [showClear]="true"
+                    />
+
+                    <label for="iServEdId"
+                        >Modelo de servicio de atención</label
+                    >
+                </span>
+            </div>
+
+            <div class="field col-12 md:col-6">
+                <span class="p-float-label">
+                    <input
+                        pInputText
+                        formControlName="cConfigDescripcion"
+                        aria-describedby="cConfigDescripcion-help"
+                    />
+                    <label for="cConfigDescripcion">Descripcion</label>
+                </span>
+            </div>
+            <div class="field col-12 md:col-6">
+                <span class="p-float-label">
+                    <input
+                        pInputText
+                        formControlName="cConfigNroRslAprobacion"
+                        aria-describedby="cConfigNroRslAprobacion-help"
+                    />
+                    <label for="cConfigNroRslAprobacion"
+                        >Resolución Directoral de aprobación</label
+                    >
+                </span>
+            </div>
+            <div class="field col-12 md:col-2">
+                <span class="p-float-label">
+                    <p-dropdown
+                        [style]="{ width: '100%' }"
+                        [options]="configTipo"
+                        optionLabel="cEstadoConfigNombre"
+                        optionValue="iEstadoConfigId"
+                        formControlName="iEstadoConfigId"
+                    />
+                    <label for="iTipoAmbienteId">Estado:</label>
+                </span>
+            </div>
+
+            <div class="field col-12 md:col-2">
+                <label for="bConfigEsBilingue"
+                    >IE Educación intercultural Bilingüe
+                </label>
+            </div>
+            <div class="field col-12 md:col-1">
+                <span class="p-float-label">
+                    Si
+
+                    <p-radioButton
+                        [value]="true"
+                        formControlName="bConfigEsBilingue"
+                    />
+                </span>
+            </div>
+            <div class="field col-12 md:col-1">
+                <span class="p-float-label"
+                    >No
+
+                    <p-radioButton
+                        [value]="false"
+                        formControlName="bConfigEsBilingue"
+                    />
+                </span>
+            </div>
+
+            <div class="field col-12 md:col-6">
+                <span class="p-float-label">
+                    <p-toast />
+                    <p-fileUpload
+                        name="demo[]"
+                        url="https://www.primefaces.org/cdn/api/upload.php"
+                        (onUpload)="onUpload($event)"
+                        [multiple]="true"
+                        accept="application/pdf"
+                        maxFileSize="10000000"
+                    >
+                        <ng-template pTemplate="content">
+                            <ul *ngIf="uploadedFiles.length">
+                                <li *ngFor="let file of uploadedFiles">
+                                    {{ file.name }} - {{ file.size }} bytes
+                                </li>
+                            </ul>
+                        </ng-template>
+                    </p-fileUpload>
+                </span>
+            </div>
+            <div class="field col-12 md:col-6">
+                <span class="p-float-label">
+                    <p><strong>Consideraciones al adjuntar archivos</strong></p>
+                    <li>
+                        Solo se permite las extensiones : JPG, JPEG, PNG, PDF
+                    </li>
+                    <li>El tamaño maximo permitido es de 10 MB</li>
+                    <li>Puede agregar solo un archivos</li>
+                </span>
+            </div>
+        </div>
+        <p-button
+            label="Guardar"
+            [disabled]="form.invalid"
+            (onClick)="accionBtnItem('guardar')"
+            styleClass="p-button-danger"
+        />
+    </form>
+</app-container-page>

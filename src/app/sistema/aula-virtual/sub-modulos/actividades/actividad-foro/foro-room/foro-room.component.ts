@@ -29,6 +29,7 @@ import { RemoveHTMLPipe } from '@/app/shared/pipes/remove-html.pipe'
 import { NgFor, NgIf } from '@angular/common'
 import { RecursosListaComponent } from '@/app/shared/components/recursos-lista/recursos-lista.component'
 import { ConstantesService } from '@/app/servicios/constantes.service'
+import { EmptySectionComponent } from '@/app/shared/components/empty-section/empty-section.component'
 @Component({
     selector: 'app-foro-room',
     standalone: true,
@@ -36,6 +37,7 @@ import { ConstantesService } from '@/app/servicios/constantes.service'
     styleUrls: ['./foro-room.component.scss'],
     imports: [
         IconComponent,
+        EmptySectionComponent,
         RecursosListaComponent,
         RemoveHTMLPipe,
         CommonInputComponent,
@@ -194,23 +196,18 @@ export class ForoRoomComponent implements OnInit {
     // closeModal(data) {
     //     this.ref.close(data)
     // }
-    //ver si mi perfil esta llegando (borrar)
+
     accionBtnItemTable({ accion, item }) {
         if (accion === 'asignar') {
             this.selectedItems = []
             this.selectedItems = [item]
-            // this.asignarPreguntas()
         }
-        if (accion === 'editar') {
-            //this.agregarEditarPregunta(item)
-        }
-
-        if (accion === 'ver') {
-            /// alert(item.iEvaluacionId)
-            //this.verEreEvaluacion(item)
-            // this.eliminarPregunta(item)
-        }
+        // if (accion === 'editar') {
+        // }
+        // if (accion === 'ver') {
+        // }
     }
+    //ver si mi perfil esta llegando (borrar)
     obtenerIdPerfil() {
         this.iEstudianteId = this._constantesService.iEstudianteId
         this.iPerfilId = this._constantesService.iPerfilId

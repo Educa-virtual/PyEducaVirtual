@@ -173,7 +173,7 @@
                         <app-recursos-lista [files]="FilesTareas">
                         </app-recursos-lista>
                     </div>
-                    <div class="container">
+                    <div class="">
                         <!-- [class]="iPerfilId !== 8 ? 'col-12' : 'col-8'"> -->
 
                         <div class="card grid">
@@ -197,172 +197,216 @@
                                         pTemplate="listItem"
                                         let-i="index"
                                     >
-                                        <p-button
-                                            [text]="true"
-                                            severity="secondary"
-                                            class="p-col-12"
-                                        >
-                                            <div
-                                                class="perfiles-list-item text-left"
-                                                tabindex="0"
+                                        <!-- Agregar el length -->
+                                        @if (1 > 0) {
+                                            <p-button
+                                                [text]="true"
+                                                severity="secondary"
+                                                class="p-col-12"
                                             >
-                                                <img
-                                                    src="assets/demo/images/matemit/avatar.png"
-                                                    [alt]="respuestas.name"
-                                                    class="w-4rem min-h-9 shadow-2 flex-shrink-0 border-round"
-                                                />
                                                 <div
-                                                    class="perfiles-list-detail"
+                                                    class="perfiles-list-item text-left"
+                                                    tabindex="0"
                                                 >
-                                                    <div>
-                                                        <div
-                                                            class="perfil-name"
-                                                        >
-                                                            {{
-                                                                respuestas.cNombreEstudiante
-                                                            }}
-                                                            {{
-                                                                respuestas?.dtCreado
-                                                            }}
-                                                        </div>
-                                                    </div>
+                                                    <img
+                                                        src="assets/demo/images/matemit/avatar.png"
+                                                        [alt]="respuestas.name"
+                                                        class="w-4rem min-h-9 shadow-2 flex-shrink-0 border-round"
+                                                    />
                                                     <div
-                                                        class=""
-                                                        style="
-                                                            text-align: justify;
-                                                        "
+                                                        class="perfiles-list-detail"
                                                     >
-                                                        <div
-                                                            class="perfil-name"
-                                                        >
-                                                            Comentario:
+                                                        <div>
+                                                            <div
+                                                                class="perfil-name"
+                                                            >
+                                                                {{
+                                                                    respuestas.cNombreEstudiante
+                                                                }}
+                                                                {{
+                                                                    respuestas?.dtCreado
+                                                                }}
+                                                                {{
+                                                                    respuestas?.length
+                                                                }}
+                                                            </div>
                                                         </div>
-                                                        <span
-                                                            *ngIf="
-                                                                !respuestas.expanded
-                                                            "
-                                                        >
-                                                            {{
-                                                                respuestas?.cForoRptaRespuesta
-                                                                    | removeHTML
-                                                                    | slice
-                                                                        : 0
-                                                                        : 150
-                                                            }}...
-                                                        </span>
-                                                        <span
-                                                            *ngIf="
-                                                                respuestas.expanded
-                                                            "
-                                                        >
-                                                            {{
-                                                                respuestas?.cForoRptaRespuesta
-                                                                    | removeHTML
-                                                            }}
-                                                        </span>
-                                                        <!-- <a (click)="toggleExpand(respuestas)" class="toggle-link">
-                                                            {{ respuestas.expanded ? 'Leer menos' : 'Leer más' }}
-                                                        </a> -->
-                                                    </div>
-                                                    <!-- startReply(i) -->
-
-                                                    <button
-                                                        pButton
-                                                        type="button"
-                                                        class="p-button-text"
-                                                    >
-                                                        <u>4</u>
-                                                        <i
-                                                            class="pi pi-thumbs-up"
-                                                            style="
-                                                                font-size: 18px;
-                                                            "
-                                                        ></i>
-                                                    </button>
-                                                    <button
-                                                        pButton
-                                                        type="button"
-                                                        class="p-button-text"
-                                                        (click)="startReply(i)"
-                                                    >
-                                                        <i
-                                                            class="pi pi-comments"
-                                                            style="
-                                                                font-size: 18px;
-                                                            "
-                                                        ></i>
-                                                    </button>
-                                                    <div
-                                                        *ngIf="
-                                                            respuestas
-                                                                .respuestas
-                                                                ?.length
-                                                        "
-                                                    >
                                                         <div
-                                                            *ngFor="
-                                                                let reply of respuestas.respuestas
+                                                            class=""
+                                                            style="
+                                                                text-align: justify;
                                                             "
-                                                            class="reply"
                                                         >
                                                             <div
                                                                 class="perfil-name"
                                                             >
-                                                                Respuesta:
-                                                                {{
-                                                                    reply.cForoRptaRespuesta
-                                                                }}
+                                                                Comentario:
                                                             </div>
+                                                            <span
+                                                                *ngIf="
+                                                                    !respuestas.expanded
+                                                                "
+                                                            >
+                                                                {{
+                                                                    respuestas?.cForoRptaRespuesta
+                                                                        | removeHTML
+                                                                        | slice
+                                                                            : 0
+                                                                            : 150
+                                                                }}...
+                                                            </span>
+                                                            <span
+                                                                *ngIf="
+                                                                    respuestas.expanded
+                                                                "
+                                                            >
+                                                                {{
+                                                                    respuestas?.cForoRptaRespuesta
+                                                                        | removeHTML
+                                                                }}
+                                                            </span>
+                                                            <!-- <a (click)="toggleExpand(respuestas)" class="toggle-link">
+                                                    {{ respuestas.expanded ? 'Leer menos' : 'Leer más' }}
+                                                </a> -->
                                                         </div>
-                                                    </div>
-                                                    <!-- Campo de respuesta y botón enviar -->
-                                                    <div
-                                                        *ngIf="
-                                                            selectedCommentIndex ===
-                                                            i
-                                                        "
-                                                    >
-                                                        <p-editor
-                                                            id="descripcion"
-                                                            placeholder="Comentar.."
-                                                            formControlName="cForoRptaPadre"
-                                                        />
+                                                        <!-- startReply(i) -->
+
+                                                        <button
+                                                            pButton
+                                                            type="button"
+                                                            class="p-button-text"
+                                                        >
+                                                            <u>4</u>
+                                                            <i
+                                                                class="pi pi-thumbs-up"
+                                                                style="
+                                                                    font-size: 18px;
+                                                                "
+                                                            ></i>
+                                                        </button>
+                                                        <button
+                                                            pButton
+                                                            type="button"
+                                                            class="p-button-text"
+                                                            (click)="
+                                                                startReply(i)
+                                                            "
+                                                        >
+                                                            <i
+                                                                class="pi pi-comments"
+                                                                style="
+                                                                    font-size: 18px;
+                                                                "
+                                                            ></i>
+                                                        </button>
                                                         <div
-                                                            class="reply-container"
+                                                            *ngIf="
+                                                                respuestas
+                                                                    .respuestas
+                                                                    ?.length
+                                                            "
                                                         >
                                                             <div
-                                                                class="button-container"
+                                                                *ngFor="
+                                                                    let reply of respuestas.respuestas
+                                                                "
+                                                                class="reply"
+                                                            >
+                                                                <div
+                                                                    class="perfil-name"
+                                                                >
+                                                                    Respuesta:
+                                                                    {{
+                                                                        reply.cForoRptaRespuesta
+                                                                    }}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <!-- Campo de respuesta y botón enviar -->
+                                                        <div
+                                                            *ngIf="
+                                                                selectedCommentIndex ===
+                                                                i
+                                                            "
+                                                        >
+                                                            <!-- <p-editor
+                                                    id="descripcion"
+                                                    placeholder="Comentar.."
+                                                    formControlName="cForoRptaPadre"
+                                                /> -->
+                                                            <input
+                                                                type="text"
+                                                                class="comment-input"
+                                                                placeholder="Escribe un comentario..."
+                                                                id="commentText"
+                                                                formControlName="cForoRptaRespuesta"
+                                                            />
+                                                            <div
+                                                                class="chat-input-container"
                                                             >
                                                                 <button
-                                                                    pButton
-                                                                    pRipple
-                                                                    label="Cancelar"
-                                                                    icon="pi pi-times"
-                                                                    class="p-button-secondary mx-3"
-                                                                    type="button"
-                                                                    size="small"
-                                                                    (click)="
-                                                                        cancelarEdicion()
-                                                                    "
-                                                                ></button>
+                                                                    class="icon-button"
+                                                                >
+                                                                    😊
+                                                                </button>
                                                                 <button
-                                                                    pButton
-                                                                    pRipple
-                                                                    type="button"
-                                                                    label="Responder Enviar"
-                                                                    icon="pi pi-send"
-                                                                    size="small"
-                                                                    class="p-button-primary"
-                                                                    (click)="
-                                                                        sendCommentPadre()
-                                                                    "
-                                                                ></button>
+                                                                    class="icon-button"
+                                                                >
+                                                                    +
+                                                                </button>
+                                                                <textarea
+                                                                    class="chat-input"
+                                                                    placeholder="Escribe un mensaje..."
+                                                                    rows="1"
+                                                                ></textarea>
+                                                                <button
+                                                                    class="icon-button"
+                                                                >
+                                                                    ➡️
+                                                                </button>
+                                                            </div>
+                                                            <div
+                                                                class="reply-container"
+                                                            >
+                                                                <div
+                                                                    class="button-container"
+                                                                >
+                                                                    <button
+                                                                        pButton
+                                                                        pRipple
+                                                                        label="Cancelar"
+                                                                        icon="pi pi-times"
+                                                                        class="p-button-secondary mx-3"
+                                                                        type="button"
+                                                                        size="small"
+                                                                        (click)="
+                                                                            cancelarEdicion()
+                                                                        "
+                                                                    ></button>
+                                                                    <button
+                                                                        pButton
+                                                                        pRipple
+                                                                        type="button"
+                                                                        label="Responder Enviar"
+                                                                        icon="pi pi-send"
+                                                                        size="small"
+                                                                        class="p-button-primary"
+                                                                        (click)="
+                                                                            sendCommentPadre()
+                                                                        "
+                                                                    ></button>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </p-button>
+                                            </p-button>
+                                        } @else {
+                                            <app-empty-section
+                                                class="w-full"
+                                                [message]="'Ningun Comentario'"
+                                            ></app-empty-section>
+                                        }
                                     </ng-template>
                                 </p-orderList>
                                 <div class="comment-container">
@@ -444,6 +488,10 @@
                                     </ng-template>
                                 </p-orderList>
                             </div>
+                            <!-- <app-empty-section
+                            class="w-full"
+                            [message]="'Ningun Estudiante seleccionado'"
+                        ></app-empty-section> -->
                         </div>
                     </div>
                 </div>

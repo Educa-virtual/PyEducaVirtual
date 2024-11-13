@@ -350,6 +350,44 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
                 },
             })
     }
+
+    //Actualizar Cursos
+    // Método para actualizar cursos en el backend
+    actualizarCursos(): void {
+        const iEvaluacionId = this.compartirIdEvaluacionService.iEvaluacionId
+
+        // Filtra los cursos seleccionados y crea un array con `iCursoId` y `isSelected`
+        this.selectedCursos = this.cursos.map((curso) => ({
+            iCursoId: curso.iCursoId,
+            isSelected: curso.isSelected,
+        }))
+
+        // Verifica que haya cursos seleccionados
+        if (this.selectedCursos.length === 0) {
+            console.log('No hay cursos seleccionados para actualizar')
+            return
+        }
+
+        console.log(
+            'Cursos seleccionados para actualizar:',
+            this.selectedCursos
+        )
+
+        // Llama al servicio para actualizar cursos
+        this._apiEre
+            .actualizarCursos(iEvaluacionId, this.selectedCursos)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+                next: (resp) => {
+                    console.log('Cursos actualizados correctamente:', resp)
+                    // Aquí podrías agregar alguna lógica adicional, como notificaciones al usuario
+                },
+                error: (err) => {
+                    console.error('Error al actualizar los cursos:', err)
+                },
+            })
+    }
+
     public onFilter(dv: DataView, event: Event) {
         const text = (event.target as HTMLInputElement).value
         this.cursos = this.data

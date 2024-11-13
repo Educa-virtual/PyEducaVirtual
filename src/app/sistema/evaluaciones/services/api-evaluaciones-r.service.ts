@@ -164,7 +164,21 @@ export class ApiEvaluacionesRService {
             data
         )
     }
+    //Actualizar Cursos
+    actualizarCursos(
+        iEvaluacionId: number,
+        cursos: { iCursoId: number; isSelected: boolean }[]
+    ): Observable<any> {
+        const data = {
+            iEvaluacionId: iEvaluacionId,
+            cursos: cursos,
+        }
 
+        return this.http.put(
+            `${this.baseUrl}/ere/Evaluaciones/actualizarCursos`,
+            data
+        )
+    }
     generarWordByPreguntasIds(baseParams) {
         const url = `${this.baseUrlBackend}/generarWordBancoPreguntasSeleccionadas`
         const params = new URLSearchParams({ ...baseParams })

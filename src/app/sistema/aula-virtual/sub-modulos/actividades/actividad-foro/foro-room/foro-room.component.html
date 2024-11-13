@@ -504,7 +504,7 @@
                     <!-- [(selection)]="evaluacionSeleccionada" (onRowSelect)="seleccionarEvaluacion()" -->
                     <!-- <div
                         class="flex flex-column gap-4 md:flex-row md:align-items-start align-items-stretch"
-                    > 
+                    >
                     <div class="flex flex-column gap-2 card">
                         <div class="flex gap-4 align-items-center flex-wrap mx-auto">
                             <app-leyenda
@@ -616,6 +616,7 @@
                                             <td class="">
                                                 {{
                                                     respuestas?.cForoRptaRespuesta
+                                                        | removeHTML
                                                 }}
                                             </td>
                                             <td>

@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core'
 import { Subject } from 'rxjs'
 import { httpService } from '../../http/httpService'
-import { tap, catchError } from 'rxjs/operators'
-import { throwError, EMPTY, Observable, firstValueFrom } from 'rxjs'
+import { firstValueFrom } from 'rxjs'
 
 export type ArrayElement<ArrayType extends readonly unknown[]> =
     ArrayType extends readonly (infer ElementType)[] ? ElementType : never
@@ -29,7 +28,7 @@ export class TicketService {
             bCalAcadFaseRecuperacion?: boolean
             fases_promocionales?: {
                 iFaseId?: string
-                iFasePromId?: string
+                iFasePromId?: number
                 cFasePromNombre?: string
                 dtFaseInicio?: Date
                 dtFaseFin?: Date
@@ -231,11 +230,34 @@ export class TicketService {
         const id =
             (this.registroInformation.calendar?.iCalAcadId || iCalAcadId) ?? ''
 
+        const sede =
+            (this.registroInformation.calendar?.iSedeId || iSedeId) ??
+            JSON.parse(localStorage.getItem('dremoPerfil')).iSedeId
+
         if (id) {
             data = await firstValueFrom(
                 this.httpService.getData(
-                    'acad/calendarioAcademico/selCalAcademico'
+                    `acad/calendarioAcademico/selCalAcademico?iCalAcadId=${id}`
                 )
+            )
+
+            this.setTicketInformation(
+                {
+                    iCalAcadId: data.data.iCalAcadId,
+                    iSedeId: data.data.iSedeId,
+                    iYAcadId: data.data.iYAcadId,
+                },
+                'calendar'
+            )
+
+            this.setTicketInformation(
+                {
+                    fechaVigente: data.data.cYearNombre,
+                    fechaInicio: new Date(data.data.dtCalAcadInicio),
+                    fechaFin: new Date(data.data.dtCalAcadFin),
+                    fases_promocionales: data.data.fasesPromocionales,
+                },
+                'stepYear'
             )
         } else {
             data = await firstValueFrom(
@@ -250,8 +272,8 @@ export class TicketService {
             this.setTicketInformation(
                 {
                     iCalAcadId: '',
-                    iSedeId: iSedeId,
-                    iYAcadId: data.iYAcadId,
+                    iSedeId: sede,
+                    iYAcadId: data.data.yearAcad.iYAcadId,
                 },
                 'calendar'
             )
@@ -294,119 +316,6 @@ export class TicketService {
                     onCompleteCallbacks.forEach((callback) => callback())
                 },
             })
-    }
-
-    getDiasLaborales(
-        { iCalAcadId }: { iCalAcadId: string },
-        returnObservable: boolean = true
-    ): Observable<any> {
-        const request$ = this.httpService
-            .postData('acad/calendarioAcademico/addCalAcademico', {
-                json: JSON.stringify({
-                    iCalAcadId: iCalAcadId,
-                }),
-                _opcion: 'getCalendarioDiasLaborables',
-            })
-            .pipe(
-                tap((data: any) => {
-                    const filterDiasLaborales = JSON.parse(
-                        data.data[0]['calDiasDatos']
-                    ).map((dia) => ({
-                        iDiaLabId: String(dia.iDiaLabId),
-                        iDiaId: String(dia.iDiaId),
-                        iDia: String(dia.iDiaId),
-                        cDiaNombre: dia.cDiaNombre,
-                        cDiaAbreviado: dia.cDiaAbreviado,
-                    }))
-                }),
-                catchError((error) => {
-                    console.error('Error fetching turnos:', error)
-                    return throwError(() => error)
-                })
-            )
-
-        // Devuelve el Observable solo si returnObservable es true
-        if (returnObservable) {
-            return request$
-        } else {
-            // Ejecuta la suscripción internamente y retorna un Observable vacío
-            request$.subscribe()
-            return EMPTY
-        }
-    }
-
-    getFormasAtencion(
-        { iCalAcadId }: { iCalAcadId: string },
-        returnObservable: boolean = true
-    ): Observable<any> {
-        const request$ = this.httpService
-            .postData('acad/calendarioAcademico/addCalAcademico', {
-                json: JSON.stringify({
-                    iCalAcadId: iCalAcadId,
-                }),
-                _opcion: 'getCalendarioTurnos',
-            })
-            .pipe(
-                tap((data: any) => {
-                    this.setTicketInformation(
-                        data.data.map((turno) => ({
-                            iCalTurnoId: turno.iCalTurnoId,
-                            iTurnoId: turno.iTurnoId,
-                            iModalServId: turno.iModalServId,
-                            iCalAcadId: turno.iCalAcadId,
-                            dtTurnoInicia: turno.dtTurnoInicia,
-                            dtTurnoFin: turno.dtTurnoFin,
-                            cModalServNombre: turno.cModalServNombre,
-                            cTurnoNombre: turno.cTurnoNombre,
-                            dtAperTurnoInicio: turno.dtAperTurnoInicio,
-                            dtAperTurnoFin: turno.dtAperTurnoFin,
-                        })),
-                        'stepFormasAtencion'
-                    )
-                }),
-                catchError((error) => {
-                    console.error('Error fetching turnos:', error)
-                    return throwError(() => error)
-                })
-            )
-
-        // Devuelve el Observable solo si returnObservable es true
-        if (returnObservable) {
-            return request$
-        } else {
-            // Ejecuta la suscripción internamente y retorna un Observable vacío
-            request$.subscribe()
-            return EMPTY
-        }
-    }
-
-    getPeriodosAcademicos(
-        { iCalAcadId }: { iCalAcadId: string },
-        returnObservable: boolean = true
-    ): Observable<any> {
-        const request$ = this.httpService
-            .postData('acad/calendarioAcademico/addCalAcademico', {
-                json: JSON.stringify({
-                    iCalAcadId: iCalAcadId,
-                }),
-                _opcion: 'getCalendarioPeriodos',
-            })
-            .pipe(
-                tap((data: any) => {}),
-                catchError((error) => {
-                    console.error('Error fetching modalidades:', error)
-                    return throwError(() => error)
-                })
-            )
-
-        // Devuelve el Observable si returnObservable es true
-        if (returnObservable) {
-            return request$
-        } else {
-            // Ejecuta la suscripción internamente y retorna un Observable vacío
-            request$.subscribe()
-            return EMPTY
-        }
     }
 
     async insCalAcademico(
@@ -476,9 +385,9 @@ export class TicketService {
         } = {}
     ) {
         try {
-            const { iCalAcadId, iSedeId } = this.registroInformation.calendar
+            const { iCalAcadId } = this.registroInformation.calendar
 
-            const data = await firstValueFrom(
+            await firstValueFrom(
                 this.httpService.putData(
                     'acad/calendarioAcademico/updCalAcademico',
                     {
@@ -500,9 +409,12 @@ export class TicketService {
                     }
                 )
             )
+            onNextCallbacks.forEach((callback) => callback())
 
             onCompleteCallbacks.forEach((callback) => callback())
-        } catch (error) {}
+        } catch (error) {
+            console.error('Error en insCalAcademico:', error)
+        }
     }
 
     updCalFasesFechas({
@@ -515,7 +427,7 @@ export class TicketService {
         this.httpService
             .putData('acad/calendarioAcademico/updCalFasesFechas', {})
             .subscribe({
-                next: (data) => {
+                next: () => {
                     onNextCallbacks.forEach((callback) => callback())
                 },
 
@@ -559,7 +471,7 @@ export class TicketService {
         } = {}
     ) {
         try {
-            const data = await firstValueFrom(
+            await firstValueFrom(
                 this.httpService.postData(
                     'acad/calendarioAcademico/insCalFasesProm',
                     {
@@ -591,19 +503,39 @@ export class TicketService {
         } = {}
     ) {
         try {
+            console.log(this.registroInformation.stepYear.fases_promocionales)
             console.log(deleteFasesProm)
-            const data = await firstValueFrom(
+            let fasePromocional
+
+            if (
+                Array.isArray(
+                    this.registroInformation.stepYear.fases_promocionales
+                )
+            ) {
+                fasePromocional =
+                    this.registroInformation.stepYear.fases_promocionales.find(
+                        (fase) =>
+                            String(fase.iFasePromId) ==
+                            deleteFasesProm.iFasePromId
+                    )
+            }
+
+            console.log('Fase a borrar')
+
+            console.log(fasePromocional)
+
+            await firstValueFrom(
                 this.httpService.deleteData(
                     'acad/calendarioAcademico/deleteCalFasesProm',
                     {
-                        iFaseId: deleteFasesProm.iFaseId,
+                        iFaseId: fasePromocional.iFaseId,
                     }
                 )
             )
             onNextCallbacks.forEach((callback) => callback())
             onCompleteCallbacks.forEach((callback) => callback())
         } catch (err) {
-            console.error('Error en insCalAcademico:', err)
+            console.error('Error en deleteCalFasesProm:', err)
         }
     }
 

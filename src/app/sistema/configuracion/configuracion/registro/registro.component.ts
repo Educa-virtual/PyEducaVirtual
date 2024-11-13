@@ -1,63 +1,86 @@
-import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component';
-import { Component, onDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
+import { Component, OnDestroy, OnInit } from '@angular/core'
+import { Router } from '@angular/router'
 
-
-import { EventEmitter, Output } from '@angular/core';
-import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
-import { StepsModule } from 'primeng/steps';
-import { Subscription } from 'rxjs';
-import { TicketService } from './service/ticketservice';
+import { EventEmitter, Output } from '@angular/core'
+import { ConfirmationService, MenuItem, MessageService } from 'primeng/api'
+import { StepsModule } from 'primeng/steps'
+import { Subscription } from 'rxjs'
+import { TicketService } from './service/ticketservice'
 
 @Component({
     selector: 'app-registro',
     standalone: true,
-    imports: [
-        ContainerPageComponent,
-        StepsModule,
-    ],
+    imports: [ContainerPageComponent, StepsModule],
     providers: [MessageService],
     templateUrl: './registro.component.html',
     styleUrl: './registro.component.scss',
 })
-export class RegistroComponent implements OnInit, onDestroy {
-    @Output() emitMode = new EventEmitter();
-    subscription: Subscription;
-    items: MenuItem[];
+export class RegistroComponent implements OnInit, OnDestroy {
+    @Output() emitMode = new EventEmitter()
+    subscription: Subscription
+    items: MenuItem[]
 
-    constructor(public messageService: MessageService, public ticketService: TicketService, private router: Router, private confirmationService: ConfirmationService) {
-
-    }
-
+    constructor(
+        public messageService: MessageService,
+        public ticketService: TicketService,
+        private router: Router,
+        private confirmationService: ConfirmationService
+    ) {}
 
     ngOnInit() {
         this.items = [
             {
                 label: 'Fechas',
-                routerLink: this.ticketService.registroInformation?.calendar?.iCalAcadId ? 'fechas' : ''
+                routerLink: this.ticketService.registroInformation?.calendar
+                    ?.iCalAcadId
+                    ? 'fechas'
+                    : '',
             },
             {
                 label: 'Días laborales',
-                routerLink: this.ticketService.registroInformation?.calendar?.iCalAcadId ? 'dias-laborales' : ''
+                routerLink: this.ticketService.registroInformation?.calendar
+                    ?.iCalAcadId
+                    ? 'dias-laborales'
+                    : '',
             },
             {
                 label: 'Turnos',
-                routerLink: this.ticketService.registroInformation?.calendar?.iCalAcadId ? 'turnos' : ''
+                routerLink: this.ticketService.registroInformation?.calendar
+                    ?.iCalAcadId
+                    ? 'turnos'
+                    : '',
             },
             {
                 label: 'Periodos académicos',
-                routerLink: this.ticketService.registroInformation?.calendar?.iCalAcadId ? 'periodos-academicos' : ''
+                routerLink: this.ticketService.registroInformation?.calendar
+                    ?.iCalAcadId
+                    ? 'periodos-academicos'
+                    : '',
             },
             {
                 label: 'Resumen',
-                routerLink: this.ticketService.registroInformation?.calendar?.iCalAcadId ? 'resumen' : ''
+                routerLink: this.ticketService.registroInformation?.calendar
+                    ?.iCalAcadId
+                    ? 'resumen'
+                    : '',
             },
         ]
 
-        this.subscription = this.ticketService.registrationComplete$.subscribe((personalInformation) => {
-            this.messageService.add({ severity: 'success', summary: 'Order submitted', detail: 'Dear, ' + personalInformation.firstname + ' ' + personalInformation.lastname + ' your order completed.' });
-        });
-
+        this.subscription = this.ticketService.registrationComplete$.subscribe(
+            (personalInformation) => {
+                this.messageService.add({
+                    severity: 'success',
+                    summary: 'Order submitted',
+                    detail:
+                        'Dear, ' +
+                        personalInformation.firstname +
+                        ' ' +
+                        personalInformation.lastname +
+                        ' your order completed.',
+                })
+            }
+        )
     }
     actionsContainer = [
         {
@@ -73,19 +96,15 @@ export class RegistroComponent implements OnInit, onDestroy {
         this.emitMode.emit(mode)
     }
 
-    validateYear(){
-
-    }
+    validateYear() {}
 
     navigateToYears() {
-        
-        this.router.navigate(['configuracion/configuracion/years']); // Navega a YearsComponent
+        this.router.navigate(['configuracion/configuracion/years']) // Navega a YearsComponent
     }
-
 
     ngOnDestroy() {
         if (this.subscription) {
-            this.subscription.unsubscribe();
+            this.subscription.unsubscribe()
         }
     }
 }

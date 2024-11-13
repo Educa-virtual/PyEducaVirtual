@@ -119,9 +119,20 @@
                     @if (col.type === 'checkbox') {
                         <p-tableCheckbox [value]="rowData" />
                     }
+                    @if (col.type === 'date') {
+                        <div [style.text-align]="col.text">
+                            {{ rowData[col.field] | date: 'dd/MM/YYYY' }}
+                        </div>
+                    }
                     @if (col.type === 'radio') {
                         <p-tableRadioButton
                             [value]="rowData"
+                        ></p-tableRadioButton>
+                    }
+                    @if (col.type === 'radio-action') {
+                        <p-tableRadioButton
+                            [value]="rowData"
+                            (click)="accionBtn('select', rowData)"
                         ></p-tableRadioButton>
                     }
                     @if (col.type === 'trim') {
@@ -185,6 +196,29 @@
                             "
                         >
                         </p-tag>
+                    }
+                    @if (col.type === 'estado-activo') {
+                        <div [style.text-align]="col.text">
+                            @if (rowData[col.field] === '1') {
+                                <i
+                                    class="pi pi-check-circle"
+                                    style="color: green"
+                                    [pTooltip]="
+                                        rowData[col.field] + ' - Habilitado'
+                                    "
+                                    tooltipPosition="top"
+                                ></i>
+                            } @else {
+                                <i
+                                    class="pi pi-times-circle"
+                                    style="color: red"
+                                    [pTooltip]="
+                                        rowData[col.field] + ' - Deshabilitado'
+                                    "
+                                    tooltipPosition="top"
+                                ></i>
+                            }
+                        </div>
                     }
                     @if (col.type === 'list_json_file') {
                         @if (rowData[col.field].length) {

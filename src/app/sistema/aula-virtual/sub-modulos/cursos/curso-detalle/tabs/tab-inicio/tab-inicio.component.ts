@@ -1,19 +1,17 @@
 import { Component, Input } from '@angular/core'
-import { ButtonModule } from 'primeng/button'
 import { ProfesorAvatarComponent } from '../../../components/profesor-avatar/profesor-avatar.component'
 import { ICurso } from '../../../interfaces/curso.interface'
-import { EditorModule } from 'primeng/editor'
 import { TableModule } from 'primeng/table'
 import { PrimengModule } from '@/app/primeng.module'
+import { EditorImageDirective } from '@/app/shared/directives/editor-image.directive'
 @Component({
     selector: 'app-tab-inicio',
     standalone: true,
     imports: [
         ProfesorAvatarComponent,
-        ButtonModule,
-        EditorModule,
         TableModule,
         PrimengModule,
+        EditorImageDirective,
     ],
     templateUrl: './tab-inicio.component.html',
     styleUrl: './tab-inicio.component.scss',

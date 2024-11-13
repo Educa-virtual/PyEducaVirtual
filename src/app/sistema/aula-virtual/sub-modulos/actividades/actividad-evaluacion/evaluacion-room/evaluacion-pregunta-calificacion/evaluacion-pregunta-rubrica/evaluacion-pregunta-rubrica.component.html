@@ -1,0 +1,219 @@
+<form [formGroup]="rubricaFormGroup">
+    <div class="flex flex-column gap-2">
+        <div class="mb-2">
+            <p>Rúbrica: {{ rubrica?.cInstrumentoNombre }}</p>
+            <p>{{ rubrica?.cInstrumentoDescripcion }}</p>
+        </div>
+        <div class="flex flex-column gap-2">
+            <h3 class="text-lg">Criterios</h3>
+        </div>
+
+        <ng-container formArrayName="criterios">
+            @for (criterio of criterios.controls; track i; let i = $index) {
+                <ng-container [formGroupName]="i">
+                    @if (criterio.get('niveles').hasError('noActiveGroup')) {
+                        <small class="ml-auto text-red-500">
+                            Debe activar al menos un nivel
+                        </small>
+                    }
+                    <p-accordion [multiple]="true">
+                        <p-accordionTab [selected]="true">
+                            <ng-template pTemplate="header">
+                                <div class="ellipsis">
+                                    <span class="">
+                                        {{
+                                            criterio.get('cCriterioNombre')
+                                                .value
+                                        }}
+                                    </span>
+                                </div>
+                            </ng-template>
+                            <p>
+                                {{ criterio.get('cCriterioDescripcion').value }}
+                            </p>
+                            <span class="text-md mb-1">Niveles</span>
+
+                            <div class="niveles" formArrayName="niveles">
+                                @for (
+                                    nivel of niveles($index).controls;
+                                    track j;
+                                    let j = $index
+                                ) {
+                                    <div
+                                        class="border-round-sm p-3 relative border-1 border-gray-200 flex flex-column"
+                                        [ngClass]="{
+                                            'bg-blue-100':
+                                                nivel.get('bActivo').value,
+                                            'bg-white':
+                                                !nivel.get('bActivo').value,
+                                        }"
+                                        [formGroupName]="j"
+                                    >
+                                        <p-inputSwitch
+                                            class="ml-auto"
+                                            ariaLabel="{{
+                                                nivel.get('bActivo').value
+                                                    ? 'Activar'
+                                                    : 'Desactivar'
+                                            }}"
+                                            formControlName="bActivo"
+                                            (onChange)="
+                                                marcarNivelActivo($event, i, j)
+                                            "
+                                        />
+                                        <p>
+                                            Título:
+                                            {{
+                                                nivel.get('cNivelEvaNombre')
+                                                    .value
+                                            }}
+                                        </p>
+                                        <p>
+                                            Valor:
+                                            {{
+                                                nivel.get('iNivelEvaValor')
+                                                    .value
+                                            }}
+                                        </p>
+                                        <p>
+                                            Descripción:
+                                            {{
+                                                nivel.get(
+                                                    'cNivelEvaDescripcion'
+                                                ).value
+                                            }}
+                                        </p>
+                                        <div class="formgrid grid">
+                                            <div
+                                                class="field col-12 md:col-6 flex flex-column gap-2"
+                                            >
+                                                <label for=""
+                                                    >Escala Calificativa</label
+                                                >
+                                                <p-dropdown
+                                                    styleClass="w-full"
+                                                    optionValue="iEscalaCalifId"
+                                                    formControlName="iEscalaCalifId"
+                                                    [options]="
+                                                        escalasCalificativas
+                                                    "
+                                                    optionLabel="cEscalaCalifNombre"
+                                                />
+                                            </div>
+
+                                            <div
+                                                class="field col-12 md:col-6 flex flex-column gap-2"
+                                            >
+                                                <label
+                                                    for="nota-numero-{{ i }}-{{
+                                                        j
+                                                    }}"
+                                                    >Nota Numérica</label
+                                                >
+                                                <p-inputNumber
+                                                    formControlName="nNnivelLogroAlcNota"
+                                                    inputStyleClass="w-full"
+                                                    inputId="nota-numero-{{
+                                                        $index
+                                                    }}"
+                                                    mode="decimal"
+                                                    [min]="0"
+                                                    [max]="20"
+                                                    [class]="
+                                                        nivel.get(
+                                                            'nNnivelLogroAlcNota'
+                                                        )?.invalid &&
+                                                        nivel.get(
+                                                            'nNnivelLogroAlcNota'
+                                                        )?.touched
+                                                            ? 'w-full ng-dirty ng-invalid p-invalid'
+                                                            : 'w-full'
+                                                    "
+                                                />
+                                                @if (
+                                                    nivel
+                                                        .get(
+                                                            'nNnivelLogroAlcNota'
+                                                        )
+                                                        .hasError('required') &&
+                                                    nivel.get(
+                                                        'nNnivelLogroAlcNota'
+                                                    )?.touched
+                                                ) {
+                                                    <small class="text-red-500">
+                                                        Este campo es requerido
+                                                    </small>
+                                                }
+                                            </div>
+                                            <div
+                                                class="field col-12 flex flex-column gap-2"
+                                            >
+                                                <label for=""
+                                                    >Conclusión
+                                                    Descriptiva</label
+                                                >
+                                                <textarea
+                                                    rows="5"
+                                                    cols="30"
+                                                    formControlName="cNivelLogroAlcConclusionDescriptiva"
+                                                    pInputTextarea
+                                                    [autoResize]="true"
+                                                    [class]="
+                                                        nivel.get(
+                                                            'cNivelLogroAlcConclusionDescriptiva'
+                                                        )?.invalid &&
+                                                        nivel.get(
+                                                            'cNivelLogroAlcConclusionDescriptiva'
+                                                        )?.touched
+                                                            ? 'w-full ng-dirty ng-invalid p-invalid'
+                                                            : 'w-full'
+                                                    "
+                                                ></textarea>
+                                                @if (
+                                                    nivel
+                                                        .get(
+                                                            'cNivelLogroAlcConclusionDescriptiva'
+                                                        )
+                                                        ?.hasError(
+                                                            'required'
+                                                        ) &&
+                                                    nivel.get(
+                                                        'cNivelLogroAlcConclusionDescriptiva'
+                                                    )?.touched
+                                                ) {
+                                                    <small class="text-red-500">
+                                                        Este campo es requerido
+                                                    </small>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </p-accordionTab>
+                    </p-accordion>
+                </ng-container>
+            }
+        </ng-container>
+    </div>
+</form>
+
+<div class="flex justify-content-end gap-2 pt-3">
+    <button
+        pButton
+        pRipple
+        label="Cancelar"
+        icon="pi pi-times"
+        class="p-button-secondary"
+        type="button"
+        size="small"
+        (click)="closeModalChange.emit(null)"
+    ></button>
+    <button
+        pButton
+        [label]="'Guardar Cambios'"
+        icon="pi pi-check"
+        size="small"
+        (click)="guardarActualizarLogrosRubrica()"
+    ></button>
+</div>

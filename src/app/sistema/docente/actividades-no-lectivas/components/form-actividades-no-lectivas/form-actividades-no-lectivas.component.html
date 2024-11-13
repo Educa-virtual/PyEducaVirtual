@@ -1,124 +1,58 @@
 <app-modal-primeng
-    [title]="'Crear actividad no lectiva'"
+    [title]="titulo"
     [showModal]="showModal"
     [width]="'55rem'"
     (accionBtnItem)="accionBtn($event)"
+    *ngIf="formDetalleCargaNoLectivas"
 >
-    <div class="grid">
-        <div class="col-12">
-            <p-inputGroup>
-                <p-inputGroupAddon> Nombre de la actividad </p-inputGroupAddon>
-                <input pInputText />
-            </p-inputGroup>
-        </div>
-        <div class="col-12">
-            <p-inputGroup>
-                <p-inputGroupAddon> Descripción </p-inputGroupAddon>
-                <textarea pInputText></textarea>
-            </p-inputGroup>
-        </div>
-        <div class="col-6">
-            <p-inputGroup>
-                <p-inputGroupAddon> Tipo de Actividad </p-inputGroupAddon>
-                <p-dropdown
-                    [options]="[]"
-                    optionValue="iTipoActividadId"
-                    optionLabel="cTipoActividad"
-                    placeholder="Tipo Actividad"
-                    [style]="{ width: '100%' }"
-                ></p-dropdown>
-            </p-inputGroup>
-        </div>
-        <div class="col-6">
-            <p-inputGroup>
-                <p-inputGroupAddon> Fecha y Hora </p-inputGroupAddon>
-                <p-calendar
-                    [(ngModel)]="date"
-                    [showIcon]="true"
-                    [hourFormat]="'24'"
-                    [showTime]="true"
-                />
-            </p-inputGroup>
-        </div>
-        <div class="col-12">
-            <p-inputGroup>
-                <p-inputGroupAddon> Lugar </p-inputGroupAddon>
-                <input pInputText />
-            </p-inputGroup>
-        </div>
-        <div class="col-12 mt-1">
-            <div class="card">
-                <label for="" class="mt-1">Adjuntar</label>
-                <div class="d-flex align-items-center text-center mt-1">
-                    <button
-                        pButton
-                        pRipple
-                        type="button"
-                        class="p-button-rounded p-button-outlined mx-2"
+    <form [formGroup]="formDetalleCargaNoLectivas">
+        <div class="grid">
+            <div class="col-9">
+                <p-inputGroup>
+                    <p-inputGroupAddon> Tipo de Actividad </p-inputGroupAddon>
+                    <p-dropdown
+                        formControlName="iTipoCargaNoLectId"
+                        [options]="tiposCargaNoLectivas"
+                        optionValue="iTipoCargaNoLectId"
+                        optionLabel="cTipoCargaNoLectNombre"
+                        placeholder="Tipo de Actividad"
+                        [style]="{ width: '100%' }"
+                    ></p-dropdown>
+                </p-inputGroup>
+            </div>
+            <div class="col-3">
+                <p-inputGroup>
+                    <p-inputGroupAddon> Horas </p-inputGroupAddon>
+                    <p-inputNumber
+                        formControlName="nDetCargaNoLectHoras"
+                        mode="decimal"
+                        [minFractionDigits]="1"
+                        [maxFractionDigits]="3"
                     >
-                        <i
-                            class="pi pi-upload my-2"
-                            style="color: #333437; font-size: 3rem"
-                            pTooltip="Subir Archivo"
-                            tooltipPosition="bottom"
-                        ></i>
-                    </button>
-
-                    <button
-                        pButton
-                        pRipple
-                        type="button"
-                        class="p-button-rounded p-button-outlined mx-2"
-                    >
-                        <i
-                            class="pi pi-link my-2"
-                            style="color: #333437; font-size: 3rem"
-                            pTooltip="Subir Enlace"
-                            tooltipPosition="bottom"
-                        ></i>
-                    </button>
-
-                    <button
-                        pButton
-                        pRipple
-                        type="button"
-                        class="p-button-rounded p-button-outlined mx-2"
-                    >
-                        <i
-                            class="pi pi-youtube my-2"
-                            style="color: #c4302b; font-size: 3rem"
-                            pTooltip="Subir Enlace Youtube"
-                            tooltipPosition="bottom"
-                        ></i>
-                    </button>
-                    <!--5: Image-->
-                    <button
-                        pButton
-                        pRipple
-                        type="button"
-                        class="p-button-rounded p-button-outlined mx-2"
-                    >
-                        <i
-                            class="pi pi-images my-2"
-                            style="color: #ff844b; font-size: 3rem"
-                            pTooltip="Subir Fotos"
-                            tooltipPosition="bottom"
-                        ></i>
-                    </button>
-                </div>
+                    </p-inputNumber>
+                </p-inputGroup>
+            </div>
+            <div class="col-12 mt-1">
+                <app-types-files-upload-primeng
+                    [nameFile]="'detalle-carga-no-lectivas'"
+                    [nameOption]="'detalle-carga-no-lectivas'"
+                    [typesFiles]="typesFiles"
+                    (actionTypesFileUpload)="accionBtn($event)"
+                    [filesUrl]="filesUrl"
+                ></app-types-files-upload-primeng>
             </div>
         </div>
-        <!-- <div class="col-12">
-        <label for="" class="mt-2">Lista de Adjuntos</label>
-      </div> -->
-    </div>
-
+    </form>
     <div class="flex justify-content-end gap-2">
         <p-button
             label="Cancelar"
             severity="secondary"
             (onClick)="showModal = false"
         />
-        <p-button [label]="'GUARDAR'" (onClick)="showModal = false" />
+        <p-button
+            [label]="opcion"
+            [disabled]="!this.formDetalleCargaNoLectivas.valid"
+            (onClick)="accionBtn({ accion: opcion, item: [] })"
+        />
     </div>
 </app-modal-primeng>

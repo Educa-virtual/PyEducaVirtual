@@ -21,6 +21,8 @@ import { EvaluacionFormPreguntasComponent } from '../evaluacion-form/evaluacion-
 import { EvaluacionRoomCalificacionComponent } from './evaluacion-room-calificacion/evaluacion-room-calificacion.component'
 import { PrimengModule } from '@/app/primeng.module'
 import { EditorOnlyViewDirective } from '@/app/shared/directives/editor-only-view.directive'
+import { RecursosListaComponent } from '@/app/shared/components/recursos-lista/recursos-lista.component'
+import { EmptySectionComponent } from '@/app/shared/components/empty-section/empty-section.component'
 
 @Component({
     selector: 'app-evaluacion-room',
@@ -34,6 +36,8 @@ import { EditorOnlyViewDirective } from '@/app/shared/directives/editor-only-vie
         EvaluacionFormPreguntasComponent,
         EvaluacionRoomCalificacionComponent,
         EditorOnlyViewDirective,
+        RecursosListaComponent,
+        EmptySectionComponent,
     ],
     templateUrl: './evaluacion-room.component.html',
     styleUrl: './evaluacion-room.component.scss',

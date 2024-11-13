@@ -1,318 +1,190 @@
-<form [formGroup]="foroFormComnt" class="flex flex-column gap-3 w-full">
-    <section class="flex flex-column gap-4">
-        <p-tabView styleClass="actividad-tabs">
-            <!-- Mostrar informacion general del foro -->
-            <p-tabPanel>
-                <ng-template pTemplate="header">
-                    <div class="flex align-items-center flex-column gap-2">
-                        <app-icon name="matListAlt"></app-icon>
-                        <span class="font-bold white-space-nowrap m-0">
-                            Instrucciones
-                        </span>
-                    </div>
-                </ng-template>
-                <div class="flex flex-column gap-4">
-                    <article class="card">
-                        <h2>Foro: {{ foro?.cForoTitulo }}</h2>
-                        <hr />
-
-                        <div class="grid mb-4">
-                            <div
-                                class="col-12 md:col-6 flex flex-column gap-2 align-items-start"
-                            >
-                                <div
-                                    class="col-12 md:col-6 gap-2 flex flex-column"
-                                >
-                                    <span class="font-bold text-xl"
-                                        >Catergoria:</span
-                                    >
-                                    {{ foro.cForoCatDescripcion }}
-                                </div>
-                                <!-- <span class="font-bold text-xl flex gap-2">
-                                    <app-icon
-                                        name="matCalendarMonth"
-                                        class="text-primary"
-                                        size="sm"
-                                    ></app-icon>
-                                    Título del Foro:</span
-                                >
-                                {{ foro?.cForoTitulo }} -->
-                                <!-- <p>
-                              {{
-                                  evaluacion?.dtEvaluacionPublicacion
-                                      | date: "EEEE, d 'de' MMMM 'de' yyyy"
-                              }}
-
-                              {{
-                                  evaluacion?.dtEvaluacionPublicacion
-                                      | date: 'h:mm a'
-                              }}
-                          </p> -->
-                            </div>
-                        </div>
-
-                        <div class="grid mb-4">
-                            <div class="col-12 md:col-6 flex flex-column gap-2">
-                                <span class="font-bold text-xl flex gap-2">
-                                    <app-icon
-                                        name="matCalendarMonth"
-                                        class="text-primary"
-                                        size="sm"
-                                    ></app-icon>
-                                    Inicio de Foro:
-                                </span>
-                                <!-- {{ foro.dtForoInicio }} -->
-                                <p class="flex gap-2 flex-wrap">
-                                    {{
-                                        foro?.dtForoInicio
-                                            | date
-                                                : "EEEE, d 'de' MMMM 'de' yyyy"
-                                    }}
-
-                                    <span class="flex gap-2">
-                                        <app-icon
-                                            name="matAccessTime"
-                                            class="text-primary"
-                                            size="sm"
-                                        ></app-icon>
-                                        <span class="font-bold"
-                                            >Hora Limite:</span
-                                        >
-                                        {{
-                                            foro?.dtForoInicio | date: 'h:mm a'
-                                        }}
-                                    </span>
-                                </p>
-                            </div>
-                            <div class="col-12 md:col-6 flex flex-column gap-2">
-                                <span class="font-bold text-xl flex gap-2">
-                                    <app-icon
-                                        name="matCalendarMonth"
-                                        class="text-primary"
-                                        size="sm"
-                                    ></app-icon>
-                                    Cierre de Foro
-                                </span>
-                                <!-- {{ foro.dtForoFin }} -->
-                                <p class="flex gap-2 flex-wrap">
-                                    {{
-                                        foro?.dtForoFin
-                                            | date
-                                                : "EEEE, d 'de' MMMM 'de' yyyy"
-                                    }}
-
-                                    <span class="flex gap-2">
-                                        <app-icon
-                                            name="matAccessTime"
-                                            class="text-primary"
-                                            size="sm"
-                                        ></app-icon>
-                                        <span class="font-bold"
-                                            >Hora Limite:</span
-                                        >
-                                        {{ foro?.dtForoFin | date: 'h:mm a' }}
-                                    </span>
-                                </p>
-                            </div>
-                        </div>
-
-                        <!-- <div class="grid mb-4">
-                      <div
-                          class="col-12 md:col-6 flex flex-column gap-2 align-items-start"
-                      >
-                          <span class="font-bold text-xl"
-                              >Total de Preguntas
-                          </span>
-                          <span>{{
-                              evaluacion?.iEvaluacionNroPreguntas ?? 0 }}
-
-                          </span>
-                      </div>
-                      <div class="col-12 md:col-6 gap-2 flex flex-column">
-                          <div
-                              class="bg-yellow-100 p-2 border-round h-8rem flex gap-2 flex-column flex-column justify-content-between"
-                          >
-                              <div class="flex gap-2 flex">
-                                  <app-icon
-                                      name="matStar"
-                                      size="sm"
-                                      class="text-primary"
-                                  />
-                                  <span class="text-xl">Puntuación</span>
-                              </div>
-                              <p class="text-3xl font-bold">
-                                  Totaldel puntaje 0/35
-                                  <span class="text-sm font-normal"
-                                      >calificación máxima</span
-                                  >
-                              </p>
-                          </div>
-                      </div>
-                  </div> -->
-
-                        <div
-                            class="flex gap-2 flex-wrap align-items-center mb-4"
-                        >
-                            <app-icon
-                                name="matMessage"
-                                color="text-primary"
-                                size="sm"
-                            />
-                            <h3 class="text-lg m-0">Descripción:</h3>
-                            {{ foro['cForoDescripcion'] | removeHTML }}
-                        </div>
-
-                        <div
-                            class="bg-gray-100 p-1 border-round min-h-10rem flex gap-2 flex-column"
-                        >
-                            <!-- <div
-                          class="ql-editor"
-                          [innerHTML]="evaluacion?.cEvaluacionDescripcion"
-                      ></div> -->
-                        </div>
-                    </article>
-                    <article class="card">
-                        <h2>Recursos:</h2>
-                        <ul class="list-none p-0 m-0">
-                            <li
-                                class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap"
-                            >
-                                <div class="flex gap-2 align-items-center">
-                                    <i
-                                        class="pi pi-file text-lg text-primary"
-                                    ></i>
-                                    <span class="font-medium text-lg"
-                                        >Recurso.pdf</span
-                                    >
-                                    <span class="text-gray-500"
-                                        >tamaño(319.532KB)</span
-                                    >
-                                </div>
-                            </li>
-                            <li
-                                class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap"
-                            >
-                                <div class="flex gap-2 align-items-center">
-                                    <i
-                                        class="pi pi-file text-lg text-primary"
-                                    ></i>
-                                    <span class="font-medium text-lg"
-                                        >Recurso.pdf</span
-                                    >
-                                    <span class="text-gray-500"
-                                        >tamaño(319.532KB)</span
-                                    >
-                                </div>
-                            </li>
-                        </ul>
-                    </article>
-
-                    <article class="card flex flex-column gap-4">
-                        <!-- <div class="flex justify-content-between flex-wrap gap-2">
-                      <h2>Preguntas</h2>
-                      <button
-                          pButton
-                          icon="pi pi-plus"
-                          size="small"
-                          class="flex gap-2"
-                      >
-                          Agregar Pregunta
-                      </button>
-                  </div> -->
-
-                        <!-- @if (
-                      evaluacion?.preguntas === null ||
-                      evaluacion?.preguntas === undefined ||
-                      evaluacion?.preguntas.length === 0
-                  ) {
-                      <div
-                          class="bg-indigo-200 p-2 border-round h-10rem flex justify-content-center align-items-center gap-2 flex-column"
-                      >
-                          <app-icon name="matHideSource" size="xl"></app-icon>
-                          <p class="text-2xl">
-                              No se Encontraron Preguntas en esta Evaluacion
-                          </p>
-                      </div>
-                  } @else {
-                      <app-evaluacion-form-preguntas
-                          [tituloEvaluacion]="''"
-                          [preguntas]="evaluacion?.preguntas ?? []"
-                      ></app-evaluacion-form-preguntas>
-                  } -->
-                    </article>
+<section class="flex flex-column gap-4">
+    <p-tabView styleClass="actividad-tabs">
+        <!-- Mostrar informacion general del foro -->
+        <p-tabPanel>
+            <ng-template pTemplate="header">
+                <div class="flex align-items-center flex-column gap-2">
+                    <app-icon name="matListAlt"></app-icon>
+                    <span class="font-bold white-space-nowrap m-0">
+                        Instrucciones
+                    </span>
                 </div>
-            </p-tabPanel>
-            <!-- Ver Comentarios de los Foros -->
-            <p-tabPanel>
-                <ng-template pTemplate="header">
-                    <div class="flex align-items-center flex-column gap-2">
-                        <app-icon name="matRule"></app-icon>
-                        <span class="font-bold white-space-nowrap m-0">
-                            Ver Foro
-                        </span>
+            </ng-template>
+            <div class="flex flex-column gap-4">
+                <div class="card grid">
+                    <div
+                        [class]="iPerfilId === 8 ? 'col-12 md:col-8' : 'col-12'"
+                    >
+                        <article class="card">
+                            <h2>Foro: {{ foro?.cForoTitulo }}</h2>
+                            <hr />
+
+                            <div class="grid mb-4">
+                                <div
+                                    class="col-12 md:col-6 flex flex-column gap-2 align-items-start"
+                                >
+                                    <div
+                                        class="col-12 md:col-6 gap-2 flex flex-column"
+                                    >
+                                        <span class="font-bold text-xl"
+                                            >Catergoria:</span
+                                        >
+                                        {{ foro?.cForoCatDescripcion }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="grid mb-4">
+                                <div
+                                    class="col-12 md:col-6 flex flex-column gap-2"
+                                >
+                                    <span class="font-bold text-xl flex gap-2">
+                                        <app-icon
+                                            name="matCalendarMonth"
+                                            class="text-primary"
+                                            size="sm"
+                                        ></app-icon>
+                                        Inicio de Foro:
+                                    </span>
+                                    <!-- {{ foro.dtForoInicio }} -->
+                                    <p class="flex gap-2 flex-wrap">
+                                        {{
+                                            foro?.dtForoInicio
+                                                | date
+                                                    : "EEEE, d 'de' MMMM 'de' yyyy"
+                                        }}
+
+                                        <span class="flex gap-2">
+                                            <app-icon
+                                                name="matAccessTime"
+                                                class="text-primary"
+                                                size="sm"
+                                            ></app-icon>
+                                            <span class="font-bold"
+                                                >Hora Limite:</span
+                                            >
+                                            {{
+                                                foro?.dtForoInicio
+                                                    | date: 'h:mm a'
+                                            }}
+                                        </span>
+                                    </p>
+                                </div>
+                                <div
+                                    class="col-12 md:col-6 flex flex-column gap-2"
+                                >
+                                    <span class="font-bold text-xl flex gap-2">
+                                        <app-icon
+                                            name="matCalendarMonth"
+                                            class="text-primary"
+                                            size="sm"
+                                        ></app-icon>
+                                        Cierre de Foro
+                                    </span>
+                                    <!-- {{ foro.dtForoFin }} -->
+                                    <p class="flex gap-2 flex-wrap">
+                                        {{
+                                            foro?.dtForoFin
+                                                | date
+                                                    : "EEEE, d 'de' MMMM 'de' yyyy"
+                                        }}
+
+                                        <span class="flex gap-2">
+                                            <app-icon
+                                                name="matAccessTime"
+                                                class="text-primary"
+                                                size="sm"
+                                            ></app-icon>
+                                            <span class="font-bold"
+                                                >Hora Limite:</span
+                                            >
+                                            {{
+                                                foro?.dtForoFin | date: 'h:mm a'
+                                            }}
+                                        </span>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div
+                                class="flex gap-2 flex-wrap align-items-center mb-4"
+                            >
+                                <app-icon
+                                    name="matMessage"
+                                    color="text-primary"
+                                    size="sm"
+                                />
+                                <h3 class="text-lg m-0">Descripción:</h3>
+                                {{ foro?.cForoDescripcion | removeHTML }}
+                            </div>
+
+                            <div
+                                class="bg-gray-100 p-1 border-round min-h-10rem flex gap-2 flex-column"
+                            ></div>
+                        </article>
                     </div>
-                </ng-template>
+                    <div class="col-12 md:col-4" [hidden]="iPerfilId !== 8">
+                        <div class="card">
+                            <h4>Mi Nota</h4>
+                            <p-divider></p-divider>
+                            <p-inputGroup>
+                                <p-inputGroupAddon> Nota </p-inputGroupAddon>
+                                <input pInputText />
+                            </p-inputGroup>
+                            <p-divider></p-divider>
+                            <p-inputGroup>
+                                <p-inputGroupAddon>
+                                    Comentario Docente
+                                </p-inputGroupAddon>
+                                <textarea pInputText rows="5"></textarea>
+                            </p-inputGroup>
+                        </div>
+                    </div>
+                </div>
+                <article class="card">
+                    <h2>Recursos:</h2>
+                    <app-recursos-lista [files]="FilesTareas">
+                    </app-recursos-lista>
+                </article>
+            </div>
+        </p-tabPanel>
+        <!-- Ver Comentarios de los Foros -->
+        <p-tabPanel>
+            <ng-template pTemplate="header">
+                <div class="flex align-items-center flex-column gap-2">
+                    <app-icon name="matRule"></app-icon>
+                    <span class="font-bold white-space-nowrap m-0">
+                        Ver Foro
+                    </span>
+                </div>
+            </ng-template>
+            <form
+                [formGroup]="foroFormComntAl"
+                class="flex flex-column gap-3 w-full"
+            >
                 <div class="flex flex-column gap-4">
                     <div class="card">
                         <h2>Foro: {{ foro?.cForoTitulo }}</h2>
                     </div>
-                    <!-- Recursos y Comentarios -->
+                    <div class="card">
+                        <b>
+                            <label class="text-lg" for="">Recursos:</label>
+                        </b>
+                        <app-recursos-lista [files]="FilesTareas">
+                        </app-recursos-lista>
+                    </div>
                     <div class="container">
-                        <div class="card1">
-                            <div class=" ">
-                                <b>
-                                    <label class="text-lg" for=""
-                                        >Recursos:</label
-                                    >
-                                </b>
-                                <ul class="list-none p-0 m-0">
-                                    <li
-                                        class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap"
-                                    >
-                                        <div
-                                            class="flex gap-2 align-items-center"
-                                        >
-                                            <i
-                                                class="pi pi-file text-lg text-primary"
-                                            ></i>
-                                            <span class="font-medium text-lg"
-                                                >Recurso.pdf</span
-                                            >
-                                            <span class="text-gray-500"
-                                                >tamaño(319.532KB)</span
-                                            >
-                                        </div>
-                                    </li>
-                                    <li
-                                        class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap"
-                                    >
-                                        <div
-                                            class="flex gap-2 align-items-center"
-                                        >
-                                            <i
-                                                class="pi pi-file text-lg text-primary"
-                                            ></i>
-                                            <span class="font-medium text-lg"
-                                                >Recurso.pdf</span
-                                            >
-                                            <span class="text-gray-500"
-                                                >tamaño(319.532KB)</span
-                                            >
-                                        </div>
-                                    </li>
-                                </ul>
-                                <div>
-                                    <!-- <ngx-extended-pdf-viewer [src]="'pdf/TL7 75 Español.pdf'" useBrowserLocale="true" height="100px" width="900px" ></ngx-extended-pdf-viewer> -->
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card2">
-                            <!-- <b>
-                                <label class="text-lg" for=""
-                                    >Comentarios:</label
-                                >
-                            </b> -->
-                            <div>
+                        <!-- [class]="iPerfilId !== 8 ? 'col-12' : 'col-8'"> -->
+
+                        <div class="card grid">
+                            <!-- listar comentarios -->
+                            <div
+                                [class]="
+                                    iPerfilId === 7
+                                        ? 'col-12 md:col-8'
+                                        : 'col-12'
+                                "
+                            >
                                 <p-orderList
                                     class="list"
                                     [value]="respuestasForo"
@@ -320,7 +192,10 @@
                                 >
                                     <ng-template
                                         let-respuestas
+                                        of
+                                        comentarios
                                         pTemplate="listItem"
+                                        let-i="index"
                                     >
                                         <p-button
                                             [text]="true"
@@ -339,28 +214,152 @@
                                                 <div
                                                     class="perfiles-list-detail"
                                                 >
-                                                    <div class="perfil-name">
-                                                        {{
-                                                            respuestas?.cNombreEstudiante
-                                                        }}
+                                                    <div>
+                                                        <div
+                                                            class="perfil-name"
+                                                        >
+                                                            {{
+                                                                respuestas.cNombreEstudiante
+                                                            }}
+                                                            {{
+                                                                respuestas?.dtCreado
+                                                            }}
+                                                        </div>
                                                     </div>
                                                     <div
-                                                        class="perfil-description"
+                                                        class=""
+                                                        style="
+                                                            text-align: justify;
+                                                        "
                                                     >
-                                                        Fecha:{{
-                                                            respuestas?.dtCreado
-                                                        }}
+                                                        <div
+                                                            class="perfil-name"
+                                                        >
+                                                            Comentario:
+                                                        </div>
+                                                        <span
+                                                            *ngIf="
+                                                                !respuestas.expanded
+                                                            "
+                                                        >
+                                                            {{
+                                                                respuestas?.cForoRptaRespuesta
+                                                                    | removeHTML
+                                                                    | slice
+                                                                        : 0
+                                                                        : 150
+                                                            }}...
+                                                        </span>
+                                                        <span
+                                                            *ngIf="
+                                                                respuestas.expanded
+                                                            "
+                                                        >
+                                                            {{
+                                                                respuestas?.cForoRptaRespuesta
+                                                                    | removeHTML
+                                                            }}
+                                                        </span>
+                                                        <!-- <a (click)="toggleExpand(respuestas)" class="toggle-link">
+                                                            {{ respuestas.expanded ? 'Leer menos' : 'Leer más' }}
+                                                        </a> -->
                                                     </div>
-                                                    <div class="perfil-name">
-                                                        comentario:
-                                                        {{
-                                                            respuestas?.cForoRptaRespuesta
-                                                        }}
+                                                    <!-- startReply(i) -->
+
+                                                    <button
+                                                        pButton
+                                                        type="button"
+                                                        class="p-button-text"
+                                                    >
+                                                        <u>4</u>
+                                                        <i
+                                                            class="pi pi-thumbs-up"
+                                                            style="
+                                                                font-size: 18px;
+                                                            "
+                                                        ></i>
+                                                    </button>
+                                                    <button
+                                                        pButton
+                                                        type="button"
+                                                        class="p-button-text"
+                                                        (click)="startReply(i)"
+                                                    >
+                                                        <i
+                                                            class="pi pi-comments"
+                                                            style="
+                                                                font-size: 18px;
+                                                            "
+                                                        ></i>
+                                                    </button>
+                                                    <div
+                                                        *ngIf="
+                                                            respuestas
+                                                                .respuestas
+                                                                ?.length
+                                                        "
+                                                    >
+                                                        <div
+                                                            *ngFor="
+                                                                let reply of respuestas.respuestas
+                                                            "
+                                                            class="reply"
+                                                        >
+                                                            <div
+                                                                class="perfil-name"
+                                                            >
+                                                                Respuesta:
+                                                                {{
+                                                                    reply.cForoRptaRespuesta
+                                                                }}
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                    <!-- <div class="perfil-description">Nivel: {{ null }}</div>
-                                                <div class="perfil-description">
-                                                    {{ perfiles.cEntNombreLargo }}
-                                                </div> -->
+                                                    <!-- Campo de respuesta y botón enviar -->
+                                                    <div
+                                                        *ngIf="
+                                                            selectedCommentIndex ===
+                                                            i
+                                                        "
+                                                    >
+                                                        <p-editor
+                                                            id="descripcion"
+                                                            placeholder="Comentar.."
+                                                            formControlName="cForoRptaPadre"
+                                                        />
+                                                        <div
+                                                            class="reply-container"
+                                                        >
+                                                            <div
+                                                                class="button-container"
+                                                            >
+                                                                <button
+                                                                    pButton
+                                                                    pRipple
+                                                                    label="Cancelar"
+                                                                    icon="pi pi-times"
+                                                                    class="p-button-secondary mx-3"
+                                                                    type="button"
+                                                                    size="small"
+                                                                    (click)="
+                                                                        cancelarEdicion()
+                                                                    "
+                                                                ></button>
+                                                                <button
+                                                                    pButton
+                                                                    pRipple
+                                                                    type="button"
+                                                                    label="Responder Enviar"
+                                                                    icon="pi pi-send"
+                                                                    size="small"
+                                                                    class="p-button-primary"
+                                                                    (click)="
+                                                                        sendCommentPadre()
+                                                                    "
+                                                                ></button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </p-button>
@@ -368,30 +367,90 @@
                                 </p-orderList>
                                 <div class="comment-container">
                                     <input
+                                        *ngIf="!showEditor"
                                         type="text"
                                         class="comment-input"
                                         placeholder="Escribe un comentario..."
                                         id="commentText"
-                                        formControlName="cForoRptaRespuestar"
+                                        formControlName="cForoRptaRespuesta"
+                                        (click)="toggleEditor()"
                                     />
-                                    <button
-                                        class="send-button"
-                                        (click)="sendComment()"
-                                    >
-                                        Enviar
-                                    </button>
+                                    <div *ngIf="showEditor">
+                                        <p-editor
+                                            id="descripcion"
+                                            placeholder="Escribe un Comentario... "
+                                            formControlName="cForoRptaRespuesta"
+                                        />
+                                        <div class="reply-container">
+                                            <div class="button-container">
+                                                <button
+                                                    pButton
+                                                    pRipple
+                                                    label="Cancelar"
+                                                    icon="pi pi-times"
+                                                    class="p-button-secondary mx-3"
+                                                    type="button"
+                                                    size="small"
+                                                    (click)="closeEditor()"
+                                                ></button>
+                                                <button
+                                                    pButton
+                                                    pRipple
+                                                    type="button"
+                                                    label="Enviar"
+                                                    icon="pi pi-send"
+                                                    size="small"
+                                                    class="p-button-primary"
+                                                    (click)="sendComment()"
+                                                ></button>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
+                            </div>
+                            <!-- lista de participantes... -->
+                            <div
+                                class="col-12 md:col-4"
+                                [hidden]="iPerfilId !== 7"
+                            >
+                                <p-orderList
+                                    class="list"
+                                    [value]="respuestasForo"
+                                    header="Parcipantes:"
+                                >
+                                    <ng-template
+                                        let-respuestas
+                                        of
+                                        comentarios
+                                        pTemplate="listItem"
+                                        let-i="index"
+                                    >
+                                        <div
+                                            class="perfiles-list-item text-left"
+                                            tabindex="0"
+                                        >
+                                            <img
+                                                src="assets/demo/images/matemit/perfil.png"
+                                                [alt]="respuestas.name"
+                                                class="w-3rem"
+                                            />
+                                            <!--class="w-4rem min-h-9 shadow-2 flex-shrink-0 border-round"-->
+                                            <div class="perfil-name">
+                                                {{
+                                                    respuestas.cNombreEstudiante
+                                                }}
+                                            </div>
+                                        </div>
+                                    </ng-template>
+                                </p-orderList>
                             </div>
                         </div>
                     </div>
-                    <!-- <div class="card3">
-                        <div>
-                            <h1>footer</h1>
-                        </div>
-                    </div> -->
                 </div>
-            </p-tabPanel>
-            <!-- Calificar Foro -->
+            </form>
+        </p-tabPanel>
+        <!-- Calificar Foro -->
+        @if (iPerfilId !== 8) {
             <p-tabPanel>
                 <ng-template pTemplate="header">
                     <div class="flex align-items-center flex-column gap-2">
@@ -401,107 +460,232 @@
                         </span>
                     </div>
                 </ng-template>
-                <div class="card">
-                    <h2>Foro: {{ foro?.cForoTitulo }}</h2>
-                    <hr />
-                    <div class="flex gap-2 flex-wrap align-items-center mb-4">
-                        <app-icon
-                            name="matMessage"
-                            color="text-primary"
-                            size="sm"
-                        />
-                        <h3 class="text-lg m-0">Descripción:</h3>
-
-                        {{ foro['cForoDescripcion'] | removeHTML }}
-                    </div>
-                </div>
-
-                <p-table
-                    #dv
-                    class="col-12 hoverTable"
-                    [value]="estudiantes"
-                    paginator="false"
-                    styleClass="p-datatable-sm"
+                <form
+                    [formGroup]="foroFormComnt"
+                    class="flex flex-column gap-3 w-full"
                 >
-                    <ng-template pTemplate="header">
-                        <tr>
-                            <!-- incio -->
-                            <p-table
-                                [value]="respuestasForo"
-                                [scrollable]="true"
-                                scrollHeight="500px"
-                            >
-                                <ng-template pTemplate="header">
-                                    <tr class="sticky-header">
-                                        <th>#</th>
-                                        <th>Nombre Estudiante</th>
-                                        <th>Respuesta</th>
-                                        <th>Calificación</th>
-                                        <th>Descripción</th>
-                                        <th>Acciones</th>
-                                    </tr>
-                                </ng-template>
-                                <ng-template
-                                    pTemplate="body"
-                                    let-respuestas
-                                    let-rowIndex="rowIndex"
-                                >
-                                    <tr>
-                                        <td>
-                                            <!-- <p-checkbox
-                                            [(ngModel)]="estudiante.selected"
-                                        ></p-checkbox> -->
-                                            {{ rowIndex + 1 }}
-                                        </td>
-                                        <td class="w-5">
-                                            {{ respuestas?.cNombreEstudiante }}
-                                        </td>
-                                        <td class="">
-                                            {{ respuestas?.cForoRptaRespuesta }}
-                                        </td>
-                                        <td>C</td>
-                                        <td>Ninguna</td>
-                                        <td style="text-align: center">
-                                            <p-button
-                                                (click)="openModal(respuestas)"
-                                                class="btCalificacion"
-                                                icon="pi pi-book"
-                                                rounded="true"
-                                                severity="secondary"
-                                                [style]="{
-                                                    'margin-right': '.5em',
-                                                }"
-                                            />
+                    <div class="card">
+                        <h2>Foro: {{ foro?.cForoTitulo }}</h2>
+                        <hr />
+                        <div
+                            class="flex gap-2 flex-wrap align-items-center mb-4"
+                        >
+                            <app-icon
+                                name="matMessage"
+                                color="text-primary"
+                                size="sm"
+                            />
+                            <h3 class="text-lg m-0">Descripción:</h3>
 
-                                            <!-- <div
-                                            class="w-1rem h-1rem border-circle ml-3"
-                                            [ngClass]="
-                                                estudiante.cEstado === 'F'
-                                                    ? 'bg-red-500'
-                                                    : estudiante.cEstado === 'P'
-                                                      ? 'bg-yellow-500'
-                                                      : 'bg-green-500'
-                                            "
-                                        ></div> -->
-                                        </td>
-                                    </tr>
-                                </ng-template>
-                            </p-table>
-                            <!-- incio -->
-                        </tr></ng-template
+                            {{ foro?.cForoDescripcion ?? '' | removeHTML }}
+                        </div>
+                    </div>
+                    <!-- Mostrar las leyendas -->
+                    <!-- <div class="flex gap-4 align-items-center flex-wrap mx-auto">
+                        <app-leyenda
+                            [total]="2"
+                            text="Revisados"
+                            [size]="'md'"
+                            colorClass="bg-green-500"
+                        ></app-leyenda>
+                        <app-leyenda
+                            [total]="3"
+                            text="En proceso"
+                            [size]="'md'"
+                            colorClass="bg-yellow-500"
+                        ></app-leyenda>
+                        <app-leyenda
+                            [total]="10"
+                            text="Pendientes"
+                            [size]="'md'"
+                            colorClass="bg-red-500"
+                        ></app-leyenda>
+                    </div> -->
+                    <!-- [(selection)]="evaluacionSeleccionada" (onRowSelect)="seleccionarEvaluacion()" -->
+                    <!-- <div
+                        class="flex flex-column gap-4 md:flex-row md:align-items-start align-items-stretch"
                     >
-                    <ng-template pTemplate="emptymessage" let-columns>
-                        <tr>
-                            <td [attr.colspan]="8">
-                                No se encontraron resultados.
-                            </td>
-                        </tr>
-                    </ng-template>
-                </p-table>
+                    <div class="flex flex-column gap-2 card">
+                        <div class="flex gap-4 align-items-center flex-wrap mx-auto">
+                            <app-leyenda
+                                [total]="2"
+                                text="Revisados"
+                                [size]="'md'"
+                                colorClass="bg-green-500"
+                            ></app-leyenda>
+                            <app-leyenda
+                                [total]="3"
+                                text="En proceso"
+                                [size]="'md'"
+                                colorClass="bg-yellow-500"
+                            ></app-leyenda>
+                            <app-leyenda
+                                [total]="10"
+                                text="Pendientes"
+                                [size]="'md'"
+                                colorClass="bg-red-500"
+                            ></app-leyenda>
+                        </div>
+                        <div class="w-full">
+                            <p-iconField iconPosition="left" class="w-full">
+                                <p-inputIcon styleClass="pi pi-search" />
+                                <input
+                                    type="text"
+                                    pInputText
+                                    placeholder="Search"
+                                    class="w-full"
+                                />
+                            </p-iconField>
+                        </div>
+                        <p-table
+                            [value]="respuestasForo"
+                            selectionMode="single"
+                        >
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Nombre y Apellidos</th>
+                                    <th>Estado</th>
+                                    <th>Notal Final</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-respuestas
+                                let-rowIndex = "rowIndex"
+                                >
+                                <tr>
+                                    <td>
+                                        {{rowIndex + 1}}
+                                    </td>
+                                    <td style="max-width: 150px; word-wrap: break-word;" >
+                                        {{respuestas?.cNombreEstudiante}}
+                                    </td>
+                                    <td>
+                                        <span
+                                            class="block w-1rem h-1rem bg-red-500 border-circle"
+                                        ></span>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                    </div> -->
+                    <!-- Mostrar tabla -->
+                    <p-table
+                        #dv
+                        class="col-12 hoverTable"
+                        [value]="estudiantes"
+                        paginator="false"
+                        styleClass="p-datatable-sm"
+                    >
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <!-- incio -->
+                                <p-table
+                                    [value]="respuestasForo"
+                                    [scrollable]="true"
+                                    scrollHeight="500px"
+                                >
+                                    <ng-template pTemplate="header">
+                                        <tr class="sticky-header">
+                                            <th>#</th>
+                                            <th>Nombre Estudiante</th>
+                                            <th>Respuesta</th>
+                                            <th>Calificación</th>
+                                            <th>Descripción</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </ng-template>
+                                    <ng-template
+                                        pTemplate="body"
+                                        let-respuestas
+                                        let-rowIndex="rowIndex"
+                                    >
+                                        <tr>
+                                            <td>
+                                                <!-- <p-checkbox
+                                                [(ngModel)]="estudiante.selected"
+                                            ></p-checkbox> -->
+                                                {{ rowIndex + 1 }}
+                                            </td>
+                                            <td class="">
+                                                {{
+                                                    respuestas?.cNombreEstudiante
+                                                }}
+                                            </td>
+                                            <td class="">
+                                                {{
+                                                    respuestas?.cForoRptaRespuesta
+                                                        | removeHTML
+                                                }}
+                                            </td>
+                                            <td>
+                                                {{
+                                                    respuestas?.cEscalaCalifNombre
+                                                }}
+                                            </td>
+                                            <td>
+                                                {{
+                                                    respuestas?.cForoRptaDocente ??
+                                                        '' | removeHTML
+                                                }}
+                                            </td>
+                                            <td style="text-align: center">
+                                                <p-button
+                                                    (click)="
+                                                        openModal(respuestas)
+                                                    "
+                                                    class="btCalificacion"
+                                                    icon="pi pi-book"
+                                                    rounded="true"
+                                                    severity="secondary"
+                                                    [style]="{
+                                                        'margin-right': '.5em',
+                                                    }"
+                                                />
+
+                                                <!-- <div
+                                                class="w-1rem h-1rem border-circle ml-3"
+                                                [ngClass]="
+                                                    estudiante.cEstado === 'F'
+                                                        ? 'bg-red-500'
+                                                        : estudiante.cEstado === 'P'
+                                                            ? 'bg-yellow-500'
+                                                            : 'bg-green-500'
+                                                "
+                                            ></div> -->
+                                            </td>
+                                        </tr>
+                                    </ng-template>
+                                </p-table>
+                                <!-- incio -->
+                            </tr></ng-template
+                        >
+                        <ng-template pTemplate="emptymessage" let-columns>
+                            <tr>
+                                <td [attr.colspan]="8">
+                                    No se encontraron resultados.
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                    <div class="card">
+                        <app-table-primeng
+                            [columnas]="columnas"
+                            [data]="data"
+                            (accionBtnItem)="accionBtnItemTable($event)"
+                            [(selectedRowData)]="selectedItems"
+                            [actions]="accionesTabla"
+                        >
+                            <ng-container slot="caption-content">
+                            </ng-container>
+                        </app-table-primeng>
+                    </div>
+                </form>
             </p-tabPanel>
-        </p-tabView>
-    </section>
-</form>
+        }
+    </p-tabView>
+</section>
 
 <p-dialog
     [(visible)]="modalCalificacion"
@@ -523,10 +707,11 @@
             </div> -->
             <!-- Mostrar el título -->
             <div class="col-8 flex flex-column gap-2">
-                <app-common-input
+                <!-- <app-common-input
                     [controlKey]="'cForoRptaRespuesta'"
                     label="Comentario"
-                />
+                /> -->
+                comentario: "{{ estudianteSelect?.cForoRptaRespuesta }}"
             </div>
             <div class="col-4 flex flex-column gap-2">
                 <label for="calificacion">Calificación</label>
@@ -550,7 +735,7 @@
                 <div class="mt-2">
                     <p-editor
                         id="descripcion"
-                        formControlName="cForoDescripcion"
+                        formControlName="cForoRptaDocente"
                         [style]="{ height: '150px' }"
                     />
                 </div>

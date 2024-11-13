@@ -13,7 +13,10 @@ import { HttpClient, HttpEventType } from '@angular/common/http'
 })
 export class ImageUploadPrimengComponent {
     @Output() actionImageUpload = new EventEmitter()
-    @Input() label: string
+    @Input() label: string = 'user.png'
+    @Input() urlFoto: string
+
+    backend = environment.backend
 
     public iProgress
 
@@ -79,5 +82,9 @@ export class ImageUploadPrimengComponent {
         })
 
         return formData
+    }
+
+    updateUrl() {
+        this.urlFoto = 'users/no-image.png'
     }
 }

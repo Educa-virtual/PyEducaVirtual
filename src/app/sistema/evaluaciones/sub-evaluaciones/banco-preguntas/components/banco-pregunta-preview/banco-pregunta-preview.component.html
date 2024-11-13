@@ -8,9 +8,17 @@
             preguntaItem of pregunta.preguntas;
             track preguntaItem.iPreguntaId
         ) {
-            <app-banco-pregunta-preview-item [pregunta]="preguntaItem" />
+            <app-banco-pregunta-preview-item
+                [footerPreguntaTemplate]="footerPreguntaTemplate"
+                [customAlternativeTemplate]="customAlternativeTemplate"
+                [pregunta]="preguntaItem"
+            />
         }
     </div>
 } @else {
-    <app-banco-pregunta-preview-item [pregunta]="pregunta" />
+    <app-banco-pregunta-preview-item
+        [footerPreguntaTemplate]="footerPreguntaTemplate"
+        [customAlternativeTemplate]="customAlternativeTemplate"
+        [pregunta]="pregunta"
+    />
 }

@@ -8,7 +8,7 @@
     toggler="header"
 >
     <ng-template pTemplate="header">
-        <div class="flex flex-column w-full">
+        <div class="flex flex-wrap w-full justify-content-between gap-2">
             <div class="flex gap-4 font-normal">
                 <app-icon
                     [name]="actividad.iActTipoId | appActividadConfig: 'icon'"
@@ -32,7 +32,14 @@
                     >
                 </div>
             </div>
-            <div class="flex align-items-end flex-column gap-1">
+            <div
+                class="flex flex-column align-items-center justify-content-end gap-2"
+            >
+                @if (actividad.iActTipoId === 3) {
+                    @if (actividad['iEstado'] === 1) {
+                        <p-tag value="Borrador" severity="info" />
+                    }
+                }
                 <div
                     class="font-medium text-sm text-gray-500 gap-1 flex align-items-center"
                 >
@@ -64,7 +71,7 @@
                 @if (item.isVisible ? item.isVisible(actividad) : true) {
                     <button
                         pButton
-                        class="gap-2 w-full flex p-button-text p-button-plain"
+                        class="gap-2 w-full flex p-button-text p-button-plain text-left"
                         (click)="
                             onAction(item.accion, $event); menuActividad.hide()
                         "
@@ -84,6 +91,7 @@
             </ng-template>
         </p-menu>
         <button
+            [hidden]="iPerfilId === 8"
             class="p-link ml-auto mr-2 text-primary"
             (click)="$event.stopPropagation(); menuActividad.toggle($event)"
         >
@@ -120,8 +128,8 @@
                     <span>
                         Fecha Cierre:
                         {{ actividad['dtProgActFin'] | date: 'dd/MM/yyyy' }}
-                        Hora:
                         <i class="pi pi-clock text-primary"></i>
+                        Hora:
                         {{ actividad['dtProgActFin'] | date: 'h:mm a' }}
                     </span>
                 </div>

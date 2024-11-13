@@ -110,7 +110,9 @@ export class TabContenidoComponent implements OnInit {
         private _activatedRoute: ActivatedRoute
     ) {}
 
+    iPerfilId: number = null
     ngOnInit(): void {
+        this.iPerfilId = this._constantesService.iPerfilId
         const today = new Date()
         const nextWeek = new Date()
         nextWeek.setDate(today.getDate() + 7)
@@ -282,23 +284,85 @@ export class TabContenidoComponent implements OnInit {
 
     handleForoAction(action: string, actividad: IActividad) {
         if (action === 'EDITAR') {
-            this._dialogService.open(ForoFormContainerComponent, {
-                ...MODAL_CONFIG,
-                data: {
-                    contenidoSemana: this.semanaSeleccionada,
-                    iActTipoId: actividad.iActTipoId,
-                    actividad: actividad,
-                    action: action === 'EDITAR' ? 'ACTUALIZAR' : 'GUARDAR',
-                },
-                header: 'Editar Foro',
-            })
+            console.log('Editar', actividad)
+            this._dialogService
+                .open(ForoFormContainerComponent, {
+                    ...MODAL_CONFIG,
+                    data: {
+                        contenidoSemana: this.semanaSeleccionada,
+                        iActTipoId: actividad.iActTipoId,
+                        actividad: actividad,
+                        action: 'editar',
+                    },
+                    header: 'Editar Foro',
+                })
+                .onClose.subscribe((result) => {
+                    console.log(result)
+                    if (result) {
+                        const data = {
+                            ...result,
+                        }
+                        this._aulaService.actualizarForo(data).subscribe(() => {
+                            this.getData()
+                        })
+                    } else {
+                        console.log('Formulario cancelado')
+                    }
+                })
         }
         if (action === 'CREAR') {
-            this._dialogService.open(ForoFormContainerComponent, {
-                ...MODAL_CONFIG,
-                header: 'Crear Foro',
-                data: actividad,
+            this._dialogService
+                .open(ForoFormContainerComponent, {
+                    ...MODAL_CONFIG,
+                    header: 'Crear Foro',
+                    data: {
+                        contenidoSemana: this.semanaSeleccionada,
+                        iActTipoId: actividad.iActTipoId,
+                        actividad: actividad,
+                        action: 'guardar',
+                    },
+                })
+                .onClose.subscribe((result) => {
+                    console.log(result)
+                    if (result) {
+                        const data = {
+                            ...result,
+                            iContenidoSemId:
+                                this.semanaSeleccionada.iContenidoSemId,
+                        }
+                        console.log('Formulario enviado', data)
+                        this._aulaService.guardarForo(data).subscribe(() => {
+                            this.getData()
+                        })
+                    } else {
+                        console.log('Formulario cancelado')
+                    }
+                })
+        }
+        if (action === 'ELIMINAR') {
+            this._confirmService.openConfirm({
+                header: '¿Esta seguro de eliminar la evaluación?',
+                accept: () => {
+                    this.eliminarActividad(
+                        actividad.iProgActId,
+                        actividad.iActTipoId,
+                        actividad.ixActivadadId
+                    )
+                },
             })
+        }
+        if (action === 'VER') {
+            this.router.navigate(
+                [
+                    '../',
+                    'actividad',
+                    actividad.ixActivadadId,
+                    actividad.iActTipoId,
+                ],
+                {
+                    relativeTo: this._activatedRoute,
+                }
+            )
         }
     }
 
@@ -314,6 +378,16 @@ export class TabContenidoComponent implements OnInit {
                 header: header,
             })
         }
+    }
+
+    anularPublicacionEvaluacion({ iEvaluacionId }) {
+        this._evalService
+            .anularPublicacionEvaluacion({ iEvaluacionId })
+            .subscribe({
+                next: () => {
+                    this.obtenerContenidoSemanas()
+                },
+            })
     }
 
     // maneja las acciones de las evaluaciones
@@ -377,20 +451,31 @@ export class TabContenidoComponent implements OnInit {
                 },
             })
         }
+        if (action === 'ANULAR_PUBLICACION') {
+            this._confirmService.openConfirm({
+                header: '¿Esta seguro de anular la publicación de la evaluación?',
+                accept: () => {
+                    this.anularPublicacionEvaluacion({
+                        iEvaluacionId: actividad.ixActivadadId,
+                    })
+                },
+            })
+        }
     }
 
-    // todo usar valores reales
     publicarEvaluacion(actividad: IActividad) {
         const data = {
             iEvaluacionId: actividad.ixActivadadId,
-            iCursoId: 1,
-            iSeccionId: 2,
-            iYAcadId: 3,
-            iSemAcadId: 3,
-            iNivelGradoId: 1,
-            iCurrId: 1,
+            iCursoId: this.semanaSeleccionada.iCursoId,
+            // obtener iseccionId
+            iSeccionId: this.semanaSeleccionada.iSeccionId,
+            iYAcadId: this._constantesService.iYAcadId,
+            iSemAcadId: this.semanaSeleccionada.iSemAcadId,
+            iNivelGradoId: this.semanaSeleccionada.iNivelGradoId,
+            iCurrId: this.semanaSeleccionada.iCurrId,
             iEstado: 2,
         }
+
         this._evalService
             .publicarEvaluacion(data)
             .pipe(takeUntil(this._unsubscribe$))

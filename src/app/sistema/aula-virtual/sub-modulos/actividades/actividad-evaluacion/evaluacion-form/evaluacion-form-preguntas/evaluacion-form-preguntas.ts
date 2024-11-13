@@ -13,6 +13,14 @@ export const accionesPreguntasEvaluacion: IActionTable[] = [
             name: 'matWorkspacePremium',
         },
         class: 'p-button-rounded p-button-warning p-button-text',
+        isVisible: (row) => {
+            if (row.preguntas && row.preguntas.length > 0) {
+                return row.preguntas.some(
+                    (pregunta) => pregunta.iTipoPregId === 3
+                )
+            }
+            return row.iTipoPregId === 3
+        },
     },
     {
         labelTooltip: 'Quitar Pregunta',

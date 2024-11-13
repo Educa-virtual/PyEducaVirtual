@@ -64,8 +64,9 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
             detail: 'En esta sección podrá visualizar las áreas curriculares asignadas para el periodo seleccionado, así como la institución educativa a la que pertenece.',
         },
     ]
-
+    iPerfilId: number
     ngOnInit() {
+        this.iPerfilId = this._constantesService.iPerfilId
         this.items = [
             {
                 label: 'Fichas de Aprendizaje',
@@ -97,7 +98,9 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
             {
                 label: 'Material Educativo',
                 icon: 'pi pi-angle-right',
-                command: () => {},
+                command: () => {
+                    this.goSection('material-educativo')
+                },
             },
             {
                 label: 'Cuaderno de campo',
@@ -158,7 +161,6 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
                 this.router.navigateByUrl('docente/sesion-aprendizaje')
                 break
             case 'asistencia':
-                console.log(this.selectedData)
                 this.router.navigateByUrl(
                     'docente/asistencia/' +
                         this.selectedData['iCursoId'] +
@@ -171,6 +173,17 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
                         this.selectedData['iNivelGradoId'] +
                         '/' +
                         this.selectedData['iSeccionId']
+                )
+                break
+            case 'material-educativo':
+                this.router.navigateByUrl(
+                    'docente/material-educativo/' +
+                        this.selectedData['idDocCursoId'] +
+                        '/' +
+                        this.selectedData['cCursoNombre'].replace(
+                            /[\^*@!"#$%&/()=?¡!¿':\\]/gi,
+                            ''
+                        )
                 )
                 break
         }
@@ -210,14 +223,29 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
     getSilaboPdf(iSilaboId) {
         if (!iSilaboId) return
         const params = {
-            petition: 'get',
+            petition: 'post',
             group: 'docente',
             prefix: 'silabus_reporte',
             ruta: 'report',
-            iSilaboId: iSilaboId,
-            params: { skipSuccessMessage: true },
+            data: {
+                iSilaboId: iSilaboId,
+            },
         }
-        this._generalService.getGralReporte(params)
+        this._generalService.generarPdf(params).subscribe({
+            next: (response) => {
+                const blob = new Blob([response], { type: 'application/pdf' })
+                const url = window.URL.createObjectURL(blob)
+                const a = document.createElement('a')
+                a.href = url
+                a.download = 'archivo.pdf'
+                a.click()
+                window.URL.revokeObjectURL(url)
+            },
+            complete: () => {},
+            error: (error) => {
+                console.log(error)
+            },
+        })
     }
     ngOnDestroy() {
         this.unsubscribe$.next(true)

@@ -1,0 +1,50 @@
+<app-modal-primeng
+    [title]="titulo"
+    [showModal]="showModal"
+    [width]="'55rem'"
+    (accionBtnItem)="accionBtn($event)"
+    *ngIf="formMaterialEducativoDocentes"
+>
+    <form [formGroup]="formMaterialEducativoDocentes">
+        <div class="grid">
+            <div class="col-12">
+                <p-inputGroup>
+                    <p-inputGroupAddon>
+                        Título del Material Educativo
+                    </p-inputGroupAddon>
+                    <input pInputText formControlName="cMatEducativoTitulo" />
+                </p-inputGroup>
+            </div>
+            <div class="col-12">
+                <p-inputGroup>
+                    <p-inputGroupAddon> Descripción </p-inputGroupAddon>
+                    <textarea
+                        pInputText
+                        formControlName="cMatEducativoDescripcion"
+                    ></textarea>
+                </p-inputGroup>
+            </div>
+            <div class="col-12 mt-1">
+                <app-types-files-upload-primeng
+                    [nameFile]="'material-educativos'"
+                    [nameOption]="'material-educativos'"
+                    [typesFiles]="typesFiles"
+                    (actionTypesFileUpload)="accionBtn($event)"
+                    [filesUrl]="filesUrl"
+                ></app-types-files-upload-primeng>
+            </div>
+        </div>
+    </form>
+    <div class="flex justify-content-end gap-2">
+        <p-button
+            label="Cancelar"
+            severity="secondary"
+            (onClick)="showModal = false"
+        />
+        <p-button
+            [label]="opcion"
+            [disabled]="!this.formMaterialEducativoDocentes.valid"
+            (onClick)="accionBtn({ accion: opcion, item: [] })"
+        />
+    </div>
+</app-modal-primeng>

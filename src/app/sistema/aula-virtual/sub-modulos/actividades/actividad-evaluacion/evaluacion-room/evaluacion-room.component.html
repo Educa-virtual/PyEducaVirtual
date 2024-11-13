@@ -141,62 +141,21 @@
                 </article>
                 <article class="card">
                     <h2>Recursos</h2>
-                    <!-- <ul class="list-none p-0 m-0">
-                        <li
-                            class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap"
-                        >
-                            <div class="flex gap-2 align-items-center">
-                                <i class="pi pi-file text-lg text-primary"></i>
-                                <span class="font-medium text-lg"
-                                    >Recurso.pdf</span
-                                >
-                                <span class="text-gray-500"
-                                    >tamaño(319.532KB)</span
-                                >
-                            </div>
-                        </li>
-                        <li
-                            class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap"
-                        >
-                            <div class="flex gap-2 align-items-center">
-                                <i class="pi pi-file text-lg text-primary"></i>
-                                <span class="font-medium text-lg"
-                                    >Recurso.pdf</span
-                                >
-                                <span class="text-gray-500"
-                                    >tamaño(319.532KB)</span
-                                >
-                            </div>
-                        </li>
-                        <li
-                            class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap"
-                        >
-                            <div class="flex gap-2 align-items-center">
-                                <i class="pi pi-file text-lg text-primary"></i>
-                                <span class="font-medium text-lg"
-                                    >Recurso.pdf</span
-                                >
-                                <span class="text-gray-500"
-                                    >tamaño(319.532KB)</span
-                                >
-                            </div>
-                        </li>
-                    </ul> -->
+                    @if (evaluacion?.cEvaluacionArchivoAdjunto.length === 0) {
+                        <app-empty-section
+                            class="w-full"
+                            [message]="'Sin recursos asignados'"
+                        ></app-empty-section>
+                    } @else {
+                        <app-recursos-lista
+                            [files]="
+                                evaluacion?.cEvaluacionArchivoAdjunto ?? []
+                            "
+                        ></app-recursos-lista>
+                    }
                 </article>
 
                 <article class="card flex flex-column gap-4">
-                    <!-- <div class="flex justify-content-between flex-wrap gap-2">
-                        <h2>Preguntas</h2>
-                        <button
-                            pButton
-                            icon="pi pi-plus"
-                            size="small"
-                            class="flex gap-2"
-                        >
-                            Agregar Pregunta
-                        </button>
-                    </div> -->
-
                     @if (
                         evaluacion?.preguntas === null ||
                         evaluacion?.preguntas === undefined ||
@@ -214,6 +173,8 @@
                         <app-evaluacion-form-preguntas
                             [tituloEvaluacion]="''"
                             [preguntas]="evaluacion?.preguntas ?? []"
+                            [iEvaluacionId]="evaluacion.iEvaluacionId"
+                            [iCursoId]="evaluacion.iCursoId"
                         ></app-evaluacion-form-preguntas>
                     }
                 </article>

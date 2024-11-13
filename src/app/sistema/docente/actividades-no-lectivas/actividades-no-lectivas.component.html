@@ -9,7 +9,7 @@
                 pButton
                 icon="pi pi-plus"
                 class="p-button-success"
-                (click)="showModal = true"
+                (click)="accionBtnItem({ accion: 'agregar', item: [] })"
             >
                 &nbsp;Agregar
             </button>
@@ -22,96 +22,22 @@
             [closable]="false"
         />
     </div>
-    <p-dataView
-        class="col-12"
-        #dv
-        [value]="[]"
-        [paginator]="false"
-        [rows]="100"
-        filterBy="cActNoLectNombre"
-        [sortField]="''"
-        [sortOrder]="0"
-        [layout]="layout"
-        [emptyMessage]="' '"
-    >
-        <ng-template pTemplate="header">
-            <div
-                class="flex flex-column md:flex-row md:justify-content-between gap-2"
-            >
-                <div class="flex justify-content-start">
-                    @if (layout === 'list') {
-                        <p-inputGroup class="h-min">
-                            <p-inputGroupAddon
-                                ><p-inputIcon styleClass="pi pi-search"
-                            /></p-inputGroupAddon>
-                            <input
-                                pInputText
-                                type="text"
-                                placeholder="Buscar por nombre"
-                            />
-                        </p-inputGroup>
-                        &nbsp;&nbsp;
-                    }
-                    <p-inputGroup class="h-min" s>
-                        <p-inputGroupAddon> Fecha</p-inputGroupAddon>
-                        <p-calendar
-                            [(ngModel)]="date"
-                            [showIcon]="true"
-                            [hourFormat]="'24'"
-                        />
-                    </p-inputGroup>
-                </div>
-                <div class="flex justify-end">
-                    <p-selectButton
-                        [(ngModel)]="layout"
-                        [options]="options"
-                        [allowEmpty]="false"
-                    >
-                        <ng-template pTemplate="item" let-item>
-                            <i
-                                class="pi"
-                                [ngClass]="{
-                                    'pi-bars': item === 'list',
-                                    'pi-th-large': item === 'grid',
-                                }"
-                            ></i>
-                        </ng-template>
-                    </p-selectButton>
-                </div>
-            </div>
-        </ng-template>
-        <ng-template let-item pTemplate="list">
-            <app-table-primeng
-                [columnas]="columns"
-                [actions]="actions"
-                [data]="data"
-                [showCaption]="false"
-                [tableStyle]="null"
-            ></app-table-primeng>
-        </ng-template>
-        <ng-template let-item pTemplate="grid">
-            <p-divider></p-divider>
-            <div class="grid">
-                <div class="col-3">
-                    <h5>Actividades y Fechas Especiales</h5>
-                    <div *ngFor="let item of fechas" class="field-checkbox">
-                        <p-checkbox
-                            [ngStyle]="{ color: item.color }"
-                            [label]="item.nombre + ' : ' + item.cantidad"
-                            class="font-bold"
-                            value="category"
-                            name="group"
-                        />
-                    </div>
-                </div>
-                <div class="col-9">
-                    <app-full-calendar></app-full-calendar>
-                </div>
-            </div>
-        </ng-template>
-    </p-dataView>
+    <div class="col-12">
+        <app-table-primeng
+            [columnas]="columns"
+            [actions]="actions"
+            [data]="data"
+            [showCaption]="true"
+            [tableStyle]="null"
+            (accionBtnItem)="accionBtnItem($event)"
+        ></app-table-primeng>
+    </div>
 </div>
 <app-form-actividades-no-lectivas
     [showModal]="showModal"
+    [data]="item"
+    [titulo]="titulo"
+    [opcion]="opcion"
+    [tiposCargaNoLectivas]="tiposCargaNoLectivas"
     (accionBtnItem)="accionBtnItem($event)"
 ></app-form-actividades-no-lectivas>

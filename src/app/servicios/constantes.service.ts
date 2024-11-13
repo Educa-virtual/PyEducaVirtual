@@ -5,7 +5,7 @@ const store = new LocalStoreService()
 const perfil = store.getItem('dremoPerfil')
 const verificado = store.getItem('dremoPerfilVerificado')
 const user = store.getItem('dremoUser')
-
+const iYAcadId = store.getItem('dremoYear')
 const inicio = {
     label: 'Inicio',
     icon: 'pi pi-fw pi-home',
@@ -51,7 +51,29 @@ const docente = [
 
 const estudiante = [
     {
-        items: [inicio],
+        items: [
+            inicio,
+            {
+                label: 'Mis Áreas Curriculares',
+                icon: 'pi pi-fw pi-book',
+                routerLink: ['/aula-virtual/areas-curriculares'],
+            },
+            {
+                label: 'Calendario',
+                icon: 'pi pi-fw pi-book',
+                routerLink: ['/aula-virtual/areas-curriculares'],
+            },
+            {
+                label: 'Solicitudes y Tramites',
+                icon: 'pi pi-fw pi-book',
+                routerLink: ['/aula-virtual/areas-curriculares'],
+            },
+            {
+                label: 'Buzon de Sugerencias',
+                icon: 'pi pi-fw pi-book',
+                routerLink: ['/aula-virtual/areas-curriculares'],
+            },
+        ],
     },
 ]
 // const especialista_ugel = [
@@ -586,18 +608,21 @@ const first = [
     providedIn: 'root',
 })
 export class ConstantesService {
-    public idDocCursoId: string = ''
-    public iCursoId: string = ''
-
     iPersId = user ? user.iPersId : null
     iCredId = user ? user.iCredId : null
     iDocenteId = user ? user?.iDocenteId : null
     iNivelCicloId = user?.iNivelCicloId ?? 1
     iEspecialistaId = user?.iEspecialistaId ?? 1
+    iEstudianteId = user ? user?.iEstudianteId : null
+    iPerfilId = perfil ? Number(perfil.iPerfilId) : null
+    // verificar si viene del usuario/perfil
+    iCurrContId = user?.iCurrContId ?? 1
+    iYAcadId = iYAcadId
+
     nav = this.getMenu()
     getMenu() {
         if (!perfil) return first
-        console.log('perfiles', perfil)
+        // console.log('perfiles', perfil)
         switch (Number(perfil.iPerfilId)) {
             case 1:
                 return aula_virtual
@@ -605,7 +630,7 @@ export class ConstantesService {
                 return docente
             case 3:
                 return notas_evaluaciones
-            case 4:
+            case 8:
                 return estudiante
             case 5:
                 return registro_asistencia
@@ -613,7 +638,7 @@ export class ConstantesService {
                 return administrador
             case 7:
                 return docente
-            case 8:
+            case 4:
                 return bienestar
             default:
                 return first

@@ -38,24 +38,25 @@ export class FormGrupoComponent implements OnChanges {
         if (changes.data?.currentValue) {
             this.data = changes.data.currentValue
         }
-        if (!this.data?.cTareaGrupoNombre && this.iTareaId) {
+        if (!this.data?.cTareaGrupoNombre) {
             this.opcion = 'GUARDAR'
             this.cTareaGrupoNombre = null
             this.estudiantes = []
             this.iTareaCabGrupoId = null
-            this.getTareaCabeceraGruposEstudiantes()
         } else {
             this.opcion = 'ACTUALIZAR'
             this.iTareaCabGrupoId = this.data?.iTareaCabGrupoId
             this.cTareaGrupoNombre = this.data?.cTareaGrupoNombre
-            this.estudiantes = this.data?.json_estudiantes_respaldo
-            this.estudiantes.forEach((i) => {
-                Number(i.bAsignado) === 1
-                    ? (i.bAsignado = true)
-                    : (i.bAsignado = false)
-                i.disabled = i.bAsignado
-            })
+            // this.estudiantes = this.data?.json_estudiantes_respaldo
+            // this.estudiantes.forEach((i) => {
+            //     Number(i.bAsignado) === 1
+            //         ? (i.bAsignado = true)
+            //         : (i.bAsignado = false)
+            //     i.disabled = i.bAsignado
+            // })
         }
+        this.getTareaCabeceraGruposEstudiantes()
+        //console.log(this.data)
     }
     getTareaCabeceraGruposEstudiantes() {
         const params = {
@@ -82,9 +83,12 @@ export class FormGrupoComponent implements OnChanges {
                 opcion: this.opcion + '-ESTUDIANTESxiTareaId',
                 iTareaId: this.iTareaId,
                 cTareaGrupoNombre: this.cTareaGrupoNombre,
-                valorBusqueda: JSON.stringify(
-                    this.estudiantes.filter((i) => !i.disabled)
-                ),
+                valorBusqueda:
+                    this.opcion === 'GUARDAR'
+                        ? JSON.stringify(
+                              this.estudiantes.filter((i) => !i.disabled)
+                          )
+                        : JSON.stringify(this.estudiantes),
                 iTareaCabGrupoId: this.iTareaCabGrupoId,
             },
             params: { skipSuccessMessage: true },

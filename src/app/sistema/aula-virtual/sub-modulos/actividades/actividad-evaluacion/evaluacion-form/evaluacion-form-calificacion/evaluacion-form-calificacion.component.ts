@@ -23,6 +23,11 @@ export class EvaluacionFormCalificacionComponent {
     @Input() tituloEvaluacion: string = 'Sin título de evaluación'
     @Input() calificacionForm: FormGroup
     @Input() rubricaSelected = null
+    @Input({ required: true }) params = {
+        iCursoId: null,
+        iDocenteId: null,
+        idDocCursoId: null,
+    }
 
     public instrumentosEvaluacion = []
     public instrumentoEvaluacionOpciones = [

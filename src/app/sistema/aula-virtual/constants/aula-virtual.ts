@@ -78,12 +78,14 @@ export const actividadesConfig: Record<
                 accion: 'EDITAR',
                 class: '',
                 label: 'Editar',
+                isVisible: (row) => row.iEstado === 1,
             },
             {
                 icon: 'pi pi-trash',
                 accion: 'ELIMINAR',
                 class: '',
                 label: 'Eliminar',
+                isVisible: (row) => row.iEstado === 1,
             },
             {
                 icon: 'pi pi-eye',
@@ -110,7 +112,7 @@ export const actividadesConfig: Record<
                 },
                 accion: 'ANULAR_PUBLICACION',
                 class: '',
-                label: 'Anular Publicar',
+                label: 'Anular Publicación',
                 isVisible: (row) => row.iEstado === 2,
             },
         ],

@@ -145,6 +145,8 @@ export class TareaFormComponent implements OnChanges {
                 params: { skipSuccessMessage: true },
             }
             this.getInformation(params, 'get_tareas_reutilizadas')
+        } else {
+            this.formTareas.controls.cTareaTitulo.setValue(null)
         }
     }
 

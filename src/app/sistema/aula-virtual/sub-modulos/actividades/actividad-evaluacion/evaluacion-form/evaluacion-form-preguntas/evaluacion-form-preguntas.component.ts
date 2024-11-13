@@ -54,6 +54,7 @@ export class EvaluacionFormPreguntasComponent implements OnDestroy {
     @Input() preguntas: any[] = []
     // se guarda en evaluaciones_preguntas si se envia iEvaluacionId
     @Input() iEvaluacionId: number
+    @Input({ required: true }) iCursoId: string
     @Output() preguntasSeleccionadasChange = new EventEmitter()
 
     public acciones = accionesPreguntasEvaluacion
@@ -100,7 +101,7 @@ export class EvaluacionFormPreguntasComponent implements OnDestroy {
     agregarEditarPregunta(pregunta) {
         const refModal = this._aulaBancoPreguntasService.openPreguntaModal({
             pregunta,
-            iCursoId: 1,
+            iCursoId: this.iCursoId,
             tipoPreguntas: [],
             iEvaluacionId: this.iEvaluacionId,
         })

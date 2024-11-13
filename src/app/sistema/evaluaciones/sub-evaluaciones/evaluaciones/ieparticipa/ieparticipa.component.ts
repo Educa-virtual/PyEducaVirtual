@@ -1,8 +1,8 @@
 //Agregar Servicio de Evaluacion
 import { CompartirIdEvaluacionService } from './../../../services/ereEvaluaciones/compartir-id-evaluacion.service'
 import { Component, ChangeDetectorRef, inject, OnInit } from '@angular/core'
-import { Product } from 'src/app/demo/api/product'
-import { ProductService } from 'src/app/demo/service/product.service'
+// import { Product } from 'src/app/demo/api/product'
+// import { ProductService } from 'src/app/demo/service/product.service'
 import { PickListModule } from 'primeng/picklist'
 import { ApiEvaluacionesRService } from '../../../services/api-evaluaciones-r.service'
 import { Subject, takeUntil } from 'rxjs'
@@ -39,7 +39,6 @@ interface EvaluacionCopia {
     ],
     templateUrl: './ieparticipa.component.html',
     styleUrl: './ieparticipa.component.scss',
-    providers: [ProductService],
 })
 export class IeparticipaComponent implements OnInit {
     public evaluacionFormGroup: any
@@ -70,13 +69,12 @@ export class IeparticipaComponent implements OnInit {
     evaluaciones: any[] = [] // Array para almacenar las evaluaciones obtenidas del API
     selectedEvaluacionId: number // ID de la evaluación seleccionada en el dropdown
     constructor(
-        private carService: ProductService,
         private cdr: ChangeDetectorRef,
         private compartirIdEvaluacionService: CompartirIdEvaluacionService,
         private _config: DynamicDialogConfig, // Inyectar configuración
         private evaluacionesService: ApiEvaluacionesRService // Inyecta el servicio -> Evaliacion Copiar
     ) {}
-    public allIEs: Product[] = [] // Lista completa de IE para filtrar los no participantes
+    public allIEs = [] // Lista completa de IE para filtrar los no participantes
     ngOnInit() {
         console.log('Iniciando componente con config:', this._config.data)
 
@@ -87,10 +85,10 @@ export class IeparticipaComponent implements OnInit {
         console.log('Modo actual:', this.accion)
         console.log('Es modo edición:', this.esModoEdicion)
 
-        this.carService.getProductsSmall().then((products) => {
-            this.sourceProducts = products
-            this.cdr.markForCheck()
-        })
+        // this.carService.getProductsSmall().then((products) => {
+        //     this.sourceProducts = products
+        //     this.cdr.markForCheck()
+        // })
 
         this.obtenerIE()
         this.obtenerNivelTipo()

@@ -19,7 +19,7 @@
     [dataKey]="dataKey"
     [expandedRowKeys]="expandedRowKeys"
 >
-    @if (showCaption) {
+    <ng-container *ngIf="showCaption">
         <ng-template pTemplate="caption">
             <div
                 class="flex justify-content-between gap-2 flex-column sm:flex-row flex-wrap"
@@ -30,7 +30,12 @@
                         pInputText
                         type="text"
                         class="py-2"
-                        (input)="dt.filterGlobal($event.target, 'contains')"
+                        (input)="
+                            dt.filterGlobal(
+                                $any($event.target).value,
+                                'contains'
+                            )
+                        "
                         placeholder="Buscar palabra clave"
                     />
                 </p-iconField>
@@ -41,7 +46,7 @@
                 ></app-table-column-filter>
             </div>
         </ng-template>
-    }
+    </ng-container>
     <ng-template pTemplate="header" let-columns>
         <tr class="text-uppercase">
             @for (col of columnasSeleccionadas; track $index) {
@@ -115,12 +120,23 @@
                             {{ rowData[col.field] }}
                         </div>
                     }
+                    @if (col.type === 'date') {
+                        <div [style.text-align]="col.text">
+                            {{ rowData[col.field] | date: 'dd/MM/YYYY' }}
+                        </div>
+                    }
                     @if (col.type === 'checkbox') {
                         <p-tableCheckbox [value]="rowData" />
                     }
                     @if (col.type === 'radio') {
                         <p-tableRadioButton
                             [value]="rowData"
+                        ></p-tableRadioButton>
+                    }
+                    @if (col.type === 'radio-action') {
+                        <p-tableRadioButton
+                            [value]="rowData"
+                            (click)="accionBtn('select', rowData)"
                         ></p-tableRadioButton>
                     }
                     @if (col.type === 'trim') {

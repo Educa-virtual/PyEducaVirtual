@@ -1,26 +1,26 @@
 import { Injectable } from '@angular/core'
 
 export interface ConfigTipo {
-    iEstadoConfigId: number;
-    cEstadoConfigNombre: string;
-  }
+    iEstadoConfigId: number
+    cEstadoConfigNombre: string
+}
 
 export interface Grado {
-    iConfigGradoId: number;
-    iCicloId: number;
-    iGradoId: number;
-    iFasesPromId: number;
-    iYAcadId: number;
-    iSedeId: number;
-    bConfigGradoEstado: number;
-    cConfigGradoObs: string;
-    cYAcadNombre: string;
-    cFase: string;
-    cCiclo: string;
-    cGrado: string;
-  }
+    iConfigGradoId: number
+    iCicloId: number
+    iGradoId: number
+    iFasesPromId: number
+    iYAcadId: number
+    iSedeId: number
+    bConfigGradoEstado: number
+    cConfigGradoObs: string
+    cYAcadNombre: string
+    cFase: string
+    cCiclo: string
+    cGrado: string
+}
 
-  export interface Ambientes {
+export interface Ambientes {
     iIieeAmbienteId: number
     iTipoAmbienteId: number
     cTipoAmbienteNombre: string
@@ -48,7 +48,7 @@ export interface Grado {
     cAmbienteDescripcion: string
 }
 
-export interface ListaConfig{
+export interface ListaConfig {
     iConfigId: number
     iEstadoConfigId: number
     cConfigDescripcion: string
@@ -65,11 +65,11 @@ export interface ListaConfig{
     providedIn: 'root',
 })
 export class AdmStepGradoSeccionService {
-   // Propiedades
-    configTipo: ConfigTipo[] = [];
-    ambientes: Ambientes [] = [];
-    grados: Grado[] = [];
-    listaConfig: ListaConfig[] =[]
+    // Propiedades
+    configTipo: ConfigTipo[] = []
+    ambientes: Ambientes[] = []
+    grados: Grado[] = []
+    listaConfig: ListaConfig[] = []
 
     // configTipo: {
     //     iEstadoConfigId: number
@@ -120,122 +120,105 @@ export class AdmStepGradoSeccionService {
     iNivelTipoId: number
 
     constructor() {
-        this.initializeData();
-    }    
+        this.initializeData()
+    }
 
     private initializeData(): void {
         this.grados = [
-          {
-            iConfigGradoId: 1,
-            iCicloId: 3,
-            iGradoId: 1,
-            iFasesPromId: 1,
-            iYAcadId: 3,
-            iSedeId: 1,
-            bConfigGradoEstado: 1,
-            cConfigGradoObs: '',
-            cYAcadNombre: '2024',
-            cFase: 'Fase Regular',
-            cCiclo: 'CICLO III',
-            cGrado: 'PRIMERO',
-          },
-          {
-            iConfigGradoId: 2,
-            iCicloId: 3,
-            iGradoId: 2,
-            iFasesPromId: 1,
-            iYAcadId: 3,
-            iSedeId: 1,
-            bConfigGradoEstado: 1,
-            cConfigGradoObs: '',
-            cYAcadNombre: '2024',
-            cFase: 'Fase Regular',
-            cCiclo: 'CICLO III',
-            cGrado: 'SEGUNDO',
-        },
-        {
-            iConfigGradoId: 3,
-            iCicloId: 4,
-            iGradoId: 3,
-            iFasesPromId: 1,
-            iYAcadId: 3,
-            iSedeId: 1,
-            bConfigGradoEstado: 1,
-            cConfigGradoObs: '',
-            cYAcadNombre: '2024',
-            cFase: 'Fase Regular',
-            cCiclo: 'CICLO IV',
-            cGrado: 'TERCERO',
-        },
-        {
-            iConfigGradoId: 4,
-            iCicloId: 4,
-            iGradoId: 4,
-            iFasesPromId: 1,
-            iYAcadId: 3,
-            iSedeId: 1,
-            bConfigGradoEstado: 1,
-            cConfigGradoObs: '',
-            cYAcadNombre: '2024',
-            cFase: 'Fase Regular',
-            cCiclo: 'CICLO IV',
-            cGrado: 'CUARTO',
-        },
-        {
-            iConfigGradoId: 5,
-            iCicloId: 5,
-            iGradoId: 5,
-            iFasesPromId: 1,
-            iYAcadId: 3,
-            iSedeId: 1,
-            bConfigGradoEstado: 1,
-            cConfigGradoObs: '',
-            cYAcadNombre: '2024',
-            cFase: 'Fase Regular',
-            cCiclo: 'CICLO V',
-            cGrado: 'QUINTO',
-        },
-        {
-            iConfigGradoId: 6,
-            iCicloId: 5,
-            iGradoId: 6,
-            iFasesPromId: 1,
-            iYAcadId: 3,
-            iSedeId: 1,
-            bConfigGradoEstado: 1,
-            cConfigGradoObs: '',
-            cYAcadNombre: '2024',
-            cFase: 'Fase Regular',
-            cCiclo: 'CICLO V',
-            cGrado: 'SEXTO',
-        },
-          // Agregar los demás grados aquí...
-        ]; 
+            {
+                iConfigGradoId: 1,
+                iCicloId: 3,
+                iGradoId: 1,
+                iFasesPromId: 1,
+                iYAcadId: 3,
+                iSedeId: 1,
+                bConfigGradoEstado: 1,
+                cConfigGradoObs: '',
+                cYAcadNombre: '2024',
+                cFase: 'Fase Regular',
+                cCiclo: 'CICLO III',
+                cGrado: 'PRIMERO',
+            },
+            {
+                iConfigGradoId: 2,
+                iCicloId: 3,
+                iGradoId: 2,
+                iFasesPromId: 1,
+                iYAcadId: 3,
+                iSedeId: 1,
+                bConfigGradoEstado: 1,
+                cConfigGradoObs: '',
+                cYAcadNombre: '2024',
+                cFase: 'Fase Regular',
+                cCiclo: 'CICLO III',
+                cGrado: 'SEGUNDO',
+            },
+            {
+                iConfigGradoId: 3,
+                iCicloId: 4,
+                iGradoId: 3,
+                iFasesPromId: 1,
+                iYAcadId: 3,
+                iSedeId: 1,
+                bConfigGradoEstado: 1,
+                cConfigGradoObs: '',
+                cYAcadNombre: '2024',
+                cFase: 'Fase Regular',
+                cCiclo: 'CICLO IV',
+                cGrado: 'TERCERO',
+            },
+            {
+                iConfigGradoId: 4,
+                iCicloId: 4,
+                iGradoId: 4,
+                iFasesPromId: 1,
+                iYAcadId: 3,
+                iSedeId: 1,
+                bConfigGradoEstado: 1,
+                cConfigGradoObs: '',
+                cYAcadNombre: '2024',
+                cFase: 'Fase Regular',
+                cCiclo: 'CICLO IV',
+                cGrado: 'CUARTO',
+            },
+            {
+                iConfigGradoId: 5,
+                iCicloId: 5,
+                iGradoId: 5,
+                iFasesPromId: 1,
+                iYAcadId: 3,
+                iSedeId: 1,
+                bConfigGradoEstado: 1,
+                cConfigGradoObs: '',
+                cYAcadNombre: '2024',
+                cFase: 'Fase Regular',
+                cCiclo: 'CICLO V',
+                cGrado: 'QUINTO',
+            },
+            {
+                iConfigGradoId: 6,
+                iCicloId: 5,
+                iGradoId: 6,
+                iFasesPromId: 1,
+                iYAcadId: 3,
+                iSedeId: 1,
+                bConfigGradoEstado: 1,
+                cConfigGradoObs: '',
+                cYAcadNombre: '2024',
+                cFase: 'Fase Regular',
+                cCiclo: 'CICLO V',
+                cGrado: 'SEXTO',
+            },
+            // Agregar los demás grados aquí...
+        ]
     }
 
-   
- 
     setEstadoConfig(value: any) {
         // informacion de tabla estado de configuraciones
         this.configTipo = value
     }
     getEstadoConfig() {
         return this.configTipo
-    }
-
-    setConfig(item: any) {
-        // this.configuracion.iConfigId = item.iConfigId
-        // this.configuracion.iEstadoConfigId = item.iEstadoConfigId
-        // this.configuracion.cConfigDescripcion = item.cConfigDescripcion
-        // this.configuracion.cConfigNroRslAprobacion =
-        //     item.cConfigNroRslAprobacion
-        // this.configuracion.cConfigUrlRslAprobacion =
-        //     item.cConfigUrlRslAprobacion
-        // this.configuracion.cEstadoConfigNombre = item.cEstadoConfigNombre
-        // this.configuracion.cSedeNombre = item.cSedeNombre
-        // this.configuracion.iSedeId = item.iSedeId
-        // this.configuracion.iYAcadId = item.iYAcadId
-        // this.configuracion.cYAcadNombre = item.cYAcadNombre
     }
 
     getConfig() {
@@ -249,27 +232,27 @@ export class AdmStepGradoSeccionService {
     getListaConfig() {
         return this.listaConfig
     }
-    // grados 
+    // grados
     // Obtener grados
-  getGrados(): Grado[] {
-    return this.grados;
-  }
-
-  // Agregar un nuevo grado
-  addGrado(newGrado: Grado): void {
-    this.grados.push(newGrado);
-  }
-
-  // Actualizar un grado por ID
-  updateGrado(id: number, updatedGrado: Partial<Grado>): void {
-    const index = this.grados.findIndex((g) => g.iConfigGradoId === id);
-    if (index !== -1) {
-      this.grados[index] = { ...this.grados[index], ...updatedGrado };
+    getGrados(): Grado[] {
+        return this.grados
     }
-  }
 
-  // Eliminar un grado por ID
-  deleteGrado(id: number): void {
-    this.grados = this.grados.filter((g) => g.iConfigGradoId !== id);
-  }
+    // Agregar un nuevo grado
+    addGrado(newGrado: Grado): void {
+        this.grados.push(newGrado)
+    }
+
+    // Actualizar un grado por ID
+    updateGrado(id: number, updatedGrado: Partial<Grado>): void {
+        const index = this.grados.findIndex((g) => g.iConfigGradoId === id)
+        if (index !== -1) {
+            this.grados[index] = { ...this.grados[index], ...updatedGrado }
+        }
+    }
+
+    // Eliminar un grado por ID
+    deleteGrado(id: number): void {
+        this.grados = this.grados.filter((g) => g.iConfigGradoId !== id)
+    }
 }

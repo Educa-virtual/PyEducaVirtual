@@ -1,4 +1,7 @@
 <ul class="layout-menu">
+    <!-- <div class="footer">
+        <i class="pi pi-"></i>
+    </div> -->
     <ng-container *ngFor="let item of model; let i = index">
         <li
             app-menuitem
@@ -8,12 +11,8 @@
             [root]="true"
         ></li>
         <li *ngIf="item.separator" class="menu-separator"></li>
-        <div class="footer">
-            <img
-                src="assets/images/modulos/docente.png"
-                alt="logo"
-                class="logo"
-            />
-        </div>
+        <!-- <div class="footer">
+            <img src="assets/images/modulos/docente.png" alt="logo" class="logo" />
+        </div> -->
     </ng-container>
 </ul>

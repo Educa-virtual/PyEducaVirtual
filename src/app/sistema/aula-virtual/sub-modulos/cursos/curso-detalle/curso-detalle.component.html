@@ -19,7 +19,6 @@
         </div>
         <div class="divider"></div>
     </div>
-
     <app-curso-detalle-navigation
         [actualTab]="tab"
         (tabChange)="updateTab($event)"
@@ -40,6 +39,9 @@
             }
             @case ('resultados') {
                 <app-tab-resultados></app-tab-resultados>
+            }
+            @case ('asistencia') {
+                <app-asistencia></app-asistencia>
             }
             @default {}
         }

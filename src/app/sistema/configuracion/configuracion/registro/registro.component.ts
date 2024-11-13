@@ -32,38 +32,23 @@ export class RegistroComponent implements OnInit, OnDestroy {
         this.items = [
             {
                 label: 'Fechas',
-                routerLink: this.ticketService.registroInformation?.calendar
-                    ?.iCalAcadId
-                    ? 'fechas'
-                    : '',
+                routerLink: 'fechas',
             },
             {
                 label: 'Días laborales',
-                routerLink: this.ticketService.registroInformation?.calendar
-                    ?.iCalAcadId
-                    ? 'dias-laborales'
-                    : '',
+                routerLink: 'dias-laborales',
             },
             {
                 label: 'Turnos',
-                routerLink: this.ticketService.registroInformation?.calendar
-                    ?.iCalAcadId
-                    ? 'turnos'
-                    : '',
+                routerLink: 'turnos',
             },
             {
                 label: 'Periodos académicos',
-                routerLink: this.ticketService.registroInformation?.calendar
-                    ?.iCalAcadId
-                    ? 'periodos-academicos'
-                    : '',
+                routerLink: 'periodos-academicos',
             },
             {
                 label: 'Resumen',
-                routerLink: this.ticketService.registroInformation?.calendar
-                    ?.iCalAcadId
-                    ? 'resumen'
-                    : '',
+                routerLink: 'resumen',
             },
         ]
 

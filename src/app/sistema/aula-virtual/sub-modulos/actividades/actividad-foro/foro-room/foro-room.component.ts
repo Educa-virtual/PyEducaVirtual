@@ -11,7 +11,11 @@ import {
     matStar,
 } from '@ng-icons/material-icons/baseline'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
-import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
+import {
+    TablePrimengComponent,
+    IActionTable,
+    IColumn,
+} from '@/app/shared/table-primeng/table-primeng.component'
 import { provideIcons } from '@ng-icons/core'
 import { TabViewModule } from 'primeng/tabview'
 import { OrderListModule } from 'primeng/orderlist'
@@ -66,6 +70,7 @@ export class ForoRoomComponent implements OnInit {
     //private ref = inject(DynamicDialogRef)
     // variables
     showEditor = false // variable          para ocultar el p-editor
+    public data = []
     FilesTareas = []
     estudiantes: any[] = []
     calificacion: any[] = []
@@ -104,11 +109,82 @@ export class ForoRoomComponent implements OnInit {
     })
     public foroFormComntAl: FormGroup = this._formBuilder.group({
         cForoRptaRespuesta: ['', [Validators.required]],
+        cForoRptaPadre: [''],
         iEstudianteId: [],
         iForoId: [''],
         iDocenteId: [''],
     })
     constructor() {}
+
+    selectedItems = []
+    columnas: IColumn[] = [
+        {
+            field: 'id',
+            header: '#',
+            text: 'actividad',
+            text_header: 'left',
+            width: '3rem',
+            type: 'text',
+        },
+        {
+            field: 'cNombreEstudiante',
+            header: 'Estudiantes',
+            text: 'actividad',
+            text_header: 'left',
+            width: '5rem',
+            type: 'text',
+        },
+
+        {
+            field: 'cForoRptaRespuesta',
+            header: 'Respuesta',
+            text: 'Estado',
+            text_header: 'left',
+            width: '5rem',
+            type: 'text',
+        },
+        {
+            field: 'cNombreEstudiante',
+            header: 'Calificación',
+            text: 'actividad',
+            text_header: 'left',
+            width: '5rem',
+            type: 'text',
+        },
+
+        {
+            field: 'cForoRptaRespuesta',
+            header: 'Descripción',
+            text: 'Estado',
+            text_header: 'left',
+            width: '5rem',
+            type: 'text',
+        },
+        {
+            field: '',
+            header: 'Acciones',
+            type: 'actions',
+            width: '5rem',
+            text: 'left',
+            text_header: '',
+        },
+    ]
+    public accionesTabla: IActionTable[] = [
+        {
+            labelTooltip: 'Calificar',
+            icon: 'pi pi-eye',
+            accion: 'ver',
+            type: 'item',
+            class: 'p-button-rounded p-button-warning p-button-text',
+        },
+        {
+            labelTooltip: 'Eliminar',
+            icon: 'pi pi-trash',
+            accion: 'editar',
+            type: 'item',
+            class: 'p-button-rounded p-button-danger p-button-text',
+        },
+    ]
     ngOnInit() {
         this.obtenerIdPerfil()
         this.mostrarCalificacion()
@@ -119,6 +195,22 @@ export class ForoRoomComponent implements OnInit {
     //     this.ref.close(data)
     // }
     //ver si mi perfil esta llegando (borrar)
+    accionBtnItemTable({ accion, item }) {
+        if (accion === 'asignar') {
+            this.selectedItems = []
+            this.selectedItems = [item]
+            // this.asignarPreguntas()
+        }
+        if (accion === 'editar') {
+            //this.agregarEditarPregunta(item)
+        }
+
+        if (accion === 'ver') {
+            /// alert(item.iEvaluacionId)
+            //this.verEreEvaluacion(item)
+            // this.eliminarPregunta(item)
+        }
+    }
     obtenerIdPerfil() {
         this.iEstudianteId = this._constantesService.iEstudianteId
         this.iPerfilId = this._constantesService.iPerfilId
@@ -149,6 +241,15 @@ export class ForoRoomComponent implements OnInit {
     startReply(index: number) {
         this.selectedCommentIndex = index // Guarda el índice del comentario seleccionado
         console.log('Comentario', this.selectedCommentIndex)
+    }
+    cancelarEdicion() {
+        this.selectedCommentIndex = null // Desactiva el editor al hacer clic en "Cancelar"
+    }
+    sendCommentPadre() {
+        // guardar el comentario
+        this.iEstudianteId = this._constantesService.iEstudianteId
+        this.foroFormComntAl.value
+        console.log('rptaPadre', this.foroFormComntAl)
     }
 
     sendComment() {
@@ -234,6 +335,7 @@ export class ForoRoomComponent implements OnInit {
                             expanded: false,
                         })
                     )
+                    this.data = resp['data']
                     console.log('Comentarios de los Foros', this.respuestasForo)
                 },
                 error: (err) => {

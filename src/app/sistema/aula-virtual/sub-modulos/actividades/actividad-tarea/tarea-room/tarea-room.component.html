@@ -318,7 +318,7 @@
                             <p-divider></p-divider>
                             <p-inputGroup>
                                 <p-inputGroupAddon>
-                                    Calificación
+                                    Escala de Calificación
                                 </p-inputGroupAddon>
                                 <input
                                     pInputText
@@ -328,7 +328,7 @@
                             <p-divider></p-divider>
                             <p-inputGroup>
                                 <p-inputGroupAddon>
-                                    Comentario Docente
+                                    Conclusión Descriptiva
                                 </p-inputGroupAddon>
                                 <textarea
                                     pInputText
@@ -490,7 +490,7 @@
                                                             [class]="
                                                                 nEstudiante ===
                                                                 rowIndex
-                                                                    ? 'bg-green-200'
+                                                                    ? 'bg-green-180'
                                                                     : ''
                                                             "
                                                         >
@@ -757,7 +757,7 @@
                                                                                     Apellidos
                                                                                 </th>
                                                                                 <th>
-                                                                                    Agregar
+                                                                                    Acciones
                                                                                 </th>
                                                                             </tr>
                                                                         </ng-template>
@@ -800,8 +800,9 @@
                                                                                                     estudiante
                                                                                                 )
                                                                                             " /> -->
+
                                                                                         <p-button
-                                                                                            icon="pi pi-times"
+                                                                                            icon="pi pi-trash"
                                                                                             [rounded]="
                                                                                                 true
                                                                                             "
@@ -1024,7 +1025,8 @@
                                                 <div class="col-12">
                                                     <p-inputGroup>
                                                         <p-inputGroupAddon>
-                                                            Comentario
+                                                            Conclusión
+                                                            Descriptiva
                                                         </p-inputGroupAddon>
                                                         <textarea
                                                             pInputText
@@ -1227,7 +1229,8 @@
                                                 <div class="col-12">
                                                     <p-inputGroup>
                                                         <p-inputGroupAddon>
-                                                            Comentario
+                                                            Conclusión
+                                                            Descriptiva
                                                         </p-inputGroupAddon>
                                                         <textarea
                                                             pInputText

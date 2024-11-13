@@ -11,8 +11,6 @@
     flex: 1;
 }
 
-//cdk-drop-list p-orderlist-list
-
 :host ::ng-deep .cdk-drop-list {
     max-height: 400px;
 }
@@ -36,7 +34,10 @@
 //perfiles-list-item text-left ng-star-inserted
 :host ::ng-deep .perfiles-list-item .img {
     border-radius: 100px;
-    background-color: red;
+}
+:host ::ng-deep .perfiles-list-item {
+    //border: 2px solid #ccc; /* Cambia el color y grosor del borde según prefieras */
+    border-radius: 8px; /* Radio del borde */
 }
 
 /************************/
@@ -52,15 +53,33 @@
 }
 :host ::ng-deep .list .p-orderlist-controls {
     display: none;
-    height: 100%;
+    height: 600px;
 }
 
 :host ::ng-deep .list .p-orderlist-list-container {
-    height: 100%;
+    height: 600px;
 }
+
 //sticky-header ng-star-inserted
 :host ::ng-deep .sticky-header {
     background-color: #0056b3;
+}
+:host ::ng-deep .list .p-orderlist-controls {
+    display: none;
+}
+:host ::ng-deep .p-orderlist-list {
+    max-height: 550px; /* Define la altura máxima deseada */
+    overflow-y: auto; /* Agrega la barra de desplazamiento en el eje vertical */
+}
+
+:host ::ng-deep .list .p-orderlist-header {
+    background-color: #f8f9fa;
+    font-weight: bold;
+    padding: 1%;
+    position: sticky;
+    top: 0;
+    z-index: 1000; /* Asegúrate de que la cabecera esté por encima de los elementos */
+    border-bottom: 1px solid #ddd;
 }
 /**********************************/
 .comment-container {
@@ -117,29 +136,10 @@
 
 // ----------------------------------------------
 //
-:host ::ng-deep .list .p-orderlist-controls {
-    display: none;
-}
-:host ::ng-deep .p-orderlist-list {
-    max-height: 365px; /* Define la altura máxima deseada */
-    overflow-y: auto; /* Agrega la barra de desplazamiento en el eje vertical */
-}
 
-:host ::ng-deep .list .p-orderlist-header {
-    background-color: #f8f9fa;
-    font-weight: bold;
-    padding: 1%;
-    position: sticky;
-    top: 0;
-    z-index: 1000; /* Asegúrate de que la cabecera esté por encima de los elementos */
-    border-bottom: 1px solid #ddd;
-}
-:host ::ng-deep .list .p-ripple {
-    height: auto;
-}
-//class="p-ripple p-element cdk-drag p-orderlist-item cdk-drag-disabled ng-star-inserted p-highlight p-focus"
-
-//p-element p-ripple ng-tns-c1946505645-2 p-dialog-header-icon p-dialog-header-close p-link p-button p-component ng-star-insertedp-element p-icon-wrapper ng-tns-c1946505645-2 ng-star-inserted
+// :host ::ng-deep .list .p-ripple {
+//     height: auto;
+// }
 
 :host ::ng-deep {
     .p-dropdown {
@@ -153,7 +153,7 @@
     }
 
     .perfil-description {
-        font-size: 0.8rem;
+        line-height: 1rem;
         margin: 0 0 0.2rem 0;
     }
 
@@ -295,7 +295,10 @@
 
 /*texto enriquecido*/
 
-//class="p-editor-container"
+//class="p-editor-container" ng-star-inserted
 :host ::ng-deep .p-editor-container {
+    width: auto;
+}
+:host ::ng-deep .ng-star-inserted {
     width: 100%;
 }

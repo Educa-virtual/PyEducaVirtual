@@ -79,18 +79,22 @@ export class LayoutService {
             }
         }
         if (this.isDesktop()) {
-            if (!this.state.staticMenuDesktopInactive) {
-                this.state.staticMenuDesktopInactive =
-                    !this.state.staticMenuDesktopInactive
-            } else {
-                if (!this.state.staticMenuToggle) {
-                    this.state.staticMenuDesktopInactive =
-                        !this.state.staticMenuDesktopInactive
-                    this.state.staticMenuToggle = !this.state.staticMenuToggle
-                } else {
-                    this.state.staticMenuToggle = !this.state.staticMenuToggle
-                }
-            }
+            this.state.staticMenuDesktopInactive =
+                !this.state.staticMenuDesktopInactive
+            //SI
+            // if (!this.state.staticMenuDesktopInactive) {
+            //     this.state.staticMenuDesktopInactive =
+            //         !this.state.staticMenuDesktopInactive
+            // } else {
+            //     if (!this.state.staticMenuToggle) {
+            //         this.state.staticMenuDesktopInactive =
+            //             !this.state.staticMenuDesktopInactive
+            //         this.state.staticMenuToggle = !this.state.staticMenuToggle
+            //     } else {
+            //         this.state.staticMenuToggle = !this.state.staticMenuToggle
+            //     }
+            // }
+            //FIN SI
         } else {
             // if (!this.state.staticMenuMobileActive) {
             //     this.state.staticMenuMobileActive =

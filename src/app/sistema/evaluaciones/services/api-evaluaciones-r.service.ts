@@ -173,7 +173,6 @@ export class ApiEvaluacionesRService {
             iEvaluacionId: iEvaluacionId,
             cursos: cursos,
         }
-
         return this.http.put(
             `${this.baseUrl}/ere/Evaluaciones/actualizarCursos`,
             data

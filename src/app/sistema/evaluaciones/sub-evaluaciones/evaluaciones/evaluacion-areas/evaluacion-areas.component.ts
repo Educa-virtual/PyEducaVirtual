@@ -25,12 +25,19 @@ import { ApiEvaluacionesRService } from '../../../services/api-evaluaciones-r.se
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog'
 import { ButtonModule } from 'primeng/button'
 import { ReactiveFormsModule } from '@angular/forms' // Importar ReactiveFormsModule
-
+import { DropdownModule } from 'primeng/dropdown'
 // interface NivelCurso {
 //     //iCursoId: int
 //     cCursoNombre: string
 // }
-
+interface NivelTipo {
+    cNivelTipoNombre: string
+    iNivelTipoId: string
+}
+interface EvaluacionCopia {
+    iEvaluacionId: number
+    cEvaluacionNombre: string
+}
 export type Layout = 'list' | 'grid'
 @Component({
     selector: 'app-evaluacion-areas',
@@ -49,6 +56,7 @@ export type Layout = 'list' | 'grid'
         CheckboxModule,
         ButtonModule,
         ReactiveFormsModule, // Asegúrate de que ReactiveFormsModule esté importado
+        DropdownModule,
     ],
     templateUrl: './evaluacion-areas.component.html',
     styleUrl: './evaluacion-areas.component.scss',
@@ -60,6 +68,10 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
     public selectedCursos: any[] = []
     accion: string // Nueva propiedad para controlar la acción
     esModoEdicion: boolean = false // Para controlar el modo edición
+    nivelTipo: NivelTipo[] | undefined
+
+    selectedEvaluacionCopia: EvaluacionCopia | number
+    EvaluacionCopia: EvaluacionCopia[] | undefined
 
     private _ref = inject(DynamicDialogRef)
     public sortField: string = ''
@@ -110,6 +122,7 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
         }
         this.getCursos()
         this.obtenerCursos()
+        this.obtenerEvaluacionesCopia()
         if (this.accion === 'crear') {
             console.log('INICIAMOS CREANDO UNO NUEVO CURSO')
             //this.targetProducts = [] // Asegurar que la lista destino esté vacía
@@ -124,12 +137,11 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
                     'Obteniendo cursos para evaluación con ID:',
                     evaluacionId
                 )
-                this.obtenerCursosEvaluacion()
-            } else {
-                console.warn('EvaluacionId no está definido')
+                this.obtenerCursosEvaluacion(evaluacionId)
             }
         }
-        this.obtenerCursosEvaluacion()
+        const evaluacionId = this.compartirIdEvaluacionService.iEvaluacionId // Asegúrate de que este ID esté disponible
+        this.obtenerCursosEvaluacion(evaluacionId)
     }
     // Función para obtener los cursos
     // obtenerCursos(): void {
@@ -320,38 +332,50 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
                 },
             })
     }
-
-    //Obtener los cursos registrados y no registrados
-    // Función para obtener los cursos en modo 'ver' o 'editar'
-    obtenerCursosEvaluacion(): void {
-        const iEvaluacionId = this.compartirIdEvaluacionService.iEvaluacionId
-        console.log(
-            'AQUI ESTA EL ID DE OBTENER CURSOS EVALAUCOIN',
-            iEvaluacionId
-        )
+    // Función para obtener los cursos en modo 'ver' o 'editar' CURSO BIEN
+    // obtenerCursosEvaluacion(): void {
+    //     const iEvaluacionId = this.compartirIdEvaluacionService.iEvaluacionId
+    //     console.log(
+    //         'AQUI ESTA EL ID DE OBTENER CURSOS EVALAUCOIN',
+    //         iEvaluacionId
+    //     )
+    //     this._apiEre
+    //         .obtenerCursosEvaluacion(iEvaluacionId) // Llamada al backend con el ID de evaluación
+    //         .pipe(takeUntil(this.unsubscribe$))
+    //         .subscribe({
+    //             next: (resp: any) => {
+    //                 console.log(
+    //                     'Cursos obtenidos desde el backend:',
+    //                     resp.cursos
+    //                 )
+    //                 this.cursos = resp.cursos.map((curso: any) => ({
+    //                     ...curso,
+    //                     isSelected: curso.isSelected === '1' ? true : false, // Asegúrate de convertir '1' a true y '0' a false
+    //                 }))
+    //                 // Forzar detección de cambios para que se actualice la vista si es necesario
+    //                 this.cdRef.markForCheck()
+    //             },
+    //             error: (err) => {
+    //                 console.error('Error al obtener cursos:', err)
+    //             },
+    //         })
+    // }
+    obtenerEvaluacionesCopia(): void {
         this._apiEre
-            .obtenerCursosEvaluacion(iEvaluacionId) // Llamada al backend con el ID de evaluación
+            .obtenerEvaluacionesCopia(this.params)
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
-                next: (resp: any) => {
+                next: (resp: unknown) => {
+                    console.log('DATOS OBTENIDOS DE EVALUACIONES:', resp) // Imprime la respuesta completa
+                    this.EvaluacionCopia = resp['data']
                     console.log(
-                        'Cursos obtenidos desde el backend:',
-                        resp.cursos
+                        'Nivel tipo asignado a this.ugel:',
+                        this.nivelTipo
                     )
-                    this.cursos = resp.cursos.map((curso: any) => ({
-                        ...curso,
-                        isSelected: curso.isSelected === '1' ? true : false, // Asegúrate de convertir '1' a true y '0' a false
-                    }))
-                    // Forzar detección de cambios para que se actualice la vista si es necesario
-                    this.cdRef.markForCheck()
-                },
-                error: (err) => {
-                    console.error('Error al obtener cursos:', err)
                 },
             })
     }
 
-    //Actualizar Cursos
     // Método para actualizar cursos en el backend
     actualizarCursos(): void {
         const iEvaluacionId = this.compartirIdEvaluacionService.iEvaluacionId
@@ -367,12 +391,10 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
             console.log('No hay cursos seleccionados para actualizar')
             return
         }
-
         console.log(
             'Cursos seleccionados para actualizar:',
             this.selectedCursos
         )
-
         // Llama al servicio para actualizar cursos
         this._apiEre
             .actualizarCursos(iEvaluacionId, this.selectedCursos)
@@ -434,45 +456,111 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
                 },
             })
     }
+    //Usando Promise
+    // Función para obtener los cursos de la evaluación original
+    obtenerCursosEvaluacion(evaluacionId: number): Promise<any[]> {
+        return new Promise((resolve, reject) => {
+            // this._apiEre
+            //     .obtenerCursosEvaluacion(evaluacionId) // Llamada al backend para obtener los cursos de la evaluación
+            //     .pipe(takeUntil(this.unsubscribe$))
+            //     .subscribe({
+            //         next: (resp: any) => {
+            //             console.log(
+            //                 'Cursos obtenidos desde el backend:',
+            //                 resp.cursos
+            //             )
+            //             resolve(resp.cursos) // Resolver la promesa con los cursos obtenidos
+            //         },
+            //         error: (err) => {
+            //             console.error('Error al obtener los cursos:', err)
+            //             reject(err) // Rechazar la promesa en caso de error
+            //         },
+            //     })
 
-    // // Método para actualizar cursos en el backend
-    // actualizarCursosExamen(): void {
-    //     const iEvaluacionId = this.compartirIdEvaluacionService.iEvaluacionId
+            this._apiEre
+                .obtenerCursosEvaluacion(evaluacionId) // Llamada al backend con el ID de evaluación
+                .pipe(takeUntil(this.unsubscribe$))
+                .subscribe({
+                    next: (resp: any) => {
+                        console.log(
+                            'Cursos obtenidos desde el backend:',
+                            resp.cursos
+                        )
 
-    //     // Filtra los cursos seleccionados (solo envía `iCursoId`)
-    //     this.selectedCursos = this.cursos
-    //         .filter((curso) => curso.isSelected)
-    //         .map((curso) => ({ iCursoId: curso.iCursoId }))
+                        this.cursos = resp.cursos.map((curso: any) => ({
+                            ...curso,
+                            isSelected: curso.isSelected === '1' ? true : false, // Asegúrate de convertir '1' a true y '0' a false
+                        }))
+                        resolve(resp.cursos)
+                        console.log('MUESTRAME EL RESP', resp.cursos)
+                        // Forzar detección de cambios para que se actualice la vista si es necesario
+                        this.cdRef.markForCheck()
+                    },
+                    error: (err) => {
+                        console.error('Error al obtener cursos:', err)
+                        reject(err) // Rechazar la promesa en caso de error
+                    },
+                })
+        })
+    }
+    //Copiar y guardar evaluaciones de una evaluacion
+    copiarCursos(): void {
+        if (
+            !this.selectedEvaluacionCopia ||
+            typeof this.selectedEvaluacionCopia === 'number'
+        ) {
+            console.error('No se ha seleccionado una evaluación para copiar')
+            return
+        }
 
-    //     // Verifica que haya cursos seleccionados
-    //     if (this.selectedCursos.length === 0) {
-    //         console.log('No hay cursos seleccionados para actualizar')
-    //         return
-    //     }
+        const evaluacionIdCopiar = this.selectedEvaluacionCopia.iEvaluacionId
+        console.log('Evaluación a copiar:', evaluacionIdCopiar)
 
-    //     console.log(
-    //         'Cursos seleccionados para actualizar:',
-    //         this.selectedCursos
-    //     )
+        // Obtener los cursos de la evaluación seleccionada
+        this.obtenerCursosEvaluacion(evaluacionIdCopiar)
+            .then((cursos) => {
+                const cursosSeleccionados = cursos.filter(
+                    (curso: any) => curso.isSelected === '1' // Filtrar los cursos seleccionados
+                )
 
-    //     // Llama al servicio para actualizar cursos
-    //     this._apiEre
-    //         .actualizarCursosExamen(iEvaluacionId, this.selectedCursos)
-    //         .pipe(takeUntil(this.unsubscribe$))
-    //         .subscribe({
-    //             next: (resp) => {
-    //                 console.log('Cursos actualizados correctamente:', resp)
-    //                 // Aquí podrías agregar alguna lógica adicional, como notificaciones al usuario
-    //             },
-    //             error: (err) => {
-    //                 console.error('Error al actualizar los cursos:', err)
-    //             },
-    //         })
-    // }
+                if (cursosSeleccionados.length === 0) {
+                    console.warn(
+                        'No hay cursos seleccionados en la evaluación original'
+                    )
+                    return
+                }
+
+                // Crear el payload con la estructura adecuada para el backend
+                const payload = {
+                    iEvaluacionId:
+                        this.compartirIdEvaluacionService.iEvaluacionId, // ID de la nueva evaluación
+                    selectedCursos: cursosSeleccionados.map((curso: any) => ({
+                        iCursoId: curso.iCursoId, // ID del curso seleccionado
+                    })),
+                }
+
+                // Llamada al backend para guardar los cursos seleccionados en la nueva evaluación
+                this._apiEre.insertarCursos(payload).subscribe(
+                    (response) => {
+                        console.log('Cursos copiados exitosamente:', response)
+                    },
+                    (error) => {
+                        console.error('Error al guardar los cursos:', error)
+                    }
+                )
+            })
+            .catch((error) => {
+                console.error(
+                    'Error al obtener los cursos de la evaluación original:',
+                    error
+                )
+            })
+    }
 
     ngOnDestroy() {
         this.unsubscribe$.next(true)
     }
+    onChange() {}
     closeModal(data) {
         this._ref.close(data)
         console.log('Formulario de evaluación cancelado')

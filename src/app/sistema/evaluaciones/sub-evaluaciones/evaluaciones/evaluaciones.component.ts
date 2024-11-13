@@ -176,7 +176,7 @@ export class EvaluacionesComponent implements OnInit {
         this.visible = true
     }
     click() {}
-
+    //No es la ventana modal
     agregarEvaluacion() {
         this._dialogService.open(EvaluacionesFormComponent, {
             ...MODAL_CONFIG,

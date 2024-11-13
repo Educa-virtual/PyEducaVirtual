@@ -453,6 +453,7 @@
                                                             <th>#</th>
                                                             <th>Nombres</th>
                                                             <th>Apellidos</th>
+
                                                             <th>Estado</th>
                                                         </tr>
                                                     </ng-template>
@@ -472,7 +473,7 @@
                                                             [class]="
                                                                 nEstudiante ===
                                                                 rowIndex
-                                                                    ? 'bg-green-200'
+                                                                    ? 'bg-green-180'
                                                                     : ''
                                                             "
                                                         >
@@ -782,8 +783,9 @@
                                                                                                     estudiante
                                                                                                 )
                                                                                             " /> -->
+
                                                                                         <p-button
-                                                                                            icon="pi pi-times"
+                                                                                            icon="pi pi-trash"
                                                                                             [rounded]="
                                                                                                 true
                                                                                             "

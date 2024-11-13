@@ -28,6 +28,7 @@ import {
     IActionContainer,
     ContainerPageComponent,
 } from '@/app/shared/container-page/container-page.component'
+import { StepConfirmationService } from '@/app/servicios/confirm.service'
 
 @Component({
     selector: 'app-calendario-academico',
@@ -47,7 +48,7 @@ import {
         TagModule,
         InputTextareaModule,
     ],
-    providers: [MessageService, GeneralService],
+    providers: [MessageService, GeneralService, StepConfirmationService],
     templateUrl: './calendario-academico.component.html',
     styleUrl: './calendario-academico.component.scss',
 }) //, OnChanges, OnDestroy
@@ -62,8 +63,8 @@ export class CalendarioAcademicoComponent implements OnInit {
     yearCalendarios: {
         iYAcadId: number
         iYearId: number
-        dtYAcadInicio: Date
-        dYAcadFin: Date
+        dtYAcadInicio: Date | null
+        dYAcadFin: Date | null
         cYAcadNombre: string
         cYAcadDescripcion: string
         iEstado: number
@@ -84,7 +85,8 @@ export class CalendarioAcademicoComponent implements OnInit {
     constructor(
         public messageService: MessageService,
         public query: GeneralService,
-        private fb: FormBuilder
+        private fb: FormBuilder,
+        private msg: StepConfirmationService
     ) {}
 
     ngOnInit(): void {
@@ -275,7 +277,7 @@ export class CalendarioAcademicoComponent implements OnInit {
             text: 'center',
         },
         {
-            type: 'text',
+            type: 'date',
             width: '5rem',
             field: 'dtYAcadInicio',
             header: 'Inicio de año',
@@ -283,7 +285,7 @@ export class CalendarioAcademicoComponent implements OnInit {
             text: 'center',
         },
         {
-            type: 'text',
+            type: 'date',
             width: '5rem',
             field: 'dYAcadFin',
             header: 'Fin de año',

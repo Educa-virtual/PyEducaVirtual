@@ -70,7 +70,7 @@ export class GeneralService {
     }
     getDias() {
         return this.http.get(
-            `${baseUrl}/acad/calendarioAcademico/selCalAcademico?json={"jmod": "grl", "jtable": "dias"}&_opcion=getConsulta`
+            `${baseUrl}/acad/calendarioAcademico/selDiasLaborales`
 
             /*
             `${baseUrl}/acad/calendarioAcademico/selCalAcademico`,

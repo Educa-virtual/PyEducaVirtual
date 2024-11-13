@@ -71,13 +71,13 @@ export class TurnosComponent implements OnInit, OnChanges {
 
     nextPage() {
         this.router.navigate([
-            'configuracion/configuracion/registro/periodosAcademicos',
+            'configuracion/configuracion/registro/periodos-academicos',
         ])
     }
 
     prevPage() {
         this.router.navigate([
-            'configuracion/configuracion/registro/diasLaborales',
+            'configuracion/configuracion/registro/dias-laborales',
         ])
     }
 

@@ -35,12 +35,12 @@ export class ResumenComponent implements OnInit, OnChanges {
 
     nextPage() {
         this.router.navigate([
-            'configuracion/configuracion/registro/periodos',
+            'configuracion/configuracion/registro/periodos-academicos',
         ])
     }
 
     prevPage() {
-        this.router.navigate(['configuracion/configuracion/registro/periodosAcademicos'])
+        this.router.navigate(['configuracion/configuracion/registro/periodos-academicos'])
     }
 
     ngOnInit() {

@@ -68,7 +68,6 @@ export class YearComponent implements OnInit {
         private httpService: httpService,
         private stepConfirmationService: StepConfirmationService,
         private fb: FormBuilder,
-        private localService: LocalStoreService
     ) {
         this.form = this.fb.group({
             fechaVigente: ['', Validators.required],
@@ -78,15 +77,20 @@ export class YearComponent implements OnInit {
             fechaMatriculaFin: ['', Validators.required],
             fechaFaseRegularInicio: [''],
             fechaFaseRegularFin: [''],
+            fechaMatriculaRezagados: [''],
             fechaFaseRecuperacionInicio: [''],
             fechaFaseRecuperacionFin: [''],
             regular: [[], Validators.required],
             recuperacion: [[], Validators.required],
-        })
+            
+        }
+    )
     }
     async ngOnInit() {
+        // this.fasesPromocionales = await this.ticketService.getFasesFechas()
+
         await this.ticketService.setCalendar(
-            { iYAcadId:'', iCalAcadId: '' },
+            { iYAcadId: '', iCalAcadId: '' },
             {
                 onCompleteCallbacks: [
                     (data) => this.setValuesFormCalendar(data),
@@ -94,18 +98,17 @@ export class YearComponent implements OnInit {
             }
         )
 
-        const {
-            iCalAcadId = '',
-        } = this.ticketService.registroInformation?.calendar
+        const { iCalAcadId = '' } =
+            this.ticketService.registroInformation?.calendar
 
         // if (!this.ticketService.registroInformation?.calendar) {
         //     this.router.navigate(['configuracion/configuracion/years'])
         //     return
         // }
 
-        if (iCalAcadId) {
-            this.ticketService.setCalFasesProm()
-        }
+        // if (iCalAcadId) {
+        //     this.ticketService.setCalFasesProm()
+        // }
 
         // Suscribirse a los cambios del formulario después de la inicialización
         this.form.valueChanges.subscribe((value) => {
@@ -125,36 +128,62 @@ export class YearComponent implements OnInit {
                 dtFaseRegularFin: value.fechaFaseRegularFin,
                 dtFaserecuperacionInicio: value.fechaFaseRecuperacionInicio,
                 dtFaserecuperacionFin: value.fechaFaseRecuperacionFin,
+
             }
-            console.log(this.calFasesFechasInformation)
+            console.log(value)
         })
     }
 
     setValuesFormCalendar(data) {
-        this.fasesPromocionales = data.fasesProm
+        if (this.ticketService.registroInformation.calendar.iCalAcadId) {
+            const {
+                fechaVigente,
+                fechaInicio,
+                fechaFin,
+                matriculaInicio,
+                matriculaFin,
+                matriculaResagados,
+                bCalAcadFaseRegular,
+                bCalAcadFaseRecuperacion,
+                fases_promocionales,
+            } = this.ticketService.registroInformation.stepYear
 
-        const {
-            fechaVigente,
-            fechaInicio,
-            fechaFin,
-            matriculaInicio,
-            matriculaFin,
-            bCalAcadFaseRegular,
-            bCalAcadFaseRecuperacion,
-            fases_promocionales,
-        } = this.ticketService.registroInformation.stepYear
+            const fasePromocional =  data.fasesProm.reduce((acc, item) => {
+                acc[item.iFasePromId
+                ] = item;
+                return acc;
+            }, {});
 
-        this.form.patchValue({
-            fechaVigente: fechaVigente,
-            fechaInicio: fechaInicio,
-            fechaFin: fechaFin,
-            fechaMatriculaInicio: matriculaInicio,
-            fechaMatriculaFin: matriculaFin,
-            fechaFaseInicio: bCalAcadFaseRegular,
-            fechaFaseFin: bCalAcadFaseRecuperacion,
-            regular: [fases_promocionales[0]],
-            recuperacion: [fases_promocionales[1]],
-        })
+            
+            const existFaseRegular = Array.isArray(fases_promocionales) && fases_promocionales.find(fase => fase.iFasePromId == fasePromocional[1].iFasePromId)
+            console.log(existFaseRegular)
+            
+            const existFaseRecuperacion = Array.isArray(fases_promocionales) && fases_promocionales.find(fase => fase.iFasePromId == fasePromocional[2].iFasePromId)
+            console.log(existFaseRecuperacion)
+            
+            this.form.patchValue({
+                fechaVigente: fechaVigente,
+                fechaInicio: fechaInicio,
+                fechaFin: fechaFin,
+                fechaMatriculaInicio: matriculaInicio,
+                fechaMatriculaFin: matriculaFin,
+                fechaFaseRegularInicio: new Date (existFaseRegular.dtFaseFin),
+                fechaFaseRegularFin: new Date(existFaseRegular.dtFaseFin),
+                fechaFaseRecuperacionInicio: new Date(existFaseRecuperacion.dtFaseInicio),
+                fechaFaseRecuperacionFin: new Date(existFaseRecuperacion.dtFaseFin),
+                fechaMatriculaRezagados: matriculaResagados,
+                regular: existFaseRegular ? [existFaseRegular,true] : [data.fasesProm[0]],
+                recuperacion: existFaseRecuperacion ? [existFaseRecuperacion,true] : [data.fasesProm[1]],
+            })
+        } else {
+            this.form.patchValue({
+                fechaVigente: data.yearAcad.cYAcadNombre,
+                fechaInicio: new Date(data.yearAcad.dtYAcadInicio),
+                fechaFin: new Date(data.yearAcad.dYAcadFin),
+                regular: [data.fasesProm[0]],
+                recuperacion: [data.fasesProm[1]],
+            })
+        }
 
         this.form.get('fechaVigente').disable()
     }
@@ -165,20 +194,20 @@ export class YearComponent implements OnInit {
             message: 'Por favor, confirme para continuar.',
             accept: {
                 severity: 'success',
-                summary: 'Año',
+                summary: 'Fechas',
                 detail: 'Se ha guardado correctamente.',
                 life: 6000,
             },
             reject: {
-                severity: 'warn',
-                summary: 'Año',
+                severity: 'error',
+                summary: 'Fechas',
                 detail: 'Se ha cancelado guardar la información.',
                 life: 3000,
             },
         }
 
         this.stepConfirmationService.confirmAction(
-            [() => this.saveInformation()],
+            [() => this.saveInformation(), () => this.nextPage()],
             message
         )
     }
@@ -195,26 +224,27 @@ export class YearComponent implements OnInit {
         const checkRecuperacion = this.form.get('recuperacion').value
 
         if (checkRegular.includes(true)) {
-            const { dtFaseRegularInicio, dtFaseRegularFin } = this.form.value
+            const { fechaFaseRegularInicio, fechaFaseRegularFin } =
+                this.form.value
             await this.ticketService.insCalFasesProm({
                 form: {
-                    faseInicio: dtFaseRegularInicio,
-                    faseFinal: dtFaseRegularFin,
+                    faseInicio: fechaFaseRegularInicio,
+                    faseFinal: fechaFaseRegularFin,
                 },
-                fase: checkRegular[0],
+                insFase: checkRegular[0],
             })
         } else {
             await this.ticketService.deleteCalFasesProm(checkRegular[0])
         }
         if (checkRecuperacion.includes(true)) {
-            const { dtFaserecuperacionInicio, dtFaserecuperacionFin } =
+            const { fechaFaseRecuperacionInicio, fechaFaseRecuperacionFin } =
                 this.form.value
             await this.ticketService.insCalFasesProm({
                 form: {
-                    faseInicio: dtFaserecuperacionInicio,
-                    faseFinal: dtFaserecuperacionFin,
+                    faseInicio: fechaFaseRecuperacionInicio,
+                    faseFinal: fechaFaseRecuperacionFin,
                 },
-                fase: checkRecuperacion[0],
+                insFase: checkRecuperacion[0],
             })
         } else {
             await this.ticketService.deleteCalFasesProm(checkRecuperacion[0])
@@ -225,7 +255,7 @@ export class YearComponent implements OnInit {
 
     nextPage() {
         this.router.navigate([
-            'configuracion/configuracion/registro/diasLaborales',
+            'configuracion/configuracion/registro/dias-laborales',
         ])
     }
 }

@@ -54,10 +54,11 @@ export class YearsComponent implements OnInit {
             crear: () => {
                 this.navigateToRegistro()
             },
-            editar: () => {
-                this.ticketService.setCalendar({
+            editar: async () => {
+                console.log(row.item)
+
+                await this.ticketService.setCalendar({
                     iSedeId: row.item.iSedeId,
-                    iYAcadId: row.item.iYAcadId,
                     iCalAcadId: row.item.iCalAcadId,
                 }, {onCompleteCallbacks:  [() => this.navigateToRegistro()]})
 
@@ -150,6 +151,7 @@ export class YearsComponent implements OnInit {
     ]
 
     navigateToRegistro() {
+        console.log('Navegando')
         this.router.navigate(['configuracion/configuracion/registro'])
     }
 

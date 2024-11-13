@@ -27,7 +27,7 @@ import { TicketService } from '../../service/ticketservice'
 export class DiasLaboralesComponent implements OnInit, OnChanges {
     dias: typeof this.ticketService.registroInformation.stepDiasLaborales
 
-    diasSelection: typeof this.ticketService.registroInformation.stepDiasLaborales
+    diasSelections
 
     diasFetch: typeof this.ticketService.registroInformation.stepDiasLaborales
 
@@ -45,10 +45,16 @@ export class DiasLaboralesComponent implements OnInit, OnChanges {
     }
 
     prevPage() {
-        this.router.navigate(['configuracion/configuracion/registro/year'])
+        this.router.navigate(['configuracion/configuracion/registro/fechas'])
     }
 
-    ngOnInit() {
+    async ngOnInit() {
+        if(!this.ticketService.registroInformation?.calendar?.iCalAcadId){
+            this.router.navigate(['configuracion/configuracion/years'])
+
+            return;
+        }
+
         this.generalService.getDias().subscribe({
             next: (data: any) => {
                 this.dias = data.data.map((dia) => ({
@@ -63,71 +69,9 @@ export class DiasLaboralesComponent implements OnInit, OnChanges {
             },
         })
 
-        if (this.ticketService.registroInformation?.mode == 'edit') {
-            this.httpService
-                .postData('acad/calendarioAcademico/addCalAcademico', {
-                    json: JSON.stringify({
-                        iCalAcadId:
-                            this.ticketService.registroInformation.calendar
-                                .iCalAcadId,
-                    }),
-                    _opcion: 'getCalendarioDiasLaborables',
-                })
-                .subscribe({
-                    next: (data: any) => {
-                        console.log('Dias Laborales')
-                        console.log(JSON.parse(data.data[0]['calDiasDatos']))
+        await this.ticketService.setCalDiasLaborales()
 
-                        let filterDiasLaborales = JSON.parse(
-                            data.data[0]['calDiasDatos']
-                        ).map((dia) => ({
-                            iDiaLabId: String(dia.iDiaLabId),
-                            iDiaId: String(dia.iDiaId),
-                            iDia: String(dia.iDiaId),
-                            cDiaNombre: dia.cDiaNombre,
-                            cDiaAbreviado: dia.cDiaAbreviado,
-                        }))
-
-                        this.diasFetch = filterDiasLaborales
-
-                        console.log(this.diasFetch)
-                        
-                        const resultado = this.dias.map((diaOption) => {
-                            const coincidencia = filterDiasLaborales.find(
-                                (diaSelect) =>
-                                    diaSelect.iDiaId === diaOption.iDiaId
-                            )
-                            return coincidencia || diaOption
-                        })
-
-                        filterDiasLaborales.forEach((diaSelect) => {
-                            const existeEnResultado = resultado.some(
-                                (item) => item.iDiaId === diaSelect.iDiaId
-                            )
-                            if (!existeEnResultado) {
-                                resultado.push(diaSelect)
-                            }
-                        })
-
-                        this.dias = resultado
-                        
-                        this.ticketService.setTicketInformation(
-                            filterDiasLaborales,
-                            'stepDiasLaborales'
-                        )
-                        
-                        this.diasSelection =
-                        this.ticketService.registroInformation.stepDiasLaborales
-                        console.log(this.diasSelection)
-                    },
-                    error: (error) => {
-                        console.error('Error fetching turnos:', error)
-                    },
-                    complete: () => {
-                        console.log('Request completed')
-                    },
-                })
-        }
+        await this.isSelectionDia()
     }
 
     confirm() {
@@ -150,29 +94,84 @@ export class DiasLaboralesComponent implements OnInit, OnChanges {
         }
 
         this.stepConfirmationService.confirmAction(
-            [() => this.saveInformation(), () => this.nextPage()], message
+            [() => this.saveInformation(), ], message
         )
+    }
+
+    async isSelectionDia(){
+        // const resultado = this.dias.map((diaOption) => {
+        //     const coincidencia = filterDiasLaborales.find(
+        //         (diaSelect) =>
+        //             diaSelect.iDiaId === diaOption.iDiaId
+        //     )
+        //     return coincidencia || diaOption
+        // })
+
+        // filterDiasLaborales.forEach((diaSelect) => {
+        //     const existeEnResultado = resultado.some(
+        //         (item) => item.iDiaId === diaSelect.iDiaId
+        //     )
+        //     if (!existeEnResultado) {
+        //         resultado.push(diaSelect)
+        //     }
+        // })
+
+        // this.dias = resultado
+        
+        // this.ticketService.setTicketInformation(
+        //     filterDiasLaborales,
+        //     'stepDiasLaborales'
+        // )
+        
+        // this.diasSelection =
+        // this.ticketService.registroInformation.stepDiasLaborales
+        // console.log(this.diasSelection)
     }
 
     onSelectionChange(
-        columnsChecked: typeof this.ticketService.registroInformation.stepDiasLaborales
+        columnsChecked
     ) {
         console.log(columnsChecked);
-        
+        this.diasSelections = columnsChecked
 
-        this.ticketService.setTicketInformation(
-            columnsChecked,
-            'stepDiasLaborales'
-        )
     }
 
     saveInformation() {
-        if (this.ticketService.registroInformation?.mode == 'create') {
-            this.createDiasLaborales()
+
+        let noExistDiaSelection;
+        let ExistDiaNoSelection
+
+        if(Array.isArray(this.ticketService.registroInformation.stepDiasLaborales)){
+            noExistDiaSelection = this.diasSelections.filter(dia => 
+                !this.ticketService.registroInformation.stepDiasLaborales.some(diaExist => diaExist.iDia === dia.iDia)
+            )
+
+            ExistDiaNoSelection = this.ticketService.registroInformation.stepDiasLaborales.filter(diaExist => 
+                !this.diasSelections.some(dia => dia.iDia === diaExist.iDia)
+            );
+            
+        } else {
+            noExistDiaSelection = this.diasSelections
         }
-        if (this.ticketService.registroInformation?.mode == 'edit') {
-            this.deleteDiasLaborales()
+
+
+        console.log('dias a crear')
+        console.log(noExistDiaSelection)
+        
+        console.log('dias a eliminar')
+        console.log(ExistDiaNoSelection)
+
+        if(noExistDiaSelection){
+            this.ticketService.insCalDiasLaborales(noExistDiaSelection)
         }
+
+        // if(ExistDiaNoSelection){
+        //     this.deleteDiasLaborales()
+        // }
+
+        this.ticketService.setCalDiasLaborales()
+
+        // this.isSelectionDia()
     }
 
     createDiasLaborales() {

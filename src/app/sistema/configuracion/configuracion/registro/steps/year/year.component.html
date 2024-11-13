@@ -60,6 +60,21 @@
             <label for="matriculaFin">Fecha matricula fin</label>
         </p-floatLabel>
     </div>
+    <div class="flex flex-column gap-1 relative">
+        <p-floatLabel>
+            <p-calendar
+                [style]="{ width: '100%' }"
+                [inputStyle]="{ width: '100%' }"
+                formControlName="fechaMatriculaRezagados"
+                [showIcon]="true"
+                inputId="matriculaRezagados"
+            />
+            <label for="matriculaRezagados">Fecha matricula rezagados </label>
+        </p-floatLabel>
+        <!-- <small class="text-red-300 absolute top-100" [hidden]="form.get('fechaVigente').valid" id="yearToRegister-help">
+            Enter your username to reset your password.
+        </small> -->
+    </div>
     <div>
         <p-floatLabel>
             <p-calendar

@@ -8,7 +8,7 @@
         placeholder="Seleccine una Ugeles"
         styleClass="w-full"
         class="flex-1"
-        (onChange)="onChange()"
+        (onChange)="onUgelChange($event)"
         [disabled]="accion === 'ver'"
     >
     </p-dropdown>
@@ -19,7 +19,7 @@
         placeholder="Seleccione un nivel"
         styleClass="w-full"
         class="flex-1"
-        (onChange)="onChange()"
+        (onChange)="onNivelTipoChange($event)"
         [disabled]="accion === 'ver'"
     />
 </div>

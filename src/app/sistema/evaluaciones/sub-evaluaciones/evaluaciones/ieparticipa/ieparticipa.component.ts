@@ -84,12 +84,6 @@ export class IeparticipaComponent implements OnInit {
 
         console.log('Modo actual:', this.accion)
         console.log('Es modo edición:', this.esModoEdicion)
-
-        // this.carService.getProductsSmall().then((products) => {
-        //     this.sourceProducts = products
-        //     this.cdr.markForCheck()
-        // })
-
         this.obtenerIE()
         this.obtenerNivelTipo()
         this.obtenerugel()
@@ -144,6 +138,7 @@ export class IeparticipaComponent implements OnInit {
                         cIieeNombre: item.cIieeNombre,
                         cIieeCodigoModular: item.cIieeCodigoModular,
                         cNivelTipoNombre: item.cNivelTipoNombre,
+                        cUgelNombre: item.cUgelNombre, // Asegúrate de incluir esta propiedad
                     }))
 
                     // Filtra las IE que no están en `targetProducts`
@@ -153,7 +148,19 @@ export class IeparticipaComponent implements OnInit {
                                 (participa) => participa.iIieeId === ie.iIieeId
                             )
                     )
-
+                    // Aplica el filtro si se ha seleccionado un nivel y un ugel
+                    this.sourceProducts = this.allIEs.filter(
+                        (ie) =>
+                            (!this.selectedNivelTipo ||
+                                ie.cNivelTipoNombre ===
+                                    this.selectedNivelTipo.cNivelTipoNombre) &&
+                            (!this.selectedUgeles ||
+                                ie.cUgelNombre ===
+                                    this.selectedUgeles.cUgelNombre) &&
+                            !this.targetProducts.some(
+                                (participa) => participa.iIieeId === ie.iIieeId
+                            )
+                    )
                     console.log(
                         'Instituciones participantes:',
                         this.targetProducts
@@ -373,10 +380,36 @@ export class IeparticipaComponent implements OnInit {
                 },
             })
     }
+    //Filtro
+    filterIEs() {
+        this.sourceProducts = this.allIEs.filter((ie) => {
+            // Filtrar por nivelTipo si hay uno seleccionado
+            const nivelTipoMatch = this.selectedNivelTipo
+                ? ie.cNivelTipoNombre ===
+                  this.selectedNivelTipo.cNivelTipoNombre
+                : true
 
-    onChange() {
-        //alert(v)
-        // alert(JSON.stringify(event))
-        //this.verSeleccion = this.opcionSeleccionado;
+            // Filtrar por ugel si hay uno seleccionado
+            const ugelMatch = this.selectedUgeles
+                ? ie.cUgelNombre === this.selectedUgeles.cUgelNombre
+                : true
+
+            return nivelTipoMatch && ugelMatch
+        })
+
+        console.log(
+            'Instituciones no participantes (filtradas):',
+            this.sourceProducts
+        )
     }
+    onNivelTipoChange(event: any) {
+        this.selectedNivelTipo = event.value
+        this.filterIEs() // Filtrar los elementos al cambiar el nivel tipo
+    }
+
+    onUgelChange(event: any) {
+        this.selectedUgeles = event.value
+        this.filterIEs() // Filtrar los elementos al cambiar el ugel
+    }
+    onChange() {}
 }

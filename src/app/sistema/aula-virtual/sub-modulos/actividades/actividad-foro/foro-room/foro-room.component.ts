@@ -30,6 +30,7 @@ import { NgFor, NgIf } from '@angular/common'
 import { RecursosListaComponent } from '@/app/shared/components/recursos-lista/recursos-lista.component'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { EmptySectionComponent } from '@/app/shared/components/empty-section/empty-section.component'
+import { Message } from 'primeng/api'
 @Component({
     selector: 'app-foro-room',
     standalone: true,
@@ -78,6 +79,8 @@ export class ForoRoomComponent implements OnInit {
     calificacion: any[] = []
     respuestasForo: any[] = []
     comentarios: any[] = []
+    descripcion: Message[] = []
+    messages: Message[] | undefined
     modalCalificacion: boolean = false
     estudianteSelect = null
     private unsbscribe$ = new Subject<boolean>()
@@ -115,6 +118,7 @@ export class ForoRoomComponent implements OnInit {
         iEstudianteId: [],
         iForoId: [''],
         iDocenteId: [''],
+        iForoRptaId: [''],
     })
     constructor() {}
 
@@ -187,11 +191,12 @@ export class ForoRoomComponent implements OnInit {
             class: 'p-button-rounded p-button-danger p-button-text',
         },
     ]
-    ngOnInit() {
+    ngOnInit(): void {
         this.obtenerIdPerfil()
         this.mostrarCalificacion()
         this.obtenerForo()
         this.getRespuestaF()
+        this.getEstudiantesMatricula()
     }
     // closeModal(data) {
     //     this.ref.close(data)
@@ -242,11 +247,32 @@ export class ForoRoomComponent implements OnInit {
     cancelarEdicion() {
         this.selectedCommentIndex = null // Desactiva el editor al hacer clic en "Cancelar"
     }
-    sendCommentPadre() {
+    sendCommentPadre(respuestas) {
         // guardar el comentario
+        const iDocenteId = this._constantesService.iDocenteId
         this.iEstudianteId = this._constantesService.iEstudianteId
-        this.foroFormComntAl.value
-        console.log('rptaPadre', this.foroFormComntAl)
+        this.foroFormComntAl.controls['iDocenteId'].setValue(iDocenteId)
+        this.foroFormComntAl.controls['iEstudianteId'].setValue(
+            this.iEstudianteId
+        )
+        this.foroFormComntAl.controls['iForoRptaId'].setValue(
+            respuestas.iForoRptaId
+        )
+        //console.log('rptaPadre', this.foroFormComntAl)
+        this._aulaService
+            .guardarComentarioRespuesta(this.foroFormComntAl.value)
+            .subscribe({
+                next: (resp: any) => {
+                    // para refrescar la pagina
+                    if (resp?.validated) {
+                        this.getRespuestaF()
+                        this.foroFormComntAl.get('cForoRptaPadre')?.reset()
+                    }
+                },
+                error: (error) => {
+                    console.error('Comentario:', error)
+                },
+            })
     }
 
     sendComment() {
@@ -309,6 +335,14 @@ export class ForoRoomComponent implements OnInit {
             .pipe(takeUntil(this.unsbscribe$))
             .subscribe({
                 next: (resp) => {
+                    this.messages = [
+                        {
+                            severity: 'info',
+                            detail:
+                                resp?.cForoDescripcion ||
+                                'No hay descripción disponible',
+                        },
+                    ]
                     this.foro = resp
                     this.FilesTareas = this.foro?.cForoUrl
                         ? JSON.parse(this.foro?.cForoUrl)
@@ -333,6 +367,13 @@ export class ForoRoomComponent implements OnInit {
                         })
                     )
                     this.data = resp['data']
+                    this.respuestasForo.forEach(
+                        (i) =>
+                            (i.json_respuestas_comentarios =
+                                i.json_respuestas_comentarios
+                                    ? JSON.parse(i.json_respuestas_comentarios)
+                                    : null)
+                    )
                     console.log('Comentarios de los Foros', this.respuestasForo)
                 },
                 error: (err) => {
@@ -353,5 +394,24 @@ export class ForoRoomComponent implements OnInit {
                 console.log(error)
             },
         })
+    }
+
+    getEstudiantesMatricula() {
+        const params = {
+            petition: 'post',
+            group: 'aula-virtual',
+            prefix: 'matricula',
+            ruta: 'list',
+            data: {
+                opcion: 'CONSULTAR-ESTUDIANTESxiSemAcadIdxiYAcadIdxiCurrId',
+                iSemAcadId:
+                    '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+                iYAcadId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+                iCurrId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            },
+            params: { skipSuccessMessage: true },
+        }
+
+        this.getInformation(params)
     }
 }

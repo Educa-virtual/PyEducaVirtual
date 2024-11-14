@@ -302,39 +302,20 @@
 :host ::ng-deep .ng-star-inserted {
     width: 100%;
 }
-/*--------------------------------*/
-.chat-input-container {
-    display: flex;
-    align-items: center;
-    background-color: #2b2b2b;
-    padding: 10px;
-    border-radius: 5px;
-    width: 100%;
-    max-width: 500px;
-}
 
-.icon-button {
-    background: none;
-    border: none;
-    color: #fff;
-    font-size: 1.5em;
-    margin: 0 5px;
-    cursor: pointer;
+/*--------*/
+.TituloForo {
+    font-family: sans-serif;
+    font-size: 20px;
+    color: #2a2c34;
+    font-weight: bold;
 }
-
-.chat-input {
-    flex: 1;
-    background-color: transparent;
-    border: none;
-    color: #fff;
-    font-size: 1em;
-    resize: none;
-    overflow: hidden;
-    outline: none;
-    padding: 5px;
-    min-height: 1.5em;
+.TituloCurso {
+    font-family: sans-serif;
+    font-size: 18px;
+    color: #2a2c34;
+    margin: 5px;
 }
-
-.chat-input::placeholder {
-    color: #ccc;
+:host ::ng-deep .p-element {
+    margin: 0px;
 }

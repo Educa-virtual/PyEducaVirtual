@@ -83,6 +83,7 @@ export class ForoFormContainerComponent implements OnInit {
     opcion: string = 'GUARDAR'
     constructor(private dialogConfig: DynamicDialogConfig) {
         this.contenidoSemana = this.dialogConfig.data.contenidoSemana
+        console.log('hola', this.contenidoSemana)
         const data = this.dialogConfig.data
         if (data.action == 'editar') {
             this.opcion = 'ACTUALIZAR'

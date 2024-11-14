@@ -89,19 +89,19 @@ export class ConfigAmbienteComponent implements OnInit {
             //bd iiee_ambientes
             //this.visible = true
             this.form = this.fb.group({
-                iIieeAmbienteId: [''], //codigo de tabla_iiee_ambientes
-                iTipoAmbienteId: [null, Validators.required], // tabla_iiee_ambientes (FK)
-                iEstadoAmbId: ['', Validators.required], // tabla_iiee_ambientes (FK)
-                iUbicaAmbId: ['', Validators.required], // tabla_iiee_ambientes (FK)
-                iUsoAmbId: ['', Validators.required], // tabla_iiee_ambientes (FK)
-                iPisoAmbid: ['', Validators.required], // tabla_iiee_ambientes (FK)
+                iIieeAmbienteId: [0], //codigo de tabla_iiee_ambientes
+                iTipoAmbienteId: [0, Validators.required], // tabla_iiee_ambientes (FK)
+                iEstadoAmbId: [0, Validators.required], // tabla_iiee_ambientes (FK)
+                iUbicaAmbId: [0, Validators.required], // tabla_iiee_ambientes (FK)
+                iUsoAmbId: [0, Validators.required], // tabla_iiee_ambientes (FK)
+                iPisoAmbid: [0, Validators.required], // tabla_iiee_ambientes (FK)
                 iYAcadId: [this.configuracion[0].iYAcadId], // tabla_iiee_ambientes (FK)
                 iSedeId: [this.configuracion[0].iSedeId], // tabla_iiee_ambientes (FK)
-                bAmbienteEstado: [''],
+                bAmbienteEstado: [0],
                 cAmbienteNombre: ['', Validators.required],
                 cAmbienteDescripcion: ['', Validators.required],
-                iAmbienteArea: ['', Validators.required],
-                iAmbienteAforo: ['', Validators.required],
+                iAmbienteArea: [0, Validators.required],
+                iAmbienteAforo: [0, Validators.required],
                 cAmbienteObs: [''],
                 // ambiente: [''],
                 cYAcadNombre: [this.configuracion[0].cYAcadNombre], // campo adicional para la vista
@@ -392,7 +392,10 @@ export class ConfigAmbienteComponent implements OnInit {
                         console.log(data.data)
                     },
                     error: (error) => {
-                        console.error('Error fetching ambiente:', error)
+                        console.log(error, 'error al actualizar')
+                        // if(error && error.message){
+                        //   //  console.error(error?.message || 'Error en la respuesta del servicio');
+                        // }
                     },
                     complete: () => {
                         console.log('Request completed')
@@ -592,3 +595,17 @@ export class ConfigAmbienteComponent implements OnInit {
         },
     ]
 }
+
+// "{"iTipoAmbienteId":"1",
+// "iEstadoAmbId":"1",
+// "iUbicaAmbId":"1",
+// "iUsoAmbId":"1",
+// "iPisoAmbid":"2",
+// "iYAcadId":"3",
+// "iSedeId":"1",
+// "bAmbienteEstado":0,
+// "cAmbienteNombre":"aula 104",
+// "cAmbienteDescripcion":"de primaria",
+// "iAmbienteArea":"50",
+// "iAmbienteAforo":"30",
+// "cAmbienteObs":"ninguna"}"

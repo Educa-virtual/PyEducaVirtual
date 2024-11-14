@@ -221,7 +221,7 @@
             <div class="flex-1 flex-column font-bold p-2">Seccion:</div>
         </div>
         <div class="flex">
-            <p-calendar [(ngModel)]="fechaDia" autofocus="false" />
+            <p-calendar tabindex="-1"></p-calendar>
         </div>
     </div>
     <ng-template pTemplate="footer">
@@ -237,3 +237,9 @@
 </p-dialog>
 
 <p-toast />
+
+<app-reporte-asistencia
+    [showModal]="showModal"
+    [cCursoNombre]="cCursoNombre"
+    (accionBtnItem)="accionBtnItem($event)"
+></app-reporte-asistencia>

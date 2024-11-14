@@ -63,6 +63,14 @@ export const routes: Routes = [
                 (m) => m.ConfiguracionModule
             ),
     },
+    {
+        path: 'gestion-institucional',
+
+        loadChildren: () =>
+            import(
+                './sistema/gestion-institucional/gestion-institucional.module'
+            ).then((m) => m.GestionInstitucionalModule),
+    },
 
     { path: 'notfound', component: NotfoundComponent },
 

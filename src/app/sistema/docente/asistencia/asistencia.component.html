@@ -9,6 +9,7 @@
             </div>
         </div>
     </p-toolbar>
+
     <div class="col-12">
         <div class="card mb-2">
             <div class="grid">
@@ -236,3 +237,9 @@
 </p-dialog>
 
 <p-toast />
+
+<app-reporte-asistencia
+    [showModal]="showModal"
+    [cCursoNombre]="cCursoNombre"
+    (accionBtnItem)="accionBtnItem($event)"
+></app-reporte-asistencia>

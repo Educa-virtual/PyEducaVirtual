@@ -229,19 +229,21 @@
                     pTemplate="content"
                     let-prevCallback="prevCallback"
                 >
-                    <app-evaluacion-areas></app-evaluacion-areas>
+                    <app-evaluacion-areas
+                        (closeModalEvent)="closeModal($event)"
+                    ></app-evaluacion-areas>
                     <div class="flex pt-4 justify-content-between">
                         <p-button
                             label="Atras"
                             icon="pi pi-arrow-left"
                             (onClick)="prevCallback.emit()"
                         />
-                        <p-button
+                        <!-- <p-button
                             label="Salir"
                             icon="pi pi-times"
                             iconPos="right"
                             (onClick)="closeModal(null)"
-                        ></p-button>
+                        ></p-button> -->
                     </div>
                 </ng-template>
             </p-stepperPanel>

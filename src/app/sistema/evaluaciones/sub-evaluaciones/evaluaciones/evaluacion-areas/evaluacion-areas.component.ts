@@ -1,9 +1,11 @@
 import {
     ChangeDetectorRef,
     Component,
+    EventEmitter,
     inject,
     OnDestroy,
     OnInit,
+    Output,
 } from '@angular/core'
 import { InputTextModule } from 'primeng/inputtext'
 import { FormsModule } from '@angular/forms'
@@ -66,7 +68,7 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
     public data: ICurso[] = []
     NivelCurso: any = [] // Inicializa la propiedad como un array o con el valor adecuado
     public selectedCursos: any[] = []
-    accion: string // Nueva propiedad para controlar la acción
+
     esModoEdicion: boolean = false // Para controlar el modo edición
     nivelTipo: NivelTipo[] | undefined
 
@@ -92,6 +94,14 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
         iDesempenioId: 0,
         bPreguntaEstado: -1,
     }
+
+    visible: boolean = false //Accion Editar, Ver, crear
+    accion: string //Accion Editar, Ver, crear
+    isDisabled: boolean
+
+    // Definimos el Output que va a emitir el evento
+    @Output() closeModalEvent = new EventEmitter<any>()
+
     constructor(
         private store: LocalStoreService,
         private compartirIdEvaluacionService: CompartirIdEvaluacionService,
@@ -106,9 +116,9 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
         console.log('Iniciando componente con config:', this._config.data)
         // Determinar el modo
         this.accion = this._config.data?.accion || 'crear'
-        this.esModoEdicion = this.accion === 'editar'
-        console.log('Modo actual:', this.accion)
-        console.log('Es modo edición:', this.esModoEdicion)
+        console.log('Acción actual:', this.accion)
+        // console.log('Modo actual:', this.accion)
+        // console.log('Es modo edición:', this.esModoEdicion)
         const modulo = this._store.getItem('dremoModulo')
         switch (Number(modulo.iModuloId)) {
             case 2:
@@ -123,25 +133,24 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
         this.getCursos()
         this.obtenerCursos()
         this.obtenerEvaluacionesCopia()
+
+        // Inicializar según el modo
         if (this.accion === 'crear') {
-            console.log('INICIAMOS CREANDO UNO NUEVO CURSO')
-            //this.targetProducts = [] // Asegurar que la lista destino esté vacía
+            console.log('Inicializando en modo crear')
+            this.cursos = [] // Asegurar que la lista destino esté vacía
             this.obtenerCursos() // Solo obtener la lista de IEs disponibles
-        } else if (this.accion === 'editar' || this.accion === 'ver') {
-            console.log('Inicializando en modo editar/ver')
-            const evaluacionId =
-                this._config.data?.evaluacionId ||
-                this.compartirIdEvaluacionService.iEvaluacionId
-            if (evaluacionId) {
-                console.log(
-                    'Obteniendo cursos para evaluación con ID:',
-                    evaluacionId
-                )
-                this.obtenerCursosEvaluacion(evaluacionId)
-            }
         }
-        const evaluacionId = this.compartirIdEvaluacionService.iEvaluacionId // Asegúrate de que este ID esté disponible
-        this.obtenerCursosEvaluacion(evaluacionId)
+        if (this.accion === 'ver') {
+            this.obtenerCursosEvaluacion(
+                this.compartirIdEvaluacionService.iEvaluacionId
+            )
+            this.isDisabled = true // Deshabilita visualmente la sección
+        }
+        if (this.accion === 'editar') {
+            this.obtenerCursosEvaluacion(
+                this.compartirIdEvaluacionService.iEvaluacionId
+            )
+        }
     }
     // Función para obtener los cursos
     // obtenerCursos(): void {
@@ -309,10 +318,12 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
             return
         }
         console.log('iEvaluacionId:', iEvaluacionId)
+
         // Send selected data to backend
         this._apiEre
             .insertarCursos({
-                iEvaluacionId,
+                iEvaluacionId: iEvaluacionId,
+                //iEvaluacionId,
                 selectedCursos: this.selectedCursos,
             }) // Use one object
             .pipe(takeUntil(this.unsubscribe$))
@@ -329,6 +340,10 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
                     const errorMessage =
                         err?.error?.message || 'Error desconocido'
                     console.error('Mensaje de error:', errorMessage)
+                },
+                complete: () => {
+                    console.log('AQUIIIIIIII')
+                    this.closeModalEvent.emit(null) // Emitir el evento de cierre del modal
                 },
             })
     }
@@ -564,7 +579,8 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
     closeModal(data) {
         this._ref.close(data)
         console.log('Formulario de evaluación cancelado')
-
+        // this.closeModalEvent.emit(null) // Emitir el evento de cierre del modal
+        // console.log('Formulario de evaluación cancelado')
         // Resetear el formulario si es necesario
         //this.evaluacionFormGroup.reset()
     }

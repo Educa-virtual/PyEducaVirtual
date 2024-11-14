@@ -13,6 +13,8 @@ import { InputIconModule } from 'primeng/inputicon'
 import { InputTextModule } from 'primeng/inputtext'
 import { ButtonModule } from 'primeng/button'
 import { DynamicDialogConfig } from 'primeng/dynamicdialog'
+import { ReactiveFormsModule } from '@angular/forms'
+import { CommonModule } from '@angular/common'
 interface NivelTipo {
     cNivelTipoNombre: string
     iNivelTipoId: string
@@ -36,6 +38,9 @@ interface EvaluacionCopia {
         FormsModule,
         IconFieldModule,
         InputIconModule,
+        FormsModule,
+        ReactiveFormsModule,
+        CommonModule,
     ],
     templateUrl: './ieparticipa.component.html',
     styleUrl: './ieparticipa.component.scss',
@@ -52,8 +57,8 @@ export class IeparticipaComponent implements OnInit {
         bPreguntaEstado: -1,
     }
     public data = []
-    accion: string // Nueva propiedad para controlar la acción
-    esModoEdicion: boolean = false // Para controlar el modo edición
+    //accion: string // Nueva propiedad para controlar la acción
+    //esModoEdicion: boolean = false // Para controlar el modo edición
     private _apiEre = inject(ApiEvaluacionesRService)
     public sourceProducts: any[] = [] // IEs no participantes
     public targetProducts: any[] = [] // IEs participantes
@@ -68,6 +73,11 @@ export class IeparticipaComponent implements OnInit {
     //Evaluaciones Copia
     evaluaciones: any[] = [] // Array para almacenar las evaluaciones obtenidas del API
     selectedEvaluacionId: number // ID de la evaluación seleccionada en el dropdown
+
+    visible: boolean = false //Accion Editar, Ver, crear
+    accion: string //Accion Editar, Ver, crear
+    isDisabled: boolean // Indica si la sección está deshabilitada
+
     constructor(
         private cdr: ChangeDetectorRef,
         private compartirIdEvaluacionService: CompartirIdEvaluacionService,
@@ -75,57 +85,63 @@ export class IeparticipaComponent implements OnInit {
         private evaluacionesService: ApiEvaluacionesRService // Inyecta el servicio -> Evaliacion Copiar
     ) {}
     public allIEs = [] // Lista completa de IE para filtrar los no participantes
+    esModoEdicion: boolean = false // Cambiar a true si estás en modo edición
+    iEvaluacionId: number // Aquí se vincula el valor seleccionado
+
     ngOnInit() {
         console.log('Iniciando componente con config:', this._config.data)
 
         // Determinar el modo
+        //this.accion = this._config.data?.accion || 'crear'
+        //this.esModoEdicion = this.accion === 'editar'
         this.accion = this._config.data?.accion || 'crear'
-        this.esModoEdicion = this.accion === 'editar'
-
-        console.log('Modo actual:', this.accion)
-        console.log('Es modo edición:', this.esModoEdicion)
+        console.log('Acción actual:', this.accion)
+        //console.log('Modo actual:', this.accion)
+        //console.log('Es modo edición:', this.esModoEdicion)
         this.obtenerIE()
         this.obtenerNivelTipo()
         this.obtenerugel()
-
-        // Inicializar según el modo
-        if (this.accion === 'crear') {
-            console.log('Inicializando en modo crear')
-            this.targetProducts = [] // Asegurar que la lista destino esté vacía
-            this.obtenerIE() // Solo obtener la lista de IEs disponibles
-        } else if (this.accion === 'editar' || this.accion === 'ver') {
-            console.log('Inicializando en modo editar/ver')
-            const evaluacionId =
-                this._config.data?.evaluacionId ||
-                this.compartirIdEvaluacionService.iEvaluacionId
-            if (evaluacionId) {
-                this.obtenerParticipaciones(evaluacionId)
-            }
-        }
-        // Llamamos al servicio para obtener las evaluaciones
         this.obtenerEvaluacionesCopia()
 
         this.nivelTipo = [
             { cNivelTipoNombre: 'Primaria', iNivelTipoId: 'NY' },
             { cNivelTipoNombre: 'Secundaria', iNivelTipoId: 'RM' },
         ]
-    }
-
-    private initializeCreateMode() {
-        // En modo crear, solo obtenemos la lista completa de IE
-        this.obtenerIE()
-        // Inicializamos targetProducts como vacío ya que es una nueva selección
-        this.targetProducts = []
-    }
-
-    private initializeEditMode() {
-        const evaluacionId =
-            this._config.data?.evaluacionId ||
-            this.compartirIdEvaluacionService.iEvaluacionId
-        if (evaluacionId) {
-            this.obtenerParticipaciones(evaluacionId)
+        // Inicializar según el modo
+        if (this.accion === 'crear') {
+            console.log('Inicializando en modo crear')
+            this.targetProducts = [] // Asegurar que la lista destino esté vacía
+            this.obtenerIE() // Solo obtener la lista de IEs disponibles
+        }
+        if (this.accion === 'ver') {
+            this.obtenerParticipaciones(
+                this.compartirIdEvaluacionService.iEvaluacionId
+            )
+            //this.isDisabled = true // Deshabilita visualmente la sección
+        }
+        if (this.accion === 'editar') {
+            this.obtenerParticipaciones(
+                this.compartirIdEvaluacionService.iEvaluacionId
+            )
+            //this.isDisabled = true // Deshabilita visualmente la sección
         }
     }
+
+    // private initializeCreateMode() {
+    //     // En modo crear, solo obtenemos la lista completa de IE
+    //     this.obtenerIE()
+    //     // Inicializamos targetProducts como vacío ya que es una nueva selección
+    //     this.targetProducts = []
+    // }
+
+    // private initializeEditMode() {
+    //     const evaluacionId =
+    //         this._config.data?.evaluacionId ||
+    //         this.compartirIdEvaluacionService.iEvaluacionId
+    //     if (evaluacionId) {
+    //         this.obtenerParticipaciones(evaluacionId)
+    //     }
+    // }
 
     obtenerIE() {
         this._apiEre

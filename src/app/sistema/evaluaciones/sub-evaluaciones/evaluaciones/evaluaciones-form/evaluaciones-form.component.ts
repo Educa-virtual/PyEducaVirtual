@@ -86,9 +86,9 @@ export class EvaluacionesFormComponent implements OnInit {
     nivelEvaluacion: NivelEvaluacion[] | undefined
     selectedNivelEvaluacion: TipoEvaluacion | undefined
     fecha: string
-    visible: boolean = false
+    visible: boolean = false //Accion Editar, Ver, Crear
     value!: string
-    accion: string
+    accion: string //Accion Editar, Ver, Crear
     //Agregar Servicio de Evaluacion
     constructor(
         private _config: DynamicDialogConfig, // Inyección de configuración

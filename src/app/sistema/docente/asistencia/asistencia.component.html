@@ -237,3 +237,9 @@
 </p-dialog>
 
 <p-toast />
+
+<app-reporte-asistencia
+    [showModal]="showModal"
+    [cCursoNombre]="cCursoNombre"
+    (accionBtnItem)="accionBtnItem($event)"
+></app-reporte-asistencia>

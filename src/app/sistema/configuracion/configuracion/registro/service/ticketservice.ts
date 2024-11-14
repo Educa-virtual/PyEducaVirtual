@@ -230,7 +230,7 @@ export class TicketService {
 
         let data: any
 
-        let fasesFechas = await this.getFasesFechas()
+        const fasesFechas = await this.getFasesFechas()
 
         const id =
             (iCalAcadId || this.registroInformation.calendar?.iCalAcadId) ?? ''
@@ -274,6 +274,13 @@ export class TicketService {
                         JSON.parse(data.data.fasesPromocionales) ?? null,
                 },
                 'stepYear'
+            )
+
+            console.log('seteando dias')
+            console.log(JSON.parse(data.data.diasLaborales))
+
+            this.registroInformation.stepDiasLaborales = JSON.parse(
+                data.data.diasLaborales
             )
         } else {
             console.log('SIN ID')
@@ -571,23 +578,19 @@ export class TicketService {
         }
     }
 
-    async setCalDiasLaborales() {
-        const dias = await firstValueFrom(
-            this.httpService.getData(
-                `acad/calendarioAcademico/selCalDiasLaborales?iCalAcadId=${this.registroInformation.calendar.iCalAcadId}`
-            )
-        )
+    // async setCalDiasLaborales() {
+    //     const dias = await firstValueFrom(
+    //         this.httpService.getData(
+    //             `acad/calendarioAcademico/selCalDiasLaborales?iCalAcadId=${this.registroInformation.calendar.iCalAcadId}`
+    //         )
+    //     )
 
-        console.log('dias')
-        console.log(dias)
+    //     this.setTicketInformation({
+    //         ...JSON.parse(dias.data[0]["calDiasDatos"])
+    //     }, 'stepDiasLaborales')
+    // }
 
-        this.setTicketInformation({
-            ...dias
-        }, 'stepDiasLaborales')
-    }
-
-    async insCalDiasLaborales(dias){
-
+    async insCalDiasLaborales(dias) {
         dias = dias.map((dia) => ({
             iDiaId: dia.iDiaId,
             iCalAcadId: this.registroInformation.calendar.iCalAcadId,
@@ -597,11 +600,24 @@ export class TicketService {
             this.httpService.postData(
                 'acad/calendarioAcademico/insCalDiasLaborales',
                 {
-                    json: JSON.stringify(dias)
+                    json: JSON.stringify(dias),
                 }
             )
         )
-
     }
 
+    async deleteCalDiasLaborales(dias) {
+        dias = dias.map((dia) => ({
+            iDiaLabId: dia.iDiaLabId,
+        }))
+
+        await firstValueFrom(
+            this.httpService.deleteData(
+                'acad/calendarioAcademico/deleteCalDiasLaborales',
+                {
+                    calDiasLaborales: JSON.stringify(dias),
+                }
+            )
+        )
+    }
 }

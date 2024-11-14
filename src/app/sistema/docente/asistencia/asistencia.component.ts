@@ -48,31 +48,6 @@ export class AsistenciaComponent implements OnInit {
         this.getFechasImportantes()
     }
 
-    items = [
-        {
-            label: 'Inicio',
-            icon: 'pi pi-home',
-        },
-        {
-            label: 'Contenido',
-            icon: 'pi pi-star',
-        },
-        {
-            label: 'Estudiante',
-            icon: 'pi pi-envelope',
-        },
-        {
-            label: 'Resutlado',
-            icon: 'pi pi-envelope',
-        },
-        {
-            label: 'Asitencia',
-            icon: 'pi pi-envelope',
-        },
-    ]
-
-    showReporteModal() {}
-
     /**
      * @param fechaActual Guarda la fecha actual para la asistencia
      */
@@ -136,6 +111,8 @@ export class AsistenciaComponent implements OnInit {
         this.calendarOptions.events = Object.assign([], this.events)
     }
 
+    mostrarModal: number = 0
+    fechaCaptura = this.fechaActual
     // * Se encarga de seleccionar la fecha de Asistencia
     handleDateClick(item) {
         this.fechaActual = item.dateStr
@@ -144,9 +121,24 @@ export class AsistenciaComponent implements OnInit {
         this.fechaEspecifica = dia.toLocaleDateString('es-PE', this.confFecha)
 
         if (this.limitado != 6 && this.limitado != 0) {
-            this.visible = true
-            this.getAsistencia(item.dateStr)
+            if (this.fechaCaptura == this.fechaActual) {
+                this.mostrarModal++
+                if (this.mostrarModal == 1) {
+                    this.verAsistencia = true
+                    this.mostrarModal = 0
+                    this.fechaCaptura = ''
+                    this.getAsistencia(item.dateStr)
+                }
+                this.mostrarModal = 0
+            } else {
+                this.fechaCaptura = this.fechaActual
+                this.mostrarModal = 0
+            }
         }
+    }
+
+    modalReporte() {
+        this.verReporte = true
     }
 
     /**
@@ -154,18 +146,20 @@ export class AsistenciaComponent implements OnInit {
      * * Muestra una ventana Modal para poder cambiar el nombre de la programacion de actividad
      */
 
-    visible: boolean = false // * Muestra la ventana modal
+    fechaDia = new Date()
+    verReporte = false
+    verAsistencia: boolean = false // * Muestra la ventana modal
     strId: string = '' // * Almacena el id de la actividad
     strTitulo: string = '' // * Almacena el titulo de la actividad
 
     editActividad(id: any, titulo: any) {
-        this.visible = true
+        this.verAsistencia = true
         this.strId = id
         this.strTitulo = titulo
     }
 
     escapeModal() {
-        this.visible = false
+        this.verAsistencia = false
         this.strId = ''
         this.strTitulo = ''
     }
@@ -204,24 +198,20 @@ export class AsistenciaComponent implements OnInit {
         })
     }
     countAsistenciasModal() {
+        // devuelve en 0 las cantidades de tipos de asistencias
         this.leyendaModal.forEach((index) => {
             return (index.contar = 0)
         })
 
         this.data.filter((index) => {
             const suma = 1
-            this.captura = index.cTipoAsiNombre
-
-            this.leyendaModal[0].contar += this.captura == 'Asistio' ? suma : 0
-            this.leyendaModal[1].contar +=
-                this.captura == 'Inasistencia' ? suma : 0
-            this.leyendaModal[2].contar +=
-                this.captura == 'Inasistencia Justificada' ? suma : 0
-            this.leyendaModal[3].contar += this.captura == 'Tardanza' ? suma : 0
-            this.leyendaModal[4].contar +=
-                this.captura == 'Tardanza Justificada' ? suma : 0
-            this.leyendaModal[5].contar +=
-                this.captura == 'Sin Registro' ? suma : 0
+            this.captura = index.iTipoAsiId
+            this.leyendaModal[0].contar += this.captura == '1' ? suma : 0
+            this.leyendaModal[1].contar += this.captura == '3' ? suma : 0
+            this.leyendaModal[2].contar += this.captura == '4' ? suma : 0
+            this.leyendaModal[3].contar += this.captura == '2' ? suma : 0
+            this.leyendaModal[4].contar += this.captura == '9' ? suma : 0
+            this.leyendaModal[5].contar += this.captura == '7' ? suma : 0
         })
     }
 
@@ -231,87 +221,93 @@ export class AsistenciaComponent implements OnInit {
             simbolo: 'X',
             contar: 0,
             divColor: 'green-50-boton',
-            bgColor: 'green-400-boton',
+            bgColor: 'green-boton',
         },
         {
             significado: 'Inasistencia',
             simbolo: 'I',
             contar: 0,
             divColor: 'red-50-boton',
-            bgColor: 'red-400-boton',
+            bgColor: 'red-boton',
         },
         {
             significado: 'Inasistencia Justificada',
             simbolo: 'J',
             contar: 0,
             divColor: 'primary-50-boton',
-            bgColor: 'primary-400-boton',
+            bgColor: 'primary-boton',
         },
         {
             significado: 'Tardanza',
             simbolo: 'T',
             contar: 0,
             divColor: 'orange-50-boton',
-            bgColor: 'orange-400-boton',
+            bgColor: 'orange-boton',
         },
         {
             significado: 'Tardanza Justificada',
             simbolo: 'P',
             contar: 0,
             divColor: 'yellow-50-boton',
-            bgColor: 'yellow-400-boton',
+            bgColor: 'yellow-boton',
         },
         {
             significado: 'Sin Registro',
             simbolo: '-',
             contar: 0,
             divColor: 'cyan-50-boton',
-            bgColor: 'cyan-400-boton',
+            bgColor: 'cyan-boton',
         },
     ]
 
     leyendaModal = [
         {
             significado: 'Asistio',
+            iTipoAsiId: '1',
             simbolo: 'X',
             contar: 0,
             divColor: 'green-50-boton',
-            bgColor: 'green-400-boton',
+            bgColor: 'green-boton',
         },
         {
             significado: 'Inasistencia',
+            iTipoAsiId: '3',
             simbolo: 'I',
             contar: 0,
             divColor: 'red-50-boton',
-            bgColor: 'red-400-boton',
+            bgColor: 'red-boton',
         },
         {
             significado: 'Inasistencia Justificada',
+            iTipoAsiId: '4',
             simbolo: 'J',
             contar: 0,
             divColor: 'primary-50-boton',
-            bgColor: 'primary-400-boton',
+            bgColor: 'primary-boton',
         },
         {
             significado: 'Tardanza',
+            iTipoAsiId: '2',
             simbolo: 'T',
             contar: 0,
             divColor: 'orange-50-boton',
-            bgColor: 'orange-400-boton',
+            bgColor: 'orange-boton',
         },
         {
             significado: 'Tardanza Justificada',
+            iTipoAsiId: '9',
             simbolo: 'P',
             contar: 0,
             divColor: 'yellow-50-boton',
-            bgColor: 'yellow-400-boton',
+            bgColor: 'yellow-boton',
         },
         {
             significado: 'Sin Registro',
+            iTipoAsiId: '7',
             simbolo: '-',
             contar: 0,
             divColor: 'cyan-50-boton',
-            bgColor: 'cyan-400-boton',
+            bgColor: 'cyan-boton',
         },
     ]
 
@@ -381,8 +377,9 @@ export class AsistenciaComponent implements OnInit {
             this.tipoMarcado[this.indice]['iTipoAsiId']
         this.data[index]['cTipoAsiLetra'] =
             this.tipoMarcado[this.indice]['cTipoAsiLetra']
-        //this.data[index]['dtCtrlAsistencia'] = this.fechaActual
         this.data[index]['bgcolor'] = this.tipoMarcado[this.indice]['bgcolor']
+
+        this.countAsistenciasModal()
     }
 
     goAreasEstudio() {
@@ -409,7 +406,7 @@ export class AsistenciaComponent implements OnInit {
             case 'get_data':
                 this.getObtenerAsitencias()
                 this.getFechasImportantes()
-                this.visible = false
+                this.verAsistencia = false
                 break
             case 'get_asistencia':
                 this.data = item
@@ -453,13 +450,12 @@ export class AsistenciaComponent implements OnInit {
 
         this.strId = ''
         this.strTitulo = ''
-        this.visible = false
+        this.verAsistencia = false
     }
 
     // * Registro de asistencia del alumno
 
     storeAsistencia() {
-        console.table(this.data)
         if (this.limitado != 6 && this.limitado != 0) {
             const params = {
                 petition: 'post',

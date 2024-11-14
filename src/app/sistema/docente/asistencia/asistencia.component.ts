@@ -14,11 +14,17 @@ import esLocale from '@fullcalendar/core/locales/es' // * traduce el Modulo de c
 import { MessageService } from 'primeng/api'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { ConstantesService } from '@/app/servicios/constantes.service'
+import { ReporteAsistenciaComponent } from './reporte-asistencia/reporte-asistencia.component'
 
 @Component({
     selector: 'app-asistencia',
     standalone: true,
-    imports: [ContainerPageComponent, PrimengModule, TablePrimengComponent],
+    imports: [
+        ContainerPageComponent,
+        PrimengModule,
+        TablePrimengComponent,
+        ReporteAsistenciaComponent,
+    ],
     templateUrl: './asistencia.component.html',
     styleUrl: './asistencia.component.scss',
 })
@@ -136,9 +142,10 @@ export class AsistenciaComponent implements OnInit {
             }
         }
     }
-
+    showModal = false
     modalReporte() {
-        this.verReporte = true
+        this.showModal = true
+        // this.verReporte = true
     }
 
     /**
@@ -419,6 +426,9 @@ export class AsistenciaComponent implements OnInit {
                 this.calendarOptions.events = item
                 this.events = item
                 this.countAsistencias()
+                break
+            case 'close-modal':
+                this.showModal = false
                 break
             default:
                 break

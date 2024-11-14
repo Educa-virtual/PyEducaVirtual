@@ -21,15 +21,29 @@ export class YearsComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
+        this.ticketService.registroInformation = {}
+
         this.ticketService.getCalendarioIESede({
-            onNextCallbacks: [(data) => {
-                this.calendariosAcademicosSede = data.map((calAcademico) => ({
-                        iCalAcadId: calAcademico.iCalAcadId,
-                        dtCalAcadInicio: this.ticketService.toVisualFechasFormat(calAcademico.dtCalAcadInicio, 'DD/MM/YYYY'),
-                        dtCalAcadFin: this.ticketService.toVisualFechasFormat(calAcademico.dtCalAcadFin, 'DD/MM/YYYY'),
-                        cYearNombre: calAcademico.cYearNombre,
-                }))
-            }]
+            onNextCallbacks: [
+                (data) => {
+                    this.calendariosAcademicosSede = data.map(
+                        (calAcademico) => ({
+                            iCalAcadId: calAcademico.iCalAcadId,
+                            dtCalAcadInicio:
+                                this.ticketService.toVisualFechasFormat(
+                                    calAcademico.dtCalAcadInicio,
+                                    'DD/MM/YYYY'
+                                ),
+                            dtCalAcadFin:
+                                this.ticketService.toVisualFechasFormat(
+                                    calAcademico.dtCalAcadFin,
+                                    'DD/MM/YYYY'
+                                ),
+                            cYearNombre: calAcademico.cYearNombre,
+                        })
+                    )
+                },
+            ],
         })
     }
 
@@ -51,17 +65,19 @@ export class YearsComponent implements OnInit {
                 // Lógica para la acción "ver"
                 console.log('Viendo')
             },
-            crear: () => {
+            crear: async () => {
                 this.navigateToRegistro()
             },
             editar: async () => {
                 console.log(row.item)
 
-                await this.ticketService.setCalendar({
-                    iSedeId: row.item.iSedeId,
-                    iCalAcadId: row.item.iCalAcadId,
-                }, {onCompleteCallbacks:  [() => this.navigateToRegistro()]})
-
+                await this.ticketService.setCalendar(
+                    {
+                        iSedeId: row.item.iSedeId,
+                        iCalAcadId: row.item.iCalAcadId,
+                    },
+                    { onCompleteCallbacks: [() => this.navigateToRegistro()] }
+                )
 
                 // this.ticketService.getDiasLaborales({
                 //     iCalAcadId: row.item.iCalAcadId,

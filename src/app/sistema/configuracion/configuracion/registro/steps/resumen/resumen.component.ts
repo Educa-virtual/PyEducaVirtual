@@ -1,37 +1,37 @@
-import { Component, OnInit, OnChanges, OnDestroy } from '@angular/core'
+import { Component, OnInit } from '@angular/core'
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
 import { ButtonModule } from 'primeng/button'
 import { TicketService } from '../../service/ticketservice'
 import { Router } from '@angular/router'
-import { httpService } from '../../../http/httpService'
-import { Calendar } from '@fullcalendar/core'
-
 
 @Component({
     selector: 'app-resumen',
     standalone: true,
-    imports: [
-        TablePrimengComponent,
-        ButtonModule,
-    ],
+    imports: [TablePrimengComponent, ButtonModule],
     templateUrl: './resumen.component.html',
     styleUrl: './resumen.component.scss',
 })
-export class ResumenComponent implements OnInit, OnChanges {
+export class ResumenComponent implements OnInit {
     resumenInformation: {
-        calendar: any,
-        diasLaborales: any,
-        formasAtencion: any,
-        periodosAcademicos: any,
+        calendar: any
+        diasLaborales: any
+        formasAtencion: any
+        periodosAcademicos: any
     } = {
         calendar: {},
         diasLaborales: [],
         formasAtencion: [],
         periodosAcademicos: [],
     }
-    
-    constructor(private httpService: httpService, public ticketService: TicketService,
-        private router: Router) {}
+
+    faseRegular
+
+    faseRecuperacion
+
+    constructor(
+        public ticketService: TicketService,
+        private router: Router
+    ) {}
 
     nextPage() {
         this.router.navigate([
@@ -40,14 +40,69 @@ export class ResumenComponent implements OnInit, OnChanges {
     }
 
     prevPage() {
-        this.router.navigate(['configuracion/configuracion/registro/periodos-academicos'])
+        this.router.navigate([
+            'configuracion/configuracion/registro/periodos-academicos',
+        ])
     }
 
     ngOnInit() {
-        const { iSedeId, iYAcadId, iCalAcadId } = this.ticketService.registroInformation.calendar;
-        
-    }
+        if (!this.ticketService.registroInformation) {
+            this.router.navigate(['configuracion/configuracion/years'])
 
+            return
+        }
+
+        this.resumenInformation.calendar =
+            this.ticketService.registroInformation.stepYear
+
+        this.resumenInformation.diasLaborales =
+            this.ticketService.registroInformation.stepDiasLaborales
+                .map((dia) => dia.cDiaNombre)
+                .join(',')
+
+        this.resumenInformation.formasAtencion =
+            this.ticketService.registroInformation.stepFormasAtencion.map(
+                (formaAtencion, index) => ({
+                    index: index + 1,
+                    cTurnoNombre: formaAtencion.cTurnoNombre,
+                    cModalServNombre: formaAtencion.cModalServNombre,
+                    dtAperTurnoInicio: this.ticketService.toVisualFechasFormat(
+                        formaAtencion.dtAperTurnoInicio,
+                        'hh:mm'
+                    ),
+                    dtAperTurnoFin: this.ticketService.toVisualFechasFormat(
+                        formaAtencion.dtAperTurnoFin,
+                        'hh:mm'
+                    ),
+                })
+            )
+
+        this.resumenInformation.periodosAcademicos =
+            this.ticketService.registroInformation.stepPeriodosAcademicos.map(
+                (periodo, index) => ({
+                    index: index + 1,
+                    // iPeriodoEvalAperId: 251,
+                    // iFaseId: 256,
+                    iPeriodoEvalId: periodo.iPeriodoEvalId,
+                    iPeriodoEvalCantidad: periodo.iPeriodoEvalCantidad,
+                    dtPeriodoEvalAperInicio:
+                        this.ticketService.toVisualFechasFormat(
+                            periodo.iPeriodoEvalAperId
+                        ),
+                    dtPeriodoEvalAperFin:
+                        this.ticketService.toVisualFechasFormat(
+                            periodo.dtPeriodoEvalAperFin
+                        ),
+                })
+            )
+
+        this.faseRegular =
+            this.ticketService.registroInformation.stepYear.fases_promocionales[0]
+        this.faseRecuperacion =
+            this.ticketService.registroInformation.stepYear.fases_promocionales[1]
+
+        console.log(this.resumenInformation)
+    }
 
     columnsFormasAtencion = [
         {
@@ -90,9 +145,7 @@ export class ResumenComponent implements OnInit, OnChanges {
             text_header: 'center',
             text: 'center',
         },
-
     ]
-
 
     columnsPeriodosAcademicos = [
         {
@@ -127,8 +180,5 @@ export class ResumenComponent implements OnInit, OnChanges {
             text_header: 'center',
             text: 'center',
         },
-
     ]
-
-    ngOnChanges(changes) {}
 }

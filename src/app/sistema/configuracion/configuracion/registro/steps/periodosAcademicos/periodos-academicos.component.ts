@@ -12,7 +12,7 @@ import { ButtonModule } from 'primeng/button'
 import { DialogModule } from 'primeng/dialog'
 import { DropdownModule } from 'primeng/dropdown'
 import { httpService } from '../../../http/httpService'
-import { TicketService, type ArrayElement } from '../../service/ticketservice'
+import { TicketService } from '../../service/ticketservice'
 import { FloatLabelModule } from 'primeng/floatlabel'
 import { IActionTable } from '@/app/shared/table-primeng/table-primeng.component'
 import { InputTextModule } from 'primeng/inputtext'
@@ -47,11 +47,11 @@ export class PeriodosAcademicosComponent implements OnInit {
 
     faseCurrent
 
+    periodoCurrent
+
     ciclosAcademicos
 
-    cicloAcademicoModal: ArrayElement<
-        typeof this.ticketService.registroInformation.stepPeriodosAcademicos
-    >
+    fechasCalculadas
 
     form: FormGroup
 
@@ -86,34 +86,7 @@ export class PeriodosAcademicosComponent implements OnInit {
             return
         }
 
-        if (
-            Array.isArray(
-                this.ticketService.registroInformation.stepYear
-                    .fases_promocionales
-            )
-        ) {
-            this.fasesPromocionales =
-                this.ticketService.registroInformation.stepYear.fases_promocionales.map(
-                    (fase, index) => ({
-                        index: index + 1,
-                        id: fase.iFaseId,
-                        cFasePromNombre: fase.cFasePromNombre,
-                        dtFaseInicioVisual:
-                            this.ticketService.toVisualFechasFormat(
-                                fase.dtFaseInicio,
-                                'DD/MM/YYYY'
-                            ),
-                        dtFaseInicio: fase.dtFaseInicio,
-                        dtFaseFin: fase.dtFaseFin,
-                        dtFaseFinVisual:
-                            this.ticketService.toVisualFechasFormat(
-                                fase.dtFaseFin,
-                                'DD/MM/YYYY'
-                            ),
-                        cPeriodoEvalNombre: '',
-                    })
-                )
-        }
+        await this.setFasesPromocionales()
 
         this.periodosAcademicos = (
             await this.ticketService.selPeriodosFormativos()
@@ -128,6 +101,37 @@ export class PeriodosAcademicosComponent implements OnInit {
         })
     }
 
+    async setFasesPromocionales() {
+        if (
+            Array.isArray(
+                this.ticketService.registroInformation.stepYear
+                    .fases_promocionales
+            )
+        ) {
+            this.fasesPromocionales =
+                this.ticketService.registroInformation.stepYear.fases_promocionales.map(
+                    (fase, index) => ({
+                        index: index + 1,
+                        id: fase.iFaseId,
+                        cPeriodoEvalNombre: fase.cPeriodoEvalNombre,
+                        cFasePromNombre: fase.cFasePromNombre,
+                        dtFaseInicioVisual:
+                            this.ticketService.toVisualFechasFormat(
+                                fase.dtFaseInicio,
+                                'DD/MM/YYYY'
+                            ),
+                        dtFaseInicio: fase.dtFaseInicio,
+                        dtFaseFin: fase.dtFaseFin,
+                        dtFaseFinVisual:
+                            this.ticketService.toVisualFechasFormat(
+                                fase.dtFaseFin,
+                                'DD/MM/YYYY'
+                            ),
+                    })
+                )
+        }
+    }
+
     nextPage() {
         this.router.navigate(['configuracion/configuracion/registro/resumen'])
     }
@@ -136,105 +140,35 @@ export class PeriodosAcademicosComponent implements OnInit {
         this.router.navigate(['configuracion/configuracion/registro/turnos'])
     }
 
-    saveInformation() {
-        if (Array.isArray(this.ticketService.registroInformation.stepPeriodosAcademicos)) {
-            this.ticketService.updPeriodosFormativos()
-        }else{
-            this.ticketService.insPeriodosFormativos(this.ciclosAcademicos, this.faseCurrent)
+    async saveInformation() {
+        let periodo
+        if (
+            Array.isArray(
+                this.ticketService.registroInformation.stepPeriodosAcademicos
+            )
+        ) {
+            periodo =
+                this.ticketService.registroInformation.stepPeriodosAcademicos.filter(
+                    (periodo) => periodo.iFaseId == this.faseCurrent.id
+                )
         }
+
+        if (periodo && periodo.length > 0) {
+            await this.ticketService.deleteCalPeriodosFormativos(periodo)
+        }
+
+        await this.ticketService.insPeriodosFormativos(
+            this.ciclosAcademicos,
+            this.faseCurrent,
+            this.periodoCurrent
+        )
+
+        await this.ticketService.setCalendar()
+
+        await this.setFasesPromocionales()
+
+        this.hiddenDialog()
     }
-
-    // createPeriodosAcademicos() {
-    //     let periodosAcademicos = this.cicloAcademicoModal.ciclosAcademicos.map(
-    //         (ciclo) => ({
-    //             // iFaseId: this.ticketService.registroInformation.stepYear.fases_promocionales.iFaseId,
-    //             iPeriodoEvalId: ciclo.iPeriodoEvalId,
-    //             dtPeriodoEvalAperInicio: this.ticketService.toSQLDatetimeFormat(
-    //                 ciclo.StartDate
-    //             ),
-    //             dtPeriodoEvalAperFin: this.ticketService.toSQLDatetimeFormat(
-    //                 ciclo.EndDate
-    //             ),
-    //         })
-    //     )
-
-    //     console.log(periodosAcademicos)
-
-    //     this.httpService
-    //         .postData('acad/calendarioAcademico/addCalAcademico', {
-    //             json: JSON.stringify(periodosAcademicos),
-    //             _opcion: 'addCalPeriodoEval',
-    //         })
-    //         .subscribe({
-    //             next: (data: any) => {},
-    //             error: (error) => {
-    //                 console.error('Error fetching modalidades:', error)
-    //             },
-    //             complete: () => {
-    //                 console.log('Request completed')
-    //             },
-    //         })
-    // }
-
-    // updatePeriodosAcademicos() {
-    //     this.periodosInformation.map((periodo) => {
-    //         this.httpService
-    //             .postData('acad/calendarioAcademico/addCalAcademico', {
-    //                 json: JSON.stringify({
-    //                     iPeriodoEvalAperId: periodo.iPeriodoEvalAperId,
-    //                 }),
-    //                 _opcion: 'deleteCalPeriodo',
-    //             })
-    //             .subscribe({
-    //                 next: () => {},
-    //                 error: (error) => {
-    //                     console.error('Error fetching modalidades:', error)
-    //                 },
-    //                 complete: () => {
-    //                     console.log('Request completed')
-    //                 },
-    //             })
-    //     })
-
-    //     this.createPeriodosAcademicos()
-    //     this.getCalendarioPeriodosAcademicos()
-    //     this.hiddenDialog()
-    // }
-
-    // updatePeriodosAcademicos() {
-
-    //     let periodosAcademicos = this.cicloAcademicoModal.ciclosAcademicos.map((ciclo) => ({
-    //         iFaseId: this.ticketService.registroInformation.stepYear.fases_promocional.iFaseId,
-    //         iPeriodoEvalId: ciclo.iPeriodoEvalId,
-    //         dtPeriodoEvalAperInicio: ciclo.StartDate,
-    //         dtPeriodoEvalAperFin: ciclo.EndDate,
-
-    //     }))
-
-    //     console.log('Editando')
-    //     console.log(this.cicloAcademicoModal)
-    //     this.httpService
-    //     .postData('acad/calendarioAcademico/addCalAcademico', {
-    //         json: JSON.stringify({
-    //             iCalAcadId:
-    //                 this.ticketService.registroInformation.calendar
-    //                     .iCalAcadId,
-    //         }),
-    //         _opcion: 'updateCalPeriodoEval',
-    //     })
-    //     .subscribe({
-    //         next: (data: any) => {
-
-    //         },
-    //         error: (error) => {
-    //             console.error('Error fetching modalidades:', error)
-    //         },
-    //         complete: () => {
-    //             console.log('Request completed')
-    //         },
-    //     })
-    // }
-
     showDialog() {
         this.visible = true
     }
@@ -254,20 +188,24 @@ export class PeriodosAcademicosComponent implements OnInit {
     indexColumns() {}
 
     setPeriodoFormativo(periodo) {
-        const fechas = this.ticketService.calculandoPeriodosFormativos(
+        this.fechasCalculadas = this.ticketService.calculandoPeriodosFormativos(
             periodo,
             this.faseCurrent
         )
+        this.periodoCurrent = periodo
+
         let periodoType
 
+        console.log(this.fechasCalculadas)
+
         switch (periodo.iPeriodoEvalCantidad) {
-            case "2":
+            case '6':
                 periodoType = 'semestre'
                 break
-            case "3":
+            case '3':
                 periodoType = 'trimestre'
                 break
-            case "6":
+            case '2':
                 periodoType = 'bimestre'
                 break
             default:
@@ -275,14 +213,14 @@ export class PeriodosAcademicosComponent implements OnInit {
                 break
         }
 
-        this.ciclosAcademicos = fechas.map((fecha, index) => ({
+        this.ciclosAcademicos = this.fechasCalculadas.map((fecha, index) => ({
             index: index + 1,
             periodoType: `${index + 1}° ${periodoType}`,
             startDateVisual: this.ticketService.toVisualFechasFormat(
                 fecha.inicio,
                 'DD/MM/YYYY'
             ),
-            starDate: fecha.inicio,
+            startDate: fecha.inicio,
             endDateVisual: this.ticketService.toVisualFechasFormat(
                 fecha.fin,
                 'DD/MM/YYYY'
@@ -308,7 +246,7 @@ export class PeriodosAcademicosComponent implements OnInit {
                     // )
                     console.log('Periodos')
 
-                    let filterFasePeriodo = data.data[0]
+                    const filterFasePeriodo = data.data[0]
 
                     this.periodosInformation = JSON.parse(
                         filterFasePeriodo['periodo']
@@ -327,12 +265,74 @@ export class PeriodosAcademicosComponent implements OnInit {
             })
     }
 
+    setPeriodosFormativos() {
+        let periodo
+
+        if (
+            Array.isArray(
+                this.ticketService.registroInformation.stepPeriodosAcademicos
+            )
+        ) {
+            console.log('Ciclos academicos')
+            console.log(
+                this.ticketService.registroInformation.stepPeriodosAcademicos
+            )
+            console.log('Fase actual')
+            console.log(this.faseCurrent)
+
+            periodo =
+                this.ticketService.registroInformation.stepPeriodosAcademicos.filter(
+                    (periodo) => periodo.iFaseId == this.faseCurrent.id
+                )
+
+            console.log('periodos a setear')
+            console.log(periodo)
+
+            this.ciclosAcademicos = periodo.map((fase, index) => {
+                let nombrePeriodo = ''
+
+                switch (fase.iPeriodoEvalCantidad) {
+                    case 6:
+                        nombrePeriodo = 'Semestre'
+                        break
+                    case 3:
+                        nombrePeriodo = 'Trimestre'
+                        break
+                    case 2:
+                        nombrePeriodo = 'Bimestre'
+                        break
+                    default:
+                        nombrePeriodo = 'Otro' // O algún valor por defecto si el número no coincide
+                        break
+                }
+
+                return {
+                    index: index + 1,
+                    periodoType: `${index + 1}° ${nombrePeriodo}`,
+                    startDateVisual: this.ticketService.toVisualFechasFormat(
+                        fase.dtPeriodoEvalAperInicio,
+                        'DD/MM/YYYY'
+                    ),
+                    startDate: new Date(fase.dtPeriodoEvalAperInicio),
+                    endDateVisual: this.ticketService.toVisualFechasFormat(
+                        fase.dtPeriodoEvalAperFin,
+                        'DD/MM/YYYY'
+                    ),
+                    endDate: new Date(fase.dtPeriodoEvalAperFin),
+                }
+            })
+        }
+    }
+
     handleActionFase(row) {
         const actions = {
             editar: () => {
                 console.log('Editando')
-                // this.visible = true
+                console.log(row.item)
 
+                this.faseCurrent = row.item
+
+                this.setPeriodosFormativos()
 
                 console.log(this.ticketService.registroInformation)
             },
@@ -355,28 +355,18 @@ export class PeriodosAcademicosComponent implements OnInit {
     handleActionPeriodos(row) {
         console.log(row)
         const actions = {
-            ver: () => {
-                // Lógica para la acción "ver"
-                console.log('Viendo')
-            },
             editar: () => {
-                // Lógica para la acción "editar"
-                console.log('Editando')
+                console.log('Editando periodo')
                 console.log(row.item)
                 this.showDialogEditPeriodo()
                 this.formPeriodo.patchValue({
-                    id: row.item.iPeriodoEvalAperId,
-                    periodo: row.item.PeriodType,
-                    fechaInicio: new Date(row.item.StartDate),
-                    fechaFin: new Date(row.item.EndDate),
+                    id: row.item.index,
+                    periodo: row.item.periodoType,
+                    fechaInicio: row.item.startDate,
+                    fechaFin: row.item.endDate,
                 })
 
                 this.formPeriodo.get('periodo').disable()
-            },
-            eliminar: () => {
-                // Lógica para la acción "eliminar"
-                console.log('Eliminando')
-                console.log(row.item)
             },
         }
 
@@ -389,35 +379,34 @@ export class PeriodosAcademicosComponent implements OnInit {
     }
 
     saveInformationEdit() {
-        this.httpService
-            .postData('acad/calendarioAcademico/addCalAcademico', {
-                json: JSON.stringify({
-                    // iFaseId: this.ticketService.registroInformation.stepYear.fases_promocionales.iFaseId,
-                    iPeriodoEvalAperId: String(
-                        this.formPeriodo.get('id').value
-                    ),
-                    dtPeriodoEvalAperInicio:
-                        this.ticketService.toSQLDatetimeFormat(
-                            this.formPeriodo.get('fechaInicio').value
-                        ),
-                    dtPeriodoEvalAperFin:
-                        this.ticketService.toSQLDatetimeFormat(
-                            this.formPeriodo.get('fechaFin').value
-                        ),
-                }),
-                _opcion: 'updateCalPeriodoEval',
-            })
-            .subscribe({
-                next: (data: any) => {},
-                error: (error) => {
-                    console.error('Error fetching turnos:', error)
-                    this.getCalendarioPeriodosAcademicos()
-                    this.handleActionFase('')
-                },
-                complete: () => {
-                    console.log('Request completed')
-                },
-            })
+        console.log('A editar:')
+        console.log(this.ciclosAcademicos)
+        console.log(this.formPeriodo.value)
+
+        const index = this.ciclosAcademicos.findIndex(
+            (ciclo) => ciclo.index == this.formPeriodo.value.id
+        )
+
+        if (index !== -1) {
+            this.ciclosAcademicos[index].startDate = new Date(
+                this.formPeriodo.value.fechaInicio
+            )
+            this.ciclosAcademicos[index].startDateVisual =
+                this.ticketService.toVisualFechasFormat(
+                    this.formPeriodo.value.fechaInicio,
+                    'DD/MM/YYYY'
+                )
+            this.ciclosAcademicos[index].endDateVisual =
+                this.ticketService.toVisualFechasFormat(
+                    this.formPeriodo.value.fechaFin,
+                    'DD/MM/YYYY'
+                )
+            this.ciclosAcademicos[index].endDate = new Date(
+                this.formPeriodo.value.fechaFin
+            )
+        }
+        console.log('cambio en el objeto')
+        console.log(this.ciclosAcademicos)
 
         this.hiddenDialogEditPeriodo()
     }

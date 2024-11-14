@@ -89,7 +89,6 @@ export class TurnosComponent implements OnInit {
             return
         }
 
-
         const data = await this.ticketService.selTurnosModalidades()
         this.turnos = data.data.turnos
         this.modalidades = data.data.modalidades
@@ -199,21 +198,27 @@ export class TurnosComponent implements OnInit {
     }
 
     async indexColumns() {
-        this.formasAtencionInformation = this.ticketService
-            .getTicketInformation()
-            .stepFormasAtencion.map((turno, index) => ({
-                ...turno,
-                index: index + 1,
-                cModalServNombre: turno.cModalServNombre,
-                dtAperTurnoInicio: this.ticketService.toVisualFechasFormat(
-                    turno.dtAperTurnoInicio,
-                    'hh:mm'
-                ),
-                dtAperTurnoFin: this.ticketService.toVisualFechasFormat(
-                    turno.dtAperTurnoFin,
-                    'hh:mm'
-                ),
-            }))
+        if (
+            Array.isArray(
+                this.ticketService.registroInformation.stepFormasAtencion
+            )
+        ) {
+            this.formasAtencionInformation = this.ticketService
+                .getTicketInformation()
+                .stepFormasAtencion.map((turno, index) => ({
+                    ...turno,
+                    index: index + 1,
+                    cModalServNombre: turno.cModalServNombre,
+                    dtAperTurnoInicio: this.ticketService.toVisualFechasFormat(
+                        turno.dtAperTurnoInicio,
+                        'hh:mm'
+                    ),
+                    dtAperTurnoFin: this.ticketService.toVisualFechasFormat(
+                        turno.dtAperTurnoFin,
+                        'hh:mm'
+                    ),
+                }))
+        }
     }
 
     async saveInformation() {

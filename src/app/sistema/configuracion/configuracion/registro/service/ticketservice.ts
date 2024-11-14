@@ -9,9 +9,6 @@ export type ArrayElement<ArrayType extends readonly unknown[]> =
 @Injectable()
 export class TicketService {
     registroInformation: {
-        mode?: 'create' | 'edit'
-        modal?: 'create' | 'edit'
-
         calendar?: {
             iCalAcadId?: string
             iYAcadId: string
@@ -30,6 +27,7 @@ export class TicketService {
             fases_promocionales?: {
                 iFaseId?: string
                 iFasePromId?: number
+                cPeriodoEvalNombre?: string
                 cFasePromNombre?: string
                 dtFaseInicio?: Date
                 dtFaseFin?: Date
@@ -57,6 +55,9 @@ export class TicketService {
         stepPeriodosAcademicos?: {
             iPeriodoEvalAperId?: string
             iPeriodoEvalId: string
+            iFaseId: string
+            dtPeriodoEvalAperInicio: string
+            dtPeriodoEvalAperFin: string
             cPeriodoEvalNombre: 'semestral' | 'trimestral' | 'bimestral'
             cPeriodoEvalLetra: string
             iPeriodoEvalCantidad: string
@@ -161,55 +162,6 @@ export class TicketService {
         return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
     }
 
-    periodosDuracion = {
-        bimestral: 60,
-        trimestral: 90,
-        semestral: 180,
-    }
-
-    calcularFechaPeriodos(inicio, fin, tipo) {
-        // Verifica si el tipo es válido
-        const periodos = []
-        const fechaInicio = new Date(inicio)
-        const fechaFin = new Date(fin)
-        const duracion = this.periodosDuracion[tipo]
-
-        // Calcular la fecha de cada periodo
-        let contador = 1 // Contador para los períodos
-        let key
-
-        if (tipo === 'trimestral') {
-            key = 'trimestre' // Retorna la clave si el valor coincide
-        }
-        if (tipo === 'semestral') {
-            key = 'semestre' // Retorna la clave si el valor coincide
-        }
-        if (tipo === 'bimestral') {
-            key = 'bimestre' // Retorna la clave si el valor coincide
-        }
-
-        while (fechaInicio < fechaFin) {
-            // Clonar fecha de inicio para calcular la fecha de fin del período
-            const fechaFinPeriodo = new Date(fechaInicio.getTime())
-            fechaFinPeriodo.setDate(fechaFinPeriodo.getDate() + duracion)
-
-            // Añadir el período al array
-            periodos.push({
-                fechaInicio: new Date(fechaInicio),
-                fechaFin:
-                    fechaFinPeriodo > fechaFin
-                        ? new Date(fechaFin)
-                        : fechaFinPeriodo,
-                descripcion: `${contador}° ${key}`,
-            })
-
-            // Avanzar el inicio para el próximo período
-            fechaInicio.setDate(fechaInicio.getDate() + duracion)
-            contador++
-        }
-
-        return periodos
-    }
     async getFasesFechas() {
         return await firstValueFrom(
             this.httpService.getData('acad/calendarioAcademico/selFasesFechas')
@@ -276,15 +228,21 @@ export class TicketService {
                 'stepYear'
             )
 
-            this.registroInformation.stepDiasLaborales = JSON.parse(
-                data.data.diasLaborales ?? undefined
-            )
+            if (data.data.diasLaborales) {
+                this.registroInformation.stepDiasLaborales = JSON.parse(
+                    data.data.diasLaborales ?? undefined
+                )
+            }
 
-            this.registroInformation.stepFormasAtencion =
-                JSON.parse(data.data.formasAtencion) ?? undefined
+            if (data.data.formasAtencion) {
+                this.registroInformation.stepFormasAtencion =
+                    JSON.parse(data.data.formasAtencion) ?? undefined
+            }
 
-            this.registroInformation.stepPeriodosAcademicos =
-                JSON.parse(data.data.periodosAcademicos) ?? undefined
+            if (data.data.periodosAcademicos) {
+                this.registroInformation.stepPeriodosAcademicos =
+                    JSON.parse(data.data.periodosAcademicos) ?? undefined
+            }
         } else {
             console.log('SIN ID')
 
@@ -694,39 +652,70 @@ export class TicketService {
     }
 
     calculandoPeriodosFormativos(periodos, fase) {
-        console.log(periodos)
-        console.log(fase)
+        const inicio = new Date(fase.dtFaseInicio)
+        const fin = new Date(fase.dtFaseFin)
 
-        const inicio = new Date(fase.dtFaseInicio).getTime()
-        const fin = new Date(fase.dtFaseFin).getTime()
+        let cantidadPeriodos
+        let duracionMeses
+        let tipoPeriodo = ''
 
-        // Calcular la duración de cada periodo en milisegundos
-        const duracionPeriodo = (fin - inicio) / periodos.iPeriodoEvalCantidad
+        // Determinar la cantidad de periodos y la duración en meses
+        if (periodos.iPeriodoEvalCantidad == 6) {
+            cantidadPeriodos = 2
+            duracionMeses = 6
+            tipoPeriodo = 'Semestre'
+        } else if (periodos.iPeriodoEvalCantidad == 3) {
+            cantidadPeriodos = 3
+            duracionMeses = 3
+            tipoPeriodo = 'Trimestre'
+        } else if (periodos.iPeriodoEvalCantidad == 2) {
+            cantidadPeriodos = 6
+            duracionMeses = 2
+            tipoPeriodo = 'Bimestre'
+        } else {
+            throw new Error(
+                'Cantidad de periodos no válida. Debe ser 2 (Semestre), 3 (Trimestre) o 6 (Bimestre).'
+            )
+        }
 
         const periodosAcad = []
+        let inicioPeriodo = new Date(inicio)
 
-        // Iterar para calcular las fechas de inicio y fin de cada periodo
-        for (let i = 0; i < periodos.iPeriodoEvalCantidad; i++) {
-            const inicioPeriodo = new Date(inicio + duracionPeriodo * i)
-            const finPeriodo = new Date(inicio + duracionPeriodo * (i + 1) - 1) // Ajuste para el último día del periodo
+        // Crear cada periodo académico con la duración en meses específica
+        for (let i = 0; i < cantidadPeriodos; i++) {
+            // Calcular la fecha de fin del periodo sumando duracionMeses
+            let finPeriodo = new Date(inicioPeriodo)
+            finPeriodo.setMonth(finPeriodo.getMonth() + duracionMeses)
+            finPeriodo.setDate(finPeriodo.getDate() - 1) // Ajuste para el último día del periodo
+
+            // Ajustar el fin del periodo si excede el fin de la fase
+            if (finPeriodo > fin) {
+                finPeriodo = new Date(fin)
+            }
 
             periodosAcad.push({
-                inicio: inicioPeriodo,
-                fin: finPeriodo,
+                tipo: tipoPeriodo,
+                inicio: new Date(inicioPeriodo),
+                fin: new Date(finPeriodo),
             })
+
+            // Avanzar al próximo inicio de periodo
+            inicioPeriodo = new Date(finPeriodo)
+            inicioPeriodo.setDate(inicioPeriodo.getDate() + 1) // Para empezar el día siguiente
         }
 
         return periodosAcad
     }
 
-    async insPeriodosFormativos(periodosFormativos, fase) {
-
+    async insPeriodosFormativos(periodosFormativos, fase, periodoType) {
+        console.log('El periodo formativo a insertar')
         console.log(periodosFormativos)
+        console.log(periodoType)
         const periodos = periodosFormativos.map((periodo) => ({
             iFaseId: fase.id,
-            iPeriodoEvalId: periodosFormativos.iPeriodoEvalId,
+            iPeriodoEvalId: periodoType.iPeriodoEvalId,
             dtPeriodoEvalAperInicio: this.toSQLDatetimeFormat(
-                periodo.starDate
+                periodo.startDate
             ),
             dtPeriodoEvalAperFin: this.toSQLDatetimeFormat(periodo.endDate),
         }))
@@ -741,7 +730,22 @@ export class TicketService {
         )
     }
 
-    async updPeriodosFormativos() {}
+    async updPeriodoFormativo() {
+        console.log('actualizando')
+    }
 
-    async deletePeriodosFormativos() {}
+    async deleteCalPeriodosFormativos(periodos) {
+        return await firstValueFrom(
+            this.httpService.deleteData(
+                'acad/calendarioAcademico/deleteCalPeriodosFormativos',
+                {
+                    json: JSON.stringify(
+                        periodos.map((periodo) => ({
+                            iPeriodoEvalAperId: periodo.iPeriodoEvalAperId,
+                        }))
+                    ),
+                }
+            )
+        )
+    }
 }

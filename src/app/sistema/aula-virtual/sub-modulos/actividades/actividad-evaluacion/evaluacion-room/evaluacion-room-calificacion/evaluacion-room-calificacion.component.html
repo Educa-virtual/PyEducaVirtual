@@ -32,7 +32,8 @@
         <p-table
             [value]="evaluacionesEstudiantes()"
             selectionMode="single"
-            [(selection)]="selectedEstudianteValue"
+            [selection]="selectedEstudianteValue"
+            (selectionChange)="updateSelectedEstudiante($event)"
             dataKey="iEstudianteId"
             (onRowSelect)="seleccionarEvaluacion()"
         >

@@ -171,6 +171,7 @@
                         </div>
                     } @else {
                         <app-evaluacion-form-preguntas
+                            [mode]="evaluacion.iEstado === 1 ? 'EDIT' : 'VIEW'"
                             [tituloEvaluacion]="''"
                             [preguntas]="evaluacion?.preguntas ?? []"
                             [iEvaluacionId]="evaluacion.iEvaluacionId"

@@ -14,7 +14,11 @@
         @if (pregunta.iTipoPregId === 3 && !hideButton) {
             <button
                 pButton
-                label="Calificar Pregunta"
+                [label]="
+                    pregunta.iEstadoRespuestaEstudiante === 1
+                        ? 'Calificar Pregunta'
+                        : 'Actualizar Calificación'
+                "
                 type="button"
                 size="small"
                 icon="pi pi-check"

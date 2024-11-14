@@ -2,7 +2,7 @@
     <div class="opciones">
         <p-button label="Agregar turno" (onClick)="showModeCreateDialog()" />
     </div>
-    
+
     <app-table-primeng
         [showCaption]="false"
         [columnas]="columns"
@@ -12,7 +12,6 @@
         (accionBtnItem)="handleActions($event)"
     >
     </app-table-primeng>
-    
 
     <p-dialog header="Turno" [(visible)]="visible" [style]="{ width: '25rem' }">
         <form [formGroup]="form">
@@ -23,7 +22,6 @@
                 <p-dropdown
                     [style]="{ width: '100%' }"
                     [options]="turnos"
-                    [selectOnFocus]="1"
                     optionLabel="cTurnoNombre"
                     placeholder="Seleccione un turno"
                     formControlName="turno"
@@ -44,6 +42,8 @@
                         [timeOnly]="true"
                         inputId="birth_date"
                         formControlName="horaInicio"
+                        [defaultDate]="defautTimeInicio"
+                        stepMinute="10"
                     />
                     <label for="birth_date">Hora inicio</label>
                 </p-floatLabel>
@@ -54,6 +54,8 @@
                         [timeOnly]="true"
                         inputId="birth_date"
                         formControlName="horaFin"
+                        [defaultDate]="defautTimeFin"
+                        stepMinute="10"
                     />
                     <label for="birth_date">Hora fin</label>
                 </p-floatLabel>
@@ -68,7 +70,6 @@
             </div>
         </form>
     </p-dialog>
-
 
     <p-confirmDialog>
         <ng-template pTemplate="message" let-message>

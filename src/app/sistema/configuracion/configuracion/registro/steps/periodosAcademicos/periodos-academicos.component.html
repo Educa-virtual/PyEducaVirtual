@@ -1,11 +1,8 @@
 <div class="container">
-    <div class="opciones">
-        <p-button label="Agregar periodo académico" (onClick)="showDialog()" />
-    </div>
     <app-table-primeng
         [showCaption]="false"
         [columnas]="columnsPeriodosAcademicos"
-        [actions]="actions"
+        [actions]="actionsFase"
         [showPaginator]="false"
         [data]="fasesPromocionales"
         (accionBtnItem)="handleActionFase($event)"
@@ -17,17 +14,17 @@
     </div>
 
     <p-dialog
-        header="Periodo académico"
+        header="Periodo de evaluación formativa"
         [(visible)]="visible"
         [style]="{ width: '56rem' }"
     >
         <form [formGroup]="form">
             <span class="p-text-secondary block mb-5"
-                >Información sobre el periodo académico</span
+                >Asegúrate de definir las fechas y el tipo de periodo en su registro.</span
             >
             <div class="flex align-items-center gap-3 mb-5">
                 <p-dropdown
-                    (onChange)="calculandoCicloAcademico($event.value)"
+                    (onChange)="setPeriodoFormativo($event.value)"
                     [options]="periodosAcademicos"
                     optionLabel="cPeriodoEvalNombre"
                     placeholder="Seleccione un periodo"
@@ -38,9 +35,9 @@
                 <app-table-primeng
                     [showCaption]="false"
                     [columnas]="columnasCicloAcademico"
-                    [actions]="actions"
+                    [actions]="actionPeriodo"
                     [showPaginator]="false"
-                    [data]="cicloAcademicoModal?.ciclosAcademicos ?? []"
+                    [data]="ciclosAcademicos"
                     (accionBtnItem)="handleActionPeriodos($event)"
                 >
                 </app-table-primeng>

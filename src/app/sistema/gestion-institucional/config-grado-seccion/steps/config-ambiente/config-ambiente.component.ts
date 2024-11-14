@@ -440,7 +440,7 @@ export class ConfigAmbienteComponent implements OnInit {
         }
 
         this.msg.confirmAction(
-            [() => this.saveInformation(), () => this.nextPage()],
+            {onAcceptCallbacks:[() => this.saveInformation(), () => this.nextPage()]},
             message
         )
     }

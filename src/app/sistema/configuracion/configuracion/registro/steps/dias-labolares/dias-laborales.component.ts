@@ -62,19 +62,7 @@ export class DiasLaboralesComponent implements OnInit {
             return
         }
 
-        this.generalService.getDias().subscribe({
-            next: (data: any) => {
-                this.dias = data.data.map((dia) => ({
-                    ...dia,
-                }))
-            },
-            error: (error) => {
-                console.error('Error fetching dias:', error)
-            },
-            complete: () => {
-                console.log('Request completed')
-            },
-        })
+        this.dias = (await this.ticketService.selDias()).data
 
         await this.ticketService.setCalendar()
 
@@ -101,7 +89,7 @@ export class DiasLaboralesComponent implements OnInit {
         }
 
         this.stepConfirmationService.confirmAction(
-            [() => this.saveInformation()],
+            {onAcceptCallbacks: [() => this.saveInformation()]},
             message
         )
     }

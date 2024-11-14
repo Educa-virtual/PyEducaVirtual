@@ -276,12 +276,15 @@ export class TicketService {
                 'stepYear'
             )
 
-            console.log('seteando dias')
-            console.log(JSON.parse(data.data.diasLaborales))
-
             this.registroInformation.stepDiasLaborales = JSON.parse(
-                data.data.diasLaborales
+                data.data.diasLaborales ?? undefined
             )
+
+            this.registroInformation.stepFormasAtencion =
+                JSON.parse(data.data.formasAtencion) ?? undefined
+
+            this.registroInformation.stepPeriodosAcademicos =
+                JSON.parse(data.data.periodosAcademicos) ?? undefined
         } else {
             console.log('SIN ID')
 
@@ -578,17 +581,11 @@ export class TicketService {
         }
     }
 
-    // async setCalDiasLaborales() {
-    //     const dias = await firstValueFrom(
-    //         this.httpService.getData(
-    //             `acad/calendarioAcademico/selCalDiasLaborales?iCalAcadId=${this.registroInformation.calendar.iCalAcadId}`
-    //         )
-    //     )
-
-    //     this.setTicketInformation({
-    //         ...JSON.parse(dias.data[0]["calDiasDatos"])
-    //     }, 'stepDiasLaborales')
-    // }
+    async selDias() {
+        return await firstValueFrom(
+            this.httpService.getData('acad/calendarioAcademico/selDias')
+        )
+    }
 
     async insCalDiasLaborales(dias) {
         dias = dias.map((dia) => ({
@@ -620,4 +617,131 @@ export class TicketService {
             )
         )
     }
+
+    async selTurnosModalidades() {
+        return await firstValueFrom(
+            this.httpService.getData(
+                'acad/calendarioAcademico/selTurnosModalidades'
+            )
+        )
+    }
+
+    async insCalFormasAtencion(formaAtencion) {
+        console.log(formaAtencion)
+        await firstValueFrom(
+            this.httpService.postData(
+                'acad/calendarioAcademico/insCalFormasAtencion',
+                {
+                    json: JSON.stringify({
+                        iTurnoId: formaAtencion.turno.iTurnoId,
+                        iModalServId: formaAtencion.modalidad.iModalServId,
+                        iCalAcadId:
+                            this.registroInformation.calendar.iCalAcadId,
+                        dtAperTurnoInicio: this.convertToSQLDateTime(
+                            formaAtencion.horaInicio
+                        ),
+                        dtAperTurnoFin: this.convertToSQLDateTime(
+                            formaAtencion.horaFin
+                        ),
+                    }),
+                }
+            )
+        )
+    }
+
+    async updFormasAtencion(formasAtencion) {
+        await firstValueFrom(
+            this.httpService.putData(
+                'acad/calendarioAcademico/updCalFormasAtencion',
+                {
+                    json: JSON.stringify({
+                        iCalTurnoId: formasAtencion.id,
+                        iTurnoId: formasAtencion.turno.iTurnoId,
+                        iModalServId: formasAtencion.modalidad.iModalServId,
+                        iCalAcadId:
+                            this.registroInformation.calendar.iCalAcadId,
+                        dtAperTurnoInicio: this.convertToSQLDateTime(
+                            formasAtencion.horaInicio
+                        ),
+                        dtAperTurnoFin: this.convertToSQLDateTime(
+                            formasAtencion.horaFin
+                        ),
+                    }),
+                }
+            )
+        )
+    }
+
+    async deleteFormasAtencion(formasAtencion) {
+        await firstValueFrom(
+            this.httpService.deleteData(
+                'acad/calendarioAcademico/deleteCalFormasAtencion',
+                {
+                    json: JSON.stringify({
+                        iCalTurnoId: formasAtencion.iCalTurnoId,
+                    }),
+                }
+            )
+        )
+    }
+
+    async selPeriodosFormativos() {
+        return await firstValueFrom(
+            this.httpService.getData(
+                'acad/calendarioAcademico/selPeriodosFormativos'
+            )
+        )
+    }
+
+    calculandoPeriodosFormativos(periodos, fase) {
+        console.log(periodos)
+        console.log(fase)
+
+        const inicio = new Date(fase.dtFaseInicio).getTime()
+        const fin = new Date(fase.dtFaseFin).getTime()
+
+        // Calcular la duración de cada periodo en milisegundos
+        const duracionPeriodo = (fin - inicio) / periodos.iPeriodoEvalCantidad
+
+        const periodosAcad = []
+
+        // Iterar para calcular las fechas de inicio y fin de cada periodo
+        for (let i = 0; i < periodos.iPeriodoEvalCantidad; i++) {
+            const inicioPeriodo = new Date(inicio + duracionPeriodo * i)
+            const finPeriodo = new Date(inicio + duracionPeriodo * (i + 1) - 1) // Ajuste para el último día del periodo
+
+            periodosAcad.push({
+                inicio: inicioPeriodo,
+                fin: finPeriodo,
+            })
+        }
+
+        return periodosAcad
+    }
+
+    async insPeriodosFormativos(periodosFormativos, fase) {
+
+        console.log(periodosFormativos)
+        const periodos = periodosFormativos.map((periodo) => ({
+            iFaseId: fase.id,
+            iPeriodoEvalId: periodosFormativos.iPeriodoEvalId,
+            dtPeriodoEvalAperInicio: this.toSQLDatetimeFormat(
+                periodo.starDate
+            ),
+            dtPeriodoEvalAperFin: this.toSQLDatetimeFormat(periodo.endDate),
+        }))
+
+        return await firstValueFrom(
+            this.httpService.postData(
+                'acad/calendarioAcademico/insCalPeriodosFormativos',
+                {
+                    json: JSON.stringify(periodos),
+                }
+            )
+        )
+    }
+
+    async updPeriodosFormativos() {}
+
+    async deletePeriodosFormativos() {}
 }

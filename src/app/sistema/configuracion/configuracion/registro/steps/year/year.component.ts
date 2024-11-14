@@ -8,7 +8,6 @@ import { TicketService } from '../../service/ticketservice'
 import { FormsModule } from '@angular/forms'
 import { ButtonModule } from 'primeng/button'
 import { CalendarModule } from 'primeng/calendar'
-import { httpService } from '../../../http/httpService'
 
 import {
     FormBuilder,
@@ -21,7 +20,6 @@ import {
     StepConfirmationService,
     type informationMessage,
 } from '@/app/servicios/confirm.service'
-import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { CheckboxModule } from 'primeng/checkbox'
 import { ConfirmDialogModule } from 'primeng/confirmdialog'
 import { FloatLabelModule } from 'primeng/floatlabel'
@@ -65,7 +63,6 @@ export class YearComponent implements OnInit {
     constructor(
         public ticketService: TicketService,
         private router: Router,
-        private httpService: httpService,
         private stepConfirmationService: StepConfirmationService,
         private fb: FormBuilder,
     ) {
@@ -143,8 +140,6 @@ export class YearComponent implements OnInit {
                 matriculaInicio,
                 matriculaFin,
                 matriculaResagados,
-                bCalAcadFaseRegular,
-                bCalAcadFaseRecuperacion,
                 fases_promocionales,
             } = this.ticketService.registroInformation.stepYear
 
@@ -207,7 +202,7 @@ export class YearComponent implements OnInit {
         }
 
         this.stepConfirmationService.confirmAction(
-            [() => this.saveInformation(), () => this.nextPage()],
+            {onAcceptCallbacks: [() => this.saveInformation(), () => this.nextPage()]},
             message
         )
     }

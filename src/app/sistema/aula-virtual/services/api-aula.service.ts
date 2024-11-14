@@ -71,6 +71,12 @@ export class ApiAulaService {
             data
         )
     }
+    guardarComentarioRespuesta(data) {
+        return this._http.post(
+            `${this.baseUrlApi}/aula-virtual/contenidos/foro/guardarComentarioRespuesta`,
+            data
+        )
+    }
     obtenerRespuestaForo(params: { iActTipoId; ixActivadadId }) {
         return this._http
             .get<any>(

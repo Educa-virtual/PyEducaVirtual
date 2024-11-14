@@ -47,6 +47,24 @@
                     padding-left: 2rem;
                 }
             }
+            &.layout-static-toggle {
+                .layout-sidebar {
+                    width: 80px;
+                    left: 0;
+                }
+                .layout-menu ul a span {
+                    display: none;
+                }
+
+                .layout-menu ul a i {
+                    font-size: 1.25rem;
+                }
+
+                .layout-main-container {
+                    margin-left: 0;
+                    padding-left: 7rem;
+                }
+            }
         }
 
         .layout-mask {
@@ -96,6 +114,35 @@
                 animation: fadein $transitionDuration;
             }
         }
+        // &.layout-mobile-inactive {
+        //     .layout-sidebar {
+        //         transform: translateX(-100%);
+        //         left: 0;
+        //     }
+
+        //     .layout-main-container {
+        //         margin-left: 0;
+        //         padding-left: 2rem;
+        //     }
+        // }
+        // &.layout-mobile-toggle {
+        //     .layout-sidebar {
+        //         width: 80px;
+        //         left: 0;
+        //     }
+        //     .layout-menu ul a span{
+        //         display: none;
+        //     }
+
+        //     .layout-menu ul a i{
+        //        font-size: 1.25rem;
+        //     }
+
+        //     .layout-main-container {
+        //         margin-left: 0;
+        //         padding-left: 7rem;
+        //     }
+        // }
     }
 }
 

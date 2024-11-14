@@ -13,7 +13,6 @@ import { AppMenuitemComponent } from './app.menuitem.component'
     styles: [
         `
             .footer {
-                position: absolute;
                 bottom: 70px;
                 @media (max-width: 780px) {
                     height: 110px;

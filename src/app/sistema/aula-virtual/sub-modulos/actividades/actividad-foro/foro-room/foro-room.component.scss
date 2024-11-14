@@ -11,8 +11,6 @@
     flex: 1;
 }
 
-//cdk-drop-list p-orderlist-list
-
 :host ::ng-deep .cdk-drop-list {
     max-height: 400px;
 }
@@ -38,7 +36,7 @@
     border-radius: 100px;
 }
 :host ::ng-deep .perfiles-list-item {
-    border: 2px solid #ccc; /* Cambia el color y grosor del borde según prefieras */
+    //border: 2px solid #ccc; /* Cambia el color y grosor del borde según prefieras */
     border-radius: 8px; /* Radio del borde */
 }
 
@@ -303,4 +301,21 @@
 }
 :host ::ng-deep .ng-star-inserted {
     width: 100%;
+}
+
+/*--------*/
+.TituloForo {
+    font-family: sans-serif;
+    font-size: 20px;
+    color: #2a2c34;
+    font-weight: bold;
+}
+.TituloCurso {
+    font-family: sans-serif;
+    font-size: 18px;
+    color: #2a2c34;
+    margin: 5px;
+}
+:host ::ng-deep .p-element {
+    margin: 0px;
 }

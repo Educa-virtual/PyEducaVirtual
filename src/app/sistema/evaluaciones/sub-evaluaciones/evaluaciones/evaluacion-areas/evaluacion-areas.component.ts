@@ -12,10 +12,7 @@ import { FormsModule } from '@angular/forms'
 import { CardModule } from 'primeng/card'
 import { CommonModule } from '@angular/common'
 import { DividerModule } from 'primeng/divider'
-// abajo
-//import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import { Subject, takeUntil } from 'rxjs'
-//import { ICurso } from '../interfaces/curso.interface'
 import { ICurso } from '../../../../aula-virtual/sub-modulos/cursos/interfaces/curso.interface'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { GeneralService } from '@/app/servicios/general.service'
@@ -28,10 +25,6 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog'
 import { ButtonModule } from 'primeng/button'
 import { ReactiveFormsModule } from '@angular/forms' // Importar ReactiveFormsModule
 import { DropdownModule } from 'primeng/dropdown'
-// interface NivelCurso {
-//     //iCursoId: int
-//     cCursoNombre: string
-// }
 interface NivelTipo {
     cNivelTipoNombre: string
     iNivelTipoId: string
@@ -50,10 +43,7 @@ export type Layout = 'list' | 'grid'
         CardModule,
         CommonModule,
         DividerModule,
-        //ContainerPageComponent,
         InputTextModule,
-        //Subject,
-        //ConstantesService,
         DataViewModule,
         CheckboxModule,
         ButtonModule,
@@ -111,8 +101,7 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
 
     ngOnInit(): void {
         console.log(this.compartirIdEvaluacionService.iEvaluacionId)
-        alert(this.compartirIdEvaluacionService.iEvaluacionId)
-        //***
+        //alert(this.compartirIdEvaluacionService.iEvaluacionId)
         console.log('Iniciando componente con config:', this._config.data)
         // Determinar el modo
         this.accion = this._config.data?.accion || 'crear'
@@ -151,105 +140,10 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
                 this.compartirIdEvaluacionService.iEvaluacionId
             )
         }
+        this.obtenerCursosEvaluacion(
+            this.compartirIdEvaluacionService.iEvaluacionId
+        )
     }
-    // Función para obtener los cursos
-    // obtenerCursos(): void {
-    //     this._apiEre
-    //         .obtenerCursos(this.params)
-    //         .pipe(takeUntil(this.unsubscribe$))
-    //         .subscribe({
-    //             next: (resp: any) => {
-    //                 console.log('Datos obtenidos de Cursos:', resp)
-    //                 // Asegúrate de que todos los cursos tengan la propiedad 'isSelected'
-    //                 this.cursos = resp.data.map((curso: any) => ({
-    //                     ...curso,
-    //                     isSelected: curso.isSelected || false, // Asigna un valor predeterminado
-    //                 }))
-    //                 // Forzar la detección de cambios para que se actualice la vista
-    //                 this.cdRef.detectChanges()
-    //             },
-    //             error: (err) => {
-    //                 console.error('Error al obtener cursos:', err)
-    //             },
-    //         })
-    // }
-    // Función para insertar los cursos seleccionados en la base de datos
-    // insertarCursos(): void {
-    //     const iEvaluacionId = this.compartirIdEvaluacionService.iEvaluacionId
-
-    //     // Llamar al servicio para insertar los cursos seleccionados
-    //     this._apiEre
-    //         .insertarCursos(iEvaluacionId, this.selectedCursos)
-    //         .pipe(takeUntil(this.unsubscribe$))
-    //         .subscribe({
-    //             next: (resp) => {
-    //                 console.log('Cursos insertados correctamente:', resp)
-    //             },
-    //             error: (err) => {
-    //                 console.error('Error al insertar los cursos:', err)
-    //             },
-    //         })
-    // }
-    // Función de prueba para verificar los datos seleccionados
-
-    // Función para insertar los cursos seleccionados en la base de datos
-    // insertarCursos(): void {
-    //     const iEvaluacionId = this.compartirIdEvaluacionService.iEvaluacionId
-
-    //     // Llamar al servicio para insertar los cursos seleccionados
-    //     this._apiEre
-    //         .insertarCursos(iEvaluacionId, this.selectedCursos)
-    //         .pipe(takeUntil(this.unsubscribe$))
-    //         .subscribe({
-    //             next: (resp) => {
-    //                 console.log('Cursos insertados correctamente:', resp)
-    //             },
-    //             error: (err) => {
-    //                 console.error('Error al insertar los cursos:', err)
-    //             },
-    //         })
-    // }
-    // Función de prueba para verificar los datos seleccionados
-    // insertarCursos(): void {
-    //     const iEvaluacionId = this.compartirIdEvaluacionService.iEvaluacionId
-
-    //     // Verifica el estado de los cursos seleccionados antes de enviarlos
-    //     console.log(
-    //         'Cursos seleccionados antes de enviar:',
-    //         this.selectedCursos
-    //     )
-
-    //     // Si `selectedCursos` está vacío, muestra un mensaje de advertencia
-    //     if (this.selectedCursos.length === 0) {
-    //         console.log('No hay cursos seleccionados')
-    //         return // No continuar si no hay cursos seleccionados
-    //     }
-
-    //     // Verifica que iEvaluacionId no esté vacío
-    //     console.log('iEvaluacionId:', iEvaluacionId)
-
-    //     // Enviar los datos seleccionados al backend
-    //     this._apiEre
-    //         .insertarCursos(this.params, this.selectedCursos)
-    //         .pipe(takeUntil(this.unsubscribe$))
-    //         .subscribe({
-    //             next: (resp: any) => {
-    //                 console.log('Respuesta de la inserción de cursos:', resp)
-
-    //                 // Asegúrate de que cada curso tenga la propiedad 'isSelected' inicializada
-    //                 this.cursos = resp.data.map((curso) => ({
-    //                     ...curso,
-    //                     isSelected: false, // Inicializa 'isSelected' a false por defecto
-    //                 }))
-
-    //                 console.log('Cursos con propiedad isSelected:', this.cursos) // Verifica los cursos actualizados
-    //             },
-    //             error: (err) => {
-    //                 console.error('Error al insertar los cursos:', err)
-    //             },
-    //         })
-    // }
-
     // Obtener los cursos
     obtenerCursos(): void {
         console.log('Ejecutando obtenerCursos') // Para verificar si se está llamando
@@ -302,12 +196,9 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
     // Función para enviar los cursos seleccionados al backend
     insertarCursos(): void {
         const iEvaluacionId = this.compartirIdEvaluacionService.iEvaluacionId
-        // Filter out selected courses based on `isSelected` property
         this.selectedCursos = this.cursos
             .filter((curso) => curso.isSelected)
-            .map((curso) => ({ iCursoId: curso.iCursoId })) // Only include iCursoId
-
-        // Check the selected courses before sending to backend
+            .map((curso) => ({ iCursoId: curso.iCursoId }))
         console.log(
             'Cursos seleccionados antes de enviar:',
             this.selectedCursos
@@ -318,8 +209,6 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
             return
         }
         console.log('iEvaluacionId:', iEvaluacionId)
-
-        // Send selected data to backend
         this._apiEre
             .insertarCursos({
                 iEvaluacionId: iEvaluacionId,
@@ -347,34 +236,7 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
                 },
             })
     }
-    // Función para obtener los cursos en modo 'ver' o 'editar' CURSO BIEN
-    // obtenerCursosEvaluacion(): void {
-    //     const iEvaluacionId = this.compartirIdEvaluacionService.iEvaluacionId
-    //     console.log(
-    //         'AQUI ESTA EL ID DE OBTENER CURSOS EVALAUCOIN',
-    //         iEvaluacionId
-    //     )
-    //     this._apiEre
-    //         .obtenerCursosEvaluacion(iEvaluacionId) // Llamada al backend con el ID de evaluación
-    //         .pipe(takeUntil(this.unsubscribe$))
-    //         .subscribe({
-    //             next: (resp: any) => {
-    //                 console.log(
-    //                     'Cursos obtenidos desde el backend:',
-    //                     resp.cursos
-    //                 )
-    //                 this.cursos = resp.cursos.map((curso: any) => ({
-    //                     ...curso,
-    //                     isSelected: curso.isSelected === '1' ? true : false, // Asegúrate de convertir '1' a true y '0' a false
-    //                 }))
-    //                 // Forzar detección de cambios para que se actualice la vista si es necesario
-    //                 this.cdRef.markForCheck()
-    //             },
-    //             error: (err) => {
-    //                 console.error('Error al obtener cursos:', err)
-    //             },
-    //         })
-    // }
+
     obtenerEvaluacionesCopia(): void {
         this._apiEre
             .obtenerEvaluacionesCopia(this.params)
@@ -471,27 +333,9 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
                 },
             })
     }
-    //Usando Promise
-    // Función para obtener los cursos de la evaluación original
+    // Usando Promise : Función para obtener los cursos de la evaluación original
     obtenerCursosEvaluacion(evaluacionId: number): Promise<any[]> {
         return new Promise((resolve, reject) => {
-            // this._apiEre
-            //     .obtenerCursosEvaluacion(evaluacionId) // Llamada al backend para obtener los cursos de la evaluación
-            //     .pipe(takeUntil(this.unsubscribe$))
-            //     .subscribe({
-            //         next: (resp: any) => {
-            //             console.log(
-            //                 'Cursos obtenidos desde el backend:',
-            //                 resp.cursos
-            //             )
-            //             resolve(resp.cursos) // Resolver la promesa con los cursos obtenidos
-            //         },
-            //         error: (err) => {
-            //             console.error('Error al obtener los cursos:', err)
-            //             reject(err) // Rechazar la promesa en caso de error
-            //         },
-            //     })
-
             this._apiEre
                 .obtenerCursosEvaluacion(evaluacionId) // Llamada al backend con el ID de evaluación
                 .pipe(takeUntil(this.unsubscribe$))
@@ -579,9 +423,5 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
     closeModal(data) {
         this._ref.close(data)
         console.log('Formulario de evaluación cancelado')
-        // this.closeModalEvent.emit(null) // Emitir el evento de cierre del modal
-        // console.log('Formulario de evaluación cancelado')
-        // Resetear el formulario si es necesario
-        //this.evaluacionFormGroup.reset()
     }
 }

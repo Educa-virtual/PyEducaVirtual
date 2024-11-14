@@ -1,8 +1,5 @@
-//Agregar Servicio de Evaluacion
 import { CompartirIdEvaluacionService } from './../../../services/ereEvaluaciones/compartir-id-evaluacion.service'
 import { Component, ChangeDetectorRef, inject, OnInit } from '@angular/core'
-// import { Product } from 'src/app/demo/api/product'
-// import { ProductService } from 'src/app/demo/service/product.service'
 import { PickListModule } from 'primeng/picklist'
 import { ApiEvaluacionesRService } from '../../../services/api-evaluaciones-r.service'
 import { Subject, takeUntil } from 'rxjs'
@@ -57,8 +54,7 @@ export class IeparticipaComponent implements OnInit {
         bPreguntaEstado: -1,
     }
     public data = []
-    //accion: string // Nueva propiedad para controlar la acción
-    //esModoEdicion: boolean = false // Para controlar el modo edición
+
     private _apiEre = inject(ApiEvaluacionesRService)
     public sourceProducts: any[] = [] // IEs no participantes
     public targetProducts: any[] = [] // IEs participantes
@@ -70,7 +66,7 @@ export class IeparticipaComponent implements OnInit {
     selectedEvaluacionCopia: EvaluacionCopia | number
 
     itemsToDelete: any
-    //Evaluaciones Copia
+
     evaluaciones: any[] = [] // Array para almacenar las evaluaciones obtenidas del API
     selectedEvaluacionId: number // ID de la evaluación seleccionada en el dropdown
 

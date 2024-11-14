@@ -63,17 +63,6 @@ export class EvaluacionesComponent implements OnInit {
     visible: boolean = false
 
     accionesPrincipal: IActionContainer[] = [
-        /*{
-            labelTooltip: 'Asignar Matriz',
-            text: 'Asignar Matriz',
-            icon: {
-                name: 'matGroupWork',
-                size: 'xs',
-                color: '',
-            },
-            accion: 'asignar',
-            class: 'p-button-primary',
-        },*/
         {
             labelTooltip: 'Agregar evaluación',
             text: 'Agregar Evaluación',
@@ -188,12 +177,6 @@ export class EvaluacionesComponent implements OnInit {
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
                 next: (resp: unknown) => {
-                    /*.competencias = resp['data']
-                    this.competencias.unshift({
-                        iCompentenciaId: 0,
-                        cCompetenciaDescripcion: 'Todos',
-                    })*/
-
                     this.data = resp['data']
                     //alert(JSON.stringify(this.data))
                     //this.sourceProducts = this.data

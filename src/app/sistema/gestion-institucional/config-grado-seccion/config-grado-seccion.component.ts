@@ -68,7 +68,7 @@ export class ConfigGradoSeccionComponent implements OnInit {
         // cYAcadNombre: string
     }[]
     sede: any[]
-
+    enlace: string
     visible: boolean = false
     searchText: string = ''
     filteredItems: string[] = []

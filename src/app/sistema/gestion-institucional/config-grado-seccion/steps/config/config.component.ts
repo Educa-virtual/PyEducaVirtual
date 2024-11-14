@@ -92,6 +92,7 @@ export class ConfigComponent implements OnInit {
         this.configTipo = this.stepService.configTipo
     }
     ngOnInit(): void {
+        const url = this.query.baseUrlPublic()
         try {
             this.form = this.fb.group({
                 iConfigId: [this.configuracion[0].iConfigId], // tabla acad.configuraciones
@@ -128,6 +129,15 @@ export class ConfigComponent implements OnInit {
             console.error('Error initializing form:', error)
             this.router.navigate(['/gestion-institucional/configGradoSeccion'])
         }
+        if (
+            !this.configuracion[0].cConfigUrlRslAprobacion ||
+            this.configuracion[0].cConfigUrlRslAprobacion.trim() === ''
+        ) {
+            this.enlace = ''
+        } else {
+            this.enlace =
+                url + '/' + this.configuracion[0].cConfigUrlRslAprobacion
+        }
 
         this.getServicioAtencion()
     }
@@ -153,12 +163,11 @@ export class ConfigComponent implements OnInit {
                         ruta: item.name,
                     })
 
-                    console.log(this.filesUrl, 'files URL opcion')
                     this.form
                         .get('cConfigUrlRslAprobacion')
-                        ?.setValue(this.filesUrl)
+                        ?.setValue(this.filesUrl[0].ruta)
+
                     this.enlace = url + '/' + this.filesUrl[0].ruta
-                    console.log(url, 'url', url + this.filesUrl[0].ruta)
                 } else {
                     alert('No puede subir mas de un archivo')
                 }

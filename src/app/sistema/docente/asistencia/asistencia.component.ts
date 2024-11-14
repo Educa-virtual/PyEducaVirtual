@@ -148,10 +148,6 @@ export class AsistenciaComponent implements OnInit {
         // this.verReporte = true
     }
 
-    modalReporte() {
-        this.verReporte = true
-    }
-
     /**
      * updateActividad
      * * Muestra una ventana Modal para poder cambiar el nombre de la programacion de actividad

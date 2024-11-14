@@ -1,36 +1,36 @@
 <div class="grid">
-    <p-toolbar class="col-12">
-        <div class="p-toolbar-group-start">
-            <h4 class="text-primary font-bold">ACTIVIDADES NO LECTIVAS</h4>
-        </div>
-        <div class="p-toolbar-group-end">
-            <button
-                type="button"
-                pButton
-                icon="pi pi-plus"
-                class="p-button-success"
-                (click)="accionBtnItem({ accion: 'agregar', item: [] })"
-            >
-                &nbsp;Agregar
-            </button>
-        </div>
-    </p-toolbar>
     <div class="col-12">
-        <p-messages
-            [(value)]="mensaje"
-            [enableService]="false"
-            [closable]="false"
-        />
-    </div>
-    <div class="col-12">
-        <app-table-primeng
-            [columnas]="columns"
-            [actions]="actions"
-            [data]="data"
-            [showCaption]="true"
-            [tableStyle]="null"
+        <app-container-page
+            title="ACTIVIDADES NO LECTIVAS"
+            [actions]="actionsContainer"
             (accionBtnItem)="accionBtnItem($event)"
-        ></app-table-primeng>
+        >
+            <p-messages
+                [(value)]="mensaje"
+                [enableService]="false"
+                [closable]="false"
+            />
+            @if (informacion) {
+                <div class="text-primary">
+                    Total de horas:
+                    {{ informacion?.nTipoDedicaHorasSemanalMensual }} | Horas
+                    Lectivas: {{ informacion?.nTipoDedicaHorasLectivas }} |
+                    Horas No Lectivas:
+                    {{ informacion?.nTipoDedicaHorasNoLectivas }}| Total de
+                    Horas de Actividades No Lectivas:
+                    {{ informacion?.cTotal || 0 }}
+                </div>
+            }
+
+            <app-table-primeng
+                [columnas]="columns"
+                [actions]="actions"
+                [data]="data"
+                [showCaption]="true"
+                [tableStyle]="null"
+                (accionBtnItem)="accionBtnItem($event)"
+            ></app-table-primeng>
+        </app-container-page>
     </div>
 </div>
 <app-form-actividades-no-lectivas
@@ -41,3 +41,4 @@
     [tiposCargaNoLectivas]="tiposCargaNoLectivas"
     (accionBtnItem)="accionBtnItem($event)"
 ></app-form-actividades-no-lectivas>
+<p-toast />

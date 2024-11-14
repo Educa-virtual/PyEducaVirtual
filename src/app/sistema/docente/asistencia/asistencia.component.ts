@@ -45,7 +45,6 @@ export class AsistenciaComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.getObtenerAsitencias()
         this.getFechasImportantes()
     }
 
@@ -104,26 +103,42 @@ export class AsistenciaComponent implements OnInit {
         this.events.map((evento) => {
             if (evento.grupo == valor && checkbox.mostrar == true) {
                 evento.display = 'block'
-                console.log(evento)
             }
             if (evento.grupo == valor && checkbox.mostrar == false) {
                 evento.display = 'none'
-                console.log(evento)
             }
         })
         this.calendarOptions.events = Object.assign([], this.events)
     }
 
+    mostrarModal: number = 0
+    fechaCaptura = this.fechaActual
     // * Se encarga de seleccionar la fecha de Asistencia
     handleDateClick(item) {
         this.fechaActual = item.dateStr
         const dia = new Date(this.fechaActual + 'T00:00:00')
         this.limitado = dia.getDay()
         this.fechaEspecifica = dia.toLocaleDateString('es-PE', this.confFecha)
+
         if (this.limitado != 6 && this.limitado != 0) {
-            this.visible = true
-            this.getAsistencia(item.dateStr)
+            if (this.fechaCaptura == this.fechaActual) {
+                this.mostrarModal++
+                if (this.mostrarModal == 1) {
+                    this.verAsistencia = true
+                    this.mostrarModal = 0
+                    this.fechaCaptura = ''
+                    this.getAsistencia(item.dateStr)
+                }
+                this.mostrarModal = 0
+            } else {
+                this.fechaCaptura = this.fechaActual
+                this.mostrarModal = 0
+            }
         }
+    }
+
+    modalReporte() {
+        this.verReporte = true
     }
 
     /**
@@ -131,29 +146,169 @@ export class AsistenciaComponent implements OnInit {
      * * Muestra una ventana Modal para poder cambiar el nombre de la programacion de actividad
      */
 
-    visible: boolean = false // * Muestra la ventana modal
+    fechaDia = new Date()
+    verReporte = false
+    verAsistencia: boolean = false // * Muestra la ventana modal
     strId: string = '' // * Almacena el id de la actividad
     strTitulo: string = '' // * Almacena el titulo de la actividad
 
     editActividad(id: any, titulo: any) {
-        this.visible = true
+        this.verAsistencia = true
         this.strId = id
         this.strTitulo = titulo
     }
 
     escapeModal() {
-        this.visible = false
+        this.verAsistencia = false
         this.strId = ''
         this.strTitulo = ''
     }
 
+    captura = ''
+    capturarMes = 0
+    countAsistencias() {
+        this.events.filter((index) => {
+            this.captura = index.title.split(' : ')
+            const capturar = this.captura[0]
+            const suma = parseInt(this.captura[1])
+            this.capturarMes = new Date(index.start).getMonth() + 1
+            const fechas = this.formatoFecha.getMonth() + 1
+
+            this.leyenda[0].contar +=
+                capturar == 'Asistio' && this.capturarMes == fechas ? suma : 0
+            this.leyenda[1].contar +=
+                capturar == 'Inasistencia' && this.capturarMes == fechas
+                    ? suma
+                    : 0
+            this.leyenda[2].contar +=
+                capturar == 'Inasistencia Justificada' &&
+                this.capturarMes == fechas
+                    ? suma
+                    : 0
+            this.leyenda[3].contar +=
+                capturar == 'Tardanza' && this.capturarMes == fechas ? suma : 0
+            this.leyenda[4].contar +=
+                capturar == 'Tardanza Justificada' && this.capturarMes == fechas
+                    ? suma
+                    : 0
+            this.leyenda[5].contar +=
+                capturar == 'Sin Registro' && this.capturarMes == fechas
+                    ? suma
+                    : 0
+        })
+    }
+    countAsistenciasModal() {
+        // devuelve en 0 las cantidades de tipos de asistencias
+        this.leyendaModal.forEach((index) => {
+            return (index.contar = 0)
+        })
+
+        this.data.filter((index) => {
+            const suma = 1
+            this.captura = index.iTipoAsiId
+            this.leyendaModal[0].contar += this.captura == '1' ? suma : 0
+            this.leyendaModal[1].contar += this.captura == '3' ? suma : 0
+            this.leyendaModal[2].contar += this.captura == '4' ? suma : 0
+            this.leyendaModal[3].contar += this.captura == '2' ? suma : 0
+            this.leyendaModal[4].contar += this.captura == '9' ? suma : 0
+            this.leyendaModal[5].contar += this.captura == '7' ? suma : 0
+        })
+    }
+
     leyenda = [
-        { significado: 'Asistio', simbolo: 'X' },
-        { significado: 'Inasistencia', simbolo: 'I' },
-        { significado: 'Inasistencia Justificada', simbolo: 'J' },
-        { significado: 'Tardanza', simbolo: 'T' },
-        { significado: 'Tardanza Justificada', simbolo: 'P' },
-        { significado: 'Sin Registro', simbolo: '-' },
+        {
+            significado: 'Asistio',
+            simbolo: 'X',
+            contar: 0,
+            divColor: 'green-50-boton',
+            bgColor: 'green-boton',
+        },
+        {
+            significado: 'Inasistencia',
+            simbolo: 'I',
+            contar: 0,
+            divColor: 'red-50-boton',
+            bgColor: 'red-boton',
+        },
+        {
+            significado: 'Inasistencia Justificada',
+            simbolo: 'J',
+            contar: 0,
+            divColor: 'primary-50-boton',
+            bgColor: 'primary-boton',
+        },
+        {
+            significado: 'Tardanza',
+            simbolo: 'T',
+            contar: 0,
+            divColor: 'orange-50-boton',
+            bgColor: 'orange-boton',
+        },
+        {
+            significado: 'Tardanza Justificada',
+            simbolo: 'P',
+            contar: 0,
+            divColor: 'yellow-50-boton',
+            bgColor: 'yellow-boton',
+        },
+        {
+            significado: 'Sin Registro',
+            simbolo: '-',
+            contar: 0,
+            divColor: 'cyan-50-boton',
+            bgColor: 'cyan-boton',
+        },
+    ]
+
+    leyendaModal = [
+        {
+            significado: 'Asistio',
+            iTipoAsiId: '1',
+            simbolo: 'X',
+            contar: 0,
+            divColor: 'green-50-boton',
+            bgColor: 'green-boton',
+        },
+        {
+            significado: 'Inasistencia',
+            iTipoAsiId: '3',
+            simbolo: 'I',
+            contar: 0,
+            divColor: 'red-50-boton',
+            bgColor: 'red-boton',
+        },
+        {
+            significado: 'Inasistencia Justificada',
+            iTipoAsiId: '4',
+            simbolo: 'J',
+            contar: 0,
+            divColor: 'primary-50-boton',
+            bgColor: 'primary-boton',
+        },
+        {
+            significado: 'Tardanza',
+            iTipoAsiId: '2',
+            simbolo: 'T',
+            contar: 0,
+            divColor: 'orange-50-boton',
+            bgColor: 'orange-boton',
+        },
+        {
+            significado: 'Tardanza Justificada',
+            iTipoAsiId: '9',
+            simbolo: 'P',
+            contar: 0,
+            divColor: 'yellow-50-boton',
+            bgColor: 'yellow-boton',
+        },
+        {
+            significado: 'Sin Registro',
+            iTipoAsiId: '7',
+            simbolo: '-',
+            contar: 0,
+            divColor: 'cyan-50-boton',
+            bgColor: 'cyan-boton',
+        },
     ]
 
     /**
@@ -194,12 +349,12 @@ export class AsistenciaComponent implements OnInit {
      */
 
     tipoMarcado = [
-        { iTipoAsiId: '7', cTipoAsiLetra: '-' },
-        { iTipoAsiId: '1', cTipoAsiLetra: 'X' },
-        { iTipoAsiId: '2', cTipoAsiLetra: 'T' },
-        { iTipoAsiId: '3', cTipoAsiLetra: 'I' },
-        { iTipoAsiId: '4', cTipoAsiLetra: 'J' },
-        { iTipoAsiId: '9', cTipoAsiLetra: 'P' },
+        { iTipoAsiId: '7', cTipoAsiLetra: '-', bgcolor: 'bt-cyan' },
+        { iTipoAsiId: '1', cTipoAsiLetra: 'X', bgcolor: 'bt-green' },
+        { iTipoAsiId: '2', cTipoAsiLetra: 'T', bgcolor: 'bt-orange' },
+        { iTipoAsiId: '3', cTipoAsiLetra: 'I', bgcolor: 'bt-red' },
+        { iTipoAsiId: '4', cTipoAsiLetra: 'J', bgcolor: 'bt-primary' },
+        { iTipoAsiId: '9', cTipoAsiLetra: 'P', bgcolor: 'bt-yellow' },
     ]
 
     iTipoAsiId = 0
@@ -210,21 +365,34 @@ export class AsistenciaComponent implements OnInit {
             this.data[index]['iTipoAsiId'] = this.tipoMarcado[0]['iTipoAsiId']
             this.data[index]['cTipoAsiLetra'] =
                 this.tipoMarcado[0]['cTipoAsiLetra']
+            this.data[index]['bgcolor'] = this.tipoMarcado[0]['bgcolor']
         }
 
         this.iTipoAsiId = this.tipoMarcado.findIndex(
             (tipo) => tipo.iTipoAsiId == this.data[index]['iTipoAsiId']
         )
         this.indice = (this.iTipoAsiId + 7) % 6
+
         this.data[index]['iTipoAsiId'] =
             this.tipoMarcado[this.indice]['iTipoAsiId']
         this.data[index]['cTipoAsiLetra'] =
             this.tipoMarcado[this.indice]['cTipoAsiLetra']
-        this.data[index]['dtCtrlAsistencia'] = this.fechaActual
+        this.data[index]['bgcolor'] = this.tipoMarcado[this.indice]['bgcolor']
+
+        this.countAsistenciasModal()
     }
 
     goAreasEstudio() {
         this.router.navigate(['aula-virtual/areas-curriculares'])
+    }
+
+    estado = {
+        '1': 'bt-green',
+        '2': 'bt-orange',
+        '3': 'bt-red',
+        '4': 'bt-primary',
+        '7': 'bt-cyan',
+        '9': 'bt-yellow',
     }
 
     accionBtnItem(elemento): void {
@@ -238,14 +406,19 @@ export class AsistenciaComponent implements OnInit {
             case 'get_data':
                 this.getObtenerAsitencias()
                 this.getFechasImportantes()
-                this.visible = false
+                this.verAsistencia = false
                 break
             case 'get_asistencia':
                 this.data = item
+                this.data.map((index) => {
+                    index.bgcolor = this.estado[index.iTipoAsiId]
+                })
+                this.countAsistenciasModal()
                 break
             case 'get_fecha_importante':
                 this.calendarOptions.events = item
                 this.events = item
+                this.countAsistencias()
                 break
             default:
                 break
@@ -277,7 +450,7 @@ export class AsistenciaComponent implements OnInit {
 
         this.strId = ''
         this.strTitulo = ''
-        this.visible = false
+        this.verAsistencia = false
     }
 
     // * Registro de asistencia del alumno

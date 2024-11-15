@@ -195,9 +195,9 @@ export class ForoRoomComponent implements OnInit {
         },
     ]
     ngOnInit(): void {
-        this.websocketService.messages$.subscribe((msg: any) => {
-            this.messageWebs.push(`Servidor: ${msg}`)
-        })
+        // this.websocketService.messages$.subscribe((msg: any) => {
+        //     this.messageWebs.push(`Servidor: ${msg}`)
+        // })
         // this.websocketService.messages$.subscribe((message: any) => {
         //     // Agregar el mensaje recibido a la lista de comentarios
         //     this.comments.push(message);  // Asume que tienes una lista `comments`

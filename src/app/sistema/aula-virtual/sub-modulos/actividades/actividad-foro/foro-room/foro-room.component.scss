@@ -317,6 +317,7 @@
     align-self: flex-start; /* Alinea el botón a la izquierda */
 }
 .button-container {
+    display: flex;
     margin-top: 10px; /* Espacio entre el editor y el botón */
 }
 

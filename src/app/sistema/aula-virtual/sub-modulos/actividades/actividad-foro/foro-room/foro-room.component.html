@@ -845,13 +845,19 @@
                                                     respuestas?.cNombreEstudiante
                                                 }}
                                             </td>
-                                            <td class="">
+                                            <td
+                                                class=""
+                                                style="text-align: justify"
+                                            >
                                                 {{
                                                     respuestas?.cForoRptaRespuesta
                                                         | removeHTML
                                                 }}
                                             </td>
-                                            <td>
+                                            <td
+                                                class="font-bold"
+                                                style="text-align: center"
+                                            >
                                                 {{
                                                     respuestas?.cEscalaCalifNombre
                                                 }}
@@ -864,6 +870,15 @@
                                             </td>
                                             <td style="text-align: center">
                                                 <p-button
+                                                    icon="pi pi-book"
+                                                    [rounded]="true"
+                                                    [text]="true"
+                                                    severity="secondary"
+                                                    (click)="
+                                                        openModal(respuestas)
+                                                    "
+                                                />
+                                                <!-- <p-button
                                                     (click)="
                                                         openModal(respuestas)
                                                     "
@@ -874,7 +889,7 @@
                                                     [style]="{
                                                         'margin-right': '.5em',
                                                     }"
-                                                />
+                                                /> -->
 
                                                 <!-- <div
                                                 class="w-1rem h-1rem border-circle ml-3"
@@ -901,7 +916,7 @@
                             </tr>
                         </ng-template>
                     </p-table>
-                    <div class="card">
+                    <!-- <div class="card">
                         <app-table-primeng
                             [columnas]="columnas"
                             [data]="data"
@@ -912,7 +927,7 @@
                             <ng-container slot="caption-content">
                             </ng-container>
                         </app-table-primeng>
-                    </div>
+                    </div> -->
                 </form>
             </p-tabPanel>
         }
@@ -929,22 +944,18 @@
     class="p-fluid"
 >
     <form [formGroup]="foroFormComnt" class="flex flex-column gap-3 w-full">
-        <div class="grid">
-            <!-- <div class="col-12">
-                <p-messages
-                    [(value)]="semana"
-                    [enableService]="false"
-                    [closable]="false"
-                />
-            </div> -->
+        <div class="grid pt-3">
             <!-- Mostrar el título -->
-            <div class="col-8 flex flex-column gap-2">
+
+            <div class="col-8 flex flex-column gap-2 conntResp">
+                <label for="" class="font-bold">Respuesta estudiante:</label>
                 <!-- <app-common-input
                     [controlKey]="'cForoRptaRespuesta'"
                     label="Comentario"
                 /> -->
-                comentario: "{{ estudianteSelect?.cForoRptaRespuesta }}"
+                "{{ estudianteSelect?.cForoRptaRespuesta | removeHTML }}"
             </div>
+
             <div class="col-4 flex flex-column gap-2">
                 <label for="calificacion">Calificación</label>
                 <p-dropdown
@@ -974,8 +985,9 @@
             </div>
         </div>
     </form>
-
-    <div class="flex justify-content-end gap-2 pt-3">
+    <!-- <div class="">
+        
+        flex justify-content-end gap-2 pt-3 
         <button
             pButton
             pRipple
@@ -983,17 +995,31 @@
             icon="pi pi-times"
             class="p-button-secondary"
             type="button"
-            size="small"
+            
         ></button>
-        <!-- (click)="closeModal(null)" -->
+        (click)="closeModal(null)"
         <button
             pButton
             pRipple
             label="Guardar"
             icon="pi pi-check"
-            size="small"
+            
             class="p-button-primary"
             (click)="submit()"
         ></button>
+    </div> -->
+    <div class="reply-container">
+        <div class="button-container">
+            <button
+                pButton
+                pRipple
+                type="button"
+                label="Enviar"
+                icon="pi pi-send"
+                size="small"
+                class="p-button-primary"
+                (click)="submit()"
+            ></button>
+        </div>
     </div>
 </p-dialog>

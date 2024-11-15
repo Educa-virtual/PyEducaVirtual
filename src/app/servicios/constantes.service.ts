@@ -574,9 +574,37 @@ const registro_asistencia = [
 //     },
 // ]
 
-const bienestar = [
+const administracion = [
+    inicio,
     {
-        items: [inicio],
+        label: 'Administracion del Sistema',
+        icon: 'pi pi-fw pi-cog',
+        items: [
+            {
+                label: 'Registro Calendario Escolar',
+                icon: 'pi pi-fw pi-cog',
+                routerLink: ['/gestion-institucional/calendarioAcademico'],
+            },
+
+            {
+                label: 'Configuracion de grados y secciones',
+                icon: 'pi pi-fw pi-cog',
+                routerLink: ['/gestion-institucional/configGradoSeccion'],
+            },
+        ],
+        //ConfigGradoSeccion
+    },
+
+    {
+        label: 'Calendario Académico',
+        icon: 'pi pi-fw pi-cog',
+        items: [
+            {
+                label: 'Registro de año escolar',
+                icon: 'pi pi-fw pi-cog',
+                routerLink: ['/configuracion/configuracion'],
+            },
+        ],
     },
 ]
 
@@ -639,7 +667,7 @@ export class ConstantesService {
             case 7:
                 return docente
             case 4:
-                return bienestar
+                return administracion
             default:
                 return first
         }

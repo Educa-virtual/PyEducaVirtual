@@ -1,77 +1,93 @@
 <div class="grid">
     <p-toolbar class="col-12">
-        <div class="p-toolbar-group-start">
-            <h4 class="text-primary font-bold">
+        <div class="block">
+            <h4 class="text-primary text-white font-bold block">
                 Asistencia del Curso: {{ cCursoNombre }}
             </h4>
-        </div>
-        <div class="p-toolbar-group-end">
-            <p-button
-                icon="pi pi-file-pdf"
-                size="small"
-                [text]="true"
-                label="Mensual"
-                tooltipPosition="left"
-                (click)="getReportePdf(1)"
-            />
-            <p-button
-                icon="pi pi-file-pdf"
-                size="small"
-                [text]="true"
-                label="Semanal"
-                tooltipPosition="left"
-                (click)="getReportePdf(2)"
-            />
-            <p-button
-                icon="pi pi-file-pdf"
-                size="small"
-                [text]="true"
-                label="Diario"
-                tooltipPosition="left"
-                (click)="getReportePdf(3)"
-            />
+            <div class="text-primary text-white font-bold block">
+                Nivel: Secudanria | Ciclo: IV | Grado: 2do | Seccion: B
+            </div>
         </div>
     </p-toolbar>
+
     <div class="col-12">
         <div class="card mb-2">
-            <div class="flex font-bold pb-2">MIS CALENDARIOS</div>
-            <div class="flex">
-                <div *ngFor="let category of categories" class="flex mr-2">
-                    <p-checkbox
-                        [(ngModel)]="category.mostrar"
-                        (onChange)="filterCalendario(category, category.valor)"
-                        [label]="category.name"
-                        name="group"
-                        [binary]="true"
-                        [styleClass]="category.estilo"
-                    />
+            <div class="grid">
+                <div class="col-11">
+                    <div class="flex block p-2">
+                        <div class="font-bold pb-2">MIS CALENDARIOS</div>
+                    </div>
+
+                    <div class="flex block p-2">
+                        <div
+                            *ngFor="let category of categories"
+                            class="flex mr-2"
+                        >
+                            <p-checkbox
+                                [(ngModel)]="category.mostrar"
+                                (onChange)="
+                                    filterCalendario(category, category.valor)
+                                "
+                                [label]="category.name"
+                                name="group"
+                                [binary]="true"
+                                [styleClass]="category.estilo"
+                            />
+                        </div>
+                    </div>
+
+                    <div
+                        class="flex block flex-wrap column-gap-2 row-gap-2 p-2"
+                    >
+                        <div *ngFor="let lista of leyenda" class="flex mr-1">
+                            <p-inputGroup class="grupo">
+                                <button
+                                    type="button"
+                                    size="small"
+                                    pButton
+                                    [ngClass]="lista.bgColor"
+                                >
+                                    {{ lista.simbolo }}
+                                </button>
+                                <div [ngClass]="lista.divColor">
+                                    {{ lista.significado }}
+                                </div>
+                                <button
+                                    type="button"
+                                    size="small"
+                                    pButton
+                                    [ngClass]="lista.bgColor"
+                                >
+                                    {{ lista.contar }}
+                                </button>
+                            </p-inputGroup>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="flex mt-2">
-                <div class="flex font-bold mr-1">LEYENDA:</div>
-                <div *ngFor="let lista of leyenda" class="flex mr-1">
-                    [{{ lista.simbolo }}] {{ lista.significado }}
+                <div class="col-1">
+                    <p-button
+                        icon="pi pi-file-pdf"
+                        size="small"
+                        [text]="true"
+                        label="Mensual"
+                        tooltipPosition="left"
+                        (click)="modalReporte()"
+                    />
+
+                    <p-button
+                        icon="pi pi-chart-bar"
+                        size="small"
+                        [text]="true"
+                        label="estadistica"
+                        tooltipPosition="left"
+                        (click)="getReportePdf(2)"
+                    />
                 </div>
             </div>
         </div>
         <full-calendar [options]="calendarOptions">
             <ng-template #eventContent let-arg>
                 <div class="fc-event-time">{{ arg.timeText }}</div>
-                <!-- @if (arg.event.extendedProps.grupo === 'actividades') {
-                    <p-button
-                        styleClass="agregar"
-                        severity="warning"
-                        (click)="
-                            editActividad(
-                                arg.event.extendedProps.ident,
-                                arg.event.title
-                            )
-                        "
-                        >{{ arg.event.title }}
-                    </p-button>
-                } @else {
-                    <div class="fc-event-title">{{ arg.event.title }}</div>
-                } -->
                 <div class="fc-event-title">{{ arg.event.title }}</div>
             </ng-template>
         </full-calendar>
@@ -79,59 +95,151 @@
 </div>
 
 <p-dialog
-    header="Lista de Estudiantes"
+    header="Asistencia del Dia : {{ fechaEspecifica }}"
     [modal]="true"
-    [(visible)]="visible"
+    class="asistenciaModal"
+    [(visible)]="verAsistencia"
     [style]="{ width: '50rem' }"
 >
-    <div class="flex flex-column align-items-center mb-3">
+    <div class="flex flex-column mb-3 display">
         <div class="flex">
-            <h4 class="text-center font-bold">{{ fechaEspecifica }}</h4>
+            <div class="flex-1 flex-column font-bold p-2">
+                Curso: {{ cCursoNombre }}
+            </div>
         </div>
-        <p-table class="flex mt-1" [value]="data">
-            <ng-template pTemplate="header">
-                <tr style="height: 13px">
-                    <th style="width: 15rem">Nombres y Apellidos</th>
-                    <th style="width: 5px">MARCAR ASISTENCIA</th>
-                </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
-                <tr
-                    [style]="
-                        valSelect2 === rowIndex
-                            ? 'background-color:var(--green-500) !important;color:white'
-                            : 'background-color:white'
-                    "
-                    (click)="valSelect2 = rowIndex"
-                >
-                    <td>{{ item.nombrecompleto }}</td>
-                    <td>
-                        <p-button
-                            *ngIf="item.cTipoAsiLetra; else noboton"
-                            label="{{ item.cTipoAsiLetra }}"
-                            size="small"
-                            (click)="changeAsistencia(rowIndex)"
-                        />
-                        <ng-template #noboton>
+        <div class="flex">
+            <div class="flex-1 flex-column font-bold p-2">Nivel:</div>
+            <div class="flex-1 flex-column font-bold p-2">Ciclo:</div>
+        </div>
+        <div class="flex">
+            <div class="flex-1 flex-column font-bold p-2">Grado:</div>
+            <div class="flex-1 flex-column font-bold p-2">Seccion:</div>
+        </div>
+        <div class="flex block">
+            <p-table
+                class="mt-1 block w-full"
+                [value]="data"
+                [scrollable]="true"
+                scrollHeight="400px"
+            >
+                <ng-template pTemplate="header">
+                    <tr style="height: 12px">
+                        <th style="width: auto">N°</th>
+                        <th style="width: auto">Nombres y Apellidos</th>
+                        <th style="width: auto">MARCAR ASISTENCIA</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
+                    <tr>
+                        <td>{{ rowIndex + 1 }}</td>
+                        <td>{{ item.nombrecompleto }}</td>
+                        <td class="flex justify-content-center">
                             <p-button
-                                label="-"
+                                *ngIf="item.cTipoAsiLetra; else noboton"
+                                label="{{ item.cTipoAsiLetra }}"
                                 size="small"
+                                [ngClass]="item.bgcolor"
                                 (click)="changeAsistencia(rowIndex)"
                             />
-                        </ng-template>
-                    </td>
-                </tr>
-            </ng-template>
-        </p-table>
+                            <ng-template #noboton>
+                                <p-button
+                                    label="-"
+                                    size="small"
+                                    (click)="changeAsistencia(rowIndex)"
+                                    ngClass="bt-cyan"
+                                />
+                            </ng-template>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="summary">
+                    <div
+                        class="flex block flex-wrap column-gap-3 row-gap-3 p-2"
+                    >
+                        <div
+                            *ngFor="let lista of leyendaModal"
+                            class="flex mr-1"
+                        >
+                            <p-inputGroup class="grupo">
+                                <button
+                                    type="button"
+                                    size="small"
+                                    pButton
+                                    [ngClass]="lista.bgColor"
+                                >
+                                    {{ lista.simbolo }}
+                                </button>
+                                <div [ngClass]="lista.divColor">
+                                    {{ lista.significado }}
+                                </div>
+                                <button
+                                    type="button"
+                                    size="small"
+                                    pButton
+                                    [ngClass]="lista.bgColor"
+                                >
+                                    {{ lista.contar }}
+                                </button>
+                            </p-inputGroup>
+                        </div>
+                    </div>
+                </ng-template>
+            </p-table>
+        </div>
     </div>
-    <div class="flex justify-content-end gap-2">
+    <div class="flex justify-content-center gap-2">
         <p-button
-            label="Cancel"
-            severity="secondary"
+            label="Cancelar"
+            severity="danger"
             (onClick)="escapeModal()"
         />
         <p-button label="Guardar" (onClick)="storeAsistencia()" />
     </div>
 </p-dialog>
 
+<p-dialog
+    header="REPORTE DE ASISTENCIA"
+    [modal]="true"
+    [(visible)]="verReporte"
+    [responsive]="true"
+    [draggable]="false"
+    [style]="{ width: '60rem', height: '40rem' }"
+>
+    <div class="flex">
+        <div class="flex-1 flex-column font-bold p-2">
+            Curso: {{ cCursoNombre }}
+        </div>
+    </div>
+
+    <div class="flex flex-column mb-3">
+        <div class="flex align-items-center gap-3 mb-3">
+            <div class="flex-1 flex-column font-bold p-2">Nivel:</div>
+            <div class="flex-1 flex-column font-bold p-2">Ciclo:</div>
+        </div>
+        <div class="flex align-items-center gap-3 mb-3">
+            <div class="flex-1 flex-column font-bold p-2">Grado:</div>
+            <div class="flex-1 flex-column font-bold p-2">Seccion:</div>
+        </div>
+        <div class="flex">
+            <p-calendar tabindex="-1"></p-calendar>
+        </div>
+    </div>
+    <ng-template pTemplate="footer">
+        <div class="flex justify-content-center gap-2">
+            <p-button
+                label="Cancelar"
+                severity="danger"
+                (onClick)="verReporte = !verReporte"
+            />
+            <p-button label="Guardar" />
+        </div>
+    </ng-template>
+</p-dialog>
+
 <p-toast />
+
+<app-reporte-asistencia
+    [showModal]="showModal"
+    [cCursoNombre]="cCursoNombre"
+    (accionBtnItem)="accionBtnItem($event)"
+></app-reporte-asistencia>

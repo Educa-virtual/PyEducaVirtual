@@ -35,6 +35,7 @@ export class FormActividadesNoLectivasComponent implements OnChanges {
     @Input() data
     @Input() titulo: string = ''
     @Input() opcion: string = ''
+    @Input() iFalta
 
     typesFiles = {
         file: true,
@@ -44,7 +45,7 @@ export class FormActividadesNoLectivasComponent implements OnChanges {
         image: true,
     }
 
-    formDetalleCargaNoLectivas: FormGroup
+    formDetalleCargaNoLectivas: FormGroup = storeDetalleCargaNoLectivas
     filesUrl = []
 
     ngOnChanges(changes) {
@@ -78,8 +79,18 @@ export class FormActividadesNoLectivasComponent implements OnChanges {
                     this.formDetalleCargaNoLectivas.value
                         .cDetCargaNoLectEvidencias
                 this.filesUrl = files ? files : []
+                this.formDetalleCargaNoLectivas.controls[
+                    'nDetCargaNoLectHoras'
+                ].setValue(this.iFalta)
             }
         }
+        // if (changes.iFalta?.currentValue) {
+        //     this.iFalta = changes.iFalta.currentValue
+
+        //     this.formDetalleCargaNoLectivas.controls['nDetCargaNoLectHoras'].setValue(parseFloat(this.iFalta).toFixed(2))
+        //     console.log(this.formDetalleCargaNoLectivas.value)
+
+        // }
     }
     accionBtn(elemento): void {
         const { accion } = elemento

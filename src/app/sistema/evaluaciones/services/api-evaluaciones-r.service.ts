@@ -8,6 +8,10 @@ import { mapData } from '../sub-evaluaciones/banco-preguntas/models/pregunta-dat
     providedIn: 'root',
 })
 export class ApiEvaluacionesRService {
+    //MOVI AQUI
+    // ereVerEvaluacion(iEvaluacionId: number) {
+    //     throw new Error('Method not implemented.')
+    // }
     private baseUrl = environment.backendApi
     private baseUrlBackend = environment.backend
     private http = inject(HttpClient)
@@ -50,6 +54,58 @@ export class ApiEvaluacionesRService {
             params,
         })
     }
+    //Tengo estos cursos en el backend
+    obtenerCursos(params) {
+        return this.http.post(
+            `${this.baseUrl}/ere/Evaluaciones/obtenerCursos`,
+            {
+                params,
+            }
+        )
+    }
+    //Tengo estos cursos seleccionados del backend
+    obtenerCursosEvaluacion(iEvaluacionId: number): Observable<any> {
+        return this.http.get(
+            `${this.baseUrl}/ere/Evaluaciones/evaluaciones/${iEvaluacionId}/cursos`
+        )
+    }
+    //Insertar cursos
+    insertarCursos(data: {
+        iEvaluacionId: number
+        selectedCursos: { iCursoId: number }[]
+    }): Observable<any> {
+        return this.http.post(
+            `${this.baseUrl}/ere/Evaluaciones/insertarCursos`,
+            data
+        )
+    }
+    //Actualizar Cursos COMENTADO
+    actualizarCursosExamen(
+        evaluacionId: number,
+        cursos: { id: number; is_selected: boolean }[]
+    ): Observable<any> {
+        const body = {
+            evaluacion_id: evaluacionId,
+            cursos: cursos,
+        }
+
+        return this.http.put(this.baseUrl, body)
+    }
+    //Evaluacion de Copia
+    // obtenerEvaluacionesCopia(): Observable<any> {
+    //     console.log('Ejecutando obtenerEvaluaciones', this.baseUrl)
+    //     return this.http.get(
+    //         `${this.baseUrl}/ere/Evaluaciones/obtenerEvaluacionCopia2`
+    //     )
+    // }
+    obtenerEvaluacionesCopia(params) {
+        return this.http.get(
+            `${this.baseUrl}/ere/Evaluaciones/obtenerEvaluacionCopia2`,
+            {
+                params,
+            }
+        )
+    }
     obtenerTipoEvaluacion(params) {
         return this.http.get(
             `${this.baseUrl}/ere/tipoEvaluacion/obtenerTipoEvaluacion`,
@@ -66,8 +122,23 @@ export class ApiEvaluacionesRService {
     guardarEvaluacion(data: any) {
         return this.http.post(`${this.baseUrl}/ere/Evaluaciones/guardar`, data)
     }
+    // Método para actualizar una evaluación
+    actualizarEvaluacion(data: any) {
+        return this.http.put(
+            `${this.baseUrl}/ere/Evaluaciones/actualizar/${data.iEvaluacionId}`,
+            data
+        )
+    }
+    obtenerParticipaciones(iEvaluacionId: any): Observable<any> {
+        console.log(
+            'Servicio: Llamando obtenerParticipaciones con ID:',
+            iEvaluacionId
+        )
+        return this.http.get(
+            `${this.baseUrl}/ere/Evaluaciones/obtenerParticipaciones?iEvaluacionId=${iEvaluacionId}`
+        )
+    }
 
-    //Top
     guardarActualizarPreguntaConAlternativas(data) {
         return this.http.post(
             `${this.baseUrl}/ere/preguntas/guardarActualizarPreguntaConAlternativas`,
@@ -80,15 +151,11 @@ export class ApiEvaluacionesRService {
             data
         )
     }
-    // eliminarParticipacion(data: any) {
-    //     return this.http.delete(
-    //         `${this.baseUrl}/ere/Evaluaciones/eliminarParticipacion`,
-    //         data
-    //     )
-    // }
-    eliminarParticipacion(id: any): Observable<any> {
+
+    eliminarParticipacion(participaciones: any[]): Observable<any> {
         return this.http.delete(
-            `${this.baseUrl}/ere/Evaluaciones/eliminarParticipacion/${id}`
+            `${this.baseUrl}/ere/Evaluaciones/eliminarParticipacion`,
+            { body: { participaciones: participaciones } } // Enviamos un array de objetos con iIieeId e iEvaluacionId
         )
     }
     IEparticipanall(data) {
@@ -97,7 +164,20 @@ export class ApiEvaluacionesRService {
             data
         )
     }
-
+    //Actualizar Cursos
+    actualizarCursos(
+        iEvaluacionId: number,
+        cursos: { iCursoId: number; isSelected: boolean }[]
+    ): Observable<any> {
+        const data = {
+            iEvaluacionId: iEvaluacionId,
+            cursos: cursos,
+        }
+        return this.http.put(
+            `${this.baseUrl}/ere/Evaluaciones/actualizarCursos`,
+            data
+        )
+    }
     generarWordByPreguntasIds(baseParams) {
         const url = `${this.baseUrlBackend}/generarWordBancoPreguntasSeleccionadas`
         const params = new URLSearchParams({ ...baseParams })

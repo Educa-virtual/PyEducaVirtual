@@ -1,114 +1,60 @@
-<p>evaluacion-areas works!</p>
-<!-- <app-container-page [title]="'Mis Áreas Curriculares'" [actions]="[]">
-    <p-dataView
-        #dv
-        [value]="cursos"
-        [paginator]="layout === 'list' ? false : true"
-        [rows]="10"
-        filterBy="cCursoNombre"
-        [sortField]="sortField"
-        [sortOrder]="sortOrder"
-        [layout]="layout"
+<div [ngClass]="{ 'disabled-div': isDisabled }">
+    <div
+        class="flex flex-column md:flex-row md:justify-content-between gap-2 padding:100px"
     >
-        <ng-template pTemplate="header">
-            <div
-                class="flex flex-column md:flex-row md:justify-content-between gap-2"
-            >
-                <p-iconField iconPosition="left">
-                    <p-inputIcon styleClass="pi pi-search" />
-                    <input
-                        pInputText
-                        type="text"
-                        [(ngModel)]="text"
-                        (input)="onFilter(dv, $event)"
-                        placeholder="Buscar por curso"
-                    />
-                </p-iconField>
+        <!-- <p-dropdown
+            [options]="EvaluacionCopia"
+            [(ngModel)]="selectedEvaluacionCopia"
+            optionLabel="cEvaluacionNombre"
+            placeholder="Seleccione un nivel"
+            styleClass="w-full"
+            class="flex-1"
+            (onChange)="onChange()"
+            [disabled]="isDisabled"
+        />
+        <button
+            pButton
+            type="button"
+            label="Copiar y Guardar Participantes"
+            (click)="copiarCursos()"
+            [disabled]="isDisabled"
+        ></button> -->
+    </div>
+    <br />
+    <div class="card">
+        <div class="divider"></div>
 
-                <div class="flex justify-end">
-                    <p-selectButton
-                        [(ngModel)]="layout"
-                        [options]="options"
-                        [allowEmpty]="false"
-                        (onChange)="text = ''"
-                    >
-                        <ng-template pTemplate="item" let-item>
-                            <i
-                                class="pi"
-                                [ngClass]="{
-                                    'pi-bars': item === 'list',
-                                    'pi-th-large': item === 'grid',
-                                }"
-                            ></i>
-                        </ng-template>
-                    </p-selectButton>
+        <div class="card flex justify-content-center">
+            <div class="flex flex-column gap-2">
+                <div *ngFor="let curso of cursos" class="field-checkbox">
+                    <label class="custom-checkbox">
+                        <input
+                            type="checkbox"
+                            [(ngModel)]="curso.isSelected"
+                            name="curso{{ curso.cCursoNombre }}"
+                            [disabled]="isDisabled"
+                        />
+                        <span class="checkmark"></span>
+                        {{ curso.cCursoNombre }}
+                    </label>
                 </div>
             </div>
-        </ng-template>
-        <ng-template let-products pTemplate="gridItem">
-            <div class="cursos gap-4 py-2">
-                @for (curso of cursos; track curso.iCursoId) {
-                    <app-curso-card
-                        #dv
-                        class=""
-                        [curso]="curso"
-                    ></app-curso-card>
-                }
-            </div>
-        </ng-template>
-    </p-dataView>
-    @if (layout === 'list') {
-        <app-areas-estudios
-            [searchText]="searchText"
-            [data]="cursos"
-        ></app-areas-estudios>
-    }
-</app-container-page> -->
-
-<div class="card">
-    <div class="flex justify-content-center">
-        <div class="flex flex-column gap-2">
-            <label for="username">Nombre</label>
-            <input pInputText id="username" aria-describedby="username-help" />
-        </div>
-        <p-divider layout="vertical" />
-        <div class="flex flex-column gap-2">
-            <label for="username">Credito Teoria</label>
-            <input pInputText id="username" aria-describedby="username-help" />
-        </div>
-        <p-divider layout="vertical" />
-        <div class="flex flex-column gap-2">
-            <label for="username">Credito Practica</label>
-            <input pInputText id="username" aria-describedby="username-help" />
         </div>
     </div>
-    <p-divider type="solid" />
-    <div class="flex justify-content-center">
-        <div class="flex flex-column gap-2">
-            <label for="username">Descripcion</label>
-            <input pInputText id="username" aria-describedby="username-help" />
-        </div>
-        <p-divider layout="vertical" />
-        <div class="flex flex-column gap-2">
-            <label for="username">Total Credito</label>
-            <input pInputText id="username" aria-describedby="username-help" />
-        </div>
-        <p-divider layout="vertical" />
-        <div class="flex flex-column gap-2">
-            <label for="username">Perfil Docente</label>
-            <input pInputText id="username" aria-describedby="username-help" />
-        </div>
-    </div>
-    <p-divider type="solid" />
-    <div class="flex justify-content-center">
-        <div class="flex flex-column gap-2">
-            <label for="username">Total Horas</label>
-            <input pInputText id="username" aria-describedby="username-help" />
-        </div>
-        <p-divider layout="vertical" />
-        <div class="flex flex-column gap-2">
-            <label for="username">Estado</label>
-            <input pInputText id="username" aria-describedby="username-help" />
-        </div>
+    <div class="flex pt-4 justify-content-end" style="margin-bottom: -62px">
+        <p-button
+            label="Guardar y Salir"
+            icon="pi pi-times"
+            iconPos="right"
+            (click)="insertarCursos()"
+            styleClass="background: #0E4194; "
+        ></p-button>
+        <p-button
+            label="Editar y salir"
+            icon="pi pi-times"
+            iconPos="right"
+            (click)="actualizarCursos()"
+            styleClass="background: #0E4194;"
+        ></p-button>
     </div>
 </div>

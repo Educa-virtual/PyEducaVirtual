@@ -4,6 +4,8 @@
     [(visible)]="showModal"
     [style]="{ width: width }"
     (onHide)="accionBtn('close-modal', [])"
+    [draggable]="false"
+    [resizable]="false"
 >
     <ng-content></ng-content>
 </p-dialog>

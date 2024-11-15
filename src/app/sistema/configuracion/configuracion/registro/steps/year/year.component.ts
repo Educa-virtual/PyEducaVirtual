@@ -209,7 +209,7 @@ export class YearComponent implements OnInit {
         }
     }
 
-    confirm() {
+    async confirm() {
         const message: informationMessage = {
             header: '¿Desea guardar información?',
             message: 'Por favor, confirme para continuar.',
@@ -227,11 +227,11 @@ export class YearComponent implements OnInit {
             },
         }
 
-        this.stepConfirmationService.confirmAction(
+        await this.stepConfirmationService.confirmAction(
             {
                 onAcceptPromises: [
-                    () => this.saveInformation(),
-                    () => this.nextPage(),
+                    async () => await this.saveInformation(),
+                    async () => await this.nextPage(),
                 ],
             },
             message

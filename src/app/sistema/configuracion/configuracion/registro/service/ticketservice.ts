@@ -237,6 +237,8 @@ export class TicketService {
             if (data.data.formasAtencion) {
                 this.registroInformation.stepFormasAtencion =
                     JSON.parse(data.data.formasAtencion) ?? undefined
+            } else {
+                this.registroInformation.stepFormasAtencion = []
             }
 
             if (data.data.periodosAcademicos) {
@@ -321,7 +323,7 @@ export class TicketService {
                 this.httpService.postData(
                     'acad/calendarioAcademico/insCalAcademico',
                     {
-                        calAcad: JSON.stringify({
+                        json: JSON.stringify({
                             iSedeId: iSedeId,
                             iYAcadId: iYAcadId,
                             dtCalAcadInicio:

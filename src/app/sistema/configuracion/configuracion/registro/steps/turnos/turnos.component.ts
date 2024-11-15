@@ -103,8 +103,12 @@ export class TurnosComponent implements OnInit {
     }
 
     async setFormasAtencion() {
+        console.log(this.formasAtencionInformation)
+
         this.formasAtencionInformation =
             this.ticketService.registroInformation.stepFormasAtencion
+
+        console.log(this.formasAtencionInformation)
     }
 
     nextPage() {
@@ -175,13 +179,13 @@ export class TurnosComponent implements OnInit {
                 await this.stepConfirmationService.confirmAction(
                     {
                         onAcceptPromises: [
-                            async () =>
-                                await this.ticketService.deleteFormasAtencion(
+                            () =>
+                                this.ticketService.deleteFormasAtencion(
                                     row.item
                                 ),
-                            async () => await this.ticketService.setCalendar(),
-                            async () => await this.setFormasAtencion(),
-                            async () => await this.indexColumns(),
+                            () => this.ticketService.setCalendar(),
+                            () => this.setFormasAtencion(),
+                            () => this.indexColumns(),
                         ],
                     },
                     message

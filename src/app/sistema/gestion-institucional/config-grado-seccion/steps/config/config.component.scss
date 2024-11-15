@@ -1,0 +1,27 @@
+note-background {
+    font-size: 9px;
+    /* Tamaño de la letra */
+    background-color: #f3b60f;
+    /* Color de fondo tipo "nota" */
+    border: 1px solid #f4e1a1;
+    /* Borde para resaltar el fondo */
+    padding: 10px;
+    /* Espaciado interno */
+    border-radius: 5px;
+    /* Bordes redondeados */
+    color: #333;
+    /* Color del texto */
+    display: inline-block;
+    /* Asegura que el estilo no sea expandido */
+}
+
+.note-background p {
+    font-weight: bold;
+    margin-bottom: 5px;
+    /* Separación entre título y lista */
+}
+
+.note-background li {
+    margin-left: 15px;
+    /* Espaciado para lista */
+}

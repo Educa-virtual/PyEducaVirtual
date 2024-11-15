@@ -171,7 +171,7 @@
     background-color: #f8f9fa;
 }
 /*para que remarque el contorno de los comentarios*/
-:host ::ng-deep .p-ripple {
+:host ::ng-deep .btnContorno .p-ripple {
     width: 100%;
 }
 
@@ -354,10 +354,7 @@
     margin: 0px;
     border: none;
 }
-:host ::ng-deep .p-message-wrapper {
-    display: flex;
-    flex-direction: column;
-}
+
 /*El icono de los perfiles de los comentarios y participantes*/
 .btn {
     border-radius: 50%; /* Si quieres hacerla circular */
@@ -366,4 +363,8 @@
 .inputSearch {
     width: 100%;
     border: 1px solid #efefef;
+}
+.btn-calificar-comentario {
+    text-align: end;
+    float: right;
 }

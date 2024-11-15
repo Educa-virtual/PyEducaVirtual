@@ -360,9 +360,7 @@ export class ForoRoomComponent implements OnInit {
                     this.messages = [
                         {
                             severity: 'info',
-                            detail:
-                                resp?.cForoDescripcion ||
-                                'No hay descripción disponible',
+                            detail: 'hola',
                         },
                     ]
                     this.foro = resp

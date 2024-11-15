@@ -260,7 +260,7 @@
                                             <p-button
                                                 [text]="true"
                                                 severity="secondary"
-                                                class=""
+                                                class="btnContorno"
                                             >
                                                 <div
                                                     class="perfiles-list-item text-left"
@@ -616,6 +616,20 @@
                                             <!--class="w-4rem min-h-9 shadow-2 flex-shrink-0 border-round"-->
                                             <div class="perfil-name">
                                                 {{ estudiante.nombrecompleto }}
+                                            </div>
+                                            <div
+                                                class="btn-calificar-comentario"
+                                            >
+                                                <p-button
+                                                    icon="pi pi-book"
+                                                    [rounded]="true"
+                                                    severity="success"
+                                                    (click)="
+                                                        openModal(estudiante)
+                                                    "
+                                                    tooltipPosition="bottom"
+                                                    pTooltip="Calificar"
+                                                />
                                             </div>
                                         </div>
                                     </ng-template>

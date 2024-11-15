@@ -1,0 +1,9 @@
+<app-container-page
+    title="Registrar plan de estudio"
+    [actions]="accionesPrincipal"
+    (accionBtnItem)="accionBtnItemTable($event)"
+>
+    <div class="card">
+        <p-steps [model]="items" [readonly]="false"></p-steps>
+    </div>
+</app-container-page>

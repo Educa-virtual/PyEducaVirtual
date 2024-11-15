@@ -59,7 +59,7 @@ export class AppTopBarComponent implements OnInit {
 
         const perfil = this.store.getItem('dremoPerfil')
         this.perfiles = user.perfiles
-
+        console.log(this.perfiles)
         const perfil_data = {
             iPerfilId: 0,
             cPerfilNombre: '-',

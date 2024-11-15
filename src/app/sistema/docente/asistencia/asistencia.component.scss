@@ -1,34 +1,18 @@
-.toolbar-title {
-    background-color: #117fb3 !important;
-}
-.footer {
-    position: fixed;
-    bottom: 0.5rem;
-}
-.hoverTable {
-    border-collapse: collapse;
-    border: 1px;
-}
-.hoverTable tr th {
-    background-color: var(--primary-color) !important;
-    color: white;
-}
-.hoverTable tr:hover {
-    background-color: #e3f7ff;
-    border-left: 8px solid #4a47e2 !important;
-}
-
-th,
-td {
-    font-size: 0.8rem;
-}
-
 /*
     * * Modifica los siguientes elementos:
     * * checkbox
     * * vendana modal
 */
 :host ::ng-deep {
+    .p-toolbar {
+        background-color: var(--primary-700);
+    }
+    .p-menuitem-content {
+        &:hover {
+            background-color: var(--primary-400);
+        }
+    }
+
     .pink-checkbox.p-checkbox {
         .p-checkbox-box.p-highlight {
             background: var(--pink-600);
@@ -47,6 +31,56 @@ td {
             border-color: var(--green-600);
         }
     }
+    .boton-primary.p-button {
+        background-color: var(--primary-600);
+        border: 0px;
+    }
+    .bt-primary button {
+        background-color: var(--primary-600);
+        border: 0px;
+    }
+    // estilo de para botones en grupo
+    .boton-green .p-button {
+        background-color: var(--green-600);
+        border: 0px;
+    }
+    // estilo de para botones simples
+    .bt-green button {
+        background-color: var(--green-600);
+        border: 0px;
+    }
+    .boton-yellow.p-button {
+        background-color: var(--yellow-600);
+        border: 0px;
+    }
+    .bt-yellow button {
+        background-color: var(--yellow-600);
+        border: 0px;
+    }
+    .boton-red.p-button {
+        background-color: var(--red-600);
+        border: 0px;
+    }
+    .bt-red button {
+        background-color: var(--red-600);
+        border: 0px;
+    }
+    .boton-orange.p-button {
+        background-color: var(--orange-600);
+        border: 0px;
+    }
+    .bt-orange button {
+        background-color: var(--orange-600);
+        border: 0px;
+    }
+    .boton-cyan.p-button {
+        background-color: var(--cyan-600);
+        border: 0px;
+    }
+    .bt-cyan button {
+        background-color: var(--cyan-600);
+        border: 0px;
+    }
     .agregar.p-button {
         width: 100%;
         height: 20px;
@@ -56,4 +90,104 @@ td {
     .boton-width.p-button {
         width: 100%;
     }
+    .asistenciaModal .p-dialog {
+        .p-dialog-header {
+            background-color: var(--primary-700);
+            color: white;
+        }
+    }
+}
+
+.grupo {
+    height: 30px;
+}
+.primary-boton {
+    background-color: var(--primary-600);
+    color: white;
+    font-weight: 900;
+    border: 0px;
+}
+.green-boton {
+    background-color: var(--green-600);
+    color: white;
+    font-weight: 900;
+    border: 0px;
+}
+.yellow-boton {
+    background-color: var(--yellow-600);
+    color: white;
+    font-weight: 900;
+    border: 0px;
+}
+.orange-boton {
+    background-color: var(--orange-600);
+    color: white;
+    font-weight: 900;
+    border: 0px;
+}
+.red-boton {
+    background-color: var(--red-600);
+    color: white;
+    font-weight: 900;
+    border: 0px;
+}
+.cyan-boton {
+    background-color: var(--cyan-600);
+    color: white;
+    font-weight: 900;
+    border: 0px;
+}
+.primary-50-boton {
+    background-color: var(--primary-50);
+    color: var(--primary-400);
+    font-weight: 700;
+    padding: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.green-50-boton {
+    background-color: var(--green-50);
+    color: var(--green-400);
+    font-weight: 700;
+    padding: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.yellow-50-boton {
+    background-color: var(--yellow-50);
+    color: var(--yellow-400);
+    font-weight: 700;
+    padding: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.orange-50-boton {
+    background-color: var(--orange-50);
+    color: var(--orange-400);
+    font-weight: 700;
+    padding: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.red-50-boton {
+    background-color: var(--red-50);
+    color: var(--red-400);
+    font-weight: 700;
+    padding: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.cyan-50-boton {
+    background-color: var(--cyan-50);
+    color: var(--cyan-400);
+    font-weight: 700;
+    padding: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

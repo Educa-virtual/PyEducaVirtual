@@ -1,0 +1,22 @@
+<app-container-page
+    title="Registro de Grado"
+    [actions]="accionesPrincipal"
+    (accionBtnItem)="accionBtnItemTable($event)"
+>
+    <div class="card">
+        <p-steps [model]="items" [readonly]="false"></p-steps>
+    </div>
+    <div class="card">
+        <app-table-primeng
+            [columnas]="columns"
+            [showCaption]="true"
+            [data]="grados"
+            (accionBtnItem)="accionBtnItemTable($event)"
+            [showPaginator]="true"
+            [(selectedRowData)]="accionBtnItemTable"
+            [actions]="actions"
+        >
+            <ng-container slot="caption-content"> </ng-container>
+        </app-table-primeng>
+    </div>
+</app-container-page>

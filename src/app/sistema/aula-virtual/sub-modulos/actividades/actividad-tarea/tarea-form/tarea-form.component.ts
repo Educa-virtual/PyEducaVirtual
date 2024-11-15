@@ -17,6 +17,7 @@ import { ConstantesService } from '@/app/servicios/constantes.service'
 import { AutoCompleteCompleteEvent } from 'primeng/autocomplete'
 import { DatePipe } from '@angular/common'
 import { ModalPrimengComponent } from '@/app/shared/modal-primeng/modal-primeng.component'
+import { TypesFilesUploadPrimengComponent } from '../../../../../../shared/types-files-upload-primeng/types-files-upload-primeng.component'
 
 @Component({
     selector: 'app-tarea-form',
@@ -27,6 +28,7 @@ import { ModalPrimengComponent } from '@/app/shared/modal-primeng/modal-primeng.
         DisponibilidadFormComponent,
         FileUploadPrimengComponent,
         ModalPrimengComponent,
+        TypesFilesUploadPrimengComponent,
     ],
     templateUrl: './tarea-form.component.html',
     styleUrl: './tarea-form.component.scss',
@@ -35,6 +37,13 @@ export class TareaFormComponent implements OnChanges {
     pipe = new DatePipe('es-ES')
     date = new Date()
 
+    typesFiles = {
+        file: true,
+        url: true,
+        youtube: true,
+        repository: false,
+        image: false,
+    }
     @Output() submitEvent = new EventEmitter<any>()
     @Output() cancelEvent = new EventEmitter<void>()
 
@@ -44,7 +53,6 @@ export class TareaFormComponent implements OnChanges {
     semana: Message[] = []
     tareas = []
     filteredTareas: any[] | undefined
-    FilesTareas = []
     nameEnlace: string = ''
     titleFileTareas: string = ''
 
@@ -68,7 +76,7 @@ export class TareaFormComponent implements OnChanges {
         if (changes.tarea?.currentValue) {
             this.tarea = changes.tarea.currentValue
             this.formTareas.patchValue(this.tarea)
-            this.FilesTareas = this.formTareas.value.cTareaArchivoAdjunto
+            this.filesUrl = this.formTareas.value.cTareaArchivoAdjunto
                 ? JSON.parse(this.formTareas.value.cTareaArchivoAdjunto)
                 : []
             if (this.tarea.iTareaId) {
@@ -188,7 +196,7 @@ export class TareaFormComponent implements OnChanges {
             },
         })
     }
-
+    filesUrl = []
     accionBtnItem(elemento): void {
         const { accion } = elemento
         const { item } = elemento
@@ -201,39 +209,32 @@ export class TareaFormComponent implements OnChanges {
             case 'close-modal':
                 this.showModal = false
                 break
-            case 'subir-archivo-tareas':
-                this.FilesTareas.push({
+            case 'subir-file-tareas':
+                this.filesUrl.push({
                     type: 1, //1->file
                     nameType: 'file',
                     name: item.file.name,
                     size: item.file.size,
                     ruta: item.name,
                 })
-                this.showModal = false
                 break
-            case 'subir-url':
-                if (item === '') return
-                this.FilesTareas.push({
+            case 'url-tareas':
+                this.filesUrl.push({
                     type: 2, //2->url
                     nameType: 'url',
-                    name: item,
+                    name: item.name,
                     size: '',
-                    ruta: item,
+                    ruta: item.ruta,
                 })
-                this.showModal = false
-                this.nameEnlace = ''
                 break
-            case 'subir-youtube':
-                if (item === '') return
-                this.FilesTareas.push({
+            case 'youtube-tareas':
+                this.filesUrl.push({
                     type: 3, //3->youtube
                     nameType: 'youtube',
-                    name: item,
+                    name: item.name,
                     size: '',
-                    ruta: item,
+                    ruta: item.ruta,
                 })
-                this.showModal = false
-                this.nameEnlace = ''
                 break
         }
     }
@@ -260,7 +261,7 @@ export class TareaFormComponent implements OnChanges {
         )
         this.formTareas.controls.dtProgActPublicacion.setValue(horaFin)
         this.formTareas.controls.cTareaArchivoAdjunto.setValue(
-            JSON.stringify(this.FilesTareas)
+            JSON.stringify(this.filesUrl)
         )
         const value = this.formTareas.value
 

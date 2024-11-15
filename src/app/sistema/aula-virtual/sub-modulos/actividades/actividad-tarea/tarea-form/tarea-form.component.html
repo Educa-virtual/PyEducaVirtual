@@ -95,124 +95,14 @@
             </p-inputGroup>
         </div>
         <div class="col-12 mt-1">
-            <div class="card">
-                <label for="" class="mt-1">Adjuntar</label>
-                <div class="d-flex align-items-center text-center mt-1">
-                    <button
-                        pButton
-                        pRipple
-                        type="button"
-                        class="p-button-rounded p-button-outlined mx-2"
-                        (click)="openUpload('file')"
-                    >
-                        <i
-                            class="pi pi-upload my-2"
-                            style="color: #333437; font-size: 3rem"
-                            pTooltip="Subir Archivo"
-                            tooltipPosition="bottom"
-                        ></i>
-                    </button>
-
-                    <button
-                        pButton
-                        pRipple
-                        type="button"
-                        class="p-button-rounded p-button-outlined mx-2"
-                        (click)="openUpload('url')"
-                    >
-                        <i
-                            class="pi pi-link my-2"
-                            style="color: #333437; font-size: 3rem"
-                            pTooltip="Subir Enlace"
-                            tooltipPosition="bottom"
-                        ></i>
-                    </button>
-
-                    <button
-                        pButton
-                        pRipple
-                        type="button"
-                        class="p-button-rounded p-button-outlined mx-2"
-                        (click)="openUpload('youtube')"
-                    >
-                        <i
-                            class="pi pi-youtube my-2"
-                            style="color: #c4302b; font-size: 3rem"
-                            pTooltip="Subir Enlace Youtube"
-                            tooltipPosition="bottom"
-                        ></i>
-                    </button>
-
-                    <button
-                        pButton
-                        pRipple
-                        type="button"
-                        class="p-button-rounded p-button-outlined mx-2"
-                        (click)="openUpload('file')"
-                    >
-                        <i
-                            class="pi pi-upload my-2"
-                            style="color: #ffd04b; font-size: 3rem"
-                            pTooltip="Subir Rubrica"
-                            tooltipPosition="bottom"
-                        ></i>
-                    </button>
-                </div>
-            </div>
+            <app-types-files-upload-primeng
+                [nameFile]="'tareas'"
+                [nameOption]="'tareas'"
+                [typesFiles]="typesFiles"
+                (actionTypesFileUpload)="accionBtnItem($event)"
+                [filesUrl]="filesUrl"
+            ></app-types-files-upload-primeng>
         </div>
-        @if (FilesTareas.length) {
-            <div class="col-12">
-                <label for="" class="mt-2">Lista de Adjuntos</label>
-
-                @for (item of FilesTareas; track item; let idx = $index) {
-                    <p-inputGroup class="mt-1">
-                        <p-inputGroupAddon>
-                            @switch (item.type) {
-                                @case (1) {
-                                    <i
-                                        class="pi pi-upload"
-                                        style="color: #333437"
-                                    ></i>
-                                }
-                                @case (2) {
-                                    <i
-                                        class="pi pi-link"
-                                        style="color: #333437"
-                                    ></i>
-                                }
-                                @case (3) {
-                                    <i
-                                        class="pi pi-youtube"
-                                        style="color: #c4302b"
-                                    ></i>
-                                }
-                                @case (4) {
-                                    <i
-                                        class="pi pi-folder"
-                                        style="color: #ffd04b"
-                                    ></i>
-                                }
-                            }
-                        </p-inputGroupAddon>
-                        <input
-                            type="text"
-                            pInputText
-                            [placeholder]="item.name"
-                            disabled
-                        />
-                        <button
-                            type="button"
-                            pButton
-                            icon="pi pi-trash"
-                            (click)="FilesTareas.splice(idx, 1)"
-                            class="p-button-danger"
-                        >
-                            &nbsp;
-                        </button>
-                    </p-inputGroup>
-                }
-            </div>
-        }
     </div>
 </form>
 

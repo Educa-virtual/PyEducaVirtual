@@ -1,5 +1,11 @@
 import { CompartirIdEvaluacionService } from './../../../services/ereEvaluaciones/compartir-id-evaluacion.service'
-import { Component, ChangeDetectorRef, inject, OnInit } from '@angular/core'
+import {
+    Component,
+    ChangeDetectorRef,
+    inject,
+    OnInit,
+    Input,
+} from '@angular/core'
 import { PickListModule } from 'primeng/picklist'
 import { ApiEvaluacionesRService } from '../../../services/api-evaluaciones-r.service'
 import { Subject, takeUntil } from 'rxjs'
@@ -43,6 +49,8 @@ interface EvaluacionCopia {
     styleUrl: './ieparticipa.component.scss',
 })
 export class IeparticipaComponent implements OnInit {
+    @Input() _iEvaluacionId: number
+
     public evaluacionFormGroup: any
 
     private unsubscribe$: Subject<boolean> = new Subject()
@@ -92,8 +100,7 @@ export class IeparticipaComponent implements OnInit {
         //this.esModoEdicion = this.accion === 'editar'
         this.accion = this._config.data?.accion || 'crear'
         console.log('Acción actual:', this.accion)
-        //console.log('Modo actual:', this.accion)
-        //console.log('Es modo edición:', this.esModoEdicion)
+
         this.obtenerIE()
         this.obtenerNivelTipo()
         this.obtenerugel()
@@ -105,7 +112,6 @@ export class IeparticipaComponent implements OnInit {
         ]
         // Inicializar según el modo
         if (this.accion === 'crear') {
-            console.log('Inicializando en modo crear')
             this.targetProducts = [] // Asegurar que la lista destino esté vacía
             this.obtenerIE() // Solo obtener la lista de IEs disponibles
         }
@@ -116,28 +122,10 @@ export class IeparticipaComponent implements OnInit {
             //this.isDisabled = true // Deshabilita visualmente la sección
         }
         if (this.accion === 'editar') {
-            this.obtenerParticipaciones(
-                this.compartirIdEvaluacionService.iEvaluacionId
-            )
+            this.obtenerParticipaciones(this._iEvaluacionId)
             //this.isDisabled = true // Deshabilita visualmente la sección
         }
     }
-
-    // private initializeCreateMode() {
-    //     // En modo crear, solo obtenemos la lista completa de IE
-    //     this.obtenerIE()
-    //     // Inicializamos targetProducts como vacío ya que es una nueva selección
-    //     this.targetProducts = []
-    // }
-
-    // private initializeEditMode() {
-    //     const evaluacionId =
-    //         this._config.data?.evaluacionId ||
-    //         this.compartirIdEvaluacionService.iEvaluacionId
-    //     if (evaluacionId) {
-    //         this.obtenerParticipaciones(evaluacionId)
-    //     }
-    // }
 
     obtenerIE() {
         this._apiEre
@@ -206,19 +194,15 @@ export class IeparticipaComponent implements OnInit {
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
                 next: (resp: unknown) => {
-                    console.log('Datos obtenidos de Ugel:', resp) // Imprime la respuesta completa
+                    //console.log('Datos obtenidos de Ugel:', resp) // Imprime la respuesta completa
                     this.Ugeles = resp['data']
-                    console.log(
-                        'Nivel tipo asignado a this.ugel:',
-                        this.nivelTipo
-                    )
                 },
             })
     }
     // Cuando se mueve un elemento a "Participan"
     IEparticipan(event: any) {
         const itemsMoved = event.items
-        console.log('Moviendo a Participan:', itemsMoved)
+        // console.log('Moviendo a Participan:', itemsMoved)
         const payload = {
             items: itemsMoved.map((item) => ({
                 iEvaluacionId: this.compartirIdEvaluacionService.iEvaluacionId,
@@ -234,10 +218,10 @@ export class IeparticipaComponent implements OnInit {
 
     IEnoparticipan(event: any) {
         const itemsMoved = event.items
-        console.log(
-            'Elementos movidos de IEnoparticipan a IEparticipan:',
-            itemsMoved
-        )
+        // console.log(
+        //     'Elementos movidos de IEnoparticipan a IEparticipan:',
+        //     itemsMoved
+        // )
 
         // Obtenemos los objetos con iIieeId e iEvaluacionId para eliminarlos
         const participacionesToDelete = itemsMoved.map((item) => ({
@@ -263,7 +247,7 @@ export class IeparticipaComponent implements OnInit {
     }
     IEparticipanall(event: any) {
         const itemsMoved = event.items
-        console.log('Moviendo a Participan:', itemsMoved)
+        // console.log('Moviendo a Participan:', itemsMoved)
         const payload = {
             items: itemsMoved.map((item) => ({
                 //!ESTA EN MODO MANUAL; CAMBIAR POR EL ID DE LA EVALUACION
@@ -278,10 +262,10 @@ export class IeparticipaComponent implements OnInit {
     }
     IEnoparticipanall(event: any) {
         const itemsMoved = event.items
-        console.log(
-            'Elementos movidos de IEnoparticipan a IEparticipan:',
-            itemsMoved
-        )
+        // console.log(
+        //     'Elementos movidos de IEnoparticipan a IEparticipan:',
+        //     itemsMoved
+        // )
 
         // Obtenemos los objetos con iIieeId e iEvaluacionId para eliminarlos
         const participacionesToDelete = itemsMoved.map((item) => ({
@@ -328,10 +312,10 @@ export class IeparticipaComponent implements OnInit {
                         if (modoCopia) {
                             this.targetProducts = participantes
                             this.obtenerIE()
-                            console.log(
-                                'Participantes copiados para nueva evaluación:',
-                                this.targetProducts
-                            )
+                            // console.log(
+                            //     'Participantes copiados para nueva evaluación:',
+                            //     this.targetProducts
+                            // )
                         } else {
                             this.targetProducts = participantes
                             this.obtenerIE()
@@ -409,10 +393,10 @@ export class IeparticipaComponent implements OnInit {
             return nivelTipoMatch && ugelMatch
         })
 
-        console.log(
-            'Instituciones no participantes (filtradas):',
-            this.sourceProducts
-        )
+        // console.log(
+        //     'Instituciones no participantes (filtradas):',
+        //     this.sourceProducts
+        // )
     }
     onNivelTipoChange(event: any) {
         this.selectedNivelTipo = event.value

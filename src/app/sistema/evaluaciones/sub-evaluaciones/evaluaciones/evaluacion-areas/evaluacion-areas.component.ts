@@ -3,6 +3,7 @@ import {
     Component,
     EventEmitter,
     inject,
+    Input,
     OnDestroy,
     OnInit,
     Output,
@@ -54,6 +55,8 @@ export type Layout = 'list' | 'grid'
     styleUrl: './evaluacion-areas.component.scss',
 })
 export class EvaluacionAreasComponent implements OnDestroy, OnInit {
+    @Input() _iEvaluacionId: number
+
     public cursos: any[] = [] // Asegúrate de tener esta variable declarada en tu componente
     public data: ICurso[] = []
     NivelCurso: any = [] // Inicializa la propiedad como un array o con el valor adecuado
@@ -119,12 +122,12 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
             default:
                 break
         }
-        this.getCursos()
-        this.obtenerCursos()
+        //this.getCursos()
+        //.obtenerCursos()
         this.obtenerEvaluacionesCopia()
-
+        console.log('ESTE ES LA ACCION', this.accion)
         // Inicializar según el modo
-        if (this.accion === 'crear') {
+        if (this.accion === 'nuevo') {
             console.log('Inicializando en modo crear')
             this.cursos = [] // Asegurar que la lista destino esté vacía
             this.obtenerCursos() // Solo obtener la lista de IEs disponibles
@@ -136,13 +139,10 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
             this.isDisabled = true // Deshabilita visualmente la sección
         }
         if (this.accion === 'editar') {
-            this.obtenerCursosEvaluacion(
-                this.compartirIdEvaluacionService.iEvaluacionId
-            )
+            console.log('VIENE DATOS COMO ', this._iEvaluacionId)
+            this.obtenerCursosEvaluacion(this._iEvaluacionId)
         }
-        this.obtenerCursosEvaluacion(
-            this.compartirIdEvaluacionService.iEvaluacionId
-        )
+        //this.obtenerCursosEvaluacion(this._iEvaluacionId)
     }
     // Obtener los cursos
     obtenerCursos(): void {
@@ -335,6 +335,7 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
     }
     // Usando Promise : Función para obtener los cursos de la evaluación original
     obtenerCursosEvaluacion(evaluacionId: number): Promise<any[]> {
+        console.log('Evaluacion ID VIENE EN CHAR:', evaluacionId)
         return new Promise((resolve, reject) => {
             this._apiEre
                 .obtenerCursosEvaluacion(evaluacionId) // Llamada al backend con el ID de evaluación

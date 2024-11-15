@@ -1,6 +1,6 @@
 //Agregar Servicio de Evaluacion
 import { CompartirIdEvaluacionService } from './../../../services/ereEvaluaciones/compartir-id-evaluacion.service'
-import { Component, inject, OnInit, ViewChild } from '@angular/core'
+import { Component, inject, Input, OnInit, ViewChild } from '@angular/core'
 
 /*BOTONES */
 import { ButtonModule } from 'primeng/button'
@@ -26,6 +26,8 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog'
 //Uso para separar y poner en vertical o horizonal
 import { DividerModule } from 'primeng/divider'
 
+import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
+
 import {
     FormBuilder,
     FormsModule,
@@ -35,7 +37,9 @@ import {
 import { CommonInputComponent } from '@/app/shared/components/common-input/common-input.component'
 import { StepperModule } from 'primeng/stepper'
 import { CommonModule } from '@angular/common'
-
+import { TablePrimengComponent } from '../../../../../shared/table-primeng/table-primeng.component'
+import { CardModule } from 'primeng/card'
+import { StepsModule } from 'primeng/steps'
 interface TipoEvaluacion {
     idTipoEvalId: number
     cTipoEvalDescripcion: string
@@ -49,6 +53,8 @@ interface NivelEvaluacion {
     selector: 'app-evaluaciones-form',
     standalone: true,
     imports: [
+        ContainerPageComponent,
+        StepsModule,
         ButtonModule,
         DialogModule,
         InputTextModule,
@@ -63,6 +69,8 @@ interface NivelEvaluacion {
         StepperModule,
         CommonModule,
         DividerModule,
+        TablePrimengComponent,
+        CardModule,
     ],
     templateUrl: './evaluaciones-form.component.html',
     styleUrl: './evaluaciones-form.component.scss',
@@ -89,31 +97,41 @@ export class EvaluacionesFormComponent implements OnInit {
     visible: boolean = false //Accion Editar, Ver, Crear
     value!: string
     accion: string //Accion Editar, Ver, Crear
-    //Agregar Servicio de Evaluacion
+    caption: string = '' // Etiqueta de modal
+    @Input() opcion: string = 'seleccionar'
+    acciones: string = 'agregar'
+    formulario: string
+    formCapas: string = 'capa1'
+
+    // Declara la propiedad isDialogVisible aquí
+    isDialogVisible: boolean = false
     constructor(
-        private _config: DynamicDialogConfig, // Inyección de configuración
+        public _config: DynamicDialogConfig, // Inyección de configuración
         private compartirIdEvaluacionService: CompartirIdEvaluacionService // Inyección del servicio
     ) {}
     esModoEdicion: boolean = false // Cambiar a true si estás en modo edición
     ngOnInit() {
+        // console.log(this.opcion, 'LLEGARAEL DATO OPCION')
         this.accion = this._config.data.accion
 
         this.obtenerTipoEvaluacion()
         this.obtenerNivelEvaluacion()
         this.ereCrearFormulario()
         this.ereVerEvaluacion()
-        //alert(this.accion)
-        //alert(this.esModoEdicion)
-        this.esModoEdicion = this.accion === 'editar'
-        // Aquí podrías establecer `esModoEdicion` en base a si ya hay un ID de evaluación
         if (this.evaluacionFormGroup.get('iEvaluacionId').value) {
             this.esModoEdicion = true
+            console.log('Formulario EDITAR', this.accion)
         }
         // Configura el formulario en modo solo lectura si está en "ver"
         if (this.accion === 'ver') {
             this.evaluacionFormGroup.disable()
+            console.log('Formulario DESABILITADO', this.accion)
+        }
+        if (this.accion === 'editar') {
+            this.esModoEdicion = true
         }
     }
+
     ereCrearFormulario() {
         this.evaluacionFormGroup = this._formBuilder.group({
             iEvaluacionId: [null],
@@ -213,7 +231,7 @@ export class EvaluacionesFormComponent implements OnInit {
                 },
                 error: (error) => {
                     console.error('Error al guardar la evaluación:', error) // Captura el error aquí
-                    alert('Error en el servidor: ' + JSON.stringify(error))
+                    //alert('Error en el servidor: ' + JSON.stringify(error))
                 },
             })
     }
@@ -264,7 +282,7 @@ export class EvaluacionesFormComponent implements OnInit {
             },
             error: (error) => {
                 console.error('Error al actualizar la evaluación:', error)
-                alert('Error al actualizar la evaluación')
+                //alert('Error al actualizar la evaluación')
             },
         })
     }

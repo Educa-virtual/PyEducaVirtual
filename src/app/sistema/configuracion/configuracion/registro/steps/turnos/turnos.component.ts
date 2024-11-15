@@ -151,7 +151,7 @@ export class TurnosComponent implements OnInit {
                 })
                 console.log(this.form.value)
             },
-            eliminar: () => {
+            eliminar: async () => {
                 // Lógica para la acción "eliminar"
                 console.log('Eliminando')
                 console.log(row.item)
@@ -165,23 +165,23 @@ export class TurnosComponent implements OnInit {
                         life: 3000,
                     },
                     reject: {
-                        severity: 'info',
+                        severity: 'error',
                         summary: 'Turno',
                         detail: 'Se ha cancelado eliminar.',
                         life: 3000,
                     },
                 }
 
-                this.stepConfirmationService.confirmAction(
+                await this.stepConfirmationService.confirmAction(
                     {
                         onAcceptPromises: [
-                            () =>
-                                this.ticketService.deleteFormasAtencion(
+                            async () =>
+                                await this.ticketService.deleteFormasAtencion(
                                     row.item
                                 ),
-                            () => this.ticketService.setCalendar(),
-                            () => this.setFormasAtencion(),
-                            () => this.indexColumns(),
+                            async () => await this.ticketService.setCalendar(),
+                            async () => await this.setFormasAtencion(),
+                            async () => await this.indexColumns(),
                         ],
                     },
                     message

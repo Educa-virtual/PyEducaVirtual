@@ -75,21 +75,21 @@ export class DiasLaboralesComponent implements OnInit {
             header: 'Confirmar',
             message: 'Por favor, confirme para continuar.',
             accept: {
-                severity: 'info',
-                summary: 'Confirmado',
-                detail: 'Usted ha aceptado',
+                severity: 'success',
+                summary: 'Dias laborales',
+                detail: 'Se han guardado los dias.',
                 life: 3000,
             },
             reject: {
-                severity: 'info',
-                summary: 'Confirmado',
-                detail: 'Usted ha aceptado',
+                severity: 'error',
+                summary: 'Dias laborales',
+                detail: 'Se ha cancelado',
                 life: 3000,
             },
         }
 
         this.stepConfirmationService.confirmAction(
-            {onAcceptCallbacks: [() => this.saveInformation()]},
+            { onAcceptCallbacks: [() => this.saveInformation()] },
             message
         )
     }

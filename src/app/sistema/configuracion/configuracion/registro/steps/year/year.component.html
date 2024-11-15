@@ -1,141 +1,166 @@
-<form [formGroup]="form">
-    <div class="flex flex-column gap-1 relative">
-        <p-floatLabel>
-            <p-calendar
-                [style]="{ width: '100%' }"
-                [inputStyle]="{ width: '100%' }"
-                formControlName="fechaVigente"
-                [showIcon]="true"
-                view="year"
-                dateFormat="yy"
-                inputId="yearToRegister"
-            />
-            <label for="yearToRegister">Año vigente </label>
-        </p-floatLabel>
-        <!-- <small class="text-red-300 absolute top-100" [hidden]="form.get('fechaVigente').valid" id="yearToRegister-help">
-            Enter your username to reset your password.
-        </small> -->
+<form [formGroup]="form" class="flex gap-4 flex-column">
+    <div class>
+        <section class="flex flex-column gap-7 flex-1 px-4">
+            <div class="">
+                <p-floatLabel>
+                    <p-calendar
+                        [style]="{ width: '100%' }"
+                        [inputStyle]="{ width: '100%' }"
+                        formControlName="fechaVigente"
+                        [showIcon]="true"
+                        view="year"
+                        dateFormat="yy"
+                        inputId="yearToRegister"
+                    />
+                    <label for="yearToRegister">Año vigente </label>
+                </p-floatLabel>
+            </div>
+            <div>
+                <p-floatLabel>
+                    <p-calendar
+                        [style]="{ width: '100%' }"
+                        [inputStyle]="{ width: '100%' }"
+                        formControlName="fechaInicio"
+                        [showIcon]="true"
+                        inputId="yearInicio"
+                    />
+                    <label for="yearInicio">Fecha inicio de año</label>
+                </p-floatLabel>
+                <p-floatLabel>
+                    <p-calendar
+                        [style]="{ width: '100%' }"
+                        [inputStyle]="{ width: '100%' }"
+                        formControlName="fechaFin"
+                        [showIcon]="true"
+                        inputId="yearFin"
+                    />
+                    <label for="yearFin">Fecha fin de año</label>
+                </p-floatLabel>
+            </div>
+            <div>
+                <p-floatLabel>
+                    <p-calendar
+                        [style]="{ width: '100%' }"
+                        [inputStyle]="{ width: '100%' }"
+                        formControlName="fechaMatriculaInicio"
+                        [showIcon]="true"
+                        inputId="matriculaInicio"
+                    />
+                    <label for="matriculaInicio">Fecha matricula inicio</label>
+                </p-floatLabel>
+                <p-floatLabel>
+                    <p-calendar
+                        [style]="{ width: '100%' }"
+                        [inputStyle]="{ width: '100%' }"
+                        formControlName="fechaMatriculaFin"
+                        [showIcon]="true"
+                        inputId="matriculaFin"
+                    />
+                    <label for="matriculaFin">Fecha matricula fin</label>
+                </p-floatLabel>
+            </div>
+            <div class="flex flex-column gap-1 relative">
+                <p-floatLabel>
+                    <p-calendar
+                        [style]="{ width: '100%' }"
+                        [inputStyle]="{ width: '100%' }"
+                        formControlName="fechaMatriculaRezagados"
+                        [showIcon]="true"
+                        inputId="matriculaRezagados"
+                    />
+                    <label for="matriculaRezagados"
+                        >Fecha matricula rezagados
+                    </label>
+                </p-floatLabel>
+            </div>
+        </section>
+        <section class="flex flex-column gap-7 flex-1 px-4">
+            <div class="flex flex-column">
+                <div class="p-2">
+                    <p-checkbox
+                        name="fasesPromocionales"
+                        [value]="true"
+                        formControlName="regular"
+                        label="Fase regular"
+                        (onChange)="isActiveFechasFases()"
+                    />
+                </div>
+                <div>
+                    <p-floatLabel>
+                        <p-calendar
+                            [style]="{ width: '100%' }"
+                            [inputStyle]="{ width: '100%' }"
+                            formControlName="fechaFaseRegularInicio"
+                            [showIcon]="true"
+                            inputId="faseRegularInicio"
+                        />
+                        <label for="faseRegularInicio"
+                            >Fecha inicio fase regular</label
+                        >
+                    </p-floatLabel>
+                    <p-floatLabel>
+                        <p-calendar
+                            [style]="{ width: '100%' }"
+                            [inputStyle]="{ width: '100%' }"
+                            formControlName="fechaFaseRegularFin"
+                            [showIcon]="true"
+                            inputId="faseRegularFin"
+                        />
+                        <label for="faseRegularFin"
+                            >Fecha fin fase regular</label
+                        >
+                    </p-floatLabel>
+                </div>
+            </div>
+            <div class="flex flex-column">
+                <div class="p-2">
+                    <p-checkbox
+                        name="fasesPromocionales"
+                        [value]="true"
+                        formControlName="recuperacion"
+                        label="Fase de recuperación"
+                        (onChange)="isActiveFechasFases()"
+                    />
+                </div>
+                <div>
+                    <p-floatLabel>
+                        <p-calendar
+                            [style]="{ width: '100%' }"
+                            [inputStyle]="{ width: '100%' }"
+                            formControlName="fechaFaseRecuperacionInicio"
+                            [showIcon]="true"
+                            inputId="faseRecuperacionInicio"
+                        />
+                        <label for="faseRecuperacionInicio"
+                            >Fecha inicio fase recuperación</label
+                        >
+                    </p-floatLabel>
+                    <p-floatLabel>
+                        <p-calendar
+                            [style]="{ width: '100%' }"
+                            [inputStyle]="{ width: '100%' }"
+                            formControlName="fechaFaseRecuperacionFin"
+                            [showIcon]="true"
+                            inputId="faseRecuperacionFin"
+                        />
+                        <label for="faseRecuperacionFin"
+                            >Fecha fin fase recuperación</label
+                        >
+                    </p-floatLabel>
+                </div>
+            </div>
+        </section>
     </div>
-    <div>
-        <p-floatLabel>
-            <p-calendar
-                [style]="{ width: '100%' }"
-                [inputStyle]="{ width: '100%' }"
-                formControlName="fechaInicio"
-                [showIcon]="true"
-                inputId="yearInicio"
-            />
-            <label for="yearInicio">Fecha inicio de año</label>
-        </p-floatLabel>
-        <p-floatLabel>
-            <p-calendar
-                [style]="{ width: '100%' }"
-                [inputStyle]="{ width: '100%' }"
-                formControlName="fechaFin"
-                [showIcon]="true"
-                inputId="yearFin"
-            />
-            <label for="yearFin">Fecha fin de año</label>
-        </p-floatLabel>
-    </div>
-    <div>
-        <p-floatLabel>
-            <p-calendar
-                [style]="{ width: '100%' }"
-                [inputStyle]="{ width: '100%' }"
-                formControlName="fechaMatriculaInicio"
-                [showIcon]="true"
-                inputId="matriculaInicio"
-            />
-            <label for="matriculaInicio">Fecha matricula inicio</label>
-        </p-floatLabel>
-        <p-floatLabel>
-            <p-calendar
-                [style]="{ width: '100%' }"
-                [inputStyle]="{ width: '100%' }"
-                formControlName="fechaMatriculaFin"
-                [showIcon]="true"
-                inputId="matriculaFin"
-            />
-            <label for="matriculaFin">Fecha matricula fin</label>
-        </p-floatLabel>
-    </div>
-    <div class="flex flex-column gap-1 relative">
-        <p-floatLabel>
-            <p-calendar
-                [style]="{ width: '100%' }"
-                [inputStyle]="{ width: '100%' }"
-                formControlName="fechaMatriculaRezagados"
-                [showIcon]="true"
-                inputId="matriculaRezagados"
-            />
-            <label for="matriculaRezagados">Fecha matricula rezagados </label>
-        </p-floatLabel>
-        <!-- <small class="text-red-300 absolute top-100" [hidden]="form.get('fechaVigente').valid" id="yearToRegister-help">
-            Enter your username to reset your password.
-        </small> -->
-    </div>
-    <div>
-        <p-floatLabel>
-            <p-calendar
-                [style]="{ width: '100%' }"
-                [inputStyle]="{ width: '100%' }"
-                formControlName="fechaFaseRegularInicio"
-                [showIcon]="true"
-                inputId="faseRegularInicio"
-            />
-            <label for="faseRegularInicio">Fecha inicio fase regular</label>
-        </p-floatLabel>
-        <p-floatLabel>
-            <p-calendar
-                [style]="{ width: '100%' }"
-                [inputStyle]="{ width: '100%' }"
-                formControlName="fechaFaseRegularFin"
-                [showIcon]="true"
-                inputId="faseRegularFin"
-            />
-            <label for="faseRegularFin">Fecha fin fase regular</label>
-        </p-floatLabel>
-    </div>
-    <div>
-        <p-floatLabel>
-            <p-calendar
-                [style]="{ width: '100%' }"
-                [inputStyle]="{ width: '100%' }"
-                formControlName="fechaFaseRecuperacionInicio"
-                [showIcon]="true"
-                inputId="faseRecuperacionInicio"
-            />
-            <label for="faseRecuperacionInicio">Fecha inicio fase recuperación</label>
-        </p-floatLabel>
-        <p-floatLabel>
-            <p-calendar
-                [style]="{ width: '100%' }"
-                [inputStyle]="{ width: '100%' }"
-                formControlName="fechaFaseRecuperacionFin"
-                [showIcon]="true"
-                inputId="faseRecuperacionFin"
-            />
-            <label for="faseRecuperacionFin">Fecha fin fase recuperación</label>
-        </p-floatLabel>
-    </div>
-    <div>
-        <p-checkbox 
-        name="fasesPromocionales"
-        [value]="true"
-        formControlName="regular"
-        label="Fase regular"
-        />
-        <p-checkbox 
-        name="fasesPromocionales"
-        [value]="true"
-        formControlName="recuperacion"
-        label="Fase de recuperación"
+    <div class="flex justify-content-end">
+        <p-button
+            (onClick)="confirm()"
+            [disabled]="!form.valid"
+            label="Siguiente"
         />
     </div>
 
     <div class="navigator">
-        <p-confirmDialog acceptButtonStyleClass="blue" rejectLabel="Cancelar" acceptLabel="Si, continuar">
+        <p-confirmDialog #cd class="w-5">
             <ng-template pTemplate="message" let-message>
                 <div
                     class="flex flex-column align-items-center w-full gap-3 border-bottom-1 surface-border"
@@ -147,6 +172,5 @@
                 </div>
             </ng-template>
         </p-confirmDialog>
-        <p-button (onClick)="confirm()" [disabled]="!form.valid" label="Siguiente" />
     </div>
 </form>

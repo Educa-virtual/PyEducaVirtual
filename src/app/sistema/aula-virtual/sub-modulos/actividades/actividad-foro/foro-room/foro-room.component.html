@@ -170,10 +170,15 @@
                             {{ foro?.cForoTitulo }}
                         </div>
                         <hr />
-                        <div class="TituloCurso">Nombre de curso:</div>
+                        <!-- <div class="TituloCurso">Nombre de curso:</div> -->
                         <div class="grid">
                             <div class="col-12 md:col-6 flex flex-column gap-2">
                                 <p class="flex gap-2 flex-wrap">
+                                    <app-icon
+                                        name="matCalendarMonth"
+                                        class="text-primary"
+                                        size="sm"
+                                    ></app-icon>
                                     {{
                                         foro?.dtForoInicio
                                             | date
@@ -194,6 +199,11 @@
                             </div>
                             <div class="col-12 md:col-6 flex flex-column gap-2">
                                 <p class="flex gap-2 flex-wrap">
+                                    <app-icon
+                                        name="matCalendarMonth"
+                                        class="text-primary"
+                                        size="sm"
+                                    ></app-icon>
                                     {{
                                         foro?.dtForoFin
                                             | date
@@ -216,14 +226,15 @@
                         </div>
                     </div>
                     <p-messages
+                        [style]="{ 'text-align': 'center', padding: '10px' }"
+                        *ngIf="messages"
                         [(value)]="messages"
                         [enableService]="false"
                         [closable]="false"
+                        class="custom-message"
                     />
 
                     <div class="">
-                        <!-- [class]="iPerfilId !== 8 ? 'col-12' : 'col-8'"> -->
-
                         <div class="card grid">
                             <!-- listar comentarios -->
                             <div
@@ -236,7 +247,6 @@
                                 <p-orderList
                                     class="list"
                                     [value]="respuestasForo"
-                                    header="Comentarios:"
                                 >
                                     <ng-template
                                         let-respuestas
@@ -250,7 +260,7 @@
                                             <p-button
                                                 [text]="true"
                                                 severity="secondary"
-                                                class="p-col-12"
+                                                class=""
                                             >
                                                 <div
                                                     class="perfiles-list-item text-left"
@@ -262,16 +272,16 @@
                                                         <div class="flex">
                                                             <div>
                                                                 <img
-                                                                    src="assets/demo/images/matemit/avatar.png"
+                                                                    src="assets/demo/images/matemit/user.png"
                                                                     [alt]="
                                                                         respuestas.name
                                                                     "
-                                                                    class="w-2rem min-h-9 shadow-2 flex-shrink-0 perfil-redondo"
+                                                                    class="w-3rem min-h-9 shadow-2 flex-shrink-0 btn"
                                                                 />
                                                             </div>
                                                             <div>
                                                                 <div
-                                                                    class="perfil-name"
+                                                                    class="pb-2 perfil-name"
                                                                 >
                                                                     {{
                                                                         respuestas.cNombreEstudiante
@@ -348,37 +358,25 @@
                                                                 </button>
                                                             </div>
                                                         </div>
-                                                        <div
-                                                            *ngIf="
-                                                                respuestas
-                                                                    .respuestas
-                                                                    ?.length
-                                                            "
-                                                        >
-                                                            <div
-                                                                *ngFor="
-                                                                    let reply of respuestas.respuestas
-                                                                "
-                                                                class="reply"
-                                                            >
-                                                                <div
-                                                                    class="perfil-name"
-                                                                >
-                                                                    Respuesta:
-                                                                    {{
-                                                                        reply.cForoRptaRespuesta
-                                                                    }}
-                                                                </div>
-                                                            </div>
-                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </p-button>
+                                            <div
+                                                class="ml-5"
+                                                *ngIf="
+                                                    selectedCommentIndex === i
+                                                "
+                                            >
+                                                <p-button
+                                                    [text]="true"
+                                                    severity="secondary"
+                                                    class="p-col-12 btCalificacion"
+                                                >
+                                                    <div
+                                                        class="perfiles-list-item text-left"
+                                                    >
                                                         <!-- Campo de respuesta y botón enviar -->
-                                                        <div
-                                                            class="ml-5"
-                                                            *ngIf="
-                                                                selectedCommentIndex ===
-                                                                i
-                                                            "
-                                                        >
+                                                        <div>
                                                             @for (
                                                                 item of respuestas.json_respuestas_comentarios;
                                                                 track item
@@ -388,16 +386,16 @@
                                                                 >
                                                                     <div>
                                                                         <img
-                                                                            src="assets/demo/images/matemit/avatar.png"
+                                                                            src="assets/demo/images/matemit/userA.png"
                                                                             [alt]="
                                                                                 respuestas.name
                                                                             "
-                                                                            class="w-2rem min-h-9 shadow-2 flex-shrink-0 perfil-redondo"
+                                                                            class="w-3rem min-h-9 shadow-2 flex-shrink-0 btn"
                                                                         />
                                                                     </div>
                                                                     <div>
                                                                         <div
-                                                                            class="font-bold"
+                                                                            class="pb-2 perfil-name"
                                                                         >
                                                                             {{
                                                                                 item.cNombres
@@ -417,51 +415,103 @@
                                                                     </div>
                                                                     <br />
                                                                 </div>
+                                                                <hr />
                                                             }
-                                                            <p-divider></p-divider>
-                                                            <p-editor
+
+                                                            <!-- <p-editor
                                                                 id="descripcion"
                                                                 placeholder="Comentar.."
                                                                 formControlName="cForoRptaPadre"
-                                                            />
+                                                            /> -->
                                                             <div
-                                                                class="reply-container"
+                                                                class="comment-container-Rpd"
                                                             >
-                                                                <div
-                                                                    class="button-container"
+                                                                <input
+                                                                    type="text"
+                                                                    class="inputRpd"
+                                                                    placeholder="Escribe un comentario..."
+                                                                    id="commentText"
+                                                                    formControlName="cForoRptaPadre"
+                                                                />
+                                                                <button
+                                                                    pButton
+                                                                    type="button"
+                                                                    class="p-button-text"
+                                                                    (click)="
+                                                                        sendCommentPadre(
+                                                                            respuestas
+                                                                        )
+                                                                    "
                                                                 >
-                                                                    <button
-                                                                        pButton
-                                                                        pRipple
-                                                                        label="Cancelar"
-                                                                        icon="pi pi-times"
-                                                                        class="p-button-secondary mx-3"
-                                                                        type="button"
-                                                                        size="small"
-                                                                        (click)="
-                                                                            cancelarEdicion()
+                                                                    <i
+                                                                        class="pi pi-send"
+                                                                        style="
+                                                                            font-size: 20px;
                                                                         "
-                                                                    ></button>
-                                                                    <button
-                                                                        pButton
-                                                                        pRipple
-                                                                        type="button"
-                                                                        label="Responder Enviar"
-                                                                        icon="pi pi-send"
-                                                                        size="small"
-                                                                        class="p-button-primary"
-                                                                        (click)="
-                                                                            sendCommentPadre(
-                                                                                respuestas
-                                                                            )
-                                                                        "
-                                                                    ></button>
-                                                                </div>
+                                                                    ></i>
+                                                                </button>
+                                                                <p-button
+                                                                    icon="pi pi-times"
+                                                                    [rounded]="
+                                                                        true
+                                                                    "
+                                                                    [text]="
+                                                                        true
+                                                                    "
+                                                                    severity="secondary"
+                                                                    (click)="
+                                                                        cancelarEdicion()
+                                                                    "
+                                                                />
                                                             </div>
+                                                            <!-- <div class="comment-container">
+                                                                <input                                                                
+                                                                    type="text"
+                                                                    class="comment-input"
+                                                                    placeholder="Escribe un comentario..."
+                                                                    id="commentText"
+                                                                    formControlName="cForoRptaPadre"
+                                                                    
+                                                                />                                                                                                                               
+                                                                <div
+                                                                    class="reply-container"
+                                                                >
+                                                                    <div
+                                                                        class="button-container"
+                                                                    >
+                                                                        <button
+                                                                            pButton
+                                                                            pRipple
+                                                                            label="Cancelar"
+                                                                            icon="pi pi-times"
+                                                                            class="p-button-secondary mx-3"
+                                                                            type="button"
+                                                                            size="small"
+                                                                            (click)="
+                                                                                cancelarEdicion()
+                                                                            "
+                                                                        ></button>
+                                                                        <button
+                                                                            pButton
+                                                                            pRipple
+                                                                            type="button"
+                                                                            label="Responder Enviar"
+                                                                            icon="pi pi-send"
+                                                                            size="small"
+                                                                            class="p-button-primary"
+                                                                            (click)="
+                                                                                sendCommentPadre(
+                                                                                    respuestas
+                                                                                )
+                                                                            "
+                                                                        ></button>
+                                                                    </div>
+                                                                </div>
+                                                            </div> -->
                                                         </div>
                                                     </div>
-                                                </div>
-                                            </p-button>
+                                                </p-button>
+                                            </div>
                                         } @else {
                                             <app-empty-section
                                                 class="w-full"
@@ -518,10 +568,34 @@
                                 class="col-12 md:col-4"
                                 [hidden]="iPerfilId !== 7"
                             >
+                                <div class="pb-2">
+                                    <label
+                                        for=""
+                                        class=""
+                                        style="
+                                            font-weight: bold;
+                                            font-size: 16px;
+                                        "
+                                        >Estudiantes:
+                                    </label>
+                                </div>
+                                <div>
+                                    <p-iconField iconPosition="left">
+                                        <p-inputIcon
+                                            styleClass="pi pi-search text-md"
+                                        />
+                                        <!-- (input)="dt.filterGlobal($event.target, 'contains')" -->
+                                        <input
+                                            pInputText
+                                            type="text"
+                                            class="inputSearch"
+                                            placeholder="Buscar estudiante...."
+                                        />
+                                    </p-iconField>
+                                </div>
                                 <p-orderList
-                                    class="list"
+                                    class="listAlumno"
                                     [value]="estudiantes"
-                                    header="Parcipantes:"
                                 >
                                     <ng-template
                                         let-estudiante
@@ -537,7 +611,7 @@
                                             <img
                                                 src="assets/demo/images/matemit/perfil.png"
                                                 alt=""
-                                                class="w-3rem"
+                                                class="w-3rem btn"
                                             />
                                             <!--class="w-4rem min-h-9 shadow-2 flex-shrink-0 border-round"-->
                                             <div class="perfil-name">
@@ -571,22 +645,73 @@
                     [formGroup]="foroFormComnt"
                     class="flex flex-column gap-3 w-full"
                 >
+                    <!-- Cabecera del Foro -->
                     <div class="card">
-                        <h2>Foro: {{ foro?.cForoTitulo }}</h2>
+                        <div class="TituloForo">
+                            {{ foro?.cForoTitulo }}
+                        </div>
                         <hr />
-                        <div
-                            class="flex gap-2 flex-wrap align-items-center mb-4"
-                        >
-                            <app-icon
-                                name="matMessage"
-                                color="text-primary"
-                                size="sm"
-                            />
-                            <h3 class="text-lg m-0">Descripción:</h3>
+                        <!-- Mostrar las fechas de Inicio y fin de foro -->
+                        <div class="grid">
+                            <div class="col-12 md:col-6 flex flex-column gap-2">
+                                <p class="flex gap-2 flex-wrap">
+                                    <app-icon
+                                        name="matCalendarMonth"
+                                        class="text-primary"
+                                        size="sm"
+                                    ></app-icon>
+                                    {{
+                                        foro?.dtForoInicio
+                                            | date
+                                                : "EEEE, d 'de' MMMM 'de' yyyy"
+                                    }}
+                                    <app-icon
+                                        name="matAccessTime"
+                                        class="text-primary"
+                                        size="sm"
+                                    ></app-icon>
+                                    <span class="font-bold">Hora Limite:</span>
+                                    <span class="flex gap-2">
+                                        {{
+                                            foro?.dtForoInicio | date: 'h:mm a'
+                                        }}
+                                    </span>
+                                </p>
+                            </div>
+                            <div class="col-12 md:col-6 flex flex-column gap-2">
+                                <p class="flex gap-2 flex-wrap">
+                                    <app-icon
+                                        name="matCalendarMonth"
+                                        class="text-primary"
+                                        size="sm"
+                                    ></app-icon>
+                                    {{
+                                        foro?.dtForoFin
+                                            | date
+                                                : "EEEE, d 'de' MMMM 'de' yyyy"
+                                    }}
 
-                            {{ foro?.cForoDescripcion ?? '' | removeHTML }}
+                                    <span class="flex gap-2">
+                                        <app-icon
+                                            name="matAccessTime"
+                                            class="text-primary"
+                                            size="sm"
+                                        ></app-icon>
+                                        <span class="font-bold"
+                                            >Hora Limite:</span
+                                        >
+                                        {{ foro?.dtForoFin | date: 'h:mm a' }}
+                                    </span>
+                                </p>
+                            </div>
                         </div>
                     </div>
+                    <!-- Mostrar descripcion de Foro -->
+                    <p-messages
+                        [(value)]="messages"
+                        [enableService]="false"
+                        [closable]="false"
+                    />
                     <!-- Mostrar las leyendas -->
                     <!-- <div class="flex gap-4 align-items-center flex-wrap mx-auto">
                         <app-leyenda

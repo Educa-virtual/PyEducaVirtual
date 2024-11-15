@@ -142,14 +142,24 @@ export class ActividadesNoLectivasComponent implements OnInit {
                 break
             case 'agregar':
             case 'actualizar':
-                this.showModal = true
-                this.item = item
-                this.titulo =
-                    accion === 'agregar'
-                        ? 'AGREGAR CARGA NO LECTIVA'
-                        : 'ACTUALIZAR CARGA NO LECTIVA'
-                this.opcion = accion === 'agregar' ? 'GUARDAR' : 'ACTUALIZAR'
+                if (Number(this.informacion.iFalta) === 0) {
+                    this._MessageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: 'Ya no puede agregar porque completó sus horas no lectivas',
+                    })
+                } else {
+                    this.showModal = true
+                    this.item = item
+                    this.titulo =
+                        accion === 'agregar'
+                            ? 'AGREGAR CARGA NO LECTIVA'
+                            : 'ACTUALIZAR CARGA NO LECTIVA'
+                    this.opcion =
+                        accion === 'agregar' ? 'GUARDAR' : 'ACTUALIZAR'
+                }
                 break
+
             case 'eliminar':
                 this._ConfirmationModalService.openConfirm({
                     header:
@@ -165,7 +175,7 @@ export class ActividadesNoLectivasComponent implements OnInit {
             case 'ACTUALIZAR':
                 this.showModal = false
                 this.GuardarActualizarDetalleCargaNoLectivas(item)
-
+                this.obtenerCargaNoLectivas()
                 break
             case 'store-carga-no-lectivas':
             case 'update-carga-no-lectivas':
@@ -190,6 +200,11 @@ export class ActividadesNoLectivasComponent implements OnInit {
                 break
             case 'CONSULTARxiDocenteIdxTiposDedicaciones':
                 this.informacion = item.length ? item[0] : null
+                this.informacion.iFalta =
+                    this.informacion.iFalta === '.00'
+                        ? '0.00'
+                        : this.informacion.iFalta
+
                 break
         }
     }

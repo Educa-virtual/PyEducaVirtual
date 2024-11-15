@@ -1,0 +1,93 @@
+<div class="container">
+    <div class="opciones">
+        <p-button label="Agregar turno" (onClick)="showModeCreateDialog()" />
+    </div>
+
+    <app-table-primeng
+        [showCaption]="false"
+        [columnas]="columns"
+        [actions]="actions"
+        [showPaginator]="false"
+        [data]="formasAtencionInformation"
+        (accionBtnItem)="handleActions($event)"
+    >
+    </app-table-primeng>
+
+    <p-dialog header="Turno" [(visible)]="visible" [style]="{ width: '25rem' }">
+        <form [formGroup]="form">
+            <span class="p-text-secondary block mb-5"
+                >Informació del turno</span
+            >
+            <div class="flex align-items-center gap-3 mb-5">
+                <p-dropdown
+                    [style]="{ width: '100%' }"
+                    [options]="turnos"
+                    optionLabel="cTurnoNombre"
+                    placeholder="Seleccione un turno"
+                    formControlName="turno"
+                />
+            </div>
+            <div class="flex align-items-center gap-3 mb-5">
+                <p-dropdown
+                    [style]="{ width: '100%' }"
+                    [options]="modalidades"
+                    optionLabel="cModalServNombre"
+                    placeholder="Seleccione una modalidad"
+                    formControlName="modalidad"
+                />
+            </div>
+            <div class="flex align-items-center gap-3 mb-5">
+                <p-floatLabel>
+                    <p-calendar
+                        [style]="{ width: '100%' }"
+                        [timeOnly]="true"
+                        inputId="birth_date"
+                        formControlName="horaInicio"
+                        [defaultDate]="defautTimeInicio"
+                        stepMinute="10"
+                    />
+                    <label for="birth_date">Hora inicio</label>
+                </p-floatLabel>
+            </div>
+            <div class="flex align-items-center gap-3 mb-5">
+                <p-floatLabel>
+                    <p-calendar
+                        [style]="{ width: '100%' }"
+                        [timeOnly]="true"
+                        inputId="birth_date"
+                        formControlName="horaFin"
+                        [defaultDate]="defautTimeFin"
+                        stepMinute="10"
+                    />
+                    <label for="birth_date">Hora fin</label>
+                </p-floatLabel>
+            </div>
+            <div class="flex justify-content-end gap-2">
+                <p-button
+                    label="Cancel"
+                    severity="secondary"
+                    (onClick)="visible = false"
+                />
+                <p-button label="Guardar" (onClick)="saveInformation()" />
+            </div>
+        </form>
+    </p-dialog>
+
+    <p-confirmDialog>
+        <ng-template pTemplate="message" let-message>
+            <div
+                class="flex flex-column align-items-center w-full gap-3 border-bottom-1 surface-border"
+            >
+                <i
+                    class="pi pi-exclamation-circle text-6xl text-primary-500"
+                ></i>
+                <p>{{ message.message }}</p>
+            </div>
+        </ng-template>
+    </p-confirmDialog>
+
+    <div class="navigator">
+        <p-button label="Regresar" (onClick)="prevPage()" />
+        <p-button label="Siguiente" (onClick)="nextPage()" />
+    </div>
+</div>

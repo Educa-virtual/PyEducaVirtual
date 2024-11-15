@@ -15,3 +15,99 @@
         </app-table-primeng>
     </div>
 </app-container-page>
+
+<p-dialog
+    header="{{ caption }}"
+    [(visible)]="visible"
+    [style]="{ width: '56rem' }"
+    [modal]="true"
+>
+    @if (
+        opcion === 'formularioEvaluacion' ||
+        formCapas === 'formularioEvaluacion' ||
+        opcion === 'manual' ||
+        opcion === 'auto' ||
+        opcion === 'seleccionar'
+    ) {
+        <div class="grid p-fluid mt-2 card-container">
+            <div class="field col-12 md:col-6">
+                <p-card header="Nueva Configuración" class="custom-card">
+                    <div class="card-content">
+                        <p-button
+                            (click)="accionbtn('manual')"
+                            (focus)="(true)"
+                            styleClass="p-button-primary"
+                        >
+                            <i class="pi pi-file" style="font-size: 3rem"></i>
+                        </p-button>
+                    </div>
+                    <!-- <footer class="card-footer">Configuración manual</footer> -->
+                </p-card>
+            </div>
+
+            <!-- AUTO -->
+
+            <div class="field col-12 md:col-6">
+                <p-card header="Basado en evaluaciones" class="custom-card">
+                    <div class="card-content">
+                        <p-button
+                            (click)="accionbtn('auto')"
+                            (focus)="(true)"
+                            styleClass="p-button-warning"
+                        >
+                            <i
+                                class="pi pi-align-justify"
+                                style="font-size: 3rem"
+                            ></i>
+                        </p-button>
+                    </div>
+                    <!-- <footer class="card-footer">Generación automática</footer> -->
+                </p-card>
+            </div>
+        </div>
+        <!-- navigator -->
+        @if (acciones === 'manual') {
+            <div class="field col-12 md:col-12">
+                <!--generacion manual -->
+                <p><strong>IMPORTANTE</strong></p>
+                <p>
+                    Al seleccionar esta opcion deberá completar información
+                    relacionada a las
+                    <strong>Evaluaciones</strong>
+                </p>
+                <p-button
+                    label="Siguiente"
+                    (onClick)="
+                        accionBtnItem({ accion: 'formularioEvaluacion' })
+                    "
+                    styleClass="p-button-primary"
+                />
+            </div>
+        }
+        @if (acciones === 'auto') {
+            <div class="field col-12 md:col-12">
+                <!--generacion automatica -->
+                <p><strong>IMPORTANTE </strong> <i></i></p>
+                <P
+                    >Al seleccionar esta opcion se importará informacion de
+                    <strong>Evaluaciones</strong>
+                </P>
+                <!-- (accionBtnItem)="accionBtnItemTable($event)" -->
+                <app-table-primeng
+                    [showCaption]="false"
+                    [showPaginator]="false"
+                    [columnas]="columnasAuto"
+                    [data]="data"
+                    [(selectedRowData)]="selectedItemsAuto"
+                >
+                    <!-- <ng-container slot="caption-content"> </ng-container> -->
+                </app-table-primeng>
+                <p-button
+                    label="Siguiente"
+                    (onClick)="accionBtnItem('sel-auto')"
+                    styleClass="p-button-warning"
+                />
+            </div>
+        }
+    }
+</p-dialog>

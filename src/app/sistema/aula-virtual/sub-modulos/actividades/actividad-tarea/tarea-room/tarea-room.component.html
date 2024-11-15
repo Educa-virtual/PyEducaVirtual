@@ -374,6 +374,7 @@
                                     />
                                 </div>
                                 <div class="p-toolbar-group-end">
+                                    <!-- estes boto esta desactivado-->
                                     <!-- <p-button icon="pi pi-sync" pTooltip="Refrescar Listas" tooltipPosition="top"
                                     [rounded]="true" [text]="true" severity="danger" /> -->
                                 </div>
@@ -446,9 +447,16 @@
                                                             class="pi pi-search"
                                                         ></i>
                                                         <input
+                                                            type="text"
                                                             pInputText
                                                             placeholder="Buscar estudiante"
                                                             style="width: 250px"
+                                                            [(ngModel)]="
+                                                                buscarEstudiante
+                                                            "
+                                                            (input)="
+                                                                buscarEstudiante()
+                                                            "
                                                         />
                                                     </span>
                                                 </div>

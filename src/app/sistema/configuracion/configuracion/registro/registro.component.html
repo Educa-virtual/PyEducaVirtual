@@ -1,0 +1,10 @@
+<app-container-page
+    title="Datos del año académico"
+    [actions]="actionsContainer"
+    (accionBtnItem)="navigateToYears()"
+>
+    <div class="card">
+        <p-steps [model]="items" [readonly]="false"></p-steps>
+    </div>
+    <router-outlet></router-outlet>
+</app-container-page>

@@ -4,6 +4,7 @@ export const TABS = {
     evaluaciones: 'EVALUACIONES',
     estudiantes: 'ESTUDIANTES',
     resultados: 'Resultados',
+    asistencia: 'Asistencia',
     'banco-preguntas': 'Banco de Preguntas',
 }
 

@@ -1,12 +1,13 @@
 import { Component, inject, OnInit } from '@angular/core'
 import { PrimengModule } from '@/app/primeng.module'
-import { Message } from 'primeng/api'
+import { Message, MessageService } from 'primeng/api'
 import { TablePrimengComponent } from '../../../shared/table-primeng/table-primeng.component'
 import { FormActividadesNoLectivasComponent } from './components/form-actividades-no-lectivas/form-actividades-no-lectivas.component'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { GeneralService } from '@/app/servicios/general.service'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
+import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 
 @Component({
     selector: 'app-actividades-no-lectivas',
@@ -15,15 +16,18 @@ import { LocalStoreService } from '@/app/servicios/local-store.service'
         PrimengModule,
         TablePrimengComponent,
         FormActividadesNoLectivasComponent,
+        ContainerPageComponent,
     ],
     templateUrl: './actividades-no-lectivas.component.html',
     styleUrl: './actividades-no-lectivas.component.scss',
+    providers: [MessageService],
 })
 export class ActividadesNoLectivasComponent implements OnInit {
     private _ConstantesService = inject(ConstantesService)
     private _GeneralService = inject(GeneralService)
     private _ConfirmationModalService = inject(ConfirmationModalService)
     private _LocalStoreService = inject(LocalStoreService)
+    private _MessageService = inject(MessageService)
 
     mensaje: Message[] = [
         {
@@ -33,7 +37,22 @@ export class ActividadesNoLectivasComponent implements OnInit {
     ]
     date = new Date()
     showModal: boolean = false
-
+    actionsContainer = [
+        {
+            labelTooltip: 'Agregar',
+            text: 'Agregar',
+            icon: 'pi pi-plus',
+            accion: 'agregar',
+            class: 'p-button-primary',
+        },
+        // {
+        //     labelTooltip: 'Refrescar lista de metodologías',
+        //     text: 'Refrescar',
+        //     icon: 'pi pi-sync',
+        //     accion: 'refrescar',
+        //     class: 'p-button-danger',
+        // },
+    ]
     actions = [
         {
             labelTooltip: 'Editar',
@@ -55,7 +74,7 @@ export class ActividadesNoLectivasComponent implements OnInit {
     item = []
     titulo: string = ''
     opcion: string = ''
-
+    informacion
     columns = [
         {
             type: 'item',
@@ -111,6 +130,7 @@ export class ActividadesNoLectivasComponent implements OnInit {
         !this.tiposCargaNoLectivas.length
             ? this.obtenerTiposCargaNoLectivas()
             : null
+        this.obtenerCargaNoLectivasxTiposDedicaciones()
         this.obtenerCargaNoLectivas()
     }
     accionBtnItem(elemento): void {
@@ -145,11 +165,13 @@ export class ActividadesNoLectivasComponent implements OnInit {
             case 'ACTUALIZAR':
                 this.showModal = false
                 this.GuardarActualizarDetalleCargaNoLectivas(item)
+
                 break
             case 'store-carga-no-lectivas':
             case 'update-carga-no-lectivas':
             case 'update-detalle-carga-no-lectivas':
                 this.obtenerCargaNoLectivas()
+                this.obtenerCargaNoLectivasxTiposDedicaciones()
                 break
             case 'list-carga-no-lectivas':
                 this.data = item
@@ -164,6 +186,10 @@ export class ActividadesNoLectivasComponent implements OnInit {
                 break
             case 'delete-detalle-carga-no-lectivas':
                 this.obtenerCargaNoLectivas()
+                this.obtenerCargaNoLectivasxTiposDedicaciones()
+                break
+            case 'CONSULTARxiDocenteIdxTiposDedicaciones':
+                this.informacion = item.length ? item[0] : null
                 break
         }
     }
@@ -181,6 +207,22 @@ export class ActividadesNoLectivasComponent implements OnInit {
         }
         this.getInformation(params, params.ruta + '-' + params.prefix)
     }
+    obtenerCargaNoLectivasxTiposDedicaciones() {
+        const iYearId = this._LocalStoreService.getItem('dremoYear')
+        const params = {
+            petition: 'post',
+            group: 'docente',
+            prefix: 'carga-no-lectivas',
+            ruta: 'list',
+            data: {
+                opcion: 'CONSULTARxiDocenteIdxTiposDedicaciones',
+                iDocenteId: this._ConstantesService.iDocenteId,
+                valorBusqueda: iYearId,
+            },
+            params: { skipSuccessMessage: true },
+        }
+        this.getInformation(params, 'CONSULTARxiDocenteIdxTiposDedicaciones')
+    }
     obtenerCargaNoLectivas() {
         const iYearId = this._LocalStoreService.getItem('dremoYear')
         const params = {
@@ -193,7 +235,6 @@ export class ActividadesNoLectivasComponent implements OnInit {
                 iDocenteId: this._ConstantesService.iDocenteId,
                 valorBusqueda: iYearId,
             },
-            params: { skipSuccessMessage: true },
         }
         this.getInformation(params, params.ruta + '-' + params.prefix)
     }
@@ -241,10 +282,26 @@ export class ActividadesNoLectivasComponent implements OnInit {
         this._GeneralService.getGralPrefix(params).subscribe({
             next: (response) => {
                 this.accionBtnItem({ accion, item: response?.data })
+                if (
+                    accion === 'store-carga-no-lectivas' ||
+                    accion === 'update-detalle-carga-no-lectivas'
+                ) {
+                    console.log(response)
+                    this._MessageService.add({
+                        severity: 'success',
+                        summary: 'Éxito',
+                        detail: response.mensaje,
+                    })
+                }
             },
             complete: () => {},
             error: (error) => {
                 console.log(error)
+                this._MessageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: error,
+                })
             },
         })
     }

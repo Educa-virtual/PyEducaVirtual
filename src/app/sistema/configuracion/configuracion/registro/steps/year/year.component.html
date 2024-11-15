@@ -76,78 +76,49 @@
         </section>
         <section class="flex flex-column gap-7 flex-1 px-4">
             <div class="flex flex-column">
-                <div class="p-2">
-                    <p-checkbox
-                        name="fasesPromocionales"
-                        [value]="true"
-                        formControlName="regular"
-                        label="Fase regular"
-                        (onChange)="isActiveFechasFases()"
-                    />
-                </div>
-                <div>
-                    <p-floatLabel>
-                        <p-calendar
-                            [style]="{ width: '100%' }"
-                            [inputStyle]="{ width: '100%' }"
-                            formControlName="fechaFaseRegularInicio"
-                            [showIcon]="true"
-                            inputId="faseRegularInicio"
+                @for (fase of fasesPromocionales; track fase.iFasePromId) {
+                    <div class="p-2">
+                        <p-checkbox
+                            name="fasesPromocionales"
+                            [value]="true"
+                            formControlName="{{
+                                'faseCheck' + fase.iFasePromId
+                            }}"
+                            [label]="fase.cFasePromNombre"
+                            (onChange)="isActiveFechasFases(fase.iFasePromId)"
                         />
-                        <label for="faseRegularInicio"
-                            >Fecha inicio fase regular</label
-                        >
-                    </p-floatLabel>
-                    <p-floatLabel>
-                        <p-calendar
-                            [style]="{ width: '100%' }"
-                            [inputStyle]="{ width: '100%' }"
-                            formControlName="fechaFaseRegularFin"
-                            [showIcon]="true"
-                            inputId="faseRegularFin"
-                        />
-                        <label for="faseRegularFin"
-                            >Fecha fin fase regular</label
-                        >
-                    </p-floatLabel>
-                </div>
-            </div>
-            <div class="flex flex-column">
-                <div class="p-2">
-                    <p-checkbox
-                        name="fasesPromocionales"
-                        [value]="true"
-                        formControlName="recuperacion"
-                        label="Fase de recuperación"
-                        (onChange)="isActiveFechasFases()"
-                    />
-                </div>
-                <div>
-                    <p-floatLabel>
-                        <p-calendar
-                            [style]="{ width: '100%' }"
-                            [inputStyle]="{ width: '100%' }"
-                            formControlName="fechaFaseRecuperacionInicio"
-                            [showIcon]="true"
-                            inputId="faseRecuperacionInicio"
-                        />
-                        <label for="faseRecuperacionInicio"
-                            >Fecha inicio fase recuperación</label
-                        >
-                    </p-floatLabel>
-                    <p-floatLabel>
-                        <p-calendar
-                            [style]="{ width: '100%' }"
-                            [inputStyle]="{ width: '100%' }"
-                            formControlName="fechaFaseRecuperacionFin"
-                            [showIcon]="true"
-                            inputId="faseRecuperacionFin"
-                        />
-                        <label for="faseRecuperacionFin"
-                            >Fecha fin fase recuperación</label
-                        >
-                    </p-floatLabel>
-                </div>
+                    </div>
+                    <div>
+                        <p-floatLabel>
+                            <p-calendar
+                                [style]="{ width: '100%' }"
+                                [inputStyle]="{ width: '100%' }"
+                                formControlName="{{
+                                    'faseInputInicio' + fase.iFasePromId
+                                }}"
+                                [showIcon]="true"
+                                inputId="faseRegularInicio"
+                            />
+                            <label for="faseRegularInicio"
+                                >Fecha inicio {{ fase.cFasePromNombre }}</label
+                            >
+                        </p-floatLabel>
+                        <p-floatLabel>
+                            <p-calendar
+                                [style]="{ width: '100%' }"
+                                [inputStyle]="{ width: '100%' }"
+                                formControlName="{{
+                                    'faseInputFin' + fase.iFasePromId
+                                }}"
+                                [showIcon]="true"
+                                inputId="faseRegularFin"
+                            />
+                            <label for="faseRegularFin"
+                                >Fecha fin {{ fase.cFasePromNombre }}</label
+                            >
+                        </p-floatLabel>
+                    </div>
+                }
             </div>
         </section>
     </div>

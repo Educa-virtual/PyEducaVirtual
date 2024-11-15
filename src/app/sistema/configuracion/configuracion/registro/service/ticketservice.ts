@@ -169,7 +169,7 @@ export class TicketService {
     }
 
     async setCalendar(
-        { iCalAcadId }: Partial<typeof this.registroInformation.calendar> = {},
+        { iCalAcadId }: { iCalAcadId?: string } = {},
         {
             onCompleteCallbacks = [],
         }: {
@@ -247,6 +247,9 @@ export class TicketService {
             }
         } else {
             console.log('SIN ID')
+
+            console.log('Fase y fecha')
+            console.log(fasesFechas)
 
             data = await firstValueFrom(
                 this.httpService.getData(

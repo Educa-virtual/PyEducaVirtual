@@ -73,7 +73,6 @@ export class YearsComponent implements OnInit {
 
                 await this.ticketService.setCalendar(
                     {
-                        iSedeId: row.item.iSedeId,
                         iCalAcadId: row.item.iCalAcadId,
                     },
                     { onCompleteCallbacks: [() => this.navigateToRegistro()] }

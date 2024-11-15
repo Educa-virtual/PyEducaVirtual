@@ -5,7 +5,7 @@ import { Component, OnInit } from '@angular/core'
 import { Router } from '@angular/router'
 import { TicketService } from '../../service/ticketservice'
 
-import { FormsModule } from '@angular/forms'
+import { FormControl, FormsModule } from '@angular/forms'
 import { ButtonModule } from 'primeng/button'
 import { CalendarModule } from 'primeng/calendar'
 
@@ -59,7 +59,10 @@ export class YearComponent implements OnInit {
         dtFaserecuperacionInicio: Date
         dtFaserecuperacionFin: Date
     }
-    fasesPromocionales: Array<any>
+    fasesPromocionales: {
+        iFasePromId: string
+        cFasePromNombre: string
+    }[]
     constructor(
         public ticketService: TicketService,
         private router: Router,
@@ -72,20 +75,14 @@ export class YearComponent implements OnInit {
             fechaFin: ['', Validators.required],
             fechaMatriculaInicio: ['', Validators.required],
             fechaMatriculaFin: ['', Validators.required],
-            fechaFaseRegularInicio: [''],
-            fechaFaseRegularFin: [''],
             fechaMatriculaRezagados: [''],
-            fechaFaseRecuperacionInicio: [''],
-            fechaFaseRecuperacionFin: [''],
-            regular: [[], Validators.required],
-            recuperacion: [[], Validators.required],
         })
     }
     async ngOnInit() {
         // this.fasesPromocionales = await this.ticketService.getFasesFechas()
 
         await this.ticketService.setCalendar(
-            { iYAcadId: '', iCalAcadId: '' },
+            { iCalAcadId: '' },
             {
                 onCompleteCallbacks: [
                     (data) => this.setValuesFormCalendar(data),
@@ -117,6 +114,8 @@ export class YearComponent implements OnInit {
     }
 
     setValuesFormCalendar(data) {
+        this.fasesPromocionales = data.fasesProm
+
         if (this.ticketService.registroInformation.calendar.iCalAcadId) {
             const {
                 fechaVigente,
@@ -128,24 +127,60 @@ export class YearComponent implements OnInit {
                 fases_promocionales,
             } = this.ticketService.registroInformation.stepYear
 
-            const fasePromocional = data.fasesProm.reduce((acc, item) => {
-                acc[item.iFasePromId] = item
-                return acc
-            }, {})
+            const idExistsFases = fases_promocionales.map((faseExist) =>
+                String(faseExist.iFasePromId)
+            )
 
-            const existFaseRegular =
-                Array.isArray(fases_promocionales) &&
-                fases_promocionales.find(
-                    (fase) => fase.iFasePromId == fasePromocional[1].iFasePromId
-                )
-            console.log(existFaseRegular)
+            // const existsFases = data.fasesProm.filter((fase) => idExistsFases.includes(fase.iFasePromId))
 
-            const existFaseRecuperacion =
-                Array.isArray(fases_promocionales) &&
-                fases_promocionales.find(
-                    (fase) => fase.iFasePromId == fasePromocional[2].iFasePromId
+            const noExistsFases = data.fasesProm.filter(
+                (fase) => !idExistsFases.includes(fase.iFasePromId)
+            )
+
+            this.ticketService.registroInformation.stepYear.fases_promocionales.forEach(
+                (fase) => {
+                    this.form.addControl(
+                        'faseCheck' + fase.iFasePromId,
+                        new FormControl([
+                            {
+                                iFasePromId: fase.iFasePromId,
+                                cFasePromNombre: fase.cFasePromNombre,
+                            },
+                            true,
+                        ])
+                    )
+
+                    this.form.addControl(
+                        'faseInputInicio' + fase.iFasePromId,
+                        new FormControl(new Date(fase.dtFaseInicio))
+                    )
+
+                    this.form.addControl(
+                        'faseInputFin' + fase.iFasePromId,
+                        new FormControl(new Date(fase.dtFaseFin))
+                    )
+                }
+            )
+
+            noExistsFases.forEach((fase) => {
+                this.form.addControl(
+                    'faseCheck' + fase.iFasePromId,
+                    new FormControl([fase])
                 )
-            console.log(existFaseRecuperacion)
+
+                this.form.addControl(
+                    'faseInputInicio' + fase.iFasePromId,
+                    new FormControl('')
+                )
+
+                this.form.addControl(
+                    'faseInputFin' + fase.iFasePromId,
+                    new FormControl('')
+                )
+
+                this.form.get('faseInputInicio' + fase.iFasePromId).disable()
+                this.form.get('faseInputFin' + fase.iFasePromId).disable()
+            })
 
             this.form.patchValue({
                 fechaVigente: fechaVigente ?? '',
@@ -153,59 +188,51 @@ export class YearComponent implements OnInit {
                 fechaFin: fechaFin ?? '',
                 fechaMatriculaInicio: matriculaInicio ?? '',
                 fechaMatriculaFin: matriculaFin ?? '',
-                fechaFaseRegularInicio: existFaseRegular?.dtFaseInicio
-                    ? new Date(existFaseRegular.dtFaseInicio)
-                    : '',
-                fechaFaseRegularFin: existFaseRegular?.dtFaseFin
-                    ? new Date(existFaseRegular.dtFaseFin)
-                    : '',
-                fechaFaseRecuperacionInicio: existFaseRecuperacion?.dtFaseInicio
-                    ? new Date(existFaseRecuperacion.dtFaseInicio)
-                    : '',
-                fechaFaseRecuperacionFin: existFaseRecuperacion?.dtFaseFin
-                    ? new Date(existFaseRecuperacion.dtFaseFin)
-                    : '',
                 fechaMatriculaRezagados: matriculaResagados ?? '',
-                regular: existFaseRegular
-                    ? [existFaseRegular, true]
-                    : [data.fasesProm[0]],
-                recuperacion: existFaseRecuperacion
-                    ? [existFaseRecuperacion, true]
-                    : [data.fasesProm[1]],
             })
         } else {
             this.form.patchValue({
                 fechaVigente: data.yearAcad.cYAcadNombre,
                 fechaInicio: new Date(data.yearAcad.dtYAcadInicio),
                 fechaFin: new Date(data.yearAcad.dYAcadFin),
-                regular: [data.fasesProm[0]],
-                recuperacion: [data.fasesProm[1]],
+            })
+
+            this.fasesPromocionales.forEach((fase) => {
+                this.form.addControl(
+                    'faseCheck' + fase.iFasePromId,
+                    new FormControl([fase])
+                )
+
+                this.form.addControl(
+                    'faseInputInicio' + fase.iFasePromId,
+                    new FormControl('')
+                )
+
+                this.form.addControl(
+                    'faseInputFin' + fase.iFasePromId,
+                    new FormControl('')
+                )
+
+                this.form.get('faseInputInicio' + fase.iFasePromId).disable()
+                this.form.get('faseInputFin' + fase.iFasePromId).disable()
             })
         }
 
         this.form.get('fechaVigente').disable()
-        this.isActiveFechasFases()
     }
 
-    isActiveFechasFases() {
-        if (this.form.get('regular').value.includes(true)) {
-            this.form.get('fechaFaseRegularInicio').enable()
-            this.form.get('fechaFaseRegularFin').enable()
+    isActiveFechasFases(checkId = null) {
+        if (
+            checkId &&
+            this.form.get('faseCheck' + checkId).value.includes(true)
+        ) {
+            this.form.get('faseInputInicio' + checkId).enable()
+            this.form.get('faseInputFin' + checkId).enable()
         } else {
-            this.form.get('fechaFaseRegularInicio').disable()
-            this.form.get('fechaFaseRegularFin').disable()
-            this.form.get('fechaFaseRegularInicio').reset()
-            this.form.get('fechaFaseRegularFin').reset()
-        }
-
-        if (this.form.get('recuperacion').value.includes(true)) {
-            this.form.get('fechaFaseRecuperacionInicio').enable()
-            this.form.get('fechaFaseRecuperacionFin').enable()
-        } else {
-            this.form.get('fechaFaseRecuperacionInicio').disable()
-            this.form.get('fechaFaseRecuperacionFin').disable()
-            this.form.get('fechaFaseRecuperacionInicio').reset()
-            this.form.get('fechaFaseRecuperacionFin').reset()
+            this.form.get('faseInputInicio' + checkId).disable()
+            this.form.get('faseInputFin' + checkId).disable()
+            this.form.get('faseInputInicio' + checkId).reset()
+            this.form.get('faseInputFin' + checkId).reset()
         }
     }
 

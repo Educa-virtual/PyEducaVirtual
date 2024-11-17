@@ -176,10 +176,10 @@
 }
 
 :host ::ng-deep {
-    .p-dropdown {
-        width: 10rem;
-        font-weight: normal;
-    }
+    // .p-dropdown {
+    //     width: 10rem;
+    //     font-weight: normal;
+    // }
 
     .perfil-name {
         font-size: 0.9rem;
@@ -365,6 +365,20 @@
     border: 1px solid #efefef;
 }
 .btn-calificar-comentario {
-    text-align: end;
-    float: right;
+    display: flex;
+    margin-left: auto;
+}
+:host ::ng-deep .p-dropdown-trigger {
+    display: flex;
+    margin-left: auto;
+    background-color: red;
+}
+:host ::ng-deep .p-dropdown {
+    width: auto;
+    display: flex;
+    display: block;
+    white-space: nowrap;
+    //p-element p-dropdown-label p-inputtext p-placeholder ng-star-inserted
+    //p-element p-dropdown-label p-inputtext p-placeholder ng-star-inserted
+    //p-dropdown-trigger
 }

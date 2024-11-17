@@ -605,7 +605,7 @@
                                         let-i="index"
                                     >
                                         <div
-                                            class="perfiles-list-item text-left"
+                                            class="perfiles-list-item"
                                             tabindex="0"
                                         >
                                             <img
@@ -947,7 +947,7 @@
         }
     </p-tabView>
 </section>
-
+<!-- Calificar estudiante en el mismo foro -->
 <p-dialog
     [(visible)]="modalCalificacion"
     [style]="{ width: '1000px' }"
@@ -958,32 +958,30 @@
     class="p-fluid"
 >
     <form [formGroup]="foroFormComnt" class="flex flex-column gap-3 w-full">
-        <div class="grid pt-3">
-            <!-- Mostrar el título -->
-
-            <div class="col-8 flex flex-column gap-2 conntResp">
-                <label for="" class="font-bold">Respuesta estudiante:</label>
-                <!-- <app-common-input
-                    [controlKey]="'cForoRptaRespuesta'"
-                    label="Comentario"
-                /> -->
-                "{{ estudianteSelect?.cForoRptaRespuesta | removeHTML }}"
-            </div>
-
-            <div class="col-4 flex flex-column gap-2">
-                <label for="calificacion">Calificación</label>
+        <div class="grid pt-2">
+            <!-- Mostrar la califcación -->
+            <div class="col-12">
+                <label class="font-bold" for="calificacion">Calificación</label>
                 <p-dropdown
                     [options]="calificacion"
                     formControlName="iEscalaCalifId"
                     styleClass="w-full"
+                    [showClear]="true"
                     optionValue="iEscalaCalifId"
                     optionLabel="cEscalaCalifNombre"
                     placeholder="Seleccione una Calificación"
                 />
+                <!-- <p-dropdown 
+                    [options]="calificacion" 
+                    styleClass="w-full"
+                    [checkmark]="true" 
+                    optionLabel="name" 
+                    [showClear]="true" 
+                    placeholder="Seleccione una Calificación" /> -->
             </div>
             <!-- Mostrar descripción -->
             <div class="col-12">
-                <label for="descripcion" class="mt-1"
+                <label for="descripcion" class="font-bold mt-1"
                     >Descripción
                     <span class="text-red-500 text-xs"
                         >(*) Obligatorio</span
@@ -999,31 +997,17 @@
             </div>
         </div>
     </form>
-    <!-- <div class="">
-        
-        flex justify-content-end gap-2 pt-3 
-        <button
-            pButton
-            pRipple
-            label="Cancelar"
-            icon="pi pi-times"
-            class="p-button-secondary"
-            type="button"
-            
-        ></button>
-        (click)="closeModal(null)"
-        <button
-            pButton
-            pRipple
-            label="Guardar"
-            icon="pi pi-check"
-            
-            class="p-button-primary"
-            (click)="submit()"
-        ></button>
-    </div> -->
     <div class="reply-container">
         <div class="button-container">
+            <button
+                pButton
+                pRipple
+                label="Editar"
+                icon="pi pi-pencil"
+                class="p-button-secondary mx-3"
+                type="button"
+                size="small"
+            ></button>
             <button
                 pButton
                 pRipple

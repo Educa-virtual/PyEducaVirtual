@@ -35,7 +35,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div class="grid mb-4">
                                 <div
                                     class="col-12 md:col-6 flex flex-column gap-2"
@@ -226,7 +225,6 @@
                         </div>
                     </div>
                     <p-messages
-                        [style]="{ 'text-align': 'center', padding: '10px' }"
                         *ngIf="messages"
                         [(value)]="messages"
                         [enableService]="false"
@@ -536,6 +534,17 @@
                                             placeholder="Escribe un Comentario... "
                                             formControlName="cForoRptaRespuesta"
                                         />
+                                        <!-- <p-editor
+                                            id="descripcion"
+                                            formControlName="cForoRptaDocente">
+                                            <ng-template pTemplate="header">
+                                                <span class="ql-formats">
+                                                    <button type="button" class="ql-bold" aria-label="Bold"></button>
+                                                    <button type="button" class="ql-italic" aria-label="Italic"></button>
+                                                    <button type="button" class="ql-underline" aria-label="Underline"></button>
+                                                </span>
+                                            </ng-template>
+                                        </p-editor> -->
                                         <div class="reply-container">
                                             <div class="button-container">
                                                 <button
@@ -604,6 +613,13 @@
                                         pTemplate="listItem"
                                         let-i="index"
                                     >
+                                        <!-- <p-button
+                                        [text]="true"
+                                        severity="secondary"
+                                        
+                                    >
+                                               
+                                    </p-button> -->
                                         <div
                                             class="perfiles-list-item"
                                             tabindex="0"
@@ -615,7 +631,7 @@
                                             />
                                             <!--class="w-4rem min-h-9 shadow-2 flex-shrink-0 border-round"-->
                                             <div class="perfil-name">
-                                                {{ estudiante.nombrecompleto }}
+                                                {{ estudiante?.nombrecompleto }}
                                             </div>
                                             <div
                                                 class="btn-calificar-comentario"
@@ -625,7 +641,9 @@
                                                     [rounded]="true"
                                                     severity="success"
                                                     (click)="
-                                                        openModal(estudiante)
+                                                        openModalCalificacion(
+                                                            estudiante
+                                                        )
                                                     "
                                                     tooltipPosition="bottom"
                                                     pTooltip="Calificar"
@@ -949,17 +967,16 @@
 </section>
 <!-- Calificar estudiante en el mismo foro -->
 <p-dialog
-    [(visible)]="modalCalificacion"
+    [(visible)]="modelaCalificacionComen"
     [style]="{ width: '1000px' }"
-    header="Calificar las Respuestas de: {{
-        estudianteSelect?.cNombreEstudiante
-    }}"
-    [modal]="true"
     class="p-fluid"
+    header="Calificar a: {{ perfilSelect?.nombrecompleto }}"
+    [modal]="true"
 >
     <form [formGroup]="foroFormComnt" class="flex flex-column gap-3 w-full">
         <div class="grid pt-2">
             <!-- Mostrar la califcación -->
+            <!--  for="calificacion" [options]="calificacion"-->
             <div class="col-12">
                 <label class="font-bold" for="calificacion">Calificación</label>
                 <div class="pt-2">
@@ -967,10 +984,10 @@
                         [options]="calificacion"
                         formControlName="iEscalaCalifId"
                         styleClass="w-full"
-                        [showClear]="true"
                         optionValue="iEscalaCalifId"
                         optionLabel="cEscalaCalifNombre"
                         placeholder="Seleccione una Calificación"
+                        [showClear]="true"
                     />
                 </div>
             </div>
@@ -982,12 +999,37 @@
                         >(*) Obligatorio</span
                     ></label
                 >
-                <div class="mt-2">
-                    <p-editor
+                <div class="mt-2 pt-2">
+                    <!-- <p-editor
                         id="descripcion"
                         formControlName="cForoRptaDocente"
                         [style]="{ height: '150px' }"
-                    />
+                    /> -->
+                    <p-editor
+                        [style]="{ height: '120px' }"
+                        id="descripcion"
+                        formControlName="cForoRptaDocente"
+                    >
+                        <ng-template pTemplate="header">
+                            <span class="ql-formats">
+                                <button
+                                    type="button"
+                                    class="ql-bold"
+                                    aria-label="Bold"
+                                ></button>
+                                <button
+                                    type="button"
+                                    class="ql-italic"
+                                    aria-label="Italic"
+                                ></button>
+                                <button
+                                    type="button"
+                                    class="ql-underline"
+                                    aria-label="Underline"
+                                ></button>
+                            </span>
+                        </ng-template>
+                    </p-editor>
                 </div>
             </div>
         </div>
@@ -1003,6 +1045,96 @@
                 type="button"
                 size="small"
             ></button>
+            <button
+                pButton
+                pRipple
+                type="button"
+                label="Enviar"
+                icon="pi pi-send"
+                size="small"
+                class="p-button-primary"
+            ></button>
+            <!-- (click)="submit()" -->
+        </div>
+    </div>
+</p-dialog>
+
+<p-dialog
+    [(visible)]="modalCalificacion"
+    [style]="{ width: '1000px' }"
+    header="Calificar las Respuestas de: {{
+        estudianteSelect?.cNombreEstudiante
+    }}"
+    [modal]="true"
+    class="p-fluid"
+>
+    <form [formGroup]="foroFormComnt" class="flex flex-column gap-3 w-full">
+        <div class="grid pt-3">
+            <!-- Mostrar el título -->
+
+            <div class="col-8 flex flex-column gap-2 conntResp">
+                <label for="" class="font-bold">Respuesta estudiante:</label>
+                <!-- <app-common-input
+                    [controlKey]="'cForoRptaRespuesta'"
+                    label="Comentario"
+                /> -->
+                "{{ estudianteSelect?.cForoRptaRespuesta | removeHTML }}"
+            </div>
+
+            <div class="col-4 flex flex-column gap-2">
+                <label for="calificacion">Calificación</label>
+                <p-dropdown
+                    [options]="calificacion"
+                    formControlName="iEscalaCalifId"
+                    styleClass="w-full"
+                    optionValue="iEscalaCalifId"
+                    optionLabel="cEscalaCalifNombre"
+                    placeholder="Seleccione una Calificación"
+                />
+            </div>
+            <!-- Mostrar descripción -->
+            <div class="col-12">
+                <label for="descripcion" class="mt-1"
+                    >Descripción
+                    <span class="text-red-500 text-xs"
+                        >(*) Obligatorio</span
+                    ></label
+                >
+                <div class="mt-2">
+                    <p-editor
+                        id="descripcion"
+                        formControlName="cForoRptaDocente"
+                        [style]="{ height: '150px' }"
+                    />
+                </div>
+            </div>
+        </div>
+    </form>
+    <!-- <div class="">
+        
+        flex justify-content-end gap-2 pt-3 
+        <button
+            pButton
+            pRipple
+            label="Cancelar"
+            icon="pi pi-times"
+            class="p-button-secondary"
+            type="button"
+            
+        ></button>
+        (click)="closeModal(null)"
+        <button
+            pButton
+            pRipple
+            label="Guardar"
+            icon="pi pi-check"
+            
+            class="p-button-primary"
+            (click)="submit()"
+        ></button>
+    </div> -->
+    <div class="reply-container">
+        <div class="button-container">
             <button
                 pButton
                 pRipple

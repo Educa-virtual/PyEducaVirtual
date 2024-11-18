@@ -91,6 +91,7 @@ export class ForoRoomComponent implements OnInit {
     modalCalificacion: boolean = false
     estudianteSelect = null
     respuestasForo: any[] = []
+    nombrecompleto
 
     public foro
     iPerfilId: number
@@ -460,5 +461,19 @@ export class ForoRoomComponent implements OnInit {
         }
 
         this.getInformation(params)
+    }
+    onGlobalFilter(event: Event): void {
+        const filterValue = (
+            event.target as HTMLInputElement
+        ).value.toLowerCase()
+
+        if (!filterValue) {
+            // Si el campo de búsqueda está vacío, muestra toda la lista original
+            this.estudiantes = [...this.estudiantes]
+            return
+        }
+        this.estudiantes = this.estudiantes.filter((estudiante) =>
+            estudiante.nombrecompleto.toLowerCase().includes(filterValue)
+        )
     }
 }

@@ -598,6 +598,7 @@
                                             pInputText
                                             type="text"
                                             class="inputSearch"
+                                            (input)="onGlobalFilter($event)"
                                             placeholder="Buscar estudiante...."
                                         />
                                     </p-iconField>
@@ -614,12 +615,12 @@
                                         let-i="index"
                                     >
                                         <!-- <p-button
-                                        [text]="true"
-                                        severity="secondary"
-                                        
-                                    >
-                                               
-                                    </p-button> -->
+                                            [text]="true"
+                                            severity="secondary"
+                                            
+                                        >
+                                                
+                                        </p-button> -->
                                         <div
                                             class="perfiles-list-item"
                                             tabindex="0"
@@ -639,7 +640,7 @@
                                                 <p-button
                                                     icon="pi pi-book"
                                                     [rounded]="true"
-                                                    severity="success"
+                                                    severity="danger"
                                                     (click)="
                                                         openModalCalificacion(
                                                             estudiante
@@ -1039,8 +1040,8 @@
             <button
                 pButton
                 pRipple
-                label="Editar"
-                icon="pi pi-pencil"
+                label="Cancelar"
+                icon="pi pi-times"
                 class="p-button-secondary mx-3"
                 type="button"
                 size="small"

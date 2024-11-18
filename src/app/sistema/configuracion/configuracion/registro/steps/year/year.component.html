@@ -2,41 +2,53 @@
     <div class>
         <section class="flex flex-column gap-7 flex-1 px-4">
             <div class="">
-                <p-floatLabel>
+                <p-inputGroup>
+                    <p-inputGroupAddon>Año vigente</p-inputGroupAddon>
                     <p-calendar
-                        [style]="{ width: '100%' }"
-                        [inputStyle]="{ width: '100%' }"
+                        styleClass="w-full"
                         formControlName="fechaVigente"
+                        [iconDisplay]="'input'"
                         [showIcon]="true"
                         view="year"
                         dateFormat="yy"
                         inputId="yearToRegister"
                     />
-                    <label for="yearToRegister">Año vigente </label>
-                </p-floatLabel>
+                </p-inputGroup>
             </div>
+
             <div>
-                <p-floatLabel>
+                <p-inputGroup>
+                    <p-inputGroupAddon>Cronograma</p-inputGroupAddon>
                     <p-calendar
-                        [style]="{ width: '100%' }"
-                        [inputStyle]="{ width: '100%' }"
+                        styleClass="w-full"
+                        formControlName="fechaInicio"
+                        selectionMode="range"
+                        [iconDisplay]="'input'"
+                        [showIcon]="true"
+                        inputId="yearInicio"
+                    />
+                </p-inputGroup>
+            </div>
+            <!-- <div>
+                <p-inputGroup>
+                    <p-inputGroupAddon>Inicio de año</p-inputGroupAddon>
+                    <p-calendar
+                        styleClass="w-full"
                         formControlName="fechaInicio"
                         [showIcon]="true"
                         inputId="yearInicio"
                     />
-                    <label for="yearInicio">Fecha inicio de año</label>
-                </p-floatLabel>
-                <p-floatLabel>
+                </p-inputGroup>
+                <p-inputGroup>
+                    <p-inputGroupAddon>Fin de año</p-inputGroupAddon>
                     <p-calendar
-                        [style]="{ width: '100%' }"
-                        [inputStyle]="{ width: '100%' }"
-                        formControlName="fechaFin"
-                        [showIcon]="true"
-                        inputId="yearFin"
-                    />
-                    <label for="yearFin">Fecha fin de año</label>
-                </p-floatLabel>
-            </div>
+                    styleClass="w-full"
+                    formControlName="fechaFin"
+                    [showIcon]="true"
+                    inputId="yearFin"
+                />
+                </p-inputGroup>
+            </div> -->
             <div>
                 <p-floatLabel>
                     <p-calendar
@@ -131,16 +143,34 @@
     </div>
 
     <div class="navigator">
-        <p-confirmDialog #cd class="w-5">
+        <p-confirmDialog
+            #cd
+            [acceptVisible]="false"
+            [rejectVisible]="false"
+            class="w-5"
+        >
             <ng-template pTemplate="message" let-message>
                 <div
                     class="flex flex-column align-items-center w-full gap-3 border-bottom-1 surface-border"
                 >
-                    <i
-                        class="pi pi-exclamation-circle text-6xl text-primary-500"
-                    ></i>
-                    <p>{{ message.message }}</p>
+                    <i class="pi pi-exclamation-circle text-6xl"></i>
+                    <p class="text-center">{{ message.message }}</p>
                 </div>
+            </ng-template>
+
+            <ng-template pTemplate="footer">
+                <button
+                    pButton
+                    label="Cancelar"
+                    (click)="cd.reject()"
+                    class="p-button-outlined w-8rem accept"
+                ></button>
+                <button
+                    pButton
+                    label="Confirmar"
+                    (click)="cd.accept()"
+                    class="w-8rem reject"
+                ></button>
             </ng-template>
         </p-confirmDialog>
     </div>

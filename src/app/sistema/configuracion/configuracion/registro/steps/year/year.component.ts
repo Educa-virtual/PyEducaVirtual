@@ -1,6 +1,6 @@
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
-import { Component, OnInit } from '@angular/core'
+import { Component, OnInit, HostListener } from '@angular/core'
 
 import { Router } from '@angular/router'
 import { TicketService } from '../../service/ticketservice'
@@ -8,7 +8,8 @@ import { TicketService } from '../../service/ticketservice'
 import { FormControl, FormsModule } from '@angular/forms'
 import { ButtonModule } from 'primeng/button'
 import { CalendarModule } from 'primeng/calendar'
-
+import { InputGroupModule } from 'primeng/inputgroup'
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
 import {
     FormBuilder,
     FormGroup,
@@ -38,6 +39,8 @@ import { ToastModule } from 'primeng/toast'
         ConfirmDialogModule,
         ToastModule,
         CheckboxModule,
+        InputGroupModule,
+        InputGroupAddonModule,
     ],
     templateUrl: './year.component.html',
     styleUrl: './year.component.scss',
@@ -75,8 +78,26 @@ export class YearComponent implements OnInit {
             fechaMatriculaRezagados: [''],
         })
     }
+
+    @HostListener('window:beforeunload', ['$event'])
+    onBeforeUnload(): void {
+        // param: event: BeforeUnloadEvent
+        sessionStorage.setItem('reloadDetected', 'true')
+    }
     async ngOnInit() {
         // this.fasesPromocionales = await this.ticketService.getFasesFechas()
+        console.log('reloadDetected')
+        console.log(sessionStorage)
+
+        if (
+            sessionStorage.getItem('reloadDetected') &&
+            sessionStorage.getItem('reloadDetected') == 'true'
+        ) {
+            this.router.navigate(['configuracion/configuracion/years'])
+        }
+
+        // Limpia la marca después de manejarla
+        sessionStorage.removeItem('reloadDetected')
 
         await this.ticketService.setCalendar(
             { iCalAcadId: '' },

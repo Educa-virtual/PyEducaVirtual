@@ -1,11 +1,44 @@
-.container{
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  margin-top: 2rem;
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin-top: 2rem;
 }
 
 .navigator {
-  display: flex;
-  justify-content: space-between;
+    display: flex;
+    justify-content: space-between;
+}
+
+p-button {
+    background-color: #0e4194;
+    border-radius: 0.5rem;
+}
+
+:host ::ng-deep .p-dialog-content {
+    display: flex;
+    flex-direction: column;
+}
+
+:host ::ng-deep .p-dialog-content i {
+    color: #c44c5b;
+}
+
+:host ::ng-deep .p-dialog-footer {
+    display: flex;
+    justify-content: space-between;
+}
+
+:host ::ng-deep .p-button-label {
+    color: #fff;
+}
+
+:host ::ng-deep .p-dialog-footer .accept {
+    background-color: #c44c5b;
+    border-color: #c44c5b;
+}
+
+:host ::ng-deep .p-dialog-footer .reject {
+    background-color: #0e4194;
+    border-color: #0e4194;
 }

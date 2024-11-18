@@ -11,11 +11,7 @@ import {
     matStar,
 } from '@ng-icons/material-icons/baseline'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
-import {
-    TablePrimengComponent,
-    IActionTable,
-    IColumn,
-} from '@/app/shared/table-primeng/table-primeng.component'
+import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
 import { provideIcons } from '@ng-icons/core'
 import { TabViewModule } from 'primeng/tabview'
 import { OrderListModule } from 'primeng/orderlist'
@@ -77,6 +73,7 @@ export class ForoRoomComponent implements OnInit {
     public data = []
     FilesTareas = []
     estudiantes: any[] = []
+    estudiantesOriginales: any[] = []
     calificacion: any[] = []
     comentarios: any[] = []
     descripcion: Message[] = []
@@ -131,74 +128,6 @@ export class ForoRoomComponent implements OnInit {
     constructor(private websocketService: WebsocketService) {}
 
     selectedItems = []
-    columnas: IColumn[] = [
-        {
-            field: 'id',
-            header: '#',
-            text: 'actividad',
-            text_header: 'left',
-            width: '3rem',
-            type: 'text',
-        },
-        {
-            field: 'cNombreEstudiante',
-            header: 'Estudiantes',
-            text: 'actividad',
-            text_header: 'left',
-            width: '5rem',
-            type: 'text',
-        },
-
-        {
-            field: 'cForoRptaRespuesta',
-            header: 'Respuesta',
-            text: 'Estado',
-            text_header: 'left',
-            width: '5rem',
-            type: 'text',
-        },
-        {
-            field: 'cNombreEstudiante',
-            header: 'Calificación',
-            text: 'actividad',
-            text_header: 'left',
-            width: '5rem',
-            type: 'text',
-        },
-
-        {
-            field: 'cForoRptaRespuesta',
-            header: 'Descripción',
-            text: 'Estado',
-            text_header: 'left',
-            width: '5rem',
-            type: 'text',
-        },
-        {
-            field: '',
-            header: 'Acciones',
-            type: 'actions',
-            width: '5rem',
-            text: 'left',
-            text_header: '',
-        },
-    ]
-    public accionesTabla: IActionTable[] = [
-        {
-            labelTooltip: 'Calificar',
-            icon: 'pi pi-eye',
-            accion: 'ver',
-            type: 'item',
-            class: 'p-button-rounded p-button-warning p-button-text',
-        },
-        {
-            labelTooltip: 'Eliminar',
-            icon: 'pi pi-trash',
-            accion: 'editar',
-            type: 'item',
-            class: 'p-button-rounded p-button-danger p-button-text',
-        },
-    ]
     ngOnInit(): void {
         // this.websocketService.messages$.subscribe((msg: any) => {
         //     this.messageWebs.push(`Servidor: ${msg}`)
@@ -461,19 +390,5 @@ export class ForoRoomComponent implements OnInit {
         }
 
         this.getInformation(params)
-    }
-    onGlobalFilter(event: Event): void {
-        const filterValue = (
-            event.target as HTMLInputElement
-        ).value.toLowerCase()
-
-        if (!filterValue) {
-            // Si el campo de búsqueda está vacío, muestra toda la lista original
-            this.estudiantes = [...this.estudiantes]
-            return
-        }
-        this.estudiantes = this.estudiantes.filter((estudiante) =>
-            estudiante.nombrecompleto.toLowerCase().includes(filterValue)
-        )
     }
 }

@@ -5,26 +5,27 @@
 :host ::ng-deep .actividad-tabs .p-tabview-nav {
     display: flex;
     justify-content: space-between;
+    position: fixed;
+    background-color: white;
 }
 
 :host ::ng-deep .actividad-tabs .p-tabview-nav li {
     flex: 1;
 }
-
-:host ::ng-deep .cdk-drop-list {
-    max-height: 400px;
-    border: none;
-}
-
 :host ::ng-deep .actividad-tabs .p-tabview-nav li a {
     text-align: center;
-    width: 100%;
+    //width: 100%;
     display: block;
     color: inherit;
 }
 
 :host ::ng-deep .actividad-tabs .p-tabview-nav li.p-highlight a {
     color: var(--primary-color);
+}
+
+:host ::ng-deep .cdk-drop-list {
+    max-height: 400px;
+    border: none;
 }
 
 :host ::ng-deep .p-tabview .p-tabview-panels {
@@ -35,11 +36,54 @@
 /*para el borde de la lista*/
 :host ::ng-deep .perfiles-list-item {
     border-radius: 8px; /* Radio del borde */
+    //border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 1px 1px 1px 1px;
+    width: 100%;
+    //box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra para dar profundidad */
+}
+:host ::ng-deep .perfilesList {
+    border-radius: 8px; /* Radio del borde */
     border: 1px solid #ccc;
     border-radius: 8px;
     padding: 1px 1px 1px 1px;
     width: 100%;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra para dar profundidad */
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+
+    img {
+        width: 150px;
+        box-shadow:
+            0 3px 6px rgba(0, 0, 0, 0.16),
+            0 3px 6px rgba(0, 0, 0, 0.23);
+        margin-right: 2rem;
+    }
+
+    .product-list-detail {
+        flex: 1 1 0;
+    }
+
+    .p-rating {
+        margin: 0 0 0.5rem 0;
+    }
+
+    .product-price {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        align-self: flex-end;
+    }
+
+    .product-list-action {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .p-button {
+        margin-bottom: 0.5rem;
+    }
 }
 
 /************************/
@@ -355,6 +399,16 @@
     margin: 0px;
     border: none;
 }
+:host ::ng-deep .header .p-element {
+    position: sticky;
+    top: 0; /* Fijo en la parte superior */
+    background-color: white; /* Fondo para evitar superposiciones visuales */
+    z-index: 10; /* Asegura que esté encima del contenido */
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    background-color: red;
+    color: red;
+}
 
 /*El icono de los perfiles de los comentarios y participantes*/
 .btn {
@@ -369,3 +423,13 @@
     display: flex;
     margin-left: auto;
 }
+//p-tabview-nav
+// :host ::ng-deep .p-tabview-nav {
+//     position: fixed;
+//     top: 40px; /* Fijo en la parte superior */
+//     width: auto; /* Ocupa todo el ancho */
+//     z-index: 10; /* Asegura que esté sobre el contenido */
+//     background-color: white; /* Fondo para evitar superposiciones */
+//     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* Sombra para mejor visibilidad */
+//     color: red;
+// }

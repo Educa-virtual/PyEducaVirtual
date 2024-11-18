@@ -20,6 +20,7 @@ import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.ser
 import { ConfirmationService, MessageService } from 'primeng/api'
 import { RecursosListaComponent } from '../../../../../../shared/components/recursos-lista/recursos-lista.component'
 import { Table } from 'primeng/table'
+import { ScrollerModule } from 'primeng/scroller'
 
 @Component({
     selector: 'app-tarea-room',
@@ -31,6 +32,7 @@ import { Table } from 'primeng/table'
         FormGrupoComponent,
         FormTransferirGrupoComponent,
         RecursosListaComponent,
+        ScrollerModule,
     ],
 
     templateUrl: './tarea-room.component.html',

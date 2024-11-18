@@ -51,9 +51,6 @@ export class YearComponent implements OnInit {
         dtCalAcadFin: Date
         dtCalAcadMatriculaInicio: Date
         dtCalAcadMatriculaFin: Date
-        bCalAcadFaseRegular: boolean
-        bCalAcadFaseRecuperacion: boolean
-
         dtFaseRegularInicio: Date
         dtFaseRegularFin: Date
         dtFaserecuperacionInicio: Date
@@ -101,8 +98,6 @@ export class YearComponent implements OnInit {
                 dtCalAcadFin: value.fechaFin,
                 dtCalAcadMatriculaInicio: value.fechaMatriculaInicio,
                 dtCalAcadMatriculaFin: value.fechaMatriculaFin,
-                bCalAcadFaseRegular: value.regular.includes(true),
-                bCalAcadFaseRecuperacion: value.recuperacion.includes(true),
 
                 dtFaseRegularInicio: value.fechaFaseRegularInicio,
                 dtFaseRegularFin: value.fechaFaseRegularFin,
@@ -127,60 +122,91 @@ export class YearComponent implements OnInit {
                 fases_promocionales,
             } = this.ticketService.registroInformation.stepYear
 
-            const idExistsFases = fases_promocionales.map((faseExist) =>
-                String(faseExist.iFasePromId)
-            )
+            if (Array.isArray(fases_promocionales)) {
+                const idExistsFases = fases_promocionales.map((faseExist) =>
+                    String(faseExist.iFasePromId)
+                )
 
-            // const existsFases = data.fasesProm.filter((fase) => idExistsFases.includes(fase.iFasePromId))
+                const noExistsFases = data.fasesProm.filter(
+                    (fase) => !idExistsFases.includes(fase.iFasePromId)
+                )
 
-            const noExistsFases = data.fasesProm.filter(
-                (fase) => !idExistsFases.includes(fase.iFasePromId)
-            )
+                console.log('ifo')
 
-            this.ticketService.registroInformation.stepYear.fases_promocionales.forEach(
-                (fase) => {
+                console.log(
+                    this.ticketService.registroInformation.stepYear
+                        .fases_promocionales
+                )
+
+                this.ticketService.registroInformation.stepYear.fases_promocionales.forEach(
+                    (fase) => {
+                        this.form.addControl(
+                            'faseCheck' + fase.iFasePromId,
+                            new FormControl([
+                                {
+                                    iFasePromId: fase.iFasePromId,
+                                    cFasePromNombre: fase.cFasePromNombre,
+                                },
+                                true,
+                            ])
+                        )
+
+                        this.form.addControl(
+                            'faseInputInicio' + fase.iFasePromId,
+                            new FormControl(new Date(fase.dtFaseInicio))
+                        )
+
+                        this.form.addControl(
+                            'faseInputFin' + fase.iFasePromId,
+                            new FormControl(new Date(fase.dtFaseFin))
+                        )
+                    }
+                )
+
+                noExistsFases.forEach((fase) => {
                     this.form.addControl(
                         'faseCheck' + fase.iFasePromId,
-                        new FormControl([
-                            {
-                                iFasePromId: fase.iFasePromId,
-                                cFasePromNombre: fase.cFasePromNombre,
-                            },
-                            true,
-                        ])
+                        new FormControl([fase])
                     )
 
                     this.form.addControl(
                         'faseInputInicio' + fase.iFasePromId,
-                        new FormControl(new Date(fase.dtFaseInicio))
+                        new FormControl('')
                     )
 
                     this.form.addControl(
                         'faseInputFin' + fase.iFasePromId,
-                        new FormControl(new Date(fase.dtFaseFin))
+                        new FormControl('')
                     )
-                }
-            )
 
-            noExistsFases.forEach((fase) => {
-                this.form.addControl(
-                    'faseCheck' + fase.iFasePromId,
-                    new FormControl([fase])
-                )
+                    this.form
+                        .get('faseInputInicio' + fase.iFasePromId)
+                        .disable()
+                    this.form.get('faseInputFin' + fase.iFasePromId).disable()
+                })
+            } else {
+                this.fasesPromocionales.forEach((fase) => {
+                    this.form.addControl(
+                        'faseCheck' + fase.iFasePromId,
+                        new FormControl([fase])
+                    )
 
-                this.form.addControl(
-                    'faseInputInicio' + fase.iFasePromId,
-                    new FormControl('')
-                )
+                    this.form.addControl(
+                        'faseInputInicio' + fase.iFasePromId,
+                        new FormControl('')
+                    )
 
-                this.form.addControl(
-                    'faseInputFin' + fase.iFasePromId,
-                    new FormControl('')
-                )
+                    this.form.addControl(
+                        'faseInputFin' + fase.iFasePromId,
+                        new FormControl('')
+                    )
 
-                this.form.get('faseInputInicio' + fase.iFasePromId).disable()
-                this.form.get('faseInputFin' + fase.iFasePromId).disable()
-            })
+                    this.form
+                        .get('faseInputInicio' + fase.iFasePromId)
+                        .disable()
+                    this.form.get('faseInputFin' + fase.iFasePromId).disable()
+                })
+            }
 
             this.form.patchValue({
                 fechaVigente: fechaVigente ?? '',
@@ -265,42 +291,104 @@ export class YearComponent implements OnInit {
         )
     }
 
+    filterInputsByPrefix(obj, prefix) {
+        const keysWithPrefix = Object.keys(obj).filter(
+            (key) => key.startsWith(prefix) && obj[key].includes(true)
+        )
+
+        const faseChecks = keysWithPrefix
+            .flatMap((keyFaseCheck) => obj[keyFaseCheck])
+            .filter((fase) => typeof fase == 'object')
+
+        const faseInputs = faseChecks.map((faseCheck) => ({
+            iFasePromId: faseCheck.iFasePromId,
+            dtFaseInicio: obj['faseInputInicio' + faseCheck.iFasePromId],
+            dtFaseFin: obj['faseInputFin' + faseCheck.iFasePromId],
+        }))
+
+        return faseInputs
+    }
+
     async saveInformation() {
         if (!this.ticketService.registroInformation.calendar.iCalAcadId) {
             await this.ticketService.insCalAcademico(this.form.value)
         } else {
             await this.ticketService.updCalAcademico(this.form.value)
+            // await this.ticketService.updCalFasesProm(this.form.value)
         }
-        console.log(this.ticketService.registroInformation.calendar.iCalAcadId)
 
-        const checkRegular = this.form.get('regular').value
-        const checkRecuperacion = this.form.get('recuperacion').value
+        const calFasesProm = this.filterInputsByPrefix(
+            this.form.value,
+            'faseCheck'
+        )
 
-        if (checkRegular.includes(true)) {
-            const { fechaFaseRegularInicio, fechaFaseRegularFin } =
-                this.form.value
-            await this.ticketService.insCalFasesProm({
-                form: {
-                    faseInicio: fechaFaseRegularInicio,
-                    faseFinal: fechaFaseRegularFin,
-                },
-                insFase: checkRegular[0],
-            })
+        const idCheckFases = calFasesProm.map((fase) =>
+            Number(fase.iFasePromId)
+        )
+
+        console.log(idCheckFases)
+
+        if (
+            Array.isArray(
+                this.ticketService.registroInformation.stepYear
+                    .fases_promocionales
+            )
+        ) {
+            const deleteCalFasesProm =
+                this.ticketService.registroInformation.stepYear.fases_promocionales.filter(
+                    (fase) => !idCheckFases.includes(fase.iFasePromId)
+                )
+
+            const idExistsFases =
+                this.ticketService.registroInformation.stepYear.fases_promocionales.map(
+                    (fase) => fase.iFasePromId
+                )
+
+            const insCalFasesProm = calFasesProm.filter(
+                (fase) => !idExistsFases.includes(fase.iFasePromId)
+            )
+
+            const existCalFasesProm = calFasesProm.filter((fase) =>
+                idExistsFases.includes(fase.iFasePromId)
+            )
+
+            if (insCalFasesProm.length > 0) {
+                await this.ticketService.insCalFasesProm(insCalFasesProm)
+            }
+
+            if (deleteCalFasesProm.length > 0) {
+                await this.ticketService.deleteCalFasesProm(deleteCalFasesProm)
+            }
+
+            if (existCalFasesProm.length > 0) {
+                console.log('Actualizando')
+                const updCalFasesProm =
+                    this.ticketService.registroInformation.stepYear.fases_promocionales.map(
+                        (fase) => {
+                            const obj = existCalFasesProm.find(
+                                (existCalFaseProm) =>
+                                    existCalFaseProm.iFasePromId ==
+                                    fase.iFasePromId
+                            )
+
+                            console.log('Fase a actualizar')
+
+                            console.log(fase)
+
+                            return obj
+                                ? {
+                                      iFaseId: fase.iFaseId,
+                                      iFasePromId: obj.iFasePromId,
+                                      dtFaseInicio: obj.dtFaseInicio,
+                                      dtFaseFin: obj.dtFaseFin,
+                                  }
+                                : fase
+                        }
+                    )
+                await this.ticketService.updCalFasesProm(updCalFasesProm)
+            }
         } else {
-            await this.ticketService.deleteCalFasesProm(checkRegular[0])
-        }
-        if (checkRecuperacion.includes(true)) {
-            const { fechaFaseRecuperacionInicio, fechaFaseRecuperacionFin } =
-                this.form.value
-            await this.ticketService.insCalFasesProm({
-                form: {
-                    faseInicio: fechaFaseRecuperacionInicio,
-                    faseFinal: fechaFaseRecuperacionFin,
-                },
-                insFase: checkRecuperacion[0],
-            })
-        } else {
-            await this.ticketService.deleteCalFasesProm(checkRecuperacion[0])
+            await this.ticketService.insCalFasesProm(calFasesProm)
         }
 
         await this.ticketService.setCalendar()

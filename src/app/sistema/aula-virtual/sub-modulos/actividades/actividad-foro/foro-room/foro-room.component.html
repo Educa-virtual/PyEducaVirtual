@@ -962,22 +962,17 @@
             <!-- Mostrar la califcación -->
             <div class="col-12">
                 <label class="font-bold" for="calificacion">Calificación</label>
-                <p-dropdown
-                    [options]="calificacion"
-                    formControlName="iEscalaCalifId"
-                    styleClass="w-full"
-                    [showClear]="true"
-                    optionValue="iEscalaCalifId"
-                    optionLabel="cEscalaCalifNombre"
-                    placeholder="Seleccione una Calificación"
-                />
-                <!-- <p-dropdown 
-                    [options]="calificacion" 
-                    styleClass="w-full"
-                    [checkmark]="true" 
-                    optionLabel="name" 
-                    [showClear]="true" 
-                    placeholder="Seleccione una Calificación" /> -->
+                <div class="pt-2">
+                    <p-dropdown
+                        [options]="calificacion"
+                        formControlName="iEscalaCalifId"
+                        styleClass="w-full"
+                        [showClear]="true"
+                        optionValue="iEscalaCalifId"
+                        optionLabel="cEscalaCalifNombre"
+                        placeholder="Seleccione una Calificación"
+                    />
+                </div>
             </div>
             <!-- Mostrar descripción -->
             <div class="col-12">

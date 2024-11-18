@@ -78,15 +78,19 @@ export class ForoRoomComponent implements OnInit {
     FilesTareas = []
     estudiantes: any[] = []
     calificacion: any[] = []
-    respuestasForo: any[] = []
     comentarios: any[] = []
     descripcion: Message[] = []
     messages: Message[] | undefined
     messageWeb: string = ''
     messageWebs: string[] = []
+    private unsbscribe$ = new Subject<boolean>()
+    modelaCalificacionComen: boolean = false
+    perfilSelect = null
+    respuestasForoEstudiant: any[] = []
+    // borrar variables del p-dia
     modalCalificacion: boolean = false
     estudianteSelect = null
-    private unsbscribe$ = new Subject<boolean>()
+    respuestasForo: any[] = []
 
     public foro
     iPerfilId: number
@@ -234,6 +238,10 @@ export class ForoRoomComponent implements OnInit {
         this.estudianteSelect = respuestasForo
         this.foroFormComnt.patchValue(respuestasForo)
     }
+    openModalCalificacion(respuestasForoEstudiant) {
+        this.modelaCalificacionComen = true
+        this.perfilSelect = respuestasForoEstudiant
+    }
     toggleEditor() {
         this.showEditor = true
     }
@@ -360,10 +368,11 @@ export class ForoRoomComponent implements OnInit {
                     this.messages = [
                         {
                             severity: 'info',
-                            detail: 'hola',
+                            detail: resp?.cForoDescripcion,
                         },
                     ]
                     this.foro = resp
+                    console.log('obtener datos de foro01', resp)
                     this.FilesTareas = this.foro?.cForoUrl
                         ? JSON.parse(this.foro?.cForoUrl)
                         : []

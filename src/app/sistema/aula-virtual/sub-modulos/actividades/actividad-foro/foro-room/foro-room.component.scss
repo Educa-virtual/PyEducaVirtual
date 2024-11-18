@@ -155,15 +155,15 @@
 }
 
 /* Adaptabilidad para pantallas pequeñas */
-@media (max-width: 600px) {
-    .comment-container {
-        flex-direction: column;
-    }
-    .comment-input {
-        margin-right: 0;
-        margin-bottom: 10px;
-    }
-}
+// @media (max-width: 600px) {
+//     .comment-container {
+//         flex-direction: column;
+//     }
+//     .comment-input {
+//         margin-right: 0;
+//         margin-bottom: 10px;
+//     }
+// }
 //class="perfiles-list-item text-left"
 :host ::ng-deep .btCalificacion {
     display: flex;
@@ -333,7 +333,8 @@
 :host ::ng-deep .p-editor-container {
     width: auto;
 }
-:host ::ng-deep .ng-star-inserted {
+// control del del 100% de p-editor
+:host ::ng-deep .comment-container .ng-star-inserted {
     width: 100%;
 }
 
@@ -367,18 +368,4 @@
 .btn-calificar-comentario {
     display: flex;
     margin-left: auto;
-}
-:host ::ng-deep .p-dropdown-trigger {
-    display: flex;
-    margin-left: auto;
-    background-color: red;
-}
-:host ::ng-deep .p-dropdown {
-    width: auto;
-    display: flex;
-    display: block;
-    white-space: nowrap;
-    //p-element p-dropdown-label p-inputtext p-placeholder ng-star-inserted
-    //p-element p-dropdown-label p-inputtext p-placeholder ng-star-inserted
-    //p-dropdown-trigger
 }

@@ -133,6 +133,14 @@ export class ForoFormContainerComponent implements OnInit {
         this.foroForm.controls.cForoUrl.setValue(
             JSON.stringify(this.FilesTareas)
         )
+        // Limpiar el campo cForoDescripcion de etiquetas HTML
+        const rawDescripcion =
+            this.foroForm.controls.cForoDescripcion.value || ''
+        const tempElement = document.createElement('div')
+        tempElement.innerHTML = rawDescripcion // Insertamos el HTML en un elemento temporal
+        const cleanDescripcion = tempElement.innerText.trim() // Obtenemos solo el texto
+
+        this.foroForm.controls.cForoDescripcion.setValue(cleanDescripcion)
 
         const value = {
             ...this.foroForm.value,

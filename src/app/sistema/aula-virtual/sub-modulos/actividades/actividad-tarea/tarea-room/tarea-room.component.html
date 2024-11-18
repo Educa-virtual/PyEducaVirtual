@@ -439,30 +439,45 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-6">
-                                                    <span
-                                                        class="p-input-icon-left"
-                                                    >
-                                                        <i
-                                                            class="pi pi-search"
-                                                        ></i>
-                                                        <input
-                                                            pInputText
-                                                            placeholder="Buscar estudiante"
-                                                            style="width: 250px"
-                                                        />
-                                                    </span>
-                                                </div>
-                                                <div
-                                                    class="col-6 text-right"
-                                                ></div>
                                                 <p-table
                                                     #dv
                                                     class="col-12 hoverTable"
                                                     [value]="estudiantes"
                                                     paginator="false"
+                                                    [globalFilterFields]="[
+                                                        'cPersPaterno',
+                                                        'cPersMaterno',
+                                                        'cPersNombre',
+                                                    ]"
                                                     styleClass="p-datatable-sm"
                                                 >
+                                                    <ng-template
+                                                        pTemplate="caption"
+                                                    >
+                                                        <div
+                                                            class="flex justify-content-between gap-2 flex-column sm:flex-row flex-wrap"
+                                                        >
+                                                            <p-iconField
+                                                                iconPosition="left"
+                                                            >
+                                                                <p-inputIcon
+                                                                    styleClass="pi pi-search text-md"
+                                                                />
+                                                                <input
+                                                                    pInputText
+                                                                    type="text"
+                                                                    class="py-2"
+                                                                    (input)="
+                                                                        onGlobalFilter(
+                                                                            dv,
+                                                                            $event
+                                                                        )
+                                                                    "
+                                                                    placeholder="Buscar por apellidos y nombres"
+                                                                />
+                                                            </p-iconField>
+                                                        </div>
+                                                    </ng-template>
                                                     <ng-template
                                                         pTemplate="header"
                                                     >
@@ -470,8 +485,8 @@
                                                             class="sticky-header"
                                                         >
                                                             <th>#</th>
-                                                            <th>Nombres</th>
                                                             <th>Apellidos</th>
+                                                            <th>Nombres</th>
                                                             <th>Estado</th>
                                                         </tr>
                                                     </ng-template>
@@ -491,7 +506,7 @@
                                                             [class]="
                                                                 nEstudiante ===
                                                                 rowIndex
-                                                                    ? 'bg-green-180'
+                                                                    ? 'bg-green-200'
                                                                     : ''
                                                             "
                                                         >
@@ -502,16 +517,16 @@
                                                             </td>
                                                             <td>
                                                                 {{
-                                                                    estudiante?.cPersNombre
-                                                                }}
-                                                            </td>
-                                                            <td>
-                                                                {{
                                                                     estudiante.cPersPaterno
                                                                 }}
 
                                                                 {{
                                                                     estudiante.cPersMaterno
+                                                                }}
+                                                            </td>
+                                                            <td>
+                                                                {{
+                                                                    estudiante?.cPersNombre
                                                                 }}
                                                             </td>
 
@@ -613,21 +628,13 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-6">
-                                                    <span
-                                                        class="p-input-icon-left"
-                                                    >
-                                                        <i
-                                                            class="pi pi-search"
-                                                        ></i>
-                                                        <input
-                                                            pInputText
-                                                            placeholder="Buscar estudiante"
-                                                            style="width: 250px"
-                                                        />
-                                                    </span>
-                                                </div>
-                                                <div class="col-6 text-right">
+                                                <!-- <div class="col-6">
+                                        <span class="p-input-icon-left">
+                                            <i class="pi pi-search"></i>
+                                            <input pInputText placeholder="Buscar estudiante" style="width: 250px" />
+                                        </span>
+                                    </div> -->
+                                                <div class="col-12 text-right">
                                                     <p-button
                                                         label="Crear Grupo"
                                                         icon="pi pi-plus"
@@ -741,7 +748,39 @@
                                                                         "
                                                                         paginator="false"
                                                                         styleClass="p-datatable-sm"
+                                                                        [globalFilterFields]="[
+                                                                            'cPersPaterno',
+                                                                            'cPersMaterno',
+                                                                            'cPersNombre',
+                                                                        ]"
                                                                     >
+                                                                        <ng-template
+                                                                            pTemplate="caption"
+                                                                        >
+                                                                            <div
+                                                                                class="flex justify-content-between gap-2 flex-column sm:flex-row flex-wrap"
+                                                                            >
+                                                                                <p-iconField
+                                                                                    iconPosition="left"
+                                                                                >
+                                                                                    <p-inputIcon
+                                                                                        styleClass="pi pi-search text-md"
+                                                                                    />
+                                                                                    <input
+                                                                                        pInputText
+                                                                                        type="text"
+                                                                                        class="py-2"
+                                                                                        (input)="
+                                                                                            onGlobalFilter(
+                                                                                                dv,
+                                                                                                $event
+                                                                                            )
+                                                                                        "
+                                                                                        placeholder="Buscar por apellidos y nombres"
+                                                                                    />
+                                                                                </p-iconField>
+                                                                            </div>
+                                                                        </ng-template>
                                                                         <ng-template
                                                                             pTemplate="header"
                                                                         >
@@ -752,10 +791,10 @@
                                                                                     #
                                                                                 </th>
                                                                                 <th>
-                                                                                    Nombres
+                                                                                    Apellidos
                                                                                 </th>
                                                                                 <th>
-                                                                                    Apellidos
+                                                                                    Nombres
                                                                                 </th>
                                                                                 <th>
                                                                                     Acciones
@@ -779,15 +818,15 @@
                                                                                     </td>
                                                                                     <td>
                                                                                         {{
-                                                                                            estudiante?.cPersNombre
-                                                                                        }}
-                                                                                    </td>
-                                                                                    <td>
-                                                                                        {{
                                                                                             estudiante.cPersPaterno
                                                                                         }}
                                                                                         {{
                                                                                             estudiante.cPersMaterno
+                                                                                        }}
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        {{
+                                                                                            estudiante?.cPersNombre
                                                                                         }}
                                                                                     </td>
                                                                                     <td>

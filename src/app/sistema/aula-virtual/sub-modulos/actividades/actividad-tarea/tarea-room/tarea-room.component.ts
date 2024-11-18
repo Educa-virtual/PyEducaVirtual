@@ -19,6 +19,7 @@ import { FormBuilder, FormGroup } from '@angular/forms'
 import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
 import { ConfirmationService, MessageService } from 'primeng/api'
 import { RecursosListaComponent } from '../../../../../../shared/components/recursos-lista/recursos-lista.component'
+import { Table } from 'primeng/table'
 
 @Component({
     selector: 'app-tarea-room',
@@ -680,4 +681,9 @@ export class TareaRoomComponent implements OnChanges, OnInit {
     // Estilos - eliminar y trabajo grupal
     nEstudiante: number = null
     nGrupal: number = null
+
+    onGlobalFilter(table: Table, event: Event) {
+        if (!table) return
+        table.filterGlobal((event.target as HTMLInputElement).value, 'contains')
+    }
 }

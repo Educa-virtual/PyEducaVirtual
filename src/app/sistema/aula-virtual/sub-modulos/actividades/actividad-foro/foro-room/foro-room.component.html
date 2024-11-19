@@ -668,7 +668,12 @@
                                         <div
                                             class="perfilesList"
                                             tabindex="0"
-                                            (onclick)="
+                                            (click)="
+                                                selecEstudiante(
+                                                    estudiante.iEstudianteId
+                                                )
+                                            "
+                                            (keydown.enter)="
                                                 selecEstudiante(
                                                     estudiante.iEstudianteId
                                                 )

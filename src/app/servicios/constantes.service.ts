@@ -61,17 +61,17 @@ const estudiante = [
             {
                 label: 'Calendario',
                 icon: 'pi pi-fw pi-book',
-                routerLink: ['/aula-virtual/areas-curriculares'],
+                routerLink: ['/aula-virtual'],
             },
             {
                 label: 'Solicitudes y Tramites',
                 icon: 'pi pi-fw pi-book',
-                routerLink: ['/aula-virtual/areas-curriculares'],
+                routerLink: ['/aula-virtual'],
             },
             {
                 label: 'Buzon de Sugerencias',
                 icon: 'pi pi-fw pi-book',
-                routerLink: ['/aula-virtual/areas-curriculares'],
+                routerLink: ['/aula-virtual'],
             },
         ],
     },

@@ -7,6 +7,7 @@ import {
     Input,
     Output,
     OnDestroy,
+    OnInit,
 } from '@angular/core'
 import { MenuItem } from 'primeng/api'
 import { ButtonModule } from 'primeng/button'
@@ -49,12 +50,13 @@ import { Subject, takeUntil } from 'rxjs'
         provideIcons({ matWorkspacePremium }),
     ],
 })
-export class EvaluacionFormPreguntasComponent implements OnDestroy {
+export class EvaluacionFormPreguntasComponent implements OnInit, OnDestroy {
     @Input() tituloEvaluacion: string = 'Sin título de evaluación'
     @Input() preguntas: any[] = []
     // se guarda en evaluaciones_preguntas si se envia iEvaluacionId
     @Input() iEvaluacionId: number
     @Input({ required: true }) iCursoId: string
+    @Input() mode: 'EDIT' | 'VIEW' = 'EDIT'
     @Output() preguntasSeleccionadasChange = new EventEmitter()
 
     public acciones = accionesPreguntasEvaluacion
@@ -89,6 +91,15 @@ export class EvaluacionFormPreguntasComponent implements OnDestroy {
     ]
 
     constructor() {}
+
+    ngOnInit() {
+        if (this.mode === 'VIEW') {
+            this.acciones = this.acciones.map((acc) => {
+                acc.isVisible = () => false
+                return acc
+            })
+        }
+    }
 
     handleNuevaPregunta() {
         this.agregarEditarPregunta({

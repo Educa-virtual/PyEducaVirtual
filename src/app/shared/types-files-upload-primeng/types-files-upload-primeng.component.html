@@ -4,10 +4,10 @@
         <button
             *ngIf="typesFiles.file"
             pButton
-            pRipple
             type="button"
             class="p-button-rounded p-button-outlined mx-2 btn-file-image"
         >
+            <!--pRipple-->
             <i
                 class="pi pi-upload my-2"
                 style="color: #333437; font-size: 3rem"
@@ -24,7 +24,6 @@
         <button
             *ngIf="typesFiles.url"
             pButton
-            pRipple
             type="button"
             class="p-button-rounded p-button-outlined mx-2"
             (click)="openUpload('url')"
@@ -40,7 +39,6 @@
         <button
             *ngIf="typesFiles.youtube"
             pButton
-            pRipple
             type="button"
             class="p-button-rounded p-button-outlined mx-2"
             (click)="openUpload('youtube')"
@@ -56,7 +54,6 @@
         <button
             *ngIf="typesFiles.repository"
             pButton
-            pRipple
             type="button"
             class="p-button-rounded p-button-outlined mx-2"
             (click)="openUpload('repository')"
@@ -71,7 +68,6 @@
         <button
             *ngIf="typesFiles.image"
             pButton
-            pRipple
             type="button"
             class="p-button-rounded p-button-outlined mx-2 btn-file-image"
             (click)="openUpload('image')"

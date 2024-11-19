@@ -13,6 +13,7 @@
 
 :host ::ng-deep .cdk-drop-list {
     max-height: 400px;
+    border: none;
 }
 
 :host ::ng-deep .actividad-tabs .p-tabview-nav li a {
@@ -31,25 +32,28 @@
     padding-inline: 0;
     padding-block-end: 0;
 }
-//perfiles-list-item text-left ng-star-inserted
-:host ::ng-deep .perfiles-list-item .img {
-    border-radius: 100px;
-}
+/*para el borde de la lista*/
 :host ::ng-deep .perfiles-list-item {
-    //border: 2px solid #ccc; /* Cambia el color y grosor del borde según prefieras */
     border-radius: 8px; /* Radio del borde */
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 1px 1px 1px 1px;
+    width: 100%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra para dar profundidad */
 }
 
 /************************/
-.container {
-    display: flex;
-    //gap: 20px; /* Espacio entre las columnas */
-    height: 900px;
-    flex-wrap: wrap;
-    justify-content: space-between;
-}
+// .container {
+//     display: flex;
+//     //gap: 20px; /* Espacio entre las columnas */
+//     height: 900px;
+//     flex-wrap: wrap;
+//     justify-content: space-between;
+// }
+//-----------------------SCSS DE COMENTARIOS--------------
 .list {
     height: 1000px;
+    border: #007bff;
 }
 :host ::ng-deep .list .p-orderlist-controls {
     display: none;
@@ -57,41 +61,74 @@
 }
 
 :host ::ng-deep .list .p-orderlist-list-container {
-    height: 600px;
+    height: auto;
 }
-
-//sticky-header ng-star-inserted
-:host ::ng-deep .sticky-header {
-    background-color: #0056b3;
-}
-:host ::ng-deep .list .p-orderlist-controls {
-    display: none;
-}
-:host ::ng-deep .p-orderlist-list {
+:host ::ng-deep .list .p-orderlist-list {
     max-height: 550px; /* Define la altura máxima deseada */
     overflow-y: auto; /* Agrega la barra de desplazamiento en el eje vertical */
 }
-
-:host ::ng-deep .list .p-orderlist-header {
-    background-color: #f8f9fa;
-    font-weight: bold;
-    padding: 1%;
-    position: sticky;
-    top: 0;
-    z-index: 1000; /* Asegúrate de que la cabecera esté por encima de los elementos */
-    border-bottom: 1px solid #ddd;
+//----------------------SCSS DE ALUMNOS
+.listAlumno {
+    height: 1000px;
 }
+:host ::ng-deep .listAlumno .p-orderlist-controls {
+    display: none;
+    height: 600px;
+}
+
+:host ::ng-deep .listAlumno .p-orderlist-list-container {
+    height: 600px;
+}
+:host ::ng-deep .listAlumno .p-orderlist-list {
+    max-height: 550px; /* Define la altura máxima deseada */
+    overflow-y: auto; /* Agrega la barra de desplazamiento en el eje vertical */
+}
+//sticky-header ng-star-inserted
+// :host ::ng-deep .sticky-header {
+//     background-color: #0056b3;
+// }
+//class="perfiles-list-item text-left"
+
+// :host ::ng-deep .list .p-orderlist-header {
+//     background-color: #f8f9fa;
+//     font-weight: bold;
+//     padding: 1%;
+//     position: sticky;
+//     top: 0;
+//     z-index: 1000; /* Asegúrate de que la cabecera esté por encima de los elementos */
+//     border-bottom: 1px solid #ddd;
+// }
 /**********************************/
 .comment-container {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    max-width: 100%; /* Ancho máximo de la barra */
+    width: 100%; /* Ancho máximo de la barra */
     padding: 10px;
     background-color: #f0f0f0;
     border-radius: 5px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
+/*--------------------------sub comentarios--------------------------*/
+
+.comment-container-Rpd {
+    display: flex;
+    width: 100%; /* Ancho máximo de la barra */
+    padding: 10px;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+.inputRpd {
+    flex: 1; /* Toma el máximo espacio disponible */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 10px;
+    font-size: 16px;
+    width: 100%;
+}
+/*--------------------------sub comentarios--------------------------*/
 
 .comment-input {
     flex: 1; /* Toma el máximo espacio disponible */
@@ -127,19 +164,16 @@
         margin-bottom: 10px;
     }
 }
-
-:host ::ng-deep .btCalificacion .p-ripple {
+//class="perfiles-list-item text-left"
+:host ::ng-deep .btCalificacion {
     display: flex;
-    justify-content: center;
-    align-items: center;
+    width: auto;
+    background-color: #f8f9fa;
 }
-
-// ----------------------------------------------
-//
-
-// :host ::ng-deep .list .p-ripple {
-//     height: auto;
-// }
+/*para que remarque el contorno de los comentarios*/
+:host ::ng-deep .p-ripple {
+    width: 100%;
+}
 
 :host ::ng-deep {
     .p-dropdown {
@@ -171,7 +205,6 @@
         display: flex;
         align-items: center;
         padding: 1rem;
-        width: 100%;
 
         img {
             width: 150px;
@@ -284,6 +317,7 @@
     align-self: flex-start; /* Alinea el botón a la izquierda */
 }
 .button-container {
+    display: flex;
     margin-top: 10px; /* Espacio entre el editor y el botón */
 }
 
@@ -301,4 +335,35 @@
 }
 :host ::ng-deep .ng-star-inserted {
     width: 100%;
+}
+
+/*--------*/
+.TituloForo {
+    font-family: sans-serif;
+    font-size: 20px;
+    color: #2a2c34;
+    font-weight: bold;
+}
+.TituloCurso {
+    font-family: sans-serif;
+    font-size: 18px;
+    color: #2a2c34;
+    margin: 5px;
+}
+:host ::ng-deep .p-element {
+    margin: 0px;
+    border: none;
+}
+:host ::ng-deep .p-message-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+/*El icono de los perfiles de los comentarios y participantes*/
+.btn {
+    border-radius: 50%; /* Si quieres hacerla circular */
+}
+//inputSearch
+.inputSearch {
+    width: 100%;
+    border: 1px solid #efefef;
 }

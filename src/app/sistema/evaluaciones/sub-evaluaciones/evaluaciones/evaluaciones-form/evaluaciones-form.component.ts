@@ -1,6 +1,6 @@
 //Agregar Servicio de Evaluacion
 import { CompartirIdEvaluacionService } from './../../../services/ereEvaluaciones/compartir-id-evaluacion.service'
-import { Component, inject, OnInit } from '@angular/core'
+import { Component, inject, Input, OnInit, ViewChild } from '@angular/core'
 
 /*BOTONES */
 import { ButtonModule } from 'primeng/button'
@@ -23,6 +23,10 @@ import { EvaluacionAreasComponent } from './../evaluacion-areas/evaluacion-areas
 import { ApiEvaluacionesRService } from '../../../services/api-evaluaciones-r.service'
 import { Subject, takeUntil } from 'rxjs'
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog'
+//Uso para separar y poner en vertical o horizonal
+import { DividerModule } from 'primeng/divider'
+
+import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 
 import {
     FormBuilder,
@@ -33,7 +37,9 @@ import {
 import { CommonInputComponent } from '@/app/shared/components/common-input/common-input.component'
 import { StepperModule } from 'primeng/stepper'
 import { CommonModule } from '@angular/common'
-
+import { TablePrimengComponent } from '../../../../../shared/table-primeng/table-primeng.component'
+import { CardModule } from 'primeng/card'
+import { StepsModule } from 'primeng/steps'
 interface TipoEvaluacion {
     idTipoEvalId: number
     cTipoEvalDescripcion: string
@@ -47,6 +53,8 @@ interface NivelEvaluacion {
     selector: 'app-evaluaciones-form',
     standalone: true,
     imports: [
+        ContainerPageComponent,
+        StepsModule,
         ButtonModule,
         DialogModule,
         InputTextModule,
@@ -60,6 +68,9 @@ interface NivelEvaluacion {
         EvaluacionAreasComponent,
         StepperModule,
         CommonModule,
+        DividerModule,
+        TablePrimengComponent,
+        CardModule,
     ],
     templateUrl: './evaluaciones-form.component.html',
     styleUrl: './evaluaciones-form.component.scss',
@@ -67,25 +78,7 @@ interface NivelEvaluacion {
 export class EvaluacionesFormComponent implements OnInit {
     private _formBuilder = inject(FormBuilder)
     private _ref = inject(DynamicDialogRef)
-
-    public evaluacionFormGroup = this._formBuilder.group({
-        iEvaluacionId: [null, [Validators.required]],
-        idTipoEvalId: [null, [Validators.required]],
-        iNivelEvalId: [null, [Validators.required]],
-        cEvaluacionDescripcion: [null, [Validators.required]],
-        cEvaluacionUrlDrive: [null, [Validators.required]],
-        cEvaluacionUrlPlantilla: [null, [Validators.required]],
-        cEvaluacionUrlManual: [null, [Validators.required]],
-        cEvaluacionUrlMatriz: [null, [Validators.required]],
-        cEvaluacionObs: [null, [Validators.required]],
-        dtEvaluacionLiberarMatriz: [null, [Validators.required]],
-        dtEvaluacionLiberarCuadernillo: [null, [Validators.required]],
-        dtEvaluacionLiberarResultados: [null, [Validators.required]],
-        dtEvaluacionCreacion: [null, Validators.required],
-
-        cEvaluacionNombre: [null, Validators.required],
-    })
-
+    public evaluacionFormGroup: any
     private unsubscribe$: Subject<boolean> = new Subject()
     public params = {
         iCompentenciaId: 0,
@@ -101,13 +94,45 @@ export class EvaluacionesFormComponent implements OnInit {
     nivelEvaluacion: NivelEvaluacion[] | undefined
     selectedNivelEvaluacion: TipoEvaluacion | undefined
     fecha: string
-    visible: boolean = false
+    visible: boolean = false //Accion Editar, Ver, Crear
     value!: string
-    //Agregar Servicio de Evaluacion
+    accion: string //Accion Editar, Ver, Crear
+    caption: string = '' // Etiqueta de modal
+    @Input() opcion: string = 'seleccionar'
+    acciones: string = 'agregar'
+    formulario: string
+    formCapas: string = 'capa1'
+
+    // Declara la propiedad isDialogVisible aquí
+    isDialogVisible: boolean = false
     constructor(
-        private _config: DynamicDialogConfig, // Inyección de configuración
+        public _config: DynamicDialogConfig, // Inyección de configuración
         private compartirIdEvaluacionService: CompartirIdEvaluacionService // Inyección del servicio
-    ) {
+    ) {}
+    esModoEdicion: boolean = false // Cambiar a true si estás en modo edición
+    ngOnInit() {
+        // console.log(this.opcion, 'LLEGARAEL DATO OPCION')
+        this.accion = this._config.data.accion
+
+        this.obtenerTipoEvaluacion()
+        this.obtenerNivelEvaluacion()
+        this.ereCrearFormulario()
+        this.ereVerEvaluacion()
+        if (this.evaluacionFormGroup.get('iEvaluacionId').value) {
+            this.esModoEdicion = true
+            console.log('Formulario EDITAR', this.accion)
+        }
+        // Configura el formulario en modo solo lectura si está en "ver"
+        if (this.accion === 'ver') {
+            this.evaluacionFormGroup.disable()
+            console.log('Formulario DESABILITADO', this.accion)
+        }
+        if (this.accion === 'editar') {
+            this.esModoEdicion = true
+        }
+    }
+
+    ereCrearFormulario() {
         this.evaluacionFormGroup = this._formBuilder.group({
             iEvaluacionId: [null],
             idTipoEvalId: [null, [Validators.required]],
@@ -125,19 +150,11 @@ export class EvaluacionesFormComponent implements OnInit {
             dtEvaluacionLiberarResultados: [null, Validators.required],
         })
     }
-    convertToDate(dateString: string | null): Date | null {
-        if (!dateString) return null // Manejar null
-        const [day, month, year] = dateString.split('/') // Asumiendo que el formato es 'dd/MM/yyyy'
-        return new Date(+year, +month - 1, +day) // Recuerda que los meses son indexados desde 0
-    }
-    ngOnInit() {
-        this.obtenerTipoEvaluacion()
-        this.obtenerNivelEvaluacion()
-
+    ereVerEvaluacion() {
         const evaluacionData = this._config.data.evaluacion // Obtener los datos del modal
 
         if (evaluacionData) {
-            console.log(evaluacionData)
+            console.log(evaluacionData.dtEvaluacionCreacion)
             this.evaluacionFormGroup.patchValue({
                 iEvaluacionId: evaluacionData.iEvaluacionId,
                 idTipoEvalId: evaluacionData.idTipoEvalId,
@@ -149,22 +166,16 @@ export class EvaluacionesFormComponent implements OnInit {
                 cEvaluacionUrlManual: evaluacionData.cEvaluacionUrlManual,
                 cEvaluacionUrlMatriz: evaluacionData.cEvaluacionUrlMatriz,
                 cEvaluacionObs: evaluacionData.cEvaluacionObs,
-                // dtEvaluacionCreacion: this.convertToDate(
-                //     evaluacionData.dtEvaluacionCreacion
-                // ),
-                // dtEvaluacionLiberarMatriz: this.convertToDate(
-                //     evaluacionData.dtEvaluacionLiberarMatriz
-                // ),
-                // dtEvaluacionLiberarCuadernillo: this.convertToDate(
-                //     evaluacionData.dtEvaluacionLiberarCuadernillo
-                // ),
-                // dtEvaluacionLiberarResultados: this.convertToDate(
-                //     evaluacionData.dtEvaluacionLiberarResultados
-                // ),
+                dtEvaluacionCreacion: evaluacionData.dtEvaluacionCreacion,
+                dtEvaluacionLiberarMatriz:
+                    evaluacionData.dtEvaluacionLiberarMatriz,
+                dtEvaluacionLiberarCuadernillo:
+                    evaluacionData.dtEvaluacionLiberarCuadernillo,
+                dtEvaluacionLiberarResultados:
+                    evaluacionData.dtEvaluacionLiberarResultados,
             })
         }
     }
-
     guardarEvaluacion() {
         const data = {
             idTipoEvalId: this.evaluacionFormGroup.get('idTipoEvalId').value,
@@ -220,10 +231,62 @@ export class EvaluacionesFormComponent implements OnInit {
                 },
                 error: (error) => {
                     console.error('Error al guardar la evaluación:', error) // Captura el error aquí
-                    alert('Error en el servidor: ' + JSON.stringify(error))
+                    //alert('Error en el servidor: ' + JSON.stringify(error))
                 },
             })
     }
+
+    // Método para actualizar los datos en el backend
+    actualizarEvaluacion() {
+        const data = {
+            iEvaluacionId: this.evaluacionFormGroup.get('iEvaluacionId').value,
+            idTipoEvalId: this.evaluacionFormGroup.get('idTipoEvalId').value,
+            iNivelEvalId: this.evaluacionFormGroup.get('iNivelEvalId').value,
+            dtEvaluacionCreacion: this.evaluacionFormGroup.get(
+                'dtEvaluacionCreacion'
+            ).value,
+            cEvaluacionNombre:
+                this.evaluacionFormGroup.get('cEvaluacionNombre').value,
+            cEvaluacionDescripcion: this.evaluacionFormGroup.get(
+                'cEvaluacionDescripcion'
+            ).value,
+            cEvaluacionUrlDrive: this.evaluacionFormGroup.get(
+                'cEvaluacionUrlDrive'
+            ).value,
+            cEvaluacionUrlPlantilla: this.evaluacionFormGroup.get(
+                'cEvaluacionUrlPlantilla'
+            ).value,
+            cEvaluacionUrlManual: this.evaluacionFormGroup.get(
+                'cEvaluacionUrlManual'
+            ).value,
+            cEvaluacionUrlMatriz: this.evaluacionFormGroup.get(
+                'cEvaluacionUrlMatriz'
+            ).value,
+            cEvaluacionObs:
+                this.evaluacionFormGroup.get('cEvaluacionObs').value,
+            dtEvaluacionLiberarMatriz: this.evaluacionFormGroup.get(
+                'dtEvaluacionLiberarMatriz'
+            ).value,
+            dtEvaluacionLiberarCuadernillo: this.evaluacionFormGroup.get(
+                'dtEvaluacionLiberarCuadernillo'
+            ).value,
+            dtEvaluacionLiberarResultados: this.evaluacionFormGroup.get(
+                'dtEvaluacionLiberarResultados'
+            ).value,
+        }
+
+        this._apiEre.actualizarEvaluacion(data).subscribe({
+            next: (resp) => {
+                console.log('Evaluación actualizada:', resp)
+                //alert('Evaluación actualizada exitosamente')
+            },
+            error: (error) => {
+                console.error('Error al actualizar la evaluación:', error)
+                //alert('Error al actualizar la evaluación')
+            },
+        })
+    }
+
     obtenerTipoEvaluacion() {
         this._apiEre
             .obtenerTipoEvaluacion(this.params)
@@ -248,6 +311,18 @@ export class EvaluacionesFormComponent implements OnInit {
     onchange() {
         //alert(JSON.stringify(this.selectedTipoEvaluacion))
         //alert(this.fecha)
+    }
+
+    @ViewChild(EvaluacionAreasComponent)
+    evaluacionAreasComponent: EvaluacionAreasComponent
+
+    // Este método será llamado cuando el evento closeModalEvent sea emitido desde el hijo
+    handleCloseModal(data: any): void {
+        console.log('Cerrar modal en el padre:', data)
+        this.evaluacionFormGroup.reset()
+        // Aquí puedes realizar acciones adicionales, como cerrar el modal, resetear campos, etc.
+        // Si tienes un modal, podrías hacer algo como:
+        // this.modalService.close(); // o algo similar para cerrar el modal
     }
 
     closeModal(data) {

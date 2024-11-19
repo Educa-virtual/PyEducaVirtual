@@ -22,19 +22,31 @@ export class StepConfirmationService {
         private messageService: MessageService
     ) {}
 
-    confirmAction(
-        onAcceptCallbacks: (() => void)[] = [],
+    async confirmAction(
+        {
+            onAcceptCallbacks = [],
+            onAcceptPromises = [],
+        }: {
+            onAcceptCallbacks?: (() => void)[]
+            onAcceptPromises?: (() => Promise<void>)[]
+        } = {},
         informationMessage: informationMessage
     ) {
         this.confirmationService.confirm({
             header: informationMessage.header,
             message: informationMessage.message,
-            accept: () => {
+            accept: async () => {
                 console.log('sirviendo confirmacion')
 
                 this.messageService.add(informationMessage.accept)
 
+                // Ejecutar funciones síncronas
                 onAcceptCallbacks.forEach((callback) => callback())
+
+                // Ejecutar funciones asincrónicas y esperar que se resuelvan
+                for (const callback of onAcceptPromises) {
+                    await callback()
+                }
             },
             reject: () => {
                 this.messageService.add(informationMessage.reject)

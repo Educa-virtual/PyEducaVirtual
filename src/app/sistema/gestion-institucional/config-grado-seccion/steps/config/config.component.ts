@@ -1,34 +1,24 @@
 import { AdmStepGradoSeccionService } from '@/app/servicios/adm/adm-step-grado-seccion.service'
-import { Component, OnInit } from '@angular/core'
+import { Component, inject, OnInit } from '@angular/core'
 
 import {
     ContainerPageComponent,
     IActionContainer,
 } from '@/app/shared/container-page/container-page.component'
-
+import { TypesFilesUploadPrimengComponent } from '@/app/shared/types-files-upload-primeng/types-files-upload-primeng.component'
 import {
     FormBuilder,
     FormGroup,
     ReactiveFormsModule,
     Validators,
 } from '@angular/forms'
-import { MenuItem } from 'primeng/api'
+import { MenuItem, Message } from 'primeng/api'
 import { Router } from '@angular/router'
-import { DialogModule } from 'primeng/dialog'
-import { DropdownModule } from 'primeng/dropdown'
-import { FloatLabelModule } from 'primeng/floatlabel'
-import { InputNumberModule } from 'primeng/inputnumber'
-import { InputTextModule } from 'primeng/inputtext'
-import { StepsModule } from 'primeng/steps'
-import { ButtonModule } from 'primeng/button'
-import { RadioButtonModule } from 'primeng/radiobutton'
-
-import { FileUploadModule } from 'primeng/fileupload'
-import { CommonModule } from '@angular/common'
-import { ToastModule } from 'primeng/toast'
+import { PrimengModule } from '@/app/primeng.module'
 import { MessageService } from 'primeng/api'
 import { HttpEvent } from '@angular/common/http'
 import { GeneralService } from '@/app/servicios/general.service'
+import { ConfirmationService } from 'primeng/api'
 
 interface UploadEvent {
     originalEvent: HttpEvent<any> | Event
@@ -40,24 +30,23 @@ interface UploadEvent {
     standalone: true,
     imports: [
         ReactiveFormsModule,
-        DialogModule,
-        StepsModule,
-        ButtonModule,
-        InputNumberModule,
-        DropdownModule,
-        FloatLabelModule,
-        InputTextModule,
         ContainerPageComponent,
-        FileUploadModule,
-        ToastModule,
-        CommonModule,
-        RadioButtonModule,
+        PrimengModule,
+        TypesFilesUploadPrimengComponent,
     ],
     providers: [MessageService],
     templateUrl: './config.component.html',
     styleUrl: './config.component.scss',
 })
 export class ConfigComponent implements OnInit {
+    private confirmationService = inject(ConfirmationService)
+    mensaje: Message[] = [
+        {
+            severity: 'info',
+            detail: 'En esta sección podrá visualizar la configuración de los ambientes',
+        },
+    ]
+
     form: FormGroup
 
     items: MenuItem[]
@@ -68,7 +57,18 @@ export class ConfigComponent implements OnInit {
     uploadedFiles: any[] = []
     iServId: number
     configTipo: any[]
+    enlace: string = ''
     event: []
+
+    typesFiles = {
+        //archivos
+        file: true,
+        url: false,
+        youtube: false,
+        repository: false,
+        image: false,
+    }
+    filesUrl = [] //archivos
 
     serv_atencion: {
         iServEdId: number
@@ -92,6 +92,7 @@ export class ConfigComponent implements OnInit {
         this.configTipo = this.stepService.configTipo
     }
     ngOnInit(): void {
+        const url = this.query.baseUrlPublic()
         try {
             this.form = this.fb.group({
                 iConfigId: [this.configuracion[0].iConfigId], // tabla acad.configuraciones
@@ -128,20 +129,52 @@ export class ConfigComponent implements OnInit {
             console.error('Error initializing form:', error)
             this.router.navigate(['/gestion-institucional/configGradoSeccion'])
         }
+        if (
+            !this.configuracion[0].cConfigUrlRslAprobacion ||
+            this.configuracion[0].cConfigUrlRslAprobacion.trim() === ''
+        ) {
+            this.enlace = ''
+        } else {
+            this.enlace =
+                url + '/' + this.configuracion[0].cConfigUrlRslAprobacion
+        }
 
         this.getServicioAtencion()
-        // this.form
-        //     .get('iModalServId')
-        //     ?.setValue(this.stepService.perfil['cNivelNombre'])
-        // this.form
-        //     .get('cNivelTipoNombre')
-        //     ?.setValue(this.stepService.perfil['cNivelTipoNombre'])
-        // this.form.get('iNivelTipoId')?.setValue(this.perfil['iNivelTipoId'])
-        // this.form.get('cYAcadNombre')?.setValue(this.sede[0].cYAcadNombre)
-        // this.form.get('iYAcadId')?.setValue(this.sede[0].iYAcadId)
-        // this.form.get('iSedeId')?.setValue(this.sede[0].iSedeId)
-        // this.form.get('cModalServId')?.setValue(this.perfil['cNivelNombre'])
-        // console.log(this.configuracion, 'configuracion_')
+    }
+
+    accionBtn(elemento): void {
+        const { accion } = elemento
+        const { item } = elemento
+        console.log(this.filesUrl, 'files URL')
+        switch (accion) {
+            case 'close-modal':
+                // this.accionBtnItem.emit({ accion, item })
+                break
+
+            case 'subir-file-configuracion-iiee':
+                const url = this.query.baseUrlPublic()
+                if (this.filesUrl.length < 1) {
+                    console.log(item)
+                    this.filesUrl.push({
+                        type: 1, //1->file
+                        nameType: 'file',
+                        name: item.file.name,
+                        size: item.file.size,
+                        ruta: item.name,
+                    })
+
+                    this.form
+                        .get('cConfigUrlRslAprobacion')
+                        ?.setValue(this.filesUrl[0].ruta)
+
+                    this.enlace = url + '/' + this.filesUrl[0].ruta
+                } else {
+                    alert('No puede subir mas de un archivo')
+                }
+                console.log(this.filesUrl, 'subir-file-configuracion-iiee')
+
+                break
+        }
     }
 
     onUpload(event: UploadEvent) {
@@ -155,6 +188,7 @@ export class ConfigComponent implements OnInit {
             detail: '',
         })
     }
+
     accionBtnItemTable({ accion, item }) {
         this.event = item
         if (accion === 'retornar') {
@@ -198,12 +232,25 @@ export class ConfigComponent implements OnInit {
         }
     }
 
+    confirmar() {
+        this.confirmationService.confirm({
+            message: '¿Está seguro de que desea eliminar este elemento?',
+            header: 'Confirmación de eliminación',
+            icon: 'pi pi-exclamation-triangle',
+            accept: () => {
+                // Acción a realizar al confirmar
+                console.log('Eliminado')
+            },
+            reject: () => {
+                // Acción a realizar al rechazar
+                console.log('Acción cancelada')
+            },
+        })
+    }
     accionBtnItem(accion) {
         if (accion === 'guardar') {
             if (this.form.valid) {
-                console.log(this.form.value)
-                //ALMACENAR LA INFORMACION
-                console.log(this.form)
+                alert('trata de guardar')
                 this.query
                     .addAmbienteAcademico({
                         json: JSON.stringify(this.form.value),
@@ -230,12 +277,22 @@ export class ConfigComponent implements OnInit {
                                 'Error fetching configuración:',
                                 error
                             )
+                            this.messageService.add({
+                                severity: 'error',
+                                summary: 'Mensaje',
+                                detail: 'Error. No se proceso petición ',
+                            })
                         },
                         complete: () => {
+                            this.messageService.add({
+                                severity: 'success',
+                                summary: 'Mensaje',
+                                detail: 'Proceso exitoso',
+                            })
                             console.log('Request completed')
-                            this.router.navigate([
-                                '/gestion-institucional/ambiente',
-                            ])
+                            // this.router.navigate([
+                            //     '/gestion-institucional/ambiente',
+                            // ])
                         },
                     })
             } else {

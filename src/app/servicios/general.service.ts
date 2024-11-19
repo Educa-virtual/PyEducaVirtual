@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http'
 import { environment } from '@/environments/environment'
 
 const baseUrl = environment.backendApi
-
+const baseUrlPublic = environment.backend
 @Injectable({
     providedIn: 'root',
 })
@@ -191,5 +191,8 @@ export class GeneralService {
                 condicion: '1 = 1 ',
             }
         )
+    }
+    baseUrlPublic() {
+        return baseUrlPublic
     }
 }

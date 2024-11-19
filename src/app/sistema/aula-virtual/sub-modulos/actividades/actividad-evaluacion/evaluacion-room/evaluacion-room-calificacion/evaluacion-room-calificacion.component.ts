@@ -107,15 +107,13 @@ export class EvaluacionRoomCalificacionComponent implements OnInit {
     evaluacionesEstudiantes = computed(() => this._state().estudiantes)
     selectedEstudiante = computed(() => this._state().selectedEstudiante)
 
-    set selectedEstudianteValue(value: any) {
+    updateSelectedEstudiante(value: any) {
         this._state.update((state) => ({
             ...state,
             selectedEstudiante: value,
         }))
-        if (value) {
-            this.seleccionarEvaluacion()
-        }
     }
+
     get selectedEstudianteValue() {
         return this._state().selectedEstudiante
     }
@@ -220,7 +218,29 @@ export class EvaluacionRoomCalificacionComponent implements OnInit {
         )
         refModal.onClose.subscribe((result) => {
             if (result) {
-                this.obtenerEvaluacionRespuestasEstudiante()
+                const preguntas = this.selectedEstudiante().preguntas.map(
+                    (preg) => {
+                        if (preg.iPreguntaId === pregunta.iPreguntaId) {
+                            preg.iEstadoRespuestaEstudiante = 2
+                            if (result.esRubrica) {
+                                preg.nivelesLogrosAlcanzados = result.data
+                            } else {
+                                preg.logrosCalificacion = result.data
+                            }
+                        }
+                        return preg
+                    }
+                )
+
+                this._state.update((current) => ({
+                    ...current,
+                    selectedEstudiante: {
+                        ...current.selectedEstudiante,
+                        preguntas,
+                    },
+                }))
+
+                this.obtenerEstudiantesEvaluacion()
             }
         })
     }

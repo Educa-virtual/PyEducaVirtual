@@ -18,7 +18,14 @@
                     Horas No Lectivas:
                     {{ informacion?.nTipoDedicaHorasNoLectivas }}| Total de
                     Horas de Actividades No Lectivas:
-                    {{ informacion?.cTotal || 0 }}
+                    {{ informacion?.cTotal || 0 }} |
+                    <span
+                        [style]="
+                            informacion?.iFalta === '0.00' ? '' : 'color: red'
+                        "
+                    >
+                        Falta: {{ informacion?.iFalta || 0 }}</span
+                    >
                 </div>
             }
 
@@ -39,6 +46,7 @@
     [titulo]="titulo"
     [opcion]="opcion"
     [tiposCargaNoLectivas]="tiposCargaNoLectivas"
+    [iFalta]="informacion?.iFalta"
     (accionBtnItem)="accionBtnItem($event)"
 ></app-form-actividades-no-lectivas>
 <p-toast />

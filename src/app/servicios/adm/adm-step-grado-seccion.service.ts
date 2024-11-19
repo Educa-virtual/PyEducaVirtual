@@ -99,7 +99,7 @@ export class AdmStepGradoSeccionService {
         },
         {
             label: 'Plan de estudios',
-            routerLink: '/gestion-institucional/plan-estudios',
+            routerLink: '/gestion-institucional/plan-estudio',
         },
         {
             label: 'Horas del docente',

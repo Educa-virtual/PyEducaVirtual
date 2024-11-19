@@ -31,7 +31,12 @@
                         pInputText
                         type="text"
                         class="py-2"
-                        (input)="dt.filterGlobal($event.target, 'contains')"
+                        (input)="
+                            dt.filterGlobal(
+                                $any($event.target).value,
+                                'contains'
+                            )
+                        "
                         placeholder="Buscar palabra clave"
                     />
                 </p-iconField>

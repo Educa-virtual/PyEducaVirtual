@@ -71,7 +71,8 @@ export class FormMaterialEducativoComponent implements OnChanges {
                     this.opcion
                 )
                 const files =
-                    this.formMaterialEducativoDocentes.value.cMatEducativoUrl
+                    this.formMaterialEducativoDocentes.value.cMatEducativoUrl ||
+                    []
                 this.filesUrl = files
             }
         }

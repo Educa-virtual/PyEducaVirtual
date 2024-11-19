@@ -209,10 +209,10 @@ export class CalendarioAcademicoComponent implements OnInit {
     // recordset de Year
     columns = [
         {
-            type: 'text',
+            type: 'item',
             width: '5rem',
-            field: 'iYearId',
-            header: 'Cod',
+            field: '',
+            header: 'Item',
             text_header: 'center',
             text: 'center',
         },

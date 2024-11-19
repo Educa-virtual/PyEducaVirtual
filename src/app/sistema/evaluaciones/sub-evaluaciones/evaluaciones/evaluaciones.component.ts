@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core'
+import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core'
 
 /*GRILLA */
 
@@ -31,7 +31,14 @@ import {
     ContainerPageComponent,
     IActionContainer,
 } from '@/app/shared/container-page/container-page.component'
-
+import { CompartirIdEvaluacionService } from './../../services/ereEvaluaciones/compartir-id-evaluacion.service'
+import { PrimengModule } from '@/app/primeng.module'
+import { CommonInputComponent } from '../../../../shared/components/common-input/common-input.component'
+import { IeparticipaComponent } from './ieparticipa/ieparticipa.component'
+import { EvaluacionAreasComponent } from './evaluacion-areas/evaluacion-areas.component'
+import { FormGroup } from '@angular/forms'
+//import { Checkbox } from 'primeng/checkbox'
+//import { I } from '@fullcalendar/core/internal-common'
 @Component({
     selector: 'app-evaluaciones',
     standalone: true,
@@ -43,12 +50,17 @@ import {
         InputTextModule,
         TablePrimengComponent,
         ContainerPageComponent,
+        PrimengModule,
+        CommonInputComponent,
+        IeparticipaComponent,
+        EvaluacionAreasComponent,
     ],
     providers: [DialogService],
     templateUrl: './evaluaciones.component.html',
     styleUrl: './evaluaciones.component.scss',
 })
 export class EvaluacionesComponent implements OnInit {
+    isDialogVisible: boolean = false
     private unsubscribe$: Subject<boolean> = new Subject()
     public params = {
         iCompentenciaId: 0,
@@ -61,37 +73,36 @@ export class EvaluacionesComponent implements OnInit {
     private _apiEre = inject(ApiEvaluacionesRService)
     customers!: any
     visible: boolean = false
+    opcion: string = 'seleccionar'
+    @Output() opcionChange = new EventEmitter<string>()
 
     accionesPrincipal: IActionContainer[] = [
-        /*{
-            labelTooltip: 'Asignar Matriz',
-            text: 'Asignar Matriz',
-            icon: {
-                name: 'matGroupWork',
-                size: 'xs',
-                color: '',
-            },
-            accion: 'asignar',
-            class: 'p-button-primary',
-        },*/
         {
             labelTooltip: 'Agregar evaluación',
             text: 'Agregar Evaluación',
             icon: 'pi pi-plus',
-            accion: 'agregar',
+            accion: 'seleccionar',
             class: 'p-button-secondary',
         },
+        // {
+        //     labelTooltip: 'Agregar evaluación',
+        //     text: 'Agregar Evaluación',
+        //     icon: 'pi pi-plus',
+        //     accion: 'agregar',
+        //     class: 'p-button-secondary',
+        // },
     ]
-
-    columnas: IColumn[] = [
-        {
-            field: 'iEvaluacionId',
-            header: 'ID',
-            type: 'text',
-            width: '5rem',
-            text: 'left',
-            text_header: 'Pregunta',
-        },
+    opcionesAuto: IActionTable[] = []
+    // Aqui va la columas con anterioridad
+    columnasBase: IColumn[] = [
+        // {
+        //     field: 'iEvaluacionId',
+        //     header: 'ID',
+        //     type: 'text',
+        //     width: '5rem',
+        //     text: 'left',
+        //     text_header: 'Pregunta',
+        // },
         {
             field: 'cTipoEvalDescripcion',
             header: 'Tipo evaluación',
@@ -124,6 +135,18 @@ export class EvaluacionesComponent implements OnInit {
             text: 'left',
             text_header: 'Clave',
         },
+        // {
+        //     field: '',
+        //     header: 'Acciones',
+        //     type: 'actions',
+        //     width: '5rem',
+        //     text: 'left',
+        //     text_header: '',
+        // },
+    ]
+    //COPIANDO COLUMNA PARA MODAL
+    columnas: IColumn[] = [
+        ...this.columnasBase,
         {
             field: '',
             header: 'Acciones',
@@ -133,7 +156,25 @@ export class EvaluacionesComponent implements OnInit {
             text_header: '',
         },
     ]
+    columnasAuto: IColumn[] = [
+        {
+            type: 'radio-action',
+            width: '3rem',
+            field: 'iConfigId',
+            header: 'Seleccionar',
+            text_header: 'center',
+            text: 'center',
 
+            // field: '',
+            // header: 'Acciones',
+            // type: 'actions',
+            // width: '5rem',
+            // text: 'left',
+            // text_header: '',
+        },
+        ...this.columnasBase,
+    ]
+    selectedItemsAuto = []
     selectedItems = []
     public accionesTabla: IActionTable[] = [
         {
@@ -150,16 +191,25 @@ export class EvaluacionesComponent implements OnInit {
             type: 'item',
             class: 'p-button-rounded p-button-warning p-button-text',
         },
-        {
-            labelTooltip: 'Eliminar',
-            icon: 'pi pi-trash',
-            accion: 'editar',
-            type: 'item',
-            class: 'p-button-rounded p-button-danger p-button-text',
-        },
+        // {
+        //     labelTooltip: 'Eliminar',
+        //     icon: 'pi pi-trash',
+        //     accion: 'editar',
+        //     type: 'item',
+        //     class: 'p-button-rounded p-button-danger p-button-text',
+        // },
     ]
+    caption: any
+    formCapas: any
+    evaluacionFormGroup: FormGroup<any>
+    tipoEvaluacion: any[]
+    nivelEvaluacion: any[]
+    acciones: any
 
-    constructor() {}
+    constructor(
+        // private customerService: CustomerService,
+        private compartirIdEvaluacionService: CompartirIdEvaluacionService
+    ) {}
 
     ngOnInit() {
         this.obtenerEvaluacion()
@@ -168,7 +218,7 @@ export class EvaluacionesComponent implements OnInit {
         this.visible = true
     }
     click() {}
-
+    //No es la ventana modal
     agregarEvaluacion() {
         this._dialogService.open(EvaluacionesFormComponent, {
             ...MODAL_CONFIG,
@@ -185,12 +235,6 @@ export class EvaluacionesComponent implements OnInit {
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
                 next: (resp: unknown) => {
-                    /*.competencias = resp['data']
-                    this.competencias.unshift({
-                        iCompentenciaId: 0,
-                        cCompetenciaDescripcion: 'Todos',
-                    })*/
-
                     this.data = resp['data']
                     //alert(JSON.stringify(this.data))
                     //this.sourceProducts = this.data
@@ -198,33 +242,51 @@ export class EvaluacionesComponent implements OnInit {
             })
     }
 
+    // asignar
     accionBtnItemTable({ accion, item }) {
-        if (accion === 'asignar') {
+        if (accion === 'seleccionar') {
             this.selectedItems = []
             this.selectedItems = [item]
             // this.asignarPreguntas()
         }
         if (accion === 'editar') {
-            //this.agregarEditarPregunta(item)
+            this.agregarEditarPregunta(item)
         }
 
         if (accion === 'ver') {
             /// alert(item.iEvaluacionId)
+            //console.log('Aqui: ' + item.iEvaluacionId)
+            this.compartirIdEvaluacionService.iEvaluacionId = item.iEvaluacionId
+            //alert(this.compartirIdEvaluacionService.iEvaluacionId)
             this.verEreEvaluacion(item)
             // this.eliminarPregunta(item)
         }
+        if (accion === 'agregar') {
+            // this.selectedItems = []
+            // this.selectedItems = [item]
+            this.opcion = 'seleccionar'
+
+            this.caption = 'Seleccionar configuración'
+            this.visible = true
+            // this.asignarPreguntas()
+        }
+        if (accion === 'editar') {
+            this.opcion = 'seleccionar'
+        }
+        if (accion === 'capa1') {
+            this.visible = false
+            console.log(this.visible, 'ESTOY EN CAPA 1')
+        }
     }
     verEreEvaluacion(evaluacion) {
-        alert('iEvaluacionId' + evaluacion.iEvaluacionId)
+        //alert('iEvaluacionId' + evaluacion.iEvaluacionId)
         const refModal = this._dialogService.open(EvaluacionesFormComponent, {
             ...MODAL_CONFIG,
             data: {
+                accion: 'ver',
                 evaluacion: evaluacion,
             },
-            header:
-                evaluacion?.iEvaluacionId == 0
-                    ? 'Nueva evaluación'
-                    : 'Editar evaluación',
+            header: 'Ver evaluacion',
         })
 
         refModal.onClose.subscribe((result) => {
@@ -233,34 +295,83 @@ export class EvaluacionesComponent implements OnInit {
             }
         })
     }
+
     // abrir el modal para agregar una nueva pregunta
     agregarEditarPregunta(evaluacion) {
-        alert('iEvaluacionId' + evaluacion.iEvaluacionId)
+        const accion = evaluacion?.iEvaluacionId ? 'editar' : 'nuevo'
+        const header =
+            accion === 'nuevo' ? 'Nueva evaluación' : 'Editar evaluación'
+
         const refModal = this._dialogService.open(EvaluacionesFormComponent, {
             ...MODAL_CONFIG,
             data: {
-                //tipoPreguntas: this.tipoPreguntas,
+                accion: accion,
                 evaluacion: evaluacion,
-                //iCursoId: this.params.iCursoId,
             },
-            header:
-                evaluacion?.iEvaluacionId == 0
-                    ? 'Nueva evaluación'
-                    : 'Editar evaluación',
+            header: header,
         })
+
         refModal.onClose.subscribe((result) => {
             if (result) {
-                //this.obtenerBancoPreguntas()
+                this.obtenerEvaluacion()
             }
         })
     }
-    // manejar las acciones
-    accionBtnItem(action) {
-        if (action.accion === 'agregar') {
-            this.agregarEditarPregunta({
-                iEvaluacionId: 0,
-            })
+
+    accionbtn(accion) {
+        switch (accion) {
+            case 'manual':
+                this.opcion = 'manual'
+                this.caption = 'Registrar'
+                this.acciones = 'manual'
+                break
+            case 'auto':
+                this.opcion = 'auto'
+                this.caption = 'Registrar'
+                this.acciones = 'auto'
+                break
         }
+    }
+    // manejar las acciones
+    accionBtnItem(elemento) {
+        const { accion } = elemento
+
+        switch (accion) {
+            case 'seleccionar':
+                this.visible = true
+                this.opcion = 'seleccionar'
+                break
+            case 'agregar':
+                this.agregarEditarPregunta({
+                    iEvaluacionId: 0,
+                })
+                this.opcion = 'seleccionar'
+
+                break
+            case 'auto':
+                this.opcion = 'auto'
+                break
+            case 'manual':
+                this.opcion = 'manual'
+                this.caption = 'Registrar'
+
+                break
+            case 'sel-manual':
+                break
+            case 'capa1':
+                this.visible = false
+                break
+            case 'formularioEvaluacion':
+                this.visible = false
+                this.opcion = 'formularioEvaluacion'
+                this.formCapas = 'formularioEvaluacion'
+                this.isDialogVisible = true
+
+                this.agregarEditarPregunta({ iEvaluacionId: null })
+                break
+        }
+        // Emitir el valor de `opcion` al componente padre
+        //this.opcionChange.emit(this.opcion)
         /* if (action.accion === 'asignar') {
         //this.asignarPreguntas()
     }*/

@@ -27,10 +27,7 @@ import {
     Validators,
 } from '@angular/forms'
 import { MessageService } from 'primeng/api'
-import {
-    StepConfirmationService,
-    type informationMessage,
-} from '@/app/servicios/confirm.service'
+import { StepConfirmationService } from '@/app/servicios/confirm.service'
 
 @Component({
     selector: 'app-config-ambiente',
@@ -423,30 +420,7 @@ export class ConfigAmbienteComponent implements OnInit {
         this.form.get('cAmbienteObs')?.setValue('')
         this.form.get('bAmbienteEstado')?.setValue(0)
     }
-    confirm() {
-        console.log('confirmando')
-        const message: informationMessage = {
-            header: '¿Desea guardar información?',
-            message: 'Por favor, confirme para continuar.',
-            accept: {
-                severity: 'success',
-                summary: 'Año',
-                detail: 'Se ha guardado correctamente.',
-                life: 6000,
-            },
-            reject: {
-                severity: 'warn',
-                summary: 'Año',
-                detail: 'Se ha cancelado guardar la información.',
-                life: 3000,
-            },
-        }
 
-        this.msg.confirmAction(
-            [() => this.saveInformation(), () => this.nextPage()],
-            message
-        )
-    }
     saveInformation() {
         if (this.caption == 'create') {
             alert('Mensaje 0 save')

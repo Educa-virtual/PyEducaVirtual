@@ -18,6 +18,7 @@ import { ButtonModule } from 'primeng/button'
 import { DynamicDialogConfig } from 'primeng/dynamicdialog'
 import { ReactiveFormsModule } from '@angular/forms'
 import { CommonModule } from '@angular/common'
+import { MessageService } from 'primeng/api'
 interface NivelTipo {
     cNivelTipoNombre: string
     iNivelTipoId: string
@@ -49,7 +50,7 @@ interface EvaluacionCopia {
     styleUrl: './ieparticipa.component.scss',
 })
 export class IeparticipaComponent implements OnInit {
-    @Input() _iEvaluacionId: number
+    @Input() _iEvaluacionId: number //ID de la evaluacion Form
 
     public evaluacionFormGroup: any
 
@@ -66,6 +67,7 @@ export class IeparticipaComponent implements OnInit {
     private _apiEre = inject(ApiEvaluacionesRService)
     public sourceProducts: any[] = [] // IEs no participantes
     public targetProducts: any[] = [] // IEs participantes
+    private _MessageService = inject(MessageService) //!Agregando Mensaje
     nivelTipo: NivelTipo[] | undefined
     selectedNivelTipo: NivelTipo | undefined
     Ugeles: Ugeles[] | undefined
@@ -95,6 +97,17 @@ export class IeparticipaComponent implements OnInit {
     ngOnInit() {
         console.log('Iniciando componente con config:', this._config.data)
 
+        console.log(
+            'iEvaluacionId recibido:',
+            this.compartirIdEvaluacionService
+        )
+        if (
+            this.compartirIdEvaluacionService === null ||
+            this.compartirIdEvaluacionService === undefined
+        ) {
+            console.error('El ID de evaluación es nulo o indefinido')
+        }
+
         // Determinar el modo
         //this.accion = this._config.data?.accion || 'crear'
         //this.esModoEdicion = this.accion === 'editar'
@@ -111,9 +124,22 @@ export class IeparticipaComponent implements OnInit {
             { cNivelTipoNombre: 'Secundaria', iNivelTipoId: 'RM' },
         ]
         // Inicializar según el modo
-        if (this.accion === 'crear') {
-            this.targetProducts = [] // Asegurar que la lista destino esté vacía
-            this.obtenerIE() // Solo obtener la lista de IEs disponibles
+        if (this.accion === 'nuevo') {
+            //this.targetProducts = [] // Vaciar correctamente
+            //this.sourceProducts = [] // Asegurar que no haya productos en la fuente
+            // Vaciar los productos anteriores
+            this.targetProducts = [] // Vaciar correctamente la lista de productos seleccionados
+            this.sourceProducts = [] // Vaciar la lista de productos disponibles
+
+            // Reiniciar otros valores de formulario si es necesario
+            this.selectedNivelTipo = null
+            this.selectedUgeles = null
+
+            // Asegurarse de obtener la lista de Instituciones Educativas disponibles
+            this.obtenerIE()
+            console.log('QUIERO VER QUE LLEGA EN:', this.allIEs)
+            //this.obtenerIE() // Solo obtener la lista de IEs disponibles
+            //console.log('QUIERO VER QUE LLEGA EN:', this.obtenerIE)
         }
         if (this.accion === 'ver') {
             this.obtenerParticipaciones(
@@ -125,9 +151,15 @@ export class IeparticipaComponent implements OnInit {
             this.obtenerParticipaciones(this._iEvaluacionId)
             //this.isDisabled = true // Deshabilita visualmente la sección
         }
+        this.obtenerParticipaciones(
+            this.compartirIdEvaluacionService.iEvaluacionId
+        )
     }
 
     obtenerIE() {
+        this.allIEs = []
+        this.sourceProducts = []
+
         this._apiEre
             .obtenerIE(this.params)
             .pipe(takeUntil(this.unsubscribe$))
@@ -141,7 +173,6 @@ export class IeparticipaComponent implements OnInit {
                         cUgelNombre: item.cUgelNombre, // Asegúrate de incluir esta propiedad
                     }))
 
-                    // Filtra las IE que no están en `targetProducts`
                     this.sourceProducts = this.allIEs.filter(
                         (ie) =>
                             !this.targetProducts.some(
@@ -202,7 +233,7 @@ export class IeparticipaComponent implements OnInit {
     // Cuando se mueve un elemento a "Participan"
     IEparticipan(event: any) {
         const itemsMoved = event.items
-        // console.log('Moviendo a Participan:', itemsMoved)
+        console.log('Moviendo a Participan:', itemsMoved)
         const payload = {
             items: itemsMoved.map((item) => ({
                 iEvaluacionId: this.compartirIdEvaluacionService.iEvaluacionId,
@@ -210,8 +241,23 @@ export class IeparticipaComponent implements OnInit {
                 iIieeId: item.iIieeId,
             })),
         }
+        // const payload = {
+        //     items: itemsMoved.map((item) => ({
+        //         iEvaluacionId: this._iEvaluacionId, // Usando el ID recibido como Input
+        //         iIieeId: item.iIieeId,
+        //     })),
+        // }
         this._apiEre.guardarParticipacion(payload).subscribe(
-            (response) => console.log('Guardado exitoso:', response),
+            //(response) => console.log('Guardado exitoso:', response),
+            (response) => {
+                // Mostrar mensaje tipo toast en caso de éxito
+                this._MessageService.add({
+                    severity: 'success',
+                    summary: 'Guardado exitoso',
+                    detail: 'Las instituciones educativas se guardaron correctamente.',
+                })
+                console.log('Guardado exitoso:', response)
+            },
             (error) => console.error('Error al guardar:', error)
         )
     }
@@ -289,15 +335,22 @@ export class IeparticipaComponent implements OnInit {
             console.warn('No hay elementos para eliminar.')
         }
     }
-    seleccionados() {
-        // alert(JSON.stringify(this.targetProducts))
-        //console.log('Seleccionados:', this.targetProducts)
-    }
+
     obtenerParticipaciones(
         evaluacionId: number,
         modoCopia: boolean = false
     ): Promise<any[]> {
         return new Promise((resolve, reject) => {
+            // Obtener el iEvaluacionId desde el servicio
+            const iEvaluacionId =
+                this.compartirIdEvaluacionService.iEvaluacionId
+
+            // Verificar si el iEvaluacionId está disponible y no es nulo
+            if (iEvaluacionId === null || iEvaluacionId === undefined) {
+                console.error('El ID de evaluación no está disponible.')
+                reject('El ID de evaluación no está disponible.')
+                return
+            }
             this._apiEre
                 .obtenerParticipaciones(evaluacionId)
                 .pipe(takeUntil(this.unsubscribe$))
@@ -311,7 +364,7 @@ export class IeparticipaComponent implements OnInit {
                         }))
                         if (modoCopia) {
                             this.targetProducts = participantes
-                            this.obtenerIE()
+                            // this.obtenerIE()
                             // console.log(
                             //     'Participantes copiados para nueva evaluación:',
                             //     this.targetProducts
@@ -367,7 +420,7 @@ export class IeparticipaComponent implements OnInit {
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
                 next: (resp: unknown) => {
-                    console.log('DATOS OBTENIDOS DE EVALUACIONES:', resp) // Imprime la respuesta completa
+                    //console.log('DATOS OBTENIDOS DE EVALUACIONES:', resp) // Imprime la respuesta completa
                     this.EvaluacionCopia = resp['data']
                     console.log(
                         'Nivel tipo asignado a this.ugel:',
@@ -392,11 +445,6 @@ export class IeparticipaComponent implements OnInit {
 
             return nivelTipoMatch && ugelMatch
         })
-
-        // console.log(
-        //     'Instituciones no participantes (filtradas):',
-        //     this.sourceProducts
-        // )
     }
     onNivelTipoChange(event: any) {
         this.selectedNivelTipo = event.value

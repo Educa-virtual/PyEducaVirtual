@@ -33,6 +33,7 @@
                             [(ngModel)]="curso.isSelected"
                             name="curso{{ curso.cCursoNombre }}"
                             [disabled]="isDisabled"
+                            (change)="onCursoSelect(curso)"
                         />
                         <span class="checkmark"></span>
                         {{ curso.cCursoNombre }}
@@ -41,20 +42,8 @@
             </div>
         </div>
     </div>
-    <div class="flex pt-4 justify-content-end" style="margin-bottom: -62px">
-        <p-button
-            label="Guardar y Salir"
-            icon="pi pi-times"
-            iconPos="right"
-            (click)="insertarCursos()"
-            styleClass="background: #0E4194; "
-        ></p-button>
-        <p-button
-            label="Editar y salir"
-            icon="pi pi-times"
-            iconPos="right"
-            (click)="actualizarCursos()"
-            styleClass="background: #0E4194;"
-        ></p-button>
-    </div>
+    <div
+        class="flex pt-4 justify-content-end"
+        style="margin-bottom: -62px"
+    ></div>
 </div>

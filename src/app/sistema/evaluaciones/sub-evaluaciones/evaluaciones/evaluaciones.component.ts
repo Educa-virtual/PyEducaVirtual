@@ -1,4 +1,12 @@
-import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core'
+import {
+    ChangeDetectorRef,
+    Component,
+    EventEmitter,
+    inject,
+    Input,
+    OnInit,
+    Output,
+} from '@angular/core'
 
 /*GRILLA */
 
@@ -25,7 +33,7 @@ import {
 } from '../../../../shared/table-primeng/table-primeng.component'
 
 import { ApiEvaluacionesRService } from '../../services/api-evaluaciones-r.service'
-import { Subject, takeUntil } from 'rxjs'
+import { BehaviorSubject, Subject, takeUntil } from 'rxjs'
 
 import {
     ContainerPageComponent,
@@ -37,6 +45,8 @@ import { CommonInputComponent } from '../../../../shared/components/common-input
 import { IeparticipaComponent } from './ieparticipa/ieparticipa.component'
 import { EvaluacionAreasComponent } from './evaluacion-areas/evaluacion-areas.component'
 import { FormGroup } from '@angular/forms'
+import { MessageService } from 'primeng/api'
+
 //import { Checkbox } from 'primeng/checkbox'
 //import { I } from '@fullcalendar/core/internal-common'
 @Component({
@@ -61,6 +71,7 @@ import { FormGroup } from '@angular/forms'
 })
 export class EvaluacionesComponent implements OnInit {
     isDialogVisible: boolean = false
+
     private unsubscribe$: Subject<boolean> = new Subject()
     public params = {
         iCompentenciaId: 0,
@@ -68,13 +79,18 @@ export class EvaluacionesComponent implements OnInit {
         iDesempenioId: 0,
         bPreguntaEstado: -1,
     }
+
     public data = []
     private _dialogService = inject(DialogService)
     private _apiEre = inject(ApiEvaluacionesRService)
+    private _MessageService = inject(MessageService)
     customers!: any
     visible: boolean = false
     opcion: string = 'seleccionar'
     @Output() opcionChange = new EventEmitter<string>()
+
+    // Variable para manejar datos reactivos
+    dataSubject = new BehaviorSubject<any[]>([]) // Reactivo para actualizar la tabla automáticamente
 
     accionesPrincipal: IActionContainer[] = [
         {
@@ -82,27 +98,12 @@ export class EvaluacionesComponent implements OnInit {
             text: 'Agregar Evaluación',
             icon: 'pi pi-plus',
             accion: 'seleccionar',
-            class: 'p-button-secondary',
+            class: 'p-button-lg',
         },
-        // {
-        //     labelTooltip: 'Agregar evaluación',
-        //     text: 'Agregar Evaluación',
-        //     icon: 'pi pi-plus',
-        //     accion: 'agregar',
-        //     class: 'p-button-secondary',
-        // },
     ]
     opcionesAuto: IActionTable[] = []
     // Aqui va la columas con anterioridad
     columnasBase: IColumn[] = [
-        // {
-        //     field: 'iEvaluacionId',
-        //     header: 'ID',
-        //     type: 'text',
-        //     width: '5rem',
-        //     text: 'left',
-        //     text_header: 'Pregunta',
-        // },
         {
             field: 'cTipoEvalDescripcion',
             header: 'Tipo evaluación',
@@ -135,14 +136,6 @@ export class EvaluacionesComponent implements OnInit {
             text: 'left',
             text_header: 'Clave',
         },
-        // {
-        //     field: '',
-        //     header: 'Acciones',
-        //     type: 'actions',
-        //     width: '5rem',
-        //     text: 'left',
-        //     text_header: '',
-        // },
     ]
     //COPIANDO COLUMNA PARA MODAL
     columnas: IColumn[] = [
@@ -164,13 +157,6 @@ export class EvaluacionesComponent implements OnInit {
             header: 'Seleccionar',
             text_header: 'center',
             text: 'center',
-
-            // field: '',
-            // header: 'Acciones',
-            // type: 'actions',
-            // width: '5rem',
-            // text: 'left',
-            // text_header: '',
         },
         ...this.columnasBase,
     ]
@@ -191,13 +177,6 @@ export class EvaluacionesComponent implements OnInit {
             type: 'item',
             class: 'p-button-rounded p-button-warning p-button-text',
         },
-        // {
-        //     labelTooltip: 'Eliminar',
-        //     icon: 'pi pi-trash',
-        //     accion: 'editar',
-        //     type: 'item',
-        //     class: 'p-button-rounded p-button-danger p-button-text',
-        // },
     ]
     caption: any
     formCapas: any
@@ -206,13 +185,33 @@ export class EvaluacionesComponent implements OnInit {
     nivelEvaluacion: any[]
     acciones: any
 
+    //!AQUI CAMBIE MOSTRAR ROW
+    @Input() dataRow: any[] = [] // Los datos que recibe la tabla
+    @Input() columnasRow: any[] = [] // Las columnas que muestra la tabla
+    selectedRow: any[] = [] // Aquí se almacena la fila seleccionada
+    onRowSelect(event: any) {
+        console.log('Datos de la fila seleccionada:', 'event', event) // Verifica los datos seleccionados
+        this.selectedRow = [event]
+        //this.selectedRowData.emit(this.selectedRow) // Emite los datos al componente padre
+    }
+    //!AQUI TERMINO
     constructor(
         // private customerService: CustomerService,
-        private compartirIdEvaluacionService: CompartirIdEvaluacionService
+        private compartirIdEvaluacionService: CompartirIdEvaluacionService,
+        private messageService: MessageService,
+        private cdr: ChangeDetectorRef
     ) {}
 
     ngOnInit() {
         this.obtenerEvaluacion()
+        this.caption = 'Evaluaciones'
+        this.dataSubject.subscribe((newData: any[]) => {
+            this.data = newData // Actualizar los datos en el componente
+        })
+    }
+    closeDialog() {
+        // Aquí va la lógica para finalizar el formulario
+        this.visible = false
     }
     showDialog() {
         this.visible = true
@@ -223,12 +222,48 @@ export class EvaluacionesComponent implements OnInit {
         this._dialogService.open(EvaluacionesFormComponent, {
             ...MODAL_CONFIG,
             header: 'Nueva evaluación',
-            /* templates: {
-                footer: BotonosModalFormComponent,
-            },*/
         })
     }
 
+    //!
+    // Método para actualizar los datos
+    actualizarDatos(evaluacion: any) {
+        const params = { id: evaluacion.iEvaluacionId }
+
+        this._apiEre
+            .obtenerEvaluacion(params)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+                next: (resp: any) => {
+                    console.log('Respuesta de la actualización:', resp) // Para depuración
+                    if (resp.status === 'Success') {
+                        // Verificar que el status sea 'Success'
+                        this._MessageService.add({
+                            severity: 'success',
+                            summary: 'Actualización exitosa',
+                            detail: 'La evaluación se actualizó correctamente.',
+                        })
+                        this.dataSubject.next(resp.data) // Emitir los nuevos datos al dataSubject
+                        console.log('Datos actualizados:', resp.data) // Para depuración
+                    } else {
+                        console.log('Error en la respuesta:', resp) // Para depuración
+                        this._MessageService.add({
+                            severity: 'error',
+                            summary: 'Error',
+                            detail: 'Hubo un error al actualizar la evaluación.',
+                        })
+                    }
+                },
+                error: (error) => {
+                    this._MessageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: 'Error al conectar con el servidor.',
+                    })
+                    console.error('Error al actualizar la evaluación:', error)
+                },
+            })
+    }
     obtenerEvaluacion() {
         this._apiEre
             .obtenerEvaluacion(this.params)
@@ -236,8 +271,6 @@ export class EvaluacionesComponent implements OnInit {
             .subscribe({
                 next: (resp: unknown) => {
                     this.data = resp['data']
-                    //alert(JSON.stringify(this.data))
-                    //this.sourceProducts = this.data
                 },
             })
     }
@@ -250,6 +283,7 @@ export class EvaluacionesComponent implements OnInit {
             // this.asignarPreguntas()
         }
         if (accion === 'editar') {
+            console.log('AQUI ESTA EL EDITAR', accion)
             this.agregarEditarPregunta(item)
         }
 
@@ -270,12 +304,9 @@ export class EvaluacionesComponent implements OnInit {
             this.visible = true
             // this.asignarPreguntas()
         }
-        if (accion === 'editar') {
-            this.opcion = 'seleccionar'
-        }
-        if (accion === 'capa1') {
-            this.visible = false
-            console.log(this.visible, 'ESTOY EN CAPA 1')
+        if (accion === 'actualizar') {
+            // Aquí se puede invocar el método de actualización de los datos
+            this.actualizarDatos(item)
         }
     }
     verEreEvaluacion(evaluacion) {
@@ -322,15 +353,46 @@ export class EvaluacionesComponent implements OnInit {
         switch (accion) {
             case 'manual':
                 this.opcion = 'manual'
-                this.caption = 'Registrar'
+                this.caption = 'Nueva Evaluacion'
                 this.acciones = 'manual'
                 break
             case 'auto':
                 this.opcion = 'auto'
-                this.caption = 'Registrar'
+                this.caption = 'Recuperar Evaluacion'
                 this.acciones = 'auto'
                 break
         }
+    }
+
+    //!CREANDO COPIA DE EVALUACION
+    copiarEvaluacion(iEvaluacionId: number): Promise<any[]> {
+        return new Promise((resolve, reject) => {
+            //this.copiarEvaluacion(iEvaluacionId)
+            this._apiEre
+                .copiarEvaluacion(iEvaluacionId)
+                .pipe(takeUntil(this.unsubscribe$))
+                .subscribe({
+                    next: (resp: any) => {
+                        this._MessageService.add({
+                            severity: 'success',
+                            summary: 'Éxito',
+                            detail: resp.message,
+                        })
+
+                        resolve(resp)
+                        console.log('Copiar Evaluacion exitosa:', resp)
+                    },
+                    error: (error) => {
+                        console.error('Error al Copiar Evaluacion:', error)
+                        this._MessageService.add({
+                            severity: 'error',
+                            summary: 'Error',
+                            detail: 'Error al copiar la Evaluacion',
+                        })
+                        reject(error)
+                    },
+                })
+        })
     }
     // manejar las acciones
     accionBtnItem(elemento) {
@@ -346,7 +408,14 @@ export class EvaluacionesComponent implements OnInit {
                     iEvaluacionId: 0,
                 })
                 this.opcion = 'seleccionar'
-
+                break
+            case 'copiarEvaluacion':
+                this.copiarEvaluacion(this.selectedRow[0].iEvaluacionId).then(
+                    (resp) => {
+                        console.log('Copiar evaluacion', resp)
+                        this.closeDialog()
+                    }
+                )
                 break
             case 'auto':
                 this.opcion = 'auto'
@@ -370,10 +439,5 @@ export class EvaluacionesComponent implements OnInit {
                 this.agregarEditarPregunta({ iEvaluacionId: null })
                 break
         }
-        // Emitir el valor de `opcion` al componente padre
-        //this.opcionChange.emit(this.opcion)
-        /* if (action.accion === 'asignar') {
-        //this.asignarPreguntas()
-    }*/
     }
 }

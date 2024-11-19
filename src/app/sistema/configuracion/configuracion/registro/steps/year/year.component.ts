@@ -1,8 +1,8 @@
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
-import { Component, OnInit, HostListener } from '@angular/core'
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core'
 
-import { Router } from '@angular/router'
+import { Router, NavigationStart, Event as NavigationEvent } from '@angular/router'
 import { TicketService } from '../../service/ticketservice'
 
 import { FormControl, FormsModule } from '@angular/forms'
@@ -45,7 +45,10 @@ import { ToastModule } from 'primeng/toast'
     templateUrl: './year.component.html',
     styleUrl: './year.component.scss',
 })
-export class YearComponent implements OnInit {
+export class YearComponent implements OnInit, OnDestroy {
+
+    navigationSubscription
+    isHandlingNavigation = false
     form: FormGroup
     calFasesFechasInformation: {
         iSedeId: string
@@ -127,6 +130,25 @@ export class YearComponent implements OnInit {
             }
             console.log(value)
         })
+
+        this.navigationSubscription = this.router.events.subscribe((event: NavigationEvent) => {
+            if (event instanceof NavigationStart) {
+              if (this.isHandlingNavigation) {
+                return; // Si ya estás manejando el evento, no hagas nada
+              }
+      
+              this.isHandlingNavigation = true; // Establece el flag para bloquear otros eventos
+              const allowNavigation = window.confirm('¿Desea salir sin guardar los cambios?');
+      
+              if (!allowNavigation) {
+                // Cancela la navegación
+                this.router.navigateByUrl(this.router.url); // Mantén la ruta actual
+                this.isHandlingNavigation = false; // Restablece el flag después de manejar el evento
+              }
+      
+            }
+          });
+      
     }
 
     setValuesFormCalendar(data) {
@@ -437,4 +459,11 @@ export class YearComponent implements OnInit {
             'configuracion/configuracion/registro/dias-laborales',
         ])
     }
+
+    ngOnDestroy() {
+        if (this.router) {
+          this.navigationSubscription.unsubscribe();
+        }
+      }
+    
 }

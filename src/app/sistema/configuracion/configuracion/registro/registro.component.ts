@@ -21,6 +21,8 @@ export class RegistroComponent implements OnInit, OnDestroy {
     subscription: Subscription
     items: MenuItem[]
 
+    routeLink = 0
+
     constructor(
         public messageService: MessageService,
         public ticketService: TicketService,
@@ -77,11 +79,15 @@ export class RegistroComponent implements OnInit, OnDestroy {
         },
     ]
 
-    actionBtn(mode) {
-        this.emitMode.emit(mode)
+    selectedRouteLink(e){
+        console.log('cambiando de ruta')
+        console.log(e)
+        console.log(this.routeLink = 4)
     }
 
-    validateYear() {}
+    emitEventRouting(data){
+        this.ticketService.emitEvent('Data');
+    }
 
     navigateToYears() {
         this.router.navigate(['configuracion/configuracion/years']) // Navega a YearsComponent

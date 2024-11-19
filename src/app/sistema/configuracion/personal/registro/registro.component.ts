@@ -1,8 +1,6 @@
 import { Component, OnInit, OnChanges, OnDestroy } from '@angular/core'
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
-import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
 import { Router } from '@angular/router';
-
 
 import { StepsModule } from 'primeng/steps'
 import { Subscription } from 'rxjs';
@@ -25,7 +23,7 @@ export class RegistroComponent implements OnInit, OnChanges {
     subscription: Subscription;
     items: MenuItem[];
 
-    constructor(public messageService: MessageService, private router: Router, private confirmationService: ConfirmationService) {
+    constructor(private router: Router) {
 
     }
 
@@ -84,13 +82,7 @@ export class RegistroComponent implements OnInit, OnChanges {
         },
     ]
 
-    actionBtn(mode) {
-        this.emitMode.emit(mode)
-    }
 
-    validateYear(){
-
-    }
 
     navigateToAdministrarPersonal() {
         

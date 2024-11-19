@@ -8,6 +8,7 @@
             styleClass="w-full overflow-scroll"
             [model]="items"
             [readonly]="false"
+            (activeIndexChange)="emitEventRouting($event)"
         ></p-steps>
     </div>
     <router-outlet></router-outlet>

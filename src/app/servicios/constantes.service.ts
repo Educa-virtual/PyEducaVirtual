@@ -146,36 +146,7 @@ const administrador = [
                 icon: 'pi pi-fw pi-cog',
                 routerLink: ['/configuracion/gestion-traslados'],
             },
-            {
-                label: 'Calendario Académico',
-                icon: 'pi pi-fw pi-desktop',
-                routerLink: ['/'],
-            },
-            {
-                label: 'Cursos',
-                icon: 'pi pi-fw pi-desktop',
-                routerLink: ['/'],
-            },
-            {
-                label: 'Horarios',
-                icon: 'pi pi-fw pi-desktop',
-                routerLink: ['/'],
-            },
-            {
-                label: 'Grados',
-                icon: 'pi pi-fw pi-desktop',
-                routerLink: ['/'],
-            },
-            {
-                label: 'Sección',
-                icon: 'pi pi-fw pi-desktop',
-                routerLink: ['/'],
-            },
-            {
-                label: 'Roles',
-                icon: 'pi pi-users',
-                routerLink: ['/roles'],
-            },
+
         ],
     },
 ]

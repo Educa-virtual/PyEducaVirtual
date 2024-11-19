@@ -98,7 +98,7 @@ export class EvaluacionesFormComponent implements OnInit {
     private _apiEre = inject(ApiEvaluacionesRService)
     private _MessageService = inject(MessageService) //!Agregando Mensaje
     tipoEvaluacion: TipoEvaluacion[] | undefined
-    iEvaluacionId: any
+    iEvaluacionId: number
     selectedTipoEvaluacion: TipoEvaluacion | undefined
     nivelEvaluacion: NivelEvaluacion[] | undefined
     selectedNivelEvaluacion: TipoEvaluacion | undefined
@@ -197,6 +197,9 @@ export class EvaluacionesFormComponent implements OnInit {
     //!TERMINA AQUI
     esModoEdicion: boolean = false // Cambiar a true si estás en modo edición
     ngOnInit() {
+        console.log('Evaluación desde el padre:', this._config.data.evaluacion)
+        console.log('Config en el padre:', this._config)
+
         // console.log(this.opcion, 'LLEGARAEL DATO OPCION')
         this.accion = this._config.data.accion
 

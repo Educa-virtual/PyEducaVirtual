@@ -47,8 +47,13 @@
             <div class="field col-12 md:col-6">
                 <p-card header="" class="custom-card">
                     <div class="card-content">
+                        <!-- (click)="accionbtn('manual')" -->
                         <p-button
-                            (click)="accionbtn('manual')"
+                            (onClick)="
+                                accionBtnItem({
+                                    accion: 'formularioEvaluacion',
+                                })
+                            "
                             (focus)="(true)"
                             styleClass="p-button-primary  "
                         >
@@ -138,11 +143,12 @@
 
                 <div class="flex justify-content-between">
                     <P
-                        >Al seleccionar esta opcion se importará informacion de
-                        <strong>Evaluaciones</strong>
+                        >Al seleccionar esta opcion se va a recuperar la
+                        informacion de otra
+                        <strong>Evaluacion</strong>
                     </P>
                     <p-button
-                        label="Siguiente"
+                        label="Recuperar"
                         (onClick)="
                             accionBtnItem({ accion: 'copiarEvaluacion' })
                         "

@@ -83,7 +83,7 @@ export class IeparticipaComponent implements OnInit {
     visible: boolean = false //Accion Editar, Ver, crear
     accion: string //Accion Editar, Ver, crear
     isDisabled: boolean // Indica si la sección está deshabilitada
-
+    prueba: number
     constructor(
         private cdr: ChangeDetectorRef,
         private compartirIdEvaluacionService: CompartirIdEvaluacionService,
@@ -95,19 +95,16 @@ export class IeparticipaComponent implements OnInit {
     iEvaluacionId: number // Aquí se vincula el valor seleccionado
 
     ngOnInit() {
+        this.prueba = this._iEvaluacionId['data'][0]['iEvaluacionId']
+        console.log('Valor recibido en _iEvaluacionId:', this._iEvaluacionId)
         console.log('Iniciando componente con config:', this._config.data)
-
+        console.log('Aqui puse el [data][0][iEvaluacionId]', this.prueba)
+        //console.log('iEvaluacionId recibido:', this._iEvaluacionId)
         console.log(
             'iEvaluacionId recibido:',
             this.compartirIdEvaluacionService
         )
-        if (
-            this.compartirIdEvaluacionService === null ||
-            this.compartirIdEvaluacionService === undefined
-        ) {
-            console.error('El ID de evaluación es nulo o indefinido')
-        }
-
+        //alert(this._iEvaluacionId)
         // Determinar el modo
         //this.accion = this._config.data?.accion || 'crear'
         //this.esModoEdicion = this.accion === 'editar'
@@ -125,35 +122,33 @@ export class IeparticipaComponent implements OnInit {
         ]
         // Inicializar según el modo
         if (this.accion === 'nuevo') {
-            //this.targetProducts = [] // Vaciar correctamente
-            //this.sourceProducts = [] // Asegurar que no haya productos en la fuente
-            // Vaciar los productos anteriores
+            //alert('ENTRO NUEVO')
+
+            this.compartirIdEvaluacionService.iEvaluacionId = this.iEvaluacionId
+
             this.targetProducts = [] // Vaciar correctamente la lista de productos seleccionados
-            this.sourceProducts = [] // Vaciar la lista de productos disponibles
 
-            // Reiniciar otros valores de formulario si es necesario
-            this.selectedNivelTipo = null
-            this.selectedUgeles = null
+            // this.iEvaluacionId = resp['data'][0]['iEvaluacionId'] // Captura el ID generado
+            // this.compartirIdEvaluacionService.iEvaluacionId = this.iEvaluacionId
 
-            // Asegurarse de obtener la lista de Instituciones Educativas disponibles
-            this.obtenerIE()
-            console.log('QUIERO VER QUE LLEGA EN:', this.allIEs)
-            //this.obtenerIE() // Solo obtener la lista de IEs disponibles
-            //console.log('QUIERO VER QUE LLEGA EN:', this.obtenerIE)
-        }
-        if (this.accion === 'ver') {
+            console.log('AQUI ESTA EN NUEVO', this.accion)
             this.obtenerParticipaciones(
                 this.compartirIdEvaluacionService.iEvaluacionId
             )
-            //this.isDisabled = true // Deshabilita visualmente la sección
+            console.log(
+                'El ID del servicio Evaluacion es AQUI --->>>>: ',
+                this.compartirIdEvaluacionService.iEvaluacionId
+            )
         }
-        if (this.accion === 'editar') {
+        if (this.accion === 'ver') {
             this.obtenerParticipaciones(this._iEvaluacionId)
             //this.isDisabled = true // Deshabilita visualmente la sección
         }
-        this.obtenerParticipaciones(
-            this.compartirIdEvaluacionService.iEvaluacionId
-        )
+        if (this.accion === 'editar') {
+            console.log(this._iEvaluacionId, 'AQUI ESTA EL ID')
+            this.obtenerParticipaciones(this._iEvaluacionId)
+        }
+        this.obtenerParticipaciones(this._iEvaluacionId)
     }
 
     obtenerIE() {
@@ -232,13 +227,23 @@ export class IeparticipaComponent implements OnInit {
     }
     // Cuando se mueve un elemento a "Participan"
     IEparticipan(event: any) {
+        // const iEvaluacionId =
+        //     this.compartirIdEvaluacionService.iEvaluacionId['data'][0][
+        //         'iEvaluacionId'
+        //     ]
         const itemsMoved = event.items
-        console.log('Moviendo a Participan:', itemsMoved)
+        console.log('Moviendo a Participan AQUI:', itemsMoved)
+
         const payload = {
             items: itemsMoved.map((item) => ({
-                iEvaluacionId: this.compartirIdEvaluacionService.iEvaluacionId,
-                //!ESTA EN MODO MANUAL; CAMBIAR POR EL ID DE LA EVALUACION
+                //iEvaluacionId: this._iEvaluacionId, //FUNCIONA PARA EDITAR
+                //iEvaluacionId: this.compartirIdEvaluacionService.iEvaluacionId, //FUNCIONA PARA GUARDAR
+                iEvaluacionId:
+                    this._iEvaluacionId ??
+                    this.compartirIdEvaluacionService.iEvaluacionId,
                 iIieeId: item.iIieeId,
+
+                //iIieeId: item.iIieeId,
             })),
         }
         // const payload = {
@@ -264,15 +269,10 @@ export class IeparticipaComponent implements OnInit {
 
     IEnoparticipan(event: any) {
         const itemsMoved = event.items
-        // console.log(
-        //     'Elementos movidos de IEnoparticipan a IEparticipan:',
-        //     itemsMoved
-        // )
-
         // Obtenemos los objetos con iIieeId e iEvaluacionId para eliminarlos
         const participacionesToDelete = itemsMoved.map((item) => ({
             iIieeId: item.iIieeId,
-            iEvaluacionId: this.compartirIdEvaluacionService.iEvaluacionId, // Asumiendo que iEvaluacionId está disponible en el componente
+            iEvaluacionId: this._iEvaluacionId, // Asumiendo que iEvaluacionId está disponible en el componente
         }))
 
         if (participacionesToDelete.length > 0) {
@@ -281,7 +281,13 @@ export class IeparticipaComponent implements OnInit {
                 .eliminarParticipacion(participacionesToDelete)
                 .subscribe(
                     (response) => {
-                        console.log('Eliminación exitosa:', response)
+                        // Mostrar mensaje tipo toast en caso de éxito
+                        this._MessageService.add({
+                            severity: 'success',
+                            summary: 'Eliminado exitoso',
+                            detail: 'Las institucione educativa se elimino correctamente.',
+                        })
+                        console.log('Eliminado exitoso:', response)
                     },
                     (error) => {
                         console.error('Error al eliminar:', error)
@@ -297,7 +303,7 @@ export class IeparticipaComponent implements OnInit {
         const payload = {
             items: itemsMoved.map((item) => ({
                 //!ESTA EN MODO MANUAL; CAMBIAR POR EL ID DE LA EVALUACION
-                iEvaluacionId: this.compartirIdEvaluacionService.iEvaluacionId,
+                iEvaluacionId: this._iEvaluacionId,
                 iIieeId: item.iIieeId,
             })),
         }
@@ -316,7 +322,7 @@ export class IeparticipaComponent implements OnInit {
         // Obtenemos los objetos con iIieeId e iEvaluacionId para eliminarlos
         const participacionesToDelete = itemsMoved.map((item) => ({
             iIieeId: item.iIieeId,
-            iEvaluacionId: this.compartirIdEvaluacionService.iEvaluacionId, // Asumiendo que iEvaluacionId está disponible en el componente
+            iEvaluacionId: this._iEvaluacionId, // Asumiendo que iEvaluacionId está disponible en el componente
         }))
 
         if (participacionesToDelete.length > 0) {
@@ -336,43 +342,102 @@ export class IeparticipaComponent implements OnInit {
         }
     }
 
+    // obtenerParticipaciones(
+    //     evaluacionId: number,
+    //     modoCopia: boolean = false
+    // ): Promise<any[]> {
+    //     return new Promise((resolve, reject) => {
+    //         // Obtener el iEvaluacionId desde el servicio
+    //         // Verificar si el iEvaluacionId está disponible y no es nulo
+    //         if (
+    //             this.compartirIdEvaluacionService.iEvaluacionId === null ||
+    //             this.compartirIdEvaluacionService.iEvaluacionId === undefined
+    //         ) {
+    //             console.error('El ID de evaluación no está disponible.')
+    //             reject('El ID de evaluación no está disponible.')
+    //             return
+    //         }
+    //         this._apiEre
+    //             .obtenerParticipaciones(evaluacionId)
+    //             .pipe(takeUntil(this.unsubscribe$))
+    //             .subscribe({
+    //                 next: (resp: any) => {
+    //                     const participantes = resp.data.map((item: any) => ({
+    //                         iIieeId: item.iIieeId,
+    //                         cIieeNombre: item.cIieeNombre,
+    //                         cIieeCodigoModular: item.cIieeCodigoModular,
+    //                         cNivelTipoNombre: item.cNivelTipoNombre,
+    //                     }))
+    //                     if (modoCopia) {
+    //                         this.targetProducts = participantes
+    //                         // this.obtenerIE()
+    //                         // console.log(
+    //                         //     'Participantes copiados para nueva evaluación:',
+    //                         //     this.targetProducts
+    //                         // )
+    //                     } else {
+    //                         this.targetProducts = participantes
+    //                         this.obtenerIE()
+    //                     }
+    //                     resolve(participantes)
+    //                 },
+    //                 error: (error) => {
+    //                     console.error(
+    //                         'Error al obtener participaciones:',
+    //                         error
+    //                     )
+    //                     reject(error)
+    //                 },
+    //             })
+    //     })
+    // }
+
     obtenerParticipaciones(
-        evaluacionId: number,
+        evaluacionId?: number,
         modoCopia: boolean = false
     ): Promise<any[]> {
         return new Promise((resolve, reject) => {
-            // Obtener el iEvaluacionId desde el servicio
-            const iEvaluacionId =
-                this.compartirIdEvaluacionService.iEvaluacionId
+            // Usar el evaluacionId proporcionado o el _iEvaluacionId del componente
+            // const evaluacionId =
+            //     this.compartirIdEvaluacionService.iEvaluacionId['data'][0][
+            //         'iEvaluacionId'
+            //     ]
 
-            // Verificar si el iEvaluacionId está disponible y no es nulo
-            if (iEvaluacionId === null || iEvaluacionId === undefined) {
-                console.error('El ID de evaluación no está disponible.')
-                reject('El ID de evaluación no está disponible.')
-                return
-            }
+            const id =
+                this.compartirIdEvaluacionService.iEvaluacionId ||
+                this._iEvaluacionId
+            console.log(
+                'evaluacionId DE SERVICIO OBTENERPARTICIPACIONES:',
+                evaluacionId
+            )
+            console.log('DE _IEVALUACIONS:', this._iEvaluacionId) // Asegúrate de que sea un número
+
+            // Llamar a la API para obtener las participaciones
             this._apiEre
-                .obtenerParticipaciones(evaluacionId)
+
+                .obtenerParticipaciones(id)
                 .pipe(takeUntil(this.unsubscribe$))
                 .subscribe({
+                    //!Error Console Aqui
                     next: (resp: any) => {
+                        // Mapear los datos de la respuesta
                         const participantes = resp.data.map((item: any) => ({
                             iIieeId: item.iIieeId,
                             cIieeNombre: item.cIieeNombre,
                             cIieeCodigoModular: item.cIieeCodigoModular,
                             cNivelTipoNombre: item.cNivelTipoNombre,
                         }))
+
                         if (modoCopia) {
+                            // Si es modo copia, asignar directamente a targetProducts
                             this.targetProducts = participantes
-                            // this.obtenerIE()
-                            // console.log(
-                            //     'Participantes copiados para nueva evaluación:',
-                            //     this.targetProducts
-                            // )
                         } else {
+                            // Si no es modo copia, reiniciar y obtener IE
                             this.targetProducts = participantes
-                            this.obtenerIE()
+                            this.obtenerIE() // Actualizar la lista de IEs
                         }
+
+                        console.log('Participantes cargados:', participantes)
                         resolve(participantes)
                     },
                     error: (error) => {
@@ -385,6 +450,7 @@ export class IeparticipaComponent implements OnInit {
                 })
         })
     }
+
     copiarParticipantes(): void {
         if (
             !this.selectedEvaluacionCopia ||

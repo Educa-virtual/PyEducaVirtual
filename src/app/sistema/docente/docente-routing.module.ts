@@ -28,7 +28,7 @@ import { MaterialEducativoComponent } from './material-educativo/material-educat
             { path: 'ficha-actividades', component: FichaActividadesComponent },
             { path: 'silabo', component: SilaboComponent },
             {
-                path: 'asistencia/:iCursoId/:cCursoNombre/:iNivelGradoId/:iSeccionId',
+                path: 'asistencia/:iCursoId/:cCursoNombre/:iNivelGradoId/:iSeccionId/:iDocenteId/:iYAcadId/:iGradoId/:cNivelTipoNombre/:cGradoAbreviacion/:cSeccion/:cCicloRomanos/:cNivelNombreCursos/:nombrecompleto',
                 component: AsistenciaComponent,
             },
             {

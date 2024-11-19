@@ -72,10 +72,10 @@ export class YearComponent implements OnInit {
         this.form = this.fb.group({
             fechaVigente: ['', Validators.required],
             fechaInicio: ['', Validators.required],
-            fechaFin: ['', Validators.required],
-            fechaMatriculaInicio: ['', Validators.required],
+            // fechaFin: ['', Validators.required],
+            // fechaMatriculaInicio: ['', Validators.required],
             fechaMatriculaFin: ['', Validators.required],
-            fechaMatriculaRezagados: [''],
+            fechaMatriculaRezagados: ['', Validators.required],
         })
     }
 
@@ -174,7 +174,10 @@ export class YearComponent implements OnInit {
 
                         this.form.addControl(
                             'faseInputInicio' + fase.iFasePromId,
-                            new FormControl(new Date(fase.dtFaseInicio))
+                            new FormControl([
+                                new Date(fase.dtFaseInicio),
+                                new Date(fase.dtFaseFin),
+                            ])
                         )
 
                         this.form.addControl(
@@ -231,17 +234,25 @@ export class YearComponent implements OnInit {
 
             this.form.patchValue({
                 fechaVigente: fechaVigente ?? '',
-                fechaInicio: fechaInicio ?? '',
+                fechaInicio: (fechaInicio && [fechaInicio, fechaFin]) ?? '',
                 fechaFin: fechaFin ?? '',
                 fechaMatriculaInicio: matriculaInicio ?? '',
-                fechaMatriculaFin: matriculaFin ?? '',
-                fechaMatriculaRezagados: matriculaResagados ?? '',
+                fechaMatriculaFin:
+                    (matriculaFin && [matriculaInicio, matriculaFin]) ?? '',
+                fechaMatriculaRezagados:
+                    (matriculaResagados && [
+                        matriculaFin,
+                        matriculaResagados,
+                    ]) ??
+                    '',
             })
         } else {
             this.form.patchValue({
                 fechaVigente: data.yearAcad.cYAcadNombre,
-                fechaInicio: new Date(data.yearAcad.dtYAcadInicio),
-                fechaFin: new Date(data.yearAcad.dYAcadFin),
+                fechaInicio: [
+                    new Date(data.yearAcad.dtYAcadInicio),
+                    new Date(data.yearAcad.dYAcadFin),
+                ],
             })
 
             this.fasesPromocionales.forEach((fase) => {
@@ -341,13 +352,19 @@ export class YearComponent implements OnInit {
         const calFasesProm = this.filterInputsByPrefix(
             this.form.value,
             'faseCheck'
-        )
+        ).map((fase) => ({
+            iFasePromId: fase.iFasePromId,
+            dtFaseInicio: fase.dtFaseInicio[0],
+            dtFaseFin: fase.dtFaseInicio[1],
+        }))
 
         const idCheckFases = calFasesProm.map((fase) =>
             Number(fase.iFasePromId)
         )
 
+        console.log('Fases Prom')
         console.log(idCheckFases)
+        console.log(calFasesProm)
 
         if (
             Array.isArray(

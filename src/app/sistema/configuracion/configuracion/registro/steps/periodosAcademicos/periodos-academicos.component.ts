@@ -17,7 +17,8 @@ import { FloatLabelModule } from 'primeng/floatlabel'
 import { IActionTable } from '@/app/shared/table-primeng/table-primeng.component'
 import { InputTextModule } from 'primeng/inputtext'
 import { CalendarModule } from 'primeng/calendar'
-
+import { InputGroupModule } from 'primeng/inputgroup'
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
 @Component({
     selector: 'app-periodos-academicos',
     standalone: true,
@@ -31,6 +32,8 @@ import { CalendarModule } from 'primeng/calendar'
         FloatLabelModule,
         InputTextModule,
         CalendarModule,
+        InputGroupModule,
+        InputGroupAddonModule,
     ],
     templateUrl: './periodos-academicos.component.html',
     styleUrl: './periodos-academicos.component.scss',
@@ -419,13 +422,13 @@ export class PeriodosAcademicosComponent implements OnInit {
             type: 'item',
             class: 'p-button-rounded p-button-warning p-button-text',
         },
-        {
-            labelTooltip: 'Eliminar',
-            icon: 'pi pi-trash',
-            accion: 'eliminar',
-            type: 'item',
-            class: 'p-button-rounded p-button-danger p-button-text',
-        },
+        // {
+        //     labelTooltip: 'Eliminar',
+        //     icon: 'pi pi-trash',
+        //     accion: 'eliminar',
+        //     type: 'item',
+        //     class: 'p-button-rounded p-button-danger p-button-text',
+        // },
     ]
 
     actionPeriodo: IActionTable[] = [

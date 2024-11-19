@@ -23,6 +23,8 @@ import { DropdownModule } from 'primeng/dropdown'
 import { FloatLabelModule } from 'primeng/floatlabel'
 import { httpService } from '../../../http/httpService'
 import { TicketService, type ArrayElement } from '../../service/ticketservice'
+import { InputGroupModule } from 'primeng/inputgroup'
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
 
 @Component({
     selector: 'app-turnos',
@@ -37,6 +39,8 @@ import { TicketService, type ArrayElement } from '../../service/ticketservice'
         ReactiveFormsModule,
         FormsModule,
         ConfirmDialogModule,
+        InputGroupModule,
+        InputGroupAddonModule,
     ],
     templateUrl: './turnos.component.html',
     styleUrl: './turnos.component.scss',

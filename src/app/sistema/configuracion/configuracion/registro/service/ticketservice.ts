@@ -332,22 +332,24 @@ export class TicketService {
                             iSedeId: iSedeId,
                             iYAcadId: iYAcadId,
                             dtCalAcadInicio:
-                                this.toSQLDatetimeFormat(calAcad.fechaInicio) ??
-                                null,
+                                this.toSQLDatetimeFormat(
+                                    calAcad.fechaInicio[0]
+                                ) ?? null,
                             dtCalAcadFin:
-                                this.toSQLDatetimeFormat(calAcad.fechaFin) ??
-                                null,
+                                this.toSQLDatetimeFormat(
+                                    calAcad.fechaInicio[1]
+                                ) ?? null,
                             dtCalAcadMatriculaInicio:
                                 this.toSQLDatetimeFormat(
-                                    calAcad.fechaMatriculaInicio
+                                    calAcad.fechaMatriculaFin[0]
                                 ) ?? null,
                             dtCalAcadMatriculaFin:
                                 this.toSQLDatetimeFormat(
-                                    calAcad.fechaMatriculaFin
+                                    calAcad.fechaMatriculaFin[1]
                                 ) ?? null,
                             dtCalAcadMatriculaResagados:
                                 this.toSQLDatetimeFormat(
-                                    calAcad.fechaMatriculaRezagados
+                                    calAcad.fechaMatriculaRezagados[1]
                                 ) ?? null,
                             bCalAcadFaseRegular: true,
                             bCalAcadFaseRecuperacion: true,
@@ -391,20 +393,20 @@ export class TicketService {
                         calAcad: JSON.stringify({
                             iCalAcadId: iCalAcadId,
                             dtCalAcadInicio: this.toSQLDatetimeFormat(
-                                calAcad.fechaInicio
+                                calAcad.fechaInicio[0]
                             ),
                             dtCalAcadFin: this.toSQLDatetimeFormat(
-                                calAcad.fechaFin
+                                calAcad.fechaInicio[1]
                             ),
                             dtCalAcadMatriculaInicio: this.toSQLDatetimeFormat(
-                                calAcad.fechaMatriculaInicio
+                                calAcad.fechaMatriculaFin[0]
                             ),
                             dtCalAcadMatriculaFin: this.toSQLDatetimeFormat(
-                                calAcad.fechaMatriculaFin
+                                calAcad.fechaMatriculaFin[1]
                             ),
                             dtCalAcadMatriculaResagados:
                                 this.toSQLDatetimeFormat(
-                                    calAcad.fechaMatriculaInicio
+                                    calAcad.fechaMatriculaRezagados[1]
                                 ),
                             bCalAcadFaseRegular: false,
                             bCalAcadFaseRecuperacion: false,
@@ -431,18 +433,21 @@ export class TicketService {
         } = {}
     ) {
         try {
-
             await firstValueFrom(
                 this.httpService.putData(
                     'acad/calendarioAcademico/updCalFasesProm',
                     {
-                        calFases: JSON.stringify(calFasesProm.map(fase => ({
-                            iFaseId: fase.iFaseId,
-                            iCalAcadId: this.registroInformation.calendar.iCalAcadId,
-                            iFasePromId: fase.iFasePromId,
-                            dtFaseInicio: fase.dtFaseInicio,
-                            dtFaseFin: fase.dtFaseFin,
-                        }))),
+                        calFases: JSON.stringify(
+                            calFasesProm.map((fase) => ({
+                                iFaseId: fase.iFaseId,
+                                iCalAcadId:
+                                    this.registroInformation.calendar
+                                        .iCalAcadId,
+                                iFasePromId: fase.iFasePromId,
+                                dtFaseInicio: fase.dtFaseInicio,
+                                dtFaseFin: fase.dtFaseFin,
+                            }))
+                        ),
                     }
                 )
             )
@@ -543,19 +548,18 @@ export class TicketService {
         } = {}
     ) {
         try {
-
-                await firstValueFrom(
-                    this.httpService.deleteData(
-                        'acad/calendarioAcademico/deleteCalFasesProm',
-                        {
-                            deleteFasesProm: JSON.stringify(
-                                deleteFasesProm.map(fase => ({
-                                    iFaseId: fase.iFaseId
-                                }))
-                            ),
-                        }
-                    )
+            await firstValueFrom(
+                this.httpService.deleteData(
+                    'acad/calendarioAcademico/deleteCalFasesProm',
+                    {
+                        deleteFasesProm: JSON.stringify(
+                            deleteFasesProm.map((fase) => ({
+                                iFaseId: fase.iFaseId,
+                            }))
+                        ),
+                    }
                 )
+            )
 
             onNextCallbacks.forEach((callback) => callback())
             onCompleteCallbacks.forEach((callback) => callback())

@@ -1,6 +1,6 @@
 <form [formGroup]="form" class="flex gap-4 flex-column">
-    <div class>
-        <section class="flex flex-column gap-7 flex-1 px-4">
+    <div class="flex flex-wrap">
+        <section class="flex flex-column gap-5 flex-1 px-4 py-5">
             <div class="">
                 <p-inputGroup>
                     <p-inputGroupAddon>Año vigente</p-inputGroupAddon>
@@ -18,7 +18,9 @@
 
             <div>
                 <p-inputGroup>
-                    <p-inputGroupAddon>Cronograma</p-inputGroupAddon>
+                    <p-inputGroupAddon
+                        >Fecha inicio y fin del año</p-inputGroupAddon
+                    >
                     <p-calendar
                         styleClass="w-full"
                         formControlName="fechaInicio"
@@ -26,6 +28,37 @@
                         [iconDisplay]="'input'"
                         [showIcon]="true"
                         inputId="yearInicio"
+                        placeholder="Ingrese un rango de fechas"
+                    />
+                </p-inputGroup>
+            </div>
+
+            <div>
+                <p-inputGroup>
+                    <p-inputGroupAddon>Matricula regular</p-inputGroupAddon>
+                    <p-calendar
+                        styleClass="w-full"
+                        selectionMode="range"
+                        [iconDisplay]="'input'"
+                        formControlName="fechaMatriculaFin"
+                        [showIcon]="true"
+                        inputId="matriculaFin"
+                        placeholder="Ingrese un plazo para matricula ordinaria"
+                    />
+                </p-inputGroup>
+            </div>
+
+            <div>
+                <p-inputGroup>
+                    <p-inputGroupAddon>Matricula rezagados</p-inputGroupAddon>
+                    <p-calendar
+                        styleClass="w-full"
+                        selectionMode="range"
+                        [iconDisplay]="'input'"
+                        formControlName="fechaMatriculaRezagados"
+                        [showIcon]="true"
+                        inputId="matriculaFin"
+                        placeholder="Ingrese un plazo para matricula extraordinaria"
                     />
                 </p-inputGroup>
             </div>
@@ -49,29 +82,7 @@
                 />
                 </p-inputGroup>
             </div> -->
-            <div>
-                <p-floatLabel>
-                    <p-calendar
-                        [style]="{ width: '100%' }"
-                        [inputStyle]="{ width: '100%' }"
-                        formControlName="fechaMatriculaInicio"
-                        [showIcon]="true"
-                        inputId="matriculaInicio"
-                    />
-                    <label for="matriculaInicio">Fecha matricula inicio</label>
-                </p-floatLabel>
-                <p-floatLabel>
-                    <p-calendar
-                        [style]="{ width: '100%' }"
-                        [inputStyle]="{ width: '100%' }"
-                        formControlName="fechaMatriculaFin"
-                        [showIcon]="true"
-                        inputId="matriculaFin"
-                    />
-                    <label for="matriculaFin">Fecha matricula fin</label>
-                </p-floatLabel>
-            </div>
-            <div class="flex flex-column gap-1 relative">
+            <!-- <div class="flex flex-column gap-1 relative">
                 <p-floatLabel>
                     <p-calendar
                         [style]="{ width: '100%' }"
@@ -84,55 +95,51 @@
                         >Fecha matricula rezagados
                     </label>
                 </p-floatLabel>
-            </div>
+            </div> -->
         </section>
-        <section class="flex flex-column gap-7 flex-1 px-4">
+        <div class="flex flex-column gap-7 flex-1">
             <div class="flex flex-column">
                 @for (fase of fasesPromocionales; track fase.iFasePromId) {
-                    <div class="p-2">
-                        <p-checkbox
-                            name="fasesPromocionales"
-                            [value]="true"
-                            formControlName="{{
-                                'faseCheck' + fase.iFasePromId
-                            }}"
-                            [label]="fase.cFasePromNombre"
-                            (onChange)="isActiveFechasFases(fase.iFasePromId)"
-                        />
-                    </div>
-                    <div>
-                        <p-floatLabel>
-                            <p-calendar
-                                [style]="{ width: '100%' }"
-                                [inputStyle]="{ width: '100%' }"
+                    <section class="flex flex-column gap-2 px-4 py-5">
+                        <div class="p-2">
+                            <p-checkbox
+                                name="fasesPromocionales"
+                                [value]="true"
                                 formControlName="{{
-                                    'faseInputInicio' + fase.iFasePromId
+                                    'faseCheck' + fase.iFasePromId
                                 }}"
-                                [showIcon]="true"
-                                inputId="faseRegularInicio"
+                                [label]="fase.cFasePromNombre"
+                                (onChange)="
+                                    isActiveFechasFases(fase.iFasePromId)
+                                "
                             />
-                            <label for="faseRegularInicio"
-                                >Fecha inicio {{ fase.cFasePromNombre }}</label
-                            >
-                        </p-floatLabel>
-                        <p-floatLabel>
-                            <p-calendar
-                                [style]="{ width: '100%' }"
-                                [inputStyle]="{ width: '100%' }"
-                                formControlName="{{
-                                    'faseInputFin' + fase.iFasePromId
-                                }}"
-                                [showIcon]="true"
-                                inputId="faseRegularFin"
-                            />
-                            <label for="faseRegularFin"
-                                >Fecha fin {{ fase.cFasePromNombre }}</label
-                            >
-                        </p-floatLabel>
-                    </div>
+                        </div>
+                        <div>
+                            <p-inputGroup>
+                                <p-inputGroupAddon
+                                    >Fecha inicio y fin de
+                                    fase</p-inputGroupAddon
+                                >
+                                <p-calendar
+                                    styleClass="w-full"
+                                    selectionMode="range"
+                                    [iconDisplay]="'input'"
+                                    formControlName="{{
+                                        'faseInputInicio' + fase.iFasePromId
+                                    }}"
+                                    [showIcon]="true"
+                                    inputId="faseRegularInicio"
+                                    [placeholder]="
+                                        'Ingrese un rango de fechas para la ' +
+                                        fase.cFasePromNombre.toLocaleLowerCase()
+                                    "
+                                />
+                            </p-inputGroup>
+                        </div>
+                    </section>
                 }
             </div>
-        </section>
+        </div>
     </div>
     <div class="flex justify-content-end">
         <p-button

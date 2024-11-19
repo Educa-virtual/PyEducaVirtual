@@ -4,17 +4,17 @@ form {
 
 section {
     border-radius: 12px;
-    padding: 3.75rem;
     border: 1px solid #dfe7ef;
+    min-width: fit-content;
 }
 
 p-button {
     border-radius: 0.5rem;
 }
 
-:host ::ng-deep p-button button {
-    background-color: #0e4194;
-}
+// :host ::ng-deep p-button button {
+//     background-color: #0e4194;
+// }
 
 .p-confirm-dialog-reject {
     background-color: black;

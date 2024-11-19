@@ -469,6 +469,7 @@ export class TabContenidoComponent implements OnInit {
             iCursoId: this.semanaSeleccionada.iCursoId,
             // obtener iseccionId
             iSeccionId: this.semanaSeleccionada.iSeccionId,
+            iGradoId: this.semanaSeleccionada.iGradoId,
             iYAcadId: this._constantesService.iYAcadId,
             iSemAcadId: this.semanaSeleccionada.iSemAcadId,
             iNivelGradoId: this.semanaSeleccionada.iNivelGradoId,

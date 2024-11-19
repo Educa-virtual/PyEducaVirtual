@@ -30,8 +30,18 @@ import { ReporteAsistenciaComponent } from './reporte-asistencia/reporte-asisten
 })
 export class AsistenciaComponent implements OnInit {
     @Input() iCursoId: string
+    @Input() iDocenteId: string
+    @Input() iGradoId: string
+    @Input() iYAcadId: string
     @Input() iNivelGradoId: string
     @Input() iSeccionId: string
+    @Input() cSeccion: string
+    @Input() cGradoAbreviacion: string
+    @Input() cNivelTipoNombre: string
+    @Input() cNivelNombreCursos: string
+    @Input() nombrecompleto: string
+    @Input() cCicloRomanos: string
+
     private GeneralService = inject(GeneralService)
     private unsubscribe$ = new Subject<boolean>()
     private _LocalStoreService = inject(LocalStoreService)
@@ -154,7 +164,6 @@ export class AsistenciaComponent implements OnInit {
      */
 
     fechaDia = new Date()
-    verReporte = false
     verAsistencia: boolean = false // * Muestra la ventana modal
     strId: string = '' // * Almacena el id de la actividad
     strTitulo: string = '' // * Almacena el titulo de la actividad
@@ -482,6 +491,12 @@ export class AsistenciaComponent implements OnInit {
             }
 
             this.getInformation(params, 'get_data')
+
+            this.messageService.add({
+                severity: 'success',
+                summary: 'Mensaje',
+                detail: 'Asistencia Registrada',
+            })
         } else {
             this.messageService.add({
                 severity: 'info',

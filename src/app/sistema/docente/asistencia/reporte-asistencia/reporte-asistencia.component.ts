@@ -104,12 +104,6 @@ export class ReporteAsistenciaComponent implements OnChanges {
                     opcion: 'reporte-diario',
                 }
                 break
-            case 2:
-                data = {
-                    id: this.value1,
-                    opcion: 'reporte-semanal',
-                }
-                break
             case 3:
                 data = {
                     id: this.iMesId,

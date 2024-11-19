@@ -91,14 +91,6 @@
         <div class="col-3">
             <p-radioButton
                 [(ngModel)]="tipoReporte"
-                label="Semanal"
-                value="2"
-                (onClick)="solicitarFecha = 2"
-            />
-        </div>
-        <div class="col-3">
-            <p-radioButton
-                [(ngModel)]="tipoReporte"
                 label="Mensual"
                 value="3"
                 (onClick)="solicitarFecha = 3"
@@ -131,29 +123,6 @@
                             ></p-calendar>
                         </p-inputGroup>
                     </div>
-                }
-                @case (2) {
-                    <p-inputGroup>
-                        <p-inputGroupAddon
-                            [ngStyle]="{
-                                backgroundColor: 'var(--primary-700)',
-                                color: 'var(--primary-color-text)',
-                            }"
-                            >Ingrese Número de Semana
-                        </p-inputGroupAddon>
-                        <p-inputNumber
-                            [(ngModel)]="value1"
-                            [showButtons]="true"
-                            inputId="integeronly"
-                            [min]="1"
-                        />
-                        <p-calendar
-                            appendTo="body"
-                            styleClass="w-full"
-                            selectionMode="range"
-                            [readonlyInput]="true"
-                        ></p-calendar>
-                    </p-inputGroup>
                 }
                 @case (3) {
                     <div>

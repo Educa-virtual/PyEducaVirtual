@@ -29,6 +29,9 @@ import { RemoveHTMLPipe } from '@/app/shared/pipes/remove-html.pipe'
 import { NgFor, NgIf } from '@angular/common'
 import { RecursosListaComponent } from '@/app/shared/components/recursos-lista/recursos-lista.component'
 import { ConstantesService } from '@/app/servicios/constantes.service'
+import { EmptySectionComponent } from '@/app/shared/components/empty-section/empty-section.component'
+import { Message } from 'primeng/api'
+import { WebsocketService } from '@/app/sistema/aula-virtual/services/websoket.service'
 @Component({
     selector: 'app-foro-room',
     standalone: true,
@@ -36,6 +39,7 @@ import { ConstantesService } from '@/app/servicios/constantes.service'
     styleUrls: ['./foro-room.component.scss'],
     imports: [
         IconComponent,
+        EmptySectionComponent,
         RecursosListaComponent,
         RemoveHTMLPipe,
         CommonInputComponent,
@@ -76,6 +80,10 @@ export class ForoRoomComponent implements OnInit {
     calificacion: any[] = []
     respuestasForo: any[] = []
     comentarios: any[] = []
+    descripcion: Message[] = []
+    messages: Message[] | undefined
+    messageWeb: string = ''
+    messageWebs: string[] = []
     modalCalificacion: boolean = false
     estudianteSelect = null
     private unsbscribe$ = new Subject<boolean>()
@@ -113,8 +121,9 @@ export class ForoRoomComponent implements OnInit {
         iEstudianteId: [],
         iForoId: [''],
         iDocenteId: [''],
+        iForoRptaId: [''],
     })
-    constructor() {}
+    constructor(private websocketService: WebsocketService) {}
 
     selectedItems = []
     columnas: IColumn[] = [
@@ -185,32 +194,35 @@ export class ForoRoomComponent implements OnInit {
             class: 'p-button-rounded p-button-danger p-button-text',
         },
     ]
-    ngOnInit() {
+    ngOnInit(): void {
+        // this.websocketService.messages$.subscribe((msg: any) => {
+        //     this.messageWebs.push(`Servidor: ${msg}`)
+        // })
+        // this.websocketService.messages$.subscribe((message: any) => {
+        //     // Agregar el mensaje recibido a la lista de comentarios
+        //     this.comments.push(message);  // Asume que tienes una lista `comments`
+        // });
         this.obtenerIdPerfil()
         this.mostrarCalificacion()
         this.obtenerForo()
         this.getRespuestaF()
+        this.getEstudiantesMatricula()
     }
     // closeModal(data) {
     //     this.ref.close(data)
     // }
-    //ver si mi perfil esta llegando (borrar)
+
     accionBtnItemTable({ accion, item }) {
         if (accion === 'asignar') {
             this.selectedItems = []
             this.selectedItems = [item]
-            // this.asignarPreguntas()
         }
-        if (accion === 'editar') {
-            //this.agregarEditarPregunta(item)
-        }
-
-        if (accion === 'ver') {
-            /// alert(item.iEvaluacionId)
-            //this.verEreEvaluacion(item)
-            // this.eliminarPregunta(item)
-        }
+        // if (accion === 'editar') {
+        // }
+        // if (accion === 'ver') {
+        // }
     }
+    //ver si mi perfil esta llegando (borrar)
     obtenerIdPerfil() {
         this.iEstudianteId = this._constantesService.iEstudianteId
         this.iPerfilId = this._constantesService.iPerfilId
@@ -245,11 +257,32 @@ export class ForoRoomComponent implements OnInit {
     cancelarEdicion() {
         this.selectedCommentIndex = null // Desactiva el editor al hacer clic en "Cancelar"
     }
-    sendCommentPadre() {
+    sendCommentPadre(respuestas) {
         // guardar el comentario
+        const iDocenteId = this._constantesService.iDocenteId
         this.iEstudianteId = this._constantesService.iEstudianteId
-        this.foroFormComntAl.value
-        console.log('rptaPadre', this.foroFormComntAl)
+        this.foroFormComntAl.controls['iDocenteId'].setValue(iDocenteId)
+        this.foroFormComntAl.controls['iEstudianteId'].setValue(
+            this.iEstudianteId
+        )
+        this.foroFormComntAl.controls['iForoRptaId'].setValue(
+            respuestas.iForoRptaId
+        )
+        //console.log('rptaPadre', this.foroFormComntAl)
+        this._aulaService
+            .guardarComentarioRespuesta(this.foroFormComntAl.value)
+            .subscribe({
+                next: (resp: any) => {
+                    // para refrescar la pagina
+                    if (resp?.validated) {
+                        this.getRespuestaF()
+                        this.foroFormComntAl.get('cForoRptaPadre')?.reset()
+                    }
+                },
+                error: (error) => {
+                    console.error('Comentario:', error)
+                },
+            })
     }
 
     sendComment() {
@@ -264,10 +297,17 @@ export class ForoRoomComponent implements OnInit {
             console.log('comentarios: ', comment)
             this._aulaService.guardarRespuesta(comment).subscribe({
                 next: (resp: any) => {
+                    console.log('respuesta completa', resp)
                     // para refrescar la pagina
                     if (resp?.validated) {
                         this.getRespuestaF()
                         this.foroFormComntAl.get('cForoRptaRespuesta')?.reset()
+                        // Enviar comentario a través de WebSocket
+                        this.websocketService.sendMessage({
+                            type: 'newComment',
+                            data: comment?.cForoRptaRespuesta,
+                        })
+                        console.log('que envias', comment?.cForoRptaRespuesta)
                     }
                 },
                 error: (error) => {
@@ -287,6 +327,11 @@ export class ForoRoomComponent implements OnInit {
                     if (resp?.validated) {
                         this.getRespuestaF()
                         this.foroFormComntAl.get('cForoRptaRespuesta')?.reset()
+                        // Enviar comentario a través de WebSocket
+                        this.websocketService.sendMessage({
+                            type: 'newComment',
+                            data: comment?.cForoRptaRespuesta,
+                        })
                     }
                 },
                 error: (error) => {
@@ -312,6 +357,14 @@ export class ForoRoomComponent implements OnInit {
             .pipe(takeUntil(this.unsbscribe$))
             .subscribe({
                 next: (resp) => {
+                    this.messages = [
+                        {
+                            severity: 'info',
+                            detail:
+                                resp?.cForoDescripcion ||
+                                'No hay descripción disponible',
+                        },
+                    ]
                     this.foro = resp
                     this.FilesTareas = this.foro?.cForoUrl
                         ? JSON.parse(this.foro?.cForoUrl)
@@ -336,12 +389,37 @@ export class ForoRoomComponent implements OnInit {
                         })
                     )
                     this.data = resp['data']
+                    this.respuestasForo.forEach(
+                        (i) =>
+                            (i.json_respuestas_comentarios =
+                                i.json_respuestas_comentarios
+                                    ? JSON.parse(i.json_respuestas_comentarios)
+                                    : null)
+                    )
                     console.log('Comentarios de los Foros', this.respuestasForo)
                 },
                 error: (err) => {
                     console.error('Error al obtener respuestas del foro', err)
                 },
             })
+        // Suscribirse a nuevos comentarios a través de WebSocket
+        this.websocketService.listen('newComment').subscribe((message: any) => {
+            console.log('Nuevo comentario recibido desde WebSocket:', message)
+
+            // Suponiendo que el comentario recibido es solo texto, puedes agregarlo a la lista de respuestas.
+            // Si necesitas agregar la respuesta de una manera más estructurada, ajusta este bloque.
+            const newComment = {
+                cForoRptaRespuesta: message,
+                expanded: false,
+            }
+
+            // Aquí puedes agregar el nuevo comentario al array `respuestasForo`
+            // Asegúrate de que `respuestasForo` esté actualizada con los nuevos comentarios
+            this.respuestasForo.push(newComment)
+
+            // Si la lista de respuestas necesita alguna otra actualización o formato, puedes hacerlo aquí.
+            console.log('Respuestas de foro actualizadas:', this.respuestasForo)
+        })
     }
     toggleExpand(comment: any) {
         comment.expanded = !comment.expanded
@@ -356,5 +434,24 @@ export class ForoRoomComponent implements OnInit {
                 console.log(error)
             },
         })
+    }
+
+    getEstudiantesMatricula() {
+        const params = {
+            petition: 'post',
+            group: 'aula-virtual',
+            prefix: 'matricula',
+            ruta: 'list',
+            data: {
+                opcion: 'CONSULTAR-ESTUDIANTESxiSemAcadIdxiYAcadIdxiCurrId',
+                iSemAcadId:
+                    '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+                iYAcadId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+                iCurrId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+            },
+            params: { skipSuccessMessage: true },
+        }
+
+        this.getInformation(params)
     }
 }

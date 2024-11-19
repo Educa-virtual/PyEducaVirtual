@@ -195,7 +195,10 @@ export class EvaluacionPreguntaRubricaComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this._unsubscribe$))
             .subscribe({
                 next: (response) => {
-                    this.closeModalChange.emit(response)
+                    this.closeModalChange.emit({
+                        esRubrica: true,
+                        data: response,
+                    })
                 },
             })
     }

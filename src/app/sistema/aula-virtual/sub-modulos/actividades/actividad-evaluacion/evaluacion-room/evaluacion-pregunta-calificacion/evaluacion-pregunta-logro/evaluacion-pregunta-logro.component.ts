@@ -91,7 +91,7 @@ export class EvaluacionPreguntaLogroComponent implements OnInit, OnDestroy {
 
         this._apiEvalService.calificarLogros(data).subscribe({
             next: (data) => {
-                this.closeModalChange.emit(data)
+                this.closeModalChange.emit({ esRubrica: false, data })
             },
         })
     }

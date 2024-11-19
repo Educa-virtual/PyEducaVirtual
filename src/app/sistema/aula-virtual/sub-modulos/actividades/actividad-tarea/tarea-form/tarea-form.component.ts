@@ -7,27 +7,18 @@ import {
     OnChanges,
 } from '@angular/core'
 import { FormBuilder, Validators } from '@angular/forms'
-import { DisponibilidadFormComponent } from '../../components/disponibilidad-form/disponibilidad-form.component'
 import { GeneralService } from '@/app/servicios/general.service'
-import { FileUploadPrimengComponent } from '../../../../../../shared/file-upload-primeng/file-upload-primeng.component'
 import { PrimengModule } from '@/app/primeng.module'
-import { CommonInputComponent } from '@/app/shared/components/common-input/common-input.component'
 import { Message } from 'primeng/api'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { AutoCompleteCompleteEvent } from 'primeng/autocomplete'
 import { DatePipe } from '@angular/common'
-import { ModalPrimengComponent } from '@/app/shared/modal-primeng/modal-primeng.component'
+import { TypesFilesUploadPrimengComponent } from '../../../../../../shared/types-files-upload-primeng/types-files-upload-primeng.component'
 
 @Component({
     selector: 'app-tarea-form',
     standalone: true,
-    imports: [
-        CommonInputComponent,
-        PrimengModule,
-        DisponibilidadFormComponent,
-        FileUploadPrimengComponent,
-        ModalPrimengComponent,
-    ],
+    imports: [PrimengModule, TypesFilesUploadPrimengComponent],
     templateUrl: './tarea-form.component.html',
     styleUrl: './tarea-form.component.scss',
 })
@@ -35,6 +26,13 @@ export class TareaFormComponent implements OnChanges {
     pipe = new DatePipe('es-ES')
     date = new Date()
 
+    typesFiles = {
+        file: true,
+        url: true,
+        youtube: true,
+        repository: false,
+        image: false,
+    }
     @Output() submitEvent = new EventEmitter<any>()
     @Output() cancelEvent = new EventEmitter<void>()
 
@@ -44,9 +42,9 @@ export class TareaFormComponent implements OnChanges {
     semana: Message[] = []
     tareas = []
     filteredTareas: any[] | undefined
-    FilesTareas = []
     nameEnlace: string = ''
     titleFileTareas: string = ''
+    showModal: boolean = false
 
     private _formBuilder = inject(FormBuilder)
     private GeneralService = inject(GeneralService)
@@ -68,7 +66,7 @@ export class TareaFormComponent implements OnChanges {
         if (changes.tarea?.currentValue) {
             this.tarea = changes.tarea.currentValue
             this.formTareas.patchValue(this.tarea)
-            this.FilesTareas = this.formTareas.value.cTareaArchivoAdjunto
+            this.filesUrl = this.formTareas.value.cTareaArchivoAdjunto
                 ? JSON.parse(this.formTareas.value.cTareaArchivoAdjunto)
                 : []
             if (this.tarea.iTareaId) {
@@ -80,21 +78,6 @@ export class TareaFormComponent implements OnChanges {
                 )
             }
         }
-    }
-    onToggleChange(event: any) {
-        console.log('Estado del ToggleButton:', event)
-    }
-
-    onTareaSelected(event: any) {
-        const selectedTarea = event.value
-        if (selectedTarea) {
-            this.showModalDialog9(selectedTarea)
-        }
-    }
-    showModalDialog9(tarea: any) {
-        console.log('Mostrando modal para la tarea:', tarea)
-        // Aquí puedes implementar la lógica para mostrar el modal, como usar un servicio de PrimeNG o ng-bootstrap
-        // por ejemplo, puedes activar un modal o caja de diálogo si ya lo tienes implementado.
     }
 
     public formTareas = this._formBuilder.group({
@@ -188,7 +171,7 @@ export class TareaFormComponent implements OnChanges {
             },
         })
     }
-
+    filesUrl = []
     accionBtnItem(elemento): void {
         const { accion } = elemento
         const { item } = elemento
@@ -201,39 +184,32 @@ export class TareaFormComponent implements OnChanges {
             case 'close-modal':
                 this.showModal = false
                 break
-            case 'subir-archivo-tareas':
-                this.FilesTareas.push({
+            case 'subir-file-tareas':
+                this.filesUrl.push({
                     type: 1, //1->file
                     nameType: 'file',
                     name: item.file.name,
                     size: item.file.size,
                     ruta: item.name,
                 })
-                this.showModal = false
                 break
-            case 'subir-url':
-                if (item === '') return
-                this.FilesTareas.push({
+            case 'url-tareas':
+                this.filesUrl.push({
                     type: 2, //2->url
                     nameType: 'url',
-                    name: item,
+                    name: item.name,
                     size: '',
-                    ruta: item,
+                    ruta: item.ruta,
                 })
-                this.showModal = false
-                this.nameEnlace = ''
                 break
-            case 'subir-youtube':
-                if (item === '') return
-                this.FilesTareas.push({
+            case 'youtube-tareas':
+                this.filesUrl.push({
                     type: 3, //3->youtube
                     nameType: 'youtube',
-                    name: item,
+                    name: item.name,
                     size: '',
-                    ruta: item,
+                    ruta: item.ruta,
                 })
-                this.showModal = false
-                this.nameEnlace = ''
                 break
         }
     }
@@ -260,7 +236,7 @@ export class TareaFormComponent implements OnChanges {
         )
         this.formTareas.controls.dtProgActPublicacion.setValue(horaFin)
         this.formTareas.controls.cTareaArchivoAdjunto.setValue(
-            JSON.stringify(this.FilesTareas)
+            JSON.stringify(this.filesUrl)
         )
         const value = this.formTareas.value
 
@@ -270,38 +246,4 @@ export class TareaFormComponent implements OnChanges {
         }
         this.submitEvent.emit(value)
     }
-    showModal: boolean = false
-    typeUpload: string
-    openUpload(type) {
-        this.showModal = true
-        this.typeUpload = type
-        this.titleFileTareas = ''
-        switch (type) {
-            case 'file':
-                this.titleFileTareas = 'Añadir Archivo Local'
-                break
-            case 'url':
-                this.titleFileTareas = 'Añadir Enlace URL'
-                break
-            case 'youtube':
-                this.titleFileTareas = 'Añadir Enlace de Youtube'
-                break
-            case 'recursos':
-                this.titleFileTareas = 'Añadir Archivo de mis Recursos'
-                break
-            default:
-                this.showModal = false
-                this.typeUpload = null
-                break
-        }
-    }
-
-    // cancel() {
-    //     this.formTareas.reset()
-    //     this.cancelEvent.emit()
-    // }
-    // guardarDatos() {
-    //     this.formTareas.reset()
-    //     this.cancelEvent.emit()
-    // }
 }

@@ -172,7 +172,43 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
                         '/' +
                         this.selectedData['iNivelGradoId'] +
                         '/' +
-                        this.selectedData['iSeccionId']
+                        this.selectedData['iSeccionId'] +
+                        '/' +
+                        this.selectedData['iDocenteId'] +
+                        '/' +
+                        this.selectedData['iYAcadId'] +
+                        '/' +
+                        this.selectedData['iGradoId'] +
+                        '/' +
+                        this.selectedData['cNivelTipoNombre'].replace(
+                            /[\^*@!"#$%&/()=?¡!¿':\\]/gi,
+                            ''
+                        ) +
+                        '/' +
+                        this.selectedData['cGradoAbreviacion'].replace(
+                            /[\^*@!"#$%&/()=?¡!¿':\\]/gi,
+                            ''
+                        ) +
+                        '/' +
+                        this.selectedData['cSeccion'].replace(
+                            /[\^*@!"#$%&/()=?¡!¿':\\]/gi,
+                            ''
+                        ) +
+                        '/' +
+                        this.selectedData['cCicloRomanos'].replace(
+                            /[\^*@!"#$%&/()=?¡!¿':\\]/gi,
+                            ''
+                        ) +
+                        '/' +
+                        this.selectedData['cNivelNombreCursos'].replace(
+                            /[\^*@!"#$%&/()=?¡!¿':\\]/gi,
+                            ''
+                        ) +
+                        '/' +
+                        this.selectedData['nombrecompleto'].replace(
+                            /[\^*@!"#$%&/()=?¡!¿':\\]/gi,
+                            ''
+                        )
                 )
                 break
             case 'material-educativo':

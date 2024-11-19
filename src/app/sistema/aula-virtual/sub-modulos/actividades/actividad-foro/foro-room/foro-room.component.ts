@@ -67,7 +67,6 @@ export class ForoRoomComponent implements OnInit {
     private _aulaService = inject(ApiAulaService)
     // private ref = inject(DynamicDialogRef)
     private _constantesService = inject(ConstantesService)
-    //private ref = inject(DynamicDialogRef)
     // variables
     showEditor = false // variable          para ocultar el p-editor
     public data = []
@@ -84,10 +83,12 @@ export class ForoRoomComponent implements OnInit {
     modelaCalificacionComen: boolean = false
     perfilSelect = null
     respuestasForoEstudiant: any[] = []
+    totalComentarios: number = 0
     // borrar variables del p-dia
     modalCalificacion: boolean = false
     estudianteSelect = null
     respuestasForo: any[] = []
+    display = false
     nombrecompleto
 
     public foro
@@ -142,9 +143,6 @@ export class ForoRoomComponent implements OnInit {
         this.getRespuestaF()
         this.getEstudiantesMatricula()
     }
-    // closeModal(data) {
-    //     this.ref.close(data)
-    // }
 
     accionBtnItemTable({ accion, item }) {
         if (accion === 'asignar') {
@@ -326,37 +324,52 @@ export class ForoRoomComponent implements OnInit {
                         })
                     )
                     this.data = resp['data']
-                    this.respuestasForo.forEach(
-                        (i) =>
-                            (i.json_respuestas_comentarios =
-                                i.json_respuestas_comentarios
-                                    ? JSON.parse(i.json_respuestas_comentarios)
-                                    : null)
+                    this.totalComentarios = 0
+                    this.respuestasForo.forEach((respuesta) => {
+                        respuesta.json_respuestas_comentarios =
+                            respuesta.json_respuestas_comentarios
+                                ? JSON.parse(
+                                      respuesta.json_respuestas_comentarios
+                                  )
+                                : []
+                        // Sumar comentarios principales + anidados
+                        this.totalComentarios +=
+                            respuesta.json_respuestas_comentarios.length
+                    })
+
+                    // (i) =>
+                    //     (i.json_respuestas_comentarios =
+                    //         i.json_respuestas_comentarios
+                    //             ? JSON.parse(i.json_respuestas_comentarios)
+                    //             : null)
+                    // )
+                    console.log(
+                        'Respuesta Comentarios de los Foros',
+                        this.respuestasForo
                     )
-                    console.log('Comentarios de los Foros', this.respuestasForo)
                 },
                 error: (err) => {
                     console.error('Error al obtener respuestas del foro', err)
                 },
             })
         // Suscribirse a nuevos comentarios a través de WebSocket
-        this.websocketService.listen('newComment').subscribe((message: any) => {
-            console.log('Nuevo comentario recibido desde WebSocket:', message)
+        // this.websocketService.listen('newComment').subscribe((message: any) => {
+        //     console.log('Nuevo comentario recibido desde WebSocket:', message)
 
-            // Suponiendo que el comentario recibido es solo texto, puedes agregarlo a la lista de respuestas.
-            // Si necesitas agregar la respuesta de una manera más estructurada, ajusta este bloque.
-            const newComment = {
-                cForoRptaRespuesta: message,
-                expanded: false,
-            }
+        //     // Suponiendo que el comentario recibido es solo texto, puedes agregarlo a la lista de respuestas.
+        //     // Si necesitas agregar la respuesta de una manera más estructurada, ajusta este bloque.
+        //     const newComment = {
+        //         cForoRptaRespuesta: message,
+        //         expanded: false,
+        //     }
 
-            // Aquí puedes agregar el nuevo comentario al array `respuestasForo`
-            // Asegúrate de que `respuestasForo` esté actualizada con los nuevos comentarios
-            this.respuestasForo.push(newComment)
+        //     // Aquí puedes agregar el nuevo comentario al array `respuestasForo`
+        //     // Asegúrate de que `respuestasForo` esté actualizada con los nuevos comentarios
+        //     this.respuestasForo.push(newComment)
 
-            // Si la lista de respuestas necesita alguna otra actualización o formato, puedes hacerlo aquí.
-            console.log('Respuestas de foro actualizadas:', this.respuestasForo)
-        })
+        //     // Si la lista de respuestas necesita alguna otra actualización o formato, puedes hacerlo aquí.
+        //     console.log('Respuestas de foro actualizadas:', this.respuestasForo)
+        // })
     }
     toggleExpand(comment: any) {
         comment.expanded = !comment.expanded

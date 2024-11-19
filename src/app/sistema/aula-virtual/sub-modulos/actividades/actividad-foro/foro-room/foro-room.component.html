@@ -274,6 +274,10 @@
                                                 <div
                                                     class="perfiles-list-item text-left"
                                                     tabindex="0"
+                                                    [class.highlight]="
+                                                        respuestas.iEstudianteId ===
+                                                        estudianteSelectComent
+                                                    "
                                                 >
                                                     <div
                                                         class="perfiles-list-detail"
@@ -330,8 +334,8 @@
                                                                                 | removeHTML
                                                                         }}
                                                                     </span>
-                                                                    <a
-                                                                        (onclick)="
+                                                                    <!-- <a
+                                                                        (click)="
                                                                             toggleExpand(
                                                                                 respuestas
                                                                             )
@@ -343,7 +347,7 @@
                                                                                 ? 'Leer menos'
                                                                                 : 'Leer más'
                                                                         }}
-                                                                    </a>
+                                                                    </a> -->
                                                                 </div>
                                                                 <!-- startReply(i) -->
 
@@ -376,7 +380,10 @@
                                                                             for=""
                                                                             class="text-sm text-black pr-2"
                                                                             >{{
-                                                                                totalComentarios
+                                                                                respuestas
+                                                                                    .json_respuestas_comentarios
+                                                                                    .length ||
+                                                                                    0
                                                                             }}
                                                                             Respuestas
                                                                         </label>
@@ -658,7 +665,19 @@
                                         >
                                                 
                                         </p-button> -->
-                                        <div class="perfilesList" tabindex="0">
+                                        <div
+                                            class="perfilesList"
+                                            tabindex="0"
+                                            (onclick)="
+                                                selecEstudiante(
+                                                    estudiante.iEstudianteId
+                                                )
+                                            "
+                                            [class.selected]="
+                                                estudianteSelectComent ===
+                                                estudiante.iEstudianteId
+                                            "
+                                        >
                                             <img
                                                 src="assets/demo/images/matemit/perfil.png"
                                                 alt=""

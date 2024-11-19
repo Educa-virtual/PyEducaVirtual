@@ -84,8 +84,10 @@ export class ForoRoomComponent implements OnInit {
     perfilSelect = null
     respuestasForoEstudiant: any[] = []
     totalComentarios: number = 0
+    estudianteId: any[] = []
     // borrar variables del p-dia
     modalCalificacion: boolean = false
+    estudianteSelectComent: number | null = null
     estudianteSelect = null
     respuestasForo: any[] = []
     display = false
@@ -175,6 +177,10 @@ export class ForoRoomComponent implements OnInit {
     }
     closeEditor() {
         this.showEditor = false
+    }
+    selecEstudiante(estudianteId: number): void {
+        this.estudianteSelectComent = estudianteId
+        console.log('Hola estudiante', this.estudianteSelectComent)
     }
     submit() {
         const value = this.foroFormComnt.value
@@ -337,12 +343,6 @@ export class ForoRoomComponent implements OnInit {
                             respuesta.json_respuestas_comentarios.length
                     })
 
-                    // (i) =>
-                    //     (i.json_respuestas_comentarios =
-                    //         i.json_respuestas_comentarios
-                    //             ? JSON.parse(i.json_respuestas_comentarios)
-                    //             : null)
-                    // )
                     console.log(
                         'Respuesta Comentarios de los Foros',
                         this.respuestasForo

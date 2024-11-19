@@ -433,3 +433,11 @@
 //     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* Sombra para mejor visibilidad */
 //     color: red;
 // }
+.highlight {
+    background-color: #f0f8ff; /* Color de fondo para el comentario destacado */
+    border-left: 4px solid #007bff; /* Línea indicativa a la izquierda */
+}
+.selected {
+    cursor: pointer; /* Cambia el cursor al pasar el mouse */
+    color: black;
+}

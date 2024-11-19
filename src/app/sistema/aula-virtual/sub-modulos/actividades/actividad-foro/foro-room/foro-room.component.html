@@ -2,7 +2,7 @@
     <p-tabView styleClass="actividad-tabs">
         <!-- Mostrar informacion general del foro -->
         <p-tabPanel>
-            <ng-template pTemplate="header">
+            <ng-template pTemplate="header" class="header">
                 <div class="flex align-items-center flex-column gap-2">
                     <app-icon name="matListAlt"></app-icon>
                     <span class="font-bold white-space-nowrap m-0">
@@ -242,6 +242,17 @@
                                         : 'col-12'
                                 "
                             >
+                                <div class="pb-2">
+                                    <label
+                                        for=""
+                                        class=""
+                                        style="
+                                            font-weight: bold;
+                                            font-size: 16px;
+                                        "
+                                        >Chats:
+                                    </label>
+                                </div>
                                 <p-orderList
                                     class="list"
                                     [value]="respuestasForo"
@@ -588,24 +599,11 @@
                                         >Estudiantes:
                                     </label>
                                 </div>
-                                <div>
-                                    <p-iconField iconPosition="left">
-                                        <p-inputIcon
-                                            styleClass="pi pi-search text-md"
-                                        />
-                                        <!-- (input)="dt.filterGlobal($event.target, 'contains')" -->
-                                        <input
-                                            pInputText
-                                            type="text"
-                                            class="inputSearch"
-                                            (input)="onGlobalFilter($event)"
-                                            placeholder="Buscar estudiante...."
-                                        />
-                                    </p-iconField>
-                                </div>
                                 <p-orderList
                                     class="listAlumno"
                                     [value]="estudiantes"
+                                    filterBy="nombrecompleto"
+                                    filterPlaceholder="Buscar...."
                                 >
                                     <ng-template
                                         let-estudiante
@@ -621,10 +619,7 @@
                                         >
                                                 
                                         </p-button> -->
-                                        <div
-                                            class="perfiles-list-item"
-                                            tabindex="0"
-                                        >
+                                        <div class="perfilesList" tabindex="0">
                                             <img
                                                 src="assets/demo/images/matemit/perfil.png"
                                                 alt=""

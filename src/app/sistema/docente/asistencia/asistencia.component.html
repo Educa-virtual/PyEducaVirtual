@@ -2,10 +2,11 @@
     <p-toolbar class="col-12">
         <div class="block">
             <h4 class="text-primary text-white font-bold block">
-                Asistencia del Curso: {{ cCursoNombre }}
+                {{ cNivelNombreCursos.toUpperCase() }} : {{ cCursoNombre }}
             </h4>
             <div class="text-primary text-white font-bold block">
-                Nivel: Secudanria | Ciclo: IV | Grado: 2do | Seccion: B
+                Nivel: {{ cNivelTipoNombre }} | Ciclo: I | Grado:
+                {{ cGradoAbreviacion }} | Seccion: {{ cSeccion }}
             </div>
         </div>
     </p-toolbar>
@@ -36,6 +37,9 @@
                         </div>
                     </div>
 
+                    <div class="flex block p-2">
+                        <div class="font-bold pb-2">LEGENDA</div>
+                    </div>
                     <div
                         class="flex block flex-wrap column-gap-2 row-gap-2 p-2"
                     >
@@ -101,19 +105,163 @@
     [(visible)]="verAsistencia"
     [style]="{ width: '50rem' }"
 >
-    <div class="flex flex-column mb-3 display">
+    <div class="grid mt-4">
+        <div class="col-12">
+            <span class="font-bold white-space-nowrap m-0">
+                Detalle del {{ cNivelNombreCursos }}
+            </span>
+        </div>
+        <div class="col-12">
+            <p-inputGroup>
+                <p-inputGroupAddon
+                    [ngStyle]="{
+                        backgroundColor: 'var(--primary-700)',
+                        color: 'var(--primary-color-text)',
+                    }"
+                >
+                    {{ cNivelNombreCursos }}
+                </p-inputGroupAddon>
+                <input pInputText disabled [value]="cCursoNombre" />
+            </p-inputGroup>
+        </div>
+        <div class="col-6">
+            <p-inputGroup>
+                <p-inputGroupAddon
+                    [ngStyle]="{
+                        backgroundColor: 'var(--primary-700)',
+                        color: 'var(--primary-color-text)',
+                    }"
+                >
+                    Nivel
+                </p-inputGroupAddon>
+                <input pInputText disabled [value]="cNivelTipoNombre" />
+            </p-inputGroup>
+        </div>
+        <div class="col-6">
+            <p-inputGroup>
+                <p-inputGroupAddon
+                    [ngStyle]="{
+                        backgroundColor: 'var(--primary-700)',
+                        color: 'var(--primary-color-text)',
+                    }"
+                >
+                    Ciclo
+                </p-inputGroupAddon>
+                <input pInputText disabled value="I" />
+            </p-inputGroup>
+        </div>
+        <div class="col-6">
+            <p-inputGroup>
+                <p-inputGroupAddon
+                    [ngStyle]="{
+                        backgroundColor: 'var(--primary-700)',
+                        color: 'var(--primary-color-text)',
+                    }"
+                >
+                    Grado
+                </p-inputGroupAddon>
+                <input pInputText disabled [value]="cGradoAbreviacion" />
+            </p-inputGroup>
+        </div>
+        <div class="col-6">
+            <p-inputGroup>
+                <p-inputGroupAddon
+                    [ngStyle]="{
+                        backgroundColor: 'var(--primary-700)',
+                        color: 'var(--primary-color-text)',
+                    }"
+                >
+                    Sección
+                </p-inputGroupAddon>
+                <input pInputText disabled [value]="cSeccion" />
+            </p-inputGroup>
+        </div>
+        <div class="col-12">
+            <p-table
+                class="mt-1 block w-full"
+                [value]="data"
+                [scrollable]="true"
+                scrollHeight="400px"
+            >
+                <ng-template pTemplate="header">
+                    <tr style="height: 12px">
+                        <th style="width: auto">N°</th>
+                        <th style="width: auto">Nombres y Apellidos</th>
+                        <th style="width: auto">MARCAR ASISTENCIA</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
+                    <tr>
+                        <td>{{ rowIndex + 1 }}</td>
+                        <td>{{ item.nombrecompleto }}</td>
+                        <td class="flex justify-content-center">
+                            <p-button
+                                *ngIf="item.cTipoAsiLetra; else noboton"
+                                label="{{ item.cTipoAsiLetra }}"
+                                size="small"
+                                [ngClass]="item.bgcolor"
+                                (click)="changeAsistencia(rowIndex)"
+                            />
+                            <ng-template #noboton>
+                                <p-button
+                                    label="-"
+                                    size="small"
+                                    (click)="changeAsistencia(rowIndex)"
+                                    ngClass="bt-cyan"
+                                />
+                            </ng-template>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="summary">
+                    <div
+                        class="flex block flex-wrap column-gap-3 row-gap-3 p-2"
+                    >
+                        <div
+                            *ngFor="let lista of leyendaModal"
+                            class="flex mr-1"
+                        >
+                            <p-inputGroup class="grupo">
+                                <button
+                                    type="button"
+                                    size="small"
+                                    pButton
+                                    [ngClass]="lista.bgColor"
+                                >
+                                    {{ lista.simbolo }}
+                                </button>
+                                <div [ngClass]="lista.divColor">
+                                    {{ lista.significado }}
+                                </div>
+                                <button
+                                    type="button"
+                                    size="small"
+                                    pButton
+                                    [ngClass]="lista.bgColor"
+                                >
+                                    {{ lista.contar }}
+                                </button>
+                            </p-inputGroup>
+                        </div>
+                    </div>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+    <!-- <div class="flex flex-column mb-3 display">
+        
         <div class="flex">
             <div class="flex-1 flex-column font-bold p-2">
-                Curso: {{ cCursoNombre }}
+                {{ cNivelNombreCursos.toUpperCase() }} : {{ cCursoNombre }}
             </div>
         </div>
         <div class="flex">
-            <div class="flex-1 flex-column font-bold p-2">Nivel:</div>
-            <div class="flex-1 flex-column font-bold p-2">Ciclo:</div>
+            <div class="flex-1 flex-column font-bold p-2">Nivel: {{cNivelTipoNombre}}</div>
+            <div class="flex-1 flex-column font-bold p-2">Ciclo: I</div>
         </div>
         <div class="flex">
-            <div class="flex-1 flex-column font-bold p-2">Grado:</div>
-            <div class="flex-1 flex-column font-bold p-2">Seccion:</div>
+            <div class="flex-1 flex-column font-bold p-2">Grado: {{cGradoAbreviacion}}</div>
+            <div class="flex-1 flex-column font-bold p-2">Seccion: {{cSeccion}}</div>
         </div>
         <div class="flex block">
             <p-table
@@ -186,7 +334,7 @@
                 </ng-template>
             </p-table>
         </div>
-    </div>
+    </div> -->
     <div class="flex justify-content-center gap-2">
         <p-button
             label="Cancelar"
@@ -197,49 +345,22 @@
     </div>
 </p-dialog>
 
-<p-dialog
-    header="REPORTE DE ASISTENCIA"
-    [modal]="true"
-    [(visible)]="verReporte"
-    [responsive]="true"
-    [draggable]="false"
-    [style]="{ width: '60rem', height: '40rem' }"
->
-    <div class="flex">
-        <div class="flex-1 flex-column font-bold p-2">
-            Curso: {{ cCursoNombre }}
-        </div>
-    </div>
-
-    <div class="flex flex-column mb-3">
-        <div class="flex align-items-center gap-3 mb-3">
-            <div class="flex-1 flex-column font-bold p-2">Nivel:</div>
-            <div class="flex-1 flex-column font-bold p-2">Ciclo:</div>
-        </div>
-        <div class="flex align-items-center gap-3 mb-3">
-            <div class="flex-1 flex-column font-bold p-2">Grado:</div>
-            <div class="flex-1 flex-column font-bold p-2">Seccion:</div>
-        </div>
-        <div class="flex">
-            <p-calendar tabindex="-1"></p-calendar>
-        </div>
-    </div>
-    <ng-template pTemplate="footer">
-        <div class="flex justify-content-center gap-2">
-            <p-button
-                label="Cancelar"
-                severity="danger"
-                (onClick)="verReporte = !verReporte"
-            />
-            <p-button label="Guardar" />
-        </div>
-    </ng-template>
-</p-dialog>
-
 <p-toast />
 
 <app-reporte-asistencia
     [showModal]="showModal"
     [cCursoNombre]="cCursoNombre"
+    [cGradoAbreviacion]="cGradoAbreviacion"
+    [cNivelTipoNombre]="cNivelTipoNombre"
+    [cNivelNombreCursos]="cNivelNombreCursos"
+    [nombrecompleto]="nombrecompleto"
+    [cSeccion]="cSeccion"
+    [cCicloRomanos]="cCicloRomanos"
+    [iCursoId]="iCursoId"
+    [iDocenteId]="iDocenteId"
+    [iGradoId]="iGradoId"
+    [iSeccionId]="iSeccionId"
+    [iYAcadId]="iYAcadId"
+    [iNivelGradoId]="iNivelGradoId"
     (accionBtnItem)="accionBtnItem($event)"
 ></app-reporte-asistencia>

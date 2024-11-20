@@ -34,6 +34,7 @@ import {
 } from './pregunta-lista-columns'
 import { provideIcons } from '@ng-icons/core'
 import { matListAlt } from '@ng-icons/material-icons/baseline'
+import { PrimengModule } from '@/app/primeng.module'
 
 const preguntaFormInfoDefaultValues = {
     iPreguntaId: generarIdAleatorio(),
@@ -62,6 +63,7 @@ const alternativasLabel = {
         BancoPreguntaEncabezadoFormComponent,
         BancoPreguntasModule,
         ReactiveFormsModule,
+        PrimengModule,
     ],
     templateUrl: './banco-preguntas-form.component.html',
     styleUrl: './banco-preguntas-form.component.scss',
@@ -79,7 +81,7 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
     @Input() public columnasPreguntas = columnasListaPreguntaForm
     @Input() public accionesPreguntas = accionesTablaListaPreguntaForm
     private _pregunta
-
+    private _FormBuilder = inject(FormBuilder)
     // si envia la pregunta se hace el patch del formulario
     @Input()
     set pregunta(pregunta) {
@@ -567,4 +569,18 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
         this.unsubscribe$.next(true)
         this.unsubscribe$.complete()
     }
+
+    formPreguntas = this._FormBuilder.group({
+        cEvaluacionDescripcion: [''],
+
+        iTipoPreguntaId: [''],
+        cPeso: [''],
+        cHrs: [''],
+        cMin: [''],
+        cSeg: [''],
+        cEnunciado: [''],
+        cCorrecto: [''],
+        cEnunciadoPregunta: [''],
+    })
+    agregarPregunta() {}
 }

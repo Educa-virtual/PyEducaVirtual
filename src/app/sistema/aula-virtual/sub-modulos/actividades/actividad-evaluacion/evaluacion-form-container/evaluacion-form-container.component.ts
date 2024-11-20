@@ -9,7 +9,6 @@ import {
 } from 'primeng/dynamicdialog'
 import { EvaluacionFormInfoComponent } from '../evaluacion-form/evaluacion-form-info/evaluacion-form-info.component'
 import { EvaluacionFormPreguntasComponent } from '../evaluacion-form/evaluacion-form-preguntas/evaluacion-form-preguntas.component'
-import { EvaluacionFormCalificacionComponent } from '../evaluacion-form/evaluacion-form-calificacion/evaluacion-form-calificacion.component'
 import { StepperModule } from 'primeng/stepper'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { MenuItem } from 'primeng/api'
@@ -30,7 +29,6 @@ import { ConstantesService } from '@/app/servicios/constantes.service'
         PrimengModule,
         EvaluacionFormInfoComponent,
         EvaluacionFormPreguntasComponent,
-        EvaluacionFormCalificacionComponent,
         StepperModule,
     ],
     templateUrl: './evaluacion-form-container.component.html',
@@ -51,13 +49,13 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
             label: 'Información',
             icon: 'pi-info',
         },
+        // {
+        //     id: '1',
+        //     label: 'Calificación',
+        //     icon: 'pi-list-check',
+        // },
         {
             id: '1',
-            label: 'Calificación',
-            icon: 'pi-list-check',
-        },
-        {
-            id: '2',
             label: 'Preguntas',
             icon: 'pi-list-check',
         },
@@ -224,7 +222,7 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
     goStep(opcion: string) {
         switch (opcion) {
             case 'next':
-                if (this.activeStepper !== 2) {
+                if (this.activeStepper !== 1) {
                     this.activeStepper++
                 }
                 break
@@ -247,13 +245,13 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
             return
         }
 
-        if (this.activeStepper === 2) {
+        if (this.activeStepper === 1) {
             this.guardarActualizarPreguntas()
         }
 
-        if (this.activeStepper === 1) {
-            this.guardarActualizarCalificacion()
-        }
+        // if (this.activeStepper === 1) {
+        //     this.guardarActualizarCalificacion()
+        // }
     }
 
     // agrega el tiempo a la fecha
@@ -273,6 +271,44 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
         data.iActTipoId = EVALUACION
         data.iContenidoSemId = this.paramsData.iContenidoSemId
         data.cEvaluacionArchivoAdjunto = JSON.stringify(this.files)
+
+        let horaInicio = data.dFechaEvaluacionInico.toLocaleString('en-GB', {
+            timeZone: 'America/Lima',
+        })
+        let horaFin = data.dFechaEvaluacionFin.toLocaleString('en-GB', {
+            timeZone: 'America/Lima',
+        })
+        horaInicio = horaInicio.split(',')
+        horaFin = horaFin.split(',')
+
+        this.evaluacionInfoForm.controls[
+            'dFechaEvaluacionPublicacion'
+        ].setValue(horaInicio[0])
+        this.evaluacionInfoForm.controls['tHoraEvaluacionPublicacion'].setValue(
+            horaInicio[1].replace(' ', '')
+        )
+        this.evaluacionInfoForm.controls['dFechaEvaluacionInico'].setValue(
+            horaInicio[0]
+        )
+        this.evaluacionInfoForm.controls['tHoraEvaluacionInico'].setValue(
+            horaInicio[1].replace(' ', '')
+        )
+        this.evaluacionInfoForm.controls['dFechaEvaluacionFin'].setValue(
+            horaFin[0]
+        )
+        this.evaluacionInfoForm.controls['tHoraEvaluacionFin'].setValue(
+            horaFin[1].replace(' ', '')
+        )
+
+        data.dFechaEvaluacionPublicacion = horaInicio[0]
+        data.tHoraEvaluacionPublicacion = horaInicio[1].replace(' ', '')
+
+        data.dFechaEvaluacionInico = horaInicio[0]
+        data.tHoraEvaluacionInico = horaInicio[1].replace(' ', '')
+
+        data.dFechaEvaluacionFin = horaFin[0]
+        data.tHoraEvaluacionFin = horaFin[1].replace(' ', '')
+
         if (this.evaluacionInfoForm.invalid) {
             this.evaluacionInfoForm.markAllAsTouched()
             return
@@ -282,23 +318,34 @@ export class EvaluacionFormContainerComponent implements OnInit, OnDestroy {
             data.dFechaEvaluacionPublicacion &&
             data.tHoraEvaluacionPublicacion
         ) {
-            data.dtEvaluacionPublicacion = this.addTimeToDate(
-                data.dFechaEvaluacionPublicacion,
+            data.dtEvaluacionPublicacion =
+                data.dFechaEvaluacionPublicacion +
+                ' ' +
                 data.tHoraEvaluacionPublicacion
-            )
+
+            // this.addTimeToDate(
+            //     data.dFechaEvaluacionPublicacion,
+            //     data.tHoraEvaluacionPublicacion
+            // )
         }
         if (data.dFechaEvaluacionInico && data.tHoraEvaluacionInico) {
-            data.dtEvaluacionInicio = this.addTimeToDate(
-                data.dFechaEvaluacionInico,
-                data.tHoraEvaluacionInico
-            )
+            data.dtEvaluacionInicio =
+                data.dFechaEvaluacionInico + ' ' + data.tHoraEvaluacionInico
+
+            // this.addTimeToDate(
+            //     data.dFechaEvaluacionInico,
+            //     data.tHoraEvaluacionInico
+            // )
         }
 
         if (data.dFechaEvaluacionFin && data.tHoraEvaluacionFin) {
-            data.dtEvaluacionFin = this.addTimeToDate(
-                data.dFechaEvaluacionFin,
-                data.tHoraEvaluacionFin
-            )
+            data.dtEvaluacionFin =
+                data.dFechaEvaluacionFin + ' ' + data.tHoraEvaluacionFin
+
+            // this.addTimeToDate(
+            //     data.dFechaEvaluacionFin,
+            //     data.tHoraEvaluacionFin
+            // )
         }
 
         this._evaluacionService

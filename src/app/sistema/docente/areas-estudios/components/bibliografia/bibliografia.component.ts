@@ -216,16 +216,14 @@ export class BibliografiaComponent implements OnChanges, OnDestroy {
     }
     deleteBibliografias(item) {
         this.confirmationService.confirm({
-            message:
-                'Deseas eliminar la biliobrafía ' + item.cBiblioTitulo + ' ?',
-            header: 'Eliminar Bibliografía',
-            icon: 'pi pi-info-circle',
-            acceptButtonStyleClass: 'p-button-danger p-button-text',
-            rejectButtonStyleClass: 'p-button-text p-button-text',
+            message: 'Desea eliminar estudiante ' + item.cBiblioTitulo + ' ?',
+            header: 'Eliminar Estudiante',
+            acceptButtonStyleClass: 'p-button-secondary p-mr-2', // Agregar margen derecho al botón Aceptar
+            rejectButtonStyleClass: 'p-button-info p-button-text p-ml-2', // Agregar margen izquierdo al botón Rechazar
             acceptIcon: 'none',
             rejectIcon: 'none',
             acceptLabel: 'Si',
-            rejectLabel: 'No',
+            rejectLabel: 'Cancelar',
 
             accept: () => {
                 item.opcion = 'ELIMINARxiBiblioId'
@@ -239,13 +237,13 @@ export class BibliografiaComponent implements OnChanges, OnDestroy {
                     params: { skipSuccessMessage: true },
                 }
                 this.getInformation(params, true)
-                //this.messageService.add({ severity: 'info', summary: 'Confirmado', detail: 'Eliminando Metodología' });
             },
             reject: () => {
-                //this.messageService.add({ severity: 'error', summary: '', detail: 'You have rejected' });
+                // Acción al rechazar
             },
         })
     }
+
     getInformation(params, api) {
         this.GeneralService.getGralPrefix(params)
             .pipe(takeUntil(this.unsubscribe$))

@@ -1,7 +1,7 @@
 <section class="flex flex-column gap-4">
     <p-tabView styleClass="actividad-tabs">
         <p-tabPanel>
-            <ng-template pTemplate="header">
+            <ng-template pTemplate="header" class="header-fixed">
                 <div class="flex align-items-center flex-column gap-2">
                     <app-icon name="matListAlt"></app-icon>
                     <span class="font-bold white-space-nowrap m-0">
@@ -9,7 +9,7 @@
                     </span>
                 </div>
             </ng-template>
-            <div class="flex grid">
+            <div class="flex grid tab-content">
                 <div
                     class="card"
                     [class]="iPerfilId !== 8 ? 'col-12' : 'col-6'"
@@ -48,35 +48,41 @@
                             </p>
                         </div>
                     </div>
-                    <p-inputGroup>
-                        <p-inputGroupAddon>Título</p-inputGroupAddon>
-                        <input
-                            type="text"
-                            pInputText
-                            [value]="data?.cTareaTitulo"
-                            placeholder="Ingrese el título de la tarea"
-                            [disabled]="
-                                !data?.cTareaTitulo ||
-                                data.cTareaTitulo.trim() === ''
-                            "
-                        />
-                    </p-inputGroup>
-                    <div class="col-12">
-                        <label for="descripcion" class="mt-1"
-                            >Descripción
-                            <span class="text-red-500 text-xs"
-                                >(*) Obligatorio</span
-                            ></label
-                        >
-                        <div class="mt-2">
-                            <p-editor
-                                [(ngModel)]="cTareaDescripcion"
+                    <div class="p-fluid">
+                        <div class="p-field">
+                            <p *ngIf="true">Para estudiantes</p>
+                            <h3>
+                                <label for="descripcion" class="p-text-bold"
+                                    >Descripción de la tarea</label
+                                >
+                            </h3>
+                            <div class="mt-2">
+                                <div
+                                    [innerHTML]="data?.cTareaDescripcion"
+                                ></div>
+                                <p-editor
+                                    [(ngModel)]="cTareaDescripcion"
+                                    [disabled]="true"
+                                    id="descripcion"
+                                    [style]="{ height: '150px' }"
+                                    disabled
+                                />
+                            </div>
+                            <!-- <div [innerHTML]="data?.cTareaDescripcion"></div>
+                            <input
                                 id="descripcion"
-                                [style]="{ height: '150px' }"
-                                disabled
-                            />
+                                type="text"
+                                pInputText
+                                [value]="data?.cTareaDescripcion"
+                                [disabled]="
+                                    !data?.cTareaDescripcion || isDisabled
+                                "
+                                placeholder="Ingrese el título de la tarea"
+                                class="p-inputtext-sm"
+                            /> -->
                         </div>
                     </div>
+
                     <div>
                         <!-- Título para la sección de recursos -->
                         <h2>Recursos:</h2>
@@ -202,6 +208,7 @@
                                     [(ngModel)]="notaTareaEstudiante"
                                     class="p-inputtext-lg"
                                     placeholder="Aqui muestra la calificación"
+                                    [disabled]="isDisabled"
                                 />
                             </div>
                             <p-divider class="mb-3"></p-divider>
@@ -217,6 +224,7 @@
                                     [(ngModel)]="comentarioTareaEstudiante"
                                     class="p-inputtextarea-lg"
                                     placeholder="Muestra Comentario Docente"
+                                    [disabled]="isDisabled"
                                 ></textarea>
                             </div>
                         </div>
@@ -297,10 +305,10 @@
                                 </div>
                             }
                             <p-divider></p-divider>
+                            <p-toast></p-toast>
                             <div
                                 class="flex align-items-center justify-content-center"
                             >
-                                <p-toast></p-toast>
                                 <p-button
                                     label="Enviar Tarea"
                                     icon="pi pi-check"
@@ -346,7 +354,7 @@
         </p-tabPanel>
         @if (iPerfilId !== 8) {
             <p-tabPanel>
-                <ng-template pTemplate="header">
+                <ng-template pTemplate="header" class="header-fixed">
                     <div class="flex align-items-center flex-column gap-2">
                         <app-icon name="matPeople"></app-icon>
                         <span class="font-bold white-space-nowrap m-0">
@@ -354,7 +362,7 @@
                         </span>
                     </div>
                 </ng-template>
-                <div class="flex flex-column gap-4">
+                <div class="flex flex-column gap-4 tab-content">
                     <div class="grid">
                         <div class="col-12 md:col-5">
                             <p-toolbar>
@@ -374,6 +382,7 @@
                                     />
                                 </div>
                                 <div class="p-toolbar-group-end">
+                                    <!-- estes boto esta desactivado-->
                                     <!-- <p-button icon="pi pi-sync" pTooltip="Refrescar Listas" tooltipPosition="top"
                                     [rounded]="true" [text]="true" severity="danger" /> -->
                                 </div>
@@ -438,42 +447,60 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-6">
-                                                    <span
-                                                        class="p-input-icon-left"
-                                                    >
-                                                        <i
-                                                            class="pi pi-search"
-                                                        ></i>
-                                                        <input
-                                                            pInputText
-                                                            placeholder="Buscar estudiante"
-                                                            style="width: 250px"
-                                                        />
-                                                    </span>
-                                                </div>
-                                                <div
-                                                    class="col-6 text-right"
-                                                ></div>
                                                 <p-table
                                                     #dv
                                                     class="col-12 hoverTable"
                                                     [value]="estudiantes"
                                                     paginator="false"
+                                                    [globalFilterFields]="[
+                                                        'cPersPaterno',
+                                                        'cPersMaterno',
+                                                        'cPersNombre',
+                                                    ]"
                                                     styleClass="p-datatable-sm"
+                                                    [scrollable]="true"
+                                                    scrollHeight="300px"
                                                 >
+                                                    <ng-template
+                                                        pTemplate="caption"
+                                                    >
+                                                        <div
+                                                            class="flex justify-content-between gap-2 flex-column sm:flex-row flex-wrap"
+                                                        >
+                                                            <p-iconField
+                                                                iconPosition="left"
+                                                            >
+                                                                <p-inputIcon
+                                                                    styleClass="pi pi-search text-md"
+                                                                />
+                                                                <input
+                                                                    pInputText
+                                                                    type="text"
+                                                                    class="py-2"
+                                                                    (input)="
+                                                                        onGlobalFilter(
+                                                                            dv,
+                                                                            $event
+                                                                        )
+                                                                    "
+                                                                    placeholder="Buscar por apellidos y nombres"
+                                                                />
+                                                            </p-iconField>
+                                                        </div>
+                                                    </ng-template>
                                                     <ng-template
                                                         pTemplate="header"
                                                     >
                                                         <tr
-                                                            class="sticky-header"
+                                                            class="sticky-header th"
                                                         >
                                                             <th>#</th>
-                                                            <th>Nombres</th>
                                                             <th>Apellidos</th>
+                                                            <th>Nombres</th>
                                                             <th>Estado</th>
                                                         </tr>
                                                     </ng-template>
+
                                                     <ng-template
                                                         pTemplate="body"
                                                         let-estudiante
@@ -490,7 +517,7 @@
                                                             [class]="
                                                                 nEstudiante ===
                                                                 rowIndex
-                                                                    ? 'bg-green-180'
+                                                                    ? 'bg-green-200'
                                                                     : ''
                                                             "
                                                         >
@@ -501,16 +528,16 @@
                                                             </td>
                                                             <td>
                                                                 {{
-                                                                    estudiante?.cPersNombre
-                                                                }}
-                                                            </td>
-                                                            <td>
-                                                                {{
                                                                     estudiante.cPersPaterno
                                                                 }}
 
                                                                 {{
                                                                     estudiante.cPersMaterno
+                                                                }}
+                                                            </td>
+                                                            <td>
+                                                                {{
+                                                                    estudiante?.cPersNombre
                                                                 }}
                                                             </td>
 
@@ -612,21 +639,14 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-6">
-                                                    <span
-                                                        class="p-input-icon-left"
-                                                    >
-                                                        <i
-                                                            class="pi pi-search"
-                                                        ></i>
-                                                        <input
-                                                            pInputText
-                                                            placeholder="Buscar estudiante"
-                                                            style="width: 250px"
-                                                        />
-                                                    </span>
-                                                </div>
-                                                <div class="col-6 text-right">
+                                                <!-- <div class="col-6">
+                                        <span class="p-input-icon-left">
+                                            <i class="pi pi-search"></i>
+                                            <input pInputText placeholder="Buscar estudiante" style="width: 250px" />
+                                        </span>
+                                    </div> -->
+
+                                                <div class="col-12 text-right">
                                                     <p-button
                                                         label="Crear Grupo"
                                                         icon="pi pi-plus"
@@ -740,7 +760,39 @@
                                                                         "
                                                                         paginator="false"
                                                                         styleClass="p-datatable-sm"
+                                                                        [globalFilterFields]="[
+                                                                            'cPersPaterno',
+                                                                            'cPersMaterno',
+                                                                            'cPersNombre',
+                                                                        ]"
                                                                     >
+                                                                        <ng-template
+                                                                            pTemplate="caption"
+                                                                        >
+                                                                            <div
+                                                                                class="flex justify-content-between gap-2 flex-column sm:flex-row flex-wrap"
+                                                                            >
+                                                                                <p-iconField
+                                                                                    iconPosition="left"
+                                                                                >
+                                                                                    <p-inputIcon
+                                                                                        styleClass="pi pi-search text-md"
+                                                                                    />
+                                                                                    <input
+                                                                                        pInputText
+                                                                                        type="text"
+                                                                                        class="py-2"
+                                                                                        (input)="
+                                                                                            onGlobalFilter(
+                                                                                                dv,
+                                                                                                $event
+                                                                                            )
+                                                                                        "
+                                                                                        placeholder="Buscar por apellidos y nombres"
+                                                                                    />
+                                                                                </p-iconField>
+                                                                            </div>
+                                                                        </ng-template>
                                                                         <ng-template
                                                                             pTemplate="header"
                                                                         >
@@ -751,10 +803,10 @@
                                                                                     #
                                                                                 </th>
                                                                                 <th>
-                                                                                    Nombres
+                                                                                    Apellidos
                                                                                 </th>
                                                                                 <th>
-                                                                                    Apellidos
+                                                                                    Nombres
                                                                                 </th>
                                                                                 <th>
                                                                                     Acciones
@@ -778,15 +830,15 @@
                                                                                     </td>
                                                                                     <td>
                                                                                         {{
-                                                                                            estudiante?.cPersNombre
-                                                                                        }}
-                                                                                    </td>
-                                                                                    <td>
-                                                                                        {{
                                                                                             estudiante.cPersPaterno
                                                                                         }}
                                                                                         {{
                                                                                             estudiante.cPersMaterno
+                                                                                        }}
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        {{
+                                                                                            estudiante?.cPersNombre
                                                                                         }}
                                                                                     </td>
                                                                                     <td>
@@ -1040,7 +1092,7 @@
                                         </p-fieldset>
                                         <div class="grid">
                                             <div
-                                                class="col-12 text-right text-center"
+                                                class="col-12 text-right fixed-button text-center"
                                             >
                                                 <p-toast></p-toast>
                                                 <p-button
@@ -1244,7 +1296,7 @@
                                         </p-fieldset>
                                         <div class="grid">
                                             <div
-                                                class="col-12 text-right text-center"
+                                                class="col-12 text-right fixed-button text-center"
                                             >
                                                 <p-toast></p-toast>
                                                 <p-button

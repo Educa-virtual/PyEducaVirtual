@@ -670,6 +670,12 @@ export class TareaRoomComponent implements OnChanges, OnInit {
     }
 
     entregarEstudianteTareaGrupal() {
+        this.messageService.add({
+            severity: 'success', // success, info, warn, error
+            summary: 'Tarea enviada',
+            detail: 'La tarea ha sido entregada exitosamente.',
+        })
+
         if (!this.FilesTareasEstudiantesGrupal.length) return
         const params = {
             petition: 'post',

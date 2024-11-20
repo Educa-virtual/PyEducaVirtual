@@ -6,3 +6,7 @@
     background-color: #64748b;
     border-color: #64748b;
 }
+
+:host ::ng-deep p-steps nav {
+    overflow: auto !important;
+}

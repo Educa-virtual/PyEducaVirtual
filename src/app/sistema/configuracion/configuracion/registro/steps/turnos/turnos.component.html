@@ -13,76 +13,121 @@
     >
     </app-table-primeng>
 
-    <p-dialog header="Turno" [(visible)]="visible" [style]="{ width: '25rem' }">
-        <form [formGroup]="form">
-            <span class="p-text-secondary block mb-5"
-                >Informació del turno</span
-            >
-            <div class="flex align-items-center gap-3 mb-5">
-                <p-dropdown
-                    [style]="{ width: '100%' }"
-                    [options]="turnos"
-                    optionLabel="cTurnoNombre"
-                    placeholder="Seleccione un turno"
-                    formControlName="turno"
-                />
-            </div>
-            <div class="flex align-items-center gap-3 mb-5">
-                <p-dropdown
-                    [style]="{ width: '100%' }"
-                    [options]="modalidades"
-                    optionLabel="cModalServNombre"
-                    placeholder="Seleccione una modalidad"
-                    formControlName="modalidad"
-                />
-            </div>
-            <div class="flex align-items-center gap-3 mb-5">
-                <p-floatLabel>
-                    <p-calendar
+    <section>
+        <p-dialog
+            header="Información del turno"
+            [(visible)]="visible"
+            [modal]="true"
+            [style]="{ width: '30rem' }"
+        >
+            <form [formGroup]="form">
+                <span class="p-text-secondary block mb-5"></span>
+                <div class="flex align-items-center gap-3 mb-5">
+                    <p-inputGroup>
+                        <p-inputGroupAddon>Turno</p-inputGroupAddon>
+                        <p-dropdown
+                            styleClass="w-full"
+                            [options]="turnos"
+                            optionLabel="cTurnoNombre"
+                            placeholder="Seleccione un turno"
+                            formControlName="turno"
+                        />
+                    </p-inputGroup>
+                    <!-- <p-dropdown
                         [style]="{ width: '100%' }"
-                        [timeOnly]="true"
-                        inputId="birth_date"
-                        formControlName="horaInicio"
-                        [defaultDate]="defautTimeInicio"
-                        stepMinute="10"
-                    />
-                    <label for="birth_date">Hora inicio</label>
-                </p-floatLabel>
-            </div>
-            <div class="flex align-items-center gap-3 mb-5">
-                <p-floatLabel>
-                    <p-calendar
+                        [options]="turnos"
+                        optionLabel="cTurnoNombre"
+                        placeholder="Seleccione un turno"
+                        formControlName="turno"
+                    /> -->
+                </div>
+                <div class="flex align-items-center gap-3 mb-5">
+                    <p-inputGroup>
+                        <p-inputGroupAddon>Modalidad</p-inputGroupAddon>
+                        <p-dropdown
+                            styleClass="w-full"
+                            [options]="modalidades"
+                            optionLabel="cModalServNombre"
+                            placeholder="Seleccione una modalidad"
+                            formControlName="modalidad"
+                        />
+                    </p-inputGroup>
+                    <!-- <p-dropdown
                         [style]="{ width: '100%' }"
-                        [timeOnly]="true"
-                        inputId="birth_date"
-                        formControlName="horaFin"
-                        [defaultDate]="defautTimeFin"
-                        stepMinute="10"
+                        [options]="modalidades"
+                        optionLabel="cModalServNombre"
+                        placeholder="Seleccione una modalidad"
+                        formControlName="modalidad"
+                    /> -->
+                </div>
+                <div class="flex align-items-center gap-3 mb-5">
+                    <p-inputGroup>
+                        <p-inputGroupAddon>Hora inicio</p-inputGroupAddon>
+                        <p-calendar
+                            styleClass="w-full"
+                            [timeOnly]="true"
+                            inputId="birth_date"
+                            formControlName="horaInicio"
+                            [defaultDate]="defautTimeInicio"
+                            stepMinute="10"
+                            placeholder="Seleccione una hora inicio"
+                        />
+                    </p-inputGroup>
+                </div>
+                <div class="flex align-items-center gap-3 mb-5">
+                    <p-inputGroup>
+                        <p-inputGroupAddon>Hora Fin</p-inputGroupAddon>
+                        <p-calendar
+                            styleClass="w-full"
+                            [timeOnly]="true"
+                            inputId="birth_date"
+                            formControlName="horaFin"
+                            [defaultDate]="defautTimeFin"
+                            stepMinute="10"
+                            placeholder="Seleccione una hora de fin"
+                        />
+                    </p-inputGroup>
+                </div>
+                <div class="flex justify-content-between gap-2">
+                    <p-button
+                        label="Cancel"
+                        severity="secondary"
+                        (onClick)="visible = false"
                     />
-                    <label for="birth_date">Hora fin</label>
-                </p-floatLabel>
-            </div>
-            <div class="flex justify-content-end gap-2">
-                <p-button
-                    label="Cancel"
-                    severity="secondary"
-                    (onClick)="visible = false"
-                />
-                <p-button label="Guardar" (onClick)="saveInformation()" />
-            </div>
-        </form>
-    </p-dialog>
+                    <p-button label="Guardar" (onClick)="saveInformation()" />
+                </div>
+            </form>
+        </p-dialog>
+    </section>
 
-    <p-confirmDialog>
+    <p-confirmDialog
+        #cd
+        [acceptVisible]="false"
+        [rejectVisible]="false"
+        class="w-5"
+    >
         <ng-template pTemplate="message" let-message>
             <div
                 class="flex flex-column align-items-center w-full gap-3 border-bottom-1 surface-border"
             >
-                <i
-                    class="pi pi-exclamation-circle text-6xl text-primary-500"
-                ></i>
-                <p>{{ message.message }}</p>
+                <i class="pi pi-exclamation-circle text-6xl"></i>
+                <p class="text-center">{{ message.message }}</p>
             </div>
+        </ng-template>
+
+        <ng-template pTemplate="footer">
+            <button
+                pButton
+                label="Cancelar"
+                (click)="cd.reject()"
+                class="p-button-outlined w-8rem accept"
+            ></button>
+            <button
+                pButton
+                label="Confirmar"
+                (click)="cd.accept()"
+                class="w-8rem reject"
+            ></button>
         </ng-template>
     </p-confirmDialog>
 

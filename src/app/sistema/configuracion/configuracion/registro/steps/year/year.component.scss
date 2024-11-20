@@ -4,25 +4,56 @@ form {
 
 section {
     border-radius: 12px;
-    padding: 3.75rem;
     border: 1px solid #dfe7ef;
+    min-width: fit-content;
 }
 
 p-button {
-    background-color: #0e4194;
     border-radius: 0.5rem;
 }
+
+// :host ::ng-deep p-button button {
+//     background-color: #0e4194;
+// }
 
 .p-confirm-dialog-reject {
     background-color: black;
 }
 
-p-calendar,
-p-floatlabel {
-    width: 100%;
+:host ::ng-deep p-inputGroupAddon {
+    background-color: #3e67a9;
+    color: #fff;
 }
 
 div {
     display: flex;
     gap: 2rem;
+}
+
+:host ::ng-deep .p-dialog-content {
+    display: flex;
+    flex-direction: column;
+}
+
+:host ::ng-deep .p-dialog-content i {
+    color: #c44c5b;
+}
+
+:host ::ng-deep .p-dialog-footer {
+    display: flex;
+    justify-content: space-between;
+}
+
+:host ::ng-deep .p-button-label {
+    color: #fff;
+}
+
+:host ::ng-deep .p-dialog-footer .accept {
+    background-color: #c44c5b;
+    border-color: #c44c5b;
+}
+
+:host ::ng-deep .p-dialog-footer .reject {
+    background-color: #0e4194;
+    border-color: #0e4194;
 }

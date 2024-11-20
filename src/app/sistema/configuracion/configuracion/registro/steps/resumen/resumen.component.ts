@@ -78,7 +78,7 @@ export class ResumenComponent implements OnInit {
             )
         this.resumenInformation.periodosAcademicos =
             this.ticketService.registroInformation.stepYear.fases_promocionales.map(
-                (fase) => {
+                (fase, index) => {
                     // Buscar todas las coincidencias en lugar de solo una
                     const periodosEvalForm =
                         this.ticketService.registroInformation.stepPeriodosAcademicos
@@ -87,8 +87,8 @@ export class ResumenComponent implements OnInit {
                             )
                             .map((periodo, index) => {
                                 let periodoType
-                                console.log(periodo)
-
+                                console.log(periodo);
+                                
                                 switch (Number(periodo.iPeriodoEvalCantidad)) {
                                     case 6:
                                         periodoType = 'semestre'

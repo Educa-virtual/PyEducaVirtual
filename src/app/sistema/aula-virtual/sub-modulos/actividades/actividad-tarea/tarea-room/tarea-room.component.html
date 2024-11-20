@@ -50,32 +50,32 @@
                     </div>
                     <div class="p-fluid">
                         <div class="p-field">
-                            <p *ngIf="false">Para estudiantes</p>
+                            <p *ngIf="true">Para estudiantes</p>
                             <h3>
                                 <label for="descripcion" class="p-text-bold"
                                     >Descripción de la tarea</label
                                 >
                             </h3>
                             <div class="mt-2">
-                                <form [formGroup]="form">
-                                    <p-editor
-                                        [(ngModel)]="cTareaDescripcion"
-                                        formControlName="editor"
-                                        [disabled]="true"
-                                        id="descripcion"
-                                        [style]="{ height: '150px' }"
-                                    />
-                                </form>
+                                <!-- <p-editor
+                                [(ngModel)]="cTareaDescripcion"
+                                 [disabled]="true"
+                                id="descripcion"
+                                [style]="{ height: '150px' }"
+                                disabled
+                            /> -->
                             </div>
-                            <!-- <input
+                            <input
                                 id="descripcion"
                                 type="text"
                                 pInputText
                                 [value]="data?.cTareaDescripcion"
-                                [disabled]="!data?.cTareaDescripcion || isDisabled"
+                                [disabled]="
+                                    !data?.cTareaDescripcion || isDisabled
+                                "
                                 placeholder="Ingrese el título de la tarea"
                                 class="p-inputtext-sm"
-                            /> -->
+                            />
                         </div>
                     </div>
 
@@ -1088,7 +1088,7 @@
                                         </p-fieldset>
                                         <div class="grid">
                                             <div
-                                                class="col-12 text-right text-center"
+                                                class="col-12 text-right fixed-button text-center"
                                             >
                                                 <p-toast></p-toast>
                                                 <p-button
@@ -1292,7 +1292,7 @@
                                         </p-fieldset>
                                         <div class="grid">
                                             <div
-                                                class="col-12 text-right text-center"
+                                                class="col-12 text-right fixed-button text-center"
                                             >
                                                 <p-toast></p-toast>
                                                 <p-button

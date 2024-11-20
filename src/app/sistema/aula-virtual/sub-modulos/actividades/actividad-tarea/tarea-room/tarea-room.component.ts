@@ -582,13 +582,13 @@ export class TareaRoomComponent implements OnChanges, OnInit {
                 'Deseas eliminar del grupo al estudiante ' +
                 item.cPersNombre +
                 ' ?',
-            header: 'Eliminar Bibliografía',
-            icon: 'pi pi-info-circle',
-            acceptButtonStyleClass: 'p-button-danger p-button-text',
-            rejectButtonStyleClass: 'p-button-text p-button-text',
-            acceptIcon: 'none',
-            rejectIcon: 'none',
-            acceptLabel: 'Si',
+            header: 'Eliminar Estudiante del Grupo',
+            // icon: 'pi pi-info-circle', // Se ha activado el icono predeterminado
+            acceptButtonStyleClass: 'p-button-success  ', // Estilo para el botón de aceptar
+            rejectButtonStyleClass: 'p-button-danger', // Estilo para el botón de rechazar
+            acceptIcon: 'pi pi-check', // Icono de aceptación
+            rejectIcon: 'pi pi-times', // Icono de rechazo
+            acceptLabel: 'SI',
             rejectLabel: 'No',
 
             accept: () => {
@@ -604,23 +604,26 @@ export class TareaRoomComponent implements OnChanges, OnInit {
                     },
                 }
                 this.getInformation(params, 'eliminar-tareas-estudiantes')
-                //this.messageService.add({ severity: 'info', summary: 'Confirmado', detail: 'Eliminando Metodología' });
             },
             reject: () => {
-                //this.messageService.add({ severity: 'error', summary: '', detail: 'You have rejected' });
+                // Código en caso de rechazo
             },
         })
     }
 
     entregartaraeaestudiante() {
-        if (!this.iEscalaCalifId) {
+        if (
+            !this.FilesTareasEstudiantes ||
+            this.FilesTareasEstudiantes.length === 0
+        ) {
             this.messageService.add({
                 severity: 'warn',
-                summary: 'Falta Entregar su tarea',
-                detail: 'Subi su tarea para entregar',
+                summary: 'A un no subio su tarea Para revisar',
+                detail: '',
             })
             return
         }
+
         const comment = this.entregarEstud.value
         comment.iTareaId = this.iTareaId
         console.log('Enviar Tarea', comment)
@@ -637,14 +640,18 @@ export class TareaRoomComponent implements OnChanges, OnInit {
         //console.log(this.grupoTransferir)
     }
     entregarEstudianteTarea() {
-        if (!this.FilesTareasEstudiantes) {
+        if (
+            !this.FilesTareasEstudiantes ||
+            this.FilesTareasEstudiantes.length === 0
+        ) {
             this.messageService.add({
                 severity: 'warn',
-                summary: 'Falta Entregar su tarea',
-                detail: 'Subi su tarea para entregar sus tarea ',
+                summary: 'A un no entrego su tarea',
+                detail: 'Por favor, suba su tarea',
             })
             return
         }
+
         if (!this.FilesTareasEstudiantes.length) return
         const params = {
             petition: 'post',
@@ -715,4 +722,22 @@ export class TareaRoomComponent implements OnChanges, OnInit {
         table.filterGlobal((event.target as HTMLInputElement).value, 'contains')
     }
     isDisabled: boolean = true
+
+    validarFormulario(): boolean {
+        if (
+            !this.notaTareaEstudianteGrupal ||
+            this.notaTareaEstudianteGrupal.trim() === ''
+        ) {
+            alert('Por favor, ingrese una nota válida.')
+            return false
+        }
+        if (
+            !this.comentarioTareaEstudianteGrupal ||
+            this.comentarioTareaEstudianteGrupal.trim() === ''
+        ) {
+            alert('Por favor, ingrese un comentario.')
+            return false
+        }
+        return true
+    }
 }

@@ -14,6 +14,9 @@
             />
         </div>
         <div class="field col-12 md:col-12">
+            <!-- Mostrar el conteo de estudiantes -->
+            <p>Total Estudiantes Sin Asignar!: {{ conteoEstudiantes }}</p>
+
             <p-table
                 #dv
                 class="col-12 hoverTable"
@@ -24,7 +27,7 @@
                 <ng-template pTemplate="header">
                     <tr>
                         <th style="width: 0.5rem; text-align: center"></th>
-                        <th style="width: 10rem">Lista de Estudiante</th>
+                        <th style="width: 10rem">Lista de Estudiantes</th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="emptymessage" let-columns>
@@ -55,13 +58,15 @@
             </p-table>
         </div>
     </div>
-
-    <div class="flex justify-content-end gap-2">
-        <p-button
-            label="Cancelar"
-            severity="secondary"
-            (onClick)="accionBtn({ accion: 'close-modal', item: [] })"
-        />
-        <p-button [label]="opcion" (onClick)="saveTareaCabeceraGrupos()" />
+    <div class="modal-content">
+        <!-- Contenido del modal -->
+        <div class="modal-footer flex justify-content-end gap-2">
+            <p-button
+                label="Cancelar"
+                severity="secondary"
+                (onClick)="accionBtn({ accion: 'close-modal', item: [] })"
+            />
+            <p-button [label]="opcion" (onClick)="saveTareaCabeceraGrupos()" />
+        </div>
     </div>
 </app-modal-primeng>

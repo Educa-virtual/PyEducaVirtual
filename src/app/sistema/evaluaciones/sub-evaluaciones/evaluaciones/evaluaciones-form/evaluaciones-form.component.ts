@@ -1,6 +1,8 @@
 //Agregar Servicio de Evaluacion
 //!Se agrego el afterviewinit
 import { CompartirIdEvaluacionService } from './../../../services/ereEvaluaciones/compartir-id-evaluacion.service'
+import { CompartirFormularioEvaluacionService } from './../../../services/ereEvaluaciones/compartir-formulario-evaluacion.service'
+
 import { Component, inject, OnInit, ViewChild } from '@angular/core'
 
 /*BOTONES */
@@ -72,6 +74,7 @@ interface NivelEvaluacion {
         CommonInputComponent,
         ReactiveFormsModule,
         EvaluacionAreasComponent,
+
         StepperModule,
         CommonModule,
         DividerModule,
@@ -119,6 +122,7 @@ export class EvaluacionesFormComponent implements OnInit {
     constructor(
         public _config: DynamicDialogConfig, // Inyección de configuración
         private compartirIdEvaluacionService: CompartirIdEvaluacionService, // Inyección del servicio
+        private compartirFormularioEvaluacionService: CompartirFormularioEvaluacionService, // Inyección del servicio
         private fb: FormBuilder
     ) {
         // Inicializar formulario reactivo

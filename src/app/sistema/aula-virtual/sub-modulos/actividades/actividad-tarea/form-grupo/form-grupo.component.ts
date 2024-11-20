@@ -133,4 +133,8 @@ export class FormGrupoComponent implements OnChanges {
                 break
         }
     }
+
+    get conteoEstudiantes(): number {
+        return this.estudiantes.length
+    }
 }

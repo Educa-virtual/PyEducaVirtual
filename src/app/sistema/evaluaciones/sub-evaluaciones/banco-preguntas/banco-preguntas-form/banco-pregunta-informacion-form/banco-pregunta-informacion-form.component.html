@@ -69,7 +69,7 @@
             <label for="firstname2">Enunciado de la pregunta</label>
             <p-editor
                 [formControlName]="'cPregunta'"
-                [style]="{ height: '320px' }"
+                [style]="{ height: 'auto' }"
             />
             @if (
                 formGroup.get('cPregunta').hasError('required') &&
@@ -84,7 +84,7 @@
             <label for="firstname2">Texto ayuda</label>
             <p-editor
                 formControlName="cPreguntaTextoAyuda"
-                [style]="{ height: '320px' }"
+                [style]="{ height: 'auto' }"
             />
         </div>
     </div>

@@ -398,10 +398,9 @@ export class TabContenidoComponent implements OnInit {
                 {
                     ...MODAL_CONFIG,
                     maximizable: true,
-                    header:
-                        actividad == null
-                            ? 'Crear Evaluación'
-                            : 'Editar Evaluación',
+                    header: !actividad['iEvaluacionId']
+                        ? 'Crear Evaluación'
+                        : 'Editar Evaluación',
                     data: {
                         actividad,
                         semana: this.semanaSeleccionada,
@@ -469,6 +468,7 @@ export class TabContenidoComponent implements OnInit {
             iCursoId: this.semanaSeleccionada.iCursoId,
             // obtener iseccionId
             iSeccionId: this.semanaSeleccionada.iSeccionId,
+            iGradoId: this.semanaSeleccionada.iGradoId,
             iYAcadId: this._constantesService.iYAcadId,
             iSemAcadId: this.semanaSeleccionada.iSemAcadId,
             iNivelGradoId: this.semanaSeleccionada.iNivelGradoId,

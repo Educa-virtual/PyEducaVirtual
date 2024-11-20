@@ -1,372 +1,268 @@
-<h2 class="text-2xl font-bold">Información</h2>
-
 <form [formGroup]="evaluacionInfoForm">
-    <div class="formgrid grid">
-        <div class="field flex flex-column col-12 md:col-6">
-            <app-common-input
-                [label]="'Nombre de la evaluación'"
-                [controlKey]="'cEvaluacionTitulo'"
-            />
+    <div class="grid">
+        <div class="col-12 md:col-5">
+            <p-inputGroup>
+                <p-inputGroupAddon>Nombre</p-inputGroupAddon>
+                <input
+                    type="text"
+                    pInputText
+                    placeholder="Ingrese el nombre de la evaluación"
+                    formControlName="cEvaluacionTitulo"
+                />
+            </p-inputGroup>
         </div>
-        <div class="field flex flex-column col-12 md:col-6">
-            <label class="align-self-start" for="tipo-pregunta"
-                >Tipo evaluación</label
-            >
-            <p-dropdown
-                styleClass="w-full"
-                optionValue="iTipoEvalId"
-                formControlName="iTipoEvalId"
-                [options]="tipoEvaluaciones"
-                optionLabel="cTipoEvalNombre"
-                [styleClass]="
-                    evaluacionInfoForm.get('iTipoEvalId')?.invalid &&
+        <div class="col-12 md:col-3">
+            <p-inputGroup>
+                <p-inputGroupAddon>Tipo</p-inputGroupAddon>
+                <p-dropdown
+                    styleClass="w-full"
+                    placeholder="Seleccione Tipo"
+                    optionValue="iTipoEvalId"
+                    formControlName="iTipoEvalId"
+                    [options]="tipoEvaluaciones"
+                    optionLabel="cTipoEvalNombre"
+                    [styleClass]="
+                        evaluacionInfoForm.get('iTipoEvalId')?.invalid &&
+                        evaluacionInfoForm.get('iTipoEvalId')?.touched
+                            ? 'w-full ng-dirty ng-invalid p-invalid'
+                            : 'w-full'
+                    "
+                />
+            </p-inputGroup>
+            <div class="ml-7">
+                @if (
+                    evaluacionInfoForm
+                        .get('iTipoEvalId')
+                        .hasError('required') &&
                     evaluacionInfoForm.get('iTipoEvalId')?.touched
-                        ? 'w-full ng-dirty ng-invalid p-invalid'
-                        : 'w-full'
-                "
-            />
-            @if (
-                evaluacionInfoForm.get('iTipoEvalId').hasError('required') &&
-                evaluacionInfoForm.get('iTipoEvalId')?.touched
-            ) {
-                <small class="text-red-500"> Este campo es requerido </small>
-            }
+                ) {
+                    <small class="text-red-500">
+                        Este campo es requerido
+                    </small>
+                }
+            </div>
+        </div>
+
+        <div class="col-12 md:col-4">
+            <p-inputGroup>
+                <p-inputGroupAddon>Instrumento</p-inputGroupAddon>
+                <p-dropdown
+                    styleClass="w-full"
+                    placeholder="Seleccione Instrumento"
+                    optionValue="iInstrumentoId"
+                    formControlName="iInstrumentoId"
+                    [options]="rubricas"
+                    optionLabel="cInstrumentoNombre"
+                />
+            </p-inputGroup>
+        </div>
+        <div class="col-12">
+            <label for="descripcion" class="mt-1"
+                >Descripción o Instrucciones
+                <span class="text-red-500 text-xs">(*) Obligatorio</span></label
+            >
+            <div class="mt-2">
+                <p-editor
+                    styleClass="w-full"
+                    formControlName="cEvaluacionDescripcion"
+                    [style]="{ height: '150px' }"
+                    placeholder="Ingrese la descripción o instrucciones"
+                />
+                @if (
+                    evaluacionInfoForm
+                        .get('cEvaluacionDescripcion')
+                        .hasError('required') &&
+                    evaluacionInfoForm.get('cEvaluacionDescripcion')?.touched
+                ) {
+                    <small class="text-red-500">
+                        Este campo es requerido.
+                    </small>
+                }
+            </div>
+        </div>
+        <!-- <div class="col-12 md:col-4">
+           
+            <p-inputGroup>
+                <p-inputGroupAddon>Fecha - Hora Publicación </p-inputGroupAddon>
+                <p-calendar formControlName="dFechaEvaluacionPublicacion" [iconDisplay]="'input'" styleClass="w-full"
+                    [showIcon]="true" [showTime]="true" [hourFormat]="'24'" inputId="dFechaEvaluacionPublicacion" />
+            </p-inputGroup>
+        </div> -->
+        <div class="col-12 md:col-6">
+            <p-inputGroup>
+                <p-inputGroupAddon>Fecha - Hora Inicio </p-inputGroupAddon>
+                <p-calendar
+                    appendTo="body"
+                    formControlName="dFechaEvaluacionInico"
+                    [iconDisplay]="'input'"
+                    styleClass="w-full"
+                    [showIcon]="true"
+                    [showTime]="true"
+                    [hourFormat]="'24'"
+                    inputId="dFechaEvaluacionInico"
+                />
+            </p-inputGroup>
+        </div>
+        <div class="col-12 md:col-6">
+            <p-inputGroup>
+                <p-inputGroupAddon>Fecha - Hora Fin</p-inputGroupAddon>
+                <p-calendar
+                    appendTo="body"
+                    formControlName="dFechaEvaluacionFin"
+                    [iconDisplay]="'input'"
+                    styleClass="w-full"
+                    [showIcon]="true"
+                    [showTime]="true"
+                    [hourFormat]="'24'"
+                    inputId="dFechaEvaluacionFin"
+                />
+            </p-inputGroup>
+        </div>
+        <div class="col-12 mt-1">
+            <app-types-files-upload-primeng
+                [nameFile]="'evaluacion'"
+                [nameOption]="'evaluacion'"
+                [typesFiles]="typesFiles"
+                (actionTypesFileUpload)="accionBtnItem($event)"
+                [filesUrl]="filesUrl"
+            ></app-types-files-upload-primeng>
         </div>
     </div>
 
-    <h3 class="text-lg mt-0">Disponibilidad</h3>
-
-    <div class="formgrid grid">
+    <!-- <div class="formgrid grid">
         <div class="field flex flex-column col-12 md:col-6">
-            <label class="align-self-start" for="dFechaEvaluacionPublicacion"
-                >Fecha publicación</label
-            >
-            <p-calendar
-                formControlName="dFechaEvaluacionPublicacion"
-                appBaseDatePicker
-                [ngClass]="{
+            <label class="align-self-start" for="dFechaEvaluacionPublicacion">Fecha publicación</label>
+            <p-calendar formControlName="dFechaEvaluacionPublicacion" appBaseDatePicker [ngClass]="{
                     'ng-invalid ng-dirty':
                         evaluacionInfoForm.get('dFechaEvaluacionPublicacion')
                             ?.invalid &&
                         evaluacionInfoForm.get('dFechaEvaluacionPublicacion')
                             ?.touched,
-                }"
-                inputId="dFechaEvaluacionPublicacion"
-            />
-            @if (
-                evaluacionInfoForm
-                    .get('dFechaEvaluacionPublicacion')
-                    .hasError('required') &&
-                evaluacionInfoForm.get('dFechaEvaluacionPublicacion')?.touched
-            ) {
-                <small class="text-red-500"> Este campo es requerido. </small>
-            }
+                }" inputId="dFechaEvaluacionPublicacion" />
+
         </div>
         <div class="field flex flex-column col-12 md:col-6">
-            <label class="align-self-start" for="tHoraEvaluacionPublicacion"
-                >Hora publicación</label
-            >
-            <p-calendar
-                [timeOnly]="true"
-                appBaseDatePicker
-                [ngClass]="{
+            <label class="align-self-start" for="tHoraEvaluacionPublicacion">Hora publicación</label>
+            <p-calendar [timeOnly]="true" appBaseDatePicker [ngClass]="{
                     'ng-invalid ng-dirty':
                         evaluacionInfoForm.get('tHoraEvaluacionPublicacion')
                             ?.invalid &&
                         evaluacionInfoForm.get('tHoraEvaluacionPublicacion')
                             ?.touched,
-                }"
-                formControlName="tHoraEvaluacionPublicacion"
-                inputId="tHoraEvaluacionPublicacion"
-            >
-                <ng-template
-                    pTemplate="inputicon"
-                    let-clickCallBack="clickCallBack"
-                >
-                    <i
-                        class="pi pi-clock pointer-events-none"
-                    ></i> </ng-template
-            ></p-calendar>
+                }" formControlName="tHoraEvaluacionPublicacion" inputId="tHoraEvaluacionPublicacion">
+                <ng-template pTemplate="inputicon" let-clickCallBack="clickCallBack">
+                    <i class="pi pi-clock pointer-events-none"></i> </ng-template></p-calendar>
             @if (
-                evaluacionInfoForm
-                    .get('tHoraEvaluacionPublicacion')
-                    .hasError('required') &&
-                evaluacionInfoForm.get('tHoraEvaluacionPublicacion')?.touched
+            evaluacionInfoForm
+            .get('tHoraEvaluacionPublicacion')
+            .hasError('required') &&
+            evaluacionInfoForm.get('tHoraEvaluacionPublicacion')?.touched
             ) {
-                <small class="text-red-500"> Este campo es requerido. </small>
+            <small class="text-red-500"> Este campo es requerido. </small>
             }
         </div>
-    </div>
+    </div> -->
 
-    <div class="formgrid grid">
+    <!-- <div class="formgrid grid">
         <div class="field flex flex-column col-12 md:col-6">
-            <label class="align-self-start" for="dFechaEvaluacionInico"
-                >Fecha inicio evaluación</label
-            >
-            <p-calendar
-                appBaseDatePicker
-                formControlName="dFechaEvaluacionInico"
-                inputId="dFechaEvaluacionInico"
-            />
+            <label class="align-self-start" for="dFechaEvaluacionInico">Fecha inicio evaluación</label>
+            <p-calendar appBaseDatePicker formControlName="dFechaEvaluacionInico" inputId="dFechaEvaluacionInico" />
         </div>
         <div class="field flex flex-column col-12 md:col-6">
-            <label class="align-self-start" for="tHoraEvaluacionInico"
-                >Hora inicio evaluación</label
-            >
-            <p-calendar
-                [timeOnly]="true"
-                appBaseDatePicker
-                formControlName="tHoraEvaluacionInico"
-                inputId="tHoraEvaluacionInico"
-            >
-                <ng-template
-                    pTemplate="inputicon"
-                    let-clickCallBack="clickCallBack"
-                >
-                    <i
-                        class="pi pi-clock pointer-events-none"
-                    ></i> </ng-template
-            ></p-calendar>
+            <label class="align-self-start" for="tHoraEvaluacionInico">Hora inicio evaluación</label>
+            <p-calendar [timeOnly]="true" appBaseDatePicker formControlName="tHoraEvaluacionInico"
+                inputId="tHoraEvaluacionInico">
+                <ng-template pTemplate="inputicon" let-clickCallBack="clickCallBack">
+                    <i class="pi pi-clock pointer-events-none"></i> </ng-template></p-calendar>
         </div>
-    </div>
+    </div> -->
 
-    <div class="formgrid grid">
+    <!-- <div class="formgrid grid">
         <div class="field flex flex-column col-12 md:col-6">
-            <label class="align-self-start" for="dFechaEvaluacionFin"
-                >Fecha fin evaluación</label
-            >
-            <p-calendar
-                formControlName="dFechaEvaluacionFin"
-                appBaseDatePicker
-                inputId="dFechaEvaluacionFin"
-            />
+            <label class="align-self-start" for="dFechaEvaluacionFin">Fecha fin evaluación</label>
+            <p-calendar formControlName="dFechaEvaluacionFin" appBaseDatePicker inputId="dFechaEvaluacionFin" />
         </div>
         <div class="field flex flex-column col-12 md:col-6">
-            <label class="align-self-start" for="tHoraEvaluacionFin"
-                >Hora fin evaluación</label
-            >
-            <p-calendar
-                appBaseDatePicker
-                [timeOnly]="true"
-                formControlName="tHoraEvaluacionFin"
-                inputId="tHoraEvaluacionFin"
-            >
-                <ng-template
-                    pTemplate="inputicon"
-                    let-clickCallBack="clickCallBack"
-                >
+            <label class="align-self-start" for="tHoraEvaluacionFin">Hora fin evaluación</label>
+            <p-calendar appBaseDatePicker [timeOnly]="true" formControlName="tHoraEvaluacionFin"
+                inputId="tHoraEvaluacionFin">
+                <ng-template pTemplate="inputicon" let-clickCallBack="clickCallBack">
                     <i class="pi pi-clock pointer-events-none"></i>
                 </ng-template>
             </p-calendar>
         </div>
-    </div>
+    </div> -->
 
-    <div class="formgrid grid">
+    <!-- <div class="formgrid grid">
         <div class="field flex flex-column col-12">
-            <label class="align-self-start" for="cEvaluacionDescripcion"
-                >Descripción o Instrucciones</label
-            >
-            <p-editor
-                styleClass="w-full"
-                formControlName="cEvaluacionDescripcion"
-            />
+            <label class="align-self-start" for="cEvaluacionDescripcion">Descripción o Instrucciones</label>
+            <p-editor styleClass="w-full" formControlName="cEvaluacionDescripcion" />
             @if (
-                evaluacionInfoForm
-                    .get('cEvaluacionDescripcion')
-                    .hasError('required') &&
-                evaluacionInfoForm.get('cEvaluacionDescripcion')?.touched
+            evaluacionInfoForm
+            .get('cEvaluacionDescripcion')
+            .hasError('required') &&
+            evaluacionInfoForm.get('cEvaluacionDescripcion')?.touched
             ) {
-                <small class="text-red-500"> Este campo es requerido. </small>
+            <small class="text-red-500"> Este campo es requerido. </small>
             }
         </div>
-    </div>
+    </div> -->
 
-    <div class="formgrid grid">
+    <!-- <div class="formgrid grid">
         <div class="col-12 mt-1">
             <div class="card">
                 <label for="" class="mt-1">Adjuntar</label>
                 <div class="d-flex align-items-center text-center mt-1">
-                    <button
-                        pButton
-                        pRipple
-                        type="button"
-                        class="p-button-rounded p-button-outlined mx-2"
-                        (click)="openUpload('file')"
-                    >
-                        <i
-                            class="pi pi-upload my-2"
-                            style="color: #333437; font-size: 3rem"
-                            pTooltip="Subir Archivo"
-                            tooltipPosition="bottom"
-                        ></i>
+                    <button pButton pRipple type="button" class="p-button-rounded p-button-outlined mx-2"
+                        (click)="openUpload('file')">
+                        <i class="pi pi-upload my-2" style="color: #333437; font-size: 3rem" pTooltip="Subir Archivo"
+                            tooltipPosition="bottom"></i>
                     </button>
 
-                    <button
-                        pButton
-                        pRipple
-                        type="button"
-                        class="p-button-rounded p-button-outlined mx-2"
-                        (click)="openUpload('url')"
-                    >
-                        <i
-                            class="pi pi-link my-2"
-                            style="color: #333437; font-size: 3rem"
-                            pTooltip="Subir Enlace"
-                            tooltipPosition="bottom"
-                        ></i>
+                    <button pButton pRipple type="button" class="p-button-rounded p-button-outlined mx-2"
+                        (click)="openUpload('url')">
+                        <i class="pi pi-link my-2" style="color: #333437; font-size: 3rem" pTooltip="Subir Enlace"
+                            tooltipPosition="bottom"></i>
                     </button>
 
-                    <button
-                        pButton
-                        pRipple
-                        type="button"
-                        class="p-button-rounded p-button-outlined mx-2"
-                        (click)="openUpload('youtube')"
-                    >
-                        <i
-                            class="pi pi-youtube my-2"
-                            style="color: #c4302b; font-size: 3rem"
-                            pTooltip="Subir Enlace Youtube"
-                            tooltipPosition="bottom"
-                        ></i>
+                    <button pButton pRipple type="button" class="p-button-rounded p-button-outlined mx-2"
+                        (click)="openUpload('youtube')">
+                        <i class="pi pi-youtube my-2" style="color: #c4302b; font-size: 3rem"
+                            pTooltip="Subir Enlace Youtube" tooltipPosition="bottom"></i>
                     </button>
                 </div>
             </div>
         </div>
 
         @if (files.length) {
-            <div class="col-12">
-                <label for="" class="mt-2">Lista de Adjuntos</label>
+        <div class="col-12">
+            <label for="" class="mt-2">Lista de Adjuntos</label>
 
-                @for (item of files; track item; let idx = $index) {
-                    <p-inputGroup class="mt-1">
-                        <p-inputGroupAddon>
-                            @switch (item.type) {
-                                @case (1) {
-                                    <i
-                                        class="pi pi-upload"
-                                        style="color: #333437"
-                                    ></i>
-                                }
-                                @case (2) {
-                                    <i
-                                        class="pi pi-link"
-                                        style="color: #333437"
-                                    ></i>
-                                }
-                                @case (3) {
-                                    <i
-                                        class="pi pi-youtube"
-                                        style="color: #c4302b"
-                                    ></i>
-                                }
-                                @case (4) {
-                                    <i
-                                        class="pi pi-folder"
-                                        style="color: #ffd04b"
-                                    ></i>
-                                }
-                            }
-                        </p-inputGroupAddon>
-                        <input
-                            type="text"
-                            pInputText
-                            [placeholder]="item.name"
-                            disabled
-                        />
-                        <button
-                            type="button"
-                            pButton
-                            icon="pi pi-trash"
-                            (click)="files.splice(idx, 1)"
-                            class="p-button-danger"
-                        >
-                            &nbsp;
-                        </button>
-                    </p-inputGroup>
-                }
-            </div>
+            @for (item of files; track item; let idx = $index) {
+            <p-inputGroup class="mt-1">
+                <p-inputGroupAddon>
+                    @switch (item.type) {
+                    @case (1) {
+                    <i class="pi pi-upload" style="color: #333437"></i>
+                    }
+                    @case (2) {
+                    <i class="pi pi-link" style="color: #333437"></i>
+                    }
+                    @case (3) {
+                    <i class="pi pi-youtube" style="color: #c4302b"></i>
+                    }
+                    @case (4) {
+                    <i class="pi pi-folder" style="color: #ffd04b"></i>
+                    }
+                    }
+                </p-inputGroupAddon>
+                <input type="text" pInputText [placeholder]="item.name" disabled />
+                <button type="button" pButton icon="pi pi-trash" (click)="files.splice(idx, 1)" class="p-button-danger">
+                    &nbsp;
+                </button>
+            </p-inputGroup>
+            }
+        </div>
         }
-    </div>
+    </div> -->
 </form>
-
-<app-modal-primeng
-    [title]="titleFileEvaluacion"
-    [showModal]="showModal"
-    [width]="'35rem'"
-    (accionBtnItem)="accionBtnItem($event)"
->
-    <div class="grid">
-        @if (typeUpload === 'file') {
-            <div class="col-12 text-center">
-                <app-file-upload-primeng
-                    [nameFile]="'evaluacion'"
-                    [nameOption]="'evaluacion'"
-                    (actionFileUpload)="accionBtnItem($event)"
-                ></app-file-upload-primeng>
-            </div>
-        }
-        @if (typeUpload === 'url') {
-            <div class="col-12">
-                <p-inputGroup>
-                    <p-inputGroupAddon>
-                        <i class="pi pi-link"></i>
-                    </p-inputGroupAddon>
-                    <input
-                        type="text"
-                        pInputText
-                        placeholder="Pegar la URL"
-                        [(ngModel)]="nameEnlace"
-                    />
-                    <button
-                        type="button"
-                        pButton
-                        icon="pi pi-check"
-                        (click)="
-                            accionBtnItem({
-                                accion: 'subir-url',
-                                item: this.nameEnlace,
-                            })
-                        "
-                        class="p-button-succes"
-                    >
-                        &nbsp;
-                    </button>
-                </p-inputGroup>
-            </div>
-        }
-        @if (typeUpload === 'youtube') {
-            <div class="col-12">
-                <p-inputGroup>
-                    <p-inputGroupAddon>
-                        <i class="pi pi-youtube" style="color: #c4302b"></i>
-                    </p-inputGroupAddon>
-                    <input
-                        type="text"
-                        pInputText
-                        placeholder="Buscaer en Youtube o pegar la URL"
-                        [(ngModel)]="nameEnlace"
-                    />
-                    <button
-                        type="button"
-                        pButton
-                        icon="pi pi-check"
-                        (click)="
-                            accionBtnItem({
-                                accion: 'subir-youtube',
-                                item: this.nameEnlace,
-                            })
-                        "
-                        class="p-button-danger"
-                    >
-                        &nbsp;
-                    </button>
-                </p-inputGroup>
-            </div>
-        }
-
-        @if (typeUpload === 'recursos') {
-            <div class="col-12"></div>
-        }
-    </div>
-</app-modal-primeng>

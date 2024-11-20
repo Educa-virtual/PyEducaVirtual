@@ -11,11 +11,7 @@ import {
     matStar,
 } from '@ng-icons/material-icons/baseline'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
-import {
-    TablePrimengComponent,
-    IActionTable,
-    IColumn,
-} from '@/app/shared/table-primeng/table-primeng.component'
+import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
 import { provideIcons } from '@ng-icons/core'
 import { TabViewModule } from 'primeng/tabview'
 import { OrderListModule } from 'primeng/orderlist'
@@ -71,22 +67,31 @@ export class ForoRoomComponent implements OnInit {
     private _aulaService = inject(ApiAulaService)
     // private ref = inject(DynamicDialogRef)
     private _constantesService = inject(ConstantesService)
-    //private ref = inject(DynamicDialogRef)
     // variables
     showEditor = false // variable          para ocultar el p-editor
     public data = []
     FilesTareas = []
     estudiantes: any[] = []
+    estudiantesOriginales: any[] = []
     calificacion: any[] = []
-    respuestasForo: any[] = []
     comentarios: any[] = []
     descripcion: Message[] = []
     messages: Message[] | undefined
     messageWeb: string = ''
     messageWebs: string[] = []
-    modalCalificacion: boolean = false
-    estudianteSelect = null
     private unsbscribe$ = new Subject<boolean>()
+    modelaCalificacionComen: boolean = false
+    perfilSelect = null
+    respuestasForoEstudiant: any[] = []
+    totalComentarios: number = 0
+    estudianteId: any[] = []
+    // borrar variables del p-dia
+    modalCalificacion: boolean = false
+    estudianteSelectComent: number | null = null
+    estudianteSelect = null
+    respuestasForo: any[] = []
+    display = false
+    nombrecompleto
 
     public foro
     iPerfilId: number
@@ -126,74 +131,6 @@ export class ForoRoomComponent implements OnInit {
     constructor(private websocketService: WebsocketService) {}
 
     selectedItems = []
-    columnas: IColumn[] = [
-        {
-            field: 'id',
-            header: '#',
-            text: 'actividad',
-            text_header: 'left',
-            width: '3rem',
-            type: 'text',
-        },
-        {
-            field: 'cNombreEstudiante',
-            header: 'Estudiantes',
-            text: 'actividad',
-            text_header: 'left',
-            width: '5rem',
-            type: 'text',
-        },
-
-        {
-            field: 'cForoRptaRespuesta',
-            header: 'Respuesta',
-            text: 'Estado',
-            text_header: 'left',
-            width: '5rem',
-            type: 'text',
-        },
-        {
-            field: 'cNombreEstudiante',
-            header: 'Calificación',
-            text: 'actividad',
-            text_header: 'left',
-            width: '5rem',
-            type: 'text',
-        },
-
-        {
-            field: 'cForoRptaRespuesta',
-            header: 'Descripción',
-            text: 'Estado',
-            text_header: 'left',
-            width: '5rem',
-            type: 'text',
-        },
-        {
-            field: '',
-            header: 'Acciones',
-            type: 'actions',
-            width: '5rem',
-            text: 'left',
-            text_header: '',
-        },
-    ]
-    public accionesTabla: IActionTable[] = [
-        {
-            labelTooltip: 'Calificar',
-            icon: 'pi pi-eye',
-            accion: 'ver',
-            type: 'item',
-            class: 'p-button-rounded p-button-warning p-button-text',
-        },
-        {
-            labelTooltip: 'Eliminar',
-            icon: 'pi pi-trash',
-            accion: 'editar',
-            type: 'item',
-            class: 'p-button-rounded p-button-danger p-button-text',
-        },
-    ]
     ngOnInit(): void {
         // this.websocketService.messages$.subscribe((msg: any) => {
         //     this.messageWebs.push(`Servidor: ${msg}`)
@@ -208,9 +145,6 @@ export class ForoRoomComponent implements OnInit {
         this.getRespuestaF()
         this.getEstudiantesMatricula()
     }
-    // closeModal(data) {
-    //     this.ref.close(data)
-    // }
 
     accionBtnItemTable({ accion, item }) {
         if (accion === 'asignar') {
@@ -234,11 +168,19 @@ export class ForoRoomComponent implements OnInit {
         this.estudianteSelect = respuestasForo
         this.foroFormComnt.patchValue(respuestasForo)
     }
+    openModalCalificacion(respuestasForoEstudiant) {
+        this.modelaCalificacionComen = true
+        this.perfilSelect = respuestasForoEstudiant
+    }
     toggleEditor() {
         this.showEditor = true
     }
     closeEditor() {
         this.showEditor = false
+    }
+    selecEstudiante(estudianteId: number): void {
+        this.estudianteSelectComent = estudianteId
+        console.log('Hola estudiante', this.estudianteSelectComent)
     }
     submit() {
         const value = this.foroFormComnt.value
@@ -360,12 +302,11 @@ export class ForoRoomComponent implements OnInit {
                     this.messages = [
                         {
                             severity: 'info',
-                            detail:
-                                resp?.cForoDescripcion ||
-                                'No hay descripción disponible',
+                            detail: resp?.cForoDescripcion,
                         },
                     ]
                     this.foro = resp
+                    console.log('obtener datos de foro01', resp)
                     this.FilesTareas = this.foro?.cForoUrl
                         ? JSON.parse(this.foro?.cForoUrl)
                         : []
@@ -389,37 +330,46 @@ export class ForoRoomComponent implements OnInit {
                         })
                     )
                     this.data = resp['data']
-                    this.respuestasForo.forEach(
-                        (i) =>
-                            (i.json_respuestas_comentarios =
-                                i.json_respuestas_comentarios
-                                    ? JSON.parse(i.json_respuestas_comentarios)
-                                    : null)
+                    this.totalComentarios = 0
+                    this.respuestasForo.forEach((respuesta) => {
+                        respuesta.json_respuestas_comentarios =
+                            respuesta.json_respuestas_comentarios
+                                ? JSON.parse(
+                                      respuesta.json_respuestas_comentarios
+                                  )
+                                : []
+                        // Sumar comentarios principales + anidados
+                        this.totalComentarios +=
+                            respuesta.json_respuestas_comentarios.length
+                    })
+
+                    console.log(
+                        'Respuesta Comentarios de los Foros',
+                        this.respuestasForo
                     )
-                    console.log('Comentarios de los Foros', this.respuestasForo)
                 },
                 error: (err) => {
                     console.error('Error al obtener respuestas del foro', err)
                 },
             })
         // Suscribirse a nuevos comentarios a través de WebSocket
-        this.websocketService.listen('newComment').subscribe((message: any) => {
-            console.log('Nuevo comentario recibido desde WebSocket:', message)
+        // this.websocketService.listen('newComment').subscribe((message: any) => {
+        //     console.log('Nuevo comentario recibido desde WebSocket:', message)
 
-            // Suponiendo que el comentario recibido es solo texto, puedes agregarlo a la lista de respuestas.
-            // Si necesitas agregar la respuesta de una manera más estructurada, ajusta este bloque.
-            const newComment = {
-                cForoRptaRespuesta: message,
-                expanded: false,
-            }
+        //     // Suponiendo que el comentario recibido es solo texto, puedes agregarlo a la lista de respuestas.
+        //     // Si necesitas agregar la respuesta de una manera más estructurada, ajusta este bloque.
+        //     const newComment = {
+        //         cForoRptaRespuesta: message,
+        //         expanded: false,
+        //     }
 
-            // Aquí puedes agregar el nuevo comentario al array `respuestasForo`
-            // Asegúrate de que `respuestasForo` esté actualizada con los nuevos comentarios
-            this.respuestasForo.push(newComment)
+        //     // Aquí puedes agregar el nuevo comentario al array `respuestasForo`
+        //     // Asegúrate de que `respuestasForo` esté actualizada con los nuevos comentarios
+        //     this.respuestasForo.push(newComment)
 
-            // Si la lista de respuestas necesita alguna otra actualización o formato, puedes hacerlo aquí.
-            console.log('Respuestas de foro actualizadas:', this.respuestasForo)
-        })
+        //     // Si la lista de respuestas necesita alguna otra actualización o formato, puedes hacerlo aquí.
+        //     console.log('Respuestas de foro actualizadas:', this.respuestasForo)
+        // })
     }
     toggleExpand(comment: any) {
         comment.expanded = !comment.expanded

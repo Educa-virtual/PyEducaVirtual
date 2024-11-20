@@ -4,6 +4,9 @@ export interface ICurso {
     descripcion?: string
     seccion?: string
     cGradoAbreviacion?: string
+    cCicloRomanos?: string
+    cNivelNombreCursos?: string
     iEstudiantes?: number
     iSilaboId: string
+    nombrecompleto?: string
 }

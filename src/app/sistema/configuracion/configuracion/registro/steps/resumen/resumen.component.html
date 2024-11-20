@@ -9,7 +9,7 @@
                 <span>Fecha inicio:</span>
                 <span>{{
                     this.ticketService.toVisualFechasFormat(
-                        this.ticketService.registroInformation.stepYear
+                        this.ticketService.registroInformation?.stepYear
                             .fechaInicio,
                         'DD/MM/YYYY'
                     )
@@ -19,7 +19,7 @@
                 <span>Fecha fin:</span>
                 <span>{{
                     this.ticketService.toVisualFechasFormat(
-                        this.ticketService.registroInformation.stepYear
+                        this.ticketService.registroInformation?.stepYear
                             .fechaFin,
                         'DD/MM/YYYY'
                     )
@@ -38,24 +38,29 @@
             [data]="resumenInformation.formasAtencion"
         >
         </app-table-primeng>
+        
         <h6>Información del periodo académico</h6>
-        <div class="flex justify-content-between">
-            <div>
-                <span>Periodo académico:</span>
-                <span>Regular</span>
+        @for (periodo of resumenInformation.periodosAcademicos; track periodo.iFaseId) {
+            <div class="flex justify-content-between">
+                <div>
+                    <span>Periodo académico:</span>
+                    <span>{{periodo.cFasePromNombre}}</span>
+                </div>
+                <div>
+                    <span>Ciclo académico:</span>
+                    <span>{{periodo.cPeriodoEvalNombre}}</span>
+                </div>
             </div>
-            <div>
-                <span>Ciclo académico:</span>
-                <span></span>
-            </div>
-        </div>
-        <app-table-primeng
+            <app-table-primeng
             [showCaption]="false"
             [columnas]="columnsPeriodosAcademicos"
             [showPaginator]="false"
-            [data]="resumenInformation.periodosAcademicos"
+            [data]="periodo.periodosEvalForm"
         >
-        </app-table-primeng>
+            </app-table-primeng>
+        }
+        
+
     </div>
 
     <div class="navigator flex justify-content-between">

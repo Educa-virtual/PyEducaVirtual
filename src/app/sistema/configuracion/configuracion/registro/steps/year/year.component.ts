@@ -1,14 +1,15 @@
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
-import { Component, OnInit } from '@angular/core'
+import { Component, OnInit, HostListener } from '@angular/core'
 
 import { Router } from '@angular/router'
 import { TicketService } from '../../service/ticketservice'
 
-import { FormsModule } from '@angular/forms'
+import { FormControl, FormsModule } from '@angular/forms'
 import { ButtonModule } from 'primeng/button'
 import { CalendarModule } from 'primeng/calendar'
-
+import { InputGroupModule } from 'primeng/inputgroup'
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
 import {
     FormBuilder,
     FormGroup,
@@ -38,11 +39,15 @@ import { ToastModule } from 'primeng/toast'
         ConfirmDialogModule,
         ToastModule,
         CheckboxModule,
+        InputGroupModule,
+        InputGroupAddonModule,
     ],
     templateUrl: './year.component.html',
     styleUrl: './year.component.scss',
 })
 export class YearComponent implements OnInit {
+    // navigationSubscription
+    // isHandlingNavigation = false
     form: FormGroup
     calFasesFechasInformation: {
         iSedeId: string
@@ -51,15 +56,15 @@ export class YearComponent implements OnInit {
         dtCalAcadFin: Date
         dtCalAcadMatriculaInicio: Date
         dtCalAcadMatriculaFin: Date
-        bCalAcadFaseRegular: boolean
-        bCalAcadFaseRecuperacion: boolean
-
         dtFaseRegularInicio: Date
         dtFaseRegularFin: Date
         dtFaserecuperacionInicio: Date
         dtFaserecuperacionFin: Date
     }
-    fasesPromocionales: Array<any>
+    fasesPromocionales: {
+        iFasePromId: string
+        cFasePromNombre: string
+    }[]
     constructor(
         public ticketService: TicketService,
         private router: Router,
@@ -69,23 +74,35 @@ export class YearComponent implements OnInit {
         this.form = this.fb.group({
             fechaVigente: ['', Validators.required],
             fechaInicio: ['', Validators.required],
-            fechaFin: ['', Validators.required],
-            fechaMatriculaInicio: ['', Validators.required],
+            // fechaFin: ['', Validators.required],
+            // fechaMatriculaInicio: ['', Validators.required],
             fechaMatriculaFin: ['', Validators.required],
-            fechaFaseRegularInicio: [''],
-            fechaFaseRegularFin: [''],
-            fechaMatriculaRezagados: [''],
-            fechaFaseRecuperacionInicio: [''],
-            fechaFaseRecuperacionFin: [''],
-            regular: [[], Validators.required],
-            recuperacion: [[], Validators.required],
+            fechaMatriculaRezagados: ['', Validators.required],
         })
+    }
+
+    @HostListener('window:beforeunload', ['$event'])
+    onBeforeUnload(): void {
+        // param: event: BeforeUnloadEvent
+        sessionStorage.setItem('reloadDetected', 'true')
     }
     async ngOnInit() {
         // this.fasesPromocionales = await this.ticketService.getFasesFechas()
+        console.log('reloadDetected')
+        console.log(sessionStorage)
+
+        if (
+            sessionStorage.getItem('reloadDetected') &&
+            sessionStorage.getItem('reloadDetected') == 'true'
+        ) {
+            this.router.navigate(['configuracion/configuracion/years'])
+        }
+
+        // Limpia la marca después de manejarla
+        sessionStorage.removeItem('reloadDetected')
 
         await this.ticketService.setCalendar(
-            { iYAcadId: '', iCalAcadId: '' },
+            { iCalAcadId: '' },
             {
                 onCompleteCallbacks: [
                     (data) => this.setValuesFormCalendar(data),
@@ -104,8 +121,6 @@ export class YearComponent implements OnInit {
                 dtCalAcadFin: value.fechaFin,
                 dtCalAcadMatriculaInicio: value.fechaMatriculaInicio,
                 dtCalAcadMatriculaFin: value.fechaMatriculaFin,
-                bCalAcadFaseRegular: value.regular.includes(true),
-                bCalAcadFaseRecuperacion: value.recuperacion.includes(true),
 
                 dtFaseRegularInicio: value.fechaFaseRegularInicio,
                 dtFaseRegularFin: value.fechaFaseRegularFin,
@@ -114,9 +129,29 @@ export class YearComponent implements OnInit {
             }
             console.log(value)
         })
+
+        // this.navigationSubscription = this.router.events.subscribe((event: NavigationEvent) => {
+        //     if (event instanceof NavigationStart) {
+        //       if (this.isHandlingNavigation) {
+        //         return; // Si ya estás manejando el evento, no hagas nada
+        //       }
+
+        //       this.isHandlingNavigation = true; // Establece el flag para bloquear otros eventos
+        //       const allowNavigation = window.confirm('¿Desea salir sin guardar los cambios?');
+
+        //       if (!allowNavigation) {
+        //         // Cancela la navegación
+        //         this.router.navigateByUrl(this.router.url); // Mantén la ruta actual
+        //         this.isHandlingNavigation = false; // Restablece el flag después de manejar el evento
+        //       }
+
+        //     }
+        //   });
     }
 
     setValuesFormCalendar(data) {
+        this.fasesPromocionales = data.fasesProm
+
         if (this.ticketService.registroInformation.calendar.iCalAcadId) {
             const {
                 fechaVigente,
@@ -128,88 +163,158 @@ export class YearComponent implements OnInit {
                 fases_promocionales,
             } = this.ticketService.registroInformation.stepYear
 
-            const fasePromocional = data.fasesProm.reduce((acc, item) => {
-                acc[item.iFasePromId] = item
-                return acc
-            }, {})
-
-            const existFaseRegular =
-                Array.isArray(fases_promocionales) &&
-                fases_promocionales.find(
-                    (fase) => fase.iFasePromId == fasePromocional[1].iFasePromId
+            if (Array.isArray(fases_promocionales)) {
+                const idExistsFases = fases_promocionales.map((faseExist) =>
+                    String(faseExist.iFasePromId)
                 )
-            console.log(existFaseRegular)
 
-            const existFaseRecuperacion =
-                Array.isArray(fases_promocionales) &&
-                fases_promocionales.find(
-                    (fase) => fase.iFasePromId == fasePromocional[2].iFasePromId
+                const noExistsFases = data.fasesProm.filter(
+                    (fase) => !idExistsFases.includes(fase.iFasePromId)
                 )
-            console.log(existFaseRecuperacion)
+
+                console.log('ifo')
+
+                console.log(
+                    this.ticketService.registroInformation.stepYear
+                        .fases_promocionales
+                )
+
+                this.ticketService.registroInformation.stepYear.fases_promocionales.forEach(
+                    (fase) => {
+                        this.form.addControl(
+                            'faseCheck' + fase.iFasePromId,
+                            new FormControl([
+                                {
+                                    iFasePromId: fase.iFasePromId,
+                                    cFasePromNombre: fase.cFasePromNombre,
+                                },
+                                true,
+                            ])
+                        )
+
+                        this.form.addControl(
+                            'faseInputInicio' + fase.iFasePromId,
+                            new FormControl([
+                                new Date(fase.dtFaseInicio),
+                                new Date(fase.dtFaseFin),
+                            ])
+                        )
+
+                        this.form.addControl(
+                            'faseInputFin' + fase.iFasePromId,
+                            new FormControl(new Date(fase.dtFaseFin))
+                        )
+                    }
+                )
+
+                noExistsFases.forEach((fase) => {
+                    this.form.addControl(
+                        'faseCheck' + fase.iFasePromId,
+                        new FormControl([fase])
+                    )
+
+                    this.form.addControl(
+                        'faseInputInicio' + fase.iFasePromId,
+                        new FormControl('')
+                    )
+
+                    this.form.addControl(
+                        'faseInputFin' + fase.iFasePromId,
+                        new FormControl('')
+                    )
+
+                    this.form
+                        .get('faseInputInicio' + fase.iFasePromId)
+                        .disable()
+                    this.form.get('faseInputFin' + fase.iFasePromId).disable()
+                })
+            } else {
+                this.fasesPromocionales.forEach((fase) => {
+                    this.form.addControl(
+                        'faseCheck' + fase.iFasePromId,
+                        new FormControl([fase])
+                    )
+
+                    this.form.addControl(
+                        'faseInputInicio' + fase.iFasePromId,
+                        new FormControl('')
+                    )
+
+                    this.form.addControl(
+                        'faseInputFin' + fase.iFasePromId,
+                        new FormControl('')
+                    )
+
+                    this.form
+                        .get('faseInputInicio' + fase.iFasePromId)
+                        .disable()
+                    this.form.get('faseInputFin' + fase.iFasePromId).disable()
+                })
+            }
 
             this.form.patchValue({
                 fechaVigente: fechaVigente ?? '',
-                fechaInicio: fechaInicio ?? '',
+                fechaInicio: (fechaInicio && [fechaInicio, fechaFin]) ?? '',
                 fechaFin: fechaFin ?? '',
                 fechaMatriculaInicio: matriculaInicio ?? '',
-                fechaMatriculaFin: matriculaFin ?? '',
-                fechaFaseRegularInicio: existFaseRegular?.dtFaseInicio
-                    ? new Date(existFaseRegular.dtFaseInicio)
-                    : '',
-                fechaFaseRegularFin: existFaseRegular?.dtFaseFin
-                    ? new Date(existFaseRegular.dtFaseFin)
-                    : '',
-                fechaFaseRecuperacionInicio: existFaseRecuperacion?.dtFaseInicio
-                    ? new Date(existFaseRecuperacion.dtFaseInicio)
-                    : '',
-                fechaFaseRecuperacionFin: existFaseRecuperacion?.dtFaseFin
-                    ? new Date(existFaseRecuperacion.dtFaseFin)
-                    : '',
-                fechaMatriculaRezagados: matriculaResagados ?? '',
-                regular: existFaseRegular
-                    ? [existFaseRegular, true]
-                    : [data.fasesProm[0]],
-                recuperacion: existFaseRecuperacion
-                    ? [existFaseRecuperacion, true]
-                    : [data.fasesProm[1]],
+                fechaMatriculaFin:
+                    (matriculaFin && [matriculaInicio, matriculaFin]) ?? '',
+                fechaMatriculaRezagados:
+                    (matriculaResagados && [
+                        matriculaFin,
+                        matriculaResagados,
+                    ]) ??
+                    '',
             })
         } else {
             this.form.patchValue({
                 fechaVigente: data.yearAcad.cYAcadNombre,
-                fechaInicio: new Date(data.yearAcad.dtYAcadInicio),
-                fechaFin: new Date(data.yearAcad.dYAcadFin),
-                regular: [data.fasesProm[0]],
-                recuperacion: [data.fasesProm[1]],
+                fechaInicio: [
+                    new Date(data.yearAcad.dtYAcadInicio),
+                    new Date(data.yearAcad.dYAcadFin),
+                ],
+            })
+
+            this.fasesPromocionales.forEach((fase) => {
+                this.form.addControl(
+                    'faseCheck' + fase.iFasePromId,
+                    new FormControl([fase])
+                )
+
+                this.form.addControl(
+                    'faseInputInicio' + fase.iFasePromId,
+                    new FormControl('')
+                )
+
+                this.form.addControl(
+                    'faseInputFin' + fase.iFasePromId,
+                    new FormControl('')
+                )
+
+                this.form.get('faseInputInicio' + fase.iFasePromId).disable()
+                this.form.get('faseInputFin' + fase.iFasePromId).disable()
             })
         }
 
         this.form.get('fechaVigente').disable()
-        this.isActiveFechasFases()
     }
 
-    isActiveFechasFases() {
-        if (this.form.get('regular').value.includes(true)) {
-            this.form.get('fechaFaseRegularInicio').enable()
-            this.form.get('fechaFaseRegularFin').enable()
+    isActiveFechasFases(checkId = null) {
+        if (
+            checkId &&
+            this.form.get('faseCheck' + checkId).value.includes(true)
+        ) {
+            this.form.get('faseInputInicio' + checkId).enable()
+            this.form.get('faseInputFin' + checkId).enable()
         } else {
-            this.form.get('fechaFaseRegularInicio').disable()
-            this.form.get('fechaFaseRegularFin').disable()
-            this.form.get('fechaFaseRegularInicio').reset()
-            this.form.get('fechaFaseRegularFin').reset()
-        }
-
-        if (this.form.get('recuperacion').value.includes(true)) {
-            this.form.get('fechaFaseRecuperacionInicio').enable()
-            this.form.get('fechaFaseRecuperacionFin').enable()
-        } else {
-            this.form.get('fechaFaseRecuperacionInicio').disable()
-            this.form.get('fechaFaseRecuperacionFin').disable()
-            this.form.get('fechaFaseRecuperacionInicio').reset()
-            this.form.get('fechaFaseRecuperacionFin').reset()
+            this.form.get('faseInputInicio' + checkId).disable()
+            this.form.get('faseInputFin' + checkId).disable()
+            this.form.get('faseInputInicio' + checkId).reset()
+            this.form.get('faseInputFin' + checkId).reset()
         }
     }
 
-    confirm() {
+    async confirm() {
         const message: informationMessage = {
             header: '¿Desea guardar información?',
             message: 'Por favor, confirme para continuar.',
@@ -227,15 +332,33 @@ export class YearComponent implements OnInit {
             },
         }
 
-        this.stepConfirmationService.confirmAction(
+        await this.stepConfirmationService.confirmAction(
             {
                 onAcceptPromises: [
-                    () => this.saveInformation(),
-                    () => this.nextPage(),
+                    async () => await this.saveInformation(),
+                    async () => await this.nextPage(),
                 ],
             },
             message
         )
+    }
+
+    filterInputsByPrefix(obj, prefix) {
+        const keysWithPrefix = Object.keys(obj).filter(
+            (key) => key.startsWith(prefix) && obj[key].includes(true)
+        )
+
+        const faseChecks = keysWithPrefix
+            .flatMap((keyFaseCheck) => obj[keyFaseCheck])
+            .filter((fase) => typeof fase == 'object')
+
+        const faseInputs = faseChecks.map((faseCheck) => ({
+            iFasePromId: faseCheck.iFasePromId,
+            dtFaseInicio: obj['faseInputInicio' + faseCheck.iFasePromId],
+            dtFaseFin: obj['faseInputFin' + faseCheck.iFasePromId],
+        }))
+
+        return faseInputs
     }
 
     async saveInformation() {
@@ -243,37 +366,87 @@ export class YearComponent implements OnInit {
             await this.ticketService.insCalAcademico(this.form.value)
         } else {
             await this.ticketService.updCalAcademico(this.form.value)
+            // await this.ticketService.updCalFasesProm(this.form.value)
         }
-        console.log(this.ticketService.registroInformation.calendar.iCalAcadId)
 
-        const checkRegular = this.form.get('regular').value
-        const checkRecuperacion = this.form.get('recuperacion').value
+        const calFasesProm = this.filterInputsByPrefix(
+            this.form.value,
+            'faseCheck'
+        ).map((fase) => ({
+            iFasePromId: fase.iFasePromId,
+            dtFaseInicio: fase.dtFaseInicio[0],
+            dtFaseFin: fase.dtFaseInicio[1],
+        }))
 
-        if (checkRegular.includes(true)) {
-            const { fechaFaseRegularInicio, fechaFaseRegularFin } =
-                this.form.value
-            await this.ticketService.insCalFasesProm({
-                form: {
-                    faseInicio: fechaFaseRegularInicio,
-                    faseFinal: fechaFaseRegularFin,
-                },
-                insFase: checkRegular[0],
-            })
+        const idCheckFases = calFasesProm.map((fase) =>
+            Number(fase.iFasePromId)
+        )
+
+        console.log('Fases Prom')
+        console.log(idCheckFases)
+        console.log(calFasesProm)
+
+        if (
+            Array.isArray(
+                this.ticketService.registroInformation.stepYear
+                    .fases_promocionales
+            )
+        ) {
+            const deleteCalFasesProm =
+                this.ticketService.registroInformation.stepYear.fases_promocionales.filter(
+                    (fase) => !idCheckFases.includes(fase.iFasePromId)
+                )
+
+            const idExistsFases =
+                this.ticketService.registroInformation.stepYear.fases_promocionales.map(
+                    (fase) => fase.iFasePromId
+                )
+
+            const insCalFasesProm = calFasesProm.filter(
+                (fase) => !idExistsFases.includes(fase.iFasePromId)
+            )
+
+            const existCalFasesProm = calFasesProm.filter((fase) =>
+                idExistsFases.includes(fase.iFasePromId)
+            )
+
+            if (insCalFasesProm.length > 0) {
+                await this.ticketService.insCalFasesProm(insCalFasesProm)
+            }
+
+            if (deleteCalFasesProm.length > 0) {
+                await this.ticketService.deleteCalFasesProm(deleteCalFasesProm)
+            }
+
+            if (existCalFasesProm.length > 0) {
+                console.log('Actualizando')
+                const updCalFasesProm =
+                    this.ticketService.registroInformation.stepYear.fases_promocionales.map(
+                        (fase) => {
+                            const obj = existCalFasesProm.find(
+                                (existCalFaseProm) =>
+                                    existCalFaseProm.iFasePromId ==
+                                    fase.iFasePromId
+                            )
+
+                            console.log('Fase a actualizar')
+
+                            console.log(fase)
+
+                            return obj
+                                ? {
+                                      iFaseId: fase.iFaseId,
+                                      iFasePromId: obj.iFasePromId,
+                                      dtFaseInicio: obj.dtFaseInicio,
+                                      dtFaseFin: obj.dtFaseFin,
+                                  }
+                                : fase
+                        }
+                    )
+                await this.ticketService.updCalFasesProm(updCalFasesProm)
+            }
         } else {
-            await this.ticketService.deleteCalFasesProm(checkRegular[0])
-        }
-        if (checkRecuperacion.includes(true)) {
-            const { fechaFaseRecuperacionInicio, fechaFaseRecuperacionFin } =
-                this.form.value
-            await this.ticketService.insCalFasesProm({
-                form: {
-                    faseInicio: fechaFaseRecuperacionInicio,
-                    faseFinal: fechaFaseRecuperacionFin,
-                },
-                insFase: checkRecuperacion[0],
-            })
-        } else {
-            await this.ticketService.deleteCalFasesProm(checkRecuperacion[0])
+            await this.ticketService.insCalFasesProm(calFasesProm)
         }
 
         await this.ticketService.setCalendar()
@@ -284,4 +457,10 @@ export class YearComponent implements OnInit {
             'configuracion/configuracion/registro/dias-laborales',
         ])
     }
+
+    // ngOnDestroy() {
+    //     if (this.router) {
+    //       this.navigationSubscription.unsubscribe();
+    //     }
+    //   }
 }

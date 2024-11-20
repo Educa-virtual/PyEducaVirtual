@@ -231,9 +231,15 @@ export class TareaFormComponent implements OnChanges {
         this.formTareas.controls.cProgActTituloLeccion.setValue(
             this.formTareas.value.cTareaTitulo
         )
-        this.formTareas.controls.cProgActDescripcion.setValue(
-            this.formTareas.value.cTareaDescripcion
-        )
+        // Funcion para limpiar la etiqueta de p-editor
+        const rawDescripcion =
+            this.formTareas.controls.cTareaDescripcion.value || ''
+        const tempElement = document.createElement('div')
+        tempElement.innerHTML = rawDescripcion // Insertamos el HTML en un elemento temporal
+        const cleanDescripcion = tempElement.innerText.trim() // Obtenemos solo el texto
+
+        this.formTareas.controls.cTareaDescripcion.setValue(cleanDescripcion)
+
         this.formTareas.controls.dtProgActPublicacion.setValue(horaFin)
         this.formTareas.controls.cTareaArchivoAdjunto.setValue(
             JSON.stringify(this.filesUrl)

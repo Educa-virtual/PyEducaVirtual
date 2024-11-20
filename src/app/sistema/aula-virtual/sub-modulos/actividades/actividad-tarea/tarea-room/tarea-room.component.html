@@ -57,14 +57,18 @@
                                 >
                             </h3>
                             <div class="mt-2">
-                                <!-- <p-editor
-                                [(ngModel)]="cTareaDescripcion"
-                                 [disabled]="true"
-                                id="descripcion"
-                                [style]="{ height: '150px' }"
-                                disabled
-                            /> -->
+                                <div
+                                    [innerHTML]="data?.cTareaDescripcion"
+                                ></div>
+                                <p-editor
+                                    [(ngModel)]="cTareaDescripcion"
+                                    [disabled]="true"
+                                    id="descripcion"
+                                    [style]="{ height: '150px' }"
+                                    disabled
+                                />
                             </div>
+                            <!-- <div [innerHTML]="data?.cTareaDescripcion"></div>
                             <input
                                 id="descripcion"
                                 type="text"
@@ -75,7 +79,7 @@
                                 "
                                 placeholder="Ingrese el título de la tarea"
                                 class="p-inputtext-sm"
-                            />
+                            /> -->
                         </div>
                     </div>
 
@@ -301,12 +305,12 @@
                                 </div>
                             }
                             <p-divider></p-divider>
+                            <p-toast></p-toast>
                             <div
                                 class="flex align-items-center justify-content-center"
                             >
-                                <p-toast></p-toast>
                                 <p-button
-                                    label="Enviar Tareass"
+                                    label="Enviar Tarea"
                                     icon="pi pi-check"
                                     iconPos="right"
                                     (onClick)="entregarEstudianteTareaGrupal()"

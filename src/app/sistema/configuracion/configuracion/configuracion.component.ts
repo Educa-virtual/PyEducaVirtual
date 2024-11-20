@@ -1,4 +1,4 @@
-import { Component } from '@angular/core'
+import { Component, OnInit, OnChanges, OnDestroy } from '@angular/core'
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
 
@@ -26,13 +26,13 @@ import { TicketService } from './registro/service/ticketservice'
     ],
     templateUrl: './configuracion.component.html',
     styleUrl: './configuracion.component.scss',
-    providers: [
-        TicketService,
-        StepConfirmationService,
-        ConfirmationService,
-        MessageService,
-    ],
+    providers: [TicketService, StepConfirmationService, ConfirmationService, MessageService],
 })
-export class ConfiguracionComponent {
+export class ConfiguracionComponent implements OnInit, OnChanges, OnDestroy {
     constructor(private router: Router) {}
+    ngOnInit() {}
+
+    ngOnChanges(changes) {}
+
+    ngOnDestroy() {}
 }

@@ -47,7 +47,7 @@ export class DiasLaboralesComponent implements OnInit {
         private localService: LocalStoreService
     ) {}
 
-    nextPage() {
+    async nextPage() {
         this.router.navigate(['configuracion/configuracion/registro/turnos'])
     }
 
@@ -89,7 +89,12 @@ export class DiasLaboralesComponent implements OnInit {
         }
 
         this.stepConfirmationService.confirmAction(
-            { onAcceptCallbacks: [() => this.saveInformation()] },
+            {
+                onAcceptPromises: [
+                    () => this.saveInformation(),
+                    () => this.nextPage(),
+                ],
+            },
             message
         )
     }

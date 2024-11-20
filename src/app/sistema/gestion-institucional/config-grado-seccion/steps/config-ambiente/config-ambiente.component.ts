@@ -420,6 +420,18 @@ export class ConfigAmbienteComponent implements OnInit {
         this.form.get('cAmbienteObs')?.setValue('')
         this.form.get('bAmbienteEstado')?.setValue(0)
     }
+
+    saveInformation() {
+        if (this.caption == 'create') {
+            alert('Mensaje 0 save')
+        } else {
+            alert('Mensaje 1 save')
+        }
+    }
+    nextPage() {
+        alert('mensaje de next')
+    }
+
     //ESTRUCTURASS DE TABLA
     //Maquetar tablas
     handleActions(actions) {

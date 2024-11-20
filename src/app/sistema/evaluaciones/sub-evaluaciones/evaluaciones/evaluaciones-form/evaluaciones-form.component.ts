@@ -1,6 +1,7 @@
 //Agregar Servicio de Evaluacion
+//!Se agrego el afterviewinit
 import { CompartirIdEvaluacionService } from './../../../services/ereEvaluaciones/compartir-id-evaluacion.service'
-import { Component, inject, Input, OnInit, ViewChild } from '@angular/core'
+import { Component, inject, OnInit, ViewChild } from '@angular/core'
 
 /*BOTONES */
 import { ButtonModule } from 'primeng/button'
@@ -16,7 +17,7 @@ import { InputTextareaModule } from 'primeng/inputtextarea'
 import { TabViewModule } from 'primeng/tabview'
 import { DropdownModule } from 'primeng/dropdown'
 
-import { IeparticipaComponent } from '../ieparticipa/ieparticipa.component'
+import { IeparticipaComponent } from '../ieparticipa/ieparticipa.component' //Referencia Componente IE
 
 import { EvaluacionAreasComponent } from './../evaluacion-areas/evaluacion-areas.component'
 
@@ -27,7 +28,7 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog'
 import { DividerModule } from 'primeng/divider'
 
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
-
+import { ScrollPanelModule } from 'primeng/scrollpanel'
 import {
     FormBuilder,
     FormsModule,
@@ -40,6 +41,10 @@ import { CommonModule } from '@angular/common'
 import { TablePrimengComponent } from '../../../../../shared/table-primeng/table-primeng.component'
 import { CardModule } from 'primeng/card'
 import { StepsModule } from 'primeng/steps'
+import { Stepper } from 'primeng/stepper'
+import { MessageService } from 'primeng/api'
+import { ToastModule } from 'primeng/toast'
+import { CalendarModule } from 'primeng/calendar'
 interface TipoEvaluacion {
     idTipoEvalId: number
     cTipoEvalDescripcion: string
@@ -53,6 +58,7 @@ interface NivelEvaluacion {
     selector: 'app-evaluaciones-form',
     standalone: true,
     imports: [
+        ScrollPanelModule,
         ContainerPageComponent,
         StepsModule,
         ButtonModule,
@@ -71,6 +77,8 @@ interface NivelEvaluacion {
         DividerModule,
         TablePrimengComponent,
         CardModule,
+        ToastModule,
+        CalendarModule,
     ],
     templateUrl: './evaluaciones-form.component.html',
     styleUrl: './evaluaciones-form.component.scss',
@@ -88,8 +96,9 @@ export class EvaluacionesFormComponent implements OnInit {
     }
     public data = []
     private _apiEre = inject(ApiEvaluacionesRService)
+    private _MessageService = inject(MessageService) //!Agregando Mensaje
     tipoEvaluacion: TipoEvaluacion[] | undefined
-    iEvaluacionId: any
+    iEvaluacionId: number
     selectedTipoEvaluacion: TipoEvaluacion | undefined
     nivelEvaluacion: NivelEvaluacion[] | undefined
     selectedNivelEvaluacion: TipoEvaluacion | undefined
@@ -97,20 +106,101 @@ export class EvaluacionesFormComponent implements OnInit {
     visible: boolean = false //Accion Editar, Ver, Crear
     value!: string
     accion: string //Accion Editar, Ver, Crear
-    caption: string = '' // Etiqueta de modal
-    @Input() opcion: string = 'seleccionar'
-    acciones: string = 'agregar'
-    formulario: string
-    formCapas: string = 'capa1'
+    @ViewChild('stepper') stepper: Stepper
+    activeStep: number = 0 // Paso activo
+    totalSteps = 3 // Total de pasos del stepper
 
-    // Declara la propiedad isDialogVisible aquí
-    isDialogVisible: boolean = false
+    dtEvaluacionCreacion: Date | null = null // Esto guarda la fecha seleccionada
+
+    // Función para mostrar el valor en la consola
+    logCalendarValue() {
+        console.log('Valor del calendario:', this.dtEvaluacionCreacion)
+    }
     constructor(
         public _config: DynamicDialogConfig, // Inyección de configuración
-        private compartirIdEvaluacionService: CompartirIdEvaluacionService // Inyección del servicio
-    ) {}
+        private compartirIdEvaluacionService: CompartirIdEvaluacionService, // Inyección del servicio
+        private fb: FormBuilder
+    ) {
+        // Inicializar formulario reactivo
+        this.evaluacionFormGroup = this.fb.group({
+            iEvaluacionId: [null],
+            idTipoEvalId: [null, [Validators.required]],
+            iNivelEvalId: [null, [Validators.required]],
+            cEvaluacionNombre: [null, [Validators.required]],
+            cEvaluacionDescripcion: [null, [Validators.required]],
+            cEvaluacionUrlDrive: [null, [Validators.required]],
+            cEvaluacionUrlPlantilla: [null, [Validators.required]],
+            cEvaluacionUrlManual: [null, [Validators.required]],
+            cEvaluacionUrlMatriz: [null, [Validators.required]],
+            cEvaluacionObs: [null],
+            dtEvaluacionCreacion: [null, Validators.required],
+            dtEvaluacionLiberarMatriz: [null, Validators.required],
+            dtEvaluacionLiberarCuadernillo: [null, Validators.required],
+            dtEvaluacionLiberarResultados: [null, Validators.required],
+        })
+    }
+
+    // Función para manejar el botón de "Siguiente"
+    handleNext() {
+        if (this.activeStep === 0 && this.accion === 'ver') {
+            this.evaluacionFormGroup.disable() // Hacer el formulario solo lectura
+
+            console.log('Formulario DESABILITADO', this.accion)
+        }
+
+        if (this.activeStep === 0 && this.accion === 'editar') {
+            this.esModoEdicion = true
+
+            this.actualizarEvaluacion()
+            console.log('Formulario EDITAR DESDE HANDLE', this.accion)
+        }
+
+        if (this.activeStep === 0 && this.accion === 'nuevo') {
+            // Guardar datos de Información Evaluación
+
+            // this._MessageService.add({
+            //     severity: 'success',
+            //     summary: 'Actualización exitosa',
+            //     detail: 'La evaluacion se inserto Correctamente.',
+            // })
+            this.guardarEvaluacion()
+        }
+        // Pasar al siguiente paso
+        if (this.activeStep < this.totalSteps - 1) {
+            this.activeStep++
+            return
+        }
+    }
+
+    // Función para manejar el botón "Atrás"
+    handlePrevious() {
+        if (this.activeStep > 0) {
+            this.activeStep--
+        }
+    }
+
+    // Finalizar el formulario
+    finalizarFormulario(data) {
+        console.log('Formulario finalizado.')
+        this._ref.close(data)
+        console.log('Salir de Formulario')
+
+        // Resetear el formulario si es necesario
+        this.evaluacionFormGroup.reset()
+        // Aquí va la lógica para finalizar el formulario
+    }
+
+    // Función para determinar si es el último paso
+    get isLastStep(): boolean {
+        return this.activeStep === this.totalSteps - 1
+    }
+    //!TERMINA AQUI
     esModoEdicion: boolean = false // Cambiar a true si estás en modo edición
     ngOnInit() {
+        if (this._config?.data?.evaluacion?.iEvaluacionId) {
+            this.iEvaluacionId = this._config.data.evaluacion.iEvaluacionId
+            console.log('Se agrego esto:', this.iEvaluacionId)
+        }
         // console.log(this.opcion, 'LLEGARAEL DATO OPCION')
         this.accion = this._config.data.accion
 
@@ -122,13 +212,14 @@ export class EvaluacionesFormComponent implements OnInit {
             this.esModoEdicion = true
             console.log('Formulario EDITAR', this.accion)
         }
-        // Configura el formulario en modo solo lectura si está en "ver"
+
+        // Configura el formulario dependiendo de la acción
         if (this.accion === 'ver') {
-            this.evaluacionFormGroup.disable()
+            this.evaluacionFormGroup.disable() // Hacer el formulario solo lectura
             console.log('Formulario DESABILITADO', this.accion)
-        }
-        if (this.accion === 'editar') {
+        } else if (this.accion === 'editar') {
             this.esModoEdicion = true
+            this.ereVerEvaluacion() // Llenar el formulario con los datos para editar
         }
     }
 
@@ -177,6 +268,7 @@ export class EvaluacionesFormComponent implements OnInit {
         }
     }
     guardarEvaluacion() {
+        console.log('STEPPER Guardando información de evaluación...')
         const data = {
             idTipoEvalId: this.evaluacionFormGroup.get('idTipoEvalId').value,
             iNivelEvalId: this.evaluacionFormGroup.get('iNivelEvalId').value,
@@ -226,6 +318,11 @@ export class EvaluacionesFormComponent implements OnInit {
                         this.iEvaluacionId
                     )
                     this.iEvaluacionId = resp['data'][0]['iEvaluacionId']
+                    this._MessageService.add({
+                        severity: 'success',
+                        summary: 'Evaluación registrada',
+                        detail: 'La evaluación se registró correctamente en el sistema.',
+                    })
                     //alert(JSON.stringify(this.data))
                     //this.sourceProducts = this.data
                 },
@@ -235,7 +332,6 @@ export class EvaluacionesFormComponent implements OnInit {
                 },
             })
     }
-
     // Método para actualizar los datos en el backend
     actualizarEvaluacion() {
         const data = {
@@ -286,7 +382,6 @@ export class EvaluacionesFormComponent implements OnInit {
             },
         })
     }
-
     obtenerTipoEvaluacion() {
         this._apiEre
             .obtenerTipoEvaluacion(this.params)
@@ -297,7 +392,6 @@ export class EvaluacionesFormComponent implements OnInit {
                 },
             })
     }
-
     obtenerNivelEvaluacion() {
         this._apiEre
             .obtenerNivelEvaluacion(this.params)
@@ -312,10 +406,9 @@ export class EvaluacionesFormComponent implements OnInit {
         //alert(JSON.stringify(this.selectedTipoEvaluacion))
         //alert(this.fecha)
     }
-
+    //Mandando el Closet Modal al hijo
     @ViewChild(EvaluacionAreasComponent)
     evaluacionAreasComponent: EvaluacionAreasComponent
-
     // Este método será llamado cuando el evento closeModalEvent sea emitido desde el hijo
     handleCloseModal(data: any): void {
         console.log('Cerrar modal en el padre:', data)
@@ -327,7 +420,7 @@ export class EvaluacionesFormComponent implements OnInit {
 
     closeModal(data) {
         this._ref.close(data)
-        console.log('Formulario de evaluación cancelado')
+        console.log('Salir de Formulario')
 
         // Resetear el formulario si es necesario
         this.evaluacionFormGroup.reset()

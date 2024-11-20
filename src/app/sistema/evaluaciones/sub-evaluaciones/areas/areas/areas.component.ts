@@ -9,7 +9,11 @@ import { TablePrimengComponent } from '../../../../../shared/table-primeng/table
 import { Component } from '@angular/core'
 import { IArea } from '../interfaces/area.interface'
 import { AreaCardComponent } from '../components/area-card/area-card.component'
+//import { CursoCardComponent } from '../components/curso-card/curso-card.component'
+import { ICurso } from '../../../../aula-virtual/sub-modulos/cursos/interfaces/curso.interface'
+import { ButtonModule } from 'primeng/button'
 
+export type Layout = 'list' | 'grid'
 @Component({
     selector: 'app-areas',
     standalone: true,
@@ -25,9 +29,15 @@ import { AreaCardComponent } from '../components/area-card/area-card.component'
         TableModule,
         TablePrimengComponent,
         AreaCardComponent,
+        ButtonModule,
     ],
 })
 export class AreasComponent {
+    public cursos: ICurso[] = []
+    public data: ICurso[] = []
+    public layout: Layout = 'list'
+    public text: string = ''
+    public searchText: Event
     public area: IArea[] = [
         {
             id: 0,
@@ -60,7 +70,21 @@ export class AreasComponent {
     public sortField: string = ''
     public sortOrder: number = 0
 
+    //!original
+    // public onFilter(dv: DataView, event: Event) {
+    //     dv.filter((event.target as HTMLInputElement).value)
+    // }
+    //!Agregado
     public onFilter(dv: DataView, event: Event) {
-        dv.filter((event.target as HTMLInputElement).value)
+        const text = (event.target as HTMLInputElement).value
+        this.cursos = this.data
+        dv.value = this.data
+        if (text.length > 1) {
+            dv.filter(text)
+            this.cursos = dv.filteredValue
+        }
+        if (this.layout === 'list') {
+            this.searchText = event
+        }
     }
 }

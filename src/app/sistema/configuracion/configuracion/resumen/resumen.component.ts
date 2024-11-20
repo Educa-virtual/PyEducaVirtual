@@ -1,4 +1,4 @@
-import { Component } from '@angular/core'
+import { Component, OnInit } from '@angular/core'
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
 
@@ -9,4 +9,8 @@ import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.
     templateUrl: './resumen.component.html',
     styleUrl: './resumen.component.scss',
 })
-export class ResumenComponent {}
+export class ResumenComponent implements OnInit {
+    ngOnInit(): void {
+        console.log('')
+    }
+}

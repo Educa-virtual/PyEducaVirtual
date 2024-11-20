@@ -76,30 +76,75 @@ export class ResumenComponent implements OnInit {
                     ),
                 })
             )
-
         this.resumenInformation.periodosAcademicos =
-            this.ticketService.registroInformation.stepPeriodosAcademicos.map(
-                (periodo, index) => ({
-                    index: index + 1,
-                    // iPeriodoEvalAperId: 251,
-                    // iFaseId: 256,
-                    iPeriodoEvalId: periodo.iPeriodoEvalId,
-                    iPeriodoEvalCantidad: periodo.iPeriodoEvalCantidad,
-                    dtPeriodoEvalAperInicio:
-                        this.ticketService.toVisualFechasFormat(
-                            periodo.iPeriodoEvalAperId
-                        ),
-                    dtPeriodoEvalAperFin:
-                        this.ticketService.toVisualFechasFormat(
-                            periodo.dtPeriodoEvalAperFin
-                        ),
-                })
+            this.ticketService.registroInformation.stepYear.fases_promocionales.map(
+                (fase) => {
+                    // Buscar todas las coincidencias en lugar de solo una
+                    const periodosEvalForm =
+                        this.ticketService.registroInformation.stepPeriodosAcademicos
+                            .filter(
+                                (periodo) => periodo.iFaseId == fase.iFaseId
+                            )
+                            .map((periodo, index) => {
+                                let periodoType
+                                console.log(periodo)
+
+                                switch (Number(periodo.iPeriodoEvalCantidad)) {
+                                    case 6:
+                                        periodoType = 'semestre'
+                                        break
+                                    case 3:
+                                        periodoType = 'trimestre'
+                                        break
+                                    case 2:
+                                        periodoType = 'bimestre'
+                                        break
+                                    default:
+                                        periodoType = ''
+                                        break
+                                }
+
+                                return {
+                                    periodoType: `${index + 1}° ${periodoType}`,
+                                    dtPeriodoEvalAperInicio:
+                                        this.ticketService.toVisualFechasFormat(
+                                            periodo.dtPeriodoEvalAperInicio,
+                                            'DD/MM/YYYY'
+                                        ),
+                                    dtPeriodoEvalAperFin:
+                                        this.ticketService.toVisualFechasFormat(
+                                            periodo.dtPeriodoEvalAperFin,
+                                            'DD/MM/YYYY'
+                                        ),
+                                }
+                            })
+
+                    // Retornar un nuevo objeto que incluye las coincidencias
+                    return {
+                        ...fase,
+                        periodosEvalForm, // Agregar todas las coincidencias encontradas
+                    }
+                }
             )
 
-        this.faseRegular =
-            this.ticketService.registroInformation.stepYear.fases_promocionales[0]
-        this.faseRecuperacion =
-            this.ticketService.registroInformation.stepYear.fases_promocionales[1]
+        // this.resumenInformation.periodosAcademicos =
+        //     this.ticketService.registroInformation.stepPeriodosAcademicos.map(
+        //         (periodo, index) => ({
+        //             index: index + 1,
+        //             // iPeriodoEvalAperId: 251,
+        //             // iFaseId: 256,
+        //             iPeriodoEvalId: periodo.iPeriodoEvalId,
+        //             iPeriodoEvalCantidad: periodo.iPeriodoEvalCantidad,
+        //             dtPeriodoEvalAperInicio:
+        //                 this.ticketService.toVisualFechasFormat(
+        //                     periodo.iPeriodoEvalAperId
+        //                 ),
+        //             dtPeriodoEvalAperFin:
+        //                 this.ticketService.toVisualFechasFormat(
+        //                     periodo.dtPeriodoEvalAperFin
+        //                 ),
+        //         })
+        //     )
 
         console.log(this.resumenInformation)
     }
@@ -151,15 +196,7 @@ export class ResumenComponent implements OnInit {
         {
             type: 'text',
             width: '5rem',
-            field: 'index',
-            header: 'Nro',
-            text_header: 'center',
-            text: 'center',
-        },
-        {
-            type: 'text',
-            width: '5rem',
-            field: 'iPeriodoEvalNombre',
+            field: 'periodoType',
             header: 'Periodo de evaluación',
             text_header: 'center',
             text: 'center',

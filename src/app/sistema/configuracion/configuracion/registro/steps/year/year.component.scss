@@ -30,9 +30,14 @@ div {
     gap: 2rem;
 }
 
+:host ::ng-deep p-dialog .p-dialog-header {
+    background-color: #fff !important;
+}
+
 :host ::ng-deep .p-dialog-content {
     display: flex;
     flex-direction: column;
+    padding: 2rem 1.5rem 2rem 1.5rem !important;
 }
 
 :host ::ng-deep .p-dialog-content i {

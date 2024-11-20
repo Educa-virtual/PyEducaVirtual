@@ -72,7 +72,7 @@ export class DiasLaboralesComponent implements OnInit {
     confirm() {
         console.log('confirmando')
         const message: informationMessage = {
-            header: 'Confirmar',
+            header: '¿Desea guardar información?',
             message: 'Por favor, confirme para continuar.',
             accept: {
                 severity: 'success',

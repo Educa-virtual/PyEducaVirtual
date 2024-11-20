@@ -1028,7 +1028,7 @@
 <!-- Calificar estudiante en el mismo foro -->
 <p-dialog
     [(visible)]="modelaCalificacionComen"
-    [style]="{ width: '1000px' }"
+    [style]="{ width: '50%' }"
     class="p-fluid"
     header="Calificar a: {{ perfilSelect?.nombrecompleto }}"
     [modal]="true"
@@ -1038,18 +1038,18 @@
             <!-- Mostrar la califcación -->
             <!--  for="calificacion" [options]="calificacion"-->
             <div class="col-12">
-                <label class="font-bold" for="calificacion">Calificación</label>
-                <div class="pt-2">
+                <p-inputGroup>
+                    <p-inputGroupAddon> Calificación </p-inputGroupAddon>
                     <p-dropdown
-                        [options]="calificacion"
                         formControlName="iEscalaCalifId"
-                        styleClass="w-full"
+                        [options]="calificacion"
                         optionValue="iEscalaCalifId"
                         optionLabel="cEscalaCalifNombre"
                         placeholder="Seleccione una Calificación"
+                        [style]="{ width: '100%' }"
                         [showClear]="true"
-                    />
-                </div>
+                    ></p-dropdown>
+                </p-inputGroup>
             </div>
             <!-- Mostrar descripción -->
             <div class="col-12">
@@ -1060,36 +1060,6 @@
                     ></label
                 >
                 <div class="mt-2 pt-2">
-                    <!-- <p-editor
-                        id="descripcion"
-                        formControlName="cForoRptaDocente"
-                        [style]="{ height: '150px' }"
-                    /> -->
-                    <!-- <p-editor
-                        [style]="{ height: '120px' }"
-                        id="descripcion"
-                        formControlName="cForoRptaDocente"
-                    >
-                        <ng-template pTemplate="header">
-                            <span class="ql-formats">
-                                <button
-                                    type="button"
-                                    class="ql-bold"
-                                    aria-label="Bold"
-                                ></button>
-                                <button
-                                    type="button"
-                                    class="ql-italic"
-                                    aria-label="Italic"
-                                ></button>
-                                <button
-                                    type="button"
-                                    class="ql-underline"
-                                    aria-label="Underline"
-                                ></button>
-                            </span>
-                        </ng-template>
-                    </p-editor> -->
                     <p-editor
                         id="descripcion"
                         formControlName="cForoRptaDocente"
@@ -1119,6 +1089,7 @@
                 icon="pi pi-send"
                 size="small"
                 class="p-button-primary"
+                (click)="submit()"
             ></button>
             <!-- (click)="submit()" -->
         </div>

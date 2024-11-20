@@ -1,8 +1,8 @@
 //Agregar Servicio de Evaluacion
 //!Se agrego el afterviewinit
 import { CompartirIdEvaluacionService } from './../../../services/ereEvaluaciones/compartir-id-evaluacion.service'
+//import { CompartirFormularioEvaluacionService } from './../../../services/ereEvaluaciones/compartir-formulario-evaluacion.service'
 import { CompartirFormularioEvaluacionService } from './../../../services/ereEvaluaciones/compartir-formulario-evaluacion.service'
-
 import { Component, inject, OnInit, ViewChild } from '@angular/core'
 
 /*BOTONES */

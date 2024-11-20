@@ -398,10 +398,9 @@ export class TabContenidoComponent implements OnInit {
                 {
                     ...MODAL_CONFIG,
                     maximizable: true,
-                    header:
-                        actividad == null
-                            ? 'Crear Evaluación'
-                            : 'Editar Evaluación',
+                    header: !actividad['iEvaluacionId']
+                        ? 'Crear Evaluación'
+                        : 'Editar Evaluación',
                     data: {
                         actividad,
                         semana: this.semanaSeleccionada,

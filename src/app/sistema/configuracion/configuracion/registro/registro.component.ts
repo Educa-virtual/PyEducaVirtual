@@ -79,16 +79,6 @@ export class RegistroComponent implements OnInit, OnDestroy {
         },
     ]
 
-    selectedRouteLink(e){
-        console.log('cambiando de ruta')
-        console.log(e)
-        console.log(this.routeLink = 4)
-    }
-
-    emitEventRouting(data){
-        this.ticketService.emitEvent('Data');
-    }
-
     navigateToYears() {
         this.router.navigate(['configuracion/configuracion/years']) // Navega a YearsComponent
     }

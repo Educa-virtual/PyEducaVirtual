@@ -8,14 +8,6 @@ export type ArrayElement<ArrayType extends readonly unknown[]> =
 
 @Injectable()
 export class TicketService {
-    private eventSubject = new Subject<string>()
-
-    event$ = this.eventSubject.asObservable()
-
-    emitEvent(data: string = '') {
-        this.eventSubject.next(data)
-    }
-
     registroInformation: {
         calendar?: {
             iCalAcadId?: string

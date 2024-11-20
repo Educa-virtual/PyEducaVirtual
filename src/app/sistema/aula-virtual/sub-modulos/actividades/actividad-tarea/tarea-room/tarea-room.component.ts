@@ -40,6 +40,8 @@ import { ScrollerModule } from 'primeng/scroller'
     providers: [provideIcons({ matListAlt, matPeople }), DialogService],
 })
 export class TareaRoomComponent implements OnChanges, OnInit {
+    form: FormGroup
+
     @Input() iTareaId: string
     private _dialogService = inject(DialogService)
     private GeneralService = inject(GeneralService)
@@ -52,7 +54,14 @@ export class TareaRoomComponent implements OnChanges, OnInit {
     students: any
 
     iPerfilId: number
-    constructor(private messageService: MessageService) {}
+    constructor(
+        private messageService: MessageService,
+        private fb: FormBuilder
+    ) {
+        this.form = this.fb.group({
+            editor: [''],
+        })
+    }
     public entregarEstud: FormGroup = this._formBuilder.group({
         cTareaEstudianteUrlEstudiante: [''],
         //iEstudianteId: [],
@@ -66,6 +75,8 @@ export class TareaRoomComponent implements OnChanges, OnInit {
         } else {
             this.obtenerEscalaCalificaciones()
         }
+
+        this.form.get('editor').disable()
     }
     ngOnChanges(changes) {
         if (changes.iTareaId?.currentValue) {
@@ -436,8 +447,8 @@ export class TareaRoomComponent implements OnChanges, OnInit {
         if (!this.iEscalaCalifId) {
             this.messageService.add({
                 severity: 'warn',
-                summary: 'Campo vacio',
-                detail: 'Seleccione una calaficación',
+                summary: 'Falta Entregar su tarea',
+                detail: 'Seleccione calaficación para guardar',
             })
             return
         }
@@ -520,12 +531,11 @@ export class TareaRoomComponent implements OnChanges, OnInit {
         if (!this.iEscalaCalifId) {
             this.messageService.add({
                 severity: 'warn',
-                summary: 'Campo vacio',
-                detail: 'Seleccione una calaficación',
+                summary: 'Falta Entregar su tarea',
+                detail: 'Seleccione calaficación para guardar',
             })
             return
         }
-
         const params = {
             petition: 'post',
             group: 'aula-virtual',
@@ -603,6 +613,14 @@ export class TareaRoomComponent implements OnChanges, OnInit {
     }
 
     entregartaraeaestudiante() {
+        if (!this.iEscalaCalifId) {
+            this.messageService.add({
+                severity: 'warn',
+                summary: 'Falta Entregar su tarea',
+                detail: 'Subi su tarea para entregar',
+            })
+            return
+        }
         const comment = this.entregarEstud.value
         comment.iTareaId = this.iTareaId
         console.log('Enviar Tarea', comment)
@@ -619,6 +637,14 @@ export class TareaRoomComponent implements OnChanges, OnInit {
         //console.log(this.grupoTransferir)
     }
     entregarEstudianteTarea() {
+        if (!this.FilesTareasEstudiantes) {
+            this.messageService.add({
+                severity: 'warn',
+                summary: 'Falta Entregar su tarea',
+                detail: 'Subi su tarea para entregar sus tarea ',
+            })
+            return
+        }
         if (!this.FilesTareasEstudiantes.length) return
         const params = {
             petition: 'post',
@@ -688,4 +714,5 @@ export class TareaRoomComponent implements OnChanges, OnInit {
         if (!table) return
         table.filterGlobal((event.target as HTMLInputElement).value, 'contains')
     }
+    isDisabled: boolean = true
 }

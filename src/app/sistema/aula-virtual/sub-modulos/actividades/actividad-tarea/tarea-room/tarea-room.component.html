@@ -48,35 +48,37 @@
                             </p>
                         </div>
                     </div>
-                    <p-inputGroup>
-                        <p-inputGroupAddon>Título</p-inputGroupAddon>
-                        <input
-                            type="text"
-                            pInputText
-                            [value]="data?.cTareaTitulo"
-                            placeholder="Ingrese el título de la tarea"
-                            [disabled]="
-                                !data?.cTareaTitulo ||
-                                data.cTareaTitulo.trim() === ''
-                            "
-                        />
-                    </p-inputGroup>
-                    <div class="col-12">
-                        <label for="descripcion" class="mt-1"
-                            >Descripción
-                            <span class="text-red-500 text-xs"
-                                >(*) Obligatorio</span
-                            ></label
-                        >
-                        <div class="mt-2">
-                            <p-editor
-                                [(ngModel)]="cTareaDescripcion"
+                    <div class="p-fluid">
+                        <div class="p-field">
+                            <p *ngIf="false">Para estudiantes</p>
+                            <h3>
+                                <label for="descripcion" class="p-text-bold"
+                                    >Descripción de la tarea</label
+                                >
+                            </h3>
+                            <div class="mt-2">
+                                <form [formGroup]="form">
+                                    <p-editor
+                                        [(ngModel)]="cTareaDescripcion"
+                                        formControlName="editor"
+                                        [disabled]="true"
+                                        id="descripcion"
+                                        [style]="{ height: '150px' }"
+                                    />
+                                </form>
+                            </div>
+                            <!-- <input
                                 id="descripcion"
-                                [style]="{ height: '50px' }"
-                                disabled
-                            />
+                                type="text"
+                                pInputText
+                                [value]="data?.cTareaDescripcion"
+                                [disabled]="!data?.cTareaDescripcion || isDisabled"
+                                placeholder="Ingrese el título de la tarea"
+                                class="p-inputtext-sm"
+                            /> -->
                         </div>
                     </div>
+
                     <div>
                         <!-- Título para la sección de recursos -->
                         <h2>Recursos:</h2>
@@ -202,6 +204,7 @@
                                     [(ngModel)]="notaTareaEstudiante"
                                     class="p-inputtext-lg"
                                     placeholder="Aqui muestra la calificación"
+                                    [disabled]="isDisabled"
                                 />
                             </div>
                             <p-divider class="mb-3"></p-divider>
@@ -217,6 +220,7 @@
                                     [(ngModel)]="comentarioTareaEstudiante"
                                     class="p-inputtextarea-lg"
                                     placeholder="Muestra Comentario Docente"
+                                    [disabled]="isDisabled"
                                 ></textarea>
                             </div>
                         </div>
@@ -302,7 +306,7 @@
                             >
                                 <p-toast></p-toast>
                                 <p-button
-                                    label="Enviar Tarea"
+                                    label="Enviar Tareass"
                                     icon="pi pi-check"
                                     iconPos="right"
                                     (onClick)="entregarEstudianteTareaGrupal()"
@@ -637,6 +641,7 @@
                                             <input pInputText placeholder="Buscar estudiante" style="width: 250px" />
                                         </span>
                                     </div> -->
+
                                                 <div class="col-12 text-right">
                                                     <p-button
                                                         label="Crear Grupo"

@@ -32,25 +32,31 @@ export class StepConfirmationService {
         } = {},
         informationMessage: informationMessage
     ) {
-        this.confirmationService.confirm({
-            header: informationMessage.header,
-            message: informationMessage.message,
-            accept: async () => {
-                console.log('sirviendo confirmacion')
+        return new Promise((resolve) => {
+            this.confirmationService.confirm({
+                header: informationMessage.header,
+                message: informationMessage.message,
+                accept: async () => {
+                    console.log('sirviendo confirmacion')
 
-                this.messageService.add(informationMessage.accept)
+                    this.messageService.add(informationMessage.accept)
 
-                // Ejecutar funciones síncronas
-                onAcceptCallbacks.forEach((callback) => callback())
+                    // Ejecutar funciones síncronas
+                    onAcceptCallbacks.forEach((callback) => callback())
 
-                // Ejecutar funciones asincrónicas y esperar que se resuelvan
-                for (const callback of onAcceptPromises) {
-                    await callback()
-                }
-            },
-            reject: () => {
-                this.messageService.add(informationMessage.reject)
-            },
+                    // Ejecutar funciones asincrónicas y esperar que se resuelvan
+                    for (const callback of onAcceptPromises) {
+                        await callback()
+                    }
+
+                    resolve(true)
+                },
+                reject: () => {
+                    this.messageService.add(informationMessage.reject)
+
+                    resolve(false)
+                },
+            })
         })
     }
 }

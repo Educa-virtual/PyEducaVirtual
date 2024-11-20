@@ -274,6 +274,10 @@
                                                 <div
                                                     class="perfiles-list-item text-left"
                                                     tabindex="0"
+                                                    [class.highlight]="
+                                                        respuestas.iEstudianteId ===
+                                                        estudianteSelectComent
+                                                    "
                                                 >
                                                     <div
                                                         class="perfiles-list-detail"
@@ -330,41 +334,67 @@
                                                                                 | removeHTML
                                                                         }}
                                                                     </span>
-                                                                    <!-- <a (click)="toggleExpand(respuestas)" class="toggle-link">
-                                                                {{ respuestas.expanded ? 'Leer menos' : 'Leer más' }}
-                                                            </a> -->
+                                                                    <!-- <a
+                                                                        (click)="
+                                                                            toggleExpand(
+                                                                                respuestas
+                                                                            )
+                                                                        "
+                                                                        class="toggle-link"
+                                                                    >
+                                                                        {{
+                                                                            respuestas.expanded
+                                                                                ? 'Leer menos'
+                                                                                : 'Leer más'
+                                                                        }}
+                                                                    </a> -->
                                                                 </div>
                                                                 <!-- startReply(i) -->
 
-                                                                <button
-                                                                    pButton
-                                                                    type="button"
-                                                                    class="p-button-text"
+                                                                <div
+                                                                    class="align-items-center"
                                                                 >
-                                                                    <i
-                                                                        class="pi pi-thumbs-up"
-                                                                        style="
-                                                                            font-size: 18px;
+                                                                    <button
+                                                                        pButton
+                                                                        type="button"
+                                                                        class="p-button-text"
+                                                                    >
+                                                                        <i
+                                                                            class="pi pi-thumbs-up"
+                                                                            style="
+                                                                                font-size: 18px;
+                                                                            "
+                                                                        ></i>
+                                                                    </button>
+                                                                    <button
+                                                                        pButton
+                                                                        type="button"
+                                                                        class="p-button-text"
+                                                                        (click)="
+                                                                            startReply(
+                                                                                i
+                                                                            )
                                                                         "
-                                                                    ></i>
-                                                                </button>
-                                                                <button
-                                                                    pButton
-                                                                    type="button"
-                                                                    class="p-button-text"
-                                                                    (click)="
-                                                                        startReply(
-                                                                            i
-                                                                        )
-                                                                    "
-                                                                >
-                                                                    <i
-                                                                        class="pi pi-comments"
-                                                                        style="
-                                                                            font-size: 18px;
-                                                                        "
-                                                                    ></i>
-                                                                </button>
+                                                                    >
+                                                                        <label
+                                                                            for=""
+                                                                            class="text-sm text-black pr-2"
+                                                                            >{{
+                                                                                respuestas
+                                                                                    .json_respuestas_comentarios
+                                                                                    .length ||
+                                                                                    0
+                                                                            }}
+                                                                            Respuestas
+                                                                        </label>
+                                                                        <i
+                                                                            class="pi pi-comments"
+                                                                            style="
+                                                                                font-size: 18px;
+                                                                            "
+                                                                        ></i>
+                                                                    </button>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -544,18 +574,34 @@
                                             id="descripcion"
                                             placeholder="Escribe un Comentario... "
                                             formControlName="cForoRptaRespuesta"
-                                        />
-                                        <!-- <p-editor
-                                            id="descripcion"
-                                            formControlName="cForoRptaDocente">
+                                        >
                                             <ng-template pTemplate="header">
                                                 <span class="ql-formats">
-                                                    <button type="button" class="ql-bold" aria-label="Bold"></button>
-                                                    <button type="button" class="ql-italic" aria-label="Italic"></button>
-                                                    <button type="button" class="ql-underline" aria-label="Underline"></button>
+                                                    <button
+                                                        type="button"
+                                                        class="ql-bold"
+                                                        aria-label="Bold"
+                                                    ></button>
+                                                    <button
+                                                        type="button"
+                                                        class="ql-italic"
+                                                        aria-label="Italic"
+                                                    ></button>
+                                                    <button
+                                                        type="button"
+                                                        class="ql-underline"
+                                                        aria-label="Underline"
+                                                    ></button>
                                                 </span>
                                             </ng-template>
-                                        </p-editor> -->
+                                        </p-editor>
+
+                                        <!-- <p-editor
+                                            id="descripcion"
+                                            placeholder="Escribe un Comentario... "
+                                            formControlName="cForoRptaRespuesta"
+                                        /> -->
+
                                         <div class="reply-container">
                                             <div class="button-container">
                                                 <button
@@ -619,7 +665,24 @@
                                         >
                                                 
                                         </p-button> -->
-                                        <div class="perfilesList" tabindex="0">
+                                        <div
+                                            class="perfilesList"
+                                            tabindex="0"
+                                            (click)="
+                                                selecEstudiante(
+                                                    estudiante.iEstudianteId
+                                                )
+                                            "
+                                            (keydown.enter)="
+                                                selecEstudiante(
+                                                    estudiante.iEstudianteId
+                                                )
+                                            "
+                                            [class.selected]="
+                                                estudianteSelectComent ===
+                                                estudiante.iEstudianteId
+                                            "
+                                        >
                                             <img
                                                 src="assets/demo/images/matemit/perfil.png"
                                                 alt=""
@@ -1001,7 +1064,7 @@
                         formControlName="cForoRptaDocente"
                         [style]="{ height: '150px' }"
                     /> -->
-                    <p-editor
+                    <!-- <p-editor
                         [style]="{ height: '120px' }"
                         id="descripcion"
                         formControlName="cForoRptaDocente"
@@ -1025,7 +1088,12 @@
                                 ></button>
                             </span>
                         </ng-template>
-                    </p-editor>
+                    </p-editor> -->
+                    <p-editor
+                        id="descripcion"
+                        formControlName="cForoRptaDocente"
+                        [style]="{ height: '150px' }"
+                    />
                 </div>
             </div>
         </div>
@@ -1040,6 +1108,7 @@
                 class="p-button-secondary mx-3"
                 type="button"
                 size="small"
+                (click)="display = true"
             ></button>
             <button
                 pButton
@@ -1054,7 +1123,6 @@
         </div>
     </div>
 </p-dialog>
-
 <p-dialog
     [(visible)]="modalCalificacion"
     [style]="{ width: '1000px' }"
@@ -1066,14 +1134,9 @@
 >
     <form [formGroup]="foroFormComnt" class="flex flex-column gap-3 w-full">
         <div class="grid pt-3">
-            <!-- Mostrar el título -->
-
             <div class="col-8 flex flex-column gap-2 conntResp">
                 <label for="" class="font-bold">Respuesta estudiante:</label>
-                <!-- <app-common-input
-                    [controlKey]="'cForoRptaRespuesta'"
-                    label="Comentario"
-                /> -->
+
                 "{{ estudianteSelect?.cForoRptaRespuesta | removeHTML }}"
             </div>
 
@@ -1088,7 +1151,7 @@
                     placeholder="Seleccione una Calificación"
                 />
             </div>
-            <!-- Mostrar descripción -->
+
             <div class="col-12">
                 <label for="descripcion" class="mt-1"
                     >Descripción

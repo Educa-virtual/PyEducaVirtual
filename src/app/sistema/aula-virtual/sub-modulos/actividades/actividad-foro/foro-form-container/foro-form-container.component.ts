@@ -69,7 +69,7 @@ export class ForoFormContainerComponent implements OnInit {
         cForoDescripcion: ['', [Validators.required]],
         iForoCatId: [0, [Validators.required]],
         dtForoInicio: [''],
-        iEstado: [false],
+        iEstado: [true],
         dtForoPublicacion: [''],
         dtForoFin: [],
         cForoUrl: [],
@@ -102,7 +102,6 @@ export class ForoFormContainerComponent implements OnInit {
             },
         ]
     }
-
     ngOnInit(): void {
         this.mostrarCategorias()
     }

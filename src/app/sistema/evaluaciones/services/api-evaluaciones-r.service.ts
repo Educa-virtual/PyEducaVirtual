@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core'
 import { environment } from '@/environments/environment.template'
 import { HttpClient } from '@angular/common/http'
-import { map, Observable } from 'rxjs'
+import { catchError, map, Observable, tap, throwError } from 'rxjs'
 import { mapData } from '../sub-evaluaciones/banco-preguntas/models/pregunta-data-transformer'
 
 @Injectable({
@@ -24,12 +24,19 @@ export class ApiEvaluacionesRService {
     //     )
     // }
     obtenerEvaluacion(params) {
-        return this.http.get(
-            `${this.baseUrl}/ere/Evaluaciones/ereObtenerEvaluacion`,
-            {
+        return this.http
+            .get(`${this.baseUrl}/ere/Evaluaciones/ereObtenerEvaluacion`, {
                 params,
-            }
-        )
+            })
+            .pipe(
+                tap((response) =>
+                    console.log('Respuesta de la API:', response)
+                ), // Verifica lo que devuelve la API
+                catchError((error) => {
+                    console.error('Error en la solicitud:', error)
+                    return throwError(error)
+                })
+            )
     }
 
     obtenerTipoPreguntas() {
@@ -77,6 +84,16 @@ export class ApiEvaluacionesRService {
         return this.http.post(
             `${this.baseUrl}/ere/Evaluaciones/insertarCursos`,
             data
+        )
+    }
+    //!Eliminar Cursos
+    eliminarCursos(data: {
+        iEvaluacionId: number
+        selectedCursos: { iCursoId: number }[]
+    }): Observable<any> {
+        return this.http.delete(
+            `${this.baseUrl}/ere/Evaluaciones/eliminarCursos`,
+            { body: data } // Los datos se pasan en el cuerpo de la solicitud DELETE
         )
     }
     //Actualizar Cursos COMENTADO
@@ -178,6 +195,14 @@ export class ApiEvaluacionesRService {
             data
         )
     }
+    //!Agregando Copiar ActualizarEvaluacion
+    copiarEvaluacion(iEvaluacionId: number) {
+        return this.http.post(
+            `${this.baseUrl}/ere/Evaluaciones/copiarEvaluacion`,
+            { iEvaluacionIdOriginal: iEvaluacionId }
+        )
+    }
+
     generarWordByPreguntasIds(baseParams) {
         const url = `${this.baseUrlBackend}/generarWordBancoPreguntasSeleccionadas`
         const params = new URLSearchParams({ ...baseParams })

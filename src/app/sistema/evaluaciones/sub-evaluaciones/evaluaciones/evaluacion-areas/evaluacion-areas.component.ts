@@ -26,6 +26,8 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog'
 import { ButtonModule } from 'primeng/button'
 import { ReactiveFormsModule } from '@angular/forms' // Importar ReactiveFormsModule
 import { DropdownModule } from 'primeng/dropdown'
+import { MessageService } from 'primeng/api'
+//import { ToastModule } from 'primeng/toast'
 interface NivelTipo {
     cNivelTipoNombre: string
     iNivelTipoId: string
@@ -87,7 +89,7 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
         iDesempenioId: 0,
         bPreguntaEstado: -1,
     }
-
+    private _MessageService = inject(MessageService) //!Agregando Mensaje
     visible: boolean = false //Accion Editar, Ver, crear
     accion: string //Accion Editar, Ver, crear
     isDisabled: boolean
@@ -122,15 +124,17 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
             default:
                 break
         }
-        //this.getCursos()
-        //.obtenerCursos()
+
         this.obtenerEvaluacionesCopia()
         console.log('ESTE ES LA ACCION', this.accion)
         // Inicializar según el modo
         if (this.accion === 'nuevo') {
             console.log('Inicializando en modo crear')
             this.cursos = [] // Asegurar que la lista destino esté vacía
-            this.obtenerCursos() // Solo obtener la lista de IEs disponibles
+            this.obtenerCursosEvaluacion(
+                this.compartirIdEvaluacionService.iEvaluacionId
+            )
+            //this.insertarCursos([], this._iEvaluacionId)
         }
         if (this.accion === 'ver') {
             this.obtenerCursosEvaluacion(
@@ -140,9 +144,11 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
         }
         if (this.accion === 'editar') {
             console.log('VIENE DATOS COMO ', this._iEvaluacionId)
-            this.obtenerCursosEvaluacion(this._iEvaluacionId)
+            this.obtenerCursosEvaluacion(
+                this.compartirIdEvaluacionService.iEvaluacionId
+            )
         }
-        //this.obtenerCursosEvaluacion(this._iEvaluacionId)
+        this.obtenerCursosEvaluacion(this._iEvaluacionId)
     }
     // Obtener los cursos
     obtenerCursos(): void {
@@ -168,71 +174,105 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
             })
     }
 
-    // Función que maneja la selección o deselección de los cursos
+    //!Funcion de oncoruseSelect
     onCursoSelect(curso: any): void {
-        if (!curso.isSelected) {
-            // Si el curso está seleccionado, agrégalo al array de seleccionados
-            if (
-                !this.selectedCursos.some(
-                    (c) => c.cCursoNombre === curso.cCursoNombre
-                )
-            ) {
-                this.selectedCursos.push(curso)
-            }
-        } else {
-            // Si el curso está deseleccionado, elimínalo del array de seleccionados
-            const index = this.selectedCursos.findIndex(
-                (c) => c.cCursoNombre === curso.cCursoNombre
-            )
-            if (index !== -1) {
-                this.selectedCursos.splice(index, 1)
-            }
-        }
-
-        // Mostrar en consola el estado del array de cursos seleccionados
-        console.log('Cursos seleccionados:', this.selectedCursos)
-    }
-
-    // Función para enviar los cursos seleccionados al backend
-    insertarCursos(): void {
         const iEvaluacionId = this.compartirIdEvaluacionService.iEvaluacionId
-        this.selectedCursos = this.cursos
-            .filter((curso) => curso.isSelected)
-            .map((curso) => ({ iCursoId: curso.iCursoId }))
+        const iEvaluacionId_ = this._iEvaluacionId
         console.log(
-            'Cursos seleccionados antes de enviar:',
-            this.selectedCursos
+            `Estado seleccionado para ${curso.cCursoNombre}: ${curso.isSelected}`
+        )
+        if (curso.isSelected) {
+            this.insertarCursos([curso], iEvaluacionId_)
+        } else {
+            this.eliminarCursos([curso], iEvaluacionId)
+        }
+        // Actualizar la base de datos con los cursos seleccionados o deseleccionados
+        //this.actualizarCursosSeleccionados()
+    }
+    //! Función para insertar o eliminar cursos seleccionados
+    actualizarCursosSeleccionados(): void {
+        const iEvaluacionId = this.compartirIdEvaluacionService.iEvaluacionId // Obtener el iEvaluacionId
+        //const iEvaluacionId = this._iEvaluacionId
+        // Filtra los cursos seleccionados y crea un array con `iCursoId` y `isSelected`
+        this.selectedCursos = this.cursos.map((curso) => ({
+            iCursoId: curso.iCursoId,
+            isSelected: curso.isSelected,
+        }))
+
+        // Dividir los cursos en seleccionados y deseleccionados
+        const cursosSeleccionados = this.selectedCursos.filter(
+            (curso) => curso.isSelected
+        )
+        const cursosDeseleccionados = this.selectedCursos.filter(
+            (curso) => !curso.isSelected
         )
 
-        if (this.selectedCursos.length === 0) {
-            console.log('No hay cursos seleccionados')
+        // Si hay cursos seleccionados, insertarlos en la base de datos
+        if (cursosSeleccionados.length > 0) {
+            this.insertarCursos(cursosSeleccionados, iEvaluacionId)
+        }
+
+        // Si hay cursos deseleccionados, eliminarlos de la base de datos
+        if (cursosDeseleccionados.length > 0) {
+            this.eliminarCursos(cursosDeseleccionados, iEvaluacionId)
+        }
+    }
+    // !Función para insertar los cursos seleccionados en la base de datos
+    insertarCursos(cursos: any[], iEvaluacionId: number): void {
+        // Determinar qué valor de iEvaluacionId usar
+        const id =
+            iEvaluacionId || this.compartirIdEvaluacionService.iEvaluacionId
+
+        // Si ambos valores son null o undefined, se muestra un error o mensaje adecuado
+        if (!id) {
+            console.error('No se ha proporcionado un iEvaluacionId válido')
+            this._MessageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'No se ha proporcionado un iEvaluacionId válido.',
+            })
             return
         }
-        console.log('iEvaluacionId:', iEvaluacionId)
+
         this._apiEre
             .insertarCursos({
-                iEvaluacionId: iEvaluacionId,
-                //iEvaluacionId,
-                selectedCursos: this.selectedCursos,
-            }) // Use one object
+                iEvaluacionId: id, // Aseguramos que se pasa el iEvaluacionId
+                selectedCursos: cursos, // Y los cursos seleccionados
+            })
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
                 next: (resp: any) => {
-                    console.log('Respuesta de la inserción de cursos:', resp)
-                    this.cursos = this.cursos.map((curso) => ({
-                        ...curso,
-                        isSelected: false, // Reset selection
-                    }))
+                    this._MessageService.add({
+                        severity: 'success',
+                        summary: 'Cursos registrados',
+                        detail: 'El curso se registró correctamente.',
+                    })
+                    console.log('Cursos insertados:', resp)
                 },
                 error: (err) => {
-                    console.error('Error al insertar los cursos:', err)
-                    const errorMessage =
-                        err?.error?.message || 'Error desconocido'
-                    console.error('Mensaje de error:', errorMessage)
+                    console.error('Error al insertar cursos:', err)
                 },
-                complete: () => {
-                    console.log('AQUIIIIIIII')
-                    this.closeModalEvent.emit(null) // Emitir el evento de cierre del modal
+            })
+    }
+    //! Función para eliminar los cursos deseleccionados de la base de datos
+    eliminarCursos(cursos: any[], iEvaluacionId: number): void {
+        this._apiEre
+            .eliminarCursos({
+                iEvaluacionId: iEvaluacionId,
+                selectedCursos: cursos,
+            })
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+                next: (resp: any) => {
+                    this._MessageService.add({
+                        severity: 'success',
+                        summary: 'Curso eliminado',
+                        detail: 'El curso se eliminó correctamente.',
+                    })
+                    console.log('Cursos insertados:', resp)
+                },
+                error: (err) => {
+                    console.error('Error al eliminar cursos:', err)
                 },
             })
     }
@@ -284,6 +324,10 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
                 error: (err) => {
                     console.error('Error al actualizar los cursos:', err)
                 },
+                complete: () => {
+                    console.log('AQUIIIIIIII')
+                    this.closeModalEvent.emit(null) // Emitir el evento de cierre del modal
+                },
             })
     }
 
@@ -333,12 +377,21 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
                 },
             })
     }
-    // Usando Promise : Función para obtener los cursos de la evaluación original
-    obtenerCursosEvaluacion(evaluacionId: number): Promise<any[]> {
+
+    obtenerCursosEvaluacion(evaluacionId: number) {
         console.log('Evaluacion ID VIENE EN CHAR:', evaluacionId)
         return new Promise((resolve, reject) => {
+            const evaluacionId =
+                this.compartirIdEvaluacionService.iEvaluacionId ||
+                this._iEvaluacionId
+            console.log(
+                'evaluacionId DE SERVICIO OBTENERPARTICIPACIONES:',
+                evaluacionId
+            )
+            console.log('DE _IEVALUACIONS:', this._iEvaluacionId) // Asegúrate de que sea un número
+
             this._apiEre
-                .obtenerCursosEvaluacion(evaluacionId) // Llamada al backend con el ID de evaluación
+                .obtenerCursosEvaluacion(evaluacionId) //! Llamada al backend con el ID de evaluación tenia el "evaluacionId"
                 .pipe(takeUntil(this.unsubscribe$))
                 .subscribe({
                     next: (resp: any) => {
@@ -362,59 +415,6 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
                     },
                 })
         })
-    }
-    //Copiar y guardar evaluaciones de una evaluacion
-    copiarCursos(): void {
-        if (
-            !this.selectedEvaluacionCopia ||
-            typeof this.selectedEvaluacionCopia === 'number'
-        ) {
-            console.error('No se ha seleccionado una evaluación para copiar')
-            return
-        }
-
-        const evaluacionIdCopiar = this.selectedEvaluacionCopia.iEvaluacionId
-        console.log('Evaluación a copiar:', evaluacionIdCopiar)
-
-        // Obtener los cursos de la evaluación seleccionada
-        this.obtenerCursosEvaluacion(evaluacionIdCopiar)
-            .then((cursos) => {
-                const cursosSeleccionados = cursos.filter(
-                    (curso: any) => curso.isSelected === '1' // Filtrar los cursos seleccionados
-                )
-
-                if (cursosSeleccionados.length === 0) {
-                    console.warn(
-                        'No hay cursos seleccionados en la evaluación original'
-                    )
-                    return
-                }
-
-                // Crear el payload con la estructura adecuada para el backend
-                const payload = {
-                    iEvaluacionId:
-                        this.compartirIdEvaluacionService.iEvaluacionId, // ID de la nueva evaluación
-                    selectedCursos: cursosSeleccionados.map((curso: any) => ({
-                        iCursoId: curso.iCursoId, // ID del curso seleccionado
-                    })),
-                }
-
-                // Llamada al backend para guardar los cursos seleccionados en la nueva evaluación
-                this._apiEre.insertarCursos(payload).subscribe(
-                    (response) => {
-                        console.log('Cursos copiados exitosamente:', response)
-                    },
-                    (error) => {
-                        console.error('Error al guardar los cursos:', error)
-                    }
-                )
-            })
-            .catch((error) => {
-                console.error(
-                    'Error al obtener los cursos de la evaluación original:',
-                    error
-                )
-            })
     }
 
     ngOnDestroy() {

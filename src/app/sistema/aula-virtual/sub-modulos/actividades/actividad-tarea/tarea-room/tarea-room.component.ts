@@ -40,6 +40,8 @@ import { ScrollerModule } from 'primeng/scroller'
     providers: [provideIcons({ matListAlt, matPeople }), DialogService],
 })
 export class TareaRoomComponent implements OnChanges, OnInit {
+    form: FormGroup
+
     @Input() iTareaId: string
     private _dialogService = inject(DialogService)
     private GeneralService = inject(GeneralService)
@@ -52,7 +54,14 @@ export class TareaRoomComponent implements OnChanges, OnInit {
     students: any
 
     iPerfilId: number
-    constructor(private messageService: MessageService) {}
+    constructor(
+        private messageService: MessageService,
+        private fb: FormBuilder
+    ) {
+        this.form = this.fb.group({
+            editor: [''],
+        })
+    }
     public entregarEstud: FormGroup = this._formBuilder.group({
         cTareaEstudianteUrlEstudiante: [''],
         //iEstudianteId: [],
@@ -66,6 +75,8 @@ export class TareaRoomComponent implements OnChanges, OnInit {
         } else {
             this.obtenerEscalaCalificaciones()
         }
+
+        this.form.get('editor').disable()
     }
     ngOnChanges(changes) {
         if (changes.iTareaId?.currentValue) {
@@ -436,8 +447,8 @@ export class TareaRoomComponent implements OnChanges, OnInit {
         if (!this.iEscalaCalifId) {
             this.messageService.add({
                 severity: 'warn',
-                summary: 'Campo vacio',
-                detail: 'Seleccione una calaficación',
+                summary: 'Falta Entregar su tarea',
+                detail: 'Seleccione calaficación para guardar',
             })
             return
         }
@@ -520,12 +531,11 @@ export class TareaRoomComponent implements OnChanges, OnInit {
         if (!this.iEscalaCalifId) {
             this.messageService.add({
                 severity: 'warn',
-                summary: 'Campo vacio',
-                detail: 'Seleccione una calaficación',
+                summary: 'Falta Entregar su tarea',
+                detail: 'Seleccione calaficación para guardar',
             })
             return
         }
-
         const params = {
             petition: 'post',
             group: 'aula-virtual',
@@ -572,13 +582,13 @@ export class TareaRoomComponent implements OnChanges, OnInit {
                 'Deseas eliminar del grupo al estudiante ' +
                 item.cPersNombre +
                 ' ?',
-            header: 'Eliminar Bibliografía',
-            icon: 'pi pi-info-circle',
-            acceptButtonStyleClass: 'p-button-danger p-button-text',
-            rejectButtonStyleClass: 'p-button-text p-button-text',
-            acceptIcon: 'none',
-            rejectIcon: 'none',
-            acceptLabel: 'Si',
+            header: 'Eliminar Estudiante del Grupo',
+            // icon: 'pi pi-info-circle', // Se ha activado el icono predeterminado
+            acceptButtonStyleClass: 'p-button-success  ', // Estilo para el botón de aceptar
+            rejectButtonStyleClass: 'p-button-danger', // Estilo para el botón de rechazar
+            acceptIcon: 'pi pi-check', // Icono de aceptación
+            rejectIcon: 'pi pi-times', // Icono de rechazo
+            acceptLabel: 'SI',
             rejectLabel: 'No',
 
             accept: () => {
@@ -594,15 +604,26 @@ export class TareaRoomComponent implements OnChanges, OnInit {
                     },
                 }
                 this.getInformation(params, 'eliminar-tareas-estudiantes')
-                //this.messageService.add({ severity: 'info', summary: 'Confirmado', detail: 'Eliminando Metodología' });
             },
             reject: () => {
-                //this.messageService.add({ severity: 'error', summary: '', detail: 'You have rejected' });
+                // Código en caso de rechazo
             },
         })
     }
 
     entregartaraeaestudiante() {
+        if (
+            !this.FilesTareasEstudiantes ||
+            this.FilesTareasEstudiantes.length === 0
+        ) {
+            this.messageService.add({
+                severity: 'warn',
+                summary: 'A un no subio su tarea Para revisar',
+                detail: '',
+            })
+            return
+        }
+
         const comment = this.entregarEstud.value
         comment.iTareaId = this.iTareaId
         console.log('Enviar Tarea', comment)
@@ -619,6 +640,18 @@ export class TareaRoomComponent implements OnChanges, OnInit {
         //console.log(this.grupoTransferir)
     }
     entregarEstudianteTarea() {
+        if (
+            !this.FilesTareasEstudiantes ||
+            this.FilesTareasEstudiantes.length === 0
+        ) {
+            this.messageService.add({
+                severity: 'warn',
+                summary: 'A un no entrego su tarea',
+                detail: 'Por favor, suba su tarea',
+            })
+            return
+        }
+
         if (!this.FilesTareasEstudiantes.length) return
         const params = {
             petition: 'post',
@@ -637,6 +670,12 @@ export class TareaRoomComponent implements OnChanges, OnInit {
     }
 
     entregarEstudianteTareaGrupal() {
+        this.messageService.add({
+            severity: 'success', // success, info, warn, error
+            summary: 'Tarea enviada',
+            detail: 'La tarea ha sido entregada exitosamente.',
+        })
+
         if (!this.FilesTareasEstudiantesGrupal.length) return
         const params = {
             petition: 'post',
@@ -687,5 +726,24 @@ export class TareaRoomComponent implements OnChanges, OnInit {
     onGlobalFilter(table: Table, event: Event) {
         if (!table) return
         table.filterGlobal((event.target as HTMLInputElement).value, 'contains')
+    }
+    isDisabled: boolean = true
+
+    validarFormulario(): boolean {
+        if (
+            !this.notaTareaEstudianteGrupal ||
+            this.notaTareaEstudianteGrupal.trim() === ''
+        ) {
+            alert('Por favor, ingrese una nota válida.')
+            return false
+        }
+        if (
+            !this.comentarioTareaEstudianteGrupal ||
+            this.comentarioTareaEstudianteGrupal.trim() === ''
+        ) {
+            alert('Por favor, ingrese un comentario.')
+            return false
+        }
+        return true
     }
 }

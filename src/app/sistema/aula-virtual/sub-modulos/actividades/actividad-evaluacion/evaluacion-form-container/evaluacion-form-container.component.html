@@ -1,4 +1,4 @@
-<div class="flex flex-column gap-4">
+<div class="flex flex-column gap-4 mt-4">
     <p-steps
         [model]="evaluacionFormPasos"
         [(activeIndex)]="activeStepper"
@@ -15,19 +15,6 @@
             ></app-evaluacion-form-info>
         }
         @case (1) {
-            <app-evaluacion-form-calificacion
-                [calificacionForm]="calificacionForm"
-                [tituloEvaluacion]="tituloEvulacion"
-                (rubricaSelectedChange)="rubricaSelected = $event"
-                [rubricaSelected]="rubricaSelected"
-                [params]="{
-                    iCursoId: paramsData.iCursoId,
-                    iDocenteId: paramsData.iDocenteId,
-                    idDocCursoId: paramsData.idDocCursoId,
-                }"
-            ></app-evaluacion-form-calificacion>
-        }
-        @case (2) {
             <app-evaluacion-form-preguntas
                 [tituloEvaluacion]="tituloEvulacion"
                 [iEvaluacionId]="evaluacionInfoForm.get('iEvaluacionId').value"
@@ -38,6 +25,7 @@
                 [iCursoId]="paramsData.iCursoId"
             ></app-evaluacion-form-preguntas>
         }
+
         @default {}
     }
 

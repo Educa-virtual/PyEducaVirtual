@@ -104,3 +104,9 @@
         padding: 8px;
     }
 }
+.fixed-button {
+    position: fixed;
+    bottom: 20px; /* Ajusta la distancia desde la parte inferior */
+    right: 70px; /* Ajusta la distancia desde la parte derecha */
+    z-index: 9999; /* Asegura que esté por encima de otros elementos */
+}

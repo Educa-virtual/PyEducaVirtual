@@ -244,8 +244,8 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
                 next: (resp: any) => {
                     this._MessageService.add({
                         severity: 'success',
-                        summary: 'Actualización exitosa',
-                        detail: 'El curso se inserto Correctamente.',
+                        summary: 'Cursos registrados',
+                        detail: 'El curso se registró correctamente.',
                     })
                     console.log('Cursos insertados:', resp)
                 },
@@ -264,7 +264,12 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
                 next: (resp: any) => {
-                    console.log('Cursos eliminados:', resp)
+                    this._MessageService.add({
+                        severity: 'success',
+                        summary: 'Curso eliminado',
+                        detail: 'El curso se eliminó correctamente.',
+                    })
+                    console.log('Cursos insertados:', resp)
                 },
                 error: (err) => {
                     console.error('Error al eliminar cursos:', err)

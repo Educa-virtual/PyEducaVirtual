@@ -25,12 +25,20 @@
         />
     </div>
     <br />
-
+    <!-- <div class="conteo">
+        <p>
+            <strong>Instituciones que participan:</strong> {{ participanCount }}
+        </p>
+        <p>
+            <strong>Instituciones que no participan:</strong>
+            {{ noParticipanCount }}
+        </p>
+    </div> -->
     <p-pickList
         [source]="sourceProducts"
         [target]="targetProducts"
-        sourceHeader="I.E No participan"
-        targetHeader="I.E Participan"
+        sourceHeader="I.E No participan {{ noParticipanCount }}"
+        targetHeader="I.E Participan {{ participanCount }}"
         (onMoveToTarget)="IEparticipan($event)"
         (onMoveToSource)="IEnoparticipan($event)"
         (onMoveAllToTarget)="IEparticipanall($event)"

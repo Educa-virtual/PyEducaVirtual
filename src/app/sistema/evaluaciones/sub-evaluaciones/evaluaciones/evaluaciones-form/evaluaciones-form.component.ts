@@ -158,11 +158,11 @@ export class EvaluacionesFormComponent implements OnInit {
         if (this.activeStep === 0 && this.accion === 'nuevo') {
             // Guardar datos de Información Evaluación
 
-            this._MessageService.add({
-                severity: 'success',
-                summary: 'Actualización exitosa',
-                detail: 'La evaluacion se inserto Correctamente.',
-            })
+            // this._MessageService.add({
+            //     severity: 'success',
+            //     summary: 'Actualización exitosa',
+            //     detail: 'La evaluacion se inserto Correctamente.',
+            // })
             this.guardarEvaluacion()
         }
         // Pasar al siguiente paso
@@ -197,9 +197,10 @@ export class EvaluacionesFormComponent implements OnInit {
     //!TERMINA AQUI
     esModoEdicion: boolean = false // Cambiar a true si estás en modo edición
     ngOnInit() {
-        console.log('Evaluación desde el padre:', this._config.data.evaluacion)
-        console.log('Config en el padre:', this._config)
-
+        if (this._config?.data?.evaluacion?.iEvaluacionId) {
+            this.iEvaluacionId = this._config.data.evaluacion.iEvaluacionId
+            console.log('Se agrego esto:', this.iEvaluacionId)
+        }
         // console.log(this.opcion, 'LLEGARAEL DATO OPCION')
         this.accion = this._config.data.accion
 
@@ -317,6 +318,11 @@ export class EvaluacionesFormComponent implements OnInit {
                         this.iEvaluacionId
                     )
                     this.iEvaluacionId = resp['data'][0]['iEvaluacionId']
+                    this._MessageService.add({
+                        severity: 'success',
+                        summary: 'Evaluación registrada',
+                        detail: 'La evaluación se registró correctamente en el sistema.',
+                    })
                     //alert(JSON.stringify(this.data))
                     //this.sourceProducts = this.data
                 },

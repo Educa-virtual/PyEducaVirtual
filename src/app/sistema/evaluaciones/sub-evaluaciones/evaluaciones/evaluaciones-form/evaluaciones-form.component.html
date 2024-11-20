@@ -140,6 +140,18 @@
                                             label="URL Plantilla"
                                         ></app-common-input>
                                     </div>
+                                    <div class="field col-12 md:col-6">
+                                        <app-common-input
+                                            controlKey="cEvaluacionUrlManual"
+                                            label="URL Manual"
+                                        ></app-common-input>
+                                    </div>
+                                    <div class="field col-12 md:col-6">
+                                        <app-common-input
+                                            controlKey="cEvaluacionUrlMatriz"
+                                            label="URL Matriz"
+                                        ></app-common-input>
+                                    </div>
                                 </div>
 
                                 <!-- Observación -->
@@ -204,7 +216,7 @@
                                 <div>
                                     <app-ieparticipa
                                         [_iEvaluacionId]="
-                                            _config.data.evaluacion
+                                            this._config.data.evaluacion
                                                 .iEvaluacionId
                                         "
                                     ></app-ieparticipa>

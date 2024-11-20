@@ -87,7 +87,7 @@
                 <p-card header="" class="custom-card">
                     <div class="card-content">
                         <p-button
-                            (click)="accionbtn('auto')"
+                            (click)="accionbtn('auto'); toggleBotonc()"
                             (focus)="(true)"
                             styleClass="p-button-warning"
                         >
@@ -138,26 +138,6 @@
         }
         @if (acciones === 'auto') {
             <div class="field col-12 md:col-12">
-                <!--generacion automatica -->
-                <p style="color: red"><strong>!IMPORTANTE</strong></p>
-
-                <div class="flex justify-content-between">
-                    <P
-                        >Al seleccionar esta opcion se va a recuperar la
-                        informacion de otra
-                        <strong>Evaluacion</strong>
-                    </P>
-                    <p-button
-                        label="Recuperar"
-                        (onClick)="
-                            accionBtnItem({ accion: 'copiarEvaluacion' })
-                        "
-                        [disabled]="selectedRow.length === 0"
-                        styleClass="p-button-warning mb-4"
-                    />
-                </div>
-
-                <!-- (accionBtnItem)="accionBtnItemTable($event)" -->
                 <p-scrollPanel [style]="{ width: '100%', height: '300px' }"
                     ><app-table-primeng
                         [showCaption]="false"
@@ -171,7 +151,24 @@
                         <!-- <ng-container slot="caption-content"> </ng-container> -->
                     </app-table-primeng></p-scrollPanel
                 >
+                <div class="flex justify-content-between">
+                    <!-- <P
+                        >Al seleccionar esta opcion se va a recuperar la
+                        informacion de otra
+                        <strong>Evaluacion</strong>
+                    </P> -->
+                </div>
+                <!-- <footer class="card-footer"></footer> -->
             </div>
         }
     }
+    <ng-template pTemplate="footer">
+        <p-button
+            *ngIf="mostrarBoton"
+            label="Recuperar"
+            (onClick)="accionBtnItem({ accion: 'copiarEvaluacion' })"
+            [disabled]="selectedRow.length === 0"
+            styleClass="p-button-warning mt-3"
+        />
+    </ng-template>
 </p-dialog>

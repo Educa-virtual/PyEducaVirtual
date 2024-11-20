@@ -92,6 +92,12 @@ export class EvaluacionesComponent implements OnInit {
     // Variable para manejar datos reactivos
     dataSubject = new BehaviorSubject<any[]>([]) // Reactivo para actualizar la tabla automáticamente
 
+    mostrarBoton: boolean = false // Controla la visibilidad del botón
+
+    // Método para alternar el estado del botón
+    toggleBotonc(): void {
+        this.mostrarBoton = !this.mostrarBoton // Cambia true/false
+    }
     accionesPrincipal: IActionContainer[] = [
         {
             labelTooltip: 'Agregar evaluación',
@@ -288,8 +294,6 @@ export class EvaluacionesComponent implements OnInit {
         }
 
         if (accion === 'ver') {
-            /// alert(item.iEvaluacionId)
-            //console.log('Aqui: ' + item.iEvaluacionId)
             this.compartirIdEvaluacionService.iEvaluacionId = item.iEvaluacionId
             //alert(this.compartirIdEvaluacionService.iEvaluacionId)
             this.verEreEvaluacion(item)
@@ -331,7 +335,7 @@ export class EvaluacionesComponent implements OnInit {
     agregarEditarPregunta(evaluacion) {
         const accion = evaluacion?.iEvaluacionId ? 'editar' : 'nuevo'
         const header =
-            accion === 'nuevo' ? 'Nueva evaluación' : 'Editar evaluación'
+            accion === 'nuevo' ? 'Nueva evaluación ' : 'Editar evaluación'
 
         const refModal = this._dialogService.open(EvaluacionesFormComponent, {
             ...MODAL_CONFIG,
@@ -341,7 +345,7 @@ export class EvaluacionesComponent implements OnInit {
             },
             header: header,
         })
-
+        console.log('MODAL DE AGREGAR EDITAR PREGUNTA', refModal)
         refModal.onClose.subscribe((result) => {
             if (result) {
                 this.obtenerEvaluacion()

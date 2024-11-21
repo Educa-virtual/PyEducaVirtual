@@ -1,31 +1,45 @@
-<form [formGroup]="videoconferenciaForm" class="flex flex-column gap-3">
-    <app-common-input [controlKey]="'titulo'" label="Título" />
-
-    <app-disponibilidad-form />
-
-    <div class="flex flex-column gap-2">
-        <label for="descripcion">Descripción</label>
-        <p-editor id="descripcion" formControlName="descripcion" />
+<div class="container">
+    <div class="header">
+        <h1 class="title">Videollamadas y reuniones para todos</h1>
+        <p class="subtitle">
+            Conecta, colabora y celebra desde cualquier lugar con Google Meet
+        </p>
     </div>
-</form>
 
-<div class="flex justify-content-end gap-2 pt-3">
-    <button
-        pButton
-        pRipple
-        label="Cancelar"
-        icon="pi pi-times"
-        class="p-button-secondary"
-        type="button"
-        size="small"
-        (click)="closeModal(null)"
-    ></button>
-    <button
-        pButton
-        pRipple
-        label="Guardar"
-        icon="pi pi-check"
-        size="small"
-        class="p-button-primary"
-    ></button>
+    <div class="buttons p-fluid">
+        <!-- Botón para crear nueva reunión con tooltip -->
+        <a
+            pButton
+            label="Nueva reunión"
+            icon="pi pi-video"
+            class="p-button-primary create-meeting"
+            href="https://meet.google.com/new"
+            target="_blank"
+            pTooltip="Crea una nueva reunión en Google Meet"
+            tooltipPosition="top"
+        >
+        </a>
+
+        <!-- Campo de texto para ingresar código o enlace con tooltip -->
+        <input
+            pInputText
+            type="text"
+            placeholder="Introduce un código o enlace"
+            class="meeting-code"
+            [(ngModel)]="meetingInput"
+            pTooltip="Ingresa el código o enlace de la reunión"
+            tooltipPosition="top"
+        />
+
+        <!-- Botón para unirse a la reunión con tooltip -->
+        <button
+            pButton
+            label="Unirme"
+            icon="pi pi-check"
+            class="p-button-secondary join-meeting"
+            (click)="joinMeeting()"
+            pTooltip="Haz clic para unirte a la reunión"
+            tooltipPosition="top"
+        ></button>
+    </div>
 </div>

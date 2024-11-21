@@ -172,11 +172,11 @@ const notas_evaluaciones = [
                 icon: 'pi pi-fw pi-book',
                 routerLink: ['/evaluaciones'],
             },
-            {
-                label: 'Mis Áreas Curriculares',
-                icon: 'pi pi-fw pi-folder',
-                routerLink: ['/evaluaciones/areas'],
-            },
+            // {
+            //     label: 'Mis Áreas Curriculares',
+            //     icon: 'pi pi-fw pi-folder',
+            //     routerLink: ['/evaluaciones/areas'],
+            // },
             {
                 label: 'Configurar Modulo',
                 icon: 'pi pi-fw pi-book',
@@ -257,7 +257,8 @@ const notas_evaluaciones = [
                     {
                         label: 'Prueba ECE',
                         icon: 'pi pi-fw pi-times-circle',
-                        routerLink: ['/evaluaciones/preguntas-activas'],
+                        url: 'http://umc.minedu.gob.pe/evaluaciones-censales/',
+                        target: '_blank', // Opcional: abre el enlace en una nueva pestaña
                     },
                 ],
             },

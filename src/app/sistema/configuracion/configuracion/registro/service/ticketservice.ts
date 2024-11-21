@@ -169,7 +169,7 @@ export class TicketService {
     }
 
     async setCalendar(
-        { iCalAcadId }: Partial<typeof this.registroInformation.calendar> = {},
+        { iCalAcadId }: { iCalAcadId?: string } = {},
         {
             onCompleteCallbacks = [],
         }: {
@@ -237,6 +237,8 @@ export class TicketService {
             if (data.data.formasAtencion) {
                 this.registroInformation.stepFormasAtencion =
                     JSON.parse(data.data.formasAtencion) ?? undefined
+            } else {
+                this.registroInformation.stepFormasAtencion = []
             }
 
             if (data.data.periodosAcademicos) {
@@ -245,6 +247,9 @@ export class TicketService {
             }
         } else {
             console.log('SIN ID')
+
+            console.log('Fase y fecha')
+            console.log(fasesFechas)
 
             data = await firstValueFrom(
                 this.httpService.getData(
@@ -315,36 +320,39 @@ export class TicketService {
         } = {}
     ) {
         try {
-            const { iSedeId, iYAcadId } = this.registroInformation.calendar
+            const { iCalAcadId, iSedeId, iYAcadId } =
+                this.registroInformation.calendar
 
             const data = await firstValueFrom(
                 this.httpService.postData(
                     'acad/calendarioAcademico/insCalAcademico',
                     {
-                        calAcad: JSON.stringify({
+                        json: JSON.stringify({
+                            iCalAcadId: iCalAcadId,
                             iSedeId: iSedeId,
                             iYAcadId: iYAcadId,
                             dtCalAcadInicio:
-                                this.toSQLDatetimeFormat(calAcad.fechaInicio) ??
-                                null,
+                                this.toSQLDatetimeFormat(
+                                    calAcad.fechaInicio[0]
+                                ) ?? null,
                             dtCalAcadFin:
-                                this.toSQLDatetimeFormat(calAcad.fechaFin) ??
-                                null,
+                                this.toSQLDatetimeFormat(
+                                    calAcad.fechaInicio[1]
+                                ) ?? null,
                             dtCalAcadMatriculaInicio:
                                 this.toSQLDatetimeFormat(
-                                    calAcad.fechaMatriculaInicio
+                                    calAcad.fechaMatriculaFin[0]
                                 ) ?? null,
                             dtCalAcadMatriculaFin:
                                 this.toSQLDatetimeFormat(
-                                    calAcad.fechaMatriculaFin
+                                    calAcad.fechaMatriculaFin[1]
                                 ) ?? null,
                             dtCalAcadMatriculaResagados:
                                 this.toSQLDatetimeFormat(
-                                    calAcad.fechaMatriculaRezagados
+                                    calAcad.fechaMatriculaRezagados[1]
                                 ) ?? null,
-                            bCalAcadFaseRegular: calAcad.regular.includes(true),
-                            bCalAcadFaseRecuperacion:
-                                calAcad.recuperacion.includes(true),
+                            bCalAcadFaseRegular: true,
+                            bCalAcadFaseRecuperacion: true,
                         }),
                     }
                 )
@@ -383,20 +391,63 @@ export class TicketService {
                     'acad/calendarioAcademico/updCalAcademico',
                     {
                         calAcad: JSON.stringify({
+                            iCalAcadId: iCalAcadId,
                             dtCalAcadInicio: this.toSQLDatetimeFormat(
-                                calAcad.fechaInicio
+                                calAcad.fechaInicio[0]
                             ),
                             dtCalAcadFin: this.toSQLDatetimeFormat(
-                                calAcad.fechaFin
+                                calAcad.fechaInicio[1]
                             ),
                             dtCalAcadMatriculaInicio: this.toSQLDatetimeFormat(
-                                calAcad.fechaMatriculaInicio
+                                calAcad.fechaMatriculaFin[0]
                             ),
                             dtCalAcadMatriculaFin: this.toSQLDatetimeFormat(
-                                calAcad.fechaMatriculaFin
+                                calAcad.fechaMatriculaFin[1]
                             ),
+                            dtCalAcadMatriculaResagados:
+                                this.toSQLDatetimeFormat(
+                                    calAcad.fechaMatriculaRezagados[1]
+                                ),
+                            bCalAcadFaseRegular: false,
+                            bCalAcadFaseRecuperacion: false,
                         }),
-                        iCalAcadId: iCalAcadId,
+                    }
+                )
+            )
+            onNextCallbacks.forEach((callback) => callback())
+
+            onCompleteCallbacks.forEach((callback) => callback())
+        } catch (error) {
+            console.error('Error en insCalAcademico:', error)
+        }
+    }
+
+    async updCalFasesProm(
+        calFasesProm,
+        {
+            onNextCallbacks = [],
+            onCompleteCallbacks = [],
+        }: {
+            onNextCallbacks?: (() => void)[]
+            onCompleteCallbacks?: (() => void)[]
+        } = {}
+    ) {
+        try {
+            await firstValueFrom(
+                this.httpService.putData(
+                    'acad/calendarioAcademico/updCalFasesProm',
+                    {
+                        calFases: JSON.stringify(
+                            calFasesProm.map((fase) => ({
+                                iFaseId: fase.iFaseId,
+                                iCalAcadId:
+                                    this.registroInformation.calendar
+                                        .iCalAcadId,
+                                iFasePromId: fase.iFasePromId,
+                                dtFaseInicio: fase.dtFaseInicio,
+                                dtFaseFin: fase.dtFaseFin,
+                            }))
+                        ),
                     }
                 )
             )
@@ -452,7 +503,7 @@ export class TicketService {
     }
 
     async insCalFasesProm(
-        { form, insFase },
+        calFasesProm,
         {
             onNextCallbacks = [],
             onCompleteCallbacks = [],
@@ -462,36 +513,23 @@ export class TicketService {
         } = {}
     ) {
         try {
-            let fasePromocional
-
-            if (
-                Array.isArray(
-                    this.registroInformation.stepYear.fases_promocionales
-                )
-            ) {
-                fasePromocional =
-                    this.registroInformation.stepYear.fases_promocionales.find(
-                        (fase) => fase.iFasePromId == insFase.iFasePromId
-                    )
-            }
-
-            if (fasePromocional == null || fasePromocional == undefined) {
-                await firstValueFrom(
-                    this.httpService.postData(
-                        'acad/calendarioAcademico/insCalFasesProm',
-                        {
-                            calFasesProm: JSON.stringify({
+            await firstValueFrom(
+                this.httpService.postData(
+                    'acad/calendarioAcademico/insCalFasesProm',
+                    {
+                        calFasesProm: JSON.stringify(
+                            calFasesProm.map((fase) => ({
                                 iCalAcadId:
                                     this.registroInformation.calendar
                                         .iCalAcadId,
-                                iFasePromId: insFase.iFasePromId,
-                                dtFaseInicio: form.faseInicio,
-                                dtFaseFin: form.faseFinal,
-                            }),
-                        }
-                    )
+                                iFasePromId: fase.iFasePromId,
+                                dtFaseInicio: fase.dtFaseInicio,
+                                dtFaseFin: fase.dtFaseFin,
+                            }))
+                        ),
+                    }
                 )
-            }
+            )
             onNextCallbacks.forEach((callback) => callback())
             onCompleteCallbacks.forEach((callback) => callback())
         } catch (err) {
@@ -510,27 +548,18 @@ export class TicketService {
         } = {}
     ) {
         try {
-            console.log('fases')
-            console.log(this.registroInformation.stepYear.fases_promocionales)
-
-            const fasePromocional =
-                Array.isArray(
-                    this.registroInformation.stepYear.fases_promocionales
-                ) &&
-                this.registroInformation.stepYear.fases_promocionales.find(
-                    (fase) => fase.iFasePromId == deleteFasesProm.iFasePromId
+            await firstValueFrom(
+                this.httpService.deleteData(
+                    'acad/calendarioAcademico/deleteCalFasesProm',
+                    {
+                        deleteFasesProm: JSON.stringify(
+                            deleteFasesProm.map((fase) => ({
+                                iFaseId: fase.iFaseId,
+                            }))
+                        ),
+                    }
                 )
-
-            if (fasePromocional != null) {
-                await firstValueFrom(
-                    this.httpService.deleteData(
-                        'acad/calendarioAcademico/deleteCalFasesProm',
-                        {
-                            iFaseId: fasePromocional.iFaseId,
-                        }
-                    )
-                )
-            }
+            )
 
             onNextCallbacks.forEach((callback) => callback())
             onCompleteCallbacks.forEach((callback) => callback())

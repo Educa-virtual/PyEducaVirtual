@@ -18,6 +18,7 @@ import { ButtonModule } from 'primeng/button'
 import { DynamicDialogConfig } from 'primeng/dynamicdialog'
 import { ReactiveFormsModule } from '@angular/forms'
 import { CommonModule } from '@angular/common'
+import { MessageService } from 'primeng/api'
 interface NivelTipo {
     cNivelTipoNombre: string
     iNivelTipoId: string
@@ -49,7 +50,7 @@ interface EvaluacionCopia {
     styleUrl: './ieparticipa.component.scss',
 })
 export class IeparticipaComponent implements OnInit {
-    @Input() _iEvaluacionId: number
+    @Input() _iEvaluacionId: number //ID de la evaluacion Form
 
     public evaluacionFormGroup: any
 
@@ -66,6 +67,7 @@ export class IeparticipaComponent implements OnInit {
     private _apiEre = inject(ApiEvaluacionesRService)
     public sourceProducts: any[] = [] // IEs no participantes
     public targetProducts: any[] = [] // IEs participantes
+    private _MessageService = inject(MessageService) //!Agregando Mensaje
     nivelTipo: NivelTipo[] | undefined
     selectedNivelTipo: NivelTipo | undefined
     Ugeles: Ugeles[] | undefined
@@ -81,6 +83,9 @@ export class IeparticipaComponent implements OnInit {
     visible: boolean = false //Accion Editar, Ver, crear
     accion: string //Accion Editar, Ver, crear
     isDisabled: boolean // Indica si la sección está deshabilitada
+    //!Conteo de Ie participan y Ie no participan
+    participanCount: number = 0 // Conteo de instituciones que participan
+    noParticipanCount: number = 0 // Conteo de instituciones que no participan
 
     constructor(
         private cdr: ChangeDetectorRef,
@@ -93,41 +98,66 @@ export class IeparticipaComponent implements OnInit {
     iEvaluacionId: number // Aquí se vincula el valor seleccionado
 
     ngOnInit() {
+        console.log('Valor recibido en _iEvaluacionId:', this._iEvaluacionId)
         console.log('Iniciando componente con config:', this._config.data)
-
+        //console.log('iEvaluacionId recibido:', this._iEvaluacionId)
+        console.log(
+            'iEvaluacionId recibido:',
+            this.compartirIdEvaluacionService
+        )
+        //alert(this._iEvaluacionId)
         // Determinar el modo
         //this.accion = this._config.data?.accion || 'crear'
         //this.esModoEdicion = this.accion === 'editar'
         this.accion = this._config.data?.accion || 'crear'
         console.log('Acción actual:', this.accion)
 
-        this.obtenerIE()
         this.obtenerNivelTipo()
         this.obtenerugel()
-        this.obtenerEvaluacionesCopia()
+        //this.obtenerEvaluacionesCopia()
 
         this.nivelTipo = [
             { cNivelTipoNombre: 'Primaria', iNivelTipoId: 'NY' },
             { cNivelTipoNombre: 'Secundaria', iNivelTipoId: 'RM' },
         ]
         // Inicializar según el modo
-        if (this.accion === 'crear') {
-            this.targetProducts = [] // Asegurar que la lista destino esté vacía
-            this.obtenerIE() // Solo obtener la lista de IEs disponibles
+        if (this.accion === 'nuevo') {
+            this.obtenerIE()
+            this.compartirIdEvaluacionService.iEvaluacionId = this.iEvaluacionId
+            this.targetProducts = [] // Vaciar correctamente la lista de productos seleccionados
+            this.obtenerParticipaciones(
+                this.compartirIdEvaluacionService.iEvaluacionId
+            )
         }
         if (this.accion === 'ver') {
             this.obtenerParticipaciones(
                 this.compartirIdEvaluacionService.iEvaluacionId
             )
-            //this.isDisabled = true // Deshabilita visualmente la sección
+            console.log(
+                'iEvaluacionId recibido Ver:',
+                this.obtenerParticipaciones(
+                    this.compartirIdEvaluacionService.iEvaluacionId
+                )
+            )
         }
         if (this.accion === 'editar') {
-            this.obtenerParticipaciones(this._iEvaluacionId)
-            //this.isDisabled = true // Deshabilita visualmente la sección
+            console.log(
+                this.compartirIdEvaluacionService.iEvaluacionId,
+                'AQUI ESTA EL ID'
+            )
+            this.obtenerParticipaciones(
+                this.compartirIdEvaluacionService.iEvaluacionId
+            )
         }
+        // this.obtenerParticipaciones(
+        //     this.compartirIdEvaluacionService.iEvaluacionId
+        // )
     }
 
     obtenerIE() {
+        this.allIEs = []
+        this.sourceProducts = []
+
         this._apiEre
             .obtenerIE(this.params)
             .pipe(takeUntil(this.unsubscribe$))
@@ -141,7 +171,6 @@ export class IeparticipaComponent implements OnInit {
                         cUgelNombre: item.cUgelNombre, // Asegúrate de incluir esta propiedad
                     }))
 
-                    // Filtra las IE que no están en `targetProducts`
                     this.sourceProducts = this.allIEs.filter(
                         (ie) =>
                             !this.targetProducts.some(
@@ -169,10 +198,12 @@ export class IeparticipaComponent implements OnInit {
                         'Instituciones no participantes:',
                         this.sourceProducts
                     )
+                    this.actualizarConteos()
                 },
                 error: (error) => console.error('Error al obtener IEs:', error),
             })
     }
+
     obtenerNivelTipo() {
         this._apiEre
             .obtenerNivelTipo(this.params)
@@ -202,31 +233,53 @@ export class IeparticipaComponent implements OnInit {
     // Cuando se mueve un elemento a "Participan"
     IEparticipan(event: any) {
         const itemsMoved = event.items
-        // console.log('Moviendo a Participan:', itemsMoved)
+        console.log('Moviendo a Participan AQUI:', itemsMoved)
+
         const payload = {
             items: itemsMoved.map((item) => ({
-                iEvaluacionId: this.compartirIdEvaluacionService.iEvaluacionId,
-                //!ESTA EN MODO MANUAL; CAMBIAR POR EL ID DE LA EVALUACION
+                //iEvaluacionId: this._iEvaluacionId, //FUNCIONA PARA EDITAR
+                //iEvaluacionId: this.compartirIdEvaluacionService.iEvaluacionId, //FUNCIONA PARA GUARDAR
+                iEvaluacionId:
+                    this._iEvaluacionId ??
+                    this.compartirIdEvaluacionService.iEvaluacionId,
                 iIieeId: item.iIieeId,
+
+                //iIieeId: item.iIieeId,
             })),
         }
+        // const payload = {
+        //     items: itemsMoved.map((item) => ({
+        //         iEvaluacionId: this._iEvaluacionId, // Usando el ID recibido como Input
+        //         iIieeId: item.iIieeId,
+        //     }))
+        // }
         this._apiEre.guardarParticipacion(payload).subscribe(
-            (response) => console.log('Guardado exitoso:', response),
+            //(response) => console.log('Guardado exitoso:', response),
+            (response) => {
+                // Mostrar mensaje tipo toast en caso de éxito
+                this._MessageService.add({
+                    severity: 'success',
+                    summary: 'Guardado completado',
+                    detail: 'Las instituciones educativas se han guardado correctamente en el sistema.',
+                })
+                console.log('Guardado exitoso:', response)
+            },
             (error) => console.error('Error al guardar:', error)
         )
+        //this.actualizarConteos() //!Se agrego el conteo de datos.
     }
 
     IEnoparticipan(event: any) {
         const itemsMoved = event.items
-        // console.log(
-        //     'Elementos movidos de IEnoparticipan a IEparticipan:',
-        //     itemsMoved
-        // )
-
         // Obtenemos los objetos con iIieeId e iEvaluacionId para eliminarlos
         const participacionesToDelete = itemsMoved.map((item) => ({
+            //!Cambios Recientes
+            iEvaluacionId:
+                this._iEvaluacionId ??
+                this.compartirIdEvaluacionService.iEvaluacionId,
             iIieeId: item.iIieeId,
-            iEvaluacionId: this.compartirIdEvaluacionService.iEvaluacionId, // Asumiendo que iEvaluacionId está disponible en el componente
+            // iIieeId: item.iIieeId,
+            // iEvaluacionId: this._iEvaluacionId, // Asumiendo que iEvaluacionId está disponible en el componente
         }))
 
         if (participacionesToDelete.length > 0) {
@@ -235,7 +288,13 @@ export class IeparticipaComponent implements OnInit {
                 .eliminarParticipacion(participacionesToDelete)
                 .subscribe(
                     (response) => {
-                        console.log('Eliminación exitosa:', response)
+                        // Mostrar mensaje tipo toast en caso de éxito
+                        this._MessageService.add({
+                            severity: 'success',
+                            summary: 'Eliminación realizada',
+                            detail: 'La institución educativa fue eliminada correctamente del sistema.',
+                        })
+                        console.log('Eliminado exitoso:', response)
                     },
                     (error) => {
                         console.error('Error al eliminar:', error)
@@ -244,6 +303,7 @@ export class IeparticipaComponent implements OnInit {
         } else {
             console.warn('No hay elementos para eliminar.')
         }
+        this.actualizarConteos() //!Se agrego el conteo de datos.
     }
     IEparticipanall(event: any) {
         const itemsMoved = event.items
@@ -251,14 +311,29 @@ export class IeparticipaComponent implements OnInit {
         const payload = {
             items: itemsMoved.map((item) => ({
                 //!ESTA EN MODO MANUAL; CAMBIAR POR EL ID DE LA EVALUACION
-                iEvaluacionId: this.compartirIdEvaluacionService.iEvaluacionId,
+                // iEvaluacionId: this._iEvaluacionId,
+                // iIieeId: item.iIieeId,
+                //!Cambios recientes
+                iEvaluacionId:
+                    this._iEvaluacionId ??
+                    this.compartirIdEvaluacionService.iEvaluacionId,
                 iIieeId: item.iIieeId,
             })),
         }
         this._apiEre.guardarParticipacion(payload).subscribe(
-            (response) => console.log('Guardado exitoso:', response),
+            //(response) => console.log('Guardado exitoso:', response),
+            (response) => {
+                // Mostrar mensaje tipo toast en caso de éxito
+                this._MessageService.add({
+                    severity: 'success',
+                    summary: 'Guardado exitoso',
+                    detail: 'Las instituciones educativas han sido registradas con éxito.',
+                })
+                console.log('IE Resgistradas exitosas:', response)
+            },
             (error) => console.error('Error al guardar:', error)
         )
+        this.actualizarConteos() //!Se agrego el conteo de datos.
     }
     IEnoparticipanall(event: any) {
         const itemsMoved = event.items
@@ -269,8 +344,13 @@ export class IeparticipaComponent implements OnInit {
 
         // Obtenemos los objetos con iIieeId e iEvaluacionId para eliminarlos
         const participacionesToDelete = itemsMoved.map((item) => ({
+            //!Cambios recientes
+            iEvaluacionId:
+                this._iEvaluacionId ??
+                this.compartirIdEvaluacionService.iEvaluacionId,
             iIieeId: item.iIieeId,
-            iEvaluacionId: this.compartirIdEvaluacionService.iEvaluacionId, // Asumiendo que iEvaluacionId está disponible en el componente
+            // iIieeId: item.iIieeId,
+            // iEvaluacionId: this._iEvaluacionId, // Asumiendo que iEvaluacionId está disponible en el componente
         }))
 
         if (participacionesToDelete.length > 0) {
@@ -279,7 +359,13 @@ export class IeparticipaComponent implements OnInit {
                 .eliminarParticipacion(participacionesToDelete)
                 .subscribe(
                     (response) => {
-                        console.log('Eliminación exitosa:', response)
+                        // Mostrar mensaje tipo toast en caso de éxito
+                        this._MessageService.add({
+                            severity: 'success',
+                            summary: 'Eliminación realizada',
+                            detail: 'Se han eliminado todas las instituciones educativas seleccionadas de los participantes.',
+                        })
+                        console.log('Eliminacion de varios exitoso:', response)
                     },
                     (error) => {
                         console.error('Error al eliminar:', error)
@@ -288,38 +374,96 @@ export class IeparticipaComponent implements OnInit {
         } else {
             console.warn('No hay elementos para eliminar.')
         }
+        this.actualizarConteos() //!Se agrego el conteo de datos.
     }
-    seleccionados() {
-        // alert(JSON.stringify(this.targetProducts))
-        //console.log('Seleccionados:', this.targetProducts)
-    }
+
+    // obtenerParticipaciones(
+    //     evaluacionId: number,
+    //     modoCopia: boolean = false
+    // ): Promise<any[]> {
+    //     return new Promise((resolve, reject) => {
+    //         // Obtener el iEvaluacionId desde el servicio
+    //         // Verificar si el iEvaluacionId está disponible y no es nulo
+    //         if (
+    //             this.compartirIdEvaluacionService.iEvaluacionId === null ||
+    //             this.compartirIdEvaluacionService.iEvaluacionId === undefined
+    //         ) {
+    //             console.error('El ID de evaluación no está disponible.')
+    //             reject('El ID de evaluación no está disponible.')
+    //             return
+    //         }
+    //         this._apiEre
+    //             .obtenerParticipaciones(evaluacionId)
+    //             .pipe(takeUntil(this.unsubscribe$))
+    //             .subscribe({
+    //                 next: (resp: any) => {
+    //                     const participantes = resp.data.map((item: any) => ({
+    //                         iIieeId: item.iIieeId,
+    //                         cIieeNombre: item.cIieeNombre,
+    //                         cIieeCodigoModular: item.cIieeCodigoModular,
+    //                         cNivelTipoNombre: item.cNivelTipoNombre,
+    //                     }))
+    //                     if (modoCopia) {
+    //                         this.targetProducts = participantes
+    //                         // this.obtenerIE()
+    //                         // console.log(
+    //                         //     'Participantes copiados para nueva evaluación:',
+    //                         //     this.targetProducts
+    //                         // )
+    //                     } else {
+    //                         this.targetProducts = participantes
+    //                         this.obtenerIE()
+    //                     }
+    //                     resolve(participantes)
+    //                 },
+    //                 error: (error) => {
+    //                     console.error(
+    //                         'Error al obtener participaciones:',
+    //                         error
+    //                     )
+    //                     reject(error)
+    //                 },
+    //             })
+    //     })
+    // }
+
     obtenerParticipaciones(
-        evaluacionId: number,
+        evaluacionId?: number,
         modoCopia: boolean = false
     ): Promise<any[]> {
         return new Promise((resolve, reject) => {
+            const id =
+                this.compartirIdEvaluacionService.iEvaluacionId ||
+                this._iEvaluacionId
+            console.log(
+                'evaluacionId DE SERVICIO OBTENERPARTICIPACIONES:',
+                evaluacionId
+            )
+
+            // Llamar a la API para obtener las participaciones
             this._apiEre
-                .obtenerParticipaciones(evaluacionId)
+                .obtenerParticipaciones(id)
                 .pipe(takeUntil(this.unsubscribe$))
                 .subscribe({
+                    //!Error Console Aqui
                     next: (resp: any) => {
+                        // Mapear los datos de la respuesta
                         const participantes = resp.data.map((item: any) => ({
                             iIieeId: item.iIieeId,
                             cIieeNombre: item.cIieeNombre,
                             cIieeCodigoModular: item.cIieeCodigoModular,
                             cNivelTipoNombre: item.cNivelTipoNombre,
                         }))
+
                         if (modoCopia) {
+                            // Si es modo copia, asignar directamente a targetProducts
                             this.targetProducts = participantes
-                            this.obtenerIE()
-                            // console.log(
-                            //     'Participantes copiados para nueva evaluación:',
-                            //     this.targetProducts
-                            // )
                         } else {
+                            // Si no es modo copia, reiniciar y obtener IE
                             this.targetProducts = participantes
-                            this.obtenerIE()
+                            this.obtenerIE() // Actualizar la lista de IEs
                         }
+                        console.log('Participantes cargados:', participantes)
                         resolve(participantes)
                     },
                     error: (error) => {
@@ -332,50 +476,51 @@ export class IeparticipaComponent implements OnInit {
                 })
         })
     }
-    copiarParticipantes(): void {
-        if (
-            !this.selectedEvaluacionCopia ||
-            typeof this.selectedEvaluacionCopia === 'number'
-        ) {
-            console.error('No se ha seleccionado una evaluación para copiar')
-            return
-        }
-        const evaluacionIdCopiar = this.selectedEvaluacionCopia.iEvaluacionId
-        this.obtenerParticipaciones(evaluacionIdCopiar, true)
-            .then((participantes) => {
-                this.targetProducts = participantes
-                const payload = {
-                    items: this.targetProducts.map((participante) => ({
-                        iEvaluacionId:
-                            this.compartirIdEvaluacionService.iEvaluacionId,
-                        iIieeId: participante.iIieeId,
-                    })),
-                }
-                this._apiEre.guardarParticipacion(payload).subscribe(
-                    (response) => console.log('Guardado exitoso:', response),
-                    (error) => console.error('Error al guardar:', error)
-                )
-            })
-            .catch((error) => {
-                console.error('Error al copiar participantes:', error)
-            })
-    }
+
+    // copiarParticipantes(): void {
+    //     if (
+    //         !this.selectedEvaluacionCopia ||
+    //         typeof this.selectedEvaluacionCopia === 'number'
+    //     ) {
+    //         console.error('No se ha seleccionado una evaluación para copiar')
+    //         return
+    //     }
+    //     const evaluacionIdCopiar = this.selectedEvaluacionCopia.iEvaluacionId
+    //     this.obtenerParticipaciones(evaluacionIdCopiar, true)
+    //         .then((participantes) => {
+    //             this.targetProducts = participantes
+    //             const payload = {
+    //                 items: this.targetProducts.map((participante) => ({
+    //                     iEvaluacionId:
+    //                         this.compartirIdEvaluacionService.iEvaluacionId,
+    //                     iIieeId: participante.iIieeId,
+    //                 })),
+    //             }
+    //             this._apiEre.guardarParticipacion(payload).subscribe(
+    //                 (response) => console.log('Guardado exitoso:', response),
+    //                 (error) => console.error('Error al guardar:', error)
+    //             )
+    //         })
+    //         .catch((error) => {
+    //             console.error('Error al copiar participantes:', error)
+    //         })
+    // }
     // Evaluaciones Copia
-    obtenerEvaluacionesCopia(): void {
-        this._apiEre
-            .obtenerEvaluacionesCopia(this.params)
-            .pipe(takeUntil(this.unsubscribe$))
-            .subscribe({
-                next: (resp: unknown) => {
-                    console.log('DATOS OBTENIDOS DE EVALUACIONES:', resp) // Imprime la respuesta completa
-                    this.EvaluacionCopia = resp['data']
-                    console.log(
-                        'Nivel tipo asignado a this.ugel:',
-                        this.nivelTipo
-                    )
-                },
-            })
-    }
+    // obtenerEvaluacionesCopia(): void {
+    //     this._apiEre
+    //         .obtenerEvaluacionesCopia(this.params)
+    //         .pipe(takeUntil(this.unsubscribe$))
+    //         .subscribe({
+    //             next: (resp: unknown) => {
+    //                 //console.log('DATOS OBTENIDOS DE EVALUACIONES:', resp) // Imprime la respuesta completa
+    //                 this.EvaluacionCopia = resp['data']
+    //                 console.log(
+    //                     'Nivel tipo asignado a this.ugel:',
+    //                     this.nivelTipo
+    //                 )
+    //             },
+    //         })
+    // }
     //Filtro
     filterIEs() {
         this.sourceProducts = this.allIEs.filter((ie) => {
@@ -392,11 +537,6 @@ export class IeparticipaComponent implements OnInit {
 
             return nivelTipoMatch && ugelMatch
         })
-
-        // console.log(
-        //     'Instituciones no participantes (filtradas):',
-        //     this.sourceProducts
-        // )
     }
     onNivelTipoChange(event: any) {
         this.selectedNivelTipo = event.value
@@ -407,5 +547,10 @@ export class IeparticipaComponent implements OnInit {
         this.selectedUgeles = event.value
         this.filterIEs() // Filtrar los elementos al cambiar el ugel
     }
-    onChange() {}
+
+    actualizarConteos(): void {
+        //!Agrego Recien Actualizar Conteos
+        this.participanCount = this.targetProducts.length // Total de ieparticipan
+        this.noParticipanCount = this.sourceProducts.length // Total de ienoparticipan
+    }
 }

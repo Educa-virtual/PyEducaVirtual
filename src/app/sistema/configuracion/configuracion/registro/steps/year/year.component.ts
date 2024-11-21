@@ -1,11 +1,9 @@
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
-import { Component, OnInit, OnDestroy, HostListener } from '@angular/core'
+import { Component, OnInit, HostListener } from '@angular/core'
 
 import {
     Router,
-    NavigationStart,
-    Event as NavigationEvent,
 } from '@angular/router'
 import { TicketService } from '../../service/ticketservice'
 
@@ -29,6 +27,7 @@ import { CheckboxModule } from 'primeng/checkbox'
 import { ConfirmDialogModule } from 'primeng/confirmdialog'
 import { FloatLabelModule } from 'primeng/floatlabel'
 import { ToastModule } from 'primeng/toast'
+import { StepGuardService, type CanComponentDeactivate  } from '@/app/servicios/step.guard'
 @Component({
     selector: 'app-year',
     standalone: true,
@@ -49,9 +48,8 @@ import { ToastModule } from 'primeng/toast'
     templateUrl: './year.component.html',
     styleUrl: './year.component.scss',
 })
-export class YearComponent implements OnInit, OnDestroy {
-    navigationSubscription
-    isHandlingNavigation = false
+export class YearComponent implements OnInit, CanComponentDeactivate  {
+    hasUnsavedChanges  = true
     form: FormGroup
     calFasesFechasInformation: {
         iSedeId: string
@@ -72,6 +70,7 @@ export class YearComponent implements OnInit, OnDestroy {
     constructor(
         public ticketService: TicketService,
         private router: Router,
+        private stepGuardService: StepGuardService,
         private stepConfirmationService: StepConfirmationService,
         private fb: FormBuilder
     ) {
@@ -134,48 +133,13 @@ export class YearComponent implements OnInit, OnDestroy {
             console.log(value)
         })
 
-        this.navigationSubscription = this.router.events.subscribe(
-            async (event: NavigationEvent) => {
-                if (event instanceof NavigationStart) {
-                    if (this.isHandlingNavigation) {
-                        return // Si ya estás manejando el evento, no hagas nada
-                    }
-
-                    this.isHandlingNavigation = true // Establece el flag para bloquear otros eventos
-
-                    const message: informationMessage = {
-                        header: '¿Desea salir sin guardar los cambios?',
-                        message: 'Por favor, confirme para continuar.',
-                        accept: {
-                            severity: 'success',
-                            summary: 'Fechas',
-                            detail: 'Se ha guardado correctamente.',
-                            life: 6000,
-                        },
-                        reject: {
-                            severity: 'error',
-                            summary: 'Fechas',
-                            detail: 'Se ha cancelado guardar la información.',
-                            life: 3000,
-                        },
-                    }
-
-                    const responseConfirm =
-                        await this.stepConfirmationService.confirmAction(
-                            {},
-                            message
-                        )
-
-                    if (!responseConfirm) {
-                        // Cancela la navegación
-                        this.router.navigateByUrl(this.router.url) // Mantén la ruta actual
-
-                        this.isHandlingNavigation = false // Restablece el flag después de manejar el evento
-                    }
-                }
-            }
-        )
     }
+
+    canDeactivate: () => Promise<boolean> = () => {
+        // Solo se devuelve el método del servicio de guardia
+        return this.stepGuardService.canDeactivate();
+      };
+    
 
     setValuesFormCalendar(data) {
         this.fasesPromocionales = data.fasesProm
@@ -484,11 +448,5 @@ export class YearComponent implements OnInit, OnDestroy {
         this.router.navigate([
             'configuracion/configuracion/registro/dias-laborales',
         ])
-    }
-
-    ngOnDestroy() {
-        if (this.router) {
-            this.navigationSubscription.unsubscribe()
-        }
     }
 }

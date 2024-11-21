@@ -1,5 +1,10 @@
 import { Injectable } from '@angular/core'
 import { ConfirmationService, MessageService } from 'primeng/api'
+import { CanDeactivate } from '@angular/router'
+
+export interface CanComponentDeactivate {
+    canDeactivate: () => Promise<boolean> | boolean
+}
 
 type toastMessage = {
     severity: 'success' | 'info' | 'warn' | 'error' | 'secondary' | 'contrast'
@@ -16,7 +21,10 @@ export type informationMessage = {
 }
 
 @Injectable({ providedIn: 'root' })
-export class StepConfirmationService {
+export class StepConfirmationService
+    implements CanDeactivate<CanComponentDeactivate>
+{
+    private isDeactivating = false
     constructor(
         private confirmationService: ConfirmationService,
         private messageService: MessageService
@@ -32,7 +40,7 @@ export class StepConfirmationService {
         } = {},
         informationMessage: informationMessage
     ) {
-        return new Promise((resolve) => {
+        return new Promise<boolean>((resolve) => {
             this.confirmationService.confirm({
                 header: informationMessage.header,
                 message: informationMessage.message,
@@ -58,5 +66,16 @@ export class StepConfirmationService {
                 },
             })
         })
+    }
+
+    async canDeactivate(component?: CanComponentDeactivate): Promise<boolean> {
+        if (component.canDeactivate) {
+            return await component.canDeactivate()
+        }
+
+        // const confirm = await component.(); 
+        // return confirm;  
+
+        return false
     }
 }

@@ -1,5 +1,3 @@
-import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
-import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
 import { Component, OnInit, HostListener } from '@angular/core'
 
 import {
@@ -32,8 +30,6 @@ import { StepGuardService, type CanComponentDeactivate  } from '@/app/servicios/
     selector: 'app-year',
     standalone: true,
     imports: [
-        ContainerPageComponent,
-        TablePrimengComponent,
         CalendarModule,
         ButtonModule,
         FloatLabelModule,
@@ -48,8 +44,8 @@ import { StepGuardService, type CanComponentDeactivate  } from '@/app/servicios/
     templateUrl: './year.component.html',
     styleUrl: './year.component.scss',
 })
-export class YearComponent implements OnInit, CanComponentDeactivate  {
-    hasUnsavedChanges  = true
+export class YearComponent implements OnInit  {
+    hasUnsavedChanges = false
     form: FormGroup
     calFasesFechasInformation: {
         iSedeId: string
@@ -70,7 +66,6 @@ export class YearComponent implements OnInit, CanComponentDeactivate  {
     constructor(
         public ticketService: TicketService,
         private router: Router,
-        private stepGuardService: StepGuardService,
         private stepConfirmationService: StepConfirmationService,
         private fb: FormBuilder
     ) {
@@ -131,15 +126,37 @@ export class YearComponent implements OnInit, CanComponentDeactivate  {
                 dtFaserecuperacionFin: value.fechaFaseRecuperacionFin,
             }
             console.log(value)
+
         })
 
     }
 
-    canDeactivate: () => Promise<boolean> = () => {
-        // Solo se devuelve el método del servicio de guardia
-        return this.stepGuardService.canDeactivate();
-      };
+    async canDeactivate(): Promise<boolean> {
+        if (this.hasUnsavedChanges) {
+            return true;
+        }
     
+        const confirm = await this.stepConfirmationService.confirmAction(
+            {},
+            {
+                header: '¿Desea salir sin guardar los cambios?',
+                message: 'Por favor, confirme para continuar.',
+                accept: {
+                    severity: 'success',
+                    summary: 'Confirmado',
+                    detail: 'Se ha aceptado la navegación.',
+                    life: 3000,
+                },
+                reject: {
+                    severity: 'error',
+                    summary: 'Cancelado',
+                    detail: 'Se ha cancelado la navegación.',
+                    life: 3000,
+                },
+            }
+        );
+        return confirm;
+    }
 
     setValuesFormCalendar(data) {
         this.fasesPromocionales = data.fasesProm
@@ -442,6 +459,8 @@ export class YearComponent implements OnInit, CanComponentDeactivate  {
         }
 
         await this.ticketService.setCalendar()
+
+        this.hasUnsavedChanges = true
     }
 
     async nextPage() {

@@ -24,7 +24,6 @@ export type informationMessage = {
 export class StepConfirmationService
     implements CanDeactivate<CanComponentDeactivate>
 {
-    private isDeactivating = false
     constructor(
         private confirmationService: ConfirmationService,
         private messageService: MessageService
@@ -72,10 +71,6 @@ export class StepConfirmationService
         if (component.canDeactivate) {
             return await component.canDeactivate()
         }
-
-        // const confirm = await component.(); 
-        // return confirm;  
-
         return false
     }
 }

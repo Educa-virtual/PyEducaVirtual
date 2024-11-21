@@ -32,7 +32,8 @@ import { TicketService } from '../../service/ticketservice'
     styleUrl: './dias-laborales.component.scss',
 })
 export class DiasLaboralesComponent implements OnInit {
-    hasUnsavedChanges = true
+    hasUnsavedChanges = false
+
     dias: typeof this.ticketService.registroInformation.stepDiasLaborales
 
     diasSelections
@@ -101,11 +102,10 @@ export class DiasLaboralesComponent implements OnInit {
     }
 
     async canDeactivate(): Promise<boolean> {
-        if (!this.hasUnsavedChanges) {
-            return true; // Permitir navegación sin confirmación
+        if (this.hasUnsavedChanges) {
+            return true;
         }
-
-        // Si hay cambios no guardados, mostrar el modal de confirmación
+    
         const confirm = await this.stepConfirmationService.confirmAction(
             {},
             {
@@ -202,6 +202,8 @@ export class DiasLaboralesComponent implements OnInit {
         await this.ticketService.setCalendar()
 
         await this.isSelectionDia()
+
+        this.hasUnsavedChanges = true
     }
 
     actions: IActionTable[] = [

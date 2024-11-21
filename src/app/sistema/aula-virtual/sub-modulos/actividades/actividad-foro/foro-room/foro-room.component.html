@@ -37,6 +37,20 @@
                             </div>
                             <div class="grid mb-4">
                                 <div
+                                    class="col-12 md:col-6 flex flex-column gap-2 align-items-start"
+                                >
+                                    <div
+                                        class="col-12 md:col-6 gap-2 flex flex-column"
+                                    >
+                                        <app-time
+                                            [inicio]="fechaInicio"
+                                            [fin]="fechaFin"
+                                        ></app-time>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="grid mb-4">
+                                <div
                                     class="col-12 md:col-6 flex flex-column gap-2"
                                 >
                                     <span class="font-bold text-xl flex gap-2">
@@ -1033,7 +1047,7 @@
     header="Calificar a: {{ perfilSelect?.nombrecompleto }}"
     [modal]="true"
 >
-    <form [formGroup]="foroFormComnt" class="flex flex-column gap-3 w-full">
+    <form [formGroup]="foroFormCalf" class="flex flex-column gap-3 w-full">
         <div class="grid pt-2">
             <!-- Mostrar la califcación -->
             <!--  for="calificacion" [options]="calificacion"-->
@@ -1089,7 +1103,7 @@
                 icon="pi pi-send"
                 size="small"
                 class="p-button-primary"
-                (click)="submit()"
+                (click)="calificarComnt()"
             ></button>
             <!-- (click)="submit()" -->
         </div>

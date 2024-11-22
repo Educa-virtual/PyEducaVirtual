@@ -651,6 +651,8 @@ export class TareaRoomComponent implements OnChanges, OnInit {
             detail: `La tarea fue entregada el ${fechaEntrega} a las ${horaEntrega}.`,
         })
 
+        this.miTarea = `La tarea fue entregada el ${fechaEntrega} a las ${horaEntrega}.`
+
         if (!this.FilesTareasEstudiantes.length) return
         console.log('entregarEstudianteTarea')
         const params = {

@@ -103,7 +103,7 @@
                             class="card-body m-3"
                             [hidden]="iEstadoEstudianteTarea !== '0'"
                         >
-                            <h4>Tu Trabajo</h4>
+                            <h4>Entregar Tarea</h4>
                             <p-divider></p-divider>
                             <!-- Componente para subir archivos, configurado para recibir los archivos de tareas de estudiantes -->
 
@@ -173,10 +173,13 @@
                             <p-divider></p-divider>
 
                             <!-- Botón para enviar la tarea -->
+                            <div>
+                                <p-toast></p-toast>
+                            </div>
+
                             <div
                                 class="flex align-items-center justify-content-center"
                             >
-                                <p-toast></p-toast>
                                 <p-button
                                     label="Enviar Tarea"
                                     icon="pi pi-check"
@@ -187,6 +190,7 @@
                                 ></p-button>
                             </div>
                         </div>
+
                         <!-- Muestra mensaje de tarea evaluada si el estado de la tarea es '1' -->
 
                         <div
@@ -310,7 +314,7 @@
                                 class="flex align-items-center justify-content-center"
                             >
                                 <p-button
-                                    label="Enviar Tarea"
+                                    label="Enviar Tareass"
                                     icon="pi pi-check"
                                     iconPos="right"
                                     (onClick)="entregarEstudianteTareaGrupal()"

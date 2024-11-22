@@ -639,18 +639,21 @@ export class TareaRoomComponent implements OnChanges, OnInit {
         )
         //console.log(this.grupoTransferir)
     }
+
+    miTarea
+
     entregarEstudianteTarea() {
-        if (
-            !this.FilesTareasEstudiantes ||
-            this.FilesTareasEstudiantes.length === 0
-        ) {
-            this.messageService.add({
-                severity: 'warn',
-                summary: 'A un no entrego su tarea',
-                detail: 'Por favor, suba su tarea',
-            })
-            return
-        }
+        // Obtener la fecha y hora actual
+        const now = new Date()
+        const fechaEntrega = now.toLocaleDateString() // Ejemplo: "21/11/2024"
+        const horaEntrega = now.toLocaleTimeString() // Ejemplo: "10:45:23"
+
+        // Mostrar mensaje con fecha y hora
+        this.messageService.add({
+            severity: 'success',
+            summary: 'Tarea entregada',
+            detail: `La tarea fue entregada el ${fechaEntrega} a las ${horaEntrega}.`,
+        })
 
         if (!this.FilesTareasEstudiantes.length) return
         const params = {

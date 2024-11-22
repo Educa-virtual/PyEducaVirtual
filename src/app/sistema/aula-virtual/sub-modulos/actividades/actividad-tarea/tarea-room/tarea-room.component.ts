@@ -638,6 +638,8 @@ export class TareaRoomComponent implements OnChanges, OnInit {
         //console.log(this.grupoTransferir)
     }
 
+    miTarea
+
     entregarEstudianteTarea() {
         // Obtener la fecha y hora actual
         const now = new Date()
@@ -650,6 +652,8 @@ export class TareaRoomComponent implements OnChanges, OnInit {
             summary: 'Tarea entregada',
             detail: `La tarea fue entregada el ${fechaEntrega} a las ${horaEntrega}.`,
         })
+
+        this.miTarea = `La tarea fue entregada el ${fechaEntrega} a las ${horaEntrega}.`
 
         if (!this.FilesTareasEstudiantes.length) return
         console.log('entregarEstudianteTarea')

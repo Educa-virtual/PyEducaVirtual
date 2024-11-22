@@ -54,6 +54,7 @@ export class TareaRoomComponent implements OnChanges, OnInit {
     students: any
 
     iPerfilId: number
+    formTareas: any
     constructor(
         private messageService: MessageService,
         private fb: FormBuilder
@@ -64,7 +65,6 @@ export class TareaRoomComponent implements OnChanges, OnInit {
     }
     public entregarEstud: FormGroup = this._formBuilder.group({
         cTareaEstudianteUrlEstudiante: [''],
-        //iEstudianteId: [],
         iEstudianteId: [1],
     })
 
@@ -605,9 +605,7 @@ export class TareaRoomComponent implements OnChanges, OnInit {
                 }
                 this.getInformation(params, 'eliminar-tareas-estudiantes')
             },
-            reject: () => {
-                // Código en caso de rechazo
-            },
+            reject: () => {},
         })
     }
 
@@ -640,8 +638,6 @@ export class TareaRoomComponent implements OnChanges, OnInit {
         //console.log(this.grupoTransferir)
     }
 
-    miTarea
-
     entregarEstudianteTarea() {
         // Obtener la fecha y hora actual
         const now = new Date()
@@ -656,6 +652,7 @@ export class TareaRoomComponent implements OnChanges, OnInit {
         })
 
         if (!this.FilesTareasEstudiantes.length) return
+        console.log('entregarEstudianteTarea')
         const params = {
             petition: 'post',
             group: 'aula-virtual',
@@ -674,7 +671,7 @@ export class TareaRoomComponent implements OnChanges, OnInit {
 
     entregarEstudianteTareaGrupal() {
         this.messageService.add({
-            severity: 'success', // success, info, warn, error
+            severity: 'success',
             summary: 'Tarea enviada',
             detail: 'La tarea ha sido entregada exitosamente.',
         })
@@ -708,6 +705,7 @@ export class TareaRoomComponent implements OnChanges, OnInit {
         }
         this.getInformation(params, params.ruta)
     }
+    // Continúa con la lógica si la validación es exitosa
     validarEscalaCalifId(): void {
         if (
             this.iEscalaCalifId == 1 ||
@@ -719,7 +717,6 @@ export class TareaRoomComponent implements OnChanges, OnInit {
             )
         } else {
             console.log('El ID de la escala de calificación es válido.')
-            // Continúa con la lógica si la validación es exitosa
         }
     }
     // Estilos - eliminar y trabajo grupal
@@ -748,5 +745,9 @@ export class TareaRoomComponent implements OnChanges, OnInit {
             return false
         }
         return true
+    }
+
+    limpiarComentario(): void {
+        this.comentarioTareaEstudiante = '' // Limpiar el comentario
     }
 }

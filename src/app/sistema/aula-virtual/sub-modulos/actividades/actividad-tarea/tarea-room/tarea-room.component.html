@@ -219,7 +219,7 @@
                             <!-- Campo de texto para el comentario del docente -->
                             <div class="p-field p-fluid mb-3">
                                 <label for="comentarioDocente"
-                                    >Comentario Docente</label
+                                    >Conclusión Descriptiva</label
                                 >
                                 <textarea
                                     id="comentarioDocente"
@@ -229,7 +229,8 @@
                                     class="p-inputtextarea-lg"
                                     placeholder="Muestra Comentario Docente"
                                     [disabled]="isDisabled"
-                                ></textarea>
+                                >
+                                </textarea>
                             </div>
                         </div>
                     }
@@ -343,13 +344,16 @@
                                 <p-inputGroupAddon>
                                     Conclusión Descriptiva
                                 </p-inputGroupAddon>
-                                <extarea
+                                <textarea
                                     pInputText
                                     rows="5"
                                     [(ngModel)]="
                                         comentarioTareaEstudianteGrupal
                                     "
-                                ></extarea>
+                                    [disabled]="isDisabled"
+                                    placeholder="Escribe la conclusión descriptiva aquí..."
+                                >
+                                </textarea>
                             </p-inputGroup>
                         </div>
                     }
@@ -1084,12 +1088,12 @@
                                                             Conclusión
                                                             Descriptiva
                                                         </p-inputGroupAddon>
-                                                        <p-editor
+                                                        <textarea
                                                             pInputText
                                                             [(ngModel)]="
                                                                 cTareaEstudianteComentarioDocente
                                                             "
-                                                        ></p-editor>
+                                                        ></textarea>
                                                     </p-inputGroup>
                                                 </div>
                                             </div>

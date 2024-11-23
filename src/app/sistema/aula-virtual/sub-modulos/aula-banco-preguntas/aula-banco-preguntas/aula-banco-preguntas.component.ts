@@ -49,7 +49,7 @@ export class AulaBancoPreguntasComponent implements OnInit, OnDestroy {
     private _dialogService = inject(DialogService)
     private _constantesService = inject(ConstantesService)
 
-    public params = {
+    @Input() public params = {
         iCursoId: null,
         iDocenteId: null,
         iCurrContId: null,

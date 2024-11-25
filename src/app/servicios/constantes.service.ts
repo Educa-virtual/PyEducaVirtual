@@ -46,7 +46,7 @@ const docente = [
                 routerLink: ['/docente/capacitaciones'],
             },
             {
-                label: 'Bance de Preguntas',
+                label: 'Banco de Preguntas',
                 icon: 'pi pi-fw pi-folder',
                 routerLink: ['/aula-virtual/banco-preguntas'],
             },

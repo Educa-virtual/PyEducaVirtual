@@ -158,6 +158,29 @@ export class ForoRoomComponent implements OnInit {
         this.getRespuestaF()
         this.getEstudiantesMatricula()
     }
+    // menu para editar y eliminar el comentario del foro
+    menuItems = [
+        {
+            label: 'Editar',
+            icon: 'pi pi-pencil',
+            command: () => this.editar(),
+        },
+        {
+            label: 'Eliminar',
+            icon: 'pi pi-trash',
+            command: () => this.eliminar(),
+        },
+    ]
+
+    editar() {
+        console.log('Editar acción ejecutada')
+        // Lógica para editar
+    }
+
+    eliminar() {
+        console.log('Eliminar acción ejecutada')
+        // Lógica para eliminar
+    }
 
     accionBtnItemTable({ accion, item }) {
         if (accion === 'asignar') {

@@ -311,14 +311,18 @@
                                                                 <div
                                                                     class="pb-2 perfil-name"
                                                                 >
-                                                                    {{
-                                                                        respuestas.cNombres
-                                                                    }}
-                                                                    {{
-                                                                        respuestas?.dtCreado
-                                                                            | date
-                                                                                : 'short'
-                                                                    }}
+                                                                    <span
+                                                                        class="user-name"
+                                                                    >
+                                                                        {{
+                                                                            respuestas.cNombres
+                                                                        }}
+                                                                        {{
+                                                                            respuestas?.dtCreado
+                                                                                | date
+                                                                                    : 'short'
+                                                                        }}
+                                                                    </span>
                                                                 </div>
                                                                 <div
                                                                     class=""
@@ -367,7 +371,7 @@
                                                                 <!-- startReply(i) -->
 
                                                                 <div
-                                                                    class="align-items-center"
+                                                                    class="actions-container"
                                                                 >
                                                                     <button
                                                                         pButton
@@ -409,6 +413,33 @@
                                                                             "
                                                                         ></i>
                                                                     </button>
+
+                                                                    <!-- Menú al final -->
+                                                                    <div
+                                                                        class="menu-container"
+                                                                    >
+                                                                        <p-menu
+                                                                            #menu
+                                                                            [model]="
+                                                                                menuItems
+                                                                            "
+                                                                            [popup]="
+                                                                                true
+                                                                            "
+                                                                        ></p-menu>
+                                                                        <button
+                                                                            pButton
+                                                                            type="button"
+                                                                            icon="pi pi-ellipsis-v"
+                                                                            class="gap-2 w-full flex p-button-text p-button-plain text-left"
+                                                                            (click)="
+                                                                                menu.toggle(
+                                                                                    $event
+                                                                                )
+                                                                            "
+                                                                            aria-label="Abrir menú de configuración"
+                                                                        ></button>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>

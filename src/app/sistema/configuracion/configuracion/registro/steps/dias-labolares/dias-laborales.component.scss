@@ -9,3 +9,37 @@
     display: flex;
     justify-content: space-between;
 }
+
+p-button {
+    background-color: #3e67a9; //modal,inputs #3e67a9, boton #OE4194
+    border-radius: 0.5rem;
+}
+
+:host ::ng-deep .p-dialog-content {
+    padding: 2rem 1.5rem 2rem 1.5rem !important;
+    display: flex;
+    flex-direction: column;
+}
+
+:host ::ng-deep .p-dialog-content i {
+    color: #c44c5b;
+}
+
+:host ::ng-deep .p-dialog-footer {
+    display: flex;
+    justify-content: space-between;
+}
+
+:host ::ng-deep .p-button-label {
+    color: #fff;
+}
+
+:host ::ng-deep .p-dialog-footer .accept {
+    background-color: #c44c5b;
+    border-color: #c44c5b;
+}
+
+:host ::ng-deep .p-dialog-footer .reject {
+    background-color: #0e4194;
+    border-color: #0e4194;
+}

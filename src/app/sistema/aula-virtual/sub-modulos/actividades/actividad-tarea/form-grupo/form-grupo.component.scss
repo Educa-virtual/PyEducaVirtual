@@ -9,3 +9,16 @@
     justify-content: flex-end;
     gap: 10px;
 }
+
+.fixed-input {
+    position: fixed;
+    top: 20px; /* Ajusta según tu diseño */
+    left: 20px; /* Ajusta según tu diseño */
+    width: calc(100% - 40px); /* Mantén espacio para márgenes */
+    z-index: 1000; /* Asegúrate de que esté encima de otros elementos */
+    background: white; /* Fondo blanco para destacar */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}

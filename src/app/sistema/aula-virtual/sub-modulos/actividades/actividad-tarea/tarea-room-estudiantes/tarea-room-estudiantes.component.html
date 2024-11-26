@@ -1,0 +1,98 @@
+<div class="grid">
+    <p-toolbar class="col-12">
+        <div class="block">
+            <h2 class="text-white font-bold block">
+                Tarea: {{ data?.cTareaTitulo }}
+            </h2>
+            <div class="text-white font-bold block"></div>
+        </div>
+        <div class="p-toolbar-group-end">
+            <!-- <p-button icon="pi pi-undo" [rounded]="true" pTooltip="Regresar" tooltipPosition="top" ]="['../..']" /> -->
+        </div>
+    </p-toolbar>
+</div>
+<div
+    class="card"
+    [@animate]="{
+        value: '*',
+        params: { y: '200px', opacity: '0', delay: '200ms', duration: '200ms' },
+    }"
+>
+    <div class="grid">
+        <div class="col-12 md:col-8">
+            <div class="grid mb-4">
+                <div class="col-12">
+                    <h3 class="text-primary">
+                        <i class="pi pi-list"></i>&nbsp;&nbsp;Detalle de la
+                        tarea:
+                    </h3>
+                </div>
+                <div class="col-12 md:col-6">
+                    <span class="text-lg flex gap-2">
+                        <app-icon
+                            name="matCalendarMonth"
+                            class="text-primary"
+                            size="sm"
+                        ></app-icon>
+                        <span class="font-bold">Inicio de Tarea: </span
+                        >{{ data?.dtTareaInicio | date: 'short' }}
+                    </span>
+                </div>
+                <div class="col-12 md:col-6">
+                    <span class="text-lg flex gap-2">
+                        <app-icon
+                            name="matCalendarMonth"
+                            class="text-primary"
+                            size="sm"
+                        ></app-icon>
+                        <span class="font-bold">Fin de Tarea: </span
+                        >{{ data?.dtTareaFin | date: 'short' }}
+                    </span>
+                </div>
+                <div class="col-12">
+                    <p class="font-bold text-lg flex gap-2">Instrucciones</p>
+                    <div [innerHTML]="data?.cTareaDescripcion"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 md:col-4">
+            <h3 class="text-primary">
+                <i class="pi pi-folder"></i>&nbsp;&nbsp;Recursos:
+            </h3>
+            <app-recursos-lista [files]="FilesTareas"> </app-recursos-lista>
+        </div>
+    </div>
+</div>
+<div
+    class="card mt-2 border-blue-500"
+    [@animate]="{
+        value: '*',
+        params: { y: '200px', opacity: '0', delay: '200ms', duration: '200ms' },
+    }"
+>
+    <div class="grid">
+        <div class="col-10 text-primary">
+            <h3 class="text-primary">
+                <i class="pi pi-check-square"></i>&nbsp;&nbsp;Entregar tarea:
+            </h3>
+        </div>
+        <div class="col-2" align="right">
+            <p-button label="Enviar Tarea" icon="pi pi-send" iconPos="left" />
+        </div>
+        <div class="col-12">
+            <p-editor
+                id="descripcion"
+                placeholder="Ingrese si en caso la respuesta sea una descripción"
+                [style]="{ height: '100px' }"
+            />
+        </div>
+        <div class="col-12">
+            <app-types-files-upload-primeng
+                [nameFile]="'tareas-estudiantes'"
+                [nameOption]="'tareas-estudiantes'"
+                [typesFiles]="typesFiles"
+                [filesUrl]="filesUrl"
+            ></app-types-files-upload-primeng>
+        </div>
+    </div>
+</div>

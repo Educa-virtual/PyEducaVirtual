@@ -16,34 +16,36 @@
     <p-dialog
         header="Periodo de evaluación formativa"
         [(visible)]="visible"
+        [modal]="true"
         [style]="{ width: '56rem' }"
     >
-        <form [formGroup]="form">
-            <span class="p-text-secondary block mb-5"
-                >Asegúrate de definir las fechas y el tipo de periodo en su
-                registro.</span
-            >
-            <div class="flex align-items-center gap-3 mb-5">
-                <p-dropdown
-                    (onChange)="setPeriodoFormativo($event.value)"
-                    [options]="periodosAcademicos"
-                    optionLabel="cPeriodoEvalNombre"
-                    placeholder="Seleccione un periodo"
-                    formControlName="periodo"
-                />
-            </div>
-            <div>
-                <app-table-primeng
-                    [showCaption]="false"
-                    [columnas]="columnasCicloAcademico"
-                    [actions]="actionPeriodo"
-                    [showPaginator]="false"
-                    [data]="ciclosAcademicos"
-                    (accionBtnItem)="handleActionPeriodos($event)"
+        <form [formGroup]="form" class="flex flex-column gap-3">
+            <section>
+                <span class="p-text-secondary block mb-5"
+                    ><!-- Asegúrate de definir las fechas y el tipo de periodo en su registro. --></span
                 >
-                </app-table-primeng>
-            </div>
-            <div class="flex justify-content-end gap-2">
+                <div class="flex align-items-center gap-3 mb-5">
+                    <p-dropdown
+                        (onChange)="setPeriodoFormativo($event.value)"
+                        [options]="periodosAcademicos"
+                        optionLabel="cPeriodoEvalNombre"
+                        placeholder="Seleccione un periodo"
+                        formControlName="periodo"
+                    />
+                </div>
+                <div>
+                    <app-table-primeng
+                        [showCaption]="false"
+                        [columnas]="columnasCicloAcademico"
+                        [actions]="actionPeriodo"
+                        [showPaginator]="false"
+                        [data]="ciclosAcademicos"
+                        (accionBtnItem)="handleActionPeriodos($event)"
+                    >
+                    </app-table-primeng>
+                </div>
+            </section>
+            <div class="flex justify-content-between gap-2">
                 <p-button
                     label="Cancel"
                     severity="secondary"
@@ -57,37 +59,40 @@
     <p-dialog
         header="Editando periodo de formación"
         [(visible)]="visibleEditPeriodo"
-        [style]="{
-            width: '30rem',
-            height: 'max-content',
-            'padding-block': '4rem',
-        }"
+        [modal]="true"
     >
-        <form [formGroup]="formPeriodo" class="flex flex-column gap-4">
-            <div class="flex flex-column gap-2">
-                <label for="periodo">Periodo de evaluación formativa</label>
+        <form [formGroup]="formPeriodo" class="flex flex-column gap-4 py-5">
+            <p-inputGroup>
+                <p-inputGroupAddon
+                    >Periodo de evaluación formativa</p-inputGroupAddon
+                >
                 <input pInputText id="periodo" formControlName="periodo" />
-            </div>
-            <div class="flex flex-column gap-2">
-                <label for="birth_date">Fecha inicio</label>
+            </p-inputGroup>
+            <p-inputGroup>
+                <p-inputGroupAddon>Fecha inicio</p-inputGroupAddon>
                 <p-calendar
+                    styleClass="w-full"
                     class="flex"
+                    [iconDisplay]="'input'"
                     appendTo="body"
-                    iputId="birth_date"
+                    [showOnFocus]="false"
+                    inputId="birth_date"
                     [showIcon]="true"
                     formControlName="fechaInicio"
                 />
-            </div>
-            <div class="flex flex-column gap-2">
-                <label for="birth_date">Fecha fin</label>
+            </p-inputGroup>
+            <p-inputGroup>
+                <p-inputGroupAddon>Fecha fin</p-inputGroupAddon>
                 <p-calendar
+                    styleClass="w-full "
+                    [iconDisplay]="'input'"
                     appendTo="body"
                     inputId="birth_date"
                     [showIcon]="true"
                     formControlName="fechaFin"
                 />
-            </div>
-            <div class="flex justify-content-end gap-2">
+            </p-inputGroup>
+            <div class="flex justify-content-between gap-2">
                 <p-button
                     label="Cancel"
                     severity="secondary"

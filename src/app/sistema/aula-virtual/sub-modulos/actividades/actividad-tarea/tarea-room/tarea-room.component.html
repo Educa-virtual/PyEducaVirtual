@@ -56,7 +56,7 @@
                                     >Descripción de la tarea</label
                                 >
                             </h3>
-                            <div class="mt-2">
+                            <!-- <div class="mt-2">
                                 <div
                                     [innerHTML]="data?.cTareaDescripcion"
                                 ></div>
@@ -67,8 +67,8 @@
                                     [style]="{ height: '150px' }"
                                     disabled
                                 />
-                            </div>
-                            <!-- <div [innerHTML]="data?.cTareaDescripcion"></div>
+                            </div> -->
+                            <!-- <div [innerHTML]="data?.cTareaDescripcion"></div> -->
                             <input
                                 id="descripcion"
                                 type="text"
@@ -79,7 +79,7 @@
                                 "
                                 placeholder="Ingrese el título de la tarea"
                                 class="p-inputtext-sm"
-                            /> -->
+                            />
                         </div>
                     </div>
 
@@ -103,7 +103,7 @@
                             class="card-body m-3"
                             [hidden]="iEstadoEstudianteTarea !== '0'"
                         >
-                            <h4>Tu Trabajo</h4>
+                            <h4>Entregar Tarea</h4>
                             <p-divider></p-divider>
                             <!-- Componente para subir archivos, configurado para recibir los archivos de tareas de estudiantes -->
 
@@ -173,10 +173,13 @@
                             <p-divider></p-divider>
 
                             <!-- Botón para enviar la tarea -->
+                            <div>
+                                <p-toast></p-toast>
+                            </div>
+
                             <div
                                 class="flex align-items-center justify-content-center"
                             >
-                                <p-toast></p-toast>
                                 <p-button
                                     label="Enviar Tarea"
                                     icon="pi pi-check"
@@ -187,6 +190,11 @@
                                 ></p-button>
                             </div>
                         </div>
+
+                        @if (miTarea) {
+                            <div>{{ miTarea }}</div>
+                        }
+
                         <!-- Muestra mensaje de tarea evaluada si el estado de la tarea es '1' -->
 
                         <div
@@ -215,7 +223,7 @@
                             <!-- Campo de texto para el comentario del docente -->
                             <div class="p-field p-fluid mb-3">
                                 <label for="comentarioDocente"
-                                    >Comentario Docente</label
+                                    >Conclusión Descriptiva</label
                                 >
                                 <textarea
                                     id="comentarioDocente"
@@ -225,7 +233,8 @@
                                     class="p-inputtextarea-lg"
                                     placeholder="Muestra Comentario Docente"
                                     [disabled]="isDisabled"
-                                ></textarea>
+                                >
+                                </textarea>
                             </div>
                         </div>
                     }
@@ -310,7 +319,7 @@
                                 class="flex align-items-center justify-content-center"
                             >
                                 <p-button
-                                    label="Enviar Tarea"
+                                    label="Enviar Tareass"
                                     icon="pi pi-check"
                                     iconPos="right"
                                     (onClick)="entregarEstudianteTareaGrupal()"
@@ -345,7 +354,10 @@
                                     [(ngModel)]="
                                         comentarioTareaEstudianteGrupal
                                     "
-                                ></textarea>
+                                    [disabled]="isDisabled"
+                                    placeholder="Escribe la conclusión descriptiva aquí..."
+                                >
+                                </textarea>
                             </p-inputGroup>
                         </div>
                     }
@@ -1092,7 +1104,7 @@
                                         </p-fieldset>
                                         <div class="grid">
                                             <div
-                                                class="col-12 text-right fixed-button text-center"
+                                                class="col-12 text-right text-center"
                                             >
                                                 <p-toast></p-toast>
                                                 <p-button
@@ -1296,7 +1308,7 @@
                                         </p-fieldset>
                                         <div class="grid">
                                             <div
-                                                class="col-12 text-right fixed-button text-center"
+                                                class="col-12 text-right text-center"
                                             >
                                                 <p-toast></p-toast>
                                                 <p-button

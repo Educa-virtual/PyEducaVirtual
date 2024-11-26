@@ -37,6 +37,20 @@
                             </div>
                             <div class="grid mb-4">
                                 <div
+                                    class="col-12 md:col-6 flex flex-column gap-2 align-items-start"
+                                >
+                                    <div
+                                        class="col-12 md:col-6 gap-2 flex flex-column"
+                                    >
+                                        <app-time
+                                            [inicio]="fechaInicio"
+                                            [fin]="fechaFin"
+                                        ></app-time>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="grid mb-4">
+                                <div
                                     class="col-12 md:col-6 flex flex-column gap-2"
                                 >
                                     <span class="font-bold text-xl flex gap-2">
@@ -297,14 +311,18 @@
                                                                 <div
                                                                     class="pb-2 perfil-name"
                                                                 >
-                                                                    {{
-                                                                        respuestas.cNombres
-                                                                    }}
-                                                                    {{
-                                                                        respuestas?.dtCreado
-                                                                            | date
-                                                                                : 'short'
-                                                                    }}
+                                                                    <span
+                                                                        class="user-name"
+                                                                    >
+                                                                        {{
+                                                                            respuestas.cNombres
+                                                                        }}
+                                                                        {{
+                                                                            respuestas?.dtCreado
+                                                                                | date
+                                                                                    : 'short'
+                                                                        }}
+                                                                    </span>
                                                                 </div>
                                                                 <div
                                                                     class=""
@@ -353,7 +371,7 @@
                                                                 <!-- startReply(i) -->
 
                                                                 <div
-                                                                    class="align-items-center"
+                                                                    class="actions-container"
                                                                 >
                                                                     <button
                                                                         pButton
@@ -395,6 +413,33 @@
                                                                             "
                                                                         ></i>
                                                                     </button>
+
+                                                                    <!-- Menú al final -->
+                                                                    <div
+                                                                        class="menu-container"
+                                                                    >
+                                                                        <p-menu
+                                                                            #menu
+                                                                            [model]="
+                                                                                menuItems
+                                                                            "
+                                                                            [popup]="
+                                                                                true
+                                                                            "
+                                                                        ></p-menu>
+                                                                        <button
+                                                                            pButton
+                                                                            type="button"
+                                                                            icon="pi pi-ellipsis-v"
+                                                                            class="gap-2 w-full flex p-button-text p-button-plain text-left"
+                                                                            (click)="
+                                                                                menu.toggle(
+                                                                                    $event
+                                                                                )
+                                                                            "
+                                                                            aria-label="Abrir menú de configuración"
+                                                                        ></button>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -1028,28 +1073,28 @@
 <!-- Calificar estudiante en el mismo foro -->
 <p-dialog
     [(visible)]="modelaCalificacionComen"
-    [style]="{ width: '1000px' }"
+    [style]="{ width: '50%' }"
     class="p-fluid"
     header="Calificar a: {{ perfilSelect?.nombrecompleto }}"
     [modal]="true"
 >
-    <form [formGroup]="foroFormComnt" class="flex flex-column gap-3 w-full">
+    <form [formGroup]="foroFormCalf" class="flex flex-column gap-3 w-full">
         <div class="grid pt-2">
             <!-- Mostrar la califcación -->
             <!--  for="calificacion" [options]="calificacion"-->
             <div class="col-12">
-                <label class="font-bold" for="calificacion">Calificación</label>
-                <div class="pt-2">
+                <p-inputGroup>
+                    <p-inputGroupAddon> Calificación </p-inputGroupAddon>
                     <p-dropdown
-                        [options]="calificacion"
                         formControlName="iEscalaCalifId"
-                        styleClass="w-full"
+                        [options]="calificacion"
                         optionValue="iEscalaCalifId"
                         optionLabel="cEscalaCalifNombre"
                         placeholder="Seleccione una Calificación"
+                        [style]="{ width: '100%' }"
                         [showClear]="true"
-                    />
-                </div>
+                    ></p-dropdown>
+                </p-inputGroup>
             </div>
             <!-- Mostrar descripción -->
             <div class="col-12">
@@ -1060,36 +1105,6 @@
                     ></label
                 >
                 <div class="mt-2 pt-2">
-                    <!-- <p-editor
-                        id="descripcion"
-                        formControlName="cForoRptaDocente"
-                        [style]="{ height: '150px' }"
-                    /> -->
-                    <!-- <p-editor
-                        [style]="{ height: '120px' }"
-                        id="descripcion"
-                        formControlName="cForoRptaDocente"
-                    >
-                        <ng-template pTemplate="header">
-                            <span class="ql-formats">
-                                <button
-                                    type="button"
-                                    class="ql-bold"
-                                    aria-label="Bold"
-                                ></button>
-                                <button
-                                    type="button"
-                                    class="ql-italic"
-                                    aria-label="Italic"
-                                ></button>
-                                <button
-                                    type="button"
-                                    class="ql-underline"
-                                    aria-label="Underline"
-                                ></button>
-                            </span>
-                        </ng-template>
-                    </p-editor> -->
                     <p-editor
                         id="descripcion"
                         formControlName="cForoRptaDocente"
@@ -1119,6 +1134,7 @@
                 icon="pi pi-send"
                 size="small"
                 class="p-button-primary"
+                (click)="calificarComnt()"
             ></button>
             <!-- (click)="submit()" -->
         </div>

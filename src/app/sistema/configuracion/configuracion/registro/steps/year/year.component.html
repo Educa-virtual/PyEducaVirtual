@@ -1,65 +1,88 @@
 <form [formGroup]="form" class="flex gap-4 flex-column">
-    <div class>
-        <section class="flex flex-column gap-7 flex-1 px-4">
+    <div class="flex flex-wrap">
+        <section class="flex flex-column gap-5 flex-1 px-4 py-5">
             <div class="">
-                <p-floatLabel>
+                <p-inputGroup>
+                    <p-inputGroupAddon>Año vigente</p-inputGroupAddon>
                     <p-calendar
-                        [style]="{ width: '100%' }"
-                        [inputStyle]="{ width: '100%' }"
+                        styleClass="w-full"
                         formControlName="fechaVigente"
+                        [iconDisplay]="'input'"
                         [showIcon]="true"
                         view="year"
                         dateFormat="yy"
                         inputId="yearToRegister"
                     />
-                    <label for="yearToRegister">Año vigente </label>
-                </p-floatLabel>
+                </p-inputGroup>
             </div>
+
             <div>
-                <p-floatLabel>
+                <p-inputGroup>
+                    <p-inputGroupAddon
+                        >Fecha inicio y fin del año</p-inputGroupAddon
+                    >
                     <p-calendar
-                        [style]="{ width: '100%' }"
-                        [inputStyle]="{ width: '100%' }"
+                        styleClass="w-full"
+                        formControlName="fechaInicio"
+                        selectionMode="range"
+                        [iconDisplay]="'input'"
+                        [showIcon]="true"
+                        inputId="yearInicio"
+                        placeholder="Ingrese un rango de fechas"
+                    />
+                </p-inputGroup>
+            </div>
+
+            <div>
+                <p-inputGroup>
+                    <p-inputGroupAddon>Matricula regular</p-inputGroupAddon>
+                    <p-calendar
+                        styleClass="w-full"
+                        selectionMode="range"
+                        [iconDisplay]="'input'"
+                        formControlName="fechaMatriculaFin"
+                        [showIcon]="true"
+                        inputId="matriculaFin"
+                        placeholder="Ingrese un plazo para matricula ordinaria"
+                    />
+                </p-inputGroup>
+            </div>
+
+            <div>
+                <p-inputGroup>
+                    <p-inputGroupAddon>Matricula rezagados</p-inputGroupAddon>
+                    <p-calendar
+                        styleClass="w-full"
+                        selectionMode="range"
+                        [iconDisplay]="'input'"
+                        formControlName="fechaMatriculaRezagados"
+                        [showIcon]="true"
+                        inputId="matriculaFin"
+                        placeholder="Ingrese un plazo para matricula extraordinaria"
+                    />
+                </p-inputGroup>
+            </div>
+            <!-- <div>
+                <p-inputGroup>
+                    <p-inputGroupAddon>Inicio de año</p-inputGroupAddon>
+                    <p-calendar
+                        styleClass="w-full"
                         formControlName="fechaInicio"
                         [showIcon]="true"
                         inputId="yearInicio"
                     />
-                    <label for="yearInicio">Fecha inicio de año</label>
-                </p-floatLabel>
-                <p-floatLabel>
+                </p-inputGroup>
+                <p-inputGroup>
+                    <p-inputGroupAddon>Fin de año</p-inputGroupAddon>
                     <p-calendar
-                        [style]="{ width: '100%' }"
-                        [inputStyle]="{ width: '100%' }"
-                        formControlName="fechaFin"
-                        [showIcon]="true"
-                        inputId="yearFin"
-                    />
-                    <label for="yearFin">Fecha fin de año</label>
-                </p-floatLabel>
-            </div>
-            <div>
-                <p-floatLabel>
-                    <p-calendar
-                        [style]="{ width: '100%' }"
-                        [inputStyle]="{ width: '100%' }"
-                        formControlName="fechaMatriculaInicio"
-                        [showIcon]="true"
-                        inputId="matriculaInicio"
-                    />
-                    <label for="matriculaInicio">Fecha matricula inicio</label>
-                </p-floatLabel>
-                <p-floatLabel>
-                    <p-calendar
-                        [style]="{ width: '100%' }"
-                        [inputStyle]="{ width: '100%' }"
-                        formControlName="fechaMatriculaFin"
-                        [showIcon]="true"
-                        inputId="matriculaFin"
-                    />
-                    <label for="matriculaFin">Fecha matricula fin</label>
-                </p-floatLabel>
-            </div>
-            <div class="flex flex-column gap-1 relative">
+                    styleClass="w-full"
+                    formControlName="fechaFin"
+                    [showIcon]="true"
+                    inputId="yearFin"
+                />
+                </p-inputGroup>
+            </div> -->
+            <!-- <div class="flex flex-column gap-1 relative">
                 <p-floatLabel>
                     <p-calendar
                         [style]="{ width: '100%' }"
@@ -72,84 +95,51 @@
                         >Fecha matricula rezagados
                     </label>
                 </p-floatLabel>
-            </div>
+            </div> -->
         </section>
-        <section class="flex flex-column gap-7 flex-1 px-4">
+        <div class="flex flex-column gap-7 flex-1">
             <div class="flex flex-column">
-                <div class="p-2">
-                    <p-checkbox
-                        name="fasesPromocionales"
-                        [value]="true"
-                        formControlName="regular"
-                        label="Fase regular"
-                        (onChange)="isActiveFechasFases()"
-                    />
-                </div>
-                <div>
-                    <p-floatLabel>
-                        <p-calendar
-                            [style]="{ width: '100%' }"
-                            [inputStyle]="{ width: '100%' }"
-                            formControlName="fechaFaseRegularInicio"
-                            [showIcon]="true"
-                            inputId="faseRegularInicio"
-                        />
-                        <label for="faseRegularInicio"
-                            >Fecha inicio fase regular</label
-                        >
-                    </p-floatLabel>
-                    <p-floatLabel>
-                        <p-calendar
-                            [style]="{ width: '100%' }"
-                            [inputStyle]="{ width: '100%' }"
-                            formControlName="fechaFaseRegularFin"
-                            [showIcon]="true"
-                            inputId="faseRegularFin"
-                        />
-                        <label for="faseRegularFin"
-                            >Fecha fin fase regular</label
-                        >
-                    </p-floatLabel>
-                </div>
+                @for (fase of fasesPromocionales; track fase.iFasePromId) {
+                    <section class="flex flex-column gap-2 px-4 py-5">
+                        <div class="p-2">
+                            <p-checkbox
+                                name="fasesPromocionales"
+                                [value]="true"
+                                formControlName="{{
+                                    'faseCheck' + fase.iFasePromId
+                                }}"
+                                [label]="fase.cFasePromNombre"
+                                (onChange)="
+                                    isActiveFechasFases(fase.iFasePromId)
+                                "
+                            />
+                        </div>
+                        <div>
+                            <p-inputGroup>
+                                <p-inputGroupAddon
+                                    >Fecha inicio y fin de
+                                    fase</p-inputGroupAddon
+                                >
+                                <p-calendar
+                                    styleClass="w-full"
+                                    selectionMode="range"
+                                    [iconDisplay]="'input'"
+                                    formControlName="{{
+                                        'faseInputInicio' + fase.iFasePromId
+                                    }}"
+                                    [showIcon]="true"
+                                    inputId="faseRegularInicio"
+                                    [placeholder]="
+                                        'Ingrese un rango de fechas para la ' +
+                                        fase.cFasePromNombre.toLocaleLowerCase()
+                                    "
+                                />
+                            </p-inputGroup>
+                        </div>
+                    </section>
+                }
             </div>
-            <div class="flex flex-column">
-                <div class="p-2">
-                    <p-checkbox
-                        name="fasesPromocionales"
-                        [value]="true"
-                        formControlName="recuperacion"
-                        label="Fase de recuperación"
-                        (onChange)="isActiveFechasFases()"
-                    />
-                </div>
-                <div>
-                    <p-floatLabel>
-                        <p-calendar
-                            [style]="{ width: '100%' }"
-                            [inputStyle]="{ width: '100%' }"
-                            formControlName="fechaFaseRecuperacionInicio"
-                            [showIcon]="true"
-                            inputId="faseRecuperacionInicio"
-                        />
-                        <label for="faseRecuperacionInicio"
-                            >Fecha inicio fase recuperación</label
-                        >
-                    </p-floatLabel>
-                    <p-floatLabel>
-                        <p-calendar
-                            [style]="{ width: '100%' }"
-                            [inputStyle]="{ width: '100%' }"
-                            formControlName="fechaFaseRecuperacionFin"
-                            [showIcon]="true"
-                            inputId="faseRecuperacionFin"
-                        />
-                        <label for="faseRecuperacionFin"
-                            >Fecha fin fase recuperación</label
-                        >
-                    </p-floatLabel>
-                </div>
-            </div>
-        </section>
+        </div>
     </div>
     <div class="flex justify-content-end">
         <p-button
@@ -160,16 +150,34 @@
     </div>
 
     <div class="navigator">
-        <p-confirmDialog #cd class="w-5">
+        <p-confirmDialog
+            #cd
+            [acceptVisible]="false"
+            [rejectVisible]="false"
+            class="w-5"
+        >
             <ng-template pTemplate="message" let-message>
                 <div
                     class="flex flex-column align-items-center w-full gap-3 border-bottom-1 surface-border"
                 >
-                    <i
-                        class="pi pi-exclamation-circle text-6xl text-primary-500"
-                    ></i>
-                    <p>{{ message.message }}</p>
+                    <i class="pi pi-exclamation-circle text-6xl"></i>
+                    <p class="text-center">{{ message.message }}</p>
                 </div>
+            </ng-template>
+
+            <ng-template pTemplate="footer">
+                <button
+                    pButton
+                    label="Cancelar"
+                    (click)="cd.reject()"
+                    class="p-button-outlined w-8rem accept"
+                ></button>
+                <button
+                    pButton
+                    label="Confirmar"
+                    (click)="cd.accept()"
+                    class="w-8rem reject"
+                ></button>
             </ng-template>
         </p-confirmDialog>
     </div>

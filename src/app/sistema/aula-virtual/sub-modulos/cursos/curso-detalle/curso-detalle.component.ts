@@ -20,6 +20,7 @@ import { ConstantesService } from '@/app/servicios/constantes.service'
 import { GeneralService } from '@/app/servicios/general.service'
 import { TabInicioComponent } from './tabs/tab-inicio/tab-inicio.component'
 import { AsistenciaComponent } from '../../../../docente/asistencia/asistencia.component'
+import { PrimengModule } from '@/app/primeng.module'
 
 @Component({
     selector: 'app-curso-detalle',
@@ -39,6 +40,7 @@ import { AsistenciaComponent } from '../../../../docente/asistencia/asistencia.c
         TabResultadosComponent,
         TabInicioComponent,
         AsistenciaComponent,
+        PrimengModule,
     ],
     templateUrl: './curso-detalle.component.html',
     styleUrl: './curso-detalle.component.scss',
@@ -94,14 +96,29 @@ export class CursoDetalleComponent implements OnInit {
 
     // obtiene el parametro y actualiza el tab
     listenParams() {
+        console.log(this._activatedRoute.snapshot.queryParams)
         const tab = this._activatedRoute.snapshot.queryParams['tab']
         const cCursoNombre =
             this._activatedRoute.snapshot.queryParams['cCursoNombre']
+        const cNivelNombreCursos =
+            this._activatedRoute.snapshot.queryParams['cNivelNombreCursos']
+        const cNivelTipoNombre =
+            this._activatedRoute.snapshot.queryParams['cNivelTipoNombre']
+        const cGradoAbreviacion =
+            this._activatedRoute.snapshot.queryParams['cGradoAbreviacion']
+        const cSeccion = this._activatedRoute.snapshot.queryParams['cSeccion']
+        const cCicloRomanos =
+            this._activatedRoute.snapshot.queryParams['cCicloRomanos']
 
         this.curso = {
             cCursoNombre,
             iCursoId: '1',
             iSilaboId: this.iSilaboId,
+            cNivelNombreCursos,
+            cNivelTipoNombre,
+            cGradoAbreviacion,
+            cSeccion,
+            cCicloRomanos,
         }
 
         if (isValidTabKey(tab)) {

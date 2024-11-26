@@ -14,7 +14,7 @@ import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
     selector: 'app-tab-resultados',
     standalone: true,
     templateUrl: './tab-resultados.component.html',
-    styleUrls: [],
+    styleUrls: ['./tab-resultados.component.scss'],
     imports: [
         TablePrimengComponent,
         DataViewModule,

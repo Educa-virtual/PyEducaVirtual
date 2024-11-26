@@ -21,6 +21,11 @@ const routes: Routes = [
             import('./sub-modulos/calendario/calendario.routes'),
     },
     {
+        path: 'notificaciones',
+        loadChildren: () =>
+            import('./sub-modulos/notificaciones/notificaciones.routes'),
+    },
+    {
         path: 'banco-preguntas',
         loadComponent: () =>
             import(

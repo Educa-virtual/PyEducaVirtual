@@ -3,6 +3,14 @@ import { Subject } from 'rxjs'
 import { httpService } from '../../http/httpService'
 import { firstValueFrom } from 'rxjs'
 
+interface FormData {
+    entries(): IterableIterator<[string, FormDataEntryValue]>;
+  }
+
+interface FormData {
+    entries(): IterableIterator<[string, FormDataEntryValue]>;
+  }
+
 export type ArrayElement<ArrayType extends readonly unknown[]> =
     ArrayType extends readonly (infer ElementType)[] ? ElementType : never
 
@@ -168,6 +176,9 @@ export class TicketService {
         Object.entries(form).forEach(([key, value]) => {
             if (value instanceof File) {
                 // Si es un archivo, accedemos a `name`
+                console.log('Agregando form data')
+                console.log(key, value)
+
                 formData.append(key, value, value.name)
             } else if (value instanceof Blob) {
                 // Si es un Blob genérico
@@ -349,31 +360,6 @@ export class TicketService {
             const { iCalAcadId, iSedeId, iYAcadId } =
                 this.registroInformation.calendar
 
-            const formData = this.convertFormGroupToFormData({
-                iCalAcadId: iCalAcadId,
-                iSedeId: iSedeId,
-                iYAcadId: iYAcadId,
-                dtCalAcadInicio:
-                    this.toSQLDatetimeFormat(calAcad.fechaInicio[0]) ?? null,
-                dtCalAcadFin:
-                    this.toSQLDatetimeFormat(calAcad.fechaInicio[1]) ?? null,
-                dtCalAcadMatriculaInicio:
-                    this.toSQLDatetimeFormat(calAcad.fechaMatriculaFin[0]) ??
-                    null,
-                dtCalAcadMatriculaFin:
-                    this.toSQLDatetimeFormat(calAcad.fechaMatriculaFin[1]) ??
-                    null,
-                dtCalAcadMatriculaResagados:
-                    this.toSQLDatetimeFormat(
-                        calAcad.fechaMatriculaRezagados[1]
-                    ) ?? null,
-                bCalAcadFaseRegular: true,
-                bCalAcadFaseRecuperacion: true,
-                jCalAcadRsl: calAcad.reglamentoInterno,
-            })
-
-            console.log(formData)
-
             const data = await firstValueFrom(
                 this.httpService.postData(
                     'acad/calendarioAcademico/insCalAcademico',
@@ -404,7 +390,6 @@ export class TicketService {
                                 ) ?? null,
                             bCalAcadFaseRegular: true,
                             bCalAcadFaseRecuperacion: true,
-                            jCalAcadRsl: calAcad.reglamentoInterno,
                         }),
                     }
                 )
@@ -438,31 +423,32 @@ export class TicketService {
         try {
             const { iCalAcadId } = this.registroInformation.calendar
 
-            console.log('Reglamento')
-            const formData = await this.convertFormGroupToFormData({
-                iCalAcadId: iCalAcadId,
-                dtCalAcadInicio: this.toSQLDatetimeFormat(
-                    calAcad.fechaInicio[0]
-                ),
-                dtCalAcadFin: this.toSQLDatetimeFormat(calAcad.fechaInicio[1]),
-                dtCalAcadMatriculaInicio: this.toSQLDatetimeFormat(
-                    calAcad.fechaMatriculaFin[0]
-                ),
-                dtCalAcadMatriculaFin: this.toSQLDatetimeFormat(
-                    calAcad.fechaMatriculaFin[1]
-                ),
-                dtCalAcadMatriculaResagados: this.toSQLDatetimeFormat(
-                    calAcad.fechaMatriculaRezagados[1]
-                ),
-                bCalAcadFaseRegular: false,
-                bCalAcadFaseRecuperacion: false,
-                jCalAcadRsl: calAcad.reglamentoInterno,
-            })
-
             await firstValueFrom(
                 this.httpService.putData(
                     'acad/calendarioAcademico/updCalAcademico',
-                    formData
+                    {
+                        calAcad: JSON.stringify({
+                            iCalAcadId: iCalAcadId,
+                            dtCalAcadInicio: this.toSQLDatetimeFormat(
+                                calAcad.fechaInicio[0]
+                            ),
+                            dtCalAcadFin: this.toSQLDatetimeFormat(
+                                calAcad.fechaInicio[1]
+                            ),
+                            dtCalAcadMatriculaInicio: this.toSQLDatetimeFormat(
+                                calAcad.fechaMatriculaFin[0]
+                            ),
+                            dtCalAcadMatriculaFin: this.toSQLDatetimeFormat(
+                                calAcad.fechaMatriculaFin[1]
+                            ),
+                            dtCalAcadMatriculaResagados:
+                                this.toSQLDatetimeFormat(
+                                    calAcad.fechaMatriculaRezagados[1]
+                                ),
+                            bCalAcadFaseRegular: false,
+                            bCalAcadFaseRecuperacion: false,
+                        }),
+                    }
                 )
             )
             onNextCallbacks.forEach((callback) => callback())
@@ -471,6 +457,39 @@ export class TicketService {
         } catch (error) {
             console.error('Error en insCalAcademico:', error)
         }
+    }
+
+    async selReglamentoInterno(
+        calAcad,
+    ) {
+        const formData = this.convertFormGroupToFormData({
+            cIieeUrlReglamentoInterno: calAcad.reglamentoInterno,
+        })
+
+        await firstValueFrom(
+            this.httpService.putData(
+                'acad/calendarioAcademico/updCalAcademico',
+                formData
+            )
+        )
+    }
+
+  
+      
+    async updReglamentoInterno(
+        calAcad,
+    ) {
+        const formData = await this.convertFormGroupToFormData({
+            cIieeUrlReglamentoInterno: calAcad.reglamentoInterno,
+            iIieeId: JSON.parse(localStorage.getItem('dremoPerfil')).iIieeId
+        })    
+
+        await firstValueFrom(
+            this.httpService.putData(
+                'acad/institucionEducativa/updReglamentoInterno',
+                formData
+            )
+        )
     }
 
     async updCalFasesProm(

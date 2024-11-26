@@ -384,6 +384,10 @@ export class YearComponent implements OnInit {
             // await this.ticketService.updCalFasesProm(this.form.value)
         }
 
+        if(JSON.parse(localStorage.getItem('dremoPerfil')).iIieeId){
+            await this.ticketService.updReglamentoInterno(this.form.value)
+        }
+
         const calFasesProm = this.filterInputsByPrefix(
             this.form.value,
             'faseCheck'

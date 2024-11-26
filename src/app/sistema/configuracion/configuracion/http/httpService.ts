@@ -16,11 +16,15 @@ export class httpService {
     }
 
     postData(endpoint: string, data: any): Observable<any> {
-        return this.http.post(`${this.apiURL}/${endpoint}`, data, {
-            headers: new HttpHeaders({
-                'Content-Type': 'application/json',
-            }),
-        })
+        if (data instanceof FormData) {
+            return this.http.post(`${this.apiURL}/${endpoint}`, data)
+        } else {
+            return this.http.post(`${this.apiURL}/${endpoint}`, data, {
+                headers: new HttpHeaders({
+                    'Content-Type': 'application/json',
+                }),
+            })
+        }
     }
 
     putData(endpoint: string, data: any): Observable<any> {
@@ -28,7 +32,8 @@ export class httpService {
         if (data instanceof FormData) {
             // Si los datos son FormData, no se debe establecer el encabezado Content-Type
             // porque el navegador lo maneja automáticamente.
-            return this.http.put(`${this.apiURL}/${endpoint}`, data)
+            data.append('_method', 'PUT'); 
+            return this.http.post(`${this.apiURL}/${endpoint}`, data)
         } else {
             // Si no es FormData, lo tratamos como JSON
             return this.http.put(`${this.apiURL}/${endpoint}`, data, {

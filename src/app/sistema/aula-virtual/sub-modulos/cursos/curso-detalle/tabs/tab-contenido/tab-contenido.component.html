@@ -40,23 +40,27 @@
                             }}
                         </div>
                     </div>
-                    <div class="flex align-items-end justify-content-end mx-4">
-                        <button
-                            size="small"
-                            [rounded]="true"
-                            pButton
-                            pRipple
-                            (click)="
-                                $event.stopPropagation();
-                                setSemanaSeleccionada(semana);
-                                menuContenido.toggle($event)
-                            "
-                            ngClass="p-button-primary"
+                    @if (iPerfilId === 7) {
+                        <div
+                            class="flex align-items-end justify-content-end mx-4"
                         >
-                            <i class="pi pi-plus"></i>
-                            &nbsp;Actividad
-                        </button>
-                    </div>
+                            <button
+                                size="small"
+                                [rounded]="true"
+                                pButton
+                                pRipple
+                                (click)="
+                                    $event.stopPropagation();
+                                    setSemanaSeleccionada(semana);
+                                    menuContenido.toggle($event)
+                                "
+                                ngClass="p-button-primary"
+                            >
+                                <i class="pi pi-plus"></i>
+                                &nbsp;Actividad
+                            </button>
+                        </div>
+                    }
                 </ng-template>
 
                 @for (fecha of semana.fechas; track $index) {

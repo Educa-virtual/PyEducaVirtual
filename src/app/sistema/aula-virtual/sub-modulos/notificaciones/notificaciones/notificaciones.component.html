@@ -1,15 +1,15 @@
-<app-container-page [title]="'Mis Notificaciones'">
+<!-- <app-container-page [title]="'Mis Notificaciones'">
     <p-dataView #dv [paginator]="true" [rows]="9" filterBy="name" layout="grid">
         <ng-template pTemplate="header">
             <div
                 class="flex flex-column md:flex-row md:justify-content-between gap-2"
             >
-                <!-- (input)="onFilter(dv, $event)", [sortOrder]="sortOrder", [sortField]="sortField", [value]="area" , [actions]="[]" -->
+                (input)="onFilter(dv, $event)", [sortOrder]="sortOrder", [sortField]="sortField", [value]="area" , [actions]="[]"
                 <p-iconField iconPosition="left">
                     <p-inputIcon styleClass="pi pi-search" />
                     <input pInputText type="text" placeholder="Buscar..." />
                 </p-iconField>
-                <!-- [emptyMessage]="'000237'" [options]="[]" -->
+                [emptyMessage]="'000237'" [options]="[]"
                 <p-dropdown
                     placeholder="Notificaciones Resientes"
                     styleClass="w-full"
@@ -33,12 +33,49 @@
                 [data]="[]"
             ></app-table-primeng>
         </ng-template>
-        <!-- <ng-template let-products pTemplate="gridItem">
+        <ng-template let-products pTemplate="gridItem">
           <div class="area gap-4 py-2">
               @for (area of area; track area.id) {
                   <app-area-card class="" [area]="area"></app-area-card>
               }
           </div>
-      </ng-template> -->
+      </ng-template>
+    </p-dataView>
+</app-container-page> -->
+<app-container-page [title]="'Mis Notificaciones'" [actions]="[]">
+    <p-dataView #dv [rows]="10" filterBy="cCursoNombre">
+        <!-- [sortField]="sortField"
+        [sortOrder]="sortOrder" [value]="cursos",  [layout]="layout",  [paginator]="layout === 'list' ? false : true" -->
+        <ng-template pTemplate="header">
+            <div
+                class="flex flex-column md:flex-row md:justify-content-between gap-2"
+            >
+                <p-iconField iconPosition="left">
+                    <p-inputIcon styleClass="pi pi-search" />
+                    <input pInputText type="text" placeholder="Buscar...." />
+                </p-iconField>
+                <p-dropdown
+                    placeholder="Notificaciones Resientes"
+                    styleClass="w-full"
+                    class="flex-1"
+                >
+                </p-dropdown>
+                <p-dropdown
+                    placeholder="2024"
+                    styleClass="w-full"
+                    class="flex-1"
+                >
+                </p-dropdown>
+
+                <p-dataViewLayoutOptions></p-dataViewLayoutOptions>
+            </div>
+        </ng-template>
+        <ng-template let-products pTemplate="listItem">
+            <app-table-primeng
+                [showPaginator]="false"
+                [showCaption]="false"
+                [data]="[]"
+            ></app-table-primeng>
+        </ng-template>
     </p-dataView>
 </app-container-page>

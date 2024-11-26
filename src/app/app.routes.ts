@@ -5,6 +5,7 @@ import { LoginComponent } from './shared/login/login.component'
 import { VerificacionComponent } from './shared/verificacion/verificacion.component'
 import { InicioComponent } from './sistema/inicio/inicio.component'
 import { NotfoundComponent } from './shared/notfound/notfound.component'
+import { RecoverPasswordComponent } from './shared/recover-password/recover-password.component'
 
 export const routes: Routes = [
     { path: '', component: InicioComponent },
@@ -54,6 +55,8 @@ export const routes: Routes = [
     { path: 'login', component: LoginComponent },
 
     { path: 'verificacion', component: VerificacionComponent },
+
+    { path: 'recover-password', component: RecoverPasswordComponent },
 
     {
         path: 'configuracion',

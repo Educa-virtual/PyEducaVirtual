@@ -9,4 +9,6 @@ export interface ICurso {
     iEstudiantes?: number
     iSilaboId: string
     nombrecompleto?: string
+    cNivelTipoNombre?: string
+    cSeccion?: string
 }

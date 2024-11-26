@@ -22,9 +22,9 @@
                 <small class="text-red-500"> Este campo es requerido </small>
             }
         </div>
-
+        <!--! Se cambio tamaño de class="field col-12 md:col-6" a md:col-3 -->
         @if (formGroup.get('iPreguntaNivel') !== null) {
-            <div class="field col-12 md:col-6">
+            <div class="field col-12 md:col-3">
                 <app-common-input
                     type="number"
                     [label]="'Nivel'"
@@ -32,7 +32,7 @@
                 />
             </div>
         }
-        <div class="field col-12 md:col-6">
+        <div class="field col-12 md:col-3">
             <app-common-input
                 type="number"
                 [label]="'Peso'"
@@ -40,7 +40,8 @@
             />
         </div>
     </div>
-    <h2 class="text-xl m-0 mb-2">Tiempo para responder</h2>
+    <!--! Se Comento esto para el formulario Banco de Preguntas  -->
+    <!-- <h2 class="text-xl m-0 mb-2">Tiempo para responder</h2>
     <div class="formgrid grid">
         <div class="field col-12 md:col">
             <app-common-input
@@ -63,7 +64,7 @@
                 [controlKey]="'iSegundos'"
             />
         </div>
-    </div>
+    </div> -->
     <div class="formgrid grid">
         <div class="field col">
             <label for="firstname2">Enunciado de la pregunta</label>

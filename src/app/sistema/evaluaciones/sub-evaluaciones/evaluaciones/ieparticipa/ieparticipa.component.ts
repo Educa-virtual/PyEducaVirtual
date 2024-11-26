@@ -1,4 +1,6 @@
 import { CompartirIdEvaluacionService } from './../../../services/ereEvaluaciones/compartir-id-evaluacion.service'
+import { CompartirFormularioEvaluacionService } from './../../../services/ereEvaluaciones/compartir-formulario-evaluacion.service'
+
 import {
     Component,
     ChangeDetectorRef,
@@ -51,7 +53,7 @@ interface EvaluacionCopia {
 })
 export class IeparticipaComponent implements OnInit {
     @Input() _iEvaluacionId: number //ID de la evaluacion Form
-
+    public cEvaluacionNombre: string | null = null //!Nombre del formulario Evaluacion
     public evaluacionFormGroup: any
 
     private unsubscribe$: Subject<boolean> = new Subject()
@@ -90,6 +92,7 @@ export class IeparticipaComponent implements OnInit {
     constructor(
         private cdr: ChangeDetectorRef,
         private compartirIdEvaluacionService: CompartirIdEvaluacionService,
+        private compartirFormularioEvaluacionService: CompartirFormularioEvaluacionService,
         private _config: DynamicDialogConfig, // Inyectar configuración
         private evaluacionesService: ApiEvaluacionesRService // Inyecta el servicio -> Evaliacion Copiar
     ) {}
@@ -105,10 +108,11 @@ export class IeparticipaComponent implements OnInit {
             'iEvaluacionId recibido:',
             this.compartirIdEvaluacionService
         )
-        //alert(this._iEvaluacionId)
-        // Determinar el modo
-        //this.accion = this._config.data?.accion || 'crear'
-        //this.esModoEdicion = this.accion === 'editar'
+        //!Cambios servicio form
+        this.cEvaluacionNombre =
+            this.compartirFormularioEvaluacionService.getcEvaluacionNombre()
+        console.log('Valor obtenido desde el servicio:', this.cEvaluacionNombre)
+        //!Cambios servicio form
         this.accion = this._config.data?.accion || 'crear'
         console.log('Acción actual:', this.accion)
 
@@ -120,6 +124,7 @@ export class IeparticipaComponent implements OnInit {
             { cNivelTipoNombre: 'Primaria', iNivelTipoId: 'NY' },
             { cNivelTipoNombre: 'Secundaria', iNivelTipoId: 'RM' },
         ]
+
         // Inicializar según el modo
         if (this.accion === 'nuevo') {
             this.obtenerIE()
@@ -231,59 +236,156 @@ export class IeparticipaComponent implements OnInit {
             })
     }
     // Cuando se mueve un elemento a "Participan"
+    // IEparticipan(event: any) {
+    //     const itemsMoved = event.items
+    //     console.log('Moviendo a Participan AQUI:', itemsMoved)
+
+    //     const payload = {
+    //         items: itemsMoved.map((item) => ({
+    //             //iEvaluacionId: this._iEvaluacionId, //FUNCIONA PARA EDITAR
+    //             //iEvaluacionId: this.compartirIdEvaluacionService.iEvaluacionId, //FUNCIONA PARA GUARDAR
+    //             iEvaluacionId:
+    //                 this._iEvaluacionId ??
+    //                 this.compartirIdEvaluacionService.iEvaluacionId,
+    //             iIieeId: item.iIieeId,
+
+    //             //iIieeId: item.iIieeId,
+    //         })),
+    //     }
+    //     // const payload = {
+    //     //     items: itemsMoved.map((item) => ({
+    //     //         iEvaluacionId: this._iEvaluacionId, // Usando el ID recibido como Input
+    //     //         iIieeId: item.iIieeId,
+    //     //     }))
+    //     // }
+    //     this._apiEre.guardarParticipacion(payload).subscribe(
+    //         //(response) => console.log('Guardado exitoso:', response),
+    //         (response) => {
+    //             // Mostrar mensaje tipo toast en caso de éxito
+    //             if (this.accion === 'nuevo') {
+    //                 this._MessageService.add({
+    //                     severity: 'success',
+    //                     summary: 'Guardado completado',
+    //                     detail: 'Las instituciones educativas se han guardado correctamente en el sistema.',
+    //                 })
+    //             }
+    //             if (this.accion === 'editar') {
+    //                 this._MessageService.add({
+    //                     severity: 'success',
+    //                     summary: 'Edicion completado',
+    //                     detail: 'Las instituciones educativas se han editado correctamente en el sistema.',
+    //                 })
+    //             }
+    //             console.log('Guardado exitoso:', response)
+    //         },
+    //         (error) => console.error('Error al guardar:', error)
+    //     )
+    //     //this.actualizarConteos() //!Se agrego el conteo de datos.
+    // }
+
+    // IEnoparticipan(event: any) {
+    //     const itemsMoved = event.items
+    //     // Obtenemos los objetos con iIieeId e iEvaluacionId para eliminarlos
+    //     const participacionesToDelete = itemsMoved.map((item) => ({
+    //         //!Cambios Recientes
+    //         iEvaluacionId:
+    //             this._iEvaluacionId ??
+    //             this.compartirIdEvaluacionService.iEvaluacionId,
+    //         iIieeId: item.iIieeId,
+    //         // iIieeId: item.iIieeId,
+    //         // iEvaluacionId: this._iEvaluacionId, // Asumiendo que iEvaluacionId está disponible en el componente
+    //     }))
+
+    //     if (participacionesToDelete.length > 0) {
+    //         // Realizamos la eliminación en bloque enviando los objetos necesarios
+    //         this._apiEre
+    //             .eliminarParticipacion(participacionesToDelete)
+    //             .subscribe(
+    //                 (response) => {
+    //                     // Mostrar mensaje tipo toast en caso de éxito
+    //                     this._MessageService.add({
+    //                         severity: 'success',
+    //                         summary: 'Eliminación realizada',
+    //                         detail: 'La institución educativa fue eliminada correctamente del sistema.',
+    //                     })
+    //                     console.log('Eliminado exitoso:', response)
+    //                 },
+    //                 (error) => {
+    //                     console.error('Error al eliminar:', error)
+    //                 }
+    //             )
+    //     } else {
+    //         console.warn('No hay elementos para eliminar.')
+    //     }
+    //     this.actualizarConteos() //!Se agrego el conteo de datos.
+    // }
+
+    //!Aqui se cambio
     IEparticipan(event: any) {
         const itemsMoved = event.items
         console.log('Moviendo a Participan AQUI:', itemsMoved)
 
+        // Elimina de sourceProducts los elementos que se mueven a targetProducts
+        itemsMoved.forEach((item) => {
+            this.sourceProducts = this.sourceProducts.filter(
+                (sourceItem) => sourceItem.iIieeId !== item.iIieeId
+            )
+        })
+
         const payload = {
             items: itemsMoved.map((item) => ({
-                //iEvaluacionId: this._iEvaluacionId, //FUNCIONA PARA EDITAR
-                //iEvaluacionId: this.compartirIdEvaluacionService.iEvaluacionId, //FUNCIONA PARA GUARDAR
                 iEvaluacionId:
                     this._iEvaluacionId ??
                     this.compartirIdEvaluacionService.iEvaluacionId,
                 iIieeId: item.iIieeId,
-
-                //iIieeId: item.iIieeId,
             })),
         }
-        // const payload = {
-        //     items: itemsMoved.map((item) => ({
-        //         iEvaluacionId: this._iEvaluacionId, // Usando el ID recibido como Input
-        //         iIieeId: item.iIieeId,
-        //     }))
-        // }
+
         this._apiEre.guardarParticipacion(payload).subscribe(
-            //(response) => console.log('Guardado exitoso:', response),
             (response) => {
                 // Mostrar mensaje tipo toast en caso de éxito
-                this._MessageService.add({
-                    severity: 'success',
-                    summary: 'Guardado completado',
-                    detail: 'Las instituciones educativas se han guardado correctamente en el sistema.',
-                })
+                if (this.accion === 'nuevo') {
+                    this._MessageService.add({
+                        severity: 'success',
+                        summary: 'Guardado completado',
+                        detail: 'Las instituciones educativas se han guardado correctamente en el sistema.',
+                    })
+                }
+                if (this.accion === 'editar') {
+                    this._MessageService.add({
+                        severity: 'success',
+                        summary: 'Edición completada',
+                        detail: 'Las instituciones educativas se han editado correctamente en el sistema.',
+                    })
+                }
                 console.log('Guardado exitoso:', response)
             },
             (error) => console.error('Error al guardar:', error)
         )
-        //this.actualizarConteos() //!Se agrego el conteo de datos.
+
+        // Actualiza los conteos (si es necesario)
+        this.actualizarConteos()
     }
 
     IEnoparticipan(event: any) {
         const itemsMoved = event.items
-        // Obtenemos los objetos con iIieeId e iEvaluacionId para eliminarlos
+        console.log('Moviendo a No Participan AQUI:', itemsMoved)
+
+        // Elimina de targetProducts los elementos que se mueven a sourceProducts
+        itemsMoved.forEach((item) => {
+            this.targetProducts = this.targetProducts.filter(
+                (targetItem) => targetItem.iIieeId !== item.iIieeId
+            )
+        })
+
         const participacionesToDelete = itemsMoved.map((item) => ({
-            //!Cambios Recientes
             iEvaluacionId:
                 this._iEvaluacionId ??
                 this.compartirIdEvaluacionService.iEvaluacionId,
             iIieeId: item.iIieeId,
-            // iIieeId: item.iIieeId,
-            // iEvaluacionId: this._iEvaluacionId, // Asumiendo que iEvaluacionId está disponible en el componente
         }))
 
         if (participacionesToDelete.length > 0) {
-            // Realizamos la eliminación en bloque enviando los objetos necesarios
             this._apiEre
                 .eliminarParticipacion(participacionesToDelete)
                 .subscribe(
@@ -296,135 +398,184 @@ export class IeparticipaComponent implements OnInit {
                         })
                         console.log('Eliminado exitoso:', response)
                     },
-                    (error) => {
-                        console.error('Error al eliminar:', error)
-                    }
+                    (error) => console.error('Error al eliminar:', error)
                 )
         } else {
             console.warn('No hay elementos para eliminar.')
         }
-        this.actualizarConteos() //!Se agrego el conteo de datos.
+
+        // Actualiza los conteos (si es necesario)
+        this.actualizarConteos()
     }
+    //!CAMBIOS ALL
     IEparticipanall(event: any) {
         const itemsMoved = event.items
-        // console.log('Moviendo a Participan:', itemsMoved)
-        const payload = {
-            items: itemsMoved.map((item) => ({
-                //!ESTA EN MODO MANUAL; CAMBIAR POR EL ID DE LA EVALUACION
-                // iEvaluacionId: this._iEvaluacionId,
-                // iIieeId: item.iIieeId,
-                //!Cambios recientes
+
+        // Filtrar los elementos movidos según los filtros seleccionados (nivel y ugel)
+        const filteredItems = itemsMoved.filter((item) => {
+            const nivelTipoMatch = this.selectedNivelTipo
+                ? item.cNivelTipoNombre ===
+                  this.selectedNivelTipo.cNivelTipoNombre
+                : true
+
+            const ugelMatch = this.selectedUgeles
+                ? item.cUgelNombre === this.selectedUgeles.cUgelNombre
+                : true
+
+            return nivelTipoMatch && ugelMatch
+        })
+
+        // Si hay elementos filtrados para guardar
+        if (filteredItems.length > 0) {
+            const payload = {
+                items: filteredItems.map((item) => ({
+                    iEvaluacionId:
+                        this._iEvaluacionId ??
+                        this.compartirIdEvaluacionService.iEvaluacionId,
+                    iIieeId: item.iIieeId,
+                })),
+            }
+
+            this._apiEre.guardarParticipacion(payload).subscribe(
+                (response) => {
+                    this._MessageService.add({
+                        severity: 'success',
+                        summary: 'Guardado exitoso',
+                        detail: 'Las instituciones educativas han sido registradas con éxito.',
+                    })
+                    console.log('IE Registradas exitosas:', response)
+                },
+                (error) => console.error('Error al guardar:', error)
+            )
+        } else {
+            console.warn(
+                'No hay instituciones educativas que coincidan con los filtros.'
+            )
+        }
+
+        this.actualizarConteos() // Actualizar el conteo después de la operación
+    }
+    IEnoparticipanall(event: any) {
+        const itemsMoved = event.items
+
+        // Filtrar los elementos movidos según los filtros seleccionados (nivel y ugel)
+        const filteredItems = itemsMoved.filter((item) => {
+            const nivelTipoMatch = this.selectedNivelTipo
+                ? item.cNivelTipoNombre ===
+                  this.selectedNivelTipo.cNivelTipoNombre
+                : true
+
+            const ugelMatch = this.selectedUgeles
+                ? item.cUgelNombre === this.selectedUgeles.cUgelNombre
+                : true
+
+            return nivelTipoMatch && ugelMatch
+        })
+
+        // Si hay elementos filtrados para eliminar
+        if (filteredItems.length > 0) {
+            const participacionesToDelete = filteredItems.map((item) => ({
                 iEvaluacionId:
                     this._iEvaluacionId ??
                     this.compartirIdEvaluacionService.iEvaluacionId,
                 iIieeId: item.iIieeId,
-            })),
-        }
-        this._apiEre.guardarParticipacion(payload).subscribe(
-            //(response) => console.log('Guardado exitoso:', response),
-            (response) => {
-                // Mostrar mensaje tipo toast en caso de éxito
-                this._MessageService.add({
-                    severity: 'success',
-                    summary: 'Guardado exitoso',
-                    detail: 'Las instituciones educativas han sido registradas con éxito.',
-                })
-                console.log('IE Resgistradas exitosas:', response)
-            },
-            (error) => console.error('Error al guardar:', error)
-        )
-        this.actualizarConteos() //!Se agrego el conteo de datos.
-    }
-    IEnoparticipanall(event: any) {
-        const itemsMoved = event.items
-        // console.log(
-        //     'Elementos movidos de IEnoparticipan a IEparticipan:',
-        //     itemsMoved
-        // )
+            }))
 
-        // Obtenemos los objetos con iIieeId e iEvaluacionId para eliminarlos
-        const participacionesToDelete = itemsMoved.map((item) => ({
-            //!Cambios recientes
-            iEvaluacionId:
-                this._iEvaluacionId ??
-                this.compartirIdEvaluacionService.iEvaluacionId,
-            iIieeId: item.iIieeId,
-            // iIieeId: item.iIieeId,
-            // iEvaluacionId: this._iEvaluacionId, // Asumiendo que iEvaluacionId está disponible en el componente
-        }))
-
-        if (participacionesToDelete.length > 0) {
-            // Realizamos la eliminación en bloque enviando los objetos necesarios
             this._apiEre
                 .eliminarParticipacion(participacionesToDelete)
                 .subscribe(
                     (response) => {
-                        // Mostrar mensaje tipo toast en caso de éxito
                         this._MessageService.add({
                             severity: 'success',
                             summary: 'Eliminación realizada',
                             detail: 'Se han eliminado todas las instituciones educativas seleccionadas de los participantes.',
                         })
-                        console.log('Eliminacion de varios exitoso:', response)
+                        console.log('Eliminación de varios exitoso:', response)
                     },
                     (error) => {
                         console.error('Error al eliminar:', error)
                     }
                 )
         } else {
-            console.warn('No hay elementos para eliminar.')
+            console.warn(
+                'No hay instituciones educativas que coincidan con los filtros para eliminar.'
+            )
         }
-        this.actualizarConteos() //!Se agrego el conteo de datos.
+
+        this.actualizarConteos() // Actualizar el conteo después de la operación
     }
 
-    // obtenerParticipaciones(
-    //     evaluacionId: number,
-    //     modoCopia: boolean = false
-    // ): Promise<any[]> {
-    //     return new Promise((resolve, reject) => {
-    //         // Obtener el iEvaluacionId desde el servicio
-    //         // Verificar si el iEvaluacionId está disponible y no es nulo
-    //         if (
-    //             this.compartirIdEvaluacionService.iEvaluacionId === null ||
-    //             this.compartirIdEvaluacionService.iEvaluacionId === undefined
-    //         ) {
-    //             console.error('El ID de evaluación no está disponible.')
-    //             reject('El ID de evaluación no está disponible.')
-    //             return
-    //         }
-    //         this._apiEre
-    //             .obtenerParticipaciones(evaluacionId)
-    //             .pipe(takeUntil(this.unsubscribe$))
-    //             .subscribe({
-    //                 next: (resp: any) => {
-    //                     const participantes = resp.data.map((item: any) => ({
-    //                         iIieeId: item.iIieeId,
-    //                         cIieeNombre: item.cIieeNombre,
-    //                         cIieeCodigoModular: item.cIieeCodigoModular,
-    //                         cNivelTipoNombre: item.cNivelTipoNombre,
-    //                     }))
-    //                     if (modoCopia) {
-    //                         this.targetProducts = participantes
-    //                         // this.obtenerIE()
-    //                         // console.log(
-    //                         //     'Participantes copiados para nueva evaluación:',
-    //                         //     this.targetProducts
-    //                         // )
-    //                     } else {
-    //                         this.targetProducts = participantes
-    //                         this.obtenerIE()
-    //                     }
-    //                     resolve(participantes)
-    //                 },
-    //                 error: (error) => {
-    //                     console.error(
-    //                         'Error al obtener participaciones:',
-    //                         error
-    //                     )
-    //                     reject(error)
-    //                 },
+    //!AQUI SE CAMBIO
+    // IEparticipanall(event: any) {
+    //     const itemsMoved = event.items
+    //     // console.log('Moviendo a Participan:', itemsMoved)
+    //     const payload = {
+    //         items: itemsMoved.map((item) => ({
+    //             //!ESTA EN MODO MANUAL; CAMBIAR POR EL ID DE LA EVALUACION
+    //             // iEvaluacionId: this._iEvaluacionId,
+    //             // iIieeId: item.iIieeId,
+    //             //!Cambios recientes
+    //             iEvaluacionId:
+    //                 this._iEvaluacionId ??
+    //                 this.compartirIdEvaluacionService.iEvaluacionId,
+    //             iIieeId: item.iIieeId,
+    //         })),
+    //     }
+    //     this._apiEre.guardarParticipacion(payload).subscribe(
+    //         //(response) => console.log('Guardado exitoso:', response),
+    //         (response) => {
+    //             // Mostrar mensaje tipo toast en caso de éxito
+    //             this._MessageService.add({
+    //                 severity: 'success',
+    //                 summary: 'Guardado exitoso',
+    //                 detail: 'Las instituciones educativas han sido registradas con éxito.',
     //             })
-    //     })
+    //             console.log('IE Resgistradas exitosas:', response)
+    //         },
+    //         (error) => console.error('Error al guardar:', error)
+    //     )
+    //     this.actualizarConteos() //!Se agrego el conteo de datos.
+    // }
+    // IEnoparticipanall(event: any) {
+    //     const itemsMoved = event.items
+    //     // console.log(
+    //     //     'Elementos movidos de IEnoparticipan a IEparticipan:',
+    //     //     itemsMoved
+    //     // )
+
+    //     // Obtenemos los objetos con iIieeId e iEvaluacionId para eliminarlos
+    //     const participacionesToDelete = itemsMoved.map((item) => ({
+    //         //!Cambios recientes
+    //         iEvaluacionId:
+    //             this._iEvaluacionId ??
+    //             this.compartirIdEvaluacionService.iEvaluacionId,
+    //         iIieeId: item.iIieeId,
+    //         // iIieeId: item.iIieeId,
+    //         // iEvaluacionId: this._iEvaluacionId, // Asumiendo que iEvaluacionId está disponible en el componente
+    //     }))
+
+    //     if (participacionesToDelete.length > 0) {
+    //         // Realizamos la eliminación en bloque enviando los objetos necesarios
+    //         this._apiEre
+    //             .eliminarParticipacion(participacionesToDelete)
+    //             .subscribe(
+    //                 (response) => {
+    //                     // Mostrar mensaje tipo toast en caso de éxito
+    //                     this._MessageService.add({
+    //                         severity: 'success',
+    //                         summary: 'Eliminación realizada',
+    //                         detail: 'Se han eliminado todas las instituciones educativas seleccionadas de los participantes.',
+    //                     })
+    //                     console.log('Eliminacion de varios exitoso:', response)
+    //                 },
+    //                 (error) => {
+    //                     console.error('Error al eliminar:', error)
+    //                 }
+    //             )
+    //     } else {
+    //         console.warn('No hay elementos para eliminar.')
+    //     }
+    //     this.actualizarConteos() //!Se agrego el conteo de datos.
     // }
 
     obtenerParticipaciones(
@@ -521,8 +672,72 @@ export class IeparticipaComponent implements OnInit {
     //             },
     //         })
     // }
-    //Filtro
-    filterIEs() {
+    //!Filtro
+    // filterIEs() {
+    //     this.sourceProducts = this.allIEs.filter((ie) => {
+    //         // Filtrar por nivelTipo si hay uno seleccionado
+    //         const nivelTipoMatch = this.selectedNivelTipo
+    //             ? ie.cNivelTipoNombre ===
+    //               this.selectedNivelTipo.cNivelTipoNombre
+    //             : true
+
+    //         // Filtrar por ugel si hay uno seleccionado
+    //         const ugelMatch = this.selectedUgeles
+    //             ? ie.cUgelNombre === this.selectedUgeles.cUgelNombre
+    //             : true
+
+    //         return nivelTipoMatch && ugelMatch
+    //     })
+    // }
+    //!cambios
+    // filterIEs(): void {
+    //     // Filtrar los elementos en sourceProducts (No Participan)
+    //     this.sourceProducts = this.allIEs.filter((ie) => {
+    //         // Filtrar por nivelTipo si hay uno seleccionado
+    //         const nivelTipoMatch = this.selectedNivelTipo
+    //             ? ie.cNivelTipoNombre ===
+    //               this.selectedNivelTipo.cNivelTipoNombre
+    //             : true
+
+    //         // Filtrar por ugel si hay uno seleccionado
+    //         const ugelMatch = this.selectedUgeles
+    //             ? ie.cUgelNombre === this.selectedUgeles.cUgelNombre
+    //             : true
+
+    //         // Asegurarse de que el elemento no esté en targetProducts
+    //         const notInTarget = !this.targetProducts.some(
+    //             (target) => target.iIieeId === ie.iIieeId
+    //         )
+
+    //         return nivelTipoMatch && ugelMatch && notInTarget
+    //     })
+
+    //     // Filtrar los elementos en targetProducts (Participan)
+    //     this.targetProducts = this.allIEs.filter((ie) => {
+    //         // Filtrar por nivelTipo si hay uno seleccionado
+    //         const nivelTipoMatch = this.selectedNivelTipo
+    //             ? ie.cNivelTipoNombre ===
+    //               this.selectedNivelTipo.cNivelTipoNombre
+    //             : true
+
+    //         // Filtrar por ugel si hay uno seleccionado
+    //         const ugelMatch = this.selectedUgeles
+    //             ? ie.cUgelNombre === this.selectedUgeles.cUgelNombre
+    //             : true
+
+    //         // Asegurarse de que el elemento esté en targetProducts
+    //         const inTarget = this.targetProducts.some(
+    //             (target) => target.iIieeId === ie.iIieeId
+    //         )
+
+    //         return nivelTipoMatch && ugelMatch && inTarget
+    //     })
+
+    //     // Actualizar los conteos
+    //     this.actualizarConteos()
+    // }
+    filterIEs(): void {
+        // Filtrar los elementos en sourceProducts (No Participan)
         this.sourceProducts = this.allIEs.filter((ie) => {
             // Filtrar por nivelTipo si hay uno seleccionado
             const nivelTipoMatch = this.selectedNivelTipo
@@ -535,8 +750,25 @@ export class IeparticipaComponent implements OnInit {
                 ? ie.cUgelNombre === this.selectedUgeles.cUgelNombre
                 : true
 
-            return nivelTipoMatch && ugelMatch
+            // Asegurarse de que el elemento no esté en targetProducts
+            const notInTarget = !this.targetProducts.some(
+                (target) => target.iIieeId === ie.iIieeId
+            )
+
+            return nivelTipoMatch && ugelMatch && notInTarget
         })
+
+        // Filtrar los elementos en targetProducts (Participan)
+        // Solo se agregarán los productos seleccionados sin eliminar ninguno ya existente
+        this.targetProducts = this.targetProducts.filter((product) => {
+            return this.allIEs.some((ie) => ie.iIieeId === product.iIieeId)
+        })
+
+        // Aquí se pueden agregar nuevos productos a targetProducts si es necesario, como:
+        // (por ejemplo, si algún producto es seleccionado de sourceProducts)
+
+        // Actualizar los conteos después de los cambios
+        this.actualizarConteos()
     }
     onNivelTipoChange(event: any) {
         this.selectedNivelTipo = event.value
@@ -548,9 +780,71 @@ export class IeparticipaComponent implements OnInit {
         this.filterIEs() // Filtrar los elementos al cambiar el ugel
     }
 
+    //!Cambios Codigo Bueno
+    // actualizarConteos(): void {
+    //     //!Agrego Recien Actualizar Conteos
+    //     this.participanCount = this.targetProducts.length // Total de ieparticipan
+    //     this.noParticipanCount = this.sourceProducts.length // Total de ienoparticipan
+    // }
+
+    // Función para actualizar los conteos con base en los filtros actuales
+    // actualizarConteos(): void {
+    //     // Aplicar los filtros
+    //     const filteredParticipan = this.targetProducts.filter((item) => {
+    //         const nivelTipoMatch = this.selectedNivelTipo
+    //             ? item.cNivelTipoNombre ===
+    //               this.selectedNivelTipo.cNivelTipoNombre
+    //             : true
+    //         const ugelMatch = this.selectedUgeles
+    //             ? item.cUgelNombre === this.selectedUgeles.cUgelNombre
+    //             : true
+    //         return nivelTipoMatch && ugelMatch
+    //     })
+
+    //     const filteredNoParticipan = this.sourceProducts.filter((item) => {
+    //         const nivelTipoMatch = this.selectedNivelTipo
+    //             ? item.cNivelTipoNombre ===
+    //               this.selectedNivelTipo.cNivelTipoNombre
+    //             : true
+    //         const ugelMatch = this.selectedUgeles
+    //             ? item.cUgelNombre === this.selectedUgeles.cUgelNombre
+    //             : true
+    //         return nivelTipoMatch && ugelMatch
+    //     })
+
+    //     // Actualizar los conteos
+    //     this.participanCount = filteredParticipan.length
+    //     this.noParticipanCount = filteredNoParticipan.length
+    // }
+    // Función para actualizar los conteos con base en los filtros actuales
     actualizarConteos(): void {
-        //!Agrego Recien Actualizar Conteos
-        this.participanCount = this.targetProducts.length // Total de ieparticipan
-        this.noParticipanCount = this.sourceProducts.length // Total de ienoparticipan
+        // Aplicar los filtros
+        const filteredParticipan = this.targetProducts.filter((item) => {
+            const nivelTipoMatch = this.selectedNivelTipo
+                ? item.cNivelTipoNombre ===
+                  this.selectedNivelTipo.cNivelTipoNombre
+                : true
+            const ugelMatch = this.selectedUgeles
+                ? item.cUgelNombre === this.selectedUgeles.cUgelNombre
+                : true
+            return nivelTipoMatch && ugelMatch
+        })
+
+        const filteredNoParticipan = this.sourceProducts.filter((item) => {
+            const nivelTipoMatch = this.selectedNivelTipo
+                ? item.cNivelTipoNombre ===
+                  this.selectedNivelTipo.cNivelTipoNombre
+                : true
+            const ugelMatch = this.selectedUgeles
+                ? item.cUgelNombre === this.selectedUgeles.cUgelNombre
+                : true
+            return nivelTipoMatch && ugelMatch
+        })
+
+        // Actualizar los conteos
+        this.participanCount = filteredParticipan.length
+        this.noParticipanCount = filteredNoParticipan.length
+        console.log('Datos actuales de targetProducts:', this.targetProducts)
     }
+    //!Cambios bien
 }

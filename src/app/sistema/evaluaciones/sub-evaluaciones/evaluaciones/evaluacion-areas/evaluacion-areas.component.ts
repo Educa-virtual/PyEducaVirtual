@@ -242,12 +242,28 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
                 next: (resp: any) => {
-                    this._MessageService.add({
-                        severity: 'success',
-                        summary: 'Cursos registrados',
-                        detail: 'El curso se registró correctamente.',
-                    })
-                    console.log('Cursos insertados:', resp)
+                    if (this.accion == 'nuevo') {
+                        this._MessageService.add({
+                            severity: 'success',
+                            summary: 'Cursos registrados',
+                            detail: 'El curso se registrado correctamente.',
+                        })
+                        console.log('Cursos insertados:', resp)
+                    }
+                    if (this.accion == 'editar') {
+                        this._MessageService.add({
+                            severity: 'success',
+                            summary: 'Cursos editados',
+                            detail: 'El curso se ha editado correctamente.',
+                        })
+                        console.log('Cursos editados:', resp)
+                    }
+                    // this._MessageService.add({
+                    //     severity: 'success',
+                    //     summary: 'Cursos registrados',
+                    //     detail: 'El curso se registró correctamente.',
+                    // })
+                    // console.log('Cursos insertados:', resp)
                 },
                 error: (err) => {
                     console.error('Error al insertar cursos:', err)
@@ -264,12 +280,28 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
                 next: (resp: any) => {
-                    this._MessageService.add({
-                        severity: 'success',
-                        summary: 'Curso eliminado',
-                        detail: 'El curso se eliminó correctamente.',
-                    })
-                    console.log('Cursos insertados:', resp)
+                    if (this.accion == 'nuevo') {
+                        this._MessageService.add({
+                            severity: 'success',
+                            summary: 'Curso eliminado',
+                            detail: 'El curso se eliminó correctamente.',
+                        })
+                        console.log('Cursos insertados:', resp)
+                    }
+                    if (this.accion == 'editar') {
+                        this._MessageService.add({
+                            severity: 'success',
+                            summary: 'Curso eliminado',
+                            detail: 'El curso se eliminó correctamente.',
+                        })
+                        console.log('Cursos eliminados:', resp)
+                    }
+                    // this._MessageService.add({
+                    //     severity: 'success',
+                    //     summary: 'Curso eliminado',
+                    //     detail: 'El curso se eliminó correctamente.',
+                    // })
+                    // console.log('Cursos insertados:', resp)
                 },
                 error: (err) => {
                     console.error('Error al eliminar cursos:', err)

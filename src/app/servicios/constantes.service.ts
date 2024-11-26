@@ -243,13 +243,13 @@ const notas_evaluaciones = [
                                             '/especialista-ugel/estado-archivos',
                                         ],
                                     },
-                                    {
-                                        label: 'Proc. Archivo. DRE',
-                                        icon: 'pi pi-fw pi-user',
-                                        routerLink: [
-                                            '/especialista-ugel/procesar-archivos',
-                                        ],
-                                    },
+                                    // {
+                                    //     label: 'Proc. Archivo. DRE',
+                                    //     icon: 'pi pi-fw pi-user',
+                                    //     routerLink: [
+                                    //         '/especialista-ugel/procesar-archivos',
+                                    //     ],
+                                    // },
                                 ],
                             },
                         ],
@@ -257,6 +257,7 @@ const notas_evaluaciones = [
                     {
                         label: 'Prueba ECE',
                         icon: 'pi pi-fw pi-times-circle',
+                        //routerLink: ['/especialista-ugel/procesar-archivos'],
                         url: 'http://umc.minedu.gob.pe/evaluaciones-censales/',
                         target: '_blank', // Opcional: abre el enlace en una nueva pestaña
                     },

@@ -8,21 +8,11 @@ import { mapData } from '../sub-evaluaciones/banco-preguntas/models/pregunta-dat
     providedIn: 'root',
 })
 export class ApiEvaluacionesRService {
-    //MOVI AQUI
-    // ereVerEvaluacion(iEvaluacionId: number) {
-    //     throw new Error('Method not implemented.')
-    // }
     private baseUrl = environment.backendApi
     private baseUrlBackend = environment.backend
     private http = inject(HttpClient)
     constructor() {}
 
-    // obtenerEvaluacion(params) {
-    //     return this.http.get(
-    //         `${this.baseUrl}/ere/Evaluaciones/obtenerEvaluaciones`,
-    //         { params }
-    //     )
-    // }
     obtenerEvaluacion(params) {
         return this.http
             .get(`${this.baseUrl}/ere/Evaluaciones/ereObtenerEvaluacion`, {

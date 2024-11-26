@@ -1,0 +1,22 @@
+<div class="grid">
+    <div class="col-12">
+        <app-aula-banco-preguntas
+            [iCursoId]="params.iCursoId"
+            [params]="params"
+        >
+            <div class="flex flex-column gap-1 flex-1">
+                <label for="tipo-pregunta">Cursos</label>
+                <p-dropdown
+                    [(ngModel)]="params.iCursoId"
+                    optionValue="iCursoId"
+                    [options]="cursos"
+                    optionLabel="cCursoNombre"
+                    styleClass="w-full"
+                    inputId="cursos"
+                    (onChange)="obtenerBancoPreguntas()"
+                />
+            </div>
+            <!-- cursoinput -->
+        </app-aula-banco-preguntas>
+    </div>
+</div>

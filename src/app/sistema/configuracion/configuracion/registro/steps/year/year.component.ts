@@ -1,8 +1,6 @@
 import { Component, OnInit, HostListener } from '@angular/core'
 
-import {
-    Router,
-} from '@angular/router'
+import { Router } from '@angular/router'
 import { TicketService } from '../../service/ticketservice'
 
 import { FormControl, FormsModule } from '@angular/forms'
@@ -25,7 +23,6 @@ import { CheckboxModule } from 'primeng/checkbox'
 import { ConfirmDialogModule } from 'primeng/confirmdialog'
 import { FloatLabelModule } from 'primeng/floatlabel'
 import { ToastModule } from 'primeng/toast'
-import { StepGuardService, type CanComponentDeactivate  } from '@/app/servicios/step.guard'
 @Component({
     selector: 'app-year',
     standalone: true,
@@ -44,7 +41,7 @@ import { StepGuardService, type CanComponentDeactivate  } from '@/app/servicios/
     templateUrl: './year.component.html',
     styleUrl: './year.component.scss',
 })
-export class YearComponent implements OnInit  {
+export class YearComponent implements OnInit {
     hasUnsavedChanges = false
     form: FormGroup
     calFasesFechasInformation: {
@@ -126,16 +123,14 @@ export class YearComponent implements OnInit  {
                 dtFaserecuperacionFin: value.fechaFaseRecuperacionFin,
             }
             console.log(value)
-
         })
-
     }
 
     async canDeactivate(): Promise<boolean> {
         if (this.hasUnsavedChanges) {
-            return true;
+            return true
         }
-    
+
         const confirm = await this.stepConfirmationService.confirmAction(
             {},
             {
@@ -154,8 +149,8 @@ export class YearComponent implements OnInit  {
                     life: 3000,
                 },
             }
-        );
-        return confirm;
+        )
+        return confirm
     }
 
     setValuesFormCalendar(data) {

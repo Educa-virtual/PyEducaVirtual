@@ -62,40 +62,16 @@
                     />
                 </p-inputGroup>
             </div>
-            <!-- <div>
-                <p-inputGroup>
-                    <p-inputGroupAddon>Inicio de año</p-inputGroupAddon>
-                    <p-calendar
-                        styleClass="w-full"
-                        formControlName="fechaInicio"
-                        [showIcon]="true"
-                        inputId="yearInicio"
+            <div>
+                <p-inputGroup class="mt-1">
+                    <app-input-file-upload
+                        class="w-full"
+                        label="Reglamento interno"
+                        acceptTypes="application/pdf"
+                        formControlName="reglamentoInterno"
                     />
                 </p-inputGroup>
-                <p-inputGroup>
-                    <p-inputGroupAddon>Fin de año</p-inputGroupAddon>
-                    <p-calendar
-                    styleClass="w-full"
-                    formControlName="fechaFin"
-                    [showIcon]="true"
-                    inputId="yearFin"
-                />
-                </p-inputGroup>
-            </div> -->
-            <!-- <div class="flex flex-column gap-1 relative">
-                <p-floatLabel>
-                    <p-calendar
-                        [style]="{ width: '100%' }"
-                        [inputStyle]="{ width: '100%' }"
-                        formControlName="fechaMatriculaRezagados"
-                        [showIcon]="true"
-                        inputId="matriculaRezagados"
-                    />
-                    <label for="matriculaRezagados"
-                        >Fecha matricula rezagados
-                    </label>
-                </p-floatLabel>
-            </div> -->
+            </div>
         </section>
         <div class="flex flex-column gap-7 flex-1">
             <div class="flex flex-column">

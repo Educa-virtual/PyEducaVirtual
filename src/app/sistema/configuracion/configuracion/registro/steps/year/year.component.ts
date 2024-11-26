@@ -23,18 +23,26 @@ import { CheckboxModule } from 'primeng/checkbox'
 import { ConfirmDialogModule } from 'primeng/confirmdialog'
 import { FloatLabelModule } from 'primeng/floatlabel'
 import { ToastModule } from 'primeng/toast'
+import { FileUploadModule } from 'primeng/fileupload'
+import { InputTextModule } from 'primeng/inputtext'
+import { InputFileUploadComponent } from '@/app/shared/input-file-upload/input-file-upload.component'
+
 @Component({
     selector: 'app-year',
     standalone: true,
     imports: [
         CalendarModule,
         ButtonModule,
+        InputTextModule,
+        InputFileUploadComponent,
         FloatLabelModule,
         FormsModule,
+        InputGroupModule,
         ReactiveFormsModule,
         ConfirmDialogModule,
         ToastModule,
         CheckboxModule,
+        FileUploadModule,
         InputGroupModule,
         InputGroupAddonModule,
     ],
@@ -69,6 +77,7 @@ export class YearComponent implements OnInit {
         this.form = this.fb.group({
             fechaVigente: ['', Validators.required],
             fechaInicio: ['', Validators.required],
+            reglamentoInterno: [null, Validators.required],
             // fechaFin: ['', Validators.required],
             // fechaMatriculaInicio: ['', Validators.required],
             fechaMatriculaFin: ['', Validators.required],
@@ -81,6 +90,7 @@ export class YearComponent implements OnInit {
         // param: event: BeforeUnloadEvent
         sessionStorage.setItem('reloadDetected', 'true')
     }
+
     async ngOnInit() {
         // this.fasesPromocionales = await this.ticketService.getFasesFechas()
         console.log('reloadDetected')
@@ -128,6 +138,7 @@ export class YearComponent implements OnInit {
 
     async canDeactivate(): Promise<boolean> {
         if (this.hasUnsavedChanges) {
+            return true
             return true
         }
 

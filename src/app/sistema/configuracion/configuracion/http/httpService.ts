@@ -24,11 +24,19 @@ export class httpService {
     }
 
     putData(endpoint: string, data: any): Observable<any> {
-        return this.http.put(`${this.apiURL}/${endpoint}`, data, {
-            headers: new HttpHeaders({
-                'Content-Type': 'application/json',
-            }),
-        })
+        // Determinamos si los datos son FormData o JSON
+        if (data instanceof FormData) {
+            // Si los datos son FormData, no se debe establecer el encabezado Content-Type
+            // porque el navegador lo maneja automáticamente.
+            return this.http.put(`${this.apiURL}/${endpoint}`, data)
+        } else {
+            // Si no es FormData, lo tratamos como JSON
+            return this.http.put(`${this.apiURL}/${endpoint}`, data, {
+                headers: new HttpHeaders({
+                    'Content-Type': 'application/json',
+                }),
+            })
+        }
     }
 
     deleteData(endpoint: string, data: any): Observable<any> {

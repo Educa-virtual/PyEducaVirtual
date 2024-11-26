@@ -162,6 +162,32 @@ export class TicketService {
         return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
     }
 
+    async convertFormGroupToFormData(form) {
+        const formData = new FormData()
+
+        Object.entries(form).forEach(([key, value]) => {
+            if (value instanceof File) {
+                // Si es un archivo, accedemos a `name`
+                formData.append(key, value, value.name)
+            } else if (value instanceof Blob) {
+                // Si es un Blob genérico
+                formData.append(key, value, 'archivo-sin-nombre')
+            } else if (typeof value === 'boolean') {
+                // Si el valor es un booleano, lo convertimos a 'true' o 'false'
+                formData.append(key, value.toString())
+            } else if (typeof value === 'string') {
+                formData.append(key, value)
+            } else {
+                console.warn(
+                    `El campo "${key}" tiene un valor no compatible:`,
+                    value
+                )
+            }
+        })
+
+        return formData
+    }
+
     async getFasesFechas() {
         return await firstValueFrom(
             this.httpService.getData('acad/calendarioAcademico/selFasesFechas')
@@ -323,6 +349,31 @@ export class TicketService {
             const { iCalAcadId, iSedeId, iYAcadId } =
                 this.registroInformation.calendar
 
+            const formData = this.convertFormGroupToFormData({
+                iCalAcadId: iCalAcadId,
+                iSedeId: iSedeId,
+                iYAcadId: iYAcadId,
+                dtCalAcadInicio:
+                    this.toSQLDatetimeFormat(calAcad.fechaInicio[0]) ?? null,
+                dtCalAcadFin:
+                    this.toSQLDatetimeFormat(calAcad.fechaInicio[1]) ?? null,
+                dtCalAcadMatriculaInicio:
+                    this.toSQLDatetimeFormat(calAcad.fechaMatriculaFin[0]) ??
+                    null,
+                dtCalAcadMatriculaFin:
+                    this.toSQLDatetimeFormat(calAcad.fechaMatriculaFin[1]) ??
+                    null,
+                dtCalAcadMatriculaResagados:
+                    this.toSQLDatetimeFormat(
+                        calAcad.fechaMatriculaRezagados[1]
+                    ) ?? null,
+                bCalAcadFaseRegular: true,
+                bCalAcadFaseRecuperacion: true,
+                jCalAcadRsl: calAcad.reglamentoInterno,
+            })
+
+            console.log(formData)
+
             const data = await firstValueFrom(
                 this.httpService.postData(
                     'acad/calendarioAcademico/insCalAcademico',
@@ -353,6 +404,7 @@ export class TicketService {
                                 ) ?? null,
                             bCalAcadFaseRegular: true,
                             bCalAcadFaseRecuperacion: true,
+                            jCalAcadRsl: calAcad.reglamentoInterno,
                         }),
                     }
                 )
@@ -386,32 +438,31 @@ export class TicketService {
         try {
             const { iCalAcadId } = this.registroInformation.calendar
 
+            console.log('Reglamento')
+            const formData = await this.convertFormGroupToFormData({
+                iCalAcadId: iCalAcadId,
+                dtCalAcadInicio: this.toSQLDatetimeFormat(
+                    calAcad.fechaInicio[0]
+                ),
+                dtCalAcadFin: this.toSQLDatetimeFormat(calAcad.fechaInicio[1]),
+                dtCalAcadMatriculaInicio: this.toSQLDatetimeFormat(
+                    calAcad.fechaMatriculaFin[0]
+                ),
+                dtCalAcadMatriculaFin: this.toSQLDatetimeFormat(
+                    calAcad.fechaMatriculaFin[1]
+                ),
+                dtCalAcadMatriculaResagados: this.toSQLDatetimeFormat(
+                    calAcad.fechaMatriculaRezagados[1]
+                ),
+                bCalAcadFaseRegular: false,
+                bCalAcadFaseRecuperacion: false,
+                jCalAcadRsl: calAcad.reglamentoInterno,
+            })
+
             await firstValueFrom(
                 this.httpService.putData(
                     'acad/calendarioAcademico/updCalAcademico',
-                    {
-                        calAcad: JSON.stringify({
-                            iCalAcadId: iCalAcadId,
-                            dtCalAcadInicio: this.toSQLDatetimeFormat(
-                                calAcad.fechaInicio[0]
-                            ),
-                            dtCalAcadFin: this.toSQLDatetimeFormat(
-                                calAcad.fechaInicio[1]
-                            ),
-                            dtCalAcadMatriculaInicio: this.toSQLDatetimeFormat(
-                                calAcad.fechaMatriculaFin[0]
-                            ),
-                            dtCalAcadMatriculaFin: this.toSQLDatetimeFormat(
-                                calAcad.fechaMatriculaFin[1]
-                            ),
-                            dtCalAcadMatriculaResagados:
-                                this.toSQLDatetimeFormat(
-                                    calAcad.fechaMatriculaRezagados[1]
-                                ),
-                            bCalAcadFaseRegular: false,
-                            bCalAcadFaseRecuperacion: false,
-                        }),
-                    }
+                    formData
                 )
             )
             onNextCallbacks.forEach((callback) => callback())

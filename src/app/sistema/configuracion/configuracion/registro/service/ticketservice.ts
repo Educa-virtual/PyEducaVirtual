@@ -459,22 +459,42 @@ export class TicketService {
         }
     }
 
-    async selReglamentoInterno(
-        calAcad,
+    async setReglamentoInterno(
     ) {
-        const formData = this.convertFormGroupToFormData({
-            cIieeUrlReglamentoInterno: calAcad.reglamentoInterno,
-        })
 
-        await firstValueFrom(
-            this.httpService.putData(
-                'acad/calendarioAcademico/updCalAcademico',
-                formData
+        return await firstValueFrom(
+            this.httpService.getData(
+                `acad/institucionEducativa/selReglamentoInterno?iIieeId=${JSON.parse(localStorage.getItem('dremoPerfil')).iIieeId}`
             )
         )
     }
 
-  
+    base64ToFile(base64String: string, fileName: string, mimeType: string): File {
+    // Eliminar el encabezado 'data:*/*;base64,' si está presente
+    const base64Data = base64String.startsWith('data:') ? base64String.split(',')[1] : base64String;
+
+    // Decodificar la cadena Base64 a bytes
+    const byteCharacters = atob(base64Data);
+
+    // Crear un array de bytes de la cadena decodificada
+    const byteArrays = [];
+    for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+        const slice = byteCharacters.slice(offset, offset + 512);
+        const byteNumbers = new Array(slice.length);
+        for (let i = 0; i < slice.length; i++) {
+            byteNumbers[i] = slice.charCodeAt(i);
+        }
+        byteArrays.push(new Uint8Array(byteNumbers));
+    }
+
+    // Crear un Blob con los bytes y el tipo MIME del archivo
+    const blob = new Blob(byteArrays, { type: mimeType });
+
+    // Crear un objeto File a partir del Blob
+    return new File([blob], fileName, { type: mimeType });
+}
+
+    
       
     async updReglamentoInterno(
         calAcad,

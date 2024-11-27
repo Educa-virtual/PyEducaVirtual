@@ -115,6 +115,15 @@ export class YearComponent implements OnInit {
             }
         )
 
+        let file = await this.ticketService.setReglamentoInterno()
+        console.log(file);
+
+        const fileObj = this.ticketService.base64ToFile(file.content, file.name, file.mimeType);
+        
+        this.form.patchValue({
+            reglamentoInterno: fileObj
+        })
+
         // Suscribirse a los cambios del formulario después de la inicialización
         this.form.valueChanges.subscribe((value) => {
             this.calFasesFechasInformation = {
@@ -384,7 +393,7 @@ export class YearComponent implements OnInit {
             // await this.ticketService.updCalFasesProm(this.form.value)
         }
 
-        if(JSON.parse(localStorage.getItem('dremoPerfil')).iIieeId){
+        if (JSON.parse(localStorage.getItem('dremoPerfil')).iIieeId) {
             await this.ticketService.updReglamentoInterno(this.form.value)
         }
 

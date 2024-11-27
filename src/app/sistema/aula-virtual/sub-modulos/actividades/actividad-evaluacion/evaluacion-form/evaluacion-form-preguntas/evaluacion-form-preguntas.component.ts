@@ -29,6 +29,7 @@ import { matWorkspacePremium } from '@ng-icons/material-icons/baseline'
 import { MODAL_CONFIG } from '@/app/shared/constants/modal.config'
 import { EvaluacionLogrosComponent } from '../../evaluacion-logros/evaluacion-logros.component'
 import { Subject, takeUntil } from 'rxjs'
+import { ApiEvaluacionesRService } from '@/app/sistema/evaluaciones/services/api-evaluaciones-r.service'
 
 @Component({
     selector: 'app-evaluacion-form-preguntas',
@@ -70,7 +71,7 @@ export class EvaluacionFormPreguntasComponent implements OnInit, OnDestroy {
     private _aulaBancoPreguntasService = inject(AulaBancoPreguntasService)
     private _evaluacionService = inject(ApiEvaluacionesService)
     private _dialogService = inject(DialogService)
-
+    private _apiEvaluacionesR = inject(ApiEvaluacionesRService)
     private _unsubscribe$ = new Subject<boolean>()
 
     tiposAgrecacionPregunta: MenuItem[] = [
@@ -231,5 +232,37 @@ export class EvaluacionFormPreguntasComponent implements OnInit, OnDestroy {
     ngOnDestroy() {
         this._unsubscribe$.next(true)
         this._unsubscribe$.complete()
+    }
+
+    generarWordEvaluacion() {
+        if (this.preguntas.length === 0) {
+            this._confirmationService.openAlert({
+                header: 'Debe seleccionar almenos una pregunta.',
+            })
+            return
+        }
+
+        let preguntas_evaluacion = []
+
+        this.preguntas.forEach((item) => {
+            if (item.iEncabPregId == -1) {
+                preguntas_evaluacion = [...preguntas_evaluacion, item]
+            } else {
+                preguntas_evaluacion = [
+                    ...preguntas_evaluacion,
+                    ...item.preguntas,
+                ]
+            }
+        })
+
+        const ids = preguntas_evaluacion
+            .map((item) => item.iPreguntaId)
+            .join(',')
+
+        const params = {
+            iCursoId: this.iCursoId,
+            ids,
+        }
+        this._apiEvaluacionesR.generarWordEvaluacionByIds(params)
     }
 }

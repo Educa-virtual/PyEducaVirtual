@@ -5,3 +5,16 @@
         color: var(--primary-color-text) !important;
     }
 }
+/* Rotar el texto del encabezado */
+.vertical-header {
+    writing-mode: vertical-lr; /* Hace el texto vertical */
+    transform: rotate(180deg); /* Invierte el texto para que sea legible */
+    text-align: center; /* Alinea el texto en el centro de la celda */
+    vertical-align: middle; /* Centra el texto verticalmente */
+    height: 120px; /* Ajusta según el espacio que necesites */
+    white-space: nowrap; /* Evita que el texto se parta */
+    width: 4rem;
+}
+.heard-color {
+    background-color: rgb(202, 202, 214);
+}

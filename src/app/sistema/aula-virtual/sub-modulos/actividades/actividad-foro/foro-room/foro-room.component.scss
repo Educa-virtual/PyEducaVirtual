@@ -35,11 +35,12 @@
 }
 /*para el borde de la lista*/
 :host ::ng-deep .perfiles-list-item {
+    display: flex;
     border-radius: 8px; /* Radio del borde */
     border: 1px solid #ccc;
     border-radius: 8px;
     padding: 1px 1px 1px 1px;
-    width: 100%;
+    //width: 100%;
     //box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra para dar profundidad */
 }
 
@@ -63,29 +64,29 @@
         margin-right: 2rem;
     }
 
-    .product-list-detail {
-        flex: 1 1 0;
-    }
+    // .product-list-detail {
+    //     flex: 1 1 0;
+    // }
 
-    .p-rating {
-        margin: 0 0 0.5rem 0;
-    }
+    // .p-rating {
+    //     margin: 0 0 0.5rem 0;
+    // }
 
-    .product-price {
-        font-size: 1.5rem;
-        font-weight: 600;
-        margin-bottom: 0.5rem;
-        align-self: flex-end;
-    }
+    // .product-price {
+    //     font-size: 1.5rem;
+    //     font-weight: 600;
+    //     margin-bottom: 0.5rem;
+    //     align-self: flex-end;
+    // }
 
-    .product-list-action {
-        display: flex;
-        flex-direction: column;
-    }
+    // .product-list-action {
+    //     display: flex;
+    //     flex-direction: column;
+    // }
 
-    .p-button {
-        margin-bottom: 0.5rem;
-    }
+    // .p-button {
+    //     margin-bottom: 0.5rem;
+    // }
 }
 
 /************************/
@@ -251,6 +252,7 @@
         display: flex;
         align-items: center;
         padding: 1rem;
+        width: 100%;
 
         img {
             width: 150px;
@@ -282,39 +284,6 @@
 
         .p-button {
             margin-bottom: 0.5rem;
-        }
-    }
-}
-
-@media screen and (max-width: 576px) {
-    :host ::ng-deep .product-list-item {
-        flex-direction: column;
-        align-items: center;
-
-        img {
-            width: 75%;
-            margin: 2rem 0;
-        }
-
-        .product-list-detail {
-            text-align: center;
-        }
-
-        .product-price {
-            align-self: center;
-        }
-
-        .product-list-action {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .product-list-action {
-            margin-top: 2rem;
-            flex-direction: row;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
         }
     }
 }
@@ -443,6 +412,7 @@
     cursor: pointer; /* Cambia el cursor al pasar el mouse */
     color: black;
 }
+//perfiles-list-item text-left
 
 .actions-container {
     display: flex;
@@ -450,6 +420,11 @@
     align-items: center; /* Centra verticalmente los elementos */
     position: relative;
     width: 100%;
+    background-color: red;
+}
+.btnAcciones {
+    display: flex;
+    margin-left: auto;
 }
 
 .menu-container {

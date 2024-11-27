@@ -446,15 +446,15 @@
 
 .actions-container {
     display: flex;
-    justify-content: space-between; /* Asegura que los elementos estén separados */
-    align-items: center; /* Centra verticalmente los elementos */
-    position: relative;
-    width: 100%;
+    //justify-content: space-between; /* Asegura que los elementos estén separados */
+    // align-items: center; /* Centra verticalmente los elementos */
+    //position: relative;
+    //width: 100%;
 }
 
 .menu-container {
     margin-left: auto; /* Empuja el menú al extremo derecho */
-    // display: flex;
+    display: flex;
     // align-items: center;
 }
 .p-menu {

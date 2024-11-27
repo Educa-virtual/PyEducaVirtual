@@ -115,13 +115,16 @@ export class YearComponent implements OnInit {
             }
         )
 
-        let file = await this.ticketService.setReglamentoInterno()
-        console.log(file);
+        const file = await this.ticketService.setReglamentoInterno()
 
-        const fileObj = this.ticketService.base64ToFile(file.content, file.name, file.mimeType);
-        
+        const fileObj = this.ticketService.base64ToFile(
+            file.value,
+            file.name,
+            file.mimeType
+        )
+
         this.form.patchValue({
-            reglamentoInterno: fileObj
+            reglamentoInterno: fileObj,
         })
 
         // Suscribirse a los cambios del formulario después de la inicialización

@@ -1,52 +1,77 @@
-<app-container-page [title]="'Mis Rresultados'" [actions]="[]">
-    <p-dataView #dv [rows]="10" filterBy="cCursoNombre">
+<app-container-page [title]="'Mis Resultados'" [actions]="[]">
+    <p-dataView #dv [rows]="5" filterBy="cCursoNombre">
         <ng-template pTemplate="header">
-            <div
-                class="flex flex-column md:flex-row md:justify-content-between gap-2"
-            >
-                <div class="4">
-                    <p-inputGroup>
-                        <p-inputGroupAddon>
-                            <p-inputIcon styleClass="pi pi-search" />
-                        </p-inputGroupAddon>
-                        <input
-                            pInputText
-                            type="text"
-                            placeholder="Buscar...."
-                        />
-                    </p-inputGroup>
-                </div>
-                <div class="col-4">
-                    <p-inputGroup>
-                        <p-inputGroupAddon> Evaluación </p-inputGroupAddon>
-                        <p-dropdown
-                            placeholder="Evaluaciones"
-                            styleClass="w-full"
-                            class="flex-1"
-                        />
-                    </p-inputGroup>
-                </div>
-                <div class="col-3">
-                    <p-inputGroup>
-                        <p-inputGroupAddon> Fecha </p-inputGroupAddon>
-                        <p-dropdown
-                            placeholder="Seleccione fecha"
-                            styleClass="w-full"
-                            class="flex-1"
-                        >
-                        </p-dropdown>
-                    </p-inputGroup>
+            <div class="">
+                <div class="grid grid-nogutter">
+                    <div class="col pr-2">
+                        <p-inputGroup>
+                            <p-inputGroupAddon>
+                                <p-inputIcon styleClass="pi pi-search" />
+                            </p-inputGroupAddon>
+                            <input
+                                pInputText
+                                type="text"
+                                placeholder="Buscar por nombre...."
+                            />
+                        </p-inputGroup>
+                    </div>
+                    <div class="col pr-2">
+                        <p-inputGroup>
+                            <p-inputGroupAddon> Actividad </p-inputGroupAddon>
+                            <p-dropdown
+                                placeholder="Evaluaciones"
+                                styleClass="w-full"
+                                class="flex-1"
+                            />
+                        </p-inputGroup>
+                    </div>
+                    <div class="col">
+                        <p-inputGroup>
+                            <p-inputGroupAddon> Fecha </p-inputGroupAddon>
+                            <p-dropdown
+                                placeholder="Seleccione fecha"
+                                styleClass="w-full"
+                                class="flex-1"
+                            >
+                            </p-dropdown>
+                        </p-inputGroup>
+                    </div>
                 </div>
 
-                <p-dataViewLayoutOptions></p-dataViewLayoutOptions>
+                <!-- <p-dataViewLayoutOptions></p-dataViewLayoutOptions> -->
             </div>
         </ng-template>
         <ng-template let-products pTemplate="listItem">
-            <app-table-primeng
-                [showPaginator]="false"
-                [showCaption]="false"
-                [data]="[]"
-            ></app-table-primeng>
+            <app-table-primeng [columnas]="columnasTabla" [data]="estudiantes">
+            </app-table-primeng>
         </ng-template>
     </p-dataView>
+    <p-table
+        [value]="estudiantes"
+        [tableStyle]="{ 'min-width': '50rem' }"
+        class="heard-color"
+    >
+        <ng-template pTemplate="header">
+            <tr>
+                <th>#</th>
+                <th>Nombre Estudiante</th>
+                <th class="vertical-header">Tareas</th>
+                <th class="vertical-header">Evaluaciones</th>
+                <th class="vertical-header">Foro</th>
+                <th class="vertical-header">Promedio</th>
+                <th class="vertical-header">Tareas</th>
+                <th class="vertical-header">Evaluaciones</th>
+                <th class="vertical-header">Foro</th>
+                <th class="vertical-header">Promedio</th>
+                <th>Promedio Final</th>
+                <th>Observaciones</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-estudiantes let-rowIndex="rowIndex">
+            <tr>
+                <td>{{ rowIndex + 1 }}</td>
+                <td>{{ estudiantes?.nombrecompleto }}</td>
+            </tr>
+        </ng-template>
+    </p-table>
 </app-container-page>

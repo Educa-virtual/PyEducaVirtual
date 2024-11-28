@@ -210,8 +210,12 @@
                             {{ item.cGradoAbreviacion }}
                         </td>
                         <td style="text-align: center">{{ item.cSeccion }}</td>
-                        <td style="text-align: center"></td>
-                        <td style="text-align: center"></td>
+                        <td style="text-align: center">
+                            {{ item.pAsistencia }} %
+                        </td>
+                        <td style="text-align: center">
+                            {{ item.pInasistencia }} %
+                        </td>
                         <td style="text-align: center">
                             <p-button
                                 severity="success"

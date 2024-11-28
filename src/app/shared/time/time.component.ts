@@ -22,21 +22,6 @@ export class TimeComponent implements OnChanges, OnDestroy {
     constructor() {}
 
     ngOnChanges(changes: SimpleChanges): void {
-        console.log('fecha de inicio', typeof this.inicio)
-        console.log('fecha de cierre', typeof this.fin)
-        // Comprobar si las fechas son instancias de Date
-        // if (typeof this.inicio === 'string') {
-        //   // Convertir a Date si es string
-        //   this.inicio = new Date(this.inicio.replace(' ', 'T'));
-        // }
-        // if (typeof this.fin === 'string') {
-        //   // Convertir a Date si es string
-        //   this.fin = new Date(this.fin.replace(' ', 'T'));
-        // }
-
-        console.log('Fecha de inicio:', this.inicio)
-        console.log('Fecha de cierre:', this.fin)
-
         if (changes['inicio'] || changes['fin']) {
             this.detenerContador() // Reinicia el contador si las fechas cambian
             this.calcularTiempoRestante()

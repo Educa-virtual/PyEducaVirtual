@@ -53,14 +53,6 @@ export const columns: IColumn[] = [
         text_header: 'center',
         text: 'center',
     },
-    {
-        field: 'checked',
-        header: '',
-        type: 'checkbox',
-        width: '5rem',
-        text: 'left',
-        text_header: '',
-    },
 ]
 
 export const actionsContainer: IActionContainer[] = [
@@ -74,7 +66,7 @@ export const actionsContainer: IActionContainer[] = [
 
     {
         labelTooltip: 'Agregar Pregunta',
-        text: 'Agregar Preguntazz',
+        text: 'Agregar Pregunta',
         icon: 'pi pi-plus',
         accion: 'agregar',
         class: 'p-button-secondary',

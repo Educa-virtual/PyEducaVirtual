@@ -103,6 +103,7 @@ export class ForoRoomComponent implements OnInit {
     iEstudianteId: number
     iDocenteId: number
     expanded: false
+    iCredId: number
 
     commentForoM: string = ''
     selectedCommentIndex: number | null = null // Para rastrear el comentario seleccionado para responder
@@ -120,7 +121,7 @@ export class ForoRoomComponent implements OnInit {
     })
     public foroFormCalf: FormGroup = this._formBuilder.group({
         iEscalaCalifId: [],
-        iForoRptaId: [],
+        iForoRptaId: ['', [Validators.required]],
         cForoRptaDocente: ['', [Validators.required]],
         nForoRptaNota: [],
         cForoDescripcion: [],
@@ -131,6 +132,7 @@ export class ForoRoomComponent implements OnInit {
         iForoRptaId: [],
         cForoRptaDocente: ['', [Validators.required]],
         nForoRptaNota: [],
+        iDocenteId: [''],
         cForoDescripcion: [],
     })
     public foroFormComntAl: FormGroup = this._formBuilder.group({
@@ -152,6 +154,7 @@ export class ForoRoomComponent implements OnInit {
         //     // Agregar el mensaje recibido a la lista de comentarios
         //     this.comments.push(message);  // Asume que tienes una lista `comments`
         // });
+        this.obtenerEstudiantesMatricula()
         this.obtenerIdPerfil()
         this.mostrarCalificacion()
         this.obtenerForo()
@@ -197,7 +200,7 @@ export class ForoRoomComponent implements OnInit {
         this.iEstudianteId = this._constantesService.iEstudianteId
         this.iPerfilId = this._constantesService.iPerfilId
         this.iDocenteId = this._constantesService.iDocenteId
-        console.log('mi id perfil', this.iPerfilId)
+        console.log('icredito', this.iEstudianteId)
     }
     openModal(respuestasForo) {
         this.modalCalificacion = true
@@ -219,8 +222,19 @@ export class ForoRoomComponent implements OnInit {
         console.log('Hola estudiante', this.estudianteSelectComent)
     }
     calificarComnt() {
+        const rpta = this.respuestasForo.find(
+            (i) => i.EstudianteId === this.perfilSelect.EstudianteId
+        )
+        this.foroFormCalf.controls['iForoRptaId'].setValue(rpta.iForoRptaId)
         const value = this.foroFormCalf.value
+        this._aulaService.calificarForoDocente(value).subscribe((resp: any) => {
+            if (resp?.validated) {
+                this.modelaCalificacionComen = false
+                this.getRespuestaF()
+            }
+        })
         console.log('Guardar Calificacion', value)
+
         // this._aulaService.calificarForoDocente(value).subscribe((resp: any) => {
         //     if (resp?.validated) {
         //         this.modalCalificacion = false
@@ -229,14 +243,22 @@ export class ForoRoomComponent implements OnInit {
         // })
     }
     submit() {
-        const value = this.foroFormComnt.value
-        console.log('Guardar Calificacion', value)
-        this._aulaService.calificarForoDocente(value).subscribe((resp: any) => {
-            if (resp?.validated) {
-                this.modalCalificacion = false
-                this.getRespuestaF()
-            }
-        })
+        //const value = this.foroFormComnt.value
+        this.iDocenteId = this._constantesService.iDocenteId
+        const comment = {
+            ...this.foroFormComnt.value,
+            iForoId: this.ixActivadadId,
+            iDocenteId: this.iDocenteId,
+        }
+        console.log('Guardar Calificacion', comment)
+        this._aulaService
+            .calificarForoDocente(comment)
+            .subscribe((resp: any) => {
+                if (resp?.validated) {
+                    this.modalCalificacion = false
+                    this.getRespuestaF()
+                }
+            })
     }
     startReply(index: number) {
         this.selectedCommentIndex = index // Guarda el índice del comentario seleccionado
@@ -457,6 +479,7 @@ export class ForoRoomComponent implements OnInit {
         this.GeneralService.getGralPrefix(params).subscribe({
             next: (response) => {
                 this.estudiantes = response.data
+                console.log('lista de estudiante', this.estudiantes)
             },
             complete: () => {},
             error: (error) => {
@@ -482,5 +505,9 @@ export class ForoRoomComponent implements OnInit {
         }
 
         this.getInformation(params)
+    }
+    obtenerEstudiantesMatricula() {
+        this.iCredId = this._constantesService.iCredId
+        console.log('Parametros para obtener Alumnos', this.iCredId)
     }
 }

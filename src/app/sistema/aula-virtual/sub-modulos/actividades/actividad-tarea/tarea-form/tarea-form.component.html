@@ -19,6 +19,7 @@
             <p-inputGroup>
                 <p-inputGroupAddon> Título </p-inputGroupAddon>
                 @if (this.formTareas.value.bReutilizarTarea) {
+                    <!-- Si la propiedad bReutilizarTarea es verdadera, se muestra un componente de autocompletado -->
                     <p-autoComplete
                         formControlName="cTareaTitulo"
                         [dropdown]="
@@ -59,6 +60,8 @@
                 >Descripción
                 <span class="text-red-500 text-xs">(*) Obligatorio</span></label
             >
+            <!-- Componente de editor de texto de PrimeNG -->
+
             <div class="mt-2">
                 <p-editor
                     id="descripcion"
@@ -70,6 +73,7 @@
         <div class="col-12 md:col-6">
             <p-inputGroup>
                 <p-inputGroupAddon> Fecha - Hora de Inicio </p-inputGroupAddon>
+                <!-- Componente de calendario para seleccionar una fecha y hora -->
                 <p-calendar
                     formControlName="dtInicio"
                     [iconDisplay]="'input'"
@@ -82,6 +86,7 @@
             </p-inputGroup>
         </div>
         <div class="col-12 md:col-6">
+            <!-- Este componente es un grupo de entrada que encapsula un `p-inputGroupAddon` y un `p-calendar` -->
             <p-inputGroup>
                 <p-inputGroupAddon> Fecha - Hora de Entrega </p-inputGroupAddon>
                 <p-calendar
@@ -96,6 +101,8 @@
             </p-inputGroup>
         </div>
         <div class="col-12 mt-1">
+            <!-- Componente personalizado para la carga de archivos con PrimeNG -->
+            <!-- Propiedad de entrada que define una opción asociada al componente -->
             <app-types-files-upload-primeng
                 [nameFile]="'tareas'"
                 [nameOption]="'tareas'"

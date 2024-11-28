@@ -91,7 +91,7 @@ export class ForoRoomComponent implements OnInit {
     fechaInicio: Date = new Date() // Hora actual
     fechaFin: Date = new Date(new Date().getTime() + 10 * 60 * 1000) // 10 minutos después
     // borrar variables del p-dia
-    modalCalificacion: boolean = false
+    //modalCalificacion: boolean = false
     estudianteSelectComent: number | null = null
     estudianteSelect = null
     respuestasForo: any[] = []
@@ -161,6 +161,7 @@ export class ForoRoomComponent implements OnInit {
         this.getRespuestaF()
         this.getEstudiantesMatricula()
     }
+    itemRespuesta: any[] = []
     // menu para editar y eliminar el comentario del foro
     menuItems = [
         {
@@ -171,17 +172,51 @@ export class ForoRoomComponent implements OnInit {
         {
             label: 'Eliminar',
             icon: 'pi pi-trash',
-            command: () => this.eliminar(),
+            command: () => this.eliminar(this.itemRespuesta),
         },
     ]
 
-    editar() {
-        console.log('Editar acción ejecutada')
-        // Lógica para editar
+    editar(): void {
+        // let respuestasForo = this.itemRespuesta
+        // console.log('Editar acción ejecutada', respuestasForo)
+        //iForoRptaId
     }
+    eliminar(item: any): void {
+        // let value = typeof Number(this.itemRespuesta);
+        // console.log('Eliminar acción ejecutada01', value)
+        if (!item || !item.iForoRptaId) {
+            console.error('Elemento inválido para eliminar.')
+            return
+        }
+        const itemId = item.iForoRptaId
 
-    eliminar() {
-        console.log('Eliminar acción ejecutada')
+        this._aulaService.eliminarRespuesta(itemId).subscribe({
+            next: (response) => {
+                console.log('Elemento eliminado correctamente:', response)
+                // Actualiza la lista local después de eliminar
+                this.itemRespuesta = this.itemRespuesta.filter(
+                    (res: any) => res.iForoRptaId !== itemId
+                )
+            },
+            error: (err) => {
+                console.error('Error al eliminar:', err)
+            },
+        })
+
+        // let value = this.itemRespuesta;
+        // console.log('Eliminar acción ejecutada01', value)
+        // this._aulaService.eliminarRespuesta(value).subscribe({
+        //     next: (response) => {
+        //         console.log('Elemento eliminado correctamente:', response);
+        //         // Actualiza la lista local después de eliminar
+        //         // this.itemRespuesta = this.itemRespuesta.filter(
+        //         //     (item: any) => item.iForoRptaId !== respuestasForo
+        //         // );
+        //     },
+        //     error: (err) => {
+        //         console.error('Error al eliminar:', err);
+        //     },
+        // });
         // Lógica para eliminar
     }
 
@@ -202,11 +237,11 @@ export class ForoRoomComponent implements OnInit {
         this.iDocenteId = this._constantesService.iDocenteId
         console.log('icredito', this.iEstudianteId)
     }
-    openModal(respuestasForo) {
-        this.modalCalificacion = true
-        this.estudianteSelect = respuestasForo
-        this.foroFormComnt.patchValue(respuestasForo)
-    }
+    // openModal(respuestasForo) {
+    //     this.modalCalificacion = true
+    //     this.estudianteSelect = respuestasForo
+    //     this.foroFormComnt.patchValue(respuestasForo)
+    // }
     openModalCalificacion(respuestasForoEstudiant) {
         this.modelaCalificacionComen = true
         this.perfilSelect = respuestasForoEstudiant
@@ -242,24 +277,24 @@ export class ForoRoomComponent implements OnInit {
         //     }
         // })
     }
-    submit() {
-        //const value = this.foroFormComnt.value
-        this.iDocenteId = this._constantesService.iDocenteId
-        const comment = {
-            ...this.foroFormComnt.value,
-            iForoId: this.ixActivadadId,
-            iDocenteId: this.iDocenteId,
-        }
-        console.log('Guardar Calificacion', comment)
-        this._aulaService
-            .calificarForoDocente(comment)
-            .subscribe((resp: any) => {
-                if (resp?.validated) {
-                    this.modalCalificacion = false
-                    this.getRespuestaF()
-                }
-            })
-    }
+    // submit() {
+    //     //const value = this.foroFormComnt.value
+    //     this.iDocenteId = this._constantesService.iDocenteId
+    //     const comment = {
+    //         ...this.foroFormComnt.value,
+    //         iForoId: this.ixActivadadId,
+    //         iDocenteId: this.iDocenteId,
+    //     }
+    //     console.log('Guardar Calificacion', comment)
+    //     this._aulaService
+    //         .calificarForoDocente(comment)
+    //         .subscribe((resp: any) => {
+    //             if (resp?.validated) {
+    //                 this.modalCalificacion = false
+    //                 this.getRespuestaF()
+    //             }
+    //         })
+    // }
     startReply(index: number) {
         this.selectedCommentIndex = index // Guarda el índice del comentario seleccionado
         console.log('Comentario', this.selectedCommentIndex)

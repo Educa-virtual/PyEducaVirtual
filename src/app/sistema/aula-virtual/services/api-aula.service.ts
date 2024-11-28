@@ -107,6 +107,12 @@ export class ApiAulaService {
             { params: data }
         )
     }
+    eliminarRespuesta(data) {
+        return this._http.delete(
+            `${this.baseUrlApi}/aula-virtual/contenidos/foro/eliminarRptEstudiante`,
+            { params: data }
+        )
+    }
 
     contenidoSemanasProgramacionActividades(params) {
         return this._http

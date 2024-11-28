@@ -35,4 +35,13 @@ export class AuthService {
     sendVerify(data) {
         return this.http.post(`${baseUrl}/verificar_codigo`, data)
     }
+    obtenerUsuario(data) {
+        return this.http.post(`${baseUrl}/obtenerUsuario`, data)
+    }
+    verificarUsuario(data) {
+        return this.http.post(`${baseUrl}/verificarUsuario`, data)
+    }
+    actualizarUsuario(data) {
+        return this.http.post(`${baseUrl}/actualizarUsuario`, data)
+    }
 }

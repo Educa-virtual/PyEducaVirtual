@@ -112,6 +112,9 @@ export class AulaBancoPreguntasComponent implements OnInit, OnDestroy {
                 this.bancoPreguntas = data
                 this.bancoPreguntas.forEach((item) => {
                     this.expandedRowKeys[item.iPreguntaId] = true
+                    item.iTotalPreguntas = !item.preguntas
+                        ? 1
+                        : item.preguntas.length
                 })
 
                 this.expandedRowKeys = Object.assign({}, this.expandedRowKeys)

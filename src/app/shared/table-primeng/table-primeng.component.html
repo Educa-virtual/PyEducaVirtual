@@ -22,29 +22,35 @@
 >
     @if (showCaption) {
         <ng-template pTemplate="caption">
-            <div
-                class="flex justify-content-between gap-2 flex-column sm:flex-row flex-wrap"
-            >
-                <p-iconField iconPosition="left">
-                    <p-inputIcon styleClass="pi pi-search text-md" />
-                    <input
-                        pInputText
-                        type="text"
-                        class="py-2"
-                        (input)="
-                            dt.filterGlobal(
-                                $any($event.target).value,
-                                'contains'
-                            )
-                        "
-                        placeholder="Buscar palabra clave"
-                    />
-                </p-iconField>
-                <ng-content select="[slot='caption-content']"></ng-content>
-                <app-table-column-filter
-                    [columns]="columnas"
-                    (columnsChange)="onColumnSelected($event)"
-                ></app-table-column-filter>
+            <div class="grid">
+                <div class="col-10" style="margin-left: -0.5rem">
+                    <p-inputGroup>
+                        <p-inputGroupAddon
+                            ><i class="pi pi-search"></i
+                        ></p-inputGroupAddon>
+                        <input
+                            pInputText
+                            [placeholder]="placeholder"
+                            (input)="
+                                dt.filterGlobal(
+                                    $any($event.target).value,
+                                    'contains'
+                                )
+                            "
+                        />
+                    </p-inputGroup>
+                </div>
+                <div class="col-2 align-content-center">
+                    <div class="flex flex-wrap gap-2 justify-content-end">
+                        <ng-content
+                            select="[slot='caption-content']"
+                        ></ng-content>
+                        <app-table-column-filter
+                            [columns]="columnas"
+                            (columnsChange)="onColumnSelected($event)"
+                        ></app-table-column-filter>
+                    </div>
+                </div>
             </div>
         </ng-template>
     }

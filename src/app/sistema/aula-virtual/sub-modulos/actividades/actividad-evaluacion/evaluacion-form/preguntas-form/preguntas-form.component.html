@@ -1,0 +1,268 @@
+<app-modal-primeng
+    [title]="'Nueva Pregunta'"
+    [showModal]="showModalPreguntas"
+    (accionBtnItem)="accionBtn($event)"
+    width="980px"
+>
+    <div class="grid mt-4">
+        <div class="col-12 md:col-4 align-self-center">
+            <div class="flex justify-content-between">
+                ¿Deseas que tenga encabezado? &nbsp;&nbsp;
+                <p-inputSwitch />
+            </div>
+        </div>
+        <div class="col-12 md:col-4">
+            <p-inputGroup>
+                <p-inputGroupAddon>
+                    <i class="pi pi-upload" style="color: #333437"></i>
+                </p-inputGroupAddon>
+                <input
+                    type="text"
+                    pInputText
+                    placeholder="Subir Pdf"
+                    disabled
+                    class="w-full p-inputtext-sm opacity-100"
+                    pInputText
+                />
+            </p-inputGroup>
+        </div>
+        <div class="col-9">
+            <h3>Pregunta</h3>
+        </div>
+        <div class="col-3 flex align-items-center justify-content-end">
+            <button pButton pRipple type="button" class="p-button-primary">
+                <i class="pi pi-plus"></i>&nbsp; Guardar Pregunta
+            </button>
+        </div>
+        <div class="col-12 md:col-5">
+            <p-inputGroup>
+                <p-inputGroupAddon>Tipo de Pregunta</p-inputGroupAddon>
+                <p-dropdown
+                    styleClass="w-full"
+                    [(ngModel)]="iTipoPreguntaId"
+                    placeholder="Seleccione Tipo"
+                    optionValue="iTipoPreguntaId"
+                    [options]="tipoPreguntas"
+                    optionLabel="cTipoPregunta"
+                />
+            </p-inputGroup>
+        </div>
+        <div class="col-12 md:col-3">
+            <p-inputGroup>
+                <p-inputGroupAddon>Peso</p-inputGroupAddon>
+                <input pInputText styleClass="w-full" placeholder="Ingrese" />
+            </p-inputGroup>
+        </div>
+        <div class="col-12">
+            <p-editor
+                styleClass="w-full"
+                [style]="{ height: '120px' }"
+                placeholder="Ingrese el nombre del enunciado"
+            />
+        </div>
+        <div class="col-8">
+            <label for="" class="mt-1"
+                >Alternativas - elija al menos una respuesta correcta</label
+            >
+            <div class="mt-2">
+                <p-editor
+                    styleClass="w-full"
+                    [style]="{ height: '120px' }"
+                    placeholder="Ingrese la alternativa"
+                />
+            </div>
+        </div>
+        <div class="col-4 align-self-center">
+            <div class="flex justify-content-between">
+                ¿Es Respuesta correcta? &nbsp;&nbsp;
+                <p-inputSwitch />
+            </div>
+            <div class="flex justify-content-center mt-2">
+                <button pButton pRipple type="button" class="p-button-primary">
+                    <i class="pi pi-check"></i>&nbsp; Añadir
+                </button>
+            </div>
+        </div>
+        <div class="col-12"></div>
+    </div>
+
+    <!-- <p-steps
+    [model]="pasos"
+    [(activeIndex)]="activeIndex"
+    [readonly]="modePregunta === 'CREAR'"
+></p-steps>
+
+@switch (activeIndex) {
+    @case (0) {
+        <form [formGroup]="bancoPreguntasForm">
+            <app-banco-pregunta-encabezado-form
+                [mode]="encabezadoMode"
+                (encabezadoChange)="encabezadoChange.emit($event)"
+                [controlKey]="'0'"
+                [encabezados]="encabezados"
+                [parentMode]="formMode"
+            />
+        </form>
+    }
+    @case (1) {
+        <div class="grid mb-2">
+            <div class="col-12 flex justify-content-between flex-wrap gap-2">
+                <h2 class="text-xl">Formulario Preguntas</h2>
+                @if (!esSinEncabezado && showFooterSteps) {
+                    <button
+                        pButton
+                        pRipple
+                        label="Agregar Pregunta"
+                        icon="pi pi-plus"
+                        size="small"
+                        class="p-button-primary"
+                        (click)="agregarPreguntaForm()"
+                    ></button>
+                }
+            </div>
+        </div>
+        @switch (bancoPreguntaActiveIndex) {
+            @case (0) {
+                @if (esSinEncabezado) {
+                    <form [formGroup]="bancoPreguntasForm">
+                        <app-banco-pregunta-informacion-form
+                            [tipoPreguntas]="tipoPreguntas"
+                            [controlKey]="'1'"
+                        ></app-banco-pregunta-informacion-form>
+                    </form>
+                } @else {
+                    <app-banco-pregunta-lista
+                        [showCaption]="false"
+                        [columnas]="columnasPreguntas"
+                        [accionesTabla]="accionesPreguntas"
+                        [data]="preguntas"
+                        (accionBtnItemTable)="accionPreguntaTable($event)"
+                    ></app-banco-pregunta-lista>
+                }
+            }
+
+            @case (1) {
+                <form [formGroup]="bancoPreguntasForm">
+                    <app-banco-pregunta-informacion-form
+                        [tipoPreguntas]="tipoPreguntas"
+                        [controlKey]="'1'"
+                    ></app-banco-pregunta-informacion-form>
+                </form>
+                <footer class="flex justify-content-end gap-2 pt-3">
+                    <button
+                        pButton
+                        pRipple
+                        label="Cancelar"
+                        icon="pi pi-times"
+                        class="p-button-secondary"
+                        type="button"
+                        size="small"
+                        (click)="
+                            toggleStepsVisibility(true);
+                            changeIndexBancoForm(0);
+                            agregarQuitarValidacionesFormPregunta('QUITAR')
+                        "
+                    ></button>
+                    <button
+                        pButton
+                        pRipple
+                        label="Guardar"
+                        icon="pi pi-save"
+                        size="small"
+                        type="button"
+                        class="p-button-primary"
+                        (click)="guardarActualizarPreguntaForm()"
+                    ></button>
+                </footer>
+            }
+            @default {}
+        }
+    }
+
+    @case (2) {
+        <div class="grid">
+            <div class="col-12">
+                <h2 class="text-lg">Alternativas de la pregunta:</h2>
+                <div
+                    [innerHTML]="
+                        preguntaSelected?.cPregunta ??
+                        pregunta.cPregunta ??
+                        formPreguntaInfo.get('cPregunta')?.value
+                    "
+                ></div>
+            </div>
+        </div>
+
+        <app-alternativas
+            [alternativas]="preguntaSelected?.alternativas ?? alternativas"
+            [pregunta]="preguntaSelected ?? pregunta"
+            (alternativasChange)="alternativasChange($event)"
+            (alternativasEliminadasChange)="setAlternativasEliminadas($event)"
+            [serviceProvider]="evaluacionesService"
+        ></app-alternativas>
+
+        @if (
+            bancoPreguntasForm
+                .get('2.alternativas')
+                ?.hasError('alternativasInvalidas')
+        ) {
+            <small class="text-red-500">
+                {{
+                    bancoPreguntasForm
+                        .get('2.alternativas')
+                        .getError('alternativasInvalidas')
+                }}
+            </small>
+        }
+
+        @if (!showFooterSteps) {
+            <footer class="flex justify-content-end gap-2 pt-3">
+                <button
+                    pButton
+                    pRipple
+                    label="Guardar Alternativas"
+                    icon="pi pi-save"
+                    size="small"
+                    type="button"
+                    class="p-button-primary"
+                    (click)="
+                        goStep('back');
+                        toggleStepsVisibility(true);
+                        agregarQuitarAlternativasPaso('QUITAR')
+                    "
+                ></button>
+            </footer>
+        }
+    }
+    @default {}
+}
+
+@if (showFooterSteps) {
+    <div class="flex justify-content-between">
+        @if (activeIndex !== 0) {
+            <button pButton size="small" (click)="goStep('back')">Atrás</button>
+        }
+        @if (activeIndex !== pasos.length - 1) {
+            <button
+                pButton
+                size="small"
+                (click)="goStep('next')"
+                class="ml-auto"
+            >
+                Siguiente
+            </button>
+        }
+        @if (activeIndex === pasos.length - 1) {
+            <button
+                pButton
+                pRipple
+                label="Finalizar"
+                icon="pi pi-save"
+                size="small"
+                class="p-button-primary ml-auto"
+                (click)="guardarActualizarBancoPreguntas()"
+            ></button>
+        }
+    </div>
+} -->
+</app-modal-primeng>

@@ -60,13 +60,13 @@ export const actionsContainer: IActionContainer[] = [
         labelTooltip: 'Word',
         text: 'Word',
         icon: 'pi pi-file-word',
-        accion: 'generar-word',
+        accion: 'generarWordEvaluacion',
         class: 'p-button-info',
     },
 
     {
         labelTooltip: 'Agregar Pregunta',
-        text: 'Agregar Pregunta',
+        text: 'Agregar Preguntas',
         icon: 'pi pi-plus',
         accion: 'agregar',
         class: 'p-button-secondary',

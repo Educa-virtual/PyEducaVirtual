@@ -16,6 +16,7 @@ import { BancoPreguntasFormComponent } from '@/app/sistema/evaluaciones/sub-eval
 @NgModule({
     declarations: [AulaBancoPreguntaFormContainerComponent],
     imports: [
+        CommonModule,
         TablePrimengComponent,
         ContainerPageComponent,
         StepsModule,

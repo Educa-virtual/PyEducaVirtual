@@ -24,9 +24,10 @@ import { TooltipModule } from 'primeng/tooltip'
     styleUrl: './tarea-form.component.scss',
 })
 export class TareaFormComponent implements OnChanges {
+    // Crea una instancia de la clase DatePipe para formatear fechas en español
     pipe = new DatePipe('es-ES')
     date = new Date()
-
+    // Indica que el tipo de archivo "file" está habilitado o permitido.
     typesFiles = {
         file: true,
         url: true,
@@ -80,7 +81,7 @@ export class TareaFormComponent implements OnChanges {
             }
         }
     }
-
+    // Declaración de un formulario reactivo con el uso de FormBuilder para la creación y configuración de los controles.
     public formTareas = this._formBuilder.group({
         bReutilizarTarea: [false],
         dtInicio: [this.date, Validators.required],
@@ -93,7 +94,6 @@ export class TareaFormComponent implements OnChanges {
         dtTareaInicio: ['', [Validators.required]],
         dtTareaFin: ['', [Validators.required]],
 
-        //
         cTareaArchivoAdjunto: [],
         cTareaIndicaciones: [''],
         dFechaEvaluacionPublicacion: [''],
@@ -115,7 +115,9 @@ export class TareaFormComponent implements OnChanges {
     })
 
     getTareasxiCursoId() {
+        // Verifica si la opción "bReutilizarTarea" en el formulario es verdadera
         if (this.formTareas.value.bReutilizarTarea) {
+            // Si es verdadera, se crea un objeto de configuración para realizar una petición de tipo 'post'
             const params = {
                 petition: 'post',
                 group: 'aula-virtual',
@@ -135,6 +137,7 @@ export class TareaFormComponent implements OnChanges {
     }
 
     filterTareas(event: AutoCompleteCompleteEvent) {
+        // Método que filtra las tareas de acuerdo con la consulta del usuario.
         const filtered: any[] = []
         const query = event.query
         for (let i = 0; i < (this.tareas as any[]).length; i++) {
@@ -151,16 +154,19 @@ export class TareaFormComponent implements OnChanges {
     }
 
     getFilterIndicaciones(event) {
+        // Verifica si 'event' no es nulo o indefinido
         if (event) {
             this.formTareas.controls.cTareaDescripcion.setValue(
                 event.cTareaDescripcion ? event.cTareaDescripcion : ''
             )
+            // Asigna el valor de 'event.iProgActId' al control 'iProgActId' del formulario.
+            // Si 'event.iProgActId' es nulo o indefinido, asigna 'null'.
             this.formTareas.controls.iProgActId.setValue(
                 event.iProgActId ? event.iProgActId : null
             )
         }
     }
-
+    /*Obtiene información general desde el servicio GeneralService.*/
     getInformation(params, accion) {
         this.GeneralService.getGralPrefix(params).subscribe({
             next: (response) => {
@@ -214,7 +220,9 @@ export class TareaFormComponent implements OnChanges {
                 break
         }
     }
-
+    /*Esta función se encarga de formatear y establecer los valores de ciertos campos
+ de un formulario, ajustando las fechas y horas a una zona horaria específica
+  y asignando ciertos valores de campos a otros.*/
     submit() {
         let horaInicio = this.formTareas.value.dtInicio.toLocaleString(
             'en-GB',

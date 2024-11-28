@@ -484,6 +484,9 @@ export class AsistenciaComponent implements OnInit {
                 data: {
                     opcion: 'GUARDAR_ASISTENCIA_ESTUDIANTE',
                     iCursoId: this.iCursoId,
+                    iSeccionId: this.iSeccionId,
+                    iDocenteId: this.iDocenteId,
+                    iYAcadId: this.iYAcadId,
                     asistencia_json: JSON.stringify(this.data),
                     dtCtrlAsistencia: this.fechaActual,
                 },
@@ -522,6 +525,8 @@ export class AsistenciaComponent implements OnInit {
             ruta: 'list',
             data: {
                 opcion: 'CONSULTAR_FECHAS_IMPORTANTES',
+                iCursoId: this.iCursoId,
+                iYAcadId: this.iYAcadId,
             },
             params: { skipSuccessMessage: true },
         }
@@ -542,6 +547,9 @@ export class AsistenciaComponent implements OnInit {
             data: {
                 opcion: 'CONSULTAR_ASISTENCIA_FECHA',
                 iCursoId: this.iCursoId,
+                iSeccionId: this.iSeccionId,
+                iDocenteId: this.iDocenteId,
+                iYAcadId: this.iYAcadId,
                 dtCtrlAsistencia: fechas,
             },
             params: { skipSuccessMessage: true },

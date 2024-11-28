@@ -28,6 +28,7 @@ import { ConstantesService } from '@/app/servicios/constantes.service'
 import { EmptySectionComponent } from '@/app/shared/components/empty-section/empty-section.component'
 import { Message } from 'primeng/api'
 import { WebsocketService } from '@/app/sistema/aula-virtual/services/websoket.service'
+import { TimeComponent } from '@/app/shared/time/time.component'
 @Component({
     selector: 'app-foro-room',
     standalone: true,
@@ -35,6 +36,7 @@ import { WebsocketService } from '@/app/sistema/aula-virtual/services/websoket.s
     styleUrls: ['./foro-room.component.scss'],
     imports: [
         IconComponent,
+        TimeComponent,
         EmptySectionComponent,
         RecursosListaComponent,
         RemoveHTMLPipe,
@@ -85,6 +87,9 @@ export class ForoRoomComponent implements OnInit {
     respuestasForoEstudiant: any[] = []
     totalComentarios: number = 0
     estudianteId: any[] = []
+    //
+    fechaInicio: Date = new Date() // Hora actual
+    fechaFin: Date = new Date(new Date().getTime() + 10 * 60 * 1000) // 10 minutos después
     // borrar variables del p-dia
     modalCalificacion: boolean = false
     estudianteSelectComent: number | null = null
@@ -98,6 +103,7 @@ export class ForoRoomComponent implements OnInit {
     iEstudianteId: number
     iDocenteId: number
     expanded: false
+    iCredId: number
 
     commentForoM: string = ''
     selectedCommentIndex: number | null = null // Para rastrear el comentario seleccionado para responder
@@ -113,11 +119,20 @@ export class ForoRoomComponent implements OnInit {
         dtForoPublicacion: ['dtForoInicio'],
         dtForoFin: [],
     })
+    public foroFormCalf: FormGroup = this._formBuilder.group({
+        iEscalaCalifId: [],
+        iForoRptaId: ['', [Validators.required]],
+        cForoRptaDocente: ['', [Validators.required]],
+        nForoRptaNota: [],
+        cForoDescripcion: [],
+    })
+    // borrar foroFormComnt
     public foroFormComnt: FormGroup = this._formBuilder.group({
         iEscalaCalifId: [],
         iForoRptaId: [],
         cForoRptaDocente: ['', [Validators.required]],
         nForoRptaNota: [],
+        iDocenteId: [''],
         cForoDescripcion: [],
     })
     public foroFormComntAl: FormGroup = this._formBuilder.group({
@@ -139,11 +154,35 @@ export class ForoRoomComponent implements OnInit {
         //     // Agregar el mensaje recibido a la lista de comentarios
         //     this.comments.push(message);  // Asume que tienes una lista `comments`
         // });
+        this.obtenerEstudiantesMatricula()
         this.obtenerIdPerfil()
         this.mostrarCalificacion()
         this.obtenerForo()
         this.getRespuestaF()
         this.getEstudiantesMatricula()
+    }
+    // menu para editar y eliminar el comentario del foro
+    menuItems = [
+        {
+            label: 'Editar',
+            icon: 'pi pi-pencil',
+            command: () => this.editar(),
+        },
+        {
+            label: 'Eliminar',
+            icon: 'pi pi-trash',
+            command: () => this.eliminar(),
+        },
+    ]
+
+    editar() {
+        console.log('Editar acción ejecutada')
+        // Lógica para editar
+    }
+
+    eliminar() {
+        console.log('Eliminar acción ejecutada')
+        // Lógica para eliminar
     }
 
     accionBtnItemTable({ accion, item }) {
@@ -161,7 +200,7 @@ export class ForoRoomComponent implements OnInit {
         this.iEstudianteId = this._constantesService.iEstudianteId
         this.iPerfilId = this._constantesService.iPerfilId
         this.iDocenteId = this._constantesService.iDocenteId
-        console.log('mi id perfil', this.iPerfilId)
+        console.log('icredito', this.iEstudianteId)
     }
     openModal(respuestasForo) {
         this.modalCalificacion = true
@@ -182,15 +221,44 @@ export class ForoRoomComponent implements OnInit {
         this.estudianteSelectComent = estudianteId
         console.log('Hola estudiante', this.estudianteSelectComent)
     }
-    submit() {
-        const value = this.foroFormComnt.value
-        console.log('Guardar Calificacion', value)
+    calificarComnt() {
+        const rpta = this.respuestasForo.find(
+            (i) => i.EstudianteId === this.perfilSelect.EstudianteId
+        )
+        this.foroFormCalf.controls['iForoRptaId'].setValue(rpta.iForoRptaId)
+        const value = this.foroFormCalf.value
         this._aulaService.calificarForoDocente(value).subscribe((resp: any) => {
             if (resp?.validated) {
-                this.modalCalificacion = false
+                this.modelaCalificacionComen = false
                 this.getRespuestaF()
             }
         })
+        console.log('Guardar Calificacion', value)
+
+        // this._aulaService.calificarForoDocente(value).subscribe((resp: any) => {
+        //     if (resp?.validated) {
+        //         this.modalCalificacion = false
+        //         this.getRespuestaF()
+        //     }
+        // })
+    }
+    submit() {
+        //const value = this.foroFormComnt.value
+        this.iDocenteId = this._constantesService.iDocenteId
+        const comment = {
+            ...this.foroFormComnt.value,
+            iForoId: this.ixActivadadId,
+            iDocenteId: this.iDocenteId,
+        }
+        console.log('Guardar Calificacion', comment)
+        this._aulaService
+            .calificarForoDocente(comment)
+            .subscribe((resp: any) => {
+                if (resp?.validated) {
+                    this.modalCalificacion = false
+                    this.getRespuestaF()
+                }
+            })
     }
     startReply(index: number) {
         this.selectedCommentIndex = index // Guarda el índice del comentario seleccionado
@@ -310,8 +378,41 @@ export class ForoRoomComponent implements OnInit {
                     this.FilesTareas = this.foro?.cForoUrl
                         ? JSON.parse(this.foro?.cForoUrl)
                         : []
+                    // Formatear fechas (si existen)
+                    // Formatear fechas (si existen)
+                    if (this.foro?.dtForoInicio) {
+                        this.foro.dtForoInicio = this.formatDateISO(
+                            this.foro.dtForoInicio
+                        )
+                    }
+
+                    if (this.foro?.dtForoFin) {
+                        this.foro.dtForoFin = this.formatDateISO(
+                            this.foro.dtForoFin
+                        )
+                    }
                 },
             })
+    }
+    formatDateISO(date: string | number | Date): string {
+        const parsedDate = new Date(date) // Convertir a Date
+        if (isNaN(parsedDate.getTime())) {
+            console.warn('Fecha no válida:', date)
+            return '' // Manejo de errores si la fecha no es válida
+        }
+
+        const year = parsedDate.getFullYear()
+        const month = String(parsedDate.getMonth() + 1).padStart(2, '0') // Mes comienza desde 0
+        const day = String(parsedDate.getDate()).padStart(2, '0')
+        const hours = String(parsedDate.getHours()).padStart(2, '0')
+        const minutes = String(parsedDate.getMinutes()).padStart(2, '0')
+        const seconds = String(parsedDate.getSeconds()).padStart(2, '0')
+        const milliseconds = String(parsedDate.getMilliseconds()).padStart(
+            3,
+            '0'
+        )
+
+        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}.${milliseconds}`
     }
     //getRespuestasForo
     getRespuestaF() {
@@ -378,6 +479,7 @@ export class ForoRoomComponent implements OnInit {
         this.GeneralService.getGralPrefix(params).subscribe({
             next: (response) => {
                 this.estudiantes = response.data
+                console.log('lista de estudiante', this.estudiantes)
             },
             complete: () => {},
             error: (error) => {
@@ -403,5 +505,9 @@ export class ForoRoomComponent implements OnInit {
         }
 
         this.getInformation(params)
+    }
+    obtenerEstudiantesMatricula() {
+        this.iCredId = this._constantesService.iCredId
+        console.log('Parametros para obtener Alumnos', this.iCredId)
     }
 }

@@ -20,6 +20,18 @@ const routes: Routes = [
         loadChildren: () =>
             import('./sub-modulos/calendario/calendario.routes'),
     },
+    {
+        path: 'notificaciones',
+        loadChildren: () =>
+            import('./sub-modulos/notificaciones/notificaciones.routes'),
+    },
+    {
+        path: 'banco-preguntas',
+        loadComponent: () =>
+            import(
+                './sub-modulos/aula-banco-preguntas/aula-banco-pregunta-page/aula-banco-pregunta-page.component'
+            ).then((m) => m.AulaBancoPreguntaPageComponent),
+    },
 ]
 
 export default routes

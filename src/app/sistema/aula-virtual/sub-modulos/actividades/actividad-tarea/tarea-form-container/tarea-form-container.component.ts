@@ -11,7 +11,7 @@ import {
 } from 'primeng/dynamicdialog'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { GeneralService } from '@/app/servicios/general.service'
-
+// Selector que se utiliza para referenciar este componente en la plantilla de otros componentes.
 @Component({
     selector: 'app-tarea-form-container',
     standalone: true,
@@ -20,8 +20,10 @@ import { GeneralService } from '@/app/servicios/general.service'
     styleUrl: './tarea-form-container.component.scss',
     providers: [DialogService],
 })
+// Clase principal que gestiona el contenedor del formulario de tareas.
 export class TareaFormContainerComponent {
     @ViewChild(TareaFormComponent) tareaFormComponent: TareaFormComponent
+    // Propiedad para almacenar la actividad actual (opcional).
     actividad: IActividad | undefined
     action: string
     contenidoSemana = []
@@ -35,12 +37,13 @@ export class TareaFormContainerComponent {
         this.contenidoSemana = this.dialogConfig.data.contenidoSemana
         this.action = this.dialogConfig.data.action
         this.actividad = this.dialogConfig.data.actividad
-
+        // Verifica si hay una actividad específica y si la acción es 'ACTUALIZAR'
         if (this.actividad?.ixActivadadId && this.action === 'ACTUALIZAR') {
             this.getTareasxiTareaId(this.actividad.ixActivadadId)
         }
     }
-
+    /*Esta función se utiliza para enviar un formulario con datos relacionados con
+una tarea o actividad a un servicio backend, con la finalidad de guardarla o actualizarla en la base de datos.*/
     submitFormulario(data) {
         //OPCION: ACTUALIZAR O GUARDAR +xProgActxiTarea
         data.cTareaTitulo = !data.bReutilizarTarea
@@ -86,17 +89,17 @@ export class TareaFormContainerComponent {
             },
         })
     }
-
+    // funcio  cancelar
     cancelar() {
         // this.tarea = null
         this.ref.close(null)
     }
-
+    // funcion que cierra el  modal
     closeModal(resp: boolean) {
         // this.tarea = null
         this.ref.close(resp)
     }
-
+    // Método para obtener una tarea específica por su ID (iTareaId)
     getTareasxiTareaId(iTareaId) {
         const params = {
             petition: 'post',

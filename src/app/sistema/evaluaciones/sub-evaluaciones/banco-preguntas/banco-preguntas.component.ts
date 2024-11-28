@@ -76,7 +76,7 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
         },
         {
             labelTooltip: 'Agregar Pregunta',
-            text: 'Agregar Pregunta',
+            text: 'Agregar Preguntass',
             icon: 'pi pi-plus',
             accion: 'agregar',
             class: 'p-button-secondary',

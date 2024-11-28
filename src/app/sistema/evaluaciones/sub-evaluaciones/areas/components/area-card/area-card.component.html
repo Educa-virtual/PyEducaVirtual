@@ -6,6 +6,7 @@
             class="w-full h-full"
         />
     </div>
+
     <div class="p-3">
         <h3 class="text-xl">
             {{ area.nombre }} {{ area.grado }} {{ area.seccion }}
@@ -23,6 +24,8 @@
                 seccion: area.seccion,
                 grado: area.grado,
                 nivel: area.nivel,
+                iEvaluacionId: _iEvaluacionId,
+                nombreEvaluacion: _nombreEvaluacion,
             }"
             icon="pi pi-external-link"
             pTooltip="Banco de Preguntas"

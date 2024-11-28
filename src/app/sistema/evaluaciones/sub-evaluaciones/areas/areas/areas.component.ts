@@ -6,13 +6,13 @@ import { TableModule } from 'primeng/table'
 import { InputTextModule } from 'primeng/inputtext'
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import { TablePrimengComponent } from '../../../../../shared/table-primeng/table-primeng.component'
-import { Component } from '@angular/core'
+import { Component, OnInit } from '@angular/core'
 import { IArea } from '../interfaces/area.interface'
 import { AreaCardComponent } from '../components/area-card/area-card.component'
 //import { CursoCardComponent } from '../components/curso-card/curso-card.component'
 import { ICurso } from '../../../../aula-virtual/sub-modulos/cursos/interfaces/curso.interface'
 import { ButtonModule } from 'primeng/button'
-
+import { ActivatedRoute } from '@angular/router'
 export type Layout = 'list' | 'grid'
 @Component({
     selector: 'app-areas',
@@ -32,7 +32,7 @@ export type Layout = 'list' | 'grid'
         ButtonModule,
     ],
 })
-export class AreasComponent {
+export class AreasComponent implements OnInit {
     public cursos: ICurso[] = []
     public data: ICurso[] = []
     public layout: Layout = 'list'
@@ -69,6 +69,9 @@ export class AreasComponent {
     ]
     public sortField: string = ''
     public sortOrder: number = 0
+    public iEvaluacionId: string | null = null // Para almacenar el ID de la evaluación.
+    public nombreEvaluacion: string | null = null // Para almacenar el nombre de la evaluación.
+    //@Input() _iEvaluacionId: string | null = null // Usamos _iEvaluacionId como input
 
     //!original
     // public onFilter(dv: DataView, event: Event) {
@@ -86,5 +89,21 @@ export class AreasComponent {
         if (this.layout === 'list') {
             this.searchText = event
         }
+    }
+    constructor(private route: ActivatedRoute) {}
+    ngOnInit(): void {
+        // Capturar el parámetro iEvaluacionId de la URL
+        this.route.queryParams.subscribe((params) => {
+            this.iEvaluacionId = params['iEvaluacionId']
+            this.nombreEvaluacion = params['nombreEvaluacion']
+            console.log(
+                'iEvaluacionId recibido en AreasComponent:',
+                this.iEvaluacionId
+            )
+            console.log('nombreEvaluacion:', this.nombreEvaluacion)
+        })
+
+        // El resto de tu lógica de inicialización
+        //this.obtenerCursos() // O cualquier otra lógica para cargar los datos.
     }
 }

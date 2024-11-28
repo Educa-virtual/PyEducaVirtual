@@ -35,17 +35,17 @@ export class BancoPreguntasFormContainerComponent implements OnInit {
 
     public modePregunta: 'CREAR' | 'EDITAR' = 'CREAR'
     private params = {}
-
+    public iEvaluacionId = this._config.data.iEvaluacionId //Aqui viene desde el Banco-Preguntas
     constructor() {
         this.inicializarFormulario()
     }
 
     ngOnInit() {
         this.getData()
+        console.log('Data de Banco preguntas Llega', this._config)
         this.tipoPreguntas = this._config.data.tipoPreguntas.filter((item) => {
             return item.iTipoPregId !== 0
         })
-
         if (this._config.data.pregunta.iPreguntaId == 0) {
             this.modePregunta = 'CREAR'
         } else {
@@ -53,6 +53,9 @@ export class BancoPreguntasFormContainerComponent implements OnInit {
             this.encabezadoMode = 'COMPLETADO'
         }
         this.pregunta = this._config.data.pregunta
+
+        // Aquí verificamos que el iEvaluacionId llega correctamente
+        console.log('iEvaluacionId recibido en Form:', this.iEvaluacionId) // Asegúrate de que esta línea sea correcta
     }
 
     getData() {
@@ -107,14 +110,17 @@ export class BancoPreguntasFormContainerComponent implements OnInit {
     }
 
     guardarBancoPreguntas(data) {
-        data.iCursoId = 1
+        // Aqui se puede poner datos agregados en data para insertar en la base de datos
+        data.iCursoId = 3
         data.iNivelGradoId = 1
         data.iEspecialistaId = 1
+        //console.table(data)
         this._evaluacionesService
             .guardarActualizarPreguntaConAlternativas(data)
             .subscribe({
                 next: () => {
                     this.closeModal(data)
+                    console.log('GuardarBancoPreguntas exitosa', data)
                 },
             })
     }

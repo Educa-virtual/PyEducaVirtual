@@ -49,6 +49,7 @@ import { IeparticipaComponent } from './ieparticipa/ieparticipa.component'
 import { EvaluacionAreasComponent } from './evaluacion-areas/evaluacion-areas.component'
 import { FormGroup } from '@angular/forms'
 import { MessageService } from 'primeng/api'
+import { Router } from '@angular/router'
 //import { Checkbox } from 'primeng/checkbox'
 //import { I } from '@fullcalendar/core/internal-common'
 @Component({
@@ -96,9 +97,11 @@ export class EvaluacionesComponent implements OnInit {
     dataSubject = new BehaviorSubject<any[]>([]) // Reactivo para actualizar la tabla automáticamente
 
     mostrarBoton: boolean = false // Controla la visibilidad del botón
+    iEvaluacionId: number //!Aqui puse para guardar el IevaluacionId 2610
 
     //!AQUI TERMINO
     constructor(
+        private router: Router, //!Rutas
         // private customerService: CustomerService,
         private compartirIdEvaluacionService: CompartirIdEvaluacionService,
         private compartirFormularioEvaluacionService: CompartirFormularioEvaluacionService,
@@ -240,9 +243,12 @@ export class EvaluacionesComponent implements OnInit {
         this.selectedRow = [event]
         //this.selectedRowData.emit(this.selectedRow) // Emite los datos al componente padre
     }
-    closeDialog() {
+    closeDialog(evaluacion: any) {
         // Aquí va la lógica para finalizar el formulario
         this.visible = false
+
+        // Llamar a actualizarDatos automáticamente al cerrar
+        this.actualizarDatos(evaluacion)
     }
     showDialog() {
         this.visible = true
@@ -326,6 +332,27 @@ export class EvaluacionesComponent implements OnInit {
         if (accion === 'actualizar') {
             // Aquí se puede invocar el método de actualización de los datos
             this.actualizarDatos(item)
+        }
+        if (accion === 'BancoPreguntas') {
+            console.log('Acción BancoPreguntas ->', accion)
+            const _iEvaluacionIdtoBancoPreguntas =
+                (this.compartirIdEvaluacionService.iEvaluacionId =
+                    item.iEvaluacionId)
+            const _nombreEvaluacion = item.cEvaluacionNombre
+            console.log(
+                'iEvaluacionId antes de navegar:',
+                _iEvaluacionIdtoBancoPreguntas
+            ) // Aquí verificamos el valor de iEvaluacionId
+
+            // Navegar al routerLink especificado
+            //this.router.navigate(['/evaluaciones/areas'])
+            // Navegar al routerLink especificado con el parámetro iEvaluacionId
+            this.router.navigate(['/evaluaciones/areas'], {
+                queryParams: {
+                    iEvaluacionId: _iEvaluacionIdtoBancoPreguntas,
+                    nombreEvaluacion: _nombreEvaluacion,
+                },
+            })
         }
     }
     // verEreEvaluacion(evaluacion) {
@@ -661,7 +688,7 @@ export class EvaluacionesComponent implements OnInit {
                 this.copiarEvaluacion(this.selectedRow[0].iEvaluacionId).then(
                     (resp) => {
                         console.log('Copiar evaluacion', resp)
-                        this.closeDialog()
+                        this.closeDialog(resp)
                     }
                 )
                 break

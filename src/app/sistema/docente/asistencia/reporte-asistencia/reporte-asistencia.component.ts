@@ -101,14 +101,40 @@ export class ReporteAsistenciaComponent implements OnChanges {
             case 1:
                 data = {
                     id: this.inputDia,
-                    opcion: 'reporte-diario',
+                    opcion: 'reporte_personalizado',
+                    cSeccion: this.cSeccion,
+                    cGradoAbreviacion: this.cGradoAbreviacion,
+                    cNivelTipoNombre: this.cNivelTipoNombre,
+                    cNivelNombreCursos: this.cNivelNombreCursos,
+                    nombrecompleto: this.nombrecompleto,
+                    cCicloRomanos: this.cCicloRomanos,
+                    iCursoId: this.iCursoId,
+                    iDocenteId: this.iDocenteId,
+                    iSeccionId: this.iSeccionId,
+                    iGradoId: this.iGradoId,
+                    iNivelGradoId: this.iNivelGradoId,
+                    iYAcadId: this.iYAcadId,
                 }
+                this.rutas = 'reporte_diario'
                 break
             case 3:
                 data = {
                     id: this.iMesId,
-                    opcion: 'reporte-mensual',
+                    opcion: 'REPORTE_MENSUAL',
+                    cSeccion: this.cSeccion,
+                    cGradoAbreviacion: this.cGradoAbreviacion,
+                    cNivelTipoNombre: this.cNivelTipoNombre,
+                    cNivelNombreCursos: this.cNivelNombreCursos,
+                    nombrecompleto: this.nombrecompleto,
+                    cCicloRomanos: this.cCicloRomanos,
+                    iCursoId: this.iCursoId,
+                    iDocenteId: this.iDocenteId,
+                    iSeccionId: this.iSeccionId,
+                    iGradoId: this.iGradoId,
+                    iNivelGradoId: this.iNivelGradoId,
+                    iYAcadId: this.iYAcadId,
                 }
+                this.rutas = 'reporte_mensual'
                 break
             case 4:
                 data = {
@@ -127,10 +153,10 @@ export class ReporteAsistenciaComponent implements OnChanges {
                     iNivelGradoId: this.iNivelGradoId,
                     iYAcadId: this.iYAcadId,
                 }
-
+                this.rutas = 'reporte_personalizado'
                 break
         }
-        //console.log(data)
+
         this.getReportePdf(data)
     }
 
@@ -155,15 +181,15 @@ export class ReporteAsistenciaComponent implements OnChanges {
     solicitarFecha: number
     iMesId: number
     iDateRango
-
+    rutas = ''
     getReportePdf(data) {
         // const iYearId = this._LocalStoreService.getItem('dremoYear')
-        console.table(data)
+
         const params = {
             petition: 'post',
             group: 'docente',
             prefix: 'reporte_asistencia',
-            ruta: 'reporte_personalizado',
+            ruta: this.rutas,
             data: data,
             params: { skipSuccessMessage: true },
         }

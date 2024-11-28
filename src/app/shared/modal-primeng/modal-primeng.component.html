@@ -9,6 +9,6 @@
 >
     <ng-content></ng-content>
     <ng-template pTemplate="footer">
-        <div slot="footer"></div>
+        <ng-content select="[footer]"></ng-content>
     </ng-template>
 </p-dialog>

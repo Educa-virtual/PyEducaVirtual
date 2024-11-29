@@ -4,6 +4,11 @@
     [(visible)]="showModal"
     [style]="{ width: width }"
     (onHide)="accionBtn('close-modal', [])"
+    [draggable]="false"
+    [resizable]="false"
 >
     <ng-content></ng-content>
+    <ng-template pTemplate="footer">
+        <ng-content select="[footer]"></ng-content>
+    </ng-template>
 </p-dialog>

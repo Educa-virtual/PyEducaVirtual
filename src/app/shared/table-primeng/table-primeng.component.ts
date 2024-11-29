@@ -14,9 +14,24 @@ import { IIcon } from '../icon/icon.interface'
 import { IconComponent } from '../icon/icon.component'
 import { isIIcon } from '../utils/is-icon-object'
 import { IsIconTypePipe } from '../pipes/is-icon-type.pipe'
+import { environment } from '@/environments/environment.template'
+
+type TColumnType =
+    | 'actions'
+    | 'item'
+    | 'checkbox'
+    | 'expansion'
+    | 'p-editor'
+    | 'text'
+    | 'radio'
+    | 'trim'
+    | 'icon-tooltip'
+    | 'estado'
+    | string
 
 export interface IColumn {
-    type: string
+    type: TColumnType
+
     width: string
     field: string
     header: string
@@ -50,10 +65,13 @@ export interface IActionTable {
     ],
 })
 export class TablePrimengComponent implements OnChanges, OnInit {
+    backend = environment.backend
+
     @Output() accionBtnItem: EventEmitter<{ accion: any; item: any }> =
         new EventEmitter()
     @Output() selectedRowDataChange = new EventEmitter()
 
+    @Input() selectionMode: 'single' | 'multiple' | null = null
     @Input() expandedRowKeys = {}
     @Input() dataKey: string
 
@@ -67,8 +85,9 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     @Input() data = []
     @Input() tableStyle: {
         [klass: string]: unknown
-    } = { 'min-width': '50rem' }
+    } = {}
 
+    @Input() placeholder = 'Buscar'
     @ContentChild('rowExpansionTemplate', { static: false })
     rowExpansionTemplate: TemplateRef<unknown>
 
@@ -232,5 +251,22 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     onSelectionChange(event) {
         this.selectedRowData = event
         this.selectedRowDataChange.emit(event)
+    }
+
+    openFile(item) {
+        switch (Number(item.type)) {
+            case 1:
+            case 4:
+                window.open(this.backend + '/' + item.ruta, '_blank')
+                break
+            case 2:
+            case 3:
+                const ruta = item.ruta.includes('http')
+                window.open(ruta ? item.ruta : 'http://' + item.ruta, '_blank')
+                break
+        }
+    }
+    updateUrl(item) {
+        item.ruta = 'users/no-image.png'
     }
 }

@@ -1,0 +1,81 @@
+@if (pregunta.iTipoPregId === 3) {
+    <p-editor
+        appEditorOnlyView
+        [(ngModel)]="pregunta.respuestaEstudiante"
+    ></p-editor>
+} @else {
+    <div
+        class="flex gap-2 flex-wrap w-full p-1 border-round-xs"
+        [ngClass]="{
+            'bg-yellow-100': pregunta.alternativaCorrecta.includes(
+                alternativa.cAlternativaLetra
+            ),
+        }"
+    >
+        <!-- AlternativaLetra -->
+        <span>{{ alternativa?.cAlternativaLetra }} )</span>
+        <!-- input o checkbox dependiendo del tipo pregunta -->
+        <div class="flex gap-2">
+            <!-- input o checkbox dependiendo del tipo pregunta -->
+            @if (pregunta.iTipoPregId === 1) {
+                <p-radioButton
+                    [name]="pregunta.iEvalRptaId"
+                    [value]="alternativa.cAlternativaLetra"
+                    [(ngModel)]="pregunta.respuestaEstudiante"
+                    disabled="true"
+                ></p-radioButton>
+            }
+            @if (pregunta.iTipoPregId === 2) {
+                <p-checkbox
+                    disabled="true"
+                    [name]="pregunta.iEvalRptaId"
+                    [value]="alternativa.cAlternativaLetra"
+                    [(ngModel)]="pregunta.respuestaEstudiante"
+                />
+            }
+        </div>
+        <!-- AlternativaContenido -->
+        <div [innerHTML]="alternativa?.cAlternativaDescripcion"></div>
+
+        @if (
+            pregunta.iTipoPregId === 1 &&
+            alternativa.cAlternativaLetra === pregunta.alternativaCorrecta
+        ) {
+            @if (
+                pregunta.alternativaCorrecta === pregunta.respuestaEstudiante
+            ) {
+                <app-icon
+                    name="matCheckOutline"
+                    size="xs"
+                    color="text-green-500"
+                />
+            } @else {
+                <app-icon
+                    name="matCloseOutline"
+                    size="xs"
+                    color="text-red-500"
+                />
+            }
+        }
+
+        @if (pregunta.iTipoPregId === 2) {
+            @if (
+                pregunta.respuestaEstudiante.includes(
+                    alternativa.cAlternativaLetra
+                )
+            ) {
+                <app-icon
+                    name="matCheckOutline"
+                    size="xs"
+                    color="text-green-500"
+                />
+            } @else {
+                <app-icon
+                    name="matCloseOutline"
+                    size="xs"
+                    color="text-red-500"
+                />
+            }
+        }
+    </div>
+}

@@ -1,259 +1,176 @@
-import { CommonInputComponent } from '@/app/shared/components/common-input/common-input.component'
-import { CommonModule } from '@angular/common'
 import {
     Component,
     EventEmitter,
     inject,
     Output,
-    OnInit,
     Input,
+    OnChanges,
 } from '@angular/core'
-import { DropdownModule } from 'primeng/dropdown'
-import {
-    FormBuilder,
-    ReactiveFormsModule,
-    Validators,
-    FormsModule,
-} from '@angular/forms'
-import { EditorModule } from 'primeng/editor'
-import { DisponibilidadFormComponent } from '../../components/disponibilidad-form/disponibilidad-form.component'
-import { CountryService } from '@/app/demo/service/country.service'
-import { CalendarModule } from 'primeng/calendar'
-import { DialogModule } from 'primeng/dialog'
-import { TableModule } from 'primeng/table'
-import { CheckboxModule } from 'primeng/checkbox'
-import { FileUploadModule } from 'primeng/fileupload'
-import { DynamicDialogRef } from 'primeng/dynamicdialog'
+import { FormBuilder, Validators } from '@angular/forms'
 import { GeneralService } from '@/app/servicios/general.service'
-import { FileUploadPrimengComponent } from '../../../../../../shared/file-upload-primeng/file-upload-primeng.component'
-import { PickListModule } from 'primeng/picklist'
-import { ToggleButtonModule } from 'primeng/togglebutton'
-import { DataViewModule } from 'primeng/dataview'
-import { InputTextModule } from 'primeng/inputtext'
+import { PrimengModule } from '@/app/primeng.module'
+import { Message } from 'primeng/api'
+import { ConstantesService } from '@/app/servicios/constantes.service'
+import { AutoCompleteCompleteEvent } from 'primeng/autocomplete'
+import { DatePipe } from '@angular/common'
+import { TypesFilesUploadPrimengComponent } from '../../../../../../shared/types-files-upload-primeng/types-files-upload-primeng.component'
+import { TooltipModule } from 'primeng/tooltip'
 
 @Component({
     selector: 'app-tarea-form',
     standalone: true,
-    imports: [
-        CommonModule,
-        InputTextModule,
-        ToggleButtonModule,
-        ReactiveFormsModule,
-        PickListModule,
-        CommonInputComponent,
-        FormsModule,
-        EditorModule,
-        DropdownModule,
-        DisponibilidadFormComponent,
-        CalendarModule,
-        DialogModule,
-        TableModule,
-        CheckboxModule,
-        FileUploadModule,
-        FileUploadPrimengComponent,
-        DataViewModule,
-    ],
+    imports: [PrimengModule, TypesFilesUploadPrimengComponent, TooltipModule],
     templateUrl: './tarea-form.component.html',
     styleUrl: './tarea-form.component.scss',
 })
-export class TareaFormComponent implements OnInit {
+export class TareaFormComponent implements OnChanges {
+    // Crea una instancia de la clase DatePipe para formatear fechas en español
+    pipe = new DatePipe('es-ES')
+    date = new Date()
+    // Indica que el tipo de archivo "file" está habilitado o permitido.
+    typesFiles = {
+        file: true,
+        url: true,
+        youtube: true,
+        repository: false,
+        image: false,
+    }
     @Output() submitEvent = new EventEmitter<any>()
     @Output() cancelEvent = new EventEmitter<void>()
 
+    @Input() contenidoSemana
     @Input() tarea
 
-    checked: boolean = false
-    FilesTareas: any[] = []
-    FilesInstrumentos: any[] = []
+    semana: Message[] = []
+    tareas = []
+    filteredTareas: any[] | undefined
+    nameEnlace: string = ''
+    titleFileTareas: string = ''
+    showModal: boolean = false
 
     private _formBuilder = inject(FormBuilder)
     private GeneralService = inject(GeneralService)
+    private ConstantesService = inject(ConstantesService)
 
-    private ref = inject(DynamicDialogRef)
-    selectedState: unknown = null
-    cities: any[]
-    countries: any[] = []
-    value10: any
-    constructor(private countryService: CountryService) {
-        this.cities = [
-            { name: 'New York', code: 'NY' },
-            { name: 'Rome', code: 'RM' },
-            { name: 'London', code: 'LDN' },
-            { name: 'Istanbul', code: 'IST' },
-            { name: 'Paris', code: 'PRS' },
-        ]
-    }
-
-    estudiantes: any[] = []
-
-    // nota
-    puntajeArray: { name: string; code: string }[] = []
-
-    //
-    itemtareas: any[] = [{ label: 'Nuevo', value: 1 }]
-    selectedTarea: any
-
-    ngOnInit() {
-        this.getEstudiantesMatricula()
-
-        this.countryService.getCountries().then((countries) => {
-            this.countries = countries
-        })
-
-        for (let i = 1; i <= 20; i++) {
-            this.puntajeArray.push({ name: `${i}`, code: `${i}` })
+    ngOnChanges(changes): void {
+        if (changes.contenidoSemana?.currentValue) {
+            this.contenidoSemana = changes.contenidoSemana.currentValue
+            this.semana = [
+                {
+                    severity: 'info',
+                    detail:
+                        this.contenidoSemana.cContenidoSemNumero +
+                        ' SEMANA - ' +
+                        this.contenidoSemana.cContenidoSemTitulo,
+                },
+            ]
         }
-    }
-    onToggleChange(event: any) {
-        console.log('Estado del ToggleButton:', event)
-    }
-
-    ngOnChanges(changes) {
         if (changes.tarea?.currentValue) {
             this.tarea = changes.tarea.currentValue
-            this.tareaForm.patchValue(this.tarea)
-
-            this.FilesTareas =
-                this.tareaForm.value.cTareaArchivoAdjunto !== ''
-                    ? JSON.parse(this.tareaForm.value.cTareaArchivoAdjunto)
-                    : []
+            this.formTareas.patchValue(this.tarea)
+            this.filesUrl = this.formTareas.value.cTareaArchivoAdjunto
+                ? JSON.parse(this.formTareas.value.cTareaArchivoAdjunto)
+                : []
+            if (this.tarea.iTareaId) {
+                this.formTareas.controls.dtFin.setValue(
+                    new Date(this.formTareas.value.dtTareaFin)
+                )
+                this.formTareas.controls.dtInicio.setValue(
+                    new Date(this.formTareas.value.dtTareaInicio)
+                )
+            }
         }
     }
+    // Declaración de un formulario reactivo con el uso de FormBuilder para la creación y configuración de los controles.
+    public formTareas = this._formBuilder.group({
+        bReutilizarTarea: [false],
+        dtInicio: [this.date, Validators.required],
+        dtFin: [this.date, Validators.required],
 
-    onTareaSelected(event: any) {
-        const selectedTarea = event.value
-        if (selectedTarea) {
-            this.showModalDialog9(selectedTarea)
-        }
-    }
-    showModalDialog9(tarea: any) {
-        console.log('Mostrando modal para la tarea:', tarea)
-        // Aquí puedes implementar la lógica para mostrar el modal, como usar un servicio de PrimeNG o ng-bootstrap
-        // por ejemplo, puedes activar un modal o caja de diálogo si ya lo tienes implementado.
-    }
-
-    public tareaForm = this._formBuilder.group({
-        iTareaId: [''],
+        iTareaId: [],
         cTareaTitulo: ['', [Validators.required]],
         cTareaDescripcion: ['', [Validators.required]],
+
+        dtTareaInicio: ['', [Validators.required]],
+        dtTareaFin: ['', [Validators.required]],
+
         cTareaArchivoAdjunto: [],
         cTareaIndicaciones: [''],
         dFechaEvaluacionPublicacion: [''],
         tHoraEvaluacionPublicacion: [''],
-        dFechaEvaluacionPublicacionInicio: [''],
+        dFechaEvaluacionPublicacionInicio: [],
         tHoraEvaluacionPublicacionInicio: [''],
-        dFechaEvaluacionPublicacionFin: [''],
+        dFechaEvaluacionPublicacionFin: [],
         tHoraEvaluacionPublicacionFin: [''],
 
-        iActTipoId: [],
+        //TABLA: PROGRACION_ACTIVIDADES
+        iProgActId: [],
         iContenidoSemId: [],
+        iActTipoId: [],
+        dtProgActInicio: [],
+        dtProgActFin: [],
+        cProgActTituloLeccion: [''],
+        cProgActDescripcion: [''],
+        dtProgActPublicacion: [],
     })
-    displayModal: boolean = false
 
-    mostrarModal() {
-        this.displayModal = true
-    }
-
-    linkDialogVisible: boolean = false
-    link: string = ''
-    linkToShow: string = ''
-
-    openLinkDialog() {
-        this.linkDialogVisible = true
-    }
-
-    addLink() {
-        console.log('Enlace agregado: ', this.link)
-        this.linkToShow = this.link
-        this.linkDialogVisible = false
-        this.link = ''
-    }
-
-    cerrarModal() {
-        this.displayModal = false
-    }
-
-    niveldelogrosDropdownItems = [
-        { name: '01', code: 'A' },
-        { name: '02', code: 'B' },
-        { name: '03', code: 'C' },
-        { name: '04', code: 'C' },
-    ]
-
-    submit() {
-        this.tareaForm.controls.cTareaArchivoAdjunto.setValue(
-            JSON.stringify(this.FilesTareas)
-        )
-        const value = this.tareaForm.value
-
-        if (this.tareaForm.invalid) {
-            this.tareaForm.markAllAsTouched()
-            return
-        }
-        this.submitEvent.emit(value)
-    }
-
-    cancel() {
-        this.tareaForm.reset()
-        this.cancelEvent.emit()
-    }
-    guardarDatos() {
-        this.tareaForm.reset()
-        this.cancelEvent.emit()
-    }
-
-    handleAction(elemento): void {
-        const { accion } = elemento
-        const { item } = elemento
-
-        switch (accion) {
-            case 'subir-archivo-tareas':
-                this.FilesTareas.push({
-                    name: item.file.name,
-                    size: item.file.size,
-                    ruta: item.name,
-                })
-                break
-            case 'subir-archivo-instrumentos':
-                this.FilesInstrumentos.push({
-                    name: item.file.name,
-                    size: item.file.size,
-                    ruta: item.name,
-                })
-
-                break
+    getTareasxiCursoId() {
+        // Verifica si la opción "bReutilizarTarea" en el formulario es verdadera
+        if (this.formTareas.value.bReutilizarTarea) {
+            // Si es verdadera, se crea un objeto de configuración para realizar una petición de tipo 'post'
+            const params = {
+                petition: 'post',
+                group: 'aula-virtual',
+                prefix: 'tareas',
+                ruta: 'getTareasxiCursoId',
+                data: {
+                    opcion: 'CONSULTAR-TAREASxiCursoId',
+                    iCredId: this.ConstantesService.iCredId,
+                    iCursoId: this.contenidoSemana.iCursoId,
+                },
+                params: { skipSuccessMessage: true },
+            }
+            this.getInformation(params, 'get_tareas_reutilizadas')
+        } else {
+            this.formTareas.controls.cTareaTitulo.setValue(null)
         }
     }
 
-    getEstudiantesMatricula() {
-        const params = {
-            petition: 'post',
-            group: 'aula-virtual',
-            prefix: 'matricula',
-            ruta: 'list',
-            data: {
-                opcion: 'CONSULTAR-ESTUDIANTESxiSemAcadIdxiYAcadIdxiCurrId',
-                iSemAcadId:
-                    '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-                iYAcadId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-                iCurrId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-            },
-            params: { skipSuccessMessage: true },
+    filterTareas(event: AutoCompleteCompleteEvent) {
+        // Método que filtra las tareas de acuerdo con la consulta del usuario.
+        const filtered: any[] = []
+        const query = event.query
+        for (let i = 0; i < (this.tareas as any[]).length; i++) {
+            const tareas = (this.tareas as any[])[i]
+            if (
+                tareas.cTareaTitulo
+                    .toLowerCase()
+                    .indexOf(query.toLowerCase()) == 0
+            ) {
+                filtered.push(tareas)
+            }
         }
-        console.log(this.getInformation)
-
-        this.getInformation(params)
+        this.filteredTareas = filtered
     }
 
-    // obtenerEstudiantes(){
-    //     const userId = 1;
-    //     this.getEstudiantesMatricula(params).subscribe((Data) => this.estudiantes = Data['data'])
-    // }
-
-    getInformation(params) {
+    getFilterIndicaciones(event) {
+        // Verifica si 'event' no es nulo o indefinido
+        if (event) {
+            this.formTareas.controls.cTareaDescripcion.setValue(
+                event.cTareaDescripcion ? event.cTareaDescripcion : ''
+            )
+            // Asigna el valor de 'event.iProgActId' al control 'iProgActId' del formulario.
+            // Si 'event.iProgActId' es nulo o indefinido, asigna 'null'.
+            this.formTareas.controls.iProgActId.setValue(
+                event.iProgActId ? event.iProgActId : null
+            )
+        }
+    }
+    /*Obtiene información general desde el servicio GeneralService.*/
+    getInformation(params, accion) {
         this.GeneralService.getGralPrefix(params).subscribe({
             next: (response) => {
-                this.estudiantes = response.data
+                this.accionBtnItem({ accion, item: response?.data })
             },
             complete: () => {},
             error: (error) => {
@@ -261,8 +178,91 @@ export class TareaFormComponent implements OnInit {
             },
         })
     }
-    showModalDialog(event: any) {
-        this.displayModal = true
-        console.log('Estado del ToggleButton:', event)
+    filesUrl = []
+    accionBtnItem(elemento): void {
+        const { accion } = elemento
+        const { item } = elemento
+        // let params
+        switch (accion) {
+            case 'get_tareas_reutilizadas':
+                this.tareas = item
+                this.filteredTareas = item
+                break
+            case 'close-modal':
+                this.showModal = false
+                break
+            case 'subir-file-tareas':
+                this.filesUrl.push({
+                    type: 1, //1->file
+                    nameType: 'file',
+                    name: item.file.name,
+                    size: item.file.size,
+                    ruta: item.name,
+                })
+                break
+            case 'url-tareas':
+                this.filesUrl.push({
+                    type: 2, //2->url
+                    nameType: 'url',
+                    name: item.name,
+                    size: '',
+                    ruta: item.ruta,
+                })
+                break
+            case 'youtube-tareas':
+                this.filesUrl.push({
+                    type: 3, //3->youtube
+                    nameType: 'youtube',
+                    name: item.name,
+                    size: '',
+                    ruta: item.ruta,
+                })
+                break
+        }
     }
+    /*Esta función se encarga de formatear y establecer los valores de ciertos campos
+ de un formulario, ajustando las fechas y horas a una zona horaria específica
+  y asignando ciertos valores de campos a otros.*/
+    submit() {
+        let horaInicio = this.formTareas.value.dtInicio.toLocaleString(
+            'en-GB',
+            { timeZone: 'America/Lima' }
+        )
+        let horaFin = this.formTareas.value.dtFin.toLocaleString('en-GB', {
+            timeZone: 'America/Lima',
+        })
+        horaInicio = horaInicio.replace(',', '')
+        horaFin = horaFin.replace(',', '')
+        this.formTareas.controls.dtTareaInicio.setValue(horaInicio)
+        this.formTareas.controls.dtTareaFin.setValue(horaFin)
+        this.formTareas.controls.dtProgActInicio.setValue(horaInicio)
+        this.formTareas.controls.dtProgActFin.setValue(horaFin)
+        this.formTareas.controls.cProgActTituloLeccion.setValue(
+            this.formTareas.value.cTareaTitulo
+        )
+        // Funcion para limpiar la etiqueta de p-editor
+        const rawDescripcion =
+            this.formTareas.controls.cTareaDescripcion.value || ''
+        const tempElement = document.createElement('div')
+        tempElement.innerHTML = rawDescripcion // Insertamos el HTML en un elemento temporal
+        const cleanDescripcion = tempElement.innerText.trim() // Obtenemos solo el texto
+
+        this.formTareas.controls.cTareaDescripcion.setValue(cleanDescripcion)
+
+        this.formTareas.controls.dtProgActPublicacion.setValue(horaFin)
+        this.formTareas.controls.cTareaArchivoAdjunto.setValue(
+            JSON.stringify(this.filesUrl)
+        )
+        const value = this.formTareas.value
+
+        if (this.formTareas.invalid) {
+            this.formTareas.markAllAsTouched()
+            return
+        }
+        this.submitEvent.emit(value)
+    }
+    imports: [
+        TooltipModule,
+        // otros módulos necesarios
+    ]
 }

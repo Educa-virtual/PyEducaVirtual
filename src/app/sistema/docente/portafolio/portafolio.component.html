@@ -1,0 +1,164 @@
+<div class="grid">
+    <p-toolbar class="col-12">
+        <div class="block">
+            <h2 class="text-white font-bold block">Mi portafolio</h2>
+            <div class="text-white font-bold block"></div>
+        </div>
+        <div class="p-toolbar-group-end">
+            <!-- <p-button icon="pi pi-undo" [rounded]="true" pTooltip="Regresar" tooltipPosition="top" ]="['../..']" /> -->
+        </div>
+    </p-toolbar>
+</div>
+<div class="card">
+    <div class="grid">
+        <div class="col-12">
+            <h4 class="text-primary">
+                <i class="pi pi-list"></i>&nbsp;Itinerario
+            </h4>
+        </div>
+        <div class="col-12">
+            <p-inputGroup>
+                <p-inputGroupAddon>
+                    <i class="pi pi-link" style="color: #333437"></i>
+                </p-inputGroupAddon>
+                <input
+                    type="text"
+                    pInputText
+                    placeholder="Nombre de Itinerario"
+                    disabled
+                    class="w-full p-inputtext-sm opacity-100"
+                    pInputText
+                />
+                <button
+                    type="button"
+                    pButton
+                    icon="pi pi-upload"
+                    class="p-button-primary"
+                >
+                    &nbsp;
+                </button>
+                <button
+                    type="button"
+                    pButton
+                    icon="pi pi-eye"
+                    class="p-button-info"
+                >
+                    &nbsp;
+                </button>
+            </p-inputGroup>
+        </div>
+        @for (item of cursos; track item) {
+            <div class="col-12">
+                <h4 class="text-primary">
+                    <i class="pi pi-folder"></i>&nbsp;{{ item.cNombreCurso }}
+                </h4>
+            </div>
+            <div class="col-12">
+                <p-inputGroup>
+                    <p-inputGroupAddon>
+                        <i class="pi pi-link" style="color: #333437"></i>
+                    </p-inputGroupAddon>
+                    <input
+                        type="text"
+                        pInputText
+                        placeholder="Fichas de Actividades de Aprendizaje"
+                        disabled
+                        class="w-full p-inputtext-sm opacity-100"
+                        pInputText
+                    />
+                    <button
+                        type="button"
+                        pButton
+                        icon="pi pi-upload"
+                        class="p-button-primary"
+                    >
+                        &nbsp;
+                    </button>
+                    <button
+                        type="button"
+                        pButton
+                        icon="pi pi-eye"
+                        class="p-button-info"
+                    >
+                        &nbsp;
+                    </button>
+                </p-inputGroup>
+            </div>
+            <div class="col-12">
+                <p-inputGroup>
+                    <p-inputGroupAddon>
+                        <i class="pi pi-link" style="color: #333437"></i>
+                    </p-inputGroupAddon>
+                    <input
+                        type="text"
+                        pInputText
+                        placeholder="Instrumentos de Evaluación"
+                        disabled
+                        class="w-full p-inputtext-sm opacity-100"
+                        pInputText
+                    />
+                    <button
+                        type="button"
+                        pButton
+                        icon="pi pi-eye"
+                        class="p-button-info"
+                    >
+                        &nbsp;
+                    </button>
+                </p-inputGroup>
+            </div>
+            <div class="col-12">
+                <p-inputGroup>
+                    <p-inputGroupAddon>
+                        <i class="pi pi-link" style="color: #333437"></i>
+                    </p-inputGroupAddon>
+                    <input
+                        type="text"
+                        pInputText
+                        placeholder="Registro de evaluación"
+                        disabled
+                        class="w-full p-inputtext-sm opacity-100"
+                        pInputText
+                    />
+                    <button
+                        type="button"
+                        pButton
+                        icon="pi pi-eye"
+                        class="p-button-info"
+                    >
+                        &nbsp;
+                    </button>
+                </p-inputGroup>
+            </div>
+        }
+
+        <div class="col-12">
+            <h4 class="text-primary">
+                <i class="pi pi-book"></i>&nbsp;Reglamento Interno
+            </h4>
+        </div>
+        <div class="col-12">
+            <p-inputGroup>
+                <p-inputGroupAddon>
+                    <i class="pi pi-link" style="color: #333437"></i>
+                </p-inputGroupAddon>
+                <input
+                    type="text"
+                    pInputText
+                    placeholder="Resolución C.O. 2024-01202190112-1"
+                    disabled
+                    class="w-full p-inputtext-sm opacity-100"
+                    pInputText
+                />
+                <button
+                    type="button"
+                    pButton
+                    icon="pi pi-eye"
+                    class="p-button-info"
+                >
+                    &nbsp;
+                </button>
+            </p-inputGroup>
+        </div>
+    </div>
+</div>

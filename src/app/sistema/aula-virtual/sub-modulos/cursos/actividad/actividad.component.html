@@ -1,11 +1,12 @@
 @switch (iActTopId) {
     <!-- tarea -->
     @case (1) {
-        <app-tarea-room></app-tarea-room>
+        <app-tarea-room [iTareaId]="ixActivadadId"></app-tarea-room>
     }
     <!-- Foro -->
     @case (2) {
-        <app-foro-room></app-foro-room>
+        <app-foro-room [ixActivadadId]="ixActivadadId" [iActTopId]="iActTopId">
+        </app-foro-room>
     }
     <!-- evaluacion -->
     @case (3) {

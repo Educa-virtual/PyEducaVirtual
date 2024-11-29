@@ -1,149 +1,366 @@
-<!-- <div class="grid">
-    <p-toolbar class="col-12">
-        <div class="p-toolbar-group-start">
-            <h4 class="text-primary font-bold">
-                Asistencia del Curso: {{ cCursoNombre }}
-            </h4>
-        </div>
-        <div class="p-toolbar-group-end">
-            <p-tag severity="success" [value]="'Avance de Asistencia: 60%'" />
-            <p-button
-                icon="pi pi-download"
-                severity="success"
-                pTooltip="Importar Excel"
-                tooltipPosition="top"
-                [rounded]="true"
-                [text]="true"
-            />
-            <p-button
-                icon="pi pi-file-pdf"
-                severity="danger"
-                pTooltip="Descargar Asistencia"
-                tooltipPosition="top"
-                [rounded]="true"
-                [text]="true"
-            />
-            <p-button
-                icon="pi pi-undo"
-                pTooltip="Regresar"
-                tooltipPosition="top"
-                [rounded]="true"
-                [text]="true"
-                (onClick)="goAreasEstudio()"
-            />
-            <p-button
-                icon="pi pi-sync"
-                pTooltip="Recargar"
-                tooltipPosition="top"
-                [rounded]="true"
-                [text]="true"
-                severity="danger"
-            />
-        </div>
-    </p-toolbar>
-
-    <div class="col-12 md:col-5 mx-2">
-        <p-table class="mt-1" [value]="data">
-            <ng-template pTemplate="caption">
-                <span class="p-input-icon-left">
-                    <i class="pi pi-search"></i>
-                    <input
-                        pInputText
-                        placeholder="Buscar Estudiante"
-                        style="width: 250px"
-                    />
-                </span>
-            </ng-template>
-            <ng-template pTemplate="header">
-                <tr style="height: 13px">
-                    <th style="width: 15rem">Nombres y Apellidos</th>
-                    <th style="width: 5px">MARCAR ASISTENCIA</th>
-         
-                </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
-                <tr
-                    style="height: 13px"
-                    [style]="
-                        valSelect2 === rowIndex
-                            ? 'background-color:var(--green-500) !important;color:white'
-                            : 'background-color:white'
-                    "
-                    (click)="valSelect2 = rowIndex"
-                >
-                    <td>{{ item.nombre_completo }}</td>
-             
-                </tr>
-            </ng-template>
-        </p-table>
-    </div>
-
-    <div class="col-12 footer flex gap-2 my-2 mx-2">
-        <p class="font-bold">Leyenda:</p>
-        <p-tag value="[X] Asistió" />
-        <p-tag severity="secondary" value="[I] Inasistencia" />
-        <p-tag severity="warning" value="[J] Inasistencia Justificada" />
-        <p-tag severity="success" value="[T] Tardanza" />
-        <p-tag severity="danger" value="[P] Tardanza Justificada" />
-    </div>
-</div> -->
-
 <div class="grid">
     <p-toolbar class="col-12">
-        <div class="p-toolbar-group-start">
-            <h4 class="text-primary font-bold">
-                Asistencia del Curso: {{ cCursoNombre }}
+        <div class="block">
+            <h4 class="text-primary text-white font-bold block">
+                {{ cNivelNombreCursos.toUpperCase() }} : {{ cCursoNombre }}
             </h4>
+            <div class="text-primary text-white font-bold block">
+                Nivel: {{ cNivelTipoNombre }} | Ciclo: I | Grado:
+                {{ cGradoAbreviacion }} | Seccion: {{ cSeccion }}
+            </div>
         </div>
     </p-toolbar>
-    <div class="col-3">
-        <p-table class="mt-1" [value]="data">
-            <ng-template pTemplate="header">
-                <tr style="height: 13px">
-                    <th style="width: 15rem">Nombres y Apellidos</th>
-                    <th style="width: 5px">MARCAR ASISTENCIA</th>
-                </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
-                <tr
-                    [style]="
-                        valSelect2 === rowIndex
-                            ? 'background-color:var(--green-500) !important;color:white'
-                            : 'background-color:white'
-                    "
-                    (click)="valSelect2 = rowIndex"
-                >
-                    <td>{{ item.nombrecompleto }}</td>
-                    <td><p-button label="A" size="small" /></td>
-                </tr>
-            </ng-template>
-        </p-table>
-        <h5>Fechas Especiales</h5>
-        <div *ngFor="let item of fechas" class="field-checkbox">
-            <p-checkbox
-                [ngStyle]="{ color: item.color }"
-                [label]="item.nombre + ' : ' + item.cantidad"
-                class="font-bold"
-                value="category"
-                name="group"
-            />
+
+    <div class="col-12">
+        <div class="card mb-2">
+            <div class="grid">
+                <div class="col-11">
+                    <div class="flex block p-2">
+                        <div class="font-bold pb-2">MIS CALENDARIOS</div>
+                    </div>
+
+                    <div class="flex block p-2">
+                        <div
+                            *ngFor="let category of categories"
+                            class="flex mr-2"
+                        >
+                            <p-checkbox
+                                [(ngModel)]="category.mostrar"
+                                (onChange)="
+                                    filterCalendario(category, category.valor)
+                                "
+                                [label]="category.name"
+                                name="group"
+                                [binary]="true"
+                                [styleClass]="category.estilo"
+                            />
+                        </div>
+                    </div>
+
+                    <div class="flex block p-2">
+                        <div class="font-bold pb-2">LEGENDA</div>
+                    </div>
+                    <div
+                        class="flex block flex-wrap column-gap-2 row-gap-2 p-2"
+                    >
+                        <div *ngFor="let lista of leyenda" class="flex mr-1">
+                            <p-inputGroup class="grupo">
+                                <button
+                                    type="button"
+                                    size="small"
+                                    pButton
+                                    [ngClass]="lista.bgColor"
+                                >
+                                    {{ lista.simbolo }}
+                                </button>
+                                <div [ngClass]="lista.divColor">
+                                    {{ lista.significado }}
+                                </div>
+                                <button
+                                    type="button"
+                                    size="small"
+                                    pButton
+                                    [ngClass]="lista.bgColor"
+                                >
+                                    {{ lista.contar }}
+                                </button>
+                            </p-inputGroup>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-1">
+                    <p-button
+                        icon="pi pi-file-pdf"
+                        size="small"
+                        [text]="true"
+                        label="Mensual"
+                        tooltipPosition="left"
+                        (click)="modalReporte()"
+                    />
+
+                    <p-button
+                        icon="pi pi-chart-bar"
+                        size="small"
+                        [text]="true"
+                        label="estadistica"
+                        tooltipPosition="left"
+                        (click)="getReportePdf(2)"
+                    />
+                </div>
+            </div>
         </div>
-    </div>
-    <div class="col-9">
         <full-calendar [options]="calendarOptions">
             <ng-template #eventContent let-arg>
-                <b>{{ arg.timeText }}</b>
-                <i>{{ arg.event.title }}</i>
+                <div class="fc-event-time">{{ arg.timeText }}</div>
+                <div class="fc-event-title">{{ arg.event.title }}</div>
             </ng-template>
         </full-calendar>
     </div>
 </div>
 
 <p-dialog
-    header="Header"
+    header="Asistencia del Dia : {{ fechaEspecifica }}"
     [modal]="true"
-    [(visible)]="visible"
+    class="asistenciaModal"
+    [(visible)]="verAsistencia"
     [style]="{ width: '50rem' }"
-    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
 >
+    <div class="grid mt-4">
+        <div class="col-12">
+            <span class="font-bold white-space-nowrap m-0">
+                Detalle del {{ cNivelNombreCursos }}
+            </span>
+        </div>
+        <div class="col-12">
+            <p-inputGroup>
+                <p-inputGroupAddon
+                    [ngStyle]="{
+                        backgroundColor: 'var(--primary-700)',
+                        color: 'var(--primary-color-text)',
+                    }"
+                >
+                    {{ cNivelNombreCursos }}
+                </p-inputGroupAddon>
+                <input pInputText disabled [value]="cCursoNombre" />
+            </p-inputGroup>
+        </div>
+        <div class="col-6">
+            <p-inputGroup>
+                <p-inputGroupAddon
+                    [ngStyle]="{
+                        backgroundColor: 'var(--primary-700)',
+                        color: 'var(--primary-color-text)',
+                    }"
+                >
+                    Nivel
+                </p-inputGroupAddon>
+                <input pInputText disabled [value]="cNivelTipoNombre" />
+            </p-inputGroup>
+        </div>
+        <div class="col-6">
+            <p-inputGroup>
+                <p-inputGroupAddon
+                    [ngStyle]="{
+                        backgroundColor: 'var(--primary-700)',
+                        color: 'var(--primary-color-text)',
+                    }"
+                >
+                    Ciclo
+                </p-inputGroupAddon>
+                <input pInputText disabled value="I" />
+            </p-inputGroup>
+        </div>
+        <div class="col-6">
+            <p-inputGroup>
+                <p-inputGroupAddon
+                    [ngStyle]="{
+                        backgroundColor: 'var(--primary-700)',
+                        color: 'var(--primary-color-text)',
+                    }"
+                >
+                    Grado
+                </p-inputGroupAddon>
+                <input pInputText disabled [value]="cGradoAbreviacion" />
+            </p-inputGroup>
+        </div>
+        <div class="col-6">
+            <p-inputGroup>
+                <p-inputGroupAddon
+                    [ngStyle]="{
+                        backgroundColor: 'var(--primary-700)',
+                        color: 'var(--primary-color-text)',
+                    }"
+                >
+                    Sección
+                </p-inputGroupAddon>
+                <input pInputText disabled [value]="cSeccion" />
+            </p-inputGroup>
+        </div>
+        <div class="col-12">
+            <p-table
+                class="mt-1 block w-full"
+                [value]="data"
+                [scrollable]="true"
+                scrollHeight="400px"
+            >
+                <ng-template pTemplate="header">
+                    <tr style="height: 12px">
+                        <th style="width: auto">N°</th>
+                        <th style="width: auto">Nombres y Apellidos</th>
+                        <th style="width: auto">MARCAR ASISTENCIA</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
+                    <tr>
+                        <td>{{ rowIndex + 1 }}</td>
+                        <td>{{ item.nombrecompleto }}</td>
+                        <td class="flex justify-content-center">
+                            <p-button
+                                *ngIf="item.cTipoAsiLetra; else noboton"
+                                label="{{ item.cTipoAsiLetra }}"
+                                size="small"
+                                [ngClass]="item.bgcolor"
+                                (click)="changeAsistencia(rowIndex)"
+                            />
+                            <ng-template #noboton>
+                                <p-button
+                                    label="-"
+                                    size="small"
+                                    (click)="changeAsistencia(rowIndex)"
+                                    ngClass="bt-cyan"
+                                />
+                            </ng-template>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="summary">
+                    <div
+                        class="flex block flex-wrap column-gap-3 row-gap-3 p-2"
+                    >
+                        <div
+                            *ngFor="let lista of leyendaModal"
+                            class="flex mr-1"
+                        >
+                            <p-inputGroup class="grupo">
+                                <button
+                                    type="button"
+                                    size="small"
+                                    pButton
+                                    [ngClass]="lista.bgColor"
+                                >
+                                    {{ lista.simbolo }}
+                                </button>
+                                <div [ngClass]="lista.divColor">
+                                    {{ lista.significado }}
+                                </div>
+                                <button
+                                    type="button"
+                                    size="small"
+                                    pButton
+                                    [ngClass]="lista.bgColor"
+                                >
+                                    {{ lista.contar }}
+                                </button>
+                            </p-inputGroup>
+                        </div>
+                    </div>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+    <!-- <div class="flex flex-column mb-3 display">
+        
+        <div class="flex">
+            <div class="flex-1 flex-column font-bold p-2">
+                {{ cNivelNombreCursos.toUpperCase() }} : {{ cCursoNombre }}
+            </div>
+        </div>
+        <div class="flex">
+            <div class="flex-1 flex-column font-bold p-2">Nivel: {{cNivelTipoNombre}}</div>
+            <div class="flex-1 flex-column font-bold p-2">Ciclo: I</div>
+        </div>
+        <div class="flex">
+            <div class="flex-1 flex-column font-bold p-2">Grado: {{cGradoAbreviacion}}</div>
+            <div class="flex-1 flex-column font-bold p-2">Seccion: {{cSeccion}}</div>
+        </div>
+        <div class="flex block">
+            <p-table
+                class="mt-1 block w-full"
+                [value]="data"
+                [scrollable]="true"
+                scrollHeight="400px"
+            >
+                <ng-template pTemplate="header">
+                    <tr style="height: 12px">
+                        <th style="width: auto">N°</th>
+                        <th style="width: auto">Nombres y Apellidos</th>
+                        <th style="width: auto">MARCAR ASISTENCIA</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
+                    <tr>
+                        <td>{{ rowIndex + 1 }}</td>
+                        <td>{{ item.nombrecompleto }}</td>
+                        <td class="flex justify-content-center">
+                            <p-button
+                                *ngIf="item.cTipoAsiLetra; else noboton"
+                                label="{{ item.cTipoAsiLetra }}"
+                                size="small"
+                                [ngClass]="item.bgcolor"
+                                (click)="changeAsistencia(rowIndex)"
+                            />
+                            <ng-template #noboton>
+                                <p-button
+                                    label="-"
+                                    size="small"
+                                    (click)="changeAsistencia(rowIndex)"
+                                    ngClass="bt-cyan"
+                                />
+                            </ng-template>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="summary">
+                    <div
+                        class="flex block flex-wrap column-gap-3 row-gap-3 p-2"
+                    >
+                        <div
+                            *ngFor="let lista of leyendaModal"
+                            class="flex mr-1"
+                        >
+                            <p-inputGroup class="grupo">
+                                <button
+                                    type="button"
+                                    size="small"
+                                    pButton
+                                    [ngClass]="lista.bgColor"
+                                >
+                                    {{ lista.simbolo }}
+                                </button>
+                                <div [ngClass]="lista.divColor">
+                                    {{ lista.significado }}
+                                </div>
+                                <button
+                                    type="button"
+                                    size="small"
+                                    pButton
+                                    [ngClass]="lista.bgColor"
+                                >
+                                    {{ lista.contar }}
+                                </button>
+                            </p-inputGroup>
+                        </div>
+                    </div>
+                </ng-template>
+            </p-table>
+        </div>
+    </div> -->
+    <div class="flex justify-content-center gap-2">
+        <p-button
+            label="Cancelar"
+            severity="danger"
+            (onClick)="escapeModal()"
+        />
+        <p-button label="Guardar" (onClick)="storeAsistencia()" />
+    </div>
 </p-dialog>
+
+<p-toast />
+
+<app-reporte-asistencia
+    [showModal]="showModal"
+    [cCursoNombre]="cCursoNombre"
+    [cGradoAbreviacion]="cGradoAbreviacion"
+    [cNivelTipoNombre]="cNivelTipoNombre"
+    [cNivelNombreCursos]="cNivelNombreCursos"
+    [nombrecompleto]="nombrecompleto"
+    [cSeccion]="cSeccion"
+    [cCicloRomanos]="cCicloRomanos"
+    [iCursoId]="iCursoId"
+    [iDocenteId]="iDocenteId"
+    [iGradoId]="iGradoId"
+    [iSeccionId]="iSeccionId"
+    [iYAcadId]="iYAcadId"
+    [iNivelGradoId]="iNivelGradoId"
+    (accionBtnItem)="accionBtnItem($event)"
+></app-reporte-asistencia>

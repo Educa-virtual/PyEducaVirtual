@@ -1,9 +1,7 @@
 import { IconComponent } from '@/app/shared/icon/icon.component'
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
 import { CommonModule } from '@angular/common'
-import { Component, inject, Input, OnInit } from '@angular/core'
-import { ButtonModule } from 'primeng/button'
-import { TabViewModule } from 'primeng/tabview'
+import { Component, inject, Input, OnInit, OnDestroy } from '@angular/core'
 import { LeyendaTareasComponent } from '../../components/leyenda-tareas/leyenda-tareas.component'
 import { provideIcons } from '@ng-icons/core'
 import {
@@ -20,6 +18,11 @@ import { tipoActividadesKeys } from '@/app/sistema/aula-virtual/interfaces/activ
 import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
 import { Subject, takeUntil } from 'rxjs'
 import { EvaluacionFormPreguntasComponent } from '../evaluacion-form/evaluacion-form-preguntas/evaluacion-form-preguntas.component'
+import { EvaluacionRoomCalificacionComponent } from './evaluacion-room-calificacion/evaluacion-room-calificacion.component'
+import { PrimengModule } from '@/app/primeng.module'
+import { EditorOnlyViewDirective } from '@/app/shared/directives/editor-only-view.directive'
+import { RecursosListaComponent } from '@/app/shared/components/recursos-lista/recursos-lista.component'
+import { EmptySectionComponent } from '@/app/shared/components/empty-section/empty-section.component'
 
 @Component({
     selector: 'app-evaluacion-room',
@@ -27,11 +30,14 @@ import { EvaluacionFormPreguntasComponent } from '../evaluacion-form/evaluacion-
     imports: [
         CommonModule,
         IconComponent,
-        TabViewModule,
-        ButtonModule,
         TablePrimengComponent,
+        PrimengModule,
         LeyendaTareasComponent,
         EvaluacionFormPreguntasComponent,
+        EvaluacionRoomCalificacionComponent,
+        EditorOnlyViewDirective,
+        RecursosListaComponent,
+        EmptySectionComponent,
     ],
     templateUrl: './evaluacion-room.component.html',
     styleUrl: './evaluacion-room.component.scss',
@@ -47,21 +53,24 @@ import { EvaluacionFormPreguntasComponent } from '../evaluacion-form/evaluacion-
         }),
     ],
 })
-export class EvaluacionRoomComponent implements OnInit {
+export class EvaluacionRoomComponent implements OnInit, OnDestroy {
     @Input() ixActivadadId: string
     @Input() iActTopId: tipoActividadesKeys
+
+    // injeccion de dependencias
     private _route = inject(ActivatedRoute)
     private _aulaService = inject(ApiAulaService)
+
     private unsbscribe$ = new Subject<boolean>()
     public iPerfilId = 1
     public evaluacion
+    public cEvaluacionInstrucciones
 
     ngOnInit() {
-        console.log(this.ixActivadadId, this.iActTopId)
-
         this.obtenerEvaluacion()
     }
 
+    // obtiene la evalución
     obtenerEvaluacion() {
         this._aulaService
             .obtenerActividad({
@@ -72,7 +81,15 @@ export class EvaluacionRoomComponent implements OnInit {
             .subscribe({
                 next: (resp) => {
                     this.evaluacion = resp
+                    this.cEvaluacionInstrucciones =
+                        this.evaluacion.cEvaluacionDescripcion
                 },
             })
+    }
+
+    // desuscribe los observables al eliminarse el componente
+    ngOnDestroy() {
+        this.unsbscribe$.next(true)
+        this.unsbscribe$.complete()
     }
 }

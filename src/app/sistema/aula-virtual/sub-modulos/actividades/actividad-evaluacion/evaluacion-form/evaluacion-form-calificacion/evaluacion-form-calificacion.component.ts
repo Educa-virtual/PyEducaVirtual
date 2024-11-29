@@ -1,6 +1,7 @@
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
+import { RubricasComponent } from '@/app/sistema/aula-virtual/features/rubricas/rubricas.component'
 import { CommonModule } from '@angular/common'
-import { Component, Input } from '@angular/core'
+import { Component, EventEmitter, Input, Output } from '@angular/core'
 import { FormGroup, ReactiveFormsModule } from '@angular/forms'
 import { DropdownModule } from 'primeng/dropdown'
 
@@ -12,13 +13,21 @@ import { DropdownModule } from 'primeng/dropdown'
         DropdownModule,
         ReactiveFormsModule,
         TablePrimengComponent,
+        RubricasComponent,
     ],
     templateUrl: './evaluacion-form-calificacion.component.html',
     styleUrl: './evaluacion-form-calificacion.component.scss',
 })
 export class EvaluacionFormCalificacionComponent {
+    @Output() rubricaSelectedChange = new EventEmitter()
     @Input() tituloEvaluacion: string = 'Sin título de evaluación'
     @Input() calificacionForm: FormGroup
+    @Input() rubricaSelected = null
+    @Input({ required: true }) params = {
+        iCursoId: null,
+        iDocenteId: null,
+        idDocCursoId: null,
+    }
 
     public instrumentosEvaluacion = []
     public instrumentoEvaluacionOpciones = [

@@ -22,3 +22,15 @@
     flex: 1;
     margin: 0 10px;
 }
+
+//p-element p-inputgroup-addon
+:host ::ng-deep .p-element {
+    border-radius: 5px;
+    //margin: 1px;
+}
+::ng-deep .p-dialog-header {
+    background-color: #0e4194;
+    color: white; /* Cambia el color del texto si necesitas mejor contraste */
+    padding: 20px; /* Opcional: añade un poco de espacio alrededor del contenido */
+    border-radius: 5px; /* Opc*/
+}

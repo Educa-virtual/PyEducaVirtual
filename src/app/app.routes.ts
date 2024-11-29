@@ -2,9 +2,10 @@ import { Routes } from '@angular/router'
 
 import { LoginComponent } from './shared/login/login.component'
 
-import { NotfoundComponent } from './demo/components/notfound/notfound.component'
 import { VerificacionComponent } from './shared/verificacion/verificacion.component'
 import { InicioComponent } from './sistema/inicio/inicio.component'
+import { NotfoundComponent } from './shared/notfound/notfound.component'
+import { RecoverPasswordComponent } from './shared/recover-password/recover-password.component'
 
 export const routes: Routes = [
     { path: '', component: InicioComponent },
@@ -12,60 +13,6 @@ export const routes: Routes = [
         path: '',
 
         children: [
-            {
-                path: '',
-
-                loadChildren: () =>
-                    import('./demo/components/dashboard/dashboard.module').then(
-                        (m) => m.DashboardModule
-                    ),
-            },
-
-            {
-                path: 'uikit',
-
-                loadChildren: () =>
-                    import('./demo/components/uikit/uikit.module').then(
-                        (m) => m.UIkitModule
-                    ),
-            },
-
-            {
-                path: 'utilities',
-
-                loadChildren: () =>
-                    import('./demo/components/utilities/utilities.module').then(
-                        (m) => m.UtilitiesModule
-                    ),
-            },
-
-            {
-                path: 'documentation',
-
-                loadChildren: () =>
-                    import(
-                        './demo/components/documentation/documentation.module'
-                    ).then((m) => m.DocumentationModule),
-            },
-
-            {
-                path: 'blocks',
-
-                loadChildren: () =>
-                    import(
-                        './demo/components/primeblocks/primeblocks.module'
-                    ).then((m) => m.PrimeBlocksModule),
-            },
-
-            {
-                path: 'pages',
-
-                loadChildren: () =>
-                    import('./demo/components/pages/pages.module').then(
-                        (m) => m.PagesModule
-                    ),
-            },
-
             {
                 path: 'docente',
 
@@ -87,12 +34,16 @@ export const routes: Routes = [
                 loadChildren: () =>
                     import('./sistema/evaluaciones/evaluaciones.routes'),
             },
-        ],
-    },
-    {
-        path: 'roles',
+            // Ruta de Especialista
+            {
+                path: 'especialista-ugel',
 
-        loadChildren: () => import('./sistema/roles/roles.routes'),
+                loadChildren: () =>
+                    import(
+                        './sistema/especialista-ugel/especialista-ugel.routes'
+                    ),
+            },
+        ],
     },
     {
         path: 'especialista-ugel',
@@ -105,6 +56,8 @@ export const routes: Routes = [
 
     { path: 'verificacion', component: VerificacionComponent },
 
+    { path: 'recover-password', component: RecoverPasswordComponent },
+
     {
         path: 'configuracion',
 
@@ -113,23 +66,13 @@ export const routes: Routes = [
                 (m) => m.ConfiguracionModule
             ),
     },
-
     {
-        path: 'auth',
+        path: 'gestion-institucional',
 
         loadChildren: () =>
-            import('./demo/components/auth/auth.module').then(
-                (m) => m.AuthModule
-            ),
-    },
-
-    {
-        path: 'landing',
-
-        loadChildren: () =>
-            import('./demo/components/landing/landing.module').then(
-                (m) => m.LandingModule
-            ),
+            import(
+                './sistema/gestion-institucional/gestion-institucional.module'
+            ).then((m) => m.GestionInstitucionalModule),
     },
 
     {

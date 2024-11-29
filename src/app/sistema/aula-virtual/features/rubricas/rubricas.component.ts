@@ -1,4 +1,12 @@
-import { Component, inject, OnInit, OnDestroy, Input } from '@angular/core'
+import {
+    Component,
+    inject,
+    OnInit,
+    OnDestroy,
+    Input,
+    Output,
+    EventEmitter,
+} from '@angular/core'
 import { RubricasModule } from './rubricas.module'
 import {
     IActionTable,
@@ -7,9 +15,11 @@ import {
 import { DialogService } from 'primeng/dynamicdialog'
 import { RubricaFormComponent } from './components/rubrica-form/rubrica-form.component'
 import { MODAL_CONFIG } from '@/app/shared/constants/modal.config'
-import { ApiEvaluacionesService } from '@/app/sistema/evaluaciones/services/api-evaluaciones.service'
+
 import { Subject, takeUntil } from 'rxjs'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
+import { ConstantesService } from '@/app/servicios/constantes.service'
+import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-evaluaciones.service'
 
 const SELECTION_ACTION: IActionTable = {
     labelTooltip: 'Seleccionar',
@@ -27,7 +37,16 @@ const SELECTION_ACTION: IActionTable = {
     styleUrl: './rubricas.component.scss',
 })
 export class RubricasComponent implements OnInit, OnDestroy {
+    @Output() rubricaSelectedChange = new EventEmitter()
+    @Input() public rubricaSelected = null
     @Input() mode: 'SELECTION' | 'NORMAL' = 'NORMAL'
+    @Input() title: string = 'Rubricas'
+    @Input({ required: true }) params = {
+        iCursoId: null,
+        iDocenteId: null,
+        idDocCursoId: null,
+    }
+
     public columnasTabla: IColumn[] = [
         {
             type: 'text',
@@ -72,12 +91,16 @@ export class RubricasComponent implements OnInit, OnDestroy {
     ]
 
     public data = []
+
     private _dialogService = inject(DialogService)
     private _evaluacionApiService = inject(ApiEvaluacionesService)
     private _unsubscribe$ = new Subject<boolean>()
     private _confirmService = inject(ConfirmationModalService)
+    private _constantesService = inject(ConstantesService)
 
     ngOnInit() {
+        this.params.iDocenteId = this._constantesService.iDocenteId
+
         this.getData()
         if (this.mode === 'SELECTION') {
             this.accionesTabla.unshift(SELECTION_ACTION)
@@ -90,7 +113,7 @@ export class RubricasComponent implements OnInit, OnDestroy {
 
     obtenerRubricas() {
         this._evaluacionApiService
-            .obtenerRubricas({})
+            .obtenerRubricas(this.params)
             .pipe(takeUntil(this._unsubscribe$))
             .subscribe({
                 next: (data) => {
@@ -109,6 +132,8 @@ export class RubricasComponent implements OnInit, OnDestroy {
             ...MODAL_CONFIG,
             header,
             data: {
+                iCursoId: this.params.iCursoId,
+                idDocCursoId: this.params.idDocCursoId,
                 rubrica: item,
             },
         })
@@ -120,7 +145,7 @@ export class RubricasComponent implements OnInit, OnDestroy {
 
     public onActionBtn({ accion, item }) {
         if (accion === 'seleccionar') {
-            this.agregarActualizarEvaluacionModal(item)
+            this.seleccionarItem(item)
         }
         if (accion === 'eliminar') {
             this.confirmarEliminar(item)
@@ -128,6 +153,11 @@ export class RubricasComponent implements OnInit, OnDestroy {
         if (accion === 'editar') {
             this.agregarActualizarEvaluacionModal(item)
         }
+    }
+
+    seleccionarItem(item) {
+        this.rubricaSelected = item
+        this.rubricaSelectedChange.emit(item)
     }
 
     confirmarEliminar(item) {

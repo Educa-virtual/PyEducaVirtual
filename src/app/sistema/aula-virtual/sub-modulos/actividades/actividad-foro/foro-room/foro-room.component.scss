@@ -5,15 +5,16 @@
 :host ::ng-deep .actividad-tabs .p-tabview-nav {
     display: flex;
     justify-content: space-between;
+    // position: fixed;
+    // background-color: white;
 }
 
 :host ::ng-deep .actividad-tabs .p-tabview-nav li {
     flex: 1;
 }
-
 :host ::ng-deep .actividad-tabs .p-tabview-nav li a {
     text-align: center;
-    width: 100%;
+    //width: 100%;
     display: block;
     color: inherit;
 }
@@ -22,76 +23,159 @@
     color: var(--primary-color);
 }
 
+:host ::ng-deep .cdk-drop-list {
+    max-height: 400px;
+    border: none;
+}
+
 :host ::ng-deep .p-tabview .p-tabview-panels {
     background-color: transparent;
     padding-inline: 0;
     padding-block-end: 0;
 }
-/************************/
-.container {
+/*para el borde de la lista*/
+:host ::ng-deep .perfiles-list-item {
     display: flex;
-    gap: 20px; /* Espacio entre las columnas */
-    height: 420px;
-    flex-wrap: wrap;
-    justify-content: space-between;
+    border-radius: 8px; /* Radio del borde */
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 1px 1px 1px 1px;
+    //width: 100%;
+    //box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra para dar profundidad */
 }
-.card1 {
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    padding: 20px;
-    width: 58%; /* Para que ambas columnas ocupen igual espacio */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    height: 100%;
-}
-.card2 {
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    padding: 20px;
-    width: 40%; /* Para que ambas columnas ocupen igual espacio */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    height: 100%;
-}
-.card3 {
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    padding: 20px;
-    width: 100%; /* Para que ambas columnas ocupen igual espacio */
-    height: 100%;
-}
-@media (max-width: 768px) {
-    .card1 {
-        width: 100%;
+
+//listar perfiles de estudiantes:
+:host ::ng-deep .perfilesList {
+    border-radius: 8px; /* Radio del borde */
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 1px 1px 1px 1px;
+    width: 100%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra para dar profundidad */
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+
+    img {
+        width: 150px;
+        box-shadow:
+            0 3px 6px rgba(0, 0, 0, 0.16),
+            0 3px 6px rgba(0, 0, 0, 0.23);
+        margin-right: 2rem;
     }
-    .card2 {
-        width: 100%;
-    }
-    .card3 {
-        width: 100%;
-    }
+
+    // .product-list-detail {
+    //     flex: 1 1 0;
+    // }
+
+    // .p-rating {
+    //     margin: 0 0 0.5rem 0;
+    // }
+
+    // .product-price {
+    //     font-size: 1.5rem;
+    //     font-weight: 600;
+    //     margin-bottom: 0.5rem;
+    //     align-self: flex-end;
+    // }
+
+    // .product-list-action {
+    //     display: flex;
+    //     flex-direction: column;
+    // }
+
+    // .p-button {
+    //     margin-bottom: 0.5rem;
+    // }
 }
+
+/************************/
+// .container {
+//     display: flex;
+//     //gap: 20px; /* Espacio entre las columnas */
+//     height: 900px;
+//     flex-wrap: wrap;
+//     justify-content: space-between;
+// }
+//-----------------------SCSS DE COMENTARIOS--------------
 .list {
     height: 1000px;
+    border: #007bff;
 }
 :host ::ng-deep .list .p-orderlist-controls {
     display: none;
-    height: 100%;
+    height: 600px;
 }
 
 :host ::ng-deep .list .p-orderlist-list-container {
-    height: 100%;
+    height: auto;
+}
+:host ::ng-deep .list .p-orderlist-list {
+    max-height: 550px; /* Define la altura máxima deseada */
+    overflow-y: auto; /* Agrega la barra de desplazamiento en el eje vertical */
+}
+//----------------------SCSS DE ALUMNOS
+.listAlumno {
+    height: 1000px;
+}
+:host ::ng-deep .listAlumno .p-orderlist-controls {
+    display: none;
+    height: 600px;
 }
 
+:host ::ng-deep .listAlumno .p-orderlist-list-container {
+    height: 600px;
+}
+:host ::ng-deep .listAlumno .p-orderlist-list {
+    max-height: 550px; /* Define la altura máxima deseada */
+    overflow-y: auto; /* Agrega la barra de desplazamiento en el eje vertical */
+}
+//sticky-header ng-star-inserted
+// :host ::ng-deep .sticky-header {
+//     background-color: #0056b3;
+// }
+//class="perfiles-list-item text-left"
+
+// :host ::ng-deep .list .p-orderlist-header {
+//     background-color: #f8f9fa;
+//     font-weight: bold;
+//     padding: 1%;
+//     position: sticky;
+//     top: 0;
+//     z-index: 1000; /* Asegúrate de que la cabecera esté por encima de los elementos */
+//     border-bottom: 1px solid #ddd;
+// }
 /**********************************/
 .comment-container {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    max-width: 100%; /* Ancho máximo de la barra */
+    width: 100%; /* Ancho máximo de la barra */
     padding: 10px;
     background-color: #f0f0f0;
     border-radius: 5px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
+/*--------------------------sub comentarios--------------------------*/
+
+.comment-container-Rpd {
+    display: flex;
+    width: 100%; /* Ancho máximo de la barra */
+    padding: 10px;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+.inputRpd {
+    flex: 1; /* Toma el máximo espacio disponible */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 10px;
+    font-size: 16px;
+    width: 100%;
+}
+/*--------------------------sub comentarios--------------------------*/
 
 .comment-input {
     flex: 1; /* Toma el máximo espacio disponible */
@@ -118,12 +202,238 @@
 }
 
 /* Adaptabilidad para pantallas pequeñas */
-@media (max-width: 600px) {
-    .comment-container {
-        flex-direction: column;
+// @media (max-width: 600px) {
+//     .comment-container {
+//         flex-direction: column;
+//     }
+//     .comment-input {
+//         margin-right: 0;
+//         margin-bottom: 10px;
+//     }
+// }
+//class="perfiles-list-item text-left"
+:host ::ng-deep .btCalificacion {
+    display: flex;
+    width: auto;
+    background-color: #f8f9fa;
+}
+/*para que remarque el contorno de los comentarios*/
+:host ::ng-deep .btnContorno .p-ripple {
+    width: 100%;
+}
+
+:host ::ng-deep {
+    // .p-dropdown {
+    //     width: 10rem;
+    //     font-weight: normal;
+    // }
+
+    .perfil-name {
+        font-size: 0.9rem;
+        font-weight: bold;
     }
-    .comment-input {
-        margin-right: 0;
-        margin-bottom: 10px;
+
+    .perfil-description {
+        line-height: 1rem;
+        margin: 0 0 0.2rem 0;
+    }
+
+    .product-category-icon {
+        vertical-align: middle;
+        margin-right: 0.5rem;
+    }
+
+    .product-category {
+        font-weight: 600;
+        vertical-align: middle;
+    }
+
+    .perfiles-list-item {
+        display: flex;
+        align-items: center;
+        padding: 1rem;
+        width: 100%;
+
+        img {
+            width: 150px;
+            box-shadow:
+                0 3px 6px rgba(0, 0, 0, 0.16),
+                0 3px 6px rgba(0, 0, 0, 0.23);
+            margin-right: 2rem;
+        }
+
+        .product-list-detail {
+            flex: 1 1 0;
+        }
+
+        .p-rating {
+            margin: 0 0 0.5rem 0;
+        }
+
+        .product-price {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            align-self: flex-end;
+        }
+
+        .product-list-action {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .p-button {
+            margin-bottom: 0.5rem;
+        }
+    }
+}
+
+:host ::ng-deep .p-button:focus {
+    outline: 0 none;
+    outline-offset: 0px;
+    box-shadow: none;
+}
+/*---------------------------------------------*/
+.toggle-link {
+    color: #007bff;
+    cursor: pointer;
+    font-size: 0.9rem;
+    margin-left: 5px;
+}
+.reply-button {
+    margin-top: 0.5rem;
+    color: #007bff;
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-size: 0.9rem;
+}
+
+.reply-container {
+    display: flex;
+    align-items: center;
+    margin-top: 0.5rem;
+    flex-direction: column;
+    align-items: flex-end; /* Alinea elementos al inicio horizontalmente */
+}
+
+.reply-container .comment-input {
+    flex: 1;
+    margin-right: 0.5rem;
+}
+
+.reply-container .send-button {
+    padding: 0.5rem 1rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    align-self: flex-start; /* Alinea el botón a la izquierda */
+}
+.button-container {
+    display: flex;
+    margin-top: 10px; /* Espacio entre el editor y el botón */
+}
+
+.reply {
+    margin-left: 1rem;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+/*texto enriquecido*/
+
+//class="p-editor-container" ng-star-inserted
+:host ::ng-deep .p-editor-container {
+    width: auto;
+}
+// control del del 100% de p-editor
+:host ::ng-deep .comment-container .ng-star-inserted {
+    width: 100%;
+}
+
+/*--------*/
+.TituloForo {
+    font-family: sans-serif;
+    font-size: 20px;
+    color: #2a2c34;
+    font-weight: bold;
+}
+.TituloCurso {
+    font-family: sans-serif;
+    font-size: 18px;
+    color: #2a2c34;
+    margin: 5px;
+}
+:host ::ng-deep .p-element {
+    margin: 0px;
+    border: none;
+}
+:host ::ng-deep .header .p-element {
+    position: sticky;
+    top: 0; /* Fijo en la parte superior */
+    background-color: white; /* Fondo para evitar superposiciones visuales */
+    z-index: 10; /* Asegura que esté encima del contenido */
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    background-color: red;
+    color: red;
+}
+
+/*El icono de los perfiles de los comentarios y participantes*/
+.btn {
+    border-radius: 50%; /* Si quieres hacerla circular */
+}
+//inputSearch
+.inputSearch {
+    width: 100%;
+    border: 1px solid #efefef;
+}
+.btn-calificar-comentario {
+    display: flex;
+    margin-left: auto;
+}
+//p-tabview-nav
+// :host ::ng-deep .p-tabview-nav {
+//     position: fixed;
+//     top: 40px; /* Fijo en la parte superior */
+//     width: auto; /* Ocupa todo el ancho */
+//     z-index: 10; /* Asegura que esté sobre el contenido */
+//     background-color: white; /* Fondo para evitar superposiciones */
+//     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* Sombra para mejor visibilidad */
+//     color: red;
+// }
+.highlight {
+    background-color: #f0f8ff; /* Color de fondo para el comentario destacado */
+    border-left: 4px solid #007bff; /* Línea indicativa a la izquierda */
+}
+.selected {
+    cursor: pointer; /* Cambia el cursor al pasar el mouse */
+    color: black;
+}
+//perfiles-list-item text-left
+
+.actions-container {
+    display: flex;
+    //justify-content: space-between; /* Asegura que los elementos estén separados */
+    // align-items: center; /* Centra verticalmente los elementos */
+    //position: relative;
+    //width: 100%;
+}
+
+.menu-container {
+    margin-left: auto; /* Empuja el menú al extremo derecho */
+    display: flex;
+    // align-items: center;
+}
+.p-menu {
+    z-index: 1000;
+}
+:host ::ng-deep p-inputGroupAddon {
+    background-color: var(--bg-header-modal) !important;
+    color: var(--primary-color-text) !important;
+    i {
+        color: var(--primary-color-text) !important;
     }
 }

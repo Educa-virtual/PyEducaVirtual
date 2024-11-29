@@ -1,14 +1,30 @@
-<div class="flex flex-column md:flex-row gap-2 justify-content-between mb-4">
-    <h2 class="text-2xl font-bold">Preguntas {{ tituloEvaluacion }}</h2>
-    <button
-        pButton
-        class="p-button-primary gap-2"
-        (click)="menuAgregacionPreguntas.toggle($event)"
-        size="small"
-    >
-        <i class="pi pi-plus"></i>
-        <span class="text-md">Agregar Pregunta</span>
-    </button>
+<div
+    class="flex flex-column md:flex-row gap-2 justify-content-between items-center mb-4"
+>
+    <h2 class="text-2xl font-bold text-left">
+        Preguntas {{ tituloEvaluacion }}
+    </h2>
+    <div class="flex gap-2">
+        <button
+            pButton
+            class="p-button-primary gap-2"
+            (click)="generarWordEvaluacion()"
+            size="small"
+        >
+            <i class="pi pi-upload"></i>
+            <span class="text-md">Exportar Word</span>
+        </button>
+        <button
+            pButton
+            class="p-button-primary gap-2"
+            (click)="menuAgregacionPreguntas.toggle($event)"
+            [disabled]="mode === 'VIEW'"
+            size="small"
+        >
+            <i class="pi pi-plus"></i>
+            <span class="text-md">Agregar Preguntas</span>
+        </button>
+    </div>
 </div>
 
 <app-banco-pregunta-lista
@@ -41,6 +57,8 @@
         <!-- las preguntas seleccionadas -->
         <app-aula-banco-preguntas
             [mode]="'SELECTION'"
+            [iEvaluacionId]="iEvaluacionId"
+            [iCursoId]="iCursoId"
             (selectedRowDataChange)="selectedRowDataChange($event)"
         />
     }
@@ -67,3 +85,7 @@
         ></button>
     </div>
 </p-dialog>
+<app-preguntas-form
+    [showModalPreguntas]="showModalPreguntas"
+    (accionBtnItem)="accionBtnItem($event)"
+></app-preguntas-form>

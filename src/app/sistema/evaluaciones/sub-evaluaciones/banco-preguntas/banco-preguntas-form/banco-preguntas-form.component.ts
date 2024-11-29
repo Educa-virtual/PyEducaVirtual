@@ -34,6 +34,7 @@ import {
 } from './pregunta-lista-columns'
 import { provideIcons } from '@ng-icons/core'
 import { matListAlt } from '@ng-icons/material-icons/baseline'
+import { PrimengModule } from '@/app/primeng.module'
 
 const preguntaFormInfoDefaultValues = {
     iPreguntaId: generarIdAleatorio(),
@@ -62,6 +63,7 @@ const alternativasLabel = {
         BancoPreguntaEncabezadoFormComponent,
         BancoPreguntasModule,
         ReactiveFormsModule,
+        PrimengModule,
     ],
     templateUrl: './banco-preguntas-form.component.html',
     styleUrl: './banco-preguntas-form.component.scss',
@@ -79,7 +81,8 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
     @Input() public columnasPreguntas = columnasListaPreguntaForm
     @Input() public accionesPreguntas = accionesTablaListaPreguntaForm
     private _pregunta
-
+    private _FormBuilder = inject(FormBuilder)
+    // si envia la pregunta se hace el patch del formulario
     @Input()
     set pregunta(pregunta) {
         if (pregunta === undefined) {
@@ -145,7 +148,7 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
     public preguntasEliminar = []
 
     ngOnInit() {
-        // escuchar cambio tip pregunta
+        // escuchar cambio tipo pregunta
         this.listenTipoPregunta()
         // Llenar el formulario paso 1 basado en la seleccion de la cabecera.
         this.bancoPreguntasForm
@@ -182,6 +185,7 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
         return this.bancoPreguntasForm.get('0')
     }
 
+    // escuchar cambio tipo pregunta
     private listenTipoPregunta() {
         this.formPreguntaInfo
             .get('iTipoPregId')
@@ -200,12 +204,14 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
             })
     }
 
+    // agrega o quita la pregunta única
     private handleSinEncabezado() {
         this.agregarQuitarValidacionesFormPregunta('AGREGAR')
         this.agregarQuitarValidacionesEncabezado('QUITAR')
         this.agregarQuitarAlternativasPaso('AGREGAR')
     }
 
+    // agrega o quita el paso alternativas
     private handleConEncabezado() {
         this.agregarQuitarAlternativasPaso('QUITAR')
         this.agregarQuitarValidacionesEncabezado('AGREGAR')
@@ -563,4 +569,18 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
         this.unsubscribe$.next(true)
         this.unsubscribe$.complete()
     }
+
+    formPreguntas = this._FormBuilder.group({
+        cEvaluacionDescripcion: [''],
+
+        iTipoPreguntaId: [''],
+        cPeso: [''],
+        cHrs: [''],
+        cMin: [''],
+        cSeg: [''],
+        cEnunciado: [''],
+        cCorrecto: [''],
+        cEnunciadoPregunta: [''],
+    })
+    agregarPregunta() {}
 }

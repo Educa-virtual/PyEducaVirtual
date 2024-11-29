@@ -59,7 +59,7 @@ export class AppTopBarComponent implements OnInit {
 
         const perfil = this.store.getItem('dremoPerfil')
         this.perfiles = user.perfiles
-
+        console.log(this.perfiles)
         const perfil_data = {
             iPerfilId: 0,
             cPerfilNombre: '-',
@@ -118,4 +118,22 @@ export class AppTopBarComponent implements OnInit {
                 break
         }
     }
+
+    items = [
+        {
+            label: 'Notificaciones',
+            items: [
+                {
+                    label: 'Julio Salazar creó la tarea "Descubrimiento de América ..."',
+                    icon: 'pi pi-book',
+                    sublabel: 'Hace 1 día',
+                },
+                {
+                    label: 'Roberto comentó la publicación de Julio ...',
+                    icon: 'pi pi-book',
+                    sublabel: 'Hace 1 mes',
+                },
+            ],
+        },
+    ]
 }

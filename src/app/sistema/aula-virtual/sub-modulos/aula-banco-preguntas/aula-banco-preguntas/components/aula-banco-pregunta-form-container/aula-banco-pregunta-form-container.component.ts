@@ -1,3 +1,4 @@
+import { ConstantesService } from '@/app/servicios/constantes.service'
 import { ApiAulaBancoPreguntasService } from '@/app/sistema/aula-virtual/services/api-aula-banco-preguntas.service'
 import { sinEncabezadoObj } from '@/app/sistema/evaluaciones/sub-evaluaciones/banco-preguntas/components/banco-pregunta-encabezado-form/banco-pregunta-encabezado-form.component'
 import {
@@ -21,7 +22,8 @@ export class AulaBancoPreguntaFormContainerComponent implements OnInit {
     private _config = inject(DynamicDialogConfig)
     private _ref = inject(DynamicDialogRef)
     private _aulaBancoPreguntasService = inject(ApiAulaBancoPreguntasService)
-
+    private iEvaluacionId = null
+    private _constantesService = inject(ConstantesService)
     private unsubscribe$: Subject<boolean> = new Subject()
 
     public encabezados = []
@@ -30,7 +32,11 @@ export class AulaBancoPreguntaFormContainerComponent implements OnInit {
 
     public modePregunta: 'CREAR' | 'EDITAR' = 'CREAR'
     public encabezadoMode: 'COMPLETADO' | 'EDITAR' = 'EDITAR'
-    private params = {}
+    private params = {
+        iCursoId: null,
+        iCurrContId: null,
+        iEvaluacionId: 0,
+    }
 
     constructor() {
         this.inicializarFormulario()
@@ -41,6 +47,9 @@ export class AulaBancoPreguntaFormContainerComponent implements OnInit {
         this.tipoPreguntas = this._config.data.tipoPreguntas.filter((item) => {
             return item.iTipoPregId !== 0
         })
+        this.params.iEvaluacionId = this._config.data.iEvaluacionId ?? 0
+        this.params.iCursoId = this._config.data.iCursoId
+        this.params.iCurrContId = this._constantesService.iCurrContId
 
         if (this._config.data.pregunta.iPreguntaId == 0) {
             this.modePregunta = 'CREAR'
@@ -59,9 +68,8 @@ export class AulaBancoPreguntaFormContainerComponent implements OnInit {
     obtenerEncabezados() {
         const params = {
             iCursoId: this._config.data.iCursoId,
-            iNivelCicloId: 1,
-            iEspecialistaId: 1,
-            iDocenteId: 1,
+            iNivelCicloId: this._constantesService.iNivelCicloId,
+            iDocenteId: this._constantesService.iDocenteId,
         }
         this._aulaBancoPreguntasService
             .obtenerEncabezadosPreguntas(params)
@@ -102,6 +110,8 @@ export class AulaBancoPreguntaFormContainerComponent implements OnInit {
     obtenerPreguntasPorEncabezado(iEncabPregId) {
         const params = {
             iEncabPregId,
+            iCursoId: this.params.iCursoId,
+            iDocenteId: this._constantesService.iDocenteId,
         }
         this._aulaBancoPreguntasService
             .obtenerBancoPreguntas(params)
@@ -109,18 +119,20 @@ export class AulaBancoPreguntaFormContainerComponent implements OnInit {
             .subscribe({
                 next: (data) => {
                     if (data.length > 0) {
-                        this.pregunta = undefined
-                        this.pregunta = data[0]
+                        this.pregunta = data
+                        console.log(data)
                     }
                 },
             })
     }
 
     guardarBancoPreguntas(data) {
-        data.iNivelCicloId = 1
-        data.iDocenteId = 1
-        data.iCursoId = 1
-        data.iCurrContId = 1
+        data.iNivelCicloId = this._constantesService.iNivelCicloId
+        data.iDocenteId = this._constantesService.iDocenteId
+        data.iCursoId = this.params.iCursoId
+        data.iCurrContId = this.params.iCurrContId
+        // el iEvaluacionId es usado para agregrarlo directamntee a eval.preguntas si no es 0
+        data.iEvaluacionId = this.params.iEvaluacionId
         this._aulaBancoPreguntasService
             .guardarActualizarPreguntaConAlternativas(data)
             .subscribe({

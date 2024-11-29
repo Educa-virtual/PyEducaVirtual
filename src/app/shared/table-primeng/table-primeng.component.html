@@ -18,32 +18,39 @@
     class="hoverTable"
     [dataKey]="dataKey"
     [expandedRowKeys]="expandedRowKeys"
+    [selectionMode]="selectionMode"
 >
     <ng-container *ngIf="showCaption">
         <ng-template pTemplate="caption">
-            <div
-                class="flex justify-content-between gap-2 flex-column sm:flex-row flex-wrap"
-            >
-                <p-iconField iconPosition="left">
-                    <p-inputIcon styleClass="pi pi-search text-md" />
-                    <input
-                        pInputText
-                        type="text"
-                        class="py-2"
-                        (input)="
-                            dt.filterGlobal(
-                                $any($event.target).value,
-                                'contains'
-                            )
-                        "
-                        placeholder="Buscar palabra clave"
-                    />
-                </p-iconField>
-                <ng-content select="[slot='caption-content']"></ng-content>
-                <app-table-column-filter
-                    [columns]="columnas"
-                    (columnsChange)="onColumnSelected($event)"
-                ></app-table-column-filter>
+            <div class="grid">
+                <div class="col-10" style="margin-left: -0.5rem">
+                    <p-inputGroup>
+                        <p-inputGroupAddon
+                            ><i class="pi pi-search"></i
+                        ></p-inputGroupAddon>
+                        <input
+                            pInputText
+                            [placeholder]="placeholder"
+                            (input)="
+                                dt.filterGlobal(
+                                    $any($event.target).value,
+                                    'contains'
+                                )
+                            "
+                        />
+                    </p-inputGroup>
+                </div>
+                <div class="col-2 align-content-center">
+                    <div class="flex flex-wrap gap-2 justify-content-end">
+                        <ng-content
+                            select="[slot='caption-content']"
+                        ></ng-content>
+                        <app-table-column-filter
+                            [columns]="columnas"
+                            (columnsChange)="onColumnSelected($event)"
+                        ></app-table-column-filter>
+                    </div>
+                </div>
             </div>
         </ng-template>
     </ng-container>
@@ -127,6 +134,11 @@
                     }
                     @if (col.type === 'checkbox') {
                         <p-tableCheckbox [value]="rowData" />
+                    }
+                    @if (col.type === 'date') {
+                        <div [style.text-align]="col.text">
+                            {{ rowData[col.field] | date: 'dd/MM/YYYY' }}
+                        </div>
                     }
                     @if (col.type === 'radio') {
                         <p-tableRadioButton
@@ -223,6 +235,77 @@
                                 ></i>
                             }
                         </div>
+                    }
+                    @if (col.type === 'list_json_file') {
+                        @if (rowData[col.field].length) {
+                            <div class="flex">
+                                @for (
+                                    item of rowData[col.field];
+                                    track $index
+                                ) {
+                                    <div>
+                                        <p-button
+                                            [text]="true"
+                                            severity="secondary"
+                                            class="p-col-12"
+                                            (onClick)="openFile(item)"
+                                        >
+                                            @switch (item.type) {
+                                                @case (1) {
+                                                    <i
+                                                        [pTooltip]="item.name"
+                                                        tooltipPosition="top"
+                                                        class="pi pi-upload"
+                                                        style="color: #333437"
+                                                    ></i>
+                                                }
+                                                @case (2) {
+                                                    <i
+                                                        [pTooltip]="item.name"
+                                                        tooltipPosition="top"
+                                                        class="pi pi-link"
+                                                        style="color: #333437"
+                                                    ></i>
+                                                }
+                                                @case (3) {
+                                                    <i
+                                                        [pTooltip]="item.name"
+                                                        tooltipPosition="top"
+                                                        class="pi pi-youtube"
+                                                        style="color: #c4302b"
+                                                    ></i>
+                                                }
+                                                @case (4) {
+                                                    <i
+                                                        [pTooltip]="item.name"
+                                                        tooltipPosition="top"
+                                                        class="pi pi-folder"
+                                                        style="color: #ffd04b"
+                                                    ></i>
+                                                }
+                                                @case (5) {
+                                                    <p-image
+                                                        [src]="
+                                                            backend +
+                                                            '/' +
+                                                            item.ruta
+                                                        "
+                                                        alt="Image"
+                                                        width="15"
+                                                        [preview]="true"
+                                                        (onImageError)="
+                                                            updateUrl(item)
+                                                        "
+                                                    />
+                                                }
+                                            }
+                                        </p-button>
+                                    </div>
+                                }
+                            </div>
+                        } @else {
+                            -
+                        }
                     }
                 </td>
             }

@@ -20,6 +20,12 @@ p-button {
     color: #fff;
 }
 
+:host ::ng-deep .p-dialog-content {
+    display: flex;
+    flex-direction: column;
+    padding: 2rem 1.5rem 2rem 1.5rem !important;
+}
+
 :host ::ng-deep p-dialog:first-child .p-dialog-header {
     background-color: #3e67a9;
     color: #fff;

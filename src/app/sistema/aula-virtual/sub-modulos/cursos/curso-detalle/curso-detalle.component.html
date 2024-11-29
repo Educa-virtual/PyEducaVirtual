@@ -1,29 +1,31 @@
 <section class="flex flex-column gap-4">
-    <!-- <p-breadcrumb class="max-w-full" [model]="items">
-        <ng-template pTemplate="item" let-item>
-            <ng-container *ngIf="item.route; else elseBlock">
-                <a [routerLink]="item.route" class="p-menuitem-link">
-                    <span
-                        [ngClass]="[item.icon ? item.icon : '', 'text-color']"
-                    ></span>
-                    <span class="text-primary font-semibold">{{
-                        item.label
-                    }}</span>
-                </a>
-            </ng-container>
-            <ng-template #elseBlock>
-                <a [href]="item.url">
-                    <span class="text-color">{{ item.label }}</span>
-                </a>
-            </ng-template>
-        </ng-template>
-    </p-breadcrumb> -->
-
     <div class="flex flex-column">
+        <div class="grid">
+            <p-toolbar class="col-12">
+                <div class="block">
+                    <h2 class="text-primary text-white font-bold block">
+                        {{ curso?.cNivelNombreCursos.toUpperCase() }} :
+                        {{ curso?.cCursoNombre }}
+                    </h2>
+                    <div class="text-primary text-white font-bold block">
+                        Nivel: {{ curso?.cNivelTipoNombre }} | Ciclo:
+                        {{ curso?.cCicloRomanos }} | Grado:
+                        {{ curso?.cGradoAbreviacion }} | Seccion:
+                        {{ curso?.cSeccion }}
+                    </div>
+                </div>
+                <div class="p-toolbar-group-end">
+                    <p-button
+                        icon="pi pi-undo"
+                        [rounded]="true"
+                        pTooltip="Regresar"
+                        tooltipPosition="top"
+                        [routerLink]="['..']"
+                    />
+                </div>
+            </p-toolbar>
+        </div>
         <div class="flex justify-content-between">
-            <h1>
-                {{ curso?.cCursoNombre }}
-            </h1>
             <p-menu #menu [model]="items" [popup]="true">
                 <ng-template pTemplate="start">
                     <app-curso-detalle-navigation
@@ -31,15 +33,13 @@
                         (tabChange)="updateTab($event); menu.toggle(null)"
                     />
                 </ng-template>
-                <ng-template pTemplate="item" let-item></ng-template>
+                <ng-template pTemplate="end" let-item></ng-template>
             </p-menu>
             <button class="p-link menu-button" (click)="menu.toggle($event)">
                 <i class="pi pi-bars"></i>
             </button>
         </div>
-        <div class="divider"></div>
     </div>
-
     <app-curso-detalle-navigation
         [actualTab]="tab"
         (tabChange)="updateTab($event)"
@@ -61,11 +61,9 @@
             @case ('resultados') {
                 <app-tab-resultados></app-tab-resultados>
             }
-            @case ('banco-preguntas') {
-                <!-- <app-aula-banco-preguntas></app-aula-banco-preguntas> -->
-                <app-rubricas></app-rubricas>
+            @case ('asistencia') {
+                <app-asistencia></app-asistencia>
             }
-
             @default {}
         }
 

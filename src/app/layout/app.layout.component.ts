@@ -8,6 +8,7 @@ import { NgClass } from '@angular/common'
 import { AppConfigComponent } from './config/app.config.component'
 import { GlobalLoaderComponent } from '../shared/interceptors/global-loader/global-loader.component'
 import { ConfirmModalComponent } from '../shared/confirm-modal/confirm-modal/confirm-modal.component'
+import { BreadcrumbPrimengComponent } from '../shared/breadcrumb-primeng/breadcrumb-primeng.component'
 
 @Component({
     selector: 'app-layout',
@@ -21,6 +22,7 @@ import { ConfirmModalComponent } from '../shared/confirm-modal/confirm-modal/con
         AppConfigComponent,
         GlobalLoaderComponent,
         ConfirmModalComponent,
+        BreadcrumbPrimengComponent,
     ],
 })
 export class AppLayoutComponent implements OnDestroy {
@@ -157,9 +159,26 @@ export class AppLayoutComponent implements OnDestroy {
             'layout-static-inactive':
                 this.layoutService.state.staticMenuDesktopInactive &&
                 this.layoutService.config().menuMode === 'static',
+            // 'layout-static':
+            //     this.layoutService.state.staticMenuDesktopInactive &&
+            //     this.layoutService.config().menuMode === 'static',
+            // 'layout-static-inactive':
+            //     this.layoutService.state.staticMenuDesktopInactive &&
+            //     !this.layoutService.state.staticMenuToggle &&
+            //     this.layoutService.config().menuMode === 'static',
+            // 'layout-static-toggle':
+            //     this.layoutService.state.staticMenuDesktopInactive &&
+            //     this.layoutService.state.staticMenuToggle &&
+            //     this.layoutService.config().menuMode === 'static',
             'layout-overlay-active': this.layoutService.state.overlayMenuActive,
             'layout-mobile-active':
                 this.layoutService.state.staticMenuMobileActive,
+            // 'layout-mobile-inactive':
+            //     this.layoutService.state.staticMenuMobileActive && !this.layoutService.state.staticMenuToggle &&
+            //     this.layoutService.config().menuMode === 'static',
+            // 'layout-mobile-toggle':
+            //     this.layoutService.state.staticMenuMobileActive && this.layoutService.state.staticMenuToggle &&
+            //     this.layoutService.config().menuMode === 'static',
             'p-input-filled':
                 this.layoutService.config().inputStyle === 'filled',
             'p-ripple-disabled': !this.layoutService.config().ripple,

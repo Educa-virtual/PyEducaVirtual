@@ -4,11 +4,12 @@ import { ButtonModule } from 'primeng/button'
 import { MenuModule } from 'primeng/menu'
 import { PanelModule } from 'primeng/panel'
 import { ITabs, TabsKeys } from '../tabs/tab.interface'
+import { PrimengModule } from '@/app/primeng.module'
 
 @Component({
     selector: 'app-curso-detalle-navigation',
     standalone: true,
-    imports: [NgClass, PanelModule, MenuModule, ButtonModule],
+    imports: [NgClass, PanelModule, MenuModule, ButtonModule, PrimengModule],
     templateUrl: './curso-detalle-navigation.component.html',
     styleUrl: './curso-detalle-navigation.component.scss',
 })
@@ -40,10 +41,15 @@ export class CursoDetalleNavigationComponent implements OnInit {
                 tab: 'resultados',
             },
             {
-                title: '',
-                icon: 'pi pi-users',
-                tab: 'banco-preguntas',
+                title: 'Asistencia',
+                icon: 'pi pi-list',
+                tab: 'asistencia',
             },
+            // {
+            //     title: '',
+            //     icon: 'pi pi-users',
+            //     tab: 'banco-preguntas',
+            // },
         ]
     }
 

@@ -1,94 +1,65 @@
 import { IActividad } from '@/app/sistema/aula-virtual/interfaces/actividad.interface'
 import { CommonModule } from '@angular/common'
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
-import { provideIcons } from '@ng-icons/core'
-import { AccordionModule } from 'primeng/accordion'
-import { ButtonModule } from 'primeng/button'
-import { MenuModule } from 'primeng/menu'
-import { PanelModule } from 'primeng/panel'
 import {
-    matAssignment,
-    matDescription,
-    matFactCheck,
-    matForum,
-    matQuiz,
-    matVideocam,
-} from '@ng-icons/material-icons/baseline'
+    Component,
+    EventEmitter,
+    Input,
+    Output,
+    OnInit,
+    inject,
+} from '@angular/core'
+
 import { IconComponent } from '@/app/shared/icon/icon.component'
 import { ActividadConfigPipe } from '@/app/sistema/aula-virtual/pipes/actividad-config.pipe'
-import { MenuItem, MenuItemCommandEvent } from 'primeng/api'
-import { TActividadActions } from '@/app/sistema/aula-virtual/interfaces/actividad-actions.iterface'
+import { MenuItem } from 'primeng/api'
+import { PrimengModule } from '@/app/primeng.module'
+import { ConstantesService } from '@/app/servicios/constantes.service'
+import { IsIconTypePipe } from '@/app/shared/pipes/is-icon-type.pipe'
 
 @Component({
     selector: 'app-actividad-row',
     standalone: true,
     imports: [
         CommonModule,
-        AccordionModule,
-        MenuModule,
-        PanelModule,
-        ButtonModule,
         IconComponent,
         ActividadConfigPipe,
+        PrimengModule,
+        IsIconTypePipe,
     ],
     templateUrl: './actividad-row.component.html',
     styleUrl: './actividad-row.component.scss',
-    providers: [
-        provideIcons({
-            matFactCheck,
-            matQuiz,
-            matAssignment,
-            matDescription,
-            matForum,
-            matVideocam,
-        }),
-    ],
 })
 export class ActividadRowComponent implements OnInit {
     @Input({ required: true }) actividad: IActividad
     @Output() actionSelected = new EventEmitter<{
         actividad: IActividad
-        action: TActividadActions
+        action: string
     }>()
 
     public accionesActividad: MenuItem[] | undefined
 
+    private _constantesService = inject(ConstantesService)
+    iPerfilId: number = null
     ngOnInit() {
-        // todo: cambiar acciones por actividad y no en general
-        this.accionesActividad = [
-            {
-                label: 'Editar',
-                icon: 'pi pi-pencil',
-                command: (event: MenuItemCommandEvent) => {
-                    event.originalEvent.stopPropagation()
-                    this.actionSelected.emit({
-                        actividad: this.actividad,
-                        action: 'EDITAR',
-                    })
-                },
-            },
-            {
-                label: 'Eliminar',
-                icon: 'pi pi-trash',
-                command: (event: MenuItemCommandEvent) => {
-                    event.originalEvent.stopPropagation()
-                    this.actionSelected.emit({
-                        actividad: this.actividad,
-                        action: 'ELIMINAR',
-                    })
-                },
-            },
-            {
-                label: 'Ver',
-                icon: 'pi pi-eye',
-                command: (event: MenuItemCommandEvent) => {
-                    event.originalEvent.stopPropagation()
-                    this.actionSelected.emit({
-                        actividad: this.actividad,
-                        action: 'VER',
-                    })
-                },
-            },
-        ]
+        this.iPerfilId = this._constantesService.iPerfilId
+    }
+    onAction(action: string, event: Event) {
+        this.actionSelected.emit({ actividad: this.actividad, action })
+        event.stopPropagation()
+    }
+    obtenerStyleActividad(iEstadoActividad) {
+        let styleActividad = ''
+        switch (Number(iEstadoActividad)) {
+            case 1: //PROCESO
+                styleActividad = 'border-left:15px solid var(--green-500);'
+                break
+            case 2: //NO PUBLICADO
+                styleActividad = 'border-left:15px solid var(--yellow-500);'
+                break
+            case 0: //CULMINADO
+                styleActividad = 'border-left:15px solid var(--red-500);'
+                break
+        }
+        return styleActividad
     }
 }

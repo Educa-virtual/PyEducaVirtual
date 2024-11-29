@@ -137,6 +137,7 @@ export class SilaboComponent implements OnInit, OnDestroy {
                 this.dataSilabo.controls.iYAcadId.setValue(
                     '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe'
                 )
+                this.dataSilabo.controls.dtSilabo.setValue(null)
                 if (!this.dataSilabo.valid) {
                     this.messageService.add({
                         severity: 'error',

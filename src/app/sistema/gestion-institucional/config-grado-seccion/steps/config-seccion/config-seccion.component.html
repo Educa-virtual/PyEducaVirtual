@@ -1,1 +1,9 @@
-<p>config-seccion works!</p>
+<app-container-page
+    title="Registrar secciones"
+    [actions]="accionesPrincipal"
+    (accionBtnItem)="accionBtnItemTable($event)"
+>
+    <div class="card">
+        <p-steps [model]="items" [readonly]="false"></p-steps>
+    </div>
+</app-container-page>

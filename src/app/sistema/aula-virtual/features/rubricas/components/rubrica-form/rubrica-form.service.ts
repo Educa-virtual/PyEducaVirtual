@@ -1,7 +1,9 @@
 import { inject, Injectable } from '@angular/core'
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms'
 
-@Injectable()
+@Injectable({
+    providedIn: 'root',
+})
 export class RubricaFormService {
     rubricaForm: FormGroup
     private _formBuilder = inject(FormBuilder)
@@ -12,7 +14,7 @@ export class RubricaFormService {
         this.rubricaForm = this._formBuilder.group({
             iInstrumentoId: [0],
             cInstrumentoNombre: [null, [Validators.required]],
-            cInstrumentoDescripcion: ['', [Validators.required]],
+            cInstrumentoDescripcion: [''],
             criterios: this._formBuilder.array([]),
         })
     }
@@ -40,6 +42,7 @@ export class RubricaFormService {
             iNivelEvaId: [0, [Validators.required]],
             cNivelEvaNombre: ['', [Validators.required]],
             iEscalaCalifId: [0, [Validators.required]],
+            iNivelEvaValor: [0],
             cNivelEvaDescripcion: [''],
         })
     }
@@ -77,10 +80,7 @@ export class RubricaFormService {
                 [Validators.required],
             ],
             cCriterioNombre: [criterio?.cCriterioNombre, [Validators.required]],
-            cCriterioDescripcion: [
-                criterio?.cCriterioDescripcion ?? '',
-                [Validators.required],
-            ],
+            cCriterioDescripcion: [criterio?.cCriterioDescripcion ?? ''],
             niveles: this._formBuilder.array(criterio?.niveles ?? []),
         })
     }

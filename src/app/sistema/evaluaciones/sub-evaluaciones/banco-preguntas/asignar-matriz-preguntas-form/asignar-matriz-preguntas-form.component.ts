@@ -127,25 +127,6 @@ export class AsignarMatrizPreguntasFormComponent implements OnInit {
     ]
 
     ngOnInit() {
-        this.competencias = [
-            {
-                iCompentenciaId: 1,
-                cCompetenciaDescripcion: 'Capacidad 1',
-            },
-        ]
-        this.capacidades = [
-            {
-                iCapacidadId: 1,
-                cCompetenciaDescripcion: 'Competencia 1',
-            },
-        ]
-        this.desempenos = [
-            {
-                iDesempenoId: 1,
-                cCompetenciaDescripcion: 'Desempeño 1',
-            },
-        ]
-
         const preguntas = this._config.data.preguntas
 
         //  mapear las preguntas si es con cabecera o no

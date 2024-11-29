@@ -37,3 +37,13 @@
         margin-left: 10%;
     }
 }
+
+.logo_dremo {
+    max-width: 100%;
+}
+
+:host ::ng-deep .p-button:focus {
+    outline: 0 none;
+    outline-offset: 0px;
+    box-shadow: none;
+}

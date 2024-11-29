@@ -1,17 +1,12 @@
-import { CommonInputComponent } from '@/app/shared/components/common-input/common-input.component'
 import { CommonModule } from '@angular/common'
-import { Component, inject } from '@angular/core'
-import {
-    FormBuilder,
-    FormGroup,
-    ReactiveFormsModule,
-    Validators,
-} from '@angular/forms'
-import { DisponibilidadFormComponent } from '../../components/disponibilidad-form/disponibilidad-form.component'
+import { Component } from '@angular/core'
+import { ReactiveFormsModule } from '@angular/forms'
 import { DialogModule } from 'primeng/dialog'
 import { ButtonModule } from 'primeng/button'
-import { DynamicDialogRef } from 'primeng/dynamicdialog'
+
 import { EditorModule } from 'primeng/editor'
+import { FormsModule } from '@angular/forms'
+import { TooltipModule } from 'primeng/tooltip'
 
 @Component({
     selector: 'app-videoconferencia-container-form',
@@ -19,25 +14,39 @@ import { EditorModule } from 'primeng/editor'
     imports: [
         CommonModule,
         ReactiveFormsModule,
-        CommonInputComponent,
-        DisponibilidadFormComponent,
         DialogModule,
         ButtonModule,
         EditorModule,
+        FormsModule,
+        TooltipModule,
     ],
     templateUrl: './videoconferencia-container-form.component.html',
     styleUrl: './videoconferencia-container-form.component.scss',
 })
 export class VideoconferenciaContainerFormComponent {
-    private _formBuilder = inject(FormBuilder)
-    private ref = inject(DynamicDialogRef)
+    meetingInput: string = '' // Variable para capturar el valor del campo de texto
+    typesFiles: any
 
-    public videoconferenciaForm: FormGroup = this._formBuilder.group({
-        titulo: ['', [Validators.required]],
-        descripcion: ['', [Validators.required]],
-    })
+    joinMeeting() {
+        if (!this.meetingInput.trim()) {
+            alert('Por favor, introduce un código o enlace válido.')
+            return
+        }
 
-    closeModal(data) {
-        this.ref.close(data)
+        // Comprobar si es un enlace completo o un código
+        const input = this.meetingInput.trim()
+        const isLink =
+            input.startsWith('http://') || input.startsWith('https://')
+
+        // Construir el enlace de la reunión
+        const meetingUrl = isLink ? input : `https://meet.google.com/${input}`
+
+        // Redirigir al enlace
+        window.open(meetingUrl, '_blank') // Abre en una nueva pestaña
     }
+
+    imports: [
+        TooltipModule,
+        // otros módulos necesarios
+    ]
 }

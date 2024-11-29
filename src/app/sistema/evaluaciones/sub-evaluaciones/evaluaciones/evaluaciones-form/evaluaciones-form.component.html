@@ -1,197 +1,283 @@
-<form [formGroup]="evaluacionFormGroup">
-    <p-tabView>
-        <p-tabPanel header="Información evaluación">
-            <div class="formgrid grid">
-                <div class="field flex flex-column col-12 md:col-6">
-                    <label for="tipo-pregunta">Tipo evaluación</label>
-                    <p-dropdown
-                        styleClass="w-full"
-                        optionValue="idTipoEvalId"
-                        formControlName="idTipoEvalId"
-                        [options]="tipoEvaluacion"
-                        optionLabel="cTipoEvalDescripcion"
-                        [styleClass]="
-                            evaluacionFormGroup.get('idTipoEvalId')?.invalid &&
-                            evaluacionFormGroup.get('idTipoEvalId')?.touched
-                                ? 'w-full ng-dirty ng-invalid p-invalid'
-                                : 'w-full'
-                        "
-                    />
-                    @if (
-                        evaluacionFormGroup
-                            .get('idTipoEvalId')
-                            .hasError('required') &&
-                        evaluacionFormGroup.get('idTipoEvalId')?.touched
-                    ) {
-                        <small class="text-red-500">
-                            Este campo es requerido
-                        </small>
-                    }
-                </div>
-            </div>
-
-            <div class="formgrid grid">
-                <div class="field flex flex-column col-12 md:col-6">
-                    <label for="tipo-pregunta">Nivel evaluación</label>
-                    <p-dropdown
-                        styleClass="w-full"
-                        optionValue="iNivelEvalId"
-                        formControlName="iNivelEvalId"
-                        [options]="nivelEvaluacion"
-                        optionLabel="cNivelEvalNombre"
-                        [styleClass]="
-                            evaluacionFormGroup.get('iNivelEvalId')?.invalid &&
-                            evaluacionFormGroup.get('iNivelEvalId')?.touched
-                                ? 'w-full ng-dirty ng-invalid p-invalid'
-                                : 'w-full'
-                        "
-                    />
-                    @if (
-                        evaluacionFormGroup
-                            .get('iNivelEvalId')
-                            .hasError('required') &&
-                        evaluacionFormGroup.get('iNivelEvalId')?.touched
-                    ) {
-                        <small class="text-red-500">
-                            Este campo es requerido
-                        </small>
-                    }
-                </div>
-            </div>
-
-            <div class="formgrid grid">
-                <div class="field col">
-                    <app-common-input
-                        controlKey="dtEvaluacionCreacion"
-                        type="date"
-                        label="Fecha de creación"
-                    />
-                </div>
-            </div>
-
-            <div class="formgrid grid">
-                <div class="field col">
-                    <app-common-input
-                        controlKey="cEvaluacionNombre"
-                        label="Nombre"
-                    />
-                </div>
-            </div>
-
-            <div class="formgrid grid">
-                <div class="field col">
-                    <app-common-input
-                        controlKey="cEvaluacionDescripcion"
-                        label="Descripción"
-                    />
-                </div>
-            </div>
-
-            <div class="formgrid grid">
-                <div class="field col">
-                    <app-common-input
-                        controlKey="cEvaluacionUrlDrive"
-                        label="URL DRIVE"
-                    />
-                </div>
-            </div>
-
-            <div class="formgrid grid">
-                <div class="field col">
-                    <app-common-input
-                        controlKey="cEvaluacionUrlPlantilla"
-                        label="URL Plantilla"
-                    />
-                </div>
-            </div>
-
-            <div class="formgrid grid">
-                <div class="field col">
-                    <app-common-input
-                        controlKey="cEvaluacionUrlManual"
-                        label="URL Manual"
-                    />
-                </div>
-            </div>
-
-            <div class="formgrid grid">
-                <div class="field col">
-                    <app-common-input
-                        controlKey="cEvaluacionUrlMatriz"
-                        label="URL Matriz"
-                    />
-                </div>
-            </div>
-
-            <div class="formgrid grid">
-                <div class="field col">
-                    <label for="explicacion">Observación</label>
-                    <textarea
-                        rows="5"
-                        cols="30"
-                        id="observacion"
-                        pInputTextarea
-                        formControlName="cEvaluacionObs"
-                        class="w-full"
+<div class="card">
+    <!-- Scroll Panel para el Formulario -->
+    <p-scrollPanel [style]="{ width: '100%', height: '400px' }">
+        <p-toast> </p-toast>
+        <form [formGroup]="evaluacionFormGroup">
+            <div class="content-scrollable">
+                <div class="card">
+                    <p-stepper
+                        #stepper
+                        [linear]="true"
+                        [(activeStep)]="activeStep"
                     >
-                    </textarea>
-                </div>
-            </div>
+                        <!-- Primer panel: Información Evaluación -->
+                        <p-stepperPanel header="Información Evaluación">
+                            <ng-template
+                                pTemplate="content"
+                                let-nextCallback="nextCallback"
+                            >
+                                <div class="formgrid grid flex">
+                                    <!-- Tipo Evaluación -->
+                                    <div
+                                        class="field flex flex-column col-12 md:col-4"
+                                    >
+                                        <label for="tipo-pregunta"
+                                            >Tipo evaluación</label
+                                        >
+                                        <p-dropdown
+                                            styleClass="w-full"
+                                            optionValue="idTipoEvalId"
+                                            formControlName="idTipoEvalId"
+                                            [options]="tipoEvaluacion"
+                                            optionLabel="cTipoEvalDescripcion"
+                                            [styleClass]="
+                                                evaluacionFormGroup.get(
+                                                    'idTipoEvalId'
+                                                )?.invalid &&
+                                                evaluacionFormGroup.get(
+                                                    'idTipoEvalId'
+                                                )?.touched
+                                                    ? 'w-full ng-dirty ng-invalid p-invalid'
+                                                    : 'w-full '
+                                            "
+                                        ></p-dropdown>
+                                        <small
+                                            *ngIf="
+                                                evaluacionFormGroup
+                                                    .get('idTipoEvalId')
+                                                    ?.hasError('required') &&
+                                                evaluacionFormGroup.get(
+                                                    'idTipoEvalId'
+                                                )?.touched
+                                            "
+                                            class="text-red-500"
+                                        >
+                                            Este campo es requerido
+                                        </small>
+                                    </div>
 
-            <div class="formgrid grid">
-                <div class="field col">
-                    <app-common-input
-                        type="date"
-                        controlKey="dtEvaluacionLiberarMatriz"
-                        label="Fecha Liberar matriz"
-                    />
-                </div>
-            </div>
+                                    <!-- Nivel Evaluación -->
+                                    <div
+                                        class="field flex flex-column col-12 md:col-4"
+                                    >
+                                        <label for="nivel-pregunta"
+                                            >Nivel evaluación</label
+                                        >
+                                        <p-dropdown
+                                            styleClass="w-full"
+                                            optionValue="iNivelEvalId"
+                                            formControlName="iNivelEvalId"
+                                            [options]="nivelEvaluacion"
+                                            optionLabel="cNivelEvalNombre"
+                                            [styleClass]="
+                                                evaluacionFormGroup.get(
+                                                    'iNivelEvalId'
+                                                )?.invalid &&
+                                                evaluacionFormGroup.get(
+                                                    'iNivelEvalId'
+                                                )?.touched
+                                                    ? 'w-full ng-dirty ng-invalid p-invalid'
+                                                    : 'w-full'
+                                            "
+                                        ></p-dropdown>
+                                        <small
+                                            *ngIf="
+                                                evaluacionFormGroup
+                                                    .get('iNivelEvalId')
+                                                    ?.hasError('required') &&
+                                                evaluacionFormGroup.get(
+                                                    'iNivelEvalId'
+                                                )?.touched
+                                            "
+                                            class="text-red-500"
+                                        >
+                                            Este campo es requerido
+                                        </small>
+                                    </div>
 
-            <div class="formgrid grid">
-                <div class="field col">
-                    <app-common-input
-                        type="date"
-                        controlKey="dtEvaluacionLiberarCuadernillo"
-                        label="Fecha Liberar cuadernillo"
-                    />
-                </div>
-            </div>
-            <div class="formgrid grid">
-                <div class="field col">
-                    <app-common-input
-                        type="date"
-                        controlKey="dtEvaluacionLiberarResultados"
-                        label="Fecha Liberar resultados"
-                    />
-                </div>
-            </div>
-        </p-tabPanel>
-        <p-tabPanel header="Instituciones Educativas">
-            <app-ieparticipa></app-ieparticipa>
-        </p-tabPanel>
-    </p-tabView>
+                                    <!-- Fecha de creación -->
 
-    <footer class="flex justify-content-end gap-2 pt-3">
-        <button
-            pButton
-            pRipple
-            label="Cancelar"
-            icon="pi pi-times"
-            class="p-button-secondary"
-            type="button"
-            size="small"
-            (click)="closeModal(null)"
-        ></button>
-        <button
-            pButton
-            pRipple
-            label="Guardar"
-            icon="pi pi-save"
-            size="small"
-            type="button"
-            class="p-button-primary"
-            (click)="guardarActualizarAlternativa()"
-        ></button>
-    </footer>
-</form>
+                                    <div class="field col-12 md:col-4">
+                                        <app-common-input
+                                            controlKey="dtEvaluacionCreacion"
+                                            type="date"
+                                            label="Fecha de creación"
+                                        ></app-common-input>
+                                    </div>
+                                </div>
+
+                                <!-- Nombre Evaluación -->
+                                <div class="formgrid grid">
+                                    <div class="field col">
+                                        <app-common-input
+                                            controlKey="cEvaluacionNombre"
+                                            label="Nombre"
+                                        ></app-common-input>
+                                    </div>
+                                </div>
+
+                                <!-- Descripción Evaluación -->
+                                <div class="formgrid grid">
+                                    <div class="field col">
+                                        <app-common-input
+                                            controlKey="cEvaluacionDescripcion"
+                                            label="Descripción"
+                                        ></app-common-input>
+                                    </div>
+                                </div>
+
+                                <!-- URLs -->
+                                <div class="formgrid grid flex">
+                                    <div class="field col-12 md:col-6">
+                                        <app-common-input
+                                            controlKey="cEvaluacionUrlDrive"
+                                            label="URL DRIVE"
+                                        ></app-common-input>
+                                    </div>
+                                    <div class="field col-12 md:col-6">
+                                        <app-common-input
+                                            controlKey="cEvaluacionUrlPlantilla"
+                                            label="URL Plantilla"
+                                        ></app-common-input>
+                                    </div>
+                                    <div class="field col-12 md:col-6">
+                                        <app-common-input
+                                            controlKey="cEvaluacionUrlManual"
+                                            label="URL Manual"
+                                        ></app-common-input>
+                                    </div>
+                                    <div class="field col-12 md:col-6">
+                                        <app-common-input
+                                            controlKey="cEvaluacionUrlMatriz"
+                                            label="URL Matriz"
+                                        ></app-common-input>
+                                    </div>
+                                </div>
+
+                                <!-- Observación -->
+                                <div class="formgrid grid">
+                                    <div class="field col">
+                                        <label for="observacion"
+                                            >Observación</label
+                                        >
+                                        <textarea
+                                            rows="5"
+                                            id="observacion"
+                                            pInputTextarea
+                                            formControlName="cEvaluacionObs"
+                                            class="w-full"
+                                        ></textarea>
+                                    </div>
+                                </div>
+
+                                <!-- Fechas de Liberación -->
+                                <div class="formgrid grid flex">
+                                    <div
+                                        class="field flex flex-column col-12 md:col-4"
+                                    >
+                                        <app-common-input
+                                            type="date"
+                                            controlKey="dtEvaluacionLiberarMatriz"
+                                            label="Fecha Liberar matriz"
+                                        ></app-common-input>
+                                    </div>
+                                    <div
+                                        class="field flex flex-column col-12 md:col-4"
+                                    >
+                                        <app-common-input
+                                            type="date"
+                                            controlKey="dtEvaluacionLiberarCuadernillo"
+                                            label="Fecha Liberar cuadernillo"
+                                        ></app-common-input>
+                                    </div>
+                                    <div
+                                        class="field flex flex-column col-12 md:col-4"
+                                    >
+                                        <app-common-input
+                                            type="date"
+                                            controlKey="dtEvaluacionLiberarResultados"
+                                            label="Fecha Liberar resultados"
+                                        ></app-common-input>
+                                    </div>
+                                </div>
+                            </ng-template>
+                        </p-stepperPanel>
+
+                        <!-- !Segundo Panel: Instituciones Educativas -->
+                        <p-stepperPanel
+                            #stepper
+                            header="Instituciones Educativas"
+                        >
+                            <ng-template
+                                pTemplate="content"
+                                let-prevCallback="prevCallback"
+                                let-nextCallback="nextCallback"
+                            >
+                                <div>
+                                    <app-ieparticipa
+                                        [_iEvaluacionId]="
+                                            this._config.data.evaluacion
+                                                .iEvaluacionId
+                                        "
+                                    ></app-ieparticipa>
+                                </div>
+                            </ng-template>
+                        </p-stepperPanel>
+
+                        <!-- Tercer Panel: Áreas -->
+                        <p-stepperPanel header="Áreas">
+                            <ng-template
+                                pTemplate="content"
+                                let-prevCallback="prevCallback"
+                            >
+                                <app-evaluacion-areas
+                                    (closeModalEvent)="closeModal($event)"
+                                    [_iEvaluacionId]="
+                                        this._config.data.evaluacion
+                                            .iEvaluacionId
+                                    "
+                                ></app-evaluacion-areas>
+                                <div class="flex pt-4 justify-content-between">
+                                    <!-- <p-button
+                                        label="Atras"
+                                        icon="pi pi-arrow-left"
+                                        (click)="prevCallback.emit()"
+                                    ></p-button> -->
+                                </div>
+                            </ng-template>
+                        </p-stepperPanel>
+                    </p-stepper>
+                </div>
+            </div>
+        </form>
+    </p-scrollPanel>
+
+    <!--! Botón Siguiente para modo ver -->
+
+    <div
+        class="flex pt-4"
+        [class.justify-content-end]="activeStep === 0"
+        [class.justify-content-between]="activeStep !== 0"
+    >
+        <p-button
+            label="Atrás"
+            icon="pi pi-arrow-left"
+            (click)="handlePrevious()"
+            [className]="activeStep === 0 ? 'hidden' : ''"
+            [disabled]="activeStep === 0"
+        ></p-button>
+
+        <p-button
+            *ngIf="!isLastStep"
+            [label]="activeStep === 0 ? 'Siguiente' : 'Siguiente'"
+            (click)="handleNext()"
+        ></p-button>
+
+        <p-button
+            *ngIf="isLastStep"
+            label="Finalizar"
+            icon="pi pi-check"
+            (click)="finalizarFormulario(data)"
+        ></p-button>
+    </div>
+</div>

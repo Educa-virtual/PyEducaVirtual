@@ -30,6 +30,7 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
     private _apiEvaluacionesR = inject(ApiEvaluacionesRService)
     private _confirmationModalService = inject(ConfirmationModalService)
     private _route = inject(ActivatedRoute)
+
     private unsubscribe$: Subject<boolean> = new Subject()
 
     public area = {
@@ -75,7 +76,7 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
         },
         {
             labelTooltip: 'Agregar Pregunta',
-            text: 'Agregar Pregunta',
+            text: 'Agregar Preguntass',
             icon: 'pi pi-plus',
             accion: 'agregar',
             class: 'p-button-secondary',

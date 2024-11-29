@@ -12,6 +12,8 @@ import { PersonalComponent } from './personal/personal.component'
 import { SesionAprendizajeComponent } from './sesion-aprendizaje/sesion-aprendizaje.component'
 import { GestionarSilaboComponent } from './areas-estudios/components/gestionar-silabo/gestionar-silabo.component'
 import { PerfilComponent } from './perfil/perfil.component'
+import { ActividadesNoLectivasComponent } from './actividades-no-lectivas/actividades-no-lectivas.component'
+import { MaterialEducativoComponent } from './material-educativo/material-educativo.component'
 
 @NgModule({
     imports: [
@@ -26,7 +28,7 @@ import { PerfilComponent } from './perfil/perfil.component'
             { path: 'ficha-actividades', component: FichaActividadesComponent },
             { path: 'silabo', component: SilaboComponent },
             {
-                path: 'asistencia/:iCursoId/:cCursoNombre',
+                path: 'asistencia/:iCursoId/:cCursoNombre/:iNivelGradoId/:iSeccionId/:iDocenteId/:iYAcadId/:iGradoId/:cNivelTipoNombre/:cGradoAbreviacion/:cSeccion/:cCicloRomanos/:cNivelNombreCursos/:nombrecompleto',
                 component: AsistenciaComponent,
             },
             {
@@ -45,6 +47,14 @@ import { PerfilComponent } from './perfil/perfil.component'
             {
                 path: 'perfil',
                 component: PerfilComponent,
+            },
+            {
+                path: 'actividades-no-lectivas',
+                component: ActividadesNoLectivasComponent,
+            },
+            {
+                path: 'material-educativo/:idDocCursoId/:cCursoNombre',
+                component: MaterialEducativoComponent,
             },
         ]),
     ],

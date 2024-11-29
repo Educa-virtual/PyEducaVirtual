@@ -1,1 +1,146 @@
-<p>Página de Perfil en desarrollo</p>
+<div class="grid">
+    <p-toolbar class="col-12">
+        <div class="p-toolbar-group-start">
+            <h4 class="text-primary font-bold">MI PERFIL</h4>
+        </div>
+    </p-toolbar>
+    <div class="col-12">
+        <p-messages
+            [(value)]="mensaje"
+            [enableService]="false"
+            [closable]="false"
+        />
+    </div>
+    <div class="col-12">
+        <div class="card">
+            <form class="grid" [formGroup]="formPersonas">
+                <div
+                    class="col-12 md:col-5 flex flex-column align-items-center"
+                >
+                    <app-image-upload-primeng
+                        (actionImageUpload)="accionBtnItem($event)"
+                        [urlFoto]="formPersonas.value.cPersFotografia"
+                    ></app-image-upload-primeng>
+                </div>
+                <div class="col-12 md:col-7">
+                    <div class="grid">
+                        <div class="col-12">
+                            <h3>Datos Personales</h3>
+                            <p-divider></p-divider>
+                        </div>
+                        <div class="col-12">
+                            <p-inputGroup>
+                                <p-inputGroupAddon>
+                                    Nombres y Apellidos
+                                </p-inputGroupAddon>
+                                <input
+                                    pInputText
+                                    disabled
+                                    [value]="
+                                        formPersonas.value.cPersNombre +
+                                        ' ' +
+                                        formPersonas.value.cPersPaterno +
+                                        ' ' +
+                                        formPersonas.value.cPersMaterno
+                                    "
+                                />
+                            </p-inputGroup>
+                        </div>
+                        <div class="col-12">
+                            <p-inputGroup>
+                                <p-inputGroupAddon>
+                                    Dirección
+                                </p-inputGroupAddon>
+                                <input
+                                    pInputText
+                                    formControlName="cPersDomicilio"
+                                />
+                            </p-inputGroup>
+                        </div>
+                        <div class="col-12">
+                            <p-inputGroup>
+                                <p-inputGroupAddon>
+                                    <i class="pi pi-at"></i>
+                                </p-inputGroupAddon>
+                                <input
+                                    pInputText
+                                    formControlName="cPersCorreo"
+                                    (input)="
+                                        formPersonas.value.cPersCorreoValidado = false
+                                    "
+                                />
+                                <button
+                                    type="button"
+                                    pButton
+                                    [icon]="
+                                        formPersonas.value.cPersCorreoValidado
+                                            ? 'pi pi-verified'
+                                            : 'pi pi-clock'
+                                    "
+                                    [class]="
+                                        formPersonas.value.cPersCorreoValidado
+                                            ? 'p-button-success'
+                                            : 'p-button-warning'
+                                    "
+                                >
+                                    <ng-template></ng-template>
+                                </button>
+                            </p-inputGroup>
+                        </div>
+                        <div class="col-7">
+                            <p-inputGroup>
+                                <p-inputGroupAddon>
+                                    Fecha de Nacimiento</p-inputGroupAddon
+                                >
+                                <p-calendar
+                                    formControlName="dPersNacimiento"
+                                    [showIcon]="true"
+                                    [showTime]="false"
+                                />
+                            </p-inputGroup>
+                        </div>
+                        <div class="col-5">
+                            <p-inputGroup>
+                                <p-inputGroupAddon> Celular </p-inputGroupAddon>
+                                <input
+                                    pInputText
+                                    formControlName="cPersCelular"
+                                />
+                            </p-inputGroup>
+                        </div>
+                        <div class="col-7">
+                            <p-inputGroup>
+                                <p-inputGroupAddon
+                                    >Contraseña</p-inputGroupAddon
+                                >
+                                <input
+                                    pInputText
+                                    type="password"
+                                    placeholder="*******"
+                                    formControlName="cPersPassword"
+                                />
+                            </p-inputGroup>
+                        </div>
+                        <div class="col-5">
+                            <button
+                                pButton
+                                pRipple
+                                type="button"
+                                class="p-button-primary"
+                                (click)="guardarPersonasxDatosPersonales()"
+                            >
+                                <i class="pi pi-check"></i>&nbsp; Guardar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<app-form-verificar-correo
+    [showModalVerificarCorreo]="showModalVerificarCorreo"
+    [iPersConId]="iPersConId"
+    (accionBtnItem)="accionBtnItem($event)"
+></app-form-verificar-correo>

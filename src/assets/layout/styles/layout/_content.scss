@@ -3,8 +3,12 @@
     flex-direction: column;
     min-height: 100vh;
     justify-content: space-between;
-    padding: 6rem 24px 2rem 24px;
+    padding: 72px 24px 2rem 24px;
     transition: margin-left $transitionDuration;
+    // padding-left: 284px;
+    @media (max-width: 780px) {
+        padding-top: 114px;
+    }
 }
 
 .layout-main {

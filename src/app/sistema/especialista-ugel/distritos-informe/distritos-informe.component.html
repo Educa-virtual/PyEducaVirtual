@@ -1,0 +1,46 @@
+<p>distritos-informe works!</p>
+<div class="card">
+    <h3>.:: INSTITUCION EDUCATIVA</h3>
+    <p-divider type="solid"></p-divider>
+    <div class="flex justify-content-center align-items-center">
+        <div class="dropdown-container">
+            <p-dropdown
+                class="fixed-dropdown"
+                [options]="cities"
+                [(ngModel)]="selectedCity"
+                optionLabel="name"
+                placeholder="Seleccionar"
+                [style]="{ width: '200px' }"
+            />
+            <label
+                for="countries"
+                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >Nivel</label
+            >
+        </div>
+        <p-divider layout="vertical" />
+        <div class="flex justify-content-center">
+            <p-button label="Submit" />
+        </div>
+    </div>
+    <p-divider type="solid"></p-divider>
+    <div class="card">
+        <p-table [value]="products" [tableStyle]="{ 'min-width': '50rem' }">
+            <ng-template pTemplate="caption"> .::Distritos </ng-template>
+            <ng-template pTemplate="header" let-columns>
+                <tr>
+                    <th>#</th>
+                    <th>Codigo Modular</th>
+                    <th>Descripcion</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-product let-columns="columns">
+                <tr>
+                    <td>x</td>
+                    <td>a</td>
+                    <td>b</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</div>

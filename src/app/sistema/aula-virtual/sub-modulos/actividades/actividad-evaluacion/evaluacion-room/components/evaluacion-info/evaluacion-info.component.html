@@ -1,0 +1,48 @@
+<p-table
+    styleClass="p-datatable-gridlines p-datatable-sm"
+    class="evaluacion-info"
+>
+    <ng-template pTemplate="caption">
+        <p class="text-center">Informacion de la evaluación</p>
+    </ng-template>
+    <ng-template pTemplate="header">
+        <tr>
+            <th>Código Estudiante</th>
+            <th colspan="3">
+                {{ evaluacionEstudiante.cEstCodigo }}
+            </th>
+        </tr>
+        <tr>
+            <th>Estudiante</th>
+            <th colspan="3">
+                {{ evaluacionEstudiante.cEstNombres }}
+                {{ evaluacionEstudiante.cEstPaterno }}
+                {{ evaluacionEstudiante.cEstMaterno }}
+            </th>
+        </tr>
+        <tr>
+            <th>Iniciado el</th>
+            <th colspan="3">
+                {{ evaluacionEstudiante.dtEvalPromInicio | fullDate }}
+                {{ evaluacionEstudiante?.dtEvalPromInicio | date: 'h:mm a' }}
+            </th>
+        </tr>
+        <tr>
+            <th>Estado</th>
+            <th colspan="3">Finalizado</th>
+        </tr>
+        <tr>
+            <th>Finalizado el</th>
+            <th colspan="3">
+                {{ evaluacionEstudiante.dtEvalPromFin | fullDate }}
+                {{ evaluacionEstudiante.dtEvalPromFin | fullTime }}
+            </th>
+        </tr>
+        <tr>
+            <th>Tiempo empleado</th>
+            <th>{{ evaluacionEstudiante.iTotalMinutos ?? 0 }} minutos</th>
+            <th>Nota</th>
+            <th></th>
+        </tr>
+    </ng-template>
+</p-table>

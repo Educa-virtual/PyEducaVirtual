@@ -20,6 +20,8 @@ import { Subject, takeUntil } from 'rxjs'
 import { MODAL_CONFIG } from '@/app/shared/constants/modal.config'
 import { DialogService } from 'primeng/dynamicdialog'
 import { AulaBancoPreguntaFormContainerComponent } from './components/aula-banco-pregunta-form-container/aula-banco-pregunta-form-container.component'
+import { ConstantesService } from '@/app/servicios/constantes.service'
+import { ApiEvaluacionesRService } from '@/app/sistema/evaluaciones/services/api-evaluaciones-r.service'
 
 @Component({
     selector: 'app-aula-banco-preguntas',
@@ -29,8 +31,12 @@ import { AulaBancoPreguntaFormContainerComponent } from './components/aula-banco
     styleUrl: './aula-banco-preguntas.component.scss',
 })
 export class AulaBancoPreguntasComponent implements OnInit, OnDestroy {
-    @Input() public mode: 'SELECTION' | 'NORMAL' = 'NORMAL'
     @Output() public selectedRowDataChange = new EventEmitter()
+    @Input() public mode: 'SELECTION' | 'NORMAL' = 'NORMAL'
+    @Input() iEvaluacionId: number
+    @Input({ required: true }) set iCursoId(value) {
+        this.params.iCursoId = value
+    }
     public actionsTable = actionsTable
     public actionsContainer = actionsContainer
     public columnas = columns
@@ -42,20 +48,25 @@ export class AulaBancoPreguntasComponent implements OnInit, OnDestroy {
 
     private _aulaBancoApiService = inject(ApiAulaBancoPreguntasService)
     private _dialogService = inject(DialogService)
-    private _confirmationModalService = inject(ConfirmationModalService)
+    private _constantesService = inject(ConstantesService)
 
-    public params = {
-        iCursoId: 1,
-        iDocenteId: 1,
-        iCurrContId: 1,
-        iNivelCicloId: 1,
+    @Input() public params = {
+        iCursoId: null,
+        iDocenteId: null,
+        iCurrContId: null,
+        iNivelCicloId: null,
         busqueda: '',
         iTipoPregId: 0,
+        iEvaluacionId: 0,
     }
 
     private _confirmService = inject(ConfirmationModalService)
 
     ngOnInit() {
+        this.params.iEvaluacionId = this.iEvaluacionId
+        this.params.iDocenteId = this._constantesService.iDocenteId
+        this.params.iNivelCicloId = this._constantesService.iNivelCicloId
+        this.params.iCurrContId = this._constantesService.iCurrContId
         this.getData()
         this.setupConfig()
     }
@@ -101,6 +112,9 @@ export class AulaBancoPreguntasComponent implements OnInit, OnDestroy {
                 this.bancoPreguntas = data
                 this.bancoPreguntas.forEach((item) => {
                     this.expandedRowKeys[item.iPreguntaId] = true
+                    item.iTotalPreguntas = !item.preguntas
+                        ? 1
+                        : item.preguntas.length
                 })
 
                 this.expandedRowKeys = Object.assign({}, this.expandedRowKeys)
@@ -117,6 +131,10 @@ export class AulaBancoPreguntasComponent implements OnInit, OnDestroy {
             })
             return
         }
+
+        if (accion.accion === 'generar-word') {
+            this.generarWord()
+        }
         if (accion === 'editar') {
             this.agregarEditarPregunta(item)
         }
@@ -124,6 +142,36 @@ export class AulaBancoPreguntasComponent implements OnInit, OnDestroy {
         if (accion === 'eliminar') {
             this.handleEliminarBancoPreguntas(item)
         }
+    }
+    selectedItems = []
+    private _confirmationModalService = inject(ConfirmationModalService)
+    private _apiEvaluacionesR = inject(ApiEvaluacionesRService)
+
+    generarWord() {
+        if (this.selectedItems.length === 0) {
+            this._confirmationModalService.openAlert({
+                header: 'Debe seleccionar almenos una pregunta.',
+            })
+            return
+        }
+
+        let preguntas = []
+
+        this.selectedItems.forEach((item) => {
+            if (item.iEncabPregId == -1) {
+                preguntas = [...preguntas, item]
+            } else {
+                preguntas = [...preguntas, ...item.preguntas]
+            }
+        })
+
+        const ids = preguntas.map((item) => item.iPreguntaId).join(',')
+
+        const params = {
+            iCursoId: this.params.iCursoId,
+            ids,
+        }
+        this._apiEvaluacionesR.generarWordByPreguntasIds(params)
     }
 
     agregarEditarPregunta(pregunta) {
@@ -135,6 +183,7 @@ export class AulaBancoPreguntasComponent implements OnInit, OnDestroy {
                     tipoPreguntas: this.tipoPreguntas,
                     pregunta: pregunta,
                     iCursoId: this.params.iCursoId,
+                    iEvaluacionId: this.params.iEvaluacionId,
                 },
                 header:
                     pregunta.iPreguntaId == 0

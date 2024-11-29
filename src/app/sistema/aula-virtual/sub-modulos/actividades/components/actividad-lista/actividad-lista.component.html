@@ -1,7 +1,11 @@
-@for (actividad of actividades; track actividad.iProgActId) {
-    <app-actividad-row
-        [actividad]="actividad"
-        class="actividad"
-        (actionSelected)="actionSelected.emit($event)"
-    ></app-actividad-row>
+@for (actividad of actividades; track $index) {
+    @if (actividad.iActTipoId === 1 && actividad['cTareaTitulo'] === null) {
+    } @else {
+        <app-actividad-row
+            [actividad]="actividad"
+            class="actividad"
+            (actionSelected)="actionSelected.emit($event)"
+            ><p-divider></p-divider
+        ></app-actividad-row>
+    }
 }

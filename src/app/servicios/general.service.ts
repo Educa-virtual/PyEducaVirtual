@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http'
 import { environment } from '@/environments/environment'
 
 const baseUrl = environment.backendApi
-
+const baseUrlPublic = environment.backend
 @Injectable({
     providedIn: 'root',
 })
@@ -33,7 +33,6 @@ export class GeneralService {
                     data.data,
                     { params: data.params }
                 )
-
                 break
             default:
                 break
@@ -61,26 +60,28 @@ export class GeneralService {
         return this.http.post(`${baseUrl}/general/subir-archivo`, data)
     }
 
-    addYear(data) {
-        //para almacenar calendario academico
+    generarPdf(data: any) {
         return this.http.post(
-            `${baseUrl}/acad/calendarioAcademico/addCalAcademico`,
-            data
-        )
-    }
-    getDias() {
-        return this.http.get(
-            `${baseUrl}/acad/calendarioAcademico/selDiasLaborales`
-
-            /*
-            `${baseUrl}/acad/calendarioAcademico/selCalAcademico`,
+            `${baseUrl}/${data.group}/${data.prefix}/${data.ruta}`,
+            data.data,
             {
-                json: JSON.stringify({ jmod: 'grl', jtable: 'dias' }),
-                _opcion: 'getConsulta',
-            }*/
+                responseType: 'blob',
+            }
         )
     }
-    
+
+    // Modulo de Gestion
+    getDias() {
+        return this.http.post(
+            `${baseUrl}/acad/calendarioAcademico/searchCalAcademico`,
+            {
+                esquema: 'grl',
+                tabla: 'dias',
+                campos: '*',
+                condicion: '1 = 1',
+            }
+        )
+    }
 
     getModalidad() {
         return this.http.post(
@@ -93,6 +94,7 @@ export class GeneralService {
             }
         )
     }
+
     getTurno() {
         return this.http.post(
             `${baseUrl}/acad/calendarioAcademico/searchCalAcademico`,
@@ -189,5 +191,8 @@ export class GeneralService {
                 condicion: '1 = 1 ',
             }
         )
+    }
+    baseUrlPublic() {
+        return baseUrlPublic
     }
 }

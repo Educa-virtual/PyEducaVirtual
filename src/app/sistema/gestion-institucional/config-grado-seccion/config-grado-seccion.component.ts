@@ -142,14 +142,14 @@ export class ConfigGradoSeccionComponent implements OnInit {
                         cNivelTipoNombre:
                             this.stepService.perfil['cNivelTipoNombre'],
                         iSedeId: <number>this.iSedeId,
-                        iServEdId: 0,
+                        iServEdId: <number>0,
                         cConfigNroRslAprobacion: '',
                         cConfigUrlRslAprobacion: '',
                         cConfigDescripcion: '',
                         bConfigEsBilingue: false,
                         cEstadoConfigNombre: '',
                         cSedeNombre: '',
-                        iNivelTipoId: this.stepService.perfil['iNivelTipoId'],
+                        iNivelTipoId: this.stepService.iNivelTipoId,
                         cYAcadNombre: <number>this.sede[0].cYAcadNombre,
                     },
                 ]
@@ -319,7 +319,6 @@ export class ConfigGradoSeccionComponent implements OnInit {
             // this.showDelete()
         }
         if (accion === 'select') {
-            alert('selecciono ' + item.cYAcadNombre)
             this.selAnio = 'El año a clonar es ' + item.cYAcadNombre
             console.log(item)
             // this.showDelete()
@@ -336,7 +335,7 @@ export class ConfigGradoSeccionComponent implements OnInit {
             text: 'Configuración',
             icon: 'pi pi-plus',
             accion: 'agregar',
-            class: 'p-button-secondary',
+            class: 'p-button-Primary',
         },
     ]
     selectedItems = []
@@ -359,10 +358,10 @@ export class ConfigGradoSeccionComponent implements OnInit {
     actionsLista: IActionTable[]
     columns = [
         {
-            type: 'text',
+            type: 'item',
             width: '5rem',
-            field: 'iConfigId',
-            header: 'Cod',
+            field: 'item',
+            header: '',
             text_header: 'left',
             text: 'left',
         },

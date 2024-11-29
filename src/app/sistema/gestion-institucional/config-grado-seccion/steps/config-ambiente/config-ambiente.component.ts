@@ -307,6 +307,11 @@ export class ConfigAmbienteComponent implements OnInit {
                     console.error('Error fetching ambiente:', error)
                 },
                 complete: () => {
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Mensaje',
+                        detail: 'Proceso exitoso',
+                    })
                     console.log('Request completed')
                     this.getAmbientes()
                     this.visible = false
@@ -342,6 +347,11 @@ export class ConfigAmbienteComponent implements OnInit {
                             console.error('Error fetching ambiente:', error)
                         },
                         complete: () => {
+                            this.messageService.add({
+                                severity: 'success',
+                                summary: 'Mensaje',
+                                detail: 'Proceso exitoso',
+                            })
                             console.log('Request completed')
                             this.getAmbientes()
                             this.visible = false
@@ -395,6 +405,11 @@ export class ConfigAmbienteComponent implements OnInit {
                         // }
                     },
                     complete: () => {
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: 'Mensaje',
+                            detail: 'Proceso exitoso',
+                        })
                         console.log('Request completed')
                         this.getAmbientes()
                         this.visible = false

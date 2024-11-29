@@ -87,6 +87,7 @@ export class TablePrimengComponent implements OnChanges, OnInit {
         [klass: string]: unknown
     } = {}
 
+    @Input() placeholder = 'Buscar'
     @ContentChild('rowExpansionTemplate', { static: false })
     rowExpansionTemplate: TemplateRef<unknown>
 

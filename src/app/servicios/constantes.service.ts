@@ -26,6 +26,11 @@ const docente = [
                 routerLink: ['/aula-virtual/areas-curriculares'],
             },
             {
+                label: 'Notificaciones',
+                icon: 'pi pi-bell',
+                routerLink: ['/aula-virtual/notificaciones'],
+            },
+            {
                 label: 'Mi Perfil',
                 icon: 'pi pi-fw pi-id-card',
                 routerLink: ['/docente/perfil'],
@@ -44,6 +49,11 @@ const docente = [
                 label: 'Mis Capacitaciones',
                 icon: 'pi pi-fw pi-sitemap',
                 routerLink: ['/docente/capacitaciones'],
+            },
+            {
+                label: 'Banco de Preguntas',
+                icon: 'pi pi-fw pi-folder',
+                routerLink: ['/aula-virtual/banco-preguntas'],
             },
         ],
     },
@@ -106,6 +116,11 @@ const aula_virtual = [
                 label: 'Mis Áreas Curriculares',
                 icon: 'pi pi-fw pi-book',
                 routerLink: ['/aula-virtual/areas-curriculares'],
+            },
+            {
+                label: 'Notificaciones',
+                icon: 'pi pi-bell',
+                routerLink: ['/aula-virtual/notificaciones'],
             },
             {
                 label: 'Calendario',

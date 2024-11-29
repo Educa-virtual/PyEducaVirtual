@@ -1,0 +1,53 @@
+<app-toolbar-primeng title="Banco de Preguntas"></app-toolbar-primeng>
+<div class="card">
+    <div class="grid">
+        <div class="col-12 lg:col-5">
+            <p-inputGroup>
+                <p-inputGroupAddon>Área Curricular</p-inputGroupAddon>
+                <p-dropdown
+                    [(ngModel)]="params.iCursoId"
+                    optionValue="iCursoId"
+                    [options]="cursos"
+                    optionLabel="cCursoNombre"
+                    styleClass="w-full"
+                    inputId="cursos"
+                    (onChange)="obtenerBancoPreguntas()"
+                />
+            </p-inputGroup>
+        </div>
+        <div class="col-12 lg:col-4">
+            <p-inputGroup>
+                <p-inputGroupAddon> Tipo Pregunta </p-inputGroupAddon>
+                <p-dropdown
+                    optionValue="iTipoPregId"
+                    [options]="[]"
+                    optionLabel="cTipoPregDescripcion"
+                    styleClass="w-full"
+                />
+            </p-inputGroup>
+        </div>
+        <div class="col-12 lg:col-3">
+            <div class="flex flex-wrap gap-2 justify-content-end">
+                <button
+                    size="small"
+                    [rounded]="true"
+                    pButton
+                    pRipple
+                    pTooltip="Agregar Preguntas"
+                    tooltipPosition="top"
+                    ngClass="p-button-primary"
+                >
+                    <i class="pi pi-plus"></i>
+                    &nbsp;Agregar Preguntas
+                </button>
+            </div>
+        </div>
+        <div class="col-12">
+            <app-aula-banco-preguntas
+                [iCursoId]="params.iCursoId"
+                [params]="params"
+            >
+            </app-aula-banco-preguntas>
+        </div>
+    </div>
+</div>

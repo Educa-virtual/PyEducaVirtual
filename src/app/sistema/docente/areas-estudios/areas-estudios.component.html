@@ -65,6 +65,12 @@
                         <th style="width: 2rem; text-align: center">Grado</th>
                         <th style="width: 2rem; text-align: center">Sección</th>
                         <th style="width: 2rem; text-align: center">
+                            % Asistencia
+                        </th>
+                        <th style="width: 2rem; text-align: center">
+                            % Inasistencia
+                        </th>
+                        <th style="width: 2rem; text-align: center">
                             Aula Virtual
                         </th>
                     }
@@ -180,6 +186,11 @@
                                 [routerLink]="['./', item.iSilaboId]"
                                 [queryParams]="{
                                     cCursoNombre: item.cCursoNombre,
+                                    cNivelTipoNombre: item.cNivelTipoNombre,
+                                    cGradoAbreviacion: item.cGradoAbreviacion,
+                                    cSeccion: item.cSeccion,
+                                    cCicloRomanos: item.cCicloRomanos,
+                                    cNivelNombreCursos: item.cNivelNombreCursos,
                                 }"
                                 label="Acceder"
                                 icon="pi pi-arrow-right"
@@ -200,11 +211,22 @@
                         </td>
                         <td style="text-align: center">{{ item.cSeccion }}</td>
                         <td style="text-align: center">
+                            {{ item.pAsistencia }} %
+                        </td>
+                        <td style="text-align: center">
+                            {{ item.pInasistencia }} %
+                        </td>
+                        <td style="text-align: center">
                             <p-button
                                 severity="success"
                                 [routerLink]="['./', item.iSilaboId]"
                                 [queryParams]="{
                                     cCursoNombre: item.cCursoNombre,
+                                    cNivelTipoNombre: item.cNivelTipoNombre,
+                                    cGradoAbreviacion: item.cGradoAbreviacion,
+                                    cSeccion: item.cSeccion,
+                                    cCicloRomanos: item.cCicloRomanos,
+                                    cNivelNombreCursos: item.cNivelNombreCursos,
                                 }"
                                 label="Acceder"
                                 icon="pi pi-arrow-right"

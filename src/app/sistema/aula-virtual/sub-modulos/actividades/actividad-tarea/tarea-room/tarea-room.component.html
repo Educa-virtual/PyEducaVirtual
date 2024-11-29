@@ -16,7 +16,9 @@
                 >
                     <h2>Tarea: {{ data?.cTareaTitulo }}</h2>
                     <div class="grid">
+                        <!-- Columna 1: Muestra la fecha de inicio y la hora límite -->
                         <div class="col-6 md:col-6 flex flex-column gap-2">
+                            <!-- Título de la sección con icono y estilo -->
                             <span class="font-bold text-xl flex gap-2">
                                 <app-icon
                                     name="matCalendarMonth"
@@ -25,6 +27,7 @@
                                 ></app-icon>
                                 Fecha inicio</span
                             >
+                            <!-- Contenido de la fecha de inicio -->
                             <p>
                                 {{ data?.dtTareaInicio | date }}
 
@@ -32,6 +35,7 @@
                                 {{ data?.dtTareaInicio | date: 'shortTime' }}
                             </p>
                         </div>
+                        <!-- Columna 2: Muestra la fecha de entrega y la hora límite -->
                         <div class="col-12 md:col-6 flex flex-column gap-2">
                             <span class="font-bold text-xl flex gap-2">
                                 <app-icon
@@ -41,6 +45,7 @@
                                 ></app-icon>
                                 Fecha de Entrega</span
                             >
+                            <!-- Contenido de la fecha de entrega -->
                             <p>
                                 {{ data?.dtTareaFin | date }}
                                 <span class="font-bold">Hora Limite: </span>
@@ -56,19 +61,8 @@
                                     >Descripción de la tarea</label
                                 >
                             </h3>
-                            <!-- <div class="mt-2">
-                                <div
-                                    [innerHTML]="data?.cTareaDescripcion"
-                                ></div>
-                                <p-editor
-                                    [(ngModel)]="cTareaDescripcion"
-                                    [disabled]="true"
-                                    id="descripcion"
-                                    [style]="{ height: '150px' }"
-                                    disabled
-                                />
-                            </div> -->
-                            <!-- <div [innerHTML]="data?.cTareaDescripcion"></div> -->
+                            <!--  en esta seccion se esta usando Directiva de PrimeNG para aplicar estilos y funcionalidades al campo de texto
+                 Desactiva el campo si no existe 'data.cTareaDescripcion' o si 'isDisabled' es verdadero -->
                             <input
                                 id="descripcion"
                                 type="text"
@@ -103,7 +97,7 @@
                             class="card-body m-3"
                             [hidden]="iEstadoEstudianteTarea !== '0'"
                         >
-                            <h4>Tu Trabajo</h4>
+                            <h4>Entregar Tarea</h4>
                             <p-divider></p-divider>
                             <!-- Componente para subir archivos, configurado para recibir los archivos de tareas de estudiantes -->
 
@@ -173,10 +167,13 @@
                             <p-divider></p-divider>
 
                             <!-- Botón para enviar la tarea -->
+                            <div>
+                                <p-toast></p-toast>
+                            </div>
+
                             <div
                                 class="flex align-items-center justify-content-center"
                             >
-                                <p-toast></p-toast>
                                 <p-button
                                     label="Enviar Tarea"
                                     icon="pi pi-check"
@@ -187,6 +184,11 @@
                                 ></p-button>
                             </div>
                         </div>
+
+                        @if (miTarea) {
+                            <div>{{ miTarea }}</div>
+                        }
+
                         <!-- Muestra mensaje de tarea evaluada si el estado de la tarea es '1' -->
 
                         <div
@@ -213,9 +215,10 @@
                             </div>
                             <p-divider class="mb-3"></p-divider>
                             <!-- Campo de texto para el comentario del docente -->
+
                             <div class="p-field p-fluid mb-3">
                                 <label for="comentarioDocente"
-                                    >Comentario Docente</label
+                                    >Conclusión Descriptiva</label
                                 >
                                 <textarea
                                     id="comentarioDocente"
@@ -225,7 +228,8 @@
                                     class="p-inputtextarea-lg"
                                     placeholder="Muestra Comentario Docente"
                                     [disabled]="isDisabled"
-                                ></textarea>
+                                >
+                                </textarea>
                             </div>
                         </div>
                     }
@@ -304,13 +308,16 @@
                                     }
                                 </div>
                             }
+                            <!-- Componente p-divider de PrimeNG para agregar una línea divisoria horizontal -->
                             <p-divider></p-divider>
+                            <!-- Componente p-toast de PrimeNG para mostrar notificaciones emergentes -->
                             <p-toast></p-toast>
+                            <!-- Contenedor div con clases para centrar contenido horizontal y verticalmente -->
                             <div
                                 class="flex align-items-center justify-content-center"
                             >
                                 <p-button
-                                    label="Enviar Tarea"
+                                    label="Enviar Tareass"
                                     icon="pi pi-check"
                                     iconPos="right"
                                     (onClick)="entregarEstudianteTareaGrupal()"
@@ -319,6 +326,7 @@
                                 ></p-button>
                             </div>
                         </div>
+                        <!--Se muestra únicamente cuando la tarea grupal está en el estado evaluado-->
                         <div
                             class="card-body m-3"
                             [hidden]="iEstadoEstudianteTareaGrupal !== '1'"
@@ -335,25 +343,33 @@
                                 />
                             </p-inputGroup>
                             <p-divider></p-divider>
+                            <!-- Grupo de entrada de PrimeNG -->
                             <p-inputGroup>
+                                <!-- Este elemento proporciona una etiqueta descriptiva para el área de texto -->
+
                                 <p-inputGroupAddon>
                                     Conclusión Descriptiva
                                 </p-inputGroupAddon>
-                                <extarea
+                                <textarea
                                     pInputText
                                     rows="5"
                                     [(ngModel)]="
                                         comentarioTareaEstudianteGrupal
                                     "
-                                ></extarea>
+                                    [disabled]="isDisabled"
+                                    placeholder="Escribe la conclusión descriptiva aquí..."
+                                >
+                                </textarea>
                             </p-inputGroup>
                         </div>
                     }
                 </div>
             </div>
         </p-tabPanel>
+
         @if (iPerfilId !== 8) {
             <p-tabPanel>
+                <!-- Este es un contenedor de plantilla para un encabezado fijo con la clase 'header-fixed'. -->
                 <ng-template pTemplate="header" class="header-fixed">
                     <div class="flex align-items-center flex-column gap-2">
                         <app-icon name="matPeople"></app-icon>
@@ -362,6 +378,7 @@
                         </span>
                     </div>
                 </ng-template>
+                <!--Es un contenedor de nivel de bloque en HTML que se usa comúnmente para agrupar y organizar otros elementos.-->
                 <div class="flex flex-column gap-4 tab-content">
                     <div class="grid">
                         <div class="col-12 md:col-5">
@@ -372,6 +389,8 @@
                                     </h4>
                                 </div>
                                 <div class="p-toolbar-group-center">
+                                    <!-- Componente de botón de selección de PrimeNG -->
+                                    <!-- Enlace bidireccional a la variable 'tareaAsignar', para reflejar el valor seleccionado -->
                                     <p-selectButton
                                         [options]="tareaOptions"
                                         [(ngModel)]="tareaAsignar"
@@ -387,12 +406,18 @@
                                     [rounded]="true" [text]="true" severity="danger" /> -->
                                 </div>
                             </p-toolbar>
+                            <!-- Este componente de PrimeNG se usa para crear una línea divisoria horizontal -->
                             <p-divider></p-divider>
+                            <!-- Verifica si la variable 'tareaAsignar' no está indefinida -->
+                            <!-- Aquí se puede agregar código para ejecutar si 'tareaAsignar' no es indefinido -->
                             @if (tareaAsignar !== undefined) {
                                 <p-accordion [activeIndex]="0">
                                     @if (!tareaAsignar) {
                                         <p-accordionTab header="Individual">
+                                            <!-- Contenedor principal para la grilla -->
                                             <div class="grid">
+                                                <!-- Sección de leyenda para mostrar tareas faltantes -->
+
                                                 <div
                                                     class="col-6 leyenda-tareas"
                                                 >
@@ -420,7 +445,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-
+                                                <!-- Contenedor principal para la leyenda de tareas, ocupa la mitad de la columna en un sistema de rejilla de 12 columnas. -->
                                                 <div
                                                     class="col-6 leyenda-tareas"
                                                 >
@@ -447,6 +472,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                                <!-- Tabla de estudiantes con soporte para paginación, filtrado y estilos personalizables -->
                                                 <p-table
                                                     #dv
                                                     class="col-12 hoverTable"
@@ -461,6 +487,7 @@
                                                     [scrollable]="true"
                                                     scrollHeight="300px"
                                                 >
+                                                    <!-- Plantilla de encabezado que incluye el filtro de búsqueda -->
                                                     <ng-template
                                                         pTemplate="caption"
                                                     >
@@ -488,6 +515,8 @@
                                                             </p-iconField>
                                                         </div>
                                                     </ng-template>
+
+                                                    <!-- Plantilla de encabezado de la tabla -->
                                                     <ng-template
                                                         pTemplate="header"
                                                     >
@@ -500,7 +529,7 @@
                                                             <th>Estado</th>
                                                         </tr>
                                                     </ng-template>
-
+                                                    <!-- Fila de la tabla que se renderiza por cada estudiante en el contexto -->
                                                     <ng-template
                                                         pTemplate="body"
                                                         let-estudiante
@@ -562,6 +591,9 @@
                                                         </tr>
                                                     </ng-template>
 
+                                                    <!-- Fila de la tabla que se renderiza por cada estudiante en el contexto
+                                            Es una directiva de Angular que permite definir una plantilla reutilizable-->
+
                                                     <ng-template
                                                         pTemplate="emptymessage"
                                                         let-columns
@@ -611,6 +643,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                                <!-- Contenedor flex para alinear los elementos en línea y centrarlos -->
 
                                                 <div
                                                     class="col-6 leyenda-tareas"
@@ -639,12 +672,8 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <!-- <div class="col-6">
-                                        <span class="p-input-icon-left">
-                                            <i class="pi pi-search"></i>
-                                            <input pInputText placeholder="Buscar estudiante" style="width: 250px" />
-                                        </span>
-                                    </div> -->
+
+                                                <!-- Contenedor de la columna que ocupa todo el ancho disponible (12 columnas) y alinea el contenido a la derecha -->
 
                                                 <div class="col-12 text-right">
                                                     <p-button
@@ -658,13 +687,17 @@
                                                         iconPos="left"
                                                     />
                                                 </div>
+                                                <!-- Se utiliza para crear un acordeón en el que cada pestaña representa un grupo de estudiantes.-->
                                                 <div class="col-12">
+                                                    <!-- Contenedor de la columna principal -->
                                                     <p-accordion
                                                         [activeIndex]="0"
                                                         class="w-full"
                                                         expandIcon="pi pi-plus"
                                                         collapseIcon="pi pi-minus"
                                                     >
+                                                        <!-- Recorremos la lista de grupos para crear un p-accordionTab por cada grupo -->
+
                                                         @for (
                                                             item of grupos;
                                                             track item;
@@ -684,12 +717,15 @@
                                                                         idx,
                                                                 }"
                                                             >
+                                                                <!-- Encabezado del tab de acordeón -->
                                                                 <ng-template
                                                                     pTemplate="header"
                                                                 >
+                                                                    <!-- Contenedor principal que usa diseño de flexbox para alinear elementos y establecer un espacio entre ellos -->
                                                                     <div
                                                                         class="flex align-items-center gap-2 w-full"
                                                                     >
+                                                                        <!-- Texto estático que indica que la siguiente parte es el nombre del grupo -->
                                                                         Grupo:
                                                                         {{
                                                                             item.cTareaGrupoNombre
@@ -700,10 +736,10 @@
                                                                         class="flex align-items-center"
                                                                     >
                                                                         <!-- <b>Calif: </b>
-                                                        {{
-                                                        item.cEscalaCalifNombre ||
-                                                        '-'
-                                                        }} -->
+                                                                        {{
+                                                                        item.cEscalaCalifNombre ||
+                                                                        '-'
+                                                                        }} -->
                                                                         <div
                                                                             class="w-1rem h-1rem border-circle ml-3"
                                                                             [ngClass]="
@@ -716,7 +752,7 @@
                                                                                       : 'bg-green-500'
                                                                             "
                                                                         ></div>
-
+                                                                        <!-- Este botón, al ser clicado, se utiliza para seleccionar un grupo representado por item y mostrar un modal-->
                                                                         <p-button
                                                                             icon="pi pi-pencil"
                                                                             [rounded]="
@@ -750,7 +786,7 @@
                                                                         />
                                                                     </div>
                                                                 </ng-template>
-
+                                                                <!-- Componente p-table de PrimeNG para mostrar una tabla con funcionalidad de paginación y filtrado -->
                                                                 <div>
                                                                     <p-table
                                                                         #dv
@@ -766,6 +802,7 @@
                                                                             'cPersNombre',
                                                                         ]"
                                                                     >
+                                                                        <!-- Contenedor principal para la cabecera de la plantilla, usando un diseño de flexbox -->
                                                                         <ng-template
                                                                             pTemplate="caption"
                                                                         >
@@ -793,6 +830,9 @@
                                                                                 </p-iconField>
                                                                             </div>
                                                                         </ng-template>
+
+                                                                        <!-- Contenedor principal para la cabecera de la plantilla, usando un diseño de flexbox -->
+
                                                                         <ng-template
                                                                             pTemplate="header"
                                                                         >
@@ -813,11 +853,14 @@
                                                                                 </th>
                                                                             </tr>
                                                                         </ng-template>
+                                                                        <!-- Esta etiqueta define una plantilla con el nombre "header" que se usa en una tabla con PrimeNG -->
+
                                                                         <ng-template
                                                                             pTemplate="body"
                                                                             let-estudiante
                                                                             let-rowIndex="rowIndex"
                                                                         >
+                                                                            <!-- Verifica si un estudiante tiene la propiedad bAsignado establecida en true y, si es así, genera una fila en una tabla HTML que muestra su información y un botón para eliminarlo-->
                                                                             @if (
                                                                                 estudiante.bAsignado
                                                                             ) {
@@ -847,12 +890,11 @@
                                                                                             " [text]="
                                                                                                 true
                                                                                             " severity="danger"
-                                                                        (onClick)="
+                                                                                             (onClick)="
                                                                                                 transferirEstudiante(
                                                                                                     estudiante
                                                                                                 )
                                                                                             " /> -->
-
                                                                                         <p-button
                                                                                             icon="pi pi-trash"
                                                                                             [rounded]="
@@ -872,6 +914,9 @@
                                                                                 </tr>
                                                                             }
                                                                         </ng-template>
+
+                                                                        <!-- Este bloque define un template para mostrar un mensaje personalizado
+                                                                            cuando no hay datos disponibles en la tabla -->
                                                                         <ng-template
                                                                             pTemplate="emptymessage"
                                                                             let-columns
@@ -902,6 +947,7 @@
                             }
                         </div>
                         <div class="col-12 md:col-7">
+                            <!-- Grupo de elementos alineados a la izquierda -->
                             <p-toolbar>
                                 <div class="p-toolbar-group-start">
                                     <h4>
@@ -1080,19 +1126,19 @@
                                                             Conclusión
                                                             Descriptiva
                                                         </p-inputGroupAddon>
-                                                        <p-editor
+                                                        <textarea
                                                             pInputText
                                                             [(ngModel)]="
                                                                 cTareaEstudianteComentarioDocente
                                                             "
-                                                        ></p-editor>
+                                                        ></textarea>
                                                     </p-inputGroup>
                                                 </div>
                                             </div>
                                         </p-fieldset>
                                         <div class="grid">
                                             <div
-                                                class="col-12 text-right fixed-button text-center"
+                                                class="col-12 text-right text-center"
                                             >
                                                 <p-toast></p-toast>
                                                 <p-button
@@ -1150,6 +1196,7 @@
                                 styleClass="p-mr-2"></p-message> -->
                                         }
                                         <p-divider></p-divider>
+                                        <!--Permite que el campo se pueda expandir o contraer-->
                                         <p-fieldset
                                             [legend]="cTareaTitulo"
                                             [toggleable]="true"
@@ -1217,6 +1264,7 @@
                                                                             ></i>
                                                                         }
                                                                     }
+                                                                    <!-- Elemento de adición para el grupo de entrada -->
                                                                 </p-inputGroupAddon>
                                                                 <input
                                                                     type="text"
@@ -1242,6 +1290,7 @@
                                                             </p-inputGroup>
                                                         }
                                                     </div>
+                                                    <!-- Si 'cTareaGrupoUrl' está vacío, muestra un mensaje de error -->
                                                 } @else {
                                                     <p class="text-danger">
                                                         Todavía el grupo no ha
@@ -1258,6 +1307,7 @@
                                             <div class="grid">
                                                 <div class="col-12">
                                                     <p-inputGroup>
+                                                        <!-- Componente de grupo de entrada que permite incluir elementos de entrada relacionados de manera conjunta -->
                                                         <p-inputGroupAddon
                                                             >Escala de
                                                             calificación</p-inputGroupAddon
@@ -1280,10 +1330,12 @@
                                                 </div>
                                                 <div class="col-12">
                                                     <p-inputGroup>
+                                                        <!-- p-inputGroupAddon: Un componente de PrimeNG que se usa para agregar elementos al principio o al final de un grupo de entrada. -->
                                                         <p-inputGroupAddon>
                                                             Conclusión
                                                             Descriptiva
                                                         </p-inputGroupAddon>
+                                                        <!-- textarea: Un elemento de formulario de HTML que permite a los usuarios introducir texto en múltiples líneas. -->
                                                         <textarea
                                                             pInputText
                                                             [(ngModel)]="
@@ -1296,9 +1348,10 @@
                                         </p-fieldset>
                                         <div class="grid">
                                             <div
-                                                class="col-12 text-right fixed-button text-center"
+                                                class="col-12 text-right text-center"
                                             >
                                                 <p-toast></p-toast>
+                                                <!-- Bonton guardarTareaCabeceraGruposxDocente -->
                                                 <p-button
                                                     severity="success"
                                                     label="Guardar"
@@ -1320,7 +1373,7 @@
             </p-tabPanel>
         }
     </p-tabView>
-
+    <!--Input property que pasa el valor de 'iTareaId' al componente hijo 'app-form-grupo'.-->
     <app-form-grupo
         [iTareaId]="iTareaId"
         [data]="grupoSeleccionado"
@@ -1328,6 +1381,7 @@
         (accionBtnItem)="accionBtnItem($event)"
     ></app-form-grupo>
 </section>
+<!-- Input que pasa una lista de grupos disponibles para la transferencia-->
 <app-form-transferir-grupo
     [showModalTransferir]="showModalTransferir"
     [grupos]="grupos"

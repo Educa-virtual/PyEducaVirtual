@@ -118,4 +118,22 @@ export class AppTopBarComponent implements OnInit {
                 break
         }
     }
+
+    items = [
+        {
+            label: 'Notificaciones',
+            items: [
+                {
+                    label: 'Julio Salazar creó la tarea "Descubrimiento de América ..."',
+                    icon: 'pi pi-book',
+                    sublabel: 'Hace 1 día',
+                },
+                {
+                    label: 'Roberto comentó la publicación de Julio ...',
+                    icon: 'pi pi-book',
+                    sublabel: 'Hace 1 mes',
+                },
+            ],
+        },
+    ]
 }

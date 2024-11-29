@@ -21,6 +21,7 @@ import { MODAL_CONFIG } from '@/app/shared/constants/modal.config'
 import { DialogService } from 'primeng/dynamicdialog'
 import { AulaBancoPreguntaFormContainerComponent } from './components/aula-banco-pregunta-form-container/aula-banco-pregunta-form-container.component'
 import { ConstantesService } from '@/app/servicios/constantes.service'
+import { ApiEvaluacionesRService } from '@/app/sistema/evaluaciones/services/api-evaluaciones-r.service'
 
 @Component({
     selector: 'app-aula-banco-preguntas',
@@ -49,7 +50,7 @@ export class AulaBancoPreguntasComponent implements OnInit, OnDestroy {
     private _dialogService = inject(DialogService)
     private _constantesService = inject(ConstantesService)
 
-    public params = {
+    @Input() public params = {
         iCursoId: null,
         iDocenteId: null,
         iCurrContId: null,
@@ -111,6 +112,9 @@ export class AulaBancoPreguntasComponent implements OnInit, OnDestroy {
                 this.bancoPreguntas = data
                 this.bancoPreguntas.forEach((item) => {
                     this.expandedRowKeys[item.iPreguntaId] = true
+                    item.iTotalPreguntas = !item.preguntas
+                        ? 1
+                        : item.preguntas.length
                 })
 
                 this.expandedRowKeys = Object.assign({}, this.expandedRowKeys)
@@ -127,6 +131,10 @@ export class AulaBancoPreguntasComponent implements OnInit, OnDestroy {
             })
             return
         }
+
+        if (accion.accion === 'generar-word') {
+            this.generarWord()
+        }
         if (accion === 'editar') {
             this.agregarEditarPregunta(item)
         }
@@ -134,6 +142,36 @@ export class AulaBancoPreguntasComponent implements OnInit, OnDestroy {
         if (accion === 'eliminar') {
             this.handleEliminarBancoPreguntas(item)
         }
+    }
+    selectedItems = []
+    private _confirmationModalService = inject(ConfirmationModalService)
+    private _apiEvaluacionesR = inject(ApiEvaluacionesRService)
+
+    generarWord() {
+        if (this.selectedItems.length === 0) {
+            this._confirmationModalService.openAlert({
+                header: 'Debe seleccionar almenos una pregunta.',
+            })
+            return
+        }
+
+        let preguntas = []
+
+        this.selectedItems.forEach((item) => {
+            if (item.iEncabPregId == -1) {
+                preguntas = [...preguntas, item]
+            } else {
+                preguntas = [...preguntas, ...item.preguntas]
+            }
+        })
+
+        const ids = preguntas.map((item) => item.iPreguntaId).join(',')
+
+        const params = {
+            iCursoId: this.params.iCursoId,
+            ids,
+        }
+        this._apiEvaluacionesR.generarWordByPreguntasIds(params)
     }
 
     agregarEditarPregunta(pregunta) {

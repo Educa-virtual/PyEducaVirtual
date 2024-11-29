@@ -1,0 +1,15 @@
+:host ::ng-deep .p-toolbar {
+    background: var(--bg-header-modal) !important;
+    color: white !important;
+
+    .p-button {
+        border: 0px;
+        color: white !important;
+        background: var(--bg-header-modal) !important;
+
+        &:hover {
+            background: white !important;
+            color: var(--bg-header-modal) !important;
+        }
+    }
+}

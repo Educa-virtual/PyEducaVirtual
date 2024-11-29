@@ -1,6 +1,5 @@
 import { PrimengModule } from '@/app/primeng.module'
 import { Component, OnInit } from '@angular/core'
-import { BtnLoadingComponent } from '../btn-loading/btn-loading.component'
 import { TokenStorageService } from '@/app/servicios/token.service'
 import { Router } from '@angular/router'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
@@ -8,6 +7,7 @@ import { AuthService } from '@/app/servicios/auth.service'
 import { MessageService } from 'primeng/api'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
+import { RecoverPasswordComponent } from '../recover-password/recover-password.component'
 
 interface Data {
     accessToken: string
@@ -27,7 +27,7 @@ interface Data {
 @Component({
     selector: 'app-login',
     standalone: true,
-    imports: [PrimengModule, BtnLoadingComponent],
+    imports: [PrimengModule, RecoverPasswordComponent],
     templateUrl: './login.component.html',
     styleUrl: './login.component.scss',
     providers: [MessageService],
@@ -117,14 +117,29 @@ export class LoginComponent implements OnInit {
             },
             complete: () => {},
             error: (error) => {
-                console.log(error)
+                // console.log(error)
                 this.loading = false
                 this.messageService.add({
                     severity: 'error',
                     summary: '¡Atención!',
-                    detail: 'Las credenciales son erróneas',
+                    detail:
+                        error.pass || error.user
+                            ? 'Verifica haber ingresado correctamente tu usuario y contraseña'
+                            : error,
                 })
             },
         })
+    }
+
+    showModal: boolean = false
+
+    accionBtnItem(elemento): void {
+        const { accion } = elemento
+        // const { item } = elemento
+        switch (accion) {
+            case 'close-modal':
+                this.showModal = false
+                break
+        }
     }
 }

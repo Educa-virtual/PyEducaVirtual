@@ -14,11 +14,20 @@
         </button>
     </div>
     <div class="topbar__notif_anio_inst_account">
-        <button class="p-link button-menu mr-1 display-none">
-            <i class="pi pi-bell"></i>
+        <button
+            class="p-link"
+            style="color: var(--surface-menu)"
+            (click)="menu.toggle($event)"
+        >
+            <i
+                class="pi pi-bell"
+                pBadge
+                style="font-size: 2rem"
+                value="10+"
+            ></i>
         </button>
         <app-anio-escolar
-            class="mr-1"
+            class="ml-5 mr-1"
             [years]="years"
             [selectedYear]="selectedYear"
             (actionTopBar)="actionTopBar($event)"
@@ -37,3 +46,40 @@
         ></app-user-account>
     </div>
 </div>
+
+<p-menu #menu [model]="items" [popup]="true" styleClass="w-29rem">
+    <ng-template pTemplate="submenuheader" let-item>
+        <div class="flex justify-content-between flex-wrap">
+            <div
+                class="flex align-items-center justify-content-center font-bold mx-2"
+            >
+                {{ item.label }}
+            </div>
+            <div
+                class="flex align-items-center justify-content-center text-none text-primary mx-2"
+            >
+                Ver
+            </div>
+        </div>
+    </ng-template>
+    <ng-template pTemplate="item" let-item>
+        <div pRipple class="flex align-items-center p-menuitem-link text-sm">
+            <span [class]="item.icon" style="color: #3e67a9"></span>
+            <span class="mx-3 text-none">{{
+                item.label.length > 40
+                    ? (item.label | slice: 0 : 40) + '...'
+                    : item.label
+            }}</span>
+            <span
+                *ngIf="item.sublabel"
+                class="ml-auto border-1 surface-border border-round surface-100 text-xs p-1"
+                >{{ item.sublabel }}</span
+            >
+        </div>
+        <!-- <div class="flex mx-2">
+            <div class="mx-2"><i [class]="item.icon"></i></div>
+            <div>{{ item.label }}</div>
+            Julio Salazar creó la tarea "Descubrimiento de América ..." Hace 1 día
+        </div> -->
+    </ng-template>
+</p-menu>

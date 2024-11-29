@@ -37,6 +37,20 @@
                             </div>
                             <div class="grid mb-4">
                                 <div
+                                    class="col-12 md:col-6 flex flex-column gap-2 align-items-start"
+                                >
+                                    <div
+                                        class="col-12 md:col-6 gap-2 flex flex-column"
+                                    >
+                                        <app-time
+                                            [inicio]="fechaInicio"
+                                            [fin]="fechaFin"
+                                        ></app-time>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="grid mb-4">
+                                <div
                                     class="col-12 md:col-6 flex flex-column gap-2"
                                 >
                                     <span class="font-bold text-xl flex gap-2">
@@ -297,14 +311,18 @@
                                                                 <div
                                                                     class="pb-2 perfil-name"
                                                                 >
-                                                                    {{
-                                                                        respuestas.cNombres
-                                                                    }}
-                                                                    {{
-                                                                        respuestas?.dtCreado
-                                                                            | date
-                                                                                : 'short'
-                                                                    }}
+                                                                    <span
+                                                                        class="user-name"
+                                                                    >
+                                                                        {{
+                                                                            respuestas.cNombres
+                                                                        }}
+                                                                        {{
+                                                                            respuestas?.dtCreado
+                                                                                | date
+                                                                                    : 'short'
+                                                                        }}
+                                                                    </span>
                                                                 </div>
                                                                 <div
                                                                     class=""
@@ -335,6 +353,7 @@
                                                                                 | removeHTML
                                                                         }}
                                                                     </span>
+                                                                    <!-- Para Leer mas.. -->
                                                                     <!-- <a
                                                                         (click)="
                                                                             toggleExpand(
@@ -350,51 +369,82 @@
                                                                         }}
                                                                     </a> -->
                                                                 </div>
-                                                                <!-- startReply(i) -->
-
                                                                 <div
-                                                                    class="align-items-center"
+                                                                    class="display flex"
                                                                 >
-                                                                    <button
-                                                                        pButton
-                                                                        type="button"
-                                                                        class="p-button-text"
+                                                                    <!-- startReply(i) -->
+                                                                    <div
+                                                                        class="actions-container"
                                                                     >
-                                                                        <i
-                                                                            class="pi pi-thumbs-up"
-                                                                            style="
-                                                                                font-size: 18px;
+                                                                        <!-- Los Likes -->
+                                                                        <button
+                                                                            pButton
+                                                                            type="button"
+                                                                            class="p-button-text"
+                                                                        >
+                                                                            <i
+                                                                                class="pi pi-thumbs-up"
+                                                                                style="
+                                                                                    font-size: 18px;
+                                                                                "
+                                                                            ></i>
+                                                                        </button>
+                                                                        <!-- Contador de Sub mensajes -->
+                                                                        <button
+                                                                            pButton
+                                                                            type="button"
+                                                                            class="p-button-text"
+                                                                            (click)="
+                                                                                startReply(
+                                                                                    i
+                                                                                )
                                                                             "
-                                                                        ></i>
-                                                                    </button>
-                                                                    <button
-                                                                        pButton
-                                                                        type="button"
-                                                                        class="p-button-text"
-                                                                        (click)="
-                                                                            startReply(
-                                                                                i
-                                                                            )
-                                                                        "
+                                                                        >
+                                                                            <label
+                                                                                for=""
+                                                                                class="text-sm text-black pr-2"
+                                                                                >{{
+                                                                                    respuestas
+                                                                                        .json_respuestas_comentarios
+                                                                                        .length ||
+                                                                                        0
+                                                                                }}
+                                                                                Respuestas
+                                                                            </label>
+                                                                            <i
+                                                                                class="pi pi-comments"
+                                                                                style="
+                                                                                    font-size: 18px;
+                                                                                "
+                                                                            ></i>
+                                                                        </button>
+                                                                    </div>
+                                                                    <!-- Menú al final -->
+                                                                    <div
+                                                                        class=""
                                                                     >
-                                                                        <label
-                                                                            for=""
-                                                                            class="text-sm text-black pr-2"
-                                                                            >{{
-                                                                                respuestas
-                                                                                    .json_respuestas_comentarios
-                                                                                    .length ||
-                                                                                    0
-                                                                            }}
-                                                                            Respuestas
-                                                                        </label>
-                                                                        <i
-                                                                            class="pi pi-comments"
-                                                                            style="
-                                                                                font-size: 18px;
+                                                                        <button
+                                                                            [style.display]="
+                                                                                !respuestas.iEstudianteId
+                                                                                    ? respuestas.iDocenteId ===
+                                                                                      iDocenteId
+                                                                                    : respuestas.iEstudianteId ===
+                                                                                      iEstudianteId
                                                                             "
-                                                                        ></i>
-                                                                    </button>
+                                                                            pButton
+                                                                            type="button"
+                                                                            icon="pi pi-ellipsis-v"
+                                                                            class="menu-container p-button-text"
+                                                                            (click)="
+                                                                                itemRespuesta =
+                                                                                    respuestas?.iForoRptaId;
+                                                                                menu.toggle(
+                                                                                    $event
+                                                                                )
+                                                                            "
+                                                                            aria-label="Abrir menú de configuración"
+                                                                        ></button>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -457,12 +507,6 @@
                                                                 </div>
                                                                 <hr />
                                                             }
-
-                                                            <!-- <p-editor
-                                                                id="descripcion"
-                                                                placeholder="Comentar.."
-                                                                formControlName="cForoRptaPadre"
-                                                            /> -->
                                                             <div
                                                                 class="comment-container-Rpd"
                                                             >
@@ -504,50 +548,6 @@
                                                                     "
                                                                 />
                                                             </div>
-                                                            <!-- <div class="comment-container">
-                                                                <input                                                                
-                                                                    type="text"
-                                                                    class="comment-input"
-                                                                    placeholder="Escribe un comentario..."
-                                                                    id="commentText"
-                                                                    formControlName="cForoRptaPadre"
-                                                                    
-                                                                />                                                                                                                               
-                                                                <div
-                                                                    class="reply-container"
-                                                                >
-                                                                    <div
-                                                                        class="button-container"
-                                                                    >
-                                                                        <button
-                                                                            pButton
-                                                                            pRipple
-                                                                            label="Cancelar"
-                                                                            icon="pi pi-times"
-                                                                            class="p-button-secondary mx-3"
-                                                                            type="button"
-                                                                            size="small"
-                                                                            (click)="
-                                                                                cancelarEdicion()
-                                                                            "
-                                                                        ></button>
-                                                                        <button
-                                                                            pButton
-                                                                            pRipple
-                                                                            type="button"
-                                                                            label="Responder Enviar"
-                                                                            icon="pi pi-send"
-                                                                            size="small"
-                                                                            class="p-button-primary"
-                                                                            (click)="
-                                                                                sendCommentPadre(
-                                                                                    respuestas
-                                                                                )
-                                                                            "
-                                                                        ></button>
-                                                                    </div>
-                                                                </div>
-                                                            </div> -->
                                                         </div>
                                                     </div>
                                                 </p-button>
@@ -596,12 +596,6 @@
                                                 </span>
                                             </ng-template>
                                         </p-editor>
-
-                                        <!-- <p-editor
-                                            id="descripcion"
-                                            placeholder="Escribe un Comentario... "
-                                            formControlName="cForoRptaRespuesta"
-                                        /> -->
 
                                         <div class="reply-container">
                                             <div class="button-container">
@@ -659,13 +653,6 @@
                                         pTemplate="listItem"
                                         let-i="index"
                                     >
-                                        <!-- <p-button
-                                            [text]="true"
-                                            severity="secondary"
-                                            
-                                        >
-                                                
-                                        </p-button> -->
                                         <div
                                             class="perfilesList"
                                             tabindex="0"
@@ -699,7 +686,12 @@
                                                 <p-button
                                                     icon="pi pi-book"
                                                     [rounded]="true"
-                                                    severity="danger"
+                                                    [severity]="
+                                                        estudiante?.cEstado ===
+                                                        '0'
+                                                            ? 'danger'
+                                                            : 'success'
+                                                    "
                                                     (click)="
                                                         openModalCalificacion(
                                                             estudiante
@@ -713,316 +705,11 @@
                                     </ng-template>
                                 </p-orderList>
                             </div>
-                            <!-- <app-empty-section
-                            class="w-full"
-                            [message]="'Ningun Estudiante seleccionado'"
-                        ></app-empty-section> -->
                         </div>
                     </div>
                 </div>
             </form>
         </p-tabPanel>
-        <!-- Calificar Foro -->
-        @if (iPerfilId !== 8) {
-            <p-tabPanel>
-                <ng-template pTemplate="header">
-                    <div class="flex align-items-center flex-column gap-2">
-                        <app-icon name="matRule"></app-icon>
-                        <span class="font-bold white-space-nowrap m-0">
-                            Calificar Foro
-                        </span>
-                    </div>
-                </ng-template>
-                <form
-                    [formGroup]="foroFormComnt"
-                    class="flex flex-column gap-3 w-full"
-                >
-                    <!-- Cabecera del Foro -->
-                    <div class="card">
-                        <div class="TituloForo">
-                            {{ foro?.cForoTitulo }}
-                        </div>
-                        <hr />
-                        <!-- Mostrar las fechas de Inicio y fin de foro -->
-                        <div class="grid">
-                            <div class="col-12 md:col-6 flex flex-column gap-2">
-                                <p class="flex gap-2 flex-wrap">
-                                    <app-icon
-                                        name="matCalendarMonth"
-                                        class="text-primary"
-                                        size="sm"
-                                    ></app-icon>
-                                    {{
-                                        foro?.dtForoInicio
-                                            | date
-                                                : "EEEE, d 'de' MMMM 'de' yyyy"
-                                    }}
-                                    <app-icon
-                                        name="matAccessTime"
-                                        class="text-primary"
-                                        size="sm"
-                                    ></app-icon>
-                                    <span class="font-bold">Hora Limite:</span>
-                                    <span class="flex gap-2">
-                                        {{
-                                            foro?.dtForoInicio | date: 'h:mm a'
-                                        }}
-                                    </span>
-                                </p>
-                            </div>
-                            <div class="col-12 md:col-6 flex flex-column gap-2">
-                                <p class="flex gap-2 flex-wrap">
-                                    <app-icon
-                                        name="matCalendarMonth"
-                                        class="text-primary"
-                                        size="sm"
-                                    ></app-icon>
-                                    {{
-                                        foro?.dtForoFin
-                                            | date
-                                                : "EEEE, d 'de' MMMM 'de' yyyy"
-                                    }}
-
-                                    <span class="flex gap-2">
-                                        <app-icon
-                                            name="matAccessTime"
-                                            class="text-primary"
-                                            size="sm"
-                                        ></app-icon>
-                                        <span class="font-bold"
-                                            >Hora Limite:</span
-                                        >
-                                        {{ foro?.dtForoFin | date: 'h:mm a' }}
-                                    </span>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Mostrar descripcion de Foro -->
-                    <p-messages
-                        [(value)]="messages"
-                        [enableService]="false"
-                        [closable]="false"
-                    />
-                    <!-- Mostrar las leyendas -->
-                    <!-- <div class="flex gap-4 align-items-center flex-wrap mx-auto">
-                        <app-leyenda
-                            [total]="2"
-                            text="Revisados"
-                            [size]="'md'"
-                            colorClass="bg-green-500"
-                        ></app-leyenda>
-                        <app-leyenda
-                            [total]="3"
-                            text="En proceso"
-                            [size]="'md'"
-                            colorClass="bg-yellow-500"
-                        ></app-leyenda>
-                        <app-leyenda
-                            [total]="10"
-                            text="Pendientes"
-                            [size]="'md'"
-                            colorClass="bg-red-500"
-                        ></app-leyenda>
-                    </div> -->
-                    <!-- [(selection)]="evaluacionSeleccionada" (onRowSelect)="seleccionarEvaluacion()" -->
-                    <!-- <div
-                        class="flex flex-column gap-4 md:flex-row md:align-items-start align-items-stretch"
-                    >
-                    <div class="flex flex-column gap-2 card">
-                        <div class="flex gap-4 align-items-center flex-wrap mx-auto">
-                            <app-leyenda
-                                [total]="2"
-                                text="Revisados"
-                                [size]="'md'"
-                                colorClass="bg-green-500"
-                            ></app-leyenda>
-                            <app-leyenda
-                                [total]="3"
-                                text="En proceso"
-                                [size]="'md'"
-                                colorClass="bg-yellow-500"
-                            ></app-leyenda>
-                            <app-leyenda
-                                [total]="10"
-                                text="Pendientes"
-                                [size]="'md'"
-                                colorClass="bg-red-500"
-                            ></app-leyenda>
-                        </div>
-                        <div class="w-full">
-                            <p-iconField iconPosition="left" class="w-full">
-                                <p-inputIcon styleClass="pi pi-search" />
-                                <input
-                                    type="text"
-                                    pInputText
-                                    placeholder="Search"
-                                    class="w-full"
-                                />
-                            </p-iconField>
-                        </div>
-                        <p-table
-                            [value]="respuestasForo"
-                            selectionMode="single"
-                        >
-                            <ng-template pTemplate="header">
-                                <tr>
-                                    <th>#</th>
-                                    <th>Nombre y Apellidos</th>
-                                    <th>Estado</th>
-                                    <th>Notal Final</th>
-                                </tr>
-                            </ng-template>
-                            <ng-template pTemplate="body" let-respuestas
-                                let-rowIndex = "rowIndex"
-                                >
-                                <tr>
-                                    <td>
-                                        {{rowIndex + 1}}
-                                    </td>
-                                    <td style="max-width: 150px; word-wrap: break-word;" >
-                                        {{respuestas?.cNombreEstudiante}}
-                                    </td>
-                                    <td>
-                                        <span
-                                            class="block w-1rem h-1rem bg-red-500 border-circle"
-                                        ></span>
-                                    </td>
-                                    <td></td>
-                                </tr>
-                            </ng-template>
-                        </p-table>
-                    </div>
-                    </div> -->
-                    <!-- Mostrar tabla -->
-                    <p-table
-                        #dv
-                        class="col-12 hoverTable"
-                        [value]="estudiantes"
-                        paginator="false"
-                        styleClass="p-datatable-sm"
-                    >
-                        <ng-template pTemplate="header">
-                            <tr>
-                                <!-- incio -->
-                                <p-table
-                                    [value]="respuestasForo"
-                                    [scrollable]="true"
-                                    scrollHeight="500px"
-                                >
-                                    <ng-template pTemplate="header">
-                                        <tr class="sticky-header">
-                                            <th>#</th>
-                                            <th>Nombre Estudiante</th>
-                                            <th>Respuesta</th>
-                                            <th>Calificación</th>
-                                            <th>Descripción</th>
-                                            <th>Acciones</th>
-                                        </tr>
-                                    </ng-template>
-                                    <ng-template
-                                        pTemplate="body"
-                                        let-respuestas
-                                        let-rowIndex="rowIndex"
-                                    >
-                                        <tr>
-                                            <td>
-                                                <!-- <p-checkbox
-                                                [(ngModel)]="estudiante.selected"
-                                            ></p-checkbox> -->
-                                                {{ rowIndex + 1 }}
-                                            </td>
-                                            <td class="">
-                                                {{
-                                                    respuestas?.cNombreEstudiante
-                                                }}
-                                            </td>
-                                            <td
-                                                class=""
-                                                style="text-align: justify"
-                                            >
-                                                {{
-                                                    respuestas?.cForoRptaRespuesta
-                                                        | removeHTML
-                                                }}
-                                            </td>
-                                            <td
-                                                class="font-bold"
-                                                style="text-align: center"
-                                            >
-                                                {{
-                                                    respuestas?.cEscalaCalifNombre
-                                                }}
-                                            </td>
-                                            <td>
-                                                {{
-                                                    respuestas?.cForoRptaDocente ??
-                                                        '' | removeHTML
-                                                }}
-                                            </td>
-                                            <td style="text-align: center">
-                                                <p-button
-                                                    icon="pi pi-book"
-                                                    [rounded]="true"
-                                                    [text]="true"
-                                                    severity="secondary"
-                                                    (click)="
-                                                        openModal(respuestas)
-                                                    "
-                                                />
-                                                <!-- <p-button
-                                                    (click)="
-                                                        openModal(respuestas)
-                                                    "
-                                                    class="btCalificacion"
-                                                    icon="pi pi-book"
-                                                    rounded="true"
-                                                    severity="secondary"
-                                                    [style]="{
-                                                        'margin-right': '.5em',
-                                                    }"
-                                                /> -->
-
-                                                <!-- <div
-                                                class="w-1rem h-1rem border-circle ml-3"
-                                                [ngClass]="
-                                                    estudiante.cEstado === 'F'
-                                                        ? 'bg-red-500'
-                                                        : estudiante.cEstado === 'P'
-                                                            ? 'bg-yellow-500'
-                                                            : 'bg-green-500'
-                                                "
-                                            ></div> -->
-                                            </td>
-                                        </tr>
-                                    </ng-template>
-                                </p-table>
-                                <!-- incio -->
-                            </tr></ng-template
-                        >
-                        <ng-template pTemplate="emptymessage" let-columns>
-                            <tr>
-                                <td [attr.colspan]="8">
-                                    No se encontraron resultados.
-                                </td>
-                            </tr>
-                        </ng-template>
-                    </p-table>
-                    <!-- <div class="card">
-                        <app-table-primeng
-                            [columnas]="columnas"
-                            [data]="data"
-                            (accionBtnItem)="accionBtnItemTable($event)"
-                            [(selectedRowData)]="selectedItems"
-                            [actions]="accionesTabla"
-                        >
-                            <ng-container slot="caption-content">
-                            </ng-container>
-                        </app-table-primeng>
-                    </div> -->
-                </form>
-            </p-tabPanel>
-        }
     </p-tabView>
 </section>
 <!-- Calificar estudiante en el mismo foro -->
@@ -1033,7 +720,7 @@
     header="Calificar a: {{ perfilSelect?.nombrecompleto }}"
     [modal]="true"
 >
-    <form [formGroup]="foroFormComnt" class="flex flex-column gap-3 w-full">
+    <form [formGroup]="foroFormCalf" class="flex flex-column gap-3 w-full">
         <div class="grid pt-2">
             <!-- Mostrar la califcación -->
             <!--  for="calificacion" [options]="calificacion"-->
@@ -1089,93 +776,9 @@
                 icon="pi pi-send"
                 size="small"
                 class="p-button-primary"
-                (click)="submit()"
-            ></button>
-            <!-- (click)="submit()" -->
-        </div>
-    </div>
-</p-dialog>
-<p-dialog
-    [(visible)]="modalCalificacion"
-    [style]="{ width: '1000px' }"
-    header="Calificar las Respuestas de: {{
-        estudianteSelect?.cNombreEstudiante
-    }}"
-    [modal]="true"
-    class="p-fluid"
->
-    <form [formGroup]="foroFormComnt" class="flex flex-column gap-3 w-full">
-        <div class="grid pt-3">
-            <div class="col-8 flex flex-column gap-2 conntResp">
-                <label for="" class="font-bold">Respuesta estudiante:</label>
-
-                "{{ estudianteSelect?.cForoRptaRespuesta | removeHTML }}"
-            </div>
-
-            <div class="col-4 flex flex-column gap-2">
-                <label for="calificacion">Calificación</label>
-                <p-dropdown
-                    [options]="calificacion"
-                    formControlName="iEscalaCalifId"
-                    styleClass="w-full"
-                    optionValue="iEscalaCalifId"
-                    optionLabel="cEscalaCalifNombre"
-                    placeholder="Seleccione una Calificación"
-                />
-            </div>
-
-            <div class="col-12">
-                <label for="descripcion" class="mt-1"
-                    >Descripción
-                    <span class="text-red-500 text-xs"
-                        >(*) Obligatorio</span
-                    ></label
-                >
-                <div class="mt-2">
-                    <p-editor
-                        id="descripcion"
-                        formControlName="cForoRptaDocente"
-                        [style]="{ height: '150px' }"
-                    />
-                </div>
-            </div>
-        </div>
-    </form>
-    <!-- <div class="">
-        
-        flex justify-content-end gap-2 pt-3 
-        <button
-            pButton
-            pRipple
-            label="Cancelar"
-            icon="pi pi-times"
-            class="p-button-secondary"
-            type="button"
-            
-        ></button>
-        (click)="closeModal(null)"
-        <button
-            pButton
-            pRipple
-            label="Guardar"
-            icon="pi pi-check"
-            
-            class="p-button-primary"
-            (click)="submit()"
-        ></button>
-    </div> -->
-    <div class="reply-container">
-        <div class="button-container">
-            <button
-                pButton
-                pRipple
-                type="button"
-                label="Enviar"
-                icon="pi pi-send"
-                size="small"
-                class="p-button-primary"
-                (click)="submit()"
+                (click)="calificarComnt()"
             ></button>
         </div>
     </div>
 </p-dialog>
+<p-menu #menu [model]="menuItems" [popup]="true"> </p-menu>

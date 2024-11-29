@@ -319,4 +319,11 @@ export class ApiEvaluacionesRService {
             .get(`${this.baseUrl}/ere/desempenos/obtenerDesempenos`, { params })
             .pipe(map((resp) => resp['data']))
     }
+
+    generarWordEvaluacionByIds(baseParams) {
+        const url = `${this.baseUrlBackend}/generarWordEvaluacionByIds`
+        const params = new URLSearchParams({ ...baseParams })
+        const fullUrl = `${url}?${params.toString()}`
+        window.open(fullUrl, '_blank')
+    }
 }

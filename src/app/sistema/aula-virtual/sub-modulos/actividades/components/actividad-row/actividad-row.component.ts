@@ -12,9 +12,9 @@ import {
 import { IconComponent } from '@/app/shared/icon/icon.component'
 import { ActividadConfigPipe } from '@/app/sistema/aula-virtual/pipes/actividad-config.pipe'
 import { MenuItem } from 'primeng/api'
-import { IsIconTypePipe } from '@/app/shared/pipes/is-icon-type.pipe'
 import { PrimengModule } from '@/app/primeng.module'
 import { ConstantesService } from '@/app/servicios/constantes.service'
+import { IsIconTypePipe } from '@/app/shared/pipes/is-icon-type.pipe'
 
 @Component({
     selector: 'app-actividad-row',
@@ -23,8 +23,8 @@ import { ConstantesService } from '@/app/servicios/constantes.service'
         CommonModule,
         IconComponent,
         ActividadConfigPipe,
-        IsIconTypePipe,
         PrimengModule,
+        IsIconTypePipe,
     ],
     templateUrl: './actividad-row.component.html',
     styleUrl: './actividad-row.component.scss',
@@ -46,5 +46,20 @@ export class ActividadRowComponent implements OnInit {
     onAction(action: string, event: Event) {
         this.actionSelected.emit({ actividad: this.actividad, action })
         event.stopPropagation()
+    }
+    obtenerStyleActividad(iEstadoActividad) {
+        let styleActividad = ''
+        switch (Number(iEstadoActividad)) {
+            case 1: //PROCESO
+                styleActividad = 'border-left:15px solid var(--green-500);'
+                break
+            case 2: //NO PUBLICADO
+                styleActividad = 'border-left:15px solid var(--yellow-500);'
+                break
+            case 0: //CULMINADO
+                styleActividad = 'border-left:15px solid var(--red-500);'
+                break
+        }
+        return styleActividad
     }
 }

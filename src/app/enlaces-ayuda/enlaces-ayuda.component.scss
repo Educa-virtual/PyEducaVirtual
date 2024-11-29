@@ -1,0 +1,49 @@
+.card-container {
+    display: flex;
+    justify-content: center;
+    padding: 16px;
+}
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 16px;
+    width: 100%;
+    max-width: 1200px;
+}
+
+.help-link {
+    display: inline-flex;
+    align-items: center;
+    margin-right: 16px;
+    text-decoration: none;
+    color: #007bff;
+    font-weight: bold;
+    font-size: 14px;
+    transition: color 0.3s ease;
+}
+
+.help-link:hover,
+.help-link:focus {
+    color: #0056b3;
+}
+
+.icon {
+    display: block;
+    width: 100%;
+    /* Asegura que ocupe todo el ancho del contenedor */
+    max-width: 300px;
+    /* Máximo ancho deseado */
+    height: auto;
+    /* Mantiene las proporciones */
+    margin-right: 8px;
+    border-radius: 4px;
+    object-fit: contain;
+    /* Ajusta el contenido sin recortar */
+    transition: transform 0.3s ease;
+}
+
+.help-link:hover .icon,
+.help-link:focus .icon {
+    transform: scale(1.1);
+}

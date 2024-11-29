@@ -200,12 +200,22 @@ export class ApiEvaluacionesRService {
         )
     }
     //!Matriz Desempeno
-    insertarMatrizDesempeno(data: any) {
+    insertarMatrizDesempeno(datapayload: any) {
         return this.http.post(
             `${this.baseUrl}/ere/Evaluaciones/insertarMatrizDesempeno`,
-            data
+            datapayload
         )
     }
+    // insertarMatrizDesempeno(data: any) {
+    //     return this.http.post(
+    //         `${this.baseUrl}/ere/Evaluaciones/insertarMatrizDesempeno`,
+    //         data
+    //     )
+    // }
+    // guardarEvaluacion(data: any) {
+    //     return this.http.post(`${this.baseUrl}/ere/Evaluaciones/guardar`, data)
+    // }
+
     //Banco de Preguntas ->
     generarWordByPreguntasIds(baseParams) {
         const url = `${this.baseUrlBackend}/generarWordBancoPreguntasSeleccionadas`

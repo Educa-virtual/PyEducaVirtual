@@ -4,16 +4,15 @@
         <div class="field flex flex-column col-12 md:col-6">
             <label for="matriz-desempeno">Matriz de Desempeño</label>
             <!-- Campo de texto para cDesempenoDescripcion -->
+
             <input
                 type="text"
                 pInputText
                 [(ngModel)]="value"
                 [ngModelOptions]="{ standalone: true }"
                 placeholder="Descripción del desempeño"
+                (ngModelChange)="onDesempenoDescripcionChange()"
             />
-
-            <!-- Botón para insertar los datos -->
-            <button (click)="insertarMatrizDesempeno()">Insertar Datos</button>
         </div>
         <!-- Matriz de Competencias fuera del formulario reactivo -->
         <div class="field flex flex-column col-12 md:col-6">
@@ -54,6 +53,7 @@
                 [options]="matrizCapacidadFiltrada"
                 optionLabel="cCapacidadNombre"
                 [ngModelOptions]="{ standalone: true }"
+                (ngModelChange)="onCapacidadChange($event)"
                 [styleClass]="
                     formGroup.get('iCapacidadId')?.invalid &&
                     formGroup.get('iCapacidadId')?.touched

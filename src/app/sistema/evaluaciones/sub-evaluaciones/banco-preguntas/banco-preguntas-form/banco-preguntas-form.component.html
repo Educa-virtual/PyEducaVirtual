@@ -104,12 +104,16 @@
                             (payloadEmitido)="recibirPayload($event)"
                         ></app-banco-pregunta-informacion-form>
                         <!-- Botón habilitado solo cuando los datos estén listos -->
-                        <button
+                        <!-- <button
                             [disabled]="!datosListos"
                             (click)="procesarDatos()"
                         >
                             Procesar Datos
-                        </button>
+                        </button> -->
+                        <!-- Botón para insertar datos en la base de datos -->
+                        <!-- <button (click)="insertarMatrizDesempeno()">
+                            Insertar en Base de Datos
+                        </button> -->
                     </form>
                 } @else {
                     <app-banco-pregunta-lista

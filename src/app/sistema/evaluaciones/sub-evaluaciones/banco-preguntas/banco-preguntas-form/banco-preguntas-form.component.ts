@@ -73,6 +73,7 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
     @Output() closeModalChange = new EventEmitter()
     @Output() submitChange = new EventEmitter()
     @Output() encabezadoChange = new EventEmitter()
+
     @Input() public tipoPreguntas = []
     @Input() public encabezados = []
     @Input() public bancoPreguntasForm: FormGroup
@@ -81,10 +82,13 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
     @Input() public columnasPreguntas = columnasListaPreguntaForm
     @Input() public accionesPreguntas = accionesTablaListaPreguntaForm
     @Input() _iEvaluacionId: string | null = null // Aquí definimos el @Input
-
+    private _apiEre = inject(ApiEvaluacionesRService)
     private _pregunta
     private _FormBuilder = inject(FormBuilder)
     payloadRecibido: any
+    @Input() payload: any
+    @Output() payloadEmitidoForm = new EventEmitter<any>()
+
     // si envia la pregunta se hace el patch del formulario
     @Input()
     set pregunta(pregunta) {
@@ -149,7 +153,6 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
     public alternativasEliminadas = []
     public preguntaSelected = null
     public preguntasEliminar = []
-    datosListos: boolean = false //! Indicador de que los datos llegaron
 
     ngOnInit() {
         // Aqui llego la iEvaluacion desde BancoPreguntasForm
@@ -157,8 +160,6 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
             'iEvaluacionId recibido desde form Click Agregar Pregunta :',
             this._iEvaluacionId
         )
-        //Aqui esta el Desempeno desde el hijo
-        console.log('Desempeno recibido desde el hijo:', this.payloadRecibido)
         // escuchar cambio tipo pregunta
         this.listenTipoPregunta()
         // Llenar el formulario paso 1 basado en la seleccion de la cabecera.
@@ -562,31 +563,19 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
             preguntas,
             preguntasEliminar: this.preguntasEliminar,
         }
-        // Aquí accedemos a iPreguntaId
-        if (data.preguntas && data.preguntas.length > 0) {
-            const iPreguntaId = data.preguntas[0].iPreguntaId // Accedemos al primer elemento del array
-            console.log('iPreguntaId Al Apretar Finalizar:', iPreguntaId)
-        }
-        console.log('Los datos de las preguntas al Apretar Finalizar', data)
         this.submitChange.emit(data)
     }
-    //Aqui recibe el payload del hijo
-    recibirPayload(payload: any) {
-        console.log('Payload recibido desde el hijo:', payload)
 
-        // Guardar o manejar el payload como sea necesario
+    //! Método que recibe el payload desde el hijo
+    recibirPayload(payload: any) {
+        console.log('Payload recibido desde el hijo Banco Pregunta:', payload)
         this.payloadRecibido = payload
 
-        // Cambiar el indicador para que se sepa que los datos ya llegaron
-        this.datosListos = true
+        const payloadEmitidoForms = payload
+        // Emitir el payload al componente padre
+        this.payloadEmitidoForm.emit(payloadEmitidoForms)
     }
-    // Método para manejar el clic del botón cuando los datos están listos
-    procesarDatos() {
-        if (this.datosListos) {
-            console.log('Procesando datos:', this.payloadRecibido)
-            // Aquí puedes realizar alguna acción con los datos
-        }
-    }
+
     closeModal(data) {
         this.closeModalChange.emit(data)
     }

@@ -18,7 +18,7 @@ import { DropdownModule } from 'primeng/dropdown'
 import { EditorModule } from 'primeng/editor'
 import { ApiEvaluacionesRService } from '../../../../services/api-evaluaciones-r.service'
 import { Subject, takeUntil } from 'rxjs'
-
+import { InputTextModule } from 'primeng/inputtext'
 // interface MatrizCompetencia {
 //     iCompetenciaId: number
 //     cCompetenciaNombre: string
@@ -33,6 +33,7 @@ import { Subject, takeUntil } from 'rxjs'
         CommonInputComponent,
         ReactiveFormsModule,
         FormsModule,
+        InputTextModule,
     ],
     templateUrl: './banco-pregunta-informacion-form.component.html',
     styleUrl: './banco-pregunta-informacion-form.component.scss',
@@ -151,6 +152,7 @@ export class BancoPreguntaInformacionFormComponent implements OnInit {
             selectedCapacidadData
         )
         console.log('Valor del Evento', event)
+        this.emitirPayload()
     }
     // Función para manejar la lógica de inserción
     insertarMatrizDesempeno() {
@@ -189,19 +191,37 @@ export class BancoPreguntaInformacionFormComponent implements OnInit {
 
             // Emitir el payload al componente padre
             this.payloadEmitido.emit(payload)
-
-            this._apiEre
-                .insertarMatrizDesempeno(payload)
-                .pipe(takeUntil(this.unsubscribe$))
-                .subscribe({
-                    next: (resp) => console.log('Inserción exitosa:', resp),
-                    error: (err) =>
-                        console.error('Error al insertar datos:', err),
-                })
         } else {
             console.log('Capacidad seleccionada no encontrada')
         }
     }
+    //emitir el payload
+    emitirPayload() {
+        // Buscar la capacidad seleccionada
+        const selectedCapacidadData = this.matrizCapacidad.find(
+            (capacidad) => capacidad.iCapacidadId === this.selectedCapacidad
+        )
+
+        if (selectedCapacidadData) {
+            const payload = {
+                iEvaluacionId: this._iEvaluacionId,
+                iCompCursoId: 1, // Este valor debe ser dinámico si es necesario
+                iCapacidadId: selectedCapacidadData.iCapacidadId,
+                cDesempenoDescripcion: this.value,
+                cDesempenoConocimiento: 'Hola', // Este campo también es dinámico
+                iEstado: 1,
+                iSesionId: 1,
+            }
+
+            // Emitir el payload al componente padre
+            this.payloadEmitido.emit(payload)
+        }
+    }
+    // Cambiar valor del input
+    onDesempenoDescripcionChange() {
+        this.emitirPayload()
+    }
+
     // Método que se ejecuta al enviar el formulario
     onSubmit(form: any) {
         if (form.valid) {

@@ -1,7 +1,7 @@
 <app-banco-preguntas-form
     (closeModalChange)="closeModal($event)"
     [bancoPreguntasForm]="bancoPreguntasForm"
-    (submitChange)="guardarBancoPreguntas($event)"
+    (submitChange)="guardarConFlujoEncadenado($event)"
     [encabezados]="encabezados"
     [modePregunta]="modePregunta"
     [encabezadoMode]="encabezadoMode"
@@ -9,4 +9,5 @@
     [tipoPreguntas]="tipoPreguntas"
     (encabezadoChange)="obtenerPreguntasPorEncabezado($event)"
     [_iEvaluacionId]="iEvaluacionId"
+    (payloadEmitidoForm)="recibirPayloadForm($event)"
 />

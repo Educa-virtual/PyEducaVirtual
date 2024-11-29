@@ -9,12 +9,13 @@
     [actions]="accionesTabla"
     [expandedRowKeys]="expandedRowKeys"
     (selectedRowDataChange)="onSelectionChange($event)"
+    [placeholder]="'Buscar por enunciado de la pregunta'"
 >
-    <ng-template #rowExpansionTemplate let-data let-columns="columns">
+    <!-- <ng-template #rowExpansionTemplate let-data let-columns="columns">
         <tr class="bg-gray-100">
             <td [attr.colspan]="columns">
                 <app-banco-pregunta-preview [pregunta]="data" />
             </td>
         </tr>
-    </ng-template>
+    </ng-template> -->
 </app-table-primeng>

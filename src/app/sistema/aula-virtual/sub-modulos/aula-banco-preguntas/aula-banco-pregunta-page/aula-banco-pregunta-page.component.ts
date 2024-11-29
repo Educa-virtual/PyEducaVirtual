@@ -6,11 +6,17 @@ import { ConstantesService } from '@/app/servicios/constantes.service'
 import { Subject, takeUntil } from 'rxjs'
 import { GeneralService } from '@/app/servicios/general.service'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
+import { ToolbarPrimengComponent } from '../../../../../shared/toolbar-primeng/toolbar-primeng.component'
 
 @Component({
     selector: 'app-aula-banco-pregunta-page',
     standalone: true,
-    imports: [PrimengModule, CommonModule, AulaBancoPreguntasComponent],
+    imports: [
+        PrimengModule,
+        CommonModule,
+        AulaBancoPreguntasComponent,
+        ToolbarPrimengComponent,
+    ],
     templateUrl: './aula-banco-pregunta-page.component.html',
     styleUrl: './aula-banco-pregunta-page.component.scss',
 })

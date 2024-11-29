@@ -117,12 +117,15 @@ export class LoginComponent implements OnInit {
             },
             complete: () => {},
             error: (error) => {
-                console.log(error)
+                // console.log(error)
                 this.loading = false
                 this.messageService.add({
                     severity: 'error',
                     summary: '¡Atención!',
-                    detail: error,
+                    detail:
+                        error.pass || error.user
+                            ? 'Verifica haber ingresado correctamente tu usuario y contraseña'
+                            : error,
                 })
             },
         })

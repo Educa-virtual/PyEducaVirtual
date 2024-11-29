@@ -4,7 +4,17 @@ import { ContainerPageComponent } from '@/app/shared/container-page/container-pa
 import {
     TablePrimengComponent,
     IColumn,
+    IActionTable,
 } from '@/app/shared/table-primeng/table-primeng.component'
+import {
+    matAccessTime,
+    matCalendarMonth,
+    matHideSource,
+    matListAlt,
+    matMessage,
+    matRule,
+    matStar,
+} from '@ng-icons/material-icons/baseline'
 import { DataViewModule } from 'primeng/dataview'
 import { IconFieldModule } from 'primeng/iconfield'
 import { InputIconModule } from 'primeng/inputicon'
@@ -15,9 +25,14 @@ import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
 import { TableModule } from 'primeng/table'
 import { tipoActividadesKeys } from '@/app/sistema/aula-virtual/interfaces/actividad.interface'
 import { GeneralService } from '@/app/servicios/general.service'
+import { TabViewModule } from 'primeng/tabview'
+import { IconComponent } from '@/app/shared/icon/icon.component'
+import { provideIcons } from '@ng-icons/core'
 // import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 // import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
 import { ConstantesService } from '@/app/servicios/constantes.service'
+import { OrderListModule } from 'primeng/orderlist'
+import { PrimengModule } from '@/app/primeng.module'
 @Component({
     selector: 'app-tab-resultados',
     standalone: true,
@@ -25,9 +40,13 @@ import { ConstantesService } from '@/app/servicios/constantes.service'
     styleUrls: ['./tab-resultados.component.scss'],
     imports: [
         TablePrimengComponent,
+        TabViewModule,
         TableModule,
+        IconComponent,
         DataViewModule,
+        OrderListModule,
         InputIconModule,
+        PrimengModule,
         IconFieldModule,
         ContainerPageComponent,
         InputTextModule,
@@ -35,6 +54,17 @@ import { ConstantesService } from '@/app/servicios/constantes.service'
         InputGroupModule,
         InputGroupAddonModule,
         CommonModule,
+    ],
+    providers: [
+        provideIcons({
+            matHideSource,
+            matCalendarMonth,
+            matMessage,
+            matStar,
+            matRule,
+            matListAlt,
+            matAccessTime,
+        }),
     ],
 })
 export class TabResultadosComponent implements OnInit {
@@ -46,6 +76,7 @@ export class TabResultadosComponent implements OnInit {
     // private _aulaService = inject(ApiAulaService)
     // private ref = inject(DynamicDialogRef)
     private _constantesService = inject(ConstantesService)
+    estudiantes: any[] = []
 
     idcurso: number
 
@@ -53,11 +84,11 @@ export class TabResultadosComponent implements OnInit {
     public columnasTabla: IColumn[] = [
         {
             type: 'item',
-            width: '5rem',
+            width: '0.5rem',
             field: 'index',
             header: 'Nro',
-            text_header: 'left',
-            text: 'left',
+            text_header: 'center',
+            text: 'center',
         },
         {
             type: 'text',
@@ -67,62 +98,30 @@ export class TabResultadosComponent implements OnInit {
             text_header: 'left',
             text: 'left',
         },
-        {
-            type: 'text',
-            width: '10rem',
-            field: '',
-            header: 'Nt. tarea',
-            text_header: 'left',
-            text: 'left',
-        },
-        {
-            type: 'text',
-            width: '10rem',
-            field: '',
-            header: 'Nt. Evaluación',
-            text_header: 'left',
-            text: 'left',
-        },
-        {
-            type: 'text',
-            width: '10rem',
-            field: '',
-            header: 'Nt. Foro',
-            text_header: 'left',
-            text: 'left',
-        },
-        {
-            type: 'text',
-            width: '10rem',
-            field: '',
-            header: 'Promedio',
-            text_header: 'left',
-            text: 'left',
-        },
-        {
-            type: 'text',
-            width: '10rem',
-            field: '',
-            header: 'Nt. tarea',
-            text_header: 'left',
-            text: 'left',
-        },
-        {
-            type: 'text',
-            width: '10rem',
-            field: '',
-            header: 'Nt. Evaluación',
-            text_header: 'left',
-            text: 'left',
-        },
-        {
-            type: 'text',
-            width: '10rem',
-            field: '',
-            header: 'Nt. Foro',
-            text_header: 'left',
-            text: 'left',
-        },
+        // {
+        //     type: 'text',
+        //     width: '10rem',
+        //     field: '',
+        //     header: 'Nt. tarea',
+        //     text_header: 'left',
+        //     text: 'left',
+        // },
+        // {
+        //     type: 'text',
+        //     width: '10rem',
+        //     field: '',
+        //     header: 'Nt. Evaluación',
+        //     text_header: 'left',
+        //     text: 'left',
+        // },
+        // {
+        //     type: 'text',
+        //     width: '10rem',
+        //     field: '',
+        //     header: 'Nt. Foro',
+        //     text_header: 'left',
+        //     text: 'left',
+        // },
         {
             type: 'text',
             width: '10rem',
@@ -132,32 +131,78 @@ export class TabResultadosComponent implements OnInit {
             text: 'left',
         },
         // {
-        //     type: 'actions',
-        //     width: '1rem',
+        //     type: 'text',
+        //     width: '10rem',
         //     field: '',
-        //     header: 'Acciones',
+        //     header: 'Nt. tarea',
         //     text_header: 'left',
         //     text: 'left',
         // },
+        // {
+        //     type: 'text',
+        //     width: '10rem',
+        //     field: '',
+        //     header: 'Nt. Evaluación',
+        //     text_header: 'left',
+        //     text: 'left',
+        // },
+        // {
+        //     type: 'text',
+        //     width: '10rem',
+        //     field: '',
+        //     header: 'Nt. Foro',
+        //     text_header: 'left',
+        //     text: 'left',
+        // },
+
+        {
+            type: 'text',
+            width: '10rem',
+            field: '',
+            header: 'Promedio',
+            text_header: 'left',
+            text: 'left',
+        },
+        {
+            type: 'text',
+            width: '10rem',
+            field: '',
+            header: 'Conclusión descriptiva',
+            text_header: 'left',
+            text: 'left',
+        },
+        {
+            type: 'actions',
+            width: '1rem',
+            field: '',
+            header: 'Acciones',
+            text_header: 'left',
+            text: 'left',
+        },
     ]
-    // [actions]="accionesTabla"
-    //  public accionesTabla: IActionTable[] = [
-    //     {
-    //         labelTooltip: 'Eliminar',
-    //         icon: 'pi pi-trash',
-    //         accion: 'eliminar',
-    //         type: 'item',
-    //         class: 'p-button-rounded p-button-danger p-button-text',
-    //     },
-    //     {
-    //         labelTooltip: 'Editar',
-    //         icon: 'pi pi-pencil',
-    //         accion: 'editar',
-    //         type: 'item',
-    //         class: 'p-button-rounded p-button-warning p-button-text',
-    //     },
-    // ]
-    estudiantes: any[] = []
+    public accionesTabla: IActionTable[] = [
+        {
+            labelTooltip: 'Eliminar',
+            icon: 'pi pi-trash',
+            accion: 'eliminar',
+            type: 'item',
+            class: 'p-button-rounded p-button-danger p-button-text',
+        },
+        {
+            labelTooltip: 'Editar',
+            icon: 'pi pi-pencil',
+            accion: 'editar',
+            type: 'item',
+            class: 'p-button-rounded p-button-warning p-button-text',
+        },
+        {
+            labelTooltip: 'Editar',
+            icon: 'pi pi-pencil',
+            accion: 'editar',
+            type: 'item',
+            class: 'p-button-rounded p-button-warning p-button-text',
+        },
+    ]
     // Inicializamos
     ngOnInit() {
         this.obtenerEstudiantesM()

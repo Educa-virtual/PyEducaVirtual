@@ -108,12 +108,17 @@ const estudiante = [
 //         ],
 //     },
 // ]
-const aula_virtual = [
+const administrador = [
     {
         items: [
             inicio,
             {
-                label: 'Mis Áreas Curriculares',
+                label: 'Auditoria',
+                icon: 'pi pi-fw pi-folder',
+                routerLink: ['/aula-virtual/areas-curriculares'],
+            },
+            {
+                label: 'Mis Áreas Curriculares admin',
                 icon: 'pi pi-fw pi-book',
                 routerLink: ['/aula-virtual/areas-curriculares'],
             },
@@ -140,7 +145,7 @@ const aula_virtual = [
         ],
     },
 ]
-const administrador = [
+const jefe_programa = [
     {
         items: [
             inicio,
@@ -702,7 +707,7 @@ export class ConstantesService {
         // console.log('perfiles', perfil)
         switch (Number(perfil.iPerfilId)) {
             case 1:
-                return aula_virtual
+                return administrador
             case 2:
                 return docente
             case 3:
@@ -712,7 +717,7 @@ export class ConstantesService {
             case 5:
                 return registro_asistencia
             case 6:
-                return administrador
+                return jefe_programa
             case 7:
                 return docente
             case 4:

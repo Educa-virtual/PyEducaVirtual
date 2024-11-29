@@ -116,21 +116,21 @@ export class EvaluacionFormPreguntasComponent implements OnInit, OnDestroy {
 
     showModalPreguntas: boolean = false
     agregarEditarPregunta(pregunta) {
-        this.showModalPreguntas = true
-        console.log(pregunta)
-        // const refModal = this._aulaBancoPreguntasService.openPreguntaModal({
-        //     pregunta,
-        //     iCursoId: this.iCursoId,
-        //     tipoPreguntas: [],
-        //     iEvaluacionId: this.iEvaluacionId,
-        // })
-        // refModal.onClose.subscribe((result) => {
-        //     if (result) {
-        //         const pregunta = this.mapLocalPregunta(result)
-        //         this.preguntas.push(pregunta)
-        //         this.preguntasSeleccionadasChange.emit(this.preguntas)
-        //     }
-        // })
+        // this.showModalPreguntas = true
+        // console.log(pregunta)
+        const refModal = this._aulaBancoPreguntasService.openPreguntaModal({
+            pregunta,
+            iCursoId: this.iCursoId,
+            tipoPreguntas: [],
+            iEvaluacionId: this.iEvaluacionId,
+        })
+        refModal.onClose.subscribe((result) => {
+            if (result) {
+                const pregunta = this.mapLocalPregunta(result)
+                this.preguntas.push(pregunta)
+                this.preguntasSeleccionadasChange.emit(this.preguntas)
+            }
+        })
     }
 
     handleBancopregunta() {

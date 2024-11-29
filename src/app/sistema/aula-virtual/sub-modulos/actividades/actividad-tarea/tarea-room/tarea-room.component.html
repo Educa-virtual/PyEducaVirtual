@@ -56,7 +56,7 @@
                                     >Descripción de la tarea</label
                                 >
                             </h3>
-                            <div class="mt-2">
+                            <!-- <div class="mt-2">
                                 <div
                                     [innerHTML]="data?.cTareaDescripcion"
                                 ></div>
@@ -67,8 +67,8 @@
                                     [style]="{ height: '150px' }"
                                     disabled
                                 />
-                            </div>
-                            <!-- <div [innerHTML]="data?.cTareaDescripcion"></div>
+                            </div> -->
+                            <!-- <div [innerHTML]="data?.cTareaDescripcion"></div> -->
                             <input
                                 id="descripcion"
                                 type="text"
@@ -79,7 +79,7 @@
                                 "
                                 placeholder="Ingrese el título de la tarea"
                                 class="p-inputtext-sm"
-                            /> -->
+                            />
                         </div>
                     </div>
 
@@ -339,13 +339,13 @@
                                 <p-inputGroupAddon>
                                     Conclusión Descriptiva
                                 </p-inputGroupAddon>
-                                <textarea
+                                <extarea
                                     pInputText
                                     rows="5"
                                     [(ngModel)]="
                                         comentarioTareaEstudianteGrupal
                                     "
-                                ></textarea>
+                                ></extarea>
                             </p-inputGroup>
                         </div>
                     }
@@ -1080,12 +1080,12 @@
                                                             Conclusión
                                                             Descriptiva
                                                         </p-inputGroupAddon>
-                                                        <textarea
+                                                        <p-editor
                                                             pInputText
                                                             [(ngModel)]="
                                                                 cTareaEstudianteComentarioDocente
                                                             "
-                                                        ></textarea>
+                                                        ></p-editor>
                                                     </p-inputGroup>
                                                 </div>
                                             </div>

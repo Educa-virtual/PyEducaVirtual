@@ -47,7 +47,7 @@ export class DiasLaboralesComponent implements OnInit {
         private localService: LocalStoreService
     ) {}
 
-    nextPage() {
+    async nextPage() {
         this.router.navigate(['configuracion/configuracion/registro/turnos'])
     }
 
@@ -72,7 +72,7 @@ export class DiasLaboralesComponent implements OnInit {
     confirm() {
         console.log('confirmando')
         const message: informationMessage = {
-            header: 'Confirmar',
+            header: '¿Desea guardar información?',
             message: 'Por favor, confirme para continuar.',
             accept: {
                 severity: 'success',
@@ -89,7 +89,12 @@ export class DiasLaboralesComponent implements OnInit {
         }
 
         this.stepConfirmationService.confirmAction(
-            { onAcceptCallbacks: [() => this.saveInformation()] },
+            {
+                onAcceptPromises: [
+                    () => this.saveInformation(),
+                    () => this.nextPage(),
+                ],
+            },
             message
         )
     }

@@ -70,6 +70,7 @@
                             label="Iniciar Sesión"
                             [loading]="loading"
                             (click)="onSubmit()"
+                            [disabled]="this.formLogin.invalid"
                         ></button>
                     </form>
                 </div>

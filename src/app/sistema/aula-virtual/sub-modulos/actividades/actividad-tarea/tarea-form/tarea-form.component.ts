@@ -14,11 +14,12 @@ import { ConstantesService } from '@/app/servicios/constantes.service'
 import { AutoCompleteCompleteEvent } from 'primeng/autocomplete'
 import { DatePipe } from '@angular/common'
 import { TypesFilesUploadPrimengComponent } from '../../../../../../shared/types-files-upload-primeng/types-files-upload-primeng.component'
+import { TooltipModule } from 'primeng/tooltip'
 
 @Component({
     selector: 'app-tarea-form',
     standalone: true,
-    imports: [PrimengModule, TypesFilesUploadPrimengComponent],
+    imports: [PrimengModule, TypesFilesUploadPrimengComponent, TooltipModule],
     templateUrl: './tarea-form.component.html',
     styleUrl: './tarea-form.component.scss',
 })
@@ -260,4 +261,8 @@ export class TareaFormComponent implements OnChanges {
         }
         this.submitEvent.emit(value)
     }
+    imports: [
+        TooltipModule,
+        // otros módulos necesarios
+    ]
 }

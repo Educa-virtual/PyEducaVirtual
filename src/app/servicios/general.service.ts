@@ -175,6 +175,13 @@ export class GeneralService {
             data
         )
     }
+    searchCalendario(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/calendarioAcademico/selCalAcademico`,
+            data
+        )
+    }
+
     searchAmbienteAcademico(data: any) {
         return this.http.post(
             `${baseUrl}/acad/calendarioAcademicos/searchAmbiente`,
@@ -194,5 +201,11 @@ export class GeneralService {
     }
     baseUrlPublic() {
         return baseUrlPublic
+    }
+    searchGradoCiclo(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/calendarioAcademicos/searchGradoCiclo`,
+            data
+        )
     }
 }

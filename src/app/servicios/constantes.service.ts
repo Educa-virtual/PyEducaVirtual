@@ -46,6 +46,11 @@ const docente = [
                 icon: 'pi pi-fw pi-sitemap',
                 routerLink: ['/docente/capacitaciones'],
             },
+            {
+                label: 'Enlaces de ayuda',
+                icon: 'pi pi-fw pi-share-alt',
+                routerLink: ['ayuda'],
+            },
         ],
     },
 ]
@@ -73,6 +78,11 @@ const estudiante = [
                 label: 'Buzon de Sugerencias',
                 icon: 'pi pi-fw pi-book',
                 routerLink: ['/aula-virtual/areas-curriculares'],
+            },
+            {
+                label: 'Enlaces de ayuda',
+                icon: 'pi pi-fw pi-share-alt',
+                routerLink: ['ayuda'],
             },
         ],
     },
@@ -123,6 +133,11 @@ const aula_virtual = [
                 icon: 'pi pi-fw pi-chart-bar',
                 routerLink: ['/aula-virtual'],
             },
+            {
+                label: 'Enlaces de ayuda',
+                icon: 'pi pi-fw pi-share-alt',
+                routerLink: ['ayuda'],
+            },
         ],
     },
 ]
@@ -159,6 +174,11 @@ const administrador = [
                 label: 'Sección',
                 icon: 'pi pi-fw pi-desktop',
                 routerLink: ['/'],
+            },
+            {
+                label: 'Enlaces de ayuda',
+                icon: 'pi pi-fw pi-share-alt',
+                routerLink: ['ayuda'],
             },
         ],
     },
@@ -261,6 +281,11 @@ const notas_evaluaciones = [
                         routerLink: ['/evaluaciones/preguntas-activas'],
                     },
                 ],
+            },
+            {
+                label: 'Enlaces de ayuda',
+                icon: 'pi pi-fw pi-share-alt',
+                routerLink: ['ayuda'],
             },
             //Borrar
             // {
@@ -567,6 +592,11 @@ const registro_asistencia = [
     {
         items: [inicio],
     },
+    {
+        label: 'Enlaces de ayuda',
+        icon: 'pi pi-fw pi-share-alt',
+        routerLink: ['ayuda'],
+    },
 ]
 
 // const seguridad = [
@@ -658,6 +688,11 @@ const administracion = [
                         routerLink: ['/configuracion/configuracion'],
                     },
                 ],
+            },
+            {
+                label: 'Enlaces de ayuda',
+                icon: 'pi pi-fw pi-share-alt',
+                routerLink: ['ayuda'],
             },
         ],
     },

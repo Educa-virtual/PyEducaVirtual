@@ -86,7 +86,11 @@
                                 pTemplate="listItem"
                                 let-i="index"
                             >
-                                <div class="perfilesList" tabindex="0">
+                                <div
+                                    class="perfilesList"
+                                    tabindex="0"
+                                    (onclick)="obtenerComnt(estudiante)"
+                                >
                                     <img
                                         src="assets/demo/images/matemit/perfil.png"
                                         alt=""
@@ -95,19 +99,6 @@
                                     <!--class="w-4rem min-h-9 shadow-2 flex-shrink-0 border-round"-->
                                     <div class="perfil-name">
                                         {{ estudiante?.nombrecompleto }}
-                                    </div>
-                                    <div class="btn-calificar-comentario">
-                                        <p-button
-                                            icon="pi pi-book"
-                                            [rounded]="true"
-                                            [severity]="
-                                                estudiante?.cEstado === '0'
-                                                    ? 'danger'
-                                                    : 'success'
-                                            "
-                                            tooltipPosition="bottom"
-                                            pTooltip="Calificar"
-                                        />
                                     </div>
                                 </div>
                             </ng-template>
@@ -135,10 +126,12 @@
                                             <tr>
                                                 <th
                                                     pSortableColumn="code"
-                                                    style="width: 20%"
+                                                    style="
+                                                        width: 1%;
+                                                        text-align: center;
+                                                    "
                                                 >
                                                     #
-                                                    <p-sortIcon field="code" />
                                                 </th>
                                                 <th
                                                     pSortableColumn="name"
@@ -164,7 +157,12 @@
                                             let-rowIndex="rowIndex"
                                         >
                                             <tr>
-                                                <td class="nmr">
+                                                <td
+                                                    style="
+                                                        width: 10px;
+                                                        text-align: center;
+                                                    "
+                                                >
                                                     {{ rowIndex + 1 }}
                                                 </td>
                                                 <td>
@@ -205,9 +203,9 @@
             </ng-template>
             <app-container-page [title]="'Mis Resultados'" [actions]="[]">
                 <p-dataView #dv [rows]="5" filterBy="cCursoNombre">
-                    <ng-template pTemplate="header">
-                        <div class="">
-                            <div class="grid grid-nogutter">
+                    <ng-template pTemplate="header" class="grid">
+                        <div class=" ">
+                            <div class="card grid grid-nogutter">
                                 <div class="col pr-2">
                                     <p-inputGroup>
                                         <p-inputGroupAddon>
@@ -261,7 +259,7 @@
                         </app-table-primeng>
                     </ng-template>
                 </p-dataView>
-                <p-table
+                <!-- <p-table
                     [value]="estudiantes"
                     [tableStyle]="{ 'min-width': '50rem' }"
                     class="heard-color"
@@ -292,7 +290,7 @@
                             <td>{{ estudiantes?.nombrecompleto }}</td>
                         </tr>
                     </ng-template>
-                </p-table>
+                </p-table> -->
             </app-container-page>
         </p-tabPanel>
     </p-tabView>

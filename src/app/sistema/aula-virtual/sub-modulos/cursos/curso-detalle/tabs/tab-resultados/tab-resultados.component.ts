@@ -77,6 +77,7 @@ export class TabResultadosComponent implements OnInit {
     // private ref = inject(DynamicDialogRef)
     private _constantesService = inject(ConstantesService)
     estudiantes: any[] = []
+    estudianteSelect = null
 
     idcurso: number
 
@@ -227,6 +228,10 @@ export class TabResultadosComponent implements OnInit {
                 console.log(error)
             },
         })
+    }
+    obtenerComnt(estudiantes) {
+        this.estudianteSelect = estudiantes
+        console.log('datos de estudiante', this.estudianteSelect)
     }
 
     getEstudiantesMatricula() {

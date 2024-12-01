@@ -6,3 +6,12 @@
     background-color: #64748b;
     border-color: #64748b;
 }
+
+.p-confirm-dialog-reject {
+    background-color: black;
+}
+
+:host ::ng-deep p-inputGroupAddon {
+    background-color: #3e67a9;
+    color: #fff;
+}

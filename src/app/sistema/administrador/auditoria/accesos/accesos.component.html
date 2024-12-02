@@ -1,5 +1,22 @@
-<app-table-primeng
-[columnas]="columns"
->
+<form [formGroup]="form">
+    <p-inputGroup class="mt-1">
+        <p-inputGroupAddon>Tipo de acceso</p-inputGroupAddon>
+        <p-dropdown
+            class="max-w-max"
+            formControlName="selectedTable"
+            [options]="options"
+            optionLabel="name"
+            placeholder="Selecciona un tipo de acceso"
+        />
+    </p-inputGroup>
+</form>
 
-</app-table-primeng>
+<section class="flex gap-3">
+    <div class="flex-1">
+        <app-table-primeng [columnas]="columns" [data]="data" [scrollable]="true" scrollHeight="flex" [showCaption]="false" [showPaginator]="false">
+        </app-table-primeng>
+    </div>
+    <div [ngStyle]="{ flex: isExpand ? '2' : '0' }">
+        <p-table> </p-table>
+    </div>
+</section>

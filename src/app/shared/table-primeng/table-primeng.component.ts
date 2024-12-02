@@ -137,11 +137,17 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     ]
 
     @Input()
-    set columnas(value: IColumn[]) {
-        this._columnas = value.map((column) => ({
-            ...column,
-            selected: true,
-        }))
+    set columnas(value: IColumn[] | undefined) {
+        console.log
+        if (value) {
+            this._columnas = value.map((column) => ({
+                ...column,
+                selected: true,
+            }));
+        } else {
+            this._columnas = []; // Valor predeterminado en caso de undefined
+        }
+    
     }
 
     get columnas(): IColumn[] {
@@ -225,6 +231,10 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     ngOnChanges(changes) {
         if (changes.data?.currentValue) {
             this.data = changes.data.currentValue
+        }
+        if (changes.columnas?.currentValue) {
+            this.columnas = changes.columnas.currentValue
+            this.columnasSeleccionadas = this.columnas
         }
 
         if (changes.selectedRowData?.currentValue) {

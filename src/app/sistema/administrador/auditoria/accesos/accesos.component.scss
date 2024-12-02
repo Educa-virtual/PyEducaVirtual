@@ -1,0 +1,9 @@
+:host ::ng-deep p-dropdown > div{
+  width: max-content;
+}
+
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}

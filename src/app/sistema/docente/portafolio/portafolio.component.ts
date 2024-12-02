@@ -7,11 +7,13 @@ import { HttpClient } from '@angular/common/http'
 import { Component, inject, OnInit } from '@angular/core'
 import { MessageService } from 'primeng/api'
 import { catchError, map, throwError } from 'rxjs'
+import { ApiEvaluacionesService } from '../../aula-virtual/services/api-evaluaciones.service'
+import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
 
 @Component({
     selector: 'app-portafolio',
     standalone: true,
-    imports: [PrimengModule],
+    imports: [PrimengModule, TablePrimengComponent],
     templateUrl: './portafolio.component.html',
     styleUrl: './portafolio.component.scss',
 })
@@ -21,6 +23,7 @@ export class PortafolioComponent implements OnInit {
     private _MessageService = inject(MessageService)
     private http = inject(HttpClient)
     private _LocalStoreService = inject(LocalStoreService)
+    private _evaluacionApiService = inject(ApiEvaluacionesService)
 
     backend = environment.backend
     private backendApi = environment.backendApi
@@ -33,10 +36,34 @@ export class PortafolioComponent implements OnInit {
     cPortafolioFichasDidacticas
     cPortafolioSesionesAprendizaje
 
+    reglamento = []
+    rubricas = []
     cursos = []
+    showModalRubricas: boolean = false
+
+    public columnasTabla = [
+        {
+            type: 'text',
+            width: '5rem',
+            field: 'cInstrumentoNombre',
+            header: 'Instrumento de Evaluación',
+            text_header: 'left',
+            text: 'left',
+        },
+        {
+            type: 'text',
+            width: '10rem',
+            field: 'cInstrumentoDescripcion',
+            header: 'Descripcion',
+            text_header: 'left',
+            text: 'left',
+        },
+    ]
+
     ngOnInit() {
         this.obtenerPortafolios()
         this.obtenerCuadernosCampo()
+        this.obtenerRubricas()
     }
     getInformation(params, accion) {
         this._GeneralService.getGralPrefix(params).subscribe({
@@ -66,6 +93,13 @@ export class PortafolioComponent implements OnInit {
                           ? JSON.parse(item[0]['cPortafolioItinerario'])
                           : [])
                     : []
+                this.reglamento = []
+                const reglamento = item.length
+                    ? item[0]['reglamento']
+                        ? JSON.parse(item[0]['reglamento'])
+                        : []
+                    : []
+                this.reglamento.push(reglamento)
                 break
             case 'docente-obtenerCuadernosCampo':
                 this.cursos = item
@@ -93,6 +127,7 @@ export class PortafolioComponent implements OnInit {
             data: {
                 iDocenteId: this._ConstantesService.iDocenteId,
                 iYAcadId: this._ConstantesService.iYAcadId,
+                iCredId: this._ConstantesService.iCredId,
             },
             params: { skipSuccessMessage: true },
         }
@@ -150,6 +185,27 @@ export class PortafolioComponent implements OnInit {
             params: { skipSuccessMessage: true },
         }
         this.getInformation(params, params.group + '-' + params.ruta)
+    }
+
+    obtenerRubricas() {
+        const params = {
+            iDocenteId: this._ConstantesService.iDocenteId,
+        }
+        this._evaluacionApiService.obtenerRubricas(params).subscribe({
+            next: (data) => {
+                data.forEach((element) => {
+                    this.rubricas.push(element)
+                })
+            },
+        })
+    }
+    rubricasCurso = []
+    obtenerRubricasxiCursoId(item) {
+        this.rubricasCurso = []
+        this.rubricasCurso = this.rubricas.filter(
+            (i) => i.iCursoId === item.iCursoId
+        )
+        this.showModalRubricas = true
     }
 
     async onUploadChange(evt: any, tipo: any, item: any) {

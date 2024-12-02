@@ -78,7 +78,11 @@
                 <input
                     type="text"
                     pInputText
-                    placeholder="Resolución C.O. 2024-01202190112-1"
+                    [placeholder]="
+                        reglamento.length
+                            ? reglamento[0]['name']
+                            : 'Nombre de la resolución'
+                    "
                     disabled
                     class="w-full p-inputtext-sm opacity-100"
                     pInputText
@@ -88,6 +92,11 @@
                     pButton
                     icon="pi pi-eye"
                     class="p-button-info"
+                    (click)="
+                        openLink(
+                            reglamento.length ? reglamento[0]['path'] : null
+                        )
+                    "
                 >
                     &nbsp;
                 </button>
@@ -227,6 +236,7 @@
                                 pButton
                                 icon="pi pi-eye"
                                 class="p-button-info"
+                                (click)="obtenerRubricasxiCursoId(item)"
                             >
                                 &nbsp;
                             </button>
@@ -275,6 +285,16 @@
                                 pInputText
                             />
                             <button
+                                pButton
+                                pRipple
+                                type="button"
+                                severity="primary"
+                                class="p-button-primary btn-file-image"
+                            >
+                                <i class="pi pi-upload"></i
+                                ><input type="file" accept=".pdf " />
+                            </button>
+                            <button
                                 type="button"
                                 pButton
                                 icon="pi pi-eye"
@@ -289,3 +309,21 @@
         }
     </div>
 </div>
+
+<p-dialog
+    [(visible)]="showModalRubricas"
+    [style]="{ width: '80%' }"
+    header="Lista de Instrumentos de Evaluación"
+    [modal]="true"
+    [draggable]="false"
+    [resizable]="false"
+    (onHide)="showModalRubricas = false"
+>
+    <div>
+        <app-table-primeng
+            [data]="rubricasCurso"
+            [columnas]="columnasTabla"
+            [actions]="[]"
+        ></app-table-primeng>
+    </div>
+</p-dialog>

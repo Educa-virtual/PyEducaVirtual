@@ -112,6 +112,23 @@
                     (onClick)="iniciarEvaluacion()"
                 />
             </div>
+            <div class="col-12" align="right">
+                <p-button
+                    label="atras"
+                    severity="secondary"
+                    (onClick)="regresarPregunta()"
+                />
+            </div>
+        </div>
+    }
+
+    @if (itemPreguntas['iPreguntaId'] > 2) {
+        <div class="col-12 text-center">
+            <p-button
+                label="Finalizar Evaluación"
+                severity="primary"
+                (onClick)="finalizarEvaluacion()"
+            />
         </div>
     }
 </div>

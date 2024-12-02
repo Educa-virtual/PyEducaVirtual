@@ -195,4 +195,10 @@ export class GeneralService {
     baseUrlPublic() {
         return baseUrlPublic
     }
+    maestroDetalle(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/calendarioAcademicos/searchAmbiente`,
+            data
+        )
+    }
 }

@@ -33,6 +33,8 @@ import { provideIcons } from '@ng-icons/core'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { OrderListModule } from 'primeng/orderlist'
 import { PrimengModule } from '@/app/primeng.module'
+import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
+import { Message } from 'primeng/api'
 @Component({
     selector: 'app-tab-resultados',
     standalone: true,
@@ -73,11 +75,14 @@ export class TabResultadosComponent implements OnInit {
 
     private GeneralService = inject(GeneralService)
     // private _formBuilder = inject(FormBuilder)
-    // private _aulaService = inject(ApiAulaService)
+    private _aulaService = inject(ApiAulaService)
     // private ref = inject(DynamicDialogRef)
     private _constantesService = inject(ConstantesService)
     estudiantes: any[] = []
+    iEstudianteId: number
     estudianteSelect = null
+    comentariosSelect: any[] = []
+    messages: Message[] | undefined
 
     idcurso: number
 
@@ -206,17 +211,15 @@ export class TabResultadosComponent implements OnInit {
     ]
     // Inicializamos
     ngOnInit() {
-        this.obtenerEstudiantesM()
         this.verperfiles()
         this.getEstudiantesMatricula()
     }
     // ver que id nos llegan(borrar):
-
     verperfiles() {
+        this.iEstudianteId = this._constantesService.iEstudianteId
         this.idcurso = this._constantesService.iYAcadId
         console.log('ver datos', this.idcurso)
     }
-    obtenerEstudiantesM() {}
     getInformation(params) {
         this.GeneralService.getGralPrefix(params).subscribe({
             next: (response) => {
@@ -230,8 +233,15 @@ export class TabResultadosComponent implements OnInit {
         })
     }
     obtenerComnt(estudiantes) {
-        this.estudianteSelect = estudiantes
-        console.log('datos de estudiante', this.estudianteSelect)
+        this._aulaService
+            .obtenerResultados({
+                iEstudianteId: estudiantes.iEstudianteId,
+                idDocCursoId: estudiantes.iCursoId,
+            })
+            .subscribe((Data) => {
+                this.comentariosSelect = Data['data']
+                console.log('kenyo: ', this.comentariosSelect)
+            })
     }
 
     getEstudiantesMatricula() {

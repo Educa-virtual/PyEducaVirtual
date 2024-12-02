@@ -1,0 +1,117 @@
+<app-toolbar-primeng
+    [title]="
+        'Evaluación Formativa: ' +
+        (evaluacion?.cEvaluacionTitulo ? evaluacion?.cEvaluacionTitulo : '')
+    "
+></app-toolbar-primeng>
+<div class="card">
+    @if (iPreguntaId === 0) {
+        <div class="grid">
+            <div class="col-12 md:col-5">
+                <span class="font-bold text-xl flex gap-2 mt-4">
+                    <app-icon
+                        name="matCalendarMonth"
+                        class="text-primary"
+                        size="sm"
+                    ></app-icon>
+                    Inicio de Evaluación Formativa
+                </span>
+                <p>
+                    {{
+                        evaluacion?.dtEvaluacionInicio
+                            | date: "EEEE, d 'de' MMMM 'de' yyyy"
+                    }}
+
+                    {{ evaluacion?.dtEvaluacionInicio | date: 'h:mm a' }}
+                </p>
+                <span class="font-bold text-xl flex gap-2 mt-8">
+                    <app-icon
+                        name="matCalendarMonth"
+                        class="text-primary"
+                        size="sm"
+                    ></app-icon>
+                    Cierre de Evaluación Formativa
+                </span>
+                <p>
+                    {{
+                        evaluacion?.dtEvaluacionFin
+                            | date: "EEEE, d 'de' MMMM 'de' yyyy"
+                    }}
+
+                    {{ evaluacion?.dtEvaluacionFin | date: 'h:mm a' }}
+                </p>
+            </div>
+            <div class="col-12 md:col-3 mt-5">
+                <div class="grid">
+                    <div class="col-6">
+                        <img
+                            src="assets/images/icons/tiempo.gif"
+                            alt="logo"
+                            width="100%"
+                        />
+                    </div>
+                    <div class="col-6 mt-4">
+                        Duración:
+                        <h1>
+                            60&nbsp;<span
+                                class="text-none"
+                                style="font-size: small"
+                                >minutos</span
+                            >
+                        </h1>
+                    </div>
+                </div>
+                <p class="text-center mt-0">
+                    Total preguntas: {{ evaluacion?.preguntas.length }}
+                </p>
+            </div>
+            <div class="col-12 md:col-3 mt-2" align="center">
+                <p class="font-bold">Evaluación empieza en:</p>
+                <app-time
+                    [inicio]="evaluacion?.dtEvaluacionInicio"
+                    [fin]="evaluacion?.dtEvaluacionFin"
+                ></app-time>
+            </div>
+            <div class="col-12">
+                <p class="font-bold">Instrucciones</p>
+                <div class="container p-2">
+                    <div [innerHTML]="evaluacion?.cEvaluacionDescripcion"></div>
+                </div>
+            </div>
+            <div class="col-12" align="right">
+                <p-button
+                    label="Iniciar Evaluación"
+                    severity="primary"
+                    (onClick)="iniciarEvaluacion()"
+                />
+            </div>
+        </div>
+    }
+    @if (itemPreguntas['iPreguntaId'] > 0) {
+        <div class="grid">
+            <div class="col-12">
+                <div [innerHTML]="itemPreguntas['cPregunta']"></div>
+            </div>
+
+            @if (itemPreguntas['alternativas'].length > 0) {
+                @for (item of itemPreguntas['alternativas']; track item.id) {
+                    <div class="col-12 ml-2">
+                        <div class="flex">
+                            <p-checkbox />&nbsp;&nbsp;
+                            <div
+                                [innerHTML]="item['cAlternativaDescripcion']"
+                            ></div>
+                        </div>
+                    </div>
+                }
+            }
+            <div class="col-12" align="right">
+                <p-button
+                    label="Siguiente"
+                    severity="primary"
+                    (onClick)="iniciarEvaluacion()"
+                />
+            </div>
+        </div>
+    }
+</div>

@@ -9,6 +9,7 @@ import { MessageService } from 'primeng/api'
 import { catchError, map, throwError } from 'rxjs'
 import { ApiEvaluacionesService } from '../../aula-virtual/services/api-evaluaciones.service'
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
+import { Router } from '@angular/router'
 
 @Component({
     selector: 'app-portafolio',
@@ -24,6 +25,7 @@ export class PortafolioComponent implements OnInit {
     private http = inject(HttpClient)
     private _LocalStoreService = inject(LocalStoreService)
     private _evaluacionApiService = inject(ApiEvaluacionesService)
+    private router = inject(Router)
 
     backend = environment.backend
     private backendApi = environment.backendApi
@@ -68,6 +70,16 @@ export class PortafolioComponent implements OnInit {
     getInformation(params, accion) {
         this._GeneralService.getGralPrefix(params).subscribe({
             next: (response) => {
+                if (accion === 'docente-obtenerPortafolios') {
+                    const data = response?.reglamento
+                    this.reglamento = []
+                    const reglamento = data.length
+                        ? data[0]['cIieeUrlReglamentoInterno']
+                            ? JSON.parse(data[0]['cIieeUrlReglamentoInterno'])
+                            : []
+                        : []
+                    this.reglamento.push(reglamento)
+                }
                 this.accionBtnItem({ accion, item: response?.data })
             },
             complete: () => {},
@@ -93,13 +105,7 @@ export class PortafolioComponent implements OnInit {
                           ? JSON.parse(item[0]['cPortafolioItinerario'])
                           : [])
                     : []
-                this.reglamento = []
-                const reglamento = item.length
-                    ? item[0]['reglamento']
-                        ? JSON.parse(item[0]['reglamento'])
-                        : []
-                    : []
-                this.reglamento.push(reglamento)
+
                 break
             case 'docente-obtenerCuadernosCampo':
                 this.cursos = item
@@ -219,6 +225,58 @@ export class PortafolioComponent implements OnInit {
             (i) => i.iCursoId === item.iCursoId
         )
         this.showModalRubricas = true
+    }
+
+    getCursosDocente(item) {
+        const year = this._LocalStoreService.getItem('dremoYear')
+        const params = {
+            petition: 'post',
+            group: 'docente',
+            prefix: 'docente-cursos',
+            ruta: 'list', //'getDocentesCursos',
+            data: {
+                opcion: 'CONSULTARxiPersIdxiYearIdxiCursoId',
+                iCredId: this._ConstantesService.iCredId,
+                valorBusqueda: year, //iYearId
+                iSemAcadId: null,
+                iIieeId: null,
+                idDocCursoId: item.iCursoId,
+            },
+            params: { skipSuccessMessage: true },
+        }
+        this._GeneralService.getGralPrefix(params).subscribe({
+            next: (response) => {
+                if (response.validated) {
+                    const data = response.data
+                    if (data.length) {
+                        const curso = data[0]
+                        this.router.navigate(
+                            [
+                                'aula-virtual/areas-curriculares/',
+                                curso.iSilaboId,
+                            ],
+                            {
+                                queryParams: {
+                                    cCursoNombre: curso.cCursoNombre,
+                                    cNivelTipoNombre: curso.cNivelTipoNombre,
+                                    cGradoAbreviacion: curso.cGradoAbreviacion,
+                                    cSeccion: curso.cSeccion,
+                                    cCicloRomanos: curso.cCicloRomanos,
+                                    cNivelNombreCursos:
+                                        curso.cNivelNombreCursos,
+                                    tab: 'resultados',
+                                },
+                            }
+                        )
+                    }
+                }
+                console.log(response)
+            },
+            complete: () => {},
+            error: (error) => {
+                console.log(error)
+            },
+        })
     }
 
     async onUploadChange(evt: any, tipo: any, item: any) {

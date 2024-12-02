@@ -1,44 +1,19 @@
-import { NgModule } from '@angular/core'
-import { RouterModule, Routes } from '@angular/router'
-import { CommonModule } from '@angular/common'
-import { Component, OnInit, OnChanges, OnDestroy } from '@angular/core'
-import { ConfirmDialogModule } from 'primeng/confirmdialog'
-import { StepsModule } from 'primeng/steps'
-import { ConfirmationService, MessageService } from 'primeng/api'
-import { StepConfirmationService } from '@/app/servicios/confirm.service'
-import { ToastModule } from 'primeng/toast'
-import { AccesosComponent } from './auditoria/accesos/accesos.component'
-import { DialogModule } from 'primeng/dialog'
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+
+const routes: Routes = [
+    {
+        path: 'auditoria',
+        loadChildren: () =>
+            import('./auditoria/auditoria.module').then(
+                (module) => module.AuditoriaModule
+            ),
+    },
+];
 
 @NgModule({
-    providers: [StepConfirmationService],
-    imports: [
-        CommonModule,
-        RouterModule.forChild([
-            {
-                path: '',
-                component: AccesosComponent,
-                children: [
-                    {
-                        path: 'registro',
-                        component: AccesosComponent,
-                        children: [
-                            {
-                                path: '',
-                                redirectTo: 'fechas',
-                                pathMatch: 'full',
-                            },
-                        ],
-                    },
-
-                    { path: '', redirectTo: 'years', pathMatch: 'full' },
-                ],
-            },
-        ]),
-    ],
-
-    exports: [RouterModule, ToastModule, DialogModule, ConfirmDialogModule],
+    imports: [RouterModule.forChild(routes)],
+    exports: [RouterModule],
 })
-export class AdministradorModule {
-    constructor(stepConfirmationService: StepConfirmationService) {}
-}
+export class AdministradorModule {}
+

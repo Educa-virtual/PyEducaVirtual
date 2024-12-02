@@ -115,32 +115,7 @@ const administrador = [
             {
                 label: 'Auditoria',
                 icon: 'pi pi-fw pi-folder',
-                routerLink: ['/aula-virtual/areas-curriculares'],
-            },
-            {
-                label: 'Mis Áreas Curriculares admin',
-                icon: 'pi pi-fw pi-book',
-                routerLink: ['/aula-virtual/areas-curriculares'],
-            },
-            {
-                label: 'Notificaciones',
-                icon: 'pi pi-bell',
-                routerLink: ['/aula-virtual/notificaciones'],
-            },
-            {
-                label: 'Calendario',
-                icon: 'pi pi-fw pi-calendar',
-                routerLink: ['/aula-virtual/calendario'],
-            },
-            {
-                label: 'Recursos',
-                icon: 'pi pi-fw pi-folder',
-                routerLink: ['/aula-virtual/recursos'],
-            },
-            {
-                label: 'DashBoard',
-                icon: 'pi pi-fw pi-chart-bar',
-                routerLink: ['/aula-virtual'],
+                routerLink: ['/administrador/auditoria'],
             },
         ],
     },

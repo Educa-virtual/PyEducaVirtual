@@ -67,6 +67,14 @@ export const routes: Routes = [
             ),
     },
     {
+        path: 'administrador',
+
+        loadChildren: () =>
+            import('./sistema/administrador/administrador.module').then(
+                (m) => m.AdministradorModule
+            ),
+    },
+    {
         path: 'gestion-institucional',
 
         loadChildren: () =>

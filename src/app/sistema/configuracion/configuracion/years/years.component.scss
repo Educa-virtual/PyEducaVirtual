@@ -11,6 +11,12 @@
     background-color: black;
 }
 
+:host{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
 :host ::ng-deep p-inputGroupAddon {
     background-color: #3e67a9;
     color: #fff;

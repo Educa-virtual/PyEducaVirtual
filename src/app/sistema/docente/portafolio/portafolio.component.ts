@@ -109,11 +109,23 @@ export class PortafolioComponent implements OnInit {
                             ? JSON.parse(item.cCuadernoUrl)
                             : item.cCuadernoUrl)
                 )
+                this.cursos.forEach((item) => {
+                    const data = item.cCuadernoUrl
+
+                    const fichas = data
+                        ? data.find((fi) => fi.typePortafolio === 1)
+                        : null
+                    item.bFichas = fichas?.name ? true : false
+                    const cuadernos = data
+                        ? data.find((fi) => fi.typePortafolio === 2)
+                        : null
+                    item.bCuadernos = cuadernos?.name ? true : false
+                })
                 break
             case 'docente-guardarItinerario':
                 this.obtenerPortafolios()
                 break
-            case 'docente-guardarFichas':
+            case 'docente-guardarFichasCuadernosCampo':
                 this.obtenerCuadernosCampo()
                 break
         }
@@ -170,12 +182,12 @@ export class PortafolioComponent implements OnInit {
         this.getInformation(params, params.group + '-' + params.ruta)
     }
 
-    guardarFichas(item) {
+    guardarFichasCuadernosCampo(item) {
         const params = {
             petition: 'post',
             group: 'docente',
             prefix: 'cuadernos-campo',
-            ruta: 'guardarFichas',
+            ruta: 'guardarFichasCuadernosCampo',
             data: {
                 iSilaboId: item.iSilaboId,
                 cCuadernoUrl: item.cCuadernoUrl.length
@@ -199,6 +211,7 @@ export class PortafolioComponent implements OnInit {
             },
         })
     }
+
     rubricasCurso = []
     obtenerRubricasxiCursoId(item) {
         this.rubricasCurso = []
@@ -237,14 +250,39 @@ export class PortafolioComponent implements OnInit {
                                 case 'fichas-aprendizaje':
                                     //1:fichas-aprendizaje
                                     //2:cuadernos-campo
-                                    console.log(item.cCuadernoUrl)
+                                    const cuadernos = item.cCuadernoUrl
+                                        ? item.cCuadernoUrl.filter(
+                                              (i) => i.typePortafolio === 2
+                                          )
+                                        : []
                                     item.cCuadernoUrl = []
                                     item.cCuadernoUrl.push({
                                         typePortafolio: 1,
                                         name: file.name,
                                         ruta: event.data,
                                     })
-                                    this.guardarFichas(item)
+                                    if (cuadernos.length) {
+                                        item.cCuadernoUrl.push(cuadernos[0])
+                                    }
+                                    this.guardarFichasCuadernosCampo(item)
+                                    break
+                                case 'cuadernos-campo':
+                                    const fichas = item.cCuadernoUrl
+                                        ? item.cCuadernoUrl.filter(
+                                              (i) => i.typePortafolio === 1
+                                          )
+                                        : []
+
+                                    item.cCuadernoUrl = []
+                                    if (fichas.length) {
+                                        item.cCuadernoUrl.push(fichas[0])
+                                    }
+                                    item.cCuadernoUrl.push({
+                                        typePortafolio: 2,
+                                        name: file.name,
+                                        ruta: event.data,
+                                    })
+                                    this.guardarFichasCuadernosCampo(item)
                                     break
                             }
                         }

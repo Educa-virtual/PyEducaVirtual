@@ -81,6 +81,7 @@ export class TabResultadosComponent implements OnInit {
     estudiantes: any[] = []
     iEstudianteId: number
     estudianteSelect = null
+    comentariosSelect: any[] = []
     messages: Message[] | undefined
 
     idcurso: number
@@ -237,24 +238,10 @@ export class TabResultadosComponent implements OnInit {
                 iEstudianteId: estudiantes.iEstudianteId,
                 idDocCursoId: estudiantes.iCursoId,
             })
-            .subscribe({
-                next: (resp) => {
-                    this.messages = [
-                        {
-                            severity: 'info',
-                            detail: resp?.iEstudianteId,
-                        },
-                    ]
-                },
+            .subscribe((Data) => {
+                this.comentariosSelect = Data['data']
+                console.log('kenyo: ', this.comentariosSelect)
             })
-        // this.estudianteSelect = JSON.stringify(
-        //     {
-        //         iEstudianteId: estudiantes.iEstudianteId,
-        //         idDocCursoId: estudiantes.iCursoId
-        //     }
-        // )
-
-        //console.log('datos de estudiante', this.estudianteSelect)
     }
 
     getEstudiantesMatricula() {

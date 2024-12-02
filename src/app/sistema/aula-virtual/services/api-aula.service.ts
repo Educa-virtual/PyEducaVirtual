@@ -94,6 +94,24 @@ export class ApiAulaService {
                 })
             )
     }
+    obtenerResultados(params: { iEstudianteId; idDocCursoId }) {
+        return this._http
+            .get<any>(
+                `${this.baseUrlApi}/aula-virtual/Resultado/obtenerResultados`,
+                { params }
+            )
+            .pipe(
+                map((resp) => resp.data),
+                map((data) => {
+                    if (data.iActTipoId == 2) {
+                        const preguntas = mapItemsBancoToEre(data.preguntas)
+                        data.preguntas = mapData(preguntas)
+                    }
+                    return data
+                })
+            )
+    }
+
     calificarForoDocente(data) {
         return this._http.post(
             `${this.baseUrlApi}/aula-virtual/contenidos/foro/calificarForoDocente`,

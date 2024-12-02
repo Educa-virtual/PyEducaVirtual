@@ -35,6 +35,8 @@ import { OrderListModule } from 'primeng/orderlist'
 import { PrimengModule } from '@/app/primeng.module'
 import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
 import { Message } from 'primeng/api'
+import { Subject, takeUntil } from 'rxjs'
+import { RemoveHTMLPipe } from '@/app/shared/pipes/remove-html.pipe'
 @Component({
     selector: 'app-tab-resultados',
     standalone: true,
@@ -42,6 +44,7 @@ import { Message } from 'primeng/api'
     styleUrls: ['./tab-resultados.component.scss'],
     imports: [
         TablePrimengComponent,
+        RemoveHTMLPipe,
         TabViewModule,
         TableModule,
         IconComponent,
@@ -81,8 +84,9 @@ export class TabResultadosComponent implements OnInit {
     estudiantes: any[] = []
     iEstudianteId: number
     estudianteSelect = null
-    comentariosSelect: any[] = []
+    public comentariosSelect
     messages: Message[] | undefined
+    private unsbscribe$ = new Subject<boolean>()
 
     idcurso: number
 
@@ -238,9 +242,18 @@ export class TabResultadosComponent implements OnInit {
                 iEstudianteId: estudiantes.iEstudianteId,
                 idDocCursoId: estudiantes.iCursoId,
             })
-            .subscribe((Data) => {
-                this.comentariosSelect = Data['data']
-                console.log('kenyo: ', this.comentariosSelect)
+            .pipe(takeUntil(this.unsbscribe$))
+            .subscribe({
+                next: (resp) => {
+                    this.messages = [
+                        {
+                            severity: 'info',
+                            detail: resp?.iEscalaCalifId,
+                        },
+                    ]
+                    this.comentariosSelect = resp
+                    console.log('obtener comentarior', resp)
+                },
             })
     }
 

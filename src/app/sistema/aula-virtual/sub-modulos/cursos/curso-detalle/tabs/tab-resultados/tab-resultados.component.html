@@ -117,7 +117,7 @@
                             <p-accordionTab header="Actividad Foro">
                                 <div class="card">
                                     <p-table
-                                        [value]="estudiantes"
+                                        [value]="comentariosSelect"
                                         [tableStyle]="{ 'min-width': '60rem' }"
                                         [tableStyle]="{ 'max-height': '400px' }"
                                         sortMode="multiple"
@@ -160,7 +160,7 @@
                                         </ng-template>
                                         <ng-template
                                             pTemplate="body"
-                                            let-estudiante
+                                            let-comentario
                                             let-rowIndex="rowIndex"
                                         >
                                             <tr>
@@ -172,10 +172,28 @@
                                                 >
                                                     {{ rowIndex + 1 }}
                                                 </td>
-                                                <td></td>
+
+                                                <td>
+                                                    {{
+                                                        comentario?.cForoTitulo
+                                                    }}
+                                                </td>
+                                                <td>
+                                                    {{
+                                                        comentario?.dtForoPublicacion
+                                                    }}
+                                                </td>
+                                                <td>
+                                                    {{
+                                                        comentario?.cForoRptaDocente
+                                                            | removeHTML
+                                                    }}
+                                                </td>
                                             </tr>
                                         </ng-template>
                                     </p-table>
+                                    <input type="text" />
+                                    <button>hola</button>
                                 </div>
                             </p-accordionTab>
                             <p-accordionTab header="Actividad Tarea">

@@ -101,7 +101,14 @@ export class ApiAulaService {
                 { params }
             )
             .pipe(
-                map((resp) => resp.data),
+                map((response) => {
+                    if (!response || !response.data) {
+                        throw new Error(
+                            'La respuesta no contiene datos válidos'
+                        )
+                    }
+                    return response.data
+                }),
                 map((data) => {
                     if (data.iActTipoId == 2) {
                         const preguntas = mapItemsBancoToEre(data.preguntas)

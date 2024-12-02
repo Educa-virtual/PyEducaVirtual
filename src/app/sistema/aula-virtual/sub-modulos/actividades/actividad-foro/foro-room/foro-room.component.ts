@@ -181,42 +181,42 @@ export class ForoRoomComponent implements OnInit {
         // console.log('Editar acción ejecutada', respuestasForo)
         //iForoRptaId
     }
-    eliminar(item: any): void {
+    eliminar(itemRespuesta: any): void {
         // let value = typeof Number(this.itemRespuesta);
         // console.log('Eliminar acción ejecutada01', value)
-        if (!item || !item.iForoRptaId) {
-            console.error('Elemento inválido para eliminar.')
-            return
-        }
-        const itemId = item.iForoRptaId
+        // if (!item || !item.iForoRptaId) {
+        //     console.error('Elemento inválido para eliminar.')
+        //     return
+        // }
+        // const itemId = item.iForoRptaId
 
-        this._aulaService.eliminarRespuesta(itemId).subscribe({
+        // this._aulaService.eliminarRespuesta(itemId).subscribe({
+        //     next: (response) => {
+        //         console.log('Elemento eliminado correctamente:', response)
+        //         // Actualiza la lista local después de eliminar
+        //         this.itemRespuesta = this.itemRespuesta.filter(
+        //             (res: any) => res.iForoRptaId !== itemId
+        //         )
+        //     },
+        //     error: (err) => {
+        //         console.error('Error al eliminar:', err)
+        //     },
+        // })
+
+        const value = typeof itemRespuesta.iForoRptaId
+        console.log('Eliminar acción ejecutada01', value)
+        this._aulaService.eliminarRespuesta(value).subscribe({
             next: (response) => {
                 console.log('Elemento eliminado correctamente:', response)
                 // Actualiza la lista local después de eliminar
-                this.itemRespuesta = this.itemRespuesta.filter(
-                    (res: any) => res.iForoRptaId !== itemId
-                )
+                // this.itemRespuesta = this.itemRespuesta.filter(
+                //     (item: any) => item.iForoRptaId !== respuestasForo
+                // );
             },
             error: (err) => {
                 console.error('Error al eliminar:', err)
             },
         })
-
-        // let value = this.itemRespuesta;
-        // console.log('Eliminar acción ejecutada01', value)
-        // this._aulaService.eliminarRespuesta(value).subscribe({
-        //     next: (response) => {
-        //         console.log('Elemento eliminado correctamente:', response);
-        //         // Actualiza la lista local después de eliminar
-        //         // this.itemRespuesta = this.itemRespuesta.filter(
-        //         //     (item: any) => item.iForoRptaId !== respuestasForo
-        //         // );
-        //     },
-        //     error: (err) => {
-        //         console.error('Error al eliminar:', err);
-        //     },
-        // });
         // Lógica para eliminar
     }
 

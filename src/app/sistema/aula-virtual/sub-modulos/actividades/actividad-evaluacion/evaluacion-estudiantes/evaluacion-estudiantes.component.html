@@ -6,6 +6,7 @@
 ></app-toolbar-primeng>
 <div class="card">
     @if (iPreguntaId === 0) {
+        <!-- Contenido inicial de la evaluación -->
         <div class="grid">
             <div class="col-12 md:col-5">
                 <span class="font-bold text-xl flex gap-2 mt-4">
@@ -21,7 +22,6 @@
                         evaluacion?.dtEvaluacionInicio
                             | date: "EEEE, d 'de' MMMM 'de' yyyy"
                     }}
-
                     {{ evaluacion?.dtEvaluacionInicio | date: 'h:mm a' }}
                 </p>
                 <span class="font-bold text-xl flex gap-2 mt-8">
@@ -37,7 +37,6 @@
                         evaluacion?.dtEvaluacionFin
                             | date: "EEEE, d 'de' MMMM 'de' yyyy"
                     }}
-
                     {{ evaluacion?.dtEvaluacionFin | date: 'h:mm a' }}
                 </p>
             </div>
@@ -67,10 +66,10 @@
             </div>
             <div class="col-12 md:col-3 mt-2" align="center">
                 <p class="font-bold">Evaluación empieza en:</p>
-                <app-time
+                <!-- <app-time
                     [inicio]="evaluacion?.dtEvaluacionInicio"
                     [fin]="evaluacion?.dtEvaluacionFin"
-                ></app-time>
+                ></app-time> -->
             </div>
             <div class="col-12">
                 <p class="font-bold">Instrucciones</p>
@@ -87,48 +86,60 @@
             </div>
         </div>
     }
-    @if (itemPreguntas['iPreguntaId'] > 0) {
+    @if (iPreguntaId > 0 && evaluacion?.preguntas.length >= iPreguntaId) {
+        <!-- Contenido de las preguntas -->
         <div class="grid">
             <div class="col-12">
+                {{ iPreguntaId }}.-
                 <div [innerHTML]="itemPreguntas['cPregunta']"></div>
             </div>
-
-            @if (itemPreguntas['alternativas'].length > 0) {
-                @for (item of itemPreguntas['alternativas']; track item.id) {
-                    <div class="col-12 ml-2">
-                        <div class="flex">
-                            <p-checkbox />&nbsp;&nbsp;
-                            <div
-                                [innerHTML]="item['cAlternativaDescripcion']"
-                            ></div>
+            @if (itemPreguntas['alternativas']) {
+                @if (itemPreguntas['alternativas'].length > 0) {
+                    @for (
+                        item of itemPreguntas['alternativas'];
+                        track item.id
+                    ) {
+                        <div class="col-12 ml-2">
+                            <div class="flex">
+                                <p-checkbox />&nbsp;&nbsp;
+                                <div
+                                    [innerHTML]="
+                                        item['cAlternativaDescripcion']
+                                    "
+                                ></div>
+                            </div>
                         </div>
-                    </div>
+                    }
                 }
             }
-            <div class="col-12" align="right">
+            <div class="col-6 mt-2" align="left">
                 <p-button
-                    label="Siguiente"
-                    severity="primary"
-                    (onClick)="iniciarEvaluacion()"
-                />
-            </div>
-            <div class="col-12" align="right">
-                <p-button
-                    label="atras"
+                    label="Atrás"
                     severity="secondary"
+                    *ngIf="
+                        iPreguntaId > 1 &&
+                        evaluacion?.preguntas.length >= iPreguntaId
+                    "
                     (onClick)="regresarPregunta()"
                 />
             </div>
-        </div>
-    }
-
-    @if (itemPreguntas['iPreguntaId'] > 2) {
-        <div class="col-12 text-center">
-            <p-button
-                label="Finalizar Evaluación"
-                severity="primary"
-                (onClick)="finalizarEvaluacion()"
-            />
+            <div class="col-6 mt-2" align="right">
+                <p-button
+                    label="Siguiente"
+                    severity="primary"
+                    *ngIf="
+                        iPreguntaId > 0 &&
+                        evaluacion?.preguntas.length > iPreguntaId
+                    "
+                    (onClick)="siguienteEvaluacion()"
+                />
+                <p-button
+                    label="Finalizar Evaluación"
+                    severity="primary"
+                    (onClick)="finalizarEvaluacion()"
+                    *ngIf="evaluacion?.preguntas.length === iPreguntaId"
+                />
+            </div>
         </div>
     }
 </div>

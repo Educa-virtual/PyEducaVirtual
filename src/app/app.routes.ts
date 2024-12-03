@@ -6,6 +6,7 @@ import { VerificacionComponent } from './shared/verificacion/verificacion.compon
 import { InicioComponent } from './sistema/inicio/inicio.component'
 import { NotfoundComponent } from './shared/notfound/notfound.component'
 import { RecoverPasswordComponent } from './shared/recover-password/recover-password.component'
+import { EnlacesAyudaComponent } from './enlaces-ayuda/enlaces-ayuda.component'
 
 export const routes: Routes = [
     { path: '', component: InicioComponent },
@@ -53,6 +54,8 @@ export const routes: Routes = [
     },
 
     { path: 'login', component: LoginComponent },
+
+    { path: 'ayuda', component: EnlacesAyudaComponent },
 
     { path: 'verificacion', component: VerificacionComponent },
 

@@ -250,7 +250,6 @@ export class ConfigComponent implements OnInit {
     accionBtnItem(accion) {
         if (accion === 'guardar') {
             if (this.form.valid) {
-                alert('trata de guardar')
                 this.query
                     .addAmbienteAcademico({
                         json: JSON.stringify(this.form.value),

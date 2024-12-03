@@ -65,7 +65,10 @@
 </app-container-page> -->
 
 <!-- Restaurar -->
-<app-container-page [title]="'Mis Áreas Curriculares'" [actions]="[]">
+<app-container-page
+    [title]="'Banco de Preguntas : ' + nombreEvaluacion"
+    [actions]="[]"
+>
     <p-dataView
         #dv
         [value]="area"
@@ -119,7 +122,12 @@
         <ng-template let-products pTemplate="gridItem">
             <div class="area gap-4 py-2">
                 @for (area of area; track area.id) {
-                    <app-area-card class="" [area]="area"></app-area-card>
+                    <app-area-card
+                        class=""
+                        [area]="area"
+                        [_iEvaluacionId]="iEvaluacionId"
+                        [_nombreEvaluacion]="nombreEvaluacion"
+                    ></app-area-card>
                 }
             </div>
         </ng-template>

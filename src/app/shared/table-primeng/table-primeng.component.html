@@ -109,6 +109,39 @@
                             "
                         ></button>
                     }
+
+                    @if (col.type === 'arrayColumn') {
+                        <p-button
+                            [text]="true"
+                            severity="secondary"
+                            class="p-col-12"
+                            (onClick)="accionBtn('select', rowData)"
+                        >
+                            <div
+                                class="perfiles-list-item text-left"
+                                tabindex="0"
+                            >
+                                <i class="pi pi-home"
+                                    ><strong> Aula : </strong
+                                    >{{ rowData[col.field].ambiente }}
+                                    <strong> Ciclo : </strong
+                                    >{{ rowData[col.field].ciclo }}</i
+                                >
+
+                                <br /><i class="pi pi-bookmark"
+                                    ><strong> Grado / Seccion : </strong
+                                    >{{ rowData[col.field].grado }} /
+                                    {{ rowData[col.field].seccion }}</i
+                                >
+
+                                <i class="pi pi-user"
+                                    ><strong> Estudiantes : </strong
+                                    >{{ rowData[col.field].estudiantes }}</i
+                                >
+                            </div>
+                        </p-button>
+                    }
+
                     @if (col.type === 'item') {
                         <div [style.text-align]="col.text">
                             <span>{{ rowIndex + 1 }}</span>

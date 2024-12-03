@@ -73,6 +73,7 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
     @Output() closeModalChange = new EventEmitter()
     @Output() submitChange = new EventEmitter()
     @Output() encabezadoChange = new EventEmitter()
+
     @Input() public tipoPreguntas = []
     @Input() public encabezados = []
     @Input() public bancoPreguntasForm: FormGroup
@@ -80,8 +81,14 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
     @Input() public obtenerPreguntasPorEncabezado: (id: number) => void
     @Input() public columnasPreguntas = columnasListaPreguntaForm
     @Input() public accionesPreguntas = accionesTablaListaPreguntaForm
+    @Input() _iEvaluacionId: string | null = null // Aquí definimos el @Input
+    private _apiEre = inject(ApiEvaluacionesRService)
     private _pregunta
     private _FormBuilder = inject(FormBuilder)
+    payloadRecibido: any
+    @Input() payload: any
+    @Output() payloadEmitidoForm = new EventEmitter<any>()
+
     // si envia la pregunta se hace el patch del formulario
     @Input()
     set pregunta(pregunta) {
@@ -148,6 +155,11 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
     public preguntasEliminar = []
 
     ngOnInit() {
+        // Aqui llego la iEvaluacion desde BancoPreguntasForm
+        console.log(
+            'iEvaluacionId recibido desde form Click Agregar Pregunta :',
+            this._iEvaluacionId
+        )
         // escuchar cambio tipo pregunta
         this.listenTipoPregunta()
         // Llenar el formulario paso 1 basado en la seleccion de la cabecera.
@@ -551,8 +563,17 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
             preguntas,
             preguntasEliminar: this.preguntasEliminar,
         }
-
         this.submitChange.emit(data)
+    }
+
+    //! Método que recibe el payload desde el hijo
+    recibirPayload(payload: any) {
+        console.log('Payload recibido desde el hijo Banco Pregunta:', payload)
+        this.payloadRecibido = payload
+
+        const payloadEmitidoForms = payload
+        // Emitir el payload al componente padre
+        this.payloadEmitidoForm.emit(payloadEmitidoForms)
     }
 
     closeModal(data) {

@@ -260,15 +260,15 @@
                                                     </td>
                                                     <td>
                                                         {{
-                                                            comentario.cForoRptaDocente
-                                                                | removeHTML
+                                                            comentario
+                                                                ? comentario.cForoRptaDocente
+                                                                : (''
+                                                                  | removeHTML)
                                                         }}
                                                     </td>
                                                 </tr>
                                             </ng-template>
                                         </p-table>
-                                        <!-- <input type="text" />
-                                        <button>hola</button> -->
                                     </div>
                                 </p-accordionTab>
                                 <p-accordionTab header="Actividad Tarea">

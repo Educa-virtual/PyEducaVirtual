@@ -121,30 +121,6 @@ export class TabResultadosComponent implements OnInit {
             text_header: 'left',
             text: 'left',
         },
-        // {
-        //     type: 'text',
-        //     width: '10rem',
-        //     field: '',
-        //     header: 'Nt. tarea',
-        //     text_header: 'left',
-        //     text: 'left',
-        // },
-        // {
-        //     type: 'text',
-        //     width: '10rem',
-        //     field: '',
-        //     header: 'Nt. Evaluación',
-        //     text_header: 'left',
-        //     text: 'left',
-        // },
-        // {
-        //     type: 'text',
-        //     width: '10rem',
-        //     field: '',
-        //     header: 'Nt. Foro',
-        //     text_header: 'left',
-        //     text: 'left',
-        // },
         {
             type: 'text',
             width: '10rem',
@@ -153,31 +129,6 @@ export class TabResultadosComponent implements OnInit {
             text_header: 'left',
             text: 'left',
         },
-        // {
-        //     type: 'text',
-        //     width: '10rem',
-        //     field: '',
-        //     header: 'Nt. tarea',
-        //     text_header: 'left',
-        //     text: 'left',
-        // },
-        // {
-        //     type: 'text',
-        //     width: '10rem',
-        //     field: '',
-        //     header: 'Nt. Evaluación',
-        //     text_header: 'left',
-        //     text: 'left',
-        // },
-        // {
-        //     type: 'text',
-        //     width: '10rem',
-        //     field: '',
-        //     header: 'Nt. Foro',
-        //     text_header: 'left',
-        //     text: 'left',
-        // },
-
         {
             type: 'text',
             width: '10rem',
@@ -218,13 +169,6 @@ export class TabResultadosComponent implements OnInit {
             type: 'item',
             class: 'p-button-rounded p-button-warning p-button-text',
         },
-        // {
-        //     labelTooltip: 'Editar',
-        //     icon: 'pi pi-pencil',
-        //     accion: 'editar',
-        //     type: 'item',
-        //     class: 'p-button-rounded p-button-warning p-button-text',
-        // },
     ]
     // Inicializamos
     ngOnInit() {
@@ -263,10 +207,22 @@ export class TabResultadosComponent implements OnInit {
     }
     guardarCalifcFinal() {
         const resultadosEstudiantesf = this.califcFinal.value
-        const datos = {
+        const datos = JSON.stringify({
             estudianteS: this.estudianteSeleccionado,
             estudianteF: resultadosEstudiantesf,
-        }
+        })
+        this._aulaService.guardarCalificacionEstudiante(datos).subscribe({
+            next: (resp) => {
+                this.messages = [
+                    {
+                        severity: 'info',
+                        //detail: resp?.iEscalaCalifId,
+                    },
+                ]
+                this.comentariosSelect = resp
+                console.log('obtener comentarior', resp)
+            },
+        })
         console.log('Enviar datos a matriz detalle', datos)
     }
     mostrarCalificacion() {

@@ -1,8 +1,10 @@
 import { PrimengModule } from '@/app/primeng.module'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
+import { MODAL_CONFIG } from '@/app/shared/constants/modal.config'
 import { ModalPrimengComponent } from '@/app/shared/modal-primeng/modal-primeng.component'
 import { TypesFilesUploadPrimengComponent } from '@/app/shared/types-files-upload-primeng/types-files-upload-primeng.component'
+import { RubricaFormComponent } from '@/app/sistema/aula-virtual/features/rubricas/components/rubrica-form/rubrica-form.component'
 import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-evaluaciones.service'
 import { NgIf } from '@angular/common'
 import {
@@ -15,6 +17,8 @@ import {
     Output,
 } from '@angular/core'
 import { FormBuilder, Validators } from '@angular/forms'
+import { DialogService } from 'primeng/dynamicdialog'
+import { RubricasComponent } from '../../../../../features/rubricas/rubricas.component'
 
 @Component({
     selector: 'app-form-evaluacion',
@@ -24,6 +28,7 @@ import { FormBuilder, Validators } from '@angular/forms'
         ModalPrimengComponent,
         NgIf,
         TypesFilesUploadPrimengComponent,
+        RubricasComponent,
     ],
     templateUrl: './form-evaluacion.component.html',
     styleUrl: './form-evaluacion.component.scss',
@@ -33,12 +38,14 @@ export class FormEvaluacionComponent implements OnChanges, OnInit {
     private _evaluacionService = inject(ApiEvaluacionesService)
     private _ConstantesService = inject(ConstantesService)
     private _ConfirmationModalService = inject(ConfirmationModalService)
+    private _DialogService = inject(DialogService)
 
     @Output() accionBtnItem = new EventEmitter()
     @Input() showModalEvaluacion: boolean = false
     @Input() tituloEvaluacion: string
     @Input() opcionEvaluacion: string
     @Input() semana
+    @Input() idDocCursoId
 
     date = new Date()
 
@@ -50,6 +57,11 @@ export class FormEvaluacionComponent implements OnChanges, OnInit {
         youtube: true,
         repository: false,
         image: false,
+    }
+    params = {
+        iCursoId: 0,
+        iDocenteId: 0,
+        idDocCursoId: 0,
     }
     formEvaluacion = this._FormBuilder.group({
         iEvaluacionId: [],
@@ -86,6 +98,7 @@ export class FormEvaluacionComponent implements OnChanges, OnInit {
 
     ngOnInit() {
         this.obtenerTipoEvaluaciones()
+        this.obtenerRubricas()
     }
     ngOnChanges(changes) {
         if (changes.showModalEvaluacion?.currentValue) {
@@ -93,13 +106,49 @@ export class FormEvaluacionComponent implements OnChanges, OnInit {
         }
         if (changes.semana?.currentValue) {
             this.semana = changes.semana.currentValue
+            //console.log(this.semana)
+            this.params.iCursoId = this.semana.iCursoId
+            this.params.iDocenteId = this._ConstantesService.iDocenteId
         }
+        console.log(changes)
     }
     obtenerTipoEvaluaciones() {
         this._evaluacionService.obtenerTipoEvaluaciones().subscribe((data) => {
             this.tipoEvaluaciones = data
         })
     }
+    rubricas = [
+        {
+            iInstrumentoId: 0,
+            cInstrumentoNombre: 'Sin instrumento de evaluación',
+        },
+    ]
+
+    obtenerRubricas() {
+        const params = {
+            iDocenteId: this._ConstantesService.iDocenteId,
+        }
+        this._evaluacionService.obtenerRubricas(params).subscribe({
+            next: (data) => {
+                data.forEach((element) => {
+                    this.rubricas.push(element)
+                })
+            },
+        })
+    }
+
+    agregarRubrica() {
+        const header = 'Crear rúbrica'
+        const ref = this._DialogService.open(RubricaFormComponent, {
+            ...MODAL_CONFIG,
+            header,
+            data: {},
+        })
+        ref.onClose.pipe().subscribe(() => {
+            this.obtenerRubricas()
+        })
+    }
+
     accionBtn(elemento): void {
         const { accion } = elemento
         const { item } = elemento

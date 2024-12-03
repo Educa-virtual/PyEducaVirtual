@@ -46,7 +46,6 @@ export class RubricasComponent implements OnInit, OnDestroy {
         iDocenteId: null,
         idDocCursoId: null,
     }
-
     public columnasTabla: IColumn[] = [
         {
             type: 'text',
@@ -127,7 +126,7 @@ export class RubricasComponent implements OnInit, OnDestroy {
     }
 
     agregarActualizarEvaluacionModal(item) {
-        const header = item == null ? 'Crear rubrica' : 'Editar rubrica'
+        const header = item == null ? 'Crear rúbrica' : 'Editar rúbrica'
         const ref = this._dialogService.open(RubricaFormComponent, {
             ...MODAL_CONFIG,
             header,
@@ -137,7 +136,6 @@ export class RubricasComponent implements OnInit, OnDestroy {
                 rubrica: item,
             },
         })
-
         ref.onClose.pipe(takeUntil(this._unsubscribe$)).subscribe(() => {
             this.obtenerRubricas()
         })

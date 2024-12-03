@@ -18,19 +18,6 @@
                     />
                 </p-inputGroup>
             </div>
-            <!-- <div class="col-12 md:col-4">
-          <p-inputGroup>
-              <p-inputGroupAddon>Instrumento</p-inputGroupAddon>
-              <p-dropdown
-                  styleClass="w-full"
-                  placeholder="Seleccione Instrumento"
-                  optionValue="iInstrumentoId"
-                  formControlName="iInstrumentoId"
-                  [options]="rubricas"
-                  optionLabel="cInstrumentoNombre"
-              />
-          </p-inputGroup>
-      </div> -->
             <div class="col-12">
                 <label for="descripcion" class="mt-1"
                     >Descripción o Instrucciones
@@ -103,6 +90,7 @@
                     />
                 </p-inputGroup>
             </div>
+
             <div class="col-12 md:col-4">
                 <p-inputGroup>
                     <p-inputGroupAddon>Fecha - Hora Fin</p-inputGroupAddon>
@@ -118,6 +106,28 @@
                     />
                 </p-inputGroup>
             </div>
+            <div class="col-12 md:col-6">
+                <p-inputGroup>
+                    <p-inputGroupAddon>Instrumento</p-inputGroupAddon>
+                    <p-dropdown
+                        styleClass="w-full"
+                        placeholder="Seleccione Instrumento"
+                        optionValue="iInstrumentoId"
+                        formControlName="iInstrumentoId"
+                        [options]="rubricas"
+                        optionLabel="cInstrumentoNombre"
+                    />
+                    @if (params.iCursoId) {
+                        <app-rubricas
+                            [title]="'Rúbricas'"
+                            [mode]="'SELECTION'"
+                            [params]="params"
+                        ></app-rubricas>
+                    }
+                </p-inputGroup>
+            </div>
+            <div class="col-12"></div>
+
             <div class="col-12 mt-1">
                 <app-types-files-upload-primeng
                     [nameFile]="'evaluacion'"

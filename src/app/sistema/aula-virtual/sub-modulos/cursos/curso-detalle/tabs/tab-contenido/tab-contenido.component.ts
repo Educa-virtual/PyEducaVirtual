@@ -74,7 +74,7 @@ import { FormEvaluacionComponent } from '../../../../actividades/actividad-evalu
 })
 export class TabContenidoComponent implements OnInit {
     @Input({ required: true }) private _iSilaboId: string
-
+    @Input() idDocCursoId
     public rangeDates: Date[] | undefined
     public accionesContenido: MenuItem[]
     public actividadSelected: IActividad | undefined
@@ -398,8 +398,8 @@ export class TabContenidoComponent implements OnInit {
     opcionEvaluacion: string
     semanaEvaluacion
     handleEvaluacionAction(action: string, actividad: IActividad) {
-        console.log(action)
-        console.log(actividad)
+        console.log(this.idDocCursoId)
+
         switch (action) {
             case 'CREAR':
             case 'EDITAR':
@@ -409,6 +409,49 @@ export class TabContenidoComponent implements OnInit {
                 this.opcionEvaluacion =
                     action === 'CREAR' ? 'GUARDAR' : 'ACTUALIZAR'
                 this.semanaEvaluacion = this.semanaSeleccionada
+                break
+            case 'ELIMINAR':
+                this._confirmService.openConfirm({
+                    header: '¿Esta seguro de eliminar la evaluación?',
+                    accept: () => {
+                        this.eliminarActividad(
+                            actividad.iProgActId,
+                            actividad.iActTipoId,
+                            actividad.ixActivadadId
+                        )
+                    },
+                })
+                break
+            case 'VER':
+                this.router.navigate(
+                    [
+                        '../',
+                        'actividad',
+                        actividad.ixActivadadId,
+                        actividad.iActTipoId,
+                    ],
+                    {
+                        relativeTo: this._activatedRoute,
+                    }
+                )
+                break
+            case 'PUBLICAR':
+                this._confirmService.openConfirm({
+                    header: '¿Esta seguro de publicar la evaluación?',
+                    accept: () => {
+                        this.publicarEvaluacion(actividad)
+                    },
+                })
+                break
+            case 'ANULAR_PUBLICACION':
+                this._confirmService.openConfirm({
+                    header: '¿Esta seguro de anular la publicación de la evaluación?',
+                    accept: () => {
+                        this.anularPublicacionEvaluacion({
+                            iEvaluacionId: actividad.ixActivadadId,
+                        })
+                    },
+                })
                 break
         }
         // if (action === 'CREAR' || action === 'EDITAR') {
@@ -431,51 +474,6 @@ export class TabContenidoComponent implements OnInit {
         //         next: () => {
         //             // todo validar solo cuando sea necesario
         //             this.obtenerContenidoSemanas()
-        //         },
-        //     })
-        // }
-
-        // if (action === 'ELIMINAR') {
-        //     this._confirmService.openConfirm({
-        //         header: '¿Esta seguro de eliminar la evaluación?',
-        //         accept: () => {
-        //             this.eliminarActividad(
-        //                 actividad.iProgActId,
-        //                 actividad.iActTipoId,
-        //                 actividad.ixActivadadId
-        //             )
-        //         },
-        //     })
-        // }
-
-        // if (action === 'VER') {
-        //     this.router.navigate(
-        //         [
-        //             '../',
-        //             'actividad',
-        //             actividad.ixActivadadId,
-        //             actividad.iActTipoId,
-        //         ],
-        //         {
-        //             relativeTo: this._activatedRoute,
-        //         }
-        //     )
-        // }
-        // if (action === 'PUBLICAR') {
-        //     this._confirmService.openConfirm({
-        //         header: '¿Esta seguro de publicar la evaluación?',
-        //         accept: () => {
-        //             this.publicarEvaluacion(actividad)
-        //         },
-        //     })
-        // }
-        // if (action === 'ANULAR_PUBLICACION') {
-        //     this._confirmService.openConfirm({
-        //         header: '¿Esta seguro de anular la publicación de la evaluación?',
-        //         accept: () => {
-        //             this.anularPublicacionEvaluacion({
-        //                 iEvaluacionId: actividad.ixActivadadId,
-        //             })
         //         },
         //     })
         // }

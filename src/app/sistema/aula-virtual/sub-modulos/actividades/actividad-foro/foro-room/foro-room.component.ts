@@ -154,7 +154,6 @@ export class ForoRoomComponent implements OnInit {
         //     // Agregar el mensaje recibido a la lista de comentarios
         //     this.comments.push(message);  // Asume que tienes una lista `comments`
         // });
-        this.obtenerEstudiantesMatricula()
         this.obtenerIdPerfil()
         this.mostrarCalificacion()
         this.obtenerForo()
@@ -540,9 +539,5 @@ export class ForoRoomComponent implements OnInit {
         }
 
         this.getInformation(params)
-    }
-    obtenerEstudiantesMatricula() {
-        this.iCredId = this._constantesService.iCredId
-        console.log('Parametros para obtener Alumnos', this.iCredId)
     }
 }

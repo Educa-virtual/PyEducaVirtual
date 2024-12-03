@@ -12,11 +12,58 @@
 </form>
 
 <section class="flex gap-3">
-    <div class="flex-1">
-        <app-table-primeng [columnas]="columns" [data]="data" [scrollable]="true" scrollHeight="flex" [showCaption]="false" [showPaginator]="false">
+    <div style="flex: 1.5">
+        <app-table-primeng
+            [columnas]="columns"
+            [data]="data"
+            [selectedRowData]="isExpand ? data[0] : null"
+            [scrollable]="true"
+            scrollHeight="flex"
+            [showCaption]="false"
+            [showPaginator]="true"
+            selectionMode="single"
+            (selectedRowDataChange)="selectRow($event)"
+        >
         </app-table-primeng>
     </div>
-    <div [ngStyle]="{ flex: isExpand ? '2' : '0' }">
-        <p-table> </p-table>
+    <div
+        class="flex-column gap-3"
+        [ngStyle]="{
+            flex: isExpand && selectRowData ? '1' : '0',
+            display: isExpand && selectRowData ? 'flex' : 'none',
+        }"
+        [ngClass]="{
+            card: isExpand,
+        }"
+    >
+        <div class="flex justify-content-between">
+            <span>Esquema: {{ selectRowData?.cAudEsquema }}</span>
+            <span>Fecha: {{ selectRowData?.dtFecha }}</span>
+        </div>
+        <div class="flex justify-content-between">
+            <span>Usuario: {{ selectRowData?.cAudUsuario }}</span>
+        </div>
+        <div>
+            <p-accordion>
+                <p-accordionTab header="Operación realizada">
+                    <p class="m-0">
+                        {{ selectRowData?.cAudOperacion }}
+                    </p>
+                </p-accordionTab>
+            </p-accordion>
+        </div>
+        <div>
+            <app-table-primeng
+                [columnas]="columnsDetail"
+                [data]="selectRowData?.cAudDatos"
+                [scrollable]="true"
+                [caption]="selectRowData?.cAudTabla"
+                scrollHeight="flex"
+                [showCaption]="true"
+                [showPaginator]="isExpand"
+                (selectedRowDataChange)="selectRow($event)"
+            >
+            </app-table-primeng>
+        </div>
     </div>
 </section>

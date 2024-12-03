@@ -22,38 +22,47 @@
 >
     <ng-container *ngIf="showCaption">
         <ng-template pTemplate="caption">
-            <div class="grid">
-                <div class="col-10" style="margin-left: -0.5rem">
-                    <p-inputGroup>
-                        <p-inputGroupAddon
-                            ><i class="pi pi-search"></i
-                        ></p-inputGroupAddon>
-                        <input
-                            pInputText
-                            [placeholder]="placeholder"
-                            (input)="
-                                dt.filterGlobal(
-                                    $any($event.target).value,
-                                    'contains'
-                                )
-                            "
-                        />
-                    </p-inputGroup>
-                </div>
-                <div class="col-2 align-content-center">
-                    <div class="flex flex-wrap gap-2 justify-content-end">
-                        <ng-content
-                            select="[slot='caption-content']"
-                        ></ng-content>
-                        <app-table-column-filter
-                            [columns]="columnas"
-                            (columnsChange)="onColumnSelected($event)"
-                        ></app-table-column-filter>
+            @if(caption){
+                <div class="grid" >
+                    <div class="p-2 w-full text-center" style="background-color: #e6e6ee">
+                       {{caption.toUpperCase()}}
                     </div>
                 </div>
-            </div>
+            } @else {
+                <div class="grid">
+                    <div class="col-10" style="margin-left: -0.5rem">
+                        <p-inputGroup>
+                            <p-inputGroupAddon
+                                ><i class="pi pi-search"></i
+                            ></p-inputGroupAddon>
+                            <input
+                                pInputText
+                                [placeholder]="placeholder"
+                                (input)="
+                                    dt.filterGlobal(
+                                        $any($event.target).value,
+                                        'contains'
+                                    )
+                                "
+                            />
+                        </p-inputGroup>
+                    </div>
+                    <div class="col-2 align-content-center">
+                        <div class="flex flex-wrap gap-2 justify-content-end">
+                            <ng-content
+                                select="[slot='caption-content']"
+                            ></ng-content>
+                            <app-table-column-filter
+                                [columns]="columnas"
+                                (columnsChange)="onColumnSelected($event)"
+                            ></app-table-column-filter>
+                        </div>
+                    </div>
+                </div>
+            }
         </ng-template>
     </ng-container>
+
     <ng-template pTemplate="header" let-columns>
         <tr class="text-uppercase">
             @for (col of columnasSeleccionadas; track $index) {
@@ -91,7 +100,7 @@
         let-rowIndex="rowIndex"
         let-expanded="expanded"
     >
-        <tr [pSelectableRow]="rowData">
+        <tr [pSelectableRow]="rowData" [ngClass]="getClass(rowData, 'operation')" [ngClass]="getClass(rowData, 'cAudTipoOperaion')">
             @for (col of columnasSeleccionadas; track $index; let i = $index) {
                 <td>
                     @if (col.type === 'expansion') {

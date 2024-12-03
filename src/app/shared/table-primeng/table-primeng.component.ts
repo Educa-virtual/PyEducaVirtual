@@ -67,6 +67,17 @@ export interface IActionTable {
 export class TablePrimengComponent implements OnChanges, OnInit {
     backend = environment.backend
 
+    getClass(rowData: any, operation: string): { [key: string]: boolean } {
+        const fieldValue = rowData[operation];
+        if(operation){
+        return { [String(fieldValue)]: !!fieldValue }; // Convertir a string y asegurarse de que sea un valor booleano.
+        } else {
+            return undefined
+        }
+
+      }
+    
+
     @Output() accionBtnItem: EventEmitter<{ accion: any; item: any }> =
         new EventEmitter()
     @Output() selectedRowDataChange = new EventEmitter()
@@ -74,8 +85,8 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     @Input() selectionMode: 'single' | 'multiple' | null = null
     @Input() expandedRowKeys = {}
     @Input() dataKey: string
-
     @Input() showCaption: boolean = true
+    @Input() caption: string | undefined | null
     @Input() showPaginator: boolean = true
 
     @Input() selectedRowData

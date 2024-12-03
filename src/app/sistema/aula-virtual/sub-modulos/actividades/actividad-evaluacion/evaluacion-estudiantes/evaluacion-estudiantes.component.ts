@@ -19,6 +19,9 @@ import { PrimengModule } from '@/app/primeng.module'
     styleUrl: './evaluacion-estudiantes.component.scss',
 })
 export class EvaluacionEstudiantesComponent implements OnChanges {
+    siguienteEvaluacion() {
+        throw new Error('Method not implemented.')
+    }
     @Input() evaluacion
 
     iPreguntaId: number = 0

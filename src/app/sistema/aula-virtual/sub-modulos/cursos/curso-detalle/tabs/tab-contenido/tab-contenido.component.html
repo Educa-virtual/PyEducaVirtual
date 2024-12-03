@@ -91,3 +91,11 @@
         </a>
     </ng-template>
 </p-menu>
+
+<app-form-evaluacion
+    [showModalEvaluacion]="showModalEvaluacion"
+    [tituloEvaluacion]="tituloEvaluacion"
+    [opcionEvaluacion]="opcionEvaluacion"
+    [semana]="semanaEvaluacion"
+    (accionBtnItem)="accionBtnItem($event)"
+></app-form-evaluacion>

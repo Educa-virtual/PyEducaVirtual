@@ -186,6 +186,7 @@
                             placeholder="Ingrese su respuesta"
                             pInputText
                             [(ngModel)]="itemPreguntas['cRptaTexto']"
+                            (blur)="enviarRpta('libre', itemPreguntas)"
                         ></textarea>
                     </div>
                 }

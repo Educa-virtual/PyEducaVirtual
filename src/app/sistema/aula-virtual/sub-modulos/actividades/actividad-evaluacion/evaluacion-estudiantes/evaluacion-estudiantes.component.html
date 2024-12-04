@@ -49,7 +49,7 @@
                     <div class="col-6 mt-4">
                         <span>Duración:</span>
                         <h1>
-                            60&nbsp;<span
+                            {{ evaluacion?.iTiempo }} &nbsp;<span
                                 class="text-none"
                                 style="font-size: small"
                                 >minutos</span
@@ -61,8 +61,21 @@
                     Total preguntas: {{ evaluacion?.preguntas?.length }}
                 </p>
             </div>
-            <div class="col-12 md:col-3 mt-2" align="center">
+
+            <div
+                *ngIf="evaluacion?.bEstadoEvaluacion === '1'"
+                class="col-12 md:col-3 mt-2"
+                align="center"
+            >
                 <p class="font-bold">Evaluación empieza en:</p>
+                <!-- Temporizador deshabilitado -->
+            </div>
+            <div
+                *ngIf="evaluacion?.bEstadoEvaluacion === '0'"
+                class="col-12 md:col-3 mt-2"
+                align="center"
+            >
+                <h2 class="font-bold text-red-500">Evaluación finalizada</h2>
                 <!-- Temporizador deshabilitado -->
             </div>
             <div class="col-12">
@@ -71,7 +84,11 @@
                     <div [innerHTML]="evaluacion?.cEvaluacionDescripcion"></div>
                 </div>
             </div>
-            <div class="col-12" align="right">
+            <div
+                class="col-12"
+                align="right"
+                [hidden]="evaluacion?.bEstadoEvaluacion === '0'"
+            >
                 <p-button
                     label="Iniciar Evaluación"
                     severity="primary"
@@ -86,22 +103,89 @@
         <!-- Contenido de las preguntas -->
         <div class="grid">
             <div class="col-12">
-                {{ iPreguntaId }}.-
+                <p class="font-bold">Pregunta {{ iPreguntaId }}.-</p>
+            </div>
+            <div class="col-12">
                 <div [innerHTML]="itemPreguntas['cPregunta']"></div>
             </div>
-            <div *ngIf="itemPreguntas['alternativas']?.length > 0">
-                <div
-                    *ngFor="let alternativa of itemPreguntas['alternativas']"
-                    class="col-12 ml-2"
-                >
-                    <div class="flex">
-                        <p-checkbox></p-checkbox>&nbsp;&nbsp;
+            @switch (itemPreguntas['iTipoPregId']) {
+                @case (1) {
+                    <!--Unica Tropical-->
+                    <div
+                        class="col-12 px-2"
+                        *ngIf="itemPreguntas['alternativas']?.length > 0"
+                    >
                         <div
-                            [innerHTML]="alternativa['cAlternativaDescripcion']"
-                        ></div>
+                            *ngFor="
+                                let alternativa of itemPreguntas[
+                                    'alternativas'
+                                ];
+                                let i = index
+                            "
+                        >
+                            <div class="flex mt-1">
+                                <p-radioButton
+                                    [inputId]="'alternativa'"
+                                    name="alternativa"
+                                    [value]="alternativa['cBancoAltLetra']"
+                                    [(ngModel)]="itemPreguntas['cRptaRadio']"
+                                    (onClick)="
+                                        enviarRpta('unica', itemPreguntas)
+                                    "
+                                />
+                                &nbsp;&nbsp;
+                                <div
+                                    [innerHTML]="
+                                        alternativa['cAlternativaDescripcion']
+                                    "
+                                ></div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
+                }
+                @case (2) {
+                    <!--Opcion Múltiple-->
+                    <div
+                        class="col-12 px-2"
+                        *ngIf="itemPreguntas['alternativas']?.length > 0"
+                    >
+                        <div
+                            *ngFor="
+                                let alternativa of itemPreguntas['alternativas']
+                            "
+                        >
+                            <div class="flex mt-1">
+                                <p-checkbox
+                                    [(ngModel)]="alternativa.cRptaCheck"
+                                    [value]="alternativa['cBancoAltLetra']"
+                                    (onChange)="
+                                        enviarRpta('multiple', itemPreguntas)
+                                    "
+                                />
+                                &nbsp;&nbsp;
+                                <div
+                                    [innerHTML]="
+                                        alternativa['cAlternativaDescripcion']
+                                    "
+                                ></div>
+                            </div>
+                        </div>
+                    </div>
+                }
+                @case (3) {
+                    <!--Opcion Libre-->
+                    <div class="col-12 px-2">
+                        <textarea
+                            class="w-full"
+                            rows="4"
+                            placeholder="Ingrese su respuesta"
+                            pInputText
+                            [(ngModel)]="itemPreguntas['cRptaTexto']"
+                        ></textarea>
+                    </div>
+                }
+            }
+
             <div class="col-6 mt-2" align="left">
                 <p-button
                     label="Atrás"
@@ -127,3 +211,15 @@
         </div>
     </div>
 </div>
+<p-toast />
+
+<p-confirmDialog>
+    <ng-template pTemplate="message" let-message>
+        <div
+            class="flex flex-column align-items-center w-full gap-3 border-bottom-1 surface-border"
+        >
+            <i class="pi pi-exclamation-circle text-6xl text-primary-500"></i>
+            <p>{{ message.message }}</p>
+        </div>
+    </ng-template>
+</p-confirmDialog>

@@ -41,6 +41,7 @@ import { actividadesConfig } from '@/app/sistema/aula-virtual/constants/aula-vir
 import { FullCalendarModule } from '@fullcalendar/angular'
 import { TareaFormContainerComponent } from '../../../../actividades/actividad-tarea/tarea-form-container/tarea-form-container.component'
 import { FormEvaluacionComponent } from '../../../../actividades/actividad-evaluacion/components/form-evaluacion/form-evaluacion.component'
+import { EvaluacionFormContainerComponent } from '../../../../actividades/actividad-evaluacion/evaluacion-form-container/evaluacion-form-container.component'
 
 @Component({
     selector: 'app-tab-contenido',
@@ -403,12 +404,35 @@ export class TabContenidoComponent implements OnInit {
         switch (action) {
             case 'CREAR':
             case 'EDITAR':
-                this.showModalEvaluacion = true
-                this.tituloEvaluacion =
-                    action === 'CREAR' ? 'AGREGAR' : 'ACTUALIZAR'
-                this.opcionEvaluacion =
-                    action === 'CREAR' ? 'GUARDAR' : 'ACTUALIZAR'
-                this.semanaEvaluacion = this.semanaSeleccionada
+                // this.showModalEvaluacion = true
+                // this.tituloEvaluacion =
+                //     action === 'CREAR' ? 'AGREGAR' : 'ACTUALIZAR'
+                // this.opcionEvaluacion =
+                //     action === 'CREAR' ? 'GUARDAR' : 'ACTUALIZAR'
+                // this.semanaEvaluacion = this.semanaSeleccionada
+
+                const ref = this._dialogService.open(
+                    EvaluacionFormContainerComponent,
+                    {
+                        ...MODAL_CONFIG,
+                        maximizable: true,
+                        header: !actividad['iEvaluacionId']
+                            ? 'Crear Evaluación'
+                            : 'Editar Evaluación',
+                        data: {
+                            actividad,
+                            semana: this.semanaSeleccionada,
+                        },
+                    }
+                )
+                this._dialogService.getInstance(ref).maximize()
+                ref.onClose.pipe(takeUntil(this._unsubscribe$)).subscribe({
+                    next: () => {
+                        // todo validar solo cuando sea necesario
+                        this.obtenerContenidoSemanas()
+                    },
+                })
+
                 break
             case 'ELIMINAR':
                 this._confirmService.openConfirm({

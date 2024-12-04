@@ -1,0 +1,82 @@
+<div class="grid">
+    <div class="col-3">
+        <div class="card m-2">
+            <div class="grid">
+                <div class="flex block p-2">
+                    <div class="font-bold pb-2">MIS CALENDARIOS</div>
+                </div>
+                <div class="col-12">
+                    <p-accordion [multiple]="true" [activeIndex]="[0]">
+                        <!-- @for (item of data; track $index) { } -->
+                        <p-accordionTab header="Fechas Importantes">
+                            <div class="flex flex-column">
+                                <div
+                                    *ngFor="let importante of importantes"
+                                    class="flex p-1"
+                                >
+                                    <p-checkbox
+                                        (onChange)="usarEvento()"
+                                        [(ngModel)]="importante.mostrar"
+                                        [label]="importante.name"
+                                        name="group"
+                                        [binary]="true"
+                                        [styleClass]="importante.estilo"
+                                    />
+                                </div>
+                            </div>
+                        </p-accordionTab>
+
+                        <p-accordionTab header="Actividades Academicas">
+                            <div class="flex flex-column">
+                                <div
+                                    *ngFor="let academica of academicas"
+                                    class="flex p-1"
+                                >
+                                    <p-checkbox
+                                        [(ngModel)]="academica.mostrar"
+                                        [label]="academica.name"
+                                        name="group"
+                                        [binary]="true"
+                                        [styleClass]="academica.estilo"
+                                    />
+                                </div>
+                            </div>
+                        </p-accordionTab>
+                        <p-accordionTab header="Areas Curriculares">
+                            <div class="flex flex-column">
+                                <div
+                                    *ngFor="let curricular of curricula"
+                                    class="flex p-1"
+                                >
+                                    <p-checkbox
+                                        [(ngModel)]="curricular.mostrar"
+                                        [label]="curricular.cCursoNombre"
+                                        name="group"
+                                        [binary]="true"
+                                        [styleClass]="curricular.estilo"
+                                    />
+                                </div>
+                            </div>
+                        </p-accordionTab>
+                    </p-accordion>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-9">
+        <div class="card m-2">
+            <div class="grid">
+                <div class="col-12">
+                    <full-calendar [options]="calendarOptions">
+                        <ng-template #eventContent let-arg>
+                            <div class="fc-event-time">{{ arg.timeText }}</div>
+                            <div class="fc-event-title">
+                                {{ arg.event.title }}
+                            </div>
+                        </ng-template>
+                    </full-calendar>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -55,6 +55,11 @@ const docente = [
                 icon: 'pi pi-fw pi-folder',
                 routerLink: ['/aula-virtual/banco-preguntas'],
             },
+            {
+                label: 'Calendario',
+                icon: 'pi pi-fw pi-calendar-clock',
+                routerLink: ['/docente/calendario'],
+            },
         ],
     },
 ]

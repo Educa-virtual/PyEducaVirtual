@@ -137,7 +137,11 @@ export class RubricasComponent implements OnInit, OnDestroy {
             },
         })
         ref.onClose.pipe(takeUntil(this._unsubscribe$)).subscribe(() => {
-            this.obtenerRubricas()
+            if (this.mode === 'SELECTION') {
+                this.rubricaSelectedChange.emit(true)
+            } else {
+                this.obtenerRubricas()
+            }
         })
     }
 

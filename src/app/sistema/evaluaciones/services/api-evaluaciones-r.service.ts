@@ -8,21 +8,11 @@ import { mapData } from '../sub-evaluaciones/banco-preguntas/models/pregunta-dat
     providedIn: 'root',
 })
 export class ApiEvaluacionesRService {
-    //MOVI AQUI
-    // ereVerEvaluacion(iEvaluacionId: number) {
-    //     throw new Error('Method not implemented.')
-    // }
     private baseUrl = environment.backendApi
     private baseUrlBackend = environment.backend
     private http = inject(HttpClient)
     constructor() {}
 
-    // obtenerEvaluacion(params) {
-    //     return this.http.get(
-    //         `${this.baseUrl}/ere/Evaluaciones/obtenerEvaluaciones`,
-    //         { params }
-    //     )
-    // }
     obtenerEvaluacion(params) {
         return this.http
             .get(`${this.baseUrl}/ere/Evaluaciones/ereObtenerEvaluacion`, {
@@ -86,7 +76,7 @@ export class ApiEvaluacionesRService {
             data
         )
     }
-    //!Eliminar Cursos
+    //Eliminar Cursos
     eliminarCursos(data: {
         iEvaluacionId: number
         selectedCursos: { iCursoId: number }[]
@@ -108,13 +98,6 @@ export class ApiEvaluacionesRService {
 
         return this.http.put(this.baseUrl, body)
     }
-    //Evaluacion de Copia
-    // obtenerEvaluacionesCopia(): Observable<any> {
-    //     console.log('Ejecutando obtenerEvaluaciones', this.baseUrl)
-    //     return this.http.get(
-    //         `${this.baseUrl}/ere/Evaluaciones/obtenerEvaluacionCopia2`
-    //     )
-    // }
     obtenerEvaluacionesCopia(params) {
         return this.http.get(
             `${this.baseUrl}/ere/Evaluaciones/obtenerEvaluacionCopia2`,
@@ -202,7 +185,38 @@ export class ApiEvaluacionesRService {
             { iEvaluacionIdOriginal: iEvaluacionId }
         )
     }
+    //!MatrizCompetencias
+    obtenerMatrizCompetencias(params) {
+        return this.http.get(
+            `${this.baseUrl}/ere/Evaluaciones/obtenerMatrizCompetencias`,
+            { params }
+        )
+    }
+    //!Matriz Capacidades
+    obtenerMatrizCapacidades(params) {
+        return this.http.get(
+            `${this.baseUrl}/ere/Evaluaciones/obtenerMatrizCapacidades`,
+            { params }
+        )
+    }
+    //!Matriz Desempeno
+    insertarMatrizDesempeno(datapayload: any) {
+        return this.http.post(
+            `${this.baseUrl}/ere/Evaluaciones/insertarMatrizDesempeno`,
+            datapayload
+        )
+    }
+    // insertarMatrizDesempeno(data: any) {
+    //     return this.http.post(
+    //         `${this.baseUrl}/ere/Evaluaciones/insertarMatrizDesempeno`,
+    //         data
+    //     )
+    // }
+    // guardarEvaluacion(data: any) {
+    //     return this.http.post(`${this.baseUrl}/ere/Evaluaciones/guardar`, data)
+    // }
 
+    //Banco de Preguntas ->
     generarWordByPreguntasIds(baseParams) {
         const url = `${this.baseUrlBackend}/generarWordBancoPreguntasSeleccionadas`
         const params = new URLSearchParams({ ...baseParams })

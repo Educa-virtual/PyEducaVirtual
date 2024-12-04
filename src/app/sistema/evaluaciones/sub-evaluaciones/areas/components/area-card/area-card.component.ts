@@ -15,4 +15,13 @@ import { TooltipModule } from 'primeng/tooltip'
 })
 export class AreaCardComponent {
     @Input() area: IArea
+    @Input() _iEvaluacionId: string | null = null // Usamos _iEvaluacionId como input
+    @Input() _nombreEvaluacion: string | null = null // Usamos _nombreEvaluacion como input
+    ngOnInit(): void {
+        // Verifica si el parámetro llega correctamente
+        console.log(
+            'A ver si llega a AreaCard el iEvaluacionId:',
+            this._iEvaluacionId
+        )
+    }
 }

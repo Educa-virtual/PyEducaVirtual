@@ -121,30 +121,6 @@ export class TabResultadosComponent implements OnInit {
             text_header: 'left',
             text: 'left',
         },
-        // {
-        //     type: 'text',
-        //     width: '10rem',
-        //     field: '',
-        //     header: 'Nt. tarea',
-        //     text_header: 'left',
-        //     text: 'left',
-        // },
-        // {
-        //     type: 'text',
-        //     width: '10rem',
-        //     field: '',
-        //     header: 'Nt. Evaluación',
-        //     text_header: 'left',
-        //     text: 'left',
-        // },
-        // {
-        //     type: 'text',
-        //     width: '10rem',
-        //     field: '',
-        //     header: 'Nt. Foro',
-        //     text_header: 'left',
-        //     text: 'left',
-        // },
         {
             type: 'text',
             width: '10rem',
@@ -153,31 +129,6 @@ export class TabResultadosComponent implements OnInit {
             text_header: 'left',
             text: 'left',
         },
-        // {
-        //     type: 'text',
-        //     width: '10rem',
-        //     field: '',
-        //     header: 'Nt. tarea',
-        //     text_header: 'left',
-        //     text: 'left',
-        // },
-        // {
-        //     type: 'text',
-        //     width: '10rem',
-        //     field: '',
-        //     header: 'Nt. Evaluación',
-        //     text_header: 'left',
-        //     text: 'left',
-        // },
-        // {
-        //     type: 'text',
-        //     width: '10rem',
-        //     field: '',
-        //     header: 'Nt. Foro',
-        //     text_header: 'left',
-        //     text: 'left',
-        // },
-
         {
             type: 'text',
             width: '10rem',
@@ -218,13 +169,6 @@ export class TabResultadosComponent implements OnInit {
             type: 'item',
             class: 'p-button-rounded p-button-warning p-button-text',
         },
-        // {
-        //     labelTooltip: 'Editar',
-        //     icon: 'pi pi-pencil',
-        //     accion: 'editar',
-        //     type: 'item',
-        //     class: 'p-button-rounded p-button-warning p-button-text',
-        // },
     ]
     // Inicializamos
     ngOnInit() {

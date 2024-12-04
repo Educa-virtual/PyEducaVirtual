@@ -131,7 +131,13 @@ export class ApiAulaService {
             data
         )
     }
-    // fin de foro
+    guardarCalificacionEstudiante(data) {
+        return this._http.post(
+            `${this.baseUrlApi}/aula-virtual/Resultado/guardarCalifEstudiante`,
+            data
+        )
+    }
+    // fin de foro guardarCalifEstudiante
     eliminarActividad(data) {
         return this._http.delete(
             `${this.baseUrlApi}/aula-virtual/contenidos/actividad/eliminarActividad`,

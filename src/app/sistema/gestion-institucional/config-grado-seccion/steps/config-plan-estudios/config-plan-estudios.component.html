@@ -6,4 +6,196 @@
     <div class="card">
         <p-steps [model]="items" [readonly]="false"></p-steps>
     </div>
+    @if (visible) {
+        <div class="card">
+            <app-table-primeng
+                [columnas]="columns"
+                [showCaption]="true"
+                [data]="planes"
+                (accionBtnItem)="accionBtnItemTable($event)"
+                [showPaginator]="true"
+                [(selectedRowData)]="selectedItems"
+                [actions]="actions"
+            >
+                <!-- <ng-container slot="caption-content"> </ng-container> -->
+            </app-table-primeng>
+            <ng-container slot="caption-content"> </ng-container>
+        </div>
+
+        <form [formGroup]="formNivelGrado">
+            <div class="grid p-fluid">
+                <div class="field col-12 md:col-3">
+                    <span class="p-float-label">
+                        <input
+                            pInputText
+                            id="cGradoNombre"
+                            formControlName="cGradoNombre"
+                            aria-describedby="cGradoNombre-help"
+                        />
+                        <label for="cGradoNombre">Grado</label>
+                    </span>
+                </div>
+                <div class="field col-12 md:col-3">
+                    <span class="p-float-label">
+                        <input
+                            pInputText
+                            id="cCicloNombre"
+                            formControlName="cCicloNombre"
+                            aria-describedby="cCicloNombre-help"
+                        />
+                        <label for="cCicloNombre">Ciclo</label>
+                    </span>
+                </div>
+
+                <div class="field col-12 md:col-3">
+                    <span class="p-float-label">
+                        <input
+                            pInputText
+                            id="cNivelNombre"
+                            formControlName="cNivelNombre"
+                            aria-describedby="cNivelNombre-help"
+                        />
+                        <label for="cNivelNombre">Modalidad regular :</label>
+                    </span>
+                </div>
+                <div class="field col-12 md:col-3">
+                    <span class="p-float-label">
+                        <input
+                            pInputText
+                            id="cNivelTipoNombre"
+                            formControlName="cNivelTipoNombre"
+                            aria-describedby="cNivelTipoNombre-help"
+                        />
+                        <label for="cNivelTipoNombre">Nivel modular :</label>
+                    </span>
+                </div>
+            </div>
+        </form>
+    }
+    <div class="card">
+        <p-table [value]="groupedData" [responsiveLayout]="'scroll'">
+            <!-- Cabecera personalizada -->
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Asignatura</th>
+                    <th>Tipo de Nivel</th>
+                    <th *ngFor="let grado of dynamicColumns">{{ grado }}</th>
+                </tr>
+            </ng-template>
+
+            <!-- Filas dinámicas -->
+            <ng-template pTemplate="body" let-rowData>
+                <tr>
+                    <td>{{ rowData.cCursoNombre }}</td>
+                    <td>{{ rowData.cNivelTipoNombre }}</td>
+
+                    <td *ngFor="let grado of dynamicColumns">
+                        {{ rowData.grades[grado] || '-' }}
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+
+    <p-dialog
+        header="{{ caption }}"
+        [(visible)]="visible"
+        [style]="{ width: '56rem' }"
+        [modal]="true"
+    >
+        <form [formGroup]="form">
+            <div class="grid p-fluid mt-3">
+                <div class="field col-12 md:col-2">
+                    <span class="p-float-label">
+                        <input
+                            type="hidden"
+                            formControlName="iPlanes"
+                            aria-describedby="iConfigId-help"
+                        />
+                        <input
+                            pInputText
+                            formControlName="cYAcadNombre"
+                            readOnly="false"
+                            aria-describedby="cYAcadNombre-help"
+                        />
+
+                        <label for="cYAcadNombre">Año escolar:</label>
+                    </span>
+                </div>
+                <div class="field col-12 md:col-10">
+                    <span class="p-float-label">
+                        <input
+                            pInputText
+                            formControlName="cPlanes"
+                            readOnly="false"
+                            aria-describedby="cPlanes-help"
+                        />
+                        <label for="cPlanes">Descripcion de planes</label>
+                    </span>
+                </div>
+
+                <div class="field col-12 md:col-2">
+                    <span>
+                        @if (!enlace || enlace.trim() === '') {
+                            <p>No existe archivo adjunto</p>
+                        } @else {
+                            <p>Existe Archivo</p>
+                            <a
+                                [href]="enlace"
+                                download="archivo.pdf"
+                                class="custom-download-link"
+                                target="_blank"
+                            >
+                                <i class="pi pi-download"></i> Descargar Archivo
+                            </a>
+                        }
+                    </span>
+                </div>
+                <div class="field col-12 md:col-10">
+                    <span class="p-float-label">
+                        <input
+                            pInputText
+                            formControlName="cObsPlanes"
+                            readOnly="false"
+                            aria-describedby="cObsPlanes-help"
+                        />
+
+                        <label for="cObsPlanes">Observaciones</label>
+                    </span>
+                </div>
+
+                <div class="field col-12 md:col-5">
+                    <app-types-files-upload-primeng
+                        [nameFile]="'configuracion-iiee'"
+                        [nameOption]="'configuracion-iiee'"
+                        [typesFiles]="typesFiles"
+                        (actionTypesFileUpload)="accionBtn($event)"
+                        [filesUrl]="filesUrl"
+                    >
+                    </app-types-files-upload-primeng>
+                </div>
+                <div class="field col-12 md:col-7">
+                    <span>
+                        <p>
+                            <strong
+                                >Consideraciones al adjuntar archivos</strong
+                            >
+                        </p>
+                        <li>
+                            Solo se permite las extensiones : JPG, JPEG, PNG,
+                            PDF
+                        </li>
+                        <li>El tamaño maximo permitido es de 10 MB</li>
+                        <li>Puede agregar solo un archivos</li>
+                    </span>
+                </div>
+            </div>
+            <p-button
+                label="Guardar"
+                [disabled]="form.invalid"
+                (onClick)="accionBtnItem('guardar')"
+                styleClass="p-button-danger"
+            /><p-toast />
+        </form>
+    </p-dialog>
 </app-container-page>

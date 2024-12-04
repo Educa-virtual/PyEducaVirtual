@@ -19,9 +19,6 @@ import { PrimengModule } from '@/app/primeng.module'
     styleUrl: './evaluacion-estudiantes.component.scss',
 })
 export class EvaluacionEstudiantesComponent implements OnChanges {
-    siguienteEvaluacion() {
-        throw new Error('Method not implemented.')
-    }
     @Input() evaluacion
 
     iPreguntaId: number = 0
@@ -78,5 +75,17 @@ export class EvaluacionEstudiantesComponent implements OnChanges {
         alert('Evaluación finalizada. ¡Gracias por participar!')
         // Cerrar el modal
         this.display = false
+    }
+    siguienteEvaluacion(): void {
+        // Verificar si no estamos en la última pregunta
+        if (
+            this.evaluacion?.preguntas &&
+            this.iPreguntaId < this.evaluacion.preguntas.length
+        ) {
+            this.iPreguntaId++ // Avanzar a la siguiente pregunta
+            this.itemPreguntas = this.evaluacion.preguntas[this.iPreguntaId - 1] // Actualizar la pregunta actual
+        } else {
+            console.warn('No hay más preguntas disponibles.')
+        }
     }
 }

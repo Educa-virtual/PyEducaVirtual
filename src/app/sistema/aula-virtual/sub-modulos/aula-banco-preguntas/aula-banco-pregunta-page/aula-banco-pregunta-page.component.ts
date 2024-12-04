@@ -7,6 +7,8 @@ import { Subject, takeUntil } from 'rxjs'
 import { GeneralService } from '@/app/servicios/general.service'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { ToolbarPrimengComponent } from '../../../../../shared/toolbar-primeng/toolbar-primeng.component'
+import { EvaluacionButtonAgregarPreguntasComponent } from '../../actividades/actividad-evaluacion/evaluacion-button-agregar-preguntas/evaluacion-button-agregar-preguntas.component'
+import { AulaBancoPreguntasService } from '../aula-banco-preguntas/aula-banco-.preguntas.service'
 
 @Component({
     selector: 'app-aula-banco-pregunta-page',
@@ -16,9 +18,11 @@ import { ToolbarPrimengComponent } from '../../../../../shared/toolbar-primeng/t
         CommonModule,
         AulaBancoPreguntasComponent,
         ToolbarPrimengComponent,
+        EvaluacionButtonAgregarPreguntasComponent,
     ],
     templateUrl: './aula-banco-pregunta-page.component.html',
     styleUrl: './aula-banco-pregunta-page.component.scss',
+    providers: [AulaBancoPreguntasService],
 })
 export class AulaBancoPreguntaPageComponent implements OnInit {
     @ViewChild(AulaBancoPreguntasComponent)
@@ -45,6 +49,7 @@ export class AulaBancoPreguntaPageComponent implements OnInit {
     private unsubscribe$ = new Subject<boolean>()
     private _generalService = inject(GeneralService)
     private _store = inject(LocalStoreService)
+    menuAgregacionPreguntas: any
 
     ngOnInit() {
         const year = this._store.getItem('dremoYear')

@@ -1,5 +1,5 @@
 export interface ICurso {
-    iCursoId: string
+    iCursoId: string | number
     cCursoNombre: string
     descripcion?: string
     seccion?: string
@@ -7,7 +7,7 @@ export interface ICurso {
     cCicloRomanos?: string
     cNivelNombreCursos?: string
     iEstudiantes?: number
-    iSilaboId: string
+    iSilaboId?: string
     nombrecompleto?: string
     cNivelTipoNombre?: string
     cSeccion?: string

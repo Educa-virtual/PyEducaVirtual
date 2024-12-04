@@ -23,6 +23,8 @@ import { PrimengModule } from '@/app/primeng.module'
 import { EditorOnlyViewDirective } from '@/app/shared/directives/editor-only-view.directive'
 import { RecursosListaComponent } from '@/app/shared/components/recursos-lista/recursos-lista.component'
 import { EmptySectionComponent } from '@/app/shared/components/empty-section/empty-section.component'
+import { ConstantesService } from '@/app/servicios/constantes.service'
+import { EvaluacionEstudiantesComponent } from '../evaluacion-estudiantes/evaluacion-estudiantes.component'
 
 @Component({
     selector: 'app-evaluacion-room',
@@ -38,6 +40,7 @@ import { EmptySectionComponent } from '@/app/shared/components/empty-section/emp
         EditorOnlyViewDirective,
         RecursosListaComponent,
         EmptySectionComponent,
+        EvaluacionEstudiantesComponent,
     ],
     templateUrl: './evaluacion-room.component.html',
     styleUrl: './evaluacion-room.component.scss',
@@ -60,14 +63,16 @@ export class EvaluacionRoomComponent implements OnInit, OnDestroy {
     // injeccion de dependencias
     private _route = inject(ActivatedRoute)
     private _aulaService = inject(ApiAulaService)
+    private _ConstantesService = inject(ConstantesService)
 
     private unsbscribe$ = new Subject<boolean>()
-    public iPerfilId = 1
+    public iPerfilId: number
     public evaluacion
     public cEvaluacionInstrucciones
 
     ngOnInit() {
         this.obtenerEvaluacion()
+        this.iPerfilId = Number(this._ConstantesService.iPerfilId)
     }
 
     // obtiene la evalución

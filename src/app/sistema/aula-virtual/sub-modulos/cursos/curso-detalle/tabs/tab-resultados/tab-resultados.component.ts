@@ -211,7 +211,7 @@ export class TabResultadosComponent implements OnInit {
             estudianteS: this.estudianteSeleccionado,
             estudianteF: resultadosEstudiantesf,
         })
-        this._aulaService.guardarCalificacionEstudiante(datos).subscribe({
+        this._aulaService.guardarCalifEstudiante(datos).subscribe({
             next: (resp) => {
                 this.messages = [
                     {

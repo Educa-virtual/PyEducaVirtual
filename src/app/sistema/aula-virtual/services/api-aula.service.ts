@@ -77,6 +77,12 @@ export class ApiAulaService {
             data
         )
     }
+    guardarCalifEstudiante(data) {
+        return this._http.post(
+            `${this.baseUrlApi}/aula-virtual/Resultado/guardarCalfcEstudiante`,
+            data
+        )
+    }
     obtenerRespuestaForo(params: { iActTipoId; ixActivadadId }) {
         return this._http
             .get<any>(

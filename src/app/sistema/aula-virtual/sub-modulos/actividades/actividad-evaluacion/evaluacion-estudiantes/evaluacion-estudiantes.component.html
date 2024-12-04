@@ -1,11 +1,9 @@
 <app-toolbar-primeng
-    [title]="
-        'Evaluación Formativa: ' +
-        (evaluacion?.cEvaluacionTitulo ? evaluacion?.cEvaluacionTitulo : '')
-    "
+    [title]="'Evaluación Formativa: ' + (evaluacion?.cEvaluacionTitulo || '')"
 ></app-toolbar-primeng>
 <div class="card">
-    @if (iPreguntaId === 0) {
+    <div *ngIf="iPreguntaId === 0">
+        <!-- Contenido inicial de la evaluación -->
         <div class="grid">
             <div class="col-12 md:col-5">
                 <span class="font-bold text-xl flex gap-2 mt-4">
@@ -21,7 +19,6 @@
                         evaluacion?.dtEvaluacionInicio
                             | date: "EEEE, d 'de' MMMM 'de' yyyy"
                     }}
-
                     {{ evaluacion?.dtEvaluacionInicio | date: 'h:mm a' }}
                 </p>
                 <span class="font-bold text-xl flex gap-2 mt-8">
@@ -37,7 +34,6 @@
                         evaluacion?.dtEvaluacionFin
                             | date: "EEEE, d 'de' MMMM 'de' yyyy"
                     }}
-
                     {{ evaluacion?.dtEvaluacionFin | date: 'h:mm a' }}
                 </p>
             </div>
@@ -46,14 +42,14 @@
                     <div class="col-6">
                         <img
                             src="assets/images/icons/tiempo.gif"
-                            alt="logo"
+                            alt="Tiempo"
                             width="100%"
                         />
                     </div>
                     <div class="col-6 mt-4">
-                        Duración:
+                        <span>Duración:</span>
                         <h1>
-                            60&nbsp;<span
+                            {{ evaluacion?.iTiempo }} &nbsp;<span
                                 class="text-none"
                                 style="font-size: small"
                                 >minutos</span
@@ -62,15 +58,30 @@
                     </div>
                 </div>
                 <p class="text-center mt-0">
-                    Total preguntas: {{ evaluacion?.preguntas.length }}
+                    Total preguntas: {{ evaluacion?.preguntas?.length }}
                 </p>
             </div>
-            <div class="col-12 md:col-3 mt-2" align="center">
+
+            <div
+                *ngIf="evaluacion?.bEstadoEvaluacion === '1'"
+                class="col-12 md:col-3 mt-2"
+                align="center"
+            >
                 <p class="font-bold">Evaluación empieza en:</p>
-                <app-time
-                    [inicio]="evaluacion?.dtEvaluacionInicio"
-                    [fin]="evaluacion?.dtEvaluacionFin"
-                ></app-time>
+
+                <!-- <div class="col-12 md:col-3 mt-2" align="center">
+                    <p class="font-bold">Evaluación empieza en:</p>
+                    <h1 class="text-primary">{{ getFormattedTime() }}</h1>
+                </div> -->
+                <!-- Temporizador deshabilitado -->
+            </div>
+            <div
+                *ngIf="evaluacion?.bEstadoEvaluacion === '0'"
+                class="col-12 md:col-3 mt-2"
+                align="center"
+            >
+                <h2 class="font-bold text-red-500">Evaluación finalizada</h2>
+                <!-- Temporizador deshabilitado -->
             </div>
             <div class="col-12">
                 <p class="font-bold">Instrucciones</p>
@@ -78,57 +89,142 @@
                     <div [innerHTML]="evaluacion?.cEvaluacionDescripcion"></div>
                 </div>
             </div>
-            <div class="col-12" align="right">
+            <div
+                class="col-12"
+                align="right"
+                [hidden]="evaluacion?.bEstadoEvaluacion === '0'"
+            >
                 <p-button
                     label="Iniciar Evaluación"
                     severity="primary"
                     (onClick)="iniciarEvaluacion()"
-                />
+                ></p-button>
             </div>
         </div>
-    }
-    @if (itemPreguntas['iPreguntaId'] > 0) {
+    </div>
+    <div
+        *ngIf="iPreguntaId > 0 && evaluacion?.preguntas?.length >= iPreguntaId"
+    >
+        <!-- Contenido de las preguntas -->
         <div class="grid">
+            <div class="col-12">
+                <p class="font-bold">Pregunta {{ iPreguntaId }}.-</p>
+            </div>
             <div class="col-12">
                 <div [innerHTML]="itemPreguntas['cPregunta']"></div>
             </div>
-
-            @if (itemPreguntas['alternativas'].length > 0) {
-                @for (item of itemPreguntas['alternativas']; track item.id) {
-                    <div class="col-12 ml-2">
-                        <div class="flex">
-                            <p-checkbox />&nbsp;&nbsp;
-                            <div
-                                [innerHTML]="item['cAlternativaDescripcion']"
-                            ></div>
+            @switch (itemPreguntas['iTipoPregId']) {
+                @case (1) {
+                    <!--Unica Tropical-->
+                    <div
+                        class="col-12 px-2"
+                        *ngIf="itemPreguntas['alternativas']?.length > 0"
+                    >
+                        <div
+                            *ngFor="
+                                let alternativa of itemPreguntas[
+                                    'alternativas'
+                                ];
+                                let i = index
+                            "
+                        >
+                            <div class="flex mt-1">
+                                <p-radioButton
+                                    [inputId]="'alternativa'"
+                                    name="alternativa"
+                                    [value]="alternativa['cBancoAltLetra']"
+                                    [(ngModel)]="itemPreguntas['cRptaRadio']"
+                                    (onClick)="
+                                        enviarRpta('unica', itemPreguntas)
+                                    "
+                                />
+                                &nbsp;&nbsp;
+                                <div
+                                    [innerHTML]="
+                                        alternativa['cAlternativaDescripcion']
+                                    "
+                                ></div>
+                            </div>
                         </div>
                     </div>
                 }
+                @case (2) {
+                    <!--Opcion Múltiple-->
+                    <div
+                        class="col-12 px-2"
+                        *ngIf="itemPreguntas['alternativas']?.length > 0"
+                    >
+                        <div
+                            *ngFor="
+                                let alternativa of itemPreguntas['alternativas']
+                            "
+                        >
+                            <div class="flex mt-1">
+                                <p-checkbox
+                                    [(ngModel)]="alternativa.cRptaCheck"
+                                    [value]="alternativa['cBancoAltLetra']"
+                                    (onChange)="
+                                        enviarRpta('multiple', itemPreguntas)
+                                    "
+                                />
+                                &nbsp;&nbsp;
+                                <div
+                                    [innerHTML]="
+                                        alternativa['cAlternativaDescripcion']
+                                    "
+                                ></div>
+                            </div>
+                        </div>
+                    </div>
+                }
+                @case (3) {
+                    <!--Opcion Libre-->
+                    <div class="col-12 px-2">
+                        <textarea
+                            class="w-full"
+                            rows="4"
+                            placeholder="Ingrese su respuesta"
+                            pInputText
+                            [(ngModel)]="itemPreguntas['cRptaTexto']"
+                        ></textarea>
+                    </div>
+                }
             }
-            <div class="col-12" align="right">
+
+            <div class="col-6 mt-2" align="left">
+                <p-button
+                    label="Atrás"
+                    severity="secondary"
+                    *ngIf="iPreguntaId > 1"
+                    (onClick)="regresarPregunta()"
+                ></p-button>
+            </div>
+            <div class="col-6 mt-2" align="right">
                 <p-button
                     label="Siguiente"
                     severity="primary"
-                    (onClick)="iniciarEvaluacion()"
-                />
-            </div>
-            <div class="col-12" align="right">
+                    *ngIf="evaluacion?.preguntas?.length > iPreguntaId"
+                    (onClick)="siguienteEvaluacion()"
+                ></p-button>
                 <p-button
-                    label="atras"
-                    severity="secondary"
-                    (onClick)="regresarPregunta()"
-                />
+                    label="Finalizar Evaluación"
+                    severity="primary"
+                    *ngIf="evaluacion?.preguntas?.length === iPreguntaId"
+                    (onClick)="finalizarEvaluacion()"
+                ></p-button>
             </div>
         </div>
-    }
-
-    @if (itemPreguntas['iPreguntaId'] > 2) {
-        <div class="col-12 text-center">
-            <p-button
-                label="Finalizar Evaluación"
-                severity="primary"
-                (onClick)="finalizarEvaluacion()"
-            />
-        </div>
-    }
+    </div>
 </div>
+<p-toast />
+
+<p-confirmDialog>
+    <ng-template pTemplate="message" let-message>
+        <div
+            class="flex flex-column align-items-center w-full gap-3 border-bottom-1 surface-border"
+        >
+            <i class="pi pi-exclamation-circle text-6xl text-primary-500"></i>
+            <p>{{ message.message }}</p>
+        </div>
+    </ng-template>
+</p-confirmDialog>

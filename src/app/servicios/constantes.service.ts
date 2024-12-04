@@ -672,7 +672,7 @@ export class ConstantesService {
             case 1:
                 return aula_virtual
             case 2:
-                return docente
+                return notas_evaluaciones
             case 3:
                 return notas_evaluaciones
             case 8:

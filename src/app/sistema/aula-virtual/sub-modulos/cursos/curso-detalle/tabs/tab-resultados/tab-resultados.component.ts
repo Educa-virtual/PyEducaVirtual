@@ -6,6 +6,7 @@ import {
     IColumn,
     IActionTable,
 } from '@/app/shared/table-primeng/table-primeng.component'
+import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import {
     matAccessTime,
     matCalendarMonth,
@@ -28,8 +29,6 @@ import { GeneralService } from '@/app/servicios/general.service'
 import { TabViewModule } from 'primeng/tabview'
 import { IconComponent } from '@/app/shared/icon/icon.component'
 import { provideIcons } from '@ng-icons/core'
-// import { FormBuilder, FormGroup, Validators } from '@angular/forms'
-// import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { OrderListModule } from 'primeng/orderlist'
 import { PrimengModule } from '@/app/primeng.module'
@@ -37,6 +36,7 @@ import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.ser
 import { Message } from 'primeng/api'
 import { Subject, takeUntil } from 'rxjs'
 import { RemoveHTMLPipe } from '@/app/shared/pipes/remove-html.pipe'
+import { CommonInputComponent } from '@/app/shared/components/common-input/common-input.component'
 @Component({
     selector: 'app-tab-resultados',
     standalone: true,
@@ -47,6 +47,7 @@ import { RemoveHTMLPipe } from '@/app/shared/pipes/remove-html.pipe'
         RemoveHTMLPipe,
         TabViewModule,
         TableModule,
+        CommonInputComponent,
         IconComponent,
         DataViewModule,
         OrderListModule,
@@ -77,11 +78,17 @@ export class TabResultadosComponent implements OnInit {
     @Input() iActTopId: tipoActividadesKeys
 
     private GeneralService = inject(GeneralService)
-    // private _formBuilder = inject(FormBuilder)
+    private _formBuilder = inject(FormBuilder)
     private _aulaService = inject(ApiAulaService)
     // private ref = inject(DynamicDialogRef)
     private _constantesService = inject(ConstantesService)
     estudiantes: any[] = []
+    estudianteEv: any[] = []
+    calificacion: any[] = []
+    //------
+    estudianteSeleccionado: any
+    resultadosEstudiantes: any
+    //-------
     iEstudianteId: number
     estudianteSelect = null
     public comentariosSelect
@@ -89,7 +96,13 @@ export class TabResultadosComponent implements OnInit {
     private unsbscribe$ = new Subject<boolean>()
 
     idcurso: number
+    mostrarDiv: boolean = false // Variable para controlar la visibilidad
 
+    califcnFinal: any[] = []
+    public califcFinal: FormGroup = this._formBuilder.group({
+        cDetMatrConclusionDesc1: ['', [Validators.required]],
+        iEscalaCalifIdPeriodo1: [],
+    })
     //Campos de la tabla para mostrar notas
     public columnasTabla: IColumn[] = [
         {
@@ -205,18 +218,19 @@ export class TabResultadosComponent implements OnInit {
             type: 'item',
             class: 'p-button-rounded p-button-warning p-button-text',
         },
-        {
-            labelTooltip: 'Editar',
-            icon: 'pi pi-pencil',
-            accion: 'editar',
-            type: 'item',
-            class: 'p-button-rounded p-button-warning p-button-text',
-        },
+        // {
+        //     labelTooltip: 'Editar',
+        //     icon: 'pi pi-pencil',
+        //     accion: 'editar',
+        //     type: 'item',
+        //     class: 'p-button-rounded p-button-warning p-button-text',
+        // },
     ]
     // Inicializamos
     ngOnInit() {
         this.verperfiles()
         this.getEstudiantesMatricula()
+        this.mostrarCalificacion()
     }
     // ver que id nos llegan(borrar):
     verperfiles() {
@@ -224,19 +238,10 @@ export class TabResultadosComponent implements OnInit {
         this.idcurso = this._constantesService.iYAcadId
         console.log('ver datos', this.idcurso)
     }
-    getInformation(params) {
-        this.GeneralService.getGralPrefix(params).subscribe({
-            next: (response) => {
-                this.estudiantes = response.data
-                console.log('lista de estudiante', this.estudiantes)
-            },
-            complete: () => {},
-            error: (error) => {
-                console.log(error)
-            },
-        })
-    }
     obtenerComnt(estudiantes) {
+        this.mostrarDiv = !this.mostrarDiv // Cambia el estado de visibilida
+        this.estudianteEv = estudiantes.nombrecompleto
+        this.estudianteSeleccionado = estudiantes
         this._aulaService
             .obtenerResultados({
                 iEstudianteId: estudiantes.iEstudianteId,
@@ -256,7 +261,33 @@ export class TabResultadosComponent implements OnInit {
                 },
             })
     }
-
+    guardarCalifcFinal() {
+        const resultadosEstudiantesf = this.califcFinal.value
+        const datos = {
+            estudianteS: this.estudianteSeleccionado,
+            estudianteF: resultadosEstudiantesf,
+        }
+        console.log('Enviar datos a matriz detalle', datos)
+    }
+    mostrarCalificacion() {
+        const userId = 1
+        this._aulaService.obtenerCalificacion(userId).subscribe((Data) => {
+            this.calificacion = Data['data']
+            //console.log('Mostrar escala',this.calificacion)
+        })
+    }
+    getInformation(params) {
+        this.GeneralService.getGralPrefix(params).subscribe({
+            next: (response) => {
+                this.estudiantes = response.data
+                console.log('lista de estudiante', this.estudiantes)
+            },
+            complete: () => {},
+            error: (error) => {
+                console.log(error)
+            },
+        })
+    }
     getEstudiantesMatricula() {
         const params = {
             petition: 'post',

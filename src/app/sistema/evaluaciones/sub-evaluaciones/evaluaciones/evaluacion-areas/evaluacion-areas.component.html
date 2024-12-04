@@ -34,16 +34,26 @@
                         <span class="checkmark"></span>
                         {{ curso.cCursoNombre }}
                     </label> -->
-                    <p-checkbox
-                        type="checkbox"
+                    <!-- <p-checkbox
                         [(ngModel)]="curso.isSelected"
                         [binary]="true"
                         [disabled]="isDisabled"
-                        name="curso{{ curso.cCursoNombre }}"
                         inputId="curso{{ curso.cCursoNombre }}"
-                        (change)="onCursoSelect(curso)"
-                    ></p-checkbox>
+                        (onChange)="onCursoSelect(curso)"
+                    >
+                    </p-checkbox>
                     <label for="curso{{ curso.cCursoNombre }}">
+                        {{ curso.cCursoNombre }}
+                    </label> -->
+                    <p-checkbox
+                        [(ngModel)]="curso.isSelected"
+                        [binary]="true"
+                        [disabled]="isDisabled"
+                        [name]="'curso_' + curso.iCursoNivelGradId"
+                        inputId="'curso_' + curso.iCursoNivelGradId"
+                        (onChange)="onCursoSelect(curso)"
+                    ></p-checkbox>
+                    <label [for]="'curso_' + curso.iCursoNivelGradId">
                         {{ curso.cCursoNombre }}
                     </label>
                 </div>

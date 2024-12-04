@@ -211,23 +211,18 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
 
     //!Funcion de oncoruseSelect
     onCursoSelect(curso: any): void {
-        const iEvaluacionId = this.compartirIdEvaluacionService.iEvaluacionId
+        //const iEvaluacionId = this.compartirIdEvaluacionService.iEvaluacionId
         const iEvaluacionId_ = this._iEvaluacionId
-        console.log(
-            `Estado seleccionado para ${curso.cCursoNombre}: ${curso.isSelected}`
-        )
-
         if (curso.isSelected) {
             this.insertarCursos([curso], iEvaluacionId_)
         } else {
-            this.eliminarCursos([curso], iEvaluacionId)
+            this.eliminarCursos([curso], iEvaluacionId_)
         }
-        // Actualizar la base de datos con los cursos seleccionados o deseleccionados
-        //this.actualizarCursosSeleccionados()
     }
     //! Función para insertar o eliminar cursos seleccionados
     actualizarCursosSeleccionados(): void {
         const iEvaluacionId = this.compartirIdEvaluacionService.iEvaluacionId // Obtener el iEvaluacionId
+
         // Filtra los cursos seleccionados y crea un array con `iCursoId` y `isSelected`
         this.selectedCursos = this.cursos.map((curso) => ({
             iCursoId: curso.iCursoId,
@@ -241,7 +236,6 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
         const cursosDeseleccionados = this.selectedCursos.filter(
             (curso) => !curso.isSelected
         )
-
         // Si hay cursos seleccionados, insertarlos en la base de datos
         if (cursosSeleccionados.length > 0) {
             this.insertarCursos(cursosSeleccionados, iEvaluacionId)

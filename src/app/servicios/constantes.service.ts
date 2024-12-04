@@ -67,17 +67,17 @@ const estudiante = [
             {
                 label: 'Calendario',
                 icon: 'pi pi-fw pi-book',
-                routerLink: ['/aula-virtual/areas-curriculares'],
+                routerLink: ['/aula-virtual/03'],
             },
             {
                 label: 'Solicitudes y Tramites',
                 icon: 'pi pi-fw pi-book',
-                routerLink: ['/aula-virtual/areas-curriculares'],
+                routerLink: ['/aula-virtual/02'],
             },
             {
                 label: 'Buzon de Sugerencias',
                 icon: 'pi pi-fw pi-book',
-                routerLink: ['/aula-virtual/areas-curriculares'],
+                routerLink: ['/aula-virtual/01'],
             },
             {
                 label: 'Enlaces de ayuda',
@@ -740,12 +740,12 @@ export class ConstantesService {
     nav = this.getMenu()
     getMenu() {
         if (!perfil) return first
-        // console.log('perfiles', perfil)
+        console.log('perfiles', perfil)
         switch (Number(perfil.iPerfilId)) {
             case 1:
                 return aula_virtual
             case 2:
-                return docente
+                return notas_evaluaciones
             case 3:
                 return notas_evaluaciones
             case 8:

@@ -183,7 +183,7 @@ export class TabResultadosComponent implements OnInit {
         console.log('ver datos', this.idcurso)
     }
     obtenerComnt(estudiantes) {
-        this.mostrarDiv = !this.mostrarDiv // Cambia el estado de visibilida
+        //this.mostrarDiv = !this.mostrarDiv // Cambia el estado de visibilida
         this.estudianteEv = estudiantes.nombrecompleto
         this.estudianteSeleccionado = estudiantes
         this._aulaService
@@ -205,13 +205,13 @@ export class TabResultadosComponent implements OnInit {
                 },
             })
     }
-    guardarCalifcFinal() {
+    guardarCalificacionFinal() {
         const resultadosEstudiantesf = this.califcFinal.value
         const datos = JSON.stringify({
-            estudianteS: this.estudianteSeleccionado,
-            estudianteF: resultadosEstudiantesf,
+            estudianteSeleccionado: this.estudianteSeleccionado,
+            respuestaCalificacionDocente: resultadosEstudiantesf,
         })
-        this._aulaService.guardarCalifEstudiante(datos).subscribe({
+        this._aulaService.guardarCalificacionEstudiante(datos).subscribe({
             next: (resp) => {
                 this.messages = [
                     {
@@ -220,7 +220,7 @@ export class TabResultadosComponent implements OnInit {
                     },
                 ]
                 this.comentariosSelect = resp
-                console.log('obtener comentarior', resp)
+                // console.log('obtener comentarior', resp)
             },
         })
         console.log('Enviar datos a matriz detalle', datos)

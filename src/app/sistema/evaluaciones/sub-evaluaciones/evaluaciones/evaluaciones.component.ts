@@ -344,9 +344,6 @@ export class EvaluacionesComponent implements OnInit {
                 _iEvaluacionIdtoBancoPreguntas
             ) // Aquí verificamos el valor de iEvaluacionId
 
-            // Navegar al routerLink especificado
-            //this.router.navigate(['/evaluaciones/areas'])
-            // Navegar al routerLink especificado con el parámetro iEvaluacionId
             this.router.navigate(['/evaluaciones/areas'], {
                 queryParams: {
                     iEvaluacionId: _iEvaluacionIdtoBancoPreguntas,
@@ -354,7 +351,34 @@ export class EvaluacionesComponent implements OnInit {
                 },
             })
         }
+        if (accion === 'DescargarMatriz') {
+            // const _iEvaluacionIdtoMatriz = item.iEvaluacionId
+            // alert(_iEvaluacionIdtoMatriz)
+            // //this.generarPdfMatrizbyEvaluacionId(_iEvaluacionIdtoMatriz)
+            // this._apiEre.generarPdfMatrizbyEvaluacionId(_iEvaluacionIdtoMatriz)
+
+            const _iEvaluacionIdtoMatriz = item.iEvaluacionId
+
+            this._apiEre
+                .generarPdfMatrizbyEvaluacionId(_iEvaluacionIdtoMatriz)
+                .subscribe(
+                    (response) => {
+                        if (response.status === 'success') {
+                            alert(response.message) // Mostrar el mensaje de Laravel
+                        } else {
+                            alert('Hubo un error: ' + response.message)
+                        }
+                    },
+                    (error) => {
+                        console.error(
+                            'Error al comunicarse con el backend:',
+                            error
+                        )
+                    }
+                )
+        }
     }
+
     // verEreEvaluacion(evaluacion) {
     //     //alert('iEvaluacionId' + evaluacion.iEvaluacionId)
     //     const refModal = this._dialogService.open(EvaluacionesFormComponent, {

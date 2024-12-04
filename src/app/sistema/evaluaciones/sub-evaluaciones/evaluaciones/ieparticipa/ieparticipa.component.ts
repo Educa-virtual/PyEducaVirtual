@@ -7,6 +7,8 @@ import {
     inject,
     OnInit,
     Input,
+    Output,
+    EventEmitter,
 } from '@angular/core'
 import { PickListModule } from 'primeng/picklist'
 import { ApiEvaluacionesRService } from '../../../services/api-evaluaciones-r.service'
@@ -53,6 +55,7 @@ interface EvaluacionCopia {
 })
 export class IeparticipaComponent implements OnInit {
     @Input() _iEvaluacionId: number //ID de la evaluacion Form
+    @Output() datosEmitIeParticipan = new EventEmitter<any>() // Output para enviar el dato al padre
     public cEvaluacionNombre: string | null = null //!Nombre del formulario Evaluacion
     public evaluacionFormGroup: any
 
@@ -69,6 +72,7 @@ export class IeparticipaComponent implements OnInit {
     private _apiEre = inject(ApiEvaluacionesRService)
     public sourceProducts: any[] = [] // IEs no participantes
     public targetProducts: any[] = [] // IEs participantes
+    public insParticipan: any[] = [] // InsParticipan
     private _MessageService = inject(MessageService) //!Agregando Mensaje
     nivelTipo: NivelTipo[] | undefined
     selectedNivelTipo: NivelTipo | undefined
@@ -195,6 +199,8 @@ export class IeparticipaComponent implements OnInit {
                                 (participa) => participa.iIieeId === ie.iIieeId
                             )
                     )
+                    // Actualizamos targetProducts
+                    const insParticipan = this.targetProducts
                     console.log(
                         'Instituciones participantes:',
                         this.targetProducts
@@ -203,6 +209,13 @@ export class IeparticipaComponent implements OnInit {
                         'Instituciones no participantes:',
                         this.sourceProducts
                     )
+                    // Emitimos los datos al padre después de actualizarlos
+                    this.datosEmitIeParticipan.emit(insParticipan)
+                    console.log(
+                        'Agarrar las IE que participan y enviar para Areas:',
+                        insParticipan
+                    ) // Emitir el dato automáticamente al padre
+
                     this.actualizarConteos()
                 },
                 error: (error) => console.error('Error al obtener IEs:', error),

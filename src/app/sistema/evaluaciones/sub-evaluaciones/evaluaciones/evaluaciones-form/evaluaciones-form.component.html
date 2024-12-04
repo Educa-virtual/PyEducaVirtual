@@ -219,6 +219,9 @@
                                             this._config.data.evaluacion
                                                 .iEvaluacionId
                                         "
+                                        (datosEmitIeParticipan)="
+                                            datosRecibidosIeParticipan($event)
+                                        "
                                     ></app-ieparticipa>
                                 </div>
                             </ng-template>
@@ -235,6 +238,9 @@
                                     [_iEvaluacionId]="
                                         this._config.data.evaluacion
                                             .iEvaluacionId
+                                    "
+                                    [datosRecIeParticipanToAreas]="
+                                        datosRecIeParticipan
                                     "
                                 ></app-evaluacion-areas>
                                 <div class="flex pt-4 justify-content-between">

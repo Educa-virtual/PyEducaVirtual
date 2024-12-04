@@ -49,6 +49,7 @@ export class AulaBancoPreguntaPageComponent implements OnInit {
     private unsubscribe$ = new Subject<boolean>()
     private _generalService = inject(GeneralService)
     private _store = inject(LocalStoreService)
+    menuAgregacionPreguntas: any
 
     ngOnInit() {
         const year = this._store.getItem('dremoYear')

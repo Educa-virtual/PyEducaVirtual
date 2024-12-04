@@ -78,7 +78,11 @@
                 <input
                     type="text"
                     pInputText
-                    placeholder="Resolución C.O. 2024-01202190112-1"
+                    [placeholder]="
+                        reglamento.length
+                            ? reglamento[0]['name']
+                            : 'Nombre de la resolución'
+                    "
                     disabled
                     class="w-full p-inputtext-sm opacity-100"
                     pInputText
@@ -88,6 +92,11 @@
                     pButton
                     icon="pi pi-eye"
                     class="p-button-info"
+                    (click)="
+                        openLink(
+                            reglamento.length ? reglamento[0]['path'] : null
+                        )
+                    "
                 >
                     &nbsp;
                 </button>
@@ -157,8 +166,59 @@
                                     </button>
                                 </p-inputGroup>
                             }
+                            @if (ficha.typePortafolio === 2) {
+                                <p-inputGroup class="mt-3">
+                                    <p-inputGroupAddon>
+                                        <i
+                                            class="pi pi-link"
+                                            style="color: #333437"
+                                        ></i>
+                                    </p-inputGroupAddon>
+                                    <input
+                                        type="text"
+                                        pInputText
+                                        [placeholder]="
+                                            ficha.name
+                                                ? ficha.name
+                                                : 'Cuadernos de Campo'
+                                        "
+                                        disabled
+                                        class="w-full p-inputtext-sm opacity-100"
+                                        pInputText
+                                    />
+                                    <button
+                                        pButton
+                                        pRipple
+                                        type="button"
+                                        severity="primary"
+                                        class="p-button-primary btn-file-image"
+                                    >
+                                        <i class="pi pi-upload"></i
+                                        ><input
+                                            type="file"
+                                            (change)="
+                                                onUploadChange(
+                                                    $event,
+                                                    'cuadernos-campo',
+                                                    item
+                                                )
+                                            "
+                                            accept=".pdf "
+                                        />
+                                    </button>
+                                    <button
+                                        type="button"
+                                        (click)="openLink(ficha.ruta)"
+                                        pButton
+                                        icon="pi pi-eye"
+                                        class="p-button-info"
+                                    >
+                                        &nbsp;
+                                    </button>
+                                </p-inputGroup>
+                            }
                         }
-                        @if (!item.cCuadernoUrl) {
+                        @if (!item.bFichas) {
                             <p-inputGroup>
                                 <p-inputGroupAddon>
                                     <i
@@ -196,7 +256,54 @@
                                 </button>
                                 <button
                                     type="button"
-                                    [disabled]="true"
+                                    disabled="true"
+                                    pButton
+                                    icon="pi pi-eye"
+                                    class="p-button-info"
+                                >
+                                    &nbsp;
+                                </button>
+                            </p-inputGroup>
+                        }
+                        @if (!item.bCuadernos) {
+                            <p-inputGroup class="mt-3">
+                                <p-inputGroupAddon>
+                                    <i
+                                        class="pi pi-link"
+                                        style="color: #333437"
+                                    ></i>
+                                </p-inputGroupAddon>
+                                <input
+                                    type="text"
+                                    pInputText
+                                    placeholder="Cuadernos de Campo"
+                                    disabled
+                                    class="w-full p-inputtext-sm opacity-100"
+                                    pInputText
+                                />
+                                <button
+                                    pButton
+                                    pRipple
+                                    type="button"
+                                    severity="primary"
+                                    class="p-button-primary btn-file-image"
+                                >
+                                    <i class="pi pi-upload"></i
+                                    ><input
+                                        type="file"
+                                        (change)="
+                                            onUploadChange(
+                                                $event,
+                                                'cuadernos-campo',
+                                                item
+                                            )
+                                        "
+                                        accept=".pdf "
+                                    />
+                                </button>
+                                <button
+                                    type="button"
+                                    disabled="true"
                                     pButton
                                     icon="pi pi-eye"
                                     class="p-button-info"
@@ -227,6 +334,7 @@
                                 pButton
                                 icon="pi pi-eye"
                                 class="p-button-info"
+                                (click)="obtenerRubricasxiCursoId(item)"
                             >
                                 &nbsp;
                             </button>
@@ -253,32 +361,7 @@
                                 pButton
                                 icon="pi pi-eye"
                                 class="p-button-info"
-                            >
-                                &nbsp;
-                            </button>
-                        </p-inputGroup>
-                    </div>
-                    <div class="col-12">
-                        <p-inputGroup>
-                            <p-inputGroupAddon>
-                                <i
-                                    class="pi pi-link"
-                                    style="color: #333437"
-                                ></i>
-                            </p-inputGroupAddon>
-                            <input
-                                type="text"
-                                pInputText
-                                placeholder="Cuaderno de Campo"
-                                disabled
-                                class="w-full p-inputtext-sm opacity-100"
-                                pInputText
-                            />
-                            <button
-                                type="button"
-                                pButton
-                                icon="pi pi-eye"
-                                class="p-button-info"
+                                (click)="getCursosDocente(item)"
                             >
                                 &nbsp;
                             </button>
@@ -289,3 +372,21 @@
         }
     </div>
 </div>
+
+<p-dialog
+    [(visible)]="showModalRubricas"
+    [style]="{ width: '80%' }"
+    header="Lista de Instrumentos de Evaluación"
+    [modal]="true"
+    [draggable]="false"
+    [resizable]="false"
+    (onHide)="showModalRubricas = false"
+>
+    <div>
+        <app-table-primeng
+            [data]="rubricasCurso"
+            [columnas]="columnasTabla"
+            [actions]="[]"
+        ></app-table-primeng>
+    </div>
+</p-dialog>

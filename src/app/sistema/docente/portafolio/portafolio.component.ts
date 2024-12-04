@@ -7,11 +7,14 @@ import { HttpClient } from '@angular/common/http'
 import { Component, inject, OnInit } from '@angular/core'
 import { MessageService } from 'primeng/api'
 import { catchError, map, throwError } from 'rxjs'
+import { ApiEvaluacionesService } from '../../aula-virtual/services/api-evaluaciones.service'
+import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
+import { Router } from '@angular/router'
 
 @Component({
     selector: 'app-portafolio',
     standalone: true,
-    imports: [PrimengModule],
+    imports: [PrimengModule, TablePrimengComponent],
     templateUrl: './portafolio.component.html',
     styleUrl: './portafolio.component.scss',
 })
@@ -21,6 +24,8 @@ export class PortafolioComponent implements OnInit {
     private _MessageService = inject(MessageService)
     private http = inject(HttpClient)
     private _LocalStoreService = inject(LocalStoreService)
+    private _evaluacionApiService = inject(ApiEvaluacionesService)
+    private router = inject(Router)
 
     backend = environment.backend
     private backendApi = environment.backendApi
@@ -33,14 +38,48 @@ export class PortafolioComponent implements OnInit {
     cPortafolioFichasDidacticas
     cPortafolioSesionesAprendizaje
 
+    reglamento = []
+    rubricas = []
     cursos = []
+    showModalRubricas: boolean = false
+
+    public columnasTabla = [
+        {
+            type: 'text',
+            width: '5rem',
+            field: 'cInstrumentoNombre',
+            header: 'Instrumento de Evaluación',
+            text_header: 'left',
+            text: 'left',
+        },
+        {
+            type: 'text',
+            width: '10rem',
+            field: 'cInstrumentoDescripcion',
+            header: 'Descripcion',
+            text_header: 'left',
+            text: 'left',
+        },
+    ]
+
     ngOnInit() {
         this.obtenerPortafolios()
         this.obtenerCuadernosCampo()
+        this.obtenerRubricas()
     }
     getInformation(params, accion) {
         this._GeneralService.getGralPrefix(params).subscribe({
             next: (response) => {
+                if (accion === 'docente-obtenerPortafolios') {
+                    const data = response?.reglamento
+                    this.reglamento = []
+                    const reglamento = data.length
+                        ? data[0]['cIieeUrlReglamentoInterno']
+                            ? JSON.parse(data[0]['cIieeUrlReglamentoInterno'])
+                            : []
+                        : []
+                    this.reglamento.push(reglamento)
+                }
                 this.accionBtnItem({ accion, item: response?.data })
             },
             complete: () => {},
@@ -66,6 +105,7 @@ export class PortafolioComponent implements OnInit {
                           ? JSON.parse(item[0]['cPortafolioItinerario'])
                           : [])
                     : []
+
                 break
             case 'docente-obtenerCuadernosCampo':
                 this.cursos = item
@@ -75,11 +115,23 @@ export class PortafolioComponent implements OnInit {
                             ? JSON.parse(item.cCuadernoUrl)
                             : item.cCuadernoUrl)
                 )
+                this.cursos.forEach((item) => {
+                    const data = item.cCuadernoUrl
+
+                    const fichas = data
+                        ? data.find((fi) => fi.typePortafolio === 1)
+                        : null
+                    item.bFichas = fichas?.name ? true : false
+                    const cuadernos = data
+                        ? data.find((fi) => fi.typePortafolio === 2)
+                        : null
+                    item.bCuadernos = cuadernos?.name ? true : false
+                })
                 break
             case 'docente-guardarItinerario':
                 this.obtenerPortafolios()
                 break
-            case 'docente-guardarFichas':
+            case 'docente-guardarFichasCuadernosCampo':
                 this.obtenerCuadernosCampo()
                 break
         }
@@ -93,6 +145,7 @@ export class PortafolioComponent implements OnInit {
             data: {
                 iDocenteId: this._ConstantesService.iDocenteId,
                 iYAcadId: this._ConstantesService.iYAcadId,
+                iCredId: this._ConstantesService.iCredId,
             },
             params: { skipSuccessMessage: true },
         }
@@ -135,12 +188,12 @@ export class PortafolioComponent implements OnInit {
         this.getInformation(params, params.group + '-' + params.ruta)
     }
 
-    guardarFichas(item) {
+    guardarFichasCuadernosCampo(item) {
         const params = {
             petition: 'post',
             group: 'docente',
             prefix: 'cuadernos-campo',
-            ruta: 'guardarFichas',
+            ruta: 'guardarFichasCuadernosCampo',
             data: {
                 iSilaboId: item.iSilaboId,
                 cCuadernoUrl: item.cCuadernoUrl.length
@@ -150,6 +203,80 @@ export class PortafolioComponent implements OnInit {
             params: { skipSuccessMessage: true },
         }
         this.getInformation(params, params.group + '-' + params.ruta)
+    }
+
+    obtenerRubricas() {
+        const params = {
+            iDocenteId: this._ConstantesService.iDocenteId,
+        }
+        this._evaluacionApiService.obtenerRubricas(params).subscribe({
+            next: (data) => {
+                data.forEach((element) => {
+                    this.rubricas.push(element)
+                })
+            },
+        })
+    }
+
+    rubricasCurso = []
+    obtenerRubricasxiCursoId(item) {
+        this.rubricasCurso = []
+        this.rubricasCurso = this.rubricas.filter(
+            (i) => i.iCursoId === item.iCursoId
+        )
+        this.showModalRubricas = true
+    }
+
+    getCursosDocente(item) {
+        const year = this._LocalStoreService.getItem('dremoYear')
+        const params = {
+            petition: 'post',
+            group: 'docente',
+            prefix: 'docente-cursos',
+            ruta: 'list', //'getDocentesCursos',
+            data: {
+                opcion: 'CONSULTARxiPersIdxiYearIdxiCursoId',
+                iCredId: this._ConstantesService.iCredId,
+                valorBusqueda: year, //iYearId
+                iSemAcadId: null,
+                iIieeId: null,
+                idDocCursoId: item.iCursoId,
+            },
+            params: { skipSuccessMessage: true },
+        }
+        this._GeneralService.getGralPrefix(params).subscribe({
+            next: (response) => {
+                if (response.validated) {
+                    const data = response.data
+                    if (data.length) {
+                        const curso = data[0]
+                        this.router.navigate(
+                            [
+                                'aula-virtual/areas-curriculares/',
+                                curso.iSilaboId,
+                            ],
+                            {
+                                queryParams: {
+                                    cCursoNombre: curso.cCursoNombre,
+                                    cNivelTipoNombre: curso.cNivelTipoNombre,
+                                    cGradoAbreviacion: curso.cGradoAbreviacion,
+                                    cSeccion: curso.cSeccion,
+                                    cCicloRomanos: curso.cCicloRomanos,
+                                    cNivelNombreCursos:
+                                        curso.cNivelNombreCursos,
+                                    tab: 'resultados',
+                                },
+                            }
+                        )
+                    }
+                }
+                console.log(response)
+            },
+            complete: () => {},
+            error: (error) => {
+                console.log(error)
+            },
+        })
     }
 
     async onUploadChange(evt: any, tipo: any, item: any) {
@@ -181,14 +308,39 @@ export class PortafolioComponent implements OnInit {
                                 case 'fichas-aprendizaje':
                                     //1:fichas-aprendizaje
                                     //2:cuadernos-campo
-                                    console.log(item.cCuadernoUrl)
+                                    const cuadernos = item.cCuadernoUrl
+                                        ? item.cCuadernoUrl.filter(
+                                              (i) => i.typePortafolio === 2
+                                          )
+                                        : []
                                     item.cCuadernoUrl = []
                                     item.cCuadernoUrl.push({
                                         typePortafolio: 1,
                                         name: file.name,
                                         ruta: event.data,
                                     })
-                                    this.guardarFichas(item)
+                                    if (cuadernos.length) {
+                                        item.cCuadernoUrl.push(cuadernos[0])
+                                    }
+                                    this.guardarFichasCuadernosCampo(item)
+                                    break
+                                case 'cuadernos-campo':
+                                    const fichas = item.cCuadernoUrl
+                                        ? item.cCuadernoUrl.filter(
+                                              (i) => i.typePortafolio === 1
+                                          )
+                                        : []
+
+                                    item.cCuadernoUrl = []
+                                    if (fichas.length) {
+                                        item.cCuadernoUrl.push(fichas[0])
+                                    }
+                                    item.cCuadernoUrl.push({
+                                        typePortafolio: 2,
+                                        name: file.name,
+                                        ruta: event.data,
+                                    })
+                                    this.guardarFichasCuadernosCampo(item)
                                     break
                             }
                         }

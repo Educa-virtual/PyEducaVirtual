@@ -45,23 +45,7 @@ export class AppTopBarComponent implements OnInit {
     // @ViewChild('topbarmenubutton') topbarMenuButton!: ElementRef
     @ViewChild('topbarmenu') menu!: ElementRef
 
-    items = [
-        {
-            label: 'Notificaciones',
-            items: [
-                {
-                    label: 'Julio Salazar creó la tarea "Descubrimiento de América ..."',
-                    icon: 'pi pi-book',
-                    sublabel: 'Hace 1 día',
-                },
-                {
-                    label: 'Roberto comentó la publicación de Julio ...',
-                    icon: 'pi pi-book',
-                    sublabel: 'Hace 1 mes',
-                },
-            ],
-        },
-    ]
+    items = []
     constructor(
         public layoutService: LayoutService,
         private store: LocalStoreService,
@@ -124,11 +108,12 @@ export class AppTopBarComponent implements OnInit {
         this.tokenStorageService.signOut()
         window.location.reload()
     }
-
+    notificaciones = []
+    totalNotificaciones: number = 0
     actionTopBar(elemento): void {
         const { accion } = elemento
         const { item } = elemento
-
+        const data = []
         switch (accion) {
             case 'year':
                 this.changeYear(item)
@@ -141,10 +126,45 @@ export class AppTopBarComponent implements OnInit {
                 this.changeModulo(item)
                 break
             case 'notificacion_docente':
-                console.log(item)
+                item.forEach((i) => {
+                    i.notificar = i.notificar ? JSON.parse(i.notificar) : []
+                    i.notificar.forEach((j) => {
+                        this.notificaciones.push(j)
+                    })
+                })
+                this.notificaciones = this.notificaciones.filter(
+                    (i) => i.cForoRptaRespuesta
+                )
+                this.notificaciones.forEach((i) => {
+                    data.push({
+                        label: i.cForoRptaRespuesta,
+                        icon: 'pi pi-book',
+                        sublabel: i.distancia,
+                    })
+                })
+                this.totalNotificaciones = data.length
+                this.items = [
+                    {
+                        label: 'Notificaciones',
+                        items: data,
+                    },
+                ]
                 break
             case 'notificacion_estudiante':
-                console.log(item)
+                item.forEach((i) => {
+                    data.push({
+                        label: i.cForoTitulo,
+                        icon: 'pi pi-book',
+                        sublabel: i.distancia,
+                    })
+                })
+                this.totalNotificaciones = data.length
+                this.items = [
+                    {
+                        label: 'Notificaciones',
+                        items: data,
+                    },
+                ]
                 break
         }
     }
@@ -158,7 +178,7 @@ export class AppTopBarComponent implements OnInit {
                 iDocenteId: iDocenteId,
             },
         }
-        this.getInformation(params, params.ruta + '-' + params.prefix)
+        this.getInformation(params, params.prefix)
     }
     notificacionEstudiante(iEstudianteId) {
         const params = {

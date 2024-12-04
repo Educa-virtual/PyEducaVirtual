@@ -4,15 +4,37 @@ import { firstValueFrom } from 'rxjs'
 @Injectable({ providedIn: 'root' })
 export class AuditoriaService {
     constructor(private http: httpService) {}
-    async get_auditoria_accesos(form) {
-        console.log(form)
 
+    async getAuditoriaAccesos() {
         const data = await firstValueFrom(
             this.http.getData(
-                `seg/auditoria/sel_auditoria_accesos?table=${form.selectedTable.table}`
+                `seg/auditoria/selAuditoriaAccesos`
             )
         )
-
+        return data.data
+    }
+    async getAuditoriaAccesosFallidos() {
+        const data = await firstValueFrom(
+            this.http.getData(
+                `seg/auditoria/selAuditoriaAccesosFallidos`
+            )
+        )
+        return data.data
+    }
+    async getAuditoria() {
+        const data = await firstValueFrom(
+            this.http.getData(
+                `seg/auditoria/selAuditoria`
+            )
+        )
+        return data.data
+    }
+    async getAuditoriaMiddleware() {
+        const data = await firstValueFrom(
+            this.http.getData(
+                `seg/auditoria/selAuditoriaMiddleware`
+            )
+        )
         return data.data
     }
     async get_auditoria_accesos_fallidos() {}

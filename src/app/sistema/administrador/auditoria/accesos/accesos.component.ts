@@ -39,10 +39,10 @@ export class AccesosComponent implements OnInit, OnChanges, OnDestroy {
     selectRowData
     isExpand = false
     options = [
-        { name: 'Accesos autorizados', table: 'auditoria_accesos' },
-        { name: 'Accesos fallidos', table: 'auditoria_accesos_fallidos' },
-        { name: 'Consultas database', table: 'auditoria' },
-        { name: 'Consultas backend', table: 'auditoria_backend' },
+        { name: 'Accesos autorizados' },
+        { name: 'Accesos fallidos' },
+        { name: 'Consultas database' },
+        { name: 'Consultas backend' },
     ]
 
     columnsDetail = [
@@ -51,24 +51,24 @@ export class AccesosComponent implements OnInit, OnChanges, OnDestroy {
             width: '5rem',
             field: 'property',
             header: 'Propiedad',
-            text_header: 'center',
-            text: 'center',
+            text_header: 'left',
+            text: 'left',
         },
         {
             type: 'text',
             width: '5rem',
             field: 'oldValue',
             header: 'Datos antiguos',
-            text_header: 'center',
-            text: 'center',
+            text_header: 'left',
+            text: 'left',
         },
         {
             type: 'text',
             width: '5rem',
             field: 'newValue',
             header: 'Datos nuevos',
-            text_header: 'center',
-            text: 'center',
+            text_header: 'left',
+            text: 'left',
         },
     ]
 
@@ -145,13 +145,11 @@ export class AccesosComponent implements OnInit, OnChanges, OnDestroy {
         private fb: FormBuilder
     ) {
         this.form = this.fb.group({
-            selectedTable: [
-                { name: 'Accesos autorizados', table: 'auditoria_accesos' },
-            ],
+            selectedTable: [this.options[0]],
         })
     }
     async ngOnInit() {
-        this.data = await this.auditoria.get_auditoria_accesos(this.form.value)
+        this.data = await this.auditoria.getAuditoriaAccesos()
 
         this.data = this.data.map((acceso, index) => ({
             index: index + 1,
@@ -165,14 +163,12 @@ export class AccesosComponent implements OnInit, OnChanges, OnDestroy {
         }))
 
         this.form.valueChanges.subscribe(async (value) => {
-            this.data = await this.auditoria.get_auditoria_accesos(
-                this.form.value
-            )
 
-            console.log(this.form.value.selectedTable.table)
             this.isExpand = false
 
-            if (this.form.value.selectedTable.table == 'auditoria_accesos') {
+            if (this.form.value.selectedTable.name == 'Accesos autorizados') {
+                this.data = await this.auditoria.getAuditoriaAccesos()
+
                 this.data = this.data.map((acceso, index) => ({
                     index: index + 1,
                     cCredUsuario: acceso.cCredUsuario,
@@ -255,9 +251,11 @@ export class AccesosComponent implements OnInit, OnChanges, OnDestroy {
             }
 
             if (
-                this.form.value.selectedTable.table ==
-                'auditoria_accesos_fallidos'
+                this.form.value.selectedTable.name ==
+                'Accesos fallidos'
             ) {
+                this.data = await this.auditoria.getAuditoriaAccesosFallidos()
+
                 this.data = this.data.map((acceso, index) => ({
                     index: index + 1,
                     cLogin: acceso.cLogin,
@@ -348,7 +346,9 @@ export class AccesosComponent implements OnInit, OnChanges, OnDestroy {
                 ]
             }
 
-            if (this.form.value.selectedTable.table == 'auditoria') {
+            if (this.form.value.selectedTable.name == 'Consultas database') {
+                this.data = await this.auditoria.getAuditoria()
+
                 this.isExpand = true
 
                 this.data = this.data.map((acceso, index) => {
@@ -380,8 +380,6 @@ export class AccesosComponent implements OnInit, OnChanges, OnDestroy {
 
                     const matchingKeys: string[] = []
                     const differingKeys: string[] = []
-
-                    console.log(keys)
 
                     keys.forEach((key) => {
                         const oldValue = datosAntiguos[key] ?? ''
@@ -445,7 +443,7 @@ export class AccesosComponent implements OnInit, OnChanges, OnDestroy {
                         ),
                         cAudOperacion: JSON.parse(acceso.cAudOperacion)[0][
                             'event_info'
-                        ],
+                        ].replace(/,/g, ', '),
                         cAudEsquema: acceso.cAudEsquema,
                         cAudDatos: Object.values(reorderedTransformData),
                     }
@@ -489,7 +487,9 @@ export class AccesosComponent implements OnInit, OnChanges, OnDestroy {
                 ]
             }
 
-            if (this.form.value.selectedTable.table == 'auditoria_backend') {
+            if (this.form.value.selectedTable.table == 'Consultas backend') {
+                this.data = await this.auditoria.getAuditoriaMiddleware()
+
                 this.isExpand = true
 
                 this.data = this.data.map((acceso, index) => {

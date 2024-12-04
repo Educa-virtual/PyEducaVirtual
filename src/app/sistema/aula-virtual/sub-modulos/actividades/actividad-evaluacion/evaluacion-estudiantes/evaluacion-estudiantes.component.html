@@ -106,92 +106,118 @@
         *ngIf="iPreguntaId > 0 && evaluacion?.preguntas?.length >= iPreguntaId"
     >
         <!-- Contenido de las preguntas -->
-        <div class="grid">
-            <div class="col-12">
-                <p class="font-bold">Pregunta {{ iPreguntaId }}.-</p>
-            </div>
-            <div class="col-12">
-                <div [innerHTML]="itemPreguntas['cPregunta']"></div>
-            </div>
-            @switch (itemPreguntas['iTipoPregId']) {
-                @case (1) {
-                    <!--Unica Tropical-->
-                    <div
-                        class="col-12 px-2"
-                        *ngIf="itemPreguntas['alternativas']?.length > 0"
-                    >
-                        <div
-                            *ngFor="
-                                let alternativa of itemPreguntas[
-                                    'alternativas'
-                                ];
-                                let i = index
-                            "
-                        >
-                            <div class="flex mt-1">
-                                <p-radioButton
-                                    [inputId]="'alternativa'"
-                                    name="alternativa"
-                                    [value]="alternativa['cBancoAltLetra']"
-                                    [(ngModel)]="itemPreguntas['cRptaRadio']"
-                                    (onClick)="
-                                        enviarRpta('unica', itemPreguntas)
-                                    "
-                                />
-                                &nbsp;&nbsp;
-                                <div
-                                    [innerHTML]="
-                                        alternativa['cAlternativaDescripcion']
-                                    "
-                                ></div>
-                            </div>
-                        </div>
-                    </div>
-                }
-                @case (2) {
-                    <!--Opcion Múltiple-->
-                    <div
-                        class="col-12 px-2"
-                        *ngIf="itemPreguntas['alternativas']?.length > 0"
-                    >
-                        <div
-                            *ngFor="
-                                let alternativa of itemPreguntas['alternativas']
-                            "
-                        >
-                            <div class="flex mt-1">
-                                <p-checkbox
-                                    [(ngModel)]="alternativa.cRptaCheck"
-                                    [value]="alternativa['cBancoAltLetra']"
-                                    (onChange)="
-                                        enviarRpta('multiple', itemPreguntas)
-                                    "
-                                />
-                                &nbsp;&nbsp;
-                                <div
-                                    [innerHTML]="
-                                        alternativa['cAlternativaDescripcion']
-                                    "
-                                ></div>
-                            </div>
-                        </div>
-                    </div>
-                }
-                @case (3) {
-                    <!--Opcion Libre-->
-                    <div class="col-12 px-2">
-                        <textarea
-                            class="w-full"
-                            rows="4"
-                            placeholder="Ingrese su respuesta"
-                            pInputText
-                            [(ngModel)]="itemPreguntas['cRptaTexto']"
-                            (blur)="enviarRpta('libre', itemPreguntas)"
-                        ></textarea>
-                    </div>
-                }
-            }
 
+        <div class="grid">
+            @if (itemPreguntas['iTipoPregId']) {
+                <div class="col-12">
+                    <p class="font-bold">Pregunta {{ iPreguntaId }}.-</p>
+                </div>
+                <div class="col-12">
+                    <div [innerHTML]="itemPreguntas['cPregunta']"></div>
+                </div>
+                @switch (itemPreguntas['iTipoPregId']) {
+                    @case (1) {
+                        <!--Unica Tropical-->
+                        <div
+                            class="col-12 px-2"
+                            *ngIf="itemPreguntas['alternativas']?.length > 0"
+                        >
+                            <div
+                                *ngFor="
+                                    let alternativa of itemPreguntas[
+                                        'alternativas'
+                                    ];
+                                    let i = index
+                                "
+                            >
+                                <div class="flex mt-1">
+                                    <p-radioButton
+                                        [inputId]="'alternativa'"
+                                        name="alternativa"
+                                        [value]="alternativa['cBancoAltLetra']"
+                                        [(ngModel)]="
+                                            itemPreguntas['cRptaRadio']
+                                        "
+                                        (onClick)="
+                                            enviarRpta('unica', itemPreguntas)
+                                        "
+                                    />
+                                    &nbsp;&nbsp;
+                                    <div
+                                        [innerHTML]="
+                                            alternativa[
+                                                'cAlternativaDescripcion'
+                                            ]
+                                        "
+                                    ></div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    @case (2) {
+                        <!--Opcion Múltiple-->
+                        <div
+                            class="col-12 px-2"
+                            *ngIf="itemPreguntas['alternativas']?.length > 0"
+                        >
+                            <div
+                                *ngFor="
+                                    let alternativa of itemPreguntas[
+                                        'alternativas'
+                                    ]
+                                "
+                            >
+                                <div class="flex mt-1">
+                                    <p-checkbox
+                                        [(ngModel)]="alternativa.cRptaCheck"
+                                        [value]="alternativa['cBancoAltLetra']"
+                                        (onChange)="
+                                            enviarRpta(
+                                                'multiple',
+                                                itemPreguntas
+                                            )
+                                        "
+                                    />
+                                    &nbsp;&nbsp;
+                                    <div
+                                        [innerHTML]="
+                                            alternativa[
+                                                'cAlternativaDescripcion'
+                                            ]
+                                        "
+                                    ></div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    @case (3) {
+                        <!--Opcion Libre-->
+                        <div class="col-12 px-2">
+                            <textarea
+                                class="w-full"
+                                rows="4"
+                                placeholder="Ingrese su respuesta"
+                                pInputText
+                                [(ngModel)]="itemPreguntas['cRptaTexto']"
+                                (blur)="enviarRpta('libre', itemPreguntas)"
+                            ></textarea>
+                        </div>
+                    }
+                }
+            } @else {
+                <div class="col-6">
+                    <ngx-doc-viewer
+                        [url]="
+                            environment +
+                            '/' +
+                            itemPreguntas['cEncabPregContenido']
+                        "
+                        viewer="pdf"
+                        style="width: 100%; height: 50vh"
+                    ></ngx-doc-viewer>
+                </div>
+                <div class="col-6"></div>
+            }
             <div class="col-6 mt-2" align="left">
                 <p-button
                     label="Atrás"

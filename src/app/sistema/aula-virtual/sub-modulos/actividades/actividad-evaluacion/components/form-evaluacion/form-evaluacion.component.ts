@@ -19,6 +19,9 @@ import {
 import { FormBuilder, Validators } from '@angular/forms'
 import { DialogService } from 'primeng/dynamicdialog'
 import { RubricasComponent } from '../../../../../features/rubricas/rubricas.component'
+import { LocalStoreService } from '@/app/servicios/local-store.service'
+import { GeneralService } from '@/app/servicios/general.service'
+import { ListPreguntasComponent } from '../list-preguntas/list-preguntas.component'
 
 @Component({
     selector: 'app-form-evaluacion',
@@ -29,6 +32,7 @@ import { RubricasComponent } from '../../../../../features/rubricas/rubricas.com
         NgIf,
         TypesFilesUploadPrimengComponent,
         RubricasComponent,
+        ListPreguntasComponent,
     ],
     templateUrl: './form-evaluacion.component.html',
     styleUrl: './form-evaluacion.component.scss',
@@ -39,6 +43,8 @@ export class FormEvaluacionComponent implements OnChanges, OnInit {
     private _ConstantesService = inject(ConstantesService)
     private _ConfirmationModalService = inject(ConfirmationModalService)
     private _DialogService = inject(DialogService)
+    private _store = inject(LocalStoreService)
+    private _GeneralService = inject(GeneralService)
 
     @Output() accionBtnItem = new EventEmitter()
     @Input() showModalEvaluacion: boolean = false
@@ -48,7 +54,7 @@ export class FormEvaluacionComponent implements OnChanges, OnInit {
     @Input() idDocCursoId
 
     date = new Date()
-
+    cursos = []
     tipoEvaluaciones = []
     filesUrl = []
     typesFiles = {
@@ -63,6 +69,11 @@ export class FormEvaluacionComponent implements OnChanges, OnInit {
         iDocenteId: 0,
         idDocCursoId: 0,
     }
+    showMostrarVista: 'FORM-EVALUACION' | 'LIST-PREGUNTAS' | 'FORM-PREGUNTAS' =
+        'FORM-EVALUACION'
+    showModalListPreguntas: boolean = false
+    opcionModalPreguntas: string
+    tituloModalPreguntas: string
     formEvaluacion = this._FormBuilder.group({
         iEvaluacionId: [],
         iTipoEvalId: [],
@@ -99,6 +110,7 @@ export class FormEvaluacionComponent implements OnChanges, OnInit {
     ngOnInit() {
         this.obtenerTipoEvaluaciones()
         this.obtenerRubricas()
+        this.obtenerCursos()
     }
     ngOnChanges(changes) {
         if (changes.showModalEvaluacion?.currentValue) {
@@ -106,11 +118,13 @@ export class FormEvaluacionComponent implements OnChanges, OnInit {
         }
         if (changes.semana?.currentValue) {
             this.semana = changes.semana.currentValue
-            //console.log(this.semana)
             this.params.iCursoId = this.semana.iCursoId
             this.params.iDocenteId = this._ConstantesService.iDocenteId
+            const curso = this.cursos.find(
+                (i) => i.iCursoId === this.semana.iCursoId
+            )
+            this.params.idDocCursoId = curso.idDocCursoId
         }
-        console.log(changes)
     }
     obtenerTipoEvaluaciones() {
         this._evaluacionService.obtenerTipoEvaluaciones().subscribe((data) => {
@@ -149,6 +163,37 @@ export class FormEvaluacionComponent implements OnChanges, OnInit {
         })
     }
 
+    obtenerCursos() {
+        const year = this._store.getItem('dremoYear')
+        const params = {
+            petition: 'post',
+            group: 'docente',
+            prefix: 'docente-cursos',
+            ruta: 'list', //'getDocentesCursos',
+            data: {
+                opcion: 'CONSULTARxiPersIdxiYearId',
+                iCredId: this._ConstantesService.iCredId,
+                valorBusqueda: year, //iYearId
+                iSemAcadId: null,
+                iIieeId: null,
+            },
+            params: { skipSuccessMessage: true },
+        }
+        this._GeneralService.getGralPrefix(params).subscribe({
+            next: (response) => {
+                this.cursos = response.data
+            },
+            complete: () => {},
+            error: (error) => {
+                console.log(error)
+            },
+        })
+    }
+
+    accionRubrica(elemento): void {
+        if (!elemento) return
+        this.obtenerRubricas()
+    }
     accionBtn(elemento): void {
         const { accion } = elemento
         const { item } = elemento
@@ -256,7 +301,11 @@ export class FormEvaluacionComponent implements OnChanges, OnInit {
         this._ConfirmationModalService.openConfirm({
             header: '¿Deseas agregar preguntas?',
             accept: () => {
-                this.accionBtn({ accion: 'agregar-preguntas', item: [] })
+                this.showMostrarVista = 'LIST-PREGUNTAS'
+                this.showModalListPreguntas = true
+                this.opcionModalPreguntas = 'GUARDAR'
+                this.tituloModalPreguntas = 'AGREGAR PREGUNTAS'
+                // this.accionBtn({ accion: 'agregar-preguntas', item: [] })
             },
         })
     }

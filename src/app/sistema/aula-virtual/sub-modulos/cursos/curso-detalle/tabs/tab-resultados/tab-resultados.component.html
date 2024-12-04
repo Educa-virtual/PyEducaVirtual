@@ -260,8 +260,10 @@
                                                     </td>
                                                     <td>
                                                         {{
-                                                            comentario.cForoRptaDocente
-                                                                | removeHTML
+                                                            comentario
+                                                                ? comentario.cForoRptaDocente
+                                                                : (''
+                                                                  | removeHTML)
                                                         }}
                                                     </td>
                                                 </tr>

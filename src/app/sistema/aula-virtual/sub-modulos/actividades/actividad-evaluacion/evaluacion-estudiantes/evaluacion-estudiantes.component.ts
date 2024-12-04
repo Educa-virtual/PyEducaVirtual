@@ -1,9 +1,13 @@
-import { Component, Input, OnChanges } from '@angular/core'
+import { Component, inject, Input, OnChanges } from '@angular/core'
 import { ToolbarPrimengComponent } from '../../../../../../shared/toolbar-primeng/toolbar-primeng.component'
 import { IconComponent } from '@/app/shared/icon/icon.component'
 import { CommonModule } from '@angular/common'
 import { TimeComponent } from '@/app/shared/time/time.component'
 import { PrimengModule } from '@/app/primeng.module'
+import { ConstantesService } from '@/app/servicios/constantes.service'
+import { GeneralService } from '@/app/servicios/general.service'
+import { ConfirmationService, MessageService } from 'primeng/api'
+import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 
 @Component({
     selector: 'app-evaluacion-estudiantes',
@@ -19,6 +23,12 @@ import { PrimengModule } from '@/app/primeng.module'
     styleUrl: './evaluacion-estudiantes.component.scss',
 })
 export class EvaluacionEstudiantesComponent implements OnChanges {
+    private _ConstantesService = inject(ConstantesService)
+    private _GeneralService = inject(GeneralService)
+    private _MessageService = inject(MessageService)
+    private _ConfirmationModalService = inject(ConfirmationModalService)
+    private _ConfirmationService = inject(ConfirmationService)
+
     @Input() evaluacion
 
     iPreguntaId: number = 0
@@ -26,6 +36,7 @@ export class EvaluacionEstudiantesComponent implements OnChanges {
     itemPreguntas = []
     esUltimaPregunta: boolean = false
     display: boolean
+    timeRemaining: number
 
     ngOnChanges(changes) {
         if (changes.evaluacion?.currentValue) {
@@ -51,6 +62,7 @@ export class EvaluacionEstudiantesComponent implements OnChanges {
         )
         this.itemPreguntas = this.itemPreguntas?.['preguntas'] || []
         this.esUltimaPregunta = this.iPreguntaId === this.preguntas.length
+        this.filtrarPreguntasxiTipoPregId()
     }
 
     regresarPregunta(): void {
@@ -61,6 +73,7 @@ export class EvaluacionEstudiantesComponent implements OnChanges {
             )
             this.itemPreguntas = preguntaActual?.['preguntas'] || []
             this.esUltimaPregunta = false // Desactiva el estado de "última pregunta".
+            this.filtrarPreguntasxiTipoPregId()
         } else {
             alert('Ya estás en la primera pregunta.')
         }
@@ -74,6 +87,99 @@ export class EvaluacionEstudiantesComponent implements OnChanges {
         )
         alert('Evaluación finalizada. ¡Gracias por participar!')
         // Cerrar el modal
-        this.display = false
+        // this._ConfirmationService.confirm({
+        //     header: 'Evaluación finalizada!',
+        //     message: '¡Felicitaciones, en hora buena! ahora a esperar tus resultados',
+        //     icon:'pi pi-check',
+        //     acceptIcon: 'pi pi-check mr-2',
+        //     rejectIcon: 'pi pi-times mr-2',
+        //     rejectButtonStyleClass: 'p-button-sm',
+        //     acceptButtonStyleClass: 'p-button-outlined p-button-sm',
+
+        // });
+    }
+    siguienteEvaluacion(): void {
+        // Verificar si no estamos en la última pregunta
+        if (
+            this.evaluacion?.preguntas &&
+            this.iPreguntaId < this.evaluacion.preguntas.length
+        ) {
+            this.iPreguntaId++ // Avanzar a la siguiente pregunta
+            this.itemPreguntas = this.evaluacion.preguntas[this.iPreguntaId - 1] // Actualizar la pregunta actual
+            this.filtrarPreguntasxiTipoPregId()
+        } else {
+            console.warn('No hay más preguntas disponibles.')
+        }
+    }
+    filtrarPreguntasxiTipoPregId() {
+        console.log(this.itemPreguntas)
+        switch (Number(this.itemPreguntas['iTipoPregId'])) {
+            case 1:
+                this.itemPreguntas['cRptaRadio'] = null
+                break
+            case 2:
+                this.itemPreguntas['alternativas'].forEach((i) => {
+                    i.cRptaCheck = null
+                })
+                console.log(this.itemPreguntas['alternativas'])
+                break
+            case 3:
+                this.itemPreguntas['cRptaTexto'] = null
+                break
+        }
+    }
+
+    enviarRpta(tipoRpta, pregunta) {
+        console.log(tipoRpta, pregunta)
+        switch (tipoRpta) {
+            case 'unica':
+                const params = {
+                    petition: 'post',
+                    group: 'evaluaciones',
+                    prefix: 'evaluacion/estudiantes',
+                    ruta: 'guardarRespuestaxiEstudianteId',
+                    data: {
+                        iEstudianteId: this._ConstantesService.iEstudianteId,
+                        iEvalPregId: pregunta.iEvalPregId,
+                        iEvaluacionId: pregunta.iEvaluacionId,
+                        jEvalRptaEstudiante:
+                            '{"rptaUnica":"' + pregunta.cRptaRadio + '"}',
+                    },
+                    params: { skipSuccessMessage: true },
+                }
+                this.getInformation(params, '')
+                break
+            case 'multiple':
+                break
+        }
+    }
+
+    getInformation(params, accion) {
+        this._GeneralService.getGralPrefix(params).subscribe({
+            next: (response) => {
+                console.log(accion)
+                if (response.validated) {
+                    this._MessageService.add({
+                        severity: 'success',
+                        summary: 'Guardado!',
+                        detail: 'Se guardó correctamente la respuesta',
+                    })
+                }
+            },
+            complete: () => {},
+            error: (error) => {
+                console.log(error)
+                this._MessageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: error,
+                })
+            },
+        })
+    }
+    getFormattedTime(): string {
+        const minutes = Math.floor(this.timeRemaining / 60)
+        const seconds = this.timeRemaining % 60
+        return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
     }
 }

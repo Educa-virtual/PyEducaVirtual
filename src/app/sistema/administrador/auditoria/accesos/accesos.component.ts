@@ -13,7 +13,7 @@ import {
 } from '@angular/forms'
 import { TableModule } from 'primeng/table'
 import { CommonModule } from '@angular/common'
-import { AccordionModule } from 'primeng/accordion';
+import { AccordionModule } from 'primeng/accordion'
 
 @Component({
     selector: 'app-accesos',
@@ -351,45 +351,103 @@ export class AccesosComponent implements OnInit, OnChanges, OnDestroy {
             if (this.form.value.selectedTable.table == 'auditoria') {
                 this.isExpand = true
 
-
-
                 this.data = this.data.map((acceso, index) => {
-                    const datosAntiguos = JSON.parse(
-                        acceso.cAudDatosAntiguos
-                    )[0]
-                    const datosNuevos = JSON.parse(acceso.cAudDatosNuevos)[0]
+                    const datosAntiguos = Array.isArray(
+                        JSON.parse(acceso.cAudDatosAntiguos)
+                    )
+                        ? JSON.parse(acceso.cAudDatosAntiguos)[0]
+                        : {}
+                    const datosNuevos = Array.isArray(
+                        JSON.parse(acceso.cAudDatosNuevos)
+                    )
+                        ? JSON.parse(acceso.cAudDatosNuevos)[0]
+                        : {}
 
                     const transformData: Record<
                         string,
-                        { property: any; oldValue: any; newValue: any, operation: any }
+                        {
+                            property: any
+                            oldValue: any
+                            newValue: any
+                            class: any
+                        }
                     > = {}
+
                     const keys = new Set([
-                        ...Object.keys(datosAntiguos),
-                        ...Object.keys(datosNuevos),
+                        ...Object.keys(datosAntiguos ?? {}),
+                        ...Object.keys(datosNuevos ?? {}),
                     ])
 
+                    const matchingKeys: string[] = []
+                    const differingKeys: string[] = []
+
+                    console.log(keys)
+
                     keys.forEach((key) => {
+                        const oldValue = datosAntiguos[key] ?? ''
+                        const newValue = datosNuevos[key] ?? ''
 
+                        const isMatching = oldValue == newValue
 
-                        transformData[key] = {
-                            operation: datosAntiguos[key] == datosNuevos[key] ? undefined : acceso.cAudTipoOperaion,
+                        const formatDataAntiguo =
+                            this.auditoria.toVisualFechasFormat(
+                                datosAntiguos[key]
+                            )
+                        const formatDataNuevo =
+                            this.auditoria.toVisualFechasFormat(
+                                datosNuevos[key]
+                            )
+
+                        const entry = {
+                            class: isMatching
+                                ? undefined
+                                : acceso.cAudTipoOperaion,
                             property: key,
-                            oldValue: datosAntiguos[key] ?? null,
-                            newValue: datosNuevos[key] ?? null,
+                            oldValue: formatDataAntiguo ?? null,
+                            newValue: formatDataNuevo ?? null,
                         }
+
+                        if (isMatching) {
+                            matchingKeys.push(key)
+                        } else {
+                            differingKeys.push(key)
+                        }
+
+                        transformData[key] = entry
+                    })
+
+                    const reorderedTransformData: Record<
+                        string,
+                        {
+                            property: any
+                            oldValue: any
+                            newValue: any
+                            class: any
+                        }
+                    > = {}
+
+                    differingKeys.forEach((key) => {
+                        reorderedTransformData[key] = transformData[key]
+                    })
+
+                    matchingKeys.forEach((key) => {
+                        reorderedTransformData[key] = transformData[key]
                     })
 
                     return {
                         index: index + 1,
+                        class: acceso.cAudTipoOperaion,
                         cAudUsuario: acceso.cAudUsuario,
                         cAudTabla: acceso.cAudTabla,
                         cAudTipoOperaion: acceso.cAudTipoOperaion,
                         dtFecha: this.auditoria.toVisualFechasFormat(
                             acceso.dtFecha
                         ),
-                        cAudOperacion: JSON.parse(acceso.cAudOperacion)[0]['event_info'],
+                        cAudOperacion: JSON.parse(acceso.cAudOperacion)[0][
+                            'event_info'
+                        ],
                         cAudEsquema: acceso.cAudEsquema,
-                        cAudDatos: Object.values(transformData),
+                        cAudDatos: Object.values(reorderedTransformData),
                     }
                 })
 
@@ -474,15 +532,10 @@ export class AccesosComponent implements OnInit, OnChanges, OnDestroy {
             console.log(this.data)
             console.log(this.columns)
         })
-
-
-
     }
 
     selectRow(data) {
-
         this.selectRowData = data
-        console.log(this.selectRowData)
     }
 
     ngOnChanges(changes) {}

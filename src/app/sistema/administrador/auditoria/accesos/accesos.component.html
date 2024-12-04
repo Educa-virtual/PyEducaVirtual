@@ -12,7 +12,11 @@
 </form>
 
 <section class="flex gap-3">
-    <div style="flex: 1.5">
+    <div style="flex: 1.5"
+    [ngStyle]="{
+      width: isExpand && selectRowData ? '40%' : '0',
+  }"
+    >
         <app-table-primeng
             [columnas]="columns"
             [data]="data"
@@ -29,8 +33,9 @@
     <div
         class="flex-column gap-3"
         [ngStyle]="{
-            flex: isExpand && selectRowData ? '1' : '0',
+            flex: isExpand && selectRowData ? '2' : '0',
             display: isExpand && selectRowData ? 'flex' : 'none',
+            width: isExpand && selectRowData ? '60%' : '0',
         }"
         [ngClass]="{
             card: isExpand,
@@ -46,8 +51,7 @@
         <div>
             <p-accordion>
                 <p-accordionTab header="Operación realizada">
-                    <p class="m-0">
-                        {{ selectRowData?.cAudOperacion }}
+                    <p class="flex flex-wrap" [textContent]="selectRowData?.cAudOperacion">
                     </p>
                 </p-accordionTab>
             </p-accordion>

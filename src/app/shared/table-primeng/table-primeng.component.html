@@ -100,7 +100,7 @@
         let-rowIndex="rowIndex"
         let-expanded="expanded"
     >
-        <tr [pSelectableRow]="rowData" [ngClass]="getClass(rowData, 'operation')" [ngClass]="getClass(rowData, 'cAudTipoOperaion')">
+        <tr [pSelectableRow]="rowData" [ngClass]="getClass(rowData, 'class')">
             @for (col of columnasSeleccionadas; track $index; let i = $index) {
                 <td>
                     @if (col.type === 'expansion') {

@@ -37,6 +37,12 @@ tr {
     }
 }
 
+.INSERT{
+    box-shadow: inset 10px 0 0 0 #7fd6b7;
+}
 .UPDATE{
-    background-color: #cc8925;
+    box-shadow: inset 10px 0 0 0 #f4bb7d;
+}
+.DELETE{
+    box-shadow: inset 10px 0 0 0 #f6abab;
 }

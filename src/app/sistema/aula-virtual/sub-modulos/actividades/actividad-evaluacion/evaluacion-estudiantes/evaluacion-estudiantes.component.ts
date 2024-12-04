@@ -112,7 +112,6 @@ export class EvaluacionEstudiantesComponent implements OnChanges {
         }
     }
     filtrarPreguntasxiTipoPregId() {
-        console.log(this.itemPreguntas)
         switch (Number(this.itemPreguntas['iTipoPregId'])) {
             case 1:
                 this.itemPreguntas['cRptaRadio'] = null
@@ -128,12 +127,12 @@ export class EvaluacionEstudiantesComponent implements OnChanges {
                 break
         }
     }
-
+    //Enviando Respuesta unica y multiple
     enviarRpta(tipoRpta, pregunta) {
-        console.log(tipoRpta, pregunta)
+        let params
         switch (tipoRpta) {
             case 'unica':
-                const params = {
+                params = {
                     petition: 'post',
                     group: 'evaluaciones',
                     prefix: 'evaluacion/estudiantes',
@@ -150,6 +149,58 @@ export class EvaluacionEstudiantesComponent implements OnChanges {
                 this.getInformation(params, '')
                 break
             case 'multiple':
+                let respuestas = ''
+                pregunta.alternativas.forEach((item) => {
+                    const cMarcado = item.cRptaCheck
+                        ? item.cRptaCheck.length
+                            ? item.cRptaCheck[0]
+                            : null
+                        : null
+                    if (cMarcado) {
+                        respuestas = respuestas + '"' + item.cRptaCheck + '",'
+                    }
+                })
+                const letra_ultimo = respuestas.charAt(respuestas.length - 1)
+                if (letra_ultimo === ',') {
+                    respuestas = respuestas.substring(0, respuestas.length - 1)
+                }
+
+                params = {
+                    petition: 'post',
+                    group: 'evaluaciones',
+                    prefix: 'evaluacion/estudiantes',
+                    ruta: 'guardarRespuestaxiEstudianteId',
+                    data: {
+                        iEstudianteId: this._ConstantesService.iEstudianteId,
+                        iEvalPregId: pregunta.iEvalPregId,
+                        iEvaluacionId: pregunta.iEvaluacionId,
+                        jEvalRptaEstudiante:
+                            '{"rptaMultiple": [' + respuestas + ']}',
+                    },
+                    params: { skipSuccessMessage: true },
+                }
+                this.getInformation(params, '')
+                //fin
+                break
+            case 'libre':
+                if (pregunta.cRptaTexto != '') {
+                    params = {
+                        petition: 'post',
+                        group: 'evaluaciones',
+                        prefix: 'evaluacion/estudiantes',
+                        ruta: 'guardarRespuestaxiEstudianteId',
+                        data: {
+                            iEstudianteId:
+                                this._ConstantesService.iEstudianteId,
+                            iEvalPregId: pregunta.iEvalPregId,
+                            iEvaluacionId: pregunta.iEvaluacionId,
+                            jEvalRptaEstudiante:
+                                '{"rptaAbierta":"' + pregunta.cRptaTexto + '"}',
+                        },
+                        params: { skipSuccessMessage: true },
+                    }
+                    this.getInformation(params, '')
+                }
                 break
         }
     }

@@ -1,19 +1,21 @@
 <section class="flex flex-column gap-4">
     <p-tabView styleClass="actividad-tabs">
+        <!-- calificar a estudiante  -->
         <p-tabPanel>
             <ng-template pTemplate="header" class="header">
                 <div class="flex align-items-center flex-column gap-2">
                     <app-icon name="matListAlt"></app-icon>
                     <span class="font-bold white-space-nowrap m-0">
-                        Detalleta de notas
+                        Detalle de actividad
                     </span>
                 </div>
             </ng-template>
             <app-container-page
-                [title]="'Detalle de Actividades'"
+                [title]="'Asignar Nivel de Logro a estudiantes'"
                 [actions]="[]"
             >
-                <p-dataView #dv [rows]="5" filterBy="cCursoNombre">
+                <!-- Menu de cabecera -->
+                <!-- <p-dataView #dv [rows]="5" filterBy="cCursoNombre">
                     <ng-template pTemplate="header">
                         <div class="">
                             <div class="grid grid-nogutter">
@@ -58,10 +60,10 @@
                                 </div>
                             </div>
 
-                            <!-- <p-dataViewLayoutOptions></p-dataViewLayoutOptions> -->
+                            <p-dataViewLayoutOptions></p-dataViewLayoutOptions>
                         </div>
                     </ng-template>
-                </p-dataView>
+                </p-dataView> -->
                 <div class="card grid">
                     <!-- lista de participantes... -->
                     <div class="col-4">
@@ -70,7 +72,7 @@
                                 for=""
                                 class=""
                                 style="font-weight: bold; font-size: 16px"
-                                >Estudiantes:
+                                >Seleccionar estudiante:
                             </label>
                         </div>
                         <p-orderList
@@ -105,17 +107,20 @@
                         </p-orderList>
                     </div>
                     <div class="col-8">
-                        <div class="">
+                        <div class="pb-2">
                             <div class="pb-2">
                                 <label
                                     for=""
                                     class=""
                                     style="font-weight: bold; font-size: 16px"
-                                    >Revisar a: {{ estudianteEv }}
+                                    >Asignar nivel de logro a:
+                                    {{ estudianteEv }}
                                 </label>
                             </div>
-                            <!-- Modificar el formGroup -->
-                            <div class="" *ngIf="mostrarDiv">
+                            <!-- Modificar el formGroup // *ngIf="mostrarDiv"-->
+                            <div
+                                class="card border-4 border-indigo-200 border-indigo-500/50"
+                            >
                                 <form
                                     [formGroup]="califcFinal"
                                     class="flex flex-column gap-3 w-full"
@@ -124,7 +129,8 @@
                                         <div class="col-12 pr-1 pb-2">
                                             <p-editor
                                                 id="descripcion"
-                                                placeholder="Escribe un Comentario... "
+                                                hearder="hola"
+                                                placeholder="Agregar un conclusión descriptiva..."
                                                 formControlName="cDetMatrConclusionDesc1"
                                             >
                                                 <ng-template pTemplate="header">
@@ -148,12 +154,12 @@
                                                 </ng-template>
                                             </p-editor>
                                         </div>
-                                        <div class="col-4 pr-1">
+                                        <div class="col pr-1 pb-2">
                                             <p-inputGroup>
                                                 <p-inputGroupAddon
                                                     class="rounded"
                                                 >
-                                                    Nota:
+                                                    Nivel de Logro:
                                                 </p-inputGroupAddon>
                                                 <p-dropdown
                                                     [options]="calificacion"
@@ -172,13 +178,21 @@
                                                 pRipple
                                                 label="Guardar"
                                                 class="p-button-success"
-                                                (click)="guardarCalifcFinal()"
+                                                (click)="
+                                                    guardarCalificacionFinal()
+                                                "
                                             ></button>
                                         </div>
                                     </div>
                                 </form>
                             </div>
                         </div>
+                        <label
+                            for=""
+                            class=""
+                            style="font-weight: bold; font-size: 16px"
+                            >Detalle de actividades del estudiante:
+                        </label>
                         <div>
                             <p-accordion [activeIndex]="0">
                                 <p-accordionTab header="Actividad Foro">
@@ -269,8 +283,6 @@
                                                 </tr>
                                             </ng-template>
                                         </p-table>
-                                        <!-- <input type="text" />
-                                        <button>hola</button> -->
                                     </div>
                                 </p-accordionTab>
                                 <p-accordionTab header="Actividad Tarea">
@@ -292,12 +304,13 @@
                 </div>
             </app-container-page>
         </p-tabPanel>
+        <!-- mostrar notas detalladas -->
         <p-tabPanel>
             <ng-template pTemplate="header" class="header">
                 <div class="flex align-items-center flex-column gap-2">
                     <app-icon name="matListAlt"></app-icon>
                     <span class="font-bold white-space-nowrap m-0">
-                        Reporte de Notas
+                        Reporte final de Actividades
                     </span>
                 </div>
             </ng-template>

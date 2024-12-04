@@ -1,3 +1,4 @@
+//color de bottones de cabecera
 :host ::ng-deep p-inputGroupAddon {
     background-color: var(--bg-header-modal) !important;
     color: var(--primary-color-text) !important;
@@ -15,6 +16,65 @@
     white-space: nowrap; /* Evita que el texto se parta */
     width: 4rem;
 }
+// estilo de cabecer DE Mostrar
 .heard-color {
     background-color: rgb(202, 202, 214);
 }
+:host ::ng-deep .actividad-tabs .p-tabview-nav {
+    display: flex;
+    justify-content: space-between;
+    // position: fixed;
+    // background-color: white;
+}
+:host ::ng-deep .actividad-tabs .p-tabview-nav li {
+    flex: 1;
+}
+:host ::ng-deep .actividad-tabs .p-tabview-nav li a {
+    text-align: center;
+    //width: 100%;
+    display: block;
+    color: inherit;
+}
+
+:host ::ng-deep .actividad-tabs .p-tabview-nav li.p-highlight a {
+    color: var(--primary-color);
+}
+// altura de listar estudiantes
+:host ::ng-deep .cdk-drop-list {
+    max-height: 500px;
+    border: none;
+}
+// borrar las barras al costado
+:host ::ng-deep .listAlumno .p-orderlist-controls {
+    display: none;
+    height: 600px;
+}
+// estilo de listar estudiantes
+:host ::ng-deep .perfilesList {
+    border-radius: 8px; /* Radio del borde */
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 1px 1px 1px 1px;
+    width: 100%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra para dar profundidad */
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    img {
+        width: 150px;
+        box-shadow:
+            0 3px 6px rgba(0, 0, 0, 0.16),
+            0 3px 6px rgba(0, 0, 0, 0.23);
+        margin-right: 2rem;
+    }
+}
+/*El icono de los perfiles de los comentarios y participantes*/
+.btn {
+    border-radius: 50%; /* Si quieres hacerla circular */
+}
+// :host ::ng-deep .p-element {
+//     border-radius: 5px;
+//     //margin: 1px;
+// }
+
+// 3867149912 codigo de cacelación del plan de claro

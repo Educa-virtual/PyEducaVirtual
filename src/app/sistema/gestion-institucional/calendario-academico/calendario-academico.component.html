@@ -2,19 +2,20 @@
     [title]="'Registro de Año Escolar'"
     [actions]="accionesPrincipal"
     (accionBtnItem)="accionBtnItem($event)"
->
+    ><p-toast />
     <div class="card">
         <app-table-primeng
             [columnas]="columns"
-            [showCaption]="false"
+            [showCaption]="true"
             [data]="years"
             (accionBtnItem)="accionBtnItemTable($event)"
-            [showPaginator]="false"
+            [showPaginator]="true"
             [(selectedRowData)]="selectedItems"
             [actions]="actions"
         >
             <!-- <ng-container slot="caption-content"> </ng-container> -->
         </app-table-primeng>
+        <ng-container slot="caption-content"> </ng-container>
     </div>
 </app-container-page>
 

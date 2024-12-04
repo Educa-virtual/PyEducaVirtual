@@ -28,7 +28,6 @@ import { ActividadListaComponent } from '../../../../actividades/components/acti
 import { VideoconferenciaContainerFormComponent } from '../../../../actividades/actividad-videoconferencia/videoconferencia-container-form/videoconferencia-container-form.component'
 import { ForoFormContainerComponent } from '../../../../actividades/actividad-foro/foro-form-container/foro-form-container.component'
 import { ActividadFormComponent } from '../../../../actividades/components/actividad-form/actividad-form.component'
-import { EvaluacionFormContainerComponent } from '../../../../actividades/actividad-evaluacion/evaluacion-form-container/evaluacion-form-container.component'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { GeneralService } from '@/app/servicios/general.service'
 import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
@@ -41,6 +40,8 @@ import { PrimengModule } from '@/app/primeng.module'
 import { actividadesConfig } from '@/app/sistema/aula-virtual/constants/aula-virtual'
 import { FullCalendarModule } from '@fullcalendar/angular'
 import { TareaFormContainerComponent } from '../../../../actividades/actividad-tarea/tarea-form-container/tarea-form-container.component'
+import { FormEvaluacionComponent } from '../../../../actividades/actividad-evaluacion/components/form-evaluacion/form-evaluacion.component'
+import { EvaluacionFormContainerComponent } from '../../../../actividades/actividad-evaluacion/evaluacion-form-container/evaluacion-form-container.component'
 
 @Component({
     selector: 'app-tab-contenido',
@@ -56,6 +57,7 @@ import { TareaFormContainerComponent } from '../../../../actividades/actividad-t
         DynamicDialogModule,
         PrimengModule,
         TareaFormContainerComponent,
+        FormEvaluacionComponent,
     ],
     templateUrl: './tab-contenido.component.html',
     styleUrl: './tab-contenido.component.scss',
@@ -73,7 +75,7 @@ import { TareaFormContainerComponent } from '../../../../actividades/actividad-t
 })
 export class TabContenidoComponent implements OnInit {
     @Input({ required: true }) private _iSilaboId: string
-
+    @Input() idDocCursoId
     public rangeDates: Date[] | undefined
     public accionesContenido: MenuItem[]
     public actividadSelected: IActividad | undefined
@@ -391,75 +393,114 @@ export class TabContenidoComponent implements OnInit {
     }
 
     // maneja las acciones de las evaluaciones
+    showModalEvaluacion: boolean = false
+    itemActividad = []
+    tituloEvaluacion: string
+    opcionEvaluacion: string
+    semanaEvaluacion
     handleEvaluacionAction(action: string, actividad: IActividad) {
-        if (action === 'CREAR' || action === 'EDITAR') {
-            const ref = this._dialogService.open(
-                EvaluacionFormContainerComponent,
-                {
-                    ...MODAL_CONFIG,
-                    maximizable: true,
-                    header: !actividad['iEvaluacionId']
-                        ? 'Crear Evaluación'
-                        : 'Editar Evaluación',
-                    data: {
-                        actividad,
-                        semana: this.semanaSeleccionada,
+        console.log(this.idDocCursoId)
+
+        switch (action) {
+            case 'CREAR':
+            case 'EDITAR':
+                // this.showModalEvaluacion = true
+                // this.tituloEvaluacion =
+                //     action === 'CREAR' ? 'AGREGAR' : 'ACTUALIZAR'
+                // this.opcionEvaluacion =
+                //     action === 'CREAR' ? 'GUARDAR' : 'ACTUALIZAR'
+                // this.semanaEvaluacion = this.semanaSeleccionada
+
+                const ref = this._dialogService.open(
+                    EvaluacionFormContainerComponent,
+                    {
+                        ...MODAL_CONFIG,
+                        maximizable: true,
+                        header: !actividad['iEvaluacionId']
+                            ? 'Crear Evaluación'
+                            : 'Editar Evaluación',
+                        data: {
+                            actividad,
+                            semana: this.semanaSeleccionada,
+                        },
+                    }
+                )
+                this._dialogService.getInstance(ref).maximize()
+                ref.onClose.pipe(takeUntil(this._unsubscribe$)).subscribe({
+                    next: () => {
+                        // todo validar solo cuando sea necesario
+                        this.obtenerContenidoSemanas()
                     },
-                }
-            )
-            this._dialogService.getInstance(ref).maximize()
-            ref.onClose.pipe(takeUntil(this._unsubscribe$)).subscribe({
-                next: () => {
-                    // todo validar solo cuando sea necesario
-                    this.obtenerContenidoSemanas()
-                },
-            })
-        }
+                })
 
-        if (action === 'ELIMINAR') {
-            this._confirmService.openConfirm({
-                header: '¿Esta seguro de eliminar la evaluación?',
-                accept: () => {
-                    this.eliminarActividad(
-                        actividad.iProgActId,
+                break
+            case 'ELIMINAR':
+                this._confirmService.openConfirm({
+                    header: '¿Esta seguro de eliminar la evaluación?',
+                    accept: () => {
+                        this.eliminarActividad(
+                            actividad.iProgActId,
+                            actividad.iActTipoId,
+                            actividad.ixActivadadId
+                        )
+                    },
+                })
+                break
+            case 'VER':
+                this.router.navigate(
+                    [
+                        '../',
+                        'actividad',
+                        actividad.ixActivadadId,
                         actividad.iActTipoId,
-                        actividad.ixActivadadId
-                    )
-                },
-            })
+                    ],
+                    {
+                        relativeTo: this._activatedRoute,
+                    }
+                )
+                break
+            case 'PUBLICAR':
+                this._confirmService.openConfirm({
+                    header: '¿Esta seguro de publicar la evaluación?',
+                    accept: () => {
+                        this.publicarEvaluacion(actividad)
+                    },
+                })
+                break
+            case 'ANULAR_PUBLICACION':
+                this._confirmService.openConfirm({
+                    header: '¿Esta seguro de anular la publicación de la evaluación?',
+                    accept: () => {
+                        this.anularPublicacionEvaluacion({
+                            iEvaluacionId: actividad.ixActivadadId,
+                        })
+                    },
+                })
+                break
         }
-
-        if (action === 'VER') {
-            this.router.navigate(
-                [
-                    '../',
-                    'actividad',
-                    actividad.ixActivadadId,
-                    actividad.iActTipoId,
-                ],
-                {
-                    relativeTo: this._activatedRoute,
-                }
-            )
-        }
-        if (action === 'PUBLICAR') {
-            this._confirmService.openConfirm({
-                header: '¿Esta seguro de publicar la evaluación?',
-                accept: () => {
-                    this.publicarEvaluacion(actividad)
-                },
-            })
-        }
-        if (action === 'ANULAR_PUBLICACION') {
-            this._confirmService.openConfirm({
-                header: '¿Esta seguro de anular la publicación de la evaluación?',
-                accept: () => {
-                    this.anularPublicacionEvaluacion({
-                        iEvaluacionId: actividad.ixActivadadId,
-                    })
-                },
-            })
-        }
+        // if (action === 'CREAR' || action === 'EDITAR') {
+        //     const ref = this._dialogService.open(
+        //         EvaluacionFormContainerComponent,
+        //         {
+        //             ...MODAL_CONFIG,
+        //             maximizable: true,
+        //             header: !actividad['iEvaluacionId']
+        //                 ? 'Crear Evaluación'
+        //                 : 'Editar Evaluación',
+        //             data: {
+        //                 actividad,
+        //                 semana: this.semanaSeleccionada,
+        //             },
+        //         }
+        //     )
+        //     this._dialogService.getInstance(ref).maximize()
+        //     ref.onClose.pipe(takeUntil(this._unsubscribe$)).subscribe({
+        //         next: () => {
+        //             // todo validar solo cuando sea necesario
+        //             this.obtenerContenidoSemanas()
+        //         },
+        //     })
+        // }
     }
 
     publicarEvaluacion(actividad: IActividad) {
@@ -515,5 +556,15 @@ export class TabContenidoComponent implements OnInit {
                 }
             },
         })
+    }
+
+    accionBtnItem(elemento): void {
+        const { accion } = elemento
+        //const { item } = elemento
+        switch (accion) {
+            case 'close-modal':
+                this.showModalEvaluacion = false
+                break
+        }
     }
 }

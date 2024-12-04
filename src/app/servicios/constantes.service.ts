@@ -51,6 +51,11 @@ const docente = [
                 icon: 'pi pi-fw pi-share-alt',
                 routerLink: ['ayuda'],
             },
+            {
+                label: 'Calendario',
+                icon: 'pi pi-fw pi-calendar-clock',
+                routerLink: ['/docente/calendario'],
+            },
         ],
     },
 ]

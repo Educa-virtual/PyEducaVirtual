@@ -263,10 +263,22 @@ export class TabResultadosComponent implements OnInit {
     }
     guardarCalifcFinal() {
         const resultadosEstudiantesf = this.califcFinal.value
-        const datos = {
+        const datos = JSON.stringify({
             estudianteS: this.estudianteSeleccionado,
             estudianteF: resultadosEstudiantesf,
-        }
+        })
+        this._aulaService.guardarCalifEstudiante(datos).subscribe({
+            next: (resp) => {
+                this.messages = [
+                    {
+                        severity: 'info',
+                        //detail: resp?.iEscalaCalifId,
+                    },
+                ]
+                this.comentariosSelect = resp
+                console.log('obtener comentarior', resp)
+            },
+        })
         console.log('Enviar datos a matriz detalle', datos)
     }
     mostrarCalificacion() {

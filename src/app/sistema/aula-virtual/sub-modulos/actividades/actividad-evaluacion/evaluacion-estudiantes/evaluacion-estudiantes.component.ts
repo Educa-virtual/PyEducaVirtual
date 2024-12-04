@@ -8,6 +8,8 @@ import { ConstantesService } from '@/app/servicios/constantes.service'
 import { GeneralService } from '@/app/servicios/general.service'
 import { ConfirmationService, MessageService } from 'primeng/api'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
+import { NgxDocViewerModule } from 'ngx-doc-viewer'
+import { environment } from '@/environments/environment'
 
 @Component({
     selector: 'app-evaluacion-estudiantes',
@@ -18,6 +20,7 @@ import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmatio
         CommonModule,
         TimeComponent,
         PrimengModule,
+        NgxDocViewerModule,
     ],
     templateUrl: './evaluacion-estudiantes.component.html',
     styleUrl: './evaluacion-estudiantes.component.scss',
@@ -29,6 +32,7 @@ export class EvaluacionEstudiantesComponent implements OnChanges {
     private _ConfirmationModalService = inject(ConfirmationModalService)
     private _ConfirmationService = inject(ConfirmationService)
 
+    environment = environment.backend
     @Input() evaluacion
 
     iPreguntaId: number = 0

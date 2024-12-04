@@ -29,16 +29,13 @@
         <div class="col-12 lg:col-3">
             <div class="flex flex-wrap gap-2 justify-content-end">
                 <button
-                    size="small"
-                    [rounded]="true"
                     pButton
-                    pRipple
-                    pTooltip="Agregar Preguntas"
-                    tooltipPosition="top"
-                    ngClass="p-button-primary"
+                    class="p-button-primary gap-2"
+                    (click)="menuAgregacionPreguntas.toggle($event)"
+                    size="small"
                 >
                     <i class="pi pi-plus"></i>
-                    &nbsp;Agregar Preguntas
+                    <span class="text-md">Agregar Preguntas</span>
                 </button>
             </div>
         </div>

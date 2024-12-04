@@ -36,6 +36,7 @@ export class EvaluacionEstudiantesComponent implements OnChanges {
     itemPreguntas = []
     esUltimaPregunta: boolean = false
     display: boolean
+    timeRemaining: number
 
     ngOnChanges(changes) {
         if (changes.evaluacion?.currentValue) {
@@ -175,5 +176,10 @@ export class EvaluacionEstudiantesComponent implements OnChanges {
                 })
             },
         })
+    }
+    getFormattedTime(): string {
+        const minutes = Math.floor(this.timeRemaining / 60)
+        const seconds = this.timeRemaining % 60
+        return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
     }
 }

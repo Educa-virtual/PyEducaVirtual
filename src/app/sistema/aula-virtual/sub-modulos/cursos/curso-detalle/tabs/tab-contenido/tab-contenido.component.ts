@@ -99,18 +99,18 @@ export class TabContenidoComponent implements OnInit {
         number,
         (action: TActividadActions, actividad: IActividad) => void
     > = {
-        [TAREA]: this.handleTareaAction.bind(this),
-        [FORO]: this.handleForoAction.bind(this),
-        [EVALUACION]: this.handleEvaluacionAction.bind(this),
-        [VIDEO_CONFERENCIA]: this.handleVideoconferenciaAction.bind(this),
-        [MATERIAL]: this.handleMaterialAction.bind(this),
-    }
+            [TAREA]: this.handleTareaAction.bind(this),
+            [FORO]: this.handleForoAction.bind(this),
+            [EVALUACION]: this.handleEvaluacionAction.bind(this),
+            [VIDEO_CONFERENCIA]: this.handleVideoconferenciaAction.bind(this),
+            [MATERIAL]: this.handleMaterialAction.bind(this),
+        }
 
     constructor(
         private _dialogService: DialogService,
         private router: Router,
         private _activatedRoute: ActivatedRoute
-    ) {}
+    ) { }
 
     iPerfilId: number = null
     ngOnInit(): void {
@@ -258,11 +258,11 @@ export class TabContenidoComponent implements OnInit {
             case 'VER':
                 this.router.navigate([
                     'aula-virtual/areas-curriculares/' +
-                        'actividad' +
-                        '/' +
-                        actividad.ixActivadadId +
-                        '/' +
-                        actividad.iActTipoId,
+                    'actividad' +
+                    '/' +
+                    actividad.ixActivadadId +
+                    '/' +
+                    actividad.iActTipoId,
                 ])
                 break
         }

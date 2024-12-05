@@ -213,9 +213,16 @@
                         <td style="text-align: center">
                             {{ item.pAsistencia }} %
                         </td>
-                        <td style="text-align: center">
-                            {{ item.pInasistencia }} %
-                        </td>
+                        @if (item.pInasistencia > 33) {
+                            <td style="text-align: center; color: red">
+                                {{ item.pInasistencia }} %
+                            </td>
+                        } @else {
+                            <td style="text-align: center">
+                                {{ item.pInasistencia }} %
+                            </td>
+                        }
+
                         <td style="text-align: center">
                             <p-button
                                 severity="success"

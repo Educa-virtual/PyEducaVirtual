@@ -6,21 +6,23 @@
                     <div class="font-bold pb-2">MIS CALENDARIOS</div>
                 </div>
                 <div class="col-12">
-                    <p-accordion [multiple]="true" [activeIndex]="[0]">
+                    <p-accordion [multiple]="true" [activeIndex]="[0, 1, 2]">
                         <!-- @for (item of data; track $index) { } -->
                         <p-accordionTab header="Fechas Importantes">
                             <div class="flex flex-column">
                                 <div
-                                    *ngFor="let importante of importantes"
+                                    *ngFor="let festividad of festividades"
                                     class="flex p-1"
                                 >
                                     <p-checkbox
-                                        (onChange)="usarEvento()"
-                                        [(ngModel)]="importante.mostrar"
-                                        [label]="importante.name"
+                                        (onChange)="
+                                            eventoFestividades(festividad)
+                                        "
+                                        [(ngModel)]="festividad.mostrar"
+                                        [label]="festividad.cTipoFechaNombre"
                                         name="group"
                                         [binary]="true"
-                                        [styleClass]="importante.estilo"
+                                        [styleClass]="festividad.estilo"
                                     />
                                 </div>
                             </div>
@@ -49,6 +51,9 @@
                                     class="flex p-1"
                                 >
                                     <p-checkbox
+                                        (onChange)="
+                                            eventoCurricular(curricular)
+                                        "
                                         [(ngModel)]="curricular.mostrar"
                                         [label]="curricular.cCursoNombre"
                                         name="group"

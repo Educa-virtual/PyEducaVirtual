@@ -1,5 +1,12 @@
 import { PrimengModule } from '@/app/primeng.module'
-import { Component, EventEmitter, Input, Output } from '@angular/core'
+import {
+    Component,
+    EventEmitter,
+    Input,
+    OnChanges,
+    Output,
+    SimpleChanges,
+} from '@angular/core'
 import { CalendarOptions } from '@fullcalendar/core'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
@@ -9,16 +16,23 @@ import esLocale from '@fullcalendar/core/locales/es'
 @Component({
     selector: 'app-full-calendario',
     standalone: true,
-    imports: [PrimengModule, FullCalendarioComponent],
+    imports: [PrimengModule],
     templateUrl: './full-calendario.component.html',
     styleUrl: './full-calendario.component.scss',
 })
-export class FullCalendarioComponent {
-    @Output() eventCalendario = new EventEmitter<any>()
-    @Input() importantes
+export class FullCalendarioComponent implements OnChanges {
+    @Output() filtrarFestividad = new EventEmitter()
+    @Output() filtrarCalendario = new EventEmitter()
     @Input() academicas
     @Input() curricula
-    @Input() events: any
+    @Input() festividades
+    @Input() events
+
+    ngOnChanges(changes: SimpleChanges): void {
+        if (changes['events']) {
+            this.calendarOptions.events = changes['events'].currentValue
+        }
+    }
 
     calendarOptions: CalendarOptions = {
         plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
@@ -52,11 +66,16 @@ export class FullCalendarioComponent {
         },
     }
 
-    usarEvento() {
+    eventoFestividades(id) {
         const data = {
-            accion: '',
-            item: 1,
+            checkbox: id,
         }
-        this.eventCalendario.emit(data)
+        this.filtrarFestividad.emit(data)
+    }
+    eventoCurricular(id) {
+        const data = {
+            checkbox: id,
+        }
+        this.filtrarCalendario.emit(data)
     }
 }

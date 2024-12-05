@@ -56,6 +56,11 @@ const docente = [
                 icon: 'pi pi-fw pi-calendar-clock',
                 routerLink: ['/docente/calendario'],
             },
+            {
+                label: 'Banco de Preguntas',
+                icon: 'pi pi-fw pi-folder',
+                routerLink: ['/aula-virtual/banco-preguntas'],
+            },
         ],
     },
 ]
@@ -763,7 +768,7 @@ export class ConstantesService {
     nav = this.getMenu()
     getMenu() {
         if (!perfil) return first
-        console.log('perfiles', perfil)
+        //console.log('perfiles', perfil)
         switch (Number(perfil.iPerfilId)) {
             case 1:
                 return administrador

@@ -88,6 +88,7 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
     payloadRecibido: any
     @Input() payload: any
     @Output() payloadEmitidoForm = new EventEmitter<any>()
+    @Input() padreComponente: 'AULA-VIRTUAL' | 'BANCO-PREGUNTAS'
 
     // si envia la pregunta se hace el patch del formulario
     @Input()

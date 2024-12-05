@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
 import { environment } from '@/environments/environment'
+import { map } from 'rxjs'
 
 const baseUrl = environment.backendApi
 const baseUrlPublic = environment.backend
@@ -207,5 +208,37 @@ export class GeneralService {
             `${baseUrl}/acad/calendarioAcademicos/searchGradoCiclo`,
             data
         )
+    }
+    // Método para obtener datos desde el backend
+    getDatos(
+        tabla: string,
+        //campos: string = '*',
+        where: string = '1=1'
+    ) {
+        return this.http
+            .post<any>(
+                `${baseUrl}/aula-virtual/Resultado/guardarCalfcEstudiante`,
+                {
+                    tabla,
+                    where,
+                }
+            )
+            .pipe(
+                map((response) => {
+                    if (!response || !response.data) {
+                        throw new Error(
+                            'La respuesta no contiene datos válidos'
+                        )
+                    }
+                    return response.data
+                })
+                // map((data) => {
+                //     if (data.iActTipoId == 2) {
+                //         const preguntas = mapItemsBancoToEre(data.preguntas)
+                //         data.preguntas = mapData(preguntas)
+                //     }
+                //     return data
+                // })
+            )
     }
 }

@@ -125,6 +125,7 @@ export class EvaluacionFormPreguntasComponent implements OnInit, OnDestroy {
             iCursoId: this.iCursoId,
             tipoPreguntas: [],
             iEvaluacionId: this.iEvaluacionId,
+            padreComponente: 'AULA-VIRTUAL',
         })
         refModal.onClose.subscribe((result) => {
             if (result) {

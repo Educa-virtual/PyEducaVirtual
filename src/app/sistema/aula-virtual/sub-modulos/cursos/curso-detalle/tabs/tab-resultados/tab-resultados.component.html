@@ -116,6 +116,36 @@
                                     >Asignar nivel de logro a:
                                     {{ estudianteEv }}
                                 </label>
+                                <button
+                                    [value]="'1'"
+                                    (click)="selectUnidad($event)"
+                                >
+                                    UNIDAD I
+                                </button>
+                                <button
+                                    [value]="'2'"
+                                    (click)="selectUnidad($event)"
+                                >
+                                    UNIDAD II
+                                </button>
+                                <button
+                                    [value]="'3'"
+                                    (click)="selectUnidad($event)"
+                                >
+                                    UNIDAD III
+                                </button>
+                                <button
+                                    [value]="'4'"
+                                    (click)="selectUnidad($event)"
+                                >
+                                    UNIDAD IV
+                                </button>
+                                <button
+                                    [value]="'5'"
+                                    (click)="selectUnidad($event)"
+                                >
+                                    UNIDAD IV
+                                </button>
                             </div>
                             <!-- Modificar el formGroup // *ngIf="mostrarDiv"-->
                             <div
@@ -130,7 +160,9 @@
                                             <p-editor
                                                 id="descripcion"
                                                 hearder="hola"
-                                                placeholder="Agregar un conclusión descriptiva..."
+                                                placeholder="Agregar un conclusión descriptiva... {{
+                                                    estudianteEv
+                                                }}"
                                                 formControlName="cDetMatrConclusionDesc1"
                                             >
                                                 <ng-template pTemplate="header">
@@ -179,7 +211,7 @@
                                                 label="Guardar"
                                                 class="p-button-success"
                                                 (click)="
-                                                    guardarCalificacionFinal()
+                                                    guardaCalificacionFinalUnidad()
                                                 "
                                             ></button>
                                         </div>

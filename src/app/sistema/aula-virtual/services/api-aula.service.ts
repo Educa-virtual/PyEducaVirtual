@@ -131,11 +131,40 @@ export class ApiAulaService {
             data
         )
     }
-    guardarCalificacionEstudiante(data) {
-        return this._http.post(
-            `${this.baseUrlApi}/aula-virtual/Resultado/guardarCalifEstudiante`,
-            data
-        )
+    // guardar la calificación de la unidad
+    guardarCalificacionEstudiante(
+        esquema: string,
+        tabla: string,
+        where: any,
+        datos: any
+    ) {
+        return this._http
+            .post<any>(
+                `${this.baseUrlApi}/aula-virtual/Resultado/guardarCalfcEstudiante`,
+                {
+                    esquema,
+                    tabla,
+                    where,
+                    datos,
+                }
+            )
+            .pipe(
+                map((response) => {
+                    if (!response || !response.data) {
+                        throw new Error(
+                            'La respuesta no contiene datos válidos'
+                        )
+                    }
+                    return response.data
+                }),
+                map((data) => {
+                    if (data.iActTipoId == 2) {
+                        const preguntas = mapItemsBancoToEre(data.preguntas)
+                        data.preguntas = mapData(preguntas)
+                    }
+                    return data
+                })
+            )
     }
     // fin de foro guardarCalifEstudiante
     eliminarActividad(data) {

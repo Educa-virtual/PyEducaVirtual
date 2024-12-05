@@ -93,6 +93,9 @@ export class TabResultadosComponent implements OnInit {
     estudianteSelect = null
     public comentariosSelect
     messages: Message[] | undefined
+    tabla: string
+    campos: string
+    where: number
     private unsbscribe$ = new Subject<boolean>()
     unidad: string = '1'
 
@@ -214,6 +217,23 @@ export class TabResultadosComponent implements OnInit {
         this.unidad = buttonValue
     }
     //guardar la calificación y conclusión descriptiva del docente para los promedios finales
+    obtenerReporteDenotasFinales() {
+        //this.loaderService.show(); // Muestra el loader
+
+        this.GeneralService.getDatos(
+            this.tabla,
+            this.campos,
+            this.where
+        ).subscribe({
+            next: (response) => {
+                console.log(response)
+            },
+            error: (error) => {
+                console.error('Error al obtener los personal:', error)
+            },
+        })
+    }
+
     guardaCalificacionFinalUnidad() {
         const resultadosEstudiantesf = this.califcFinal.value
         const descripcionlimpia = resultadosEstudiantesf.cDetMatrConclusionDesc1

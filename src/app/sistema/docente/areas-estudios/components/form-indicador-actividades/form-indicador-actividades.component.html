@@ -24,6 +24,7 @@
                     optionLabel="cSilaboActAprendNombre"
                     optionValue="iSilaboActAprendId"
                     formControlName="iSilaboActAprendId"
+                    (onClick)="obtenerIndicadorLogro()"
                 />
                 <p-divider></p-divider>
                 <label class="font-semibold" for="">Indicador de Logro</label>
@@ -31,6 +32,7 @@
                     rows="3"
                     pInputText
                     class="flex-auto w-full"
+                    [placeholder]="indicadorLogro"
                     disabled
                 ></textarea>
             </div>

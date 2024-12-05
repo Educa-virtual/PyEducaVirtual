@@ -27,7 +27,10 @@ import {
     Validators,
 } from '@angular/forms'
 import { MessageService } from 'primeng/api'
-import { StepConfirmationService } from '@/app/servicios/confirm.service'
+import {
+    StepConfirmationService,
+    type informationMessage,
+} from '@/app/servicios/confirm.service'
 
 @Component({
     selector: 'app-config-ambiente',
@@ -86,19 +89,19 @@ export class ConfigAmbienteComponent implements OnInit {
             //bd iiee_ambientes
             //this.visible = true
             this.form = this.fb.group({
-                iIieeAmbienteId: [0], //codigo de tabla_iiee_ambientes
-                iTipoAmbienteId: [0, Validators.required], // tabla_iiee_ambientes (FK)
-                iEstadoAmbId: [0, Validators.required], // tabla_iiee_ambientes (FK)
-                iUbicaAmbId: [0, Validators.required], // tabla_iiee_ambientes (FK)
-                iUsoAmbId: [0, Validators.required], // tabla_iiee_ambientes (FK)
-                iPisoAmbid: [0, Validators.required], // tabla_iiee_ambientes (FK)
+                iIieeAmbienteId: [''], //codigo de tabla_iiee_ambientes
+                iTipoAmbienteId: [null, Validators.required], // tabla_iiee_ambientes (FK)
+                iEstadoAmbId: ['', Validators.required], // tabla_iiee_ambientes (FK)
+                iUbicaAmbId: ['', Validators.required], // tabla_iiee_ambientes (FK)
+                iUsoAmbId: ['', Validators.required], // tabla_iiee_ambientes (FK)
+                iPisoAmbid: ['', Validators.required], // tabla_iiee_ambientes (FK)
                 iYAcadId: [this.configuracion[0].iYAcadId], // tabla_iiee_ambientes (FK)
                 iSedeId: [this.configuracion[0].iSedeId], // tabla_iiee_ambientes (FK)
-                bAmbienteEstado: [0],
+                bAmbienteEstado: [''],
                 cAmbienteNombre: ['', Validators.required],
                 cAmbienteDescripcion: ['', Validators.required],
-                iAmbienteArea: [0, Validators.required],
-                iAmbienteAforo: [0, Validators.required],
+                iAmbienteArea: ['', Validators.required],
+                iAmbienteAforo: ['', Validators.required],
                 cAmbienteObs: [''],
                 // ambiente: [''],
                 cYAcadNombre: [this.configuracion[0].cYAcadNombre], // campo adicional para la vista
@@ -399,10 +402,7 @@ export class ConfigAmbienteComponent implements OnInit {
                         console.log(data.data)
                     },
                     error: (error) => {
-                        console.log(error, 'error al actualizar')
-                        // if(error && error.message){
-                        //   //  console.error(error?.message || 'Error en la respuesta del servicio');
-                        // }
+                        console.error('Error fetching ambiente:', error)
                     },
                     complete: () => {
                         this.messageService.add({
@@ -435,7 +435,35 @@ export class ConfigAmbienteComponent implements OnInit {
         this.form.get('cAmbienteObs')?.setValue('')
         this.form.get('bAmbienteEstado')?.setValue(0)
     }
+    confirm() {
+        console.log('confirmando')
+        const message: informationMessage = {
+            header: '¿Desea guardar información?',
+            message: 'Por favor, confirme para continuar.',
+            accept: {
+                severity: 'success',
+                summary: 'Año',
+                detail: 'Se ha guardado correctamente.',
+                life: 6000,
+            },
+            reject: {
+                severity: 'warn',
+                summary: 'Año',
+                detail: 'Se ha cancelado guardar la información.',
+                life: 3000,
+            },
+        }
 
+        this.msg.confirmAction(
+            {
+                onAcceptCallbacks: [
+                    () => this.saveInformation(),
+                    () => this.nextPage(),
+                ],
+            },
+            message
+        )
+    }
     saveInformation() {
         if (this.caption == 'create') {
             alert('Mensaje 0 save')
@@ -584,17 +612,3 @@ export class ConfigAmbienteComponent implements OnInit {
         },
     ]
 }
-
-// "{"iTipoAmbienteId":"1",
-// "iEstadoAmbId":"1",
-// "iUbicaAmbId":"1",
-// "iUsoAmbId":"1",
-// "iPisoAmbid":"2",
-// "iYAcadId":"3",
-// "iSedeId":"1",
-// "bAmbienteEstado":0,
-// "cAmbienteNombre":"aula 104",
-// "cAmbienteDescripcion":"de primaria",
-// "iAmbienteArea":"50",
-// "iAmbienteAforo":"30",
-// "cAmbienteObs":"ninguna"}"

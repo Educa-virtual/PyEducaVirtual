@@ -31,7 +31,6 @@ export class ContenidoSemanasComponent implements OnChanges, OnDestroy {
         if (changes.iSilaboId?.currentValue) {
             this.iSilaboId = changes.iSilaboId.currentValue
             this.getContenidoSemanas()
-            this.getIndicadorActividades()
         }
     }
     data = []
@@ -123,23 +122,6 @@ export class ContenidoSemanasComponent implements OnChanges, OnDestroy {
             params: { skipSuccessMessage: true },
         }
         this.getInformation(params, 'get_data')
-    }
-
-    getIndicadorActividades() {
-        const params = {
-            petition: 'post',
-            group: 'docente',
-            prefix: 'indicador-actividades',
-            ruta: 'list',
-            seleccion: 1,
-            data: {
-                opcion: 'CONSULTARxiSilaboId',
-                valorBusqueda: this.iSilaboId,
-                iCredId: this.ConstantesService.iCredId,
-            },
-            params: { skipSuccessMessage: true },
-        }
-        this.getInformation(params, 'get_indicador_actividades')
     }
 
     getInformation(params, accion) {
@@ -241,9 +223,6 @@ export class ContenidoSemanasComponent implements OnChanges, OnDestroy {
                 break
             case 'get_data':
                 this.data = item
-                break
-            case 'get_indicador_actividades':
-                this.indicadorActividades = item
                 break
             default:
                 break

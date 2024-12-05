@@ -87,6 +87,7 @@ interface NivelEvaluacion {
     styleUrl: './evaluaciones-form.component.scss',
 })
 export class EvaluacionesFormComponent implements OnInit {
+    datosRecIeParticipan: any[] = []
     private _formBuilder = inject(FormBuilder)
     private _ref = inject(DynamicDialogRef)
     public evaluacionFormGroup: any
@@ -209,7 +210,10 @@ export class EvaluacionesFormComponent implements OnInit {
             console.log('GG Reasignado iEvaluacionId:', this.iEvaluacionId)
         }
     }
-
+    datosRecibidosIeParticipan(datos: any) {
+        console.log('Datos recibidos del hijo:', datos)
+        this.datosRecIeParticipan = datos
+    }
     // Finalizar el formulario
     finalizarFormulario(data) {
         console.log('Formulario finalizado.')
@@ -253,7 +257,6 @@ export class EvaluacionesFormComponent implements OnInit {
             this.ereVerEvaluacion() // Llenar el formulario con los datos para editar
         }
     }
-
     ereCrearFormulario() {
         this.evaluacionFormGroup = this._formBuilder.group({
             iEvaluacionId: [null],

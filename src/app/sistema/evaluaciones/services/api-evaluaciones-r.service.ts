@@ -69,21 +69,30 @@ export class ApiEvaluacionesRService {
     //Insertar cursos
     insertarCursos(data: {
         iEvaluacionId: number
-        selectedCursos: { iCursoId: number }[]
+        selectedCursos: { iCursoNivelGradId: number }[]
     }): Observable<any> {
         return this.http.post(
             `${this.baseUrl}/ere/Evaluaciones/insertarCursos`,
             data
         )
     }
-    //Eliminar Cursos
+    //!Eliminar Cursos: Al tener el editar no los elimina
+    // eliminarCursos(data: {
+    //     iEvaluacionId: number
+    //     selectedCursos: { iCursoNivelGradId: number }[]
+    // }): Observable<any> {
+    //     return this.http.delete(
+    //         `${this.baseUrl}/ere/Evaluaciones/eliminarCursos`,
+    //         { body: data }
+    //     )
+    // }
     eliminarCursos(data: {
         iEvaluacionId: number
-        selectedCursos: { iCursoId: number }[]
+        selectedCursos: { iCursoNivelGradId: number }[]
     }): Observable<any> {
         return this.http.delete(
             `${this.baseUrl}/ere/Evaluaciones/eliminarCursos`,
-            { body: data } // Los datos se pasan en el cuerpo de la solicitud DELETE
+            { body: data } // Envía los datos en el body
         )
     }
     //Actualizar Cursos COMENTADO
@@ -206,16 +215,37 @@ export class ApiEvaluacionesRService {
             datapayload
         )
     }
-    // insertarMatrizDesempeno(data: any) {
-    //     return this.http.post(
-    //         `${this.baseUrl}/ere/Evaluaciones/insertarMatrizDesempeno`,
-    //         data
+    //!DescargarMatriz
+    generarPdfMatrizbyEvaluacionId(
+        _iEvaluacionIdtoMatriz: number
+    ): Observable<any> {
+        return this.http.get(
+            `${this.baseUrl}/ere/Evaluaciones/generarPdfMatrizbyEvaluacionId`,
+            {
+                params: {
+                    iEvaluacionId: _iEvaluacionIdtoMatriz.toString(),
+                },
+            }
+        )
+    }
+    // generarPdfMatrizbyEvaluacionId(iEvaluacionId: number) {
+    //     return this.http.get(
+    //         `${this.baseUrl}/ere/Evaluaciones/generarPdfMatrizbyEvaluacionId`,
+    //         {
+    //             params: {
+    //                 iEvaluacionId: iEvaluacionId.toString(),
+    //             },
+    //         }
     //     )
-    // }
-    // guardarEvaluacion(data: any) {
-    //     return this.http.post(`${this.baseUrl}/ere/Evaluaciones/guardar`, data)
-    // }
+    //     // const url = `${this.baseUrlBackend}/ere/Evaluaciones/generarPdfMatrizbyEvaluacionId`
+    //     // const params = new URLSearchParams({
+    //     //     iEvaluacionId: iEvaluacionId.toString(),
+    //     // })
+    //     // const fullUrl = `${url}?${params.toString()}`
+    //     // console.log('URL completa generada:', fullUrl)
 
+    //     //window.open(fullUrl, '_blank')
+    // }
     //Banco de Preguntas ->
     generarWordByPreguntasIds(baseParams) {
         const url = `${this.baseUrlBackend}/generarWordBancoPreguntasSeleccionadas`

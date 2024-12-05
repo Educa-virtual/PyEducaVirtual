@@ -1,0 +1,10 @@
+<app-toolbar-primeng title="Calendario"></app-toolbar-primeng>
+<app-full-calendario
+    [academicas]="academicas"
+    [curricula]="curricula"
+    [events]="events"
+    [festividades]="festividades"
+    (filtrarFestividad)="filterFestividad($event)"
+    (filtrarCalendario)="filterCalendario($event)"
+>
+</app-full-calendario>

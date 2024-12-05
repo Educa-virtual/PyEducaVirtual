@@ -48,6 +48,7 @@ const routes: Routes = [
                 './sub-evaluaciones/competencias/competencias.component'
             ).then((c) => c.CompetenciasComponent),
     },
+
 ]
 
 export default routes

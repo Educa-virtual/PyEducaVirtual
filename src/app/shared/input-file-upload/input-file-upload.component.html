@@ -1,0 +1,42 @@
+<p-inputGroup class="mt-1">
+    <p-inputGroupAddon>{{ label }}</p-inputGroupAddon>
+
+    <input
+        #fileView
+        type="text"
+        (click)="viewFile()"
+        class="cursor-pointer"
+        pInputText
+        readonly
+    />
+    <input
+        #fileInput
+        type="file"
+        (change)="onFileSelected($event)"
+        [accept]="acceptTypes"
+        hidden
+    />
+    <button
+        type="button"
+        pButton
+        aria-label="ver archivo"
+        (click)="viewFile()"
+        style="background-color: #6cb3c9; border-color: #7676764d"
+        icon="pi pi-eye"
+    ></button>
+    <button
+        type="button"
+        aria-label="adjuntar archivo"
+        pButton
+        (click)="triggerFileInput()"
+        style="background-color: #949090; border-color: #7676764d"
+        icon="pi pi-upload"
+    ></button>
+</p-inputGroup>
+
+<!-- <button
+                        type="button"
+                        pButton
+                        icon="pi pi-trash"
+                        class="p-button-danger"
+                    ></button> -->

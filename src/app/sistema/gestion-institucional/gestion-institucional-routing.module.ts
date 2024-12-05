@@ -19,7 +19,7 @@ const routes: Routes = [
     { path: 'ambiente', component: ConfigAmbienteComponent },
     { path: 'grado', component: ConfigGradoComponent },
     { path: 'seccion', component: ConfigSeccionComponent },
-    { path: 'plan-estudio', component: ConfigPlanEstudiosComponent },
+    { path: 'plane-estudio', component: ConfigPlanEstudiosComponent },
     { path: 'hora-docente', component: ConfigHoraDocenteComponent },
     { path: 'asignar-grado', component: ConfigAsignarGradoComponent },
     { path: 'resumen', component: ConfigResumenComponent },

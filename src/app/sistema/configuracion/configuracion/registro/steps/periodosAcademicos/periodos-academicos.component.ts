@@ -19,6 +19,7 @@ import { InputTextModule } from 'primeng/inputtext'
 import { CalendarModule } from 'primeng/calendar'
 import { InputGroupModule } from 'primeng/inputgroup'
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
+import { StepConfirmationService } from '@/app/servicios/confirm.service'
 @Component({
     selector: 'app-periodos-academicos',
     standalone: true,
@@ -39,6 +40,7 @@ import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
     styleUrl: './periodos-academicos.component.scss',
 })
 export class PeriodosAcademicosComponent implements OnInit {
+    hasUnsavedChanges = false
     periodosAcademicos: {
         iPeriodoEvalId: string
         cPeriodoEvalNombre: string
@@ -67,6 +69,7 @@ export class PeriodosAcademicosComponent implements OnInit {
         private httpService: httpService,
         public ticketService: TicketService,
         private router: Router,
+        private stepConfirmationService: StepConfirmationService,
         private fb: FormBuilder
     ) {
         this.form = this.fb.group({
@@ -102,6 +105,33 @@ export class PeriodosAcademicosComponent implements OnInit {
         this.formPeriodo.valueChanges.subscribe((value) => {
             console.log(value)
         })
+    }
+
+    async canDeactivate(): Promise<boolean> {
+        if (this.hasUnsavedChanges) {
+            return true;
+        }
+    
+        const confirm = await this.stepConfirmationService.confirmAction(
+            {},
+            {
+                header: '¿Desea salir sin guardar los cambios?',
+                message: 'Por favor, confirme para continuar.',
+                accept: {
+                    severity: 'success',
+                    summary: 'Confirmado',
+                    detail: 'Se ha aceptado la navegación.',
+                    life: 3000,
+                },
+                reject: {
+                    severity: 'error',
+                    summary: 'Cancelado',
+                    detail: 'Se ha cancelado la navegación.',
+                    life: 3000,
+                },
+            }
+        );
+        return confirm;
     }
 
     async setFasesPromocionales() {
@@ -171,6 +201,8 @@ export class PeriodosAcademicosComponent implements OnInit {
         await this.setFasesPromocionales()
 
         this.hiddenDialog()
+
+        this.hasUnsavedChanges = true
     }
     showDialog() {
         this.visible = true

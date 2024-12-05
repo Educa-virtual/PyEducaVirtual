@@ -1,0 +1,12 @@
+<app-container-page
+    title="Personal de la IE"
+    [actions]="actionsContainer"
+    (accionBtnItem)="navigateToRegistro()"
+>
+<app-table-primeng
+[actions]="actions"
+[columnas]="columns"
+(accionBtnItem)="handleActions($event)"
+[data]= "personalInformation"
+></app-table-primeng>
+</app-container-page>

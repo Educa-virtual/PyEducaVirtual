@@ -1,7 +1,7 @@
 <app-container-page
-    title="Registro de Grado"
+    title="Registro de ambientes"
     [actions]="accionesPrincipal"
-    (accionBtnItem)="accionBtnItemTable($event)"
+    (accionBtnItem)="accionBtnItem($event)"
 >
     <div class="card">
         <p-steps [model]="items" [readonly]="false"></p-steps>
@@ -18,7 +18,7 @@
             [columnas]="columns"
             [showCaption]="true"
             [data]="grados"
-            (accionBtnItem)="accionBtnItemTable($event)"
+            (accionBtnItem)="accionBtnItem($event.accion)"
             [showPaginator]="true"
             [(selectedRowData)]="accionBtnItemTable"
             [actions]="actions"

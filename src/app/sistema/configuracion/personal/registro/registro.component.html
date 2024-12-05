@@ -1,0 +1,11 @@
+<app-container-page
+    title="Registro de personal"
+    [actions]="actionsContainer"
+    (accionBtnItem)="navigateToAdministrarPersonal()"
+>
+    
+    <div class="card">
+        <p-steps [model]="items" [readonly]="false"></p-steps>
+    </div>
+    <router-outlet></router-outlet>
+</app-container-page>

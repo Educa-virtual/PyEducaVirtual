@@ -97,7 +97,7 @@ export class VerificacionComponent {
 
     goLogin() {
         this.tokenStorage.signOut()
-        this.store.clear()
+        // this.store.clear()
         this.router.navigate(['login'])
     }
 

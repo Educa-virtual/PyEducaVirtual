@@ -1,4 +1,6 @@
 import { PrimengModule } from '@/app/primeng.module'
+import { ConstantesService } from '@/app/servicios/constantes.service'
+import { GeneralService } from '@/app/servicios/general.service'
 import { ModalPrimengComponent } from '@/app/shared/modal-primeng/modal-primeng.component'
 import {
     Component,
@@ -20,19 +22,32 @@ export class FormIndicadorActividadesComponent implements OnChanges {
     @Output() accionBtnItem = new EventEmitter()
 
     @Input() data = []
-    @Input() actividades = []
     @Input() tipoIndicadorLogros = []
     @Input() item
     @Input() showModal: boolean = true
     @Input() option: string
+    @Input() iSilaboId
 
-    constructor(private fb: FormBuilder) {}
+    actividades = []
+    indicadorLogro: string = ''
+
+    constructor(
+        private fb: FormBuilder,
+        private ConstantesService: ConstantesService,
+        private GeneralService: GeneralService
+    ) {}
 
     ngOnChanges(changes) {
         this.formIndicadorActividades.reset()
         if (changes.item?.currentValue) {
             this.item = changes.item.currentValue
             this.formIndicadorActividades.patchValue(this.item)
+        }
+        if (changes.showModal?.currentValue) {
+            this.showModal = changes.showModal.currentValue
+        }
+        if (this.showModal) {
+            this.getSilaboActividadAprendizajes()
         }
     }
 
@@ -54,6 +69,43 @@ export class FormIndicadorActividadesComponent implements OnChanges {
 
         iCredId: [''],
     })
+
+    getSilaboActividadAprendizajes() {
+        const params = {
+            petition: 'post',
+            group: 'docente',
+            prefix: 'silabo-actividad-aprendizajes',
+            ruta: 'list',
+            seleccion: 1,
+            data: {
+                opcion: 'CONSULTARxiSilaboId',
+                iCredId: this.ConstantesService.iCredId,
+                iSilaboId: this.iSilaboId,
+            },
+            params: { skipSuccessMessage: true },
+        }
+        this.GeneralService.getGralPrefix(params).subscribe({
+            next: (response) => {
+                this.actividades = response?.data
+            },
+            complete: () => {},
+            error: (error) => {
+                console.log(error)
+            },
+        })
+    }
+
+    obtenerIndicadorLogro() {
+        if (this.formIndicadorActividades.value.iSilaboActAprendId) {
+            const indicador = this.actividades.find(
+                (i) =>
+                    i.iSilaboActAprendId ===
+                    this.formIndicadorActividades.value.iSilaboActAprendId
+            )
+            this.indicadorLogro = indicador.cSilaboActIndLogro
+        }
+    }
+
     accionBtn(elemento): void {
         const { accion } = elemento
         const { item } = elemento

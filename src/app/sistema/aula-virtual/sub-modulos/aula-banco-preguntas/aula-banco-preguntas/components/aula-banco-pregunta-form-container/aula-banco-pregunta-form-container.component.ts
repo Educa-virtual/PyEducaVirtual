@@ -41,7 +41,7 @@ export class AulaBancoPreguntaFormContainerComponent implements OnInit {
     constructor() {
         this.inicializarFormulario()
     }
-
+    padreComponente: 'AULA-VIRTUAL' | 'BANCO-PREGUNTAS' = 'BANCO-PREGUNTAS'
     ngOnInit() {
         this.getData()
         this.tipoPreguntas = this._config.data.tipoPreguntas.filter((item) => {
@@ -50,6 +50,7 @@ export class AulaBancoPreguntaFormContainerComponent implements OnInit {
         this.params.iEvaluacionId = this._config.data.iEvaluacionId ?? 0
         this.params.iCursoId = this._config.data.iCursoId
         this.params.iCurrContId = this._constantesService.iCurrContId
+        this.padreComponente = this._config.data.padreComponente
 
         if (this._config.data.pregunta.iPreguntaId == 0) {
             this.modePregunta = 'CREAR'

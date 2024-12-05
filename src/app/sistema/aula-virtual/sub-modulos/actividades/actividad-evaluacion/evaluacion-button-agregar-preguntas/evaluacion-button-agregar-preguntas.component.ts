@@ -61,6 +61,7 @@ export class EvaluacionButtonAgregarPreguntasComponent {
             iCursoId: this.iCursoId,
             tipoPreguntas: [],
             iEvaluacionId: this.iEvaluacionId,
+            padreComponente: null,
         })
         refModal.onClose.subscribe((result) => {
             if (result) {

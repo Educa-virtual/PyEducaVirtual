@@ -269,13 +269,13 @@ export class ForoRoomComponent implements OnInit {
         const nn = value.cForoRptaDocente
         const conclusionFinalDocente = this.limpiarHTML(nn)
         console.log('datos de respuesta docente', conclusionFinalDocente)
-        // this._aulaService.calificarForoDocente(value).subscribe((resp: any) => {
-        //     if (resp?.validated) {
-        //         this.modelaCalificacionComen = false
-        //         this.getRespuestaF()
-        //     }
-        // })
-        // console.log('Guardar Calificacion', value)
+        this._aulaService.calificarForoDocente(value).subscribe((resp: any) => {
+            if (resp?.validated) {
+                this.modelaCalificacionComen = false
+                this.getRespuestaF()
+            }
+        })
+        console.log('Guardar Calificacion', value)
 
         // this._aulaService.calificarForoDocente(value).subscribe((resp: any) => {
         //     if (resp?.validated) {

@@ -115,6 +115,7 @@ export class EvaluacionEstudiantesComponent implements OnChanges {
             console.warn('No hay más preguntas disponibles.')
         }
     }
+    // esta seccion Filtrapreguntas por Pregunta ID
     filtrarPreguntasxiTipoPregId() {
         switch (Number(this.itemPreguntas['iTipoPregId'])) {
             case 1:
@@ -132,7 +133,7 @@ export class EvaluacionEstudiantesComponent implements OnChanges {
         }
         console.log(this.itemPreguntas)
     }
-    //Enviando Respuesta unica y multiple
+    //Enviando Respuesta unica,multiple,libre
     enviarRpta(tipoRpta, pregunta) {
         let params
         switch (tipoRpta) {
@@ -201,6 +202,28 @@ export class EvaluacionEstudiantesComponent implements OnChanges {
                             iEvaluacionId: pregunta.iEvaluacionId,
                             jEvalRptaEstudiante:
                                 '{"rptaAbierta":"' + pregunta.cRptaTexto + '"}',
+                        },
+                        params: { skipSuccessMessage: true },
+                    }
+                    this.getInformation(params, '')
+                }
+                break
+            case 'encabezado':
+                if (pregunta.cRptaTexto != '') {
+                    params = {
+                        petition: 'post',
+                        group: 'evaluaciones',
+                        prefix: 'evaluacion/estudiantes',
+                        ruta: 'guardarRespuestaxiEstudianteId',
+                        data: {
+                            iEstudianteId:
+                                this._ConstantesService.iEstudianteId,
+                            iEvalPregId: pregunta.iEvalPregId,
+                            iEvaluacionId: pregunta.iEvaluacionId,
+                            jEvalRptaEstudiante:
+                                '{"rptacabecera":"' +
+                                pregunta.cRptaTexto +
+                                '"}',
                         },
                         params: { skipSuccessMessage: true },
                     }

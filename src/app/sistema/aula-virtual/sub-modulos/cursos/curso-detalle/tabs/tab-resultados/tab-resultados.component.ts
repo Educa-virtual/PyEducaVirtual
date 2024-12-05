@@ -172,7 +172,7 @@ export class TabResultadosComponent implements OnInit {
     ]
     // Inicializamos
     ngOnInit() {
-        this.verperfiles()
+        //this.verperfiles()
         this.getEstudiantesMatricula()
         this.mostrarCalificacion()
     }
@@ -205,26 +205,68 @@ export class TabResultadosComponent implements OnInit {
                 },
             })
     }
-    guardarCalificacionFinal() {
-        const resultadosEstudiantesf = this.califcFinal.value
-        const datos = JSON.stringify({
-            estudianteSeleccionado: this.estudianteSeleccionado,
-            respuestaCalificacionDocente: resultadosEstudiantesf,
-        })
-        this._aulaService.guardarCalificacionEstudiante(datos).subscribe({
-            next: (resp) => {
-                this.messages = [
-                    {
-                        severity: 'info',
-                        //detail: resp?.iEscalaCalifId,
-                    },
-                ]
-                this.comentariosSelect = resp
-                // console.log('obtener comentarior', resp)
-            },
-        })
-        console.log('Enviar datos a matriz detalle', datos)
+    // metodo para limpiar las etiquestas
+    limpiarHTML(html: string): string {
+        const temporal = document.createElement('div') // Crear un div temporal
+        temporal.innerHTML = html // Insertar el HTML
+        return temporal.textContent || '' // Obtener solo el texto
     }
+    guardaCalificacionFinalUnidad() {
+        const resultadosEstudiantesf = this.califcFinal.value
+        const descripcionlimpia = resultadosEstudiantesf.cDetMatrConclusionDesc1
+        const conclusionFinalDocente = this.limpiarHTML(descripcionlimpia)
+
+        const where = [
+            {
+                COLUMN_NAME: 'iDetMatrId',
+                VALUE: this.estudianteSeleccionado.iDetMatrId,
+            },
+        ]
+        const registro = {
+            cDetMatrConclusionDesc1: conclusionFinalDocente,
+            iEscalaCalifIdPeriodo1:
+                resultadosEstudiantesf.iEscalaCalifIdPeriodo1,
+            dtDetMatrPeriodo1: '2024/12/4',
+        }
+        this._aulaService
+            .guardarCalificacionEstudiante(
+                'acad',
+                'detalle_matriculas',
+                where,
+                registro
+            )
+            .subscribe({
+                next: (response) => {
+                    console.log('actualizar:', response)
+                },
+                error: (error) => {
+                    console.log('Error en la actualización:', error)
+                },
+            })
+        this.califcFinal.reset()
+        console.log('hola', where, registro)
+    }
+
+    // guardarCalificacionFinal() {
+    //     const resultadosEstudiantesf = this.califcFinal.value
+    //     const datos = JSON.stringify({
+    //         estudianteSeleccionado: this.estudianteSeleccionado,
+    //         respuestaCalificacionDocente: resultadosEstudiantesf,
+    //     })
+    //     this._aulaService.guardarCalificacionEstudiante(datos).subscribe({
+    //         next: (resp) => {
+    //             this.messages = [
+    //                 {
+    //                     severity: 'info',
+    //                     //detail: resp?.iEscalaCalifId,
+    //                 },
+    //             ]
+    //             this.comentariosSelect = resp
+    //             // console.log('obtener comentarior', resp)
+    //         },
+    //     })
+    //     console.log('Enviar datos a matriz detalle', datos)
+    // }
     mostrarCalificacion() {
         const userId = 1
         this._aulaService.obtenerCalificacion(userId).subscribe((Data) => {
@@ -236,7 +278,7 @@ export class TabResultadosComponent implements OnInit {
         this.GeneralService.getGralPrefix(params).subscribe({
             next: (response) => {
                 this.estudiantes = response.data
-                console.log('lista de estudiante', this.estudiantes)
+                //console.log('lista de estudiante', this.estudiantes)
             },
             complete: () => {},
             error: (error) => {

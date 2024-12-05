@@ -255,19 +255,27 @@ export class ForoRoomComponent implements OnInit {
         this.estudianteSelectComent = estudianteId
         console.log('Hola estudiante', this.estudianteSelectComent)
     }
+    limpiarHTML(html: string): string {
+        const temporal = document.createElement('div') // Crear un div temporal
+        temporal.innerHTML = html // Insertar el HTML
+        return temporal.textContent || '' // Obtener solo el texto
+    }
     calificarComnt() {
         const rpta = this.respuestasForo.find(
             (i) => i.EstudianteId === this.perfilSelect.EstudianteId
         )
         this.foroFormCalf.controls['iForoRptaId'].setValue(rpta.iForoRptaId)
         const value = this.foroFormCalf.value
-        this._aulaService.calificarForoDocente(value).subscribe((resp: any) => {
-            if (resp?.validated) {
-                this.modelaCalificacionComen = false
-                this.getRespuestaF()
-            }
-        })
-        console.log('Guardar Calificacion', value)
+        const nn = value.cForoRptaDocente
+        const conclusionFinalDocente = this.limpiarHTML(nn)
+        console.log('datos de respuesta docente', conclusionFinalDocente)
+        // this._aulaService.calificarForoDocente(value).subscribe((resp: any) => {
+        //     if (resp?.validated) {
+        //         this.modelaCalificacionComen = false
+        //         this.getRespuestaF()
+        //     }
+        // })
+        // console.log('Guardar Calificacion', value)
 
         // this._aulaService.calificarForoDocente(value).subscribe((resp: any) => {
         //     if (resp?.validated) {
@@ -276,24 +284,6 @@ export class ForoRoomComponent implements OnInit {
         //     }
         // })
     }
-    // submit() {
-    //     //const value = this.foroFormComnt.value
-    //     this.iDocenteId = this._constantesService.iDocenteId
-    //     const comment = {
-    //         ...this.foroFormComnt.value,
-    //         iForoId: this.ixActivadadId,
-    //         iDocenteId: this.iDocenteId,
-    //     }
-    //     console.log('Guardar Calificacion', comment)
-    //     this._aulaService
-    //         .calificarForoDocente(comment)
-    //         .subscribe((resp: any) => {
-    //             if (resp?.validated) {
-    //                 this.modalCalificacion = false
-    //                 this.getRespuestaF()
-    //             }
-    //         })
-    // }
     startReply(index: number) {
         this.selectedCommentIndex = index // Guarda el índice del comentario seleccionado
         console.log('Comentario', this.selectedCommentIndex)

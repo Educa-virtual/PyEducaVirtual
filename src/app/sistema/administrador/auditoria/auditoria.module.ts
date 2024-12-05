@@ -7,10 +7,6 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { AccesosComponent } from './accesos/accesos.component';
 import { StepConfirmationService } from '@/app/servicios/confirm.service';
 import { AuditoriaComponent } from './auditoria.component';
-import { PanelGraficoComponent } from './panel-grafico/panel-grafico.component';
-import { AccesosFallidosComponent } from './accesos-fallidos/accesos-fallidos.component';
-import { AuditoriaDatabaseComponent } from './auditoria-database/auditoria-database.component';
-import { AuditoriaBackendComponent } from './auditoria-backend/auditoria-backend.component';
 
 const routes: Routes = [
     {
@@ -19,28 +15,12 @@ const routes: Routes = [
         children: [
             {
                 path: '',
-                redirectTo: 'panel-grafico',
+                redirectTo: '',
                 pathMatch: 'full',
             },
             {
-                path: 'panel-grafico',
-                component: PanelGraficoComponent
-            },
-            {
-                path: 'accesos',
+                path: '',
                 component: AccesosComponent
-            },
-            {
-                path: 'accesos-fallidos',
-                component: AccesosFallidosComponent
-            },
-            {
-                path: 'auditoria-database',
-                component: AuditoriaDatabaseComponent
-            },
-            {
-                path: 'auditoria-backend',
-                component: AuditoriaBackendComponent
             },
         ]
     },

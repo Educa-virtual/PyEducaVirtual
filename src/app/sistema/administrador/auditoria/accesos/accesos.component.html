@@ -1,6 +1,6 @@
-<form [formGroup]="form">
+<form [formGroup]="form" class="flex justify-content-between">
     <p-inputGroup class="mt-1">
-        <p-inputGroupAddon>Tipo de acceso</p-inputGroupAddon>
+        <p-inputGroupAddon>Tipo de auditoria</p-inputGroupAddon>
         <p-dropdown
             class="max-w-max"
             formControlName="selectedTable"
@@ -9,13 +9,35 @@
             placeholder="Selecciona un tipo de acceso"
         />
     </p-inputGroup>
+    <p-inputGroup class="mt-1">
+        <p-inputGroupAddon>Filtro de fecha</p-inputGroupAddon>
+        <p-calendar
+            formControlName="filtroFecha"
+            selectionMode="range"
+            [iconDisplay]="'input'"
+            [showIcon]="true"
+            placeholder="Ingrese un rango de fechas"
+        ></p-calendar>
+    </p-inputGroup>
+    <button
+        style="flex: 1 0 9rem; display: flex; gap:1rem; "
+        [rounded]="true"
+        pButton
+        class="p-button-success"
+        (click)="generarExcel()"
+    >
+
+    <i class="pi pi-download"></i>
+    <div>Exportar</div>
+    </button>
 </form>
 
 <section class="flex gap-3">
-    <div style="flex: 1.5"
-    [ngStyle]="{
-      width: isExpand && selectRowData ? '40%' : '0',
-  }"
+    <div
+        style="flex: 1.5"
+        [ngStyle]="{
+            width: isExpand && selectRowData ? '40%' : '0',
+        }"
     >
         <app-table-primeng
             [columnas]="columns"
@@ -46,13 +68,20 @@
             <span>Fecha: {{ selectRowData?.dtFecha }}</span>
         </div>
         <div class="flex justify-content-between">
-            <span>Usuario: {{ selectRowData?.cAudUsuario ?? selectRowData?.cCredUsuario }}</span>
+            <span
+                >Usuario:
+                {{
+                    selectRowData?.cAudUsuario ?? selectRowData?.cCredUsuario
+                }}</span
+            >
         </div>
         <div>
             <p-accordion>
                 <p-accordionTab header="Operación realizada">
-                    <p class="flex flex-wrap" [textContent]="selectRowData?.cAudOperacion">
-                    </p>
+                    <p
+                        class="flex flex-wrap"
+                        [textContent]="selectRowData?.cAudOperacion"
+                    ></p>
                 </p-accordionTab>
             </p-accordion>
         </div>

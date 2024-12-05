@@ -74,15 +74,5 @@ export class AuditoriaComponent implements OnInit {
     }
   
 
-    setActions() {
-        
-    }
 
-    navigateToDetail() {
-        if (this.router.url == '/administrador/auditoria/panel-grafico') {
-            this.router.navigate(['administrador/auditoria/accesos'])
-        } else {
-            this.router.navigate(['administrador/auditoria/panel-grafico'])
-        }
-    }
 }

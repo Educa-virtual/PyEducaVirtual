@@ -5,34 +5,35 @@ import { firstValueFrom } from 'rxjs'
 export class AuditoriaService {
     constructor(private http: httpService) {}
 
-    async getAuditoriaAccesos() {
+    async getAuditoriaAccesos(filtroFecha) {
+
         const data = await firstValueFrom(
             this.http.getData(
-                `seg/auditoria/selAuditoriaAccesos`
+                `seg/auditoria/selAuditoriaAccesos?filtroFechaInicio=${filtroFecha.filtroFechaInicio}&filtroFechaFin=${filtroFecha.filtroFechaFin}`
             )
         )
         return data.data
     }
-    async getAuditoriaAccesosFallidos() {
+    async getAuditoriaAccesosFallidos(filtroFecha) {
         const data = await firstValueFrom(
             this.http.getData(
-                `seg/auditoria/selAuditoriaAccesosFallidos`
+                `seg/auditoria/selAuditoriaAccesosFallidos?filtroFechaInicio=${filtroFecha.filtroFechaInicio}&filtroFechaFin=${filtroFecha.filtroFechaFin}`
             )
         )
         return data.data
     }
-    async getAuditoria() {
+    async getAuditoria(filtroFecha) {
         const data = await firstValueFrom(
             this.http.getData(
-                `seg/auditoria/selAuditoria`
+                `seg/auditoria/selAuditoria?filtroFechaInicio=${filtroFecha.filtroFechaInicio}&filtroFechaFin=${filtroFecha.filtroFechaFin}`
             )
         )
         return data.data
     }
-    async getAuditoriaMiddleware() {
+    async getAuditoriaMiddleware(filtroFecha) {
         const data = await firstValueFrom(
             this.http.getData(
-                `seg/auditoria/selAuditoriaMiddleware`
+                `seg/auditoria/selAuditoriaMiddleware?filtroFechaInicio=${filtroFecha.filtroFechaInicio}&filtroFechaFin=${filtroFecha.filtroFechaFin}`
             )
         )
         return data.data
@@ -73,6 +74,31 @@ export class AuditoriaService {
             /DD|MM|YYYY|YY|hh|mm|ss/g,
             (match) => replacements[match]
         )
+    }
+
+    convertToSQLDateTime(input) {
+        // Verifica si el input contiene solo una hora o una fecha completa
+        const timeOnlyPattern = /^\d{2}:\d{2}$/
+        let dateObject
+
+        if (timeOnlyPattern.test(input)) {
+            // Si es solo hora, combínala con la fecha actual
+            const currentDate = new Date().toISOString().slice(0, 10)
+            dateObject = new Date(`${currentDate}T${input}:00`)
+        } else {
+            // Si es una fecha completa, intenta convertirla a Date
+            dateObject = new Date(input)
+        }
+
+        // Formatea la fecha y hora al formato SQL 'YYYY-MM-DD HH:mm:ss'
+        const year = dateObject.getFullYear()
+        const month = String(dateObject.getMonth() + 1).padStart(2, '0')
+        const day = String(dateObject.getDate()).padStart(2, '0')
+        const hours = String(dateObject.getHours()).padStart(2, '0')
+        const minutes = String(dateObject.getMinutes()).padStart(2, '0')
+        const seconds = String(dateObject.getSeconds()).padStart(2, '0')
+
+        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
     }
 
 

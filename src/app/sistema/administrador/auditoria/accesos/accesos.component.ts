@@ -14,6 +14,8 @@ import {
 import { TableModule } from 'primeng/table'
 import { CommonModule } from '@angular/common'
 import { AccordionModule } from 'primeng/accordion'
+import { CalendarModule } from 'primeng/calendar'
+import * as XLSX from 'xlsx'
 
 @Component({
     selector: 'app-accesos',
@@ -28,6 +30,7 @@ import { AccordionModule } from 'primeng/accordion'
         FormsModule,
         ReactiveFormsModule,
         AccordionModule,
+        CalendarModule,
     ],
     templateUrl: './accesos.component.html',
     styleUrl: './accesos.component.scss',
@@ -139,6 +142,8 @@ export class AccesosComponent implements OnInit, OnChanges, OnDestroy {
         },
     ]
 
+    dataExport
+
     constructor(
         private router: Router,
         private auditoria: AuditoriaService,
@@ -146,10 +151,26 @@ export class AccesosComponent implements OnInit, OnChanges, OnDestroy {
     ) {
         this.form = this.fb.group({
             selectedTable: [this.options[0]],
+            filtroFecha: [[new Date(), new Date()]],
         })
     }
     async ngOnInit() {
-        this.data = await this.auditoria.getAuditoriaAccesos()
+        if (
+            this.form.value.filtroFecha[0] != null &&
+            this.form.value.filtroFecha[1] != null
+        ) {
+            this.data = await this.auditoria.getAuditoriaAccesos({
+                filtroFechaInicio: this.auditoria.convertToSQLDateTime(
+                    this.form.value.filtroFecha[0]
+                ),
+                filtroFechaFin: this.auditoria.convertToSQLDateTime(
+                    this.form.value.filtroFecha[1]
+                ),
+            })
+        }
+
+        this.dataExport = this.data
+        
 
         this.data = this.data.map((acceso, index) => ({
             index: index + 1,
@@ -163,11 +184,25 @@ export class AccesosComponent implements OnInit, OnChanges, OnDestroy {
         }))
 
         this.form.valueChanges.subscribe(async (value) => {
-
             this.isExpand = false
 
             if (this.form.value.selectedTable.name == 'Accesos autorizados') {
-                this.data = await this.auditoria.getAuditoriaAccesos()
+                if (
+                    this.form.value.filtroFecha[0] != null &&
+                    this.form.value.filtroFecha[1] != null
+                ) {
+                    this.data = await this.auditoria.getAuditoriaAccesos({
+                        filtroFechaInicio: this.auditoria.convertToSQLDateTime(
+                            this.form.value.filtroFecha[0]
+                        ),
+                        filtroFechaFin: this.auditoria.convertToSQLDateTime(
+                            this.form.value.filtroFecha[1]
+                        ),
+                    })
+                }
+
+        this.dataExport = this.data
+
 
                 this.data = this.data.map((acceso, index) => ({
                     index: index + 1,
@@ -250,11 +285,22 @@ export class AccesosComponent implements OnInit, OnChanges, OnDestroy {
                 ]
             }
 
-            if (
-                this.form.value.selectedTable.name ==
-                'Accesos fallidos'
-            ) {
-                this.data = await this.auditoria.getAuditoriaAccesosFallidos()
+            if (this.form.value.selectedTable.name == 'Accesos fallidos') {
+                if (
+                    this.form.value.filtroFecha[0] != null &&
+                    this.form.value.filtroFecha[1] != null
+                ) {
+                    this.data =
+                        await this.auditoria.getAuditoriaAccesosFallidos({
+                            filtroFechaInicio:
+                                this.auditoria.convertToSQLDateTime(
+                                    this.form.value.filtroFecha[0]
+                                ),
+                            filtroFechaFin: this.auditoria.convertToSQLDateTime(
+                                this.form.value.filtroFecha[1]
+                            ),
+                        })
+                }
 
                 this.data = this.data.map((acceso, index) => ({
                     index: index + 1,
@@ -347,7 +393,21 @@ export class AccesosComponent implements OnInit, OnChanges, OnDestroy {
             }
 
             if (this.form.value.selectedTable.name == 'Consultas database') {
-                this.data = await this.auditoria.getAuditoria()
+                if (
+                    this.form.value.filtroFecha[0] != null &&
+                    this.form.value.filtroFecha[1] != null
+                ) {
+                    this.data = await this.auditoria.getAuditoria({
+                        filtroFechaInicio: this.auditoria.convertToSQLDateTime(
+                            this.form.value.filtroFecha[0]
+                        ),
+                        filtroFechaFin: this.auditoria.convertToSQLDateTime(
+                            this.form.value.filtroFecha[1]
+                        ),
+                    })
+                }
+        this.dataExport = this.data
+
 
                 this.isExpand = true
 
@@ -488,9 +548,18 @@ export class AccesosComponent implements OnInit, OnChanges, OnDestroy {
             }
 
             if (this.form.value.selectedTable.name == 'Consultas backend') {
-                this.data = await this.auditoria.getAuditoriaMiddleware()
+                this.data = await this.auditoria.getAuditoriaMiddleware({
+                    filtroFechaInicio: this.auditoria.convertToSQLDateTime(
+                        this.form.value.filtroFecha[0]
+                    ),
+                    filtroFechaFin: this.auditoria.convertToSQLDateTime(
+                        this.form.value.filtroFecha[1]
+                    ),
+                })
 
                 this.isExpand = true
+        this.dataExport = this.data
+
 
                 this.data = this.data.map((acceso, index) => {
                     const datosAntiguos = Array.isArray(
@@ -587,11 +656,7 @@ export class AccesosComponent implements OnInit, OnChanges, OnDestroy {
                         ].replace(/,/g, ', '),
                         cAudEsquema: acceso.cAudEsquema,
                         cAudDatos: Object.values(reorderedTransformData),
-
-                        
                     }
-                    
-
                 })
 
                 this.selectRowData = this.data[0]
@@ -639,6 +704,18 @@ export class AccesosComponent implements OnInit, OnChanges, OnDestroy {
 
     selectRow(data) {
         this.selectRowData = data
+    }
+
+    generarExcel() {
+           
+        const worksheet = XLSX.utils.json_to_sheet(this.dataExport)
+
+        // Crear un libro de trabajo y añadir la hoja
+        const workbook = XLSX.utils.book_new()
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Datos')
+
+        // Exportar el archivo Excel
+        XLSX.writeFile(workbook, 'exportacion.xlsx')
     }
 
     ngOnChanges(changes) {}

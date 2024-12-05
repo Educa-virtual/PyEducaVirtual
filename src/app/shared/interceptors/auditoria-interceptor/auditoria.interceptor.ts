@@ -6,12 +6,15 @@ import { Observable } from 'rxjs';
 export class AuditoriaInterceptor implements HttpInterceptor{
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
-    const data = req.clone({
-      setHeaders: {
-        'iCredId': JSON.parse(localStorage.getItem('dremoPerfil')).iCredId
-      }
-    })
+    if(JSON.parse(localStorage.getItem('dremoPerfil'))?.iCredId){
+      const data = req.clone({
+        setHeaders: {
+          'iCredId': JSON.parse(localStorage.getItem('dremoPerfil')).iCredId
+        }
+      })
+      return next.handle(data)
+    }
     
-    return next.handle(data)
+    return next.handle(req.clone())
   }
 }

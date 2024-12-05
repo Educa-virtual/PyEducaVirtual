@@ -487,46 +487,149 @@ export class AccesosComponent implements OnInit, OnChanges, OnDestroy {
                 ]
             }
 
-            if (this.form.value.selectedTable.table == 'Consultas backend') {
+            if (this.form.value.selectedTable.name == 'Consultas backend') {
                 this.data = await this.auditoria.getAuditoriaMiddleware()
 
                 this.isExpand = true
 
                 this.data = this.data.map((acceso, index) => {
+                    const datosAntiguos = Array.isArray(
+                        JSON.parse(acceso.cAudDatosAntiguos)
+                    )
+                        ? JSON.parse(acceso.cAudDatosAntiguos)[0]
+                        : {}
+                    const datosNuevos = Array.isArray(
+                        JSON.parse(acceso.cAudDatosNuevos)
+                    )
+                        ? JSON.parse(acceso.cAudDatosNuevos)[0]
+                        : {}
+
                     const transformData: Record<
                         string,
-                        { property: any; oldValue: any; newValue: any }
+                        {
+                            property: any
+                            oldValue: any
+                            newValue: any
+                            class: any
+                        }
                     > = {}
+
                     const keys = new Set([
-                        ...Object.keys(this.selectRowData.cAudDatosAntiguos),
-                        ...Object.keys(this.selectRowData.cAudDatosNuevos),
+                        ...Object.keys(datosAntiguos ?? {}),
+                        ...Object.keys(datosNuevos ?? {}),
                     ])
 
+                    const matchingKeys: string[] = []
+                    const differingKeys: string[] = []
+
                     keys.forEach((key) => {
-                        transformData[key] = {
+                        const oldValue = datosAntiguos[key] ?? ''
+                        const newValue = datosNuevos[key] ?? ''
+
+                        const isMatching = oldValue == newValue
+
+                        const formatDataAntiguo =
+                            this.auditoria.toVisualFechasFormat(
+                                datosAntiguos[key]
+                            )
+                        const formatDataNuevo =
+                            this.auditoria.toVisualFechasFormat(
+                                datosNuevos[key]
+                            )
+
+                        const entry = {
+                            class: isMatching
+                                ? undefined
+                                : acceso.cAudTipoOperacion,
                             property: key,
-                            oldValue:
-                                this.selectRowData.cAudDatosAntiguos[key] ??
-                                null,
-                            newValue:
-                                this.selectRowData.cAudDatosNuevos[key] ?? null,
+                            oldValue: formatDataAntiguo ?? null,
+                            newValue: formatDataNuevo ?? null,
                         }
+
+                        if (isMatching) {
+                            matchingKeys.push(key)
+                        } else {
+                            differingKeys.push(key)
+                        }
+
+                        transformData[key] = entry
+                    })
+
+                    const reorderedTransformData: Record<
+                        string,
+                        {
+                            property: any
+                            oldValue: any
+                            newValue: any
+                            class: any
+                        }
+                    > = {}
+
+                    differingKeys.forEach((key) => {
+                        reorderedTransformData[key] = transformData[key]
+                    })
+
+                    matchingKeys.forEach((key) => {
+                        reorderedTransformData[key] = transformData[key]
                     })
 
                     return {
                         index: index + 1,
-                        cLogin: acceso.cLogin,
-                        cPassword: acceso.cPassword,
-                        cMotivo: acceso.cMotivo,
-                        cDispositivo: acceso.cDispositivo,
-                        cIpCliente: acceso.cIpCliente,
-                        cNavegador: acceso.cNavegador,
-                        cSistmaOperativo: acceso.cSistmaOperativo,
+                        class: acceso.cAudTipoOperacion,
+                        cCredUsuario: acceso.cCredUsuario,
+                        cAudTabla: acceso.cAudTabla,
+                        cAudTipoOperacion: acceso.cAudTipoOperacion,
                         dtFecha: this.auditoria.toVisualFechasFormat(
                             acceso.dtFecha
                         ),
+                        cAudOperacion: JSON.parse(acceso.cAudOperacion)[0][
+                            'event_info'
+                        ].replace(/,/g, ', '),
+                        cAudEsquema: acceso.cAudEsquema,
+                        cAudDatos: Object.values(reorderedTransformData),
+
+                        
                     }
+                    
+
                 })
+
+                this.selectRowData = this.data[0]
+
+                this.columns = [
+                    {
+                        type: 'text',
+                        width: '1rem',
+                        field: 'index',
+                        header: 'N°',
+                        text_header: 'center',
+                        text: 'center',
+                    },
+                    {
+                        type: 'text',
+                        width: '5rem',
+                        field: 'cCredUsuario',
+                        header: 'Usuario',
+                        text_header: 'center',
+                        text: 'center',
+                    },
+                    {
+                        type: 'text',
+                        width: '5rem',
+                        field: 'cAudTipoOperacion',
+                        header: 'Operacion',
+                        text_header: 'center',
+                        text: 'center',
+                    },
+                    {
+                        type: 'text',
+                        width: '5rem',
+                        field: 'dtFecha',
+                        header: 'Fecha',
+                        text_header: 'center',
+                        text: 'center',
+                    },
+                ]
             }
 
             console.log(this.data)

@@ -46,7 +46,7 @@
             <span>Fecha: {{ selectRowData?.dtFecha }}</span>
         </div>
         <div class="flex justify-content-between">
-            <span>Usuario: {{ selectRowData?.cAudUsuario }}</span>
+            <span>Usuario: {{ selectRowData?.cAudUsuario ?? selectRowData?.cCredUsuario }}</span>
         </div>
         <div>
             <p-accordion>

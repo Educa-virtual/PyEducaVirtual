@@ -1,11 +1,6 @@
 import { PrimengModule } from '@/app/primeng.module'
 import { GeneralService } from '@/app/servicios/general.service'
-import { Component, inject } from '@angular/core'
-import { CalendarOptions } from '@fullcalendar/core'
-import dayGridPlugin from '@fullcalendar/daygrid'
-import timeGridPlugin from '@fullcalendar/timegrid'
-import interactionPlugin from '@fullcalendar/interaction'
-import esLocale from '@fullcalendar/core/locales/es'
+import { Component, inject, Input } from '@angular/core'
 import { ToolbarPrimengComponent } from '../../../shared/toolbar-primeng/toolbar-primeng.component'
 import { FullCalendarioComponent } from '../../../shared/full-calendario/full-calendario.component' // * traduce el Modulo de calendario a español
 
@@ -19,84 +14,20 @@ import { FullCalendarioComponent } from '../../../shared/full-calendario/full-ca
 export class CalendarioComponent {
     private GeneralService = inject(GeneralService)
 
+    @Input() iCursoId: string
+    @Input() iDocenteId: string
+    @Input() iYAcadId: string
+    @Input() iSeccionId: string
+
     curricula = []
-    curricula_horario = []
-    events = []
+    festividades = []
+    events = [] // guarda los eventos para el calendario
 
     ngOnInit() {
         this.getObtenerCurriculas()
         this.getObtenerCurriculasHorario()
+        this.getObtenerFestividades()
     }
-    calendarOptions: CalendarOptions = {
-        plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
-        slotLabelFormat: { hour: 'numeric', minute: '2-digit', hour12: false },
-        initialView: 'dayGridMonth',
-        locales: [esLocale],
-        weekends: true,
-        selectable: true,
-        dayMaxEvents: true,
-        height: 600,
-        dateClick: (item) => console.log(item),
-        viewDidMount: (info) => {
-            const weekendDays = ['sábado', 'viernes']
-            const allDays = info.el.querySelectorAll('.fc-day')
-
-            allDays.forEach((cell: HTMLElement) => {
-                const date = new Date(cell.getAttribute('data-date')!)
-                if (
-                    weekendDays.includes(
-                        date.toLocaleString('es-pe', { weekday: 'long' })
-                    )
-                ) {
-                    cell.style.backgroundColor = '#ffd7d7'
-                }
-            })
-        },
-        headerToolbar: {
-            right: 'dayGridMonth,timeGridWeek,timeGridDay',
-            center: 'title',
-            start: 'prev,next today',
-        },
-    }
-
-    filterCalendario(checkbox: any, valor: any) {
-        this.events.map((evento) => {
-            if (evento.grupo == valor && checkbox.mostrar == true) {
-                evento.display = 'block'
-            }
-            if (evento.grupo == valor && checkbox.mostrar == false) {
-                evento.display = 'none'
-            }
-        })
-        this.calendarOptions.events = Object.assign([], this.events)
-    }
-
-    importantes: any[] = [
-        {
-            name: 'Feriados Nacionales',
-            valor: 'asistencias',
-            mostrar: true,
-            estilo: 'red-checkbox',
-        },
-        {
-            name: 'Feriados Recuperables',
-            valor: 'festividades',
-            mostrar: true,
-            estilo: 'yellow-checkbox',
-        },
-        {
-            name: 'Fecha de Recuperacion',
-            valor: 'actividades',
-            mostrar: true,
-            estilo: 'green-checkbox',
-        },
-        {
-            name: 'Fechas especiales de I.E.',
-            valor: 'actividades',
-            mostrar: true,
-            estilo: 'purple-checkbox',
-        },
-    ]
 
     academicas: any[] = [
         {
@@ -119,6 +50,7 @@ export class CalendarioComponent {
         },
     ]
 
+    // Obtener Areas curriculares para los checkbox
     getObtenerCurriculas() {
         const params = {
             petition: 'post',
@@ -133,6 +65,19 @@ export class CalendarioComponent {
         }
         this.getInformation(params, 'curriculas')
     }
+
+    getObtenerFestividades() {
+        const params = {
+            petition: 'post',
+            group: 'docente',
+            prefix: 'asistencia',
+            ruta: 'obtenerFestividad',
+            data: {},
+            params: { skipSuccessMessage: true },
+        }
+        this.getInformation(params, 'festividades')
+    }
+
     getObtenerCurriculasHorario() {
         const params = {
             petition: 'post',
@@ -140,8 +85,10 @@ export class CalendarioComponent {
             prefix: 'buscar_curso',
             ruta: 'curriculaHorario',
             data: {
-                iDocenteId: 1,
-                iYAcadId: 3,
+                iDocenteId: this.iDocenteId,
+                iYAcadId: this.iYAcadId,
+                iCursoId: this.iCursoId,
+                iSeccionId: this.iSeccionId,
             },
             params: { skipSuccessMessage: true },
         }
@@ -160,12 +107,17 @@ export class CalendarioComponent {
                 })
                 break
             case 'curriculaHorario':
-                this.calendarOptions.events = item
                 this.events = item
+                break
+            case 'festividades':
+                this.festividades = item
+                this.festividades.map((caja) => {
+                    caja.mostrar = true
+                })
                 break
             default:
                 this.curricula = []
-                this.curricula_horario = []
+                this.festividades = []
                 break
         }
     }
@@ -179,7 +131,39 @@ export class CalendarioComponent {
         })
     }
 
-    accionCalendario(evnt) {
-        console.log(evnt)
+    filterFestividad(valor: any) {
+        this.events.map((evento) => {
+            if (
+                evento.grupo == valor.checkbox.cTipoFechaNombre &&
+                valor.checkbox.mostrar == true
+            ) {
+                evento.display = 'block'
+            }
+            if (
+                evento.grupo == valor.checkbox.cTipoFechaNombre &&
+                valor.checkbox.mostrar == false
+            ) {
+                evento.display = 'none'
+            }
+        })
+        this.events = Object.assign([], this.events)
+    }
+
+    filterCalendario(valor: any) {
+        this.events.map((evento) => {
+            if (
+                evento.grupo == valor.checkbox.cCursoNombre &&
+                valor.checkbox.mostrar == true
+            ) {
+                evento.display = 'block'
+            }
+            if (
+                evento.grupo == valor.checkbox.cCursoNombre &&
+                valor.checkbox.mostrar == false
+            ) {
+                evento.display = 'none'
+            }
+        })
+        this.events = Object.assign([], this.events)
     }
 }

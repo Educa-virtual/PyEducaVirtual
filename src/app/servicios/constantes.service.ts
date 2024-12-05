@@ -51,6 +51,11 @@ const docente = [
                 icon: 'pi pi-fw pi-share-alt',
                 routerLink: ['ayuda'],
             },
+            {
+                label: 'Banco de Preguntas',
+                icon: 'pi pi-fw pi-folder',
+                routerLink: ['/aula-virtual/banco-preguntas'],
+            },
         ],
     },
 ]
@@ -83,11 +88,6 @@ const estudiante = [
                 label: 'Enlaces de ayuda',
                 icon: 'pi pi-fw pi-share-alt',
                 routerLink: ['ayuda'],
-            },
-            {
-                label: 'Banco de Preguntas',
-                icon: 'pi pi-fw pi-folder',
-                routerLink: ['/aula-virtual/banco-preguntas'],
             },
         ],
     },

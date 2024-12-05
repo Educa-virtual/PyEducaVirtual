@@ -85,11 +85,14 @@ export class EvaluacionEstudiantesComponent implements OnChanges {
 
     finalizarEvaluacion() {
         // Aquí va la lógica para finalizar la evaluación
+        const fechaActual = new Date() // Obtiene la fecha y hora actual.
+        console.log(`Fecha y hora de envío: ${fechaActual.toLocaleString()}`) // Imprime fecha y hora en formato legible.
         console.log(
             'Evaluación finalizada con ID de pregunta: ',
             this.iPreguntaId
         )
         alert('Evaluación finalizada. ¡Gracias por participar!')
+
         // Cerrar el modal
         // this._ConfirmationService.confirm({
         //     header: 'Evaluación finalizada!',
@@ -242,20 +245,24 @@ export class EvaluacionEstudiantesComponent implements OnChanges {
                         severity: 'success',
                         summary: 'Guardado!',
                         detail: 'Se guardó correctamente la respuesta',
+                        sticky: true, // El mensaje no se cerrará automáticamente
+                        life: 5000, // Duración en milisegundos
                     })
                 }
             },
-            complete: () => {},
             error: (error) => {
                 console.log(error)
                 this._MessageService.add({
                     severity: 'error',
                     summary: 'Error',
                     detail: error,
+                    sticky: true, // Aplicar también si es necesario para errores
                 })
             },
+            complete: () => {},
         })
     }
+
     getFormattedTime(): string {
         const minutes = Math.floor(this.timeRemaining / 60)
         const seconds = this.timeRemaining % 60

@@ -14,6 +14,7 @@ import { GestionarSilaboComponent } from './areas-estudios/components/gestionar-
 import { PerfilComponent } from './perfil/perfil.component'
 import { ActividadesNoLectivasComponent } from './actividades-no-lectivas/actividades-no-lectivas.component'
 import { MaterialEducativoComponent } from './material-educativo/material-educativo.component'
+import { CalendarioComponent } from './calendario/calendario.component'
 
 @NgModule({
     imports: [
@@ -55,6 +56,10 @@ import { MaterialEducativoComponent } from './material-educativo/material-educat
             {
                 path: 'material-educativo/:idDocCursoId/:cCursoNombre',
                 component: MaterialEducativoComponent,
+            },
+            {
+                path: 'calendario',
+                component: CalendarioComponent,
             },
         ]),
     ],

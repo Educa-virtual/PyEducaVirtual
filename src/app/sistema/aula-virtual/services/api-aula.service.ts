@@ -147,12 +147,6 @@ export class ApiAulaService {
                     where,
                     datos,
                 }
-                // {
-                //     esquema: 'acad',
-                //     tabla: 'turnos',
-                //     campos: '*',
-                //     condicion: '1 = 1',
-                // }
             )
             .pipe(
                 map((response) => {

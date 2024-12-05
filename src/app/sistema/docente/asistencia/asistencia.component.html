@@ -2,7 +2,8 @@
     <p-toolbar class="col-12">
         <div class="block">
             <h4 class="text-primary text-white font-bold block">
-                {{ cNivelNombreCursos.toUpperCase() }} : {{ cCursoNombre }}
+                ASISTENCIA DEL {{ cNivelNombreCursos.toUpperCase() }} :
+                {{ cCursoNombre }}
             </h4>
             <div class="text-primary text-white font-bold block">
                 Nivel: {{ cNivelTipoNombre }} | Ciclo: I | Grado:
@@ -15,28 +16,6 @@
         <div class="card mb-2">
             <div class="grid">
                 <div class="col-11">
-                    <div class="flex block p-2">
-                        <div class="font-bold pb-2">MIS CALENDARIOS</div>
-                    </div>
-
-                    <div class="flex block p-2">
-                        <div
-                            *ngFor="let category of categories"
-                            class="flex mr-2"
-                        >
-                            <p-checkbox
-                                [(ngModel)]="category.mostrar"
-                                (onChange)="
-                                    filterCalendario(category, category.valor)
-                                "
-                                [label]="category.name"
-                                name="group"
-                                [binary]="true"
-                                [styleClass]="category.estilo"
-                            />
-                        </div>
-                    </div>
-
                     <div class="flex block p-2">
                         <div class="font-bold pb-2">LEGENDA</div>
                     </div>
@@ -77,7 +56,6 @@
                         tooltipPosition="left"
                         (click)="modalReporte()"
                     />
-
                     <p-button
                         icon="pi pi-chart-bar"
                         size="small"
@@ -248,93 +226,6 @@
             </p-table>
         </div>
     </div>
-    <!-- <div class="flex flex-column mb-3 display">
-        
-        <div class="flex">
-            <div class="flex-1 flex-column font-bold p-2">
-                {{ cNivelNombreCursos.toUpperCase() }} : {{ cCursoNombre }}
-            </div>
-        </div>
-        <div class="flex">
-            <div class="flex-1 flex-column font-bold p-2">Nivel: {{cNivelTipoNombre}}</div>
-            <div class="flex-1 flex-column font-bold p-2">Ciclo: I</div>
-        </div>
-        <div class="flex">
-            <div class="flex-1 flex-column font-bold p-2">Grado: {{cGradoAbreviacion}}</div>
-            <div class="flex-1 flex-column font-bold p-2">Seccion: {{cSeccion}}</div>
-        </div>
-        <div class="flex block">
-            <p-table
-                class="mt-1 block w-full"
-                [value]="data"
-                [scrollable]="true"
-                scrollHeight="400px"
-            >
-                <ng-template pTemplate="header">
-                    <tr style="height: 12px">
-                        <th style="width: auto">N°</th>
-                        <th style="width: auto">Nombres y Apellidos</th>
-                        <th style="width: auto">MARCAR ASISTENCIA</th>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
-                    <tr>
-                        <td>{{ rowIndex + 1 }}</td>
-                        <td>{{ item.nombrecompleto }}</td>
-                        <td class="flex justify-content-center">
-                            <p-button
-                                *ngIf="item.cTipoAsiLetra; else noboton"
-                                label="{{ item.cTipoAsiLetra }}"
-                                size="small"
-                                [ngClass]="item.bgcolor"
-                                (click)="changeAsistencia(rowIndex)"
-                            />
-                            <ng-template #noboton>
-                                <p-button
-                                    label="-"
-                                    size="small"
-                                    (click)="changeAsistencia(rowIndex)"
-                                    ngClass="bt-cyan"
-                                />
-                            </ng-template>
-                        </td>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="summary">
-                    <div
-                        class="flex block flex-wrap column-gap-3 row-gap-3 p-2"
-                    >
-                        <div
-                            *ngFor="let lista of leyendaModal"
-                            class="flex mr-1"
-                        >
-                            <p-inputGroup class="grupo">
-                                <button
-                                    type="button"
-                                    size="small"
-                                    pButton
-                                    [ngClass]="lista.bgColor"
-                                >
-                                    {{ lista.simbolo }}
-                                </button>
-                                <div [ngClass]="lista.divColor">
-                                    {{ lista.significado }}
-                                </div>
-                                <button
-                                    type="button"
-                                    size="small"
-                                    pButton
-                                    [ngClass]="lista.bgColor"
-                                >
-                                    {{ lista.contar }}
-                                </button>
-                            </p-inputGroup>
-                        </div>
-                    </div>
-                </ng-template>
-            </p-table>
-        </div>
-    </div> -->
     <div class="flex justify-content-center gap-2">
         <p-button
             label="Cancelar"

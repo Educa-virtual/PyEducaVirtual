@@ -93,7 +93,11 @@ export class TabResultadosComponent implements OnInit {
     estudianteSelect = null
     public comentariosSelect
     messages: Message[] | undefined
+    tabla: string
+    campos: string
+    where: number
     private unsbscribe$ = new Subject<boolean>()
+    unidad: string = '1'
 
     idcurso: number
     mostrarDiv: boolean = false // Variable para controlar la visibilidad
@@ -101,7 +105,7 @@ export class TabResultadosComponent implements OnInit {
     califcnFinal: any[] = []
     public califcFinal: FormGroup = this._formBuilder.group({
         cDetMatrConclusionDesc1: ['', [Validators.required]],
-        iEscalaCalifIdPeriodo1: [],
+        iEscalaCalifIdPeriodo1: ['', [Validators.required]],
     })
     //Campos de la tabla para mostrar notas
     public columnasTabla: IColumn[] = [
@@ -175,13 +179,9 @@ export class TabResultadosComponent implements OnInit {
         //this.verperfiles()
         this.getEstudiantesMatricula()
         this.mostrarCalificacion()
+        //this.selectUnidad()
     }
-    // ver que id nos llegan(borrar):
-    verperfiles() {
-        this.iEstudianteId = this._constantesService.iEstudianteId
-        this.idcurso = this._constantesService.iYAcadId
-        console.log('ver datos', this.idcurso)
-    }
+    // Obtenemos los datos de estudiante que el docente hico su retroalimentación por alumno
     obtenerComnt(estudiantes) {
         //this.mostrarDiv = !this.mostrarDiv // Cambia el estado de visibilida
         this.estudianteEv = estudiantes.nombrecompleto
@@ -211,22 +211,74 @@ export class TabResultadosComponent implements OnInit {
         temporal.innerHTML = html // Insertar el HTML
         return temporal.textContent || '' // Obtener solo el texto
     }
+    //metodo para obtener el id de la unidad al seleccionar
+    selectUnidad(event: Event): void {
+        const buttonValue = (event.target as HTMLButtonElement).value
+        this.unidad = buttonValue
+    }
+    //guardar la calificación y conclusión descriptiva del docente para los promedios finales
+    obtenerReporteDenotasFinales() {
+        //this.loaderService.show(); // Muestra el loader
+
+        this.GeneralService.getDatos(
+            this.tabla,
+            this.campos,
+            this.where
+        ).subscribe({
+            next: (response) => {
+                console.log(response)
+            },
+            error: (error) => {
+                console.error('Error al obtener los personal:', error)
+            },
+        })
+    }
+
     guardaCalificacionFinalUnidad() {
         const resultadosEstudiantesf = this.califcFinal.value
         const descripcionlimpia = resultadosEstudiantesf.cDetMatrConclusionDesc1
         const conclusionFinalDocente = this.limpiarHTML(descripcionlimpia)
-
         const where = [
             {
                 COLUMN_NAME: 'iDetMatrId',
                 VALUE: this.estudianteSeleccionado.iDetMatrId,
             },
         ]
-        const registro = {
-            cDetMatrConclusionDesc1: conclusionFinalDocente,
-            iEscalaCalifIdPeriodo1:
-                resultadosEstudiantesf.iEscalaCalifIdPeriodo1,
-            dtDetMatrPeriodo1: '2024/12/4',
+        const registro: any = {}
+
+        switch (this.unidad) {
+            case '1':
+                registro.cDetMatrConclusionDesc1 = conclusionFinalDocente
+                registro.iEscalaCalifIdPeriodo1 =
+                    resultadosEstudiantesf.iEscalaCalifIdPeriodo1
+                registro.dtDetMatrPeriodo1 = '2024/12/5'
+                break
+            case '2':
+                registro.cDetMatrConclusionDesc2 = conclusionFinalDocente
+                registro.iEscalaCalifIdPeriodo2 =
+                    resultadosEstudiantesf.iEscalaCalifIdPeriodo1
+                registro.dtDetMatrPeriodo2 = '2024/12/5'
+                break
+            case '3':
+                registro.cDetMatrConclusionDesc3 = conclusionFinalDocente
+                registro.iEscalaCalifIdPeriodo3 =
+                    resultadosEstudiantesf.iEscalaCalifIdPeriodo1
+                registro.dtDetMatrPeriodo3 = '2024/12/5'
+                break
+            case '4':
+                registro.cDetMatrConclusionDesc4 = conclusionFinalDocente
+                registro.iEscalaCalifIdPeriodo4 =
+                    resultadosEstudiantesf.iEscalaCalifIdPeriodo1
+                registro.dtDetMatrPeriodo4 = '2024/12/5'
+                break
+            case '5':
+                registro.iEscalaCalifIdRecuperacion =
+                    resultadosEstudiantesf.iEscalaCalifIdPeriodo1
+                registro.dtDetMatrRecuperacion = '2024/12/5'
+                break
+
+            default:
+                console.log('No se a encontrado la unidad')
         }
         this._aulaService
             .guardarCalificacionEstudiante(
@@ -244,29 +296,38 @@ export class TabResultadosComponent implements OnInit {
                 },
             })
         this.califcFinal.reset()
+
+        // const where = [
+        //     {
+        //         COLUMN_NAME: 'iDetMatrId',
+        //         VALUE: this.estudianteSeleccionado.iDetMatrId,
+        //     },
+        // ]
+
+        // const registro = {
+        //     cDetMatrConclusionDesc1: conclusionFinalDocente,
+        //     iEscalaCalifIdPeriodo1:
+        //         resultadosEstudiantesf.iEscalaCalifIdPeriodo1,
+        //     dtDetMatrPeriodo1: '2024/12/4',
+        // }
+        // this._aulaService
+        //     .guardarCalificacionEstudiante(
+        //         'acad',
+        //         'detalle_matriculas',
+        //         where,
+        //         registro
+        //     )
+        //     .subscribe({
+        //         next: (response) => {
+        //             console.log('actualizar:', response)
+        //         },
+        //         error: (error) => {
+        //             console.log('Error en la actualización:', error)
+        //         },
+        //     })
+        // this.califcFinal.reset()
         console.log('hola', where, registro)
     }
-
-    // guardarCalificacionFinal() {
-    //     const resultadosEstudiantesf = this.califcFinal.value
-    //     const datos = JSON.stringify({
-    //         estudianteSeleccionado: this.estudianteSeleccionado,
-    //         respuestaCalificacionDocente: resultadosEstudiantesf,
-    //     })
-    //     this._aulaService.guardarCalificacionEstudiante(datos).subscribe({
-    //         next: (resp) => {
-    //             this.messages = [
-    //                 {
-    //                     severity: 'info',
-    //                     //detail: resp?.iEscalaCalifId,
-    //                 },
-    //             ]
-    //             this.comentariosSelect = resp
-    //             // console.log('obtener comentarior', resp)
-    //         },
-    //     })
-    //     console.log('Enviar datos a matriz detalle', datos)
-    // }
     mostrarCalificacion() {
         const userId = 1
         this._aulaService.obtenerCalificacion(userId).subscribe((Data) => {

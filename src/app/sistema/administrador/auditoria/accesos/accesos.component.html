@@ -1,0 +1,102 @@
+<form [formGroup]="form" class="flex justify-content-between">
+    <p-inputGroup class="mt-1">
+        <p-inputGroupAddon>Tipo de auditoria</p-inputGroupAddon>
+        <p-dropdown
+            class="max-w-max"
+            formControlName="selectedTable"
+            [options]="options"
+            optionLabel="name"
+            placeholder="Selecciona un tipo de acceso"
+        />
+    </p-inputGroup>
+    <p-inputGroup class="mt-1">
+        <p-inputGroupAddon>Filtro de fecha</p-inputGroupAddon>
+        <p-calendar
+            formControlName="filtroFecha"
+            selectionMode="range"
+            [iconDisplay]="'input'"
+            [showIcon]="true"
+            placeholder="Ingrese un rango de fechas"
+        ></p-calendar>
+    </p-inputGroup>
+    <button
+        style="flex: 1 0 9rem; display: flex; gap:1rem; "
+        [rounded]="true"
+        pButton
+        class="p-button-success"
+        (click)="generarExcel()"
+    >
+
+    <i class="pi pi-download"></i>
+    <div>Exportar</div>
+    </button>
+</form>
+
+<section class="flex gap-3">
+    <div
+        style="flex: 1.5"
+        [ngStyle]="{
+            width: isExpand && selectRowData ? '40%' : '0',
+        }"
+    >
+        <app-table-primeng
+            [columnas]="columns"
+            [data]="data"
+            [selectedRowData]="isExpand ? data[0] : null"
+            [scrollable]="true"
+            scrollHeight="flex"
+            [showCaption]="false"
+            [showPaginator]="true"
+            selectionMode="single"
+            (selectedRowDataChange)="selectRow($event)"
+        >
+        </app-table-primeng>
+    </div>
+    <div
+        class="flex-column gap-3"
+        [ngStyle]="{
+            flex: isExpand && selectRowData ? '2' : '0',
+            display: isExpand && selectRowData ? 'flex' : 'none',
+            width: isExpand && selectRowData ? '60%' : '0',
+        }"
+        [ngClass]="{
+            card: isExpand,
+        }"
+    >
+        <div class="flex justify-content-between">
+            <span>Esquema: {{ selectRowData?.cAudEsquema }}</span>
+            <span>Fecha: {{ selectRowData?.dtFecha }}</span>
+        </div>
+        <div class="flex justify-content-between">
+            <span
+                >Usuario:
+                {{
+                    selectRowData?.cAudUsuario ?? selectRowData?.cCredUsuario
+                }}</span
+            >
+        </div>
+        <div>
+            <p-accordion>
+                <p-accordionTab header="Operación realizada">
+                    <p
+                        class="flex flex-wrap"
+                        [textContent]="selectRowData?.cAudOperacion"
+                    ></p>
+                </p-accordionTab>
+            </p-accordion>
+        </div>
+        <div>
+            <app-table-primeng
+                [columnas]="columnsDetail"
+                [data]="selectRowData?.cAudDatos"
+                [scrollable]="true"
+                [caption]="selectRowData?.cAudTabla"
+                scrollHeight="flex"
+                [showCaption]="true"
+                [showPaginator]="isExpand"
+                (selectedRowDataChange)="selectRow($event)"
+            >
+            </app-table-primeng>
+        </div>
+    </div>
+</section>

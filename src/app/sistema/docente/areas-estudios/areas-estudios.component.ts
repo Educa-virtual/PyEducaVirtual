@@ -222,6 +222,18 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
                         )
                 )
                 break
+            // case 'calendario':
+            //     this.router.navigateByUrl(
+            //         'docente/calendario/' +
+            //             this.selectedData['idDocCursoId'] +
+            //             '/' +
+            //             this.selectedData['iYAcadId'] +
+            //             '/' +
+            //             this.selectedData['iCursoId'] +
+            //             '/' +
+            //             this.selectedData['iSeccionId']
+            //     )
+            //     break
         }
     }
     getCursos() {

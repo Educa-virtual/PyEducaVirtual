@@ -38,10 +38,12 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
         grado: '',
         seccion: '',
         nivel: '',
+        nombreEvaluacion: '',
     }
     public desempenos = []
     public estados = []
     public evaluaciones = []
+    public nombreEvaluacion = []
     public tipoPreguntas = []
     public expandedRowKeys = {}
 
@@ -206,6 +208,19 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
         this.getParamsByUrl()
         this.initializeData()
         this.fetchInitialData()
+        // Capturamos el parámetro iEvaluacionId de la URL
+        this._route.queryParams.subscribe((params) => {
+            this.evaluaciones = params['iEvaluacionId']
+            console.log(
+                'iEvaluacionId recibido en BancoPreguntasComponent:',
+                this.evaluaciones
+            )
+            this.nombreEvaluacion = params['nombreEvaluacion']
+            console.log(
+                'NombreEvaluacion recibido en BancoPreguntasComponent:',
+                this.nombreEvaluacion
+            )
+        })
     }
 
     getParamsByUrl() {
@@ -215,6 +230,7 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
                 grado: params['grado'] ?? '',
                 seccion: params['seccion'] ?? '',
                 nivel: params['nivel'] ?? '',
+                nombreEvaluacion: params['nombreEvaluacion'] ?? '',
             }
         })
     }
@@ -414,6 +430,7 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
                     tipoPreguntas: this.tipoPreguntas,
                     pregunta: pregunta,
                     iCursoId: this.params.iCursoId,
+                    iEvaluacionId: this.evaluaciones, // Pasamos iEvaluacionId para el BancoPreguntaFormContainer
                 },
                 header:
                     pregunta.iPreguntaId == 0

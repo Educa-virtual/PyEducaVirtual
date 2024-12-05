@@ -18,6 +18,7 @@ import {
     TablePrimengComponent,
     IActionTable,
 } from '@/app/shared/table-primeng/table-primeng.component'
+
 import { DropdownModule } from 'primeng/dropdown'
 import { InputTextModule } from 'primeng/inputtext'
 import { ButtonModule } from 'primeng/button'
@@ -25,6 +26,9 @@ import { InputSwitchModule } from 'primeng/inputswitch'
 import { GeneralService } from '@/app/servicios/general.service'
 import { StepConfirmationService } from '@/app/servicios/confirm.service'
 import { AdmStepGradoSeccionService } from '@/app/servicios/adm/adm-step-grado-seccion.service'
+import { TreeViewPrimengComponent } from '@/app/shared/tree-view-primeng/tree-view-primeng.component'
+import { PrimengModule } from '@/app/primeng.module'
+
 @Component({
     selector: 'app-config-grado',
     standalone: true,
@@ -38,6 +42,11 @@ import { AdmStepGradoSeccionService } from '@/app/servicios/adm/adm-step-grado-s
         InputTextModule,
         ButtonModule,
         InputSwitchModule,
+        TreeViewPrimengComponent,
+        PrimengModule,
+
+        // TreeModule,         // Asegúrate de importar el módulo del árbol
+        //InputTextModule     // Importa InputTextModule para el filtro
     ],
     templateUrl: './config-grado.component.html',
     styleUrl: './config-grado.component.scss',
@@ -196,4 +205,41 @@ export class ConfigGradoComponent implements OnInit {
         // bConfigGradoEstado
         // cConfigGradoObs
     ]
+
+    // Datos del árbol
+    rawData = [
+        {
+            nivel_tipo: 1,
+            cNivelNombre: 'Educación Primaria',
+            cCicloNombre: 'EBR-CICLO I',
+            cCicloRomanos: 'I',
+            cGradoNombre: '1° Grado',
+            cGradoAbreviacion: '1ro',
+        },
+        {
+            nivel_tipo: 1,
+            cNivelNombre: 'Educación Primaria',
+            cCicloNombre: 'EBR-CICLO I',
+            cCicloRomanos: 'I',
+            cGradoNombre: '2',
+            cGradoAbreviacion: '2do',
+        },
+        {
+            nivel_tipo: 2,
+            cNivelNombre: 'Educación Primaria',
+            cCicloNombre: 'EBR-CICLO II',
+            cCicloRomanos: 'II',
+            cGradoNombre: '3° Grado',
+            cGradoAbreviacion: '3ro',
+        },
+    ]
+
+    // Secciones disponibles
+    //seccion = ['A', 'B', 'C', 'D'];
+
+    seccionesPorGrado = {
+        '1° Grado': ['A', 'B'],
+        '2° Grado': ['A'],
+        '3° Grado': ['A', 'B', 'C'],
+    }
 }

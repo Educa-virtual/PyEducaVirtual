@@ -1,0 +1,45 @@
+<app-modal-primeng
+    [title]="tituloModalPreguntas"
+    [showModal]="showModal"
+    [width]="'70%'"
+>
+    <div class="grid mt-4">
+        <div class="col-12 md:col-9">
+            <h3 class="m-0 text-uppercase text-primary">
+                {{ data.cEvaluacionTitulo }}
+            </h3>
+        </div>
+        <div class="col-12 md:col-3" align="right">
+            <button
+                pButton
+                class="p-button-primary gap-2"
+                (click)="menuAgregacionPreguntas.toggle($event)"
+            >
+                <i class="pi pi-plus"></i>
+                <span class="text-md">Agregar Preguntas</span>
+            </button>
+        </div>
+        <div class="col-12 mt-5" align="center">
+            <img
+                src="assets/images/icons/preguntas.gif"
+                alt="logo"
+                width="10%"
+            />
+            <h4 class="font-bold">
+                Utilice este espacio para crear su examen.
+            </h4>
+            <h5>
+                Al agregar pregunta, escoje si la pregunta tiene enunciado, sin
+                enunciado o banco de preguntas
+            </h5>
+        </div>
+    </div>
+</app-modal-primeng>
+
+<p-menu
+    #menuAgregacionPreguntas
+    [popup]="true"
+    [model]="tiposAgrecacionPregunta"
+    appendTo="body"
+>
+</p-menu>

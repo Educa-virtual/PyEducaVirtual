@@ -6,6 +6,7 @@
             class="w-full h-full"
         />
     </div>
+
     <div class="p-3">
         <h3 class="text-xl">
             {{ area.nombre }} {{ area.grado }} {{ area.seccion }}
@@ -14,6 +15,7 @@
             {{ area.descripcion }}
         </p>
     </div>
+
     <footer class="p-3 pt-0 flex align-items-center justify-content-between">
         <span>{{ area.totalEstudiantes }} studiantes</span>
         <p-button
@@ -23,6 +25,8 @@
                 seccion: area.seccion,
                 grado: area.grado,
                 nivel: area.nivel,
+                iEvaluacionId: _iEvaluacionId,
+                nombreEvaluacion: _nombreEvaluacion,
             }"
             icon="pi pi-external-link"
             pTooltip="Banco de Preguntas"

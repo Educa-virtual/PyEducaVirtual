@@ -6,7 +6,6 @@
     <div class="card">
         <p-steps [model]="items" [readonly]="false"></p-steps>
     </div>
-
     <form [formGroup]="form">
         <div class="grid p-fluid mt-3">
             <div class="field col-12 md:col-3">
@@ -175,4 +174,11 @@
             styleClass="p-button-danger"
         />
     </form>
+    <div class="col-12">
+        <p-messages
+            [(value)]="mensaje"
+            [enableService]="false"
+            [closable]="true"
+        />
+    </div>
 </app-container-page>

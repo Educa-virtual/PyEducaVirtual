@@ -77,6 +77,12 @@ export class ApiAulaService {
             data
         )
     }
+    guardarCalifEstudiante(data) {
+        return this._http.post(
+            `${this.baseUrlApi}/aula-virtual/Resultado/guardarCalfcEstudiante`,
+            data
+        )
+    }
     obtenerRespuestaForo(params: { iActTipoId; ixActivadadId }) {
         return this._http
             .get<any>(
@@ -94,13 +100,44 @@ export class ApiAulaService {
                 })
             )
     }
+    obtenerResultados(params: { iEstudianteId; idDocCursoId }) {
+        return this._http
+            .get<any>(
+                `${this.baseUrlApi}/aula-virtual/Resultado/obtenerResultados`,
+                { params }
+            )
+            .pipe(
+                map((response) => {
+                    if (!response || !response.data) {
+                        throw new Error(
+                            'La respuesta no contiene datos válidos'
+                        )
+                    }
+                    return response.data
+                }),
+                map((data) => {
+                    if (data.iActTipoId == 2) {
+                        const preguntas = mapItemsBancoToEre(data.preguntas)
+                        data.preguntas = mapData(preguntas)
+                    }
+                    return data
+                })
+            )
+    }
+
     calificarForoDocente(data) {
         return this._http.post(
             `${this.baseUrlApi}/aula-virtual/contenidos/foro/calificarForoDocente`,
             data
         )
     }
-    // fin de foro
+    guardarCalificacionEstudiante(data) {
+        return this._http.post(
+            `${this.baseUrlApi}/aula-virtual/Resultado/guardarCalifEstudiante`,
+            data
+        )
+    }
+    // fin de foro guardarCalifEstudiante
     eliminarActividad(data) {
         return this._http.delete(
             `${this.baseUrlApi}/aula-virtual/contenidos/actividad/eliminarActividad`,

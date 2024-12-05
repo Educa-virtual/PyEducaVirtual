@@ -219,6 +219,9 @@
                                             this._config.data.evaluacion
                                                 .iEvaluacionId
                                         "
+                                        (datosEmitIeParticipan)="
+                                            datosRecibidosIeParticipan($event)
+                                        "
                                     ></app-ieparticipa>
                                 </div>
                             </ng-template>
@@ -236,6 +239,9 @@
                                         this._config.data.evaluacion
                                             .iEvaluacionId
                                     "
+                                    [datosRecIeParticipanToAreas]="
+                                        datosRecIeParticipan
+                                    "
                                 ></app-evaluacion-areas>
                                 <div class="flex pt-4 justify-content-between">
                                     <!-- <p-button
@@ -252,8 +258,6 @@
         </form>
     </p-scrollPanel>
 
-    <!--! Botón Siguiente para modo ver -->
-
     <div
         class="flex pt-4"
         [class.justify-content-end]="activeStep === 0"
@@ -261,7 +265,6 @@
     >
         <p-button
             label="Atrás"
-            icon="pi pi-arrow-left"
             (click)="handlePrevious()"
             [className]="activeStep === 0 ? 'hidden' : ''"
             [disabled]="activeStep === 0"
@@ -272,7 +275,6 @@
             [label]="activeStep === 0 ? 'Siguiente' : 'Siguiente'"
             (click)="handleNext()"
         ></p-button>
-
         <p-button
             *ngIf="isLastStep"
             label="Finalizar"

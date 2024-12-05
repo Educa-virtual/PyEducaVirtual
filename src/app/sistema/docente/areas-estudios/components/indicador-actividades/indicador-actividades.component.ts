@@ -24,6 +24,7 @@ export class IndicadorActividadesComponent
     implements OnInit, OnChanges, OnDestroy
 {
     @Input() iSilaboId: string
+    @Input() refreshActividades: boolean = false
     private unsubscribe$ = new Subject<boolean>()
 
     tipoIndicadorLogros = []
@@ -35,7 +36,6 @@ export class IndicadorActividadesComponent
     ) {}
 
     ngOnInit() {
-        this.getSilaboActividadAprendizajes()
         this.getTipoIndicadorLogros()
     }
     ngOnChanges(changes) {
@@ -180,22 +180,6 @@ export class IndicadorActividadesComponent
         }
         this.getInformation(params, 'get_tipo_indicador_logros')
     }
-    getSilaboActividadAprendizajes() {
-        const params = {
-            petition: 'post',
-            group: 'docente',
-            prefix: 'silabo-actividad-aprendizajes',
-            ruta: 'list',
-            seleccion: 1,
-            data: {
-                opcion: 'CONSULTARxiSilaboId',
-                iCredId: this.ConstantesService.iCredId,
-                iSilaboId: this.iSilaboId,
-            },
-            params: { skipSuccessMessage: true },
-        }
-        this.getInformation(params, 'get_actividades')
-    }
 
     getInformation(params, accion) {
         this.GeneralService.getGralPrefix(params)
@@ -298,9 +282,6 @@ export class IndicadorActividadesComponent
                 break
             case 'get_tipo_indicador_logros':
                 this.tipoIndicadorLogros = item
-                break
-            case 'get_actividades':
-                this.actividades = item
                 break
             default:
                 break

@@ -6,6 +6,13 @@
     <div class="card">
         <p-steps [model]="items" [readonly]="false"></p-steps>
     </div>
+    <div style="padding: 20px">
+        <app-tree-view-primeng
+            [treeDataRaw]="rawData"
+            [seccionesPorGrado]="seccionesPorGrado"
+        ></app-tree-view-primeng>
+    </div>
+
     <div class="card">
         <app-table-primeng
             [columnas]="columns"

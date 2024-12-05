@@ -310,6 +310,11 @@ export class ConfigAmbienteComponent implements OnInit {
                     console.error('Error fetching ambiente:', error)
                 },
                 complete: () => {
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Mensaje',
+                        detail: 'Proceso exitoso',
+                    })
                     console.log('Request completed')
                     this.getAmbientes()
                     this.visible = false
@@ -345,6 +350,11 @@ export class ConfigAmbienteComponent implements OnInit {
                             console.error('Error fetching ambiente:', error)
                         },
                         complete: () => {
+                            this.messageService.add({
+                                severity: 'success',
+                                summary: 'Mensaje',
+                                detail: 'Proceso exitoso',
+                            })
                             console.log('Request completed')
                             this.getAmbientes()
                             this.visible = false
@@ -395,6 +405,11 @@ export class ConfigAmbienteComponent implements OnInit {
                         console.error('Error fetching ambiente:', error)
                     },
                     complete: () => {
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: 'Mensaje',
+                            detail: 'Proceso exitoso',
+                        })
                         console.log('Request completed')
                         this.getAmbientes()
                         this.visible = false
@@ -440,7 +455,12 @@ export class ConfigAmbienteComponent implements OnInit {
         }
 
         this.msg.confirmAction(
-            {onAcceptCallbacks:[() => this.saveInformation(), () => this.nextPage()]},
+            {
+                onAcceptCallbacks: [
+                    () => this.saveInformation(),
+                    () => this.nextPage(),
+                ],
+            },
             message
         )
     }

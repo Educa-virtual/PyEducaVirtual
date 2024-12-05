@@ -42,7 +42,6 @@ export class RubricaFormComponent implements OnInit, OnDestroy {
         if (!this._params.idDocCursoId) {
             throw new Error('Error el idDocCursoId es requerido')
         }
-
         this.initForm()
         this.getData()
         this.handleMode()
@@ -75,8 +74,10 @@ export class RubricaFormComponent implements OnInit, OnDestroy {
     }
 
     initForm() {
+        console.log(this.rubricaForm)
         this._rubricaFormService.initRubricaForm()
         this.rubricaForm = this._rubricaFormService.rubricaForm
+        console.log(this.rubricaForm)
     }
 
     guardarActualizarRubrica() {

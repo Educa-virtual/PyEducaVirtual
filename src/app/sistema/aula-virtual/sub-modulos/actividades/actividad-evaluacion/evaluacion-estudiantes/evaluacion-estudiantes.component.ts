@@ -130,6 +130,7 @@ export class EvaluacionEstudiantesComponent implements OnChanges {
                 this.itemPreguntas['cRptaTexto'] = null
                 break
         }
+        console.log(this.itemPreguntas)
     }
     //Enviando Respuesta unica y multiple
     enviarRpta(tipoRpta, pregunta) {

@@ -18,6 +18,7 @@ export class AulaBancoPreguntasService {
         iCursoId
         tipoPreguntas
         iEvaluacionId
+        padreComponente
     }) {
         const refModal = this._dialogService.open(
             AulaBancoPreguntaFormContainerComponent,

@@ -246,7 +246,7 @@ export class EvaluacionEstudiantesComponent implements OnChanges {
                         summary: 'Guardado!',
                         detail: 'Se guardó correctamente la respuesta',
                         sticky: true, // El mensaje no se cerrará automáticamente
-                        life: 5000, // Duración en milisegundos
+                        // life: 5000, // Duración en milisegundos
                     })
                 }
             },

@@ -42,6 +42,7 @@ import { FullCalendarModule } from '@fullcalendar/angular'
 import { TareaFormContainerComponent } from '../../../../actividades/actividad-tarea/tarea-form-container/tarea-form-container.component'
 import { FormEvaluacionComponent } from '../../../../actividades/actividad-evaluacion/components/form-evaluacion/form-evaluacion.component'
 import { EvaluacionFormContainerComponent } from '../../../../actividades/actividad-evaluacion/evaluacion-form-container/evaluacion-form-container.component'
+import { NoDataComponent } from '../../../../../../../shared/no-data/no-data.component'
 
 @Component({
     selector: 'app-tab-contenido',
@@ -58,6 +59,7 @@ import { EvaluacionFormContainerComponent } from '../../../../actividades/activi
         PrimengModule,
         TareaFormContainerComponent,
         FormEvaluacionComponent,
+        NoDataComponent,
     ],
     templateUrl: './tab-contenido.component.html',
     styleUrl: './tab-contenido.component.scss',
@@ -99,18 +101,18 @@ export class TabContenidoComponent implements OnInit {
         number,
         (action: TActividadActions, actividad: IActividad) => void
     > = {
-            [TAREA]: this.handleTareaAction.bind(this),
-            [FORO]: this.handleForoAction.bind(this),
-            [EVALUACION]: this.handleEvaluacionAction.bind(this),
-            [VIDEO_CONFERENCIA]: this.handleVideoconferenciaAction.bind(this),
-            [MATERIAL]: this.handleMaterialAction.bind(this),
-        }
+        [TAREA]: this.handleTareaAction.bind(this),
+        [FORO]: this.handleForoAction.bind(this),
+        [EVALUACION]: this.handleEvaluacionAction.bind(this),
+        [VIDEO_CONFERENCIA]: this.handleVideoconferenciaAction.bind(this),
+        [MATERIAL]: this.handleMaterialAction.bind(this),
+    }
 
     constructor(
         private _dialogService: DialogService,
         private router: Router,
         private _activatedRoute: ActivatedRoute
-    ) { }
+    ) {}
 
     iPerfilId: number = null
     ngOnInit(): void {
@@ -137,8 +139,10 @@ export class TabContenidoComponent implements OnInit {
             },
         })
     }
-
+    loadingContenidoSemanas: boolean = true
     private obtenerContenidoSemanas() {
+        this.loadingContenidoSemanas = true
+
         this._aulaService
             .contenidoSemanasProgramacionActividades({
                 iSilaboId: this._iSilaboId,
@@ -146,7 +150,12 @@ export class TabContenidoComponent implements OnInit {
             .pipe(takeUntil(this._unsubscribe$))
             .subscribe({
                 next: (data) => {
+                    this.loadingContenidoSemanas = false
                     this.contenidoSemanas = data
+                },
+                error: (error) => {
+                    console.log(error)
+                    this.loadingContenidoSemanas = false
                 },
             })
     }
@@ -258,11 +267,11 @@ export class TabContenidoComponent implements OnInit {
             case 'VER':
                 this.router.navigate([
                     'aula-virtual/areas-curriculares/' +
-                    'actividad' +
-                    '/' +
-                    actividad.ixActivadadId +
-                    '/' +
-                    actividad.iActTipoId,
+                        'actividad' +
+                        '/' +
+                        actividad.ixActivadadId +
+                        '/' +
+                        actividad.iActTipoId,
                 ])
                 break
         }

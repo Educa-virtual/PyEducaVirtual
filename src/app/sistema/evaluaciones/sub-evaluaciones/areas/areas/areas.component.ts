@@ -6,13 +6,19 @@ import { TableModule } from 'primeng/table'
 import { InputTextModule } from 'primeng/inputtext'
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import { TablePrimengComponent } from '../../../../../shared/table-primeng/table-primeng.component'
-import { Component, OnInit } from '@angular/core'
+import { Component, inject, OnInit } from '@angular/core'
 import { IArea } from '../interfaces/area.interface'
 import { AreaCardComponent } from '../components/area-card/area-card.component'
 //import { CursoCardComponent } from '../components/curso-card/curso-card.component'
 import { ICurso } from '../../../../aula-virtual/sub-modulos/cursos/interfaces/curso.interface'
 import { ButtonModule } from 'primeng/button'
 import { ActivatedRoute } from '@angular/router'
+
+//import { ApiEvaluacionesRService } from '../../../../services/api-evaluaciones-r.service'
+
+import { ApiEvaluacionesRService } from '../../../services/api-evaluaciones-r.service'
+import { Subject, takeUntil } from 'rxjs'
+
 export type Layout = 'list' | 'grid'
 @Component({
     selector: 'app-areas',
@@ -33,46 +39,51 @@ export type Layout = 'list' | 'grid'
     ],
 })
 export class AreasComponent implements OnInit {
+    private _apiEre = inject(ApiEvaluacionesRService)
     public cursos: ICurso[] = []
     public data: ICurso[] = []
     public layout: Layout = 'list'
     public text: string = ''
     public searchText: Event
-    public area: IArea[] = [
-        {
-            id: 0,
-            nombre: 'Matemática',
-            descripcion: 'dedscripcion?',
-            seccion: 'A',
-            grado: '1°',
-            totalEstudiantes: 20,
-            nivel: 'Primaria',
-        },
-        {
-            id: 1,
-            nombre: 'Matemática',
-            descripcion: 'Descripcion?',
-            seccion: 'A',
-            grado: '2°',
-            totalEstudiantes: 2,
-            nivel: 'Primaria',
-        },
-        {
-            id: 2,
-            nombre: 'Matemática',
-            descripcion: 'Descripcion?',
-            seccion: 'B',
-            grado: '2°',
-            totalEstudiantes: 2,
-            nivel: 'Primaria',
-        },
-    ]
+    public area: IArea[] = [] // Inicialmente vacío, se llenará con los datos de la API.
+
+    // public area: IArea[] = [
+    //     {
+    //         id: 0,
+    //         nombre: 'Matemática',
+    //         descripcion: 'dedscripcion?',
+    //         seccion: 'A',
+    //         grado: '1°',
+    //         totalEstudiantes: 20,
+    //         nivel: 'Primaria',
+    //     },
+    //     {
+    //         id: 1,
+    //         nombre: 'Matemática',
+    //         descripcion: 'Descripcion?',
+    //         seccion: 'A',
+    //         grado: '2°',
+    //         totalEstudiantes: 2,
+    //         nivel: 'Primaria',
+    //     },
+    //     {
+    //         id: 2,
+    //         nombre: 'Matemática',
+    //         descripcion: 'Descripcion?',
+    //         seccion: 'B',
+    //         grado: '2°',
+    //         totalEstudiantes: 2,
+    //         nivel: 'Primaria',
+    //     },
+    // ]
     public sortField: string = ''
     public sortOrder: number = 0
     public iEvaluacionId: string | null = null // Para almacenar el ID de la evaluación.
     public nombreEvaluacion: string | null = null // Para almacenar el nombre de la evaluación.
     //@Input() _iEvaluacionId: string | null = null // Usamos _iEvaluacionId como input
+    public params = {}
 
+    private unsubscribe$: Subject<boolean> = new Subject()
     //!original
     // public onFilter(dv: DataView, event: Event) {
     //     dv.filter((event.target as HTMLInputElement).value)
@@ -102,8 +113,56 @@ export class AreasComponent implements OnInit {
             )
             console.log('nombreEvaluacion:', this.nombreEvaluacion)
         })
-
+        this.obtenerEspDrem()
+        this.obtenerEspDremCurso()
         // El resto de tu lógica de inicialización
         //this.obtenerCursos() // O cualquier otra lógica para cargar los datos.
+    }
+    obtenerEspDrem(): void {
+        this._apiEre
+
+            .obtenerEspDrem(this.params)
+
+            .pipe(takeUntil(this.unsubscribe$))
+
+            .subscribe({
+                next: (resp: any) => {
+                    console.log('Respuesta completa de la API:', resp)
+                },
+
+                error: (err) => {
+                    console.error('Error al cargar datos:', err)
+                },
+            })
+    }
+    obtenerEspDremCurso(): void {
+        this._apiEre.obtenerEspDremCurso(this.params).subscribe({
+            next: (resp: any) => {
+                console.log(
+                    'Respuesta completa de la API Datos Especialistas Cursos:',
+                    resp
+                )
+
+                // Procesar y mapear los datos al formato de IArea.
+                if (resp.data && Array.isArray(resp.data)) {
+                    this.area = resp.data.map((item: any) => ({
+                        id: Number(item.iCursoId), // Usamos iCursoId como ID.
+                        nombre: item.cCursoNombre || 'Sin nombre', // Nombre del curso.
+                        descripcion:
+                            item.cCursoDescripcion || 'Sin descripción', // Descripción del curso.
+                        seccion: item.cGradoRomanos || 'Sin sección', // Ejemplo: I.
+                        grado: item.cGradoAbreviacion || 'Sin grado', // Ejemplo: 1ro.
+                        totalEstudiantes: 0, // Asumimos 0 porque no viene en la API.
+                        nivel: 'Primaria', // Puedes ajustarlo según tu lógica o datos de la API.
+                    }))
+                }
+
+                console.log('Datos procesados para áreas:', this.area)
+            },
+
+            error: (err) => {
+                console.error('Error al cargar datos:', err)
+            },
+        })
     }
 }

@@ -228,24 +228,21 @@ export class ApiEvaluacionesRService {
             }
         )
     }
-    // generarPdfMatrizbyEvaluacionId(iEvaluacionId: number) {
-    //     return this.http.get(
-    //         `${this.baseUrl}/ere/Evaluaciones/generarPdfMatrizbyEvaluacionId`,
-    //         {
-    //             params: {
-    //                 iEvaluacionId: iEvaluacionId.toString(),
-    //             },
-    //         }
-    //     )
-    //     // const url = `${this.baseUrlBackend}/ere/Evaluaciones/generarPdfMatrizbyEvaluacionId`
-    //     // const params = new URLSearchParams({
-    //     //     iEvaluacionId: iEvaluacionId.toString(),
-    //     // })
-    //     // const fullUrl = `${url}?${params.toString()}`
-    //     // console.log('URL completa generada:', fullUrl)
+    //!Matriz Capacidades
 
-    //     //window.open(fullUrl, '_blank')
-    // }
+    obtenerEspDrem(params) {
+        return this.http.get(
+            `${this.baseUrl}/ere/Evaluaciones/obtenerEspDrem`,
+
+            { params }
+        )
+    }
+    obtenerEspDremCurso(params) {
+        return this.http.get(
+            `${this.baseUrl}/ere/Evaluaciones/obtenerEspDremCurso`,
+            { params }
+        )
+    }
     //Banco de Preguntas ->
     generarWordByPreguntasIds(baseParams) {
         const url = `${this.baseUrlBackend}/generarWordBancoPreguntasSeleccionadas`

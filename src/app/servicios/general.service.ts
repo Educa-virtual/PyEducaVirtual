@@ -215,7 +215,7 @@ export class GeneralService {
             .post<any>(
                 `${baseUrl}/aula-virtual/Resultado/obtenerCalificacionesFinalesReporte`,
                 {
-                    tabla,
+                    tabla: 'detalle_matriculas',
                     where,
                     campos,
                 }

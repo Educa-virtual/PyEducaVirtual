@@ -29,7 +29,7 @@ import { GeneralService } from '@/app/servicios/general.service'
 import { TabViewModule } from 'primeng/tabview'
 import { IconComponent } from '@/app/shared/icon/icon.component'
 import { provideIcons } from '@ng-icons/core'
-import { ConstantesService } from '@/app/servicios/constantes.service'
+//import { ConstantesService } from '@/app/servicios/constantes.service'
 import { OrderListModule } from 'primeng/orderlist'
 import { PrimengModule } from '@/app/primeng.module'
 import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
@@ -37,6 +37,7 @@ import { Message } from 'primeng/api'
 import { Subject, takeUntil } from 'rxjs'
 import { RemoveHTMLPipe } from '@/app/shared/pipes/remove-html.pipe'
 import { CommonInputComponent } from '@/app/shared/components/common-input/common-input.component'
+import { ButtonModule } from 'primeng/button'
 @Component({
     selector: 'app-tab-resultados',
     standalone: true,
@@ -44,6 +45,7 @@ import { CommonInputComponent } from '@/app/shared/components/common-input/commo
     styleUrls: ['./tab-resultados.component.scss'],
     imports: [
         TablePrimengComponent,
+        ButtonModule,
         RemoveHTMLPipe,
         TabViewModule,
         TableModule,
@@ -81,8 +83,9 @@ export class TabResultadosComponent implements OnInit {
     private _formBuilder = inject(FormBuilder)
     private _aulaService = inject(ApiAulaService)
     // private ref = inject(DynamicDialogRef)
-    private _constantesService = inject(ConstantesService)
+    //private _constantesService = inject(ConstantesService)
     estudiantes: any[] = []
+    reporteDeNotas: any[] = []
     estudianteEv: any[] = []
     calificacion: any[] = []
     //------
@@ -179,6 +182,7 @@ export class TabResultadosComponent implements OnInit {
         //this.verperfiles()
         this.getEstudiantesMatricula()
         this.mostrarCalificacion()
+        this.obtenerReporteDenotasFinales()
         //this.selectUnidad()
     }
     // Obtenemos los datos de estudiante que el docente hico su retroalimentación por alumno
@@ -205,6 +209,15 @@ export class TabResultadosComponent implements OnInit {
                 },
             })
     }
+    //un load para el boton guardar
+    loading: boolean = false
+    load() {
+        this.loading = true
+
+        setTimeout(() => {
+            this.loading = false
+        }, 2000)
+    }
     // metodo para limpiar las etiquestas
     limpiarHTML(html: string): string {
         const temporal = document.createElement('div') // Crear un div temporal
@@ -216,24 +229,24 @@ export class TabResultadosComponent implements OnInit {
         const buttonValue = (event.target as HTMLButtonElement).value
         this.unidad = buttonValue
     }
-    //guardar la calificación y conclusión descriptiva del docente para los promedios finales
+    // en desarrollo
     obtenerReporteDenotasFinales() {
         //this.loaderService.show(); // Muestra el loader
-
         this.GeneralService.getDatos(
             this.tabla,
             this.campos,
             this.where
         ).subscribe({
             next: (response) => {
-                console.log(response)
+                this.reporteDeNotas = response
+                console.log('Detalle Notas', this.reporteDeNotas)
             },
             error: (error) => {
-                console.error('Error al obtener los personal:', error)
+                console.error('Error al obtener notas finales:', error)
             },
         })
     }
-
+    //guardar la calificación y conclusión descriptiva del docente para los promedios finales
     guardaCalificacionFinalUnidad() {
         const resultadosEstudiantesf = this.califcFinal.value
         const descripcionlimpia = resultadosEstudiantesf.cDetMatrConclusionDesc1
@@ -296,38 +309,9 @@ export class TabResultadosComponent implements OnInit {
                 },
             })
         this.califcFinal.reset()
-
-        // const where = [
-        //     {
-        //         COLUMN_NAME: 'iDetMatrId',
-        //         VALUE: this.estudianteSeleccionado.iDetMatrId,
-        //     },
-        // ]
-
-        // const registro = {
-        //     cDetMatrConclusionDesc1: conclusionFinalDocente,
-        //     iEscalaCalifIdPeriodo1:
-        //         resultadosEstudiantesf.iEscalaCalifIdPeriodo1,
-        //     dtDetMatrPeriodo1: '2024/12/4',
-        // }
-        // this._aulaService
-        //     .guardarCalificacionEstudiante(
-        //         'acad',
-        //         'detalle_matriculas',
-        //         where,
-        //         registro
-        //     )
-        //     .subscribe({
-        //         next: (response) => {
-        //             console.log('actualizar:', response)
-        //         },
-        //         error: (error) => {
-        //             console.log('Error en la actualización:', error)
-        //         },
-        //     })
-        // this.califcFinal.reset()
         console.log('hola', where, registro)
     }
+    //mostrar las escalas de calificacioón
     mostrarCalificacion() {
         const userId = 1
         this._aulaService.obtenerCalificacion(userId).subscribe((Data) => {
@@ -335,6 +319,7 @@ export class TabResultadosComponent implements OnInit {
             //console.log('Mostrar escala',this.calificacion)
         })
     }
+    // mostrar los estudiantes
     getInformation(params) {
         this.GeneralService.getGralPrefix(params).subscribe({
             next: (response) => {

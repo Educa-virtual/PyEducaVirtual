@@ -3,6 +3,7 @@ import { GeneralService } from '@/app/servicios/general.service'
 import { Component, inject, Input } from '@angular/core'
 import { ToolbarPrimengComponent } from '../../../shared/toolbar-primeng/toolbar-primeng.component'
 import { FullCalendarioComponent } from '../../../shared/full-calendario/full-calendario.component' // * traduce el Modulo de calendario a español
+import { ConstantesService } from '@/app/servicios/constantes.service'
 
 @Component({
     selector: 'app-calendario',
@@ -13,20 +14,21 @@ import { FullCalendarioComponent } from '../../../shared/full-calendario/full-ca
 })
 export class CalendarioComponent {
     private GeneralService = inject(GeneralService)
+    private ConstantesService = inject(ConstantesService)
 
     @Input() iCursoId: string
-    @Input() iDocenteId: string
-    @Input() iYAcadId: string
     @Input() iSeccionId: string
 
     curricula = []
     festividades = []
+    actividades = []
     events = [] // guarda los eventos para el calendario
 
     ngOnInit() {
         this.getObtenerCurriculas()
         this.getObtenerCurriculasHorario()
         this.getObtenerFestividades()
+        this.getObtenerActividad()
     }
 
     academicas: any[] = [
@@ -78,6 +80,18 @@ export class CalendarioComponent {
         this.getInformation(params, 'festividades')
     }
 
+    getObtenerActividad() {
+        const params = {
+            petition: 'post',
+            group: 'docente',
+            prefix: 'buscar_curso',
+            ruta: 'obtenerActividad',
+            data: {},
+            params: { skipSuccessMessage: true },
+        }
+        this.getInformation(params, 'actividades')
+    }
+
     getObtenerCurriculasHorario() {
         const params = {
             petition: 'post',
@@ -85,10 +99,8 @@ export class CalendarioComponent {
             prefix: 'buscar_curso',
             ruta: 'curriculaHorario',
             data: {
-                iDocenteId: this.iDocenteId,
-                iYAcadId: this.iYAcadId,
-                iCursoId: this.iCursoId,
-                iSeccionId: this.iSeccionId,
+                iDocenteId: this.ConstantesService.iDocenteId,
+                iYAcadId: this.ConstantesService.iYAcadId,
             },
             params: { skipSuccessMessage: true },
         }
@@ -112,6 +124,12 @@ export class CalendarioComponent {
             case 'festividades':
                 this.festividades = item
                 this.festividades.map((caja) => {
+                    caja.mostrar = true
+                })
+                break
+            case 'actividades':
+                this.actividades = item
+                this.actividades.map((caja) => {
                     caja.mostrar = true
                 })
                 break

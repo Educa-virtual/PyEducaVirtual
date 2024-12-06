@@ -26,6 +26,7 @@ export class FullCalendarioComponent implements OnChanges {
     @Input() academicas
     @Input() curricula
     @Input() festividades
+    @Input() actividades
     @Input() events
 
     ngOnChanges(changes: SimpleChanges): void {
@@ -43,7 +44,6 @@ export class FullCalendarioComponent implements OnChanges {
         selectable: true,
         dayMaxEvents: true,
         height: 600,
-        dateClick: (item) => console.log(item),
         viewDidMount: (info) => {
             const weekendDays = ['sábado', 'viernes'] // establecemos los dias que se desea establecer un fondo se toma un dia antes
             const allDays = info.el.querySelectorAll('.fc-day')

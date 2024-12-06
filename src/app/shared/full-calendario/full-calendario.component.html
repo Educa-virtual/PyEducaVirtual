@@ -31,15 +31,15 @@
                         <p-accordionTab header="Actividades Academicas">
                             <div class="flex flex-column">
                                 <div
-                                    *ngFor="let academica of academicas"
+                                    *ngFor="let actividad of actividades"
                                     class="flex p-1"
                                 >
                                     <p-checkbox
-                                        [(ngModel)]="academica.mostrar"
-                                        [label]="academica.name"
+                                        [(ngModel)]="actividad.mostrar"
+                                        [label]="actividad.cActTipoNombre"
                                         name="group"
                                         [binary]="true"
-                                        [styleClass]="academica.estilo"
+                                        [styleClass]="actividad.estilo"
                                     />
                                 </div>
                             </div>

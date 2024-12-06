@@ -210,17 +210,14 @@ export class GeneralService {
         )
     }
     // Método para obtener datos desde el backend
-    getDatos(
-        tabla: string,
-        //campos: string = '*',
-        where: string = '1=1'
-    ) {
+    getDatos(tabla: string, campos: string, where: any) {
         return this.http
             .post<any>(
-                `${baseUrl}/aula-virtual/Resultado/guardarCalfcEstudiante`,
+                `${baseUrl}/aula-virtual/Resultado/obtenerCalificacionesFinalesReporte`,
                 {
                     tabla,
                     where,
+                    campos,
                 }
             )
             .pipe(

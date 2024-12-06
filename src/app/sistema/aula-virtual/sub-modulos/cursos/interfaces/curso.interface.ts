@@ -11,4 +11,5 @@ export interface ICurso {
     nombrecompleto?: string
     cNivelTipoNombre?: string
     cSeccion?: string
+    cCursoImagen?: string
 }

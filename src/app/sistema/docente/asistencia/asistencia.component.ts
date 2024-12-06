@@ -571,6 +571,7 @@ export class AsistenciaComponent implements OnInit {
             prefix: 'asistencia',
             ruta: 'list',
             data: {
+                opcion: 'CONSULTAR_ASISTENCIA_FECHA',
                 iCursoId: this.iCursoId,
                 iSeccionId: this.iSeccionId,
                 iDocenteId: this.iDocenteId,

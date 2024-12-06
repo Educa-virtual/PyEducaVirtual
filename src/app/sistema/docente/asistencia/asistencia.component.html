@@ -13,58 +13,72 @@
     </p-toolbar>
 
     <div class="col-12">
-        <div class="card mb-2">
-            <div class="grid">
-                <div class="col-11">
-                    <div class="flex block p-2">
-                        <div class="font-bold pb-2">LEGENDA</div>
-                    </div>
-                    <div
-                        class="flex block flex-wrap column-gap-2 row-gap-2 p-2"
-                    >
-                        <div *ngFor="let lista of leyenda" class="flex mr-1">
-                            <p-inputGroup class="grupo">
-                                <button
-                                    type="button"
-                                    size="small"
-                                    pButton
-                                    [ngClass]="lista.bgColor"
-                                >
-                                    {{ lista.simbolo }}
-                                </button>
-                                <div [ngClass]="lista.divColor">
-                                    {{ lista.significado }}
-                                </div>
-                                <button
-                                    type="button"
-                                    size="small"
-                                    pButton
-                                    [ngClass]="lista.bgColor"
-                                >
-                                    {{ lista.contar }}
-                                </button>
-                            </p-inputGroup>
-                        </div>
+        <div class="card">
+            <h5 class="font-bold">Instrucciones</h5>
+            <ol>
+                <li>
+                    Hacer doble click en la fecha que sea registrar asistencia.
+                </li>
+                <li>
+                    Luego registrar asistencia de cada alumno de acuerdo a la
+                    leyenda mostrada en la parte inferior.
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="grid">
+        <div class="col-3">
+            <div class="card">
+                <div class="flex block p-2">
+                    <div class="font-bold pb-2">LEGENDA</div>
+                </div>
+                <div class="flex block flex-wrap column-gap-2 row-gap-2 p-2">
+                    <div *ngFor="let lista of leyenda" class="flex mr-1">
+                        <p-inputGroup class="grupo">
+                            <button
+                                type="button"
+                                size="small"
+                                pButton
+                                [ngClass]="lista.bgColor"
+                            >
+                                {{ lista.simbolo }}
+                            </button>
+                            <div [ngClass]="lista.divColor">
+                                {{ lista.significado }}
+                            </div>
+                            <button
+                                type="button"
+                                size="small"
+                                pButton
+                                [ngClass]="lista.bgColor"
+                            >
+                                {{ lista.contar }}
+                            </button>
+                        </p-inputGroup>
                     </div>
                 </div>
-                <div class="col-1">
+                <div class="flex m-1">
                     <p-button
+                        label="Primary"
+                        [outlined]="true"
                         icon="pi pi-file-pdf"
-                        size="small"
-                        [text]="true"
-                        label="Mensual"
-                        tooltipPosition="left"
+                        label="Descargar Reporte"
                         (click)="modalReporte()"
                     />
                 </div>
             </div>
         </div>
-        <full-calendar [options]="calendarOptions">
-            <ng-template #eventContent let-arg>
-                <div class="fc-event-time">{{ arg.timeText }}</div>
-                <div class="fc-event-title">{{ arg.event.title }}</div>
-            </ng-template>
-        </full-calendar>
+        <div class="col-9">
+            <div class="card">
+                <full-calendar [options]="calendarOptions">
+                    <ng-template #eventContent let-arg>
+                        <div class="fc-event-time">{{ arg.timeText }}</div>
+                        <div class="fc-event-title">{{ arg.event.title }}</div>
+                    </ng-template>
+                </full-calendar>
+            </div>
+        </div>
     </div>
 </div>
 

@@ -29,6 +29,10 @@ export class FullCalendarioComponent implements OnChanges {
     @Input() actividades
     @Input() events
 
+    activarIndice: number | number[] = [] //activa las pestañas de p-according
+    ngOnInit() {
+        window.addEventListener('resize', this.verificarDimension.bind(this))
+    }
     ngOnChanges(changes: SimpleChanges): void {
         if (changes['events']) {
             this.calendarOptions.events = changes['events'].currentValue
@@ -64,6 +68,11 @@ export class FullCalendarioComponent implements OnChanges {
             center: 'title',
             start: 'prev,next today',
         },
+    }
+    movil: boolean = false
+    verificarDimension() {
+        this.movil = window.innerWidth < 768
+        this.activarIndice = this.movil ? [] : [0]
     }
 
     eventoFestividades(id) {

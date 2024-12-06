@@ -206,23 +206,18 @@ export class ApiAulaService {
                 })
             )
     }
+    habilitarCalificacion(data) {
+        return this._http.post(
+            `${this.baseUrlApi}/aula-virtual/Resultado/habilitarCalificacion`,
+            data
+        )
+    }
     obtenerEstudiantesMatricula(params: { iCurrId; iSemAcadId; iYAcadId }) {
         return this._http.get<any>(
             `${this.baseUrlApi}/aula-virtual/contenidos/foro/obtenerEstudiantesMatricula`,
             { params }
         )
-        // .pipe(
-        //     map((resp) => resp.data),
-        //     map((data) => {
-        //         if (data.iActTipoId == 2) {
-        //             const preguntas = mapItemsBancoToEre(data.preguntas)
-        //             data.preguntas = mapData(preguntas)
-        //         }
-        //         return data
-        //     })
-        // )
     }
-
     obtenerTipoActividades() {
         return this._http
             .get<ApiResponse>(

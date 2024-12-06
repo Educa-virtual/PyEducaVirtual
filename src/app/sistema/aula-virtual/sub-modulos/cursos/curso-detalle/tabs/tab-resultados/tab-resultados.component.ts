@@ -29,7 +29,7 @@ import { GeneralService } from '@/app/servicios/general.service'
 import { TabViewModule } from 'primeng/tabview'
 import { IconComponent } from '@/app/shared/icon/icon.component'
 import { provideIcons } from '@ng-icons/core'
-//import { ConstantesService } from '@/app/servicios/constantes.service'
+import { ConstantesService } from '@/app/servicios/constantes.service'
 import { OrderListModule } from 'primeng/orderlist'
 import { PrimengModule } from '@/app/primeng.module'
 import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
@@ -83,11 +83,12 @@ export class TabResultadosComponent implements OnInit {
     private _formBuilder = inject(FormBuilder)
     private _aulaService = inject(ApiAulaService)
     // private ref = inject(DynamicDialogRef)
-    //private _constantesService = inject(ConstantesService)
+    private _constantesService = inject(ConstantesService)
     estudiantes: any[] = []
     reporteDeNotas: any[] = []
     estudianteEv: any[] = []
     calificacion: any[] = []
+    mit: any[] = []
     //------
     estudianteSeleccionado: any
     resultadosEstudiantes: any
@@ -99,6 +100,8 @@ export class TabResultadosComponent implements OnInit {
     tabla: string
     campos: string
     where: number
+    iPerfilId: number
+    iDocenteId: number
     private unsbscribe$ = new Subject<boolean>()
     unidad: string = '1'
 
@@ -196,10 +199,18 @@ export class TabResultadosComponent implements OnInit {
     // Inicializamos
     ngOnInit() {
         //this.verperfiles()
+        this.obtenerIdPerfil()
         this.getEstudiantesMatricula()
         this.mostrarCalificacion()
         this.obtenerReporteDenotasFinales()
+        this.habilitarCalificacion()
         //this.selectUnidad()
+    }
+    obtenerIdPerfil() {
+        this.iEstudianteId = this._constantesService.iEstudianteId
+        this.iPerfilId = this._constantesService.iPerfilId
+        this.iDocenteId = this._constantesService.iDocenteId
+        console.log('icredito', this.iEstudianteId)
     }
     // Obtenemos los datos de estudiante que el docente hico su retroalimentación por alumno
     obtenerComnt(estudiantes) {
@@ -241,12 +252,12 @@ export class TabResultadosComponent implements OnInit {
         return temporal.textContent || '' // Obtener solo el texto
     }
     //metodo para obtener el id de la unidad al seleccionar
-    selectUnidad(event: any): void {
+    selectUnidad(event: Event): void {
         // (event.target as HTMLButtonElement).value
         const buttonValue = (event.target as HTMLButtonElement).value
         this.unidad = buttonValue
 
-        console.log('id y fechaA', buttonValue)
+        console.log('Evento', buttonValue)
     }
     // en desarrollo
     obtenerReporteDenotasFinales() {
@@ -258,7 +269,7 @@ export class TabResultadosComponent implements OnInit {
         ).subscribe({
             next: (response) => {
                 this.reporteDeNotas = response
-                console.log('Detalle Notas', this.reporteDeNotas)
+                //console.log('Detalle Notas', this.reporteDeNotas)
             },
             error: (error) => {
                 console.error('Error al obtener notas finales:', error)
@@ -337,6 +348,17 @@ export class TabResultadosComponent implements OnInit {
         this._aulaService.obtenerCalificacion(userId).subscribe((Data) => {
             this.calificacion = Data['data']
             //console.log('Mostrar escala',this.calificacion)
+        })
+    }
+    unidades = []
+    habilitarCalificacion() {
+        const params = {
+            iYAcadId: this._constantesService.iYAcadId,
+            iCredId: this._constantesService.iCredId,
+        }
+        this._aulaService.habilitarCalificacion(params).subscribe((Data) => {
+            this.unidades = Data['data']
+            console.log('Mostrar fechas', this.mit)
         })
     }
     // mostrar los estudiantes

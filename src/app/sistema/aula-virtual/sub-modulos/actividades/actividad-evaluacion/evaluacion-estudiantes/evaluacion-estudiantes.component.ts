@@ -10,6 +10,7 @@ import { ConfirmationService, MessageService } from 'primeng/api'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { NgxDocViewerModule } from 'ngx-doc-viewer'
 import { environment } from '@/environments/environment'
+//import { interval, Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-evaluacion-estudiantes',
@@ -67,6 +68,8 @@ export class EvaluacionEstudiantesComponent implements OnChanges {
         this.itemPreguntas = this.itemPreguntas?.['preguntas'] || []
         this.esUltimaPregunta = this.iPreguntaId === this.preguntas.length
         this.filtrarPreguntasxiTipoPregId()
+
+        this.iniciarTemporizador()
     }
 
     regresarPregunta(): void {
@@ -245,8 +248,7 @@ export class EvaluacionEstudiantesComponent implements OnChanges {
                         severity: 'success',
                         summary: 'Guardado!',
                         detail: 'Se guardó correctamente la respuesta',
-                        sticky: true, // El mensaje no se cerrará automáticamente
-                        // life: 5000, // Duración en milisegundos
+                        life: 3000, // Duración en milisegundos
                     })
                 }
             },
@@ -261,6 +263,46 @@ export class EvaluacionEstudiantesComponent implements OnChanges {
             },
             complete: () => {},
         })
+    }
+
+    subscription
+    tiempoRestante
+    tiempoEnMilisegundos
+
+    iniciarTemporizador(): void {
+        if (
+            !this.evaluacion?.dtEvaluacionInicio ||
+            !this.evaluacion?.dtEvaluacionFin
+        ) {
+            //console.error("Fechas no válidas en `evaluacion`.");
+            //return;
+        }
+
+        // Configuración inicial
+        const inicio = new Date(this.evaluacion.dtEvaluacionInicio).getTime() // Tiempo de inicio en ms
+        const fin = new Date(this.evaluacion.dtEvaluacionFin).getTime() // Tiempo de fin en ms
+        this.tiempoEnMilisegundos = fin - inicio // Diferencia en ms
+
+        if (this.tiempoEnMilisegundos <= 0) {
+            //console.log("El tiempo ya terminó.");
+            //return;
+        }
+
+        // Actualizar el temporizador cada segundo
+        setInterval(() => {
+            const ahora = new Date().getTime() // Tiempo actual en ms
+            const tiempoRestante = fin - ahora // Tiempo restante en ms
+
+            if (tiempoRestante <= 0) {
+                console.log('¡Tiempo finalizado!')
+                this.tiempoEnMilisegundos = 0
+                return
+            }
+
+            this.tiempoEnMilisegundos = new Date(tiempoRestante)
+                .toISOString()
+                .substr(11, 8)
+        }, 1000)
     }
 
     getFormattedTime(): string {

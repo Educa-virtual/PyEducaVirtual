@@ -91,7 +91,8 @@
                                 <div
                                     class="perfilesList"
                                     tabindex="0"
-                                    (keypress)="obtenerComnt(estudiante)"
+                                    (click)="obtenerComnt(estudiante)"
+                                    (keydown.enter)="obtenerComnt(estudiante)"
                                 >
                                     <img
                                         src="assets/demo/images/matemit/perfil.png"
@@ -116,9 +117,12 @@
                                     >Asignar nivel de logro a:
                                     {{ estudianteEv }}
                                 </label>
+
                                 <button
                                     [value]="'1'"
                                     (click)="selectUnidad($event)"
+                                    label="Submit"
+                                    class="p-button-success"
                                 >
                                     UNIDAD I
                                 </button>
@@ -144,7 +148,7 @@
                                     [value]="'5'"
                                     (click)="selectUnidad($event)"
                                 >
-                                    UNIDAD IV
+                                    R
                                 </button>
                             </div>
                             <!-- Modificar el formGroup // *ngIf="mostrarDiv"-->
@@ -205,7 +209,7 @@
                                             </p-inputGroup>
                                         </div>
                                         <div class="col">
-                                            <button
+                                            <!-- <button
                                                 pButton
                                                 pRipple
                                                 label="Guardar"
@@ -213,7 +217,18 @@
                                                 (click)="
                                                     guardaCalificacionFinalUnidad()
                                                 "
-                                            ></button>
+                                                
+                                            ></button> -->
+                                            <p-button
+                                                label="Guardar"
+                                                icon="pi pi-check"
+                                                class="p-button-success"
+                                                [loading]="loading"
+                                                (onClick)="load()"
+                                                (click)="
+                                                    guardaCalificacionFinalUnidad()
+                                                "
+                                            />
                                         </div>
                                     </div>
                                 </form>
@@ -399,8 +414,8 @@
                         <app-table-primeng
                             [columnas]="columnasTabla"
                             [data]="estudiantes"
-                            [actions]="accionesTabla"
                         >
+                            <!-- [actions]="accionesTabla" -->
                         </app-table-primeng>
                     </ng-template>
                 </p-dataView>

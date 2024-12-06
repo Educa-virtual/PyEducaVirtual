@@ -114,14 +114,14 @@ export class ApiAulaService {
                         )
                     }
                     return response.data
-                }),
-                map((data) => {
-                    if (data.iActTipoId == 2) {
-                        const preguntas = mapItemsBancoToEre(data.preguntas)
-                        data.preguntas = mapData(preguntas)
-                    }
-                    return data
                 })
+                // map((data) => {
+                //     if (data.iActTipoId == 2) {
+                //         const preguntas = mapItemsBancoToEre(data.preguntas)
+                //         data.preguntas = mapData(preguntas)
+                //     }
+                //     return data
+                // })
             )
     }
 

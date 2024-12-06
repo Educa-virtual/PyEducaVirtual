@@ -103,6 +103,21 @@ export class AsistenciaComponent implements OnInit {
         selectable: true,
         dayMaxEvents: true,
         height: 600,
+        viewDidMount: (info) => {
+            const weekendDays = ['sábado', 'viernes'] // establecemos los dias que se desea establecer un fondo se toma un dia antes
+            const allDays = info.el.querySelectorAll('.fc-day')
+
+            allDays.forEach((cell: HTMLElement) => {
+                const date = new Date(cell.getAttribute('data-date')!) // captura los dias de la semana
+                if (
+                    weekendDays.includes(
+                        date.toLocaleString('es-pe', { weekday: 'long' })
+                    )
+                ) {
+                    cell.style.backgroundColor = '#ffd7d7'
+                }
+            })
+        },
         dateClick: (item) => this.handleDateClick(item),
         headerToolbar: {
             right: 'dayGridMonth,timeGridWeek,timeGridDay',

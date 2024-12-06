@@ -4,7 +4,7 @@ import { ContainerPageComponent } from '@/app/shared/container-page/container-pa
 import {
     TablePrimengComponent,
     IColumn,
-    IActionTable,
+    //IActionTable,
 } from '@/app/shared/table-primeng/table-primeng.component'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import {
@@ -132,6 +132,22 @@ export class TabResultadosComponent implements OnInit {
             type: 'text',
             width: '10rem',
             field: '',
+            header: 'Promedio 01',
+            text_header: 'left',
+            text: 'left',
+        },
+        {
+            type: 'text',
+            width: '10rem',
+            field: '',
+            header: 'Promedio',
+            text_header: 'left',
+            text: 'left',
+        },
+        {
+            type: 'text',
+            width: '10rem',
+            field: '',
             header: 'Promedio',
             text_header: 'left',
             text: 'left',
@@ -152,31 +168,31 @@ export class TabResultadosComponent implements OnInit {
             text_header: 'left',
             text: 'left',
         },
-        {
-            type: 'actions',
-            width: '1rem',
-            field: '',
-            header: 'Acciones',
-            text_header: 'left',
-            text: 'left',
-        },
+        // {
+        //     type: 'actions',
+        //     width: '1rem',
+        //     field: '',
+        //     header: 'Acciones',
+        //     text_header: 'left',
+        //     text: 'left',
+        // },
     ]
-    public accionesTabla: IActionTable[] = [
-        {
-            labelTooltip: 'Eliminar',
-            icon: 'pi pi-trash',
-            accion: 'eliminar',
-            type: 'item',
-            class: 'p-button-rounded p-button-danger p-button-text',
-        },
-        {
-            labelTooltip: 'Editar',
-            icon: 'pi pi-pencil',
-            accion: 'editar',
-            type: 'item',
-            class: 'p-button-rounded p-button-warning p-button-text',
-        },
-    ]
+    // public accionesTabla: IActionTable[] = [
+    //     {
+    //         labelTooltip: 'Eliminar',
+    //         icon: 'pi pi-trash',
+    //         accion: 'eliminar',
+    //         type: 'item',
+    //         class: 'p-button-rounded p-button-danger p-button-text',
+    //     },
+    //     {
+    //         labelTooltip: 'Editar',
+    //         icon: 'pi pi-pencil',
+    //         accion: 'editar',
+    //         type: 'item',
+    //         class: 'p-button-rounded p-button-warning p-button-text',
+    //     },
+    // ]
     // Inicializamos
     ngOnInit() {
         //this.verperfiles()
@@ -225,9 +241,12 @@ export class TabResultadosComponent implements OnInit {
         return temporal.textContent || '' // Obtener solo el texto
     }
     //metodo para obtener el id de la unidad al seleccionar
-    selectUnidad(event: Event): void {
+    selectUnidad(event: any): void {
+        // (event.target as HTMLButtonElement).value
         const buttonValue = (event.target as HTMLButtonElement).value
         this.unidad = buttonValue
+
+        console.log('id y fechaA', buttonValue)
     }
     // en desarrollo
     obtenerReporteDenotasFinales() {
@@ -251,6 +270,7 @@ export class TabResultadosComponent implements OnInit {
         const resultadosEstudiantesf = this.califcFinal.value
         const descripcionlimpia = resultadosEstudiantesf.cDetMatrConclusionDesc1
         const conclusionFinalDocente = this.limpiarHTML(descripcionlimpia)
+        const fechaActual = new Date()
         const where = [
             {
                 COLUMN_NAME: 'iDetMatrId',
@@ -264,30 +284,30 @@ export class TabResultadosComponent implements OnInit {
                 registro.cDetMatrConclusionDesc1 = conclusionFinalDocente
                 registro.iEscalaCalifIdPeriodo1 =
                     resultadosEstudiantesf.iEscalaCalifIdPeriodo1
-                registro.dtDetMatrPeriodo1 = '2024/12/5'
+                registro.dtDetMatrPeriodo1 = fechaActual
                 break
             case '2':
                 registro.cDetMatrConclusionDesc2 = conclusionFinalDocente
                 registro.iEscalaCalifIdPeriodo2 =
                     resultadosEstudiantesf.iEscalaCalifIdPeriodo1
-                registro.dtDetMatrPeriodo2 = '2024/12/5'
+                registro.dtDetMatrPeriodo2 = fechaActual
                 break
             case '3':
                 registro.cDetMatrConclusionDesc3 = conclusionFinalDocente
                 registro.iEscalaCalifIdPeriodo3 =
                     resultadosEstudiantesf.iEscalaCalifIdPeriodo1
-                registro.dtDetMatrPeriodo3 = '2024/12/5'
+                registro.dtDetMatrPeriodo3 = fechaActual
                 break
             case '4':
                 registro.cDetMatrConclusionDesc4 = conclusionFinalDocente
                 registro.iEscalaCalifIdPeriodo4 =
                     resultadosEstudiantesf.iEscalaCalifIdPeriodo1
-                registro.dtDetMatrPeriodo4 = '2024/12/5'
+                registro.dtDetMatrPeriodo4 = fechaActual
                 break
             case '5':
                 registro.iEscalaCalifIdRecuperacion =
                     resultadosEstudiantesf.iEscalaCalifIdPeriodo1
-                registro.dtDetMatrRecuperacion = '2024/12/5'
+                registro.dtDetMatrRecuperacion = fechaActual
                 break
 
             default:

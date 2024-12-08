@@ -354,7 +354,22 @@
                                                                         }}
                                                                     </span>
                                                                     <!-- Para Leer mas.. -->
+                                                                    <button
+                                                                        (click)="
+                                                                            toggleExpand(
+                                                                                respuestas
+                                                                            )
+                                                                        "
+                                                                        class="toggle-link"
+                                                                    >
+                                                                        {{
+                                                                            respuestas.expanded
+                                                                                ? 'Leer menos'
+                                                                                : 'Leer más'
+                                                                        }}
+                                                                    </button>
                                                                     <!-- <a
+                                                                        href=""
                                                                         (click)="
                                                                             toggleExpand(
                                                                                 respuestas
@@ -722,9 +737,9 @@
 >
     <form [formGroup]="foroFormCalf" class="flex flex-column gap-3 w-full">
         <div class="grid pt-2">
-            <!-- Mostrar la califcación -->
+            <!-- Mostrar la califcación comentada segun el requerimiento -->
             <!--  for="calificacion" [options]="calificacion"-->
-            <div class="col-12">
+            <!-- <div class="col-12">
                 <p-inputGroup>
                     <p-inputGroupAddon> Calificación </p-inputGroupAddon>
                     <p-dropdown
@@ -737,7 +752,7 @@
                         [showClear]="true"
                     ></p-dropdown>
                 </p-inputGroup>
-            </div>
+            </div> -->
             <!-- Mostrar descripción -->
             <div class="col-12">
                 <label for="descripcion" class="font-bold mt-1"

@@ -120,11 +120,11 @@ export class ForoRoomComponent implements OnInit {
         dtForoFin: [],
     })
     public foroFormCalf: FormGroup = this._formBuilder.group({
-        iEscalaCalifId: [],
+        //iEscalaCalifId: [],
         iForoRptaId: ['', [Validators.required]],
         cForoRptaDocente: ['', [Validators.required]],
-        nForoRptaNota: [],
-        cForoDescripcion: [],
+        //nForoRptaNota: [],
+        //cForoDescripcion: [],
     })
     // borrar foroFormComnt
     public foroFormComnt: FormGroup = this._formBuilder.group({
@@ -268,7 +268,7 @@ export class ForoRoomComponent implements OnInit {
         const value = this.foroFormCalf.value
         const nn = value.cForoRptaDocente
         const conclusionFinalDocente = this.limpiarHTML(nn)
-        console.log('datos de respuesta docente', conclusionFinalDocente)
+        value.cForoRptaDocente = conclusionFinalDocente
         this._aulaService.calificarForoDocente(value).subscribe((resp: any) => {
             if (resp?.validated) {
                 this.modelaCalificacionComen = false
@@ -276,13 +276,7 @@ export class ForoRoomComponent implements OnInit {
             }
         })
         console.log('Guardar Calificacion', value)
-
-        // this._aulaService.calificarForoDocente(value).subscribe((resp: any) => {
-        //     if (resp?.validated) {
-        //         this.modalCalificacion = false
-        //         this.getRespuestaF()
-        //     }
-        // })
+        this.foroFormCalf.reset()
     }
     startReply(index: number) {
         this.selectedCommentIndex = index // Guarda el índice del comentario seleccionado
@@ -477,33 +471,16 @@ export class ForoRoomComponent implements OnInit {
                     console.error('Error al obtener respuestas del foro', err)
                 },
             })
-        // Suscribirse a nuevos comentarios a través de WebSocket
-        // this.websocketService.listen('newComment').subscribe((message: any) => {
-        //     console.log('Nuevo comentario recibido desde WebSocket:', message)
-
-        //     // Suponiendo que el comentario recibido es solo texto, puedes agregarlo a la lista de respuestas.
-        //     // Si necesitas agregar la respuesta de una manera más estructurada, ajusta este bloque.
-        //     const newComment = {
-        //         cForoRptaRespuesta: message,
-        //         expanded: false,
-        //     }
-
-        //     // Aquí puedes agregar el nuevo comentario al array `respuestasForo`
-        //     // Asegúrate de que `respuestasForo` esté actualizada con los nuevos comentarios
-        //     this.respuestasForo.push(newComment)
-
-        //     // Si la lista de respuestas necesita alguna otra actualización o formato, puedes hacerlo aquí.
-        //     console.log('Respuestas de foro actualizadas:', this.respuestasForo)
-        // })
     }
     toggleExpand(comment: any) {
         comment.expanded = !comment.expanded
     }
+    // Obtener la lista de estudiantes matriculados
     getInformation(params) {
         this.GeneralService.getGralPrefix(params).subscribe({
             next: (response) => {
                 this.estudiantes = response.data
-                console.log('lista de estudiante', this.estudiantes)
+                //console.log('lista de estudiante', this.estudiantes)
             },
             complete: () => {},
             error: (error) => {
@@ -511,7 +488,7 @@ export class ForoRoomComponent implements OnInit {
             },
         })
     }
-
+    // consulta para obtener los estudiantes
     getEstudiantesMatricula() {
         const params = {
             petition: 'post',

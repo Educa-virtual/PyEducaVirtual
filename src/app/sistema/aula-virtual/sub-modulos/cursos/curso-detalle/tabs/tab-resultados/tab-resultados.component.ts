@@ -356,6 +356,7 @@ export class TabResultadosComponent implements OnInit {
             iYAcadId: this._constantesService.iYAcadId,
             iCredId: this._constantesService.iCredId,
         }
+        console.log('año', params)
         this._aulaService.habilitarCalificacion(params).subscribe((Data) => {
             this.unidades = Data['data']
             console.log('Mostrar fechas', this.mit)

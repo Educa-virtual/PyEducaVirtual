@@ -12,83 +12,44 @@
                     </div>
                 </ng-template>
                 <app-container-page
-                    [title]="
-                        'Asignar Nivel de Logro a estudiantes Seleccione la Unidad'
-                    "
+                    [title]="'Asignar Nivel de Logro a estudiantes'"
                     [actions]="[]"
                 >
-                    <!-- Menu de cabecera -->
-                    <p-dataView #dv [rows]="5" filterBy="cCursoNombre">
-                        <ng-template pTemplate="header">
-                            <div class="">
-                                <div class="grid grid-nogutter">
-                                    <!-- <div class="col pr-2">
-                                    <p-inputGroup>
-                                        <p-inputGroupAddon>
-                                            <p-inputIcon
-                                                styleClass="pi pi-search"
-                                            />
-                                        </p-inputGroupAddon>
-                                        <input
-                                            pInputText
-                                            type="text"
-                                            placeholder="Buscar por nombre...."
-                                        />
-                                    </p-inputGroup>
-                                </div> -->
-                                    <!-- <div class="col pr-2">
-                                    <p-inputGroup>
-                                        <p-inputGroupAddon>
-                                            Actividad
-                                        </p-inputGroupAddon>
-                                        <p-dropdown
-                                            placeholder="Evaluaciones"
-                                            styleClass="w-full"
-                                            class="flex-1"
-                                        />
-                                    </p-inputGroup>
-                                </div> -->
-                                    <!-- <div class="col">
-                                    <p-inputGroup>
-                                        <p-inputGroupAddon>
-                                            Fecha
-                                        </p-inputGroupAddon>
-                                        <p-dropdown
-                                            placeholder="Seleccione fecha"
-                                            styleClass="w-full"
-                                            class="flex-1"
-                                        >
-                                        </p-dropdown>
-                                    </p-inputGroup>
-                                </div> -->
-                                    <div class="col">
-                                        @for (
-                                            item of unidades;
-                                            track item;
-                                            let idx = $index
-                                        ) {
-                                            <button
-                                                pButton
-                                                class="pr-2"
-                                                [disabled]="
-                                                    item.iEstado === '0'
-                                                        ? true
-                                                        : false
-                                                "
-                                                (click)="
-                                                    selectUnidad(item, idx)
-                                                "
-                                            >
-                                                UNIDAD {{ idx + 1 }}
-                                            </button>
-                                        }
-                                    </div>
-                                </div>
-
-                                <!-- <p-dataViewLayoutOptions></p-dataViewLayoutOptions> -->
+                    <div class="card grid grid-cols-2 pb-5">
+                        <div class="col-12 pb-2">
+                            <label
+                                for=""
+                                class=""
+                                style="font-weight: bold; font-size: 16px"
+                            >
+                                Año escolar:
+                            </label>
+                        </div>
+                        <div class="grid grid-nogutter">
+                            <div class="col">
+                                @for (
+                                    item of unidades;
+                                    track item;
+                                    let idx = $index
+                                ) {
+                                    <button
+                                        pButton
+                                        class="mx-2"
+                                        [disabled]="
+                                            item.iEstado === '1' ? true : false
+                                        "
+                                        (click)="selectUnidad(item, idx)"
+                                        pTooltip="Iniciar"
+                                        tooltipPosition="bottom"
+                                    >
+                                        {{ item.cPeriodoEvalNombre }}
+                                        {{ idx + 1 }}
+                                    </button>
+                                }
                             </div>
-                        </ng-template>
-                    </p-dataView>
+                        </div>
+                    </div>
+                    <br />
                     <div class="card grid">
                         <!-- lista de participantes... -->
                         <div class="col-4">
@@ -147,49 +108,26 @@
                                         >Asignar nivel de logro a:
                                         {{ estudianteEv }}
                                     </label>
-                                    <!-- @for (
-                                        item of unidades;
-                                        track item;
-                                        let idx = $index
-                                    ) {
-                                        <button
-                                            pButton                                            
-                                            class="p-button-success"
-                                            [disabled]="
-                                                item.iEstado === '0'
-                                                    ? true
-                                                    : false
-                                            "
-                                            (click)="selectUnidad(item, idx)"
-                                        >
-                                            UNIDAD {{ idx + 1 }}
-                                        </button>
-                                    } -->
-                                    <!-- <button
-                                    [value]="'2'"
-                                    (click)="selectUnidad($event)"
-                                >
-                                    UNIDAD II
-                                </button>
-                                <button
-                                    [value]="'3'"
-                                    (click)="selectUnidad($event)"
-                                >
-                                    UNIDAD III
-                                </button>
-                                <button
-                                    [value]="'4'"
-                                    (click)="selectUnidad($event)"
-                                >
-                                    UNIDAD IV
-                                </button>
-                                <button
-                                    [value]="'5'"
-                                    (click)="selectUnidad($event)"
-                                >
-                                    R
-                                </button> -->
                                 </div>
+                                <!-- Select de los periodos academicos -->
+                                <!-- <div class="pb-2">
+                                    <p-inputGroup>
+                                        <p-inputGroupAddon
+                                            class="rounded"
+                                        >
+                                            Periodo académico:
+                                        </p-inputGroupAddon>                    
+                                        <p-dropdown
+                                            [options]="unidades"
+                                            formControlName="cPeriodoEvalNombre"
+                                            styleClass="w-full"
+                                            optionValue="iEscalaCalifId"
+                                            optionLabel="cPeriodoEvalNombre"
+                                            placeholder="Seleccione Periodo"
+                                            [showClear]="true"
+                                        />
+                                    </p-inputGroup>                                    
+                                </div> -->
                                 <!-- Modificar el formGroup // *ngIf="mostrarDiv"-->
                                 <div
                                     class="card border-4 border-indigo-200 border-indigo-500/50"
@@ -203,9 +141,7 @@
                                                 <p-editor
                                                     id="descripcion"
                                                     hearder="hola"
-                                                    placeholder="Agregar un conclusión descriptiva... {{
-                                                        estudianteEv
-                                                    }}"
+                                                    placeholder="Agregar un conclusión descriptiva..."
                                                     formControlName="cDetMatrConclusionDesc1"
                                                 >
                                                     <ng-template
@@ -408,7 +344,7 @@
                 </ng-template>
                 <app-container-page [title]="'Mis Resultados'" [actions]="[]">
                     <p-dataView #dv [rows]="5" filterBy="cCursoNombre">
-                        <ng-template pTemplate="header" class="grid">
+                        <!-- <ng-template pTemplate="header" class="grid">
                             <div class=" ">
                                 <div class="card grid grid-nogutter">
                                     <div class="col pr-2">
@@ -452,13 +388,13 @@
                                     </div>
                                 </div>
 
-                                <!-- <p-dataViewLayoutOptions></p-dataViewLayoutOptions> -->
+                                <p-dataViewLayoutOptions></p-dataViewLayoutOptions>
                             </div>
-                        </ng-template>
+                        </ng-template> -->
                         <ng-template let-products pTemplate="listItem">
                             <app-table-primeng
                                 [columnas]="columnasTabla"
-                                [data]="estudiantes"
+                                [data]="reporteNotasFinales"
                             >
                                 <!-- [actions]="accionesTabla" -->
                             </app-table-primeng>

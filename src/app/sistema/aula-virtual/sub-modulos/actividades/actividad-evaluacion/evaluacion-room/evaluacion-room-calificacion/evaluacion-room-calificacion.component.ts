@@ -250,4 +250,6 @@ export class EvaluacionRoomCalificacionComponent implements OnInit {
     public seleccionarEvaluacion() {
         this.obtenerEvaluacionRespuestasEstudiante()
     }
+
+    guardarEvaluacionEstudiantesxDocente() {}
 }

@@ -1,9 +1,9 @@
 <p-table
-    styleClass="p-datatable-gridlines p-datatable-sm"
+    styleClass="p-datatable-gridlines p-datatable-sm mt-2"
     class="evaluacion-info"
 >
     <ng-template pTemplate="caption">
-        <p class="text-center">Informacion de la evaluación</p>
+        <p class="text-center">Informacion de la evaluación formativa</p>
     </ng-template>
     <ng-template pTemplate="header">
         <tr>
@@ -43,8 +43,8 @@
 
             <th>{{ evaluacionEstudiante.iTotalMinutos ?? 0 }} minutos</th>
 
-            <th>Retroalimentacion</th>
-            <th></th>
+            <!-- <th>Retroalimentacion</th>
+            <th></th> -->
         </tr>
     </ng-template>
 </p-table>

@@ -1,25 +1,28 @@
-<section class="flex flex-column gap-4">
-    <p-tabView styleClass="actividad-tabs">
-        <!-- calificar a estudiante  -->
-        <p-tabPanel>
-            <ng-template pTemplate="header" class="header">
-                <div class="flex align-items-center flex-column gap-2">
-                    <app-icon name="matListAlt"></app-icon>
-                    <span class="font-bold white-space-nowrap m-0">
-                        Detalle de actividad
-                    </span>
-                </div>
-            </ng-template>
-            <app-container-page
-                [title]="'Asignar Nivel de Logro a estudiantes'"
-                [actions]="[]"
-            >
-                <!-- Menu de cabecera -->
-                <!-- <p-dataView #dv [rows]="5" filterBy="cCursoNombre">
-                    <ng-template pTemplate="header">
-                        <div class="">
-                            <div class="grid grid-nogutter">
-                                <div class="col pr-2">
+@if (iPerfilId !== 8) {
+    <section class="flex flex-column gap-4">
+        <p-tabView styleClass="actividad-tabs">
+            <!-- calificar a estudiante  -->
+            <p-tabPanel>
+                <ng-template pTemplate="header" class="header">
+                    <div class="flex align-items-center flex-column gap-2">
+                        <app-icon name="matListAlt"></app-icon>
+                        <span class="font-bold white-space-nowrap m-0">
+                            Detalle de actividad
+                        </span>
+                    </div>
+                </ng-template>
+                <app-container-page
+                    [title]="
+                        'Asignar Nivel de Logro a estudiantes Seleccione la Unidad'
+                    "
+                    [actions]="[]"
+                >
+                    <!-- Menu de cabecera -->
+                    <p-dataView #dv [rows]="5" filterBy="cCursoNombre">
+                        <ng-template pTemplate="header">
+                            <div class="">
+                                <div class="grid grid-nogutter">
+                                    <!-- <div class="col pr-2">
                                     <p-inputGroup>
                                         <p-inputGroupAddon>
                                             <p-inputIcon
@@ -32,8 +35,8 @@
                                             placeholder="Buscar por nombre...."
                                         />
                                     </p-inputGroup>
-                                </div>
-                                <div class="col pr-2">
+                                </div> -->
+                                    <!-- <div class="col pr-2">
                                     <p-inputGroup>
                                         <p-inputGroupAddon>
                                             Actividad
@@ -44,8 +47,8 @@
                                             class="flex-1"
                                         />
                                     </p-inputGroup>
-                                </div>
-                                <div class="col">
+                                </div> -->
+                                    <!-- <div class="col">
                                     <p-inputGroup>
                                         <p-inputGroupAddon>
                                             Fecha
@@ -57,76 +60,112 @@
                                         >
                                         </p-dropdown>
                                     </p-inputGroup>
-                                </div>
-                            </div>
-
-                            <p-dataViewLayoutOptions></p-dataViewLayoutOptions>
-                        </div>
-                    </ng-template>
-                </p-dataView> -->
-                <div class="card grid">
-                    <!-- lista de participantes... -->
-                    <div class="col-4">
-                        <div class="pb-2">
-                            <label
-                                for=""
-                                class=""
-                                style="font-weight: bold; font-size: 16px"
-                                >Seleccionar estudiante:
-                            </label>
-                        </div>
-                        <p-orderList
-                            class="listAlumno"
-                            [value]="estudiantes"
-                            filterBy="nombrecompleto"
-                            filterPlaceholder="Buscar...."
-                        >
-                            <ng-template
-                                let-estudiante
-                                of
-                                comentarios
-                                pTemplate="listItem"
-                                let-i="index"
-                            >
-                                <div
-                                    class="perfilesList"
-                                    tabindex="0"
-                                    (click)="obtenerComnt(estudiante)"
-                                    (keydown.enter)="obtenerComnt(estudiante)"
-                                >
-                                    <img
-                                        src="assets/demo/images/matemit/perfil.png"
-                                        alt=""
-                                        class="w-3rem btn"
-                                    />
-                                    <!--class="w-4rem min-h-9 shadow-2 flex-shrink-0 border-round"-->
-                                    <div class="perfil-name">
-                                        {{ estudiante?.nombrecompleto }}
+                                </div> -->
+                                    <div class="col">
+                                        @for (
+                                            item of unidades;
+                                            track item;
+                                            let idx = $index
+                                        ) {
+                                            <button
+                                                pButton
+                                                class="pr-2"
+                                                [disabled]="
+                                                    item.iEstado === '0'
+                                                        ? true
+                                                        : false
+                                                "
+                                                (click)="
+                                                    selectUnidad(item, idx)
+                                                "
+                                            >
+                                                UNIDAD {{ idx + 1 }}
+                                            </button>
+                                        }
                                     </div>
                                 </div>
-                            </ng-template>
-                        </p-orderList>
-                    </div>
-                    <div class="col-8">
-                        <div class="pb-2">
+
+                                <!-- <p-dataViewLayoutOptions></p-dataViewLayoutOptions> -->
+                            </div>
+                        </ng-template>
+                    </p-dataView>
+                    <div class="card grid">
+                        <!-- lista de participantes... -->
+                        <div class="col-4">
                             <div class="pb-2">
                                 <label
                                     for=""
                                     class=""
                                     style="font-weight: bold; font-size: 16px"
-                                    >Asignar nivel de logro a:
-                                    {{ estudianteEv }}
+                                    >Seleccionar estudiante:
                                 </label>
-
-                                <button
-                                    [value]="'1'"
-                                    (click)="selectUnidad($event)"
-                                    label="Submit"
-                                    class="p-button-success"
+                            </div>
+                            <p-orderList
+                                class="listAlumno"
+                                [value]="estudiantes"
+                                filterBy="nombrecompleto"
+                                filterPlaceholder="Buscar...."
+                            >
+                                <ng-template
+                                    let-estudiante
+                                    of
+                                    comentarios
+                                    pTemplate="listItem"
+                                    let-i="index"
                                 >
-                                    UNIDAD I
-                                </button>
-                                <button
+                                    <div
+                                        class="perfilesList"
+                                        tabindex="0"
+                                        (click)="obtenerComnt(estudiante)"
+                                        (keydown.enter)="
+                                            obtenerComnt(estudiante)
+                                        "
+                                    >
+                                        <img
+                                            src="assets/demo/images/matemit/perfil.png"
+                                            alt=""
+                                            class="w-3rem btn"
+                                        />
+                                        <!--class="w-4rem min-h-9 shadow-2 flex-shrink-0 border-round"-->
+                                        <div class="perfil-name">
+                                            {{ estudiante?.nombrecompleto }}
+                                        </div>
+                                    </div>
+                                </ng-template>
+                            </p-orderList>
+                        </div>
+                        <div class="col-8">
+                            <div class="pb-2">
+                                <div class="pb-2">
+                                    <label
+                                        for=""
+                                        class=""
+                                        style="
+                                            font-weight: bold;
+                                            font-size: 16px;
+                                        "
+                                        >Asignar nivel de logro a:
+                                        {{ estudianteEv }}
+                                    </label>
+                                    <!-- @for (
+                                        item of unidades;
+                                        track item;
+                                        let idx = $index
+                                    ) {
+                                        <button
+                                            pButton                                            
+                                            class="p-button-success"
+                                            [disabled]="
+                                                item.iEstado === '0'
+                                                    ? true
+                                                    : false
+                                            "
+                                            (click)="selectUnidad(item, idx)"
+                                        >
+                                            UNIDAD {{ idx + 1 }}
+                                        </button>
+                                    } -->
+                                    <!-- <button
                                     [value]="'2'"
                                     (click)="selectUnidad($event)"
                                 >
@@ -149,67 +188,71 @@
                                     (click)="selectUnidad($event)"
                                 >
                                     R
-                                </button>
-                            </div>
-                            <!-- Modificar el formGroup // *ngIf="mostrarDiv"-->
-                            <div
-                                class="card border-4 border-indigo-200 border-indigo-500/50"
-                            >
-                                <form
-                                    [formGroup]="califcFinal"
-                                    class="flex flex-column gap-3 w-full"
+                                </button> -->
+                                </div>
+                                <!-- Modificar el formGroup // *ngIf="mostrarDiv"-->
+                                <div
+                                    class="card border-4 border-indigo-200 border-indigo-500/50"
                                 >
-                                    <div class="grid grid-nogutter">
-                                        <div class="col-12 pr-1 pb-2">
-                                            <p-editor
-                                                id="descripcion"
-                                                hearder="hola"
-                                                placeholder="Agregar un conclusión descriptiva... {{
-                                                    estudianteEv
-                                                }}"
-                                                formControlName="cDetMatrConclusionDesc1"
-                                            >
-                                                <ng-template pTemplate="header">
-                                                    <span class="ql-formats">
-                                                        <button
-                                                            type="button"
-                                                            class="ql-bold"
-                                                            aria-label="Bold"
-                                                        ></button>
-                                                        <button
-                                                            type="button"
-                                                            class="ql-italic"
-                                                            aria-label="Italic"
-                                                        ></button>
-                                                        <button
-                                                            type="button"
-                                                            class="ql-underline"
-                                                            aria-label="Underline"
-                                                        ></button>
-                                                    </span>
-                                                </ng-template>
-                                            </p-editor>
-                                        </div>
-                                        <div class="col pr-1 pb-2">
-                                            <p-inputGroup>
-                                                <p-inputGroupAddon
-                                                    class="rounded"
+                                    <form
+                                        [formGroup]="califcFinal"
+                                        class="flex flex-column gap-3 w-full"
+                                    >
+                                        <div class="grid grid-nogutter">
+                                            <div class="col-12 pr-1 pb-2">
+                                                <p-editor
+                                                    id="descripcion"
+                                                    hearder="hola"
+                                                    placeholder="Agregar un conclusión descriptiva... {{
+                                                        estudianteEv
+                                                    }}"
+                                                    formControlName="cDetMatrConclusionDesc1"
                                                 >
-                                                    Nivel de Logro:
-                                                </p-inputGroupAddon>
-                                                <p-dropdown
-                                                    [options]="calificacion"
-                                                    formControlName="iEscalaCalifIdPeriodo1"
-                                                    styleClass="w-full"
-                                                    optionValue="iEscalaCalifId"
-                                                    optionLabel="cEscalaCalifNombre"
-                                                    placeholder="Seleccione calificación"
-                                                    [showClear]="true"
-                                                />
-                                            </p-inputGroup>
-                                        </div>
-                                        <div class="col">
-                                            <!-- <button
+                                                    <ng-template
+                                                        pTemplate="header"
+                                                    >
+                                                        <span
+                                                            class="ql-formats"
+                                                        >
+                                                            <button
+                                                                type="button"
+                                                                class="ql-bold"
+                                                                aria-label="Bold"
+                                                            ></button>
+                                                            <button
+                                                                type="button"
+                                                                class="ql-italic"
+                                                                aria-label="Italic"
+                                                            ></button>
+                                                            <button
+                                                                type="button"
+                                                                class="ql-underline"
+                                                                aria-label="Underline"
+                                                            ></button>
+                                                        </span>
+                                                    </ng-template>
+                                                </p-editor>
+                                            </div>
+                                            <div class="col pr-1 pb-2">
+                                                <p-inputGroup>
+                                                    <p-inputGroupAddon
+                                                        class="rounded"
+                                                    >
+                                                        Nivel de Logro:
+                                                    </p-inputGroupAddon>
+                                                    <p-dropdown
+                                                        [options]="calificacion"
+                                                        formControlName="iEscalaCalifIdPeriodo1"
+                                                        styleClass="w-full"
+                                                        optionValue="iEscalaCalifId"
+                                                        optionLabel="cEscalaCalifNombre"
+                                                        placeholder="Seleccione calificación"
+                                                        [showClear]="true"
+                                                    />
+                                                </p-inputGroup>
+                                            </div>
+                                            <div class="col">
+                                                <!-- <button
                                                 pButton
                                                 pRipple
                                                 label="Guardar"
@@ -219,207 +262,209 @@
                                                 "
                                                 
                                             ></button> -->
-                                            <p-button
-                                                label="Guardar"
-                                                icon="pi pi-check"
-                                                class="p-button-success"
-                                                [loading]="loading"
-                                                (onClick)="load()"
-                                                (click)="
-                                                    guardaCalificacionFinalUnidad()
-                                                "
-                                            />
+                                                <p-button
+                                                    label="Guardar"
+                                                    icon="pi pi-check"
+                                                    class="p-button-success"
+                                                    [loading]="loading"
+                                                    (onClick)="load()"
+                                                    (click)="
+                                                        guardaCalificacionFinalUnidad()
+                                                    "
+                                                />
+                                            </div>
                                         </div>
-                                    </div>
-                                </form>
+                                    </form>
+                                </div>
                             </div>
-                        </div>
-                        <label
-                            for=""
-                            class=""
-                            style="font-weight: bold; font-size: 16px"
-                            >Detalle de actividades del estudiante:
-                        </label>
-                        <div>
-                            <p-accordion [activeIndex]="0">
-                                <p-accordionTab header="Actividad Foro">
-                                    <div class="card">
-                                        <p-table
-                                            [value]="comentariosSelect"
-                                            [tableStyle]="{
-                                                'min-width': '60rem',
-                                            }"
-                                            [tableStyle]="{
-                                                'max-height': '400px',
-                                            }"
-                                            sortMode="multiple"
-                                        >
-                                            <ng-template pTemplate="header">
-                                                <tr>
-                                                    <th
-                                                        pSortableColumn="code"
-                                                        style="
-                                                            width: 1%;
-                                                            text-align: center;
-                                                        "
-                                                    >
-                                                        #
-                                                    </th>
-                                                    <th
-                                                        pSortableColumn="name"
-                                                        style="width: 20%"
-                                                    >
-                                                        Nombre Activida
-                                                        <p-sortIcon
-                                                            field="name"
-                                                        />
-                                                    </th>
-                                                    <th
-                                                        pSortableColumn="name"
-                                                        style="width: 20%"
-                                                    >
-                                                        Fecha de Activida
-                                                        <p-sortIcon
-                                                            field="name"
-                                                        />
-                                                    </th>
-                                                    <th
-                                                        pSortableColumn="category"
-                                                        style="width: 20%"
-                                                    >
-                                                        Retroalimentación
-                                                        <p-sortIcon
-                                                            field="category"
-                                                        />
-                                                    </th>
-                                                </tr>
-                                            </ng-template>
-                                            <ng-template
-                                                pTemplate="body"
-                                                let-comentario
-                                                let-rowIndex="rowIndex"
+                            <label
+                                for=""
+                                class=""
+                                style="font-weight: bold; font-size: 16px"
+                                >Detalle de actividades del estudiante:
+                            </label>
+                            <div>
+                                <p-accordion [activeIndex]="0">
+                                    <p-accordionTab header="Actividad Foro">
+                                        <div class="card">
+                                            <p-table
+                                                [value]="comentariosSelect"
+                                                [tableStyle]="{
+                                                    'min-width': '60rem',
+                                                }"
+                                                [tableStyle]="{
+                                                    'max-height': '400px',
+                                                }"
+                                                sortMode="multiple"
                                             >
-                                                <tr>
-                                                    <td
-                                                        style="
-                                                            width: 10px;
-                                                            text-align: center;
-                                                        "
-                                                    >
-                                                        {{ rowIndex + 1 }}
-                                                    </td>
+                                                <ng-template pTemplate="header">
+                                                    <tr>
+                                                        <th
+                                                            pSortableColumn="code"
+                                                            style="
+                                                                width: 1%;
+                                                                text-align: center;
+                                                            "
+                                                        >
+                                                            #
+                                                        </th>
+                                                        <th
+                                                            pSortableColumn="name"
+                                                            style="width: 20%"
+                                                        >
+                                                            Nombre Activida
+                                                            <p-sortIcon
+                                                                field="name"
+                                                            />
+                                                        </th>
+                                                        <th
+                                                            pSortableColumn="name"
+                                                            style="width: 20%"
+                                                        >
+                                                            Fecha de Activida
+                                                            <p-sortIcon
+                                                                field="name"
+                                                            />
+                                                        </th>
+                                                        <th
+                                                            pSortableColumn="category"
+                                                            style="width: 20%"
+                                                        >
+                                                            Retroalimentación
+                                                            <p-sortIcon
+                                                                field="category"
+                                                            />
+                                                        </th>
+                                                    </tr>
+                                                </ng-template>
+                                                <ng-template
+                                                    pTemplate="body"
+                                                    let-comentario
+                                                    let-rowIndex="rowIndex"
+                                                >
+                                                    <tr>
+                                                        <td
+                                                            style="
+                                                                width: 10px;
+                                                                text-align: center;
+                                                            "
+                                                        >
+                                                            {{ rowIndex + 1 }}
+                                                        </td>
 
-                                                    <td>
-                                                        {{
-                                                            comentario?.cForoTitulo
-                                                        }}
-                                                    </td>
-                                                    <td>
-                                                        {{
-                                                            comentario?.dtForoPublicacion
-                                                        }}
-                                                    </td>
-                                                    <td>
-                                                        {{
-                                                            comentario
-                                                                ? comentario.cForoRptaDocente
-                                                                : (''
-                                                                  | removeHTML)
-                                                        }}
-                                                    </td>
-                                                </tr>
-                                            </ng-template>
-                                        </p-table>
-                                    </div>
-                                </p-accordionTab>
-                                <p-accordionTab header="Actividad Tarea">
-                                    <p>
-                                        Sed ut perspiciatis unde omnis iste
-                                        natus error sit voluptatem
-                                        accusantium...
-                                    </p>
-                                </p-accordionTab>
-                                <p-accordionTab header="Actividad Evaluación">
-                                    <p>
-                                        At vero eos et accusamus et iusto odio
-                                        dignissimos...
-                                    </p>
-                                </p-accordionTab>
-                            </p-accordion>
+                                                        <td>
+                                                            {{
+                                                                comentario?.cForoTitulo
+                                                            }}
+                                                        </td>
+                                                        <td>
+                                                            {{
+                                                                comentario?.dtForoPublicacion
+                                                            }}
+                                                        </td>
+                                                        <td>
+                                                            {{
+                                                                comentario
+                                                                    ? comentario.cForoRptaDocente
+                                                                    : (''
+                                                                      | removeHTML)
+                                                            }}
+                                                        </td>
+                                                    </tr>
+                                                </ng-template>
+                                            </p-table>
+                                        </div>
+                                    </p-accordionTab>
+                                    <p-accordionTab header="Actividad Tarea">
+                                        <p>
+                                            Sed ut perspiciatis unde omnis iste
+                                            natus error sit voluptatem
+                                            accusantium...
+                                        </p>
+                                    </p-accordionTab>
+                                    <p-accordionTab
+                                        header="Actividad Evaluación"
+                                    >
+                                        <p>
+                                            At vero eos et accusamus et iusto
+                                            odio dignissimos...
+                                        </p>
+                                    </p-accordionTab>
+                                </p-accordion>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </app-container-page>
-        </p-tabPanel>
-        <!-- mostrar notas detalladas -->
-        <p-tabPanel>
-            <ng-template pTemplate="header" class="header">
-                <div class="flex align-items-center flex-column gap-2">
-                    <app-icon name="matListAlt"></app-icon>
-                    <span class="font-bold white-space-nowrap m-0">
-                        Reporte final de Actividades
-                    </span>
-                </div>
-            </ng-template>
-            <app-container-page [title]="'Mis Resultados'" [actions]="[]">
-                <p-dataView #dv [rows]="5" filterBy="cCursoNombre">
-                    <ng-template pTemplate="header" class="grid">
-                        <div class=" ">
-                            <div class="card grid grid-nogutter">
-                                <div class="col pr-2">
-                                    <p-inputGroup>
-                                        <p-inputGroupAddon>
-                                            <p-inputIcon
-                                                styleClass="pi pi-search"
+                </app-container-page>
+            </p-tabPanel>
+            <!-- mostrar notas detalladas -->
+            <p-tabPanel>
+                <ng-template pTemplate="header" class="header">
+                    <div class="flex align-items-center flex-column gap-2">
+                        <app-icon name="matListAlt"></app-icon>
+                        <span class="font-bold white-space-nowrap m-0">
+                            Reporte final de Actividades
+                        </span>
+                    </div>
+                </ng-template>
+                <app-container-page [title]="'Mis Resultados'" [actions]="[]">
+                    <p-dataView #dv [rows]="5" filterBy="cCursoNombre">
+                        <ng-template pTemplate="header" class="grid">
+                            <div class=" ">
+                                <div class="card grid grid-nogutter">
+                                    <div class="col pr-2">
+                                        <p-inputGroup>
+                                            <p-inputGroupAddon>
+                                                <p-inputIcon
+                                                    styleClass="pi pi-search"
+                                                />
+                                            </p-inputGroupAddon>
+                                            <input
+                                                pInputText
+                                                type="text"
+                                                placeholder="Buscar por nombre...."
                                             />
-                                        </p-inputGroupAddon>
-                                        <input
-                                            pInputText
-                                            type="text"
-                                            placeholder="Buscar por nombre...."
-                                        />
-                                    </p-inputGroup>
+                                        </p-inputGroup>
+                                    </div>
+                                    <div class="col pr-2">
+                                        <p-inputGroup>
+                                            <p-inputGroupAddon>
+                                                Actividad
+                                            </p-inputGroupAddon>
+                                            <p-dropdown
+                                                placeholder="Evaluaciones"
+                                                styleClass="w-full"
+                                                class="flex-1"
+                                            />
+                                        </p-inputGroup>
+                                    </div>
+                                    <div class="col">
+                                        <p-inputGroup>
+                                            <p-inputGroupAddon>
+                                                Fecha
+                                            </p-inputGroupAddon>
+                                            <p-dropdown
+                                                placeholder="Seleccione fecha"
+                                                styleClass="w-full"
+                                                class="flex-1"
+                                            >
+                                            </p-dropdown>
+                                        </p-inputGroup>
+                                    </div>
                                 </div>
-                                <div class="col pr-2">
-                                    <p-inputGroup>
-                                        <p-inputGroupAddon>
-                                            Actividad
-                                        </p-inputGroupAddon>
-                                        <p-dropdown
-                                            placeholder="Evaluaciones"
-                                            styleClass="w-full"
-                                            class="flex-1"
-                                        />
-                                    </p-inputGroup>
-                                </div>
-                                <div class="col">
-                                    <p-inputGroup>
-                                        <p-inputGroupAddon>
-                                            Fecha
-                                        </p-inputGroupAddon>
-                                        <p-dropdown
-                                            placeholder="Seleccione fecha"
-                                            styleClass="w-full"
-                                            class="flex-1"
-                                        >
-                                        </p-dropdown>
-                                    </p-inputGroup>
-                                </div>
-                            </div>
 
-                            <!-- <p-dataViewLayoutOptions></p-dataViewLayoutOptions> -->
-                        </div>
-                    </ng-template>
-                    <ng-template let-products pTemplate="listItem">
-                        <app-table-primeng
-                            [columnas]="columnasTabla"
-                            [data]="estudiantes"
-                        >
-                            <!-- [actions]="accionesTabla" -->
-                        </app-table-primeng>
-                    </ng-template>
-                </p-dataView>
-                <!-- <p-table
+                                <!-- <p-dataViewLayoutOptions></p-dataViewLayoutOptions> -->
+                            </div>
+                        </ng-template>
+                        <ng-template let-products pTemplate="listItem">
+                            <app-table-primeng
+                                [columnas]="columnasTabla"
+                                [data]="estudiantes"
+                            >
+                                <!-- [actions]="accionesTabla" -->
+                            </app-table-primeng>
+                        </ng-template>
+                    </p-dataView>
+                    <!-- <p-table
                     [value]="estudiantes"
                     [tableStyle]="{ 'min-width': '50rem' }"
                     class="heard-color"
@@ -451,7 +496,9 @@
                         </tr>
                     </ng-template>
                 </p-table> -->
-            </app-container-page>
-        </p-tabPanel>
-    </p-tabView>
-</section>
+                </app-container-page>
+            </p-tabPanel>
+        </p-tabView>
+    </section>
+}
+<label for="">Hola sr: Estudiante</label>

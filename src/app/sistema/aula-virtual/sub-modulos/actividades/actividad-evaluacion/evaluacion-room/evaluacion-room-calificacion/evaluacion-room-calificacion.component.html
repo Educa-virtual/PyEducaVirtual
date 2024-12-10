@@ -1,113 +1,135 @@
-<div class="flex flex-column mb-4">
-    <article class="card">
-        <h2>Calificación: {{ evaluacion?.cEvaluacionTitulo }}</h2>
-    </article>
-</div>
+<app-toolbar-primeng
+    [title]="
+        'Evaluación Formativa: ' +
+        (evaluacion?.cEvaluacionTitulo || 'Título no disponible')
+    "
+></app-toolbar-primeng>
 
-<div
-    class="flex flex-column gap-4 md:flex-row md:align-items-start align-items-stretch"
->
-    <div class="flex flex-column gap-2 card">
-        <div class="flex gap-4 align-items-center flex-wrap mx-auto">
-            @for (leyenda of leyendasOrden; track $index) {
-                <app-leyenda
-                    [total]="leyendas()[leyenda].total"
-                    [text]="leyendas()[leyenda].text"
-                    [size]="$any(leyendas()[leyenda].size)"
-                    [colorClass]="leyendas()[leyenda].colorClass"
-                ></app-leyenda>
-            }
-        </div>
-        <div class="w-full">
-            <p-iconField iconPosition="left" class="w-full">
-                <p-inputIcon styleClass="pi pi-search" />
-                <input
-                    type="text"
-                    pInputText
-                    placeholder="Search"
-                    class="w-full"
-                />
-            </p-iconField>
-        </div>
-        <p-table
-            [value]="evaluacionesEstudiantes()"
-            selectionMode="single"
-            [selection]="selectedEstudianteValue"
-            (selectionChange)="updateSelectedEstudiante($event)"
-            dataKey="iEstudianteId"
-            (onRowSelect)="seleccionarEvaluacion()"
+<div class="grid">
+    <!-- <div class="flex flex-column mb-4">
+        <article class="card" style="position: sticky; top: 0; z-index: 10; background: white; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
+          <h2>Calificación: {{ evaluacion?.cEvaluacionTitulo }}</h2>
+        </article>
+      </div> -->
+
+    <div
+        class="flex flex-column gap-4 md:flex-row md:align-items-start align-items-stretch"
+    >
+        <!-- Panel Izquierdo -->
+        <div
+            class="flex flex-column gap-2 card"
+            style="overflow-y: auto; max-height: 500px"
         >
-            <ng-template pTemplate="header">
-                <tr>
-                    <th>Nombre y Apellidos</th>
-                    <th>Estado</th>
-                    <th>Notal Final</th>
-                </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-estudiante>
-                <tr [pSelectableRow]="estudiante">
-                    <td>
-                        {{ estudiante.cEstNombres }} <br />
-                        {{ estudiante.cEstPaterno }}
-                        {{ estudiante.cEstMaterno }}
-                    </td>
-                    <td>
-                        <span
-                            class="block w-1rem h-1rem border-circle"
-                            [ngClass]="{
-                                'bg-red-500': estudiante.cEstado === 'FALTA',
-                                'bg-yellow-500':
-                                    estudiante.cEstado === 'PROCESO',
-                                'bg-green-500':
-                                    estudiante.cEstado === 'REVISADO',
-                            }"
-                        ></span>
-                    </td>
-                    <td>{{ estudiante.cNotaFinal }}</td>
-                </tr>
-            </ng-template>
-        </p-table>
-    </div>
-
-    <div class="flex flex-column flex-1 gap-4">
-        @if (!!selectedEstudiante()) {
-            <app-evaluacion-info
-                [evaluacionEstudiante]="selectedEstudiante()"
-            ></app-evaluacion-info>
-
-            <div>
-                <h3>Preguntas</h3>
-                <hr />
+            <div class="flex gap-4 align-items-center flex-wrap mx-auto">
+                <ng-container
+                    *ngFor="let leyenda of leyendasOrden; let i = index"
+                >
+                    <app-leyenda
+                        [total]="leyendas()[leyenda].total"
+                        [text]="leyendas()[leyenda].text"
+                        [size]="$any(leyendas()[leyenda].size)"
+                        [colorClass]="leyendas()[leyenda].colorClass"
+                    ></app-leyenda>
+                </ng-container>
             </div>
-            <div class="flex flex-column gap-4 preguntas-container">
-                <p-accordion [multiple]="true">
-                    @for (
-                        pregunta of selectedEstudiante().preguntas;
-                        track $index
-                    ) {
-                        <p-accordionTab [selected]="true">
-                            <ng-template pTemplate="header">
-                                <div class="ellipsis">
-                                    <span class="">
-                                        {{ pregunta['cPregunta'] | removeHTML }}
-                                    </span>
-                                </div>
-                            </ng-template>
-                            <app-evaluacion-pregunta
-                                (calificarPreguntaChange)="
-                                    calificarPregunta($event)
-                                "
-                                [pregunta]="pregunta"
-                            ></app-evaluacion-pregunta>
-                        </p-accordionTab>
-                    }
-                </p-accordion>
+            <div class="w-full">
+                <p-iconField iconPosition="left" class="w-full">
+                    <p-inputIcon styleClass="pi pi-search"></p-inputIcon>
+                    <input
+                        type="text"
+                        pInputText
+                        placeholder="Buscar"
+                        class="w-full"
+                    />
+                </p-iconField>
             </div>
-        } @else {
-            <app-empty-section
-                class="w-full"
-                [message]="'Ningun Estudiante seleccionado'"
-            ></app-empty-section>
-        }
+            <p-table
+                [value]="evaluacionesEstudiantes()"
+                selectionMode="single"
+                [selection]="selectedEstudianteValue"
+                (selectionChange)="updateSelectedEstudiante($event)"
+                dataKey="iEstudianteId"
+                (onRowSelect)="seleccionarEvaluacion()"
+                [scrollable]="true"
+                scrollHeight="250px"
+            >
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Nombre y Apellidos</th>
+                        <th>Estado</th>
+                        <th>Nota Final</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-estudiante>
+                    <tr [pSelectableRow]="estudiante">
+                        <td>
+                            {{ estudiante.cEstNombres }} <br />
+                            {{ estudiante.cEstPaterno }}
+                            {{ estudiante.cEstMaterno }}
+                        </td>
+                        <td>
+                            <span
+                                class="block w-1rem h-1rem border-circle"
+                                [ngClass]="{
+                                    'bg-red-500':
+                                        estudiante.cEstado === 'FALTA',
+                                    'bg-yellow-500':
+                                        estudiante.cEstado === 'PROCESO',
+                                    'bg-green-500':
+                                        estudiante.cEstado === 'REVISADO',
+                                }"
+                            ></span>
+                        </td>
+                        <td>{{ estudiante.cNotaFinal }}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+
+        <!-- Panel Derecho -->
+        <div class="flex flex-column flex-1 gap-4">
+            <ng-container *ngIf="!!selectedEstudiante(); else emptySection">
+                <app-evaluacion-info
+                    [evaluacionEstudiante]="selectedEstudiante()"
+                ></app-evaluacion-info>
+
+                <div>
+                    <h3>Preguntas</h3>
+                    <hr />
+                </div>
+                <div class="flex flex-column gap-4 preguntas-container">
+                    <p-accordion [multiple]="true">
+                        <ng-container
+                            *ngFor="
+                                let pregunta of selectedEstudiante().preguntas;
+                                let i = index
+                            "
+                        >
+                            <p-accordionTab [selected]="true">
+                                <ng-template pTemplate="header">
+                                    <div class="ellipsis">
+                                        <span>{{
+                                            pregunta['cPregunta'] | removeHTML
+                                        }}</span>
+                                    </div>
+                                </ng-template>
+                                <app-evaluacion-pregunta
+                                    (calificarPreguntaChange)="
+                                        calificarPregunta($event)
+                                    "
+                                    [pregunta]="pregunta"
+                                ></app-evaluacion-pregunta>
+                            </p-accordionTab>
+                        </ng-container>
+                    </p-accordion>
+                </div>
+            </ng-container>
+            <ng-template #emptySection>
+                <app-empty-section
+                    class="w-full"
+                    [message]="'Ningún Estudiante seleccionado'"
+                ></app-empty-section>
+            </ng-template>
+        </div>
     </div>
 </div>

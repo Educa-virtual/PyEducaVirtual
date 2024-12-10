@@ -29,7 +29,7 @@ import { GeneralService } from '@/app/servicios/general.service'
 import { TabViewModule } from 'primeng/tabview'
 import { IconComponent } from '@/app/shared/icon/icon.component'
 import { provideIcons } from '@ng-icons/core'
-//import { ConstantesService } from '@/app/servicios/constantes.service'
+import { ConstantesService } from '@/app/servicios/constantes.service'
 import { OrderListModule } from 'primeng/orderlist'
 import { PrimengModule } from '@/app/primeng.module'
 import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
@@ -83,11 +83,12 @@ export class TabResultadosComponent implements OnInit {
     private _formBuilder = inject(FormBuilder)
     private _aulaService = inject(ApiAulaService)
     // private ref = inject(DynamicDialogRef)
-    //private _constantesService = inject(ConstantesService)
+    private _constantesService = inject(ConstantesService)
     estudiantes: any[] = []
     reporteDeNotas: any[] = []
     estudianteEv: any[] = []
     calificacion: any[] = []
+    mit: any[] = []
     //------
     estudianteSeleccionado: any
     resultadosEstudiantes: any
@@ -99,8 +100,11 @@ export class TabResultadosComponent implements OnInit {
     tabla: string
     campos: string
     where: number
+    iPerfilId: number
+    iDocenteId: number
     private unsbscribe$ = new Subject<boolean>()
-    unidad: string = '1'
+
+    unidad: number = 0
 
     idcurso: number
     mostrarDiv: boolean = false // Variable para controlar la visibilidad
@@ -196,10 +200,18 @@ export class TabResultadosComponent implements OnInit {
     // Inicializamos
     ngOnInit() {
         //this.verperfiles()
+        this.obtenerIdPerfil()
         this.getEstudiantesMatricula()
         this.mostrarCalificacion()
         this.obtenerReporteDenotasFinales()
+        this.habilitarCalificacion()
         //this.selectUnidad()
+    }
+    obtenerIdPerfil() {
+        this.iEstudianteId = this._constantesService.iEstudianteId
+        this.iPerfilId = this._constantesService.iPerfilId
+        this.iDocenteId = this._constantesService.iDocenteId
+        console.log('icredito', this.iEstudianteId)
     }
     // Obtenemos los datos de estudiante que el docente hico su retroalimentación por alumno
     obtenerComnt(estudiantes) {
@@ -241,13 +253,20 @@ export class TabResultadosComponent implements OnInit {
         return temporal.textContent || '' // Obtener solo el texto
     }
     //metodo para obtener el id de la unidad al seleccionar
-    selectUnidad(event: any): void {
-        // (event.target as HTMLButtonElement).value
-        const buttonValue = (event.target as HTMLButtonElement).value
-        this.unidad = buttonValue
-
-        console.log('id y fechaA', buttonValue)
+    selectUnidad(item: any, idx: number): void {
+        this.unidad = idx
+        //console.log('Unidad Seleccionada', item)
+        console.log('Indice de la Unidad', this.unidad)
     }
+    // selectUnidad(event: Event): void {
+    //     // (event.target as HTMLButtonElement).value
+    //     const buttonValue = (event.target as HTMLButtonElement).value
+    //     this.unidad = buttonValue
+
+    //     //console.log('indice de la unidad', idx)
+
+    //     console.log('Evento', buttonValue)
+    // }
     // en desarrollo
     obtenerReporteDenotasFinales() {
         //this.loaderService.show(); // Muestra el loader
@@ -258,7 +277,7 @@ export class TabResultadosComponent implements OnInit {
         ).subscribe({
             next: (response) => {
                 this.reporteDeNotas = response
-                console.log('Detalle Notas', this.reporteDeNotas)
+                //console.log('Detalle Notas', this.reporteDeNotas)
             },
             error: (error) => {
                 console.error('Error al obtener notas finales:', error)
@@ -280,31 +299,31 @@ export class TabResultadosComponent implements OnInit {
         const registro: any = {}
 
         switch (this.unidad) {
-            case '1':
+            case 0:
                 registro.cDetMatrConclusionDesc1 = conclusionFinalDocente
                 registro.iEscalaCalifIdPeriodo1 =
                     resultadosEstudiantesf.iEscalaCalifIdPeriodo1
                 registro.dtDetMatrPeriodo1 = fechaActual
                 break
-            case '2':
+            case 1:
                 registro.cDetMatrConclusionDesc2 = conclusionFinalDocente
                 registro.iEscalaCalifIdPeriodo2 =
                     resultadosEstudiantesf.iEscalaCalifIdPeriodo1
                 registro.dtDetMatrPeriodo2 = fechaActual
                 break
-            case '3':
+            case 2:
                 registro.cDetMatrConclusionDesc3 = conclusionFinalDocente
                 registro.iEscalaCalifIdPeriodo3 =
                     resultadosEstudiantesf.iEscalaCalifIdPeriodo1
                 registro.dtDetMatrPeriodo3 = fechaActual
                 break
-            case '4':
+            case 3:
                 registro.cDetMatrConclusionDesc4 = conclusionFinalDocente
                 registro.iEscalaCalifIdPeriodo4 =
                     resultadosEstudiantesf.iEscalaCalifIdPeriodo1
                 registro.dtDetMatrPeriodo4 = fechaActual
                 break
-            case '5':
+            case 4:
                 registro.iEscalaCalifIdRecuperacion =
                     resultadosEstudiantesf.iEscalaCalifIdPeriodo1
                 registro.dtDetMatrRecuperacion = fechaActual
@@ -337,6 +356,18 @@ export class TabResultadosComponent implements OnInit {
         this._aulaService.obtenerCalificacion(userId).subscribe((Data) => {
             this.calificacion = Data['data']
             //console.log('Mostrar escala',this.calificacion)
+        })
+    }
+    unidades = []
+    habilitarCalificacion() {
+        const params = {
+            iYAcadId: this._constantesService.iYAcadId,
+            iCredId: this._constantesService.iCredId,
+        }
+        console.log('año', params)
+        this._aulaService.habilitarCalificacion(params).subscribe((Data) => {
+            this.unidades = Data['data']
+            console.log('Mostrar fechas', this.mit)
         })
     }
     // mostrar los estudiantes

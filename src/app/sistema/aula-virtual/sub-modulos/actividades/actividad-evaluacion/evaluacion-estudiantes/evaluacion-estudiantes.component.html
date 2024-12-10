@@ -1,6 +1,17 @@
 <app-toolbar-primeng
     [title]="'Evaluación Formativa: ' + (evaluacion?.cEvaluacionTitulo || '')"
-></app-toolbar-primeng>
+>
+    <div class="flex flex-column">
+        <p class="flex flex-column text-white text-center text-2xl">
+            <i class="pi pi-clock mr-2 text-3xl"></i>
+            {{ tiempoEnMilisegundos ?? '00:00:00' }}
+        </p>
+        <!-- Contador de preguntas -->
+        <p class="font-bold">
+            Pregunta {{ iPreguntaId }} de {{ evaluacion?.preguntas?.length }}
+        </p>
+    </div>
+</app-toolbar-primeng>
 <div class="card">
     <div *ngIf="iPreguntaId === 0">
         <!-- Contenido inicial de la evaluación -->
@@ -359,3 +370,4 @@
         </div>
     </ng-template>
 </p-confirmDialog>
+<div class="col-12 floating-header"></div>

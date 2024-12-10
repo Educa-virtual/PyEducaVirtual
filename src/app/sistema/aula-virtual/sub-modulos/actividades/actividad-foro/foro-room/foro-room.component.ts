@@ -29,6 +29,7 @@ import { EmptySectionComponent } from '@/app/shared/components/empty-section/emp
 import { Message } from 'primeng/api'
 import { WebsocketService } from '@/app/sistema/aula-virtual/services/websoket.service'
 import { TimeComponent } from '@/app/shared/time/time.component'
+//import { Toast } from 'primeng/toast';
 @Component({
     selector: 'app-foro-room',
     standalone: true,
@@ -181,31 +182,13 @@ export class ForoRoomComponent implements OnInit {
         //iForoRptaId
     }
     eliminar(itemRespuesta: any): void {
-        // let value = typeof Number(this.itemRespuesta);
-        // console.log('Eliminar acción ejecutada01', value)
-        // if (!item || !item.iForoRptaId) {
-        //     console.error('Elemento inválido para eliminar.')
-        //     return
-        // }
-        // const itemId = item.iForoRptaId
-
-        // this._aulaService.eliminarRespuesta(itemId).subscribe({
-        //     next: (response) => {
-        //         console.log('Elemento eliminado correctamente:', response)
-        //         // Actualiza la lista local después de eliminar
-        //         this.itemRespuesta = this.itemRespuesta.filter(
-        //             (res: any) => res.iForoRptaId !== itemId
-        //         )
-        //     },
-        //     error: (err) => {
-        //         console.error('Error al eliminar:', err)
-        //     },
-        // })
-
-        const value = typeof itemRespuesta.iForoRptaId
-        console.log('Eliminar acción ejecutada01', value)
-        this._aulaService.eliminarRespuesta(value).subscribe({
+        const iForoRptaId = {
+            iForoRptaId: parseInt(itemRespuesta.iForoRptaId, 10),
+        }
+        console.log('Eliminar acción ejecutada01', iForoRptaId)
+        this._aulaService.eliminarRespuesta(iForoRptaId).subscribe({
             next: (response) => {
+                //const mensaje = response?.message || 'Elemento eliminado sin respuesta del servidor';
                 console.log('Elemento eliminado correctamente:', response)
                 // Actualiza la lista local después de eliminar
                 // this.itemRespuesta = this.itemRespuesta.filter(
@@ -216,7 +199,6 @@ export class ForoRoomComponent implements OnInit {
                 console.error('Error al eliminar:', err)
             },
         })
-        // Lógica para eliminar
     }
 
     accionBtnItemTable({ accion, item }) {

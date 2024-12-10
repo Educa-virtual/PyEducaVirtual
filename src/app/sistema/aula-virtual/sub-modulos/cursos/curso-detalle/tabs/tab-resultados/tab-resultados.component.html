@@ -12,15 +12,17 @@
                     </div>
                 </ng-template>
                 <app-container-page
-                    [title]="'Asignar Nivel de Logro a estudiantes'"
+                    [title]="
+                        'Asignar Nivel de Logro a estudiantes Seleccione la Unidad'
+                    "
                     [actions]="[]"
                 >
                     <!-- Menu de cabecera -->
-                    <!-- <p-dataView #dv [rows]="5" filterBy="cCursoNombre">
-                    <ng-template pTemplate="header">
-                        <div class="">
-                            <div class="grid grid-nogutter">
-                                <div class="col pr-2">
+                    <p-dataView #dv [rows]="5" filterBy="cCursoNombre">
+                        <ng-template pTemplate="header">
+                            <div class="">
+                                <div class="grid grid-nogutter">
+                                    <!-- <div class="col pr-2">
                                     <p-inputGroup>
                                         <p-inputGroupAddon>
                                             <p-inputIcon
@@ -33,8 +35,8 @@
                                             placeholder="Buscar por nombre...."
                                         />
                                     </p-inputGroup>
-                                </div>
-                                <div class="col pr-2">
+                                </div> -->
+                                    <!-- <div class="col pr-2">
                                     <p-inputGroup>
                                         <p-inputGroupAddon>
                                             Actividad
@@ -45,8 +47,8 @@
                                             class="flex-1"
                                         />
                                     </p-inputGroup>
-                                </div>
-                                <div class="col">
+                                </div> -->
+                                    <!-- <div class="col">
                                     <p-inputGroup>
                                         <p-inputGroupAddon>
                                             Fecha
@@ -58,13 +60,35 @@
                                         >
                                         </p-dropdown>
                                     </p-inputGroup>
+                                </div> -->
+                                    <div class="col">
+                                        @for (
+                                            item of unidades;
+                                            track item;
+                                            let idx = $index
+                                        ) {
+                                            <button
+                                                pButton
+                                                class="pr-2"
+                                                [disabled]="
+                                                    item.iEstado === '0'
+                                                        ? true
+                                                        : false
+                                                "
+                                                (click)="
+                                                    selectUnidad(item, idx)
+                                                "
+                                            >
+                                                UNIDAD {{ idx + 1 }}
+                                            </button>
+                                        }
+                                    </div>
                                 </div>
-                            </div>
 
-                            <p-dataViewLayoutOptions></p-dataViewLayoutOptions>
-                        </div>
-                    </ng-template>
-                </p-dataView> -->
+                                <!-- <p-dataViewLayoutOptions></p-dataViewLayoutOptions> -->
+                            </div>
+                        </ng-template>
+                    </p-dataView>
                     <div class="card grid">
                         <!-- lista de participantes... -->
                         <div class="col-4">
@@ -123,24 +147,24 @@
                                         >Asignar nivel de logro a:
                                         {{ estudianteEv }}
                                     </label>
-                                    @for (
+                                    <!-- @for (
                                         item of unidades;
                                         track item;
                                         let idx = $index
                                     ) {
                                         <button
-                                            pButton
-                                            label="Submit"
+                                            pButton                                            
                                             class="p-button-success"
                                             [disabled]="
                                                 item.iEstado === '0'
                                                     ? true
                                                     : false
                                             "
+                                            (click)="selectUnidad(item, idx)"
                                         >
                                             UNIDAD {{ idx + 1 }}
                                         </button>
-                                    }
+                                    } -->
                                     <!-- <button
                                     [value]="'2'"
                                     (click)="selectUnidad($event)"

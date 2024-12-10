@@ -103,7 +103,8 @@ export class TabResultadosComponent implements OnInit {
     iPerfilId: number
     iDocenteId: number
     private unsbscribe$ = new Subject<boolean>()
-    unidad: string = '1'
+
+    unidad: number = 0
 
     idcurso: number
     mostrarDiv: boolean = false // Variable para controlar la visibilidad
@@ -252,13 +253,20 @@ export class TabResultadosComponent implements OnInit {
         return temporal.textContent || '' // Obtener solo el texto
     }
     //metodo para obtener el id de la unidad al seleccionar
-    selectUnidad(event: Event): void {
-        // (event.target as HTMLButtonElement).value
-        const buttonValue = (event.target as HTMLButtonElement).value
-        this.unidad = buttonValue
-
-        console.log('Evento', buttonValue)
+    selectUnidad(item: any, idx: number): void {
+        this.unidad = idx
+        //console.log('Unidad Seleccionada', item)
+        console.log('Indice de la Unidad', this.unidad)
     }
+    // selectUnidad(event: Event): void {
+    //     // (event.target as HTMLButtonElement).value
+    //     const buttonValue = (event.target as HTMLButtonElement).value
+    //     this.unidad = buttonValue
+
+    //     //console.log('indice de la unidad', idx)
+
+    //     console.log('Evento', buttonValue)
+    // }
     // en desarrollo
     obtenerReporteDenotasFinales() {
         //this.loaderService.show(); // Muestra el loader
@@ -291,31 +299,31 @@ export class TabResultadosComponent implements OnInit {
         const registro: any = {}
 
         switch (this.unidad) {
-            case '1':
+            case 0:
                 registro.cDetMatrConclusionDesc1 = conclusionFinalDocente
                 registro.iEscalaCalifIdPeriodo1 =
                     resultadosEstudiantesf.iEscalaCalifIdPeriodo1
                 registro.dtDetMatrPeriodo1 = fechaActual
                 break
-            case '2':
+            case 1:
                 registro.cDetMatrConclusionDesc2 = conclusionFinalDocente
                 registro.iEscalaCalifIdPeriodo2 =
                     resultadosEstudiantesf.iEscalaCalifIdPeriodo1
                 registro.dtDetMatrPeriodo2 = fechaActual
                 break
-            case '3':
+            case 2:
                 registro.cDetMatrConclusionDesc3 = conclusionFinalDocente
                 registro.iEscalaCalifIdPeriodo3 =
                     resultadosEstudiantesf.iEscalaCalifIdPeriodo1
                 registro.dtDetMatrPeriodo3 = fechaActual
                 break
-            case '4':
+            case 3:
                 registro.cDetMatrConclusionDesc4 = conclusionFinalDocente
                 registro.iEscalaCalifIdPeriodo4 =
                     resultadosEstudiantesf.iEscalaCalifIdPeriodo1
                 registro.dtDetMatrPeriodo4 = fechaActual
                 break
-            case '5':
+            case 4:
                 registro.iEscalaCalifIdRecuperacion =
                     resultadosEstudiantesf.iEscalaCalifIdPeriodo1
                 registro.dtDetMatrRecuperacion = fechaActual

@@ -129,6 +129,11 @@ const administrador = [
                 routerLink: ['/administrador/auditoria'],
             },
             {
+                label: 'Componentes',
+                icon: 'pi pi-fw pi-folder',
+                routerLink: ['/administrador/componentes'],
+            },
+            {
                 label: 'Enlaces de ayuda',
                 icon: 'pi pi-fw pi-share-alt',
                 routerLink: ['ayuda'],

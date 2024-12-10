@@ -8,6 +8,15 @@ const routes: Routes = [
             import('./auditoria/auditoria.module').then(
                 (module) => module.AuditoriaModule
             ),
+        
+    },
+    {
+        path: 'componentes',
+        loadChildren: () =>
+            import('./componentes/componentes.module').then(
+                (module) => module.AuditoriaModule
+            ),
+        
     },
 ];
 

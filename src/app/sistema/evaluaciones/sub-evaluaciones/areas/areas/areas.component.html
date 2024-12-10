@@ -121,14 +121,21 @@
         </ng-template>
         <ng-template let-products pTemplate="gridItem">
             <div class="area gap-4 py-2">
-                @for (area of area; track area.id) {
+                <!-- @for (area of area; track area.id) {
                     <app-area-card
                         class=""
                         [area]="area"
                         [_iEvaluacionId]="iEvaluacionId"
                         [_nombreEvaluacion]="nombreEvaluacion"
                     ></app-area-card>
-                }
+                } -->
+                <div *ngFor="let item of area; trackBy: trackById">
+                    <app-area-card
+                        [area]="item"
+                        [_iEvaluacionId]="iEvaluacionId"
+                        [_nombreEvaluacion]="nombreEvaluacion"
+                    ></app-area-card>
+                </div>
             </div>
         </ng-template>
     </p-dataView>

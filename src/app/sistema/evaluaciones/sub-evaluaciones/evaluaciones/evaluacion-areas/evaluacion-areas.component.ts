@@ -4,7 +4,7 @@ import {
     EventEmitter,
     inject,
     Input,
-    OnDestroy,
+    OnDestroy, //!Se cambio AQUI 08
     OnInit,
     Output,
 } from '@angular/core'
@@ -33,10 +33,6 @@ interface NivelTipo {
     cNivelTipoNombre: string
     iNivelTipoId: string
 }
-// interface EvaluacionCopia {//!
-//     iEvaluacionId: number
-//     cEvaluacionNombre: string
-// }
 export type Layout = 'list' | 'grid'
 @Component({
     selector: 'app-evaluacion-areas',
@@ -57,6 +53,7 @@ export type Layout = 'list' | 'grid'
     templateUrl: './evaluacion-areas.component.html',
     styleUrl: './evaluacion-areas.component.scss',
 })
+//export class EvaluacionAreasComponent implements OnDestroy, OnInit { //!Se cambio AQUI 08
 export class EvaluacionAreasComponent implements OnDestroy, OnInit {
     lista: any[] = [] //Aqui se guarda Lista Cursos Nivel Tipo.
     public cursosTipo: any[] = [] //Aqui se guarda Lista Cursos Nivel Tipo.
@@ -80,7 +77,8 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
     public searchText: Event
     public text: string = ''
 
-    private unsubscribe$ = new Subject<boolean>()
+    //private unsubscribe$ = new Subject<void>() // Control para evitar fugas de memoria
+    private unsubscribe$ = new Subject<boolean>() //!Se cambio AQUI 08
     private _constantesService = inject(ConstantesService)
     private _generalService = inject(GeneralService)
     private _store = inject(LocalStoreService)
@@ -106,17 +104,16 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
         private cdRef: ChangeDetectorRef,
         private query: GeneralService //!Usar para obtener Nivel y Curso.
     ) {}
-
     ngOnInit(): void {
-        console.log(
-            'Datos recibidos desde IeParticipan, por medio de FormularioPadre:',
-            this.datosRecIeParticipanToAreas
-        )
-        this.separarPorNivelIeParticipan() //Visualiza IE
-        console.log('Iniciando componente con config:', this._config.data)
+        // console.log(
+        //     'Datos recibidos desde IeParticipan, por medio de FormularioPadre:',
+        //     this.datosRecIeParticipanToAreas
+        // )
+        //this.separarPorNivelIeParticipan() //Visualiza IE
+        //console.log('Iniciando componente con config:', this._config.data)
         // Determinar el modo
         this.accion = this._config.data?.accion || 'crear'
-        console.log('Acción actual:', this.accion)
+        //console.log('Acción actual:', this.accion)
         const modulo = this._store.getItem('dremoModulo')
         switch (Number(modulo.iModuloId)) {
             case 2:
@@ -128,44 +125,18 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
             default:
                 break
         }
-
-        // this.obtenerEvaluacionesCopia()//!
-        console.log('ESTE ES LA ACCION', this.accion)
-        // Inicializar según el modo
+        console.log('iEvaluacionId recibido:', this._iEvaluacionId)
         if (this.accion === 'nuevo') {
-            console.log('Inicializando en modo crear')
-            this.cursos = [] // Asegurar que la lista destino esté vacía
-            this.obtenerCursosEvaluacion(
-                this.compartirIdEvaluacionService.iEvaluacionId
-            )
+            console.log('NUEVO:', this.accion)
+            this.searchAmbienteAcademico()
         }
         if (this.accion === 'ver') {
-            this.obtenerCursosEvaluacion(
-                this.compartirIdEvaluacionService.iEvaluacionId
-            )
-            console.log(
-                'iEvaluacionId recibido Ver:',
-                this.obtenerCursosEvaluacion(
-                    this.compartirIdEvaluacionService.iEvaluacionId
-                )
-            )
+            this.searchAmbienteAcademico()
             this.isDisabled = true // Deshabilita visualmente la sección
         }
         if (this.accion === 'editar') {
-            console.log('VIENE DATOS COMO ', this._iEvaluacionId)
-            this.obtenerCursosEvaluacion(
-                this.compartirIdEvaluacionService.iEvaluacionId
-            )
-            console.log(
-                'iEvaluacionId recibido Editar:',
-                this.obtenerCursosEvaluacion(
-                    this.compartirIdEvaluacionService.iEvaluacionId
-                )
-            )
+            this.searchAmbienteAcademico()
         }
-
-        this.obtenerCursosEvaluacion(this._iEvaluacionId)
-        this.searchAmbienteAcademico()
     }
     separarPorNivelIeParticipan() {
         // Filtrar los datos para Educación Primaria
@@ -186,28 +157,28 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
         this.datosSecundaria = datosSecundaria
     }
     // Obtener los cursos
-    obtenerCursos(): void {
-        console.log('Ejecutando obtenerCursos') // Para verificar si se está llamando
+    // obtenerCursos(): void {
+    //     console.log('Ejecutando obtenerCursos') // Para verificar si se está llamando
 
-        this._apiEre
-            .obtenerCursos(this.params)
-            .pipe(takeUntil(this.unsubscribe$))
-            .subscribe({
-                next: (resp: any) => {
-                    console.log(
-                        'Datos obtenidos de Cursos de ObtenerCursos:',
-                        resp
-                    )
-                    this.cursos = resp.data.map((curso: any) => ({
-                        ...curso,
-                        isSelected: curso.isSelected || false,
-                    }))
-                },
-                error: (err) => {
-                    console.error('Error al obtener cursos:', err)
-                },
-            })
-    }
+    //     this._apiEre
+    //         .obtenerCursos(this.params)
+    //         .pipe(takeUntil(this.unsubscribe$))
+    //         .subscribe({
+    //             next: (resp: any) => {
+    //                 console.log(
+    //                     'Datos obtenidos de Cursos de ObtenerCursos:',
+    //                     resp
+    //                 )
+    //                 this.cursos = resp.data.map((curso: any) => ({
+    //                     ...curso,
+    //                     isSelected: curso.isSelected || false,
+    //                 }))
+    //             },
+    //             error: (err) => {
+    //                 console.error('Error al obtener cursos:', err)
+    //             },
+    //         })
+    // }
 
     //!Funcion de oncoruseSelect
     onCursoSelect(curso: any): void {
@@ -222,7 +193,6 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
     //! Función para insertar o eliminar cursos seleccionados
     actualizarCursosSeleccionados(): void {
         const iEvaluacionId = this.compartirIdEvaluacionService.iEvaluacionId // Obtener el iEvaluacionId
-
         // Filtra los cursos seleccionados y crea un array con `iCursoId` y `isSelected`
         this.selectedCursos = this.cursos.map((curso) => ({
             iCursoId: curso.iCursoId,
@@ -404,7 +374,6 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
             this.searchText = event
         }
     }
-
     getCursos() {
         const year = this.store.getItem('dremoYear')
         const params = {
@@ -494,6 +463,59 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
                 })
         })
     }
+    //!Se cambio AQUI 08
+    obtenerCursosSeleccionados(): Promise<Map<number, boolean>> {
+        return new Promise((resolve, reject) => {
+            // const evaluacionId = this._iEvaluacionId
+            const evaluacionId =
+                this.compartirIdEvaluacionService.iEvaluacionId ||
+                this._iEvaluacionId
+            // Validar si el ID de evaluación es válido
+            if (!evaluacionId) {
+                return reject('El ID de la evaluación no está definido.')
+            }
+
+            this._apiEre
+                .obtenerCursosEvaluacion(evaluacionId)
+                .pipe(takeUntil(this.unsubscribe$))
+                .subscribe({
+                    next: (resp: any) => {
+                        console.log(
+                            'Cursos obtenidos desde el backend:',
+                            resp.cursos
+                        )
+
+                        // Crear un mapa con los cursos seleccionados, indicando el tipo explícito
+                        const cursosSeleccionados: Map<number, boolean> =
+                            new Map(
+                                resp.cursos.map((curso: any) => [
+                                    curso.iCursoNivelGradId as number, // Asegurar que sea número
+                                    curso.isSelected === '1', // Convertir "1" a true
+                                ])
+                            )
+
+                        // Actualizar el estado de los cursos en la estructura actual
+                        this.lista.forEach((nivel: any) => {
+                            Object.keys(nivel.grados).forEach((grado) => {
+                                nivel.grados[grado].forEach((curso: any) => {
+                                    curso.isSelected =
+                                        cursosSeleccionados.get(
+                                            curso.iCursoNivelGradId
+                                        ) || false
+                                })
+                            })
+                        })
+                        resolve(cursosSeleccionados)
+                    },
+                    error: (err) => {
+                        console.error('Error al obtener cursos:', err)
+                        reject(err)
+                    },
+                })
+        })
+    }
+
+    //!Se cambio AQUI 08
     // Llamar a la función para obtener los datos de primaria y secundaria
     searchAmbienteAcademico() {
         // Realizamos ambas solicitudes al mismo tiempo utilizando forkJoin
@@ -523,6 +545,8 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
                 ]
 
                 console.log('Lista combinada:', this.lista)
+
+                this.obtenerCursosSeleccionados()
             },
             error: (err: any) => {
                 console.error('Error al obtener los datos:', err)

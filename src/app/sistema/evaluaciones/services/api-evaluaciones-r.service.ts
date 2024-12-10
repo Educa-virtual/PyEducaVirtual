@@ -76,26 +76,15 @@ export class ApiEvaluacionesRService {
             data
         )
     }
-    //!Eliminar Cursos: Al tener el editar no los elimina
-    // eliminarCursos(data: {
-    //     iEvaluacionId: number
-    //     selectedCursos: { iCursoNivelGradId: number }[]
-    // }): Observable<any> {
-    //     return this.http.delete(
-    //         `${this.baseUrl}/ere/Evaluaciones/eliminarCursos`,
-    //         { body: data }
-    //     )
-    // }
     eliminarCursos(data: {
         iEvaluacionId: number
         selectedCursos: { iCursoNivelGradId: number }[]
     }): Observable<any> {
         return this.http.delete(
             `${this.baseUrl}/ere/Evaluaciones/eliminarCursos`,
-            { body: data } // Envía los datos en el body
+            { body: data }
         )
     }
-    //Actualizar Cursos COMENTADO
     actualizarCursosExamen(
         evaluacionId: number,
         cursos: { id: number; is_selected: boolean }[]
@@ -138,16 +127,18 @@ export class ApiEvaluacionesRService {
             data
         )
     }
-    obtenerParticipaciones(iEvaluacionId: any): Observable<any> {
-        console.log(
-            'Servicio: Llamando obtenerParticipaciones con ID:',
-            iEvaluacionId
-        )
+    // obtenerParticipaciones(iEvaluacionId: number): Observable<any> {
+    //     return this.http.get(
+    //         `${this.baseUrl}/ere/Evaluaciones/obtenerParticipaciones?iEvaluacionId=${iEvaluacionId}`
+    //     )
+    // }
+    obtenerParticipaciones(iEvaluacionId: number): Observable<any> {
         return this.http.get(
-            `${this.baseUrl}/ere/Evaluaciones/obtenerParticipaciones?iEvaluacionId=${iEvaluacionId}`
+            //obtenerParticipaciones/{iEvaluacionId}
+            `${this.baseUrl}/ere/Evaluaciones/obtenerParticipaciones/${iEvaluacionId}`
         )
     }
-
+    //!
     guardarActualizarPreguntaConAlternativas(data) {
         return this.http.post(
             `${this.baseUrl}/ere/preguntas/guardarActualizarPreguntaConAlternativas`,
@@ -228,7 +219,6 @@ export class ApiEvaluacionesRService {
             }
         )
     }
-    //!Matriz Capacidades
 
     obtenerEspDrem(params) {
         return this.http.get(
@@ -237,12 +227,23 @@ export class ApiEvaluacionesRService {
             { params }
         )
     }
-    obtenerEspDremCurso(params) {
+    obtenerEspDremCurso(
+        iPersId: number,
+        iEvaluacionId: number
+    ): Observable<any> {
+        const params = { iPersId, iEvaluacionId } // Enviar el iPersId como parámetro
         return this.http.get(
             `${this.baseUrl}/ere/Evaluaciones/obtenerEspDremCurso`,
             { params }
         )
     }
+    // obtenerEspDremCurso(params) {
+    //     return this.http.get(
+    //         `${this.baseUrl}/ere/Evaluaciones/obtenerEspDremCurso`,
+    //         { params }
+    //     )
+    // }
+    //!
     //Banco de Preguntas ->
     generarWordByPreguntasIds(baseParams) {
         const url = `${this.baseUrlBackend}/generarWordBancoPreguntasSeleccionadas`

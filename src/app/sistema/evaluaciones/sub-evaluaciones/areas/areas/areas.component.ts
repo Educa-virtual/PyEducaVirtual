@@ -6,19 +6,20 @@ import { TableModule } from 'primeng/table'
 import { InputTextModule } from 'primeng/inputtext'
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import { TablePrimengComponent } from '../../../../../shared/table-primeng/table-primeng.component'
-import { Component, inject, OnInit } from '@angular/core'
+import { Component, inject, OnInit, TrackByFunction } from '@angular/core'
 import { IArea } from '../interfaces/area.interface'
 import { AreaCardComponent } from '../components/area-card/area-card.component'
 //import { CursoCardComponent } from '../components/curso-card/curso-card.component'
 import { ICurso } from '../../../../aula-virtual/sub-modulos/cursos/interfaces/curso.interface'
 import { ButtonModule } from 'primeng/button'
 import { ActivatedRoute } from '@angular/router'
-
+import { ConstantesService } from '@/app/servicios/constantes.service' //!AQUI ESTA EL USUARIO
 //import { ApiEvaluacionesRService } from '../../../../services/api-evaluaciones-r.service'
-
 import { ApiEvaluacionesRService } from '../../../services/api-evaluaciones-r.service'
 import { Subject, takeUntil } from 'rxjs'
-
+import { CompartirFormularioEvaluacionService } from '../../../services/ereEvaluaciones/compartir-formulario-evaluacion.service'
+import { CompartirIdEvaluacionService } from '../../../services/ereEvaluaciones/compartir-id-evaluacion.service'
+import { CommonModule } from '@angular/common'
 export type Layout = 'list' | 'grid'
 @Component({
     selector: 'app-areas',
@@ -36,9 +37,11 @@ export type Layout = 'list' | 'grid'
         TablePrimengComponent,
         AreaCardComponent,
         ButtonModule,
+        CommonModule,
     ],
 })
 export class AreasComponent implements OnInit {
+    private ConstantesService = inject(ConstantesService)
     private _apiEre = inject(ApiEvaluacionesRService)
     public cursos: ICurso[] = []
     public data: ICurso[] = []
@@ -46,7 +49,6 @@ export class AreasComponent implements OnInit {
     public text: string = ''
     public searchText: Event
     public area: IArea[] = [] // Inicialmente vacío, se llenará con los datos de la API.
-
     // public area: IArea[] = [
     //     {
     //         id: 0,
@@ -78,12 +80,13 @@ export class AreasComponent implements OnInit {
     // ]
     public sortField: string = ''
     public sortOrder: number = 0
-    public iEvaluacionId: string | null = null // Para almacenar el ID de la evaluación.
+    public iEvaluacionId: number | null = null // Para almacenar el ID de la evaluación.
     public nombreEvaluacion: string | null = null // Para almacenar el nombre de la evaluación.
     //@Input() _iEvaluacionId: string | null = null // Usamos _iEvaluacionId como input
     public params = {}
 
     private unsubscribe$: Subject<boolean> = new Subject()
+    trackById: TrackByFunction<IArea>
     //!original
     // public onFilter(dv: DataView, event: Event) {
     //     dv.filter((event.target as HTMLInputElement).value)
@@ -101,22 +104,32 @@ export class AreasComponent implements OnInit {
             this.searchText = event
         }
     }
-    constructor(private route: ActivatedRoute) {}
+    constructor(
+        private route: ActivatedRoute,
+        private compartirFormularioEvaluacionService: CompartirFormularioEvaluacionService,
+        private compartirIdEvaluacionService: CompartirIdEvaluacionService
+    ) {}
     ngOnInit(): void {
-        // Capturar el parámetro iEvaluacionId de la URL
-        this.route.queryParams.subscribe((params) => {
-            this.iEvaluacionId = params['iEvaluacionId']
-            this.nombreEvaluacion = params['nombreEvaluacion']
-            console.log(
-                'iEvaluacionId recibido en AreasComponent:',
-                this.iEvaluacionId
-            )
-            console.log('nombreEvaluacion:', this.nombreEvaluacion)
-        })
-        this.obtenerEspDrem()
+        // // Capturar el parámetro iEvaluacionId de la URL
+        // this.route.queryParams.subscribe((params) => {
+        //     this.iEvaluacionId = params['iEvaluacionId']
+        //     this.nombreEvaluacion = params['nombreEvaluacion']
+        // })
+        this.nombreEvaluacion =
+            this.compartirFormularioEvaluacionService.getcEvaluacionNombre()
+
+        this.iEvaluacionId = this.compartirIdEvaluacionService.iEvaluacionId
+        console.log(
+            'Evaluacion Servicio ---->',
+            this.compartirIdEvaluacionService.iEvaluacionId
+        )
+        // console.log('iEvaluacionId: ---->', this.iEvaluacionId)
+        // console.log(
+        //     'Nombre de la evaluación ----->:',
+        //     this.compartirFormularioEvaluacionService.getcEvaluacionNombre()
+        // )
+
         this.obtenerEspDremCurso()
-        // El resto de tu lógica de inicialización
-        //this.obtenerCursos() // O cualquier otra lógica para cargar los datos.
     }
     obtenerEspDrem(): void {
         this._apiEre
@@ -136,7 +149,11 @@ export class AreasComponent implements OnInit {
             })
     }
     obtenerEspDremCurso(): void {
-        this._apiEre.obtenerEspDremCurso(this.params).subscribe({
+        const iPersId = this.ConstantesService.iPersId // Obtén el iPersId
+        const iEvaluacionId = this.compartirIdEvaluacionService.iEvaluacionId // Obtén el iEvaluacionId
+        console.log('iPersId:', iPersId, 'Evaluacion', iEvaluacionId) // Asegúrate de que el valor está disponible
+
+        this._apiEre.obtenerEspDremCurso(iPersId, iEvaluacionId).subscribe({
             next: (resp: any) => {
                 console.log(
                     'Respuesta completa de la API Datos Especialistas Cursos:',
@@ -156,7 +173,6 @@ export class AreasComponent implements OnInit {
                         nivel: 'Primaria', // Puedes ajustarlo según tu lógica o datos de la API.
                     }))
                 }
-
                 console.log('Datos procesados para áreas:', this.area)
             },
 

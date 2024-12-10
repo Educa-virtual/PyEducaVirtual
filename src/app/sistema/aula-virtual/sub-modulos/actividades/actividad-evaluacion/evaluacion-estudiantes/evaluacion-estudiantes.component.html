@@ -100,6 +100,7 @@
                     <div [innerHTML]="evaluacion?.cEvaluacionDescripcion"></div>
                 </div>
             </div>
+
             <div
                 class="col-12"
                 align="right"
@@ -111,6 +112,35 @@
                     (onClick)="iniciarEvaluacion()"
                 ></p-button>
             </div>
+        </div>
+    </div>
+
+    <div class="grid">
+        <div class="col-12">
+            <article class="card">
+                <h2>Recursos de Ayuda</h2>
+                @if (evaluacion?.cEvaluacionArchivoAdjunto.length === 0) {
+                    <app-empty-section
+                        class="w-full"
+                        [message]="'Sin recursos asignados'"
+                    ></app-empty-section>
+                } @else {
+                    <app-recursos-lista
+                        [files]="evaluacion?.cEvaluacionArchivoAdjunto ?? []"
+                    ></app-recursos-lista>
+                }
+            </article>
+        </div>
+    </div>
+    <div class="container">
+        <div class="col-12">
+            <p-inputGroup>
+                <p-inputGroupAddon> Retroalimentación: </p-inputGroupAddon>
+                <textarea
+                    pInputText
+                    [(ngModel)]="cTareaEstudianteComentarioDocente"
+                ></textarea>
+            </p-inputGroup>
         </div>
     </div>
     <div

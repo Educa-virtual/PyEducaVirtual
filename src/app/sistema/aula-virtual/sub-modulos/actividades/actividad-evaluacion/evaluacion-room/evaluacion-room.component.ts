@@ -25,6 +25,7 @@ import { RecursosListaComponent } from '@/app/shared/components/recursos-lista/r
 import { EmptySectionComponent } from '@/app/shared/components/empty-section/empty-section.component'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { EvaluacionEstudiantesComponent } from '../evaluacion-estudiantes/evaluacion-estudiantes.component'
+import { EvaluacionFinalizadaComponent } from '../evaluacion-finalizada/evaluacion-finalizada.component'
 
 @Component({
     selector: 'app-evaluacion-room',
@@ -41,6 +42,7 @@ import { EvaluacionEstudiantesComponent } from '../evaluacion-estudiantes/evalua
         RecursosListaComponent,
         EmptySectionComponent,
         EvaluacionEstudiantesComponent,
+        EvaluacionFinalizadaComponent,
     ],
     templateUrl: './evaluacion-room.component.html',
     styleUrl: './evaluacion-room.component.scss',

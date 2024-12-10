@@ -128,6 +128,28 @@
                             </div>
                         </div>
 
+                        <div>
+                            <app-rubricas
+                                [title]="'Rúbricas'"
+                                [mode]="'SELECTION'"
+                                [params]="params"
+                                (rubricaSelectedChange)="accionRubrica($event)"
+                            ></app-rubricas>
+                        </div>
+
+                        <div>
+                            <p-toast />
+                            <p-menu #menu [model]="items" [popup]="true" />
+                            <button
+                                pButton
+                                size="small"
+                                class="primary"
+                                icon="pi pi-plus"
+                                label="Agregar instrumento de evaluación"
+                                (click)="menu.toggle($event)"
+                            ></button>
+                        </div>
+
                         <div
                             class="flex gap-2 flex-wrap align-items-center mb-4"
                         >

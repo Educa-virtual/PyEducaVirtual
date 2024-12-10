@@ -25,12 +25,15 @@ import { RecursosListaComponent } from '@/app/shared/components/recursos-lista/r
 import { EmptySectionComponent } from '@/app/shared/components/empty-section/empty-section.component'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { EvaluacionEstudiantesComponent } from '../evaluacion-estudiantes/evaluacion-estudiantes.component'
+import { RubricasComponent } from '@/app/sistema/aula-virtual/features/rubricas/rubricas.component'
+import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-evaluaciones.service'
 
 @Component({
     selector: 'app-evaluacion-room',
     standalone: true,
     imports: [
         CommonModule,
+        RubricasComponent,
         IconComponent,
         TablePrimengComponent,
         PrimengModule,
@@ -65,12 +68,66 @@ export class EvaluacionRoomComponent implements OnInit, OnDestroy {
     private _aulaService = inject(ApiAulaService)
     private _ConstantesService = inject(ConstantesService)
 
+    items = [
+        {
+            label: 'Seleccione una opción',
+            items: [
+                {
+                    label: 'Agregar rúbrica',
+                    icon: 'pi pi-plus',
+                },
+                {
+                    label: 'Agregar lista de cotejo',
+                    icon: 'pi pi-plus',
+                },
+            ],
+        },
+    ]
+
+    params = {
+        iCursoId: 1,
+        iDocenteId: 1,
+        idDocCursoId: 1,
+    }
+
+    rubricas = [
+        {
+            iInstrumentoId: 0,
+            cInstrumentoNombre: 'Sin instrumento de evaluación',
+        },
+    ]
+
+    constructor(
+        private _evaluacionService: ApiEvaluacionesService,
+        private _constantesService: ConstantesService
+    ) {}
+
+    obtenerRubricas() {
+        const params = {
+            iDocenteId: this._ConstantesService.iDocenteId,
+        }
+        this._evaluacionService.obtenerRubricas(params).subscribe({
+            next: (data) => {
+                data.forEach((element) => {
+                    this.rubricas.push(element)
+                })
+            },
+        })
+    }
+
+    accionRubrica(elemento): void {
+        if (!elemento) return
+        this.obtenerRubricas()
+    }
+
     private unsbscribe$ = new Subject<boolean>()
     public iPerfilId: number
     public evaluacion
     public cEvaluacionInstrucciones
 
     ngOnInit() {
+        this.params.iDocenteId = this._constantesService.iDocenteId
+
         this.obtenerEvaluacion()
         this.iPerfilId = Number(this._ConstantesService.iPerfilId)
     }

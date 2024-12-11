@@ -97,6 +97,7 @@ export class CursoDetalleComponent implements OnInit {
     // obtiene el parametro y actualiza el tab
     listenParams() {
         console.log(this._activatedRoute.snapshot.queryParams)
+
         const tab = this._activatedRoute.snapshot.queryParams['tab']
         const cCursoNombre =
             this._activatedRoute.snapshot.queryParams['cCursoNombre']
@@ -124,6 +125,8 @@ export class CursoDetalleComponent implements OnInit {
             cCicloRomanos,
             idDocCursoId,
         }
+
+        localStorage.setItem('dremoCurso', JSON.stringify(this.curso))
 
         if (isValidTabKey(tab)) {
             this.updateTab(tab)

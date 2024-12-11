@@ -20,6 +20,7 @@ import { Subject, takeUntil } from 'rxjs'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-evaluaciones.service'
+import { MenuItem } from 'primeng/api'
 
 const SELECTION_ACTION: IActionTable = {
     labelTooltip: 'Seleccionar',
@@ -91,6 +92,24 @@ export class RubricasComponent implements OnInit, OnDestroy {
 
     public data = []
 
+    items: MenuItem[] = [
+        {
+            label: 'Seleccione una opción',
+            items: [
+                {
+                    label: 'Nueva rúbrica',
+                    icon: 'pi pi-plus',
+                    command: () => this.agregarInstrumentoEvaluacion(),
+                },
+                {
+                    label: 'Reutilizar rúbrica',
+                    icon: 'pi pi-plus',
+                    command: () => this.handleActions('otro'),
+                },
+            ],
+        },
+    ]
+
     private _dialogService = inject(DialogService)
     private _evaluacionApiService = inject(ApiEvaluacionesService)
     private _unsubscribe$ = new Subject<boolean>()
@@ -104,6 +123,10 @@ export class RubricasComponent implements OnInit, OnDestroy {
         if (this.mode === 'SELECTION') {
             this.accionesTabla.unshift(SELECTION_ACTION)
         }
+    }
+
+    handleActions(action) {
+        console.log(action)
     }
 
     getData() {

@@ -211,6 +211,19 @@ export class ApiAulaService {
             `${this.baseUrlApi}/aula-virtual/Resultado/habilitarCalificacion`,
             data
         )
+        // .pipe(
+        //     map((resp) => {
+        //         console.log('Respuesta completa:', resp);
+        //         return resp?.data; // Usa el operador de encadenamiento opcional
+        //     }),
+        //     map((data) => {
+        //         if (data?.iActTipoId === 2) { // Verifica si `data` es válido
+        //             const preguntas = mapItemsBancoToEre(data.preguntas);
+        //             data.preguntas = mapData(preguntas);
+        //         }
+        //         return data;
+        //     })
+        // );
     }
     obtenerEstudiantesMatricula(params: { iCurrId; iSemAcadId; iYAcadId }) {
         return this._http.get<any>(
@@ -224,5 +237,12 @@ export class ApiAulaService {
                 `${this.baseUrlApi}/aula-virtual/contenidos/tipo-actividad`
             )
             .pipe(map((resp) => resp.data))
+    }
+    obtenerReporteFinalDeNotas(data) {
+        return this._http.get(
+            `${this.baseUrlApi}/aula-virtual/Resultado/obtenerReporteFinalNotas`,
+            data
+        )
+        //.pipe(map((resp) => resp.data))
     }
 }

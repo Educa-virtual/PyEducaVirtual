@@ -1,7 +1,6 @@
 import {
     Component,
     Input,
-    OnInit,
     Output,
     SimpleChanges,
     OnChanges,
@@ -20,7 +19,7 @@ import { TreeNode } from 'primeng/api' // Importación para el modelo de PrimeNG
     templateUrl: './tree-view-primeng.component.html',
     styleUrls: ['./tree-view-primeng.component.scss'],
 })
-export class TreeViewPrimengComponent implements OnInit, OnChanges {
+export class TreeViewPrimengComponent implements OnChanges {
     @Output() accionBtnItem: EventEmitter<{ accion: string; item: any }> =
         new EventEmitter()
     @Output() selectedRowDataChange = new EventEmitter()
@@ -35,18 +34,8 @@ export class TreeViewPrimengComponent implements OnInit, OnChanges {
 
     constructor(private cdRef: ChangeDetectorRef) {}
 
-    ngOnInit(): void {
-        console.log('Estructura del árbol generada en OnInit:', this.treeData)
-        this.treeData = this.formatTreeData(this.treeDataRaw)
-        this.cdRef.detectChanges()
-    }
-
     ngOnChanges(changes: SimpleChanges): void {
         if (changes['treeDataRaw'] && changes['treeDataRaw'].currentValue) {
-            console.log(
-                'Datos crudos han cambiado:',
-                changes['treeDataRaw'].currentValue
-            )
             this.treeData = this.formatTreeData(
                 changes['treeDataRaw'].currentValue
             )
@@ -56,17 +45,17 @@ export class TreeViewPrimengComponent implements OnInit, OnChanges {
             changes['seccionesPorGrado'] &&
             changes['seccionesPorGrado'].currentValue
         ) {
-            console.log(
-                'Secciones por grado han cambiado:',
-                changes['seccionesPorGrado'].currentValue
-            )
-            this.treeData = this.formatTreeData(this.treeDataRaw) // Usa el valor actual de `this.treeDataRaw`
+            this.treeData = this.formatTreeData(this.treeDataRaw) // Usa el valor actual de this.treeDataRaw
         }
     }
 
     // Método para convertir los datos crudos a TreeNode
     formatTreeData(rows: any[]): TreeNode[] {
         //   const tree: TreeNode[] = [];
+        if (!Array.isArray(rows)) {
+            //console.error('Los datos proporcionados no son un arreglo:', rows);
+            return []
+        }
         const nivelesMap = new Map<string, TreeNode>()
 
         rows.forEach((row) => {
@@ -98,10 +87,10 @@ export class TreeViewPrimengComponent implements OnInit, OnChanges {
             }
             // Obtener cantidad de secciones para el grado actual
             //  const cantidadSecciones = this.seccionesPorGrado[row.cGradoNombre] || 0;
-            console.log(
-                this.seccionesPorGrado,
-                'this.seccionesPorGrado en el treeee'
-            )
+            // console.log(
+            //     this.seccionesPorGrado,
+            //     'this.seccionesPorGrado en el treeee'
+            // )
             // Obtener las secciones para el grado actual
             const secciones = this.seccionesPorGrado[row.cGradoNombre] || []
 
@@ -113,7 +102,7 @@ export class TreeViewPrimengComponent implements OnInit, OnChanges {
 
                 data: `${row.cGradoAbreviacion} (${row.cCicloRomanos})`,
                 icon: 'pi pi-fw pi-folder',
-                expanded: true,
+                expanded: false,
                 children: secciones.map((seccion, index) => ({
                     key: `seccion-${row.cGradoNombre}-${index + 1}`,
                     label: `Sección ${seccion}`, // Puede ser letra o número

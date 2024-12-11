@@ -646,7 +646,12 @@ const administracion = [
                     {
                         label: 'Personal',
                         icon: 'pi pi-fw pi-circle',
-                        routerLink: ['/configuracion/configuracion'],
+                        routerLink: ['/docente/personal'],
+                    },
+                    {
+                        label: 'Personal de IE',
+                        icon: 'pi pi-fw pi-circle',
+                        routerLink: ['/gestion-institucional/IesPersonal'],
                     },
                     {
                         label: 'Gestión de usuarios E.I.',

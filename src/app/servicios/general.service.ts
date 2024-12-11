@@ -142,29 +142,70 @@ export class GeneralService {
         )
     }
 
-    addAno(data: any) {
+    addMaestro(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/gestionInstitucional/insertMaestro`,
+            data
+        )
+    }
+
+    addMaestroDetalle(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/gestionInstitucional/insertMaestroDetalle`,
+            data
+        )
+    }
+
+    addYear(data: any) {
         return this.http.post(
             `${baseUrl}/acad/calendarioAcademico/addYear`,
             data
         )
     }
+    updateYear(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/calendarioAcademico/updateYear`,
+            data
+        )
+    }
+
+    deleteYear(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/calendarioAcademico/deleteYear`,
+            data
+        )
+    }
+
+    addCalAcademico(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/calendarioAcademico/addCalAcademico`,
+            data
+        )
+    }
+
     addAmbienteAcademico(data: any) {
         return this.http.post(
-            `${baseUrl}/acad/calendarioAcademicos/addAmbiente`,
+            `${baseUrl}/acad/calendarioAcademico/addAmbiente`,
             data
         )
     }
 
     updateAcademico(data: any) {
         return this.http.post(
-            `${baseUrl}/acad/calendarioAcademicos/updateCalendario`,
+            `${baseUrl}/acad/calendarioAcademico/updateCalendario`,
             data
         )
     }
 
     deleteAcademico(data: any) {
         return this.http.post(
-            `${baseUrl}/acad/calendarioAcademicos/deleteCalendario`,
+            `${baseUrl}/acad/calendarioAcademico/deleteCalendario`,
+            data
+        )
+    }
+    searchTablaXwhere(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/calendarioAcademico/searchCalAcademico`,
             data
         )
     }
@@ -175,16 +216,17 @@ export class GeneralService {
             data
         )
     }
+
     searchCalendario(data: any) {
         return this.http.post(
-            `${baseUrl}/acad/calendarioAcademico/selCalAcademico`,
+            `${baseUrl}/acad/calendarioAcademico/searchAcademico`,
             data
         )
     }
 
     searchAmbienteAcademico(data: any) {
         return this.http.post(
-            `${baseUrl}/acad/calendarioAcademicos/searchAmbiente`,
+            `${baseUrl}/acad/calendarioAcademico/searchAmbiente`,
             data
         )
     }
@@ -204,7 +246,13 @@ export class GeneralService {
     }
     searchGradoCiclo(data: any) {
         return this.http.post(
-            `${baseUrl}/acad/calendarioAcademicos/searchGradoCiclo`,
+            `${baseUrl}/acad/calendarioAcademico/searchGradoCiclo`,
+            data
+        )
+    }
+    searchPersonalIes(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/gestionInstitucional/listarPersonalIes`,
             data
         )
     }

@@ -11,6 +11,7 @@ import { ConfigHoraDocenteComponent } from './config-grado-seccion/steps/config-
 import { ConfigAsignarGradoComponent } from './config-grado-seccion/steps/config-asignar-grado/config-asignar-grado.component'
 import { ConfigResumenComponent } from './config-grado-seccion/steps/config-resumen/config-resumen.component'
 import { ConfigFechasComponent } from './config-fechas/config-fechas.component'
+import { IesPersonalComponent } from './ies-personal/ies-personal.component'
 
 const routes: Routes = [
     { path: 'calendarioAcademico', component: CalendarioAcademicoComponent },
@@ -24,6 +25,7 @@ const routes: Routes = [
     { path: 'asignar-grado', component: ConfigAsignarGradoComponent },
     { path: 'resumen', component: ConfigResumenComponent },
     { path: 'fechas', component: ConfigFechasComponent },
+    { path: 'IesPersonal', component: IesPersonalComponent },
 ]
 
 @NgModule({

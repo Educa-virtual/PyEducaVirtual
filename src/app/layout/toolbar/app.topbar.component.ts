@@ -133,12 +133,12 @@ export class AppTopBarComponent implements OnInit {
                     })
                 })
                 this.notificaciones = this.notificaciones.filter(
-                    (i) => i.cForoRptaRespuesta
+                    (i) => i.respuesta
                 )
                 this.notificaciones.forEach((i) => {
                     data.push({
-                        label: i.cForoRptaRespuesta,
-                        icon: 'pi pi-book',
+                        label: i.respuesta,
+                        icon: i.icono,
                         sublabel: i.distancia,
                     })
                 })
@@ -153,8 +153,8 @@ export class AppTopBarComponent implements OnInit {
             case 'notificacion_estudiante':
                 item.forEach((i) => {
                     data.push({
-                        label: i.cForoTitulo,
-                        icon: 'pi pi-book',
+                        label: i.titulo,
+                        icon: i.icono,
                         sublabel: i.distancia,
                     })
                 })

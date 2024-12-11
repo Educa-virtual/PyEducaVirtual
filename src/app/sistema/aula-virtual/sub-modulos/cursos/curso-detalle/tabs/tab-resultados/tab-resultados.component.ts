@@ -257,25 +257,19 @@ export class TabResultadosComponent implements OnInit {
         //console.log('Unidad Seleccionada', item)
         console.log('Indice de la Unidad', idx)
     }
-    // selectUnidad(event: Event): void {
-    //     // (event.target as HTMLButtonElement).value
-    //     const buttonValue = (event.target as HTMLButtonElement).value
-    //     this.unidad = buttonValue
-
-    //     //console.log('indice de la unidad', idx)
-
-    //     console.log('Evento', buttonValue)
-    // }
-
     // muestra las notas del curso
     reporteNotasFinales: any[] = []
+
     obtenerReporteDenotasFinales() {
         const userId = 1
         this._aulaService
             .obtenerReporteFinalDeNotas(userId)
             .subscribe((Data) => {
                 this.reporteNotasFinales = Data['data']
-                //console.log('Mostrar notas finales', this.reporteNotasFinales)
+                // Mapear las calificaciones en letras a reporteNotasFinales
+                console.log('Mostrar notas finales', this.reporteNotasFinales)
+                this.calificacion
+                console.log(this.calificacion)
             })
     }
     //guardar la calificación y conclusión descriptiva del docente para los promedios finales

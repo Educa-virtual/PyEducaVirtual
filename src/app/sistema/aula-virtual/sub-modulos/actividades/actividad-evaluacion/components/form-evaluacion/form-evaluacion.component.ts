@@ -114,14 +114,14 @@ export class FormEvaluacionComponent implements OnChanges, OnInit {
         }
         if (changes.curso?.currentValue) {
             this.curso = changes.curso.currentValue
-            switch (this.showMostrarVista) {
-                case 'FORM-EVALUACION':
-                    this.titulo =
-                        this.tituloEvaluacion +
-                        ' EVALUACIÓN: ' +
-                        this.curso?.cCursoNombre
-                    break
-            }
+        }
+        switch (this.showMostrarVista) {
+            case 'FORM-EVALUACION':
+                this.titulo =
+                    this.tituloEvaluacion +
+                    ' EVALUACIÓN: ' +
+                    this.curso?.cCursoNombre
+                break
         }
     }
     obtenerTipoEvaluaciones() {
@@ -266,6 +266,8 @@ export class FormEvaluacionComponent implements OnChanges, OnInit {
             header: '¿Deseas agregar preguntas?',
             accept: () => {
                 this.showMostrarVista = 'LIST-PREGUNTAS'
+                this.titulo =
+                    'AGREGAR PREGUNTAS PARA: ' + this.curso?.cCursoNombre
             },
         })
     }

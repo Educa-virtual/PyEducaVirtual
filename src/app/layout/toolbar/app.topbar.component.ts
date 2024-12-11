@@ -139,7 +139,7 @@ export class AppTopBarComponent implements OnInit {
                     data.push({
                         label: i.respuesta,
                         icon: i.icono,
-                        sublabel: i.distancia,
+                        sublabel: i.tiempoNotificacion,
                     })
                 })
                 this.totalNotificaciones = data.length

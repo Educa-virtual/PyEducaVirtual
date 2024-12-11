@@ -51,7 +51,11 @@
                 <app-tab-inicio></app-tab-inicio>
             }
             @case ('contenido') {
-                <app-tab-contenido [_iSilaboId]="iSilaboId"></app-tab-contenido>
+                <app-tab-contenido
+                    [_iSilaboId]="iSilaboId"
+                    [iCursoId]="curso?.iCursoId"
+                    [idDocCursoId]="curso?.idDocCursoId"
+                ></app-tab-contenido>
             }
             @case ('estudiantes') {
                 <app-tab-estudiantes

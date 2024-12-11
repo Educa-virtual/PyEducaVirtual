@@ -19,10 +19,15 @@ export class PreguntasFormComponent implements OnChanges {
     @Output() accionBtnItem = new EventEmitter()
 
     @Input() showModalPreguntas
+    @Input() showEncabezado
+    @Input() cEvaluacionTitulo: string
 
     ngOnChanges(changes) {
         if (changes.showModalPreguntas?.currentValue) {
             this.showModalPreguntas = changes.showModalPreguntas.currentValue
+        }
+        if (changes.showEncabezado?.currentValue) {
+            this.showEncabezado = changes.showEncabezado.currentValue
         }
     }
 

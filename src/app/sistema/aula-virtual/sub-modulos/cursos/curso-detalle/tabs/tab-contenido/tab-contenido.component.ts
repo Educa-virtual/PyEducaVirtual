@@ -78,6 +78,7 @@ export class TabContenidoComponent implements OnInit {
     @Input({ required: true }) private _iSilaboId: string
     @Input() idDocCursoId
     @Input() iCursoId
+    @Input() curso
     public rangeDates: Date[] | undefined
     public accionesContenido: MenuItem[]
     public actividadSelected: IActividad | undefined
@@ -408,8 +409,6 @@ export class TabContenidoComponent implements OnInit {
     opcionEvaluacion: string
     semanaEvaluacion
     handleEvaluacionAction(action: string, actividad: IActividad) {
-        console.log(this.idDocCursoId)
-
         switch (action) {
             case 'CREAR':
             case 'EDITAR':

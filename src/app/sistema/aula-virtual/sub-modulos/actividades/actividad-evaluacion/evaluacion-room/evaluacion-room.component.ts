@@ -68,26 +68,10 @@ export class EvaluacionRoomComponent implements OnInit, OnDestroy {
     private _aulaService = inject(ApiAulaService)
     private _ConstantesService = inject(ConstantesService)
 
-    items = [
-        {
-            label: 'Seleccione una opción',
-            items: [
-                {
-                    label: 'Agregar rúbrica',
-                    icon: 'pi pi-plus',
-                },
-                {
-                    label: 'Agregar lista de cotejo',
-                    icon: 'pi pi-plus',
-                },
-            ],
-        },
-    ]
-
     params = {
-        iCursoId: 1,
-        iDocenteId: 1,
-        idDocCursoId: 1,
+        iCursoId: 0,
+        iDocenteId: 0,
+        idDocCursoId: 0,
     }
 
     rubricas = [
@@ -101,6 +85,10 @@ export class EvaluacionRoomComponent implements OnInit, OnDestroy {
         private _evaluacionService: ApiEvaluacionesService,
         private _constantesService: ConstantesService
     ) {}
+
+    handleActions(action) {
+        console.log(action)
+    }
 
     obtenerRubricas() {
         const params = {
@@ -127,6 +115,15 @@ export class EvaluacionRoomComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.params.iDocenteId = this._constantesService.iDocenteId
+        this.params.iCursoId = JSON.parse(
+            localStorage.getItem('dremoCurso')
+        ).iCursoId
+        this.params.idDocCursoId = JSON.parse(
+            localStorage.getItem('dremoCurso')
+        ).idDocCursoId
+
+        console.log('params')
+        console.log(this.params)
 
         this.obtenerEvaluacion()
         this.iPerfilId = Number(this._ConstantesService.iPerfilId)

@@ -4,7 +4,7 @@ import { ContainerPageComponent } from '@/app/shared/container-page/container-pa
 import {
     TablePrimengComponent,
     IColumn,
-    //IActionTable,
+    IActionTable,
 } from '@/app/shared/table-primeng/table-primeng.component'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import {
@@ -114,6 +114,9 @@ export class TabResultadosComponent implements OnInit {
         cDetMatrConclusionDesc1: ['', [Validators.required]],
         iEscalaCalifIdPeriodo1: ['', [Validators.required]],
     })
+    public conclusionDescrp: FormGroup = this._formBuilder.group({
+        cDetMatConclusionDescPromedio: ['', [Validators.required]],
+    })
     constructor(private messageService: MessageService) {}
     //Campos de la tabla para mostrar notas
     public columnasTabla: IColumn[] = [
@@ -173,31 +176,24 @@ export class TabResultadosComponent implements OnInit {
             text_header: 'left',
             text: 'left',
         },
-        // {
-        //     type: 'actions',
-        //     width: '1rem',
-        //     field: '',
-        //     header: 'Acciones',
-        //     text_header: 'left',
-        //     text: 'left',
-        // },
+        {
+            type: 'actions',
+            width: '1rem',
+            field: '',
+            header: 'Acciones',
+            text_header: 'left',
+            text: 'left',
+        },
     ]
-    // public accionesTabla: IActionTable[] = [
-    //     {
-    //         labelTooltip: 'Eliminar',
-    //         icon: 'pi pi-trash',
-    //         accion: 'eliminar',
-    //         type: 'item',
-    //         class: 'p-button-rounded p-button-danger p-button-text',
-    //     },
-    //     {
-    //         labelTooltip: 'Editar',
-    //         icon: 'pi pi-pencil',
-    //         accion: 'editar',
-    //         type: 'item',
-    //         class: 'p-button-rounded p-button-warning p-button-text',
-    //     },
-    // ]
+    public accionesTabla: IActionTable[] = [
+        {
+            labelTooltip: 'Agregar Conclusión descriptiva',
+            icon: 'pi pi-cog',
+            accion: 'agregarConclusion',
+            type: 'item',
+            class: 'p-button-rounded p-button-danger p-button-text',
+        },
+    ]
     // Inicializamos
     ngOnInit() {
         this.obtenerIdPerfil()
@@ -206,6 +202,14 @@ export class TabResultadosComponent implements OnInit {
         this.obtenerReporteDenotasFinales()
         this.habilitarCalificacion()
     }
+    // accionBnt(accion: String, item: any): void{
+    //     switch (accion) {
+    //         case 'agregarConclusion':
+    //             console.log('Agregar descripcion',accion,item)
+    //             break
+    //     }
+    // }
+    //obtener los perfiles
     obtenerIdPerfil() {
         this.iEstudianteId = this._constantesService.iEstudianteId
         this.iPerfilId = this._constantesService.iPerfilId

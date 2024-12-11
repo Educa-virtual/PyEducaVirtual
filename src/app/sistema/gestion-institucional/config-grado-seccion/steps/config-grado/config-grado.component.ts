@@ -58,7 +58,6 @@ export class ConfigGradoComponent implements OnInit {
     visible: boolean = false
     mensaje: string
     option: string
-    event: []
     configuracion: any[]
     grados: any[] = [] // Asegúrate de inicializarlo
 
@@ -110,7 +109,7 @@ export class ConfigGradoComponent implements OnInit {
     }
     accionBtnItemTable({ accion, item }) {
         if (accion == 'agregar') {
-            this.event = item
+            console.log(item)
         }
         if (accion === 'retornar') {
             alert('Desea retornar')
@@ -118,13 +117,15 @@ export class ConfigGradoComponent implements OnInit {
         }
     }
 
-    // accionBtnItem(accion) {}
+    accionBtnItem(accion) {
+        console.log(accion)
+    }
 
     //ESTRUCTURASS DE TABLA
     //Maquetar tablas
-    handleActions(actions) {
-        console.log(actions)
-    }
+    // handleActions(actions) {
+    //     console.log(actions)
+    // }
     accionesPrincipal: IActionContainer[] = [
         {
             labelTooltip: 'Retornar',

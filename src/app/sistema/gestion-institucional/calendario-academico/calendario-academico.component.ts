@@ -218,7 +218,7 @@ export class CalendarioAcademicoComponent implements OnInit {
     // recordset de Year
     columns = [
         {
-            type: 'item',
+            type: 'text',
             width: '5rem',
             field: 'item',
             header: 'Item',

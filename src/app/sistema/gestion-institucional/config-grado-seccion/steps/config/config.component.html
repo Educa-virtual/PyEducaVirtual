@@ -96,8 +96,20 @@
                     >
                 </span>
             </div>
+            <div class="field col-12 md:col-2">
+                <span class="p-float-label">
+                    <p-dropdown
+                        [style]="{ width: '100%' }"
+                        [options]="configTipo"
+                        optionLabel="cEstadoConfigNombre"
+                        optionValue="iEstadoConfigId"
+                        formControlName="iEstadoConfigId"
+                    />
+                    <label for="iTipoAmbienteId">Estado:</label>
+                </span>
+            </div>
 
-            <div class="field col-12 md:col-4">
+            <div class="field col-12 md:col-2">
                 <label for="bConfigEsBilingue"
                     >IE Educación intercultural Bilingüe
                 </label>
@@ -122,30 +134,30 @@
                     />
                 </span>
             </div>
-            <div class="field col-12 md:col-3">
+
+            <div class="field col-12 md:col-6">
                 <span class="p-float-label">
-                    <p-dropdown
-                        [style]="{ width: '100%' }"
-                        [options]="configTipo"
-                        optionLabel="cEstadoConfigNombre"
-                        optionValue="iEstadoConfigId"
-                        formControlName="iEstadoConfigId"
-                    />
-                    <label for="iTipoAmbienteId">Estado:</label>
+                    <p-toast />
+                    <p-fileUpload
+                        name="demo[]"
+                        url="https://www.primefaces.org/cdn/api/upload.php"
+                        (onUpload)="onUpload($event)"
+                        [multiple]="true"
+                        accept="application/pdf"
+                        maxFileSize="10000000"
+                    >
+                        <ng-template pTemplate="content">
+                            <ul *ngIf="uploadedFiles.length">
+                                <li *ngFor="let file of uploadedFiles">
+                                    {{ file.name }} - {{ file.size }} bytes
+                                </li>
+                            </ul>
+                        </ng-template>
+                    </p-fileUpload>
                 </span>
             </div>
-            <div class="col-3">
-                <app-types-files-upload-primeng
-                    [nameFile]="'configuracion-iiee'"
-                    [nameOption]="'configuracion-iiee'"
-                    [typesFiles]="typesFiles"
-                    (actionTypesFileUpload)="accionBtn($event)"
-                    [filesUrl]="filesUrl"
-                >
-                </app-types-files-upload-primeng>
-            </div>
-            <div class="field col-12 md:col-4">
-                <span>
+            <div class="field col-12 md:col-6">
+                <span class="p-float-label">
                     <p><strong>Consideraciones al adjuntar archivos</strong></p>
                     <li>
                         Solo se permite las extensiones : JPG, JPEG, PNG, PDF
@@ -154,30 +166,13 @@
                     <li>Puede agregar solo un archivos</li>
                 </span>
             </div>
-            <div class="field col-12 md:col-2">
-                <span>
-                    @if (!enlace || enlace.trim() === '') {
-                        <p>No existe archivo adjunto</p>
-                    } @else {
-                        <p>Existe Archivo</p>
-                        <a
-                            [href]="enlace"
-                            download="archivo.pdf"
-                            class="custom-download-link"
-                            target="_blank"
-                        >
-                            <i class="pi pi-download"></i> Descargar Archivo
-                        </a>
-                    }
-                </span>
-            </div>
         </div>
         <p-button
             label="Guardar"
             [disabled]="form.invalid"
             (onClick)="accionBtnItem('guardar')"
             styleClass="p-button-danger"
-        /><p-toast />
+        />
     </form>
     <div class="col-12">
         <p-messages

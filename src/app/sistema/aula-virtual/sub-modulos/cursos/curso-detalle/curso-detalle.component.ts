@@ -110,16 +110,20 @@ export class CursoDetalleComponent implements OnInit {
         const cSeccion = this._activatedRoute.snapshot.queryParams['cSeccion']
         const cCicloRomanos =
             this._activatedRoute.snapshot.queryParams['cCicloRomanos']
+        const idDocCursoId =
+            this._activatedRoute.snapshot.queryParams['idDocCursoId']
+        const iCursoId = this._activatedRoute.snapshot.queryParams['iCursoId']
 
         this.curso = {
             cCursoNombre,
-            iCursoId: '1',
+            iCursoId,
             iSilaboId: this.iSilaboId,
             cNivelNombreCursos,
             cNivelTipoNombre,
             cGradoAbreviacion,
             cSeccion,
             cCicloRomanos,
+            idDocCursoId,
         }
 
         localStorage.setItem('dremoCurso', JSON.stringify(this.curso))

@@ -12,4 +12,5 @@ export interface ICurso {
     cNivelTipoNombre?: string
     cSeccion?: string
     cCursoImagen?: string
+    idDocCursoId?: string
 }

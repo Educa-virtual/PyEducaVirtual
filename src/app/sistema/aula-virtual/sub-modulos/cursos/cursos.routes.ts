@@ -14,7 +14,7 @@ const routes: Routes = [
         component: CursoDetalleComponent,
     },
     {
-        path: 'actividad/:ixActivadadId/:iActTopId',
+        path: 'actividad/:ixActivadadId/:iActTopId/:iCursoId/:idDocCursoId',
         component: ActividadComponent,
     },
 ]

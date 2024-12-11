@@ -468,10 +468,12 @@ export class TabContenidoComponent implements OnInit {
                         'actividad',
                         actividad.ixActivadadId,
                         actividad.iActTipoId,
-                        this.iCursoId,
-                        this.idDocCursoId,
                     ],
                     {
+                        queryParams: {
+                            iCursoId: this.iCursoId,
+                            idDocCursoId: this.idDocCursoId,
+                        },
                         relativeTo: this._activatedRoute,
                     }
                 )

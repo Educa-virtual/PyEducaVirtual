@@ -1,8 +1,8 @@
+import { EvaluacionFinalizadaComponent } from './../evaluacion-finalizada/evaluacion-finalizada.component'
+import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-evaluaciones.service'
 import { IconComponent } from '@/app/shared/icon/icon.component'
-import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
 import { CommonModule } from '@angular/common'
 import { Component, inject, Input, OnInit, OnDestroy } from '@angular/core'
-import { LeyendaTareasComponent } from '../../components/leyenda-tareas/leyenda-tareas.component'
 import { provideIcons } from '@ng-icons/core'
 import {
     matAccessTime,
@@ -25,6 +25,7 @@ import { RecursosListaComponent } from '@/app/shared/components/recursos-lista/r
 import { EmptySectionComponent } from '@/app/shared/components/empty-section/empty-section.component'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { EvaluacionEstudiantesComponent } from '../evaluacion-estudiantes/evaluacion-estudiantes.component'
+import { RubricasComponent } from '@/app/sistema/aula-virtual/features/rubricas/rubricas.component'
 
 @Component({
     selector: 'app-evaluacion-room',
@@ -33,9 +34,7 @@ import { EvaluacionEstudiantesComponent } from '../evaluacion-estudiantes/evalua
         CommonModule,
         RubricasComponent,
         IconComponent,
-        TablePrimengComponent,
         PrimengModule,
-        LeyendaTareasComponent,
         EvaluacionFormPreguntasComponent,
         EvaluacionRoomCalificacionComponent,
         EditorOnlyViewDirective,

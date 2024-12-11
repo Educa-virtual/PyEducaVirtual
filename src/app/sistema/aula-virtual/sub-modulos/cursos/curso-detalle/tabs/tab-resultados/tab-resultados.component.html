@@ -22,7 +22,7 @@
                                 class=""
                                 style="font-weight: bold; font-size: 16px"
                             >
-                                Año escolar:
+                                Periodo académico:
                             </label>
                         </div>
                         <div class="grid grid-nogutter">
@@ -36,14 +36,22 @@
                                         pButton
                                         class="mx-2"
                                         [disabled]="
-                                            item.iEstado === '1' ? true : false
+                                            item.iEstado === '0' ? true : false
                                         "
                                         (click)="selectUnidad(item, idx)"
-                                        pTooltip="Iniciar"
+                                        [pTooltip]="
+                                            item.iEstado === '0'
+                                                ? 'Fuera de Fecha'
+                                                : 'Dentro de Fecha'
+                                        "
                                         tooltipPosition="bottom"
                                     >
-                                        {{ item.cPeriodoEvalNombre }}
-                                        {{ idx + 1 }}
+                                        {{ item.cPeriodoEvalNombre
+                                        }}{{ idx + 1 }}
+                                        <br />
+                                        Inicio:
+                                        {{ item.dtPeriodoEvalAperInicio }} Fin:
+                                        {{ item.dtPeriodoEvalAperFin }}
                                     </button>
                                 }
                             </div>
@@ -109,28 +117,9 @@
                                         {{ estudianteEv }}
                                     </label>
                                 </div>
-                                <!-- Select de los periodos academicos -->
-                                <!-- <div class="pb-2">
-                                    <p-inputGroup>
-                                        <p-inputGroupAddon
-                                            class="rounded"
-                                        >
-                                            Periodo académico:
-                                        </p-inputGroupAddon>                    
-                                        <p-dropdown
-                                            [options]="unidades"
-                                            formControlName="cPeriodoEvalNombre"
-                                            styleClass="w-full"
-                                            optionValue="iEscalaCalifId"
-                                            optionLabel="cPeriodoEvalNombre"
-                                            placeholder="Seleccione Periodo"
-                                            [showClear]="true"
-                                        />
-                                    </p-inputGroup>                                    
-                                </div> -->
                                 <!-- Modificar el formGroup // *ngIf="mostrarDiv"-->
                                 <div
-                                    class="card border-4 border-indigo-200 border-indigo-500/50"
+                                    class="card border-4 border-indigo-200 border-indigo-500/100"
                                 >
                                     <form
                                         [formGroup]="califcFinal"
@@ -188,16 +177,7 @@
                                                 </p-inputGroup>
                                             </div>
                                             <div class="col">
-                                                <!-- <button
-                                                pButton
-                                                pRipple
-                                                label="Guardar"
-                                                class="p-button-success"
-                                                (click)="
-                                                    guardaCalificacionFinalUnidad()
-                                                "
-                                                
-                                            ></button> -->
+                                                <p-toast></p-toast>
                                                 <p-button
                                                     label="Guardar"
                                                     icon="pi pi-check"
@@ -248,7 +228,7 @@
                                                             pSortableColumn="name"
                                                             style="width: 20%"
                                                         >
-                                                            Nombre Activida
+                                                            Nombre Actividad
                                                             <p-sortIcon
                                                                 field="name"
                                                             />
@@ -257,7 +237,7 @@
                                                             pSortableColumn="name"
                                                             style="width: 20%"
                                                         >
-                                                            Fecha de Activida
+                                                            Fecha de Actividad
                                                             <p-sortIcon
                                                                 field="name"
                                                             />

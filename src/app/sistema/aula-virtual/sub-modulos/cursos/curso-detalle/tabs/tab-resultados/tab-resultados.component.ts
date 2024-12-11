@@ -33,11 +33,12 @@ import { ConstantesService } from '@/app/servicios/constantes.service'
 import { OrderListModule } from 'primeng/orderlist'
 import { PrimengModule } from '@/app/primeng.module'
 import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
-import { Message } from 'primeng/api'
+import { Message, MessageService } from 'primeng/api'
 import { Subject, takeUntil } from 'rxjs'
 import { RemoveHTMLPipe } from '@/app/shared/pipes/remove-html.pipe'
 import { CommonInputComponent } from '@/app/shared/components/common-input/common-input.component'
 import { ButtonModule } from 'primeng/button'
+//import { Toast } from 'primeng/toast';
 @Component({
     selector: 'app-tab-resultados',
     standalone: true,
@@ -104,8 +105,7 @@ export class TabResultadosComponent implements OnInit {
     iDocenteId: number
     private unsbscribe$ = new Subject<boolean>()
 
-    unidad: number = 0
-
+    unidad: number
     idcurso: number
     mostrarDiv: boolean = false // Variable para controlar la visibilidad
 
@@ -114,6 +114,7 @@ export class TabResultadosComponent implements OnInit {
         cDetMatrConclusionDesc1: ['', [Validators.required]],
         iEscalaCalifIdPeriodo1: ['', [Validators.required]],
     })
+    constructor(private messageService: MessageService) {}
     //Campos de la tabla para mostrar notas
     public columnasTabla: IColumn[] = [
         {
@@ -137,31 +138,31 @@ export class TabResultadosComponent implements OnInit {
             width: '10rem',
             field: 'iEscalaCalifIdPeriodo1',
             header: 'Promedio 01',
-            text_header: 'left',
+            text_header: 'center',
             text: 'center',
         },
         {
             type: 'text',
             width: '10rem',
             field: 'iEscalaCalifIdPeriodo2',
-            header: 'Promedio',
-            text_header: 'left',
+            header: 'Promedio 02',
+            text_header: 'center',
             text: 'center',
         },
         {
             type: 'text',
             width: '10rem',
             field: 'iEscalaCalifIdPeriodo3',
-            header: 'Promedio',
-            text_header: 'left',
+            header: 'Promedio 03',
+            text_header: 'center',
             text: 'center',
         },
         {
             type: 'text',
             width: '10rem',
             field: 'iEscalaCalifIdPeriodo4',
-            header: 'Promedio',
-            text_header: 'left',
+            header: 'Promedio 04',
+            text_header: 'center',
             text: 'center',
         },
         {
@@ -199,19 +200,17 @@ export class TabResultadosComponent implements OnInit {
     // ]
     // Inicializamos
     ngOnInit() {
-        //this.verperfiles()
         this.obtenerIdPerfil()
         this.getEstudiantesMatricula()
         this.mostrarCalificacion()
         this.obtenerReporteDenotasFinales()
         this.habilitarCalificacion()
-        //this.selectUnidad()
     }
     obtenerIdPerfil() {
         this.iEstudianteId = this._constantesService.iEstudianteId
         this.iPerfilId = this._constantesService.iPerfilId
         this.iDocenteId = this._constantesService.iDocenteId
-        console.log('icredito', this.iEstudianteId)
+        //console.log('icredito', this.iEstudianteId)
     }
     // Obtenemos los datos de estudiante que el docente hico su retroalimentación por alumno
     obtenerComnt(estudiantes) {
@@ -246,7 +245,7 @@ export class TabResultadosComponent implements OnInit {
             this.loading = false
         }, 2000)
     }
-    // metodo para limpiar las etiquestas
+    // metodo para limpiar las etiquetas
     limpiarHTML(html: string): string {
         const temporal = document.createElement('div') // Crear un div temporal
         temporal.innerHTML = html // Insertar el HTML
@@ -256,7 +255,7 @@ export class TabResultadosComponent implements OnInit {
     selectUnidad(item: any, idx: number): void {
         this.unidad = idx
         //console.log('Unidad Seleccionada', item)
-        console.log('Indice de la Unidad', this.unidad)
+        console.log('Indice de la Unidad', idx)
     }
     // selectUnidad(event: Event): void {
     //     // (event.target as HTMLButtonElement).value
@@ -268,7 +267,7 @@ export class TabResultadosComponent implements OnInit {
     //     console.log('Evento', buttonValue)
     // }
 
-    // en desarrollo
+    // muestra las notas del curso
     reporteNotasFinales: any[] = []
     obtenerReporteDenotasFinales() {
         const userId = 1
@@ -276,22 +275,8 @@ export class TabResultadosComponent implements OnInit {
             .obtenerReporteFinalDeNotas(userId)
             .subscribe((Data) => {
                 this.reporteNotasFinales = Data['data']
-                console.log('Mostrar notas finales', this.reporteNotasFinales)
+                //console.log('Mostrar notas finales', this.reporteNotasFinales)
             })
-        //this.loaderService.show(); // Muestra el loader
-        // this.GeneralService.getDatos(
-        //     this.tabla,
-        //     this.campos,
-        //     this.where
-        // ).subscribe({
-        //     next: (response) => {
-        //         this.reporteDeNotas = response
-        //         //console.log('Detalle Notas', this.reporteDeNotas)
-        //     },
-        //     error: (error) => {
-        //         console.error('Error al obtener notas finales:', error)
-        //     },
-        // })
     }
     //guardar la calificación y conclusión descriptiva del docente para los promedios finales
     guardaCalificacionFinalUnidad() {
@@ -306,7 +291,14 @@ export class TabResultadosComponent implements OnInit {
             },
         ]
         const registro: any = {}
-
+        if (!this.unidad) {
+            this.unidades.find((i, index) => {
+                if (i.iEstado) {
+                    this.unidad = index
+                }
+            })
+        }
+        //console.log(this.unidad)
         switch (this.unidad) {
             case 0:
                 registro.cDetMatrConclusionDesc1 = conclusionFinalDocente
@@ -351,6 +343,11 @@ export class TabResultadosComponent implements OnInit {
             .subscribe({
                 next: (response) => {
                     console.log('actualizar:', response)
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Éxito',
+                        detail: 'Calificación guardada correctamente.',
+                    })
                 },
                 error: (error) => {
                     console.log('Error en la actualización:', error)
@@ -367,16 +364,31 @@ export class TabResultadosComponent implements OnInit {
             //console.log('Mostrar escala',this.calificacion)
         })
     }
+    //obtener los periordos en un button
     unidades: any[] = []
     habilitarCalificacion() {
         const params = {
             iYAcadId: this._constantesService.iYAcadId,
             iCredId: this._constantesService.iCredId,
         }
-        console.log('año', params)
+        //console.log('año', params)
         this._aulaService.habilitarCalificacion(params).subscribe((Data) => {
             this.unidades = Data['data']
-            console.log('Mostrar fechas', this.unidad)
+            this.unidades = this.unidades.map((unidad) => {
+                const ini = new Date(
+                    unidad.dtPeriodoEvalAperInicio
+                ).toLocaleDateString()
+                const fin = new Date(
+                    unidad.dtPeriodoEvalAperFin
+                ).toLocaleDateString()
+
+                return {
+                    ...unidad,
+                    dtPeriodoEvalAperInicio: ini,
+                    dtPeriodoEvalAperFin: fin,
+                }
+            })
+            //console.log('Mostrar fechas', this.unidades)
         })
     }
     // mostrar los estudiantes

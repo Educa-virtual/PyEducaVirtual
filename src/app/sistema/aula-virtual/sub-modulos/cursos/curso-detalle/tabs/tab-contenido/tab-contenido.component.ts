@@ -77,6 +77,7 @@ import { NoDataComponent } from '../../../../../../../shared/no-data/no-data.com
 export class TabContenidoComponent implements OnInit {
     @Input({ required: true }) private _iSilaboId: string
     @Input() idDocCursoId
+    @Input() iCursoId
     public rangeDates: Date[] | undefined
     public accionesContenido: MenuItem[]
     public actividadSelected: IActividad | undefined
@@ -461,6 +462,8 @@ export class TabContenidoComponent implements OnInit {
                         'actividad',
                         actividad.ixActivadadId,
                         actividad.iActTipoId,
+                        this.iCursoId,
+                        this.idDocCursoId,
                     ],
                     {
                         relativeTo: this._activatedRoute,

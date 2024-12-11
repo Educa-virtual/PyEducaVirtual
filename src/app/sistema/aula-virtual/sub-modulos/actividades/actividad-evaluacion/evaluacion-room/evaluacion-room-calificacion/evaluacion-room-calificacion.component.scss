@@ -16,3 +16,11 @@
     background-color: var(--highlight-bg) !important;
     color: var(--highlight-text-color) !important;
 }
+
+.menu-content {
+    transition: all 0.3s ease-in-out;
+    background-color: #f9f9f9;
+    padding: 10px;
+    border: 1px solid #ddd;
+    margin-top: 10px;
+}

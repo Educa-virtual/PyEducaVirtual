@@ -47,6 +47,17 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="topbar__bars_modulo">
+                    <button #menubutton class="p-link" (click)="toggleMenu()">
+                        <i class="pi pi-bars"></i>
+                    </button>
+                </div>
+                <div class="menu-content" *ngIf="menuVisible">
+                    <!-- Aquí va el contenido que se mostrará u ocultará -->
+                    <p>Contenido del menú</p>
+                </div>
+
                 <!-- <ng-container
                     *ngFor="let leyenda of leyendasOrden; let i = index"
                 >
@@ -58,7 +69,7 @@
                     ></app-leyenda>
                 </ng-container> -->
             </div>
-            <div class="w-full">
+            <!-- <div class="w-full">
                 <p-iconField iconPosition="left" class="w-full">
                     <p-inputIcon styleClass="pi pi-search"></p-inputIcon>
                     <input
@@ -66,6 +77,20 @@
                         pInputText
                         placeholder="Buscar"
                         class="w-full"
+                    />
+                </p-iconField>
+            </div> -->
+            <div
+                class="flex justify-content-between gap-2 flex-column sm:flex-row flex-wrap"
+            >
+                <p-iconField iconPosition="left">
+                    <p-inputIcon styleClass="pi pi-search text-md" />
+                    <input
+                        pInputText
+                        type="text"
+                        class="py-2"
+                        (input)="onGlobalFilter(dv, $event)"
+                        placeholder="Buscar por apellidos y nombres"
                     />
                 </p-iconField>
             </div>
@@ -83,7 +108,7 @@
                     <tr>
                         <th>Nombre y Apellidos</th>
                         <th>Estado</th>
-                        <th>Puntaje Final</th>
+                        <!-- <th>Puntaje Final</th> -->
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-estudiante>
@@ -106,7 +131,7 @@
                                 }"
                             ></span>
                         </td>
-                        <td>{{ estudiante.cNotaFinal }}</td>
+                        <!-- <td>{{ estudiante.cNotaFinal }}</td> -->
                     </tr>
                 </ng-template>
             </p-table>

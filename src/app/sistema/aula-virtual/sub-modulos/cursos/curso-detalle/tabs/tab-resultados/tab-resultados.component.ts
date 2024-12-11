@@ -127,7 +127,7 @@ export class TabResultadosComponent implements OnInit {
         {
             type: 'text',
             width: '10rem',
-            field: 'nombrecompleto',
+            field: 'cEstNombres',
             header: 'Nombre estudiante',
             text_header: 'left',
             text: 'left',
@@ -135,34 +135,34 @@ export class TabResultadosComponent implements OnInit {
         {
             type: 'text',
             width: '10rem',
-            field: '',
+            field: 'iEscalaCalifIdPeriodo1',
             header: 'Promedio 01',
             text_header: 'left',
-            text: 'left',
+            text: 'center',
         },
         {
             type: 'text',
             width: '10rem',
-            field: '',
+            field: 'iEscalaCalifIdPeriodo2',
             header: 'Promedio',
             text_header: 'left',
-            text: 'left',
+            text: 'center',
         },
         {
             type: 'text',
             width: '10rem',
-            field: '',
+            field: 'iEscalaCalifIdPeriodo3',
             header: 'Promedio',
             text_header: 'left',
-            text: 'left',
+            text: 'center',
         },
         {
             type: 'text',
             width: '10rem',
-            field: '',
+            field: 'iEscalaCalifIdPeriodo4',
             header: 'Promedio',
             text_header: 'left',
-            text: 'left',
+            text: 'center',
         },
         {
             type: 'text',
@@ -267,22 +267,31 @@ export class TabResultadosComponent implements OnInit {
 
     //     console.log('Evento', buttonValue)
     // }
+
     // en desarrollo
+    reporteNotasFinales: any[] = []
     obtenerReporteDenotasFinales() {
+        const userId = 1
+        this._aulaService
+            .obtenerReporteFinalDeNotas(userId)
+            .subscribe((Data) => {
+                this.reporteNotasFinales = Data['data']
+                console.log('Mostrar notas finales', this.reporteNotasFinales)
+            })
         //this.loaderService.show(); // Muestra el loader
-        this.GeneralService.getDatos(
-            this.tabla,
-            this.campos,
-            this.where
-        ).subscribe({
-            next: (response) => {
-                this.reporteDeNotas = response
-                //console.log('Detalle Notas', this.reporteDeNotas)
-            },
-            error: (error) => {
-                console.error('Error al obtener notas finales:', error)
-            },
-        })
+        // this.GeneralService.getDatos(
+        //     this.tabla,
+        //     this.campos,
+        //     this.where
+        // ).subscribe({
+        //     next: (response) => {
+        //         this.reporteDeNotas = response
+        //         //console.log('Detalle Notas', this.reporteDeNotas)
+        //     },
+        //     error: (error) => {
+        //         console.error('Error al obtener notas finales:', error)
+        //     },
+        // })
     }
     //guardar la calificación y conclusión descriptiva del docente para los promedios finales
     guardaCalificacionFinalUnidad() {
@@ -358,7 +367,7 @@ export class TabResultadosComponent implements OnInit {
             //console.log('Mostrar escala',this.calificacion)
         })
     }
-    unidades = []
+    unidades: any[] = []
     habilitarCalificacion() {
         const params = {
             iYAcadId: this._constantesService.iYAcadId,
@@ -367,7 +376,7 @@ export class TabResultadosComponent implements OnInit {
         console.log('año', params)
         this._aulaService.habilitarCalificacion(params).subscribe((Data) => {
             this.unidades = Data['data']
-            console.log('Mostrar fechas', this.mit)
+            console.log('Mostrar fechas', this.unidad)
         })
     }
     // mostrar los estudiantes

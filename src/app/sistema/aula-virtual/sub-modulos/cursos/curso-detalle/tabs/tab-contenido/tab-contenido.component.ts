@@ -455,6 +455,12 @@ export class TabContenidoComponent implements OnInit {
                 })
                 break
             case 'VER':
+                console.log('semana')
+                console.log(this.semanaSeleccionada)
+                localStorage.setItem(
+                    'dremoCurso',
+                    JSON.stringify(this.semanaSeleccionada)
+                )
                 this.router.navigate(
                     [
                         '../',

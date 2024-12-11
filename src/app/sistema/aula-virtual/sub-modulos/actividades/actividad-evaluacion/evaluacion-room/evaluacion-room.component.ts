@@ -25,13 +25,13 @@ import { RecursosListaComponent } from '@/app/shared/components/recursos-lista/r
 import { EmptySectionComponent } from '@/app/shared/components/empty-section/empty-section.component'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { EvaluacionEstudiantesComponent } from '../evaluacion-estudiantes/evaluacion-estudiantes.component'
-import { EvaluacionFinalizadaComponent } from '../evaluacion-finalizada/evaluacion-finalizada.component'
 
 @Component({
     selector: 'app-evaluacion-room',
     standalone: true,
     imports: [
         CommonModule,
+        RubricasComponent,
         IconComponent,
         TablePrimengComponent,
         PrimengModule,
@@ -67,12 +67,63 @@ export class EvaluacionRoomComponent implements OnInit, OnDestroy {
     private _aulaService = inject(ApiAulaService)
     private _ConstantesService = inject(ConstantesService)
 
+    params = {
+        iCursoId: 0,
+        iDocenteId: 0,
+        idDocCursoId: 0,
+    }
+
+    rubricas = [
+        {
+            iInstrumentoId: 0,
+            cInstrumentoNombre: 'Sin instrumento de evaluación',
+        },
+    ]
+
+    constructor(
+        private _evaluacionService: ApiEvaluacionesService,
+        private _constantesService: ConstantesService
+    ) {}
+
+    handleActions(action) {
+        console.log(action)
+    }
+
+    obtenerRubricas() {
+        const params = {
+            iDocenteId: this._ConstantesService.iDocenteId,
+        }
+        this._evaluacionService.obtenerRubricas(params).subscribe({
+            next: (data) => {
+                data.forEach((element) => {
+                    this.rubricas.push(element)
+                })
+            },
+        })
+    }
+
+    accionRubrica(elemento): void {
+        if (!elemento) return
+        this.obtenerRubricas()
+    }
+
     private unsbscribe$ = new Subject<boolean>()
     public iPerfilId: number
     public evaluacion
     public cEvaluacionInstrucciones
 
     ngOnInit() {
+        this.params.iDocenteId = this._constantesService.iDocenteId
+        this.params.iCursoId = JSON.parse(
+            localStorage.getItem('dremoCurso')
+        ).iCursoId
+        this.params.idDocCursoId = JSON.parse(
+            localStorage.getItem('dremoCurso')
+        ).idDocCursoId
+
+        console.log('params')
+        console.log(this.params)
+
         this.obtenerEvaluacion()
         this.iPerfilId = Number(this._ConstantesService.iPerfilId)
     }

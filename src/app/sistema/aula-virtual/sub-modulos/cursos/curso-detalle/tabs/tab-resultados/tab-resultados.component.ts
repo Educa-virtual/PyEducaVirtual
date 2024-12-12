@@ -42,6 +42,7 @@ import { RemoveHTMLPipe } from '@/app/shared/pipes/remove-html.pipe'
 import { CommonInputComponent } from '@/app/shared/components/common-input/common-input.component'
 import { ButtonModule } from 'primeng/button'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
+import { TabsKeys } from '../tab.interface'
 @Component({
     selector: 'app-tab-resultados',
     standalone: true,
@@ -82,6 +83,7 @@ import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmatio
 export class TabResultadosComponent implements OnInit {
     @Input() ixActivadadId: string
     @Input() iActTopId: tipoActividadesKeys
+    @Input() area: TabsKeys
 
     private GeneralService = inject(GeneralService)
     private _formBuilder = inject(FormBuilder)
@@ -243,6 +245,55 @@ export class TabResultadosComponent implements OnInit {
                 break
         }
     }
+    //exportar en pdf el reporte de notas finales:
+    // generarPdfMatriz(iEvaluacionId: number, area: IArea) {
+    //     //, area: IArea
+    //     //iEvaluacionId = this._iEvaluacionId
+    //     // Obtén las áreas desde el servicio
+    //     // const areas = this.compartirFormularioEvaluacionService.getAreas()
+    //     // console.log('Áreas obtenidas desde el servicio:', areas)
+
+    //     // Convierte las áreas en una cadena JSON
+    //     const encodedAreas = JSON.stringify([area]) // Solo convertir a JSON string, no codificar
+    //     console.log('Cadena JSON de las áreas:', encodedAreas)
+
+    //     this._aulaService
+    //         .generarReporteDeLogrosPdf(iEvaluacionId, encodedAreas)
+    //         .subscribe(
+    //             (response) => {
+    //                 console.log('Respuesta de Evaluacion:', iEvaluacionId) // Para depuración
+
+    //                 // Se muestra un mensaje indicando que la descarga de la matriz ha comenzado
+    //                 this.messageService.add({
+    //                     severity: 'success',
+    //                     detail: 'Comienza la descarga de la Matriz',
+    //                 })
+
+    //                 // Se crea un enlace de descarga para el archivo PDF generado
+    //                 const blob = response as Blob // Asegúrate de que la respuesta sea un Blob
+    //                 const link = document.createElement('a')
+    //                 link.href = URL.createObjectURL(blob)
+    //                 link.download =
+    //                     'matriz_evaluacion_' +
+    //                     area.nombre.toLocaleLowerCase() +
+    //                     '.pdf' // Nombre del archivo descargado
+    //                 link.click()
+    //             },
+    //             (error) => {
+    //                 // En caso de error, se determina el mensaje de error a mostrar
+    //                 const errorMessage =
+    //                     error?.message ||
+    //                     'No hay datos suficientes para descargar la Matriz'
+
+    //                 // Se muestra un mensaje de error en el sistema
+    //                 this.messageService.add({
+    //                     severity: 'error',
+    //                     summary: 'Error',
+    //                     detail: 'Seleccione un estudiante:',
+    //                 })
+    //             }
+    //         )
+    // }
     //obtener los perfiles
     obtenerIdPerfil() {
         this.iEstudianteId = this._constantesService.iEstudianteId

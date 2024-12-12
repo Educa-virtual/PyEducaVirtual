@@ -50,7 +50,7 @@ export class BancoPreguntaInformacionFormComponent implements OnInit {
     formGroup!: FormGroup
     private unsubscribe$: Subject<boolean> = new Subject()
     public params = {}
-    value: string = '' // Vinculamos el campo de texto a esta propiedad
+    value: string = '' //! Vinculamos el campo de texto a esta propiedad Cambiar Value en html y aqui
     matrizCompetencia: any[] = [] // Opciones para el dropdown
     matrizCapacidad: any[] = [] // Opciones para el dropdown
     selectedCompetencia: any // Almacena la opción seleccionada

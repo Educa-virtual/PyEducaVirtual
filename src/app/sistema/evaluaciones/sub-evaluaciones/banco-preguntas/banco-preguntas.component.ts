@@ -15,7 +15,9 @@ import { ActivatedRoute } from '@angular/router'
 import { BancoPreguntasModule } from './banco-preguntas.module'
 import { BancoPreguntaListaComponent } from './components/banco-pregunta-lista/banco-pregunta-lista.component'
 import { BancoPreguntasFormContainerComponent } from './banco-preguntas-form-container/banco-preguntas-form-container.component'
+import { CompartirFormularioEvaluacionService } from '../../services/ereEvaluaciones/compartir-formulario-evaluacion.service'
 
+// import { AulaBancoPreguntasComponent } from '@/app/sistema/aula-virtual/sub-modulos/aula-banco-preguntas/aula-banco-preguntas/aula-banco-preguntas.component'
 @Component({
     selector: 'app-ere-preguntas',
     templateUrl: './banco-preguntas.component.html',
@@ -30,6 +32,11 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
     private _apiEvaluacionesR = inject(ApiEvaluacionesRService)
     private _confirmationModalService = inject(ConfirmationModalService)
     private _route = inject(ActivatedRoute)
+
+    nombreCurso: string | null = null
+    grado: string | null = null
+    nivel: string | null = null
+    seccion: string | null = null
 
     private unsubscribe$: Subject<boolean> = new Subject()
 
@@ -202,12 +209,17 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             class: 'p-button-rounded p-button-primary p-button-text',
         },
     ]
-    constructor() {}
+    constructor(
+        private compartirFormularioEvaluacionService: CompartirFormularioEvaluacionService
+    ) {}
 
     ngOnInit() {
         this.getParamsByUrl()
         this.initializeData()
-        this.fetchInitialData()
+        //this.fetchInitialData()
+        //this.obtenerBancoPreguntas()
+        this.obtenerDesempenos()
+        this.obtenerTipoPreguntas()
         // Capturamos el parámetro iEvaluacionId de la URL
         this._route.queryParams.subscribe((params) => {
             this.evaluaciones = params['iEvaluacionId']
@@ -220,6 +232,18 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
                 'NombreEvaluacion recibido en BancoPreguntasComponent:',
                 this.nombreEvaluacion
             )
+        })
+        this.nombreCurso =
+            this.compartirFormularioEvaluacionService.getcEvaluacionNombre()
+        this.grado = this.compartirFormularioEvaluacionService.getGrado()
+        this.nivel = this.compartirFormularioEvaluacionService.getNivel()
+        this.seccion = this.compartirFormularioEvaluacionService.getSeccion()
+
+        console.log('Datos recibidos:', {
+            nombreCurso: this.nombreCurso,
+            grado: this.grado,
+            nivel: this.nivel,
+            seccion: this.seccion,
         })
     }
 
@@ -293,6 +317,7 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
                         {},
                         this.expandedRowKeys
                     )
+                    console.log('Datos de obtener banco preguntas:', data)
                 },
             })
     }

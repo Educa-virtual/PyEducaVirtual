@@ -28,14 +28,14 @@
     </div>
 
     <div class="grid">
-        <div class="col-3">
+        <div class="xl:col-3 sm:col-12 md:col-12">
             <div class="card">
                 <div class="flex block p-2">
                     <div class="font-bold pb-2">LEGENDA</div>
                 </div>
                 <div class="flex block flex-wrap column-gap-2 row-gap-2 p-2">
-                    <div *ngFor="let lista of leyenda" class="flex mr-1">
-                        <p-inputGroup class="grupo">
+                    <div *ngFor="let lista of leyenda" class="flex w-full mr-1">
+                        <p-inputGroup>
                             <button
                                 type="button"
                                 size="small"
@@ -58,9 +58,9 @@
                         </p-inputGroup>
                     </div>
                 </div>
-                <div class="flex m-1">
+                <div class="w-full">
                     <p-button
-                        label="Primary"
+                        class="flex align-items-center justify-content-center w-full"
                         [outlined]="true"
                         icon="pi pi-file-pdf"
                         label="Descargar Reporte"
@@ -69,7 +69,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-9">
+        <div class="xl:col-9 sm:col-12 md:col-12">
             <div class="card">
                 <full-calendar [options]="calendarOptions">
                     <ng-template #eventContent let-arg>

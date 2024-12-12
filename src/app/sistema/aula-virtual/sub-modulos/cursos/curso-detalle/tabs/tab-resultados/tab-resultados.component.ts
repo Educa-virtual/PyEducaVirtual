@@ -1,6 +1,9 @@
 import { CommonModule } from '@angular/common'
 import { Component, OnInit, Input, inject } from '@angular/core'
-import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
+import {
+    ContainerPageComponent,
+    IActionContainer,
+} from '@/app/shared/container-page/container-page.component'
 import {
     TablePrimengComponent,
     IColumn,
@@ -86,6 +89,22 @@ export class TabResultadosComponent implements OnInit {
     private _confirmService = inject(ConfirmationModalService)
     // private ref = inject(DynamicDialogRef)
     private _constantesService = inject(ConstantesService)
+    @Input() actions: IActionContainer[] = [
+        {
+            labelTooltip: 'Descargar Pdf',
+            text: 'Reporte  Pdf',
+            icon: 'pi pi-file-pdf',
+            accion: 'descargar_pdf',
+            class: 'p-button-danger',
+        },
+        {
+            labelTooltip: 'Descargar Excel',
+            text: 'Reporte Excel',
+            icon: 'pi pi-download',
+            accion: 'Descargar_Excel',
+            class: 'p-button-success',
+        },
+    ]
     estudiantes: any[] = []
     reporteDeNotas: any[] = []
     estudianteEv: any[] = []
@@ -210,6 +229,17 @@ export class TabResultadosComponent implements OnInit {
                 this.mostrarModalConclusionDesc = true
                 this.estudianteSelect = item
                 console.log('Agregar descripcion', accion, item)
+                break
+        }
+    }
+    //Descargar reporte de notas finales de curso con switch
+    accionDescargar({ accion }): void {
+        switch (accion) {
+            case 'descargar_pdf':
+                console.log('Descargar pdf')
+                break
+            case 'Descargar_Excel':
+                console.log('Descargar excel')
                 break
         }
     }

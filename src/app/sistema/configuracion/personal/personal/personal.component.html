@@ -3,10 +3,10 @@
     [actions]="actionsContainer"
     (accionBtnItem)="navigateToRegistro()"
 >
-<app-table-primeng
-[actions]="actions"
-[columnas]="columns"
-(accionBtnItem)="handleActions($event)"
-[data]= "personalInformation"
-></app-table-primeng>
+    <app-table-primeng
+        [actions]="actions"
+        [columnas]="columns"
+        (accionBtnItem)="handleActions($event)"
+        [data]="personalInformation"
+    ></app-table-primeng>
 </app-container-page>

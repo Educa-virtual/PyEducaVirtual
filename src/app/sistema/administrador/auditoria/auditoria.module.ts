@@ -1,12 +1,12 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { CommonModule } from '@angular/common';
-import { ToastModule } from 'primeng/toast';
-import { DialogModule } from 'primeng/dialog';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { AccesosComponent } from './accesos/accesos.component';
-import { StepConfirmationService } from '@/app/servicios/confirm.service';
-import { AuditoriaComponent } from './auditoria.component';
+import { NgModule } from '@angular/core'
+import { RouterModule, Routes } from '@angular/router'
+import { CommonModule } from '@angular/common'
+import { ToastModule } from 'primeng/toast'
+import { DialogModule } from 'primeng/dialog'
+import { ConfirmDialogModule } from 'primeng/confirmdialog'
+import { AccesosComponent } from './accesos/accesos.component'
+import { StepConfirmationService } from '@/app/servicios/confirm.service'
+import { AuditoriaComponent } from './auditoria.component'
 
 const routes: Routes = [
     {
@@ -20,11 +20,11 @@ const routes: Routes = [
             },
             {
                 path: '',
-                component: AccesosComponent
+                component: AccesosComponent,
             },
-        ]
+        ],
     },
-];
+]
 
 @NgModule({
     imports: [

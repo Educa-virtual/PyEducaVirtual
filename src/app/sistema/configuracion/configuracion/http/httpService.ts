@@ -32,7 +32,7 @@ export class httpService {
         if (data instanceof FormData) {
             // Si los datos son FormData, no se debe establecer el encabezado Content-Type
             // porque el navegador lo maneja automáticamente.
-            data.append('_method', 'PUT'); 
+            data.append('_method', 'PUT')
             return this.http.post(`${this.apiURL}/${endpoint}`, data)
         } else {
             // Si no es FormData, lo tratamos como JSON

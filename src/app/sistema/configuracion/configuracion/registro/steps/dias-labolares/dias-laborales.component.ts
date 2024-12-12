@@ -32,6 +32,8 @@ import { TicketService } from '../../service/ticketservice'
     styleUrl: './dias-laborales.component.scss',
 })
 export class DiasLaboralesComponent implements OnInit {
+    hasUnsavedChanges = false
+
     dias: typeof this.ticketService.registroInformation.stepDiasLaborales
 
     diasSelections
@@ -72,7 +74,7 @@ export class DiasLaboralesComponent implements OnInit {
     confirm() {
         console.log('confirmando')
         const message: informationMessage = {
-            header: '¿Desea guardar información?',
+            header: 'Confirmar',
             message: 'Por favor, confirme para continuar.',
             accept: {
                 severity: 'success',
@@ -99,6 +101,32 @@ export class DiasLaboralesComponent implements OnInit {
         )
     }
 
+    async canDeactivate(): Promise<boolean> {
+        if (this.hasUnsavedChanges) {
+            return true
+        }
+
+        const confirm = await this.stepConfirmationService.confirmAction(
+            {},
+            {
+                header: '¿Desea salir sin guardar los cambios?',
+                message: 'Por favor, confirme para continuar.',
+                accept: {
+                    severity: 'success',
+                    summary: 'Confirmado',
+                    detail: 'Se ha aceptado la navegación.',
+                    life: 3000,
+                },
+                reject: {
+                    severity: 'error',
+                    summary: 'Cancelado',
+                    detail: 'Se ha cancelado la navegación.',
+                    life: 3000,
+                },
+            }
+        )
+        return confirm
+    }
     async isSelectionDia() {
         if (
             Array.isArray(
@@ -174,6 +202,8 @@ export class DiasLaboralesComponent implements OnInit {
         await this.ticketService.setCalendar()
 
         await this.isSelectionDia()
+
+        this.hasUnsavedChanges = true
     }
 
     actions: IActionTable[] = [

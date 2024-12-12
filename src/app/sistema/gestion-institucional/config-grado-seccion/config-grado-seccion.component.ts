@@ -276,7 +276,7 @@ export class ConfigGradoSeccionComponent implements OnInit {
                     iConfigId: item.iConfigId,
                     iYAcadId: item.iYAcadId,
                     iEstadoConfigId: item.iEstadoConfigId,
-                    iNivelTipoId: this.stepService.iNivelTipoId,
+                    iNivelTipoId: item.NivelTipoId,
                     iSedeId: item.iSedeId,
                     iServEdId: item.iServEdId,
                     cConfigNroRslAprobacion: item.cConfigNroRslAprobacion,
@@ -290,7 +290,6 @@ export class ConfigGradoSeccionComponent implements OnInit {
                     cSedeNombre: '',
                     cModalServId: this.stepService.perfil['cNivelNombre'],
                     cYAcadNombre: <number>this.sede[0].cYAcadNombre,
-                    iProgId: this.stepService.perfil['iProgId'],
                 },
             ]
 

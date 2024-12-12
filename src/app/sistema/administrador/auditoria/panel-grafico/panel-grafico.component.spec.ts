@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing'
 
-import { IesPersonalComponent } from './ies-personal.component'
+import { PanelGraficoComponent } from './panel-grafico.component'
 
-describe('IesPersonalComponent', () => {
-    let component: IesPersonalComponent
-    let fixture: ComponentFixture<IesPersonalComponent>
+describe('PanelGraficoComponent', () => {
+    let component: PanelGraficoComponent
+    let fixture: ComponentFixture<PanelGraficoComponent>
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: [IesPersonalComponent],
+            imports: [PanelGraficoComponent],
         }).compileComponents()
 
-        fixture = TestBed.createComponent(IesPersonalComponent)
+        fixture = TestBed.createComponent(PanelGraficoComponent)
         component = fixture.componentInstance
         fixture.detectChanges()
     })

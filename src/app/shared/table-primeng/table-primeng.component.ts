@@ -67,6 +67,15 @@ export interface IActionTable {
 export class TablePrimengComponent implements OnChanges, OnInit {
     backend = environment.backend
 
+    getClass(rowData: any, classes: string): { [key: string]: boolean } {
+        const fieldValue = rowData[classes]
+        if (classes) {
+            return { [String(fieldValue)]: !!fieldValue } // Convertir a string y asegurarse de que sea un valor booleano.
+        } else {
+            return undefined
+        }
+    }
+
     @Output() accionBtnItem: EventEmitter<{ accion: any; item: any }> =
         new EventEmitter()
     @Output() selectedRowDataChange = new EventEmitter()
@@ -74,8 +83,8 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     @Input() selectionMode: 'single' | 'multiple' | null = null
     @Input() expandedRowKeys = {}
     @Input() dataKey: string
-
     @Input() showCaption: boolean = true
+    @Input() caption: string | undefined | null
     @Input() showPaginator: boolean = true
 
     @Input() selectedRowData
@@ -137,11 +146,16 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     ]
 
     @Input()
-    set columnas(value: IColumn[]) {
-        this._columnas = value.map((column) => ({
-            ...column,
-            selected: true,
-        }))
+    set columnas(value: IColumn[] | undefined) {
+        console.log
+        if (value) {
+            this._columnas = value.map((column) => ({
+                ...column,
+                selected: true,
+            }))
+        } else {
+            this._columnas = [] // Valor predeterminado en caso de undefined
+        }
     }
 
     get columnas(): IColumn[] {
@@ -225,6 +239,10 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     ngOnChanges(changes) {
         if (changes.data?.currentValue) {
             this.data = changes.data.currentValue
+        }
+        if (changes.columnas?.currentValue) {
+            this.columnas = changes.columnas.currentValue
+            this.columnasSeleccionadas = this.columnas
         }
 
         if (changes.selectedRowData?.currentValue) {

@@ -7,17 +7,3 @@
         <p-steps [model]="items" [readonly]="false"></p-steps>
     </div>
 </app-container-page>
-
-<div class="card">
-    <app-table-primeng
-        [columnas]="columns"
-        [showCaption]="true"
-        [data]="docentes"
-        (accionBtnItem)="accionBtnItemTable($event)"
-        [showPaginator]="true"
-        [(selectedRowData)]="accionBtnItemTable"
-        [actions]="actions"
-    >
-        <ng-container slot="caption-content"> </ng-container>
-    </app-table-primeng>
-</div>

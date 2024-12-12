@@ -108,13 +108,7 @@ export class ConfigGradoComponent implements OnInit {
         }
     }
     accionBtnItemTable({ accion, item }) {
-        if (accion == 'agregar') {
-            console.log(item)
-        }
-        if (accion === 'retornar') {
-            alert('Desea retornar')
-            this.router.navigate(['/gestion-institucional/configGradoSeccion'])
-        }
+        console.log(accion, 'table', item)
     }
 
     accionBtnItem(accion) {
@@ -127,13 +121,6 @@ export class ConfigGradoComponent implements OnInit {
     //     console.log(actions)
     // }
     accionesPrincipal: IActionContainer[] = [
-        {
-            labelTooltip: 'Retornar',
-            text: 'Retornar',
-            icon: 'pi pi-arrow-circle-left',
-            accion: 'retornar',
-            class: 'p-button-warning',
-        },
         {
             labelTooltip: 'Asignar Grado',
             text: 'Asignar ambientes',

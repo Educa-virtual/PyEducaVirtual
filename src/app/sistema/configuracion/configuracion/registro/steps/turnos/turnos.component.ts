@@ -46,6 +46,7 @@ import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
     styleUrl: './turnos.component.scss',
 })
 export class TurnosComponent implements OnInit {
+    hasUnsavedChanges = false
     turnos: {
         iTurnoId: string
         cTurnoNombre: string
@@ -104,6 +105,33 @@ export class TurnosComponent implements OnInit {
         await this.setFormasAtencion()
 
         await this.indexColumns()
+    }
+
+    async canDeactivate(): Promise<boolean> {
+        if (this.hasUnsavedChanges) {
+            return true
+        }
+
+        const confirm = await this.stepConfirmationService.confirmAction(
+            {},
+            {
+                header: '¿Desea salir sin guardar los cambios?',
+                message: 'Por favor, confirme para continuar.',
+                accept: {
+                    severity: 'success',
+                    summary: 'Confirmado',
+                    detail: 'Se ha aceptado la navegación.',
+                    life: 3000,
+                },
+                reject: {
+                    severity: 'error',
+                    summary: 'Cancelado',
+                    detail: 'Se ha cancelado la navegación.',
+                    life: 3000,
+                },
+            }
+        )
+        return confirm
     }
 
     async setFormasAtencion() {
@@ -245,6 +273,8 @@ export class TurnosComponent implements OnInit {
         await this.indexColumns()
 
         this.form.reset()
+
+        this.hasUnsavedChanges = true
     }
 
     showModeCreateDialog() {

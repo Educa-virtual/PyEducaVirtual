@@ -12,7 +12,7 @@ import {
 import { MenuItem, MessageService, TreeNode } from 'primeng/api'
 import { GeneralService } from '@/app/servicios/general.service'
 import { StepConfirmationService } from '@/app/servicios/confirm.service'
-//import { TreeModule } from 'primeng/tree'
+import { TreeModule } from 'primeng/tree'
 import { MultiSelectModule } from 'primeng/multiselect'
 import { TreeViewPrimengComponent } from '@/app/shared/tree-view-primeng/tree-view-primeng.component'
 
@@ -34,7 +34,7 @@ import {
         ContainerPageComponent,
         TablePrimengComponent,
         ReactiveFormsModule,
-        //  TreeModule,
+        TreeModule,
         MultiSelectModule,
         TreeViewPrimengComponent,
     ],
@@ -154,10 +154,6 @@ export class ConfigSeccionComponent implements OnInit {
             this.visible = true
             this.caption = 'Configurar grados y secciones'
             console.log(item, 'btnTable')
-        }
-        if (accion === 'retornar') {
-            alert('Desea retornar')
-            this.router.navigate(['/gestion-institucional/configGradoSeccion'])
         }
     }
 

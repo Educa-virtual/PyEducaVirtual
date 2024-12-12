@@ -121,17 +121,6 @@ export const actividadesConfig: Record<
                 label: 'Anular Publicación',
                 isVisible: (row) => row.iEstado === 2 && iPerfilId === 7,
             },
-            {
-                icon: {
-                    size: 'xs',
-                    color: '',
-                    name: 'pi pi-file-export', // Clase PrimeNG para ícono de exportar archivo
-                },
-                accion: 'EXPORTAR_ARCHIVO',
-                class: '',
-                label: 'Exportar Word',
-                isVisible: (row) => row.iEstado === 2 && iPerfilId === 7,
-            },
         ],
     },
     [VIDEO_CONFERENCIA]: {

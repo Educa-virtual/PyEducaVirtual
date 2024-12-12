@@ -61,7 +61,7 @@ export class AsistenciaComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.getFechasImportantes()
+        this.getCursoHorario()
     }
 
     /**
@@ -69,6 +69,8 @@ export class AsistenciaComponent implements OnInit {
      */
 
     formatoFecha: Date = new Date()
+    calendarioMes = ''
+    calendarioYear = ''
     fechaActual = this.formatoFecha.toISOString().split('T')[0]
     limitado = this.formatoFecha.getDay()
 
@@ -102,6 +104,26 @@ export class AsistenciaComponent implements OnInit {
         selectable: true,
         dayMaxEvents: true,
         height: 600,
+        dayCellDidMount: (data) => {
+            // Si el día es sábado o domingo
+            if (data.dow === 6 || data.dow === 0) {
+                data.el.style.backgroundColor = '#ffd7d7'
+            }
+        },
+        datesSet: (dateInfo) => {
+            const calendarioMes = dateInfo.view.currentStart.toLocaleString(
+                'default',
+                { month: 'numeric' }
+            )
+            const calendarioYear = dateInfo.view.currentStart.toLocaleString(
+                'default',
+                { year: 'numeric' }
+            )
+            this.calendarioMes = calendarioMes
+            this.calendarioYear = calendarioYear
+            //this.countAsistencias()
+            this.getFechasImportantes()
+        },
         dateClick: (item) => this.handleDateClick(item),
         headerToolbar: {
             right: 'dayGridMonth,timeGridWeek,timeGridDay',
@@ -135,22 +157,29 @@ export class AsistenciaComponent implements OnInit {
         const dia = new Date(this.fechaActual + 'T00:00:00')
         this.limitado = dia.getDay()
         this.fechaEspecifica = dia.toLocaleDateString('es-PE', this.confFecha)
+        this.horario
 
-        if (this.limitado != 6 && this.limitado != 0) {
-            if (this.fechaCaptura == this.fechaActual) {
-                this.mostrarModal++
-                if (this.mostrarModal == 1) {
-                    this.verAsistencia = true
+        this.horario.map((fecha) => {
+            if (
+                fecha.dtHorarioFecha == this.fechaActual &&
+                this.limitado != 6 &&
+                this.limitado != 0
+            ) {
+                if (this.fechaCaptura == this.fechaActual) {
+                    this.mostrarModal++
+                    if (this.mostrarModal == 1) {
+                        this.verAsistencia = true
+                        this.mostrarModal = 0
+                        this.fechaCaptura = ''
+                        this.getAsistencia(item.dateStr)
+                    }
                     this.mostrarModal = 0
-                    this.fechaCaptura = ''
-                    this.getAsistencia(item.dateStr)
+                } else {
+                    this.fechaCaptura = this.fechaActual
+                    this.mostrarModal = 0
                 }
-                this.mostrarModal = 0
-            } else {
-                this.fechaCaptura = this.fechaActual
-                this.mostrarModal = 0
             }
-        }
+        })
     }
     showModal = false
     modalReporte() {
@@ -183,34 +212,50 @@ export class AsistenciaComponent implements OnInit {
     captura = ''
     capturarMes = 0
     countAsistencias() {
+        this.leyenda.filter((index) => {
+            index.contar = 0
+        })
         this.events.filter((index) => {
             this.captura = index.title.split(' : ')
-            const capturar = this.captura[0]
-            const suma = parseInt(this.captura[1])
-            this.capturarMes = new Date(index.start).getMonth() + 1
-            const fechas = this.formatoFecha.getMonth() + 1
 
-            this.leyenda[0].contar +=
-                capturar == 'Asistio' && this.capturarMes == fechas ? suma : 0
-            this.leyenda[1].contar +=
-                capturar == 'Inasistencia' && this.capturarMes == fechas
-                    ? suma
-                    : 0
-            this.leyenda[2].contar +=
-                capturar == 'Inasistencia Justificada' &&
-                this.capturarMes == fechas
-                    ? suma
-                    : 0
-            this.leyenda[3].contar +=
-                capturar == 'Tardanza' && this.capturarMes == fechas ? suma : 0
-            this.leyenda[4].contar +=
-                capturar == 'Tardanza Justificada' && this.capturarMes == fechas
-                    ? suma
-                    : 0
-            this.leyenda[5].contar +=
-                capturar == 'Sin Registro' && this.capturarMes == fechas
-                    ? suma
-                    : 0
+            if (this.captura.length > 1) {
+                const capturar = this.captura[0]
+                const suma = parseInt(this.captura[1])
+                const capturarFecha = index.start.split('-')
+                const fechaAsistencia =
+                    capturarFecha[0] + '-' + capturarFecha[1]
+                const fechaCalendario =
+                    this.calendarioYear + '-' + this.calendarioMes
+
+                this.leyenda[0].contar +=
+                    capturar == 'Asistio' && fechaCalendario == fechaAsistencia
+                        ? suma
+                        : 0
+                this.leyenda[1].contar +=
+                    capturar == 'Inasistencia' &&
+                    fechaCalendario == fechaAsistencia
+                        ? suma
+                        : 0
+                this.leyenda[2].contar +=
+                    capturar == 'Inasistencia Justificada' &&
+                    fechaCalendario == fechaAsistencia
+                        ? suma
+                        : 0
+                this.leyenda[3].contar +=
+                    capturar == 'Tardanza' && fechaCalendario == fechaAsistencia
+                        ? suma
+                        : 0
+                this.leyenda[4].contar +=
+                    capturar == 'Tardanza Justificada' &&
+                    fechaCalendario == fechaAsistencia
+                        ? suma
+                        : 0
+                this.leyenda[5].contar +=
+                    capturar == 'Sin Registro' &&
+                    fechaCalendario == fechaAsistencia
+                        ? suma
+                        : 0
+            }
         })
     }
     countAsistenciasModal() {
@@ -327,30 +372,6 @@ export class AsistenciaComponent implements OnInit {
         },
     ]
 
-    /**
-     * @param categories Muestra los datos del checkbox
-     */
-    categories: any[] = [
-        {
-            name: 'Asistencias',
-            valor: 'asistencias',
-            mostrar: true,
-            estilo: 'cyan-checkbox',
-        },
-        {
-            name: 'Festividades',
-            valor: 'festividades',
-            mostrar: true,
-            estilo: 'pink-checkbox',
-        },
-        {
-            name: 'Programacion de Actividades',
-            valor: 'actividades',
-            mostrar: true,
-            estilo: 'green-checkbox',
-        },
-    ]
-
     valSelect1: string = ''
     valSelect2: number = 0
 
@@ -410,7 +431,7 @@ export class AsistenciaComponent implements OnInit {
         '7': 'bt-cyan',
         '9': 'bt-yellow',
     }
-
+    horario = []
     accionBtnItem(elemento): void {
         const { accion } = elemento
         const { item } = elemento
@@ -420,7 +441,7 @@ export class AsistenciaComponent implements OnInit {
                 this.router.navigate(['./docente/detalle-asistencia'])
                 break
             case 'get_data':
-                this.getObtenerAsitencias()
+                // this.getObtenerAsitencias()
                 this.getFechasImportantes()
                 this.verAsistencia = false
                 break
@@ -430,6 +451,9 @@ export class AsistenciaComponent implements OnInit {
                     index.bgcolor = this.estado[index.iTipoAsiId]
                 })
                 this.countAsistenciasModal()
+                break
+            case 'get_curso_horario':
+                this.horario = item
                 break
             case 'get_fecha_importante':
                 this.calendarOptions.events = item
@@ -480,7 +504,7 @@ export class AsistenciaComponent implements OnInit {
                 petition: 'post',
                 group: 'docente',
                 prefix: 'asistencia',
-                ruta: 'list',
+                ruta: 'guardarAsistencia',
                 data: {
                     opcion: 'GUARDAR_ASISTENCIA_ESTUDIANTE',
                     iCursoId: this.iCursoId,
@@ -511,26 +535,47 @@ export class AsistenciaComponent implements OnInit {
 
     /**
      * getFechasImportantes
-     * * Se encarga de Obtener de mostras lo siguientes actividades:
-     * * Fechas de actividades Escolares
      * * Asistencia del Año escolar
-     * * Actividades Programadas
      */
 
     getFechasImportantes() {
         const params = {
             petition: 'post',
             group: 'docente',
-            prefix: 'fechas_importantes',
-            ruta: 'list',
+            prefix: 'reporte_asistencia',
+            ruta: 'obtenerAsistencia',
             data: {
-                opcion: 'CONSULTAR_FECHAS_IMPORTANTES',
                 iCursoId: this.iCursoId,
                 iYAcadId: this.iYAcadId,
+                iDocenteId: this.iDocenteId,
+                iSeccionId: this.iSeccionId,
+                iNivelGradoId: this.iNivelGradoId,
             },
             params: { skipSuccessMessage: true },
         }
         this.getInformation(params, 'get_fecha_importante')
+    }
+
+    /**
+     * getCursoHorario
+     * * Se obtiene los horarios de los cursos para registrar las asistencias
+     */
+
+    getCursoHorario() {
+        const params = {
+            petition: 'post',
+            group: 'docente',
+            prefix: 'reporte_asistencia',
+            ruta: 'obtenerCursoHorario',
+            data: {
+                iCursoId: this.iCursoId,
+                iYAcadId: this.iYAcadId,
+                iDocenteId: this.iDocenteId,
+                iSeccionId: this.iSeccionId,
+            },
+            params: { skipSuccessMessage: true },
+        }
+        this.getInformation(params, 'get_curso_horario')
     }
 
     /**
@@ -543,13 +588,14 @@ export class AsistenciaComponent implements OnInit {
             petition: 'post',
             group: 'docente',
             prefix: 'asistencia',
-            ruta: 'list',
+            ruta: 'obtenerEstudiante',
             data: {
-                opcion: 'CONSULTAR_ASISTENCIA_FECHA',
+                opcion: 'consultar_asistencia_fecha',
                 iCursoId: this.iCursoId,
                 iSeccionId: this.iSeccionId,
                 iDocenteId: this.iDocenteId,
                 iYAcadId: this.iYAcadId,
+                iNivelGradoId: this.iNivelGradoId,
                 dtCtrlAsistencia: fechas,
             },
             params: { skipSuccessMessage: true },
@@ -583,21 +629,21 @@ export class AsistenciaComponent implements OnInit {
         this.GeneralService.getGralReporte(params)
     }
 
-    getObtenerAsitencias() {
-        const params = {
-            petition: 'post',
-            group: 'docente',
-            prefix: 'asistencia',
-            ruta: 'list',
-            data: {
-                opcion: 'CONSULTAR_ASISTENCIA_FECHA',
-                iCursoId: this.iCursoId,
-                dtCtrlAsistencia: this.fechaActual,
-            },
-            params: { skipSuccessMessage: true },
-        }
-        this.getInformation(params, 'get_asistencia')
-    }
+    // getObtenerAsitencias() {
+    //     const params = {
+    //         petition: 'post',
+    //         group: 'docente',
+    //         prefix: 'asistencia',
+    //         ruta: 'list',
+    //         data: {
+    //             opcion: 'consultar_asistencia_fecha',
+    //             iCursoId: this.iCursoId,
+    //             dtCtrlAsistencia: this.fechaActual,
+    //         },
+    //         params: { skipSuccessMessage: true },
+    //     }
+    //     this.getInformation(params, 'get_asistencia')
+    // }
     getInformation(params, accion) {
         this.GeneralService.getGralPrefix(params)
             .pipe(takeUntil(this.unsubscribe$))

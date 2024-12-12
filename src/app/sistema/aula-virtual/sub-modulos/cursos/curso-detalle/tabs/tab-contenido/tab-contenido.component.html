@@ -12,73 +12,79 @@
         </div>
     </div>
 </div>
-
 <div class="flex flex-column">
-    @for (semana of contenidoSemanas; track semana.iContenidoSemId) {
-        <p-accordion
-            [multiple]="true"
-            expandIcon="pi pi-angle-right"
-            collapseIcon="pi pi-angle-down"
-        >
-            <p-accordionTab header="" class="" iconPos="end">
-                <ng-template pTemplate="header">
-                    <div class="flex flex-column w-full">
-                        <div class="flex">
-                            <p class="text-xs">
-                                SEMANA {{ semana.cContenidoSemNumero }}
-                                <!--| (Desde: 01/01/2020 - Hasta:
+    @if (contenidoSemanas.length > 0) {
+        @for (semana of contenidoSemanas; track semana.iContenidoSemId) {
+            <p-accordion
+                [multiple]="true"
+                expandIcon="pi pi-angle-right"
+                collapseIcon="pi pi-angle-down"
+            >
+                <p-accordionTab header="" class="" iconPos="end">
+                    <ng-template pTemplate="header">
+                        <div class="flex flex-column w-full">
+                            <div class="flex">
+                                <p class="text-xs">
+                                    SEMANA {{ semana.cContenidoSemNumero }}
+                                    <!--| (Desde: 01/01/2020 - Hasta:
                             04/04/2020)-->
-                            </p>
+                                </p>
+                            </div>
+                            <div class="flex">
+                                Tema:
+                                {{
+                                    semana.cContenidoSemTitulo.length > 150
+                                        ? (semana.cContenidoSemTitulo
+                                              | slice: 0 : 150) + '...'
+                                        : semana.cContenidoSemTitulo
+                                }}
+                            </div>
                         </div>
-                        <div class="flex">
-                            Tema:
-                            {{
-                                semana.cContenidoSemTitulo.length > 150
-                                    ? (semana.cContenidoSemTitulo
-                                          | slice: 0 : 150) + '...'
-                                    : semana.cContenidoSemTitulo
-                            }}
-                        </div>
-                    </div>
-                    @if (iPerfilId === 7) {
-                        <div
-                            class="flex align-items-end justify-content-end mx-4"
-                        >
-                            <button
-                                size="small"
-                                [rounded]="true"
-                                pButton
-                                pRipple
-                                (click)="
-                                    $event.stopPropagation();
-                                    setSemanaSeleccionada(semana);
-                                    menuContenido.toggle($event)
-                                "
-                                ngClass="p-button-primary"
+                        @if (iPerfilId === 7) {
+                            <div
+                                class="flex align-items-end justify-content-end mx-4"
                             >
-                                <i class="pi pi-plus"></i>
-                                &nbsp;Actividad
-                            </button>
-                        </div>
-                    }
-                </ng-template>
+                                <button
+                                    size="small"
+                                    [rounded]="true"
+                                    pButton
+                                    pRipple
+                                    (click)="
+                                        $event.stopPropagation();
+                                        setSemanaSeleccionada(semana);
+                                        menuContenido.toggle($event)
+                                    "
+                                    ngClass="p-button-primary"
+                                >
+                                    <i class="pi pi-plus"></i>
+                                    &nbsp;Actividad
+                                </button>
+                            </div>
+                        }
+                    </ng-template>
 
-                @for (fecha of semana.fechas; track $index) {
-                    <!-- <h3 class="text-primary text-xl">
+                    @for (fecha of semana.fechas; track $index) {
+                        <!-- <h3 class="text-primary text-xl">
                 {{ fecha.fecha | date: "EEEE, d 'de' MMMM 'de' yyyy" }}
             </h3>
             <hr /> -->
-                    <app-actividad-lista
-                        [actividades]="fecha.actividades"
-                        (actionSelected)="
-                            setSemanaSeleccionada(semana);
-                            actionSelected($event)
-                        "
-                        ><p-divider></p-divider
-                    ></app-actividad-lista>
-                }
-            </p-accordionTab>
-        </p-accordion>
+                        <app-actividad-lista
+                            [actividades]="fecha.actividades"
+                            (actionSelected)="
+                                setSemanaSeleccionada(semana);
+                                actionSelected($event)
+                            "
+                            ><p-divider></p-divider
+                        ></app-actividad-lista>
+                    }
+                </p-accordionTab>
+            </p-accordion>
+        }
+    }
+    @if (!loadingContenidoSemanas && contenidoSemanas.length === 0) {
+        <div class="card">
+            <app-no-data></app-no-data>
+        </div>
     }
 </div>
 
@@ -91,3 +97,12 @@
         </a>
     </ng-template>
 </p-menu>
+
+<app-form-evaluacion
+    [showModalEvaluacion]="showModalEvaluacion"
+    [tituloEvaluacion]="tituloEvaluacion"
+    [opcionEvaluacion]="opcionEvaluacion"
+    [semana]="semanaEvaluacion"
+    [idDocCursoId]="idDocCursoId"
+    (accionBtnItem)="accionBtnItem($event)"
+></app-form-evaluacion>

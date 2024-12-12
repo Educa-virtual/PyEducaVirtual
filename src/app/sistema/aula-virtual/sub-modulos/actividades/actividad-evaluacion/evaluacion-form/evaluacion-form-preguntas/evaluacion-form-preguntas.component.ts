@@ -32,6 +32,7 @@ import { Subject, takeUntil } from 'rxjs'
 import { ApiEvaluacionesRService } from '@/app/sistema/evaluaciones/services/api-evaluaciones-r.service'
 import { PreguntasActivasComponent } from '../../../../../../evaluaciones/sub-evaluaciones/preguntas-activas/preguntas-activas.component'
 import { PreguntasFormComponent } from '../preguntas-form/preguntas-form.component'
+import { EvaluacionButtonAgregarPreguntasComponent } from '../../evaluacion-button-agregar-preguntas/evaluacion-button-agregar-preguntas.component'
 
 @Component({
     selector: 'app-evaluacion-form-preguntas',
@@ -46,6 +47,7 @@ import { PreguntasFormComponent } from '../preguntas-form/preguntas-form.compone
         AulaBancoPreguntasComponent,
         PreguntasActivasComponent,
         PreguntasFormComponent,
+        EvaluacionButtonAgregarPreguntasComponent,
     ],
     templateUrl: './evaluacion-form-preguntas.component.html',
     styleUrl: './evaluacion-form-preguntas.component.scss',
@@ -116,21 +118,22 @@ export class EvaluacionFormPreguntasComponent implements OnInit, OnDestroy {
 
     showModalPreguntas: boolean = false
     agregarEditarPregunta(pregunta) {
-        this.showModalPreguntas = true
-        console.log(pregunta)
-        // const refModal = this._aulaBancoPreguntasService.openPreguntaModal({
-        //     pregunta,
-        //     iCursoId: this.iCursoId,
-        //     tipoPreguntas: [],
-        //     iEvaluacionId: this.iEvaluacionId,
-        // })
-        // refModal.onClose.subscribe((result) => {
-        //     if (result) {
-        //         const pregunta = this.mapLocalPregunta(result)
-        //         this.preguntas.push(pregunta)
-        //         this.preguntasSeleccionadasChange.emit(this.preguntas)
-        //     }
-        // })
+        // this.showModalPreguntas = true
+        // console.log(pregunta)
+        const refModal = this._aulaBancoPreguntasService.openPreguntaModal({
+            pregunta,
+            iCursoId: this.iCursoId,
+            tipoPreguntas: [],
+            iEvaluacionId: this.iEvaluacionId,
+            padreComponente: 'AULA-VIRTUAL',
+        })
+        refModal.onClose.subscribe((result) => {
+            if (result) {
+                const pregunta = this.mapLocalPregunta(result)
+                this.preguntas.push(pregunta)
+                this.preguntasSeleccionadasChange.emit(this.preguntas)
+            }
+        })
     }
 
     handleBancopregunta() {

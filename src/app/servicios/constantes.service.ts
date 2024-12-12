@@ -51,6 +51,16 @@ const docente = [
                 icon: 'pi pi-fw pi-share-alt',
                 routerLink: ['ayuda'],
             },
+            {
+                label: 'Calendario',
+                icon: 'pi pi-fw pi-calendar-clock',
+                routerLink: ['/docente/calendario'],
+            },
+            {
+                label: 'Banco de Preguntas',
+                icon: 'pi pi-fw pi-folder',
+                routerLink: ['/aula-virtual/banco-preguntas'],
+            },
         ],
     },
 ]
@@ -67,17 +77,17 @@ const estudiante = [
             {
                 label: 'Calendario',
                 icon: 'pi pi-fw pi-book',
-                routerLink: ['/aula-virtual/areas-curriculares'],
+                routerLink: ['/aula-virtual/03'],
             },
             {
                 label: 'Solicitudes y Tramites',
                 icon: 'pi pi-fw pi-book',
-                routerLink: ['/aula-virtual/areas-curriculares'],
+                routerLink: ['/aula-virtual/02'],
             },
             {
                 label: 'Buzon de Sugerencias',
                 icon: 'pi pi-fw pi-book',
-                routerLink: ['/aula-virtual/areas-curriculares'],
+                routerLink: ['/aula-virtual/01'],
             },
             {
                 label: 'Enlaces de ayuda',
@@ -109,29 +119,19 @@ const estudiante = [
 //         ],
 //     },
 // ]
-const aula_virtual = [
+const administrador = [
     {
         items: [
             inicio,
             {
-                label: 'Mis Áreas Curriculares',
-                icon: 'pi pi-fw pi-book',
-                routerLink: ['/aula-virtual/areas-curriculares'],
-            },
-            {
-                label: 'Calendario',
-                icon: 'pi pi-fw pi-calendar',
-                routerLink: ['/aula-virtual/calendario'],
-            },
-            {
-                label: 'Recursos',
+                label: 'Auditoria',
                 icon: 'pi pi-fw pi-folder',
-                routerLink: ['/aula-virtual/recursos'],
+                routerLink: ['/administrador/auditoria'],
             },
             {
-                label: 'DashBoard',
-                icon: 'pi pi-fw pi-chart-bar',
-                routerLink: ['/aula-virtual'],
+                label: 'Componentes',
+                icon: 'pi pi-fw pi-folder',
+                routerLink: ['/administrador/componentes'],
             },
             {
                 label: 'Enlaces de ayuda',
@@ -141,39 +141,44 @@ const aula_virtual = [
         ],
     },
 ]
-const administrador = [
+const jefe_programa = [
     {
         items: [
             inicio,
+            {
+                label: 'Administracion del Sistema',
+                icon: 'pi pi-fw pi-cog',
+                items: [
+                    {
+                        label: 'Registro Calendario Escolar',
+                        icon: 'pi pi-fw pi-cog',
+                        routerLink: [
+                            '/gestion-institucional/calendarioAcademico',
+                        ],
+                    },
+                ],
+            },
+
             {
                 label: 'Personas',
                 icon: 'pi pi-fw pi-desktop',
                 routerLink: ['/configuracion/personas'],
             },
             {
-                label: 'Calendario Académico',
-                icon: 'pi pi-fw pi-desktop',
-                routerLink: ['/'],
-            },
-            {
-                label: 'Cursos',
-                icon: 'pi pi-fw pi-desktop',
-                routerLink: ['/'],
-            },
-            {
-                label: 'Horarios',
-                icon: 'pi pi-fw pi-desktop',
-                routerLink: ['/'],
-            },
-            {
-                label: 'Grados',
-                icon: 'pi pi-fw pi-desktop',
-                routerLink: ['/'],
-            },
-            {
-                label: 'Sección',
-                icon: 'pi pi-fw pi-desktop',
-                routerLink: ['/'],
+                label: 'Administracion de la I.E',
+                icon: 'pi pi-fw pi-cog',
+                items: [
+                    {
+                        label: 'Registro de año escolar',
+                        icon: 'pi pi-fw pi-cog',
+                        routerLink: ['/configuracion/configuracion'],
+                    },
+                    {
+                        label: 'Personal',
+                        icon: 'pi pi-fw pi-cog',
+                        routerLink: ['/configuracion/personal'],
+                    },
+                ],
             },
             {
                 label: 'Enlaces de ayuda',
@@ -317,6 +322,34 @@ const notas_evaluaciones = [
         ],
     },
 ]
+
+// const director = [
+//     {
+//         items: [
+//             inicio,
+//             {
+//                 label: 'Mis Áreas Curriculares',
+//                 icon: 'pi pi-fw pi-book',
+//                 routerLink: ['/aula-virtual/areas-curriculares'],
+//             },
+//             {
+//                 label: 'Calendario',
+//                 icon: 'pi pi-fw pi-calendar',
+//                 routerLink: ['/aula-virtual/calendario'],
+//             },
+//             {
+//                 label: 'Recursos',
+//                 icon: 'pi pi-fw pi-folder',
+//                 routerLink: ['/aula-virtual/recursos'],
+//             },
+//             {
+//                 label: 'DashBoard',
+//                 icon: 'pi pi-fw pi-chart-bar',
+//                 routerLink: ['/aula-virtual'],
+//             },
+//         ],
+//     },
+// ]
 
 // const other = [
 //     {
@@ -646,12 +679,7 @@ const administracion = [
                     {
                         label: 'Personal',
                         icon: 'pi pi-fw pi-circle',
-                        routerLink: ['/docente/personal'],
-                    },
-                    {
-                        label: 'Personal de IE',
-                        icon: 'pi pi-fw pi-circle',
-                        routerLink: ['/gestion-institucional/IesPersonal'],
+                        routerLink: ['/configuracion/configuracion'],
                     },
                     {
                         label: 'Gestión de usuarios E.I.',
@@ -745,12 +773,12 @@ export class ConstantesService {
     nav = this.getMenu()
     getMenu() {
         if (!perfil) return first
-        // console.log('perfiles', perfil)
+        //console.log('perfiles', perfil)
         switch (Number(perfil.iPerfilId)) {
             case 1:
-                return aula_virtual
+                return administrador
             case 2:
-                return docente
+                return notas_evaluaciones
             case 3:
                 return notas_evaluaciones
             case 8:
@@ -758,7 +786,7 @@ export class ConstantesService {
             case 5:
                 return registro_asistencia
             case 6:
-                return administrador
+                return jefe_programa
             case 7:
                 return docente
             case 4:

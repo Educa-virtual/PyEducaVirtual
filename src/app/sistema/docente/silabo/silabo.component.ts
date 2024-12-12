@@ -105,12 +105,9 @@ export class SilaboComponent implements OnInit, OnDestroy {
                         opcion: 'CONSULTARxidDocCursoIdxiYAcadIdxiDocenteIdxiIeCursoId',
                         iCredId: this.ConstantesService.iCredId,
                         idDocCursoId: this.idDocCursoId,
-                        iSemAcadId:
-                            '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-                        iYAcadId:
-                            '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-                        iDocenteId:
-                            '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
+                        iSemAcadId: null,
+                        iYAcadId: this.ConstantesService.iYAcadId,
+                        iDocenteId: this.ConstantesService.iDocenteId,
                         iIeCursoId: null,
                     },
                     params: { skipSuccessMessage: true },
@@ -131,11 +128,9 @@ export class SilaboComponent implements OnInit, OnDestroy {
                 this.dataSilabo.controls.idDocCursoId.setValue(
                     this.idDocCursoId
                 )
-                this.dataSilabo.controls.iSemAcadId.setValue(
-                    '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe'
-                )
+                this.dataSilabo.controls.iSemAcadId.setValue(null)
                 this.dataSilabo.controls.iYAcadId.setValue(
-                    '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe'
+                    this.ConstantesService.iYAcadId
                 )
                 this.dataSilabo.controls.dtSilabo.setValue(null)
                 if (!this.dataSilabo.valid) {

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
 import { environment } from '@/environments/environment'
+import { map } from 'rxjs'
 
 const baseUrl = environment.backendApi
 const baseUrlPublic = environment.backend
@@ -142,70 +143,29 @@ export class GeneralService {
         )
     }
 
-    addMaestro(data: any) {
-        return this.http.post(
-            `${baseUrl}/acad/gestionInstitucional/insertMaestro`,
-            data
-        )
-    }
-
-    addMaestroDetalle(data: any) {
-        return this.http.post(
-            `${baseUrl}/acad/gestionInstitucional/insertMaestroDetalle`,
-            data
-        )
-    }
-
-    addYear(data: any) {
+    addAno(data: any) {
         return this.http.post(
             `${baseUrl}/acad/calendarioAcademico/addYear`,
             data
         )
     }
-    updateYear(data: any) {
-        return this.http.post(
-            `${baseUrl}/acad/calendarioAcademico/updateYear`,
-            data
-        )
-    }
-
-    deleteYear(data: any) {
-        return this.http.post(
-            `${baseUrl}/acad/calendarioAcademico/deleteYear`,
-            data
-        )
-    }
-
-    addCalAcademico(data: any) {
-        return this.http.post(
-            `${baseUrl}/acad/calendarioAcademico/addCalAcademico`,
-            data
-        )
-    }
-
     addAmbienteAcademico(data: any) {
         return this.http.post(
-            `${baseUrl}/acad/calendarioAcademico/addAmbiente`,
+            `${baseUrl}/acad/calendarioAcademicos/addAmbiente`,
             data
         )
     }
 
     updateAcademico(data: any) {
         return this.http.post(
-            `${baseUrl}/acad/calendarioAcademico/updateCalendario`,
+            `${baseUrl}/acad/calendarioAcademicos/updateCalendario`,
             data
         )
     }
 
     deleteAcademico(data: any) {
         return this.http.post(
-            `${baseUrl}/acad/calendarioAcademico/deleteCalendario`,
-            data
-        )
-    }
-    searchTablaXwhere(data: any) {
-        return this.http.post(
-            `${baseUrl}/acad/calendarioAcademico/searchCalAcademico`,
+            `${baseUrl}/acad/calendarioAcademicos/deleteCalendario`,
             data
         )
     }
@@ -216,17 +176,16 @@ export class GeneralService {
             data
         )
     }
-
     searchCalendario(data: any) {
         return this.http.post(
-            `${baseUrl}/acad/calendarioAcademico/searchAcademico`,
+            `${baseUrl}/acad/calendarioAcademico/selCalAcademico`,
             data
         )
     }
 
     searchAmbienteAcademico(data: any) {
         return this.http.post(
-            `${baseUrl}/acad/calendarioAcademico/searchAmbiente`,
+            `${baseUrl}/acad/calendarioAcademicos/searchAmbiente`,
             data
         )
     }
@@ -246,14 +205,37 @@ export class GeneralService {
     }
     searchGradoCiclo(data: any) {
         return this.http.post(
-            `${baseUrl}/acad/calendarioAcademico/searchGradoCiclo`,
+            `${baseUrl}/acad/calendarioAcademicos/searchGradoCiclo`,
             data
         )
     }
-    searchPersonalIes(data: any) {
-        return this.http.post(
-            `${baseUrl}/acad/gestionInstitucional/listarPersonalIes`,
-            data
-        )
+    // Método para obtener datos desde el backend
+    getDatos(tabla: string, campos: string, where: any) {
+        return this.http
+            .post<any>(
+                `${baseUrl}/aula-virtual/Resultado/obtenerCalificacionesFinalesReporte`,
+                {
+                    tabla: 'detalle_matriculas',
+                    where,
+                    campos,
+                }
+            )
+            .pipe(
+                map((response) => {
+                    if (!response || !response.data) {
+                        throw new Error(
+                            'La respuesta no contiene datos válidos'
+                        )
+                    }
+                    return response.data
+                })
+                // map((data) => {
+                //     if (data.iActTipoId == 2) {
+                //         const preguntas = mapItemsBancoToEre(data.preguntas)
+                //         data.preguntas = mapData(preguntas)
+                //     }
+                //     return data
+                // })
+            )
     }
 }

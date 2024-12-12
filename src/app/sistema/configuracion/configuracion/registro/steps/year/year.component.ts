@@ -1,5 +1,3 @@
-import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
-import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
 import { Component, OnInit, HostListener } from '@angular/core'
 
 import { Router } from '@angular/router'
@@ -25,20 +23,26 @@ import { CheckboxModule } from 'primeng/checkbox'
 import { ConfirmDialogModule } from 'primeng/confirmdialog'
 import { FloatLabelModule } from 'primeng/floatlabel'
 import { ToastModule } from 'primeng/toast'
+import { FileUploadModule } from 'primeng/fileupload'
+import { InputTextModule } from 'primeng/inputtext'
+import { InputFileUploadComponent } from '@/app/shared/input-file-upload/input-file-upload.component'
+
 @Component({
     selector: 'app-year',
     standalone: true,
     imports: [
-        ContainerPageComponent,
-        TablePrimengComponent,
         CalendarModule,
         ButtonModule,
+        InputTextModule,
+        InputFileUploadComponent,
         FloatLabelModule,
         FormsModule,
+        InputGroupModule,
         ReactiveFormsModule,
         ConfirmDialogModule,
         ToastModule,
         CheckboxModule,
+        FileUploadModule,
         InputGroupModule,
         InputGroupAddonModule,
     ],
@@ -46,8 +50,7 @@ import { ToastModule } from 'primeng/toast'
     styleUrl: './year.component.scss',
 })
 export class YearComponent implements OnInit {
-    // navigationSubscription
-    // isHandlingNavigation = false
+    hasUnsavedChanges = false
     form: FormGroup
     calFasesFechasInformation: {
         iSedeId: string
@@ -74,6 +77,7 @@ export class YearComponent implements OnInit {
         this.form = this.fb.group({
             fechaVigente: ['', Validators.required],
             fechaInicio: ['', Validators.required],
+            reglamentoInterno: [null, Validators.required],
             // fechaFin: ['', Validators.required],
             // fechaMatriculaInicio: ['', Validators.required],
             fechaMatriculaFin: ['', Validators.required],
@@ -86,6 +90,7 @@ export class YearComponent implements OnInit {
         // param: event: BeforeUnloadEvent
         sessionStorage.setItem('reloadDetected', 'true')
     }
+
     async ngOnInit() {
         // this.fasesPromocionales = await this.ticketService.getFasesFechas()
         console.log('reloadDetected')
@@ -110,6 +115,18 @@ export class YearComponent implements OnInit {
             }
         )
 
+        const file = await this.ticketService.setReglamentoInterno()
+
+        const fileObj = this.ticketService.base64ToFile(
+            file.value,
+            file.name,
+            file.mimeType
+        )
+
+        this.form.patchValue({
+            reglamentoInterno: fileObj,
+        })
+
         // Suscribirse a los cambios del formulario después de la inicialización
         this.form.valueChanges.subscribe((value) => {
             this.calFasesFechasInformation = {
@@ -129,24 +146,34 @@ export class YearComponent implements OnInit {
             }
             console.log(value)
         })
+    }
 
-        // this.navigationSubscription = this.router.events.subscribe((event: NavigationEvent) => {
-        //     if (event instanceof NavigationStart) {
-        //       if (this.isHandlingNavigation) {
-        //         return; // Si ya estás manejando el evento, no hagas nada
-        //       }
+    async canDeactivate(): Promise<boolean> {
+        if (this.hasUnsavedChanges) {
+            return true
+            return true
+        }
 
-        //       this.isHandlingNavigation = true; // Establece el flag para bloquear otros eventos
-        //       const allowNavigation = window.confirm('¿Desea salir sin guardar los cambios?');
-
-        //       if (!allowNavigation) {
-        //         // Cancela la navegación
-        //         this.router.navigateByUrl(this.router.url); // Mantén la ruta actual
-        //         this.isHandlingNavigation = false; // Restablece el flag después de manejar el evento
-        //       }
-
-        //     }
-        //   });
+        const confirm = await this.stepConfirmationService.confirmAction(
+            {},
+            {
+                header: '¿Desea salir sin guardar los cambios?',
+                message: 'Por favor, confirme para continuar.',
+                accept: {
+                    severity: 'success',
+                    summary: 'Confirmado',
+                    detail: 'Se ha aceptado la navegación.',
+                    life: 3000,
+                },
+                reject: {
+                    severity: 'error',
+                    summary: 'Cancelado',
+                    detail: 'Se ha cancelado la navegación.',
+                    life: 3000,
+                },
+            }
+        )
+        return confirm
     }
 
     setValuesFormCalendar(data) {
@@ -369,6 +396,10 @@ export class YearComponent implements OnInit {
             // await this.ticketService.updCalFasesProm(this.form.value)
         }
 
+        if (JSON.parse(localStorage.getItem('dremoPerfil')).iIieeId) {
+            await this.ticketService.updReglamentoInterno(this.form.value)
+        }
+
         const calFasesProm = this.filterInputsByPrefix(
             this.form.value,
             'faseCheck'
@@ -450,6 +481,8 @@ export class YearComponent implements OnInit {
         }
 
         await this.ticketService.setCalendar()
+
+        this.hasUnsavedChanges = true
     }
 
     async nextPage() {
@@ -457,10 +490,4 @@ export class YearComponent implements OnInit {
             'configuracion/configuracion/registro/dias-laborales',
         ])
     }
-
-    // ngOnDestroy() {
-    //     if (this.router) {
-    //       this.navigationSubscription.unsubscribe();
-    //     }
-    //   }
 }

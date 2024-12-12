@@ -29,6 +29,7 @@ import { EmptySectionComponent } from '@/app/shared/components/empty-section/emp
 import { Message } from 'primeng/api'
 import { WebsocketService } from '@/app/sistema/aula-virtual/services/websoket.service'
 import { TimeComponent } from '@/app/shared/time/time.component'
+//import { Toast } from 'primeng/toast';
 @Component({
     selector: 'app-foro-room',
     standalone: true,
@@ -120,11 +121,11 @@ export class ForoRoomComponent implements OnInit {
         dtForoFin: [],
     })
     public foroFormCalf: FormGroup = this._formBuilder.group({
-        iEscalaCalifId: [],
+        //iEscalaCalifId: [],
         iForoRptaId: ['', [Validators.required]],
         cForoRptaDocente: ['', [Validators.required]],
-        nForoRptaNota: [],
-        cForoDescripcion: [],
+        //nForoRptaNota: [],
+        //cForoDescripcion: [],
     })
     // borrar foroFormComnt
     public foroFormComnt: FormGroup = this._formBuilder.group({
@@ -154,7 +155,6 @@ export class ForoRoomComponent implements OnInit {
         //     // Agregar el mensaje recibido a la lista de comentarios
         //     this.comments.push(message);  // Asume que tienes una lista `comments`
         // });
-        this.obtenerEstudiantesMatricula()
         this.obtenerIdPerfil()
         this.mostrarCalificacion()
         this.obtenerForo()
@@ -181,43 +181,24 @@ export class ForoRoomComponent implements OnInit {
         // console.log('Editar acción ejecutada', respuestasForo)
         //iForoRptaId
     }
-    eliminar(item: any): void {
-        // let value = typeof Number(this.itemRespuesta);
-        // console.log('Eliminar acción ejecutada01', value)
-        if (!item || !item.iForoRptaId) {
-            console.error('Elemento inválido para eliminar.')
-            return
+    eliminar(itemRespuesta: any): void {
+        const iForoRptaId = {
+            iForoRptaId: parseInt(itemRespuesta.iForoRptaId, 10),
         }
-        const itemId = item.iForoRptaId
-
-        this._aulaService.eliminarRespuesta(itemId).subscribe({
+        console.log('Eliminar acción ejecutada01', iForoRptaId)
+        this._aulaService.eliminarRespuesta(iForoRptaId).subscribe({
             next: (response) => {
+                //const mensaje = response?.message || 'Elemento eliminado sin respuesta del servidor';
                 console.log('Elemento eliminado correctamente:', response)
                 // Actualiza la lista local después de eliminar
-                this.itemRespuesta = this.itemRespuesta.filter(
-                    (res: any) => res.iForoRptaId !== itemId
-                )
+                // this.itemRespuesta = this.itemRespuesta.filter(
+                //     (item: any) => item.iForoRptaId !== respuestasForo
+                // );
             },
             error: (err) => {
                 console.error('Error al eliminar:', err)
             },
         })
-
-        // let value = this.itemRespuesta;
-        // console.log('Eliminar acción ejecutada01', value)
-        // this._aulaService.eliminarRespuesta(value).subscribe({
-        //     next: (response) => {
-        //         console.log('Elemento eliminado correctamente:', response);
-        //         // Actualiza la lista local después de eliminar
-        //         // this.itemRespuesta = this.itemRespuesta.filter(
-        //         //     (item: any) => item.iForoRptaId !== respuestasForo
-        //         // );
-        //     },
-        //     error: (err) => {
-        //         console.error('Error al eliminar:', err);
-        //     },
-        // });
-        // Lógica para eliminar
     }
 
     accionBtnItemTable({ accion, item }) {
@@ -256,12 +237,20 @@ export class ForoRoomComponent implements OnInit {
         this.estudianteSelectComent = estudianteId
         console.log('Hola estudiante', this.estudianteSelectComent)
     }
+    limpiarHTML(html: string): string {
+        const temporal = document.createElement('div') // Crear un div temporal
+        temporal.innerHTML = html // Insertar el HTML
+        return temporal.textContent || '' // Obtener solo el texto
+    }
     calificarComnt() {
         const rpta = this.respuestasForo.find(
             (i) => i.EstudianteId === this.perfilSelect.EstudianteId
         )
         this.foroFormCalf.controls['iForoRptaId'].setValue(rpta.iForoRptaId)
         const value = this.foroFormCalf.value
+        const nn = value.cForoRptaDocente
+        const conclusionFinalDocente = this.limpiarHTML(nn)
+        value.cForoRptaDocente = conclusionFinalDocente
         this._aulaService.calificarForoDocente(value).subscribe((resp: any) => {
             if (resp?.validated) {
                 this.modelaCalificacionComen = false
@@ -269,32 +258,8 @@ export class ForoRoomComponent implements OnInit {
             }
         })
         console.log('Guardar Calificacion', value)
-
-        // this._aulaService.calificarForoDocente(value).subscribe((resp: any) => {
-        //     if (resp?.validated) {
-        //         this.modalCalificacion = false
-        //         this.getRespuestaF()
-        //     }
-        // })
+        this.foroFormCalf.reset()
     }
-    // submit() {
-    //     //const value = this.foroFormComnt.value
-    //     this.iDocenteId = this._constantesService.iDocenteId
-    //     const comment = {
-    //         ...this.foroFormComnt.value,
-    //         iForoId: this.ixActivadadId,
-    //         iDocenteId: this.iDocenteId,
-    //     }
-    //     console.log('Guardar Calificacion', comment)
-    //     this._aulaService
-    //         .calificarForoDocente(comment)
-    //         .subscribe((resp: any) => {
-    //             if (resp?.validated) {
-    //                 this.modalCalificacion = false
-    //                 this.getRespuestaF()
-    //             }
-    //         })
-    // }
     startReply(index: number) {
         this.selectedCommentIndex = index // Guarda el índice del comentario seleccionado
         console.log('Comentario', this.selectedCommentIndex)
@@ -488,33 +453,16 @@ export class ForoRoomComponent implements OnInit {
                     console.error('Error al obtener respuestas del foro', err)
                 },
             })
-        // Suscribirse a nuevos comentarios a través de WebSocket
-        // this.websocketService.listen('newComment').subscribe((message: any) => {
-        //     console.log('Nuevo comentario recibido desde WebSocket:', message)
-
-        //     // Suponiendo que el comentario recibido es solo texto, puedes agregarlo a la lista de respuestas.
-        //     // Si necesitas agregar la respuesta de una manera más estructurada, ajusta este bloque.
-        //     const newComment = {
-        //         cForoRptaRespuesta: message,
-        //         expanded: false,
-        //     }
-
-        //     // Aquí puedes agregar el nuevo comentario al array `respuestasForo`
-        //     // Asegúrate de que `respuestasForo` esté actualizada con los nuevos comentarios
-        //     this.respuestasForo.push(newComment)
-
-        //     // Si la lista de respuestas necesita alguna otra actualización o formato, puedes hacerlo aquí.
-        //     console.log('Respuestas de foro actualizadas:', this.respuestasForo)
-        // })
     }
     toggleExpand(comment: any) {
         comment.expanded = !comment.expanded
     }
+    // Obtener la lista de estudiantes matriculados
     getInformation(params) {
         this.GeneralService.getGralPrefix(params).subscribe({
             next: (response) => {
                 this.estudiantes = response.data
-                console.log('lista de estudiante', this.estudiantes)
+                //console.log('lista de estudiante', this.estudiantes)
             },
             complete: () => {},
             error: (error) => {
@@ -522,7 +470,7 @@ export class ForoRoomComponent implements OnInit {
             },
         })
     }
-
+    // consulta para obtener los estudiantes
     getEstudiantesMatricula() {
         const params = {
             petition: 'post',
@@ -540,9 +488,5 @@ export class ForoRoomComponent implements OnInit {
         }
 
         this.getInformation(params)
-    }
-    obtenerEstudiantesMatricula() {
-        this.iCredId = this._constantesService.iCredId
-        console.log('Parametros para obtener Alumnos', this.iCredId)
     }
 }

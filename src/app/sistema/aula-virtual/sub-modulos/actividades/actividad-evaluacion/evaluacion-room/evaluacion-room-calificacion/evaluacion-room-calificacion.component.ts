@@ -19,6 +19,7 @@ import { PrimengModule } from '@/app/primeng.module'
 import { DialogService } from 'primeng/dynamicdialog'
 import { EvaluacionPreguntaCalificacionComponent } from '../evaluacion-pregunta-calificacion/evaluacion-pregunta-calificacion.component'
 import { MODAL_CONFIG } from '@/app/shared/constants/modal.config'
+import { ToolbarPrimengComponent } from '../../../../../../../shared/toolbar-primeng/toolbar-primeng.component'
 
 interface Leyenda {
     total: number
@@ -71,6 +72,7 @@ const leyendas = {
         RemoveHTMLPipe,
         BancoPreguntaPreviewItemComponent,
         EvaluacionPreguntaComponent,
+        ToolbarPrimengComponent,
     ],
     templateUrl: './evaluacion-room-calificacion.component.html',
     styleUrl: './evaluacion-room-calificacion.component.scss',

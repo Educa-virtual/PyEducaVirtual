@@ -1,0 +1,44 @@
+:host ::ng-deep {
+    .indigo-checkbox.p-checkbox {
+        .p-checkbox-box.p-highlight {
+            background: var(--indigo-600);
+            border-color: var(--indigo-600);
+        }
+    }
+    .teal-checkbox.p-checkbox {
+        .p-checkbox-box.p-highlight {
+            background: var(--teal-600);
+            border-color: var(--teal-600);
+        }
+    }
+    .red-checkbox.p-checkbox {
+        .p-checkbox-box.p-highlight {
+            background: var(--red-600);
+            border-color: var(--red-600);
+        }
+    }
+    .yellow-checkbox.p-checkbox {
+        .p-checkbox-box.p-highlight {
+            background: var(--yellow-600);
+            border-color: var(--yellow-600);
+        }
+    }
+    .green-checkbox.p-checkbox {
+        .p-checkbox-box.p-highlight {
+            background: var(--green-600);
+            border-color: var(--green-600);
+        }
+    }
+    .purple-checkbox.p-checkbox {
+        .p-checkbox-box.p-highlight {
+            background: var(--purple-600);
+            border-color: var(--purple-600);
+        }
+    }
+    .pink-checkbox.p-checkbox {
+        .p-checkbox-box.p-highlight {
+            background: var(--pink-100);
+            border-color: var(--pink-100);
+        }
+    }
+}

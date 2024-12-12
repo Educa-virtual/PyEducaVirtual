@@ -1,11 +1,12 @@
 <article
-    class="card p-0 border-1 flex flex-column surface-border overflow-hidden h-full"
+    class="card p-0 border-1 flex flex-column surface-border overflow-hidden h-full post-module"
 >
-    <div class="curso__image-container">
+    <div class="curso__image-container img-transition">
         <img
-            src="assets/demo/images/product/bamboo-watch.jpg"
+            [src]="backend + '/' + curso.cCursoImagen"
             [alt]="curso.cCursoNombre"
             class="w-full h-full"
+            (error)="updateUrl(curso)"
         />
     </div>
     <div class="p-3 mb-auto">

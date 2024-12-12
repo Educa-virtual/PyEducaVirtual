@@ -1,10 +1,8 @@
 import { PrimengModule } from '@/app/primeng.module'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
-import { MODAL_CONFIG } from '@/app/shared/constants/modal.config'
 import { ModalPrimengComponent } from '@/app/shared/modal-primeng/modal-primeng.component'
 import { TypesFilesUploadPrimengComponent } from '@/app/shared/types-files-upload-primeng/types-files-upload-primeng.component'
-import { RubricaFormComponent } from '@/app/sistema/aula-virtual/features/rubricas/components/rubrica-form/rubrica-form.component'
 import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-evaluaciones.service'
 import { NgIf } from '@angular/common'
 import {
@@ -18,7 +16,6 @@ import {
 } from '@angular/core'
 import { FormBuilder, Validators } from '@angular/forms'
 import { DialogService } from 'primeng/dynamicdialog'
-import { RubricasComponent } from '../../../../../features/rubricas/rubricas.component'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { GeneralService } from '@/app/servicios/general.service'
 import { ListPreguntasComponent } from '../list-preguntas/list-preguntas.component'
@@ -31,7 +28,6 @@ import { ListPreguntasComponent } from '../list-preguntas/list-preguntas.compone
         ModalPrimengComponent,
         NgIf,
         TypesFilesUploadPrimengComponent,
-        RubricasComponent,
         ListPreguntasComponent,
     ],
     templateUrl: './form-evaluacion.component.html',
@@ -52,6 +48,8 @@ export class FormEvaluacionComponent implements OnChanges, OnInit {
     @Input() opcionEvaluacion: string
     @Input() semana
     @Input() idDocCursoId
+    @Input() semanaEvaluacion
+    @Input() curso
 
     date = new Date()
     cursos = []
@@ -64,16 +62,11 @@ export class FormEvaluacionComponent implements OnChanges, OnInit {
         repository: false,
         image: false,
     }
-    params = {
-        iCursoId: 0,
-        iDocenteId: 0,
-        idDocCursoId: 0,
-    }
+
     showMostrarVista: 'FORM-EVALUACION' | 'LIST-PREGUNTAS' | 'FORM-PREGUNTAS' =
         'FORM-EVALUACION'
-    showModalListPreguntas: boolean = false
-    opcionModalPreguntas: string
-    tituloModalPreguntas: string
+    titulo: string
+
     formEvaluacion = this._FormBuilder.group({
         iEvaluacionId: [],
         iTipoEvalId: [],
@@ -109,57 +102,31 @@ export class FormEvaluacionComponent implements OnChanges, OnInit {
 
     ngOnInit() {
         this.obtenerTipoEvaluaciones()
-        this.obtenerRubricas()
         this.obtenerCursos()
     }
     ngOnChanges(changes) {
         if (changes.showModalEvaluacion?.currentValue) {
             this.showModalEvaluacion = changes.showModalEvaluacion.currentValue
         }
-        if (changes.semana?.currentValue) {
-            this.semana = changes.semana.currentValue
-            this.params.iCursoId = this.semana.iCursoId
-            this.params.iDocenteId = this._ConstantesService.iDocenteId
-            const curso = this.cursos.find(
-                (i) => i.iCursoId === this.semana.iCursoId
-            )
-            this.params.idDocCursoId = curso.idDocCursoId
+
+        if (changes.semanaEvaluacion?.currentValue) {
+            this.semanaEvaluacion = changes.semanaEvaluacion.currentValue
+        }
+        if (changes.curso?.currentValue) {
+            this.curso = changes.curso.currentValue
+        }
+        switch (this.showMostrarVista) {
+            case 'FORM-EVALUACION':
+                this.titulo =
+                    this.tituloEvaluacion +
+                    ' EVALUACIÓN: ' +
+                    this.curso?.cCursoNombre
+                break
         }
     }
     obtenerTipoEvaluaciones() {
         this._evaluacionService.obtenerTipoEvaluaciones().subscribe((data) => {
             this.tipoEvaluaciones = data
-        })
-    }
-    rubricas = [
-        {
-            iInstrumentoId: 0,
-            cInstrumentoNombre: 'Sin instrumento de evaluación',
-        },
-    ]
-
-    obtenerRubricas() {
-        const params = {
-            iDocenteId: this._ConstantesService.iDocenteId,
-        }
-        this._evaluacionService.obtenerRubricas(params).subscribe({
-            next: (data) => {
-                data.forEach((element) => {
-                    this.rubricas.push(element)
-                })
-            },
-        })
-    }
-
-    agregarRubrica() {
-        const header = 'Crear rúbrica'
-        const ref = this._DialogService.open(RubricaFormComponent, {
-            ...MODAL_CONFIG,
-            header,
-            data: {},
-        })
-        ref.onClose.pipe().subscribe(() => {
-            this.obtenerRubricas()
         })
     }
 
@@ -190,15 +157,12 @@ export class FormEvaluacionComponent implements OnChanges, OnInit {
         })
     }
 
-    accionRubrica(elemento): void {
-        if (!elemento) return
-        this.obtenerRubricas()
-    }
     accionBtn(elemento): void {
         const { accion } = elemento
         const { item } = elemento
         switch (accion) {
             case 'close-modal':
+                this.showMostrarVista = 'FORM-EVALUACION'
                 this.accionBtnItem.emit({ accion, item })
                 break
             case 'subir-file-evaluacion':
@@ -302,10 +266,8 @@ export class FormEvaluacionComponent implements OnChanges, OnInit {
             header: '¿Deseas agregar preguntas?',
             accept: () => {
                 this.showMostrarVista = 'LIST-PREGUNTAS'
-                this.showModalListPreguntas = true
-                this.opcionModalPreguntas = 'GUARDAR'
-                this.tituloModalPreguntas = 'AGREGAR PREGUNTAS'
-                // this.accionBtn({ accion: 'agregar-preguntas', item: [] })
+                this.titulo =
+                    'AGREGAR PREGUNTAS PARA: ' + this.curso?.cCursoNombre
             },
         })
     }

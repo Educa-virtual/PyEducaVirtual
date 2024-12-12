@@ -4,7 +4,7 @@ import { ContainerPageComponent } from '@/app/shared/container-page/container-pa
 import {
     TablePrimengComponent,
     IColumn,
-    //IActionTable,
+    IActionTable,
 } from '@/app/shared/table-primeng/table-primeng.component'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import {
@@ -114,6 +114,9 @@ export class TabResultadosComponent implements OnInit {
         cDetMatrConclusionDesc1: ['', [Validators.required]],
         iEscalaCalifIdPeriodo1: ['', [Validators.required]],
     })
+    public conclusionDescrp: FormGroup = this._formBuilder.group({
+        cDetMatConclusionDescPromedio: ['', [Validators.required]],
+    })
     constructor(private messageService: MessageService) {}
     //Campos de la tabla para mostrar notas
     public columnasTabla: IColumn[] = [
@@ -173,31 +176,24 @@ export class TabResultadosComponent implements OnInit {
             text_header: 'left',
             text: 'left',
         },
-        // {
-        //     type: 'actions',
-        //     width: '1rem',
-        //     field: '',
-        //     header: 'Acciones',
-        //     text_header: 'left',
-        //     text: 'left',
-        // },
+        {
+            type: 'actions',
+            width: '1rem',
+            field: '',
+            header: 'Acciones',
+            text_header: 'left',
+            text: 'left',
+        },
     ]
-    // public accionesTabla: IActionTable[] = [
-    //     {
-    //         labelTooltip: 'Eliminar',
-    //         icon: 'pi pi-trash',
-    //         accion: 'eliminar',
-    //         type: 'item',
-    //         class: 'p-button-rounded p-button-danger p-button-text',
-    //     },
-    //     {
-    //         labelTooltip: 'Editar',
-    //         icon: 'pi pi-pencil',
-    //         accion: 'editar',
-    //         type: 'item',
-    //         class: 'p-button-rounded p-button-warning p-button-text',
-    //     },
-    // ]
+    public accionesTabla: IActionTable[] = [
+        {
+            labelTooltip: 'Agregar Conclusión descriptiva',
+            icon: 'pi pi-cog',
+            accion: 'agregarConclusion',
+            type: 'item',
+            class: 'p-button-rounded p-button-danger p-button-text',
+        },
+    ]
     // Inicializamos
     ngOnInit() {
         this.obtenerIdPerfil()
@@ -206,6 +202,17 @@ export class TabResultadosComponent implements OnInit {
         this.obtenerReporteDenotasFinales()
         this.habilitarCalificacion()
     }
+    mostrarModalConclusionDesc: boolean = false
+    accionBnt({ accion, item }): void {
+        switch (accion) {
+            case 'agregarConclusion':
+                this.mostrarModalConclusionDesc = true
+                this.estudianteSelect = item
+                console.log('Agregar descripcion', accion, item)
+                break
+        }
+    }
+    //obtener los perfiles
     obtenerIdPerfil() {
         this.iEstudianteId = this._constantesService.iEstudianteId
         this.iPerfilId = this._constantesService.iPerfilId
@@ -257,25 +264,19 @@ export class TabResultadosComponent implements OnInit {
         //console.log('Unidad Seleccionada', item)
         console.log('Indice de la Unidad', idx)
     }
-    // selectUnidad(event: Event): void {
-    //     // (event.target as HTMLButtonElement).value
-    //     const buttonValue = (event.target as HTMLButtonElement).value
-    //     this.unidad = buttonValue
-
-    //     //console.log('indice de la unidad', idx)
-
-    //     console.log('Evento', buttonValue)
-    // }
-
     // muestra las notas del curso
     reporteNotasFinales: any[] = []
+
     obtenerReporteDenotasFinales() {
         const userId = 1
         this._aulaService
             .obtenerReporteFinalDeNotas(userId)
             .subscribe((Data) => {
                 this.reporteNotasFinales = Data['data']
-                //console.log('Mostrar notas finales', this.reporteNotasFinales)
+                // Mapear las calificaciones en letras a reporteNotasFinales
+                console.log('Mostrar notas finales', this.reporteNotasFinales)
+                this.calificacion
+                console.log(this.calificacion)
             })
     }
     //guardar la calificación y conclusión descriptiva del docente para los promedios finales

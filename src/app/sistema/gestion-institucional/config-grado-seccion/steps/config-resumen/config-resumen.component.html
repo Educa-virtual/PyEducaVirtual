@@ -6,4 +6,68 @@
     <div class="card">
         <p-steps [model]="items" [readonly]="false"></p-steps>
     </div>
+    <div class="card">
+        <div class="grid p-fluid mt-2 card-container">
+            <div class="field col-12 md:col-12">
+                <h1>
+                    Resumen configuración para grados y secciones de la IE 2024
+                </h1>
+            </div>
+
+            <div class="field col-12 md:col-6">
+                <p>Modelo de servicio educativo: JORNADA ESCOLAR REGULAR</p>
+                <p>Educación Intercultural Bilingüe:</p>
+                <p>
+                    Ambientes de la I.E.: 4 Aulas habilitadas y 0 ambientes de
+                    otro tipo
+                </p>
+                <h2>Grados y secciones</h2>
+                <app-table-primeng
+                    [columnas]="columns"
+                    [data]="nivelesCiclos"
+                    [showCaption]="false"
+                    [showPaginator]="false"
+                    (accionBtnItem)="accionBtnItemTable($event)"
+                    [(selectedRowData)]="accionBtnItemTable"
+                    [actions]="actions"
+                >
+                    <!-- <ng-container slot="caption-content"> </ng-container> -->
+                </app-table-primeng>
+            </div>
+            <div class="field col-12 md:col-6">
+                <p>Horas de clase semanas: 40 hrs</p>
+                <p>Total Docentes: 2 Docentes</p>
+                <p>Docentes sin asignación de secciones: 0 docentes</p>
+
+                <p-table
+                    [value]="groupedData"
+                    [responsiveLayout]="'scroll'"
+                    styleClass="p-datatable-sm"
+                >
+                    <!-- Cabecera personalizada -->
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>Asignatura</th>
+                            <th>Tipo de Nivel</th>
+                            <th *ngFor="let grado of dynamicColumns">
+                                {{ grado }}
+                            </th>
+                        </tr>
+                    </ng-template>
+
+                    <!-- Filas dinámicas -->
+                    <ng-template pTemplate="body" let-rowData>
+                        <tr>
+                            <td>{{ rowData.cCursoNombre }}</td>
+                            <td>{{ rowData.cNivelTipoNombre }}</td>
+
+                            <td *ngFor="let grado of dynamicColumns">
+                                {{ rowData.grades[grado] || '-' }}
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+        </div>
+    </div>
 </app-container-page>

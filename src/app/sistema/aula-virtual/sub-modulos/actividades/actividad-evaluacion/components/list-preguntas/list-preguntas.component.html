@@ -1,45 +1,81 @@
-<app-modal-primeng
-    [title]="tituloModalPreguntas"
-    [showModal]="showModal"
-    [width]="'70%'"
->
-    <div class="grid mt-4">
-        <div class="col-12 md:col-9">
-            <h3 class="m-0 text-uppercase text-primary">
-                {{ data.cEvaluacionTitulo }}
-            </h3>
-        </div>
-        <div class="col-12 md:col-3" align="right">
-            <button
-                pButton
-                class="p-button-primary gap-2"
-                (click)="menuAgregacionPreguntas.toggle($event)"
-            >
-                <i class="pi pi-plus"></i>
-                <span class="text-md">Agregar Preguntas</span>
-            </button>
-        </div>
-        <div class="col-12 mt-5" align="center">
-            <img
-                src="assets/images/icons/preguntas.gif"
-                alt="logo"
-                width="10%"
-            />
-            <h4 class="font-bold">
-                Utilice este espacio para crear su examen.
-            </h4>
-            <h5>
-                Al agregar pregunta, escoje si la pregunta tiene enunciado, sin
-                enunciado o banco de preguntas
-            </h5>
-        </div>
+<div class="grid mt-4">
+    <div class="col-12 md:col-8">
+        <h4 class="m-0 text-uppercase text-primary">
+            Nombre de la Evaluación:{{ data.cEvaluacionTitulo }}
+        </h4>
     </div>
-</app-modal-primeng>
+    <div class="col-12 md:col-4" align="right">
+        <button
+            pButton
+            class="p-button-primary gap-2"
+            (click)="menuAgregacionPreguntas.toggle($event)"
+        >
+            <i class="pi pi-plus"></i>
+            <span class="text-md">Agregar Preguntas</span>
+        </button>
+    </div>
+    <div class="col-12 mt-5" align="center">
+        <img src="assets/images/icons/preguntas.gif" alt="logo" width="20%" />
+        <h4 class="font-bold">Utilice este espacio para crear su examen.</h4>
+        <h5>
+            Al agregar pregunta, escoje si la pregunta tiene enunciado, sin
+            enunciado o banco de preguntas
+        </h5>
+    </div>
+</div>
 
 <p-menu
     #menuAgregacionPreguntas
     [popup]="true"
     [model]="tiposAgrecacionPregunta"
     appendTo="body"
+    styleClass="w-29rem"
 >
 </p-menu>
+
+<p-dialog
+    #dialogBancoPreguntas
+    [header]="'Agregar Preguntas del Banco de preguntas'"
+    [modal]="true"
+    [(visible)]="showModalBancoPreguntas"
+    [position]="'top'"
+    [maximizable]="true"
+    [style]="{ width: '100%' }"
+>
+    @defer (when showModalBancoPreguntas) {
+        <!-- las preguntas seleccionadas -->
+        <app-aula-banco-preguntas
+            [mode]="'SELECTION'"
+            [iEvaluacionId]="data.iEvaluacionId"
+            [iCursoId]="data.iCursoId"
+            (selectedRowDataChange)="selectedRowDataChange($event)"
+        />
+    }
+
+    <div class="flex justify-content-end gap-2 pt-3">
+        <button
+            pButton
+            pRipple
+            label="Cancelar"
+            icon="pi pi-times"
+            class="p-button-secondary"
+            type="button"
+            size="small"
+        ></button>
+        <button
+            pButton
+            pRipple
+            label="Agregar preguntas seleccionadas"
+            icon="pi pi-check"
+            size="small"
+            class="p-button-primary"
+        ></button>
+    </div>
+</p-dialog>
+
+<app-preguntas-form
+    [cEvaluacionTitulo]="data.cEvaluacionTitulo"
+    [showModalPreguntas]="showModalPreguntas"
+    [showEncabezado]="showEncabezado"
+    (accionBtnItem)="accionBtn($event)"
+></app-preguntas-form>

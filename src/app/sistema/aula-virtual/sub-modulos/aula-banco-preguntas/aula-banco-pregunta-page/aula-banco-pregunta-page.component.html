@@ -31,8 +31,9 @@
                 <button
                     pButton
                     class="p-button-primary gap-2"
-                    (click)="menuAgregacionPreguntas.toggle($event)"
                     size="small"
+                    (click)="agregarPreguntas()"
+                    [disabled]="params.iCursoId === 0"
                 >
                     <i class="pi pi-plus"></i>
                     <span class="text-md">Agregar Preguntas</span>

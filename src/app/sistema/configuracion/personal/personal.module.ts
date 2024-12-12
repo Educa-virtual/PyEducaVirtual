@@ -45,16 +45,18 @@ import { AsignacionAreasComponent } from './registro/steps/asignacion-areas/asig
                     {
                         path: 'administrar',
                         component: viewPersonal,
-                        children: [
-                            { path: '', component: viewPersonal}
-                        ]
+                        children: [{ path: '', component: viewPersonal }],
                     },
                     {
                         path: 'registro',
                         component: RegistroComponent,
                         children: [
-                            { path: '', redirectTo: 'datos-personales', pathMatch: 'full' },
-                            
+                            {
+                                path: '',
+                                redirectTo: 'datos-personales',
+                                pathMatch: 'full',
+                            },
+
                             {
                                 path: 'datos-personales',
                                 component: DatosPersonalesComponent,

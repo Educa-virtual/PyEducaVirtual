@@ -68,15 +68,13 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     backend = environment.backend
 
     getClass(rowData: any, classes: string): { [key: string]: boolean } {
-        const fieldValue = rowData[classes];
-        if(classes){
-        return { [String(fieldValue)]: !!fieldValue }; // Convertir a string y asegurarse de que sea un valor booleano.
+        const fieldValue = rowData[classes]
+        if (classes) {
+            return { [String(fieldValue)]: !!fieldValue } // Convertir a string y asegurarse de que sea un valor booleano.
         } else {
             return undefined
         }
-
-      }
-    
+    }
 
     @Output() accionBtnItem: EventEmitter<{ accion: any; item: any }> =
         new EventEmitter()
@@ -154,11 +152,10 @@ export class TablePrimengComponent implements OnChanges, OnInit {
             this._columnas = value.map((column) => ({
                 ...column,
                 selected: true,
-            }));
+            }))
         } else {
-            this._columnas = []; // Valor predeterminado en caso de undefined
+            this._columnas = [] // Valor predeterminado en caso de undefined
         }
-    
     }
 
     get columnas(): IColumn[] {

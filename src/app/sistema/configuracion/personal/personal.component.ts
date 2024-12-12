@@ -1,4 +1,4 @@
-import { Component, OnInit, OnChanges, OnDestroy } from '@angular/core'
+import { Component, OnInit, OnDestroy } from '@angular/core'
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
 
@@ -21,11 +21,18 @@ import { ToastModule } from 'primeng/toast'
     styleUrl: './personal.component.scss',
     providers: [StepConfirmationService, ConfirmationService, MessageService],
 })
-export class PersonalComponent implements OnInit, OnChanges, OnDestroy {
+export class PersonalComponent implements OnInit, OnDestroy {
     constructor(private router: Router) {}
-    ngOnInit() {}
+    ngOnDestroy(): void {
+        throw new Error('Method not implemented.')
+    }
 
-    ngOnChanges(changes) {}
+    ngOnInit(): void {
+        throw new Error('Method not implemented.')
+    }
+    // ngOnInit() {}
 
-    ngOnDestroy() {}
+    // ngOnChanges(changes) {}
+
+    // ngOnDestroy() {}
 }

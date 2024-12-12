@@ -1,6 +1,8 @@
 <div class="flex flex-column">
     @if (rubricaForm) {
         <app-rubrica-form-header
+            [mode] = "_config.data.mode"
+            [rubricas]="rubricas"
             [rubricaForm]="rubricaForm"
         ></app-rubrica-form-header>
         <app-rubrica-form-criterios

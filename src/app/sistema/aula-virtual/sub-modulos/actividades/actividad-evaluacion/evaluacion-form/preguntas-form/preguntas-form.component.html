@@ -2,38 +2,15 @@
     [title]="'Nueva Pregunta'"
     [showModal]="showModalPreguntas"
     (accionBtnItem)="accionBtn($event)"
-    width="980px"
+    [width]="'98%'"
 >
     <div class="grid mt-4">
-        <div class="col-12 md:col-4 align-self-center">
-            <div class="flex justify-content-between">
-                ¿Deseas que tenga encabezado? &nbsp;&nbsp;
-                <p-inputSwitch />
-            </div>
+        <div class="col-12">
+            <h4 class="m-0 text-uppercase text-primary">
+                Nombre de la Evaluación: {{ cEvaluacionTitulo }}
+            </h4>
         </div>
-        <div class="col-12 md:col-4">
-            <p-inputGroup>
-                <p-inputGroupAddon>
-                    <i class="pi pi-upload" style="color: #333437"></i>
-                </p-inputGroupAddon>
-                <input
-                    type="text"
-                    pInputText
-                    placeholder="Subir Pdf"
-                    disabled
-                    class="w-full p-inputtext-sm opacity-100"
-                    pInputText
-                />
-            </p-inputGroup>
-        </div>
-        <div class="col-9">
-            <h3>Pregunta</h3>
-        </div>
-        <div class="col-3 flex align-items-center justify-content-end">
-            <button pButton pRipple type="button" class="p-button-primary">
-                <i class="pi pi-plus"></i>&nbsp; Guardar Pregunta
-            </button>
-        </div>
+
         <div class="col-12 md:col-5">
             <p-inputGroup>
                 <p-inputGroupAddon>Tipo de Pregunta</p-inputGroupAddon>
@@ -47,43 +24,104 @@
                 />
             </p-inputGroup>
         </div>
-        <div class="col-12 md:col-3">
+        <div class="col-12 md:col-2">
             <p-inputGroup>
                 <p-inputGroupAddon>Peso</p-inputGroupAddon>
                 <input pInputText styleClass="w-full" placeholder="Ingrese" />
             </p-inputGroup>
         </div>
+        @if (showEncabezado) {
+            <div class="col-12 md:col-5">
+                <p-inputGroup>
+                    <p-inputGroupAddon>
+                        <i class="pi pi-link" style="color: #333437"></i>
+                    </p-inputGroupAddon>
+                    <input
+                        type="text"
+                        pInputText
+                        placeholder="Nombre del Enunciado"
+                        disabled
+                        class="w-full p-inputtext-sm opacity-100"
+                        pInputText
+                    />
+                    <button
+                        pButton
+                        pRipple
+                        type="button"
+                        severity="primary"
+                        class="p-button-primary btn-file-image"
+                    >
+                        <i class="pi pi-upload"></i
+                        ><input type="file" accept=".pdf " />
+                    </button>
+                    <button
+                        type="button"
+                        pButton
+                        icon="pi pi-eye"
+                        class="p-button-info"
+                    >
+                        &nbsp;
+                    </button>
+                </p-inputGroup>
+            </div>
+        }
         <div class="col-12">
             <p-editor
                 styleClass="w-full"
                 [style]="{ height: '120px' }"
-                placeholder="Ingrese el nombre del enunciado"
+                placeholder="Ingrese enunciado de la pregunta"
             />
         </div>
-        <div class="col-8">
-            <label for="" class="mt-1"
-                >Alternativas - elija al menos una respuesta correcta</label
-            >
-            <div class="mt-2">
-                <p-editor
-                    styleClass="w-full"
-                    [style]="{ height: '120px' }"
-                    placeholder="Ingrese la alternativa"
-                />
-            </div>
+        <div class="col-12">
+            <p-editor
+                styleClass="w-full"
+                [style]="{ height: '120px' }"
+                placeholder="Ingrese el texto de ayuda"
+            />
         </div>
-        <div class="col-4 align-self-center">
-            <div class="flex justify-content-between">
-                ¿Es Respuesta correcta? &nbsp;&nbsp;
-                <p-inputSwitch />
-            </div>
-            <div class="flex justify-content-center mt-2">
-                <button pButton pRipple type="button" class="p-button-primary">
-                    <i class="pi pi-check"></i>&nbsp; Añadir
-                </button>
-            </div>
-        </div>
-        <div class="col-12"></div>
+        @switch (iTipoPreguntaId) {
+            @case (1) {
+                <div class="col-8">
+                    <label for="" class="mt-1"
+                        >Alternativas - elija al menos una respuesta
+                        correcta</label
+                    >
+                    <div class="mt-2">
+                        <p-editor
+                            styleClass="w-full"
+                            [style]="{ height: '120px' }"
+                            placeholder="Ingrese la alternativa"
+                        />
+                    </div>
+                </div>
+                <div class="col-4 align-self-center">
+                    <div class="flex justify-content-between">
+                        ¿Es Respuesta correcta? &nbsp;&nbsp;
+                        <p-inputSwitch />
+                    </div>
+                    <div class="flex justify-content-center mt-2">
+                        <button
+                            pButton
+                            pRipple
+                            type="button"
+                            class="p-button-primary"
+                        >
+                            <i class="pi pi-check"></i>&nbsp; Añadir alternativa
+                        </button>
+                    </div>
+                </div>
+                <div class="col-12"></div>
+            }
+            @case (2) {}
+        }
+    </div>
+    <div footer class="flex justify-content-end gap-2">
+        <p-button
+            label="Cancelar"
+            severity="secondary"
+            (onClick)="accionBtn({ accion: 'close-modal', item: [] })"
+        />
+        <p-button [label]="'Guardar Pregunta'" />
     </div>
 
     <!-- <p-steps

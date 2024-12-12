@@ -93,6 +93,7 @@ export class ConfigComponent implements OnInit {
     }
     ngOnInit(): void {
         const url = this.query.baseUrlPublic()
+        console.log(this.configuracion, 'this.configuracion')
         try {
             this.form = this.fb.group({
                 iConfigId: [this.configuracion[0].iConfigId], // tabla acad.configuraciones
@@ -313,7 +314,7 @@ export class ConfigComponent implements OnInit {
         {
             labelTooltip: 'Retornar',
             text: 'Retornar',
-            icon: 'pi pi-plus',
+            icon: 'pi pi-arrow-circle-left',
             accion: 'retornar',
             class: 'p-button-warning',
         },

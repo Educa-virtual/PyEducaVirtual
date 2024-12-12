@@ -109,9 +109,9 @@ export class PeriodosAcademicosComponent implements OnInit {
 
     async canDeactivate(): Promise<boolean> {
         if (this.hasUnsavedChanges) {
-            return true;
+            return true
         }
-    
+
         const confirm = await this.stepConfirmationService.confirmAction(
             {},
             {
@@ -130,8 +130,8 @@ export class PeriodosAcademicosComponent implements OnInit {
                     life: 3000,
                 },
             }
-        );
-        return confirm;
+        )
+        return confirm
     }
 
     async setFasesPromocionales() {

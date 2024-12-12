@@ -31,7 +31,7 @@ export class FullCalendarioComponent implements OnChanges {
     @Input() events
 
     activarIndice: number | number[] = [] //activa las pestañas de p-according
-    ngOnInit() {
+    OnInit() {
         window.addEventListener('resize', this.verificarDimension.bind(this))
     }
     ngOnChanges(changes: SimpleChanges): void {

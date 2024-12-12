@@ -12,6 +12,8 @@ import { PrimengModule } from '@/app/primeng.module'
 import { UserAccountComponent } from './roles-dropdown/user-account/user-account.component'
 import { GeneralService } from '@/app/servicios/general.service'
 import { MessageService } from 'primeng/api'
+import { NgIcon, NgIconComponent, provideIcons } from '@ng-icons/core'
+import { mat10k } from '@ng-icons/material-icons/baseline'
 
 @Component({
     selector: 'app-topbar',
@@ -26,8 +28,11 @@ import { MessageService } from 'primeng/api'
         AnioEscolarComponent,
         UserAccountComponent,
         PrimengModule,
+        NgIconComponent,
+        NgIcon,
     ],
     styleUrl: './app.topbar.component.scss',
+    viewProviders: [provideIcons({ mat10k })],
 })
 export class AppTopBarComponent implements OnInit {
     private _GeneralService = inject(GeneralService)

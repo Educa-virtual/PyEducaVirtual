@@ -120,7 +120,6 @@ export class BancoPreguntasFormContainerComponent implements OnInit {
                 'Insertando datos en el desempeño:',
                 this.recibirPayloadForms
             )
-
             // Llamar al servicio para insertar en la tabla "desempeños"
             this._apiEre
                 .insertarMatrizDesempeno(this.recibirPayloadForms) // Paso 1: Insertar desempeño
@@ -128,9 +127,8 @@ export class BancoPreguntasFormContainerComponent implements OnInit {
                     takeUntil(this.unsubscribe$), // Limpiar suscripciones
                     switchMap((resp: any) => {
                         // Extraer el ID generado
-                        const iiDesempenoId = resp?.data?.iDesempenoId
-
-                        console.log('ID de Desempeño recibido:', iiDesempenoId)
+                        const iiDesempenoId = resp?.iDesempenoId
+                        console.log('ID generado:', iiDesempenoId)
 
                         // Validar que el ID exista
                         if (!iiDesempenoId) {
@@ -147,9 +145,10 @@ export class BancoPreguntasFormContainerComponent implements OnInit {
 
                         // Agregar el iDesempenoId al objeto `data` recibido
                         data.iDesempenoId = iiiDesempenoId
-                        data.iCursoId = 1 // Valores adicionales
+                        //data.iCursoId = 3 // Valores adicionales
+                        data.iCursosNivelGradId = 2
                         data.iNivelGradoId = 1
-                        data.iEspecialistaId = 1
+                        data.iEspecialistaId = 2
 
                         console.log(
                             'Datos listos para guardar preguntas:',

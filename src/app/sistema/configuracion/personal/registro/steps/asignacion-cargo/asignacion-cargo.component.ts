@@ -1,4 +1,4 @@
-import { Component, OnInit, OnChanges, OnDestroy } from '@angular/core'
+import { Component, OnInit } from '@angular/core'
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
 
@@ -18,12 +18,9 @@ export class AsignacionCargoComponent implements OnInit {
     fechasAcademicas
 
     @Output() emitMode = new EventEmitter()
-    constructor(
-        private router: Router,
-    ) {}
-
+    constructor(private router: Router) {}
     ngOnInit(): void {
-        
+        throw new Error('Method not implemented.')
     }
 
     actionsContainer = [
@@ -46,7 +43,6 @@ export class AsignacionCargoComponent implements OnInit {
             },
             editar: () => {
                 // Lógica para la acción "editar"
-                
             },
             eliminar: () => {
                 // Lógica para la acción "eliminar"
@@ -126,7 +122,6 @@ export class AsignacionCargoComponent implements OnInit {
     ]
 
     navigateToRegistro() {
-  
         this.router.navigate(['configuracion/configuracion/registro'])
     }
 

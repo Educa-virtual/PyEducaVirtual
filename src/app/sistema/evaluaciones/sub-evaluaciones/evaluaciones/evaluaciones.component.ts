@@ -129,7 +129,7 @@ export class EvaluacionesComponent implements OnInit {
     }
     accionesPrincipal: IActionContainer[] = [
         {
-            labelTooltip: 'Agregar evaluación',
+            labelTooltip: 'Agregar evaluacións',
             text: 'Agregar Evaluación',
             icon: 'pi pi-plus',
             accion: 'seleccionar',
@@ -219,13 +219,13 @@ export class EvaluacionesComponent implements OnInit {
             type: 'item',
             class: 'p-button-rounded p-button-warning p-button-text',
         },
-        {
-            labelTooltip: 'DescargarMatriz', //!Se consulta de aqui
-            icon: 'pi pi-file-export',
-            accion: 'DescargarMatriz',
-            type: 'item',
-            class: 'p-button-rounded p-button-warning p-button-text',
-        },
+        // {
+        //     labelTooltip: 'DescargarMatriz', //!Se consulta de aqui
+        //     icon: 'pi pi-file-export',
+        //     accion: 'DescargarMatriz',
+        //     type: 'item',
+        //     class: 'p-button-rounded p-button-warning p-button-text',
+        // },
     ]
     caption: any
     formCapas: any
@@ -316,86 +316,76 @@ export class EvaluacionesComponent implements OnInit {
 
         if (accion === 'ver') {
             this.compartirIdEvaluacionService.iEvaluacionId = item.iEvaluacionId
-            //alert(this.compartirIdEvaluacionService.iEvaluacionId)
             this.verEreEvaluacion(item)
-            // this.eliminarPregunta(item)
         }
         if (accion === 'agregar') {
-            // this.selectedItems = []
-            // this.selectedItems = [item]
             this.opcion = 'seleccionar'
-
             this.caption = 'Seleccionar configuración'
             this.visible = true
-            // this.asignarPreguntas()
         }
         if (accion === 'actualizar') {
-            // Aquí se puede invocar el método de actualización de los datos
             this.actualizarDatos(item)
         }
         if (accion === 'BancoPreguntas') {
-            console.log('Acción BancoPreguntas ->', accion)
-            const _iEvaluacionIdtoBancoPreguntas =
-                (this.compartirIdEvaluacionService.iEvaluacionId =
-                    item.iEvaluacionId)
-            const _nombreEvaluacion = item.cEvaluacionNombre
-            console.log(
-                'iEvaluacionId antes de navegar:',
-                _iEvaluacionIdtoBancoPreguntas
-            ) // Aquí verificamos el valor de iEvaluacionId
-
-            this.router.navigate(['/evaluaciones/areas'], {
-                queryParams: {
-                    iEvaluacionId: _iEvaluacionIdtoBancoPreguntas,
-                    nombreEvaluacion: _nombreEvaluacion,
-                },
-            })
+            // Usar el servicio para almacenar los datos
+            this.compartirFormularioEvaluacionService.setcEvaluacionNombre(
+                item.cEvaluacionNombre
+            )
+            // Enviar el IevaluacionId
+            this.compartirIdEvaluacionService.iEvaluacionId = item.iEvaluacionId
+            // Navegar a la página de destino sin pasar parámetros en la URL
+            this.router.navigate(['/evaluaciones/areas'])
         }
         if (accion === 'DescargarMatriz') {
-            // const _iEvaluacionIdtoMatriz = item.iEvaluacionId
-            // alert(_iEvaluacionIdtoMatriz)
-            // //this.generarPdfMatrizbyEvaluacionId(_iEvaluacionIdtoMatriz)
-            // this._apiEre.generarPdfMatrizbyEvaluacionId(_iEvaluacionIdtoMatriz)
-
-            const _iEvaluacionIdtoMatriz = item.iEvaluacionId
-
-            this._apiEre
-                .generarPdfMatrizbyEvaluacionId(_iEvaluacionIdtoMatriz)
-                .subscribe(
-                    (response) => {
-                        if (response.status === 'success') {
-                            alert(response.message) // Mostrar el mensaje de Laravel
-                        } else {
-                            alert('Hubo un error: ' + response.message)
-                        }
-                    },
-                    (error) => {
-                        console.error(
-                            'Error al comunicarse con el backend:',
-                            error
-                        )
-                    }
-                )
+            // Llamada a la función generarPdfMatriz
+            //const _iEvaluacionIdtoMatriz = item.iEvaluacionId
+            //this.generarPdfMatriz(_iEvaluacionIdtoMatriz)
         }
     }
+    //!MATRIZ
+    /**
+     * Función que genera y descarga un PDF de la matriz de evaluación correspondiente a un ID de evaluación.
+     *
+     * Esta función se comunica con el backend (API) para generar un PDF basado en el ID de evaluación proporcionado.
+     * Si la generación del PDF es exitosa, inicia la descarga del archivo PDF. Si ocurre un error, muestra un mensaje
+     * de error indicando la razón.
+     *
+     * @param {number} iEvaluacionId - El ID de la evaluación para la cual se generará la matriz PDF.
+     */
+    // generarPdfMatriz(iEvaluacionId: number) {
+    //     // Llamada al backend para generar el PDF de la matriz
+    //     this._apiEre.generarPdfMatrizbyEvaluacionId(iEvaluacionId).subscribe(
+    //         (response) => {
+    //             console.log('Respuesta de Laravel:', response)
 
-    // verEreEvaluacion(evaluacion) {
-    //     //alert('iEvaluacionId' + evaluacion.iEvaluacionId)
-    //     const refModal = this._dialogService.open(EvaluacionesFormComponent, {
-    //         ...MODAL_CONFIG,
-    //         data: {
-    //             accion: 'ver',
-    //             evaluacion: evaluacion,
+    //             // Se muestra un mensaje indicando que la descarga de la matriz ha comenzado
+    //             this._MessageService.add({
+    //                 severity: 'success',
+    //                 detail: 'Comienza la descarga de la Matriz',
+    //             })
+
+    //             // Se crea un enlace de descarga para el archivo PDF generado
+    //             const blob = response as Blob // Asegúrate de que la respuesta sea un Blob
+    //             const link = document.createElement('a')
+    //             link.href = URL.createObjectURL(blob)
+    //             link.download = 'matriz_evaluacion.pdf' // Nombre del archivo descargado
+    //             link.click()
     //         },
-    //         header: 'Ver evaluacion',
-    //     })
+    //         (error) => {
+    //             // En caso de error, se determina el mensaje de error a mostrar
+    //             const errorMessage =
+    //                 error?.message ||
+    //                 'No hay datos suficientes para descargar la Matriz'
 
-    //     refModal.onClose.subscribe((result) => {
-    //         if (result) {
-    //             this.obtenerEvaluacion() // Vuelve a obtener la evaluación si se realizó algún cambio
+    //             // Se muestra un mensaje de error en el sistema
+    //             this._MessageService.add({
+    //                 severity: 'success', // Se cambió a "error" ya que es un fallo
+    //                 detail: errorMessage,
+    //             })
     //         }
-    //     })
+    //     )
     // }
+
     verEreEvaluacion(evaluacion) {
         // Obtener el nombre de la evaluación
         const nombreEvaluacion =
@@ -423,25 +413,6 @@ export class EvaluacionesComponent implements OnInit {
             }
         })
     }
-    // obtenerEvaluacion() {
-    //     this._apiEre
-    //         .obtenerEvaluacion(this.params)
-    //         .pipe(takeUntil(this.unsubscribe$))
-    //         .subscribe({
-    //             next: (resp: unknown) => {
-    //                 // Mostrar toda la respuesta
-    //                 console.log(
-    //                     'Respuesta completa de obtenerEvaluacion:',
-    //                     resp
-    //                 )
-    //                 this.data = resp['data']
-    //                 console.log(
-    //                     'Información de la función ObtenerEvaluacion:',
-    //                     this.data
-    //                 )
-    //             },
-    //         })
-    // }
     obtenerEvaluacion() {
         // Realizar la solicitud a la API con los parámetros actuales
         this._apiEre
@@ -478,110 +449,6 @@ export class EvaluacionesComponent implements OnInit {
                 },
             })
     }
-
-    // abrir el modal para agregar una nueva pregunta
-    // agregarEditarPregunta(evaluacion) {
-    //     const accion = evaluacion?.iEvaluacionId ? 'editar' : 'nuevo'
-    //     //!Agrego el nombre del servicio
-    //     // Obtener el nombre de la evaluación desde el servicio
-    //     // const nombreEvaluacion =
-    //     //     this.compartirFormularioEvaluacionService.getcEvaluacionNombre() ||
-    //     //     'Nueva Evaluación'
-
-    //     //!Agrego el nombre del servicio
-    //     const header =
-    //         accion === 'nuevo' ? 'Nueva evaluación ' : 'Editar evaluación'
-
-    //     // const header =
-    //     //     accion === 'nuevo' ? `${nombreEvaluacion}` : `Editar evaluación`
-
-    //     const refModal = this._dialogService.open(EvaluacionesFormComponent, {
-    //         ...MODAL_CONFIG,
-    //         data: {
-    //             accion: accion,
-    //             evaluacion: evaluacion,
-    //         },
-    //         header: header,
-    //     })
-    //     console.log('MODAL DE AGREGAR EDITAR PREGUNTA', refModal)
-    //     refModal.onClose.subscribe((result) => {
-    //         if (result) {
-    //             this.obtenerEvaluacion()
-    //         }
-    //     })
-    // }
-
-    // agregarEditarPregunta(evaluacion) {
-    //     const accion = evaluacion?.iEvaluacionId ? 'editar' : 'nuevo'
-
-    //     // Si es una evaluación nueva, obtener el nombre del servicio compartido
-    //     const nombreEvaluacion =
-    //         accion === 'nuevo'
-    //             ? this.compartirFormularioEvaluacionService.getcEvaluacionNombre() ||
-    //               'Nueva Evaluación'
-    //             : evaluacion?.cEvaluacionNombre || 'Editar Evaluación'
-
-    //     // Construir el header dinámico
-    //     const header =
-    //         accion === 'nuevo'
-    //             ? `Nueva evaluación:`
-    //             : `Editar evaluación: ${nombreEvaluacion}`
-
-    //     // Abrir el modal con el header dinámico
-    //     const refModal = this._dialogService.open(EvaluacionesFormComponent, {
-    //         ...MODAL_CONFIG,
-    //         data: {
-    //             accion: accion,
-    //             evaluacion: evaluacion,
-    //         },
-    //         header: header, // Aquí asignamos el header con el nombre
-    //     })
-
-    //     console.log('MODAL DE AGREGAR EDITAR PREGUNTA', refModal)
-
-    //     // Suscribirse al cierre del modal para actualizar las evaluaciones
-    //     refModal.onClose.subscribe((result) => {
-    //         if (result) {
-    //             this.obtenerEvaluacion() // Actualizar la lista de evaluaciones después de cerrar el modal
-    //         }
-    //     })
-    // }
-
-    // agregarEditarPregunta(evaluacion) {
-    //     // Determina si la acción es 'nuevo' o 'editar'
-    //     const accion = evaluacion?.iEvaluacionId ? 'editar' : 'nuevo'
-    //     const nombreEvaluacion =
-    //         accion === 'nuevo'
-    //             ? this.compartirFormularioEvaluacionService.getcEvaluacionNombre() ||
-    //               'Nueva Evaluación'
-    //             : evaluacion?.cEvaluacionNombre || 'Editar Evaluación'
-
-    //     // Construir el header dinámico
-    //     const header =
-    //         accion === 'nuevo'
-    //             ? `Nueva evaluación: ${nombreEvaluacion}`
-    //             : `Editar evaluación: ${nombreEvaluacion}`
-
-    //     // Abre el modal con el header dinámico y los datos correspondientes
-    //     const refModal = this._dialogService.open(EvaluacionesFormComponent, {
-    //         ...MODAL_CONFIG,
-    //         data: {
-    //             accion: accion, // Acción (nuevo o editar)
-    //             evaluacion: evaluacion, // Datos de la evaluación a editar (si existe)
-    //         },
-    //         header: header, // Aquí asignamos el header dinámico
-    //     })
-
-    //     console.log('MODAL DE AGREGAR EDITAR PREGUNTA', refModal)
-
-    //     // Suscribirse al cierre del modal para actualizar las evaluaciones
-    //     refModal.onClose.subscribe((result) => {
-    //         if (result) {
-    //             this.obtenerEvaluacion() // Actualizar la lista de evaluaciones después de cerrar el modal
-    //         }
-    //     })
-    // }
-
     agregarEditarPregunta(evaluacion) {
         // Determina si la acción es 'nuevo' o 'editar'
         const accion = evaluacion?.iEvaluacionId ? 'editar' : 'nuevo'
@@ -590,31 +457,20 @@ export class EvaluacionesComponent implements OnInit {
         let nombreEvaluacion: string
 
         if (accion === 'nuevo') {
-            // // Para el caso 'nuevo', obtenemos el nombre desde el servicio o asignamos un valor por defecto
-            // nombreEvaluacion =
-            //     this.compartirFormularioEvaluacionService.getcEvaluacionNombre() ||
-            //     'Nueva Evaluación'
-
-            // // Depuramos el nombre para ver qué está llegando
-            // console.log(
-            //     'Nuevo nombre de evaluación desde el servicio:',
-            //     nombreEvaluacion
-            // )
             // Sobrescribir explícitamente el nombre de la evaluación
-            nombreEvaluacion =
-                this.compartirFormularioEvaluacionService.getcEvaluacionNombre()
+            nombreEvaluacion = '' //Manda el nombre
 
             // Verificamos si el servicio devuelve un valor válido
             if (!nombreEvaluacion || nombreEvaluacion.trim() === '') {
                 // Si no existe un valor válido, asignamos un valor por defecto
-                nombreEvaluacion = 'Nueva Evaluación'
+                nombreEvaluacion = '' //Manda el nombre
             }
 
             // Depuración: ver el nombre final que se asigna
-            console.log(
-                'Nombre asignado para la nueva evaluación:',
-                nombreEvaluacion
-            )
+            // console.log(
+            //     'Nombre asignado para la nueva evaluación:',
+            //     nombreEvaluacion
+            // )
         } else {
             // Para el caso 'editar', obtenemos el nombre desde el objeto de evaluación
             nombreEvaluacion =

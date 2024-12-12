@@ -41,7 +41,6 @@ import { actividadesConfig } from '@/app/sistema/aula-virtual/constants/aula-vir
 import { FullCalendarModule } from '@fullcalendar/angular'
 import { TareaFormContainerComponent } from '../../../../actividades/actividad-tarea/tarea-form-container/tarea-form-container.component'
 import { FormEvaluacionComponent } from '../../../../actividades/actividad-evaluacion/components/form-evaluacion/form-evaluacion.component'
-import { EvaluacionFormContainerComponent } from '../../../../actividades/actividad-evaluacion/evaluacion-form-container/evaluacion-form-container.component'
 import { NoDataComponent } from '../../../../../../../shared/no-data/no-data.component'
 
 @Component({
@@ -78,6 +77,8 @@ import { NoDataComponent } from '../../../../../../../shared/no-data/no-data.com
 export class TabContenidoComponent implements OnInit {
     @Input({ required: true }) private _iSilaboId: string
     @Input() idDocCursoId
+    @Input() iCursoId
+    @Input() curso
     public rangeDates: Date[] | undefined
     public accionesContenido: MenuItem[]
     public actividadSelected: IActividad | undefined
@@ -408,39 +409,37 @@ export class TabContenidoComponent implements OnInit {
     opcionEvaluacion: string
     semanaEvaluacion
     handleEvaluacionAction(action: string, actividad: IActividad) {
-        console.log(this.idDocCursoId)
-
         switch (action) {
             case 'CREAR':
             case 'EDITAR':
-                // this.showModalEvaluacion = true
-                // this.tituloEvaluacion =
-                //     action === 'CREAR' ? 'AGREGAR' : 'ACTUALIZAR'
-                // this.opcionEvaluacion =
-                //     action === 'CREAR' ? 'GUARDAR' : 'ACTUALIZAR'
-                // this.semanaEvaluacion = this.semanaSeleccionada
+                this.showModalEvaluacion = true
+                this.tituloEvaluacion =
+                    action === 'CREAR' ? 'AGREGAR' : 'ACTUALIZAR'
+                this.opcionEvaluacion =
+                    action === 'CREAR' ? 'GUARDAR' : 'ACTUALIZAR'
+                this.semanaEvaluacion = this.semanaSeleccionada
 
-                const ref = this._dialogService.open(
-                    EvaluacionFormContainerComponent,
-                    {
-                        ...MODAL_CONFIG,
-                        maximizable: true,
-                        header: !actividad['iEvaluacionId']
-                            ? 'Crear Evaluación'
-                            : 'Editar Evaluación',
-                        data: {
-                            actividad,
-                            semana: this.semanaSeleccionada,
-                        },
-                    }
-                )
-                this._dialogService.getInstance(ref).maximize()
-                ref.onClose.pipe(takeUntil(this._unsubscribe$)).subscribe({
-                    next: () => {
-                        // todo validar solo cuando sea necesario
-                        this.obtenerContenidoSemanas()
-                    },
-                })
+                // const ref = this._dialogService.open(
+                //     EvaluacionFormContainerComponent,
+                //     {
+                //         ...MODAL_CONFIG,
+                //         maximizable: true,
+                //         header: !actividad['iEvaluacionId']
+                //             ? 'Crear Evaluación'
+                //             : 'Editar Evaluación',
+                //         data: {
+                //             actividad,
+                //             semana: this.semanaSeleccionada,
+                //         },
+                //     }
+                // )
+                // this._dialogService.getInstance(ref).maximize()
+                // ref.onClose.pipe(takeUntil(this._unsubscribe$)).subscribe({
+                //     next: () => {
+                //         // todo validar solo cuando sea necesario
+                //         this.obtenerContenidoSemanas()
+                //     },
+                // })
 
                 break
             case 'ELIMINAR':
@@ -456,6 +455,12 @@ export class TabContenidoComponent implements OnInit {
                 })
                 break
             case 'VER':
+                console.log('semana')
+                console.log(this.semanaSeleccionada)
+                localStorage.setItem(
+                    'dremoCurso',
+                    JSON.stringify(this.semanaSeleccionada)
+                )
                 this.router.navigate(
                     [
                         '../',
@@ -464,6 +469,10 @@ export class TabContenidoComponent implements OnInit {
                         actividad.iActTipoId,
                     ],
                     {
+                        queryParams: {
+                            iCursoId: this.iCursoId,
+                            idDocCursoId: this.idDocCursoId,
+                        },
                         relativeTo: this._activatedRoute,
                     }
                 )
@@ -573,6 +582,7 @@ export class TabContenidoComponent implements OnInit {
         switch (accion) {
             case 'close-modal':
                 this.showModalEvaluacion = false
+                this.getData()
                 break
         }
     }

@@ -58,6 +58,7 @@ export class ConfigGradoComponent implements OnInit {
     visible: boolean = false
     mensaje: string
     option: string
+    event: []
     configuracion: any[]
     grados: any[] = [] // Asegúrate de inicializarlo
 
@@ -108,19 +109,30 @@ export class ConfigGradoComponent implements OnInit {
         }
     }
     accionBtnItemTable({ accion, item }) {
-        console.log(accion, 'table', item)
+        if (accion == 'agregar') {
+            this.event = item
+        }
+        if (accion === 'retornar') {
+            alert('Desea retornar')
+            this.router.navigate(['/gestion-institucional/configGradoSeccion'])
+        }
     }
 
-    accionBtnItem(accion) {
-        console.log(accion)
-    }
+    // accionBtnItem(accion) {}
 
     //ESTRUCTURASS DE TABLA
     //Maquetar tablas
-    // handleActions(actions) {
-    //     console.log(actions)
-    // }
+    handleActions(actions) {
+        console.log(actions)
+    }
     accionesPrincipal: IActionContainer[] = [
+        {
+            labelTooltip: 'Retornar',
+            text: 'Retornar',
+            icon: 'pi pi-arrow-circle-left',
+            accion: 'retornar',
+            class: 'p-button-warning',
+        },
         {
             labelTooltip: 'Asignar Grado',
             text: 'Asignar ambientes',

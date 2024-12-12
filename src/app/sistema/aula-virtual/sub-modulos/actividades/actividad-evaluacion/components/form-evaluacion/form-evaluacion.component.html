@@ -1,14 +1,29 @@
-@switch (showMostrarVista) {
-    @case ('FORM-EVALUACION') {
-        <app-modal-primeng
-            [title]="tituloEvaluacion + ' EVALUACIÓN'"
-            [showModal]="showModalEvaluacion"
-            [width]="'90%'"
-            (accionBtnItem)="accionBtn($event)"
-            *ngIf="formEvaluacion"
-        >
-            <form [formGroup]="formEvaluacion" class="mt-4">
+<app-modal-primeng
+    [title]="titulo"
+    [showModal]="showModalEvaluacion"
+    [width]="'90%'"
+    (accionBtnItem)="accionBtn({ accion: 'close-modal', item: [] })"
+>
+    @switch (showMostrarVista) {
+        @case ('FORM-EVALUACION') {
+            <form
+                [formGroup]="formEvaluacion"
+                class="mt-4"
+                *ngIf="formEvaluacion"
+            >
                 <div class="grid">
+                    <div class="col-12">
+                        <p-message
+                            styleClass="w-full"
+                            severity="info"
+                            [text]="
+                                'SEMANA ' +
+                                semanaEvaluacion?.cContenidoSemNumero +
+                                ': ' +
+                                semanaEvaluacion?.cContenidoSemTitulo
+                            "
+                        ></p-message>
+                    </div>
                     <div class="col-12">
                         <p-inputGroup>
                             <p-inputGroupAddon>Nombre</p-inputGroupAddon>
@@ -114,32 +129,6 @@
                             />
                         </p-inputGroup>
                     </div>
-                    <div class="col-12 md:col-6">
-                        <p-inputGroup>
-                            <p-inputGroupAddon>Instrumento</p-inputGroupAddon>
-                            <p-dropdown
-                                styleClass="w-full"
-                                placeholder="Seleccione Instrumento"
-                                optionValue="iInstrumentoId"
-                                formControlName="iInstrumentoId"
-                                [options]="rubricas"
-                                optionLabel="cInstrumentoNombre"
-                            />
-                            &nbsp;
-                            @if (params.iCursoId) {
-                                <app-rubricas
-                                    [title]="'Rúbricas'"
-                                    [mode]="'SELECTION'"
-                                    [params]="params"
-                                    (rubricaSelectedChange)="
-                                        accionRubrica($event)
-                                    "
-                                ></app-rubricas>
-                            }
-                        </p-inputGroup>
-                    </div>
-                    <div class="col-12"></div>
-
                     <div class="col-12 mt-1">
                         <app-types-files-upload-primeng
                             [nameFile]="'evaluacion'"
@@ -151,30 +140,30 @@
                     </div>
                 </div>
             </form>
-            <div footer class="flex justify-content-end gap-2">
-                <p-button
-                    label="Cancelar"
-                    severity="secondary"
-                    (onClick)="showModalEvaluacion = false"
-                />
+        }
+        @case ('LIST-PREGUNTAS') {
+            <app-list-preguntas
+                [data]="this.formEvaluacion.value"
+                (accionBtnItem)="accionBtn($event)"
+            ></app-list-preguntas>
+        }
+    }
+    <div footer class="flex justify-content-end gap-2">
+        <p-button
+            label="Cancelar"
+            severity="secondary"
+            (onClick)="accionBtn({ accion: 'close-modal', item: [] })"
+        />
+        @switch (showMostrarVista) {
+            @case ('FORM-EVALUACION') {
                 <p-button
                     [label]="opcionEvaluacion"
                     (onClick)="
                         accionBtn({ accion: opcionEvaluacion, item: [] })
                     "
                 />
-            </div>
-        </app-modal-primeng>
-    }
-    @case ('LIST-PREGUNTAS') {
-        <app-list-preguntas
-            [showModalListPreguntas]="showModalListPreguntas"
-            [opcionModalPreguntas]="opcionModalPreguntas"
-            [tituloModalPreguntas]="tituloModalPreguntas"
-            [data]="this.formEvaluacion.value"
-        ></app-list-preguntas>
-    }
-    <!-- @case('FORM-PREGUNTAS') {
-
-} -->
-}
+            }
+        }
+    </div>
+</app-modal-primeng>
+<p-toast></p-toast>

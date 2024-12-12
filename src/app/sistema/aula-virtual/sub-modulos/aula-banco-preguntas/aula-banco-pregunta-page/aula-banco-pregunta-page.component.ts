@@ -98,4 +98,29 @@ export class AulaBancoPreguntaPageComponent implements OnInit {
                 },
             })
     }
+
+    private _aulaBancoPreguntasService = inject(AulaBancoPreguntasService)
+    agregarPreguntas() {
+        this.agregarEditarPregunta({
+            iPreguntaId: 0,
+            preguntas: [],
+            iEncabPregId: -1,
+        })
+    }
+    agregarEditarPregunta(pregunta) {
+        const refModal = this._aulaBancoPreguntasService.openPreguntaModal({
+            pregunta,
+            iCursoId: this.params.iCursoId,
+            tipoPreguntas: [],
+            iEvaluacionId: null,
+            padreComponente: 'AULA-VIRTUAL',
+        })
+        refModal.onClose.subscribe((result) => {
+            if (result) {
+                // const pregunta = this.mapLocalPregunta(result)
+                // this.preguntas.push(pregunta)
+                // this.preguntasSeleccionadasChange.emit(this.preguntas)
+            }
+        })
+    }
 }

@@ -1,52 +1,48 @@
-import { Component, OnInit, OnChanges, OnDestroy } from '@angular/core'
+import { Component, OnInit, OnChanges, SimpleChanges } from '@angular/core'
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
-import { Router } from '@angular/router';
+import { Router } from '@angular/router'
 
 import { StepsModule } from 'primeng/steps'
-import { Subscription } from 'rxjs';
-import { MenuItem, MessageService, ConfirmationService } from 'primeng/api';
-import { Output, EventEmitter } from '@angular/core';
+import { Subscription } from 'rxjs'
+import { MenuItem, MessageService } from 'primeng/api'
+import { Output, EventEmitter, OnDestroy } from '@angular/core'
 
 @Component({
     selector: 'app-registro',
     standalone: true,
-    imports: [
-        ContainerPageComponent,
-        StepsModule,
-    ],
+    imports: [ContainerPageComponent, StepsModule],
     providers: [MessageService],
     templateUrl: './registro.component.html',
     styleUrl: './registro.component.scss',
 })
-export class RegistroComponent implements OnInit, OnChanges {
-    @Output() emitMode = new EventEmitter();
-    subscription: Subscription;
-    items: MenuItem[];
+export class RegistroComponent implements OnInit, OnChanges, OnDestroy {
+    @Output() emitMode = new EventEmitter()
+    subscription: Subscription
+    items: MenuItem[]
 
-    constructor(private router: Router) {
-
+    constructor(private router: Router) {}
+    ngOnChanges(changes: SimpleChanges): void {
+        throw new Error('Method not implemented.', changes)
     }
-
 
     ngOnInit() {
         this.items = [
             {
                 label: 'Datos personales',
-                routerLink: 'datos-personales'
+                routerLink: 'datos-personales',
             },
             {
                 label: 'Asignación cargo',
-                routerLink: 'asignacion-cargo'
+                routerLink: 'asignacion-cargo',
             },
             {
                 label: 'Asignación áreas',
-                routerLink: 'asignacion-areas'
+                routerLink: 'asignacion-areas',
             },
         ]
-
     }
 
-    ngOnChanges(changes) {}
+    //ngOnChanges(changes) {}
 
     handleActions(row) {
         console.log(row)
@@ -57,7 +53,6 @@ export class RegistroComponent implements OnInit, OnChanges {
             },
             editar: () => {
                 // Lógica para la acción "editar"
-
             },
             eliminar: () => {
                 // Lógica para la acción "eliminar"
@@ -82,17 +77,13 @@ export class RegistroComponent implements OnInit, OnChanges {
         },
     ]
 
-
-
     navigateToAdministrarPersonal() {
-        
-        this.router.navigate(['configuracion/personal/administrar']); 
+        this.router.navigate(['configuracion/personal/administrar'])
     }
-
 
     ngOnDestroy() {
         if (this.subscription) {
-            this.subscription.unsubscribe();
+            this.subscription.unsubscribe()
         }
     }
 }

@@ -12,83 +12,52 @@
                     </div>
                 </ng-template>
                 <app-container-page
-                    [title]="
-                        'Asignar Nivel de Logro a estudiantes Seleccione la Unidad'
-                    "
+                    [title]="'Asignar Nivel de Logro a estudiantes'"
                     [actions]="[]"
                 >
-                    <!-- Menu de cabecera -->
-                    <p-dataView #dv [rows]="5" filterBy="cCursoNombre">
-                        <ng-template pTemplate="header">
-                            <div class="">
-                                <div class="grid grid-nogutter">
-                                    <!-- <div class="col pr-2">
-                                    <p-inputGroup>
-                                        <p-inputGroupAddon>
-                                            <p-inputIcon
-                                                styleClass="pi pi-search"
-                                            />
-                                        </p-inputGroupAddon>
-                                        <input
-                                            pInputText
-                                            type="text"
-                                            placeholder="Buscar por nombre...."
-                                        />
-                                    </p-inputGroup>
-                                </div> -->
-                                    <!-- <div class="col pr-2">
-                                    <p-inputGroup>
-                                        <p-inputGroupAddon>
-                                            Actividad
-                                        </p-inputGroupAddon>
-                                        <p-dropdown
-                                            placeholder="Evaluaciones"
-                                            styleClass="w-full"
-                                            class="flex-1"
-                                        />
-                                    </p-inputGroup>
-                                </div> -->
-                                    <!-- <div class="col">
-                                    <p-inputGroup>
-                                        <p-inputGroupAddon>
-                                            Fecha
-                                        </p-inputGroupAddon>
-                                        <p-dropdown
-                                            placeholder="Seleccione fecha"
-                                            styleClass="w-full"
-                                            class="flex-1"
-                                        >
-                                        </p-dropdown>
-                                    </p-inputGroup>
-                                </div> -->
-                                    <div class="col">
-                                        @for (
-                                            item of unidades;
-                                            track item;
-                                            let idx = $index
-                                        ) {
-                                            <button
-                                                pButton
-                                                class="pr-2"
-                                                [disabled]="
-                                                    item.iEstado === '0'
-                                                        ? true
-                                                        : false
-                                                "
-                                                (click)="
-                                                    selectUnidad(item, idx)
-                                                "
-                                            >
-                                                UNIDAD {{ idx + 1 }}
-                                            </button>
-                                        }
-                                    </div>
-                                </div>
-
-                                <!-- <p-dataViewLayoutOptions></p-dataViewLayoutOptions> -->
+                    <div class="card grid grid-cols-2 pb-5">
+                        <div class="col-12 pb-2">
+                            <label
+                                for=""
+                                class=""
+                                style="font-weight: bold; font-size: 16px"
+                            >
+                                Periodo académico:
+                            </label>
+                        </div>
+                        <div class="grid grid-nogutter">
+                            <div class="col">
+                                @for (
+                                    item of unidades;
+                                    track item;
+                                    let idx = $index
+                                ) {
+                                    <button
+                                        pButton
+                                        class="mt-2 mr-2"
+                                        [disabled]="
+                                            item.iEstado === '0' ? true : false
+                                        "
+                                        (click)="selectUnidad(item, idx)"
+                                        [pTooltip]="
+                                            item.iEstado === '0'
+                                                ? 'Fuera de Fecha'
+                                                : 'Dentro de Fecha'
+                                        "
+                                        tooltipPosition="bottom"
+                                    >
+                                        {{ item.cPeriodoEvalNombre
+                                        }}{{ idx + 1 }}
+                                        <br />
+                                        Inicio:
+                                        {{ item.dtPeriodoEvalAperInicio }} Fin:
+                                        {{ item.dtPeriodoEvalAperFin }}
+                                    </button>
+                                }
                             </div>
-                        </ng-template>
-                    </p-dataView>
+                        </div>
+                    </div>
+                    <br />
                     <div class="card grid">
                         <!-- lista de participantes... -->
                         <div class="col-4">
@@ -128,7 +97,10 @@
                                         />
                                         <!--class="w-4rem min-h-9 shadow-2 flex-shrink-0 border-round"-->
                                         <div class="perfil-name">
-                                            {{ estudiante?.nombrecompleto }}
+                                            {{
+                                                estudiante?.nombrecompleto
+                                                    | uppercase
+                                            }}
                                         </div>
                                     </div>
                                 </ng-template>
@@ -147,52 +119,10 @@
                                         >Asignar nivel de logro a:
                                         {{ estudianteEv }}
                                     </label>
-                                    <!-- @for (
-                                        item of unidades;
-                                        track item;
-                                        let idx = $index
-                                    ) {
-                                        <button
-                                            pButton                                            
-                                            class="p-button-success"
-                                            [disabled]="
-                                                item.iEstado === '0'
-                                                    ? true
-                                                    : false
-                                            "
-                                            (click)="selectUnidad(item, idx)"
-                                        >
-                                            UNIDAD {{ idx + 1 }}
-                                        </button>
-                                    } -->
-                                    <!-- <button
-                                    [value]="'2'"
-                                    (click)="selectUnidad($event)"
-                                >
-                                    UNIDAD II
-                                </button>
-                                <button
-                                    [value]="'3'"
-                                    (click)="selectUnidad($event)"
-                                >
-                                    UNIDAD III
-                                </button>
-                                <button
-                                    [value]="'4'"
-                                    (click)="selectUnidad($event)"
-                                >
-                                    UNIDAD IV
-                                </button>
-                                <button
-                                    [value]="'5'"
-                                    (click)="selectUnidad($event)"
-                                >
-                                    R
-                                </button> -->
                                 </div>
                                 <!-- Modificar el formGroup // *ngIf="mostrarDiv"-->
                                 <div
-                                    class="card border-4 border-indigo-200 border-indigo-500/50"
+                                    class="card border-4 border-indigo-200 border-indigo-500/100"
                                 >
                                     <form
                                         [formGroup]="califcFinal"
@@ -203,9 +133,7 @@
                                                 <p-editor
                                                     id="descripcion"
                                                     hearder="hola"
-                                                    placeholder="Agregar un conclusión descriptiva... {{
-                                                        estudianteEv
-                                                    }}"
+                                                    placeholder="Agregar un conclusión descriptiva..."
                                                     formControlName="cDetMatrConclusionDesc1"
                                                 >
                                                     <ng-template
@@ -246,22 +174,13 @@
                                                         styleClass="w-full"
                                                         optionValue="iEscalaCalifId"
                                                         optionLabel="cEscalaCalifNombre"
-                                                        placeholder="Seleccione calificación"
+                                                        placeholder="Seleccione...."
                                                         [showClear]="true"
                                                     />
                                                 </p-inputGroup>
                                             </div>
                                             <div class="col">
-                                                <!-- <button
-                                                pButton
-                                                pRipple
-                                                label="Guardar"
-                                                class="p-button-success"
-                                                (click)="
-                                                    guardaCalificacionFinalUnidad()
-                                                "
-                                                
-                                            ></button> -->
+                                                <p-toast></p-toast>
                                                 <p-button
                                                     label="Guardar"
                                                     icon="pi pi-check"
@@ -281,7 +200,7 @@
                                 for=""
                                 class=""
                                 style="font-weight: bold; font-size: 16px"
-                                >Detalle de actividades del estudiante:
+                                >Retroalimentación de actividades académicas:
                             </label>
                             <div>
                                 <p-accordion [activeIndex]="0">
@@ -312,7 +231,7 @@
                                                             pSortableColumn="name"
                                                             style="width: 20%"
                                                         >
-                                                            Nombre Activida
+                                                            Nombre Actividad
                                                             <p-sortIcon
                                                                 field="name"
                                                             />
@@ -321,7 +240,7 @@
                                                             pSortableColumn="name"
                                                             style="width: 20%"
                                                         >
-                                                            Fecha de Activida
+                                                            Fecha de Actividad
                                                             <p-sortIcon
                                                                 field="name"
                                                             />
@@ -406,99 +325,101 @@
                         </span>
                     </div>
                 </ng-template>
-                <app-container-page [title]="'Mis Resultados'" [actions]="[]">
-                    <p-dataView #dv [rows]="5" filterBy="cCursoNombre">
-                        <ng-template pTemplate="header" class="grid">
-                            <div class=" ">
-                                <div class="card grid grid-nogutter">
-                                    <div class="col pr-2">
-                                        <p-inputGroup>
-                                            <p-inputGroupAddon>
-                                                <p-inputIcon
-                                                    styleClass="pi pi-search"
-                                                />
-                                            </p-inputGroupAddon>
-                                            <input
-                                                pInputText
-                                                type="text"
-                                                placeholder="Buscar por nombre...."
-                                            />
-                                        </p-inputGroup>
-                                    </div>
-                                    <div class="col pr-2">
-                                        <p-inputGroup>
-                                            <p-inputGroupAddon>
-                                                Actividad
-                                            </p-inputGroupAddon>
-                                            <p-dropdown
-                                                placeholder="Evaluaciones"
-                                                styleClass="w-full"
-                                                class="flex-1"
-                                            />
-                                        </p-inputGroup>
-                                    </div>
-                                    <div class="col">
-                                        <p-inputGroup>
-                                            <p-inputGroupAddon>
-                                                Fecha
-                                            </p-inputGroupAddon>
-                                            <p-dropdown
-                                                placeholder="Seleccione fecha"
-                                                styleClass="w-full"
-                                                class="flex-1"
-                                            >
-                                            </p-dropdown>
-                                        </p-inputGroup>
-                                    </div>
-                                </div>
-
-                                <!-- <p-dataViewLayoutOptions></p-dataViewLayoutOptions> -->
-                            </div>
-                        </ng-template>
+                <!-- [actions]="[]" IActionContainer-->
+                <app-container-page
+                    [title]="'Reporte final de actividades'"
+                    [actions]="actions"
+                    (accionBtnItem)="accionDescargar($event)"
+                >
+                    <p-dataView #dv [rows]="5" filterBy="completoalumno">
                         <ng-template let-products pTemplate="listItem">
                             <app-table-primeng
                                 [columnas]="columnasTabla"
-                                [data]="estudiantes"
+                                [data]="reporteNotasFinales"
+                                (accionBtnItem)="accionBnt($event)"
+                                [actions]="accionesTabla"
                             >
-                                <!-- [actions]="accionesTabla" -->
+                                <!--  -->
                             </app-table-primeng>
                         </ng-template>
                     </p-dataView>
-                    <!-- <p-table
-                    [value]="estudiantes"
-                    [tableStyle]="{ 'min-width': '50rem' }"
-                    class="heard-color"
-                >
-                    <ng-template pTemplate="header">
-                        <tr>
-                            <th>#</th>
-                            <th>Nombre Estudiante</th>
-                            <th class="vertical-header">Tareas</th>
-                            <th class="vertical-header">Evaluaciones</th>
-                            <th class="vertical-header">Foro</th>
-                            <th class="vertical-header">Promedio</th>
-                            <th class="vertical-header">Tareas</th>
-                            <th class="vertical-header">Evaluaciones</th>
-                            <th class="vertical-header">Foro</th>
-                            <th class="vertical-header">Promedio</th>
-                            <th>Promedio Final</th>
-                            <th>Observaciones</th>
-                        </tr>
-                    </ng-template>
-                    <ng-template
-                        pTemplate="body"
-                        let-estudiantes
-                        let-rowIndex="rowIndex"
-                    >
-                        <tr>
-                            <td>{{ rowIndex + 1 }}</td>
-                            <td>{{ estudiantes?.nombrecompleto }}</td>
-                        </tr>
-                    </ng-template>
-                </p-table> -->
                 </app-container-page>
             </p-tabPanel>
         </p-tabView>
     </section>
+    <!--   -->
+    <p-dialog
+        [style]="{ width: '50%' }"
+        class="p-fluid"
+        [modal]="true"
+        [(visible)]="mostrarModalConclusionDesc"
+        header="Agregar conclusión descriptiva a : {{
+            estudianteSelect?.completoalumno
+        }}"
+    >
+        <form
+            [formGroup]="conclusionDescrp"
+            class="flex flex-column gap-3 w-full"
+        >
+            <div class="grid pt-2">
+                <!-- Mostrar la califcación comentada segun el requerimiento -->
+                <!--  for="calificacion" [options]="calificacion"-->
+                <div class="col-12">
+                    <!-- <p-inputGroup>
+                        <p-inputGroupAddon> Calificación </p-inputGroupAddon>
+                        <p-dropdown
+                            formControlName="iEscalaCalifId"
+                            [options]="calificacion"
+                            optionValue="iEscalaCalifId"
+                            optionLabel="cEscalaCalifNombre"
+                            placeholder="Seleccione una Calificación"
+                            [style]="{ width: '100%' }"
+                            [showClear]="true"
+                        ></p-dropdown>
+                    </p-inputGroup> -->
+                </div>
+                <!-- Mostrar descripción -->
+                <div class="col-12">
+                    <label for="descripcion" class="font-bold mt-1"
+                        >Descripción
+                        <span class="text-red-500 text-xs"
+                            >(*) Obligatorio</span
+                        ></label
+                    >
+                    <div class="mt-2 pt-2">
+                        <p-editor
+                            id="descripcion"
+                            formControlName="cDetMatConclusionDescPromedio"
+                            [style]="{ height: '150px' }"
+                        />
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div class="reply-container">
+            <div class="button-container">
+                <button
+                    pButton
+                    pRipple
+                    label="Cancelar"
+                    icon="pi pi-times"
+                    class="p-button-secondary mx-3"
+                    type="button"
+                    size="small"
+                ></button>
+                <button
+                    pButton
+                    pRipple
+                    type="button"
+                    label="Enviar"
+                    icon="pi pi-send"
+                    size="small"
+                    class="p-button-primary"
+                    (click)="guardarConclusionDescriptiva()"
+                ></button>
+                <!-- (click)="calificarComnt()" -->
+            </div>
+        </div>
+    </p-dialog>
 }
 <label for="">Hola sr: Estudiante</label>

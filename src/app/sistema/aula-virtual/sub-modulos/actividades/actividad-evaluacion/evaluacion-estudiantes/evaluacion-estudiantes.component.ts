@@ -10,6 +10,8 @@ import { ConfirmationService, MessageService } from 'primeng/api'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { NgxDocViewerModule } from 'ngx-doc-viewer'
 import { environment } from '@/environments/environment'
+import { EmptySectionComponent } from '../../../../../../shared/components/empty-section/empty-section.component'
+import { RecursosListaComponent } from '../../../../../../shared/components/recursos-lista/recursos-lista.component'
 //import { interval, Subscription } from 'rxjs';
 
 @Component({
@@ -22,6 +24,8 @@ import { environment } from '@/environments/environment'
         TimeComponent,
         PrimengModule,
         NgxDocViewerModule,
+        EmptySectionComponent,
+        RecursosListaComponent,
     ],
     templateUrl: './evaluacion-estudiantes.component.html',
     styleUrl: './evaluacion-estudiantes.component.scss',
@@ -42,6 +46,7 @@ export class EvaluacionEstudiantesComponent implements OnChanges {
     esUltimaPregunta: boolean = false
     display: boolean
     timeRemaining: number
+    cTareaEstudianteComentarioDocente: any
 
     ngOnChanges(changes) {
         if (changes.evaluacion?.currentValue) {

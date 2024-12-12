@@ -139,7 +139,7 @@ export class ConfigPlanEstudiosComponent implements OnInit {
                         const curso = item.cCursoNombre
                         const grado =
                             item.cGradoNombre + '(' + item.cCicloRomanos + ')' //item.cGradoNombre; // Nombre ded grado
-                        const hora = item.iCursoTotalHoras // hora total
+                        const hora = item.nCursoTotalHoras // hora total
 
                         if (!acc[curso]) {
                             acc[curso] = {
@@ -312,6 +312,13 @@ export class ConfigPlanEstudiosComponent implements OnInit {
     }
 
     accionesPrincipal: IActionContainer[] = [
+        {
+            labelTooltip: 'Retornar',
+            text: 'Retornar',
+            icon: 'pi pi-arrow-circle-left',
+            accion: 'retornar',
+            class: 'p-button-warning',
+        },
         {
             labelTooltip: 'Crear Plan de estudio',
             text: 'Crear Plan de estudio',

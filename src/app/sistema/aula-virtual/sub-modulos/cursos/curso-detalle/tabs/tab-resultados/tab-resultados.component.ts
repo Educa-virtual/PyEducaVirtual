@@ -1,10 +1,13 @@
 import { CommonModule } from '@angular/common'
 import { Component, OnInit, Input, inject } from '@angular/core'
-import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
+import {
+    ContainerPageComponent,
+    IActionContainer,
+} from '@/app/shared/container-page/container-page.component'
 import {
     TablePrimengComponent,
     IColumn,
-    //IActionTable,
+    IActionTable,
 } from '@/app/shared/table-primeng/table-primeng.component'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import {
@@ -33,11 +36,12 @@ import { ConstantesService } from '@/app/servicios/constantes.service'
 import { OrderListModule } from 'primeng/orderlist'
 import { PrimengModule } from '@/app/primeng.module'
 import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
-import { Message } from 'primeng/api'
+import { Message, MessageService } from 'primeng/api'
 import { Subject, takeUntil } from 'rxjs'
 import { RemoveHTMLPipe } from '@/app/shared/pipes/remove-html.pipe'
 import { CommonInputComponent } from '@/app/shared/components/common-input/common-input.component'
 import { ButtonModule } from 'primeng/button'
+import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 @Component({
     selector: 'app-tab-resultados',
     standalone: true,
@@ -82,8 +86,25 @@ export class TabResultadosComponent implements OnInit {
     private GeneralService = inject(GeneralService)
     private _formBuilder = inject(FormBuilder)
     private _aulaService = inject(ApiAulaService)
+    private _confirmService = inject(ConfirmationModalService)
     // private ref = inject(DynamicDialogRef)
     private _constantesService = inject(ConstantesService)
+    @Input() actions: IActionContainer[] = [
+        {
+            labelTooltip: 'Descargar Pdf',
+            text: 'Reporte  Pdf',
+            icon: 'pi pi-file-pdf',
+            accion: 'descargar_pdf',
+            class: 'p-button-danger',
+        },
+        {
+            labelTooltip: 'Descargar Excel',
+            text: 'Reporte Excel',
+            icon: 'pi pi-download',
+            accion: 'Descargar_Excel',
+            class: 'p-button-success',
+        },
+    ]
     estudiantes: any[] = []
     reporteDeNotas: any[] = []
     estudianteEv: any[] = []
@@ -104,8 +125,7 @@ export class TabResultadosComponent implements OnInit {
     iDocenteId: number
     private unsbscribe$ = new Subject<boolean>()
 
-    unidad: number = 0
-
+    unidad: number
     idcurso: number
     mostrarDiv: boolean = false // Variable para controlar la visibilidad
 
@@ -114,6 +134,10 @@ export class TabResultadosComponent implements OnInit {
         cDetMatrConclusionDesc1: ['', [Validators.required]],
         iEscalaCalifIdPeriodo1: ['', [Validators.required]],
     })
+    public conclusionDescrp: FormGroup = this._formBuilder.group({
+        cDetMatConclusionDescPromedio: ['', [Validators.required]],
+    })
+    constructor(private messageService: MessageService) {}
     //Campos de la tabla para mostrar notas
     public columnasTabla: IColumn[] = [
         {
@@ -127,7 +151,7 @@ export class TabResultadosComponent implements OnInit {
         {
             type: 'text',
             width: '10rem',
-            field: 'nombrecompleto',
+            field: 'completoalumno',
             header: 'Nombre estudiante',
             text_header: 'left',
             text: 'left',
@@ -135,83 +159,96 @@ export class TabResultadosComponent implements OnInit {
         {
             type: 'text',
             width: '10rem',
-            field: '',
-            header: 'Promedio 01',
-            text_header: 'left',
-            text: 'left',
+            field: 'iEscalaCalifIdPeriodo1',
+            header: 'Trimestre 01',
+            text_header: 'center',
+            text: 'center',
         },
         {
             type: 'text',
             width: '10rem',
-            field: '',
-            header: 'Promedio',
-            text_header: 'left',
-            text: 'left',
+            field: 'iEscalaCalifIdPeriodo2',
+            header: 'Trimestre 02',
+            text_header: 'center',
+            text: 'center',
         },
         {
             type: 'text',
             width: '10rem',
-            field: '',
-            header: 'Promedio',
-            text_header: 'left',
-            text: 'left',
-        },
-        {
-            type: 'text',
-            width: '10rem',
-            field: '',
-            header: 'Promedio',
-            text_header: 'left',
-            text: 'left',
-        },
-        {
-            type: 'text',
-            width: '10rem',
-            field: '',
-            header: 'Conclusión descriptiva',
-            text_header: 'left',
-            text: 'left',
+            field: 'iEscalaCalifIdPeriodo3',
+            header: 'Trimestre 03',
+            text_header: 'center',
+            text: 'center',
         },
         // {
-        //     type: 'actions',
-        //     width: '1rem',
-        //     field: '',
-        //     header: 'Acciones',
-        //     text_header: 'left',
-        //     text: 'left',
+        //     type: 'text',
+        //     width: '10rem',
+        //     field: 'iEscalaCalifIdPeriodo4',
+        //     header: 'Promedio 04',
+        //     text_header: 'center',
+        //     text: 'center',
         // },
+        {
+            type: 'text',
+            width: '10rem',
+            field: 'cDetMatConclusionDescPromedio',
+            header: 'Conclusión descriptiva',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'actions',
+            width: '1rem',
+            field: '',
+            header: 'Acciones',
+            text_header: 'center',
+            text: 'center',
+        },
     ]
-    // public accionesTabla: IActionTable[] = [
-    //     {
-    //         labelTooltip: 'Eliminar',
-    //         icon: 'pi pi-trash',
-    //         accion: 'eliminar',
-    //         type: 'item',
-    //         class: 'p-button-rounded p-button-danger p-button-text',
-    //     },
-    //     {
-    //         labelTooltip: 'Editar',
-    //         icon: 'pi pi-pencil',
-    //         accion: 'editar',
-    //         type: 'item',
-    //         class: 'p-button-rounded p-button-warning p-button-text',
-    //     },
-    // ]
+    public accionesTabla: IActionTable[] = [
+        {
+            labelTooltip: 'Agregar Conclusión descriptiva',
+            icon: 'pi pi-cog',
+            accion: 'agregarConclusion',
+            type: 'item',
+            class: 'p-button-rounded p-button-danger p-button-text',
+        },
+    ]
     // Inicializamos
     ngOnInit() {
-        //this.verperfiles()
         this.obtenerIdPerfil()
         this.getEstudiantesMatricula()
         this.mostrarCalificacion()
         this.obtenerReporteDenotasFinales()
         this.habilitarCalificacion()
-        //this.selectUnidad()
     }
+    mostrarModalConclusionDesc: boolean = false
+    accionBnt({ accion, item }): void {
+        switch (accion) {
+            case 'agregarConclusion':
+                this.mostrarModalConclusionDesc = true
+                this.estudianteSelect = item
+                console.log('Agregar descripcion', accion, item)
+                break
+        }
+    }
+    //Descargar reporte de notas finales de curso con switch
+    accionDescargar({ accion }): void {
+        switch (accion) {
+            case 'descargar_pdf':
+                console.log('Descargar pdf')
+                break
+            case 'Descargar_Excel':
+                console.log('Descargar excel')
+                break
+        }
+    }
+    //obtener los perfiles
     obtenerIdPerfil() {
         this.iEstudianteId = this._constantesService.iEstudianteId
         this.iPerfilId = this._constantesService.iPerfilId
         this.iDocenteId = this._constantesService.iDocenteId
-        console.log('icredito', this.iEstudianteId)
+        //console.log('icredito', this.iEstudianteId)
     }
     // Obtenemos los datos de estudiante que el docente hico su retroalimentación por alumno
     obtenerComnt(estudiantes) {
@@ -246,7 +283,7 @@ export class TabResultadosComponent implements OnInit {
             this.loading = false
         }, 2000)
     }
-    // metodo para limpiar las etiquestas
+    // metodo para limpiar las etiquetas
     limpiarHTML(html: string): string {
         const temporal = document.createElement('div') // Crear un div temporal
         temporal.innerHTML = html // Insertar el HTML
@@ -256,39 +293,79 @@ export class TabResultadosComponent implements OnInit {
     selectUnidad(item: any, idx: number): void {
         this.unidad = idx
         //console.log('Unidad Seleccionada', item)
-        console.log('Indice de la Unidad', this.unidad)
+        console.log('Indice de la Unidad', idx)
     }
-    // selectUnidad(event: Event): void {
-    //     // (event.target as HTMLButtonElement).value
-    //     const buttonValue = (event.target as HTMLButtonElement).value
-    //     this.unidad = buttonValue
+    // muestra las notas del curso
+    reporteNotasFinales: any[] = []
 
-    //     //console.log('indice de la unidad', idx)
-
-    //     console.log('Evento', buttonValue)
-    // }
-    // en desarrollo
     obtenerReporteDenotasFinales() {
-        //this.loaderService.show(); // Muestra el loader
-        this.GeneralService.getDatos(
-            this.tabla,
-            this.campos,
-            this.where
-        ).subscribe({
-            next: (response) => {
-                this.reporteDeNotas = response
-                //console.log('Detalle Notas', this.reporteDeNotas)
+        const userId = 1
+        this._aulaService
+            .obtenerReporteFinalDeNotas(userId)
+            .subscribe((Data) => {
+                this.reporteNotasFinales = Data['data']
+                // Mapear las calificaciones en letras a reporteNotasFinales
+                console.log('Mostrar notas finales', this.reporteNotasFinales)
+                this.calificacion
+                console.log(this.calificacion)
+            })
+    }
+    // Metodo para guardar la conclusión descriptiva final
+    guardarConclusionDescriptiva() {
+        const conclusionDescrp = this.conclusionDescrp.value
+        const conclusionDescrpLimpia = this.limpiarHTML(
+            conclusionDescrp.cDetMatConclusionDescPromedio
+        )
+        const where = [
+            {
+                COLUMN_NAME: 'iDetMatrId',
+                VALUE: this.estudianteSelect.iDetMatrId,
             },
-            error: (error) => {
-                console.error('Error al obtener notas finales:', error)
-            },
-        })
+        ]
+        const registro: any = {
+            cDetMatConclusionDescPromedio: conclusionDescrpLimpia,
+        }
+        this._aulaService
+            .guardarCalificacionEstudiante(
+                'acad',
+                'detalle_matriculas',
+                where,
+                registro
+            )
+            .subscribe({
+                next: (response) => {
+                    this.obtenerReporteDenotasFinales()
+                    this.mostrarModalConclusionDesc = false
+                    console.log('actualizar:', response)
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Éxito',
+                        detail: 'Calificación guardada correctamente.',
+                    })
+                },
+                error: (error) => {
+                    console.log('Error en la actualización:', error)
+                },
+            })
+        this.conclusionDescrp.reset()
+        console.log('conclusion;', where, registro)
     }
     //guardar la calificación y conclusión descriptiva del docente para los promedios finales
     guardaCalificacionFinalUnidad() {
         const resultadosEstudiantesf = this.califcFinal.value
         const descripcionlimpia = resultadosEstudiantesf.cDetMatrConclusionDesc1
         const conclusionFinalDocente = this.limpiarHTML(descripcionlimpia)
+        console.log(
+            'calificacion',
+            this.califcFinal.value.iEscalaCalifIdPeriodo1
+        )
+        if (this.estudianteSeleccionado == undefined) {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Seleccione un estudiante:',
+            })
+        }
         const fechaActual = new Date()
         const where = [
             {
@@ -296,8 +373,16 @@ export class TabResultadosComponent implements OnInit {
                 VALUE: this.estudianteSeleccionado.iDetMatrId,
             },
         ]
+        console.log('where', where)
         const registro: any = {}
-
+        if (!this.unidad) {
+            this.unidades.find((i, index) => {
+                if (i.iEstado) {
+                    this.unidad = index
+                }
+            })
+        }
+        //console.log(this.unidad)
         switch (this.unidad) {
             case 0:
                 registro.cDetMatrConclusionDesc1 = conclusionFinalDocente
@@ -332,23 +417,55 @@ export class TabResultadosComponent implements OnInit {
             default:
                 console.log('No se a encontrado la unidad')
         }
-        this._aulaService
-            .guardarCalificacionEstudiante(
-                'acad',
-                'detalle_matriculas',
-                where,
-                registro
-            )
-            .subscribe({
-                next: (response) => {
-                    console.log('actualizar:', response)
+        if (
+            conclusionFinalDocente == '' ||
+            this.califcFinal.value.iEscalaCalifIdPeriodo1 == null
+        ) {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Tiene que agregar una conclusión descriptiva y el nivel de logro',
+            })
+        } else {
+            this._confirmService.openConfiSave({
+                message: 'Recuerde que no podra retroceder',
+                header: '¿Esta seguro que desea guardar conclusión descriptiva?',
+                accept: () => {
+                    // Acción para guardar la conclusion descritiva final
+                    this._aulaService
+                        .guardarCalificacionEstudiante(
+                            'acad',
+                            'detalle_matriculas',
+                            where,
+                            registro
+                        )
+                        .subscribe({
+                            next: (response) => {
+                                this.califcFinal.reset()
+                                //actualiza la tabla de reporte de notas:
+                                this.obtenerReporteDenotasFinales()
+                                console.log('actualizar:', response)
+                                this.messageService.add({
+                                    severity: 'success',
+                                    summary: 'Éxito',
+                                    detail: 'Calificación guardada correctamente.',
+                                })
+                            },
+                            error: (error) => {
+                                console.log('Error en la actualización:', error)
+                            },
+                        })
                 },
-                error: (error) => {
-                    console.log('Error en la actualización:', error)
+                reject: () => {
+                    // Mensaje de cancelación (opcional)
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Cancelado',
+                        detail: 'Acción cancelada',
+                    })
                 },
             })
-        this.califcFinal.reset()
-        console.log('hola', where, registro)
+        }
     }
     //mostrar las escalas de calificacioón
     mostrarCalificacion() {
@@ -358,16 +475,31 @@ export class TabResultadosComponent implements OnInit {
             //console.log('Mostrar escala',this.calificacion)
         })
     }
-    unidades = []
+    //obtener los periordos en un button
+    unidades: any[] = []
     habilitarCalificacion() {
         const params = {
             iYAcadId: this._constantesService.iYAcadId,
             iCredId: this._constantesService.iCredId,
         }
-        console.log('año', params)
+        //console.log('año', params)
         this._aulaService.habilitarCalificacion(params).subscribe((Data) => {
             this.unidades = Data['data']
-            console.log('Mostrar fechas', this.mit)
+            this.unidades = this.unidades.map((unidad) => {
+                const ini = new Date(
+                    unidad.dtPeriodoEvalAperInicio
+                ).toLocaleDateString()
+                const fin = new Date(
+                    unidad.dtPeriodoEvalAperFin
+                ).toLocaleDateString()
+
+                return {
+                    ...unidad,
+                    dtPeriodoEvalAperInicio: ini,
+                    dtPeriodoEvalAperFin: fin,
+                }
+            })
+            //console.log('Mostrar fechas', this.unidades)
         })
     }
     // mostrar los estudiantes

@@ -1,4 +1,10 @@
-import { Component, OnInit, OnChanges, OnDestroy } from '@angular/core'
+import {
+    Component,
+    OnInit,
+    OnChanges,
+    OnDestroy,
+    SimpleChanges,
+} from '@angular/core'
 import { Router } from '@angular/router'
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
 import { AuditoriaService } from '../services/auditoria.service'
@@ -154,6 +160,15 @@ export class AccesosComponent implements OnInit, OnChanges, OnDestroy {
             filtroFecha: [[new Date(), new Date()]],
         })
     }
+    ngOnChanges(changes: SimpleChanges): void {
+        throw new Error('Method not implemented.', changes)
+    }
+    ngOnDestroy(): void {
+        throw new Error('Method not implemented.')
+    }
+    // ngOnChanges(changes: SimpleChanges): void {
+    //     throw new Error('Method not implemented.')
+    //  }
     async ngOnInit() {
         if (
             this.form.value.filtroFecha[0] != null &&
@@ -170,7 +185,6 @@ export class AccesosComponent implements OnInit, OnChanges, OnDestroy {
         }
 
         this.dataExport = this.data
-        
 
         this.data = this.data.map((acceso, index) => ({
             index: index + 1,
@@ -185,7 +199,7 @@ export class AccesosComponent implements OnInit, OnChanges, OnDestroy {
 
         this.form.valueChanges.subscribe(async (value) => {
             this.isExpand = false
-
+            console.log(value)
             if (this.form.value.selectedTable.name == 'Accesos autorizados') {
                 if (
                     this.form.value.filtroFecha[0] != null &&
@@ -201,8 +215,7 @@ export class AccesosComponent implements OnInit, OnChanges, OnDestroy {
                     })
                 }
 
-        this.dataExport = this.data
-
+                this.dataExport = this.data
 
                 this.data = this.data.map((acceso, index) => ({
                     index: index + 1,
@@ -406,8 +419,7 @@ export class AccesosComponent implements OnInit, OnChanges, OnDestroy {
                         ),
                     })
                 }
-        this.dataExport = this.data
-
+                this.dataExport = this.data
 
                 this.isExpand = true
 
@@ -558,8 +570,7 @@ export class AccesosComponent implements OnInit, OnChanges, OnDestroy {
                 })
 
                 this.isExpand = true
-        this.dataExport = this.data
-
+                this.dataExport = this.data
 
                 this.data = this.data.map((acceso, index) => {
                     const datosAntiguos = Array.isArray(
@@ -707,7 +718,6 @@ export class AccesosComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     generarExcel() {
-           
         const worksheet = XLSX.utils.json_to_sheet(this.dataExport)
 
         // Crear un libro de trabajo y añadir la hoja
@@ -718,7 +728,7 @@ export class AccesosComponent implements OnInit, OnChanges, OnDestroy {
         XLSX.writeFile(workbook, 'exportacion.xlsx')
     }
 
-    ngOnChanges(changes) {}
+    // ngOnChanges(changes) {}
 
-    ngOnDestroy() {}
+    // ngOnDestroy() {}
 }

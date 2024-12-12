@@ -174,7 +174,7 @@
                                                         styleClass="w-full"
                                                         optionValue="iEscalaCalifId"
                                                         optionLabel="cEscalaCalifNombre"
-                                                        placeholder="Seleccione calificación"
+                                                        placeholder="Seleccione...."
                                                         [showClear]="true"
                                                     />
                                                 </p-inputGroup>
@@ -200,7 +200,7 @@
                                 for=""
                                 class=""
                                 style="font-weight: bold; font-size: 16px"
-                                >Detalle de actividades del estudiante:
+                                >Retroalimentación de actividades académicas:
                             </label>
                             <div>
                                 <p-accordion [activeIndex]="0">
@@ -325,55 +325,8 @@
                         </span>
                     </div>
                 </ng-template>
-                <app-container-page [title]="'Mis Resultados'" [actions]="[]">
+                <app-container-page [title]="" [actions]="[]">
                     <p-dataView #dv [rows]="5" filterBy="cCursoNombre">
-                        <!-- <ng-template pTemplate="header" class="grid">
-                            <div class=" ">
-                                <div class="card grid grid-nogutter">
-                                    <div class="col pr-2">
-                                        <p-inputGroup>
-                                            <p-inputGroupAddon>
-                                                <p-inputIcon
-                                                    styleClass="pi pi-search"
-                                                />
-                                            </p-inputGroupAddon>
-                                            <input
-                                                pInputText
-                                                type="text"
-                                                placeholder="Buscar por nombre...."
-                                            />
-                                        </p-inputGroup>
-                                    </div>
-                                    <div class="col pr-2">
-                                        <p-inputGroup>
-                                            <p-inputGroupAddon>
-                                                Actividad
-                                            </p-inputGroupAddon>
-                                            <p-dropdown
-                                                placeholder="Evaluaciones"
-                                                styleClass="w-full"
-                                                class="flex-1"
-                                            />
-                                        </p-inputGroup>
-                                    </div>
-                                    <div class="col">
-                                        <p-inputGroup>
-                                            <p-inputGroupAddon>
-                                                Fecha
-                                            </p-inputGroupAddon>
-                                            <p-dropdown
-                                                placeholder="Seleccione fecha"
-                                                styleClass="w-full"
-                                                class="flex-1"
-                                            >
-                                            </p-dropdown>
-                                        </p-inputGroup>
-                                    </div>
-                                </div>
-
-                                <p-dataViewLayoutOptions></p-dataViewLayoutOptions>
-                            </div>
-                        </ng-template> -->
                         <ng-template let-products pTemplate="listItem">
                             <app-table-primeng
                                 [columnas]="columnasTabla"
@@ -385,6 +338,7 @@
                             </app-table-primeng>
                         </ng-template>
                     </p-dataView>
+
                     <!-- <p-table
                     [value]="estudiantes"
                     [tableStyle]="{ 'min-width': '50rem' }"

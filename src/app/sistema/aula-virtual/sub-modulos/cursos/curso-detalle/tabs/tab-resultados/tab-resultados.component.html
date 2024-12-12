@@ -34,7 +34,7 @@
                                 ) {
                                     <button
                                         pButton
-                                        class="mx-2"
+                                        class="mt-2 mr-2"
                                         [disabled]="
                                             item.iEstado === '0' ? true : false
                                         "
@@ -97,7 +97,10 @@
                                         />
                                         <!--class="w-4rem min-h-9 shadow-2 flex-shrink-0 border-round"-->
                                         <div class="perfil-name">
-                                            {{ estudiante?.nombrecompleto }}
+                                            {{
+                                                estudiante?.nombrecompleto
+                                                    | uppercase
+                                            }}
                                         </div>
                                     </div>
                                 </ng-template>
@@ -425,7 +428,7 @@
         [modal]="true"
         [(visible)]="mostrarModalConclusionDesc"
         header="Agregar conclusión descriptiva a : {{
-            estudianteSelect?.cEstNombres
+            estudianteSelect?.completoalumno
         }}"
     >
         <form
@@ -436,7 +439,7 @@
                 <!-- Mostrar la califcación comentada segun el requerimiento -->
                 <!--  for="calificacion" [options]="calificacion"-->
                 <div class="col-12">
-                    <p-inputGroup>
+                    <!-- <p-inputGroup>
                         <p-inputGroupAddon> Calificación </p-inputGroupAddon>
                         <p-dropdown
                             formControlName="iEscalaCalifId"
@@ -447,7 +450,7 @@
                             [style]="{ width: '100%' }"
                             [showClear]="true"
                         ></p-dropdown>
-                    </p-inputGroup>
+                    </p-inputGroup> -->
                 </div>
                 <!-- Mostrar descripción -->
                 <div class="col-12">
@@ -460,7 +463,7 @@
                     <div class="mt-2 pt-2">
                         <p-editor
                             id="descripcion"
-                            formControlName="cForoRptaDocente"
+                            formControlName="cDetMatConclusionDescPromedio"
                             [style]="{ height: '150px' }"
                         />
                     </div>
@@ -486,6 +489,7 @@
                     icon="pi pi-send"
                     size="small"
                     class="p-button-primary"
+                    (click)="guardarConclusionDescriptiva()"
                 ></button>
                 <!-- (click)="calificarComnt()" -->
             </div>

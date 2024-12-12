@@ -131,7 +131,7 @@ export class TabResultadosComponent implements OnInit {
         {
             type: 'text',
             width: '10rem',
-            field: 'cEstNombres',
+            field: 'completoalumno',
             header: 'Nombre estudiante',
             text_header: 'left',
             text: 'left',
@@ -171,18 +171,18 @@ export class TabResultadosComponent implements OnInit {
         {
             type: 'text',
             width: '10rem',
-            field: '',
+            field: 'cDetMatConclusionDescPromedio',
             header: 'Conclusión descriptiva',
-            text_header: 'left',
-            text: 'left',
+            text_header: 'center',
+            text: 'center',
         },
         {
             type: 'actions',
             width: '1rem',
             field: '',
             header: 'Acciones',
-            text_header: 'left',
-            text: 'left',
+            text_header: 'center',
+            text: 'center',
         },
     ]
     public accionesTabla: IActionTable[] = [
@@ -279,6 +279,45 @@ export class TabResultadosComponent implements OnInit {
                 console.log(this.calificacion)
             })
     }
+    // Metodo para guardar la conclusión descriptiva final
+    guardarConclusionDescriptiva() {
+        const conclusionDescrp = this.conclusionDescrp.value
+        const conclusionDescrpLimpia = this.limpiarHTML(
+            conclusionDescrp.cDetMatConclusionDescPromedio
+        )
+        const where = [
+            {
+                COLUMN_NAME: 'iDetMatrId',
+                VALUE: this.estudianteSelect.iDetMatrId,
+            },
+        ]
+        const registro: any = {
+            cDetMatConclusionDescPromedio: conclusionDescrpLimpia,
+        }
+        this._aulaService
+            .guardarCalificacionEstudiante(
+                'acad',
+                'detalle_matriculas',
+                where,
+                registro
+            )
+            .subscribe({
+                next: (response) => {
+                    this.mostrarModalConclusionDesc = false
+                    console.log('actualizar:', response)
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Éxito',
+                        detail: 'Calificación guardada correctamente.',
+                    })
+                },
+                error: (error) => {
+                    console.log('Error en la actualización:', error)
+                },
+            })
+        this.conclusionDescrp.reset()
+        console.log('conclusion;', where, registro)
+    }
     //guardar la calificación y conclusión descriptiva del docente para los promedios finales
     guardaCalificacionFinalUnidad() {
         const resultadosEstudiantesf = this.califcFinal.value
@@ -291,6 +330,7 @@ export class TabResultadosComponent implements OnInit {
                 VALUE: this.estudianteSeleccionado.iDetMatrId,
             },
         ]
+        console.log('where', where)
         const registro: any = {}
         if (!this.unidad) {
             this.unidades.find((i, index) => {

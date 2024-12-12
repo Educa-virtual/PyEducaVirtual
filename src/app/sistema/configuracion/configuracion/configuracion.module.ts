@@ -23,8 +23,8 @@ import { TurnosComponent } from './registro/steps/turnos/turnos.component'
 import { ConfiguracionComponent } from './configuracion.component'
 import { YearComponent } from './registro/steps/year/year.component'
 import { YearsComponent } from './years/years.component'
-import { TicketService } from './registro/service/ticketservice'
-import { StepConfirmationService } from '@/app/servicios/confirm.service'
+//import { TicketService } from './registro/service/ticketservice'
+//import { StepConfirmationService } from '@/app/servicios/confirm.service'
 import { StepGuardService } from '@/app/servicios/step.guard'
 @NgModule({
     imports: [

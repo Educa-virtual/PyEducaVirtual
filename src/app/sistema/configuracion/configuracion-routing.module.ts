@@ -23,7 +23,7 @@ import { GestionTrasladosComponent } from './gestion-traslados/gestion-traslados
                         (c) => c.PersonalModule
                     ),
             },
-            
+
             { path: 'gestion-traslados', component: GestionTrasladosComponent },
         ]),
     ],

@@ -31,27 +31,6 @@ export class CalendarioComponent {
         this.getObtenerActividad()
     }
 
-    academicas: any[] = [
-        {
-            name: 'Foro',
-            valor: 'actividades',
-            mostrar: true,
-            estilo: 'teal-checkbox',
-        },
-        {
-            name: 'Evaluacion',
-            valor: 'actividades',
-            mostrar: true,
-            estilo: 'teal-checkbox',
-        },
-        {
-            name: 'Tarea',
-            valor: 'actividades',
-            mostrar: true,
-            estilo: 'teal-checkbox',
-        },
-    ]
-
     // Obtener Areas curriculares para los checkbox
     getObtenerCurriculas() {
         const params = {
@@ -177,6 +156,24 @@ export class CalendarioComponent {
             }
             if (
                 evento.grupo == valor.checkbox.cCursoNombre &&
+                valor.checkbox.mostrar == false
+            ) {
+                evento.display = 'none'
+            }
+        })
+        this.events = Object.assign([], this.events)
+    }
+
+    filterActividad(valor: any) {
+        this.events.map((evento) => {
+            if (
+                evento.grupo == valor.checkbox.cActTipoNombre &&
+                valor.checkbox.mostrar == true
+            ) {
+                evento.display = 'block'
+            }
+            if (
+                evento.grupo == valor.checkbox.cActTipoNombre &&
                 valor.checkbox.mostrar == false
             ) {
                 evento.display = 'none'

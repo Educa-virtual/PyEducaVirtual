@@ -129,7 +129,6 @@ export class GeneralService {
             }
         )
     }
-
     getYear() {
         // devuelve informacion en tabla grl.years sin filtro
         return this.http.post(
@@ -142,13 +141,47 @@ export class GeneralService {
             }
         )
     }
+    addMaestro(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/gestionInstitucional/insertMaestro`,
+            data
+        )
+    }
 
-    addAno(data: any) {
+    addMaestroDetalle(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/gestionInstitucional/insertMaestroDetalle`,
+            data
+        )
+    }
+
+    addYear(data: any) {
         return this.http.post(
             `${baseUrl}/acad/calendarioAcademico/addYear`,
             data
         )
     }
+    updateYear(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/calendarioAcademico/updateYear`,
+            data
+        )
+    }
+
+    deleteYear(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/calendarioAcademico/deleteYear`,
+            data
+        )
+    }
+
+    addCalAcademico(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/calendarioAcademico/addCalAcademico`,
+            data
+        )
+    }
+
     addAmbienteAcademico(data: any) {
         return this.http.post(
             `${baseUrl}/acad/calendarioAcademicos/addAmbiente`,
@@ -166,6 +199,13 @@ export class GeneralService {
     deleteAcademico(data: any) {
         return this.http.post(
             `${baseUrl}/acad/calendarioAcademicos/deleteCalendario`,
+            data
+        )
+    }
+
+    searchTablaXwhere(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/calendarioAcademico/searchCalAcademico`,
             data
         )
     }
@@ -206,6 +246,12 @@ export class GeneralService {
     searchGradoCiclo(data: any) {
         return this.http.post(
             `${baseUrl}/acad/calendarioAcademicos/searchGradoCiclo`,
+            data
+        )
+    }
+    searchPersonalIes(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/gestionInstitucional/listarPersonalIes`,
             data
         )
     }

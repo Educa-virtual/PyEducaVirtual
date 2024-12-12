@@ -1,5 +1,5 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { NgModule } from '@angular/core'
+import { RouterModule, Routes } from '@angular/router'
 
 const routes: Routes = [
     {
@@ -8,7 +8,6 @@ const routes: Routes = [
             import('./auditoria/auditoria.module').then(
                 (module) => module.AuditoriaModule
             ),
-        
     },
     {
         path: 'componentes',
@@ -16,13 +15,11 @@ const routes: Routes = [
             import('./componentes/componentes.module').then(
                 (module) => module.AuditoriaModule
             ),
-        
     },
-];
+]
 
 @NgModule({
     imports: [RouterModule.forChild(routes)],
     exports: [RouterModule],
 })
 export class AdministradorModule {}
-

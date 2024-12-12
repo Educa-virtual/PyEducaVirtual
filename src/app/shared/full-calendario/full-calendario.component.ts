@@ -23,6 +23,7 @@ import esLocale from '@fullcalendar/core/locales/es'
 export class FullCalendarioComponent implements OnChanges {
     @Output() filtrarFestividad = new EventEmitter()
     @Output() filtrarCalendario = new EventEmitter()
+    @Output() filtrarActividad = new EventEmitter()
     @Input() academicas
     @Input() curricula
     @Input() festividades
@@ -30,7 +31,7 @@ export class FullCalendarioComponent implements OnChanges {
     @Input() events
 
     activarIndice: number | number[] = [] //activa las pestañas de p-according
-    ngOnInit() {
+    OnInit() {
         window.addEventListener('resize', this.verificarDimension.bind(this))
     }
     ngOnChanges(changes: SimpleChanges): void {
@@ -48,20 +49,11 @@ export class FullCalendarioComponent implements OnChanges {
         selectable: true,
         dayMaxEvents: true,
         height: 600,
-        viewDidMount: (info) => {
-            const weekendDays = ['sábado', 'viernes'] // establecemos los dias que se desea establecer un fondo se toma un dia antes
-            const allDays = info.el.querySelectorAll('.fc-day')
-
-            allDays.forEach((cell: HTMLElement) => {
-                const date = new Date(cell.getAttribute('data-date')!) // captura los dias de la semana
-                if (
-                    weekendDays.includes(
-                        date.toLocaleString('es-pe', { weekday: 'long' })
-                    )
-                ) {
-                    cell.style.backgroundColor = '#ffd7d7'
-                }
-            })
+        dayCellDidMount: (data) => {
+            // Si el día es sábado o domingo
+            if (data.dow === 6 || data.dow === 0) {
+                data.el.style.backgroundColor = '#ffd7d7'
+            }
         },
         headerToolbar: {
             right: 'dayGridMonth,timeGridWeek,timeGridDay',
@@ -86,5 +78,11 @@ export class FullCalendarioComponent implements OnChanges {
             checkbox: id,
         }
         this.filtrarCalendario.emit(data)
+    }
+    eventoActividad(id) {
+        const data = {
+            checkbox: id,
+        }
+        this.filtrarActividad.emit(data)
     }
 }

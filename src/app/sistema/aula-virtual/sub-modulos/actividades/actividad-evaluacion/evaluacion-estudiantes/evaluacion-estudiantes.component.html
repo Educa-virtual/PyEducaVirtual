@@ -78,7 +78,7 @@
                 class="col-12 md:col-3 mt-2"
                 align="center"
             >
-                <p class="font-bold">Evaluación empieza en:</p>
+                <!-- <p class="font-bold">Evaluación empieza en:</p> -->
 
                 <!-- <div class="col-12 md:col-3 mt-2" align="center">
                     <p class="font-bold">Evaluación empieza en:</p>
@@ -99,6 +99,22 @@
                 <div class="container p-2">
                     <div [innerHTML]="evaluacion?.cEvaluacionDescripcion"></div>
                 </div>
+                <!--Agregando Recursos Vista Estudiante-->
+                <article class="card">
+                    <h2>Recursoss</h2>
+                    @if (evaluacion?.cEvaluacionArchivoAdjunto.length === 0) {
+                        <app-empty-section
+                            class="w-full"
+                            [message]="'Sin recursos asignados'"
+                        ></app-empty-section>
+                    } @else {
+                        <app-recursos-lista
+                            [files]="
+                                evaluacion?.cEvaluacionArchivoAdjunto ?? []
+                            "
+                        ></app-recursos-lista>
+                    }
+                </article>
             </div>
 
             <div
@@ -112,35 +128,11 @@
                     (onClick)="iniciarEvaluacion()"
                 ></p-button>
             </div>
-        </div>
-    </div>
-
-    <div class="grid">
-        <div class="col-12">
-            <article class="card">
-                <h2>Recursos de Ayuda</h2>
-                @if (evaluacion?.cEvaluacionArchivoAdjunto.length === 0) {
-                    <app-empty-section
-                        class="w-full"
-                        [message]="'Sin recursos asignados'"
-                    ></app-empty-section>
-                } @else {
-                    <app-recursos-lista
-                        [files]="evaluacion?.cEvaluacionArchivoAdjunto ?? []"
-                    ></app-recursos-lista>
-                }
-            </article>
-        </div>
-    </div>
-    <div class="container">
-        <div class="col-12">
-            <p-inputGroup>
-                <p-inputGroupAddon> Retroalimentación: </p-inputGroupAddon>
-                <textarea
-                    pInputText
-                    [(ngModel)]="cTareaEstudianteComentarioDocente"
-                ></textarea>
-            </p-inputGroup>
+            <div
+                class="col-12"
+                align="right"
+                [hidden]="evaluacion?.bEstadoEvaluacion === '0'"
+            ></div>
         </div>
     </div>
     <div

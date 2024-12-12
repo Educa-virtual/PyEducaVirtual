@@ -20,31 +20,5 @@
                 {{ evaluacionEstudiante.cEstMaterno }}
             </th>
         </tr>
-        <tr>
-            <th>Iniciado el</th>
-            <th colspan="3">
-                {{ evaluacionEstudiante.dtEvalPromInicio | fullDate }}
-                {{ evaluacionEstudiante?.dtEvalPromInicio | date: 'h:mm a' }}
-            </th>
-        </tr>
-        <tr>
-            <th>Estado</th>
-            <th colspan="3">Finalizado</th>
-        </tr>
-        <tr>
-            <th>Finalizado el</th>
-            <th colspan="3">
-                {{ evaluacionEstudiante.dtEvalPromFin | fullDate }}
-                {{ evaluacionEstudiante.dtEvalPromFin | fullTime }}
-            </th>
-        </tr>
-        <tr>
-            <th>Tiempo empleado</th>
-
-            <th>{{ evaluacionEstudiante.iTotalMinutos ?? 0 }} minutos</th>
-
-            <!-- <th>Retroalimentacion</th>
-            <th></th> -->
-        </tr>
     </ng-template>
 </p-table>

@@ -5,6 +5,7 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-evaluaciones.service'
 import { Subject, takeUntil } from 'rxjs'
+import { Output, EventEmitter } from '@angular/core'
 
 @Component({
     selector: 'app-rubrica-form',
@@ -33,9 +34,8 @@ export class RubricaFormComponent implements OnInit, OnDestroy {
     constructor(private _rubricaFormService: RubricaFormService) {}
 
     ngOnInit() {
-        console.log('this.mode en form rubrica');
-        console.log(this._config.data.mode);
-        
+        console.log('this.mode en form rubrica')
+        console.log(this._config.data.mode)
 
         this.rubricas = this._config.data.rubricas
         this.rubrica = this._config.data.rubrica
@@ -58,6 +58,10 @@ export class RubricaFormComponent implements OnInit, OnDestroy {
             this.mode = 'EDITAR'
             this.patchValues()
         }
+    }
+
+    patchValuesSelection(rubrica: any) {
+        this._rubricaFormService.patchRubricaForm(rubrica)
     }
 
     patchValues() {

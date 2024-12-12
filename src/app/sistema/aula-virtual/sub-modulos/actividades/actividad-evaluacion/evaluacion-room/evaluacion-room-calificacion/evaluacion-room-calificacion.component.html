@@ -10,53 +10,7 @@
         <ng-template pTemplate="header">
             <tr>
                 <th></th>
-                <th>Calificados: 2</th>
-                <th>Sin Calificar:3</th>
-                <th>Asignar Retroalimentacion a: Araceli</th>
                 <th>
-                    <button
-                        pButton
-                        type="button"
-                        label="Botón"
-                        icon="pi pi-check"
-                    >
-                        Ver Estudiante
-                    </button>
-                </th>
-            </tr>
-        </ng-template>
-    </p-table>
-</div>
-
-<div class="grid">
-    <!-- <div class="flex flex-column mb-4">
-        <article class="card" style="position: sticky; top: 0; z-index: 10; background: white; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
-          <h2>Calificación: {{ evaluacion?.cEvaluacionTitulo }}</h2>
-        </article>
-      </div> -->
-
-    <div class="col-12 grid align-items-center">
-        <div class="col-2">Calificados:</div>
-        <div class="col-2">Sin calificar:</div>
-        <div class="col-6">Aisgnar Retroalimentacion a:</div>
-        <button pbutton (click)="isExpand = !isExpand" class="col-2">
-            Listar estudiantes
-        </button>
-    </div>
-
-    <div
-        class="w-full flex flex-column gap-4 md:flex-row md:align-items-start align-items-stretch"
-    >
-        <!-- Panel Izquierdo -->
-        <div
-            [ngStyle]="{
-                display: isExpand ? 'none' : 'flex',
-            }"
-            class="flex-column gap-2 card"
-            style="overflow-y: auto; max-height: 500px"
-        >
-            <div class="flex gap-4 align-items-center flex-wrap mx-auto">
-                <div class="grid">
                     <div class="col-6 leyenda-tareas">
                         <div class="flex align-items-center">
                             <div
@@ -64,11 +18,13 @@
                                 [ngClass]="'bg-red-500'"
                             ></div>
                             <div>
-                                <b style="font-size: 1.5rem"> &nbsp;0 </b>
+                                <b style="font-size: 1.5rem">&nbsp;0</b>
                                 <small>&nbsp;Falta</small>
                             </div>
                         </div>
                     </div>
+                </th>
+                <th>
                     <div class="col-6 leyenda-tareas">
                         <div class="flex align-items-center">
                             <div
@@ -81,39 +37,39 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </th>
+                <th>
+                    <app-evaluacion-info
+                        [evaluacionEstudiante]="selectedEstudianteValue"
+                    >
+                    </app-evaluacion-info>
+                </th>
+                <th>
+                    <button
+                        pButton
+                        (click)="isExpand = !isExpand"
+                        label="Ver estudiantes"
+                        icon="pi pi-eye"
+                        iconPos="left"
+                    ></button>
+                </th>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
 
-                <div class="topbar__bars_modulo">
-                    <button #menubutton class="p-link" (click)="toggleMenu()">
-                        <i class="pi pi-bars"></i>
-                    </button>
-                </div>
-                <div class="menu-content" *ngIf="menuVisible">
-                    <p>Contenido del menú</p>
-                </div>
-
-                <!-- <ng-container
-                    *ngFor="let leyenda of leyendasOrden; let i = index"
-                >
-                    <app-leyenda
-                        [total]="leyendas()[leyenda].total"
-                        [text]="leyendas()[leyenda].text"
-                        [size]="$any(leyendas()[leyenda].size)"
-                        [colorClass]="leyendas()[leyenda].colorClass"
-                    ></app-leyenda>
-                </ng-container> -->
-            </div>
-            <!-- <div class="w-full">
-                <p-iconField iconPosition="left" class="w-full">
-                    <p-inputIcon styleClass="pi pi-search"></p-inputIcon>
-                    <input
-                        type="text"
-                        pInputText
-                        placeholder="Buscar"
-                        class="w-full"
-                    />
-                </p-iconField>
-            </div> -->
+<div class="grid">
+    <div
+        class="w-full flex flex-column gap-4 md:flex-row md:align-items-start align-items-stretch"
+    >
+        <!-- Panel Izquierdo -->
+        <div
+            [ngStyle]="{
+                display: isExpand ? 'none' : 'flex',
+            }"
+            class="flex-column gap-2 card"
+            style="overflow-y: auto; max-height: 500px"
+        >
             <div
                 class="flex justify-content-between gap-2 flex-column sm:flex-row flex-wrap"
             >
@@ -124,7 +80,7 @@
                         type="text"
                         class="py-2"
                         (input)="onGlobalFilter(dv, $event)"
-                        placeholder="Buscar por apellidos y nombres"
+                        placeholder="Buscar"
                     />
                 </p-iconField>
             </div>
@@ -172,13 +128,13 @@
         </div>
 
         <!-- Panel Derecho -->
+
         <div class="flex flex-column flex-1 gap-4">
+            <!-- Encabezado superior -->
+            <hr />
             <ng-container *ngIf="!!selectedEstudiante(); else emptySection">
-                <app-evaluacion-info
-                    [evaluacionEstudiante]="selectedEstudiante()"
-                ></app-evaluacion-info>
                 <div class="grid">
-                    <div class="col-12">
+                    <div class="col-12 flex flex-column flex-1 gap-4">
                         <p-inputGroup>
                             <p-inputGroupAddon>
                                 Retroalimentación

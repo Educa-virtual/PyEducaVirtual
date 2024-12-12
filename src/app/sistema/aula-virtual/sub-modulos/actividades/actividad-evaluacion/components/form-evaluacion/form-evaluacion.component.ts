@@ -19,6 +19,8 @@ import { DialogService } from 'primeng/dynamicdialog'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { GeneralService } from '@/app/servicios/general.service'
 import { ListPreguntasComponent } from '../list-preguntas/list-preguntas.component'
+import { EVALUACION } from '@/app/sistema/aula-virtual/interfaces/actividad.interface'
+import { MessageService } from 'primeng/api'
 
 @Component({
     selector: 'app-form-evaluacion',
@@ -41,6 +43,7 @@ export class FormEvaluacionComponent implements OnChanges, OnInit {
     private _DialogService = inject(DialogService)
     private _store = inject(LocalStoreService)
     private _GeneralService = inject(GeneralService)
+    private _MessageService = inject(MessageService)
 
     @Output() accionBtnItem = new EventEmitter()
     @Input() showModalEvaluacion: boolean = false
@@ -89,15 +92,18 @@ export class FormEvaluacionComponent implements OnChanges, OnInit {
         iActTipoId: [],
         iContenidoSemId: [],
 
-        dtInicio: [this.date, Validators.required],
-        dtFin: [this.date, Validators.required],
+        dtInicio: [this.date],
+        dtFin: [this.date],
 
         dFechaEvaluacionPublicacion: [],
-        dFechaEvaluacionInico: [],
-        dFechaEvaluacionFin: [],
+        dFechaEvaluacionInico: [this.date],
+        dFechaEvaluacionFin: [this.date],
         tHoraEvaluacionPublicacion: [],
         tHoraEvaluacionInico: [],
         tHoraEvaluacionFin: [],
+
+        fechaInicio: [],
+        fechaFin: [],
     })
 
     ngOnInit() {
@@ -199,14 +205,114 @@ export class FormEvaluacionComponent implements OnChanges, OnInit {
     }
 
     private guardarActualizarFormInfo() {
-        this.guardarPreguntas()
-        //   const data = this.formEvaluacion.getRawValue()
-        //   data.iDocenteId = this._ConstantesService.iDocenteId
-        //   data.iActTipoId = EVALUACION
-        //   data.iContenidoSemId = this.semana.iContenidoSemId
-        //   data.cEvaluacionArchivoAdjunto = JSON.stringify(this.filesUrl)
+        const data = this.formEvaluacion.getRawValue()
+        data.iDocenteId = this._ConstantesService.iDocenteId
+        data.iActTipoId = EVALUACION
+        data.iContenidoSemId = this.semanaEvaluacion.iContenidoSemId
+        data.cEvaluacionArchivoAdjunto = JSON.stringify(this.filesUrl)
 
-        //   let horaInicio = data.dFechaEvaluacionInico.toLocaleString('en-GB', {
+        this.formEvaluacion.controls.fechaInicio.setValue(
+            this.formEvaluacion.value.dtEvaluacionInicio
+        )
+        this.formEvaluacion.controls.fechaFin.setValue(
+            this.formEvaluacion.value.dtEvaluacionInicio
+        )
+
+        let horaInicio: any = data.dFechaEvaluacionInico.toLocaleString(
+            'en-GB',
+            {
+                timeZone: 'America/Lima',
+            }
+        )
+        let horaFin: any = data.dFechaEvaluacionFin.toLocaleString('en-GB', {
+            timeZone: 'America/Lima',
+        })
+        horaInicio = horaInicio.split(',')
+        horaFin = horaFin.split(',')
+
+        this.formEvaluacion.controls['dFechaEvaluacionPublicacion'].setValue(
+            horaInicio[0]
+        )
+        this.formEvaluacion.controls['tHoraEvaluacionPublicacion'].setValue(
+            horaInicio[1].replace(' ', '')
+        )
+        this.formEvaluacion.controls['dFechaEvaluacionInico'].setValue(
+            horaInicio[0]
+        )
+        this.formEvaluacion.controls['tHoraEvaluacionInico'].setValue(
+            horaInicio[1].replace(' ', '')
+        )
+        this.formEvaluacion.controls['dFechaEvaluacionFin'].setValue(horaFin[0])
+        this.formEvaluacion.controls['tHoraEvaluacionFin'].setValue(
+            horaFin[1].replace(' ', '')
+        )
+
+        data.dFechaEvaluacionPublicacion = horaInicio[0]
+        data.tHoraEvaluacionPublicacion = horaInicio[1].replace(' ', '')
+
+        data.dFechaEvaluacionInico = horaInicio[0]
+        data.tHoraEvaluacionInico = horaInicio[1].replace(' ', '')
+
+        data.dFechaEvaluacionFin = horaFin[0]
+        data.tHoraEvaluacionFin = horaFin[1].replace(' ', '')
+
+        if (
+            data.dFechaEvaluacionPublicacion &&
+            data.tHoraEvaluacionPublicacion
+        ) {
+            data.dtEvaluacionPublicacion =
+                data.dFechaEvaluacionPublicacion +
+                ' ' +
+                data.tHoraEvaluacionPublicacion
+        }
+        if (data.dFechaEvaluacionInico && data.tHoraEvaluacionInico) {
+            data.dtEvaluacionInicio =
+                data.dFechaEvaluacionInico + ' ' + data.tHoraEvaluacionInico
+            this.formEvaluacion.controls.dtEvaluacionInicio.setValue(
+                data.dtEvaluacionInicio
+            )
+        }
+
+        if (data.dFechaEvaluacionFin && data.tHoraEvaluacionFin) {
+            data.dtEvaluacionFin =
+                data.dFechaEvaluacionFin + ' ' + data.tHoraEvaluacionFin
+            this.formEvaluacion.controls.dtEvaluacionFin.setValue(
+                data.dtEvaluacionFin
+            )
+        }
+
+        if (this.formEvaluacion.invalid) {
+            this.formEvaluacion.markAllAsTouched()
+            return
+        }
+
+        this._evaluacionService.guardarActualizarEvaluacion(data).subscribe({
+            next: (data) => {
+                if (data.iEvaluacionId) {
+                    this.guardarPreguntas()
+                }
+            },
+            complete: () => {},
+            error: (error) => {
+                // this.formEvaluacion.controls.dtEvaluacionInicio.setValue(this.date)
+                // this.formEvaluacion.controls.dtEvaluacionFin.setValue(this.date)
+
+                console.log(error)
+                this._MessageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: error,
+                })
+            },
+        })
+
+        // const data = this.formEvaluacion.getRawValue()
+        // data.iDocenteId = this._ConstantesService.iDocenteId
+        // data.iActTipoId = EVALUACION
+        // data.iContenidoSemId = this.semanaEvaluacion.iContenidoSemId
+        // data.cEvaluacionArchivoAdjunto = JSON.stringify(this.filesUrl)
+
+        // let horaInicio = data.dFechaEvaluacionInico.toLocaleString('en-GB', {
         //     timeZone: 'America/Lima',
         // })
         // let horaFin = data.dFechaEvaluacionFin.toLocaleString('en-GB', {
@@ -243,23 +349,22 @@ export class FormEvaluacionComponent implements OnChanges, OnInit {
         // data.dFechaEvaluacionFin = horaFin[0]
         // data.tHoraEvaluacionFin = horaFin[1].replace(' ', '')
 
-        //   if (this.formEvaluacion.invalid) {
-        //     this.formEvaluacion.markAllAsTouched()
-        //     return
-        //   }
+        // // if (this.formEvaluacion.invalid) {
+        // //     this.formEvaluacion.markAllAsTouched()
+        // //     return
+        // // }
 
-        //   this._evaluacionService
+        // this._evaluacionService
         //     .guardarActualizarEvaluacion(data)
         //     .subscribe({
-        //       next: (data) => {
-        //         this.formEvaluacion.patchValue({
-        //           iProgActId: data.iProgActId,
-        //           iEvaluacionId: data.iEvaluacionId,
-        //         })
+        //         next: (data) => {
+        //             this.formEvaluacion.patchValue({
+        //                 iProgActId: data.iProgActId,
+        //                 iEvaluacionId: data.iEvaluacionId,
+        //             })
 
-        //       },
+        //         },
         //     })
-        //
     }
     guardarPreguntas() {
         this._ConfirmationModalService.openConfirm({
@@ -268,6 +373,9 @@ export class FormEvaluacionComponent implements OnChanges, OnInit {
                 this.showMostrarVista = 'LIST-PREGUNTAS'
                 this.titulo =
                     'AGREGAR PREGUNTAS PARA: ' + this.curso?.cCursoNombre
+            },
+            reject: () => {
+                this.accionBtn({ accion: 'close-modal', item: [] })
             },
         })
     }

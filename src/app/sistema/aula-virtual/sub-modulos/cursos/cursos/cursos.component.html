@@ -46,7 +46,7 @@
         </ng-template>
         <ng-template let-products pTemplate="gridItem">
             <div class="cursos gap-4 py-2">
-                @for (curso of cursos; track curso.iCursoId) {
+                @for (curso of cursos; track curso) {
                     <app-curso-card
                         #dv
                         class=""

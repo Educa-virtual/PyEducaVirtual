@@ -17,7 +17,9 @@
                             styleClass="w-full"
                             severity="info"
                             [text]="
-                                'SEMANA: ' +
+                                'SEMANA ' +
+                                semanaEvaluacion?.cContenidoSemNumero +
+                                ': ' +
                                 semanaEvaluacion?.cContenidoSemTitulo
                             "
                         ></p-message>
@@ -152,9 +154,16 @@
             severity="secondary"
             (onClick)="accionBtn({ accion: 'close-modal', item: [] })"
         />
-        <p-button
-            [label]="opcionEvaluacion"
-            (onClick)="accionBtn({ accion: opcionEvaluacion, item: [] })"
-        />
+        @switch (showMostrarVista) {
+            @case ('FORM-EVALUACION') {
+                <p-button
+                    [label]="opcionEvaluacion"
+                    (onClick)="
+                        accionBtn({ accion: opcionEvaluacion, item: [] })
+                    "
+                />
+            }
+        }
     </div>
 </app-modal-primeng>
+<p-toast></p-toast>

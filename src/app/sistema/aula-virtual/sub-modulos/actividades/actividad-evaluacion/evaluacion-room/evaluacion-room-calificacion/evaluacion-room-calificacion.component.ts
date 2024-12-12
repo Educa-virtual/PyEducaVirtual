@@ -84,6 +84,7 @@ export class EvaluacionRoomCalificacionComponent implements OnInit {
     @Input({ required: true }) evaluacion
     @Input({ required: true }) iEvaluacionId: string
 
+    isExpand = false
     private _state = signal<EstudianteState>({
         estudiantes: [],
         leyendas: leyendas,

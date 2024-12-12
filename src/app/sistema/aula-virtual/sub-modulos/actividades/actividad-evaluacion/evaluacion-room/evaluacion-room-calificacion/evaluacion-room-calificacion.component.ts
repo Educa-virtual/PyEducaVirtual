@@ -116,6 +116,8 @@ export class EvaluacionRoomCalificacionComponent implements OnInit {
     menuVisible: any
     onGlobalFilter: any
     dv: any
+    tareasFalta: any
+    tareasCulminado: any
 
     updateSelectedEstudiante(value: any) {
         this._state.update((state) => ({

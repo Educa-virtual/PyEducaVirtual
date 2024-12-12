@@ -38,7 +38,7 @@ import { Subject, takeUntil } from 'rxjs'
 import { RemoveHTMLPipe } from '@/app/shared/pipes/remove-html.pipe'
 import { CommonInputComponent } from '@/app/shared/components/common-input/common-input.component'
 import { ButtonModule } from 'primeng/button'
-//import { Toast } from 'primeng/toast';
+import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 @Component({
     selector: 'app-tab-resultados',
     standalone: true,
@@ -83,6 +83,7 @@ export class TabResultadosComponent implements OnInit {
     private GeneralService = inject(GeneralService)
     private _formBuilder = inject(FormBuilder)
     private _aulaService = inject(ApiAulaService)
+    private _confirmService = inject(ConfirmationModalService)
     // private ref = inject(DynamicDialogRef)
     private _constantesService = inject(ConstantesService)
     estudiantes: any[] = []
@@ -140,7 +141,7 @@ export class TabResultadosComponent implements OnInit {
             type: 'text',
             width: '10rem',
             field: 'iEscalaCalifIdPeriodo1',
-            header: 'Promedio 01',
+            header: 'Trimestre 01',
             text_header: 'center',
             text: 'center',
         },
@@ -148,7 +149,7 @@ export class TabResultadosComponent implements OnInit {
             type: 'text',
             width: '10rem',
             field: 'iEscalaCalifIdPeriodo2',
-            header: 'Promedio 02',
+            header: 'Trimestre 02',
             text_header: 'center',
             text: 'center',
         },
@@ -156,18 +157,18 @@ export class TabResultadosComponent implements OnInit {
             type: 'text',
             width: '10rem',
             field: 'iEscalaCalifIdPeriodo3',
-            header: 'Promedio 03',
+            header: 'Trimestre 03',
             text_header: 'center',
             text: 'center',
         },
-        {
-            type: 'text',
-            width: '10rem',
-            field: 'iEscalaCalifIdPeriodo4',
-            header: 'Promedio 04',
-            text_header: 'center',
-            text: 'center',
-        },
+        // {
+        //     type: 'text',
+        //     width: '10rem',
+        //     field: 'iEscalaCalifIdPeriodo4',
+        //     header: 'Promedio 04',
+        //     text_header: 'center',
+        //     text: 'center',
+        // },
         {
             type: 'text',
             width: '10rem',
@@ -303,6 +304,7 @@ export class TabResultadosComponent implements OnInit {
             )
             .subscribe({
                 next: (response) => {
+                    this.obtenerReporteDenotasFinales()
                     this.mostrarModalConclusionDesc = false
                     console.log('actualizar:', response)
                     this.messageService.add({
@@ -323,6 +325,17 @@ export class TabResultadosComponent implements OnInit {
         const resultadosEstudiantesf = this.califcFinal.value
         const descripcionlimpia = resultadosEstudiantesf.cDetMatrConclusionDesc1
         const conclusionFinalDocente = this.limpiarHTML(descripcionlimpia)
+        console.log(
+            'calificacion',
+            this.califcFinal.value.iEscalaCalifIdPeriodo1
+        )
+        if (this.estudianteSeleccionado == undefined) {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Seleccione un estudiante:',
+            })
+        }
         const fechaActual = new Date()
         const where = [
             {
@@ -374,28 +387,55 @@ export class TabResultadosComponent implements OnInit {
             default:
                 console.log('No se a encontrado la unidad')
         }
-        this._aulaService
-            .guardarCalificacionEstudiante(
-                'acad',
-                'detalle_matriculas',
-                where,
-                registro
-            )
-            .subscribe({
-                next: (response) => {
-                    console.log('actualizar:', response)
+        if (
+            conclusionFinalDocente == '' ||
+            this.califcFinal.value.iEscalaCalifIdPeriodo1 == null
+        ) {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Tiene que agregar una conclusión descriptiva y el nivel de logro',
+            })
+        } else {
+            this._confirmService.openConfiSave({
+                message: 'Recuerde que no podra retroceder',
+                header: '¿Esta seguro que desea guardar conclusión descriptiva?',
+                accept: () => {
+                    // Acción para guardar la conclusion descritiva final
+                    this._aulaService
+                        .guardarCalificacionEstudiante(
+                            'acad',
+                            'detalle_matriculas',
+                            where,
+                            registro
+                        )
+                        .subscribe({
+                            next: (response) => {
+                                this.califcFinal.reset()
+                                //actualiza la tabla de reporte de notas:
+                                this.obtenerReporteDenotasFinales()
+                                console.log('actualizar:', response)
+                                this.messageService.add({
+                                    severity: 'success',
+                                    summary: 'Éxito',
+                                    detail: 'Calificación guardada correctamente.',
+                                })
+                            },
+                            error: (error) => {
+                                console.log('Error en la actualización:', error)
+                            },
+                        })
+                },
+                reject: () => {
+                    // Mensaje de cancelación (opcional)
                     this.messageService.add({
-                        severity: 'success',
-                        summary: 'Éxito',
-                        detail: 'Calificación guardada correctamente.',
+                        severity: 'error',
+                        summary: 'Cancelado',
+                        detail: 'Acción cancelada',
                     })
                 },
-                error: (error) => {
-                    console.log('Error en la actualización:', error)
-                },
             })
-        this.califcFinal.reset()
-        console.log('hola', where, registro)
+        }
     }
     //mostrar las escalas de calificacioón
     mostrarCalificacion() {

@@ -72,9 +72,8 @@
 .btn {
     border-radius: 50%; /* Si quieres hacerla circular */
 }
-// :host ::ng-deep .p-element {
-//     border-radius: 5px;
-//     //margin: 1px;
-// }
-
 // 3867149912 codigo de cacelación del plan de claro
+.button-container {
+    display: flex;
+    margin-top: 10px; /* Espacio entre el editor y el botón */
+}

@@ -39,6 +39,27 @@ export class ConfirmationModalService {
             ...config,
         })
     }
+    openConfiSave({
+        header,
+        message = '',
+        ...config
+    }: Omit<IModal, 'header'> & {
+        header: string
+    }) {
+        console.log(message === '')
+
+        this.dialogState.next({
+            header,
+            key: 'manual',
+            icon: 'pi pi-exclamation-circle',
+            acceptLabel: 'Si',
+            rejectLabel: 'No, Cancelar',
+            rejectVisible: true,
+            message:
+                message === '' ? 'No podrá revertir esta acción.' : message,
+            ...config,
+        })
+    }
 
     openAlert({
         header,

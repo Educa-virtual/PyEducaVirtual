@@ -5,6 +5,29 @@
     "
 ></app-toolbar-primeng>
 
+<div>
+    <p-table>
+        <ng-template pTemplate="header">
+            <tr>
+                <th></th>
+                <th>Calificados: 2</th>
+                <th>Sin Calificar:3</th>
+                <th>Asignar Retroalimentacion a: Araceli</th>
+                <th>
+                    <button
+                        pButton
+                        type="button"
+                        label="Botón"
+                        icon="pi pi-check"
+                    >
+                        Ver Estudiante
+                    </button>
+                </th>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+
 <div class="grid">
     <!-- <div class="flex flex-column mb-4">
         <article class="card" style="position: sticky; top: 0; z-index: 10; background: white; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
@@ -12,16 +35,64 @@
         </article>
       </div> -->
 
+    <div class="col-12 grid align-items-center">
+        <div class="col-2">Calificados:</div>
+        <div class="col-2">Sin calificar:</div>
+        <div class="col-6">Aisgnar Retroalimentacion a:</div>
+        <button pbutton (click)="isExpand = !isExpand" class="col-2">
+            Listar estudiantes
+        </button>
+    </div>
+
     <div
-        class="flex flex-column gap-4 md:flex-row md:align-items-start align-items-stretch"
+        class="w-full flex flex-column gap-4 md:flex-row md:align-items-start align-items-stretch"
     >
         <!-- Panel Izquierdo -->
         <div
-            class="flex flex-column gap-2 card"
+            [ngStyle]="{
+                display: isExpand ? 'none' : 'flex',
+            }"
+            class="flex-column gap-2 card"
             style="overflow-y: auto; max-height: 500px"
         >
             <div class="flex gap-4 align-items-center flex-wrap mx-auto">
-                <ng-container
+                <div class="grid">
+                    <div class="col-6 leyenda-tareas">
+                        <div class="flex align-items-center">
+                            <div
+                                class="w-1rem h-1rem border-circle"
+                                [ngClass]="'bg-red-500'"
+                            ></div>
+                            <div>
+                                <b style="font-size: 1.5rem"> &nbsp;0 </b>
+                                <small>&nbsp;Falta</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 leyenda-tareas">
+                        <div class="flex align-items-center">
+                            <div
+                                class="w-1rem h-1rem border-circle"
+                                [ngClass]="'bg-green-500'"
+                            ></div>
+                            <div>
+                                <b style="font-size: 1.5rem">&nbsp;0</b>
+                                <small>&nbsp;Culminado</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="topbar__bars_modulo">
+                    <button #menubutton class="p-link" (click)="toggleMenu()">
+                        <i class="pi pi-bars"></i>
+                    </button>
+                </div>
+                <div class="menu-content" *ngIf="menuVisible">
+                    <p>Contenido del menú</p>
+                </div>
+
+                <!-- <ng-container
                     *ngFor="let leyenda of leyendasOrden; let i = index"
                 >
                     <app-leyenda
@@ -30,9 +101,9 @@
                         [size]="$any(leyendas()[leyenda].size)"
                         [colorClass]="leyendas()[leyenda].colorClass"
                     ></app-leyenda>
-                </ng-container>
+                </ng-container> -->
             </div>
-            <div class="w-full">
+            <!-- <div class="w-full">
                 <p-iconField iconPosition="left" class="w-full">
                     <p-inputIcon styleClass="pi pi-search"></p-inputIcon>
                     <input
@@ -40,6 +111,20 @@
                         pInputText
                         placeholder="Buscar"
                         class="w-full"
+                    />
+                </p-iconField>
+            </div> -->
+            <div
+                class="flex justify-content-between gap-2 flex-column sm:flex-row flex-wrap"
+            >
+                <p-iconField iconPosition="left">
+                    <p-inputIcon styleClass="pi pi-search text-md" />
+                    <input
+                        pInputText
+                        type="text"
+                        class="py-2"
+                        (input)="onGlobalFilter(dv, $event)"
+                        placeholder="Buscar por apellidos y nombres"
                     />
                 </p-iconField>
             </div>
@@ -57,7 +142,7 @@
                     <tr>
                         <th>Nombre y Apellidos</th>
                         <th>Estado</th>
-                        <th>Nota Final</th>
+                        <!-- <th>Puntaje Final</th> -->
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-estudiante>
@@ -80,7 +165,7 @@
                                 }"
                             ></span>
                         </td>
-                        <td>{{ estudiante.cNotaFinal }}</td>
+                        <!-- <td>{{ estudiante.cNotaFinal }}</td> -->
                     </tr>
                 </ng-template>
             </p-table>
@@ -92,9 +177,29 @@
                 <app-evaluacion-info
                     [evaluacionEstudiante]="selectedEstudiante()"
                 ></app-evaluacion-info>
+                <div class="grid">
+                    <div class="col-12">
+                        <p-inputGroup>
+                            <p-inputGroupAddon>
+                                Retroalimentación
+                            </p-inputGroupAddon>
+                            <textarea pInputText></textarea>
+                        </p-inputGroup>
+                    </div>
 
+                    <div class="col-12 text-right text-center">
+                        <p-toast></p-toast>
+                        <p-button
+                            severity="success"
+                            label="Guardar"
+                            icon="pi pi-plus"
+                            iconPos="left"
+                            (onClick)="guardarEvaluacionEstudiantesxDocente()"
+                        />
+                    </div>
+                </div>
                 <div>
-                    <h3>Preguntas</h3>
+                    <h3 class="text-primary">Preguntas</h3>
                     <hr />
                 </div>
                 <div class="flex flex-column gap-4 preguntas-container">
@@ -125,10 +230,12 @@
                 </div>
             </ng-container>
             <ng-template #emptySection>
-                <app-empty-section
-                    class="w-full"
-                    [message]="'Ningún Estudiante seleccionado'"
-                ></app-empty-section>
+                <div align="center" class="mt-4">
+                    <app-empty-section
+                        class="w-full"
+                        [message]="'Ningún Estudiante seleccionado'"
+                    ></app-empty-section>
+                </div>
             </ng-template>
         </div>
     </div>

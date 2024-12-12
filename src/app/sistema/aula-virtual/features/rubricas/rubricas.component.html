@@ -1,14 +1,52 @@
-@switch (mode) {
-    @case ('SELECTION') {
+<p-menu #menu [model]="items" [popup]="true" />
         <button
             pButton
+            size="small"
             class="primary"
             icon="pi pi-plus"
             label="Agregar Rúbrica"
-            (click)="agregarInstrumentoEvaluacion()"
+            (click)="menu.toggle($event)"
+        ></button>
+
+@switch (mode) {
+    @case ('SELECTION') {
+        <p-menu #menu [model]="items" [popup]="true" />
+        <button
+            pButton
+            size="small"
+            class="primary"
+            icon="pi pi-plus"
+            label="Agregar Rúbrica"
+            (click)="menu.toggle($event)"
         ></button>
     }
     @case ('NORMAL') {
+        <p-dialog
+        
+        [(visible)]="visible"
+        [modal]="true"
+        [style]="{ width: '50rem' }"
+        [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+        [maximizable]="true"
+        >
+        
+            <ng-template #header>
+
+            </ng-template>
+            <ng-template #footer>
+                <p-button
+                    label="Cancel"
+                    [text]="true"
+                    severity="secondary"
+                    (click)="visible = false" />
+                <p-button
+                    label="Save"
+                    [outlined]="true"
+                    severity="secondary"
+                    (click)="visible = false"
+                  />
+            </ng-template>
+        </p-dialog>
         <div class="flex flex-column gap-4">
             <div class="flex justify-content-between">
                 <h3>{{ title }}</h3>
@@ -21,6 +59,7 @@
                     (click)="agregarInstrumentoEvaluacion()"
                 ></button>
             </div>
+
             <app-table-primeng
                 [selectionMode]="'single'"
                 [dataKey]="'iInstrumentoId'"

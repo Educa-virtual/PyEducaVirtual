@@ -20,6 +20,7 @@ import { DialogService } from 'primeng/dynamicdialog'
 import { EvaluacionPreguntaCalificacionComponent } from '../evaluacion-pregunta-calificacion/evaluacion-pregunta-calificacion.component'
 import { MODAL_CONFIG } from '@/app/shared/constants/modal.config'
 import { ToolbarPrimengComponent } from '../../../../../../../shared/toolbar-primeng/toolbar-primeng.component'
+import { AppTopBarComponent } from '../../../../../../../layout/toolbar/app.topbar.component'
 
 interface Leyenda {
     total: number
@@ -73,6 +74,7 @@ const leyendas = {
         BancoPreguntaPreviewItemComponent,
         EvaluacionPreguntaComponent,
         ToolbarPrimengComponent,
+        AppTopBarComponent,
     ],
     templateUrl: './evaluacion-room-calificacion.component.html',
     styleUrl: './evaluacion-room-calificacion.component.scss',
@@ -82,6 +84,7 @@ export class EvaluacionRoomCalificacionComponent implements OnInit {
     @Input({ required: true }) evaluacion
     @Input({ required: true }) iEvaluacionId: string
 
+    isExpand = false
     private _state = signal<EstudianteState>({
         estudiantes: [],
         leyendas: leyendas,
@@ -108,6 +111,13 @@ export class EvaluacionRoomCalificacionComponent implements OnInit {
 
     evaluacionesEstudiantes = computed(() => this._state().estudiantes)
     selectedEstudiante = computed(() => this._state().selectedEstudiante)
+    layoutService: any
+    toggleMenu: any
+    menuVisible: any
+    onGlobalFilter: any
+    dv: any
+    tareasFalta: any
+    tareasCulminado: any
 
     updateSelectedEstudiante(value: any) {
         this._state.update((state) => ({
@@ -249,5 +259,15 @@ export class EvaluacionRoomCalificacionComponent implements OnInit {
 
     public seleccionarEvaluacion() {
         this.obtenerEvaluacionRespuestasEstudiante()
+    }
+
+    guardarEvaluacionEstudiantesxDocente() {}
+}
+
+export class TopbarComponent {
+    menuVisible: boolean = true
+
+    toggleMenu(): void {
+        this.menuVisible = !this.menuVisible
     }
 }

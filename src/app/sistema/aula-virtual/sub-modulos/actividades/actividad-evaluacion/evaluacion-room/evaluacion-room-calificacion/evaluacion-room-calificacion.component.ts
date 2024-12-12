@@ -118,6 +118,7 @@ export class EvaluacionRoomCalificacionComponent implements OnInit {
     dv: any
     tareasFalta: any
     tareasCulminado: any
+    evaluacionEstudiante: any
 
     updateSelectedEstudiante(value: any) {
         this._state.update((state) => ({

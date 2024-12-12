@@ -93,6 +93,9 @@ export class RubricaFormService {
             'criterios'
         ) as FormArray
 
+        let nivelesIsLoad = true
+        criteriosFormArray.clear()
+
         criterios.forEach((criterio) => {
             // patch niveles
             const niveles = criterio.niveles ?? []
@@ -100,6 +103,12 @@ export class RubricaFormService {
             const nivelesFormArray = criterioFormGroup.get(
                 'niveles'
             ) as FormArray
+
+            
+            if(nivelesIsLoad){
+                nivelesFormArray.clear()
+                nivelesIsLoad = false
+            }
 
             niveles.forEach((nivel) => {
                 const nivelFormGroup = this.nivelForm()

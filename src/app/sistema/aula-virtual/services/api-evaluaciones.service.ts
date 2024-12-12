@@ -50,6 +50,8 @@ export class ApiEvaluacionesService {
     // Rubricas
 
     obtenerRubricas(params) {
+        console.log('solicitando rubricas')
+        console.log(params)
         return this.http
             .get<ApiResponse>(
                 `${this.baseUrlApi}/evaluaciones/instrumento-evaluaciones/rubrica`,

@@ -202,13 +202,16 @@ export class TabResultadosComponent implements OnInit {
         this.obtenerReporteDenotasFinales()
         this.habilitarCalificacion()
     }
-    // accionBnt(accion: String, item: any): void{
-    //     switch (accion) {
-    //         case 'agregarConclusion':
-    //             console.log('Agregar descripcion',accion,item)
-    //             break
-    //     }
-    // }
+    mostrarModalConclusionDesc: boolean = false
+    accionBnt({ accion, item }): void {
+        switch (accion) {
+            case 'agregarConclusion':
+                this.mostrarModalConclusionDesc = true
+                this.estudianteSelect = item
+                console.log('Agregar descripcion', accion, item)
+                break
+        }
+    }
     //obtener los perfiles
     obtenerIdPerfil() {
         this.iEstudianteId = this._constantesService.iEstudianteId

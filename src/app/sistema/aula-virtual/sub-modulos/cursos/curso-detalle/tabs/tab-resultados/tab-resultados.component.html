@@ -375,6 +375,7 @@
                             <app-table-primeng
                                 [columnas]="columnasTabla"
                                 [data]="reporteNotasFinales"
+                                (accionBtnItem)="accionBnt($event)"
                                 [actions]="accionesTabla"
                             >
                                 <!--  -->
@@ -417,8 +418,16 @@
             </p-tabPanel>
         </p-tabView>
     </section>
-    <!--  [(visible)]="modelaCalificacionComen" header="Calificar a: {{ reporteNotasFinales?.cEstNombres }}"-->
-    <p-dialog [style]="{ width: '50%' }" class="p-fluid" [modal]="true">
+    <!--   -->
+    <p-dialog
+        [style]="{ width: '50%' }"
+        class="p-fluid"
+        [modal]="true"
+        [(visible)]="mostrarModalConclusionDesc"
+        header="Agregar conclusión descriptiva a : {{
+            estudianteSelect?.cEstNombres
+        }}"
+    >
         <form
             [formGroup]="conclusionDescrp"
             class="flex flex-column gap-3 w-full"
@@ -426,7 +435,7 @@
             <div class="grid pt-2">
                 <!-- Mostrar la califcación comentada segun el requerimiento -->
                 <!--  for="calificacion" [options]="calificacion"-->
-                <!-- <div class="col-12">
+                <div class="col-12">
                     <p-inputGroup>
                         <p-inputGroupAddon> Calificación </p-inputGroupAddon>
                         <p-dropdown
@@ -439,7 +448,7 @@
                             [showClear]="true"
                         ></p-dropdown>
                     </p-inputGroup>
-                </div> -->
+                </div>
                 <!-- Mostrar descripción -->
                 <div class="col-12">
                     <label for="descripcion" class="font-bold mt-1"

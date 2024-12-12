@@ -1,5 +1,40 @@
 <form class="flex flex-column gap-2" [formGroup]="rubricaForm">
     <div class="formgrid grid">
+        @if(mode === 'VIEW'){
+            <div class="flex">
+                <div class="field flex flex-column col-12">
+                    <label class="align-self-start" for="descripcion"
+                        >Rúbrica</label
+                    >
+                    <p-autoComplete [suggestions]="filterRubricas" (onSelect)="buscarSugerencias($event)" optionLabel="cInstrumentoNombre" [dropdown]="true" 
+                    (completeMethod)="buscarSugerencias($event)"
+                    />
+                </div>
+                <div class="field flex flex-column col-12">
+                    <label class="align-self-start" for="descripcion"
+                        >Seleccione un año</label
+                    >
+                    <p-calendar
+                        [iconDisplay]="'input'"
+                        [showIcon]="true"
+                        view="year" 
+                        dateFormat="yy"
+                        inputId="templatedisplay"
+                    >
+                        <ng-template
+                            pTemplate="inputicon"
+                            let-clickCallBack="clickCallBack"
+                        >
+                            <i
+                                class="pi pi-calendar pointer-events-none pointer-events-none"
+                                (click)="clickCallBack($event)"
+                            ></i>
+                        </ng-template>
+                    </p-calendar>
+                </div>
+            </div>
+        }
+
         <div class="field col-12">
             <app-common-input
                 [controlKey]="'cInstrumentoNombre'"

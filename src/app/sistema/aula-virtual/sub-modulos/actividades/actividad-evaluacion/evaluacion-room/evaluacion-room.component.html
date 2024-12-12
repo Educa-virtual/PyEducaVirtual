@@ -137,13 +137,54 @@
                                 <span class="font-bold text-xl">Rúbrica</span>
                                 <app-rubricas
                                     [title]="'Rúbricas'"
-                                    [mode]="'SELECTION'"
+                                    mode="NORMAL"
                                     [params]="params"
                                     (rubricaSelectedChange)="
                                         accionRubrica($event)
                                     "
                                 ></app-rubricas>
                             </div>
+                        </div>
+
+                        <div class="grid mb-4">
+                            <p-inputGroup class="mt-1">
+                                <input
+                                    #fileView
+                                    type="text"
+                                    class="cursor-pointer"
+                                    pInputText
+                                    readonly
+                                />
+                                <button
+                                    type="button"
+                                    pButton
+                                    aria-label="ver archivo"
+                                    style="background-color: #6cb3c9; border-color: #7676764d"
+                                    icon="pi pi-eye"
+                                ></button>
+                                <button
+                                    type="button"
+                                    aria-label="adjuntar archivo"
+                                    pButton
+                                    style="background-color: #949090; border-color: #7676764d"
+                                    icon="pi pi-pencil"
+                                ></button>
+                                <button
+                                    type="button"
+                                    aria-label="adjuntar archivo"
+                                    pButton
+                                    style="background-color: #949090; border-color: #7676764d"
+                                    icon="pi pi-trash"
+                                ></button>
+                            </p-inputGroup>
+                            
+                            <!-- <button
+                                                    type="button"
+                                                    pButton
+                                                    icon="pi pi-trash"
+                                                    class="p-button-danger"
+                                                ></button> -->
+                            
                         </div>
 
                         <div

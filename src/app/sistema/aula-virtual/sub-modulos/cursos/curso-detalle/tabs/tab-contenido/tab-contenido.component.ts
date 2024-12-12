@@ -582,6 +582,7 @@ export class TabContenidoComponent implements OnInit {
         switch (accion) {
             case 'close-modal':
                 this.showModalEvaluacion = false
+                this.getData()
                 break
         }
     }

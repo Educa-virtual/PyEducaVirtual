@@ -69,7 +69,14 @@
             <p-editor
                 styleClass="w-full"
                 [style]="{ height: '120px' }"
-                placeholder="Ingrese el nombre del enunciado"
+                placeholder="Ingrese enunciado de la pregunta"
+            />
+        </div>
+        <div class="col-12">
+            <p-editor
+                styleClass="w-full"
+                [style]="{ height: '120px' }"
+                placeholder="Ingrese el texto de ayuda"
             />
         </div>
         @switch (iTipoPreguntaId) {
@@ -99,7 +106,7 @@
                             type="button"
                             class="p-button-primary"
                         >
-                            <i class="pi pi-check"></i>&nbsp; Añadir
+                            <i class="pi pi-check"></i>&nbsp; Añadir alternativa
                         </button>
                     </div>
                 </div>

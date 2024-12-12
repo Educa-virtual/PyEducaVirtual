@@ -6,7 +6,6 @@ export class AuditoriaService {
     constructor(private http: httpService) {}
 
     async getAuditoriaAccesos(filtroFecha) {
-
         const data = await firstValueFrom(
             this.http.getData(
                 `seg/auditoria/selAuditoriaAccesos?filtroFechaInicio=${filtroFecha.filtroFechaInicio}&filtroFechaFin=${filtroFecha.filtroFechaFin}`
@@ -43,7 +42,8 @@ export class AuditoriaService {
     async get_auditoria_backend() {}
 
     toVisualFechasFormat(fecha, typeFormat = 'DD/MM/YY hh:mm') {
-        const sqlDatetimeRegex = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])([ ]|T)(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d/
+        const sqlDatetimeRegex =
+            /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])([ ]|T)(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d/
 
         // Verificar si ya es un objeto Date válido
         if (!(fecha instanceof Date || sqlDatetimeRegex.test(fecha))) {
@@ -100,6 +100,4 @@ export class AuditoriaService {
 
         return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
     }
-
-
 }

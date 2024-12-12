@@ -68,7 +68,7 @@ export class ConfigGradoSeccionComponent implements OnInit {
         // cYAcadNombre: string
     }[]
     sede: any[]
-
+    enlace: string
     visible: boolean = false
     searchText: string = ''
     filteredItems: string[] = []
@@ -276,7 +276,7 @@ export class ConfigGradoSeccionComponent implements OnInit {
                     iConfigId: item.iConfigId,
                     iYAcadId: item.iYAcadId,
                     iEstadoConfigId: item.iEstadoConfigId,
-                    iNivelTipoId: item.NivelTipoId,
+                    iNivelTipoId: this.stepService.iNivelTipoId,
                     iSedeId: item.iSedeId,
                     iServEdId: item.iServEdId,
                     cConfigNroRslAprobacion: item.cConfigNroRslAprobacion,
@@ -290,6 +290,7 @@ export class ConfigGradoSeccionComponent implements OnInit {
                     cSedeNombre: '',
                     cModalServId: this.stepService.perfil['cNivelNombre'],
                     cYAcadNombre: <number>this.sede[0].cYAcadNombre,
+                    iProgId: this.stepService.perfil['iProgId'],
                 },
             ]
 

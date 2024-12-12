@@ -6,12 +6,20 @@ import { TableModule } from 'primeng/table'
 import { InputTextModule } from 'primeng/inputtext'
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import { TablePrimengComponent } from '../../../../../shared/table-primeng/table-primeng.component'
-import { Component, OnInit } from '@angular/core'
+import { Component, inject, OnInit, TrackByFunction } from '@angular/core'
+import { IArea } from '../interfaces/area.interface'
+import { AreaCardComponent } from '../components/area-card/area-card.component'
 //import { CursoCardComponent } from '../components/curso-card/curso-card.component'
 import { ICurso } from '../../../../aula-virtual/sub-modulos/cursos/interfaces/curso.interface'
 import { ButtonModule } from 'primeng/button'
 import { ActivatedRoute } from '@angular/router'
-import { CursoCardComponent } from '@/app/sistema/aula-virtual/sub-modulos/cursos/components/curso-card/curso-card.component'
+import { ConstantesService } from '@/app/servicios/constantes.service' //!AQUI ESTA EL USUARIO
+//import { ApiEvaluacionesRService } from '../../../../services/api-evaluaciones-r.service'
+import { ApiEvaluacionesRService } from '../../../services/api-evaluaciones-r.service'
+import { Subject, takeUntil } from 'rxjs'
+import { CompartirFormularioEvaluacionService } from '../../../services/ereEvaluaciones/compartir-formulario-evaluacion.service'
+import { CompartirIdEvaluacionService } from '../../../services/ereEvaluaciones/compartir-id-evaluacion.service'
+import { CommonModule } from '@angular/common'
 export type Layout = 'list' | 'grid'
 @Component({
     selector: 'app-areas',
@@ -28,50 +36,30 @@ export type Layout = 'list' | 'grid'
         TableModule,
         TablePrimengComponent,
         ButtonModule,
-        CursoCardComponent,
+        CommonModule,
+        AreaCardComponent,
     ],
 })
 export class AreasComponent implements OnInit {
+    private ConstantesService = inject(ConstantesService)
+    private _apiEre = inject(ApiEvaluacionesRService)
+    //areas: any[] = [] // Áreas locales en el componente
     public cursos: ICurso[] = []
     public data: ICurso[] = []
     public layout: Layout = 'list'
     public text: string = ''
     public searchText: Event
-    public area: ICurso[] = [
-        {
-            iCursoId: 0,
-            cCursoNombre: 'Matemática',
-            descripcion: 'dedscripcion?',
-            seccion: 'A',
-            cGradoAbreviacion: '1°',
-            iEstudiantes: 20,
-            cNivelNombreCursos: 'Primaria',
-        },
-        {
-            iCursoId: 1,
-            cCursoNombre: 'Matemática',
-            descripcion: 'Descripcion?',
-            seccion: 'A',
-            cGradoAbreviacion: '2°',
-            iEstudiantes: 2,
-            cNivelNombreCursos: 'Primaria',
-        },
-        {
-            iCursoId: 2,
-            cCursoNombre: 'Matemática',
-            descripcion: 'Descripcion?',
-            seccion: 'B',
-            cGradoAbreviacion: '2°',
-            iEstudiantes: 2,
-            cNivelNombreCursos: 'Primaria',
-        },
-    ]
+    public area: IArea[] = [] // Inicialmente vacío, se llenará con los datos de la API.
     public sortField: string = ''
     public sortOrder: number = 0
-    public iEvaluacionId: string | null = null // Para almacenar el ID de la evaluación.
+    public iEvaluacionId: number | null = null // Para almacenar el ID de la evaluación.
     public nombreEvaluacion: string | null = null // Para almacenar el nombre de la evaluación.
+    selectedCursoId: number | null = null // Variable para almacenar el curso seleccionado
     //@Input() _iEvaluacionId: string | null = null // Usamos _iEvaluacionId como input
+    public params = {}
 
+    private unsubscribe$: Subject<boolean> = new Subject()
+    trackById: TrackByFunction<IArea>
     //!original
     // public onFilter(dv: DataView, event: Event) {
     //     dv.filter((event.target as HTMLInputElement).value)
@@ -89,20 +77,94 @@ export class AreasComponent implements OnInit {
             this.searchText = event
         }
     }
-    constructor(private route: ActivatedRoute) {}
+    constructor(
+        private route: ActivatedRoute,
+        private compartirFormularioEvaluacionService: CompartirFormularioEvaluacionService,
+        private compartirIdEvaluacionService: CompartirIdEvaluacionService
+    ) {}
     ngOnInit(): void {
-        // Capturar el parámetro iEvaluacionId de la URL
-        this.route.queryParams.subscribe((params) => {
-            this.iEvaluacionId = params['iEvaluacionId']
-            this.nombreEvaluacion = params['nombreEvaluacion']
-            console.log(
-                'iEvaluacionId recibido en AreasComponent:',
-                this.iEvaluacionId
-            )
-            console.log('nombreEvaluacion:', this.nombreEvaluacion)
-        })
+        // // Capturar el parámetro iEvaluacionId de la URL
+        // this.route.queryParams.subscribe((params) => {
+        //     this.iEvaluacionId = params['iEvaluacionId']
+        //     this.nombreEvaluacion = params['nombreEvaluacion']
+        // })
+        this.nombreEvaluacion =
+            this.compartirFormularioEvaluacionService.getcEvaluacionNombre()
 
-        // El resto de tu lógica de inicialización
-        //this.obtenerCursos() // O cualquier otra lógica para cargar los datos.
+        this.iEvaluacionId = this.compartirIdEvaluacionService.iEvaluacionId
+        console.log(
+            'Evaluacion Servicio ---->',
+            this.compartirIdEvaluacionService.iEvaluacionId
+        )
+
+        console.log(
+            'EVALUACION SOTRAGE:',
+            this.compartirIdEvaluacionService.iEvaluacionIdStorage
+        )
+        //!
+        // console.log('iEvaluacionId: ---->', this.iEvaluacionId)
+        // console.log(
+        //     'Nombre de la evaluación ----->:',
+        //     this.compartirFormularioEvaluacionService.getcEvaluacionNombre()
+        // )
+
+        this.obtenerEspDremCurso()
+    }
+    obtenerEspDrem(): void {
+        this._apiEre
+
+            .obtenerEspDrem(this.params)
+
+            .pipe(takeUntil(this.unsubscribe$))
+
+            .subscribe({
+                next: (resp: any) => {
+                    console.log('Respuesta completa de la API:', resp)
+                },
+
+                error: (err) => {
+                    console.error('Error al cargar datos:', err)
+                },
+            })
+    }
+    obtenerEspDremCurso(): void {
+        const iPersId = this.ConstantesService.iPersId // Obtén el iPersId
+        const iEvaluacionId = this.compartirIdEvaluacionService.iEvaluacionId // Obtén el iEvaluacionId
+        // const iEvaluacionId =
+        //     this.compartirIdEvaluacionService.iEvaluacionIdStorage
+
+        console.log('iPersId:', iPersId, 'Evaluacion', iEvaluacionId) // Asegúrate de que el valor está disponible
+
+        this._apiEre.obtenerEspDremCurso(iPersId, iEvaluacionId).subscribe({
+            next: (resp: any) => {
+                console.log(
+                    'Respuesta completa de la API Datos Especialistas Cursos:',
+                    resp
+                )
+
+                // Procesar y mapear los datos al formato de IArea.
+                if (resp.data && Array.isArray(resp.data)) {
+                    this.area = resp.data.map((item: any) => ({
+                        id: Number(item.iCursosNivelGradId), // Usamos iCursoId como ID.
+                        nombre: item.cCursoNombre || 'Sin nombre', // Nombre del curso.
+                        descripcion:
+                            item.cCursoDescripcion || 'Sin descripción', // Descripción del curso.
+                        seccion: item.cGradoRomanos || 'Sin sección', // Ejemplo: I.
+                        grado: item.cGradoAbreviacion || 'Sin grado', // Ejemplo: 1ro.
+                        totalEstudiantes: 0, // Asumimos 0 porque no viene en la API.
+                        nivel: 'Primaria', // Puedes ajustarlo según tu lógica o datos de la API.
+                    }))
+                    // Guardar las áreas procesadas en el servicio
+                    this.compartirFormularioEvaluacionService.setAreas(
+                        this.area
+                    )
+                }
+                console.log('Datos procesados para áreas:', this.area)
+            },
+
+            error: (err) => {
+                console.error('Error al cargar datos:', err)
+            },
+        })
     }
 }

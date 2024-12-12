@@ -22,8 +22,7 @@ export class StepGuardService implements CanDeactivate<CanComponentDeactivate> {
             return result // Si es un valor booleano, devolverlo directamente
         }
 
-        console.log('dddd');
-        
+        console.log('dddd')
 
         const confirm = await this.stepConfirmationService.confirmAction(
             {},

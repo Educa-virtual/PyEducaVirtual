@@ -3,7 +3,13 @@ import {
     IColumn,
     TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component'
-import { Component, OnChanges, OnDestroy, OnInit } from '@angular/core'
+import {
+    Component,
+    OnChanges,
+    OnDestroy,
+    OnInit,
+    SimpleChanges,
+} from '@angular/core'
 import {
     FormBuilder,
     FormGroup,
@@ -35,13 +41,22 @@ export class GestionTrasladosComponent implements OnInit, OnChanges, OnDestroy {
     visible: boolean = false
 
     constructor(private fb: FormBuilder) {}
+    ngOnDestroy(): void {
+        throw new Error('Method not implemented.')
+    }
+    ngOnChanges(changes: SimpleChanges): void {
+        throw new Error('Method not implemented.', changes)
+    }
+    ngOnInit(): void {
+        throw new Error('Method not implemented.')
+    }
 
     showModeCreateDialog() {}
-    ngOnInit() {}
+    // ngOnInit() {}
 
-    ngOnChanges(changes) {}
+    // ngOnChanges(changes) {}
 
-    ngOnDestroy() {}
+    // ngOnDestroy() {}
 
     columns: IColumn[] = [
         {

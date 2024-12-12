@@ -18,6 +18,18 @@
 
     <footer class="p-3 pt-0 flex align-items-center justify-content-between">
         <span>{{ area.totalEstudiantes }} studiantes</span>
+        <!-- <p-button
+            icon="pi pi-external-link"
+            pTooltip="Matriz"
+            (click)="generarPdfMatriz(_iEvaluacionId, area)"
+        >
+        </p-button> -->
+        <p-button
+            icon="pi pi-file-pdf"
+            pTooltip="Descargar Matriz"
+            (click)="generarPdfMatriz(_iEvaluacionId, area)"
+        >
+        </p-button>
         <p-button
             [routerLink]="['./', area.id, 'banco-preguntas']"
             [queryParams]="{
@@ -31,5 +43,11 @@
             icon="pi pi-external-link"
             pTooltip="Banco de Preguntas"
         ></p-button>
+
+        <!-- <p-button
+            (onClick)="irABancoPreguntas(area)"
+            icon="pi pi-external-link"
+            pTooltip="Banco de Preguntas"
+        ></p-button> -->
     </footer>
 </article>

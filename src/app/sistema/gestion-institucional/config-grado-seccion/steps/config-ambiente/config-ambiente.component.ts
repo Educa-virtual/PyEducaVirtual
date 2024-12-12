@@ -1,5 +1,5 @@
 import { AdmStepGradoSeccionService } from '@/app/servicios/adm/adm-step-grado-seccion.service'
-import { Component, OnInit } from '@angular/core'
+import { Component, inject, OnInit } from '@angular/core'
 import { Router } from '@angular/router'
 
 import {
@@ -12,7 +12,7 @@ import {
     IActionTable,
     TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component'
-
+import { PrimengModule } from '@/app/primeng.module'
 import { StepsModule } from 'primeng/steps'
 import { DialogModule } from 'primeng/dialog'
 import { InputSwitchModule } from 'primeng/inputswitch'
@@ -27,10 +27,7 @@ import {
     Validators,
 } from '@angular/forms'
 import { MessageService } from 'primeng/api'
-import {
-    StepConfirmationService,
-    type informationMessage,
-} from '@/app/servicios/confirm.service'
+import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 
 @Component({
     selector: 'app-config-ambiente',
@@ -45,6 +42,7 @@ import {
         InputTextModule,
         ButtonModule,
         InputSwitchModule,
+        PrimengModule,
     ],
     templateUrl: './config-ambiente.component.html',
     styleUrl: './config-ambiente.component.scss',
@@ -67,14 +65,13 @@ export class ConfigAmbienteComponent implements OnInit {
     configuracion: any[]
 
     ambientes: any[]
-
+    private _confirmService = inject(ConfirmationModalService)
     constructor(
         private stepService: AdmStepGradoSeccionService,
         private router: Router,
         private fb: FormBuilder,
         private messageService: MessageService,
-        private query: GeneralService,
-        private msg: StepConfirmationService
+        private query: GeneralService
     ) {
         //this.iSedeId = this.stepService.iSedeId
         this.items = this.stepService.itemsStep
@@ -89,19 +86,19 @@ export class ConfigAmbienteComponent implements OnInit {
             //bd iiee_ambientes
             //this.visible = true
             this.form = this.fb.group({
-                iIieeAmbienteId: [''], //codigo de tabla_iiee_ambientes
-                iTipoAmbienteId: [null, Validators.required], // tabla_iiee_ambientes (FK)
-                iEstadoAmbId: ['', Validators.required], // tabla_iiee_ambientes (FK)
-                iUbicaAmbId: ['', Validators.required], // tabla_iiee_ambientes (FK)
-                iUsoAmbId: ['', Validators.required], // tabla_iiee_ambientes (FK)
-                iPisoAmbid: ['', Validators.required], // tabla_iiee_ambientes (FK)
+                iIieeAmbienteId: [0], //codigo de tabla_iiee_ambientes
+                iTipoAmbienteId: [0, Validators.required], // tabla_iiee_ambientes (FK)
+                iEstadoAmbId: [0, Validators.required], // tabla_iiee_ambientes (FK)
+                iUbicaAmbId: [0, Validators.required], // tabla_iiee_ambientes (FK)
+                iUsoAmbId: [0, Validators.required], // tabla_iiee_ambientes (FK)
+                iPisoAmbid: [0, Validators.required], // tabla_iiee_ambientes (FK)
                 iYAcadId: [this.configuracion[0].iYAcadId], // tabla_iiee_ambientes (FK)
                 iSedeId: [this.configuracion[0].iSedeId], // tabla_iiee_ambientes (FK)
-                bAmbienteEstado: [''],
+                bAmbienteEstado: [0],
                 cAmbienteNombre: ['', Validators.required],
                 cAmbienteDescripcion: ['', Validators.required],
-                iAmbienteArea: ['', Validators.required],
-                iAmbienteAforo: ['', Validators.required],
+                iAmbienteArea: [0, Validators.required],
+                iAmbienteAforo: [0, Validators.required],
                 cAmbienteObs: [''],
                 // ambiente: [''],
                 cYAcadNombre: [this.configuracion[0].cYAcadNombre], // campo adicional para la vista
@@ -295,30 +292,45 @@ export class ConfigAmbienteComponent implements OnInit {
             this.clearForm()
         }
         if (accion === 'eliminar') {
-            alert('Desea eliminar')
-            const params = {
-                esquema: 'acad',
-                tabla: 'iiee_ambientes',
-                campo: 'iIieeAmbienteId',
-                valorId: item.iIieeAmbienteId,
-            }
-            this.query.deleteAcademico(params).subscribe({
-                next: (data: any) => {
-                    console.log(data.data)
-                },
-                error: (error) => {
-                    console.error('Error fetching ambiente:', error)
-                },
-                complete: () => {
-                    this.messageService.add({
-                        severity: 'success',
-                        summary: 'Mensaje',
-                        detail: 'Proceso exitoso',
+            this._confirmService.openConfirm({
+                message: '¿Está seguro de que desea eliminar este elemento?',
+                header: 'Confirmación de eliminación',
+                icon: 'pi pi-exclamation-triangle',
+                accept: () => {
+                    // Acción a realizar al confirmar
+                    const params = {
+                        esquema: 'acad',
+                        tabla: 'iiee_ambientes',
+                        campo: 'iIieeAmbienteId',
+                        valorId: item.iIieeAmbienteId,
+                    }
+                    this.query.deleteAcademico(params).subscribe({
+                        next: (data: any) => {
+                            console.log(data.data)
+                        },
+                        error: (error) => {
+                            console.error('Error fetching ambiente:', error)
+                        },
+                        complete: () => {
+                            this.messageService.add({
+                                severity: 'success',
+                                summary: 'Mensaje',
+                                detail: 'Proceso exitoso',
+                            })
+                            console.log('Request completed')
+                            this.getAmbientes()
+                            this.visible = false
+                            this.clearForm()
+                        },
                     })
-                    console.log('Request completed')
-                    this.getAmbientes()
-                    this.visible = false
-                    this.clearForm()
+                },
+                reject: () => {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Mensaje',
+                        detail: 'Proceso cancelado',
+                    })
+                    console.log('Acción cancelada')
                 },
             })
         }
@@ -367,7 +379,6 @@ export class ConfigAmbienteComponent implements OnInit {
         }
         //updateAcademico
         if (accion === 'editar') {
-            alert('vas a modificar')
             if (this.form.valid) {
                 const params = {
                     esquema: 'acad',
@@ -396,13 +407,16 @@ export class ConfigAmbienteComponent implements OnInit {
                     condicion: this.form.get('iIieeAmbienteId')?.value,
                 }
 
-                console.log(params, 'parametros dem uodate')
+                console.log(params, 'parametros dem update')
                 this.query.updateAcademico(params).subscribe({
                     next: (data: any) => {
                         console.log(data.data)
                     },
                     error: (error) => {
-                        console.error('Error fetching ambiente:', error)
+                        console.log(error, 'error al actualizar')
+                        // if(error && error.message){
+                        //   //  console.error(error?.message || 'Error en la respuesta del servicio');
+                        // }
                     },
                     complete: () => {
                         this.messageService.add({
@@ -435,35 +449,7 @@ export class ConfigAmbienteComponent implements OnInit {
         this.form.get('cAmbienteObs')?.setValue('')
         this.form.get('bAmbienteEstado')?.setValue(0)
     }
-    confirm() {
-        console.log('confirmando')
-        const message: informationMessage = {
-            header: '¿Desea guardar información?',
-            message: 'Por favor, confirme para continuar.',
-            accept: {
-                severity: 'success',
-                summary: 'Año',
-                detail: 'Se ha guardado correctamente.',
-                life: 6000,
-            },
-            reject: {
-                severity: 'warn',
-                summary: 'Año',
-                detail: 'Se ha cancelado guardar la información.',
-                life: 3000,
-            },
-        }
 
-        this.msg.confirmAction(
-            {
-                onAcceptCallbacks: [
-                    () => this.saveInformation(),
-                    () => this.nextPage(),
-                ],
-            },
-            message
-        )
-    }
     saveInformation() {
         if (this.caption == 'create') {
             alert('Mensaje 0 save')
@@ -482,19 +468,20 @@ export class ConfigAmbienteComponent implements OnInit {
     }
     accionesPrincipal: IActionContainer[] = [
         {
+            labelTooltip: 'Retornar',
+            text: 'Retornar',
+            icon: 'pi pi-arrow-circle-left',
+            accion: 'retornar',
+            class: 'p-button-warning',
+        },
+        {
             labelTooltip: 'Crear Ambiente',
             text: 'Crear ambientes',
             icon: 'pi pi-plus',
             accion: 'agregar',
             class: 'p-button-primary',
         },
-        {
-            labelTooltip: 'Retornar',
-            text: 'Retornar',
-            icon: 'pi pi-plus',
-            accion: 'retornar',
-            class: 'p-button-warning',
-        },
+
         // {
         //     labelTooltip: 'Unificar Ambiente',
         //     text: 'Unificar ambientes',
@@ -612,3 +599,17 @@ export class ConfigAmbienteComponent implements OnInit {
         },
     ]
 }
+
+// "{"iTipoAmbienteId":"1",
+// "iEstadoAmbId":"1",
+// "iUbicaAmbId":"1",
+// "iUsoAmbId":"1",
+// "iPisoAmbid":"2",
+// "iYAcadId":"3",
+// "iSedeId":"1",
+// "bAmbienteEstado":0,
+// "cAmbienteNombre":"aula 104",
+// "cAmbienteDescripcion":"de primaria",
+// "iAmbienteArea":"50",
+// "iAmbienteAforo":"30",
+// "cAmbienteObs":"ninguna"}"

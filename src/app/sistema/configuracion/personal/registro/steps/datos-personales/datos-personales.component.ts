@@ -1,11 +1,11 @@
-import { Component, OnInit, OnChanges, OnDestroy } from '@angular/core'
+import { Component, OnInit } from '@angular/core'
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
 import { CalendarModule } from 'primeng/calendar'
 import { InputTextModule } from 'primeng/inputtext'
 import { FloatLabelModule } from 'primeng/floatlabel'
-import { InputGroupModule } from 'primeng/inputgroup';
-import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
+import { InputGroupModule } from 'primeng/inputgroup'
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
 import { Router } from '@angular/router'
 
 @Component({
@@ -18,7 +18,7 @@ import { Router } from '@angular/router'
         InputTextModule,
         FloatLabelModule,
         InputGroupModule,
-        InputGroupAddonModule
+        InputGroupAddonModule,
     ],
     templateUrl: './datos-personales.component.html',
     styleUrl: './datos-personales.component.scss',
@@ -28,8 +28,9 @@ export class DatosPersonalesComponent implements OnInit {
     fechasAcademicas
 
     constructor(private router: Router) {}
-
-    ngOnInit(): void {}
+    ngOnInit(): void {
+        throw new Error('Method not implemented.')
+    }
 
     actionsContainer = [
         {

@@ -464,12 +464,71 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
         })
     }
     //!Se cambio AQUI 08
+    // obtenerCursosSeleccionados(): Promise<Map<number, boolean>> {
+    //     return new Promise((resolve, reject) => {
+    //         // const evaluacionId = this._iEvaluacionId
+    //         const evaluacionId =
+    //             this.compartirIdEvaluacionService.iEvaluacionId ||
+    //             this._iEvaluacionId
+    //         // Validar si el ID de evaluación es válido
+    //         if (!evaluacionId) {
+    //             return reject('El ID de la evaluación no está definido.')
+    //         }
+
+    //         this._apiEre
+    //             .obtenerCursosEvaluacion(evaluacionId)
+    //             .pipe(takeUntil(this.unsubscribe$))
+    //             .subscribe({
+    //                 next: (resp: any) => {
+    //                     console.log(
+    //                         'Cursos obtenidos desde el backend:',
+    //                         resp.cursos
+    //                     )
+
+    //                     // Crear un mapa con los cursos seleccionados, indicando el tipo explícito
+    //                     const cursosSeleccionados: Map<number, boolean> =
+    //                         new Map(
+    //                             resp.cursos.map((curso: any) => [
+    //                                 curso.iCursoNivelGradId as number, // Asegurar que sea número
+    //                                 curso.isSelected === '1', // Convertir "1" a true
+    //                             ])
+    //                         )
+
+    //                     // Actualizar el estado de los cursos en la estructura actual
+    //                     this.lista.forEach((nivel: any) => {
+    //                         Object.keys(nivel.grados).forEach((grado) => {
+    //                             nivel.grados[grado].forEach((curso: any) => {
+    //                                 curso.isSelected =
+    //                                     cursosSeleccionados.get(
+    //                                         curso.iCursoNivelGradId
+    //                                     ) || false
+    //                             })
+    //                         })
+    //                     })
+    //                     resolve(cursosSeleccionados)
+    //                 },
+    //                 error: (err) => {
+    //                     console.error('Error al obtener cursos:', err)
+    //                     reject(err)
+    //                 },
+    //             })
+    //     })
+    // }
+
     obtenerCursosSeleccionados(): Promise<Map<number, boolean>> {
         return new Promise((resolve, reject) => {
-            // const evaluacionId = this._iEvaluacionId
-            const evaluacionId =
-                this.compartirIdEvaluacionService.iEvaluacionId ||
-                this._iEvaluacionId
+            // const evaluacionId =
+            //     this.compartirIdEvaluacionService.iEvaluacionId ||
+            //     this._iEvaluacionId
+
+            const evaluacionId = this._iEvaluacionId
+            //!
+            console.log(
+                'CompartirEvaluacionService:',
+                this.compartirIdEvaluacionService.iEvaluacionId
+            )
+            console.log('iEvaluacionId:', this._iEvaluacionId) //Manda idCorrecto al editar
+            console.log('Evaluacion ID:', evaluacionId)
             // Validar si el ID de evaluación es válido
             if (!evaluacionId) {
                 return reject('El ID de la evaluación no está definido.')
@@ -485,7 +544,7 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
                             resp.cursos
                         )
 
-                        // Crear un mapa con los cursos seleccionados, indicando el tipo explícito
+                        // Crear un mapa con los cursos seleccionados
                         const cursosSeleccionados: Map<number, boolean> =
                             new Map(
                                 resp.cursos.map((curso: any) => [
@@ -494,10 +553,20 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
                                 ])
                             )
 
-                        // Actualizar el estado de los cursos en la estructura actual
+                        // *** Limpia la lista para evitar datos residuales ***
                         this.lista.forEach((nivel: any) => {
                             Object.keys(nivel.grados).forEach((grado) => {
                                 nivel.grados[grado].forEach((curso: any) => {
+                                    curso.isSelected = false // Resetear a false
+                                })
+                            })
+                        })
+
+                        // *** Actualizar con los nuevos datos ***
+                        this.lista.forEach((nivel: any) => {
+                            Object.keys(nivel.grados).forEach((grado) => {
+                                nivel.grados[grado].forEach((curso: any) => {
+                                    // Si el curso está en el mapa, actualizamos su estado
                                     curso.isSelected =
                                         cursosSeleccionados.get(
                                             curso.iCursoNivelGradId
@@ -505,6 +574,7 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
                                 })
                             })
                         })
+
                         resolve(cursosSeleccionados)
                     },
                     error: (err) => {

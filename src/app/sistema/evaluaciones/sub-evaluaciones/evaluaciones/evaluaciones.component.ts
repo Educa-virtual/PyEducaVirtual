@@ -219,13 +219,13 @@ export class EvaluacionesComponent implements OnInit {
             type: 'item',
             class: 'p-button-rounded p-button-warning p-button-text',
         },
-        {
-            labelTooltip: 'DescargarMatriz', //!Se consulta de aqui
-            icon: 'pi pi-file-export',
-            accion: 'DescargarMatriz',
-            type: 'item',
-            class: 'p-button-rounded p-button-warning p-button-text',
-        },
+        // {
+        //     labelTooltip: 'DescargarMatriz', //!Se consulta de aqui
+        //     icon: 'pi pi-file-export',
+        //     accion: 'DescargarMatriz',
+        //     type: 'item',
+        //     class: 'p-button-rounded p-button-warning p-button-text',
+        // },
     ]
     caption: any
     formCapas: any
@@ -337,27 +337,55 @@ export class EvaluacionesComponent implements OnInit {
             this.router.navigate(['/evaluaciones/areas'])
         }
         if (accion === 'DescargarMatriz') {
-            const _iEvaluacionIdtoMatriz = item.iEvaluacionId
-
-            this._apiEre
-                .generarPdfMatrizbyEvaluacionId(_iEvaluacionIdtoMatriz)
-                .subscribe(
-                    (response) => {
-                        if (response.status === 'success') {
-                            alert(response.message) // Mostrar el mensaje de Laravel
-                        } else {
-                            alert('Hubo un error: ' + response.message)
-                        }
-                    },
-                    (error) => {
-                        console.error(
-                            'Error al comunicarse con el backend:',
-                            error
-                        )
-                    }
-                )
+            // Llamada a la función generarPdfMatriz
+            //const _iEvaluacionIdtoMatriz = item.iEvaluacionId
+            //this.generarPdfMatriz(_iEvaluacionIdtoMatriz)
         }
     }
+    //!MATRIZ
+    /**
+     * Función que genera y descarga un PDF de la matriz de evaluación correspondiente a un ID de evaluación.
+     *
+     * Esta función se comunica con el backend (API) para generar un PDF basado en el ID de evaluación proporcionado.
+     * Si la generación del PDF es exitosa, inicia la descarga del archivo PDF. Si ocurre un error, muestra un mensaje
+     * de error indicando la razón.
+     *
+     * @param {number} iEvaluacionId - El ID de la evaluación para la cual se generará la matriz PDF.
+     */
+    // generarPdfMatriz(iEvaluacionId: number) {
+    //     // Llamada al backend para generar el PDF de la matriz
+    //     this._apiEre.generarPdfMatrizbyEvaluacionId(iEvaluacionId).subscribe(
+    //         (response) => {
+    //             console.log('Respuesta de Laravel:', response)
+
+    //             // Se muestra un mensaje indicando que la descarga de la matriz ha comenzado
+    //             this._MessageService.add({
+    //                 severity: 'success',
+    //                 detail: 'Comienza la descarga de la Matriz',
+    //             })
+
+    //             // Se crea un enlace de descarga para el archivo PDF generado
+    //             const blob = response as Blob // Asegúrate de que la respuesta sea un Blob
+    //             const link = document.createElement('a')
+    //             link.href = URL.createObjectURL(blob)
+    //             link.download = 'matriz_evaluacion.pdf' // Nombre del archivo descargado
+    //             link.click()
+    //         },
+    //         (error) => {
+    //             // En caso de error, se determina el mensaje de error a mostrar
+    //             const errorMessage =
+    //                 error?.message ||
+    //                 'No hay datos suficientes para descargar la Matriz'
+
+    //             // Se muestra un mensaje de error en el sistema
+    //             this._MessageService.add({
+    //                 severity: 'success', // Se cambió a "error" ya que es un fallo
+    //                 detail: errorMessage,
+    //             })
+    //         }
+    //     )
+    // }
+
     verEreEvaluacion(evaluacion) {
         // Obtener el nombre de la evaluación
         const nombreEvaluacion =
@@ -430,20 +458,19 @@ export class EvaluacionesComponent implements OnInit {
 
         if (accion === 'nuevo') {
             // Sobrescribir explícitamente el nombre de la evaluación
-            nombreEvaluacion =
-                this.compartirFormularioEvaluacionService.getcEvaluacionNombre()
+            nombreEvaluacion = '' //Manda el nombre
 
             // Verificamos si el servicio devuelve un valor válido
             if (!nombreEvaluacion || nombreEvaluacion.trim() === '') {
                 // Si no existe un valor válido, asignamos un valor por defecto
-                nombreEvaluacion = 'Nueva Evaluación'
+                nombreEvaluacion = '' //Manda el nombre
             }
 
             // Depuración: ver el nombre final que se asigna
-            console.log(
-                'Nombre asignado para la nueva evaluación:',
-                nombreEvaluacion
-            )
+            // console.log(
+            //     'Nombre asignado para la nueva evaluación:',
+            //     nombreEvaluacion
+            // )
         } else {
             // Para el caso 'editar', obtenemos el nombre desde el objeto de evaluación
             nombreEvaluacion =

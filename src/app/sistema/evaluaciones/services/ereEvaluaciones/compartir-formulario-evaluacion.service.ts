@@ -9,6 +9,7 @@ export class CompartirFormularioEvaluacionService {
     private grado: string | null = null
     private nivel: string | null = null
     private seccion: string | null = null
+    private areas: any[] = [] // Lista de áreas procesadas
     setcEvaluacionNombre(nombre: string) {
         //!Se agrego localStorage para el momento de reinicar la pagina no se pierdan esos datos
         // console.log('Valor recibido en setcEvaluacionNombre:', nombre) // Verifica lo que se recibe
@@ -57,7 +58,6 @@ export class CompartirFormularioEvaluacionService {
         }
         return this.nivel
     }
-
     setSeccion(seccion: string) {
         this.seccion = seccion
         localStorage.setItem('seccion', seccion)
@@ -68,6 +68,23 @@ export class CompartirFormularioEvaluacionService {
             this.seccion = localStorage.getItem('seccion')
         }
         return this.seccion
+    }
+
+    // MÉTODO PARA GUARDAR ÁREAS
+    setAreas(areas: any[]): void {
+        this.areas = areas
+        // Guardar en localStorage como string JSON
+        localStorage.setItem('areas', JSON.stringify(areas))
+    }
+
+    // MÉTODO PARA OBTENER ÁREAS
+    getAreas(): any[] {
+        // Si las áreas no están en memoria, intentar recuperarlas del localStorage
+        if (!this.areas || this.areas.length === 0) {
+            const storedAreas = localStorage.getItem('areas')
+            this.areas = storedAreas ? JSON.parse(storedAreas) : []
+        }
+        return this.areas
     }
     constructor() {}
 }

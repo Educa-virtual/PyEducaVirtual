@@ -387,10 +387,17 @@ export class IeparticipaComponent implements OnInit {
         this.actualizarConteos() // Actualizar el conteo después de la operación
     }
     obtenerParticipaciones(): Observable<any[]> {
-        const evaluacionId =
-            this.compartirIdEvaluacionService.iEvaluacionId ||
-            this._iEvaluacionId
+        // const evaluacionId =
+        //     this.compartirIdEvaluacionService.iEvaluacionId ||
+        //     this._iEvaluacionId
 
+        const evaluacionId = this._iEvaluacionId
+
+        console.log(
+            'CompartiEvaluacion',
+            this.compartirIdEvaluacionService.iEvaluacionId
+        )
+        console.log('iEvaluacionId:', this._iEvaluacionId)
         console.log('Evaluacion ID para obtener participaciones:', evaluacionId)
 
         if (!evaluacionId) {
@@ -429,9 +436,25 @@ export class IeparticipaComponent implements OnInit {
         this.obtenerIE().subscribe({
             next: (instituciones: any[]) => {
                 // Verificar si hay una evaluación activa
-                const evaluacionId =
-                    this.compartirIdEvaluacionService.iEvaluacionId
+                // const evaluacionId =
+                //     this.compartirIdEvaluacionService.iEvaluacionId
 
+                const evaluacionId =
+                    this.compartirIdEvaluacionService.iEvaluacionId ||
+                    this._iEvaluacionId
+
+                console.log(
+                    'CompartiEvaluacion obtenerIEYParticipaciones',
+                    this.compartirIdEvaluacionService.iEvaluacionId
+                )
+                console.log(
+                    'iEvaluacionId obtenerIEYParticipaciones:',
+                    this._iEvaluacionId
+                )
+                console.log(
+                    'Evaluacion ID para obtener participaciones obtenerIEYParticipaciones:',
+                    evaluacionId
+                )
                 if (!evaluacionId) {
                     // Si no hay una evaluación activa (creando una nueva), asignar todas las instituciones a sourceProducts
                     this.sourceProducts = [...instituciones]

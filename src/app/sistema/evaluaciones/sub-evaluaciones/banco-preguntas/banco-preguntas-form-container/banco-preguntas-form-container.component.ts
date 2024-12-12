@@ -120,7 +120,6 @@ export class BancoPreguntasFormContainerComponent implements OnInit {
                 'Insertando datos en el desempeño:',
                 this.recibirPayloadForms
             )
-
             // Llamar al servicio para insertar en la tabla "desempeños"
             this._apiEre
                 .insertarMatrizDesempeno(this.recibirPayloadForms) // Paso 1: Insertar desempeño
@@ -149,7 +148,7 @@ export class BancoPreguntasFormContainerComponent implements OnInit {
                         //data.iCursoId = 3 // Valores adicionales
                         data.iCursosNivelGradId = 2
                         data.iNivelGradoId = 1
-                        data.iEspecialistaId = 1
+                        data.iEspecialistaId = 2
 
                         console.log(
                             'Datos listos para guardar preguntas:',

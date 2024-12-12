@@ -17,6 +17,7 @@ import { BancoPreguntaListaComponent } from './components/banco-pregunta-lista/b
 import { BancoPreguntasFormContainerComponent } from './banco-preguntas-form-container/banco-preguntas-form-container.component'
 import { CompartirFormularioEvaluacionService } from '../../services/ereEvaluaciones/compartir-formulario-evaluacion.service'
 
+// import { AulaBancoPreguntasComponent } from '@/app/sistema/aula-virtual/sub-modulos/aula-banco-preguntas/aula-banco-preguntas/aula-banco-preguntas.component'
 @Component({
     selector: 'app-ere-preguntas',
     templateUrl: './banco-preguntas.component.html',
@@ -215,7 +216,10 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.getParamsByUrl()
         this.initializeData()
-        this.fetchInitialData()
+        //this.fetchInitialData()
+        //this.obtenerBancoPreguntas()
+        this.obtenerDesempenos()
+        this.obtenerTipoPreguntas()
         // Capturamos el parámetro iEvaluacionId de la URL
         this._route.queryParams.subscribe((params) => {
             this.evaluaciones = params['iEvaluacionId']
@@ -313,6 +317,7 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
                         {},
                         this.expandedRowKeys
                     )
+                    console.log('Datos de obtener banco preguntas:', data)
                 },
             })
     }

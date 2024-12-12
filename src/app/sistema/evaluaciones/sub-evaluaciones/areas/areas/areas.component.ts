@@ -43,45 +43,18 @@ export type Layout = 'list' | 'grid'
 export class AreasComponent implements OnInit {
     private ConstantesService = inject(ConstantesService)
     private _apiEre = inject(ApiEvaluacionesRService)
+    //areas: any[] = [] // Áreas locales en el componente
     public cursos: ICurso[] = []
     public data: ICurso[] = []
     public layout: Layout = 'list'
     public text: string = ''
     public searchText: Event
-    public area: IArea[] = [] // Inicialmente vacío, se llenará con los datos de la API.
-    // public area: IArea[] = [
-    //     {
-    //         id: 0,
-    //         nombre: 'Matemática',
-    //         descripcion: 'dedscripcion?',
-    //         seccion: 'A',
-    //         grado: '1°',
-    //         totalEstudiantes: 20,
-    //         nivel: 'Primaria',
-    //     },
-    //     {
-    //         id: 1,
-    //         nombre: 'Matemática',
-    //         descripcion: 'Descripcion?',
-    //         seccion: 'A',
-    //         grado: '2°',
-    //         totalEstudiantes: 2,
-    //         nivel: 'Primaria',
-    //     },
-    //     {
-    //         id: 2,
-    //         nombre: 'Matemática',
-    //         descripcion: 'Descripcion?',
-    //         seccion: 'B',
-    //         grado: '2°',
-    //         totalEstudiantes: 2,
-    //         nivel: 'Primaria',
-    //     },
-    // ]
+    public areas: IArea[] = [] // Inicialmente vacío, se llenará con los datos de la API.
     public sortField: string = ''
     public sortOrder: number = 0
     public iEvaluacionId: number | null = null // Para almacenar el ID de la evaluación.
     public nombreEvaluacion: string | null = null // Para almacenar el nombre de la evaluación.
+    selectedCursoId: number | null = null // Variable para almacenar el curso seleccionado
     //@Input() _iEvaluacionId: string | null = null // Usamos _iEvaluacionId como input
     public params = {}
 
@@ -123,6 +96,12 @@ export class AreasComponent implements OnInit {
             'Evaluacion Servicio ---->',
             this.compartirIdEvaluacionService.iEvaluacionId
         )
+
+        console.log(
+            'EVALUACION SOTRAGE:',
+            this.compartirIdEvaluacionService.iEvaluacionIdStorage
+        )
+        //!
         // console.log('iEvaluacionId: ---->', this.iEvaluacionId)
         // console.log(
         //     'Nombre de la evaluación ----->:',
@@ -151,6 +130,9 @@ export class AreasComponent implements OnInit {
     obtenerEspDremCurso(): void {
         const iPersId = this.ConstantesService.iPersId // Obtén el iPersId
         const iEvaluacionId = this.compartirIdEvaluacionService.iEvaluacionId // Obtén el iEvaluacionId
+        // const iEvaluacionId =
+        //     this.compartirIdEvaluacionService.iEvaluacionIdStorage
+
         console.log('iPersId:', iPersId, 'Evaluacion', iEvaluacionId) // Asegúrate de que el valor está disponible
 
         this._apiEre.obtenerEspDremCurso(iPersId, iEvaluacionId).subscribe({
@@ -162,8 +144,8 @@ export class AreasComponent implements OnInit {
 
                 // Procesar y mapear los datos al formato de IArea.
                 if (resp.data && Array.isArray(resp.data)) {
-                    this.area = resp.data.map((item: any) => ({
-                        id: Number(item.iCursoId), // Usamos iCursoId como ID.
+                    this.areas = resp.data.map((item: any) => ({
+                        id: Number(item.iCursosNivelGradId), // Usamos iCursoId como ID.
                         nombre: item.cCursoNombre || 'Sin nombre', // Nombre del curso.
                         descripcion:
                             item.cCursoDescripcion || 'Sin descripción', // Descripción del curso.
@@ -172,8 +154,12 @@ export class AreasComponent implements OnInit {
                         totalEstudiantes: 0, // Asumimos 0 porque no viene en la API.
                         nivel: 'Primaria', // Puedes ajustarlo según tu lógica o datos de la API.
                     }))
+                    // Guardar las áreas procesadas en el servicio
+                    this.compartirFormularioEvaluacionService.setAreas(
+                        this.areas
+                    )
                 }
-                console.log('Datos procesados para áreas:', this.area)
+                console.log('Datos procesados para áreas:', this.areas)
             },
 
             error: (err) => {

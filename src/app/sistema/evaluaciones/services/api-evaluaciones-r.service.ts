@@ -206,16 +206,19 @@ export class ApiEvaluacionesRService {
             datapayload
         )
     }
-    //!DescargarMatriz
     generarPdfMatrizbyEvaluacionId(
-        _iEvaluacionIdtoMatriz: number
+        _iEvaluacionIdtoMatriz: number,
+        areas: string // Cambié el nombre a 'areas'
     ): Observable<any> {
+        console.log('Parámetros enviados al backend:', areas)
         return this.http.get(
             `${this.baseUrl}/ere/Evaluaciones/generarPdfMatrizbyEvaluacionId`,
             {
                 params: {
                     iEvaluacionId: _iEvaluacionIdtoMatriz.toString(),
+                    areas: areas, // Usa 'areas' aquí para coincidir con el nombre esperado por el backend
                 },
+                responseType: 'blob' as 'json', // Asegúrate de que el responseType esté como 'blob'
             }
         )
     }
@@ -232,18 +235,13 @@ export class ApiEvaluacionesRService {
         iEvaluacionId: number
     ): Observable<any> {
         const params = { iPersId, iEvaluacionId } // Enviar el iPersId como parámetro
+        console.log('Parámetros enviados al backend:', params)
         return this.http.get(
             `${this.baseUrl}/ere/Evaluaciones/obtenerEspDremCurso`,
             { params }
         )
     }
-    // obtenerEspDremCurso(params) {
-    //     return this.http.get(
-    //         `${this.baseUrl}/ere/Evaluaciones/obtenerEspDremCurso`,
-    //         { params }
-    //     )
-    // }
-    //!
+
     //Banco de Preguntas ->
     generarWordByPreguntasIds(baseParams) {
         const url = `${this.baseUrlBackend}/generarWordBancoPreguntasSeleccionadas`

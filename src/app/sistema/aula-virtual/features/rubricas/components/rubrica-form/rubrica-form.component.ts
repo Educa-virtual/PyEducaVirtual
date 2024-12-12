@@ -12,6 +12,7 @@ import { Subject, takeUntil } from 'rxjs'
     styleUrl: './rubrica-form.component.scss',
 })
 export class RubricaFormComponent implements OnInit, OnDestroy {
+    rubricas
     public rubricaForm: FormGroup
     public mode: 'EDITAR' | 'CREAR' | 'VIEW' = 'CREAR'
 
@@ -23,7 +24,7 @@ export class RubricaFormComponent implements OnInit, OnDestroy {
     private _constantesService = inject(ConstantesService)
     private _apiEvaluacionesServ = inject(ApiEvaluacionesService)
     private _unsubscribe$ = new Subject<boolean>()
-    private _config = inject(DynamicDialogConfig)
+    public _config = inject(DynamicDialogConfig)
 
     private _params = {
         iCursoId: null,
@@ -32,6 +33,11 @@ export class RubricaFormComponent implements OnInit, OnDestroy {
     constructor(private _rubricaFormService: RubricaFormService) {}
 
     ngOnInit() {
+        console.log('this.mode en form rubrica');
+        console.log(this._config.data.mode);
+        
+
+        this.rubricas = this._config.data.rubricas
         this.rubrica = this._config.data.rubrica
         this._params.iCursoId = this._config.data.iCursoId
         this._params.idDocCursoId = this._config.data.idDocCursoId

@@ -81,7 +81,9 @@ export class EvaluacionRoomComponent implements OnInit, OnDestroy {
 
     constructor(
         private _evaluacionService: ApiEvaluacionesService,
-        private _constantesService: ConstantesService
+        private _constantesService: ConstantesService,
+
+        private _activeRoute: ActivatedRoute
     ) {}
 
     handleActions(action) {
@@ -113,12 +115,11 @@ export class EvaluacionRoomComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.params.iDocenteId = this._constantesService.iDocenteId
-        this.params.iCursoId = JSON.parse(
-            localStorage.getItem('dremoCurso')
-        ).iCursoId
-        this.params.idDocCursoId = JSON.parse(
-            localStorage.getItem('dremoCurso')
-        ).idDocCursoId
+
+        this._activeRoute.queryParams.subscribe((params) => {
+            this.params.iCursoId = params['iCursoId'] ?? null
+            this.params.idDocCursoId = params['idDocCursoId'] ?? null
+        })
 
         console.log('params')
         console.log(this.params)

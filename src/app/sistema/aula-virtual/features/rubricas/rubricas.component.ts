@@ -21,6 +21,7 @@ import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmatio
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-evaluaciones.service'
 import { MenuItem } from 'primeng/api'
+import { DialogModule } from 'primeng/dialog'
 
 const SELECTION_ACTION: IActionTable = {
     labelTooltip: 'Seleccionar',
@@ -33,7 +34,7 @@ const SELECTION_ACTION: IActionTable = {
 @Component({
     selector: 'app-rubricas',
     standalone: true,
-    imports: [RubricasModule],
+    imports: [RubricasModule, DialogModule],
     templateUrl: './rubricas.component.html',
     styleUrl: './rubricas.component.scss',
 })
@@ -92,6 +93,10 @@ export class RubricasComponent implements OnInit, OnDestroy {
 
     public data = []
 
+    visible = false
+
+    modeFormRubrica
+
     items: MenuItem[] = [
         {
             label: 'Seleccione una opción',
@@ -99,12 +104,12 @@ export class RubricasComponent implements OnInit, OnDestroy {
                 {
                     label: 'Nueva rúbrica',
                     icon: 'pi pi-plus',
-                    command: () => this.agregarInstrumentoEvaluacion(),
+                    command: () => this.handleActions({mode: 'CREAR'}),
                 },
                 {
                     label: 'Reutilizar rúbrica',
                     icon: 'pi pi-plus',
-                    command: () => this.handleActions('otro'),
+                    command: () => this.handleActions({mode: 'VIEW'}),
                 },
             ],
         },
@@ -125,8 +130,9 @@ export class RubricasComponent implements OnInit, OnDestroy {
         }
     }
 
-    handleActions(action) {
-        console.log(action)
+    handleActions({mode}) {
+        this.modeFormRubrica = mode
+        this.agregarInstrumentoEvaluacion()
     }
 
     getData() {
@@ -140,6 +146,7 @@ export class RubricasComponent implements OnInit, OnDestroy {
             .subscribe({
                 next: (data) => {
                     this.data = data
+                    console.log(data)
                 },
             })
     }
@@ -157,6 +164,8 @@ export class RubricasComponent implements OnInit, OnDestroy {
                 iCursoId: this.params.iCursoId,
                 idDocCursoId: this.params.idDocCursoId,
                 rubrica: item,
+                rubricas: this.data,
+                mode: this.modeFormRubrica
             },
         })
         ref.onClose.pipe(takeUntil(this._unsubscribe$)).subscribe(() => {

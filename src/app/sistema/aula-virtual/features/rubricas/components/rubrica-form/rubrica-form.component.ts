@@ -61,7 +61,7 @@ export class RubricaFormComponent implements OnInit, OnDestroy {
     }
 
     patchValuesSelection(rubrica: any) {
-        this._rubricaFormService.patchRubricaForm(rubrica)
+        this._rubricaFormService.patchRubricaFormSelection(rubrica)
     }
 
     patchValues() {

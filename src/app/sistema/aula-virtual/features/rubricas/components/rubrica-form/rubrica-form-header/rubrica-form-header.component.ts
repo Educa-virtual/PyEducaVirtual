@@ -12,7 +12,7 @@ import { FormBuilder } from '@angular/forms'
 })
 export class RubricaFormHeaderComponent implements OnInit {
     form: FormGroup
-    @Input() rubricas
+    rubricas = []
     @Input() mode
 
     @Output() sendRubrica = new EventEmitter<any>()
@@ -26,20 +26,22 @@ export class RubricaFormHeaderComponent implements OnInit {
 
     buscarSugerencias(event: any) {
         const query = event.query ?? event.value.cInstrumentoNombre // Entrada del usuario
-        this.filterRubricas = this.rubricas.filter((item) => {
-            if (
-                item.cInstrumentoNombre.toLowerCase() === query.toLowerCase() &&
-                event.value
-            ) {
-                this.sendRubrica.emit(event.value)
-            }
-
-            // console.log(item.cInstrumentoNombre.toLowerCase() == query.toLowerCase());
-
-            return item.cInstrumentoNombre
-                .toLowerCase()
-                .includes(query.toLowerCase())
-        })
+        if (Array.isArray(this.rubricas)) {
+            this.filterRubricas = this.rubricas.filter((item) => {
+                if (
+                    item.cInstrumentoNombre.toLowerCase() === query.toLowerCase() &&
+                    event.value
+                ) {
+                    this.sendRubrica.emit(event.value)
+                }
+    
+                // console.log(item.cInstrumentoNombre.toLowerCase() == query.toLowerCase());
+    
+                return item.cInstrumentoNombre
+                    .toLowerCase()
+                    .includes(query.toLowerCase())
+            })
+        }
     }
 
     constructor(
@@ -63,18 +65,19 @@ export class RubricaFormHeaderComponent implements OnInit {
     }
 
     obtenerRubricas(filtroYear = undefined) {
-        console.log('filtroYear')
-        console.log(filtroYear ? new Date(filtroYear).getFullYear() : filtroYear)
+
+        this.rubricas = []
 
         this.params = {
             iDocenteId: this._ConstantesService.iDocenteId,
+            filtroYear: (filtroYear ? new Date(filtroYear).getFullYear() : filtroYear) ?? this.form.value.filtroYear
         }
         this._activeRoute.queryParams.subscribe((params) => {
             this.params.iCursoId = params['iCursoId'] ?? undefined
             this.params.idDocCursoId = params['idDocCursoId'] ?? undefined
         })
 
-        this._evaluacionService.obtenerRubricas(this.params).subscribe({
+        this._evaluacionService.obtenerRubricasConFiltro(this.params).subscribe({
             next: (data) => {
                 data.forEach((element) => {
                     this.rubricas.push(element)

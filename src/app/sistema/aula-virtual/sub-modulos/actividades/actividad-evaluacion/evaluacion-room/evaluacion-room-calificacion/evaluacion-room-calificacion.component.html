@@ -4,14 +4,12 @@
         (evaluacion?.cEvaluacionTitulo || 'Título no disponible')
     "
 ></app-toolbar-primeng>
-<
-
 <div class="card">
     <p-table>
         <ng-template pTemplate="header">
             <tr>
                 <th></th>
-                <th class="leyenda-tareas">
+                <th class="leyenda-evaluacion">
                     <div class="flex align-items-center">
                         <div
                             class="w-1rem h-1rem border-circle bg-red-500"
@@ -22,7 +20,7 @@
                         </div>
                     </div>
                 </th>
-                <th class="leyenda-tareas">
+                <th class="leyenda-evaluacion">
                     <div class="flex align-items-center">
                         <div
                             class="w-1rem h-1rem border-circle bg-green-500"
@@ -141,7 +139,7 @@
                         <p-toast></p-toast>
                         <p-button
                             severity="success"
-                            label="Guardars"
+                            label="Guardar"
                             icon="pi pi-plus"
                             iconPos="left"
                             (onClick)="guardarEvaluacionEstudiantesxDocente()"

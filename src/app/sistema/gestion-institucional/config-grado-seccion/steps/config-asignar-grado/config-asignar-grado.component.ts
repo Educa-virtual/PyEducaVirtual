@@ -792,7 +792,25 @@ export class ConfigAsignarGradoComponent implements OnInit {
             })
         }
     }
-
+    confirm() {
+        this._confirmService.openConfiSave({
+            message: '¿Estás seguro de que deseas guardar y continuar?',
+            header: 'Advertencia de autoguardado',
+            icon: 'pi pi-exclamation-triangle',
+            accept: () => {
+                // Acción para eliminar el registro
+                this.router.navigate(['/gestion-institucional/resumen'])
+            },
+            reject: () => {
+                // Mensaje de cancelación (opcional)
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Cancelado',
+                    detail: 'Acción cancelada',
+                })
+            },
+        })
+    }
     accionBtnItem(accion) {
         switch (accion) {
             case 'guardar':

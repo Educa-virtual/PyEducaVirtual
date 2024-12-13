@@ -19,6 +19,7 @@ import { MessageService } from 'primeng/api'
 import { HttpEvent } from '@angular/common/http'
 import { GeneralService } from '@/app/servicios/general.service'
 import { ConfirmationService } from 'primeng/api'
+import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 
 interface UploadEvent {
     originalEvent: HttpEvent<any> | Event
@@ -76,7 +77,7 @@ export class ConfigComponent implements OnInit {
         cServEdNombre: string
     }[]
     configuracion: any = {}
-
+    private _confirmService = inject(ConfirmationModalService)
     constructor(
         private stepService: AdmStepGradoSeccionService,
         private router: Router,
@@ -125,6 +126,7 @@ export class ConfigComponent implements OnInit {
                 ], // tabla acad.configuraciones
                 cNivelTipoNombre: [this.configuracion[0].cNivelTipoNombre],
                 cYAcadNombre: [this.configuracion[0].cYAcadNombre],
+                iProgId: [this.configuracion[0].iProgId],
             })
         } catch (error) {
             console.error('Error initializing form:', error)
@@ -248,56 +250,73 @@ export class ConfigComponent implements OnInit {
             },
         })
     }
+
+    confirm() {
+        this._confirmService.openConfiSave({
+            message: '¿Estás seguro de que deseas guardar y continuar?',
+            header: 'Advertencia de autoguardado',
+            icon: 'pi pi-exclamation-triangle',
+            accept: () => {
+                // Acción para eliminar el registro
+                this.actualizar()
+            },
+            reject: () => {
+                // Mensaje de cancelación (opcional)
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Cancelado',
+                    detail: 'Acción cancelada',
+                })
+            },
+        })
+
+        // this.router.navigate(['/gestion-institucional/ambiente'])
+    }
+
+    actualizar() {
+        if (this.form.valid) {
+            this.query
+                .addAmbienteAcademico({
+                    json: JSON.stringify(this.form.value),
+                    _opcion: 'addConfig',
+                })
+                .subscribe({
+                    next: (data: any) => {
+                        console.log(data, 'id', data.data[0].id)
+
+                        this.form.get('iConfigId')?.setValue(data.data[0].id)
+                        this.configuracion[0] = this.form.getRawValue()
+                        this.stepService.configuracion[0] =
+                            this.configuracion[0]
+                    },
+                    error: (error) => {
+                        console.error('Error fetching configuración:', error)
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Mensaje',
+                            detail: 'Error. No se proceso petición ',
+                        })
+                    },
+                    complete: () => {
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: 'Mensaje',
+                            detail: 'Proceso exitoso',
+                        })
+                        console.log('Request completed')
+                        this.router.navigate([
+                            '/gestion-institucional/ambiente',
+                        ])
+                    },
+                })
+        } else {
+            console.log('Formulario no válido', this.form.invalid)
+        }
+    }
+
     accionBtnItem(accion) {
         if (accion === 'guardar') {
-            if (this.form.valid) {
-                this.query
-                    .addAmbienteAcademico({
-                        json: JSON.stringify(this.form.value),
-                        _opcion: 'addConfig',
-                    })
-                    .subscribe({
-                        next: (data: any) => {
-                            console.log(data, 'id', data.data[0].id)
-
-                            // Asegurar inicialización
-                            // this.configuracion = this.configuracion || [{}]
-                            // this.stepService.configuracion[0] = this.stepService
-                            //     .configuracion || [{}]
-                            // Actualizar valores
-                            this.form
-                                .get('iConfigId')
-                                ?.setValue(data.data[0].id)
-                            this.configuracion[0] = this.form.value
-                            this.stepService.configuracion[0] =
-                                this.configuracion[0]
-                        },
-                        error: (error) => {
-                            console.error(
-                                'Error fetching configuración:',
-                                error
-                            )
-                            this.messageService.add({
-                                severity: 'error',
-                                summary: 'Mensaje',
-                                detail: 'Error. No se proceso petición ',
-                            })
-                        },
-                        complete: () => {
-                            this.messageService.add({
-                                severity: 'success',
-                                summary: 'Mensaje',
-                                detail: 'Proceso exitoso',
-                            })
-                            console.log('Request completed')
-                            // this.router.navigate([
-                            //     '/gestion-institucional/ambiente',
-                            // ])
-                        },
-                    })
-            } else {
-                console.log('Formulario no válido', this.form.invalid)
-            }
+            this.actualizar()
         }
     }
     handleActions(actions) {

@@ -19,10 +19,12 @@
             <p-inputGroup>
                 <p-inputGroupAddon> Tipo Pregunta </p-inputGroupAddon>
                 <p-dropdown
+                    [(ngModel)]="params.iTipoPregId"
                     optionValue="iTipoPregId"
-                    [options]="[]"
+                    [options]="tipoPreguntas"
                     optionLabel="cTipoPregDescripcion"
                     styleClass="w-full"
+                    (onChange)="obtenerBancoPreguntas()"
                 />
             </p-inputGroup>
         </div>

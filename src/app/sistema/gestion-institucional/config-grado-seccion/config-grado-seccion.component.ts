@@ -261,6 +261,10 @@ export class ConfigGradoSeccionComponent implements OnInit {
 
         this.router.navigate(['configuracion/configuracion/years']) // Navega a YearsComponent
     }
+
+    confirm() {
+        this.router.navigate(['gestion-institucional/plan-estudio'])
+    }
     accionBtnItemTable({ accion, item }) {
         if (accion === 'agregar') {
             // this.selectedItems = []

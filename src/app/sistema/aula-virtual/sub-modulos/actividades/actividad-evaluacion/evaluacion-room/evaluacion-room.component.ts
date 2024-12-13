@@ -12,11 +12,19 @@ import {
     matMessage,
     matRule,
     matStar,
+    matFactCheck,
+    matQuiz,
+    matAssignment,
+    matDescription,
+    matForum,
+    matVideocam,
 } from '@ng-icons/material-icons/baseline'
+
 import { ActivatedRoute } from '@angular/router'
 import { tipoActividadesKeys } from '@/app/sistema/aula-virtual/interfaces/actividad.interface'
 import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
 import { Subject, takeUntil } from 'rxjs'
+
 import { EvaluacionFormPreguntasComponent } from '../evaluacion-form/evaluacion-form-preguntas/evaluacion-form-preguntas.component'
 import { EvaluacionRoomCalificacionComponent } from './evaluacion-room-calificacion/evaluacion-room-calificacion.component'
 import { PrimengModule } from '@/app/primeng.module'
@@ -26,12 +34,14 @@ import { EmptySectionComponent } from '@/app/shared/components/empty-section/emp
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { EvaluacionEstudiantesComponent } from '../evaluacion-estudiantes/evaluacion-estudiantes.component'
 import { RubricasComponent } from '@/app/sistema/aula-virtual/features/rubricas/rubricas.component'
-
+import { ActividadListaComponent } from '../../components/actividad-lista/actividad-lista.component'
+import { RubricaEvaluacionComponent } from '@/app/sistema/aula-virtual/features/rubricas/components/rubrica-evaluacion/rubrica-evaluacion.component'
 @Component({
     selector: 'app-evaluacion-room',
     standalone: true,
     imports: [
         CommonModule,
+        RubricaEvaluacionComponent,
         RubricasComponent,
         IconComponent,
         PrimengModule,
@@ -42,6 +52,7 @@ import { RubricasComponent } from '@/app/sistema/aula-virtual/features/rubricas/
         EmptySectionComponent,
         EvaluacionEstudiantesComponent,
         EvaluacionFinalizadaComponent,
+        ActividadListaComponent,
     ],
     templateUrl: './evaluacion-room.component.html',
     styleUrl: './evaluacion-room.component.scss',
@@ -54,6 +65,13 @@ import { RubricasComponent } from '@/app/sistema/aula-virtual/features/rubricas/
             matRule,
             matListAlt,
             matAccessTime,
+
+            matFactCheck,
+            matQuiz,
+            matAssignment,
+            matDescription,
+            matForum,
+            matVideocam,
         }),
     ],
 })
@@ -66,10 +84,29 @@ export class EvaluacionRoomComponent implements OnInit, OnDestroy {
     private _aulaService = inject(ApiAulaService)
     private _ConstantesService = inject(ConstantesService)
 
+    actividad = {
+        iContenidoSemId: 1,
+        iProgActId: 57,
+        cProgActTituloLeccion: "Exmaen de recuperación final",
+        iActTipoId: 3,
+        iPragActEstado: 1,
+        cActTipoNombre: "Evaluación Formativa",
+        idDocCursoId: 1,
+        ixActivadadId: "kVap2xygkeWrXR7q5mdBKjl6dNOzYAQ4oMGEZ31v09JbLDNw8N",
+        dtProgActInicio: "2024-10-19T14:00:00",
+        dtProgActFin: "2024-10-19T15:00:00",
+        dtProgActPublicacion: "2024-10-10T20:12:00",
+        iEstado: 2,
+        iEvaluacionId: 17,
+        cTareaTitulo: null,
+        iForoId: null,
+        iEstadoActividad: 0,
+      }
     params = {
         iCursoId: 0,
         iDocenteId: 0,
         idDocCursoId: 0,
+        iEvaluacionId: null,
     }
 
     rubricas = [
@@ -119,6 +156,7 @@ export class EvaluacionRoomComponent implements OnInit, OnDestroy {
         this._activeRoute.queryParams.subscribe((params) => {
             this.params.iCursoId = params['iCursoId'] ?? null
             this.params.idDocCursoId = params['idDocCursoId'] ?? null
+            this.params.iEvaluacionId = params['iEvaluacionId'] ?? null
         })
 
         console.log('params')
@@ -126,6 +164,15 @@ export class EvaluacionRoomComponent implements OnInit, OnDestroy {
 
         this.obtenerEvaluacion()
         this.iPerfilId = Number(this._ConstantesService.iPerfilId)
+
+        this.obtenerRubrica()
+    }
+
+    /**
+     * Obtener los datos de la rubrica adjuntada a la evaluación
+     */
+    obtenerRubrica(){
+
     }
 
     // obtiene la evalución

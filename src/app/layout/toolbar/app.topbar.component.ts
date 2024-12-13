@@ -145,7 +145,11 @@ export class AppTopBarComponent implements OnInit {
                         label: i.respuesta,
                         icon: i.icono,
                         sublabel: i.tiempoNotificacion,
+                        diferencias: i.diferencia,
                     })
+                })
+                data.sort((a, b) => {
+                    return a.diferencias - b.diferencias
                 })
                 this.totalNotificaciones = data.length
                 this.items = [

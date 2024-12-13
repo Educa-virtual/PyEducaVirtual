@@ -50,9 +50,22 @@ export class ApiEvaluacionesService {
     // Rubricas
 
     obtenerRubricas(params) {
+        console.log('solicitando rubricas')
+        console.log(params)
         return this.http
             .get<ApiResponse>(
                 `${this.baseUrlApi}/evaluaciones/instrumento-evaluaciones/rubrica`,
+                { params }
+            )
+            .pipe(map((resp) => resp.data))
+    }
+
+    obtenerRubricasConFiltro(params) {
+        console.log('solicitando rubricas')
+        console.log(params)
+        return this.http
+            .get<ApiResponse>(
+                `${this.baseUrlApi}/evaluaciones/instrumento-evaluaciones/obtenerRubricas`,
                 { params }
             )
             .pipe(map((resp) => resp.data))

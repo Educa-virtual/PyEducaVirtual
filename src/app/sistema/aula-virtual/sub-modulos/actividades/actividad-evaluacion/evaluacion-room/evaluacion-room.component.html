@@ -137,7 +137,7 @@
                                 <span class="font-bold text-xl">Rúbrica</span>
                                 <app-rubricas
                                     [title]="'Rúbricas'"
-                                    mode="NORMAL"
+                                    mode="SELECTION"
                                     [params]="params"
                                     (rubricaSelectedChange)="
                                         accionRubrica($event)
@@ -159,32 +159,40 @@
                                     type="button"
                                     pButton
                                     aria-label="ver archivo"
-                                    style="background-color: #6cb3c9; border-color: #7676764d"
+                                    style="
+                                        background-color: #6cb3c9;
+                                        border-color: #7676764d;
+                                    "
                                     icon="pi pi-eye"
                                 ></button>
                                 <button
                                     type="button"
                                     aria-label="adjuntar archivo"
                                     pButton
-                                    style="background-color: #949090; border-color: #7676764d"
+                                    style="
+                                        background-color: #949090;
+                                        border-color: #7676764d;
+                                    "
                                     icon="pi pi-pencil"
                                 ></button>
                                 <button
                                     type="button"
                                     aria-label="adjuntar archivo"
                                     pButton
-                                    style="background-color: #949090; border-color: #7676764d"
+                                    style="
+                                        background-color: #949090;
+                                        border-color: #7676764d;
+                                    "
                                     icon="pi pi-trash"
                                 ></button>
                             </p-inputGroup>
-                            
+
                             <!-- <button
                                                     type="button"
                                                     pButton
                                                     icon="pi pi-trash"
                                                     class="p-button-danger"
                                                 ></button> -->
-                            
                         </div>
 
                         <div

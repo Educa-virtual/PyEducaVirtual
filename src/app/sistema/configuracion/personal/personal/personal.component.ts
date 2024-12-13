@@ -1,4 +1,10 @@
-import { Component, OnInit, OnChanges, OnDestroy } from '@angular/core'
+import {
+    Component,
+    OnInit,
+    OnChanges,
+    OnDestroy,
+    SimpleChanges,
+} from '@angular/core'
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
 
@@ -22,11 +28,18 @@ import { ToastModule } from 'primeng/toast'
     providers: [StepConfirmationService, ConfirmationService, MessageService],
 })
 export class PersonalComponent implements OnInit, OnChanges, OnDestroy {
-
     personalInformation
 
     constructor(private router: Router) {}
-    ngOnInit() {}
+    ngOnDestroy(): void {
+        throw new Error('Method not implemented.')
+    }
+    ngOnChanges(changes: SimpleChanges): void {
+        throw new Error('Method not implemented.', changes)
+    }
+    ngOnInit(): void {
+        throw new Error('Method not implemented.')
+    }
 
     handleActions(row) {
         console.log(row)
@@ -37,13 +50,11 @@ export class PersonalComponent implements OnInit, OnChanges, OnDestroy {
             },
             editar: () => {
                 // Lógica para la acción "editar"
-
             },
             eliminar: () => {
                 // Lógica para la acción "eliminar"
             },
         }
-
 
         const action = actions[row.accion]
         if (action) {
@@ -52,7 +63,6 @@ export class PersonalComponent implements OnInit, OnChanges, OnDestroy {
             console.log(`Acción desconocida: ${row.action}`)
         }
     }
-
 
     actionsContainer = [
         {
@@ -143,11 +153,7 @@ export class PersonalComponent implements OnInit, OnChanges, OnDestroy {
         },
     ]
 
-    navigateToRegistro(){
+    navigateToRegistro() {
         this.router.navigate(['/configuracion/personal/registro'])
     }
-
-    ngOnChanges(changes) {}
-
-    ngOnDestroy() {}
 }

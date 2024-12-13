@@ -1,6 +1,9 @@
 import { CommonModule } from '@angular/common'
 import { Component, OnInit, Input, inject } from '@angular/core'
-import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
+import {
+    ContainerPageComponent,
+    IActionContainer,
+} from '@/app/shared/container-page/container-page.component'
 import {
     TablePrimengComponent,
     IColumn,
@@ -38,7 +41,8 @@ import { Subject, takeUntil } from 'rxjs'
 import { RemoveHTMLPipe } from '@/app/shared/pipes/remove-html.pipe'
 import { CommonInputComponent } from '@/app/shared/components/common-input/common-input.component'
 import { ButtonModule } from 'primeng/button'
-//import { Toast } from 'primeng/toast';
+import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
+import { TabsKeys } from '../tab.interface'
 @Component({
     selector: 'app-tab-resultados',
     standalone: true,
@@ -79,12 +83,30 @@ import { ButtonModule } from 'primeng/button'
 export class TabResultadosComponent implements OnInit {
     @Input() ixActivadadId: string
     @Input() iActTopId: tipoActividadesKeys
+    @Input() area: TabsKeys
 
     private GeneralService = inject(GeneralService)
     private _formBuilder = inject(FormBuilder)
     private _aulaService = inject(ApiAulaService)
+    private _confirmService = inject(ConfirmationModalService)
     // private ref = inject(DynamicDialogRef)
     private _constantesService = inject(ConstantesService)
+    @Input() actions: IActionContainer[] = [
+        {
+            labelTooltip: 'Descargar Pdf',
+            text: 'Reporte  Pdf',
+            icon: 'pi pi-file-pdf',
+            accion: 'descargar_pdf',
+            class: 'p-button-danger',
+        },
+        {
+            labelTooltip: 'Descargar Excel',
+            text: 'Reporte Excel',
+            icon: 'pi pi-download',
+            accion: 'Descargar_Excel',
+            class: 'p-button-success',
+        },
+    ]
     estudiantes: any[] = []
     reporteDeNotas: any[] = []
     estudianteEv: any[] = []
@@ -140,7 +162,7 @@ export class TabResultadosComponent implements OnInit {
             type: 'text',
             width: '10rem',
             field: 'iEscalaCalifIdPeriodo1',
-            header: 'Promedio 01',
+            header: 'Trimestre 01',
             text_header: 'center',
             text: 'center',
         },
@@ -148,7 +170,7 @@ export class TabResultadosComponent implements OnInit {
             type: 'text',
             width: '10rem',
             field: 'iEscalaCalifIdPeriodo2',
-            header: 'Promedio 02',
+            header: 'Trimestre 02',
             text_header: 'center',
             text: 'center',
         },
@@ -156,18 +178,18 @@ export class TabResultadosComponent implements OnInit {
             type: 'text',
             width: '10rem',
             field: 'iEscalaCalifIdPeriodo3',
-            header: 'Promedio 03',
+            header: 'Trimestre 03',
             text_header: 'center',
             text: 'center',
         },
-        {
-            type: 'text',
-            width: '10rem',
-            field: 'iEscalaCalifIdPeriodo4',
-            header: 'Promedio 04',
-            text_header: 'center',
-            text: 'center',
-        },
+        // {
+        //     type: 'text',
+        //     width: '10rem',
+        //     field: 'iEscalaCalifIdPeriodo4',
+        //     header: 'Promedio 04',
+        //     text_header: 'center',
+        //     text: 'center',
+        // },
         {
             type: 'text',
             width: '10rem',
@@ -211,6 +233,68 @@ export class TabResultadosComponent implements OnInit {
                 console.log('Agregar descripcion', accion, item)
                 break
         }
+    }
+    //Descargar reporte de notas finales de curso con switch
+    accionDescargar({ accion }): void {
+        switch (accion) {
+            case 'descargar_pdf':
+                this.generarReporteDeLogrosPdf()
+                console.log('Descargar pdf')
+                break
+            case 'Descargar_Excel':
+                console.log('Descargar excel')
+                break
+        }
+    }
+    //exportar en pdf el reporte de notas finales:
+    generarReporteDeLogrosPdf() {
+        console.log('hola exportar')
+        //, area: IArea
+        //iEvaluacionId = this._iEvaluacionId
+        // Obtén las áreas desde el servicio
+        // const areas = this.compartirFormularioEvaluacionService.getAreas()
+        // console.log('Áreas obtenidas desde el servicio:', areas)
+
+        // Convierte las áreas en una cadena JSON
+        // const encodedAreas = JSON.stringify([area]) // Solo convertir a JSON string, no codificar
+        // console.log('Cadena JSON de las áreas:', encodedAreas)
+        //     const value = 1
+        //     this._aulaService
+        //         .generarReporteDeLogrosPdf(value)
+        //         .subscribe(
+        //             (response) => {
+        //                 console.log('Respuesta de Evaluacion:', response) // Para depuración
+
+        //                 // Se muestra un mensaje indicando que la descarga de la matriz ha comenzado
+        //                 this.messageService.add({
+        //                     severity: 'success',
+        //                     detail: 'Comienza la descarga de la Matriz',
+        //                 })
+
+        //                 // Se crea un enlace de descarga para el archivo PDF generado
+        //                 // const blob = response as Blob // Asegúrate de que la respuesta sea un Blob
+        //                 // const link = document.createElement('a')
+        //                 // link.href = URL.createObjectURL(blob)
+        //                 // link.download =
+        //                 //     'matriz_evaluacion_' +
+        //                 //     area.nombre.toLocaleLowerCase() +
+        //                 //     '.pdf' // Nombre del archivo descargado
+        //                 // link.click()
+        //             },
+        //             (error) => {
+        //                 // En caso de error, se determina el mensaje de error a mostrar
+        //                 const errorMessage =
+        //                     error?.message ||
+        //                     'No hay datos suficientes para descargar la Matriz'
+
+        //                 // Se muestra un mensaje de error en el sistema
+        //                 this.messageService.add({
+        //                     severity: 'error',
+        //                     summary: 'Error',
+        //                     detail: 'Seleccione un estudiante:',
+        //                 })
+        //             }
+        //         )
     }
     //obtener los perfiles
     obtenerIdPerfil() {
@@ -303,6 +387,7 @@ export class TabResultadosComponent implements OnInit {
             )
             .subscribe({
                 next: (response) => {
+                    this.obtenerReporteDenotasFinales()
                     this.mostrarModalConclusionDesc = false
                     console.log('actualizar:', response)
                     this.messageService.add({
@@ -323,6 +408,17 @@ export class TabResultadosComponent implements OnInit {
         const resultadosEstudiantesf = this.califcFinal.value
         const descripcionlimpia = resultadosEstudiantesf.cDetMatrConclusionDesc1
         const conclusionFinalDocente = this.limpiarHTML(descripcionlimpia)
+        console.log(
+            'calificacion',
+            this.califcFinal.value.iEscalaCalifIdPeriodo1
+        )
+        if (this.estudianteSeleccionado == undefined) {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Seleccione un estudiante:',
+            })
+        }
         const fechaActual = new Date()
         const where = [
             {
@@ -374,28 +470,55 @@ export class TabResultadosComponent implements OnInit {
             default:
                 console.log('No se a encontrado la unidad')
         }
-        this._aulaService
-            .guardarCalificacionEstudiante(
-                'acad',
-                'detalle_matriculas',
-                where,
-                registro
-            )
-            .subscribe({
-                next: (response) => {
-                    console.log('actualizar:', response)
+        if (
+            conclusionFinalDocente == '' ||
+            this.califcFinal.value.iEscalaCalifIdPeriodo1 == null
+        ) {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Tiene que agregar una conclusión descriptiva y el nivel de logro',
+            })
+        } else {
+            this._confirmService.openConfiSave({
+                message: 'Recuerde que no podra retroceder',
+                header: '¿Esta seguro que desea guardar conclusión descriptiva?',
+                accept: () => {
+                    // Acción para guardar la conclusion descritiva final
+                    this._aulaService
+                        .guardarCalificacionEstudiante(
+                            'acad',
+                            'detalle_matriculas',
+                            where,
+                            registro
+                        )
+                        .subscribe({
+                            next: (response) => {
+                                this.califcFinal.reset()
+                                //actualiza la tabla de reporte de notas:
+                                this.obtenerReporteDenotasFinales()
+                                console.log('actualizar:', response)
+                                this.messageService.add({
+                                    severity: 'success',
+                                    summary: 'Éxito',
+                                    detail: 'Calificación guardada correctamente.',
+                                })
+                            },
+                            error: (error) => {
+                                console.log('Error en la actualización:', error)
+                            },
+                        })
+                },
+                reject: () => {
+                    // Mensaje de cancelación (opcional)
                     this.messageService.add({
-                        severity: 'success',
-                        summary: 'Éxito',
-                        detail: 'Calificación guardada correctamente.',
+                        severity: 'error',
+                        summary: 'Cancelado',
+                        detail: 'Acción cancelada',
                     })
                 },
-                error: (error) => {
-                    console.log('Error en la actualización:', error)
-                },
             })
-        this.califcFinal.reset()
-        console.log('hola', where, registro)
+        }
     }
     //mostrar las escalas de calificacioón
     mostrarCalificacion() {

@@ -13,6 +13,7 @@ import { AutoCompleteModule } from 'primeng/autocomplete'
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { CalendarModule } from 'primeng/calendar';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 
 const COMPONENTS = [
     RubricaFormHeaderComponent,
@@ -38,6 +39,8 @@ const COMPONENTS = [
         InputGroupModule,
         InputGroupAddonModule,
         CalendarModule,
+        FormsModule,
+        ReactiveFormsModule,
         ...COMPONENTS,
     ],
     providers: [DialogService, MessageService],

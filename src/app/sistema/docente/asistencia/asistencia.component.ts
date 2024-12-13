@@ -61,7 +61,6 @@ export class AsistenciaComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.getFechasImportantes()
         this.getCursoHorario()
     }
 
@@ -70,6 +69,8 @@ export class AsistenciaComponent implements OnInit {
      */
 
     formatoFecha: Date = new Date()
+    calendarioMes = ''
+    calendarioYear = ''
     fechaActual = this.formatoFecha.toISOString().split('T')[0]
     limitado = this.formatoFecha.getDay()
 
@@ -103,20 +104,25 @@ export class AsistenciaComponent implements OnInit {
         selectable: true,
         dayMaxEvents: true,
         height: 600,
-        viewDidMount: (info) => {
-            const weekendDays = ['sábado', 'viernes'] // establecemos los dias que se desea establecer un fondo se toma un dia antes
-            const allDays = info.el.querySelectorAll('.fc-day')
-
-            allDays.forEach((cell: HTMLElement) => {
-                const date = new Date(cell.getAttribute('data-date')!) // captura los dias de la semana
-                if (
-                    weekendDays.includes(
-                        date.toLocaleString('es-pe', { weekday: 'long' })
-                    )
-                ) {
-                    cell.style.backgroundColor = '#ffd7d7'
-                }
-            })
+        dayCellDidMount: (data) => {
+            // Si el día es sábado o domingo
+            if (data.dow === 6 || data.dow === 0) {
+                data.el.style.backgroundColor = '#ffd7d7'
+            }
+        },
+        datesSet: (dateInfo) => {
+            const calendarioMes = dateInfo.view.currentStart.toLocaleString(
+                'default',
+                { month: 'numeric' }
+            )
+            const calendarioYear = dateInfo.view.currentStart.toLocaleString(
+                'default',
+                { year: 'numeric' }
+            )
+            this.calendarioMes = calendarioMes
+            this.calendarioYear = calendarioYear
+            //this.countAsistencias()
+            this.getFechasImportantes()
         },
         dateClick: (item) => this.handleDateClick(item),
         headerToolbar: {
@@ -206,34 +212,50 @@ export class AsistenciaComponent implements OnInit {
     captura = ''
     capturarMes = 0
     countAsistencias() {
+        this.leyenda.filter((index) => {
+            index.contar = 0
+        })
         this.events.filter((index) => {
             this.captura = index.title.split(' : ')
-            const capturar = this.captura[0]
-            const suma = parseInt(this.captura[1])
-            this.capturarMes = new Date(index.start).getMonth() + 1
-            const fechas = this.formatoFecha.getMonth() + 1
 
-            this.leyenda[0].contar +=
-                capturar == 'Asistio' && this.capturarMes == fechas ? suma : 0
-            this.leyenda[1].contar +=
-                capturar == 'Inasistencia' && this.capturarMes == fechas
-                    ? suma
-                    : 0
-            this.leyenda[2].contar +=
-                capturar == 'Inasistencia Justificada' &&
-                this.capturarMes == fechas
-                    ? suma
-                    : 0
-            this.leyenda[3].contar +=
-                capturar == 'Tardanza' && this.capturarMes == fechas ? suma : 0
-            this.leyenda[4].contar +=
-                capturar == 'Tardanza Justificada' && this.capturarMes == fechas
-                    ? suma
-                    : 0
-            this.leyenda[5].contar +=
-                capturar == 'Sin Registro' && this.capturarMes == fechas
-                    ? suma
-                    : 0
+            if (this.captura.length > 1) {
+                const capturar = this.captura[0]
+                const suma = parseInt(this.captura[1])
+                const capturarFecha = index.start.split('-')
+                const fechaAsistencia =
+                    capturarFecha[0] + '-' + capturarFecha[1]
+                const fechaCalendario =
+                    this.calendarioYear + '-' + this.calendarioMes
+
+                this.leyenda[0].contar +=
+                    capturar == 'Asistio' && fechaCalendario == fechaAsistencia
+                        ? suma
+                        : 0
+                this.leyenda[1].contar +=
+                    capturar == 'Inasistencia' &&
+                    fechaCalendario == fechaAsistencia
+                        ? suma
+                        : 0
+                this.leyenda[2].contar +=
+                    capturar == 'Inasistencia Justificada' &&
+                    fechaCalendario == fechaAsistencia
+                        ? suma
+                        : 0
+                this.leyenda[3].contar +=
+                    capturar == 'Tardanza' && fechaCalendario == fechaAsistencia
+                        ? suma
+                        : 0
+                this.leyenda[4].contar +=
+                    capturar == 'Tardanza Justificada' &&
+                    fechaCalendario == fechaAsistencia
+                        ? suma
+                        : 0
+                this.leyenda[5].contar +=
+                    capturar == 'Sin Registro' &&
+                    fechaCalendario == fechaAsistencia
+                        ? suma
+                        : 0
+            }
         })
     }
     countAsistenciasModal() {
@@ -419,7 +441,7 @@ export class AsistenciaComponent implements OnInit {
                 this.router.navigate(['./docente/detalle-asistencia'])
                 break
             case 'get_data':
-                this.getObtenerAsitencias()
+                // this.getObtenerAsitencias()
                 this.getFechasImportantes()
                 this.verAsistencia = false
                 break
@@ -482,7 +504,7 @@ export class AsistenciaComponent implements OnInit {
                 petition: 'post',
                 group: 'docente',
                 prefix: 'asistencia',
-                ruta: 'list',
+                ruta: 'guardarAsistencia',
                 data: {
                     opcion: 'GUARDAR_ASISTENCIA_ESTUDIANTE',
                     iCursoId: this.iCursoId,
@@ -513,10 +535,7 @@ export class AsistenciaComponent implements OnInit {
 
     /**
      * getFechasImportantes
-     * * Se encarga de Obtener de mostras lo siguientes actividades:
-     * * Fechas de actividades Escolares
      * * Asistencia del Año escolar
-     * * Actividades Programadas
      */
 
     getFechasImportantes() {
@@ -569,9 +588,9 @@ export class AsistenciaComponent implements OnInit {
             petition: 'post',
             group: 'docente',
             prefix: 'asistencia',
-            ruta: 'list',
+            ruta: 'obtenerEstudiante',
             data: {
-                opcion: 'CONSULTAR_ASISTENCIA_FECHA',
+                opcion: 'consultar_asistencia_fecha',
                 iCursoId: this.iCursoId,
                 iSeccionId: this.iSeccionId,
                 iDocenteId: this.iDocenteId,
@@ -610,21 +629,21 @@ export class AsistenciaComponent implements OnInit {
         this.GeneralService.getGralReporte(params)
     }
 
-    getObtenerAsitencias() {
-        const params = {
-            petition: 'post',
-            group: 'docente',
-            prefix: 'asistencia',
-            ruta: 'list',
-            data: {
-                opcion: 'CONSULTAR_ASISTENCIA_FECHA',
-                iCursoId: this.iCursoId,
-                dtCtrlAsistencia: this.fechaActual,
-            },
-            params: { skipSuccessMessage: true },
-        }
-        this.getInformation(params, 'get_asistencia')
-    }
+    // getObtenerAsitencias() {
+    //     const params = {
+    //         petition: 'post',
+    //         group: 'docente',
+    //         prefix: 'asistencia',
+    //         ruta: 'list',
+    //         data: {
+    //             opcion: 'consultar_asistencia_fecha',
+    //             iCursoId: this.iCursoId,
+    //             dtCtrlAsistencia: this.fechaActual,
+    //         },
+    //         params: { skipSuccessMessage: true },
+    //     }
+    //     this.getInformation(params, 'get_asistencia')
+    // }
     getInformation(params, accion) {
         this.GeneralService.getGralPrefix(params)
             .pipe(takeUntil(this.unsubscribe$))

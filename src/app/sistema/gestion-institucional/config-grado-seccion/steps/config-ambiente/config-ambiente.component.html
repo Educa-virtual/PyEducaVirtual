@@ -3,6 +3,8 @@
     [actions]="accionesPrincipal"
     (accionBtnItem)="accionBtnItemTable($event)"
 >
+    <p-toast />
+
     <div class="card">
         <p-steps [model]="items" [readonly]="false"></p-steps>
     </div>
@@ -24,6 +26,7 @@
         header="{{ caption }}"
         [(visible)]="visible"
         [style]="{ width: '56rem' }"
+        [modal]="true"
     >
         <form [formGroup]="form">
             <input

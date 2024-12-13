@@ -112,6 +112,7 @@
                 <p-dataViewLayoutOptions></p-dataViewLayoutOptions>
             </div>
         </ng-template>
+
         <ng-template let-products pTemplate="listItem">
             <app-table-primeng
                 [showPaginator]="false"
@@ -121,13 +122,13 @@
         </ng-template>
         <ng-template let-products pTemplate="gridItem">
             <div class="area gap-4 py-2">
-                @for (area of area; track area.iCursoId) {
-                    <app-curso-card
-                        #dv
-                        class=""
-                        [curso]="area"
-                    ></app-curso-card>
-                }
+                <div *ngFor="let item of area; trackBy: trackById">
+                    <app-area-card
+                        [area]="item"
+                        [_iEvaluacionId]="iEvaluacionId"
+                        [_nombreEvaluacion]="nombreEvaluacion"
+                    ></app-area-card>
+                </div>
             </div>
         </ng-template>
     </p-dataView>

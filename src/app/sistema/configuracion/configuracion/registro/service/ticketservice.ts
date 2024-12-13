@@ -3,13 +3,13 @@ import { Subject } from 'rxjs'
 import { httpService } from '../../http/httpService'
 import { firstValueFrom } from 'rxjs'
 
-interface FormData {
-    entries(): IterableIterator<[string, FormDataEntryValue]>;
-  }
+// interface FormData {
+//     entries(): IterableIterator<[string, FormDataEntryValue]>;
+//   }
 
-interface FormData {
-    entries(): IterableIterator<[string, FormDataEntryValue]>;
-  }
+// interface FormData {
+//     entries(): IterableIterator<[string, FormDataEntryValue]>;
+//   }
 
 export type ArrayElement<ArrayType extends readonly unknown[]> =
     ArrayType extends readonly (infer ElementType)[] ? ElementType : never
@@ -459,9 +459,7 @@ export class TicketService {
         }
     }
 
-    async setReglamentoInterno(
-    ) {
-
+    async setReglamentoInterno() {
         return await firstValueFrom(
             this.httpService.getData(
                 `acad/institucionEducativa/selReglamentoInterno?iIieeId=${JSON.parse(localStorage.getItem('dremoPerfil')).iIieeId}`
@@ -469,40 +467,42 @@ export class TicketService {
         )
     }
 
-    base64ToFile(base64String: string, fileName: string, mimeType: string): File {
-    // Eliminar el encabezado 'data:*/*;base64,' si está presente
-    const base64Data = base64String.startsWith('data:') ? base64String.split(',')[1] : base64String;
+    base64ToFile(
+        base64String: string,
+        fileName: string,
+        mimeType: string
+    ): File {
+        // Eliminar el encabezado 'data:*/*;base64,' si está presente
+        const base64Data = base64String.startsWith('data:')
+            ? base64String.split(',')[1]
+            : base64String
 
-    // Decodificar la cadena Base64 a bytes
-    const byteCharacters = atob(base64Data);
+        // Decodificar la cadena Base64 a bytes
+        const byteCharacters = atob(base64Data)
 
-    // Crear un array de bytes de la cadena decodificada
-    const byteArrays = [];
-    for (let offset = 0; offset < byteCharacters.length; offset += 512) {
-        const slice = byteCharacters.slice(offset, offset + 512);
-        const byteNumbers = new Array(slice.length);
-        for (let i = 0; i < slice.length; i++) {
-            byteNumbers[i] = slice.charCodeAt(i);
+        // Crear un array de bytes de la cadena decodificada
+        const byteArrays = []
+        for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+            const slice = byteCharacters.slice(offset, offset + 512)
+            const byteNumbers = new Array(slice.length)
+            for (let i = 0; i < slice.length; i++) {
+                byteNumbers[i] = slice.charCodeAt(i)
+            }
+            byteArrays.push(new Uint8Array(byteNumbers))
         }
-        byteArrays.push(new Uint8Array(byteNumbers));
+
+        // Crear un Blob con los bytes y el tipo MIME del archivo
+        const blob = new Blob(byteArrays, { type: mimeType })
+
+        // Crear un objeto File a partir del Blob
+        return new File([blob], fileName, { type: mimeType })
     }
 
-    // Crear un Blob con los bytes y el tipo MIME del archivo
-    const blob = new Blob(byteArrays, { type: mimeType });
-
-    // Crear un objeto File a partir del Blob
-    return new File([blob], fileName, { type: mimeType });
-}
-
-    
-      
-    async updReglamentoInterno(
-        calAcad,
-    ) {
+    async updReglamentoInterno(calAcad) {
         const formData = await this.convertFormGroupToFormData({
             cIieeUrlReglamentoInterno: calAcad.reglamentoInterno,
-            iIieeId: JSON.parse(localStorage.getItem('dremoPerfil')).iIieeId
-        })    
+            iIieeId: JSON.parse(localStorage.getItem('dremoPerfil')).iIieeId,
+        })
 
         await firstValueFrom(
             this.httpService.putData(

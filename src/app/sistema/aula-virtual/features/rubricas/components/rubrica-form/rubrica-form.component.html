@@ -2,7 +2,7 @@
     @if (rubricaForm) {
         <app-rubrica-form-header
             [mode] = "_config.data.mode"
-            [rubricas]="rubricas"
+            (sendRubrica)="patchValuesSelection($event)"
             [rubricaForm]="rubricaForm"
         ></app-rubrica-form-header>
         <app-rubrica-form-criterios

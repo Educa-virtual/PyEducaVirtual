@@ -461,6 +461,8 @@ export class TabContenidoComponent implements OnInit {
                     'dremoCurso',
                     JSON.stringify(this.semanaSeleccionada)
                 )
+
+                console.log(this.actividadSelected)
                 this.router.navigate(
                     [
                         '../',
@@ -470,6 +472,7 @@ export class TabContenidoComponent implements OnInit {
                     ],
                     {
                         queryParams: {
+                            iEvaluacionId: this.actividadSelected['iEvaluacionId'],
                             iCursoId: this.iCursoId,
                             idDocCursoId: this.idDocCursoId,
                         },

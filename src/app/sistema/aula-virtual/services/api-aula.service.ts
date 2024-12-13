@@ -245,16 +245,10 @@ export class ApiAulaService {
         )
         //.pipe(map((resp) => resp.data))
     }
-    generarReporteDeLogrosPdf(_iEvaluacionIdtoMatriz: number, areas: string) {
+    generarReporteDeLogrosPdf(data) {
         return this._http.get(
-            `${this.baseUrlApi}/aula-virtual/Resultado/obtenerReporteFinalNotas`,
-            {
-                params: {
-                    iEvaluacionId: _iEvaluacionIdtoMatriz.toString(),
-                    areas: areas, // Usa 'areas' aquí para coincidir con el nombre esperado por el backend
-                },
-                responseType: 'blob' as 'json', // Asegúrate de que el responseType esté como 'blob'
-            }
+            `${this.baseUrlApi}/aula-virtual/Resultado/reporteDeLogros`,
+            data
         )
     }
     // generarPdfMatrizbyEvaluacionId(

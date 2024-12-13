@@ -19,7 +19,7 @@
                             [text]="
                                 'SEMANA ' +
                                 semanaEvaluacion?.cContenidoSemNumero +
-                                ': ' +
+                                ' ' +
                                 semanaEvaluacion?.cContenidoSemTitulo
                             "
                         ></p-message>
@@ -101,13 +101,13 @@
                             </p-inputGroupAddon>
                             <p-calendar
                                 appendTo="body"
-                                formControlName="dFechaEvaluacionInico"
+                                formControlName="dtInicio"
                                 [iconDisplay]="'input'"
                                 styleClass="w-full"
                                 [showIcon]="true"
                                 [showTime]="true"
                                 [hourFormat]="'24'"
-                                inputId="dFechaEvaluacionInico"
+                                inputId="dtInicio"
                             />
                         </p-inputGroup>
                     </div>
@@ -119,13 +119,13 @@
                             >
                             <p-calendar
                                 appendTo="body"
-                                formControlName="dFechaEvaluacionFin"
+                                formControlName="dtFin"
                                 [iconDisplay]="'input'"
                                 styleClass="w-full"
                                 [showIcon]="true"
                                 [showTime]="true"
                                 [hourFormat]="'24'"
-                                inputId="dFechaEvaluacionFin"
+                                inputId="dtFin"
                             />
                         </p-inputGroup>
                     </div>

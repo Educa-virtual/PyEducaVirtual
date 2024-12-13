@@ -1,17 +1,18 @@
 <app-modal-primeng
-    [title]="'Nueva Pregunta'"
+    [title]="'Nueva pregunta para:' + cEvaluacionTitulo"
     [showModal]="showModalPreguntas"
     (accionBtnItem)="accionBtn($event)"
-    [width]="'98%'"
+    [width]="'99%'"
 >
     <div class="grid mt-4">
-        <div class="col-12">
-            <h4 class="m-0 text-uppercase text-primary">
-                Nombre de la Evaluación: {{ cEvaluacionTitulo }}
-            </h4>
-        </div>
-
-        <div class="col-12 md:col-5">
+        @if (!iTipoPreguntaId) {
+            <div class="col-12">
+                <span class="text-red-500 text-xs"
+                    >(*) Debe seleccionar el tipo de pregunta</span
+                >
+            </div>
+        }
+        <div class="col-12 md:col-3">
             <p-inputGroup>
                 <p-inputGroupAddon>Tipo de Pregunta</p-inputGroupAddon>
                 <p-dropdown
@@ -27,7 +28,23 @@
         <div class="col-12 md:col-2">
             <p-inputGroup>
                 <p-inputGroupAddon>Peso</p-inputGroupAddon>
-                <input pInputText styleClass="w-full" placeholder="Ingrese" />
+                <input
+                    pInputText
+                    styleClass="w-full"
+                    placeholder="Ingrese"
+                    [(ngModel)]="iPeso"
+                />
+            </p-inputGroup>
+        </div>
+        <div class="col-12 md:col-7">
+            <p-inputGroup>
+                <p-inputGroupAddon>Texto de ayuda</p-inputGroupAddon>
+                <input
+                    type="text"
+                    pInputText
+                    placeholder="Ingrese el texto de ayuda"
+                    [(ngModel)]="cTextoAyuda"
+                />
             </p-inputGroup>
         </div>
         @if (showEncabezado) {
@@ -66,53 +83,179 @@
             </div>
         }
         <div class="col-12">
-            <p-editor
-                styleClass="w-full"
-                [style]="{ height: '120px' }"
-                placeholder="Ingrese enunciado de la pregunta"
-            />
+            <label for="descripcion" class="mt-1"
+                >Enunciado de la pregunta
+                <span class="text-red-500 text-xs">(*) Obligatorio</span></label
+            >
+            <div class="mt-2">
+                <p-editor
+                    styleClass="w-full"
+                    [style]="{ height: '120px' }"
+                    placeholder="Ingrese enunciado de la pregunta"
+                    [(ngModel)]="cPregunta"
+                />
+            </div>
         </div>
-        <div class="col-12">
-            <p-editor
-                styleClass="w-full"
-                [style]="{ height: '120px' }"
-                placeholder="Ingrese el texto de ayuda"
-            />
-        </div>
+
         @switch (iTipoPreguntaId) {
             @case (1) {
-                <div class="col-8">
-                    <label for="" class="mt-1"
-                        >Alternativas - elija al menos una respuesta
-                        correcta</label
-                    >
-                    <div class="mt-2">
+                <div class="col-12 md:col-7 grid">
+                    <div class="col-12">
+                        <div class="flex justify-content-between flex-wrap">
+                            <div
+                                class="flex align-items-center justify-content-center font-bold"
+                            >
+                                Alternativas
+                            </div>
+                            <div
+                                class="flex align-items-center justify-content-center"
+                            >
+                                <button
+                                    pButton
+                                    pRipple
+                                    type="button"
+                                    class="p-button-primary"
+                                    (click)="agregarAlternativa()"
+                                >
+                                    <i class="pi pi-plus"></i>&nbsp; Añadir
+                                    alternativa
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 mt-1">
                         <p-editor
                             styleClass="w-full"
-                            [style]="{ height: '120px' }"
+                            [style]="{ height: '100px' }"
                             placeholder="Ingrese la alternativa"
+                            [(ngModel)]="cAlternativa"
                         />
                     </div>
-                </div>
-                <div class="col-4 align-self-center">
-                    <div class="flex justify-content-between">
-                        ¿Es Respuesta correcta? &nbsp;&nbsp;
-                        <p-inputSwitch />
-                    </div>
-                    <div class="flex justify-content-center mt-2">
-                        <button
-                            pButton
-                            pRipple
-                            type="button"
-                            class="p-button-primary"
-                        >
-                            <i class="pi pi-check"></i>&nbsp; Añadir alternativa
-                        </button>
+                    <div class="col-12">
+                        <div class="flex justify-content-between font-bold">
+                            ¿Es Respuesta correcta? &nbsp;&nbsp;
+                            <p-inputSwitch [(ngModel)]="bRptaCorreta" />
+                        </div>
                     </div>
                 </div>
-                <div class="col-12"></div>
+                <div class="col-12 md:col-5">
+                    <label for="" class="mt-2">Lista de Alternativas</label>
+                    @for (item of alternativas; track item; let idx = $index) {
+                        <div class="grid">
+                            <div class="col-12">
+                                <p-inputGroup class="mt-1">
+                                    <p-inputGroupAddon>
+                                        {{ idx + 1 }}
+                                    </p-inputGroupAddon>
+                                    <div class="w-full align-content-center">
+                                        <div
+                                            class="ml-1"
+                                            [innerHTML]="item.cAlternativa"
+                                        ></div>
+                                    </div>
+                                    <p-button
+                                        *ngIf="item.bRptaCorreta"
+                                        icon="pi pi-check"
+                                        [rounded]="true"
+                                        [text]="true"
+                                        size="small"
+                                        severity="success"
+                                    />
+                                    <button
+                                        type="button"
+                                        pButton
+                                        icon="pi pi-trash"
+                                        (click)="alternativas.splice(idx, 1)"
+                                        class="p-button-danger"
+                                        size="small"
+                                    >
+                                        &nbsp;
+                                    </button>
+                                </p-inputGroup>
+                            </div>
+                        </div>
+                    }
+                </div>
             }
-            @case (2) {}
+            @case (2) {
+                <div class="col-12 md:col-7 grid">
+                    <div class="col-12">
+                        <div class="flex justify-content-between flex-wrap">
+                            <div
+                                class="flex align-items-center justify-content-center font-bold"
+                            >
+                                Alternativas
+                            </div>
+                            <div
+                                class="flex align-items-center justify-content-center"
+                            >
+                                <button
+                                    pButton
+                                    pRipple
+                                    type="button"
+                                    class="p-button-primary"
+                                    (click)="agregarAlternativa()"
+                                >
+                                    <i class="pi pi-plus"></i>&nbsp; Añadir
+                                    alternativa
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 mt-1">
+                        <p-editor
+                            styleClass="w-full"
+                            [style]="{ height: '100px' }"
+                            placeholder="Ingrese la alternativa"
+                            [(ngModel)]="cAlternativa"
+                        />
+                    </div>
+                    <div class="col-12">
+                        <div class="flex justify-content-between font-bold">
+                            ¿Es Respuesta correcta? &nbsp;&nbsp;
+                            <p-inputSwitch [(ngModel)]="bRptaCorreta" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 md:col-5">
+                    <label for="" class="mt-2">Lista de Alternativas</label>
+                    @for (item of alternativas; track item; let idx = $index) {
+                        <div class="grid">
+                            <div class="col-12">
+                                <p-inputGroup class="mt-1">
+                                    <p-inputGroupAddon>
+                                        {{ idx + 1 }}
+                                    </p-inputGroupAddon>
+                                    <div class="w-full align-content-center">
+                                        <div
+                                            class="ml-1"
+                                            [innerHTML]="item.cAlternativa"
+                                        ></div>
+                                    </div>
+                                    <p-button
+                                        *ngIf="item.bRptaCorreta"
+                                        icon="pi pi-check"
+                                        [rounded]="true"
+                                        [text]="true"
+                                        size="small"
+                                        severity="success"
+                                    />
+                                    <button
+                                        type="button"
+                                        pButton
+                                        icon="pi pi-trash"
+                                        (click)="alternativas.splice(idx, 1)"
+                                        class="p-button-danger"
+                                        size="small"
+                                    >
+                                        &nbsp;
+                                    </button>
+                                </p-inputGroup>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
         }
     </div>
     <div footer class="flex justify-content-end gap-2">
@@ -121,7 +264,10 @@
             severity="secondary"
             (onClick)="accionBtn({ accion: 'close-modal', item: [] })"
         />
-        <p-button [label]="'Guardar Pregunta'" />
+        <p-button
+            [label]="'Guardar Pregunta'"
+            (onClick)="accionBtn({ accion: 'guardar-pregunta', item: [] })"
+        />
     </div>
 
     <!-- <p-steps

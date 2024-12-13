@@ -4,45 +4,39 @@
         (evaluacion?.cEvaluacionTitulo || 'Título no disponible')
     "
 ></app-toolbar-primeng>
+<
 
-<div>
+<div class="card">
     <p-table>
         <ng-template pTemplate="header">
             <tr>
                 <th></th>
-                <th>
-                    <div class="col-8 leyenda-tareas">
-                        <div class="flex align-items-center">
-                            <div
-                                class="w-1rem h-1rem border-circle"
-                                [ngClass]="'bg-red-500'"
-                            ></div>
-                            <div>
-                                <b style="font-size: 1.5rem">&nbsp;0</b>
-                                <small>&nbsp;Sin Calificar</small>
-                            </div>
+                <th class="leyenda-tareas">
+                    <div class="flex align-items-center">
+                        <div
+                            class="w-1rem h-1rem border-circle bg-red-500"
+                        ></div>
+                        <div>
+                            <b class="text-lg">&nbsp;0</b>
+                            <small>&nbsp;Sin Calificar</small>
                         </div>
                     </div>
                 </th>
-                <th>
-                    <div class="col-6 leyenda-tareas">
-                        <div class="flex align-items-center">
-                            <div
-                                class="w-1rem h-1rem border-circle"
-                                [ngClass]="'bg-green-500'"
-                            ></div>
-                            <div>
-                                <b style="font-size: 1.5rem">&nbsp;0</b>
-                                <small>&nbsp;Calificados</small>
-                            </div>
+                <th class="leyenda-tareas">
+                    <div class="flex align-items-center">
+                        <div
+                            class="w-1rem h-1rem border-circle bg-green-500"
+                        ></div>
+                        <div>
+                            <b class="text-lg">&nbsp;0</b>
+                            <small>&nbsp;Calificados</small>
                         </div>
                     </div>
                 </th>
                 <th>
                     <app-evaluacion-info
                         [evaluacionEstudiante]="selectedEstudianteValue"
-                    >
-                    </app-evaluacion-info>
+                    ></app-evaluacion-info>
                 </th>
                 <th>
                     <button
@@ -147,7 +141,7 @@
                         <p-toast></p-toast>
                         <p-button
                             severity="success"
-                            label="Guardar"
+                            label="Guardars"
                             icon="pi pi-plus"
                             iconPos="left"
                             (onClick)="guardarEvaluacionEstudiantesxDocente()"

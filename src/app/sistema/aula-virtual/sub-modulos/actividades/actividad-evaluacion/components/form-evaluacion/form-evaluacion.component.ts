@@ -205,18 +205,17 @@ export class FormEvaluacionComponent implements OnChanges, OnInit {
     }
 
     private guardarActualizarFormInfo() {
+        this.formEvaluacion.controls.dFechaEvaluacionInico.setValue(
+            this.formEvaluacion.value.dtInicio
+        )
+        this.formEvaluacion.controls.dFechaEvaluacionFin.setValue(
+            this.formEvaluacion.value.dtFin
+        )
         const data = this.formEvaluacion.getRawValue()
         data.iDocenteId = this._ConstantesService.iDocenteId
         data.iActTipoId = EVALUACION
         data.iContenidoSemId = this.semanaEvaluacion.iContenidoSemId
         data.cEvaluacionArchivoAdjunto = JSON.stringify(this.filesUrl)
-
-        this.formEvaluacion.controls.fechaInicio.setValue(
-            this.formEvaluacion.value.dtEvaluacionInicio
-        )
-        this.formEvaluacion.controls.fechaFin.setValue(
-            this.formEvaluacion.value.dtEvaluacionInicio
-        )
 
         let horaInicio: any = data.dFechaEvaluacionInico.toLocaleString(
             'en-GB',

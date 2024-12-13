@@ -44,6 +44,24 @@ export class AulaBancoPreguntaPageComponent implements OnInit {
         iTipoPregId: 0,
         iEvaluacionId: 0,
     }
+    tipoPreguntas = [
+        {
+            iTipoPregId: 0,
+            cTipoPregDescripcion: 'Todos',
+        },
+        {
+            iTipoPregId: 1,
+            cTipoPregDescripcion: 'Opción única',
+        },
+        {
+            iTipoPregId: 2,
+            cTipoPregDescripcion: 'Opción múltiple',
+        },
+        {
+            iTipoPregId: 3,
+            cTipoPregDescripcion: 'Opción libre',
+        },
+    ]
 
     private _constantesService = inject(ConstantesService)
     private unsubscribe$ = new Subject<boolean>()

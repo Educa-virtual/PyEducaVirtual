@@ -84,6 +84,7 @@ export class TabResultadosComponent implements OnInit {
     @Input() ixActivadadId: string
     @Input() iActTopId: tipoActividadesKeys
     @Input() area: TabsKeys
+    @Input() iCursoId
 
     private GeneralService = inject(GeneralService)
     private _formBuilder = inject(FormBuilder)

@@ -126,8 +126,6 @@ export class CursoDetalleComponent implements OnInit {
             idDocCursoId,
         }
 
-        localStorage.setItem('dremoCurso', JSON.stringify(this.curso))
-
         if (isValidTabKey(tab)) {
             this.updateTab(tab)
         } else {

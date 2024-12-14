@@ -64,7 +64,9 @@
                 ></app-tab-estudiantes>
             } -->
             @case ('resultados') {
-                <app-tab-resultados></app-tab-resultados>
+                <app-tab-resultados
+                    [iCursoId]="curso?.iCursoId"
+                ></app-tab-resultados>
             }
             @case ('asistencia') {
                 <app-asistencia></app-asistencia>

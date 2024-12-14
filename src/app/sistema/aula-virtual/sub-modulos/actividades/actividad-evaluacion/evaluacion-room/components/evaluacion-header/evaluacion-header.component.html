@@ -1,0 +1,89 @@
+<div class="card">
+    <div class="grid">
+        <div
+            class="col-12 md:col-3 flex justify-content-between flex-wrap justify-content-around"
+        >
+            <div
+                class="flex align-items-center justify-content-center font-bold"
+            >
+                <div
+                    class="w-1rem h-1rem border-circle"
+                    [ngClass]="'bg-green-500'"
+                ></div>
+                <div>
+                    <b style="font-size: 1.5rem">&nbsp;5</b
+                    ><small>&nbsp; Culminado</small>
+                </div>
+            </div>
+
+            <div
+                class="flex align-items-center justify-content-center font-bold"
+            >
+                <div
+                    class="w-1rem h-1rem border-circle"
+                    [ngClass]="'bg-red-500'"
+                ></div>
+                <div>
+                    <b style="font-size: 1.5rem">&nbsp;5</b
+                    ><small>&nbsp; Falta</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 md:col-5 align-content-center">
+            <span class="font-bold">Estudiante seleccionado(a):</span>&nbsp;{{
+                selectedEstudianteValue?.cEstNombres || '-'
+            }}
+            {{ selectedEstudianteValue?.cEstPaterno }}
+            {{ selectedEstudianteValue?.cEstMaterno }}
+        </div>
+        <div class="col-12 md:col-4 flex justify-content-end">
+            <button
+                [disabled]="!selectedEstudianteValue?.iEstudianteId"
+                pButton
+                pRipple
+                type="button"
+                class="p-button-primary"
+                (click)="
+                    accionBtn({
+                        accion: 'abrir-form-calificar-evaluacion',
+                        item: [],
+                    })
+                "
+            >
+                <i class="pi pi-check"></i>&nbsp; Calificar
+            </button>
+            &nbsp;
+            <button
+                [disabled]="showListaEstudiantes"
+                pButton
+                pRipple
+                type="button"
+                class="p-button-success"
+                (click)="accionEvntBtn('abrir-lista-estudiantes', [])"
+            >
+                <i class="pi pi-eye"></i>&nbsp; Ver estudiantes
+            </button>
+        </div>
+    </div>
+    <!-- <div class="flex justify-content-between flex-wrap">
+    <div class="flex align-items-center justify-content-center font-bold">
+      <h4 class="text-primary">Preguntas</h4>
+    </div>
+    <div class="flex align-items-center justify-content-center font-bold">
+      <h4 class="text-primary">Preguntas</h4>
+    </div>
+    <div class="flex align-items-center justify-content-center font-bold">
+      <h4 class="text-primary">Preguntas</h4>
+    </div>
+    <div class="flex align-items-center justify-content-center">
+      <button pButton pRipple type="button" class="p-button-primary">
+        <i class="pi pi-check"></i>&nbsp; Calificar
+      </button>
+    </div>
+  </div> -->
+</div>
+<app-form-calificar-evaluacion
+    [showFormCalificarEvaluacion]="showFormCalificarEvaluacion"
+    [name]="name"
+    (accionBtnItem)="accionBtn($event)"
+></app-form-calificar-evaluacion>

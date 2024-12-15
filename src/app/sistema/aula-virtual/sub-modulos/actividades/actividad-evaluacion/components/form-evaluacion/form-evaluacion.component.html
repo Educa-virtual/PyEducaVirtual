@@ -144,6 +144,8 @@
         @case ('LIST-PREGUNTAS') {
             <app-list-preguntas
                 [data]="this.formEvaluacion.value"
+                [iEvaluacionId]="this.iEvaluacionId"
+                [curso]="curso"
                 (accionBtnItem)="accionBtn($event)"
             ></app-list-preguntas>
         }

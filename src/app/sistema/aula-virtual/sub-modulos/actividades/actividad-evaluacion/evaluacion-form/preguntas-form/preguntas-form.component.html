@@ -4,8 +4,8 @@
     (accionBtnItem)="accionBtn($event)"
     [width]="'99%'"
 >
-    <div class="grid mt-4">
-        @if (!iTipoPreguntaId) {
+    <form [formGroup]="formBancoPreguntas" class="grid mt-4">
+        @if (this.formBancoPreguntas.value.iTipoPregId === '') {
             <div class="col-12">
                 <span class="text-red-500 text-xs"
                     >(*) Debe seleccionar el tipo de pregunta</span
@@ -17,71 +17,25 @@
                 <p-inputGroupAddon>Tipo de Pregunta</p-inputGroupAddon>
                 <p-dropdown
                     styleClass="w-full"
-                    [(ngModel)]="iTipoPreguntaId"
+                    formControlName="iTipoPregId"
                     placeholder="Seleccione Tipo"
-                    optionValue="iTipoPreguntaId"
+                    optionValue="iTipoPregId"
                     [options]="tipoPreguntas"
                     optionLabel="cTipoPregunta"
                 />
             </p-inputGroup>
         </div>
-        <div class="col-12 md:col-2">
-            <p-inputGroup>
-                <p-inputGroupAddon>Peso</p-inputGroupAddon>
-                <input
-                    pInputText
-                    styleClass="w-full"
-                    placeholder="Ingrese"
-                    [(ngModel)]="iPeso"
-                />
-            </p-inputGroup>
-        </div>
-        <div class="col-12 md:col-7">
+        <div class="col-12 md:col-9">
             <p-inputGroup>
                 <p-inputGroupAddon>Texto de ayuda</p-inputGroupAddon>
                 <input
                     type="text"
                     pInputText
                     placeholder="Ingrese el texto de ayuda"
-                    [(ngModel)]="cTextoAyuda"
+                    formControlName="cBancoTextoAyuda"
                 />
             </p-inputGroup>
         </div>
-        @if (showEncabezado) {
-            <div class="col-12 md:col-5">
-                <p-inputGroup>
-                    <p-inputGroupAddon>
-                        <i class="pi pi-link" style="color: #333437"></i>
-                    </p-inputGroupAddon>
-                    <input
-                        type="text"
-                        pInputText
-                        placeholder="Nombre del Enunciado"
-                        disabled
-                        class="w-full p-inputtext-sm opacity-100"
-                        pInputText
-                    />
-                    <button
-                        pButton
-                        pRipple
-                        type="button"
-                        severity="primary"
-                        class="p-button-primary btn-file-image"
-                    >
-                        <i class="pi pi-upload"></i
-                        ><input type="file" accept=".pdf " />
-                    </button>
-                    <button
-                        type="button"
-                        pButton
-                        icon="pi pi-eye"
-                        class="p-button-info"
-                    >
-                        &nbsp;
-                    </button>
-                </p-inputGroup>
-            </div>
-        }
         <div class="col-12">
             <label for="descripcion" class="mt-1"
                 >Enunciado de la pregunta
@@ -92,12 +46,13 @@
                     styleClass="w-full"
                     [style]="{ height: '120px' }"
                     placeholder="Ingrese enunciado de la pregunta"
-                    [(ngModel)]="cPregunta"
+                    formControlName="cBancoPregunta"
                 />
             </div>
         </div>
-
-        @switch (iTipoPreguntaId) {
+    </form>
+    <div class="grid">
+        @switch (this.formBancoPreguntas.value.iTipoPregId) {
             @case (1) {
                 <div class="col-12 md:col-7 grid">
                     <div class="col-12">
@@ -137,6 +92,16 @@
                             <p-inputSwitch [(ngModel)]="bRptaCorreta" />
                         </div>
                     </div>
+                    @if (bRptaCorreta) {
+                        <div class="col-12">
+                            <p-editor
+                                styleClass="w-full"
+                                [style]="{ height: '100px' }"
+                                placeholder="Ingrese la explicación de la resolución"
+                                [(ngModel)]="cAlternativaExplicacion"
+                            />
+                        </div>
+                    }
                 </div>
                 <div class="col-12 md:col-5">
                     <label for="" class="mt-2">Lista de Alternativas</label>
@@ -229,11 +194,13 @@
                                     <div class="w-full align-content-center">
                                         <div
                                             class="ml-1"
-                                            [innerHTML]="item.cAlternativa"
+                                            [innerHTML]="
+                                                item.cBancoAltDescripcion
+                                            "
                                         ></div>
                                     </div>
                                     <p-button
-                                        *ngIf="item.bRptaCorreta"
+                                        *ngIf="item.bBancoAltRptaCorrecta"
                                         icon="pi pi-check"
                                         [rounded]="true"
                                         [text]="true"
@@ -269,184 +236,4 @@
             (onClick)="accionBtn({ accion: 'guardar-pregunta', item: [] })"
         />
     </div>
-
-    <!-- <p-steps
-    [model]="pasos"
-    [(activeIndex)]="activeIndex"
-    [readonly]="modePregunta === 'CREAR'"
-></p-steps>
-
-@switch (activeIndex) {
-    @case (0) {
-        <form [formGroup]="bancoPreguntasForm">
-            <app-banco-pregunta-encabezado-form
-                [mode]="encabezadoMode"
-                (encabezadoChange)="encabezadoChange.emit($event)"
-                [controlKey]="'0'"
-                [encabezados]="encabezados"
-                [parentMode]="formMode"
-            />
-        </form>
-    }
-    @case (1) {
-        <div class="grid mb-2">
-            <div class="col-12 flex justify-content-between flex-wrap gap-2">
-                <h2 class="text-xl">Formulario Preguntas</h2>
-                @if (!esSinEncabezado && showFooterSteps) {
-                    <button
-                        pButton
-                        pRipple
-                        label="Agregar Pregunta"
-                        icon="pi pi-plus"
-                        size="small"
-                        class="p-button-primary"
-                        (click)="agregarPreguntaForm()"
-                    ></button>
-                }
-            </div>
-        </div>
-        @switch (bancoPreguntaActiveIndex) {
-            @case (0) {
-                @if (esSinEncabezado) {
-                    <form [formGroup]="bancoPreguntasForm">
-                        <app-banco-pregunta-informacion-form
-                            [tipoPreguntas]="tipoPreguntas"
-                            [controlKey]="'1'"
-                        ></app-banco-pregunta-informacion-form>
-                    </form>
-                } @else {
-                    <app-banco-pregunta-lista
-                        [showCaption]="false"
-                        [columnas]="columnasPreguntas"
-                        [accionesTabla]="accionesPreguntas"
-                        [data]="preguntas"
-                        (accionBtnItemTable)="accionPreguntaTable($event)"
-                    ></app-banco-pregunta-lista>
-                }
-            }
-
-            @case (1) {
-                <form [formGroup]="bancoPreguntasForm">
-                    <app-banco-pregunta-informacion-form
-                        [tipoPreguntas]="tipoPreguntas"
-                        [controlKey]="'1'"
-                    ></app-banco-pregunta-informacion-form>
-                </form>
-                <footer class="flex justify-content-end gap-2 pt-3">
-                    <button
-                        pButton
-                        pRipple
-                        label="Cancelar"
-                        icon="pi pi-times"
-                        class="p-button-secondary"
-                        type="button"
-                        size="small"
-                        (click)="
-                            toggleStepsVisibility(true);
-                            changeIndexBancoForm(0);
-                            agregarQuitarValidacionesFormPregunta('QUITAR')
-                        "
-                    ></button>
-                    <button
-                        pButton
-                        pRipple
-                        label="Guardar"
-                        icon="pi pi-save"
-                        size="small"
-                        type="button"
-                        class="p-button-primary"
-                        (click)="guardarActualizarPreguntaForm()"
-                    ></button>
-                </footer>
-            }
-            @default {}
-        }
-    }
-
-    @case (2) {
-        <div class="grid">
-            <div class="col-12">
-                <h2 class="text-lg">Alternativas de la pregunta:</h2>
-                <div
-                    [innerHTML]="
-                        preguntaSelected?.cPregunta ??
-                        pregunta.cPregunta ??
-                        formPreguntaInfo.get('cPregunta')?.value
-                    "
-                ></div>
-            </div>
-        </div>
-
-        <app-alternativas
-            [alternativas]="preguntaSelected?.alternativas ?? alternativas"
-            [pregunta]="preguntaSelected ?? pregunta"
-            (alternativasChange)="alternativasChange($event)"
-            (alternativasEliminadasChange)="setAlternativasEliminadas($event)"
-            [serviceProvider]="evaluacionesService"
-        ></app-alternativas>
-
-        @if (
-            bancoPreguntasForm
-                .get('2.alternativas')
-                ?.hasError('alternativasInvalidas')
-        ) {
-            <small class="text-red-500">
-                {{
-                    bancoPreguntasForm
-                        .get('2.alternativas')
-                        .getError('alternativasInvalidas')
-                }}
-            </small>
-        }
-
-        @if (!showFooterSteps) {
-            <footer class="flex justify-content-end gap-2 pt-3">
-                <button
-                    pButton
-                    pRipple
-                    label="Guardar Alternativas"
-                    icon="pi pi-save"
-                    size="small"
-                    type="button"
-                    class="p-button-primary"
-                    (click)="
-                        goStep('back');
-                        toggleStepsVisibility(true);
-                        agregarQuitarAlternativasPaso('QUITAR')
-                    "
-                ></button>
-            </footer>
-        }
-    }
-    @default {}
-}
-
-@if (showFooterSteps) {
-    <div class="flex justify-content-between">
-        @if (activeIndex !== 0) {
-            <button pButton size="small" (click)="goStep('back')">Atrás</button>
-        }
-        @if (activeIndex !== pasos.length - 1) {
-            <button
-                pButton
-                size="small"
-                (click)="goStep('next')"
-                class="ml-auto"
-            >
-                Siguiente
-            </button>
-        }
-        @if (activeIndex === pasos.length - 1) {
-            <button
-                pButton
-                pRipple
-                label="Finalizar"
-                icon="pi pi-save"
-                size="small"
-                class="p-button-primary ml-auto"
-                (click)="guardarActualizarBancoPreguntas()"
-            ></button>
-        }
-    </div>
-} -->
 </app-modal-primeng>

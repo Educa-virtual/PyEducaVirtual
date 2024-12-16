@@ -7471,4 +7471,7 @@
       }
     }
   }
+  .p-overflow-hidden{
+    overflow: scroll !important;
+  }
 }

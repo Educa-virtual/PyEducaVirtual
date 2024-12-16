@@ -1,251 +1,276 @@
-<app-modal-primeng
-    [title]="'Nueva pregunta para: ' + cEvaluacionTitulo"
-    [showModal]="showModalPreguntas"
-    (accionBtnItem)="accionBtn($event)"
-    [width]="'99%'"
+<p-dialog
+    [header]="'Nueva pregunta para: ' + cEvaluacionTitulo"
+    [modal]="true"
+    [(visible)]="showModalPreguntas"
+    [style]="{ width: '100%', height: '100%' }"
+    (onHide)="accionBtn({ accion: 'close-modal', item: [] })"
+    [draggable]="false"
+    [resizable]="false"
 >
-    <form [formGroup]="formBancoPreguntas" class="grid mt-4">
-        @if (this.formBancoPreguntas.value.iTipoPregId === '') {
+    <ng-template pTemplate="content">
+        <form [formGroup]="formBancoPreguntas" class="grid mt-4">
+            @if (this.formBancoPreguntas.value.iTipoPregId === '') {
+                <div class="col-12">
+                    <span class="text-red-500 text-xs"
+                        >(*) Debe seleccionar el tipo de pregunta</span
+                    >
+                </div>
+            }
+            <div class="col-12 md:col-3">
+                <p-inputGroup>
+                    <p-inputGroupAddon>Tipo de Pregunta</p-inputGroupAddon>
+                    <p-dropdown
+                        styleClass="w-full"
+                        formControlName="iTipoPregId"
+                        placeholder="Seleccione Tipo"
+                        optionValue="iTipoPregId"
+                        [options]="tipoPreguntas"
+                        optionLabel="cTipoPregunta"
+                    />
+                </p-inputGroup>
+            </div>
+            <div class="col-12 md:col-9">
+                <p-inputGroup>
+                    <p-inputGroupAddon>Texto de ayuda</p-inputGroupAddon>
+                    <input
+                        type="text"
+                        pInputText
+                        placeholder="Ingrese el texto de ayuda"
+                        formControlName="cBancoTextoAyuda"
+                    />
+                </p-inputGroup>
+            </div>
             <div class="col-12">
-                <span class="text-red-500 text-xs"
-                    >(*) Debe seleccionar el tipo de pregunta</span
+                <label for="descripcion" class="mt-1"
+                    >Enunciado de la pregunta
+                    <span class="text-red-500 text-xs"
+                        >(*) Obligatorio</span
+                    ></label
                 >
+                <div class="mt-2">
+                    <p-editor
+                        styleClass="w-full"
+                        [style]="{ height: '120px' }"
+                        placeholder="Ingrese enunciado de la pregunta"
+                        formControlName="cBancoPregunta"
+                    />
+                </div>
             </div>
-        }
-        <div class="col-12 md:col-3">
-            <p-inputGroup>
-                <p-inputGroupAddon>Tipo de Pregunta</p-inputGroupAddon>
-                <p-dropdown
-                    styleClass="w-full"
-                    formControlName="iTipoPregId"
-                    placeholder="Seleccione Tipo"
-                    optionValue="iTipoPregId"
-                    [options]="tipoPreguntas"
-                    optionLabel="cTipoPregunta"
-                />
-            </p-inputGroup>
-        </div>
-        <div class="col-12 md:col-9">
-            <p-inputGroup>
-                <p-inputGroupAddon>Texto de ayuda</p-inputGroupAddon>
-                <input
-                    type="text"
-                    pInputText
-                    placeholder="Ingrese el texto de ayuda"
-                    formControlName="cBancoTextoAyuda"
-                />
-            </p-inputGroup>
-        </div>
-        <div class="col-12">
-            <label for="descripcion" class="mt-1"
-                >Enunciado de la pregunta
-                <span class="text-red-500 text-xs">(*) Obligatorio</span></label
-            >
-            <div class="mt-2">
-                <p-editor
-                    styleClass="w-full"
-                    [style]="{ height: '120px' }"
-                    placeholder="Ingrese enunciado de la pregunta"
-                    formControlName="cBancoPregunta"
-                />
-            </div>
-        </div>
-    </form>
-    <div class="grid">
-        @switch (this.formBancoPreguntas.value.iTipoPregId) {
-            @case (1) {
-                <div class="col-12 md:col-7 grid">
-                    <div class="col-12">
-                        <div class="flex justify-content-between flex-wrap">
-                            <div
-                                class="flex align-items-center justify-content-center font-bold"
-                            >
-                                Alternativas
-                            </div>
-                            <div
-                                class="flex align-items-center justify-content-center"
-                            >
-                                <button
-                                    pButton
-                                    pRipple
-                                    type="button"
-                                    class="p-button-primary"
-                                    (click)="agregarAlternativa()"
-                                >
-                                    <i class="pi pi-plus"></i>&nbsp; Añadir
-                                    alternativa
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 mt-1">
-                        <p-editor
-                            styleClass="w-full"
-                            [style]="{ height: '100px' }"
-                            placeholder="Ingrese la alternativa"
-                            [(ngModel)]="cAlternativa"
-                        />
-                    </div>
-                    <div class="col-12">
-                        <div class="flex justify-content-between font-bold">
-                            ¿Es Respuesta correcta? &nbsp;&nbsp;
-                            <p-inputSwitch [(ngModel)]="bRptaCorreta" />
-                        </div>
-                    </div>
-                    @if (bRptaCorreta) {
+        </form>
+        <div class="grid">
+            @switch (this.formBancoPreguntas.value.iTipoPregId) {
+                @case (1) {
+                    <div class="col-12 md:col-7 grid">
                         <div class="col-12">
+                            <div class="flex justify-content-between flex-wrap">
+                                <div
+                                    class="flex align-items-center justify-content-center font-bold"
+                                >
+                                    Alternativas
+                                </div>
+                                <div
+                                    class="flex align-items-center justify-content-center"
+                                >
+                                    <button
+                                        pButton
+                                        pRipple
+                                        type="button"
+                                        class="p-button-primary"
+                                        (click)="agregarAlternativa()"
+                                    >
+                                        <i class="pi pi-plus"></i>&nbsp; Añadir
+                                        alternativa
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 mt-1">
                             <p-editor
                                 styleClass="w-full"
                                 [style]="{ height: '100px' }"
-                                placeholder="Ingrese la explicación de la resolución"
-                                [(ngModel)]="cAlternativaExplicacion"
+                                placeholder="Ingrese la alternativa"
+                                [(ngModel)]="cAlternativa"
                             />
                         </div>
-                    }
-                </div>
-                <div class="col-12 md:col-5">
-                    <label for="" class="mt-2">Lista de Alternativas</label>
-                    @for (item of alternativas; track item; let idx = $index) {
-                        <div class="grid">
-                            <div class="col-12">
-                                <p-inputGroup class="mt-1">
-                                    <p-inputGroupAddon>
-                                        {{ idx + 1 }}
-                                    </p-inputGroupAddon>
-                                    <div class="w-full align-content-center">
-                                        <div
-                                            class="ml-1"
-                                            [innerHTML]="
-                                                item.cBancoAltDescripcion
-                                            "
-                                        ></div>
-                                    </div>
-                                    <p-button
-                                        *ngIf="item.bRptaCorreta"
-                                        icon="pi pi-check"
-                                        [rounded]="true"
-                                        [text]="true"
-                                        size="small"
-                                        severity="success"
-                                    />
-                                    <button
-                                        type="button"
-                                        pButton
-                                        icon="pi pi-trash"
-                                        (click)="alternativas.splice(idx, 1)"
-                                        class="p-button-danger"
-                                        size="small"
-                                    >
-                                        &nbsp;
-                                    </button>
-                                </p-inputGroup>
-                            </div>
-                        </div>
-                    }
-                </div>
-            }
-            @case (2) {
-                <div class="col-12 md:col-7 grid">
-                    <div class="col-12">
-                        <div class="flex justify-content-between flex-wrap">
-                            <div
-                                class="flex align-items-center justify-content-center font-bold"
-                            >
-                                Alternativas
-                            </div>
-                            <div
-                                class="flex align-items-center justify-content-center"
-                            >
-                                <button
-                                    pButton
-                                    pRipple
-                                    type="button"
-                                    class="p-button-primary"
-                                    (click)="agregarAlternativa()"
-                                >
-                                    <i class="pi pi-plus"></i>&nbsp; Añadir
-                                    alternativa
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 mt-1">
-                        <p-editor
-                            styleClass="w-full"
-                            [style]="{ height: '100px' }"
-                            placeholder="Ingrese la alternativa"
-                            [(ngModel)]="cAlternativa"
-                        />
-                    </div>
-                    <div class="col-12">
-                        <div class="flex justify-content-between font-bold">
-                            ¿Es Respuesta correcta? &nbsp;&nbsp;
-                            <p-inputSwitch [(ngModel)]="bRptaCorreta" />
-                        </div>
-                    </div>
-                    @if (bRptaCorreta) {
                         <div class="col-12">
+                            <div class="flex justify-content-between font-bold">
+                                ¿Es Respuesta correcta? &nbsp;&nbsp;
+                                <p-inputSwitch [(ngModel)]="bRptaCorreta" />
+                            </div>
+                        </div>
+                        @if (bRptaCorreta) {
+                            <div class="col-12">
+                                <p-editor
+                                    styleClass="w-full"
+                                    [style]="{ height: '100px' }"
+                                    placeholder="Ingrese la explicación de la resolución"
+                                    [(ngModel)]="cAlternativaExplicacion"
+                                />
+                            </div>
+                        }
+                    </div>
+                    <div class="col-12 md:col-5">
+                        <label for="" class="mt-2">Lista de Alternativas</label>
+                        @for (
+                            item of alternativas;
+                            track item;
+                            let idx = $index
+                        ) {
+                            <div class="grid">
+                                <div class="col-12">
+                                    <p-inputGroup class="mt-1">
+                                        <p-inputGroupAddon>
+                                            {{ idx + 1 }}
+                                        </p-inputGroupAddon>
+                                        <div
+                                            class="w-full align-content-center"
+                                        >
+                                            <div
+                                                class="ml-1"
+                                                [innerHTML]="
+                                                    item.cBancoAltDescripcion
+                                                "
+                                            ></div>
+                                        </div>
+                                        <p-button
+                                            *ngIf="item.bRptaCorreta"
+                                            icon="pi pi-check"
+                                            [rounded]="true"
+                                            [text]="true"
+                                            size="small"
+                                            severity="success"
+                                        />
+                                        <button
+                                            type="button"
+                                            pButton
+                                            icon="pi pi-trash"
+                                            (click)="
+                                                alternativas.splice(idx, 1)
+                                            "
+                                            class="p-button-danger"
+                                            size="small"
+                                        >
+                                            &nbsp;
+                                        </button>
+                                    </p-inputGroup>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                @case (2) {
+                    <div class="col-12 md:col-7 grid">
+                        <div class="col-12">
+                            <div class="flex justify-content-between flex-wrap">
+                                <div
+                                    class="flex align-items-center justify-content-center font-bold"
+                                >
+                                    Alternativas
+                                </div>
+                                <div
+                                    class="flex align-items-center justify-content-center"
+                                >
+                                    <button
+                                        pButton
+                                        pRipple
+                                        type="button"
+                                        class="p-button-primary"
+                                        (click)="agregarAlternativa()"
+                                    >
+                                        <i class="pi pi-plus"></i>&nbsp; Añadir
+                                        alternativa
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 mt-1">
                             <p-editor
                                 styleClass="w-full"
                                 [style]="{ height: '100px' }"
-                                placeholder="Ingrese la explicación de la resolución"
-                                [(ngModel)]="cAlternativaExplicacion"
+                                placeholder="Ingrese la alternativa"
+                                [(ngModel)]="cAlternativa"
                             />
                         </div>
-                    }
-                </div>
-                <div class="col-12 md:col-5">
-                    <label for="" class="mt-2">Lista de Alternativas</label>
-                    @for (item of alternativas; track item; let idx = $index) {
-                        <div class="grid">
-                            <div class="col-12">
-                                <p-inputGroup class="mt-1">
-                                    <p-inputGroupAddon>
-                                        {{ idx + 1 }}
-                                    </p-inputGroupAddon>
-                                    <div class="w-full align-content-center">
-                                        <div
-                                            class="ml-1"
-                                            [innerHTML]="
-                                                item.cBancoAltDescripcion
-                                            "
-                                        ></div>
-                                    </div>
-                                    <p-button
-                                        *ngIf="item.bBancoAltRptaCorrecta"
-                                        icon="pi pi-check"
-                                        [rounded]="true"
-                                        [text]="true"
-                                        size="small"
-                                        severity="success"
-                                    />
-                                    <button
-                                        type="button"
-                                        pButton
-                                        icon="pi pi-trash"
-                                        (click)="alternativas.splice(idx, 1)"
-                                        class="p-button-danger"
-                                        size="small"
-                                    >
-                                        &nbsp;
-                                    </button>
-                                </p-inputGroup>
+                        <div class="col-12">
+                            <div class="flex justify-content-between font-bold">
+                                ¿Es Respuesta correcta? &nbsp;&nbsp;
+                                <p-inputSwitch [(ngModel)]="bRptaCorreta" />
                             </div>
                         </div>
-                    }
-                </div>
+                        @if (bRptaCorreta) {
+                            <div class="col-12">
+                                <p-editor
+                                    styleClass="w-full"
+                                    [style]="{ height: '100px' }"
+                                    placeholder="Ingrese la explicación de la resolución"
+                                    [(ngModel)]="cAlternativaExplicacion"
+                                />
+                            </div>
+                        }
+                    </div>
+                    <div class="col-12 md:col-5">
+                        <label for="" class="mt-2">Lista de Alternativas</label>
+                        @for (
+                            item of alternativas;
+                            track item;
+                            let idx = $index
+                        ) {
+                            <div class="grid">
+                                <div class="col-12">
+                                    <p-inputGroup class="mt-1">
+                                        <p-inputGroupAddon>
+                                            {{ idx + 1 }}
+                                        </p-inputGroupAddon>
+                                        <div
+                                            class="w-full align-content-center"
+                                        >
+                                            <div
+                                                class="ml-1"
+                                                [innerHTML]="
+                                                    item.cBancoAltDescripcion
+                                                "
+                                            ></div>
+                                        </div>
+                                        <p-button
+                                            *ngIf="item.bBancoAltRptaCorrecta"
+                                            icon="pi pi-check"
+                                            [rounded]="true"
+                                            [text]="true"
+                                            size="small"
+                                            severity="success"
+                                        />
+                                        <button
+                                            type="button"
+                                            pButton
+                                            icon="pi pi-trash"
+                                            (click)="
+                                                alternativas.splice(idx, 1)
+                                            "
+                                            class="p-button-danger"
+                                            size="small"
+                                        >
+                                            &nbsp;
+                                        </button>
+                                    </p-inputGroup>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
             }
-        }
-    </div>
-    <div footer class="flex justify-content-end gap-2">
-        <p-button
-            label="Cancelar"
-            severity="secondary"
-            (onClick)="accionBtn({ accion: 'close-modal', item: [] })"
-        />
-        <p-button
-            [label]="'Guardar Pregunta'"
-            (onClick)="accionBtn({ accion: 'guardar-pregunta', item: [] })"
-        />
-    </div>
-</app-modal-primeng>
+        </div>
+    </ng-template>
+    <ng-template pTemplate="footer">
+        <div class="flex justify-content-end gap-2">
+            <p-button
+                label="Cancelar"
+                severity="secondary"
+                (onClick)="accionBtn({ accion: 'close-modal', item: [] })"
+            />
+            <p-button
+                [label]="'Guardar Pregunta'"
+                (onClick)="accionBtn({ accion: 'guardar-pregunta', item: [] })"
+            />
+        </div>
+    </ng-template>
+</p-dialog>

@@ -88,7 +88,6 @@
                 tooltipPosition="top"
             >
                 <p-inputGroupAddon> Fecha - Hora de Inicio </p-inputGroupAddon>
-                <!-- Componente de calendario para seleccionar una fecha y hora -->
                 <p-calendar
                     formControlName="dtInicio"
                     [iconDisplay]="'input'"
@@ -97,11 +96,22 @@
                     [showTime]="true"
                     [hourFormat]="'24'"
                     inputId="dtInicio"
+                    [minDate]="minDate"
                 />
             </p-inputGroup>
+            <!-- Mensaje de error si la fecha de inicio es inválida -->
+            <div
+                *ngIf="
+                    formTareas.controls.dtInicio.invalid &&
+                    formTareas.controls.dtInicio.touched
+                "
+                class="p-error"
+            >
+                Fecha de inicio es obligatoria.
+            </div>
         </div>
+
         <div class="col-12 md:col-6">
-            <!-- Este componente es un grupo de entrada que encapsula un `p-inputGroupAddon` y un `p-calendar` -->
             <p-inputGroup>
                 <p-inputGroupAddon> Fecha - Hora de Entrega </p-inputGroupAddon>
                 <p-calendar
@@ -112,9 +122,21 @@
                     [showTime]="true"
                     [hourFormat]="'24'"
                     inputId="dtFin"
+                    [minDate]="minDate"
                 />
             </p-inputGroup>
+            <!-- Mensaje de error si la fecha de entrega es inválida -->
+            <div
+                *ngIf="
+                    formTareas.controls.dtFin.invalid &&
+                    formTareas.controls.dtFin.touched
+                "
+                class="p-error"
+            >
+                Fecha de entrega es obligatoria.
+            </div>
         </div>
+
         <div class="col-12 mt-1">
             <!-- Componente personalizado para la carga de archivos con PrimeNG -->
             <!-- Propiedad de entrada que define una opción asociada al componente -->

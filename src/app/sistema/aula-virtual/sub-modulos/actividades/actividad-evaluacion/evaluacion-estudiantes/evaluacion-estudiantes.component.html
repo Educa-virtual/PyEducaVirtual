@@ -90,9 +90,15 @@
                 <p class="font-bold">Instrucciones</p>
                 <div class="container p-2">
                     <div [innerHTML]="evaluacion?.cEvaluacionDescripcion"></div>
+                    <!-- Agregando acordion-->
+                    <p-panel>
+                        <div class="card">
+                            <p-accordion [activeIndex]="0">
+                                Revise la Rubrica antes de iniciar Evaluacion:
+                            </p-accordion>
+                        </div>
+                    </p-panel>
                 </div>
-                <!-- Agregando acordion-->
-
                 <!--Agregando Recursos Vista Estudiante-->
                 <article class="card">
                     <h2>Recursoss</h2>

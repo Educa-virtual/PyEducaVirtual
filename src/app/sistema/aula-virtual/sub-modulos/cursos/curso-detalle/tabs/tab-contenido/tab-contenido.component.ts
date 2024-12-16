@@ -458,7 +458,6 @@ export class TabContenidoComponent implements OnInit {
                 })
                 break
             case 'VER':
-
                 console.log('actividades')
                 console.log(this.actividadSelected)
                 this.router.navigate(
@@ -469,9 +468,9 @@ export class TabContenidoComponent implements OnInit {
                         actividad.iActTipoId,
                     ],
                     {
-                        
                         queryParams: {
-                            iEvaluacionId: this.actividadSelected['iEvaluacionId'],
+                            iEvaluacionId:
+                                this.actividadSelected['iEvaluacionId'],
                             iCursoId: this.iCursoId,
                             idDocCursoId: this.idDocCursoId,
                         },

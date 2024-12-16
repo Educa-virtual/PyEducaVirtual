@@ -153,6 +153,9 @@ export class TabContenidoComponent implements OnInit {
                 next: (data) => {
                     this.loadingContenidoSemanas = false
                     this.contenidoSemanas = data
+
+                    console.log('contenido semanas')
+                    console.log(this.contenidoSemanas)
                 },
                 error: (error) => {
                     console.log(error)
@@ -455,13 +458,7 @@ export class TabContenidoComponent implements OnInit {
                 })
                 break
             case 'VER':
-                console.log('semana')
-                console.log(this.semanaSeleccionada)
-                localStorage.setItem(
-                    'dremoCurso',
-                    JSON.stringify(this.semanaSeleccionada)
-                )
-
+                console.log('actividades')
                 console.log(this.actividadSelected)
                 this.router.navigate(
                     [
@@ -472,7 +469,8 @@ export class TabContenidoComponent implements OnInit {
                     ],
                     {
                         queryParams: {
-                            iEvaluacionId: this.actividadSelected['iEvaluacionId'],
+                            iEvaluacionId:
+                                this.actividadSelected['iEvaluacionId'],
                             iCursoId: this.iCursoId,
                             idDocCursoId: this.idDocCursoId,
                         },

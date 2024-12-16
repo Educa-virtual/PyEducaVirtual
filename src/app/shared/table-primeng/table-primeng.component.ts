@@ -271,6 +271,16 @@ export class TablePrimengComponent implements OnChanges, OnInit {
         this.selectedRowDataChange.emit(event)
     }
 
+    @Output() selectedColumn = new EventEmitter()
+
+    selectCell(col: any, field: string, row): void {
+        this.selectedColumn.emit([col, row])
+    }
+
+    selectRow(row: any, field: string): void {
+        this.selectedColumn.emit(row)
+    }
+
     openFile(item) {
         switch (Number(item.type)) {
             case 1:

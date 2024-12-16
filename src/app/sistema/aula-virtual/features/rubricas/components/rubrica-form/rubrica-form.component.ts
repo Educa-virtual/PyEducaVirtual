@@ -6,6 +6,7 @@ import { ConstantesService } from '@/app/servicios/constantes.service'
 import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-evaluaciones.service'
 import { Subject, takeUntil } from 'rxjs'
 import { Output, EventEmitter } from '@angular/core'
+import { Router } from '@angular/router'
 
 @Component({
     selector: 'app-rubrica-form',
@@ -31,7 +32,7 @@ export class RubricaFormComponent implements OnInit, OnDestroy {
         iCursoId: null,
         idDocCursoId: null,
     }
-    constructor(private _rubricaFormService: RubricaFormService) {}
+    constructor(private _rubricaFormService: RubricaFormService, private router: Router) {}
 
     ngOnInit() {
         console.log('this.mode en form rubrica')
@@ -97,6 +98,15 @@ export class RubricaFormComponent implements OnInit, OnDestroy {
             return
         }
         const data = this.rubricaForm.value
+
+        this.router.navigate([], {
+            queryParams: {
+                iInstrumentoId: data.iInstrumentoId,
+            },
+            queryParamsHandling: 'merge',
+            replaceUrl: true,
+        })
+
         data.iDocenteId = this._constantesService.iDocenteId
         data.iCredId = this._constantesService.iCredId
         data.idDocCursoId = this._params.idDocCursoId

@@ -38,6 +38,7 @@ export class BancoPreguntasFormContainerComponent implements OnInit {
     public iEvaluacionId = this._config.data.iEvaluacionId //Aqui viene desde el Banco-Preguntas
     @Input() payload: any //!ATRAE DE PADRE 1
     recibirPayloadForms: any
+
     private _apiEre = inject(ApiEvaluacionesRService)
     iDesempenoId: number
     constructor() {
@@ -53,8 +54,14 @@ export class BancoPreguntasFormContainerComponent implements OnInit {
         if (this._config.data.pregunta.iPreguntaId == 0) {
             this.modePregunta = 'CREAR'
         } else {
+            console.log(
+                'Editar Pregunta: ',
+                this._config.data.pregunta.iPreguntaId
+            )
             this.modePregunta = 'EDITAR'
             this.encabezadoMode = 'COMPLETADO'
+
+            console.log('Modo Pregunta Editar: ', this.modePregunta)
         }
         this.pregunta = this._config.data.pregunta
 
@@ -114,39 +121,140 @@ export class BancoPreguntasFormContainerComponent implements OnInit {
         })
     }
 
-    guardarConFlujoEncadenado(data: any) {
+    // guardarConFlujoEncadenado(data: any) {
+    //     console.log(
+    //         'Valor actual de this.recibirPayloadForms:',
+    //         this.recibirPayloadForms
+    //     )
+    //     if (this.recibirPayloadForms) {
+    //         console.log(
+    //             'Insertando datos en el desempeño:',
+    //             this.recibirPayloadForms
+    //         )
+    //         // Llamar al servicio para insertar en la tabla "desempeños"
+    //         this._apiEre
+    //             .insertarMatrizDesempeno(this.recibirPayloadForms) // Paso 1: Insertar desempeño
+    //             .pipe(
+    //                 takeUntil(this.unsubscribe$), // Limpiar suscripciones
+    //                 switchMap((resp: any) => {
+    //                     // Extraer el ID generado
+    //                     const iiDesempenoId = resp?.iDesempenoId
+    //                     console.log('ID generado:', iiDesempenoId)
+
+    //                     // Validar que el ID exista
+    //                     if (!iiDesempenoId) {
+    //                         throw new Error(
+    //                             'No se generó un iDesempeñoId válido.'
+    //                         )
+    //                     }
+    //                     // Convertir iDesempenoId a entero
+    //                     const iiiDesempenoId = parseInt(iiDesempenoId, 10) // Asegurarse de que sea un número
+    //                     console.log(
+    //                         'ID de Desempeño recibido (convertido a número):',
+    //                         iiiDesempenoId
+    //                     )
+
+    //                     // Agregar el iDesempenoId al objeto `data` recibido
+    //                     data.iDesempenoId = iiiDesempenoId
+    //                     data.iCursosNivelGradId = 6 // Con esto al momento de guardar, la pregunta se ira al curso correspondiente.
+    //                     data.iNivelGradoId = 1
+    //                     data.iEspecialistaId = 2
+
+    //                     console.log(
+    //                         'Datos listos para guardar preguntas:',
+    //                         data
+    //                     )
+
+    //                     // Paso 2: Guardar en el banco de preguntas
+    //                     return this._evaluacionesService.guardarActualizarPreguntaConAlternativas(
+    //                         data
+    //                     )
+    //                 })
+    //             )
+    //             .subscribe({
+    //                 next: () => {
+    //                     console.log('Flujo completo: Guardar pregunta exitosa')
+    //                     this.closeModal(data) // Cerrar modal opcionalmente
+    //                 },
+    //                 error: (err) => {
+    //                     console.error('Error en el flujo de inserción:', err)
+    //                     console.warn('Datos enviados:', data)
+    //                 },
+    //             })
+    //     } else {
+    //         console.log('No se ha recibido el payload aún.')
+    //     }
+    // }
+
+    // guardarBancoPreguntas(data) {
+    //     // Aqui se puede poner datos agregados en data para insertar en la base de datos
+    //     //data.iCursoId = 3
+    //     data.iCursosNivelGradId = 6
+    //     data.iNivelGradoId = 1
+    //     data.iEspecialistaId = 1
+    //     //console.table(data)
+    //     this._evaluacionesService
+    //         .guardarActualizarPreguntaConAlternativas(data)
+    //         .subscribe({
+    //             next: () => {
+    //                 this.closeModal(data)
+    //                 console.log('GuardarBancoPreguntas exitosa', data)
+    //             },
+    //         })
+    // }
+
+    //Atreae padre 1
+    recibirPayloadForm(payloadEmitidoForms: any) {
+        console.log(
+            'Payload recibido desde el banco-preguntas-form >>>:',
+            payloadEmitidoForms
+        )
+        // Crear una copia modificada
+        this.recibirPayloadForms = {
+            ...payloadEmitidoForms, // Copia todas las propiedades originales
+            iEvaluacionId: 679, // Aqui cambiamos el ID de evaluacion
+        }
+
+        console.log('Payload modificado >>>:', this.recibirPayloadForms)
+    }
+
+    guardarPreguntasConFlujo(data: any) {
+        console.log(
+            'Valor actual de this.recibirPayloadForms:',
+            this.recibirPayloadForms
+        )
+
         if (this.recibirPayloadForms) {
             console.log(
                 'Insertando datos en el desempeño:',
                 this.recibirPayloadForms
             )
+
             // Llamar al servicio para insertar en la tabla "desempeños"
             this._apiEre
                 .insertarMatrizDesempeno(this.recibirPayloadForms) // Paso 1: Insertar desempeño
                 .pipe(
                     takeUntil(this.unsubscribe$), // Limpiar suscripciones
                     switchMap((resp: any) => {
-                        // Extraer el ID generado
-                        const iiDesempenoId = resp?.iDesempenoId
+                        const iiDesempenoId = resp?.iDesempenoId // Extraer ID
                         console.log('ID generado:', iiDesempenoId)
 
-                        // Validar que el ID exista
                         if (!iiDesempenoId) {
                             throw new Error(
                                 'No se generó un iDesempeñoId válido.'
                             )
                         }
-                        // Convertir iDesempenoId a entero
-                        const iiiDesempenoId = parseInt(iiDesempenoId, 10) // Asegurarse de que sea un número
+
+                        // Convertir ID a número entero
+                        const iiiDesempenoId = parseInt(iiDesempenoId, 10)
                         console.log(
                             'ID de Desempeño recibido (convertido a número):',
                             iiiDesempenoId
                         )
 
-                        // Agregar el iDesempenoId al objeto `data` recibido
+                        // Paso 2: Preparar el objeto `data` con los valores adicionales
                         data.iDesempenoId = iiiDesempenoId
-                        //data.iCursoId = 3 // Valores adicionales
-                        data.iCursosNivelGradId = 2
+                        data.iCursosNivelGradId = 6
                         data.iNivelGradoId = 1
                         data.iEspecialistaId = 2
 
@@ -155,7 +263,7 @@ export class BancoPreguntasFormContainerComponent implements OnInit {
                             data
                         )
 
-                        // Paso 2: Guardar en el banco de preguntas
+                        // Llamada al servicio para guardar preguntas
                         return this._evaluacionesService.guardarActualizarPreguntaConAlternativas(
                             data
                         )
@@ -164,41 +272,39 @@ export class BancoPreguntasFormContainerComponent implements OnInit {
                 .subscribe({
                     next: () => {
                         console.log('Flujo completo: Guardar pregunta exitosa')
-                        this.closeModal(data) // Cerrar modal opcionalmente
+                        this.closeModal(data)
                     },
                     error: (err) => {
                         console.error('Error en el flujo de inserción:', err)
+                        console.warn('Datos enviados:', data)
                     },
                 })
         } else {
             console.log('No se ha recibido el payload aún.')
+
+            // Si no se ha recibido payload, simplemente guardamos preguntas con datos básicos
+            data.iCursosNivelGradId = 6
+            data.iNivelGradoId = 1
+            data.iEspecialistaId = 1
+
+            console.log('Guardando preguntas sin payload de desempeño:', data)
+
+            // Guardar directamente en el banco de preguntas
+            this._evaluacionesService
+                .guardarActualizarPreguntaConAlternativas(data)
+                .subscribe({
+                    next: () => {
+                        console.log('Guardar banco de preguntas exitosa')
+                        this.closeModal(data)
+                    },
+                    error: (err) => {
+                        console.error(
+                            'Error al guardar banco de preguntas:',
+                            err
+                        )
+                    },
+                })
         }
-    }
-
-    guardarBancoPreguntas(data) {
-        // Aqui se puede poner datos agregados en data para insertar en la base de datos
-        data.iCursoId = 3
-        data.iNivelGradoId = 1
-        data.iEspecialistaId = 1
-        //console.table(data)
-        this._evaluacionesService
-            .guardarActualizarPreguntaConAlternativas(data)
-            .subscribe({
-                next: () => {
-                    this.closeModal(data)
-                    console.log('GuardarBancoPreguntas exitosa', data)
-                },
-            })
-    }
-
-    //Atreae padre 1
-    recibirPayloadForm(payloadEmitidoForms: any) {
-        console.log(
-            'Payload recibido desde el banco-preguntas-form >>>:',
-            payloadEmitidoForms
-        )
-
-        this.recibirPayloadForms = payloadEmitidoForms
     }
 
     closeModal(data) {

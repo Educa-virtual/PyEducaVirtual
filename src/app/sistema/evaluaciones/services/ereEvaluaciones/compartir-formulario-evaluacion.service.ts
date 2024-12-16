@@ -34,6 +34,7 @@ export class CompartirFormularioEvaluacionService {
         }
         return this.cEvaluacionNombre
     }
+
     //!Se agrego datos para pasar de area a banco preguntas
     setGrado(grado: string) {
         this.grado = grado

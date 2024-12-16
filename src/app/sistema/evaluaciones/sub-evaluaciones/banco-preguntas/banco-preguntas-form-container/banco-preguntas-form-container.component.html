@@ -1,7 +1,7 @@
 <app-banco-preguntas-form
     (closeModalChange)="closeModal($event)"
     [bancoPreguntasForm]="bancoPreguntasForm"
-    (submitChange)="guardarConFlujoEncadenado($event)"
+    (submitChange)="guardarPreguntasConFlujo($event)"
     [encabezados]="encabezados"
     [modePregunta]="modePregunta"
     [encabezadoMode]="encabezadoMode"
@@ -11,3 +11,4 @@
     [_iEvaluacionId]="iEvaluacionId"
     (payloadEmitidoForm)="recibirPayloadForm($event)"
 />
+<!-- (submitChange)="guardarBancoPreguntas($event)" guardarConFlujoEncadenado-->

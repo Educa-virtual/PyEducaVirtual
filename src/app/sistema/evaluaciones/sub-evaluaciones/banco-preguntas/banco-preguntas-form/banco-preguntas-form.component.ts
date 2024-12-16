@@ -110,6 +110,7 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
             this.handleSinEncabezado()
         }
         if (this.modePregunta === 'EDITAR') {
+            console.log('Banco Preguntas Form - Editar Pregunta >>>', pregunta)
             if (pregunta.iTipoPregId === 3) {
                 this.agregarQuitarAlternativasPaso('QUITAR')
             }

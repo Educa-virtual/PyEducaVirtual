@@ -206,23 +206,18 @@ export class ApiEvaluacionesRService {
             datapayload
         )
     }
-    generarPdfMatrizbyEvaluacionId(
-        _iEvaluacionIdtoMatriz: number,
-        areas: string // Cambié el nombre a 'areas'
-    ): Observable<any> {
-        console.log('Parámetros enviados al backend:', areas)
+    generarPdfMatrizbyEvaluacionId(baseParams): Observable<any> {
+        console.log('Parámetros enviados al backend:', baseParams)
         return this.http.get(
             `${this.baseUrl}/ere/Evaluaciones/generarPdfMatrizbyEvaluacionId`,
             {
                 params: {
-                    iEvaluacionId: _iEvaluacionIdtoMatriz.toString(),
-                    areas: areas, // Usa 'areas' aquí para coincidir con el nombre esperado por el backend
+                    ...baseParams,
                 },
                 responseType: 'blob' as 'json', // Asegúrate de que el responseType esté como 'blob'
             }
         )
     }
-
     obtenerEspDrem(params) {
         return this.http.get(
             `${this.baseUrl}/ere/Evaluaciones/obtenerEspDrem`,

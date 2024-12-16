@@ -51,7 +51,6 @@ export class AreaCardComponent {
         this.compartirFormularioEvaluacionService.setGrado(area.grado)
         this.compartirFormularioEvaluacionService.setNivel(area.nivel)
         this.compartirFormularioEvaluacionService.setSeccion(area.seccion)
-        this.compartirFormularioEvaluacionService.setSeccion(area.nombreCurso)
         // Navegar a la nueva ruta sin parámetros en la URL
         this.router.navigate(['./', area.id, 'banco-preguntas'])
     }
@@ -66,50 +65,49 @@ export class AreaCardComponent {
      * @param {number} iEvaluacionId - El ID de la evaluación para la cual se generará la matriz PDF.
      */
 
-    generarPdfMatriz(iEvaluacionId: number, area: IArea) {
-        iEvaluacionId = this._iEvaluacionId
-        // Obtén las áreas desde el servicio
-        // const areas = this.compartirFormularioEvaluacionService.getAreas()
-        // console.log('Áreas obtenidas desde el servicio:', areas)
+    // generarPdfMatriz(iEvaluacionId: number, area: IArea) {
+    //     iEvaluacionId = this._iEvaluacionId
+    //     // Obtén las áreas desde el servicio
+    //     // const areas = this.compartirFormularioEvaluacionService.getAreas()
+    //     // console.log('Áreas obtenidas desde el servicio:', areas)
 
-        // Convierte las áreas en una cadena JSON
-        const encodedAreas = JSON.stringify([area]) // Solo convertir a JSON string, no codificar
-        console.log('Cadena JSON de las áreas:', encodedAreas)
-        //!
-        this._apiEre
-            .generarPdfMatrizbyEvaluacionId(iEvaluacionId, encodedAreas)
-            .subscribe(
-                (response) => {
-                    console.log('Respuesta de Evaluacion:', iEvaluacionId) // Para depuración
+    //     // Convierte las áreas en una cadena JSON
+    //     const encodedAreas = JSON.stringify([area]) // Solo convertir a JSON string, no codificar
+    //     console.log('Cadena JSON de las áreas:', encodedAreas)
+    //     this._apiEre
+    //         .generarPdfMatrizbyEvaluacionId(iEvaluacionId, encodedAreas)
+    //         .subscribe(
+    //             (response) => {
+    //                 console.log('Respuesta de Evaluacion:', iEvaluacionId) // Para depuración
 
-                    // Se muestra un mensaje indicando que la descarga de la matriz ha comenzado
-                    this._MessageService.add({
-                        severity: 'success',
-                        detail: 'Comienza la descarga de la Matriz',
-                    })
+    //                 // Se muestra un mensaje indicando que la descarga de la matriz ha comenzado
+    //                 this._MessageService.add({
+    //                     severity: 'success',
+    //                     detail: 'Comienza la descarga de la Matriz',
+    //                 })
 
-                    // Se crea un enlace de descarga para el archivo PDF generado
-                    const blob = response as Blob // Asegúrate de que la respuesta sea un Blob
-                    const link = document.createElement('a')
-                    link.href = URL.createObjectURL(blob)
-                    link.download =
-                        'matriz_evaluacion_' +
-                        area.nombre.toLocaleLowerCase() +
-                        '.pdf' // Nombre del archivo descargado
-                    link.click()
-                },
-                (error) => {
-                    // En caso de error, se determina el mensaje de error a mostrar
-                    const errorMessage =
-                        error?.message ||
-                        'No hay datos suficientes para descargar la Matriz'
+    //                 // Se crea un enlace de descarga para el archivo PDF generado
+    //                 const blob = response as Blob // Asegúrate de que la respuesta sea un Blob
+    //                 const link = document.createElement('a')
+    //                 link.href = URL.createObjectURL(blob)
+    //                 link.download =
+    //                     'matriz_evaluacion_' +
+    //                     area.nombre.toLocaleLowerCase() +
+    //                     '.pdf' // Nombre del archivo descargado
+    //                 link.click()
+    //             },
+    //             (error) => {
+    //                 // En caso de error, se determina el mensaje de error a mostrar
+    //                 const errorMessage =
+    //                     error?.message ||
+    //                     'No hay datos suficientes para descargar la Matriz'
 
-                    // Se muestra un mensaje de error en el sistema
-                    this._MessageService.add({
-                        severity: 'success', // Se cambió a "error" ya que es un fallo
-                        detail: errorMessage,
-                    })
-                }
-            )
-    }
+    //                 // Se muestra un mensaje de error en el sistema
+    //                 this._MessageService.add({
+    //                     severity: 'success', // Se cambió a "error" ya que es un fallo
+    //                     detail: errorMessage,
+    //                 })
+    //             }
+    //         )
+    // }
 }

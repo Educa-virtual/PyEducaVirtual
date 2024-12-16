@@ -17,6 +17,9 @@ import { HttpClient } from '@angular/common/http'
 import { environment } from '@/environments/environment'
 import { catchError, map, throwError } from 'rxjs'
 import { GeneralService } from '@/app/servicios/general.service'
+import { BancoPreguntaListaComponent } from '@/app/sistema/evaluaciones/sub-evaluaciones/banco-preguntas/components/banco-pregunta-lista/banco-pregunta-lista.component'
+import { columnsBancoPreguntas } from '../../evaluacion-form/evaluacion-form-preguntas/evaluacion-form-preguntas'
+import { removeHTML } from '@/app/shared/utils/remove-html'
 
 @Component({
     selector: 'app-list-preguntas',
@@ -25,6 +28,7 @@ import { GeneralService } from '@/app/servicios/general.service'
         PrimengModule,
         AulaBancoPreguntasComponent,
         PreguntasFormComponent,
+        BancoPreguntaListaComponent,
     ],
     templateUrl: './list-preguntas.component.html',
     styleUrl: './list-preguntas.component.scss',
@@ -40,8 +44,7 @@ export class ListPreguntasComponent implements OnChanges {
 
     @Input() data
     @Input() curso
-    @Input() iEvaluacionId: string =
-        'DXmDQaJBZWg2bMod39eRGyKnBB8n7r8k5E1AlqwpLv4jx0YzNV'
+    @Input() iEvaluacionId: string
 
     showModal = true
     showModalPreguntas: boolean = false
@@ -50,6 +53,32 @@ export class ListPreguntasComponent implements OnChanges {
     preguntasSeleccionadas = []
     jEnunciadoUrl: any = ''
     idEncabPregId
+    preguntas = []
+    columnas = columnsBancoPreguntas
+    acciones = [
+        {
+            labelTooltip: 'Agregar Preguntas',
+            icon: 'pi pi-plus',
+            accion: 'agregar_preguntas',
+            type: 'item',
+            class: 'p-button-rounded p-button-primary p-button-text',
+            isVisible: (row) => row.idEncabPregId,
+        },
+        {
+            labelTooltip: 'Editar',
+            icon: 'pi pi-pencil',
+            accion: 'actualizar',
+            type: 'item',
+            class: 'p-button-rounded p-button-warning p-button-text',
+        },
+        {
+            labelTooltip: 'Eliminar',
+            icon: 'pi pi-trash',
+            accion: 'eliminar',
+            type: 'item',
+            class: 'p-button-rounded p-button-danger p-button-text',
+        },
+    ]
 
     private backendApi = environment.backendApi
 
@@ -70,6 +99,7 @@ export class ListPreguntasComponent implements OnChanges {
         }
         if (changes.iEvaluacionId?.currentValue) {
             this.iEvaluacionId = changes.iEvaluacionId.currentValue
+            this.obtenerBancoPreguntas()
         }
     }
 
@@ -105,37 +135,29 @@ export class ListPreguntasComponent implements OnChanges {
                 this.accionBtnItem.emit({ accion, item })
                 break
             case 'close-modal-preguntas-form':
+                this.obtenerBancoPreguntas()
                 this.showModalPreguntas = false
-                break
-            case 'guardar-pregunta':
-                const preguntas = [
-                    {
-                        isLocal: false,
-                        iPreguntaId: null,
-                        iTipoPregId: item.iTipoPregId,
-                        cPregunta: item.cPregunta,
-                        cPreguntaTextoAyuda: item.cPreguntaTextoAyuda,
-                        iPreguntaPeso: item.iPreguntaPeso,
-                        alternativas: item.Alternativas,
-                    },
-                ]
-                const params = {
-                    iEvaluacionId: 117,
-                    iEncabPregId: '-1',
-                    iDocenteId: this._ConstantesService.iDocenteId,
-                    iCursoId: null,
-                    iCurrContId: null,
-                    iNivelCicloId: null,
-                    preguntas: preguntas,
-                }
-                this.guardarActualizarPreguntaConAlternativas(params)
+                this.idEncabPregId = null
                 break
             case 'GUARDARxEncabezadoPreguntas':
                 this.idEncabPregId = item.length
-                    ? item[0]['iEvaluacionId']
+                    ? item[0]['idEncabPregId']
                     : null
                 this.jEnunciadoUrl = ''
                 this.showModalEncabezadoPreguntas = false
+                if (this.idEncabPregId) {
+                    this.showModalPreguntas = true
+                }
+                this.obtenerBancoPreguntas()
+                break
+            case 'CONSULTARxiEvaluacionId':
+                this.preguntas = item
+                this.preguntas.forEach((i) => {
+                    i.json_alternativas = i.json_alternativas
+                        ? JSON.parse(i.json_alternativas)
+                        : i.json_alternativas
+                    i.cPreguntaNoHTML = removeHTML(i.cBancoPregunta)
+                })
                 break
         }
     }
@@ -242,11 +264,24 @@ export class ListPreguntasComponent implements OnChanges {
             group: 'evaluaciones',
             prefix: 'encabezado-preguntas',
             ruta: 'handleCrudOperation',
+            valorBusqueda: this.iEvaluacionId,
             data: this.formEncabezadoPreguntas.value,
         }
         this.getInformation(params, this.formEncabezadoPreguntas.value.opcion)
     }
-
+    obtenerBancoPreguntas() {
+        const params = {
+            petition: 'post',
+            group: 'evaluaciones',
+            prefix: 'banco-preguntas',
+            ruta: 'handleCrudOperation',
+            data: {
+                opcion: 'CONSULTARxiEvaluacionId',
+                valorBusqueda: this.iEvaluacionId, //iEvaluacionId
+            },
+        }
+        this.getInformation(params, 'CONSULTARxiEvaluacionId')
+    }
     getInformation(params, accion) {
         this._GeneralService.getGralPrefix(params).subscribe({
             next: (response) => {

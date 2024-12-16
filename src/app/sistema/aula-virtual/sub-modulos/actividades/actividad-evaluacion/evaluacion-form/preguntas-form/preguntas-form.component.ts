@@ -33,6 +33,7 @@ export class PreguntasFormComponent implements OnChanges {
     @Input() cEvaluacionTitulo: string
     @Input() curso
     @Input() iEvaluacionId
+    @Input() idEncabPregId
 
     iBancoId
 
@@ -45,6 +46,7 @@ export class PreguntasFormComponent implements OnChanges {
         }
         if (changes.iEvaluacionId?.currentValue) {
             this.iEvaluacionId = changes.iEvaluacionId.currentValue
+            console.log(this.iEvaluacionId)
         }
     }
 
@@ -117,6 +119,9 @@ export class PreguntasFormComponent implements OnChanges {
 
                 this.formBancoPreguntas.controls.alternativas.setValue(
                     this.alternativas
+                )
+                this.formBancoPreguntas.controls.idEncabPregId.setValue(
+                    this.idEncabPregId
                 )
 
                 const params = {

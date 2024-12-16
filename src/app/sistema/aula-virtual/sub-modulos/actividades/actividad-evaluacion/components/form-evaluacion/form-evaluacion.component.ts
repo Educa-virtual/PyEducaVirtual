@@ -69,7 +69,7 @@ export class FormEvaluacionComponent implements OnChanges, OnInit {
     iEvaluacionId: string
 
     showMostrarVista: 'FORM-EVALUACION' | 'LIST-PREGUNTAS' | 'FORM-PREGUNTAS' =
-        'LIST-PREGUNTAS'
+        'FORM-EVALUACION'
     titulo: string
 
     formEvaluacion = this._FormBuilder.group({

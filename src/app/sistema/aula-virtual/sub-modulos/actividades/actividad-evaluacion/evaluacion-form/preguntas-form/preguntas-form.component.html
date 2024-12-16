@@ -1,5 +1,5 @@
 <app-modal-primeng
-    [title]="'Nueva pregunta para:' + cEvaluacionTitulo"
+    [title]="'Nueva pregunta para: ' + cEvaluacionTitulo"
     [showModal]="showModalPreguntas"
     (accionBtnItem)="accionBtn($event)"
     [width]="'99%'"
@@ -115,7 +115,9 @@
                                     <div class="w-full align-content-center">
                                         <div
                                             class="ml-1"
-                                            [innerHTML]="item.cAlternativa"
+                                            [innerHTML]="
+                                                item.cBancoAltDescripcion
+                                            "
                                         ></div>
                                     </div>
                                     <p-button
@@ -181,6 +183,16 @@
                             <p-inputSwitch [(ngModel)]="bRptaCorreta" />
                         </div>
                     </div>
+                    @if (bRptaCorreta) {
+                        <div class="col-12">
+                            <p-editor
+                                styleClass="w-full"
+                                [style]="{ height: '100px' }"
+                                placeholder="Ingrese la explicación de la resolución"
+                                [(ngModel)]="cAlternativaExplicacion"
+                            />
+                        </div>
+                    }
                 </div>
                 <div class="col-12 md:col-5">
                     <label for="" class="mt-2">Lista de Alternativas</label>

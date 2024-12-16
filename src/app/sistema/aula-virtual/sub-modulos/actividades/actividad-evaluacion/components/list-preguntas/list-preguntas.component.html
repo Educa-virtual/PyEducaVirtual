@@ -14,13 +14,23 @@
             <span class="text-md">Agregar Preguntas</span>
         </button>
     </div>
-    <div class="col-12 mt-5" align="center">
+    <div class="col-12 mt-5" align="center" *ngIf="!preguntas.length">
         <img src="assets/images/icons/preguntas.gif" alt="logo" width="20%" />
         <h4 class="font-bold">Utilice este espacio para crear su examen.</h4>
         <h5>
             Al agregar pregunta, escoje si la pregunta tiene enunciado, sin
             enunciado o banco de preguntas
         </h5>
+    </div>
+    <div class="col-12 mt-5" align="center" *ngIf="preguntas.length">
+        <app-banco-pregunta-lista
+            [data]="preguntas"
+            [showCaption]="false"
+            [showPaginator]="false"
+            [accionesTabla]="acciones"
+            (accionBtnItemTable)="accionBtn($event)"
+            [columnas]="columnas"
+        ></app-banco-pregunta-lista>
     </div>
 </div>
 
@@ -169,5 +179,6 @@
     [showModalPreguntas]="showModalPreguntas"
     [iEvaluacionId]="iEvaluacionId"
     [curso]="curso"
+    [idEncabPregId]="idEncabPregId"
     (accionBtnItem)="accionBtn($event)"
 ></app-preguntas-form>

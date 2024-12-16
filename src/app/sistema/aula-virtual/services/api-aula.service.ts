@@ -113,6 +113,7 @@ export class ApiAulaService {
                             'La respuesta no contiene datos válidos'
                         )
                     }
+                    console.log(response.data)
                     return response.data
                 })
                 // map((data) => {
@@ -238,18 +239,20 @@ export class ApiAulaService {
             )
             .pipe(map((resp) => resp.data))
     }
-    obtenerReporteFinalDeNotas(data) {
+    obtenerReporteFinalDeNotas(params: { iIeCursoId }) {
         return this._http.get(
             `${this.baseUrlApi}/aula-virtual/Resultado/obtenerReporteFinalNotas`,
-            data
+            {
+                params,
+            }
         )
         //.pipe(map((resp) => resp.data))
     }
-    generarReporteDeLogrosPdf(data) {
+    generarReporteDeLogrosPdf(params: { iIeCursoId }) {
         return this._http.get(
             `${this.baseUrlApi}/aula-virtual/Resultado/reporteDeLogros`,
             {
-                params: data, // Enviar los datos como parámetros
+                params, // Enviar los datos como parámetros
                 responseType: 'blob', // Indicar que la respuesta será un archivo Blob
             } // Asegúrate de que el responseType esté como 'blob'
         )

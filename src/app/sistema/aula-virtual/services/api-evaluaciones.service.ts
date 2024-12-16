@@ -60,6 +60,7 @@ export class ApiEvaluacionesService {
             .pipe(map((resp) => resp.data))
     }
 
+    rubrica
     obtenerRubrica(params) {
         console.log('solicitando rubrica')
         console.log(params)
@@ -68,7 +69,7 @@ export class ApiEvaluacionesService {
                 `${this.baseUrlApi}/evaluaciones/instrumento-evaluaciones/obtenerRubrica`,
                 { params }
             )
-            .pipe(map((resp) => resp.data[0]))
+            .pipe(map((resp) => this.rubrica = resp.data))
     }
 
     obtenerRubricasConFiltro(params) {

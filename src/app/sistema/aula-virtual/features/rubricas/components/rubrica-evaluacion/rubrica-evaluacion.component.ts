@@ -60,8 +60,8 @@ export class RubricaEvaluacionComponent implements OnInit, OnDestroy {
                 .pipe(takeUntil(this._unsubscribe$))
                 .subscribe({
                     next: (data) => {
-                        this.data = data
-                        console.log(data)
+                        this.data = Array.isArray(this._evaluacionApiService.rubrica) ? this._evaluacionApiService.rubrica[0] : undefined
+                        console.log(this.data)
                     },
                 })
         }

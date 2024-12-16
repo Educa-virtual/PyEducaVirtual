@@ -14,13 +14,23 @@
             <span class="text-md">Agregar Preguntas</span>
         </button>
     </div>
-    <div class="col-12 mt-5" align="center">
+    <div class="col-12 mt-5" align="center" *ngIf="!preguntas.length">
         <img src="assets/images/icons/preguntas.gif" alt="logo" width="20%" />
         <h4 class="font-bold">Utilice este espacio para crear su examen.</h4>
         <h5>
             Al agregar pregunta, escoje si la pregunta tiene enunciado, sin
             enunciado o banco de preguntas
         </h5>
+    </div>
+    <div class="col-12 mt-5" align="center" *ngIf="preguntas.length">
+        <app-banco-pregunta-lista
+            [data]="preguntas"
+            [showCaption]="false"
+            [showPaginator]="false"
+            [accionesTabla]="acciones"
+            (accionBtnItemTable)="accionBtn($event)"
+            [columnas]="columnas"
+        ></app-banco-pregunta-lista>
     </div>
 </div>
 
@@ -73,9 +83,102 @@
     </div>
 </p-dialog>
 
+<p-dialog
+    #dialogEncabezadoPreguntas
+    [header]="'Agregar Enunciado de Preguntas'"
+    [modal]="true"
+    [(visible)]="showModalEncabezadoPreguntas"
+    [position]="'top'"
+    [maximizable]="true"
+    [style]="{ width: '100%' }"
+>
+    <ng-content>
+        <form [formGroup]="formEncabezadoPreguntas" class="mt-4">
+            <div class="col-12">
+                <p-inputGroup>
+                    <p-inputGroupAddon> Título </p-inputGroupAddon>
+                    <input pInputText formControlName="cEncabPregTitulo" />
+                </p-inputGroup>
+            </div>
+            <div class="col-12">
+                <p-inputGroup>
+                    <p-inputGroupAddon>
+                        <i class="pi pi-link" style="color: #333437"></i>
+                    </p-inputGroupAddon>
+                    <input
+                        type="text"
+                        pInputText
+                        [placeholder]="
+                            jEnunciadoUrl !== ''
+                                ? 'Si hay enunciado subido'
+                                : 'No hay enunciado subido'
+                        "
+                        disabled
+                        class="w-full p-inputtext-sm opacity-100"
+                        pInputText
+                    />
+                    <button
+                        pButton
+                        pRipple
+                        type="button"
+                        severity="primary"
+                        class="p-button-primary btn-file-image"
+                    >
+                        <i class="pi pi-upload"></i
+                        ><input
+                            type="file"
+                            (change)="onUploadChange($event, 'enunciado')"
+                            accept=".pdf "
+                        />
+                    </button>
+                    <button
+                        type="button"
+                        (click)="
+                            openLink(
+                                jEnunciadoUrl !== '' ? jEnunciadoUrl : null
+                            )
+                        "
+                        [disabled]="jEnunciadoUrl === ''"
+                        pButton
+                        icon="pi pi-eye"
+                        class="p-button-info"
+                    >
+                        &nbsp;
+                    </button>
+                </p-inputGroup>
+            </div>
+        </form>
+    </ng-content>
+
+    <div class="flex justify-content-end gap-2 pt-3">
+        <button
+            pButton
+            pRipple
+            label="Cancelar"
+            icon="pi pi-times"
+            class="p-button-secondary"
+            type="button"
+            size="small"
+            (click)="showModalEncabezadoPreguntas = false"
+        ></button>
+        <button
+            pButton
+            pRipple
+            (click)="guardarEncabezadoPreguntas()"
+            [disabled]="this.formEncabezadoPreguntas.invalid"
+            label="Agregar Encabezado"
+            icon="pi pi-check"
+            size="small"
+            class="p-button-primary"
+        ></button>
+    </div>
+</p-dialog>
+
 <app-preguntas-form
     [cEvaluacionTitulo]="data.cEvaluacionTitulo"
     [showModalPreguntas]="showModalPreguntas"
-    [showEncabezado]="showEncabezado"
+    [iEvaluacionId]="iEvaluacionId"
+    [curso]="curso"
+    [idEncabPregId]="idEncabPregId"
     (accionBtnItem)="accionBtn($event)"
 ></app-preguntas-form>

@@ -11,7 +11,7 @@ import { PrimengModule } from '@/app/primeng.module'
     templateUrl: './actividad-lista.component.html',
     styleUrl: './actividad-lista.component.scss',
 })
-export class ActividadListaComponent implements OnInit{
+export class ActividadListaComponent implements OnInit {
     @Input({ required: true }) actividades: IActividad[] | any
 
     @Output() actionSelected = new EventEmitter<{
@@ -20,9 +20,7 @@ export class ActividadListaComponent implements OnInit{
     }>()
 
     ngOnInit(): void {
-        console.log('this.actividades');
-        console.log(this.actividades);
-        
+        console.log('this.actividades')
+        console.log(this.actividades)
     }
-    
 }

@@ -113,6 +113,8 @@ export class CursoDetalleComponent implements OnInit {
         const idDocCursoId =
             this._activatedRoute.snapshot.queryParams['idDocCursoId']
         const iCursoId = this._activatedRoute.snapshot.queryParams['iCursoId']
+        const iNivelCicloId =
+            this._activatedRoute.snapshot.queryParams['iNivelCicloId']
 
         this.curso = {
             cCursoNombre,
@@ -124,6 +126,7 @@ export class CursoDetalleComponent implements OnInit {
             cSeccion,
             cCicloRomanos,
             idDocCursoId,
+            iNivelCicloId,
         }
 
         if (isValidTabKey(tab)) {

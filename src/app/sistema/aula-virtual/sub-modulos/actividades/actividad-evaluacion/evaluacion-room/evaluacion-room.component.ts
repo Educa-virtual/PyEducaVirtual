@@ -36,6 +36,7 @@ import { EvaluacionEstudiantesComponent } from '../evaluacion-estudiantes/evalua
 import { RubricasComponent } from '@/app/sistema/aula-virtual/features/rubricas/rubricas.component'
 import { ActividadListaComponent } from '../../components/actividad-lista/actividad-lista.component'
 import { RubricaEvaluacionComponent } from '@/app/sistema/aula-virtual/features/rubricas/components/rubrica-evaluacion/rubrica-evaluacion.component'
+// import { RubricaCalificarComponent } from '@/app/sistema/aula-virtual/features/rubricas/components/rubrica-calificar/rubrica-calificar.component'
 @Component({
     selector: 'app-evaluacion-room',
     standalone: true,
@@ -53,6 +54,7 @@ import { RubricaEvaluacionComponent } from '@/app/sistema/aula-virtual/features/
         EvaluacionEstudiantesComponent,
         EvaluacionFinalizadaComponent,
         ActividadListaComponent,
+        // RubricaCalificarComponent,
     ],
     templateUrl: './evaluacion-room.component.html',
     styleUrl: './evaluacion-room.component.scss',
@@ -87,21 +89,21 @@ export class EvaluacionRoomComponent implements OnInit, OnDestroy {
     actividad = {
         iContenidoSemId: 1,
         iProgActId: 57,
-        cProgActTituloLeccion: "Exmaen de recuperación final",
+        cProgActTituloLeccion: 'Exmaen de recuperación final',
         iActTipoId: 3,
         iPragActEstado: 1,
-        cActTipoNombre: "Evaluación Formativa",
+        cActTipoNombre: 'Evaluación Formativa',
         idDocCursoId: 1,
-        ixActivadadId: "kVap2xygkeWrXR7q5mdBKjl6dNOzYAQ4oMGEZ31v09JbLDNw8N",
-        dtProgActInicio: "2024-10-19T14:00:00",
-        dtProgActFin: "2024-10-19T15:00:00",
-        dtProgActPublicacion: "2024-10-10T20:12:00",
+        ixActivadadId: 'kVap2xygkeWrXR7q5mdBKjl6dNOzYAQ4oMGEZ31v09JbLDNw8N',
+        dtProgActInicio: '2024-10-19T14:00:00',
+        dtProgActFin: '2024-10-19T15:00:00',
+        dtProgActPublicacion: '2024-10-10T20:12:00',
         iEstado: 2,
         iEvaluacionId: 17,
         cTareaTitulo: null,
         iForoId: null,
         iEstadoActividad: 0,
-      }
+    }
     params = {
         iCursoId: 0,
         iDocenteId: 0,
@@ -164,15 +166,6 @@ export class EvaluacionRoomComponent implements OnInit, OnDestroy {
 
         this.obtenerEvaluacion()
         this.iPerfilId = Number(this._ConstantesService.iPerfilId)
-
-        this.obtenerRubrica()
-    }
-
-    /**
-     * Obtener los datos de la rubrica adjuntada a la evaluación
-     */
-    obtenerRubrica(){
-
     }
 
     // obtiene la evalución

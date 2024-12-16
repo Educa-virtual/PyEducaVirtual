@@ -66,14 +66,16 @@ export class FormEvaluacionComponent implements OnChanges, OnInit {
         image: false,
     }
 
+    iEvaluacionId: string
+
     showMostrarVista: 'FORM-EVALUACION' | 'LIST-PREGUNTAS' | 'FORM-PREGUNTAS' =
         'FORM-EVALUACION'
     titulo: string
 
     formEvaluacion = this._FormBuilder.group({
+        opcion: [''],
         iEvaluacionId: [],
         iTipoEvalId: [],
-        iProgActId: [],
         iInstrumentoId: [],
         iEscalaCalifId: [],
         iDocenteId: [0, Validators.required],
@@ -89,9 +91,6 @@ export class FormEvaluacionComponent implements OnChanges, OnInit {
         iEvaluacionDuracionMinutos: [],
         cEvaluacionArchivoAdjunto: [],
 
-        iActTipoId: [],
-        iContenidoSemId: [],
-
         dtInicio: [this.date],
         dtFin: [this.date],
 
@@ -104,6 +103,16 @@ export class FormEvaluacionComponent implements OnChanges, OnInit {
 
         fechaInicio: [],
         fechaFin: [],
+
+        //TABLA: PROGRACION_ACTIVIDADES
+        iProgActId: [],
+        iContenidoSemId: [],
+        iActTipoId: [EVALUACION],
+        dtProgActInicio: [],
+        dtProgActFin: [],
+        cProgActTituloLeccion: [''],
+        cProgActDescripcion: [''],
+        dtProgActPublicacion: [],
     })
 
     ngOnInit() {
@@ -201,6 +210,15 @@ export class FormEvaluacionComponent implements OnChanges, OnInit {
             case 'GUARDAR':
                 this.guardarActualizarFormInfo()
                 break
+            case 'GUARDARxProgActxiEvaluacionId':
+                this.iEvaluacionId = item.length
+                    ? item[0]['iEvaluacionId']
+                    : null
+                this.openModalListPreguntas()
+                break
+            case 'ACTUALIZARxProgActxiEvaluacionId':
+                console.log(item)
+                break
         }
     }
 
@@ -211,6 +229,7 @@ export class FormEvaluacionComponent implements OnChanges, OnInit {
         this.formEvaluacion.controls.dFechaEvaluacionFin.setValue(
             this.formEvaluacion.value.dtFin
         )
+
         const data = this.formEvaluacion.getRawValue()
         data.iDocenteId = this._ConstantesService.iDocenteId
         data.iActTipoId = EVALUACION
@@ -280,92 +299,44 @@ export class FormEvaluacionComponent implements OnChanges, OnInit {
             )
         }
 
+        //PROGRAMACIÓN ACTIVIDADES
+        data.dtProgActInicio = data.dtEvaluacionInicio
+        data.dtProgActFin = data.dtEvaluacionFin
+        data.cProgActTituloLeccion = data.cEvaluacionTitulo
+        data.dtProgActPublicacion = data.dtEvaluacionPublicacion
+
         if (this.formEvaluacion.invalid) {
             this.formEvaluacion.markAllAsTouched()
             return
         }
 
-        this._evaluacionService.guardarActualizarEvaluacion(data).subscribe({
-            next: (data) => {
-                if (data.iEvaluacionId) {
-                    this.guardarPreguntas()
-                }
-            },
-            complete: () => {},
-            error: (error) => {
-                // this.formEvaluacion.controls.dtEvaluacionInicio.setValue(this.date)
-                // this.formEvaluacion.controls.dtEvaluacionFin.setValue(this.date)
+        let prefix = ''
+        let group = ''
+        let ruta = ''
+        if (this.opcionEvaluacion === 'GUARDAR') {
+            prefix = 'programacion-actividades'
+            group = 'aula-virtual'
+            data.opcion = 'GUARDARxProgActxiEvaluacionId'
+            ruta = 'store'
+        } else {
+            prefix = 'evaluaciones'
+            group = 'evaluaciones'
+            data.opcion = 'ACTUALIZARxProgActxiEvaluacionId'
+            ruta = 'handleCrudOperation'
+        }
 
-                console.log(error)
-                this._MessageService.add({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: error,
-                })
-            },
-        })
+        const params = {
+            petition: 'post',
+            group: group,
+            prefix: prefix,
+            ruta: ruta,
+            data: data,
+            params: { skipSuccessMessage: true },
+        }
 
-        // const data = this.formEvaluacion.getRawValue()
-        // data.iDocenteId = this._ConstantesService.iDocenteId
-        // data.iActTipoId = EVALUACION
-        // data.iContenidoSemId = this.semanaEvaluacion.iContenidoSemId
-        // data.cEvaluacionArchivoAdjunto = JSON.stringify(this.filesUrl)
-
-        // let horaInicio = data.dFechaEvaluacionInico.toLocaleString('en-GB', {
-        //     timeZone: 'America/Lima',
-        // })
-        // let horaFin = data.dFechaEvaluacionFin.toLocaleString('en-GB', {
-        //     timeZone: 'America/Lima',
-        // })
-        // horaInicio = horaInicio.split(',')
-        // horaFin = horaFin.split(',')
-
-        // this.formEvaluacion.controls[
-        //     'dFechaEvaluacionPublicacion'
-        // ].setValue(horaInicio[0])
-        // this.formEvaluacion.controls['tHoraEvaluacionPublicacion'].setValue(
-        //     horaInicio[1].replace(' ', '')
-        // )
-        // this.formEvaluacion.controls['dFechaEvaluacionInico'].setValue(
-        //     horaInicio[0]
-        // )
-        // this.formEvaluacion.controls['tHoraEvaluacionInico'].setValue(
-        //     horaInicio[1].replace(' ', '')
-        // )
-        // this.formEvaluacion.controls['dFechaEvaluacionFin'].setValue(
-        //     horaFin[0]
-        // )
-        // this.formEvaluacion.controls['tHoraEvaluacionFin'].setValue(
-        //     horaFin[1].replace(' ', '')
-        // )
-
-        // data.dFechaEvaluacionPublicacion = horaInicio[0]
-        // data.tHoraEvaluacionPublicacion = horaInicio[1].replace(' ', '')
-
-        // data.dFechaEvaluacionInico = horaInicio[0]
-        // data.tHoraEvaluacionInico = horaInicio[1].replace(' ', '')
-
-        // data.dFechaEvaluacionFin = horaFin[0]
-        // data.tHoraEvaluacionFin = horaFin[1].replace(' ', '')
-
-        // // if (this.formEvaluacion.invalid) {
-        // //     this.formEvaluacion.markAllAsTouched()
-        // //     return
-        // // }
-
-        // this._evaluacionService
-        //     .guardarActualizarEvaluacion(data)
-        //     .subscribe({
-        //         next: (data) => {
-        //             this.formEvaluacion.patchValue({
-        //                 iProgActId: data.iProgActId,
-        //                 iEvaluacionId: data.iEvaluacionId,
-        //             })
-
-        //         },
-        //     })
+        this.getInformation(params, data.opcion)
     }
-    guardarPreguntas() {
+    openModalListPreguntas() {
         this._ConfirmationModalService.openConfirm({
             header: '¿Deseas agregar preguntas?',
             accept: () => {
@@ -375,6 +346,23 @@ export class FormEvaluacionComponent implements OnChanges, OnInit {
             },
             reject: () => {
                 this.accionBtn({ accion: 'close-modal', item: [] })
+            },
+        })
+    }
+
+    getInformation(params, accion) {
+        this._GeneralService.getGralPrefix(params).subscribe({
+            next: (response) => {
+                this.accionBtn({ accion, item: response?.data })
+            },
+            complete: () => {},
+            error: (error) => {
+                console.log(error)
+                this._MessageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: error,
+                })
             },
         })
     }

@@ -105,7 +105,7 @@
     >
         <tr [pSelectableRow]="rowData" [ngClass]="getClass(rowData, 'class')">
             @for (col of columnasSeleccionadas; track $index; let i = $index) {
-                <td>
+                <td (click)="selectCell(col, col.field, rowData)">
                     @if (col.type === 'expansion') {
                         <button
                             type="button"

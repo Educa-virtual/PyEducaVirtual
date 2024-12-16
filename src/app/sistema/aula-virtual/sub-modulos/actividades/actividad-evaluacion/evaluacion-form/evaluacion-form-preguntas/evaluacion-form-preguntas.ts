@@ -81,3 +81,62 @@ export const columnasPreguntasEvaluacion: IColumn[] = [
         text: 'center',
     },
 ]
+
+export const columnsBancoPreguntas: IColumn[] = [
+    {
+        field: '',
+        header: '',
+        type: 'expansion',
+        width: '1rem',
+        text: 'left',
+        text_header: 'left',
+    },
+    {
+        field: 'iEncabezado',
+        header: 'Encabezado',
+        type: 'text',
+        width: '1rem',
+        text: 'center',
+        text_header: 'center',
+    },
+    {
+        field: 'cPreguntaNoHTML',
+        header: 'Pregunta',
+        type: 'trim',
+        width: '15rem',
+        text: 'left',
+        text_header: 'left',
+    },
+    // {
+    //     type: 'text',
+    //     width: '1rem',
+    //     field: 'iPreguntaPeso',
+    //     header: 'Peso',
+    //     text_header: 'center',
+    //     text: 'center',
+    // },
+    {
+        type: 'text',
+        width: '2rem',
+        field: 'cTipoPregDescripcion',
+        header: 'Tipo de Pregunta',
+        text_header: 'center',
+        text: 'center',
+    },
+    {
+        type: 'text',
+        width: '2rem',
+        field: 'iTotalPreguntas',
+        header: '# Preguntas',
+        text_header: 'center',
+        text: 'center',
+    },
+    {
+        type: 'actions',
+        width: '3rem',
+        field: 'actions',
+        header: 'Acciones',
+        text_header: 'center',
+        text: 'center',
+    },
+]

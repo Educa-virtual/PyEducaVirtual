@@ -85,6 +85,9 @@ export class TabResultadosComponent implements OnInit {
     @Input() iActTopId: tipoActividadesKeys
     @Input() area: TabsKeys
     @Input() iCursoId
+    @Input() _iSilaboId
+    @Input() idDocCursoId
+    @Input() curso
 
     private GeneralService = inject(GeneralService)
     private _formBuilder = inject(FormBuilder)
@@ -119,7 +122,7 @@ export class TabResultadosComponent implements OnInit {
     //-------
     iEstudianteId: number
     estudianteSelect = null
-    public comentariosSelect
+    public comentariosSelect = []
     messages: Message[] | undefined
     tabla: string
     campos: string
@@ -250,38 +253,36 @@ export class TabResultadosComponent implements OnInit {
     }
     //exportar en pdf el reporte de notas finales:
     generarReporteDeLogrosPdf() {
-        const value = 1
-        this._aulaService.generarReporteDeLogrosPdf(value).subscribe(
-            (response) => {
-                console.log('Respuesta de Evaluacion:', response) // Para depuración
+        const value = this.iCursoId
+        this._aulaService
+            .generarReporteDeLogrosPdf({
+                iIeCursoId: value,
+            })
+            .subscribe(
+                (response) => {
+                    //console.log('Respuesta de Evaluacion:', response) // Para depuración
+                    // Crear un Blob con la respuesta del backend
+                    const blob = response as Blob // Asegúrate de que la respuesta sea un Blob
+                    const link = document.createElement('a')
+                    //console.log('imprimer01', blob)
+                    link.href = URL.createObjectURL(blob)
+                    link.download = 'Reporte_logros' + '.pdf' // Nombre del archivo descargado
+                    link.click()
+                }
+                // (error) => {
+                //     // En caso de error, se determina el mensaje de error a mostrar
+                //     const errorMessage =
+                //         error?.message ||
+                //         'No hay datos suficientes para exportar nivel de logro'
 
-                // Se muestra un mensaje indicando que la descarga de la matriz ha comenzado
-                // this.messageService.add({
-                //     severity: 'success',
-                //     detail: 'Comienza la descarga de la Matriz',
-                // })
-                // Crear un Blob con la respuesta del backend
-                const blob = response as Blob // Asegúrate de que la respuesta sea un Blob
-                const link = document.createElement('a')
-                console.log('imprimer01', blob)
-                link.href = URL.createObjectURL(blob)
-                link.download = 'Reporte_logros' + '.pdf' // Nombre del archivo descargado
-                link.click()
-            }
-            // (error) => {
-            //     // En caso de error, se determina el mensaje de error a mostrar
-            //     // const errorMessage =
-            //     //     error?.message ||
-            //     //     'No hay datos suficientes para descargar la Matriz'
-
-            //     // Se muestra un mensaje de error en el sistema
-            //     this.messageService.add({
-            //         severity: 'error',
-            //         summary: 'Error',
-            //         detail: 'Seleccione un estudiante:',
-            //     })
-            // }
-        )
+                //     // // Se muestra un mensaje de error en el sistema
+                //     // this.messageService.add({
+                //     //     severity: 'error',
+                //     //     summary: 'Error',
+                //     //     detail: 'revisar',
+                //     // })
+                // }
+            )
     }
     // generarReporteDeLogrosPdf() {
     //     console.log('hola exportar')
@@ -344,22 +345,34 @@ export class TabResultadosComponent implements OnInit {
         //this.mostrarDiv = !this.mostrarDiv // Cambia el estado de visibilida
         this.estudianteEv = estudiantes.nombrecompleto
         this.estudianteSeleccionado = estudiantes
+        console.log('Estudiante select', estudiantes)
         this._aulaService
             .obtenerResultados({
                 iEstudianteId: estudiantes.iEstudianteId,
-                idDocCursoId: estudiantes.iCursoId,
+                idDocCursoId: estudiantes.iIeCursoId,
             })
             .pipe(takeUntil(this.unsbscribe$))
             .subscribe({
                 next: (resp) => {
-                    this.messages = [
-                        {
-                            severity: 'info',
-                            detail: resp?.iEscalaCalifId,
-                        },
-                    ]
-                    this.comentariosSelect = resp
-                    console.log('obtener comentarior', resp)
+                    this.comentariosSelect = []
+                    console.log('obtener comentarios', resp)
+                    resp.forEach((element) => {
+                        element['foro'] = element['foro']
+                            ? JSON.parse(element['foro'])
+                            : []
+                    })
+                    //console.log(resp)
+                    //comentariosForo
+                    //comentariosTareas
+
+                    this.comentariosSelect = resp.length ? resp[0]['foro'] : []
+                    console.log(this.comentariosSelect)
+                    // this.messages = [
+                    //     {
+                    //         severity: 'info',
+                    //         detail: resp?.iEscalaCalifId,
+                    //     },
+                    // ]
                 },
             })
     }
@@ -386,19 +399,33 @@ export class TabResultadosComponent implements OnInit {
     }
     // muestra las notas del curso
     reporteNotasFinales: any[] = []
-
     obtenerReporteDenotasFinales() {
-        const userId = 1
+        console.log('idCurso:', this.iCursoId)
+        const value = this.iCursoId
         this._aulaService
-            .obtenerReporteFinalDeNotas(userId)
+            .obtenerReporteFinalDeNotas({
+                iIeCursoId: value,
+            })
             .subscribe((Data) => {
                 this.reporteNotasFinales = Data['data']
+                console.log(this.reporteNotasFinales)
                 // Mapear las calificaciones en letras a reporteNotasFinales
-                console.log('Mostrar notas finales', this.reporteNotasFinales)
+                //console.log('Mostrar notas finales', this.reporteNotasFinales)
                 this.calificacion
-                console.log(this.calificacion)
             })
     }
+    // obtenerReporteDenotasFinales() {
+    //     console.log('idCurso:',this.iCursoId)
+    //     const userId = 1
+    //     this._aulaService
+    //         .obtenerReporteFinalDeNotas(userId)
+    //         .subscribe((Data) => {
+    //             this.reporteNotasFinales = Data['data']
+    //             // Mapear las calificaciones en letras a reporteNotasFinales
+    //             //console.log('Mostrar notas finales', this.reporteNotasFinales)
+    //             this.calificacion
+    //         })
+    // }
     // Metodo para guardar la conclusión descriptiva final
     guardarConclusionDescriptiva() {
         const conclusionDescrp = this.conclusionDescrp.value

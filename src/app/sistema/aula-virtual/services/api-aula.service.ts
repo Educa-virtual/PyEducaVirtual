@@ -248,7 +248,10 @@ export class ApiAulaService {
     generarReporteDeLogrosPdf(data) {
         return this._http.get(
             `${this.baseUrlApi}/aula-virtual/Resultado/reporteDeLogros`,
-            data
+            {
+                params: data, // Enviar los datos como parámetros
+                responseType: 'blob', // Indicar que la respuesta será un archivo Blob
+            } // Asegúrate de que el responseType esté como 'blob'
         )
     }
     // generarPdfMatrizbyEvaluacionId(

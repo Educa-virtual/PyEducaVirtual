@@ -1,0 +1,30 @@
+<div class="">
+    <ng-content>
+        <div class="flex flex-wrap gap-2 justify-content-end">
+            <ng-content select="[icons]"></ng-content>
+            @for (item of actions; track $index) {
+                <button
+                    size="small"
+                    [rounded]="true"
+                    pButton
+                    pRipple
+                    [pTooltip]="item.labelTooltip"
+                    tooltipPosition="top"
+                    (click)="accionBtn(item.accion, [])"
+                    [ngClass]="item.class"
+                >
+                    @if (item.icon | isIconType) {
+                        <app-icon
+                            [name]="item.icon.name"
+                            [color]="item.icon.color"
+                            [size]="item.icon.size"
+                        ></app-icon>
+                    } @else {
+                        <i class="{{ item.icon }}"></i>
+                    }
+                    &nbsp;{{ item.text }}
+                </button>
+            }
+        </div>
+    </ng-content>
+</div>

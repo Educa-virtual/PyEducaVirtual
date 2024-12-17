@@ -86,7 +86,7 @@ export class RubricaCalificarComponent implements OnInit, OnDestroy {
                 type: 'text',
                 width: '5rem',
                 field: 'cNivelEvaDescripcion' + index,
-                header: `${nivel.cNivelEvaNombre} - ${nivel.iNivelEvaValor}`,
+                header: `${nivel.cNivelEvaNombre}(${nivel.iNivelEvaValor})`,
                 text_header: 'left',
                 text: 'left',
             })

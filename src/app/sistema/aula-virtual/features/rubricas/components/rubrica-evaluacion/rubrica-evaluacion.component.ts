@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core'
+import { Component, EventEmitter, inject, OnDestroy, OnInit, Output } from '@angular/core'
 import { AccordionModule } from 'primeng/accordion'
 import { CommonModule } from '@angular/common'
 import { ActivatedRoute } from '@angular/router'
@@ -34,6 +34,8 @@ export class RubricaEvaluacionComponent implements OnInit, OnDestroy {
     }
 
     data
+
+    @Output() clickNameRubrica = new EventEmitter()
 
     _unsubscribe$ = new Subject<boolean>()
 

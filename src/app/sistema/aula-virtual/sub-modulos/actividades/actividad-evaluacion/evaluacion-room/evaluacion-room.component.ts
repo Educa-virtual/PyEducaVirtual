@@ -149,6 +149,17 @@ export class EvaluacionRoomComponent implements OnInit, OnDestroy {
         this.obtenerRubricas()
     }
 
+    dialogRubricaInfo = {
+        visible: false,
+        header: undefined,
+    }
+
+    showRubrica(data){
+        this.dialogRubricaInfo.visible = true
+        this.dialogRubricaInfo.header = data
+
+    }
+
     private unsbscribe$ = new Subject<boolean>()
     public iPerfilId: number
     public evaluacion

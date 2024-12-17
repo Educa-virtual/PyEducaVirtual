@@ -160,20 +160,32 @@
                                         accionRubrica($event)
                                     "
                                 ></app-rubricas>
-
-                                
                             </div>
                         </div>
                         <div class="">
-                            <app-rubrica-evaluacion class="w-full">
+                            <app-rubrica-evaluacion
+                                (clickNameRubrica)="showRubrica($event)"
+                                class="w-full"
+                            >
                             </app-rubrica-evaluacion>
                         </div>
                         <div class="">
-                            <app-rubrica-calificar class="w-full">
-                            </app-rubrica-calificar>
+                            <p-dialog
+                                [modal]="true"
+                                [header]="'Rubrica - '+ dialogRubricaInfo.header"
+                                [(visible)]="dialogRubricaInfo.visible"
+                                [style]="{ width: '75rem' }"
+                                [breakpoints]="{
+                                    '1199px': '75vw',
+                                    '575px': '90vw',
+                                }"
+                                [maximizable]="true"
+                            >
+                                <app-rubrica-calificar class="w-full">
+                                </app-rubrica-calificar>
+                            </p-dialog>
                         </div>
                     </article>
-                    
 
                     <article class="card">
                         <h2>Recursos</h2>

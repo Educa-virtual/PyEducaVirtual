@@ -69,7 +69,7 @@
     <ng-template pTemplate="header" let-columns>
         <tr class="text-uppercase">
             @for (col of columnasSeleccionadas; track $index) {
-                <th [pSortableColumn]="col.field" [style.width]="col.width">
+                <th [pSortableColumn]="col.field" [style.width]="col.width" [pSortableColumnDisabled]="enableCellSelection">
                     @switch (col.type) {
                         @case ('actions') {
                             <div [style.text-align]="col.text_header">
@@ -88,7 +88,9 @@
                         @default {
                             <div [style.text-align]="col.text_header" class="">
                                 <span> {{ col.header }}</span>
-                                <p-sortIcon [field]="col.header"></p-sortIcon>
+                                @if (!enableCellSelection) {
+                                    <p-sortIcon [field]="col.header"></p-sortIcon>
+                                }
                             </div>
                         }
                     }
@@ -105,7 +107,10 @@
     >
         <tr [pSelectableRow]="rowData" [ngClass]="getClass(rowData, 'class')">
             @for (col of columnasSeleccionadas; track $index; let i = $index) {
-                <td (click)="selectCell(col, col.field, rowData)" [class.selected]="isCellSelected(rowData.id, col.field)">
+                <td (click)="enableCellSelection && selectCell(col, col.field, rowData)" [ngClass]="{
+                    'SELECTED-CELL': enableCellSelection && isCellSelected(rowData.values[col.field]?.iNivelEvaId),
+                    'cursor-pointer': enableCellSelection
+                }">
                     @if (col.type === 'expansion') {
                         <button
                             type="button"

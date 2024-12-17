@@ -112,11 +112,12 @@ export class RubricaFormComponent implements OnInit, OnDestroy {
 
 
             this._apiEvaluacionesServ
-            .guardarActualizarEvaluacion({
-                iEvaluacionId: this.route.queryParams['_value'].iEvaluacionId,
-                 iInstrumentoId: data.iInstrumentoId,
-                opcion: 'GUARDARxProgActxiEvaluacionId'
-            })
+            .actualizarEvaluacion(JSON.stringify({
+                data: JSON.stringify({
+                    iInstrumentoId: data.iInstrumentoId,
+                }),
+                iEvaluacionId: this.route.queryParams['_value'].iEvaluacionId
+            }))
             .pipe(takeUntil(this._unsubscribe$))
             .subscribe({
                 next: (data) => {

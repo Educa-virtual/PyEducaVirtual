@@ -123,6 +123,8 @@ export class TabResultadosComponent implements OnInit {
     iEstudianteId: number
     estudianteSelect = null
     public comentariosSelect = []
+    public comentarioSelectTareas = []
+    public comentarioSelectEvaluaciones = []
     messages: Message[] | undefined
     tabla: string
     campos: string
@@ -223,7 +225,6 @@ export class TabResultadosComponent implements OnInit {
     // Inicializamos
     ngOnInit() {
         this.obtenerIdPerfil()
-        this.getEstudiantesMatricula()
         this.mostrarCalificacion()
         this.obtenerReporteDenotasFinales()
         this.habilitarCalificacion()
@@ -284,55 +285,6 @@ export class TabResultadosComponent implements OnInit {
                 // }
             )
     }
-    // generarReporteDeLogrosPdf() {
-    //     console.log('hola exportar')
-    //     //, area: IArea
-    //     //iEvaluacionId = this._iEvaluacionId
-    //     // Obtén las áreas desde el servicio
-    //     // const areas = this.compartirFormularioEvaluacionService.getAreas()
-    //     // console.log('Áreas obtenidas desde el servicio:', areas)
-
-    // Convierte las áreas en una cadena JSON
-    // const encodedAreas = JSON.stringify([area]) // Solo convertir a JSON string, no codificar
-    // console.log('Cadena JSON de las áreas:', encodedAreas)
-    //     const value = 1
-    //     this._aulaService
-    //         .generarReporteDeLogrosPdf(value)
-    //         .subscribe(
-    //             (response) => {
-    //                 console.log('Respuesta de Evaluacion:', response) // Para depuración
-
-    //                 // Se muestra un mensaje indicando que la descarga de la matriz ha comenzado
-    //                 this.messageService.add({
-    //                     severity: 'success',
-    //                     detail: 'Comienza la descarga de la Matriz',
-    //                 })
-
-    //                 // Se crea un enlace de descarga para el archivo PDF generado
-    //                 // const blob = response as Blob // Asegúrate de que la respuesta sea un Blob
-    //                 // const link = document.createElement('a')
-    //                 // link.href = URL.createObjectURL(blob)
-    //                 // link.download =
-    //                 //     'matriz_evaluacion_' +
-    //                 //     area.nombre.toLocaleLowerCase() +
-    //                 //     '.pdf' // Nombre del archivo descargado
-    //                 // link.click()
-    //             },
-    //             (error) => {
-    //                 // En caso de error, se determina el mensaje de error a mostrar
-    //                 const errorMessage =
-    //                     error?.message ||
-    //                     'No hay datos suficientes para descargar la Matriz'
-
-    //                 // Se muestra un mensaje de error en el sistema
-    //                 this.messageService.add({
-    //                     severity: 'error',
-    //                     summary: 'Error',
-    //                     detail: 'Seleccione un estudiante:',
-    //                 })
-    //             }
-    //         )
-    //}
     //obtener los perfiles
     obtenerIdPerfil() {
         this.iEstudianteId = this._constantesService.iEstudianteId
@@ -361,12 +313,37 @@ export class TabResultadosComponent implements OnInit {
                             ? JSON.parse(element['foro'])
                             : []
                     })
+                    this.comentariosSelect = resp.length ? resp[0]['foro'] : []
+                    console.log('Mis foros', this.comentariosSelect)
+
+                    this.comentarioSelectTareas = []
+                    resp.forEach((element) => {
+                        element['tarea'] = element['tarea']
+                            ? JSON.parse(element['tarea'])
+                            : []
+                    })
+                    this.comentarioSelectTareas = resp.length
+                        ? resp[0]['tarea']
+                        : []
+                    console.log('Mis tareas', this.comentarioSelectTareas)
+
+                    this.comentarioSelectEvaluaciones = []
+                    resp.forEach((element) => {
+                        element['evaluacion'] = element['evaluacion']
+                            ? JSON.parse(element['evaluacion'])
+                            : []
+                    })
+                    this.comentarioSelectEvaluaciones = resp.length
+                        ? resp[0]['evaluacion']
+                        : []
+                    console.log(
+                        'Mis evaluaciones',
+                        this.comentarioSelectEvaluaciones
+                    )
                     //console.log(resp)
                     //comentariosForo
                     //comentariosTareas
 
-                    this.comentariosSelect = resp.length ? resp[0]['foro'] : []
-                    console.log(this.comentariosSelect)
                     // this.messages = [
                     //     {
                     //         severity: 'info',
@@ -414,18 +391,6 @@ export class TabResultadosComponent implements OnInit {
                 this.calificacion
             })
     }
-    // obtenerReporteDenotasFinales() {
-    //     console.log('idCurso:',this.iCursoId)
-    //     const userId = 1
-    //     this._aulaService
-    //         .obtenerReporteFinalDeNotas(userId)
-    //         .subscribe((Data) => {
-    //             this.reporteNotasFinales = Data['data']
-    //             // Mapear las calificaciones en letras a reporteNotasFinales
-    //             //console.log('Mostrar notas finales', this.reporteNotasFinales)
-    //             this.calificacion
-    //         })
-    // }
     // Metodo para guardar la conclusión descriptiva final
     guardarConclusionDescriptiva() {
         const conclusionDescrp = this.conclusionDescrp.value
@@ -617,36 +582,5 @@ export class TabResultadosComponent implements OnInit {
             })
             //console.log('Mostrar fechas', this.unidades)
         })
-    }
-    // mostrar los estudiantes
-    getInformation(params) {
-        this.GeneralService.getGralPrefix(params).subscribe({
-            next: (response) => {
-                this.estudiantes = response.data
-                //console.log('lista de estudiante', this.estudiantes)
-            },
-            complete: () => {},
-            error: (error) => {
-                console.log(error)
-            },
-        })
-    }
-    getEstudiantesMatricula() {
-        const params = {
-            petition: 'post',
-            group: 'aula-virtual',
-            prefix: 'matricula',
-            ruta: 'list',
-            data: {
-                opcion: 'CONSULTAR-ESTUDIANTESxiSemAcadIdxiYAcadIdxiCurrId',
-                iSemAcadId:
-                    '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-                iYAcadId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-                iCurrId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-            },
-            params: { skipSuccessMessage: true },
-        }
-
-        this.getInformation(params)
     }
 }

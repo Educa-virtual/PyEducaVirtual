@@ -72,7 +72,7 @@
                             <p-orderList
                                 class="listAlumno"
                                 [value]="reporteNotasFinales"
-                                filterBy="nombrecompleto"
+                                filterBy="completoalumno"
                                 filterPlaceholder="Buscar...."
                             >
                                 <ng-template
@@ -215,6 +215,12 @@
                                                     'max-height': '400px',
                                                 }"
                                                 sortMode="multiple"
+                                                [paginator]="true"
+                                                [rows]="5"
+                                                [rowsPerPageOptions]="[
+                                                    5, 10, 20,
+                                                ]"
+                                                sortMode="multiple"
                                             >
                                                 <ng-template pTemplate="header">
                                                     <tr>
@@ -297,13 +303,19 @@
                                     <p-accordionTab header="Actividad Tarea">
                                         <div class="card">
                                             <p-table
-                                                [value]="comentariosSelect"
+                                                [value]="comentarioSelectTareas"
                                                 [tableStyle]="{
                                                     'min-width': '60rem',
                                                 }"
                                                 [tableStyle]="{
                                                     'max-height': '400px',
                                                 }"
+                                                sortMode="multiple"
+                                                [paginator]="true"
+                                                [rows]="5"
+                                                [rowsPerPageOptions]="[
+                                                    5, 10, 20,
+                                                ]"
                                                 sortMode="multiple"
                                             >
                                                 <ng-template pTemplate="header">
@@ -363,18 +375,18 @@
 
                                                         <td>
                                                             {{
-                                                                comentario?.cForoTitulo
+                                                                comentario?.cProgActTituloLeccion
                                                             }}
                                                         </td>
                                                         <td>
                                                             {{
-                                                                comentario?.dtForoPublicacion
+                                                                comentario?.dtProgActInicio
                                                             }}
                                                         </td>
                                                         <td>
                                                             {{
                                                                 comentario
-                                                                    ? comentario.cForoRptaDocente
+                                                                    ? comentario.cTareaEstudianteComentarioDocente
                                                                     : (''
                                                                       | removeHTML)
                                                             }}
@@ -389,13 +401,21 @@
                                     >
                                         <div class="card">
                                             <p-table
-                                                [value]="comentariosSelect"
+                                                [value]="
+                                                    comentarioSelectEvaluaciones
+                                                "
                                                 [tableStyle]="{
                                                     'min-width': '60rem',
                                                 }"
                                                 [tableStyle]="{
                                                     'max-height': '400px',
                                                 }"
+                                                sortMode="multiple"
+                                                [paginator]="true"
+                                                [rows]="5"
+                                                [rowsPerPageOptions]="[
+                                                    5, 10, 20,
+                                                ]"
                                                 sortMode="multiple"
                                             >
                                                 <ng-template pTemplate="header">
@@ -455,18 +475,18 @@
 
                                                         <td>
                                                             {{
-                                                                comentario?.cForoTitulo
+                                                                comentario?.cProgActTituloLeccion
                                                             }}
                                                         </td>
                                                         <td>
                                                             {{
-                                                                comentario?.dtForoPublicacion
+                                                                comentario?.dtProgActInicio
                                                             }}
                                                         </td>
                                                         <td>
                                                             {{
                                                                 comentario
-                                                                    ? comentario.cForoRptaDocente
+                                                                    ? comentario.cConclusionDescriptiva
                                                                     : (''
                                                                       | removeHTML)
                                                             }}

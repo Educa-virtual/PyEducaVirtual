@@ -13,7 +13,8 @@ import {
     TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component'
 import { PrimengModule } from '@/app/primeng.module'
-import { StepsModule } from 'primeng/steps'
+//import { StepsModule } from 'primeng/steps'
+import { StepperModule } from 'primeng/stepper'
 import { DialogModule } from 'primeng/dialog'
 import { InputSwitchModule } from 'primeng/inputswitch'
 import { DropdownModule } from 'primeng/dropdown'
@@ -34,7 +35,8 @@ import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmatio
     standalone: true,
     imports: [
         ReactiveFormsModule,
-        StepsModule,
+        //StepsModule,
+        StepperModule,
         ContainerPageComponent,
         TablePrimengComponent,
         DialogModule,
@@ -258,6 +260,25 @@ export class ConfigAmbienteComponent implements OnInit {
     }
 
     // eventos de record set
+    confirm() {
+        this._confirmService.openConfiSave({
+            message: '¿Estás seguro de que deseas guardar y continuar?',
+            header: 'Advertencia de autoguardado',
+            icon: 'pi pi-exclamation-triangle',
+            accept: () => {
+                // Acción para eliminar el registro
+                this.router.navigate(['/gestion-institucional/seccion'])
+            },
+            reject: () => {
+                // Mensaje de cancelación (opcional)
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Cancelado',
+                    detail: 'Acción cancelada',
+                })
+            },
+        })
+    }
 
     accionBtnItemTable({ accion, item }) {
         if (accion === 'editar') {
@@ -525,10 +546,10 @@ export class ConfigAmbienteComponent implements OnInit {
         //     text: 'left',
         // },
         {
-            type: 'text',
+            type: 'item',
             width: '5rem',
-            field: 'iIieeAmbienteId',
-            header: 'Cod',
+            field: 'item',
+            header: 'N°',
             text_header: 'center',
             text: 'center',
         },

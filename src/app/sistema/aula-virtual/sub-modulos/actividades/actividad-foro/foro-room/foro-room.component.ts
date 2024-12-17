@@ -298,13 +298,19 @@ export class ForoRoomComponent implements OnInit {
     sendComment() {
         const perfil = (this.iPerfilId = this._constantesService.iPerfilId)
         if (perfil == 8) {
-            this.iEstudianteId = this._constantesService.iEstudianteId
+            this.iEstudianteId = Number(this._constantesService.iEstudianteId)
+            const value = this.foroFormComntAl.value
+            const comentarioEstudiante = value.cForoRptaRespuesta
+            const comentarioEstudianteLimpio =
+                this.limpiarHTML(comentarioEstudiante)
+            value.cForoRptaRespuesta = comentarioEstudianteLimpio
             const comment = {
                 ...this.foroFormComntAl.value,
                 iForoId: this.ixActivadadId,
                 iEstudianteId: this.iEstudianteId,
             }
             console.log('comentarios: ', comment)
+
             this._aulaService.guardarRespuesta(comment).subscribe({
                 next: (resp: any) => {
                     console.log('respuesta completa', resp)
@@ -324,6 +330,7 @@ export class ForoRoomComponent implements OnInit {
                     console.error('Comentario:', error)
                 },
             })
+            this.foroFormComntAl.reset()
         } else {
             this.iDocenteId = this._constantesService.iDocenteId
             const comment = {

@@ -343,7 +343,7 @@ export class TabResultadosComponent implements OnInit {
     // Obtenemos los datos de estudiante que el docente hico su retroalimentación por alumno
     obtenerComnt(estudiantes) {
         //this.mostrarDiv = !this.mostrarDiv // Cambia el estado de visibilida
-        this.estudianteEv = estudiantes.nombrecompleto
+        this.estudianteEv = estudiantes.completoalumno
         this.estudianteSeleccionado = estudiantes
         console.log('Estudiante select', estudiantes)
         this._aulaService

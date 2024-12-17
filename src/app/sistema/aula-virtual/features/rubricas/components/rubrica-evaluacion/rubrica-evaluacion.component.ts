@@ -61,7 +61,7 @@ export class RubricaEvaluacionComponent implements OnInit, OnDestroy {
                 .obtenerRubrica(this.params)
                 .pipe(takeUntil(this._unsubscribe$))
                 .subscribe({
-                    next: (data) => {
+                    next: () => {
                         this.data = Array.isArray(this._evaluacionApiService.rubrica) ? this._evaluacionApiService.rubrica[0] : undefined
                         console.log(this.data)
                     },

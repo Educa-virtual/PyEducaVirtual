@@ -5,7 +5,7 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-evaluaciones.service'
 import { Subject, takeUntil } from 'rxjs'
-import { Router } from '@angular/router'
+import { ActivatedRoute, Router } from '@angular/router'
 
 @Component({
     selector: 'app-rubrica-form',
@@ -27,13 +27,15 @@ export class RubricaFormComponent implements OnInit, OnDestroy {
     private _unsubscribe$ = new Subject<boolean>()
     public _config = inject(DynamicDialogConfig)
 
+    public route = inject(ActivatedRoute)
+
     private _params = {
         iCursoId: null,
         idDocCursoId: null,
     }
     constructor(
         private _rubricaFormService: RubricaFormService,
-        private router: Router
+        private router: Router,
     ) {}
 
     ngOnInit() {
@@ -99,7 +101,30 @@ export class RubricaFormComponent implements OnInit, OnDestroy {
             this.rubricaForm.markAllAsTouched()
             return
         }
+        
         const data = this.rubricaForm.value
+
+        
+        if(this.route.queryParams['_value']?.iEvaluacionId){
+            console.log('Adjuntando rubrica')
+            console.log(this.route.queryParams['_value'].iEvaluacionId)
+
+
+
+            this._apiEvaluacionesServ
+            .actualizarEvaluacion(JSON.stringify({
+                data: JSON.stringify({
+                    iInstrumentoId: data.iInstrumentoId,
+                }),
+                iEvaluacionId: this.route.queryParams['_value'].iEvaluacionId
+            }))
+            .pipe(takeUntil(this._unsubscribe$))
+            .subscribe({
+                next: (data) => {
+                },
+            })
+
+        }
 
         this.router.navigate([], {
             queryParams: {

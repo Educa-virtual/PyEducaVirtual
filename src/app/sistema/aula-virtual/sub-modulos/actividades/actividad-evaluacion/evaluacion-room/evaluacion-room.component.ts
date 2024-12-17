@@ -36,7 +36,7 @@ import { EvaluacionEstudiantesComponent } from '../evaluacion-estudiantes/evalua
 import { RubricasComponent } from '@/app/sistema/aula-virtual/features/rubricas/rubricas.component'
 import { ActividadListaComponent } from '../../components/actividad-lista/actividad-lista.component'
 import { RubricaEvaluacionComponent } from '@/app/sistema/aula-virtual/features/rubricas/components/rubrica-evaluacion/rubrica-evaluacion.component'
-// import { RubricaCalificarComponent } from '@/app/sistema/aula-virtual/features/rubricas/components/rubrica-calificar/rubrica-calificar.component'
+import { RubricaCalificarComponent } from '@/app/sistema/aula-virtual/features/rubricas/components/rubrica-calificar/rubrica-calificar.component'
 @Component({
     selector: 'app-evaluacion-room',
     standalone: true,
@@ -54,11 +54,13 @@ import { RubricaEvaluacionComponent } from '@/app/sistema/aula-virtual/features/
         EvaluacionEstudiantesComponent,
         EvaluacionFinalizadaComponent,
         ActividadListaComponent,
-        // RubricaCalificarComponent,
+        RubricaCalificarComponent,
     ],
     templateUrl: './evaluacion-room.component.html',
     styleUrl: './evaluacion-room.component.scss',
     providers: [
+        ApiEvaluacionesService,
+
         provideIcons({
             matHideSource,
             matCalendarMonth,

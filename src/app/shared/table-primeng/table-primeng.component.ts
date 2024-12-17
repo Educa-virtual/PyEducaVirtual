@@ -275,11 +275,23 @@ export class TablePrimengComponent implements OnChanges, OnInit {
 
     selectCell(col: any, field: string, row): void {
         this.selectedColumn.emit([col, row])
+        // Si la celda seleccionada es la misma, la deseleccionamos
+        if (this.selectedCells[row] === field) {
+            delete this.selectedCells[row]
+        } else {
+            this.selectedCells[row] = field // Asignar nueva celda seleccionada
+        }
     }
 
     selectRow(row: any, field: string): void {
         this.selectedColumn.emit(row)
         console.log(field)
+    }
+
+    selectedCells: { [rowId: string]: string } = {};
+
+    isCellSelected(rowId: any, field: string) {
+        return this.selectedCells[rowId] === field
     }
 
     openFile(item) {

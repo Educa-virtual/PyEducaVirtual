@@ -14,6 +14,7 @@ import { EmptySectionComponent } from '../../../../../../shared/components/empty
 import { RecursosListaComponent } from '../../../../../../shared/components/recursos-lista/recursos-lista.component'
 //import { interval, Subscription } from 'rxjs';
 import { AccordionModule } from 'primeng/accordion'
+import { RubricasModule } from '../../../../features/rubricas/rubricas.module'
 
 @Component({
     selector: 'app-evaluacion-estudiantes',
@@ -28,6 +29,7 @@ import { AccordionModule } from 'primeng/accordion'
         EmptySectionComponent,
         RecursosListaComponent,
         AccordionModule,
+        RubricasModule,
     ],
     templateUrl: './evaluacion-estudiantes.component.html',
     styleUrl: './evaluacion-estudiantes.component.scss',
@@ -49,6 +51,10 @@ export class EvaluacionEstudiantesComponent implements OnChanges {
     display: boolean
     timeRemaining: number
     cTareaEstudianteComentarioDocente: any
+    selectedEstudiante: any
+    toggleSection: any
+    sections: any
+    tabs: any
 
     ngOnChanges(changes) {
         if (changes.evaluacion?.currentValue) {

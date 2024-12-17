@@ -7,7 +7,16 @@
     [tarea]="tarea"
 ></app-tarea-form>
 <!-- Contenedor para los botones de acción al final del formulario -->
-<div class="flex justify-content-end gap-2 pt-3">
+<div
+    class="sticky-buttons flex justify-content-end gap-2 pt-3"
+    style="
+        position: sticky;
+        bottom: 0;
+        background-color: #fff;
+        padding: 1rem;
+        border-top: 1px solid #ddd;
+    "
+>
     <button
         pButton
         pRipple

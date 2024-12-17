@@ -10,138 +10,119 @@
                         </span>
                     </div>
                 </ng-template>
+                <app-toolbar-primeng
+                    [title]="
+                        'Evaluación Formativa: ' +
+                        (evaluacion?.cEvaluacionTitulo || '')
+                    "
+                >
+                </app-toolbar-primeng>
                 <div class="grid">
-                    <div class="col-6">
-                        <div class="grid mb-4">
-                            <div
-                                class="col-12 md:col-6 flex flex-column gap-2 align-items-start"
+                    <!-- Inicio de Evaluación -->
+                    <div class="col-12 md:col-4">
+                        <span
+                            class="font-bold text-xl flex align-items-center gap-2"
+                        >
+                            <app-icon
+                                name="matCalendarMonth"
+                                class="text-primary"
+                                size="sm"
+                            ></app-icon>
+                            Inicio de Evaluación
+                        </span>
+                        <p class="flex gap-2 flex-wrap mt-2">
+                            {{
+                                evaluacion?.dtEvaluacionInicio
+                                    | date: "EEEE, d 'de' MMMM 'de' yyyy"
+                            }}
+                            <span class="flex align-items-center gap-2">
+                                <app-icon
+                                    name="matAccessTime"
+                                    class="text-primary"
+                                    size="sm"
+                                ></app-icon>
+                                <span class="font-bold">Hora Límite:</span>
+                                {{
+                                    evaluacion?.dtEvaluacionInicio
+                                        | date: 'h:mm a'
+                                }}
+                            </span>
+                        </p>
+                    </div>
+
+                    <!-- Tipo de Evaluación -->
+                    <div class="col-12 md:col-4">
+                        <div class="flex flex-column gap-2">
+                            <span class="font-bold text-xl"
+                                >Tipo Evaluación</span
                             >
-                                <span class="font-bold text-xl flex gap-2">
-                                    <app-icon
-                                        name="matCalendarMonth"
-                                        class="text-primary"
-                                        size="sm"
-                                    ></app-icon>
-                                    Fecha Publicación</span
-                                >
-                                <p>
-                                    {{
-                                        evaluacion?.dtEvaluacionPublicacion
-                                            | date
-                                                : "EEEE, d 'de' MMMM 'de' yyyy"
-                                    }}
-
-                                    {{
-                                        evaluacion?.dtEvaluacionPublicacion
-                                            | date: 'h:mm a'
-                                    }}
-                                </p>
-                            </div>
-                            <div class="col-12 md:col-6 gap-2 flex flex-column">
-                                <span class="font-bold text-xl"
-                                    >Tipo Evaluación</span
-                                >
-                                <span>{{ evaluacion?.cTipoEvalNombre }}</span>
-                            </div>
-                        </div>
-                        <div class="grid mb-4">
-                            <div class="col-12 md:col-6 flex flex-column gap-2">
-                                <span class="font-bold text-xl flex gap-2">
-                                    <app-icon
-                                        name="matCalendarMonth"
-                                        class="text-primary"
-                                        size="sm"
-                                    ></app-icon>
-                                    Inicio de Evaluación</span
-                                >
-                                <p class="flex gap-2 flex-wrap">
-                                    {{
-                                        evaluacion?.dtEvaluacionInicio
-                                            | date
-                                                : "EEEE, d 'de' MMMM 'de' yyyy"
-                                    }}
-
-                                    <span class="flex gap-2">
-                                        <app-icon
-                                            name="matAccessTime"
-                                            class="text-primary"
-                                            size="sm"
-                                        ></app-icon>
-                                        <span class="font-bold"
-                                            >Hora Limite:</span
-                                        >
-                                        {{
-                                            evaluacion?.dtEvaluacionInicio
-                                                | date: 'h:mm a'
-                                        }}
-                                    </span>
-                                </p>
-                            </div>
-                            <div class="col-12 md:col-6 flex flex-column gap-2">
-                                <span class="font-bold text-xl flex gap-2">
-                                    <app-icon
-                                        name="matCalendarMonth"
-                                        class="text-primary"
-                                        size="sm"
-                                    ></app-icon>
-                                    Cierre de Evaluación</span
-                                >
-                                <p class="flex gap-2 flex-wrap">
-                                    {{
-                                        evaluacion?.dtEvaluacionFin
-                                            | date
-                                                : "EEEE, d 'de' MMMM 'de' yyyy"
-                                    }}
-
-                                    <span class="flex gap-2">
-                                        <app-icon
-                                            name="matAccessTime"
-                                            class="text-primary"
-                                            size="sm"
-                                        ></app-icon>
-                                        <span class="font-bold"
-                                            >Hora Limite:</span
-                                        >
-                                        {{
-                                            evaluacion?.dtEvaluacionFin
-                                                | date: 'h:mm a'
-                                        }}
-                                    </span>
-                                </p>
-                            </div>
-                        </div>
-
-                        <div class="grid mb-4">
-                            <div
-                                class="col-12 md:col-6 flex flex-column gap-2 align-items-start"
-                            >
-                                <span class="font-bold text-xl"
-                                    >Total de Preguntas
-                                </span>
-                                <span>{{
-                                    evaluacion?.iEvaluacionNroPreguntas ?? 0
-                                }}</span>
-                            </div>
+                            <span>{{ evaluacion?.cTipoEvalNombre }}</span>
                         </div>
                     </div>
 
-                    <div class="flex gap-2 flex-wrap align-items-center mb-4">
-                        <app-icon
-                            name="matMessage"
-                            color="text-primary"
-                            size="sm"
-                        />
-                        <h3 class="text-lg m-0">Instrucciones</h3>
+                    <!-- Instrucciones -->
+                    <div class="col-12 md:col-4">
+                        <div class="flex align-items-center gap-2 mb-2">
+                            <app-icon
+                                name="matMessage"
+                                color="text-primary"
+                                size="sm"
+                            ></app-icon>
+                            <h3 class="text-lg m-0">Instrucciones</h3>
+                        </div>
+                        <div class="bg-blue-100 p-3 border-round min-h-10rem">
+                            <p-editor
+                                appEditorOnlyView
+                                class="quill-only-view"
+                                [(ngModel)]="cEvaluacionInstrucciones"
+                            ></p-editor>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Segunda Fila -->
+                <div class="grid">
+                    <!-- Cierre de Evaluación -->
+                    <div class="col-12 md:col-4">
+                        <span
+                            class="font-bold text-xl flex align-items-center gap-2"
+                        >
+                            <app-icon
+                                name="matCalendarMonth"
+                                class="text-primary"
+                                size="sm"
+                            ></app-icon>
+                            Cierre de Evaluación
+                        </span>
+                        <p class="flex gap-2 flex-wrap mt-2">
+                            {{
+                                evaluacion?.dtEvaluacionFin
+                                    | date: "EEEE, d 'de' MMMM 'de' yyyy"
+                            }}
+                            <span class="flex align-items-center gap-2">
+                                <app-icon
+                                    name="matAccessTime"
+                                    class="text-primary"
+                                    size="sm"
+                                ></app-icon>
+                                <span class="font-bold">Hora Límite:</span>
+                                {{
+                                    evaluacion?.dtEvaluacionFin | date: 'h:mm a'
+                                }}
+                            </span>
+                        </p>
                     </div>
 
-                    <div
-                        class="bg-blue-100 p-1 border-round min-h-10rem flex gap-2 flex-column"
-                    >
-                        <p-editor
-                            appEditorOnlyView
-                            class="quill-only-view"
-                            [(ngModel)]="cEvaluacionInstrucciones"
-                        ></p-editor>
+                    <!-- Total de Preguntas -->
+                    <div class="col-12 md:col-4">
+                        <div class="flex flex-column gap-2">
+                            <span class="font-bold text-xl"
+                                >Total de Preguntas</span
+                            >
+                            <span>{{
+                                evaluacion?.iEvaluacionNroPreguntas ?? 0
+                            }}</span>
+                        </div>
                     </div>
                 </div>
 
@@ -172,7 +153,9 @@
                         <div class="">
                             <p-dialog
                                 [modal]="true"
-                                [header]="'Rubrica - '+ dialogRubricaInfo.header"
+                                [header]="
+                                    'Rubrica - ' + dialogRubricaInfo.header
+                                "
                                 [(visible)]="dialogRubricaInfo.visible"
                                 [style]="{ width: '75rem' }"
                                 [breakpoints]="{

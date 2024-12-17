@@ -37,6 +37,7 @@ import { RubricasComponent } from '@/app/sistema/aula-virtual/features/rubricas/
 import { ActividadListaComponent } from '../../components/actividad-lista/actividad-lista.component'
 import { RubricaEvaluacionComponent } from '@/app/sistema/aula-virtual/features/rubricas/components/rubrica-evaluacion/rubrica-evaluacion.component'
 import { RubricaCalificarComponent } from '@/app/sistema/aula-virtual/features/rubricas/components/rubrica-calificar/rubrica-calificar.component'
+import { ToolbarPrimengComponent } from '../../../../../../shared/toolbar-primeng/toolbar-primeng.component'
 @Component({
     selector: 'app-evaluacion-room',
     standalone: true,
@@ -55,6 +56,7 @@ import { RubricaCalificarComponent } from '@/app/sistema/aula-virtual/features/r
         EvaluacionFinalizadaComponent,
         ActividadListaComponent,
         RubricaCalificarComponent,
+        ToolbarPrimengComponent,
     ],
     templateUrl: './evaluacion-room.component.html',
     styleUrl: './evaluacion-room.component.scss',
@@ -154,10 +156,9 @@ export class EvaluacionRoomComponent implements OnInit, OnDestroy {
         header: undefined,
     }
 
-    showRubrica(data){
+    showRubrica(data) {
         this.dialogRubricaInfo.visible = true
         this.dialogRubricaInfo.header = data
-
     }
 
     private unsbscribe$ = new Subject<boolean>()

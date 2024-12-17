@@ -4,18 +4,18 @@
     (accionBtnItem)="accionBtnItemTable($event)"
 >
     <div class="card">
-        <p-steps [model]="items" [readonly]="false"></p-steps>
+        <p-steps [model]="items" [readonly]="true"></p-steps>
     </div>
 </app-container-page>
 
 <!--Bloque para estructura-->
 <p-splitter
     [panelSizes]="[30, 70]"
-    [style]="{ height: '90%' }"
+    [style]="{ height: '400px' }"
     styleClass="mb-5"
 >
     <ng-template pTemplate>
-        <div class="col flex align-items-center">
+        <div class="col flex align-items-top">
             <div
                 class="card flex flex-column align-items-left justify-content-top"
             >
@@ -24,10 +24,12 @@
                 </div>
                 <!-- <p-tree [value]="files" selectionMode="checkbox" class="w-full md:w-30rem" [(selection)]="selectedFiles"
                     (onNodeSelect)="nodeSelect($event)" (onNodeUnselect)="nodeUnselect($event)" /> -->
-                <app-tree-view-primeng
-                    [treeDataRaw]="rawData"
-                    [seccionesPorGrado]="lista"
-                ></app-tree-view-primeng>
+                <div class="scrollable-panel">
+                    <app-tree-view-primeng
+                        [treeDataRaw]="rawData"
+                        [seccionesPorGrado]="lista"
+                    ></app-tree-view-primeng>
+                </div>
             </div>
         </div>
     </ng-template>
@@ -35,12 +37,14 @@
     <!--Bloque para buscador-->
     <ng-template pTemplate>
         <div class="col flex align-items-top justify-content-center">
-            <div [style]="{ width: '100%' }">
+            <div [style]="{ width: '100%' }" class="field col-12 md:col-12">
                 <div class="card">
                     <app-table-primeng
                         [columnas]="columns"
                         [showCaption]="true"
                         [data]="seccionesAsignadas"
+                        [scrollable]="true"
+                        scrollHeight="200px"
                         (accionBtnItem)="accionBtnItemTable($event)"
                         [showPaginator]="true"
                         [(selectedRowData)]="selectedItems"
@@ -365,3 +369,6 @@
         /><p-toast />
     </form>
 </p-dialog>
+<div class="flex justify-content-end">
+    <p-button (onClick)="confirm()" label="Siguiente" />
+</div>

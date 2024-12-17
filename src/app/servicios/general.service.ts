@@ -184,21 +184,21 @@ export class GeneralService {
 
     addAmbienteAcademico(data: any) {
         return this.http.post(
-            `${baseUrl}/acad/calendarioAcademicos/addAmbiente`,
+            `${baseUrl}/acad/calendarioAcademico/addAmbiente`,
             data
         )
     }
 
     updateAcademico(data: any) {
         return this.http.post(
-            `${baseUrl}/acad/calendarioAcademicos/updateCalendario`,
+            `${baseUrl}/acad/calendarioAcademico/updateCalendario`,
             data
         )
     }
 
     deleteAcademico(data: any) {
         return this.http.post(
-            `${baseUrl}/acad/calendarioAcademicos/deleteCalendario`,
+            `${baseUrl}/acad/calendarioAcademico/deleteCalendario`,
             data
         )
     }
@@ -225,7 +225,7 @@ export class GeneralService {
 
     searchAmbienteAcademico(data: any) {
         return this.http.post(
-            `${baseUrl}/acad/calendarioAcademicos/searchAmbiente`,
+            `${baseUrl}/acad/calendarioAcademico/searchAmbiente`,
             data
         )
     }
@@ -245,7 +245,7 @@ export class GeneralService {
     }
     searchGradoCiclo(data: any) {
         return this.http.post(
-            `${baseUrl}/acad/calendarioAcademicos/searchGradoCiclo`,
+            `${baseUrl}/acad/calendarioAcademico/searchGradoCiclo`,
             data
         )
     }
@@ -255,6 +255,19 @@ export class GeneralService {
             data
         )
     }
+    reporteHorasNivelGrado(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/gestionInstitucional/reporteHorasNivelGrado`,
+            data
+        )
+    }
+    reporteSeccionesNivelGrado(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/gestionInstitucional/reporteSeccionesNivelGrado`,
+            data
+        )
+    }
+
     // Método para obtener datos desde el backend
     getDatos(tabla: string, campos: string, where: any) {
         return this.http

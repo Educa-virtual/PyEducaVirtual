@@ -64,11 +64,11 @@
     </ng-template>
     <ng-template pTemplate="item" let-item>
         <div pRipple class="flex align-items-center p-menuitem-link text-sm">
-            <span><ng-icon name="mat10k" /></span>
-            <!-- <span [class]="item.icon" style="color: #3e67a9"></span> -->
+            <!-- <span><ng-icon name="mat10k" /></span> -->
+            <span [class]="item.icon" style="color: #3e67a9"></span>
             <span class="mx-3 text-none">{{
-                item.label.length > 40
-                    ? (item.label | slice: 0 : 40) + '...'
+                item.label.length > 100
+                    ? (item.label | slice: 0 : 100) + '...'
                     : item.label
             }}</span>
             <span

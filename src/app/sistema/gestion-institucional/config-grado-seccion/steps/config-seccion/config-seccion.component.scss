@@ -1,0 +1,8 @@
+.scrollable-panel {
+    height: 100%;
+    /* Asegura que el contenedor use todo el espacio disponible */
+    overflow-y: auto;
+    /* Habilita el scroll vertical */
+    padding: 1rem;
+    /* Opcional: Espaciado interno */
+}

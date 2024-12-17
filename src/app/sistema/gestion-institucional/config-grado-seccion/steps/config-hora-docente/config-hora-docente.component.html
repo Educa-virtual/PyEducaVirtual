@@ -4,20 +4,26 @@
     (accionBtnItem)="accionBtnItemTable($event)"
 >
     <div class="card">
-        <p-steps [model]="items" [readonly]="false"></p-steps>
+        <p-steps [model]="items" [readonly]="true"></p-steps>
+    </div>
+    <div class="card">
+        <app-table-primeng
+            [columnas]="columns"
+            [showCaption]="true"
+            [data]="docentes"
+            (accionBtnItem)="accionBtnItemTable($event)"
+            [showPaginator]="true"
+            [(selectedRowData)]="accionBtnItemTable"
+            [actions]="actions"
+        >
+            <ng-container slot="caption-content"> </ng-container>
+        </app-table-primeng>
+        <div class="flex justify-content-end">
+            <p-button
+                (onClick)="confirm()"
+                [disabled]="!form.valid"
+                label="Siguiente"
+            />
+        </div>
     </div>
 </app-container-page>
-
-<div class="card">
-    <app-table-primeng
-        [columnas]="columns"
-        [showCaption]="true"
-        [data]="docentes"
-        (accionBtnItem)="accionBtnItemTable($event)"
-        [showPaginator]="true"
-        [(selectedRowData)]="accionBtnItemTable"
-        [actions]="actions"
-    >
-        <ng-container slot="caption-content"> </ng-container>
-    </app-table-primeng>
-</div>

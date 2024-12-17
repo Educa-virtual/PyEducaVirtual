@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core'
+import { Component, OnInit, inject } from '@angular/core'
 import { StepsModule } from 'primeng/steps'
 import { PrimengModule } from '@/app/primeng.module'
 import { AdmStepGradoSeccionService } from '@/app/servicios/adm/adm-step-grado-seccion.service'
@@ -6,7 +6,7 @@ import { Router } from '@angular/router'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { MenuItem, MessageService } from 'primeng/api'
 import { GeneralService } from '@/app/servicios/general.service'
-import { StepConfirmationService } from '@/app/servicios/confirm.service'
+
 import {
     ContainerPageComponent,
     IActionContainer,
@@ -16,6 +16,7 @@ import {
     IActionTable,
     TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component'
+import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 
 @Component({
     selector: 'app-config-plan-estudios',
@@ -58,13 +59,13 @@ export class ConfigPlanEstudiosComponent implements OnInit {
     groupedData = []
     lista: any = []
 
+    private _confirmService = inject(ConfirmationModalService)
     constructor(
         private stepService: AdmStepGradoSeccionService,
         private router: Router,
         private fb: FormBuilder,
         private messageService: MessageService,
-        private query: GeneralService,
-        private msg: StepConfirmationService
+        private query: GeneralService
     ) {
         this.items = this.stepService.itemsStep
         this.configuracion = this.stepService.configuracion
@@ -211,6 +212,25 @@ export class ConfigPlanEstudiosComponent implements OnInit {
         return resultado
     }
 
+    confirm() {
+        this._confirmService.openConfiSave({
+            message: '¿Estás seguro de que deseas guardar y continuar?',
+            header: 'Advertencia de autoguardado',
+            icon: 'pi pi-exclamation-triangle',
+            accept: () => {
+                // Acción para eliminar el registro
+                this.router.navigate(['/gestion-institucional/hora-docente'])
+            },
+            reject: () => {
+                // Mensaje de cancelación (opcional)
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Cancelado',
+                    detail: 'Acción cancelada',
+                })
+            },
+        })
+    }
     accionBtn(elemento): void {
         const { accion } = elemento
         const { item } = elemento
@@ -319,13 +339,13 @@ export class ConfigPlanEstudiosComponent implements OnInit {
             accion: 'retornar',
             class: 'p-button-warning',
         },
-        {
-            labelTooltip: 'Crear Plan de estudio',
-            text: 'Crear Plan de estudio',
-            icon: 'pi pi-plus',
-            accion: 'agregar',
-            class: 'p-button-primary',
-        },
+        // {
+        //     labelTooltip: 'Crear Plan de estudio',
+        //     text: 'Crear Plan de estudio',
+        //     icon: 'pi pi-plus',
+        //     accion: 'agregar',
+        //     class: 'p-button-primary',
+        // },
     ]
 
     actions: IActionTable[] = [
@@ -342,66 +362,6 @@ export class ConfigPlanEstudiosComponent implements OnInit {
             accion: 'eliminar',
             type: 'item',
             class: 'p-button-rounded p-button-danger p-button-text',
-        },
-    ]
-
-    columns = [
-        {
-            type: 'item',
-            width: '5rem',
-            field: 'item',
-            header: 'NRO',
-            text_header: 'left',
-            text: 'left',
-        },
-        {
-            type: 'text',
-            width: '5rem',
-            field: 'cYAcadNombre',
-            header: 'Año',
-            text_header: 'center',
-            text: 'center',
-        },
-        {
-            type: 'text',
-            width: '5rem',
-            field: 'cConfigDescripcion',
-            header: 'Modelo o servicio educativo',
-            text_header: 'center',
-            text: 'center',
-        },
-        {
-            type: 'text',
-            width: '5rem',
-            field: 'cSedeNombre',
-            header: 'Fase',
-            text_header: 'center',
-            text: 'center',
-        },
-        {
-            type: 'text',
-            width: '5rem',
-            field: 'cSedeNombre',
-            header: 'Ciclo',
-            text_header: 'center',
-            text: 'center',
-        },
-        {
-            type: 'text',
-            width: '5rem',
-            field: 'cConfigNroRslAprobacion',
-            header: 'Grados',
-            text_header: 'center',
-            text: 'center',
-        },
-
-        {
-            type: 'actions',
-            width: '3rem',
-            field: 'actions',
-            header: 'Acciones',
-            text_header: 'center',
-            text: 'center',
         },
     ]
 }

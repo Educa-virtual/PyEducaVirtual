@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core'
+import { Component, inject, OnInit } from '@angular/core'
 import { StepsModule } from 'primeng/steps'
 import { PrimengModule } from '@/app/primeng.module'
 import { AdmStepGradoSeccionService } from '@/app/servicios/adm/adm-step-grado-seccion.service'
@@ -15,7 +15,6 @@ import { StepConfirmationService } from '@/app/servicios/confirm.service'
 //import { TreeModule } from 'primeng/tree'
 import { MultiSelectModule } from 'primeng/multiselect'
 import { TreeViewPrimengComponent } from '@/app/shared/tree-view-primeng/tree-view-primeng.component'
-
 import {
     ContainerPageComponent,
     IActionContainer,
@@ -24,6 +23,7 @@ import {
     IActionTable,
     TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component'
+import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 
 @Component({
     selector: 'app-config-seccion',
@@ -70,6 +70,7 @@ export class ConfigSeccionComponent implements OnInit {
     rawData: any[] = []
     lista: any = {}
 
+    private _confirmService = inject(ConfirmationModalService)
     constructor(
         private stepService: AdmStepGradoSeccionService,
         private router: Router,
@@ -596,7 +597,25 @@ export class ConfigSeccionComponent implements OnInit {
                 },
             })
     }
-
+    confirm() {
+        this._confirmService.openConfiSave({
+            message: '¿Estás seguro de que deseas guardar y continuar?',
+            header: 'Advertencia de autoguardado',
+            icon: 'pi pi-exclamation-triangle',
+            accept: () => {
+                // Acción para eliminar el registro
+                this.router.navigate(['/gestion-institucional/plan-estudio'])
+            },
+            reject: () => {
+                // Mensaje de cancelación (opcional)
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Cancelado',
+                    detail: 'Acción cancelada',
+                })
+            },
+        })
+    }
     // updateData() {
     //     // Actualiza las variables con nuevos datos
     //     this.rawData = this.grados;  // Aquí pones los datos nuevos para treeDataRaw

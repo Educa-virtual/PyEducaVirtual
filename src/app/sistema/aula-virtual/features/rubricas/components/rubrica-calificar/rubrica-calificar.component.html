@@ -7,7 +7,7 @@
       {{criterio.cCriterioDescripcion}}
     </p>
   }
-  <app-table-primeng [enableCellSelection]="true" (selectedColumn)="selection($event)" (selectedRowDataChange)="selection($event)" [columnas]="structuredColumns(criterio.niveles)" [data]="structuredRows(criterio.niveles)"  [columnas]="columns"  [showCaption]="false" [showPaginator]="false">
+  <app-table-primeng [enableCellSelection]="enableCellSelection" (selectedColumn)="selection($event)" (selectedRowDataChange)="selection($event)" [columnas]="structuredColumns(criterio.niveles)" [data]="structuredRows(criterio.niveles)"  [columnas]="columns"  [showCaption]="false" [showPaginator]="false">
   
   </app-table-primeng>
 }

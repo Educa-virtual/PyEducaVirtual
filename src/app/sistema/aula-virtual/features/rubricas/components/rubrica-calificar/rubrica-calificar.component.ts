@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core'
+import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core'
 import { AccordionModule } from 'primeng/accordion'
 import { CommonModule } from '@angular/common'
 import {
@@ -18,6 +18,8 @@ import { ActivatedRoute } from '@angular/router'
     styleUrl: './rubrica-calificar.component.scss',
 })
 export class RubricaCalificarComponent implements OnInit, OnDestroy {
+
+    @Input() enableCellSelection = false
     columns: IColumn[] = [
         {
             type: 'text',

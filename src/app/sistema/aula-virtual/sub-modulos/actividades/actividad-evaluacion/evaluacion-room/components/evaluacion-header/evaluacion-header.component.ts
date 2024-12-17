@@ -27,6 +27,7 @@ export class EvaluacionHeaderComponent implements OnChanges {
         if (changes.selectedEstudianteValue?.currentValue) {
             this.selectedEstudianteValue =
                 changes.selectedEstudianteValue.currentValue
+            console.log(this.selectedEstudianteValue)
         }
         if (changes.showListaEstudiantes?.currentValue) {
             this.showListaEstudiantes =

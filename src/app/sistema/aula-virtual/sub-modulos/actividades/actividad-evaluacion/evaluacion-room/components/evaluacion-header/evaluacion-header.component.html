@@ -3,7 +3,7 @@
         <div
             class="col-12 md:col-3 flex justify-content-between flex-wrap justify-content-around"
         >
-            <div
+            <!-- <div
                 class="flex align-items-center justify-content-center font-bold"
             >
                 <div
@@ -27,7 +27,7 @@
                     <b style="font-size: 1.5rem">&nbsp;5</b
                     ><small>&nbsp; Falta</small>
                 </div>
-            </div>
+            </div> -->
         </div>
         <div class="col-12 md:col-5 align-content-center">
             <span class="font-bold">Estudiante seleccionado(a):</span>&nbsp;{{
@@ -85,5 +85,6 @@
 <app-form-calificar-evaluacion
     [showFormCalificarEvaluacion]="showFormCalificarEvaluacion"
     [name]="name"
+    [estudiante]="selectedEstudianteValue"
     (accionBtnItem)="accionBtn($event)"
 ></app-form-calificar-evaluacion>

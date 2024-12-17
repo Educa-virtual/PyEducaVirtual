@@ -107,10 +107,21 @@
                                     <p-accordionTab [selected]="true">
                                         <ng-template pTemplate="header">
                                             <div class="ellipsis">
-                                                <span>{{
-                                                    pregunta['cPregunta']
-                                                        | removeHTML
-                                                }}</span>
+                                                @if (
+                                                    pregunta['idEncabPregId'] >
+                                                    0
+                                                ) {
+                                                    <span>{{
+                                                        pregunta[
+                                                            'cEncabPregTitulo'
+                                                        ]
+                                                    }}</span>
+                                                } @else {
+                                                    <span>{{
+                                                        pregunta['cPregunta']
+                                                            | removeHTML
+                                                    }}</span>
+                                                }
                                             </div>
                                         </ng-template>
                                         <app-evaluacion-pregunta

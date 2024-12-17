@@ -56,14 +56,14 @@ export const columnasPreguntasEvaluacion: IColumn[] = [
         text: 'left',
         text_header: 'Encabezado',
     },
-    {
-        type: 'text',
-        width: '3rem',
-        field: 'iPreguntaPeso',
-        header: 'Puntaje',
-        text_header: 'left',
-        text: 'left',
-    },
+    // {
+    //     type: 'text',
+    //     width: '3rem',
+    //     field: 'iPreguntaPeso',
+    //     header: 'Puntaje',
+    //     text_header: 'left',
+    //     text: 'left',
+    // },
     {
         type: 'text',
         width: '3rem',

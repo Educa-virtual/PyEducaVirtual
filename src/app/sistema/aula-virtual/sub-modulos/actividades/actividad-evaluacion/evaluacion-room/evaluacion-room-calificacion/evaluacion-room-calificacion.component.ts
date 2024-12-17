@@ -19,6 +19,7 @@ import { ToolbarPrimengComponent } from '../../../../../../../shared/toolbar-pri
 import { EvaluacionHeaderComponent } from '../components/evaluacion-header/evaluacion-header.component'
 import { NoDataComponent } from '../../../../../../../shared/no-data/no-data.component'
 import { SharedAnimations } from '@/app/shared/animations/shared-animations'
+import { RubricaCalificarComponent } from '@/app/sistema/aula-virtual/features/rubricas/components/rubrica-calificar/rubrica-calificar.component'
 interface Leyenda {
     total: number
     text: string
@@ -69,6 +70,7 @@ const leyendas = {
         ToolbarPrimengComponent,
         EvaluacionHeaderComponent,
         NoDataComponent,
+        RubricaCalificarComponent,
     ],
     templateUrl: './evaluacion-room-calificacion.component.html',
     styleUrl: './evaluacion-room-calificacion.component.scss',

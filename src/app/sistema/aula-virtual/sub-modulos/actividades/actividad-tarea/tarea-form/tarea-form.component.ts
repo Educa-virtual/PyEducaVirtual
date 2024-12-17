@@ -26,7 +26,7 @@ import { TooltipModule } from 'primeng/tooltip'
 export class TareaFormComponent implements OnChanges {
     // Crea una instancia de la clase DatePipe para formatear fechas en español
     pipe = new DatePipe('es-ES')
-    date = new Date()
+    date = this.ajustarAHorarioDeMediaHora(new Date())
     // Indica que el tipo de archivo "file" está habilitado o permitido.
     typesFiles = {
         file: true,
@@ -86,7 +86,7 @@ export class TareaFormComponent implements OnChanges {
     public formTareas = this._formBuilder.group({
         bReutilizarTarea: [false],
         dtInicio: [this.date, Validators.required],
-        dtFin: [this.date, Validators.required],
+        dtFin: [new Date(this.ajustarAHorarioDeMediaHora(new Date()).setHours(this.date.getHours() + 1)), Validators.required],
 
         iTareaId: [],
         cTareaTitulo: ['', [Validators.required]],
@@ -114,6 +114,19 @@ export class TareaFormComponent implements OnChanges {
         cProgActDescripcion: [''],
         dtProgActPublicacion: [],
     })
+
+
+    ajustarAHorarioDeMediaHora(fecha) {
+        const minutos = fecha.getMinutes(); // Obtener los minutos actuales
+        const minutosAjustados = minutos <= 30 ? 30 : 0; // Decidir si ajustar a 30 o 0 (hora siguiente)
+        if (minutos > 30) {
+          fecha.setHours(fecha.getHours() + 1); // Incrementar la hora si los minutos pasan de 30
+        }
+        fecha.setMinutes(minutosAjustados); // Ajustar los minutos
+        fecha.setSeconds(0); // Opcional: Resetear los segundos a 0
+        fecha.setMilliseconds(0); // Opcional: Resetear los milisegundos a 0
+        return fecha;
+      }
 
     getTareasxiCursoId() {
         // Verifica si la opción "bReutilizarTarea" en el formulario es verdadera

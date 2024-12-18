@@ -1,0 +1,296 @@
+<!-- [actions]="[]" -->
+<app-container-page [title]="'Mis Informes'" [actions]="[]">
+    <section class="flex flex-column gap-4">
+        <p-tabView styleClass="actividad-tabs">
+            <p-tabPanel>
+                <ng-template pTemplate="header" class="header">
+                    <div class="flex align-items-center flex-column gap-2">
+                        <app-icon name="matListAlt"></app-icon>
+                        <span class="font-bold white-space-nowrap m-0">
+                            Reporte de Logros Alcanzados
+                        </span>
+                    </div>
+                </ng-template>
+                <div class="card grid">
+                    <div class="card col-3 mr-1 mb-1">
+                        <label for="descripcion" class="font-bold mt-1">
+                            Información:
+                        </label>
+                        <p>
+                            Lorem ipsum dolor sit amet consectetur adipisicing
+                            elit. Laborum non sunt voluptates cumque quas
+                            quisquam laboriosam beatae nulla perferendis
+                            repellat. Placeat a molestias dolores commodi
+                            labore. Ipsum commodi fugiat obcaecati.
+                        </p>
+                    </div>
+                    <div class="card col mb-1">
+                        <div>
+                            <label for="descripcion" class="font-bold">
+                                Buscar Estudiante:
+                            </label>
+                        </div>
+                        <br />
+                        <!-- El buscar -->
+                        <p-inputGroup>
+                            <p-inputGroupAddon class="rounded">
+                                Ingrese Dni:
+                            </p-inputGroupAddon>
+                            <input
+                                pInputText
+                                type="text"
+                                styleClass="pi pi-search"
+                                placeholder="Buscar Dni...."
+                            />
+                            <p-button
+                                class="ml-3"
+                                label="Buscar"
+                                severity="success"
+                            />
+                        </p-inputGroup>
+                        <br />
+
+                        <p-table
+                            [tableStyle]="{
+                                'min-width': '60rem',
+                            }"
+                            [tableStyle]="{
+                                'max-height': '400px',
+                            }"
+                            sortMode="multiple"
+                            [paginator]="true"
+                            [rows]="5"
+                            [rowsPerPageOptions]="[5, 10, 20]"
+                            sortMode="multiple"
+                        >
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th
+                                        pSortableColumn="code"
+                                        style="width: 1%; text-align: center"
+                                    >
+                                        #
+                                    </th>
+                                    <th
+                                        pSortableColumn="name"
+                                        style="width: 20%"
+                                    >
+                                        Apellido Parteno
+                                        <p-sortIcon field="name" />
+                                    </th>
+                                    <th
+                                        pSortableColumn="name"
+                                        style="width: 20%"
+                                    >
+                                        Apellido Marterno
+                                        <p-sortIcon field="name" />
+                                    </th>
+                                    <th
+                                        pSortableColumn="category"
+                                        style="width: 20%"
+                                    >
+                                        Nombre
+                                        <p-sortIcon field="category" />
+                                    </th>
+                                    <th
+                                        pSortableColumn="category"
+                                        style="width: 20%"
+                                    >
+                                        Acción
+                                        <p-sortIcon field="category" />
+                                    </th>
+                                </tr>
+                            </ng-template>
+                            <ng-template
+                                pTemplate="body"
+                                let-comentario
+                                let-rowIndex="rowIndex"
+                            >
+                                <tr>
+                                    <td style="width: 10px; text-align: center">
+                                        {{ rowIndex + 1 }}
+                                    </td>
+
+                                    <!-- <td>
+                            {{
+                                mit
+                            }}
+                        </td>
+                        <td>
+                            {{
+                                comentario?.dtProgActInicio
+                            }}
+                        </td>
+                        <td>
+                            {{
+                                comentario
+                                    ? comentario.cForoRptaDocente
+                                    : (''
+                                      | removeHTML)
+                            }}
+                        </td> -->
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                    <!-- mostras las acciones de exportar en pdf -->
+                    <div class="card col-12">
+                        <div class="col-12 mb-2">
+                            <app-container-page-accionb></app-container-page-accionb>
+                        </div>
+                        <!-- Mostrar lo logros finales -->
+                        <div class="card col-12">
+                            <p-table
+                                [tableStyle]="{
+                                    'min-width': '60rem',
+                                }"
+                                [tableStyle]="{
+                                    'max-height': '400px',
+                                }"
+                                sortMode="multiple"
+                                [paginator]="true"
+                                [rows]="5"
+                                [rowsPerPageOptions]="[5, 10, 20]"
+                                sortMode="multiple"
+                            >
+                                <ng-template pTemplate="header">
+                                    <tr>
+                                        <th
+                                            pSortableColumn="code"
+                                            style="
+                                                width: 1%;
+                                                text-align: center;
+                                            "
+                                        >
+                                            #
+                                        </th>
+                                        <th
+                                            pSortableColumn="name"
+                                            style="width: 20%"
+                                        >
+                                            Áreas Curriculares
+                                        </th>
+                                        <th
+                                            pSortableColumn="name"
+                                            style="width: 20%"
+                                        >
+                                            Promedio Final
+                                        </th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template
+                                    pTemplate="body"
+                                    let-comentario
+                                    let-rowIndex="rowIndex"
+                                >
+                                    <tr>
+                                        <td
+                                            style="
+                                                width: 10px;
+                                                text-align: center;
+                                            "
+                                        >
+                                            {{ rowIndex + 1 }}
+                                        </td>
+
+                                        <!-- <td>
+                              {{
+                                  comentario?.cProgActTituloLeccion
+                              }}
+                          </td>
+                          <td>
+                              {{
+                                  comentario?.dtProgActInicio
+                              }}
+                          </td>
+                          <td>
+                              {{
+                                  comentario
+                                      ? comentario.cForoRptaDocente
+                                      : (''
+                                        | removeHTML)
+                              }}
+                          </td> -->
+                                    </tr>
+                                </ng-template>
+                            </p-table>
+                        </div>
+                    </div>
+                </div>
+            </p-tabPanel>
+            <p-tabPanel>
+                <ng-template pTemplate="header" class="header">
+                    <div class="flex align-items-center flex-column gap-2">
+                        <app-icon name="matListAlt"></app-icon>
+                        <span class="font-bold white-space-nowrap m-0">
+                            Reporte Asitencias
+                        </span>
+                    </div>
+                </ng-template>
+            </p-tabPanel>
+        </p-tabView>
+    </section>
+    <!-- <p-dataView
+      #dv
+      [value]="cursos"
+      [paginator]="layout === 'list' ? false : true"
+      [rows]="10"
+      filterBy="cCursoNombre"
+      [sortField]="sortField"
+      [sortOrder]="sortOrder"
+      [layout]="layout"
+  >
+      <ng-template pTemplate="header">
+          <div
+              class="flex flex-column md:flex-row md:justify-content-between gap-2"
+          >
+              <p-iconField iconPosition="left">
+                  <p-inputIcon styleClass="pi pi-search" />
+                  <input
+                      pInputText
+                      type="text"
+                      [(ngModel)]="text"
+                      (input)="onFilter(dv, $event)"
+                      placeholder="Buscar por curso"
+                  />
+              </p-iconField>
+
+              <div class="flex justify-end">
+                  <p-selectButton
+                      [(ngModel)]="layout"
+                      [options]="options"
+                      [allowEmpty]="false"
+                      (onChange)="text = ''"
+                  >
+                      <ng-template pTemplate="item" let-item>
+                          <i
+                              class="pi"
+                              [ngClass]="{
+                                  'pi-bars': item === 'list',
+                                  'pi-th-large': item === 'grid',
+                              }"
+                          ></i>
+                      </ng-template>
+                  </p-selectButton>
+              </div>
+          </div>
+      </ng-template>
+      <ng-template let-products pTemplate="gridItem">
+          <div class="cursos gap-4 py-2">
+              @for (curso of cursos; track curso) {
+                  <app-curso-card
+                      #dv
+                      class=""
+                      [curso]="curso"
+                  ></app-curso-card>
+              }
+          </div>
+      </ng-template>
+  </p-dataView>
+  @if (layout === 'list') {
+      <app-areas-estudios
+          [searchText]="searchText"
+          [data]="cursos"
+      ></app-areas-estudios>
+  } -->
+</app-container-page>

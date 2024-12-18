@@ -1,5 +1,5 @@
 <p-menu #menu [model]="items" [popup]="true" />
-@if (params.iInstrumentoId) {
+@if (data && data.iInstrumentoId) {
     <p-accordion
         class="w-full"
         collapseIcon="pi pi-chevron-down"

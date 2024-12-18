@@ -106,23 +106,18 @@ export class RubricaFormComponent implements OnInit, OnDestroy {
 
         
         if(this.route.queryParams['_value']?.iEvaluacionId){
-            console.log('Adjuntando rubrica')
-            console.log(this.route.queryParams['_value'].iEvaluacionId)
-
-
-
             this._apiEvaluacionesServ
-            .guardarActualizarEvaluacion({
-                iEvaluacionId: this.route.queryParams['_value'].iEvaluacionId,
-                 iInstrumentoId: data.iInstrumentoId,
-                opcion: 'GUARDARxProgActxiEvaluacionId'
+            .actualizarRubricaEvaluacion({
+                data: JSON.stringify({
+                    iInstrumentoId: data.iInstrumentoId,
+                }),
+                iEvaluacionId: this.route.queryParams['_value'].iEvaluacionId
             })
             .pipe(takeUntil(this._unsubscribe$))
             .subscribe({
                 next: (data) => {
                 },
             })
-
         }
 
         this.router.navigate([], {
@@ -137,6 +132,7 @@ export class RubricaFormComponent implements OnInit, OnDestroy {
         data.iCredId = this._constantesService.iCredId
         data.idDocCursoId = this._params.idDocCursoId
         data.iCursoId = this._params.iCursoId
+
 
         this._apiEvaluacionesServ
             .guardarActualizarRubrica(data)

@@ -6,3 +6,10 @@
     (accionBtnItemTable)="handleAcciones($event)"
     (selectedRowDataChange)="selectedRowDataChange.emit($event)"
 />
+
+<app-view-preguntas
+    [showDetallePregunta]="showDetallePregunta"
+    [detallePreguntas]="detallePreguntas"
+    [titulo]="tituloDetallePregunta"
+    (accionBtnItem)="accionBtnItem($event)"
+></app-view-preguntas>

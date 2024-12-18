@@ -83,16 +83,16 @@ export const columnasPreguntasEvaluacion: IColumn[] = [
 ]
 
 export const columnsBancoPreguntas: IColumn[] = [
+    // {
+    //     field: '',
+    //     header: '',
+    //     type: 'expansion',
+    //     width: '1rem',
+    //     text: 'left',
+    //     text_header: 'left',
+    // },
     {
-        field: '',
-        header: '',
-        type: 'expansion',
-        width: '1rem',
-        text: 'left',
-        text_header: 'left',
-    },
-    {
-        field: 'iEncabezado',
+        field: 'cEncabezado',
         header: 'Encabezado',
         type: 'text',
         width: '1rem',

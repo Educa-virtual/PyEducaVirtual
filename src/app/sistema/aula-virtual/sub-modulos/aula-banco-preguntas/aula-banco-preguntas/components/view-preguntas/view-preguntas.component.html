@@ -1,0 +1,126 @@
+<p-dialog
+    [header]="titulo"
+    [modal]="true"
+    [(visible)]="showDetallePregunta"
+    [style]="{ width: '100%' }"
+    (onHide)="accionBtn({ accion: 'close-modal', item: [] })"
+    [draggable]="false"
+    [resizable]="false"
+    ><ng-template pTemplate="content">
+        <br />
+        @if (detallePreguntas.length === 1) {
+            <div class="grid">
+                <div class="col-12">
+                    <div
+                        class="font-bold"
+                        [innerHTML]="detallePreguntas[0]['cBancoPregunta']"
+                    ></div>
+                </div>
+
+                @switch (detallePreguntas[0]['iTipoPregId']) {
+                    @case ('1') {
+                        <div
+                            class="col-12 px-2"
+                            *ngIf="
+                                detallePreguntas[0]['alternativas'].length > 0
+                            "
+                        >
+                            <div
+                                *ngFor="
+                                    let alternativa of detallePreguntas[0][
+                                        'alternativas'
+                                    ];
+                                    let i = index
+                                "
+                            >
+                                <div class="flex mt-1">
+                                    <p-radioButton
+                                        [inputId]="alternativa['iBancoAltId']"
+                                        [name]="alternativa['iBancoAltId']"
+                                        [value]="alternativa['iBancoAltId']"
+                                        [(ngModel)]="
+                                            alternativa.bBancoAltRptaCorrecta
+                                        "
+                                    />
+                                    &nbsp;&nbsp;
+                                    <div
+                                        [innerHTML]="
+                                            alternativa['cBancoAltDescripcion']
+                                        "
+                                    ></div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    @case ('2') {
+                        <div
+                            class="col-12 px-2"
+                            *ngIf="
+                                detallePreguntas[0]['alternativas'].length > 0
+                            "
+                        >
+                            <div
+                                *ngFor="
+                                    let alternativa of detallePreguntas[0][
+                                        'alternativas'
+                                    ];
+                                    let i = index
+                                "
+                            >
+                                <div class="flex mt-1">
+                                    <p-checkbox
+                                        [(ngModel)]="
+                                            alternativa.bBancoAltRptaCorrecta
+                                        "
+                                        [value]="alternativa['iBancoAltId']"
+                                    />
+                                    &nbsp;&nbsp;
+                                    <div
+                                        [innerHTML]="
+                                            alternativa['cBancoAltDescripcion']
+                                        "
+                                    ></div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+
+                <div
+                    class="col-12 mt-2"
+                    *ngIf="detallePreguntas[0]['cBancoTextoAyuda']"
+                >
+                    <p-message
+                        styleClass="w-full"
+                        severity="info"
+                        [text]="
+                            'Texto de ayuda: ' +
+                            detallePreguntas[0]['cBancoTextoAyuda']
+                        "
+                    ></p-message>
+                </div>
+            </div>
+        }
+        @if (detallePreguntas.length > 1) {
+            <div class="grid">
+                <div class="col-12">
+                    <p class="font-bold">
+                        Enunciado: {{ detallePreguntas['cEncabPregTitulo'] }}
+                    </p>
+                </div>
+                <div class="col-6">
+                    <ngx-doc-viewer
+                        [url]="
+                            environment +
+                            '/' +
+                            detallePreguntas['cEncabPregContenido']
+                        "
+                        viewer="pdf"
+                        style="width: 100%; height: 50vh"
+                    ></ngx-doc-viewer>
+                </div>
+            </div>
+        }
+    </ng-template>
+</p-dialog>

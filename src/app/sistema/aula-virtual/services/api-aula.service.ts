@@ -248,7 +248,7 @@ export class ApiAulaService {
         )
         //.pipe(map((resp) => resp.data))
     }
-    generarReporteDeLogrosPdf(params: { iIeCursoId }) {
+    generarReporteDeLogrosPdf(params: { iIeCursoId; idDocCursoId }) {
         return this._http.get(
             `${this.baseUrlApi}/aula-virtual/Resultado/reporteDeLogros`,
             {

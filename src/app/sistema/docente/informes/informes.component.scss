@@ -20,3 +20,8 @@
     display: block;
     color: inherit;
 }
+// borrar las barras al costado del listar estudiantes
+:host ::ng-deep .listAlumno .p-orderlist-controls {
+    display: none;
+    height: 600px;
+}

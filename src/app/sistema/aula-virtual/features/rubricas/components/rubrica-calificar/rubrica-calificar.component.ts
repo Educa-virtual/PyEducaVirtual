@@ -47,6 +47,8 @@ export class RubricaCalificarComponent implements OnInit, OnDestroy {
     ]
 
     rubrica
+
+    @Input() showSortIcon = false
     params = {
         iEvaluacionId: undefined,
     }
@@ -59,9 +61,9 @@ export class RubricaCalificarComponent implements OnInit, OnDestroy {
     constructor(private route: ActivatedRoute) {}
 
     ngOnInit(): void {
-
-        if(this.route.queryParams['_value'].iEvaluacionId){
-            this.params.iEvaluacionId = this.route.queryParams['_value'].iEvaluacionId 
+        if (this.route.queryParams['_value'].iEvaluacionId) {
+            this.params.iEvaluacionId =
+                this.route.queryParams['_value'].iEvaluacionId
             this.getRubrica()
         }
         this.route.queryParamMap.subscribe((params) => {
@@ -136,12 +138,9 @@ export class RubricaCalificarComponent implements OnInit, OnDestroy {
                 .pipe(takeUntil(this._unsubscribe$))
                 .subscribe({
                     next: (data) => {
-                        
-                        
                         this.data = Array.isArray(data) ? data[0] : undefined
                         console.log('Cargando rubrica')
                         console.log(this.data)
-                        
                     },
                 })
         }

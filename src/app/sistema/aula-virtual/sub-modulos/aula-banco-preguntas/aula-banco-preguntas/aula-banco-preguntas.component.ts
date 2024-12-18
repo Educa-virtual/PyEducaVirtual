@@ -6,11 +6,14 @@ import {
     Input,
     Output,
     EventEmitter,
+    OnChanges,
 } from '@angular/core'
 import { AulaBancoPreguntasModule } from '../aula-banco-preguntas.module'
 import {
     actionsContainer,
     actionsTable,
+    actionsTableModalAgregarBancoPreguntas,
+    columnasModalAgregarBancoPreguntas,
     columns,
 } from './aula-banco-preguntas.model'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
@@ -22,15 +25,23 @@ import { DialogService } from 'primeng/dynamicdialog'
 import { AulaBancoPreguntaFormContainerComponent } from './components/aula-banco-pregunta-form-container/aula-banco-pregunta-form-container.component'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { ApiEvaluacionesRService } from '@/app/sistema/evaluaciones/services/api-evaluaciones-r.service'
+import { GeneralService } from '@/app/servicios/general.service'
+import { ViewPreguntasComponent } from './components/view-preguntas/view-preguntas.component'
 
 @Component({
     selector: 'app-aula-banco-preguntas',
     standalone: true,
-    imports: [AulaBancoPreguntasModule, BancoPreguntaListaComponent],
+    imports: [
+        AulaBancoPreguntasModule,
+        BancoPreguntaListaComponent,
+        ViewPreguntasComponent,
+    ],
     templateUrl: './aula-banco-preguntas.component.html',
     styleUrl: './aula-banco-preguntas.component.scss',
 })
-export class AulaBancoPreguntasComponent implements OnInit, OnDestroy {
+export class AulaBancoPreguntasComponent
+    implements OnInit, OnDestroy, OnChanges
+{
     @Output() public selectedRowDataChange = new EventEmitter()
     @Input() public mode: 'SELECTION' | 'NORMAL' = 'NORMAL'
     @Input() iEvaluacionId: number
@@ -49,6 +60,7 @@ export class AulaBancoPreguntasComponent implements OnInit, OnDestroy {
     private _aulaBancoApiService = inject(ApiAulaBancoPreguntasService)
     private _dialogService = inject(DialogService)
     private _constantesService = inject(ConstantesService)
+    private _GeneralService = inject(GeneralService)
 
     @Input() public params = {
         iCursoId: null,
@@ -72,15 +84,17 @@ export class AulaBancoPreguntasComponent implements OnInit, OnDestroy {
     }
 
     setupConfig() {
+        // console.log(this.mode)
         if (this.mode === 'SELECTION') {
-            this.columnas.push({
-                field: 'checked',
-                header: '',
-                type: 'checkbox',
-                width: '5rem',
-                text: 'left',
-                text_header: '',
-            })
+            this.columnas = columnasModalAgregarBancoPreguntas
+            this.actionsTable = actionsTableModalAgregarBancoPreguntas
+        }
+    }
+    ngOnChanges(changes) {
+        if (changes.mode?.currentValue) {
+            this.mode = changes.mode.currentValue
+            console.log(this.mode)
+            this.setupConfig()
         }
     }
 
@@ -141,6 +155,11 @@ export class AulaBancoPreguntasComponent implements OnInit, OnDestroy {
 
         if (accion === 'eliminar') {
             this.handleEliminarBancoPreguntas(item)
+        }
+        console.log(accion, item)
+        if (accion === 'ver') {
+            this.showDetallePregunta = false
+            this.handleVerPregunta(item)
         }
     }
     selectedItems = []
@@ -223,5 +242,43 @@ export class AulaBancoPreguntasComponent implements OnInit, OnDestroy {
     ngOnDestroy() {
         this.unsubscribe$.next(true)
         this.unsubscribe$.complete()
+    }
+
+    showDetallePregunta: boolean = false
+    detallePreguntas = []
+    tituloDetallePregunta: string
+    handleVerPregunta(item) {
+        const params = {
+            petition: 'post',
+            group: 'evaluaciones',
+            prefix: 'banco-preguntas',
+            ruta: 'handleCrudOperation',
+            data: {
+                opcion: 'CONSULTARxiBancoId',
+                iBancoId: item.iBancoId,
+                idEncabPregId: item.idEncabPregId,
+            },
+        }
+        this._GeneralService.getGralPrefix(params).subscribe({
+            next: (response) => {
+                if (response.validated) {
+                    this.showDetallePregunta = true
+                    this.detallePreguntas = response.data
+                    const index =
+                        this.bancoPreguntas.findIndex(
+                            (i) => i.iBancoId === item.iBancoId
+                        ) + 1
+                    this.tituloDetallePregunta = 'PREGUNTA #' + index
+                }
+            },
+            complete: () => {},
+            error: (error) => {
+                console.log(error)
+            },
+        })
+    }
+
+    accionBtnItem(elemento) {
+        console.log(elemento)
     }
 }

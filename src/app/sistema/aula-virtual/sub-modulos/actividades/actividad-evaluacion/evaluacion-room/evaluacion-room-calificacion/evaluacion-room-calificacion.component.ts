@@ -20,6 +20,7 @@ import { EvaluacionHeaderComponent } from '../components/evaluacion-header/evalu
 import { NoDataComponent } from '../../../../../../../shared/no-data/no-data.component'
 import { SharedAnimations } from '@/app/shared/animations/shared-animations'
 import { RubricaCalificarComponent } from '@/app/sistema/aula-virtual/features/rubricas/components/rubrica-calificar/rubrica-calificar.component'
+import { ActivatedRoute, Router } from '@angular/router'
 interface Leyenda {
     total: number
     text: string
@@ -120,10 +121,22 @@ export class EvaluacionRoomCalificacionComponent implements OnInit {
     showListaEstudiantes: boolean = true
 
     updateSelectedEstudiante(value: any) {
-        this._state.update((state) => ({
-            ...state,
-            selectedEstudiante: value,
-        }))
+        this._state.update((state) => {
+            console.log('selectedEstudiante')
+            console.log(value)
+            this.router.navigate([], {
+                queryParams: {
+                    iEvalPromId: value.iEvalPromId ?? undefined,
+                    iEstudianteId: value.iEstudianteId ?? undefined,
+                },
+                queryParamsHandling: 'merge'
+            })
+
+            return ({
+                ...state,
+                selectedEstudiante: value,
+            })
+        })
     }
 
     get selectedEstudianteValue() {
@@ -134,6 +147,8 @@ export class EvaluacionRoomCalificacionComponent implements OnInit {
     private _evaluacionesService = inject(ApiEvaluacionesService)
     private _dialogService = inject(DialogService)
     private _unsubscribe$ = new Subject<boolean>()
+
+    private router = inject(Router)
 
     public leyendasOrden = ['REVISADO', 'PROCESO', 'FALTA']
 

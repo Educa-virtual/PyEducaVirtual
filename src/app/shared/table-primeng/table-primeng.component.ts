@@ -292,6 +292,7 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     selectedCells: { [rowId: string]: string } = {};
 
     @Input() enableCellSelection
+    @Input() showSortIcon = true
 
     isCellSelected(rowId: any) {
         return this.selectedCells?.hasOwnProperty(rowId)

@@ -63,6 +63,65 @@ export const columns: IColumn[] = [
     },
 ]
 
+export const columnasModalAgregarBancoPreguntas: IColumn[] = [
+    {
+        field: 'checked',
+        header: '',
+        type: 'checkbox',
+        width: '1rem',
+        text: 'left',
+        text_header: '',
+    },
+    {
+        field: 'iEncabezado',
+        header: 'Encabezado',
+        type: 'text',
+        width: '1rem',
+        text: 'center',
+        text_header: 'center',
+    },
+    {
+        field: 'cPreguntaNoHTML',
+        header: 'Pregunta',
+        type: 'trim',
+        width: '15rem',
+        text: 'left',
+        text_header: 'left',
+    },
+    // {
+    //     type: 'text',
+    //     width: '1rem',
+    //     field: 'iPreguntaPeso',
+    //     header: 'Peso',
+    //     text_header: 'center',
+    //     text: 'center',
+    // },
+    {
+        type: 'text',
+        width: '2rem',
+        field: 'cTipoPregDescripcion',
+        header: 'Tipo de Pregunta',
+        text_header: 'center',
+        text: 'center',
+    },
+    // {
+    //     type: 'text',
+    //     width: '2rem',
+    //     field: 'iTotalPreguntas',
+    //     header: '# Preguntas',
+    //     text_header: 'center',
+    //     text: 'center',
+    // },
+    {
+        type: 'actions',
+        width: '3rem',
+        field: 'actions',
+        header: 'Acciones',
+        text_header: 'center',
+        text: 'center',
+    },
+]
+
 export const actionsContainer: IActionContainer[] = [
     {
         labelTooltip: 'Word',
@@ -102,5 +161,15 @@ export const actionsTable: IActionTable[] = [
         accion: 'eliminar',
         type: 'item',
         class: 'p-button-rounded p-button-danger p-button-text',
+    },
+]
+
+export const actionsTableModalAgregarBancoPreguntas: IActionTable[] = [
+    {
+        labelTooltip: 'Ver',
+        icon: 'pi pi-eye',
+        accion: 'ver',
+        type: 'item',
+        class: 'p-button-rounded p-button-info p-button-text',
     },
 ]

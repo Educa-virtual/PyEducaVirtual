@@ -7,7 +7,7 @@
     <div
         class="flex gap-2 flex-wrap w-full p-1 border-round-xs"
         [ngClass]="{
-            'bg-yellow-100': pregunta.alternativaCorrecta.includes(
+            'bg-yellow-100': pregunta.alternativaCorrecta && pregunta.alternativaCorrecta.includes(
                 alternativa.cAlternativaLetra
             ),
         }"

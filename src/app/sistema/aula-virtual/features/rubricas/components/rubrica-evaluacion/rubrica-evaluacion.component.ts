@@ -30,7 +30,7 @@ export class RubricaEvaluacionComponent implements OnInit, OnDestroy {
     ]
     rubrica
     params = {
-        iInstrumentoId: undefined,
+        iEvaluacionId: undefined,
     }
 
     data
@@ -45,24 +45,35 @@ export class RubricaEvaluacionComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.route.queryParamMap.subscribe((params) => {
-            this.params.iInstrumentoId = params.get('iInstrumentoId')
+            this.params.iEvaluacionId = params.get('iEvaluacionId')
 
             this.getRubrica()
         })
     }
 
     deleteRubricaEvaluacion() {
-        this.params.iInstrumentoId = null
+        if (this.params?.iEvaluacionId) {
+            this._evaluacionApiService
+                .deleteRubricaEvaluacion(this.params)
+                .pipe(takeUntil(this._unsubscribe$))
+                .subscribe({
+                    next: (data) => {
+                        this.data = Array.isArray(data) ? data[0] : undefined
+                        console.log(this.data)
+                    },
+                })
+        }
+        
     }
 
     getRubrica() {
-        if (this.params?.iInstrumentoId) {
+        if (this.params?.iEvaluacionId) {
             this._evaluacionApiService
-                .obtenerRubrica(this.params)
+                .obtenerRubricaEvaluacion(this.params)
                 .pipe(takeUntil(this._unsubscribe$))
                 .subscribe({
-                    next: () => {
-                        this.data = Array.isArray(this._evaluacionApiService.rubrica) ? this._evaluacionApiService.rubrica[0] : undefined
+                    next: (data) => {
+                        this.data = Array.isArray(data) ? data[0] : undefined
                         console.log(this.data)
                     },
                 })

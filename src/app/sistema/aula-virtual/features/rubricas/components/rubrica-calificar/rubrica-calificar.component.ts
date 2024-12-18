@@ -18,7 +18,6 @@ import { ActivatedRoute } from '@angular/router'
     styleUrl: './rubrica-calificar.component.scss',
 })
 export class RubricaCalificarComponent implements OnInit, OnDestroy {
-
     @Input() enableCellSelection = false
     columns: IColumn[] = [
         {
@@ -80,7 +79,6 @@ export class RubricaCalificarComponent implements OnInit, OnDestroy {
     ]
 
     structuredColumns(niveles: Array<any>) {
-
         let columns = []
 
         niveles.forEach((nivel, index) => {
@@ -98,31 +96,30 @@ export class RubricaCalificarComponent implements OnInit, OnDestroy {
     }
 
     structuredRows(niveles: Array<any>) {
-      const nivelesMap = niveles.map((nivel, index) => ({
-        [`cNivelEvaDescripcion${index}`]: nivel.cNivelEvaDescripcion,
-        iNivelEvaId: nivel.iNivelEvaId,
-      }));
-    
-      const merged = nivelesMap.reduce((acc, curr, index) => {
-        const descriptionKey = `cNivelEvaDescripcion${index}`;
-        
-        // Agregar descripciones al acumulador
-        if (!acc[descriptionKey]) {
-          acc[descriptionKey] = [curr[descriptionKey]];
-        }
-    
-        // Agregar valores al objeto "values"
-        if (!acc['values']) {
-          acc['values'] = {};
-        }
-        acc['values'][descriptionKey] = { iNivelEvaId: curr.iNivelEvaId };
-    
-        return acc;
-      }, {});
-    
-      return [merged];
+        const nivelesMap = niveles.map((nivel, index) => ({
+            [`cNivelEvaDescripcion${index}`]: nivel.cNivelEvaDescripcion,
+            iNivelEvaId: nivel.iNivelEvaId,
+        }))
+
+        const merged = nivelesMap.reduce((acc, curr, index) => {
+            const descriptionKey = `cNivelEvaDescripcion${index}`
+
+            // Agregar descripciones al acumulador
+            if (!acc[descriptionKey]) {
+                acc[descriptionKey] = [curr[descriptionKey]]
+            }
+
+            // Agregar valores al objeto "values"
+            if (!acc['values']) {
+                acc['values'] = {}
+            }
+            acc['values'][descriptionKey] = { iNivelEvaId: curr.iNivelEvaId }
+
+            return acc
+        }, {})
+
+        return [merged]
     }
-    
 
     selection(data) {
         console.log(data)
@@ -134,12 +131,8 @@ export class RubricaCalificarComponent implements OnInit, OnDestroy {
                 .obtenerRubrica(this.params)
                 .pipe(takeUntil(this._unsubscribe$))
                 .subscribe({
-                    next: () => {
-                        this.data = Array.isArray(
-                            this._evaluacionApiService.rubrica
-                        )
-                            ? this._evaluacionApiService.rubrica[0]
-                            : undefined
+                    next: (data) => {
+                        this.data = Array.isArray(data) ? data[0] : undefined
 
                         console.log(this.data)
                     },

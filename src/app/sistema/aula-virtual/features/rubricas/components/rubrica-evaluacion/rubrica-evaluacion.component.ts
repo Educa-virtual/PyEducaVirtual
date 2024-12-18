@@ -6,6 +6,7 @@ import { Subject, takeUntil } from 'rxjs'
 import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-evaluaciones.service'
 import { MenuModule } from 'primeng/menu'
 import { MenuItem } from 'primeng/api'
+import { ConstantesService } from '@/app/servicios/constantes.service'
 
 @Component({
     selector: 'app-rubrica-evaluacion',
@@ -24,6 +25,7 @@ export class RubricaEvaluacionComponent implements OnInit, OnDestroy {
                     label: 'Eliminar',
                     icon: 'pi pi-trash',
                     command: () => this.deleteRubricaEvaluacion(),
+                    visible: this.constantesService.iPerfilId == 7 ? true : false
                 },
             ],
         },
@@ -41,9 +43,16 @@ export class RubricaEvaluacionComponent implements OnInit, OnDestroy {
 
     private _evaluacionApiService = inject(ApiEvaluacionesService)
 
-    constructor(private route: ActivatedRoute) {}
+    constructor(private route: ActivatedRoute,
+        private constantesService: ConstantesService
+    
+    ) {}
 
     ngOnInit(): void {
+
+        console.log('constantesService')
+        console.log(this.constantesService)
+
         this.route.queryParamMap.subscribe((params) => {
             this.params.iEvaluacionId = params.get('iEvaluacionId')
 
@@ -51,6 +60,11 @@ export class RubricaEvaluacionComponent implements OnInit, OnDestroy {
         })
     }
 
+    isMenuVisible(): boolean {
+        return this.items.some(group =>
+            group.items?.some(item => item.visible !== false)
+        );
+    }
     deleteRubricaEvaluacion() {
         if (this.params?.iEvaluacionId) {
             this._evaluacionApiService

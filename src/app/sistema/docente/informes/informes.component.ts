@@ -1,8 +1,8 @@
-import { Component } from '@angular/core'
+import { Component, OnInit, Input } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import {
     ContainerPageComponent,
-    //IActionContainer,, Input, inject , OnInit
+    //IActionContainer,, Input, inject inject,
 } from '@/app/shared/container-page/container-page.component'
 import { TabViewModule } from 'primeng/tabview'
 import { IconComponent } from '@/app/shared/icon/icon.component'
@@ -28,6 +28,11 @@ import { InputTextModule } from 'primeng/inputtext'
 import { InputIconModule } from 'primeng/inputicon'
 import { IconFieldModule } from 'primeng/iconfield'
 import { ButtonModule } from 'primeng/button'
+// nueva importaciones:
+import { OrderListModule } from 'primeng/orderlist'
+//import { Message, MessageService } from 'primeng/api'
+//import { ApiAulaService } from '../../aula-virtual/services/api-aula.service'
+import { LocalStoreService } from '@/app/servicios/local-store.service'
 
 @Component({
     selector: 'app-informes',
@@ -49,6 +54,7 @@ import { ButtonModule } from 'primeng/button'
         InputIconModule,
         IconFieldModule,
         ButtonModule,
+        OrderListModule,
     ],
     providers: [
         provideIcons({
@@ -62,9 +68,29 @@ import { ButtonModule } from 'primeng/button'
         }),
     ],
 })
-export class InformesComponent {
-    constructor() {}
+export class InformesComponent implements OnInit {
+    //private _aulaService = inject(ApiAulaService);
+    perfil = []
 
-    // ngOnInit() {
-    // } implements OnInit
+    @Input() iCursoId
+
+    constructor(private store: LocalStoreService) {
+        const perfil = this.store.getItem('dremoPerfil')
+        console.log(this.store)
+        console.log(perfil)
+    }
+
+    ngOnInit() {
+        this.obtenerEstudianteXCurso
+    }
+    //Obtener datos del estudiantes y sus logros alcanzados x cursos
+
+    obtenerEstudianteXCurso() {
+        // $iIeCursoId = 1;
+        // $iSeccionId = 2;
+        // $iYAcadId = 3;
+        const idDocente = this.iCursoId
+        console.log(idDocente)
+        console.log('datos de perfil', this.perfil)
+    }
 }

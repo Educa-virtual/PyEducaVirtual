@@ -160,6 +160,7 @@ export class RubricasComponent implements OnInit, OnDestroy {
         const ref = this._dialogService.open(RubricaFormComponent, {
             ...MODAL_CONFIG,
             header,
+            maximizable: true,
             data: {
                 iCursoId: this.params.iCursoId,
                 idDocCursoId: this.params.idDocCursoId,

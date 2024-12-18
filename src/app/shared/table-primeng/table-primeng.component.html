@@ -88,7 +88,7 @@
                         @default {
                             <div [style.text-align]="col.text_header" class="">
                                 <span> {{ col.header }}</span>
-                                @if (!enableCellSelection) {
+                                @if (showSortIcon) {
                                     <p-sortIcon [field]="col.header"></p-sortIcon>
                                 }
                             </div>

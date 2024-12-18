@@ -255,9 +255,12 @@ export class TabResultadosComponent implements OnInit {
     //exportar en pdf el reporte de notas finales:
     generarReporteDeLogrosPdf() {
         const value = this.iCursoId
+        const idDocente = this.idDocCursoId
+        console.log('idDocente', this.idDocCursoId)
         this._aulaService
             .generarReporteDeLogrosPdf({
                 iIeCursoId: value,
+                idDocCursoId: idDocente,
             })
             .subscribe(
                 (response) => {

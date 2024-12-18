@@ -20,6 +20,7 @@ import { GeneralService } from '@/app/servicios/general.service'
 import { BancoPreguntaListaComponent } from '@/app/sistema/evaluaciones/sub-evaluaciones/banco-preguntas/components/banco-pregunta-lista/banco-pregunta-lista.component'
 import { columnsBancoPreguntas } from '../../evaluacion-form/evaluacion-form-preguntas/evaluacion-form-preguntas'
 import { removeHTML } from '@/app/shared/utils/remove-html'
+import { generarIdAleatorio } from '@/app/shared/utils/random-id'
 
 @Component({
     selector: 'app-list-preguntas',
@@ -63,6 +64,13 @@ export class ListPreguntasComponent implements OnChanges {
             type: 'item',
             class: 'p-button-rounded p-button-primary p-button-text',
             isVisible: (row) => row.idEncabPregId,
+        },
+        {
+            labelTooltip: 'Ver',
+            icon: 'pi pi-eye',
+            accion: 'ver_preguntas',
+            type: 'item',
+            class: 'p-button-rounded p-button-info p-button-text',
         },
         {
             labelTooltip: 'Editar',
@@ -179,7 +187,6 @@ export class ListPreguntasComponent implements OnChanges {
     }
 
     guardarActualizarPreguntaConAlternativas(data) {
-        console.log(data)
         this._ApiAulaBancoPreguntasService
             .guardarActualizarPreguntaConAlternativas(data)
             .subscribe({
@@ -296,6 +303,50 @@ export class ListPreguntasComponent implements OnChanges {
                     detail: error,
                 })
             },
+        })
+    }
+
+    agregarPreguntas() {
+        this.preguntasSeleccionadas.map((item) => {
+            item = this.mapLocalPregunta(item)
+            return item
+        })
+        this.showModalBancoPreguntas = false
+        this.preguntasSeleccionadas.forEach((item) => {
+            item.opcion = 'GUARDARxBancoPreguntas'
+            item.iEncabPregId =
+                item.iEncabPregId === -1 ? null : item.iEncabPregId
+            item.iEvaluacionId = this.iEvaluacionId
+            const params = {
+                petition: 'post',
+                group: 'evaluaciones',
+                prefix: 'evaluacion-preguntas',
+                ruta: 'handleCrudOperation',
+                data: item,
+            }
+            this.getInformation(params, item.opcion)
+        })
+        this.preguntasSeleccionadas = []
+        this.obtenerBancoPreguntas()
+
+        //this.preguntas.push(...this.preguntasSeleccionadas)
+    }
+
+    mapLocalPregunta(pregunta) {
+        if (pregunta.iEncabPregId == -1) {
+            pregunta.isLocal = true
+            pregunta.iEvalPregId = generarIdAleatorio()
+        } else {
+            pregunta.preguntas = this.addLocalPreguntas(pregunta.preguntas)
+        }
+        return pregunta
+    }
+
+    addLocalPreguntas = (preguntas) => {
+        return preguntas.map((item) => {
+            item.isLocal = true
+            item.iEvalPregId = generarIdAleatorio()
+            return item
         })
     }
 }

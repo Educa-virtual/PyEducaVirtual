@@ -153,9 +153,8 @@ export class TabContenidoComponent implements OnInit {
                 next: (data) => {
                     this.loadingContenidoSemanas = false
                     this.contenidoSemanas = data
-
-                    console.log('contenido semanas')
-                    console.log(this.contenidoSemanas)
+                    // console.log('contenido semanas')
+                    // console.log(this.contenidoSemanas)
                 },
                 error: (error) => {
                     console.log(error)
@@ -411,6 +410,7 @@ export class TabContenidoComponent implements OnInit {
     tituloEvaluacion: string
     opcionEvaluacion: string
     semanaEvaluacion
+    dataActividad
     handleEvaluacionAction(action: string, actividad: IActividad) {
         switch (action) {
             case 'CREAR':
@@ -421,7 +421,7 @@ export class TabContenidoComponent implements OnInit {
                 this.opcionEvaluacion =
                     action === 'CREAR' ? 'GUARDAR' : 'ACTUALIZAR'
                 this.semanaEvaluacion = this.semanaSeleccionada
-
+                this.dataActividad = actividad
                 // const ref = this._dialogService.open(
                 //     EvaluacionFormContainerComponent,
                 //     {

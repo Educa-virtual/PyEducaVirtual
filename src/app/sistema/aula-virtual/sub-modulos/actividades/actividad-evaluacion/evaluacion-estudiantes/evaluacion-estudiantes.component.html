@@ -95,7 +95,28 @@
                         <div class="card">
                             <p-accordion [activeIndex]="0">
                                 Revise la Rubrica antes de iniciar Evaluacion:
+                                <app-rubrica-evaluacion
+                                    (clickNameRubrica)="showRubrica($event)"
+                                    class="w-full"
+                                ></app-rubrica-evaluacion>
                             </p-accordion>
+                        </div>
+                        <div>
+                            <p-dialog
+                                [modal]="true"
+                                [header]="
+                                    'Rubrica - ' + dialogRubricaInfo.header
+                                "
+                                [(visible)]="dialogRubricaInfo.visible"
+                                [style]="{ width: '75rem' }"
+                                [breakpoints]="{
+                                    '1199px': '75vw',
+                                    '575px': '90vw',
+                                }"
+                                [maximizable]="true"
+                            >
+                                <app-rubrica-calificar></app-rubrica-calificar>
+                            </p-dialog>
                         </div>
                     </p-panel>
                 </div>

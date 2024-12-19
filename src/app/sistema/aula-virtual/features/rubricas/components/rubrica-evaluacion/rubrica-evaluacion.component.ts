@@ -7,6 +7,7 @@ import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-
 import { MenuModule } from 'primeng/menu'
 import { MenuItem } from 'primeng/api'
 import { ConstantesService } from '@/app/servicios/constantes.service'
+import { CommunicationService } from '@/app/servicios/communication.service'
 
 @Component({
     selector: 'app-rubrica-evaluacion',
@@ -27,9 +28,16 @@ export class RubricaEvaluacionComponent implements OnInit, OnDestroy {
                     command: () => this.deleteRubricaEvaluacion(),
                     visible: this.constantesService.iPerfilId == 7 ? true : false
                 },
+                {
+                    label: 'Descargar',
+                    icon: 'pi pi-download',
+                    command: () => this.communicationService.requestPrint()
+                },
             ],
         },
     ]
+    private communicationService = inject(CommunicationService)
+
     rubrica
     params = {
         iEvaluacionId: undefined,
@@ -60,6 +68,9 @@ export class RubricaEvaluacionComponent implements OnInit, OnDestroy {
         })
     }
 
+    downloadRubrica(){
+
+    }
     isMenuVisible(): boolean {
         return this.items.some(group =>
             group.items?.some(item => item.visible !== false)

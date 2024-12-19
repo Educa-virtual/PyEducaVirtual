@@ -39,6 +39,7 @@ import { RubricaEvaluacionComponent } from '@/app/sistema/aula-virtual/features/
 import { RubricaCalificarComponent } from '@/app/sistema/aula-virtual/features/rubricas/components/rubrica-calificar/rubrica-calificar.component'
 import { ToolbarPrimengComponent } from '../../../../../../shared/toolbar-primeng/toolbar-primeng.component'
 import { MenuItem } from 'primeng/api'
+import { CommunicationService } from '@/app/servicios/communication.service'
 @Component({
     selector: 'app-evaluacion-room',
     standalone: true,
@@ -141,6 +142,7 @@ export class EvaluacionRoomComponent implements OnInit, OnDestroy {
             cInstrumentoNombre: 'Sin instrumento de evaluación',
         },
     ]
+
 
     constructor(
         private _evaluacionService: ApiEvaluacionesService,

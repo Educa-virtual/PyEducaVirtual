@@ -1,10 +1,4 @@
-import {
-    Component,
-    OnInit,
-    OnChanges,
-    OnDestroy,
-    SimpleChanges,
-} from '@angular/core'
+import { Component } from '@angular/core'
 import { ConfirmDialogModule } from 'primeng/confirmdialog'
 import { StepsModule } from 'primeng/steps'
 import { ConfirmationService, MessageService } from 'primeng/api'
@@ -26,15 +20,4 @@ import { TicketService } from './registro/service/ticketservice'
         MessageService,
     ],
 })
-export class ConfiguracionComponent implements OnInit, OnChanges, OnDestroy {
-    ngOnDestroy(): void {
-        throw new Error('Method not implemented.')
-    }
-    ngOnChanges(changes: SimpleChanges): void {
-        throw new Error('Method not implemented.', changes)
-    }
-    ngOnInit(): void {
-        throw new Error('Method not implemented.')
-    }
-    //constructor(private router: Router) {}
-}
+export class ConfiguracionComponent {}

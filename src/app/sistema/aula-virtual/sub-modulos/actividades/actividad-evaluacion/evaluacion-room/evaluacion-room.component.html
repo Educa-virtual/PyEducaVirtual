@@ -16,19 +16,23 @@
                         (evaluacion?.cEvaluacionTitulo || '')
                     "
                 >
-                </app-toolbar-primeng>
-                <div class="grid mb-4 justify-content-end">
-                    <div
-                        class="col-12 md:col-6 flex flex-column gap-2 align-items-end"
+                    <p-menu #menu [model]="items" [popup]="true" />
+
+                    <button
+                        [ngClass]="{
+                            'border-none': true,
+                            'cursor-pointer': true,
+                        }"
+                        class="p-1 mx-1 p-button-rounded p-button-primary p-button-text"
+                        pButton
+                        (click)="$event.stopPropagation(); menu.toggle($event)"
                     >
-                        <app-rubricas
-                            [title]="'Rúbricas'"
-                            mode="SELECTION"
-                            [params]="params"
-                            (rubricaSelectedChange)="accionRubrica($event)"
-                        ></app-rubricas>
-                    </div>
-                </div>
+                        <i
+                            class="pi pi-ellipsis-h text-white hover:text-blue-300"
+                        ></i>
+                    </button>
+                </app-toolbar-primeng>
+                <div class="grid mb-4 justify-content-end"></div>
 
                 <p-panel header="" class="mb-4">
                     <div class="grid">
@@ -162,8 +166,19 @@
                         </div>
                     </div>
                 </p-panel>
-                <div class="flex flex-column gap-4">
+                <div class="flex flex-column my-4 gap-4">
                     <article class="card">
+                        <div
+                            class="col-12 md:col-6 flex flex-column gap-2 align-items-start"
+                        >
+                            <app-rubricas
+                                [title]="'Rúbricas'"
+                                mode="SELECTION"
+                                [params]="params"
+                                (rubricaSelectedChange)="accionRubrica($event)"
+                            ></app-rubricas>
+                        </div>
+
                         <div class="">
                             <app-rubrica-evaluacion
                                 (clickNameRubrica)="showRubrica($event)"
@@ -185,7 +200,11 @@
                                 }"
                                 [maximizable]="true"
                             >
-                                <app-rubrica-calificar [enableCellSelection]="false" [showSortIcon]="false" class="w-full">
+                                <app-rubrica-calificar
+                                    [enableCellSelection]="false"
+                                    [showSortIcon]="false"
+                                    class="w-full"
+                                >
                                 </app-rubrica-calificar>
                             </p-dialog>
                         </div>

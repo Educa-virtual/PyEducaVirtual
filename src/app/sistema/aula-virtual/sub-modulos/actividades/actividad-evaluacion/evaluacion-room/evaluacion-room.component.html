@@ -32,140 +32,186 @@
                         ></i>
                     </button>
                 </app-toolbar-primeng>
-                <div class="grid mb-4 justify-content-end"></div>
+                <div class="card">
+                    <div class="grid nested-grid">
+                        <!-- Seccion de Inicio de evaluacion-->
+                        <div class="col-8">
+                            <div class="grid">
+                                <div class="col-6">
+                                    <div
+                                        class="text-justify p-3 border-round-sm font-bold"
+                                    >
+                                        <span
+                                            class="font-bold text-xl flex align-items-center gap-2"
+                                        >
+                                            <app-icon
+                                                name="matCalendarMonth"
+                                                class="text-primary"
+                                                size="sm"
+                                            ></app-icon>
+                                            Inicio de Evaluación
+                                        </span>
+                                        <p class="flex gap-2 flex-wrap mt-2">
+                                            <ng-container
+                                                *ngIf="
+                                                    evaluacion?.dtEvaluacionInicio;
+                                                    else noFecha
+                                                "
+                                            >
+                                                <span>
+                                                    {{
+                                                        evaluacion.dtEvaluacionInicio
+                                                            | date
+                                                                : "EEEE, d 'de' MMMM 'de' yyyy"
+                                                    }}
+                                                </span>
+                                                <span
+                                                    class="flex align-items-center gap-2"
+                                                >
+                                                    <app-icon
+                                                        name="matAccessTime"
+                                                        class="text-primary"
+                                                        size="sm"
+                                                    ></app-icon>
+                                                    <span class="font-bold"
+                                                        >Hora Límite:</span
+                                                    >
+                                                </span>
+                                                <span>{{
+                                                    evaluacion.dtEvaluacionInicio
+                                                        | date: 'h:mm a'
+                                                }}</span>
+                                            </ng-container>
+                                            <ng-template #noFecha>
+                                                <span class="text-danger"
+                                                    >Fecha de evaluación no
+                                                    disponible</span
+                                                >
+                                            </ng-template>
+                                        </p>
+                                    </div>
+                                </div>
 
-                <p-panel header="" class="mb-4">
-                    <div class="grid">
-                        <!-- Inicio de Evaluación -->
-                        <div class="col-12 md:col-4">
-                            <span
-                                class="font-bold text-xl flex align-items-center gap-2"
-                            >
-                                <app-icon
-                                    name="matCalendarMonth"
-                                    class="text-primary"
-                                    size="sm"
-                                ></app-icon>
-                                Inicio de Evaluación
-                            </span>
-                            <p class="flex gap-2 flex-wrap mt-2">
-                                {{
-                                    evaluacion?.dtEvaluacionInicio
-                                        | date: "EEEE, d 'de' MMMM 'de' yyyy"
-                                }}
-                                <span class="flex align-items-center gap-2">
-                                    <app-icon
-                                        name="matAccessTime"
-                                        class="text-primary"
-                                        size="sm"
-                                    ></app-icon>
-                                    <span class="font-bold">Hora Límite:</span>
-                                    {{
-                                        evaluacion?.dtEvaluacionInicio
-                                            | date: 'h:mm a'
-                                    }}
-                                </span>
-                            </p>
-                        </div>
+                                <!-- Seccion tipo de Evaluacion-->
+                                <div class="col-6">
+                                    <div class="body text-center p-3 font-bold">
+                                        <div
+                                            class="flex flex-column align-items-center gap-2"
+                                        >
+                                            <span class="font-bold text-xl"
+                                                >Tipo Evaluación</span
+                                            >
+                                            <span>{{
+                                                evaluacion?.cTipoEvalNombre
+                                            }}</span>
+                                        </div>
+                                    </div>
+                                </div>
 
-                        <!-- Tipo de Evaluación -->
-                        <div class="col-12 md:col-4">
-                            <div class="flex flex-column gap-2">
-                                <span class="font-bold text-xl"
-                                    >Tipo Evaluación</span
-                                >
-                                <span>{{ evaluacion?.cTipoEvalNombre }}</span>
+                                <!-- Seccion cierre de Evalaucion-->
+                                <div class="col-6">
+                                    <span
+                                        class="font-bold text-xl flex align-items-center gap-2"
+                                    >
+                                        <app-icon
+                                            name="matCalendarMonth"
+                                            class="text-primary"
+                                            size="sm"
+                                        ></app-icon>
+                                        Cierre de Evaluación
+                                    </span>
+                                    <span>
+                                        {{
+                                            evaluacion?.dtEvaluacionFin
+                                                | date
+                                                    : "EEEE, d 'de' MMMM 'de' yyyy"
+                                        }}
+                                    </span>
+                                    <span class="flex align-items-center gap-2">
+                                        <app-icon
+                                            name="matAccessTime"
+                                            class="text-primary"
+                                            size="sm"
+                                        ></app-icon>
+                                        <span class="font-bold"
+                                            >Hora Límite:</span
+                                        >
+                                        {{
+                                            evaluacion?.dtEvaluacionFin
+                                                | date: 'h:mm a'
+                                        }}
+                                    </span>
+                                    <p-card>
+                                        <div class="col-12 md:col-4">
+                                            <span
+                                                class="font-bold text-xl text-orange-500"
+                                                >BORRADOR</span
+                                            >
+                                            <span>
+                                                {{
+                                                    evaluacion?.iEvaluacionNroPreguntas ||
+                                                        1
+                                                }}
+                                            </span>
+                                            <div
+                                                *ngIf="
+                                                    evaluacion?.estado ===
+                                                    'borrador'
+                                                "
+                                                class="text-sm text-gray-500 mt-2"
+                                            >
+                                                <span>Estado:</span>
+                                                <span
+                                                    class="text-yellow-500 font-bold"
+                                                    >Borrador</span
+                                                >
+                                            </div>
+                                        </div>
+                                    </p-card>
+                                </div>
+
+                                <div class="col-6">
+                                    <div
+                                        class="text-center p-3 border-round-sm font-bold"
+                                    >
+                                        <!-- Total de Preguntas -->
+                                        <div class="flex flex-column gap-2">
+                                            <span class="font-bold text-xl"
+                                                >Total de Preguntas</span
+                                            >
+                                            <span>{{
+                                                evaluacion?.iEvaluacionNroPreguntas ??
+                                                    0
+                                            }}</span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-
-                        <!-- Instrucciones -->
-                        <div class="col-12 md:col-4">
-                            <div class="flex align-items-center gap-2 mb-2">
+                        <div class="col-4">
+                            <div
+                                class="text-center p-3 border-round-sm h-full font-bold"
+                            >
                                 <app-icon
                                     name="matMessage"
                                     color="text-primary"
                                     size="sm"
                                 ></app-icon>
                                 <h3 class="text-lg m-0">Instrucciones</h3>
-                            </div>
-                            <div
-                                class="bg-blue-100 p-3 border-round min-h-10rem"
-                            >
-                                <p-editor
-                                    appEditorOnlyView
-                                    class="quill-only-view"
-                                    [(ngModel)]="cEvaluacionInstrucciones"
-                                ></p-editor>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Segunda Fila -->
-                    <div class="grid mt-4">
-                        <!-- Cierre de Evaluación -->
-                        <div class="col-12 md:col-4">
-                            <span
-                                class="font-bold text-xl flex align-items-center gap-2"
-                            >
-                                <app-icon
-                                    name="matCalendarMonth"
-                                    class="text-primary"
-                                    size="sm"
-                                ></app-icon>
-                                Cierre de Evaluación
-                            </span>
-                            <p class="flex gap-2 flex-wrap mt-2">
-                                {{
-                                    evaluacion?.dtEvaluacionFin
-                                        | date: "EEEE, d 'de' MMMM 'de' yyyy"
-                                }}
-                                <span class="flex align-items-center gap-2">
-                                    <app-icon
-                                        name="matAccessTime"
-                                        class="text-primary"
-                                        size="sm"
-                                    ></app-icon>
-                                    <span class="font-bold">Hora Límite:</span>
-                                    {{
-                                        evaluacion?.dtEvaluacionFin
-                                            | date: 'h:mm a'
-                                    }}
-                                </span>
-                            </p>
-                        </div>
-
-                        <!-- Total de Preguntas -->
-                        <div class="col-12 md:col-4">
-                            <div class="flex flex-column gap-2">
-                                <span class="font-bold text-xl"
-                                    >Total de Preguntas</span
+                                <div
+                                    class="bg-blue-100 p-3 border-round min-h-10rem"
                                 >
-                                <span>{{
-                                    evaluacion?.iEvaluacionNroPreguntas ?? 0
-                                }}</span>
+                                    <p-editor
+                                        appEditorOnlyView
+                                        class="quill-only-view"
+                                        [(ngModel)]="cEvaluacionInstrucciones"
+                                    >
+                                    </p-editor>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 md:col-4">
-                        <div class="flex flex-column gap-2">
-                            <span class="font-bold text-xl text-orange-500"
-                                >BORRADOR</span
-                            >
-                            <span>{{
-                                evaluacion?.iEvaluacionNroPreguntas ?? 1
-                            }}</span>
-                            <div
-                                *ngIf="evaluacion?.estado === 'borrador'"
-                                class="text-sm text-gray-500 mt-2"
-                            >
-                                Estado:
-                                <span class="text-yellow-500 font-bold"
-                                    >Borrador</span
-                                >
-                            </div>
-                        </div>
-                    </div>
-                </p-panel>
+                </div>
                 <div class="flex flex-column my-4 gap-4">
                     <article class="card">
                         <div
@@ -240,7 +286,6 @@
                             </p-accordionTab>
                         </p-accordion>
                     </article>
-
                     <article class="card flex flex-column gap-4">
                         <p-accordion
                             *ngIf="

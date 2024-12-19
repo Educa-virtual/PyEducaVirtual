@@ -6,14 +6,15 @@
         {{ iPreguntaId }} de {{ evaluacion?.preguntas?.length }}
     </p>
 </app-toolbar-primeng>
-<div>
-    <div class="flex flex-column">
+<div class="card bg-white shadow-lg rounded-lg p-4 h-64">
+    <div class="flex flex-column h-full justify-center">
         <p class="flex flex-column text-black text-center text-2xl">
             <i class="pi pi-clock mr-2 text-3xl text-red-500"></i>
             {{ tiempoEnMilisegundos ?? '00:00:00' }}
         </p>
     </div>
 </div>
+
 <div class="grid">
     <div *ngIf="iPreguntaId === 0">
         <!-- Contenido inicial de la evaluación -->
@@ -59,16 +60,9 @@
                             alt="Tiempo"
                             class="w-6rem md:w-8rem h-auto"
                         />
-                        <div
-                            class="flex flex-column align-items-center md:flex-row md:justify-content-between"
-                        >
-                            <h2
-                                class="font-bold text-lg text-center md:text-start"
-                            >
-                                Duración:
-                            </h2>
-                        </div>
+
                         <div class="text-center mt-3">
+                            Duracion:
                             <h4 class="text-primary font-bold">
                                 {{
                                     evaluacion?.iTiempo

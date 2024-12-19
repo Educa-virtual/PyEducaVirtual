@@ -277,6 +277,8 @@ export class TablePrimengComponent implements OnChanges, OnInit {
         this.selectedColumn.emit([col, {
             iCriterioId: row.values[col.field].iCriterioId,
             iNivelEvaId: row.values[col.field].iNivelEvaId,
+            logros: row.values[col.field].logros,
+            row: row
         }])
 
         // Si la celda seleccionada es la misma, la deseleccionamos

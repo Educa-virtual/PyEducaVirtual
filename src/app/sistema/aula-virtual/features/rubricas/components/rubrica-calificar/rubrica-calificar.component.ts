@@ -183,6 +183,8 @@ export class RubricaCalificarComponent implements OnInit, OnDestroy {
             [`cNivelEvaDescripcion${index}`]: nivel.cNivelEvaDescripcion,
             iNivelEvaId: nivel.iNivelEvaId,
             iCriterioId: nivel.iCriterioId,
+            logros: nivel.logros,
+
         }))
 
         const merged = nivelesMap.reduce((acc, curr, index) => {
@@ -200,6 +202,7 @@ export class RubricaCalificarComponent implements OnInit, OnDestroy {
             acc['values'][descriptionKey] = {
                 iNivelEvaId: curr.iNivelEvaId,
                 iCriterioId: curr.iCriterioId,
+                logros: curr.logros,
             }
 
             return acc

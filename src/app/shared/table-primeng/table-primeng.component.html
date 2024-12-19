@@ -108,7 +108,7 @@
         <tr [pSelectableRow]="rowData" [ngClass]="getClass(rowData, 'class')">
             @for (col of columnasSeleccionadas; track $index; let i = $index) {
                 <td (click)="enableCellSelection && selectCell(col, col.field, rowData)" [ngClass]="{
-                    'SELECTED-CELL': enableCellSelection && isCellSelected(rowData.values[col.field]?.iNivelEvaId),
+                    'SELECTED-CELL': enableCellSelection && isCellSelected(rowData.values?.[col.field]?.iNivelEvaId) || (rowData.values?.[col.field]?.logros != null),
                     'cursor-pointer': enableCellSelection
                 }">
                     @if (col.type === 'expansion') {

@@ -257,20 +257,12 @@ export class ApiAulaService {
             } // Asegúrate de que el responseType esté como 'blob'
         )
     }
-    // generarPdfMatrizbyEvaluacionId(
-    //     _iEvaluacionIdtoMatriz: number,
-    //     areas: string // Cambié el nombre a 'areas'
-    // ): Observable<any> {
-    //     console.log('Parámetros enviados al backend:', areas)
-    //     return this.http.get(
-    //         ${this.baseUrl}/ere/Evaluaciones/generarPdfMatrizbyEvaluacionId,
-    //         {
-    //             params: {
-    //                 iEvaluacionId: _iEvaluacionIdtoMatriz.toString(),
-    //                 areas: areas, // Usa 'areas' aquí para coincidir con el nombre esperado por el backend
-    //             },
-    //             responseType: 'blob' as 'json', // Asegúrate de que el responseType esté como 'blob'
-    //         }
-    //     )
-    // }
+    generarReporteDeLogroFinalDeYear(params: { iSedeId }) {
+        return this._http.get(
+            `${this.baseUrlApi}/aula-virtual/Resultado/reporteDeLogroFinalXYear`,
+            {
+                params, // Enviar los datos como parámetros
+            }
+        )
+    }
 }

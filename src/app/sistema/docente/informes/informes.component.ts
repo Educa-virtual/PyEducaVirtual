@@ -1,9 +1,13 @@
-import { Component, OnInit, Input } from '@angular/core'
+import { Component, OnInit, inject, Input } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import {
     ContainerPageComponent,
     //IActionContainer,, Input, inject inject,
 } from '@/app/shared/container-page/container-page.component'
+import {
+    TablePrimengComponent,
+    IColumn,
+} from '@/app/shared/table-primeng/table-primeng.component'
 import { TabViewModule } from 'primeng/tabview'
 import { IconComponent } from '@/app/shared/icon/icon.component'
 import {
@@ -31,8 +35,10 @@ import { ButtonModule } from 'primeng/button'
 // nueva importaciones:
 import { OrderListModule } from 'primeng/orderlist'
 //import { Message, MessageService } from 'primeng/api'
-//import { ApiAulaService } from '../../aula-virtual/services/api-aula.service'
+import { ApiAulaService } from '../../aula-virtual/services/api-aula.service'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
+import { EditorModule } from 'primeng/editor'
+import { RemoveHTMLPipe } from '@/app/shared/pipes/remove-html.pipe'
 
 @Component({
     selector: 'app-informes',
@@ -42,6 +48,7 @@ import { LocalStoreService } from '@/app/servicios/local-store.service'
     imports: [
         ContainerPageComponent,
         CommonModule,
+        EditorModule,
         TabViewModule,
         IconComponent,
         TableModule,
@@ -55,6 +62,8 @@ import { LocalStoreService } from '@/app/servicios/local-store.service'
         IconFieldModule,
         ButtonModule,
         OrderListModule,
+        RemoveHTMLPipe,
+        TablePrimengComponent,
     ],
     providers: [
         provideIcons({
@@ -69,28 +78,115 @@ import { LocalStoreService } from '@/app/servicios/local-store.service'
     ],
 })
 export class InformesComponent implements OnInit {
-    //private _aulaService = inject(ApiAulaService);
-    perfil = []
+    private _aulaService = inject(ApiAulaService)
+
+    perfil: any[] = []
+    curso: any[] = []
+    notaEstudianteSelect: any[] = []
+    public estudianteMatriculadosxGrado = []
 
     @Input() iCursoId
 
     constructor(private store: LocalStoreService) {
-        const perfil = this.store.getItem('dremoPerfil')
-        console.log(this.store)
-        console.log(perfil)
+        this.perfil = this.store.getItem('dremoPerfil')
     }
+    public columnasTabla: IColumn[] = [
+        {
+            type: 'item',
+            width: '0.5rem',
+            field: 'index',
+            header: 'Nro',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'text',
+            width: '10rem',
+            field: 'cCursoNombre',
+            header: 'Área Curricular',
+            text_header: 'left',
+            text: 'left',
+        },
+        {
+            type: 'text',
+            width: '10rem',
+            field: 'iCalifIdPeriodo1',
+            header: 'TRIM 01',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'text',
+            width: '10rem',
+            field: 'iCalifIdPeriodo2',
+            header: 'TRIM 02',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'text',
+            width: '10rem',
+            field: 'iCalifIdPeriodo3',
+            header: 'TRIM 03',
+            text_header: 'center',
+            text: 'center',
+        },
+
+        {
+            type: 'text',
+            width: '10rem',
+            field: 'cDetMatConclusionDescPromedio',
+            header: 'Conclusión descriptiva',
+            text_header: 'center',
+            text: 'center',
+        },
+        // {
+        //     type: 'actions',
+        //     width: '1rem',
+        //     field: '',
+        //     header: 'Acciones',
+        //     text_header: 'center',
+        //     text: 'center',
+        // },
+    ]
 
     ngOnInit() {
-        this.obtenerEstudianteXCurso
+        this.obtenerEstudianteXCurso()
+    }
+    //un load para el boton guardar
+    loading: boolean = false
+    load() {
+        this.loading = true
+
+        setTimeout(() => {
+            this.loading = false
+        }, 2000)
     }
     //Obtener datos del estudiantes y sus logros alcanzados x cursos
-
     obtenerEstudianteXCurso() {
-        // $iIeCursoId = 1;
-        // $iSeccionId = 2;
-        // $iYAcadId = 3;
-        const idDocente = this.iCursoId
-        console.log(idDocente)
-        console.log('datos de perfil', this.perfil)
+        // @iSedeId INT,
+        // @iSeccionId INT,
+        // @iYAcadId INT,
+        // @iNivelGradoId INT
+        const iSedeId = this.perfil['iSedeId']
+        this._aulaService
+            .generarReporteDeLogroFinalDeYear({
+                iSedeId: iSedeId,
+            })
+            .subscribe((data) => {
+                // const registro = data['data']
+                // this.curso = JSON.parse(registro.json_cursos);
+                this.estudianteMatriculadosxGrado = data['data']
+                console.log(this.estudianteMatriculadosxGrado)
+            })
+    }
+    obtenerCursoEstudiante(estudiante) {
+        this.notaEstudianteSelect = estudiante.Estudiante
+        const id = estudiante.iEstudianteId
+        const filteredData = this.estudianteMatriculadosxGrado.filter(
+            (item) => item.iEstudianteId === id
+        )
+        this.curso = JSON.parse(filteredData[0].json_cursos)
+        console.log(filteredData[0].json_cursos)
     }
 }

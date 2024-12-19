@@ -25,3 +25,25 @@
     display: none;
     height: 600px;
 }
+// estilo de listar estudiantes
+:host ::ng-deep .perfilesList {
+    border-radius: 8px; /* Radio del borde */
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 1px 1px 1px 1px;
+    width: 100%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra para dar profundidad */
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    img {
+        width: 150px;
+        box-shadow:
+            0 3px 6px rgba(0, 0, 0, 0.16),
+            0 3px 6px rgba(0, 0, 0, 0.23);
+        margin-right: 2rem;
+    }
+}
+.btn {
+    border-radius: 50%;
+}

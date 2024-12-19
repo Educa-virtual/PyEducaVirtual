@@ -42,6 +42,8 @@ export class AreaCardComponent {
         // Obtener las áreas almacenadas en el servicio
         this.areas = this.compartirFormularioEvaluacionService.getAreas()
         console.log('Áreas obtenidas desde el servicio:', this.areas)
+
+        // this.compartirFormularioEvaluacionService.setAreas(this.areas)
     }
     irABancoPreguntas(area: any): void {
         // Almacenar los datos en el servicio
@@ -51,6 +53,7 @@ export class AreaCardComponent {
         this.compartirFormularioEvaluacionService.setGrado(area.grado)
         this.compartirFormularioEvaluacionService.setNivel(area.nivel)
         this.compartirFormularioEvaluacionService.setSeccion(area.seccion)
+        this.compartirFormularioEvaluacionService.setAreasId(area.id)
         // Navegar a la nueva ruta sin parámetros en la URL
         this.router.navigate(['./', area.id, 'banco-preguntas'])
     }
@@ -65,49 +68,90 @@ export class AreaCardComponent {
      * @param {number} iEvaluacionId - El ID de la evaluación para la cual se generará la matriz PDF.
      */
 
-    // generarPdfMatriz(iEvaluacionId: number, area: IArea) {
-    //     iEvaluacionId = this._iEvaluacionId
-    //     // Obtén las áreas desde el servicio
-    //     // const areas = this.compartirFormularioEvaluacionService.getAreas()
-    //     // console.log('Áreas obtenidas desde el servicio:', areas)
+    generarPdfMatriz(iEvaluacionId: number, area: IArea) {
+        console.log('Aqui tendremos el id NivelGradoId:', area.id)
+        // Convierte las áreas en una cadena JSON
+        console.log('Ver si area se enviara en json o array:', area)
+        const encodedAreas = JSON.stringify([area]) // Solo convertir a JSON string, no codificar
+        console.log('Cadena JSON de las áreas:', encodedAreas)
 
-    //     // Convierte las áreas en una cadena JSON
-    //     const encodedAreas = JSON.stringify([area]) // Solo convertir a JSON string, no codificar
-    //     console.log('Cadena JSON de las áreas:', encodedAreas)
-    //     this._apiEre
-    //         .generarPdfMatrizbyEvaluacionId(iEvaluacionId, encodedAreas)
-    //         .subscribe(
-    //             (response) => {
-    //                 console.log('Respuesta de Evaluacion:', iEvaluacionId) // Para depuración
+        const params = {
+            iEvaluacionId: this._iEvaluacionId,
+            areaId: area.id,
+            nombreCurso: area.nombre,
+            nivel: area.nivel,
+            grado: area.grado,
+            seccion: area.seccion,
+            nombreEvaluacion: this._nombreEvaluacion,
+        }
 
-    //                 // Se muestra un mensaje indicando que la descarga de la matriz ha comenzado
-    //                 this._MessageService.add({
-    //                     severity: 'success',
-    //                     detail: 'Comienza la descarga de la Matriz',
-    //                 })
+        //en iEvaluacionId estaba el encodeAreas iEvaluacionId, encodedAreas
+        this._apiEre.generarPdfMatrizbyEvaluacionId(params).subscribe(
+            (response) => {
+                //!
+                console.log('Respuesta de Evaluacion:', iEvaluacionId) // Para depuración
+                console.log('Acceder para params:', params)
+                // Se muestra un mensaje indicando que la descarga de la matriz ha comenzado
+                this._MessageService.add({
+                    severity: 'success',
+                    detail: 'Comienza la descarga de la Matriz',
+                })
 
-    //                 // Se crea un enlace de descarga para el archivo PDF generado
-    //                 const blob = response as Blob // Asegúrate de que la respuesta sea un Blob
-    //                 const link = document.createElement('a')
-    //                 link.href = URL.createObjectURL(blob)
-    //                 link.download =
-    //                     'matriz_evaluacion_' +
-    //                     area.nombre.toLocaleLowerCase() +
-    //                     '.pdf' // Nombre del archivo descargado
-    //                 link.click()
-    //             },
-    //             (error) => {
-    //                 // En caso de error, se determina el mensaje de error a mostrar
-    //                 const errorMessage =
-    //                     error?.message ||
-    //                     'No hay datos suficientes para descargar la Matriz'
+                // Se crea un enlace de descarga para el archivo PDF generado
+                const blob = response as Blob // Asegúrate de que la respuesta sea un Blob
+                const link = document.createElement('a')
+                link.href = URL.createObjectURL(blob)
+                link.download =
+                    'matriz_evaluacion_' +
+                    area.nombre.toLocaleLowerCase() +
+                    '.pdf' // Nombre del archivo descargado
+                link.click()
+            },
+            (error) => {
+                // En caso de error, se determina el mensaje de error a mostrar
+                const errorMessage =
+                    error?.message ||
+                    'No hay datos suficientes para descargar la Matriz'
 
-    //                 // Se muestra un mensaje de error en el sistema
-    //                 this._MessageService.add({
-    //                     severity: 'success', // Se cambió a "error" ya que es un fallo
-    //                     detail: errorMessage,
-    //                 })
-    //             }
-    //         )
-    // }
+                // Se muestra un mensaje de error en el sistema
+                this._MessageService.add({
+                    severity: 'success', // Se cambió a "error" ya que es un fallo
+                    detail: errorMessage,
+                })
+            }
+        )
+    }
+    obtenerPreguntaSeleccionada(iEvaluacionId: number) {
+        if (!iEvaluacionId || iEvaluacionId < 0) {
+            console.error(
+                'El parámetro iEvaluacionIdS no está definido o es inválido'
+            )
+            return
+        }
+        this._apiEre.obtenerPreguntaSeleccionada(iEvaluacionId).subscribe({
+            next: (data) => {
+                console.log('Preguntas seleccionadas:', data)
+            },
+            error: (error) => {
+                console.error(
+                    'Error al obtener las preguntas seleccionadas:',
+                    error
+                )
+            },
+        })
+    }
+
+    procesarAreas(): void {
+        console.log('Procesando áreas en el hijo:', this.areas)
+
+        // Ejemplo: Contar áreas
+        const totalAreas = this.areas.length
+        console.log('Total de áreas:', totalAreas)
+
+        // Ejemplo: Filtrar áreas
+        const areasConEstudiantes = this.areas.filter(
+            (area) => area.totalEstudiantes > 0
+        )
+        console.log('Áreas con estudiantes:', areasConEstudiantes)
+    }
 }

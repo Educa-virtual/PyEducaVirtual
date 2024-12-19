@@ -157,10 +157,10 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         // Aqui llego la iEvaluacion desde BancoPreguntasForm
-        console.log(
-            'iEvaluacionId recibido desde form Click Agregar Pregunta :',
-            this._iEvaluacionId
-        )
+        // console.log(
+        //     'iEvaluacionId recibido desde form Click Agregar Pregunta :',
+        //     this._iEvaluacionId
+        // )
         // escuchar cambio tipo pregunta
         this.listenTipoPregunta()
         // Llenar el formulario paso 1 basado en la seleccion de la cabecera.

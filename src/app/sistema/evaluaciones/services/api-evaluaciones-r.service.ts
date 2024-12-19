@@ -218,13 +218,13 @@ export class ApiEvaluacionesRService {
             }
         )
     }
-    obtenerEspDrem(params) {
-        return this.http.get(
-            `${this.baseUrl}/ere/Evaluaciones/obtenerEspDrem`,
+    // obtenerEspDrem(params) {
+    //     return this.http.get(
+    //         `${this.baseUrl}/ere/Evaluaciones/obtenerEspDrem`,
 
-            { params }
-        )
-    }
+    //         { params }
+    //     )
+    // }
     obtenerEspDremCurso(
         iPersId: number,
         iEvaluacionId: number
@@ -236,8 +236,35 @@ export class ApiEvaluacionesRService {
             { params }
         )
     }
+    insertarPreguntaSeleccionada(data) {
+        return this.http.post(
+            `${this.baseUrl}/ere/Evaluaciones/insertarPreguntaSeleccionada`,
+            data
+        )
+    }
+    obtenerPreguntaSeleccionada(iEvaluacionId: number) {
+        return this.http.get(
+            `${this.baseUrl}/ere/Evaluaciones/obtenerPreguntaSeleccionada`,
+            {
+                params: {
+                    iEvaluacionId: iEvaluacionId.toString(), // Convertir a cadena si es necesario
+                },
+            }
+        )
+    }
+    obtenerPreguntaInformacion(iEvaluacionId: number, iPreguntaIds: string) {
+        return this.http.get(
+            `${this.baseUrl}/ere/Evaluaciones/obtenerPreguntaInformacion`,
+            {
+                params: {
+                    iEvaluacionId: iEvaluacionId.toString(), // Convertir a cadena si es necesario
+                    iPreguntaIds: iPreguntaIds.toString(), // Convertir a cadena si es necesario
+                },
+            }
+        )
+    }
 
-    //Banco de Preguntas ->
+    //Banco de Preguntas no tocar ->
     generarWordByPreguntasIds(baseParams) {
         const url = `${this.baseUrlBackend}/generarWordBancoPreguntasSeleccionadas`
         const params = new URLSearchParams({ ...baseParams })

@@ -19,14 +19,23 @@ import { CompartirFormularioEvaluacionService } from '../../services/ereEvaluaci
 import { GeneralService } from '@/app/servicios/general.service'
 import { DomSanitizer } from '@angular/platform-browser'
 // import { AulaBancoPreguntasComponent } from '@/app/sistema/aula-virtual/sub-modulos/aula-banco-preguntas/aula-banco-preguntas/aula-banco-preguntas.component'
-import { MessageService } from 'primeng/api'
+import { MenuItem, MessageService } from 'primeng/api'
 import { IArea } from '../areas/interfaces/area.interface'
 import { CompartirIdEvaluacionService } from '../../services/ereEvaluaciones/compartir-id-evaluacion.service'
+import { MenuModule } from 'primeng/menu'
+import { DialogModule } from 'primeng/dialog'
+import { CommonModule } from '@angular/common'
 @Component({
     selector: 'app-ere-preguntas',
     templateUrl: './banco-preguntas.component.html',
     standalone: true,
-    imports: [BancoPreguntasModule, BancoPreguntaListaComponent],
+    imports: [
+        BancoPreguntasModule,
+        BancoPreguntaListaComponent,
+        MenuModule,
+        DialogModule,
+        CommonModule,
+    ],
     providers: [GeneralService],
     styleUrls: ['./banco-preguntas.component.scss'],
 })
@@ -46,6 +55,11 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
     nombrecEvaluacion: string | null = null
     area: IArea | null = null // Declara la propiedad
     public iEvaluacionId!: number // Propiedad para almacenar el ID de evaluación
+    public iPreguntaId!: number // Propiedad para almacenar el ID de evaluación
+    preguntasSeleccionadas: any // Aquí se guardarán las preguntas seleccionadas
+    preguntasInformacionBanco: any // Aquí se guardarán las preguntas seleccionadas
+    bancoPregunta: any
+    preguntasInformacion: any[] = [] // Aquí se guardarán las preguntas seleccionadas
     unsubscribe$: Subject<boolean> = new Subject()
     private _MessageService = inject(MessageService)
     public areax = {
@@ -69,10 +83,18 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
         iTipoPregId: 0,
         // iEvaluacionId: 0,
     }
-
+    public showModalBancoPreguntas: boolean = false
+    public mostrarModalBaPrInformacion: boolean = false
     areas: any[] = []
     selectedItems = []
     public iEvaluacionIdS: number | null = null
+    public informacionPregunta: any = null
+    public informacinoBanco: any = null
+    // Datos seleccionados para la segunda tabla
+    dataSeleccionado: any[] = [] // Aquí se guardarán las preguntas seleccionadas
+    selectedItemsForm = []
+    preguntaSelecionada: any[] = []
+    preguntastocursos = []
     // acciones Contenedor
     accionesPrincipal: IActionContainer[] = [
         {
@@ -84,25 +106,84 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
         },
         {
             labelTooltip: 'Agregar Pregunta',
-            text: 'Agregar Preguntass',
+            text: 'Agregar Preguntas',
             icon: 'pi pi-plus',
             accion: 'agregar',
             class: 'p-button-secondary',
         },
+        // {
+        //     labelTooltip: 'asignar',
+        //     text: 'asignar',
+        //     icon: 'pi pi-plus',
+        //     accion: 'asignar',
+        //     class: 'p-button-secondary',
+        // },
     ]
 
     public data = []
 
     // Columnas Tabla Banco Preguntas
     columnas: IColumn[] = [
+        // {
+        //     field: '',
+        //     header: '',
+        //     type: 'expansion',
+        //     width: '2rem',
+        //     text: 'left',
+        //     text_header: 'left',
+        // },
+
+        {
+            field: 'checked',
+            header: '',
+            type: 'checkbox',
+            width: '5rem',
+            text: 'left',
+            text_header: '',
+        },
+
+        {
+            field: 'cPregunta',
+            header: 'Pregunta',
+            type: 'text',
+            width: '5rem',
+            text: 'left',
+            text_header: 'Pregunta',
+        },
+        {
+            field: 'iEncabPregId',
+            header: 'Encabezado',
+            type: 'text',
+            width: '5rem',
+            text: 'left',
+            text_header: 'Encabezado',
+        },
+        {
+            field: 'cPreguntaClave',
+            header: 'Clave',
+            type: 'text',
+            width: '5rem',
+            text: 'left',
+            text_header: 'Clave',
+        },
         {
             field: '',
-            header: '',
-            type: 'expansion',
-            width: '2rem',
+            header: 'Acciones',
+            type: 'actions',
+            width: '5rem',
             text: 'left',
-            text_header: 'left',
+            text_header: '',
         },
+    ]
+    columnasSelect: IColumn[] = [
+        // {
+        //     field: '',
+        //     header: '',
+        //     type: 'expansion',
+        //     width: '2rem',
+        //     text: 'left',
+        //     text_header: 'left',
+        // },
         {
             field: 'checked',
             header: '',
@@ -161,6 +242,44 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             type: 'item',
             class: 'p-button-rounded p-button-danger p-button-text',
         },
+        {
+            labelTooltip: 'Ver',
+            icon: 'pi pi-eye',
+            accion: 'ver',
+            type: 'item',
+            class: 'p-button-rounded p-button-warning p-button-text',
+        },
+    ]
+    public accionesTablaSelect: IActionTable[] = [
+        {
+            labelTooltip: 'Ver',
+            icon: 'pi pi-eye',
+            accion: 'ver',
+            type: 'item',
+            class: 'p-button-rounded p-button-warning p-button-text',
+        },
+    ]
+
+    tiposAgrecacionPregunta: MenuItem[] = [
+        {
+            label: 'Nueva Pregunta',
+            icon: 'pi pi-plus',
+            command: () => {
+                // this.handleNuevaPregunta()
+                this.agregarEditarPregunta({
+                    iPreguntaId: 0,
+                    preguntas: [],
+                    iEncabPregId: -1,
+                })
+            },
+        },
+        {
+            label: 'Del banco de preguntas',
+            icon: 'pi pi-plus',
+            command: () => {
+                this.handleBancopregunta()
+            },
+        },
     ]
     constructor(
         private compartirFormularioEvaluacionService: CompartirFormularioEvaluacionService,
@@ -183,7 +302,7 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
         this.getParamsByUrl()
         this.initializeData()
         this.fetchInitialData()
-        this.getTipoAmbiente()
+        //this.getTipoAmbiente()
 
         this.iEvaluacionIdS = this.compartirIdEvaluacionService.iEvaluacionId
         console.log(
@@ -235,8 +354,18 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             nivel: this.nivel,
             seccion: this.seccion,
         })
-    }
+        //!
 
+        this.obtenerPreguntaSeleccionada(this.iEvaluacionId)
+        this.compartirFormularioEvaluacionService.getAreasId()
+        console.log(
+            'ID de área:',
+            this.compartirFormularioEvaluacionService.getAreasId()
+        )
+    }
+    handleBancopregunta() {
+        this.showModalBancoPreguntas = true
+    }
     getParamsByUrl() {
         this._route.queryParams.subscribe((params) => {
             this.areax = {
@@ -325,51 +454,168 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
                         {},
                         this.expandedRowKeys
                     )
-
                     console.log(
                         'Datos filtrados de banco de preguntas:',
                         this.data
                     )
                 },
             })
-
         console.log('Parámetros enviados:', this.params)
     }
 
-    preguntastocursos = []
     //!
-    getTipoAmbiente() {
-        this.query
+    // getTipoAmbiente() {
+    //     this.query
 
-            .searchCalAcademico({
-                esquema: 'ere',
-                tabla: 'preguntas',
-                campos: 'iPreguntaId,iDesempenoId,iTipoPregId,cPregunta,cPreguntaTextoAyuda,iPreguntaNivel,iPreguntaPeso,bPreguntaEstado,cPreguntaClave,iEstado,iSesionId,iEspecialistaId,iNivelGradoId,iEncabPregId,iCursosNivelGradId',
-                condicion: '1=1',
-            })
-            .subscribe({
-                next: (data: any) => {
-                    // Truncar los campos cPregunta y cPreguntaTextoAyuda
-                    this.preguntastocursos = data.data.map((pregunta: any) => ({
-                        ...pregunta,
-                        cPregunta:
-                            pregunta.cPregunta.length > 100
-                                ? pregunta.cPregunta.slice(0, 100) + '...'
-                                : pregunta.cPregunta,
-                    }))
-                    console.log(this.preguntastocursos)
-                },
-                error: (error) => {
-                    console.error('Error fetching Años Académicos:', error)
-                },
-                complete: () => {
-                    console.log('Request completed')
-                },
-            })
-    }
+    //         .searchCalAcademico({
+    //             esquema: 'ere',
+    //             tabla: 'preguntas',
+    //             campos: 'iPreguntaId,iDesempenoId,iTipoPregId,cPregunta,cPreguntaTextoAyuda,iPreguntaNivel,iPreguntaPeso,bPreguntaEstado,cPreguntaClave,iEstado,iSesionId,iEspecialistaId,iNivelGradoId,iEncabPregId,iCursosNivelGradId',
+    //             condicion: '1=1',
+    //         })
+    //         .subscribe({
+    //             next: (data: any) => {
+    //                 // Truncar los campos cPregunta y cPreguntaTextoAyuda
+    //                 this.preguntastocursos = data.data.map((pregunta: any) => ({
+    //                     ...pregunta,
+    //                     cPregunta:
+    //                         pregunta.cPregunta.length > 100
+    //                             ? pregunta.cPregunta.slice(0, 100) + '...'
+    //                             : pregunta.cPregunta,
+    //                 }))
+    //             },
+    //             error: (error) => {
+    //                 console.error('Error fetching Años Académicos:', error)
+    //             },
+    //             complete: () => {
+    //                 console.log('Request completed')
+    //             },
+    //         })
+    // }
     onRowSelectionChange(event: any) {
+        this.selectedItems
         console.log('Cambios en selección:', event) // Este evento debería contener las filas seleccionadas
         console.log('Variable seleccionados:', this.selectedItems)
+
+        // this.selectedItemsForm
+        // console.log(
+        //     'Variable seleccionados selectedItemsForm:',
+        //     this.selectedItemsForm
+        // )
+    }
+
+    guardarPreguntasSeleccionadas(iEvaluacionId: number) {
+        // Filtrar las preguntas seleccionadas que aún no están en `dataSeleccionado`
+        const nuevasPreguntas = this.selectedItems.filter(
+            (item) =>
+                !this.dataSeleccionado.some(
+                    (seleccionado) =>
+                        seleccionado.iPreguntaId === item.iPreguntaId
+                )
+        )
+
+        // Preparar el payload con todas las preguntas seleccionadas
+        const payload = {
+            iEvaluacionId: iEvaluacionId, // ID de evaluación
+            preguntas: nuevasPreguntas.map((pregunta) => ({
+                iPreguntaId: pregunta.iPreguntaId, // ID de cada pregunta
+            })),
+        }
+        console.log('Payload:', payload)
+        // Enviar el payload al backend en una sola solicitud
+        this._apiEre
+            .insertarPreguntaSeleccionada(payload) // Endpoint que maneja múltiples preguntas
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+                next: (response) => {
+                    console.log('Preguntas guardadas exitosamente:', response)
+
+                    // Actualizar la lista de seleccionados si se guardaron correctamente
+                    this.dataSeleccionado = [
+                        ...this.dataSeleccionado,
+                        ...nuevasPreguntas,
+                    ]
+                },
+                error: (error) => {
+                    console.error('Error al guardar las preguntas:', error)
+                },
+            })
+
+        // Limpiar las preguntas seleccionadas del formulario
+        this.selectedItems = []
+
+        // Log para confirmar el proceso
+        console.log('Payload enviado al backend:', payload)
+        console.log(
+            'Estado actualizado de preguntas seleccionadas:',
+            this.dataSeleccionado
+        )
+    }
+    obtenerPreguntaSeleccionada(iEvaluacionId: number) {
+        if (!iEvaluacionId || iEvaluacionId < 0) {
+            console.error(
+                'El parámetro iEvaluacionIdS no está definido o es inválido'
+            )
+            return
+        }
+        this._apiEre.obtenerPreguntaSeleccionada(iEvaluacionId).subscribe({
+            next: (data) => {
+                console.log('Preguntas seleccionadas:', data)
+                this.preguntasSeleccionadas = data // Guardamos las preguntas en una variable
+                console.log(
+                    'Datos completos de banco de preguntas:',
+                    this.preguntasSeleccionadas
+                )
+            },
+            error: (error) => {
+                console.error(
+                    'Error al obtener las preguntas seleccionadas:',
+                    error
+                )
+            },
+        })
+    }
+    //!
+    //Ver preguntas
+
+    accionVerPreguntas(): void {
+        this._apiEre
+            .obtenerPreguntaInformacion(
+                this.iEvaluacionId,
+                this.selectedItems.map((item) => item.iPreguntaId).join(',')
+            )
+            .subscribe({
+                next: (resp: any) => {
+                    console.log('Respuesta completa de la API:', resp)
+
+                    // Filtrar la respuesta para obtener solo la pregunta seleccionada
+                    const preguntaSeleccionada = resp.find(
+                        (pregunta: any) =>
+                            // pregunta.iPreguntaId ===
+                            // this.informacionPregunta.iPreguntaId
+                            parseInt(pregunta.iPreguntaId) ===
+                            parseInt(this.informacionPregunta.iPreguntaId)
+                    )
+
+                    if (preguntaSeleccionada) {
+                        this.preguntasInformacion = [preguntaSeleccionada] // Asignar la pregunta seleccionada
+                    } else {
+                        this.preguntasInformacion = [] // Si no se encuentra la pregunta, no se muestra nada
+                    }
+
+                    console.log(
+                        'Pregunta seleccionada del Const Pregunta Seleccionada:',
+                        preguntaSeleccionada
+                    )
+                    console.log(
+                        'Pregunta seleccionada de PreguntasInformacion:',
+                        this.preguntasInformacion
+                    )
+                },
+                error: (err) => {
+                    console.error('Error al cargar datos:', err)
+                },
+            })
     }
 
     generarPdfMatriz(): void {
@@ -522,6 +768,13 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
         if (accion === 'eliminar') {
             this.eliminarPregunta(item)
         }
+        if (accion === 'ver') {
+            this.informacionPregunta = item
+            this.mostrarModalBaPrInformacion = true
+            //this.showModalBancoPreguntas = true
+            console.log('Informacion de la pregunta de ITEM', item)
+            this.accionVerPreguntas() // Llamar a la función
+        }
     }
 
     eliminarPregunta(item) {
@@ -595,7 +848,6 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             }
         })
     }
-
     // desuscribirse de los observables cuando se destruye el componente
     ngOnDestroy(): void {
         this.unsubscribe$.next(true)

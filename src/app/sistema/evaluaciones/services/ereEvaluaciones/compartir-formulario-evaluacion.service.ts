@@ -10,24 +10,15 @@ export class CompartirFormularioEvaluacionService {
     private nivel: string | null = null
     private seccion: string | null = null
     private areas: any[] = [] // Lista de áreas procesadas
-    setcEvaluacionNombre(nombre: string) {
-        //!Se agrego localStorage para el momento de reinicar la pagina no se pierdan esos datos
-        // console.log('Valor recibido en setcEvaluacionNombre:', nombre) // Verifica lo que se recibe
-        // this.cEvaluacionNombre = nombre
-        // console.log('Nombre guardado en el servicio:', this.cEvaluacionNombre) // Verifica que se guarda correctamente
 
+    private areasIdNivelGradoString: string | null = null
+    setcEvaluacionNombre(nombre: string) {
         this.cEvaluacionNombre = nombre
         // Guardar en el localStorage
         localStorage.setItem('cEvaluacionNombre', nombre)
     }
 
     getcEvaluacionNombre(): string | null {
-        // console.log(
-        //     'Nombre obtenido desde el servicio:',
-        //     this.cEvaluacionNombre
-        // ) // Verifica que se recupera correctamente
-        // return this.cEvaluacionNombre
-
         // Intentar recuperar del localStorage si está vacío
         if (!this.cEvaluacionNombre) {
             this.cEvaluacionNombre = localStorage.getItem('cEvaluacionNombre')
@@ -35,7 +26,6 @@ export class CompartirFormularioEvaluacionService {
         return this.cEvaluacionNombre
     }
 
-    //!Se agrego datos para pasar de area a banco preguntas
     setGrado(grado: string) {
         this.grado = grado
         localStorage.setItem('grado', grado)
@@ -87,5 +77,21 @@ export class CompartirFormularioEvaluacionService {
         }
         return this.areas
     }
+
+    //Id Nivel Grado
+    setAreasId(areasIdNivelGradoString: string) {
+        this.areasIdNivelGradoString = areasIdNivelGradoString
+        localStorage.setItem('areasIdNivelGradoString', areasIdNivelGradoString)
+    }
+
+    getAreasId(): string | null {
+        if (!this.areasIdNivelGradoString) {
+            this.areasIdNivelGradoString = localStorage.getItem(
+                'areasIdNivelGradoString'
+            )
+        }
+        return this.areasIdNivelGradoString
+    }
+
     constructor() {}
 }

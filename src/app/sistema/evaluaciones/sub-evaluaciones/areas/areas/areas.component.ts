@@ -16,7 +16,7 @@ import { ActivatedRoute } from '@angular/router'
 import { ConstantesService } from '@/app/servicios/constantes.service' //!AQUI ESTA EL USUARIO
 //import { ApiEvaluacionesRService } from '../../../../services/api-evaluaciones-r.service'
 import { ApiEvaluacionesRService } from '../../../services/api-evaluaciones-r.service'
-import { Subject, takeUntil } from 'rxjs'
+import { Subject } from 'rxjs'
 import { CompartirFormularioEvaluacionService } from '../../../services/ereEvaluaciones/compartir-formulario-evaluacion.service'
 import { CompartirIdEvaluacionService } from '../../../services/ereEvaluaciones/compartir-id-evaluacion.service'
 import { CommonModule } from '@angular/common'
@@ -101,32 +101,9 @@ export class AreasComponent implements OnInit {
             'EVALUACION SOTRAGE:',
             this.compartirIdEvaluacionService.iEvaluacionIdStorage
         )
-        //!
-        // console.log('iEvaluacionId: ---->', this.iEvaluacionId)
-        // console.log(
-        //     'Nombre de la evaluación ----->:',
-        //     this.compartirFormularioEvaluacionService.getcEvaluacionNombre()
-        // )
-
         this.obtenerEspDremCurso()
     }
-    obtenerEspDrem(): void {
-        this._apiEre
 
-            .obtenerEspDrem(this.params)
-
-            .pipe(takeUntil(this.unsubscribe$))
-
-            .subscribe({
-                next: (resp: any) => {
-                    console.log('Respuesta completa de la API:', resp)
-                },
-
-                error: (err) => {
-                    console.error('Error al cargar datos:', err)
-                },
-            })
-    }
     obtenerEspDremCurso(): void {
         const iPersId = this.ConstantesService.iPersId // Obtén el iPersId
         const iEvaluacionId = this.compartirIdEvaluacionService.iEvaluacionId // Obtén el iEvaluacionId
@@ -145,13 +122,13 @@ export class AreasComponent implements OnInit {
                 // Procesar y mapear los datos al formato de IArea.
                 if (resp.data && Array.isArray(resp.data)) {
                     this.areas = resp.data.map((item: any) => ({
-                        id: Number(item.iCursosNivelGradId), // Usamos iCursoId como ID.
+                        id: Number(item.iCursosNivelGradId), // Usamos iCursosNivelGradId como ID.
                         nombre: item.cCursoNombre || 'Sin nombre', // Nombre del curso.
                         descripcion:
                             item.cCursoDescripcion || 'Sin descripción', // Descripción del curso.
                         seccion: item.cGradoRomanos || 'Sin sección', // Ejemplo: I.
                         grado: item.cGradoAbreviacion || 'Sin grado', // Ejemplo: 1ro.
-                        totalEstudiantes: 0, // Asumimos 0 porque no viene en la API.
+                        totalEstudiantes: 0, //!Cambiar esto y que se vea las preguntas.
                         nivel: 'Primaria', // Puedes ajustarlo según tu lógica o datos de la API.
                     }))
                     // Guardar las áreas procesadas en el servicio

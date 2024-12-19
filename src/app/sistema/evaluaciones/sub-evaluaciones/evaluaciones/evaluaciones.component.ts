@@ -580,11 +580,11 @@ export class EvaluacionesComponent implements OnInit {
                 this.caption = 'Registrar'
 
                 break
-            case 'sel-manual':
-                break
-            case 'capa1':
-                this.visible = false
-                break
+            // case 'sel-manual':
+            //     break
+            // case 'capa1':
+            //     this.visible = false
+            //     break
             case 'formularioEvaluacion':
                 this.visible = false
                 this.opcion = 'formularioEvaluacion'

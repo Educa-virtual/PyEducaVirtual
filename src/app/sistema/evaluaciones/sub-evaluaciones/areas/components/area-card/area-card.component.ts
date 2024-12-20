@@ -12,6 +12,8 @@ import { TooltipModule } from 'primeng/tooltip'
 import { CompartirFormularioEvaluacionService } from '../../../../services/ereEvaluaciones/compartir-formulario-evaluacion.service'
 import { ApiEvaluacionesRService } from '../../../../services/api-evaluaciones-r.service'
 import { MessageService } from 'primeng/api'
+import { ConstantesService } from '@/app/servicios/constantes.service'
+import { ActivatedRoute } from '@angular/router'
 @Component({
     selector: 'app-area-card',
     standalone: true,
@@ -28,9 +30,24 @@ export class AreaCardComponent {
     private _apiEre = inject(ApiEvaluacionesRService)
     private _MessageService = inject(MessageService)
     iEvaluacionMatriz: number
+    private _constantesService = inject(ConstantesService)
+    private _route = inject(ActivatedRoute)
+    preguntasSeleccionadas: any[]
+    queryParams: any = {}
+    areaId: string | null = null
+    public params = {
+        bPreguntaEstado: -1,
+        //iCursoId: 1,
+        iCursosNivelGradId: 0,
+        iNivelTipoId: 1,
+        iTipoPregId: 0,
+        // iEvaluacionId: 0,
+    }
+    cantidadPreguntas: any
     constructor(
         private router: Router,
-        private compartirFormularioEvaluacionService: CompartirFormularioEvaluacionService
+        private compartirFormularioEvaluacionService: CompartirFormularioEvaluacionService,
+        private route: ActivatedRoute
     ) {}
     ngOnInit(): void {
         // Verifica si el parámetro llega correctamente
@@ -42,8 +59,20 @@ export class AreaCardComponent {
         // Obtener las áreas almacenadas en el servicio
         this.areas = this.compartirFormularioEvaluacionService.getAreas()
         console.log('Áreas obtenidas desde el servicio:', this.areas)
-
-        // this.compartirFormularioEvaluacionService.setAreas(this.areas)
+        console.log(
+            'Ingreso el Usuario Especialista: ',
+            this._constantesService.iEspecialistaId
+        )
+        console.log(
+            'Nombre completo del usuario: ',
+            this._constantesService.nombres
+        )
+        this.obtenerPreguntaSeleccionada(this._iEvaluacionId)
+        this
+            .obtenerConteoPorCurso
+            // this._iEvaluacionId,
+            // this.params.iCursosNivelGradId
+            ()
     }
     irABancoPreguntas(area: any): void {
         // Almacenar los datos en el servicio
@@ -83,6 +112,7 @@ export class AreaCardComponent {
             grado: area.grado,
             seccion: area.seccion,
             nombreEvaluacion: this._nombreEvaluacion,
+            especialista: this._constantesService.nombres,
         }
 
         //en iEvaluacionId estaba el encodeAreas iEvaluacionId, encodedAreas
@@ -124,13 +154,36 @@ export class AreaCardComponent {
     obtenerPreguntaSeleccionada(iEvaluacionId: number) {
         if (!iEvaluacionId || iEvaluacionId < 0) {
             console.error(
-                'El parámetro iEvaluacionIdS no está definido o es inválido'
+                'El parámetro iEvaluacionId no está definido o es inválido'
             )
             return
         }
+
+        // Obtener el areaId dinámicamente desde la ruta
+        this.areaId = this.route.snapshot.paramMap.get('areaId')
+        console.log('Area Id:', this.areaId)
+
+        // Si el areaId es válido, asignarlo a iCursosNivelGradId
+        if (this.areaId) {
+            this.params.iCursosNivelGradId = parseInt(this.areaId) // Convertir el areaId a número
+            console.log(
+                'iCursosNivelGradId asignado:',
+                this.params.iCursosNivelGradId
+            )
+        }
+
         this._apiEre.obtenerPreguntaSeleccionada(iEvaluacionId).subscribe({
-            next: (data) => {
-                console.log('Preguntas seleccionadas:', data)
+            next: (data: any[]) => {
+                console.log('Datos sin filtrar:', data) // Verifica los datos originales
+
+                // Convertir ambos valores a string para asegurar la comparación
+                this.preguntasSeleccionadas = data.filter(
+                    (item) =>
+                        item.iCursosNivelGradId.toString() ===
+                        this.params.iCursosNivelGradId.toString()
+                )
+
+                console.log('Datos filtrados:', this.preguntasSeleccionadas)
             },
             error: (error) => {
                 console.error(
@@ -140,6 +193,47 @@ export class AreaCardComponent {
             },
         })
     }
+
+    // obtenerConteoPorCurso() // iEvaluacionId: number,
+    // // iCursosNivelGradId: number
+    // : void {
+    //     const iEvaluacionId = 679 // ID de evaluación de prueba
+    //     const iCursosNivelGradId = 2 // ID del curso/nivel de grado de prueba
+    //     this._apiEre
+    //         .obtenerConteoPorCurso(iEvaluacionId, iCursosNivelGradId)
+    //         .subscribe({
+    //             next: (response) => {
+    //                 this.cantidadPreguntas = response.cantidadPreguntas // Almacena el conteo de preguntas en la variable
+    //                 console.log('Conteo de preguntas:', this.cantidadPreguntas)
+    //             },
+    //             error: (error) => {
+    //                 console.error(
+    //                     'Error al obtener las preguntas seleccionadas:',
+    //                     error
+    //                 )
+    //             },
+    //         })
+    // }
+    //!
+    obtenerConteoPorCurso(): void {
+        const iEvaluacionId = 679 // ID de evaluación de prueba
+        const iCursosNivelGradId = 2 // ID del curso/nivel de grado de prueba
+        this._apiEre
+            .obtenerConteoPorCurso(iEvaluacionId, iCursosNivelGradId)
+            .subscribe({
+                next: (resp: any) => {
+                    console.log(
+                        'Respuesta completa de la API Datos Especialistas Cursos:',
+                        resp
+                    )
+                },
+
+                error: (err) => {
+                    console.error('Error al cargar datos:', err)
+                },
+            })
+    }
+    //!
 
     procesarAreas(): void {
         console.log('Procesando áreas en el hijo:', this.areas)

@@ -551,21 +551,65 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             this.dataSeleccionado
         )
     }
+    // obtenerPreguntaSeleccionada(iEvaluacionId: number) {
+    //     if (!iEvaluacionId || iEvaluacionId < 0) {
+    //         console.error(
+    //             'El parámetro iEvaluacionIdS no está definido o es inválido'
+    //         )
+    //         return
+    //     }
+    //     this._apiEre.obtenerPreguntaSeleccionada(iEvaluacionId).subscribe({
+    //         next: (data) => {
+    //             //console.log('Preguntas seleccionadas:', data)
+    //             this.preguntasSeleccionadas = data // Guardamos las preguntas en una variable
+    //             console.log(
+    //                 'Datos completos de banco de preguntas:',
+    //                 this.preguntasSeleccionadas
+    //             )
+    //         },
+    //         error: (error) => {
+    //             console.error(
+    //                 'Error al obtener las preguntas seleccionadas:',
+    //                 error
+    //             )
+    //         },
+    //     })
+    // }
+
+    //!
     obtenerPreguntaSeleccionada(iEvaluacionId: number) {
         if (!iEvaluacionId || iEvaluacionId < 0) {
             console.error(
-                'El parámetro iEvaluacionIdS no está definido o es inválido'
+                'El parámetro iEvaluacionId no está definido o es inválido'
             )
             return
         }
+
+        // Obtener el areaId dinámicamente desde la ruta
+        this.areaId = this.route.snapshot.paramMap.get('areaId')
+        console.log('Area Id:', this.areaId)
+
+        // Si el areaId es válido, asignarlo a iCursosNivelGradId
+        if (this.areaId) {
+            this.params.iCursosNivelGradId = parseInt(this.areaId) // Convertir el areaId a número
+            console.log(
+                'iCursosNivelGradId asignado:',
+                this.params.iCursosNivelGradId
+            )
+        }
+
         this._apiEre.obtenerPreguntaSeleccionada(iEvaluacionId).subscribe({
-            next: (data) => {
-                console.log('Preguntas seleccionadas:', data)
-                this.preguntasSeleccionadas = data // Guardamos las preguntas en una variable
-                console.log(
-                    'Datos completos de banco de preguntas:',
-                    this.preguntasSeleccionadas
+            next: (data: any[]) => {
+                console.log('Datos sin filtrar:', data) // Verifica los datos originales
+
+                // Convertir ambos valores a string para asegurar la comparación
+                this.preguntasSeleccionadas = data.filter(
+                    (item) =>
+                        item.iCursosNivelGradId.toString() ===
+                        this.params.iCursosNivelGradId.toString()
                 )
+
+                console.log('Datos filtrados:', this.preguntasSeleccionadas)
             },
             error: (error) => {
                 console.error(
@@ -575,8 +619,8 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             },
         })
     }
+
     //!
-    //Ver preguntas
 
     accionVerPreguntas(): void {
         this._apiEre

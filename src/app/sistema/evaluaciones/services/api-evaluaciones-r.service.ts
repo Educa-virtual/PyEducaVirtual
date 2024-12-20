@@ -230,12 +230,29 @@ export class ApiEvaluacionesRService {
         iEvaluacionId: number
     ): Observable<any> {
         const params = { iPersId, iEvaluacionId } // Enviar el iPersId como parámetro
-        console.log('Parámetros enviados al backend:', params)
+        //console.log('Parámetros enviados al backend:', params)
         return this.http.get(
             `${this.baseUrl}/ere/Evaluaciones/obtenerEspDremCurso`,
             { params }
         )
     }
+    //!
+    obtenerConteoPorCurso(
+        iEvaluacionId: number,
+        iCursosNivelGradId: number
+    ): Observable<any> {
+        // Crear parámetros para la solicitud
+        const params = {
+            iEvaluacionId: iEvaluacionId,
+            iCursosNivelGradId: iCursosNivelGradId,
+        }
+        // Realiza la solicitud GET con los parámetros
+        return this.http.get(
+            `${this.baseUrl}/ere/Evaluaciones/obtenerConteoPorCurso`,
+            { params }
+        )
+    }
+    //!
     insertarPreguntaSeleccionada(data) {
         return this.http.post(
             `${this.baseUrl}/ere/Evaluaciones/insertarPreguntaSeleccionada`,
@@ -252,6 +269,7 @@ export class ApiEvaluacionesRService {
             }
         )
     }
+
     obtenerPreguntaInformacion(iEvaluacionId: number, iPreguntaIds: string) {
         return this.http.get(
             `${this.baseUrl}/ere/Evaluaciones/obtenerPreguntaInformacion`,

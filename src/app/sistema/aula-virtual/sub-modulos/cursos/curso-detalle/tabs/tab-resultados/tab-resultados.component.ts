@@ -43,6 +43,7 @@ import { CommonInputComponent } from '@/app/shared/components/common-input/commo
 import { ButtonModule } from 'primeng/button'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { TabsKeys } from '../tab.interface'
+import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
 @Component({
     selector: 'app-tab-resultados',
     standalone: true,
@@ -130,6 +131,8 @@ export class TabResultadosComponent implements OnInit {
     campos: string
     where: number
     iPerfilId: number
+    public DOCENTE = DOCENTE
+    public ESTUDIANTE = ESTUDIANTE
     iDocenteId: number
     private unsbscribe$ = new Subject<boolean>()
 

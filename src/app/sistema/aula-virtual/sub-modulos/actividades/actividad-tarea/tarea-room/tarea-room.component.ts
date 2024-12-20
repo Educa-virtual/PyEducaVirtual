@@ -74,7 +74,7 @@ export class TareaRoomComponent implements OnChanges, OnInit {
 
     ngOnInit() {
         this.iPerfilId = this._constantesService.iPerfilId
-        if (Number(this.iPerfilId) == 8) {
+        if (Number(this.iPerfilId) == ESTUDIANTE) {
             this.obtenerTareaxiTareaidxiEstudianteId()
         } else {
             this.obtenerEscalaCalificaciones()

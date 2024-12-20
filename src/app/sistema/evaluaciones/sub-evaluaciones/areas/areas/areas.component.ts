@@ -217,13 +217,13 @@ export class AreasComponent implements OnInit {
                     console.log('Respuesta completa de la API:', resp)
                     if (Array.isArray(resp)) {
                         // Asignar la cantidad de preguntas a cada área
-                        this.areas = resp.map((area) => ({
+                        this.area = resp.map((area) => ({
                             ...area, // Mantener la estructura del área
                             cantidadPreguntas: area.conteo || 0, // Asignar la cantidad de preguntas
                         }))
                         console.log(
                             'Áreas con cantidad de preguntas:',
-                            this.areas
+                            this.area
                         )
                         this.cdr.detectChanges() // Forzar detección de cambios
                     } else {

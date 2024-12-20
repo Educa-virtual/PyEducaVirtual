@@ -146,6 +146,7 @@ export class TabResultadosComponent implements OnInit {
         iEscalaCalifIdPeriodo1: ['', [Validators.required]],
     })
     public conclusionDescrp: FormGroup = this._formBuilder.group({
+        iEscalaCalifId: ['', [Validators.required]],
         cDetMatConclusionDescPromedio: ['', [Validators.required]],
     })
     constructor(private messageService: MessageService) {}
@@ -191,14 +192,14 @@ export class TabResultadosComponent implements OnInit {
             text_header: 'center',
             text: 'center',
         },
-        // {
-        //     type: 'text',
-        //     width: '10rem',
-        //     field: 'iEscalaCalifIdPeriodo4',
-        //     header: 'Promedio 04',
-        //     text_header: 'center',
-        //     text: 'center',
-        // },
+        {
+            type: 'text',
+            width: '10rem',
+            field: 'iEscalaCalifIdPromedio',
+            header: 'Promedio Final',
+            text_header: 'center',
+            text: 'center',
+        },
         {
             type: 'text',
             width: '10rem',
@@ -403,6 +404,7 @@ export class TabResultadosComponent implements OnInit {
         const conclusionDescrpLimpia = this.limpiarHTML(
             conclusionDescrp.cDetMatConclusionDescPromedio
         )
+        const idEscala = conclusionDescrp.iEscalaCalifId
         const where = [
             {
                 COLUMN_NAME: 'iDetMatrId',
@@ -410,6 +412,7 @@ export class TabResultadosComponent implements OnInit {
             },
         ]
         const registro: any = {
+            iEscalaCalifIdPromedio: idEscala,
             cDetMatConclusionDescPromedio: conclusionDescrpLimpia,
         }
         this._aulaService

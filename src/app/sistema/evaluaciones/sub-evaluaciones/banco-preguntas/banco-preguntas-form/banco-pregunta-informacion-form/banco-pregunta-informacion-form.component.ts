@@ -19,10 +19,6 @@ import { EditorModule } from 'primeng/editor'
 import { ApiEvaluacionesRService } from '../../../../services/api-evaluaciones-r.service'
 import { Subject, takeUntil } from 'rxjs'
 import { InputTextModule } from 'primeng/inputtext'
-// interface MatrizCompetencia {
-//     iCompetenciaId: number
-//     cCompetenciaNombre: string
-// }
 @Component({
     selector: 'app-banco-pregunta-informacion-form',
     standalone: true,
@@ -213,7 +209,6 @@ export class BancoPreguntaInformacionFormComponent implements OnInit {
                 iEstado: 1,
                 iSesionId: 1,
             }
-
             // Emitir el payload al componente padre
             this.payloadEmitido.emit(payload)
         }

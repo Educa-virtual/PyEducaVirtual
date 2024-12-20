@@ -567,14 +567,10 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
         }
         this.submitChange.emit(data)
     }
-
-    //! Método que recibe el payload desde el hijo
     recibirPayload(payload: any) {
         console.log('Payload recibido desde el hijo Banco Pregunta:', payload)
         this.payloadRecibido = payload
-
         const payloadEmitidoForms = payload
-        // Emitir el payload al componente padre
         this.payloadEmitidoForm.emit(payloadEmitidoForms)
     }
 

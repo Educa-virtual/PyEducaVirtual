@@ -237,19 +237,22 @@ export class ApiEvaluacionesRService {
         )
     }
     //!
-    obtenerConteoPorCurso(
-        iEvaluacionId: number,
-        iCursosNivelGradId: number
-    ): Observable<any> {
-        // Crear parámetros para la solicitud
-        const params = {
-            iEvaluacionId: iEvaluacionId,
-            iCursosNivelGradId: iCursosNivelGradId,
-        }
-        // Realiza la solicitud GET con los parámetros
-        return this.http.get(
+    // obtenerConteoPorCurso(iEvaluacionId: number, iCursosNivelGradId: any[]) {
+    //     // Crear parámetros para la solicitud
+    //     const params = {
+    //         iEvaluacionId: iEvaluacionId,
+    //         iCursosNivelGradId: iCursosNivelGradId,
+    //     }
+    //     // Realiza la solicitud GET con los parámetros
+    //     return this.http.post(
+    //         `${this.baseUrl}/ere/Evaluaciones/obtenerConteoPorCurso`,
+    //         { params }
+    //     )
+    // }
+    obtenerConteoPorCurso(data) {
+        return this.http.post(
             `${this.baseUrl}/ere/Evaluaciones/obtenerConteoPorCurso`,
-            { params }
+            data
         )
     }
     //!

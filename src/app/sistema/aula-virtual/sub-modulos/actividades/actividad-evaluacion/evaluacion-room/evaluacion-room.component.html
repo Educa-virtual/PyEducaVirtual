@@ -16,8 +16,6 @@
                         (evaluacion?.cEvaluacionTitulo || '')
                     "
                 >
-                    <p-menu #menu [model]="items" [popup]="true" />
-
                     <button
                         [ngClass]="{
                             'border-none': true,
@@ -346,3 +344,4 @@
     ></app-evaluacion-estudiantes>
 }
 <app-evaluacion-finalizada *ngIf="iPerfilId === 0"> </app-evaluacion-finalizada>
+<p-menu #menu [model]="items" [popup]="true" />

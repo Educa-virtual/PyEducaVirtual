@@ -78,6 +78,15 @@ export class ApiEvaluacionesService {
             .pipe(map((resp) => resp.data))
     }
 
+    guardarCalificacionRubricaEvaluacion(params) {
+        return this.http
+            .post<ApiResponse>(
+                `${this.baseUrlApi}/evaluaciones/evaluacion/guardarActualizarCalificacionRubricaEvaluacion`,
+                params 
+            )
+            .pipe(map((resp) => resp.data))
+    }
+
     deleteRubricaEvaluacion(params) {
         return this.http
             .post<ApiResponse>(

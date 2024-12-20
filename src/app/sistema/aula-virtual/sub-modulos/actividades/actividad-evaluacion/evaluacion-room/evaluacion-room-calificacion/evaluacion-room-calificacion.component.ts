@@ -126,7 +126,7 @@ export class EvaluacionRoomCalificacionComponent implements OnInit {
             console.log(value)
             this.router.navigate([], {
                 queryParams: {
-                    iEvalPromId: value.iEvalPromId ?? undefined,
+                    // iEvalPromId: value.iEvalPromId ?? undefined,
                     iEstudianteId: value.iEstudianteId ?? undefined,
                 },
                 queryParamsHandling: 'merge'

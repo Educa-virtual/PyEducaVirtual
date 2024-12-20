@@ -112,32 +112,34 @@
                                 <!-- id="descripcion"
                                     placeholder="Escribe un Comentario... "
                                     formControlName="cForoRptaRespuesta" -->
-
-                                <p-editor
-                                    id="descripcion"
-                                    placeholder="Escribe una conclusión descriptiva.... "
-                                    formControlName="cForoRptaRespuesta"
-                                >
-                                    <ng-template pTemplate="header">
-                                        <span class="ql-formats">
-                                            <button
-                                                type="button"
-                                                class="ql-bold"
-                                                aria-label="Bold"
-                                            ></button>
-                                            <button
-                                                type="button"
-                                                class="ql-italic"
-                                                aria-label="Italic"
-                                            ></button>
-                                            <button
-                                                type="button"
-                                                class="ql-underline"
-                                                aria-label="Underline"
-                                            ></button>
-                                        </span>
-                                    </ng-template>
-                                </p-editor>
+                                <p-toast></p-toast>
+                                <form [formGroup]="conclusionDescrpFinal">
+                                    <p-editor
+                                        id="descripcion"
+                                        placeholder="Escribe una conclusión descriptiva.... "
+                                        formControlName="conclusionDescripFinal"
+                                    >
+                                        <ng-template pTemplate="header">
+                                            <span class="ql-formats">
+                                                <button
+                                                    type="button"
+                                                    class="ql-bold"
+                                                    aria-label="Bold"
+                                                ></button>
+                                                <button
+                                                    type="button"
+                                                    class="ql-italic"
+                                                    aria-label="Italic"
+                                                ></button>
+                                                <button
+                                                    type="button"
+                                                    class="ql-underline"
+                                                    aria-label="Underline"
+                                                ></button>
+                                            </span>
+                                        </ng-template>
+                                    </p-editor>
+                                </form>
                                 <div
                                     class="col-12 flex flex-wrap gap-2 justify-content-end"
                                 >
@@ -147,6 +149,9 @@
                                         class="p-button-success"
                                         [loading]="loading"
                                         (onClick)="load()"
+                                        (click)="
+                                            guardarPromedioDeLogroAlcanzado()
+                                        "
                                     />
                                 </div>
                             </div>

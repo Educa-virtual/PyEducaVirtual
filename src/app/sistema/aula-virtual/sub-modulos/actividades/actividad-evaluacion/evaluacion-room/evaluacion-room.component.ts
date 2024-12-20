@@ -39,7 +39,9 @@ import { RubricaEvaluacionComponent } from '@/app/sistema/aula-virtual/features/
 import { RubricaCalificarComponent } from '@/app/sistema/aula-virtual/features/rubricas/components/rubrica-calificar/rubrica-calificar.component'
 import { ToolbarPrimengComponent } from '../../../../../../shared/toolbar-primeng/toolbar-primeng.component'
 import { MenuItem } from 'primeng/api'
-import { CommunicationService } from '@/app/servicios/communication.service'
+import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
+import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
+
 @Component({
     selector: 'app-evaluacion-room',
     standalone: true,
@@ -95,21 +97,30 @@ export class EvaluacionRoomComponent implements OnInit, OnDestroy {
                 {
                     label: 'Eliminar',
                     icon: 'pi pi-trash',
+                    command: () => {
+                        this.eliminarEvaluacionxiEvaluacionId()
+                    },
                 },
+
                 {
                     label: 'Publicar',
                     icon: 'pi pi-send',
+                    command: () => {
+                        this.actualizarEvaluacionxiEvaluacionId()
+                    },
                 },
             ],
         },
     ]
     @Input() ixActivadadId: string
+    @Input() iProgActId: string
     @Input() iActTopId: tipoActividadesKeys
 
     // injeccion de dependencias
     private _route = inject(ActivatedRoute)
     private _aulaService = inject(ApiAulaService)
     private _ConstantesService = inject(ConstantesService)
+    private _ConfirmationModalService = inject(ConfirmationModalService)
 
     actividad = {
         iContenidoSemId: 1,
@@ -142,7 +153,6 @@ export class EvaluacionRoomComponent implements OnInit, OnDestroy {
             cInstrumentoNombre: 'Sin instrumento de evaluación',
         },
     ]
-
 
     constructor(
         private _evaluacionService: ApiEvaluacionesService,
@@ -187,6 +197,8 @@ export class EvaluacionRoomComponent implements OnInit, OnDestroy {
     public iPerfilId: number
     public evaluacion
     public cEvaluacionInstrucciones
+    public DOCENTE = DOCENTE
+    public ESTUDIANTE = ESTUDIANTE
 
     ngOnInit() {
         this.params.iDocenteId = this._constantesService.iDocenteId
@@ -226,4 +238,28 @@ export class EvaluacionRoomComponent implements OnInit, OnDestroy {
         this.unsbscribe$.next(true)
         this.unsbscribe$.complete()
     }
+    eliminarEvaluacionxiEvaluacionId() {
+        this._ConfirmationModalService.openConfirm({
+            header: '¿Está seguro de eliminar la evaluación?',
+            accept: () => {
+                this.eliminarEvaluacionPorId(
+                    this.iProgActId,
+                    this.iActTopId,
+                    this.ixActivadadId
+                )
+            },
+        })
+    }
+
+    private eliminarEvaluacionPorId(iProgActId, iActTipoId, ixActivadadId) {
+        this._aulaService
+            .eliminarActividad({ iProgActId, iActTipoId, ixActivadadId })
+            .subscribe({
+                next: (resp) => {
+                    console.log(resp)
+                },
+            })
+    }
+
+    actualizarEvaluacionxiEvaluacionId() {}
 }

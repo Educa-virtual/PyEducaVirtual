@@ -1,4 +1,4 @@
-@if (iPerfilId === 7) {
+@if (iPerfilId === DOCENTE) {
     <section class="flex flex-column gap-4">
         <p-tabView styleClass="actividad-tabs">
             <p-tabPanel>
@@ -16,8 +16,6 @@
                         (evaluacion?.cEvaluacionTitulo || '')
                     "
                 >
-                    <p-menu #menu [model]="items" [popup]="true" />
-
                     <button
                         [ngClass]="{
                             'border-none': true,
@@ -340,9 +338,10 @@
         </p-tabView>
     </section>
 }
-@if (iPerfilId === 8) {
+@if (iPerfilId === ESTUDIANTE) {
     <app-evaluacion-estudiantes
         [evaluacion]="evaluacion"
     ></app-evaluacion-estudiantes>
 }
 <app-evaluacion-finalizada *ngIf="iPerfilId === 0"> </app-evaluacion-finalizada>
+<p-menu #menu [model]="items" [popup]="true" />

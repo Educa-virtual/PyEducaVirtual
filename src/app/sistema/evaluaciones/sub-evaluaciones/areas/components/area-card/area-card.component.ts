@@ -4,6 +4,8 @@ import {
     ChangeDetectionStrategy,
     Input,
     inject,
+    OnChanges,
+    ChangeDetectorRef,
 } from '@angular/core'
 import { IArea } from '../../interfaces/area.interface'
 import { ButtonModule } from 'primeng/button'
@@ -22,7 +24,7 @@ import { ActivatedRoute } from '@angular/router'
     imports: [CommonModule, TooltipModule, ButtonModule, RouterModule],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AreaCardComponent {
+export class AreaCardComponent implements OnChanges {
     @Input() area: IArea
     @Input() _iEvaluacionId: number | null = null // Usamos _iEvaluacionId como input
     @Input() _nombreEvaluacion: string | null = null // Usamos _nombreEvaluacion como input
@@ -37,42 +39,25 @@ export class AreaCardComponent {
     areaId: string | null = null
     public params = {
         bPreguntaEstado: -1,
-        //iCursoId: 1,
         iCursosNivelGradId: 0,
         iNivelTipoId: 1,
         iTipoPregId: 0,
-        // iEvaluacionId: 0,
     }
-    cantidadPreguntas: any
+    @Input() cantidadPreguntas: number
     constructor(
         private router: Router,
         private compartirFormularioEvaluacionService: CompartirFormularioEvaluacionService,
-        private route: ActivatedRoute
+        private route: ActivatedRoute,
+        private cdr: ChangeDetectorRef
     ) {}
     ngOnInit(): void {
-        // Verifica si el parámetro llega correctamente
-        console.log(
-            'A ver si llega a AreaCard el iEvaluacionId: ----->',
-            this._iEvaluacionId
-        )
-
-        // Obtener las áreas almacenadas en el servicio
-        this.areas = this.compartirFormularioEvaluacionService.getAreas()
-        console.log('Áreas obtenidas desde el servicio:', this.areas)
-        console.log(
-            'Ingreso el Usuario Especialista: ',
-            this._constantesService.iEspecialistaId
-        )
-        console.log(
-            'Nombre completo del usuario: ',
-            this._constantesService.nombres
-        )
-        this.obtenerPreguntaSeleccionada(this._iEvaluacionId)
-        this
-            .obtenerConteoPorCurso
-            // this._iEvaluacionId,
-            // this.params.iCursosNivelGradId
-            ()
+        console.log(0)
+    }
+    ngOnChanges(changes) {
+        // console.log(changes)
+        if (changes.area.currentValue) {
+            this.area = changes.area.currentValue
+        }
     }
     irABancoPreguntas(area: any): void {
         // Almacenar los datos en el servicio
@@ -98,12 +83,6 @@ export class AreaCardComponent {
      */
 
     generarPdfMatriz(iEvaluacionId: number, area: IArea) {
-        console.log('Aqui tendremos el id NivelGradoId:', area.id)
-        // Convierte las áreas en una cadena JSON
-        console.log('Ver si area se enviara en json o array:', area)
-        const encodedAreas = JSON.stringify([area]) // Solo convertir a JSON string, no codificar
-        console.log('Cadena JSON de las áreas:', encodedAreas)
-
         const params = {
             iEvaluacionId: this._iEvaluacionId,
             areaId: area.id,
@@ -115,12 +94,8 @@ export class AreaCardComponent {
             especialista: this._constantesService.nombres,
         }
 
-        //en iEvaluacionId estaba el encodeAreas iEvaluacionId, encodedAreas
         this._apiEre.generarPdfMatrizbyEvaluacionId(params).subscribe(
             (response) => {
-                //!
-                console.log('Respuesta de Evaluacion:', iEvaluacionId) // Para depuración
-                console.log('Acceder para params:', params)
                 // Se muestra un mensaje indicando que la descarga de la matriz ha comenzado
                 this._MessageService.add({
                     severity: 'success',
@@ -142,8 +117,6 @@ export class AreaCardComponent {
                 const errorMessage =
                     error?.message ||
                     'No hay datos suficientes para descargar la Matriz'
-
-                // Se muestra un mensaje de error en el sistema
                 this._MessageService.add({
                     severity: 'success', // Se cambió a "error" ya que es un fallo
                     detail: errorMessage,
@@ -151,6 +124,7 @@ export class AreaCardComponent {
             }
         )
     }
+
     obtenerPreguntaSeleccionada(iEvaluacionId: number) {
         if (!iEvaluacionId || iEvaluacionId < 0) {
             console.error(
@@ -158,32 +132,20 @@ export class AreaCardComponent {
             )
             return
         }
-
         // Obtener el areaId dinámicamente desde la ruta
         this.areaId = this.route.snapshot.paramMap.get('areaId')
-        console.log('Area Id:', this.areaId)
-
-        // Si el areaId es válido, asignarlo a iCursosNivelGradId
         if (this.areaId) {
             this.params.iCursosNivelGradId = parseInt(this.areaId) // Convertir el areaId a número
-            console.log(
-                'iCursosNivelGradId asignado:',
-                this.params.iCursosNivelGradId
-            )
         }
 
         this._apiEre.obtenerPreguntaSeleccionada(iEvaluacionId).subscribe({
             next: (data: any[]) => {
-                console.log('Datos sin filtrar:', data) // Verifica los datos originales
-
                 // Convertir ambos valores a string para asegurar la comparación
                 this.preguntasSeleccionadas = data.filter(
                     (item) =>
                         item.iCursosNivelGradId.toString() ===
                         this.params.iCursosNivelGradId.toString()
                 )
-
-                console.log('Datos filtrados:', this.preguntasSeleccionadas)
             },
             error: (error) => {
                 console.error(
@@ -192,60 +154,5 @@ export class AreaCardComponent {
                 )
             },
         })
-    }
-
-    // obtenerConteoPorCurso() // iEvaluacionId: number,
-    // // iCursosNivelGradId: number
-    // : void {
-    //     const iEvaluacionId = 679 // ID de evaluación de prueba
-    //     const iCursosNivelGradId = 2 // ID del curso/nivel de grado de prueba
-    //     this._apiEre
-    //         .obtenerConteoPorCurso(iEvaluacionId, iCursosNivelGradId)
-    //         .subscribe({
-    //             next: (response) => {
-    //                 this.cantidadPreguntas = response.cantidadPreguntas // Almacena el conteo de preguntas en la variable
-    //                 console.log('Conteo de preguntas:', this.cantidadPreguntas)
-    //             },
-    //             error: (error) => {
-    //                 console.error(
-    //                     'Error al obtener las preguntas seleccionadas:',
-    //                     error
-    //                 )
-    //             },
-    //         })
-    // }
-    //!
-    obtenerConteoPorCurso(): void {
-        const iEvaluacionId = 679 // ID de evaluación de prueba
-        const iCursosNivelGradId = 2 // ID del curso/nivel de grado de prueba
-        this._apiEre
-            .obtenerConteoPorCurso(iEvaluacionId, iCursosNivelGradId)
-            .subscribe({
-                next: (resp: any) => {
-                    console.log(
-                        'Respuesta completa de la API Datos Especialistas Cursos:',
-                        resp
-                    )
-                },
-
-                error: (err) => {
-                    console.error('Error al cargar datos:', err)
-                },
-            })
-    }
-    //!
-
-    procesarAreas(): void {
-        console.log('Procesando áreas en el hijo:', this.areas)
-
-        // Ejemplo: Contar áreas
-        const totalAreas = this.areas.length
-        console.log('Total de áreas:', totalAreas)
-
-        // Ejemplo: Filtrar áreas
-        const areasConEstudiantes = this.areas.filter(
-            (area) => area.totalEstudiantes > 0
-        )
-        console.log('Áreas con estudiantes:', areasConEstudiantes)
     }
 }

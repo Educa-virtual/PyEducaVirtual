@@ -1,5 +1,5 @@
 <app-container-page
-    [title]="'Àreas Curriculares : ' + nombreEvaluacion"
+    [title]="'Banco de Preguntas : ' + nombreEvaluacion"
     [actions]="[]"
 >
     <p-dataView
@@ -45,7 +45,6 @@
                 <p-dataViewLayoutOptions></p-dataViewLayoutOptions>
             </div>
         </ng-template>
-
         <ng-template let-products pTemplate="listItem">
             <app-table-primeng
                 [showPaginator]="false"
@@ -55,13 +54,15 @@
         </ng-template>
         <ng-template let-products pTemplate="gridItem">
             <div class="area gap-4 py-2">
-                <div *ngFor="let item of area; trackBy: trackById">
+                @for (item of areaData; track item.id) {
                     <app-area-card
+                        class=""
                         [area]="item"
                         [_iEvaluacionId]="iEvaluacionId"
                         [_nombreEvaluacion]="nombreEvaluacion"
+                        [cantidadPreguntas]="cantidadPreguntas"
                     ></app-area-card>
-                </div>
+                }
             </div>
         </ng-template>
     </p-dataView>

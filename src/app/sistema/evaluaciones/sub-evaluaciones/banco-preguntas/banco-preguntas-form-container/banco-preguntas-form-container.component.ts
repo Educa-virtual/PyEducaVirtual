@@ -72,10 +72,6 @@ export class BancoPreguntasFormContainerComponent implements OnInit {
             'Id recibido en evaluacion :',
             this.compartiridEvaluacionService.iEvaluacionIdStorage
         )
-
-        // Aquí verificamos que el iEvaluacionId llega correctamente
-        // console.log('iEvaluacionId recibido en Form:', this.iEvaluacionId) // Asegúrate de que esta línea sea correcta
-        // console.log('Payload recibido en el segundo padre:', this.payload)
     }
     getData() {
         this.obtenerEncabezados()

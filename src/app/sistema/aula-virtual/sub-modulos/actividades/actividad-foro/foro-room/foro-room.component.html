@@ -13,7 +13,11 @@
             <div class="flex flex-column gap-4">
                 <div class="card grid">
                     <div
-                        [class]="iPerfilId === 8 ? 'col-12 md:col-8' : 'col-12'"
+                        [class]="
+                            iPerfilId === ESTUDIANTE
+                                ? 'col-12 md:col-8'
+                                : 'col-12'
+                        "
                     >
                         <article class="card">
                             <div class="TituloForo">
@@ -138,7 +142,10 @@
                             ></div>
                         </article>
                     </div>
-                    <div class="col-12 md:col-4" [hidden]="iPerfilId !== 8">
+                    <div
+                        class="col-12 md:col-4"
+                        [hidden]="iPerfilId !== ESTUDIANTE"
+                    >
                         <div class="card">
                             <h4>Mi Retroalimentación descriptiva:</h4>
                             <!-- <p-divider></p-divider> -->
@@ -251,7 +258,7 @@
                             <!-- listar comentarios -->
                             <div
                                 [class]="
-                                    iPerfilId === 7
+                                    iPerfilId === DOCENTE
                                         ? 'col-12 md:col-8'
                                         : 'col-12'
                                 "
@@ -627,7 +634,7 @@
                             <!-- lista de participantes... -->
                             <div
                                 class="col-12 md:col-4"
-                                [hidden]="iPerfilId !== 7"
+                                [hidden]="iPerfilId !== DOCENTE"
                             >
                                 <div class="pb-2">
                                     <label

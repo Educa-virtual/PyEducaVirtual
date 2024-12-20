@@ -1,9 +1,6 @@
 import { Component, OnInit, inject, Input } from '@angular/core'
 import { CommonModule } from '@angular/common'
-import {
-    ContainerPageComponent,
-    //IActionContainer,, Input, inject inject,
-} from '@/app/shared/container-page/container-page.component'
+import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import {
     TablePrimengComponent,
     IColumn,
@@ -26,7 +23,10 @@ import { DropdownModule } from 'primeng/dropdown'
 import { InputGroupModule } from 'primeng/inputgroup'
 import { CommonInputComponent } from '@/app/shared/components/common-input/common-input.component'
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
-import { ContainerPageAccionbComponent } from './container-page-accionb/container-page-accionb.component'
+import {
+    ContainerPageAccionbComponent,
+    IActionContainer,
+} from './container-page-accionb/container-page-accionb.component'
 //El buscar
 import { InputTextModule } from 'primeng/inputtext'
 import { InputIconModule } from 'primeng/inputicon'
@@ -39,6 +39,8 @@ import { ApiAulaService } from '../../aula-virtual/services/api-aula.service'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { EditorModule } from 'primeng/editor'
 import { RemoveHTMLPipe } from '@/app/shared/pipes/remove-html.pipe'
+import { CursoDetalleComponent } from '../../aula-virtual/sub-modulos/cursos/curso-detalle/curso-detalle.component'
+import { ActivatedRoute } from '@angular/router'
 
 @Component({
     selector: 'app-informes',
@@ -64,6 +66,7 @@ import { RemoveHTMLPipe } from '@/app/shared/pipes/remove-html.pipe'
         OrderListModule,
         RemoveHTMLPipe,
         TablePrimengComponent,
+        CursoDetalleComponent,
     ],
     providers: [
         provideIcons({
@@ -78,17 +81,44 @@ import { RemoveHTMLPipe } from '@/app/shared/pipes/remove-html.pipe'
     ],
 })
 export class InformesComponent implements OnInit {
+    //@Input() idDocCursoId
     private _aulaService = inject(ApiAulaService)
+    //private _activatedRoute = inject(ActivatedRoute)
+    // listenParams() {
+    // this.idDocCursoId =
+    //         this._activatedRoute.snapshot.queryParams['idDocCursoId']
 
+    // }
+    @Input() actionses: IActionContainer[] = [
+        {
+            labelTooltip: 'Descargar Pdf',
+            text: 'Reporte  Pdf',
+            icon: 'pi pi-file-pdf',
+            accion: 'descargar_pdf',
+            class: 'p-button-danger',
+        },
+        // {
+        //     labelTooltip: 'Descargar Excel',
+        //     text: 'Reporte Excel',
+        //     icon: 'pi pi-download',
+        //     accion: 'Descargar_Excel',
+        //     class: 'p-button-success',
+        // },
+    ]
+    idDocCursoId: any[] = []
     perfil: any[] = []
     curso: any[] = []
     notaEstudianteSelect: any[] = []
     public estudianteMatriculadosxGrado = []
 
-    @Input() iCursoId
-
-    constructor(private store: LocalStoreService) {
+    constructor(
+        private store: LocalStoreService,
+        private _activatedRoute: ActivatedRoute
+    ) {
         this.perfil = this.store.getItem('dremoPerfil')
+        //para obtener el idDocCursoId
+        this.idDocCursoId =
+            this._activatedRoute.snapshot.queryParams['idDocCursoId']
     }
     public columnasTabla: IColumn[] = [
         {
@@ -188,5 +218,36 @@ export class InformesComponent implements OnInit {
         )
         this.curso = JSON.parse(filteredData[0].json_cursos)
         console.log(filteredData[0].json_cursos)
+    }
+    // metodo para la accion switch para descargar
+    accionDescargar({ accion }): void {
+        switch (accion) {
+            case 'descargar_pdf':
+                this.generarReporteDeLogrosAlcanzadosXYear()
+                console.log('Descargar pdf')
+                break
+            case 'Descargar_Excel':
+                console.log('Descargar excel')
+                break
+        }
+    }
+    // metodo para descargar el reporte de logros alcanzados durante el año en pdf
+    generarReporteDeLogrosAlcanzadosXYear() {
+        console.log('idDocente', this.idDocCursoId)
+        const iSedeId = this.perfil['iSedeId']
+        this._aulaService
+            .generarReporteDeLogrosAlcanzadosXYear({
+                iSedeId: iSedeId,
+            })
+            .subscribe((response) => {
+                //console.log('Respuesta de Evaluacion:', response) // Para depuración
+                // Crear un Blob con la respuesta del backend
+                const blob = response as Blob // Asegúrate de que la respuesta sea un Blob
+                const link = document.createElement('a')
+                //console.log('imprimer01', blob)
+                link.href = URL.createObjectURL(blob)
+                link.download = 'Reporte_logros' + '.pdf' // Nombre del archivo descargado
+                link.click()
+            })
     }
 }

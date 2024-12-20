@@ -13,7 +13,10 @@
                 </ng-template>
                 <div class="card col-12 grid">
                     <div class="col-12 mb-2">
-                        <app-container-page-accionb></app-container-page-accionb>
+                        <app-container-page-accionb
+                            [actions]=""
+                            (accionBtnItem)="accionDescargar($event)"
+                        ></app-container-page-accionb>
                     </div>
                     <div class="card col-12">
                         <div class="grid">
@@ -109,6 +112,7 @@
                                 <!-- id="descripcion"
                                     placeholder="Escribe un Comentario... "
                                     formControlName="cForoRptaRespuesta" -->
+
                                 <p-editor
                                     id="descripcion"
                                     placeholder="Escribe una conclusión descriptiva.... "

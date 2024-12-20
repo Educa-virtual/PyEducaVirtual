@@ -265,4 +265,13 @@ export class ApiAulaService {
             }
         )
     }
+    generarReporteDeLogrosAlcanzadosXYear(params: { iSedeId }) {
+        return this._http.get(
+            `${this.baseUrlApi}/aula-virtual/Resultado/generarReporteDeLogrosAlcanzadosXYear`,
+            {
+                params, // Enviar los datos como parámetros
+                responseType: 'blob', // Indicar que la respuesta será un archivo Blob
+            }
+        )
+    }
 }

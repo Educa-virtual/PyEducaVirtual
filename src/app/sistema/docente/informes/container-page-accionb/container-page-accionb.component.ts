@@ -37,13 +37,13 @@ export class ContainerPageAccionbComponent {
             accion: 'descargar_pdf',
             class: 'p-button-danger',
         },
-        {
-            labelTooltip: 'Descargar Excel',
-            text: 'Descargar Excel',
-            icon: 'pi pi-download',
-            accion: 'Descargar Excel',
-            class: 'p-button-success',
-        },
+        // {
+        //     labelTooltip: 'Descargar Excel',
+        //     text: 'Descargar Excel',
+        //     icon: 'pi pi-download',
+        //     accion: 'Descargar Excel',
+        //     class: 'p-button-success',
+        // },
     ]
 
     accionBtn(accion, item) {

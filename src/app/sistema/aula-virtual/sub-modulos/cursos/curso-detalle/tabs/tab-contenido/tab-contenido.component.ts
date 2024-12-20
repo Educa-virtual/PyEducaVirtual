@@ -467,6 +467,7 @@ export class TabContenidoComponent implements OnInit {
                     [
                         '../',
                         'actividad',
+                        actividad.iProgActId,
                         actividad.ixActivadadId,
                         actividad.iActTipoId,
                     ],

@@ -1,3 +1,4 @@
+import { DOCENTE } from '@/app/servicios/perfilesConstantes'
 import {
     IActividadConfig,
     TAREA,
@@ -26,14 +27,14 @@ export const actividadesConfig: Record<
                 accion: 'EDITAR',
                 class: '',
                 label: 'Editar',
-                isVisible: () => iPerfilId === 7,
+                isVisible: () => iPerfilId === DOCENTE,
             },
             {
                 icon: 'pi pi-trash',
                 accion: 'ELIMINAR',
                 class: '',
                 label: 'Eliminar',
-                isVisible: () => iPerfilId === 7,
+                isVisible: () => iPerfilId === DOCENTE,
             },
             {
                 icon: 'pi pi-eye',
@@ -55,14 +56,14 @@ export const actividadesConfig: Record<
                 accion: 'EDITAR',
                 class: '',
                 label: 'Editar',
-                isVisible: () => iPerfilId === 7,
+                isVisible: () => iPerfilId === DOCENTE,
             },
             {
                 icon: 'pi pi-trash',
                 accion: 'ELIMINAR',
                 class: '',
                 label: 'Eliminar',
-                isVisible: () => iPerfilId === 7,
+                isVisible: () => iPerfilId === DOCENTE,
             },
             {
                 icon: 'pi pi-eye',
@@ -84,14 +85,14 @@ export const actividadesConfig: Record<
                 accion: 'EDITAR',
                 class: '',
                 label: 'Editar',
-                isVisible: (row) => row.iEstado === 1 && iPerfilId === 7,
+                isVisible: (row) => row.iEstado === 1 && iPerfilId === DOCENTE,
             },
             {
                 icon: 'pi pi-trash',
                 accion: 'ELIMINAR',
                 class: '',
                 label: 'Eliminar',
-                isVisible: (row) => row.iEstado === 1 && iPerfilId === 7,
+                isVisible: (row) => row.iEstado === 1 && iPerfilId === DOCENTE,
             },
             {
                 icon: 'pi pi-eye',
@@ -108,7 +109,7 @@ export const actividadesConfig: Record<
                 accion: 'PUBLICAR',
                 class: '',
                 label: 'Publicar',
-                isVisible: (row) => row.iEstado === 1 && iPerfilId === 7,
+                isVisible: (row) => row.iEstado === 1 && iPerfilId === DOCENTE,
             },
             {
                 icon: {
@@ -119,7 +120,7 @@ export const actividadesConfig: Record<
                 accion: 'ANULAR_PUBLICACION',
                 class: '',
                 label: 'Anular Publicación',
-                isVisible: (row) => row.iEstado === 2 && iPerfilId === 7,
+                isVisible: (row) => row.iEstado === 2 && iPerfilId === DOCENTE,
             },
         ],
     },

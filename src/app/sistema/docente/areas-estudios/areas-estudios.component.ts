@@ -18,6 +18,7 @@ import { MessageService } from 'primeng/api'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { Subject, takeUntil } from 'rxjs'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
+import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
 interface Data {
     accessToken: string
     refreshToken: string
@@ -65,6 +66,8 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
         },
     ]
     iPerfilId: number
+    public DOCENTE = DOCENTE
+    public ESTUDIANTE = ESTUDIANTE
     ngOnInit() {
         this.iPerfilId = this._constantesService.iPerfilId
         this.items = [

@@ -42,6 +42,7 @@ import { FullCalendarModule } from '@fullcalendar/angular'
 import { TareaFormContainerComponent } from '../../../../actividades/actividad-tarea/tarea-form-container/tarea-form-container.component'
 import { FormEvaluacionComponent } from '../../../../actividades/actividad-evaluacion/components/form-evaluacion/form-evaluacion.component'
 import { NoDataComponent } from '../../../../../../../shared/no-data/no-data.component'
+import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
 
 @Component({
     selector: 'app-tab-contenido',
@@ -116,6 +117,8 @@ export class TabContenidoComponent implements OnInit {
     ) {}
 
     iPerfilId: number = null
+    public DOCENTE = DOCENTE
+    public ESTUDIANTE = ESTUDIANTE
     ngOnInit(): void {
         this.iPerfilId = this._constantesService.iPerfilId
         const today = new Date()

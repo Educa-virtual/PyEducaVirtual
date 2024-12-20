@@ -6,18 +6,18 @@ import {
     OnChanges,
     inject,
 } from '@angular/core'
-import { ModalPrimengComponent } from '../../../../../../../shared/modal-primeng/modal-primeng.component'
 import { PrimengModule } from '@/app/primeng.module'
 import { NgIf } from '@angular/common'
 import { FormBuilder } from '@angular/forms'
 import { GeneralService } from '@/app/servicios/general.service'
 import { MessageService } from 'primeng/api'
 import { ConstantesService } from '@/app/servicios/constantes.service'
+import { abecedario } from '@/app/sistema/aula-virtual/constants/aula-virtual'
 
 @Component({
     selector: 'app-preguntas-form',
     standalone: true,
-    imports: [ModalPrimengComponent, PrimengModule, NgIf],
+    imports: [PrimengModule, NgIf],
     templateUrl: './preguntas-form.component.html',
     styleUrl: './preguntas-form.component.scss',
 })
@@ -29,24 +29,48 @@ export class PreguntasFormComponent implements OnChanges {
 
     @Output() accionBtnItem = new EventEmitter()
 
-    @Input() showModalPreguntas
+    @Input() showModalPreguntas: boolean = false
     @Input() cEvaluacionTitulo: string
     @Input() curso
     @Input() iEvaluacionId
     @Input() idEncabPregId
+    @Input() data
 
     iBancoId
+    opcion: string = 'GUARDAR'
 
     ngOnChanges(changes) {
         if (changes.showModalPreguntas?.currentValue) {
             this.showModalPreguntas = changes.showModalPreguntas.currentValue
+            if (this.formBancoPreguntas) {
+                this.formBancoPreguntas.reset()
+                this.formBancoPreguntas.controls.iTipoPregId.setValue(1)
+                this.cAlternativa = ''
+                this.cAlternativaExplicacion = ''
+                this.bRptaCorreta = false
+                this.alternativas = []
+            }
         }
         if (changes.curso?.currentValue) {
             this.curso = changes.curso.currentValue
         }
         if (changes.iEvaluacionId?.currentValue) {
             this.iEvaluacionId = changes.iEvaluacionId.currentValue
-            console.log(this.iEvaluacionId)
+        }
+        if (changes.data?.currentValue) {
+            this.data = changes.data.currentValue
+            const data = this.data.length ? this.data[0] : null
+            this.opcion = this.data.length ? 'ACTUALIZAR' : 'GUARDAR'
+            this.formBancoPreguntas.patchValue(data)
+            if (data) {
+                this.alternativas = data['alternativas']
+                    ? JSON.parse(data['alternativas'])
+                    : []
+                this.formBancoPreguntas.controls.iTipoPregId.setValue(
+                    Number(data['iTipoPregId'])
+                )
+                console.log(this.alternativas)
+            }
         }
     }
 
@@ -56,7 +80,7 @@ export class PreguntasFormComponent implements OnChanges {
 
         iBancoId: [''],
         iDocenteId: [''],
-        iTipoPregId: [],
+        iTipoPregId: [1],
         iCurrContId: [''],
         dtBancoCreacion: [''],
         cBancoPregunta: [''],
@@ -91,8 +115,34 @@ export class PreguntasFormComponent implements OnChanges {
                 })
                 break
             case 'guardar-pregunta':
+                const iRptaCorrecta = this.alternativas.filter(
+                    (i) => i.bBancoAltRptaCorrecta
+                ).length
+                const iAlternativas = this.alternativas.length
+                switch (this.formBancoPreguntas.value.iTipoPregId) {
+                    case 1:
+                        if (iRptaCorrecta !== 1 || iAlternativas <= 2) {
+                            this._MessageService.add({
+                                severity: 'error',
+                                summary: 'Error',
+                                detail: 'Debe haber solo una alternativa correcta y más de 2 alternativas. ',
+                            })
+                            return
+                        }
+                        break
+                    case 2:
+                        if (iRptaCorrecta < 2 || iAlternativas <= 3) {
+                            this._MessageService.add({
+                                severity: 'error',
+                                summary: 'Error',
+                                detail: 'Debe haber más de una alternativa correcta y más de 3 alternativas. ',
+                            })
+                            return
+                        }
+                        break
+                }
                 this.formBancoPreguntas.controls.opcion.setValue(
-                    'GUARDARxBancoPreguntas'
+                    this.opcion + 'xBancoPreguntas'
                 )
                 this.formBancoPreguntas.controls.iDocenteId.setValue(
                     this._ConstantesService.iDocenteId
@@ -136,7 +186,7 @@ export class PreguntasFormComponent implements OnChanges {
                     this.formBancoPreguntas.value.opcion
                 )
                 break
-            case 'GUARDARxBancoPreguntas':
+            case this.opcion + 'xBancoPreguntas':
                 this.accionBtn({ accion: 'close-modal', item: [] })
                 break
         }
@@ -166,20 +216,23 @@ export class PreguntasFormComponent implements OnChanges {
     // cBancoAltExplicacionRpta
 
     alternativas = []
-    cAlternativa: string = ''
-    cAlternativaExplicacion: string = ''
+    cAlternativa: string = null
+    cAlternativaExplicacion: string = null
     bRptaCorreta: boolean = false
     agregarAlternativa() {
+        const letra = abecedario.find((i) => i.id === this.alternativas.length)
+
         this.alternativas.push({
             iBancoAltId: null,
             iBancoId: this.iBancoId,
-            cBancoAltLetra: null,
+            cBancoAltLetra: letra.code,
             cBancoAltDescripcion: this.cAlternativa,
             bBancoAltRptaCorrecta: this.bRptaCorreta,
             cBancoAltExplicacionRpta: this.cAlternativaExplicacion,
+            bImage: this.cAlternativa.includes('image') ? true : false,
         })
-        this.cAlternativa = ''
-        this.cAlternativaExplicacion = ''
+        this.cAlternativa = null
+        this.cAlternativaExplicacion = null
         this.bRptaCorreta = false
     }
 

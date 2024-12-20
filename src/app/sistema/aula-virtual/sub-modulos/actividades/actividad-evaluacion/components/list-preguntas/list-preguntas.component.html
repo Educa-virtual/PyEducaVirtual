@@ -183,4 +183,11 @@
     [curso]="curso"
     [idEncabPregId]="idEncabPregId"
     (accionBtnItem)="accionBtn($event)"
+    [data]="detallePreguntas"
 ></app-preguntas-form>
+<app-view-preguntas
+    [showDetallePregunta]="showDetallePregunta"
+    [detallePreguntas]="detallePreguntas"
+    [titulo]="tituloDetallePregunta"
+    (accionBtnItem)="showDetallePregunta = false"
+></app-view-preguntas>

@@ -197,14 +197,14 @@ export class ApiAulaService {
                 { params }
             )
             .pipe(
-                map((resp) => resp.data),
-                map((data) => {
-                    if (data.iActTipoId == 3) {
-                        const preguntas = mapItemsBancoToEre(data.preguntas)
-                        data.preguntas = mapData(preguntas)
-                    }
-                    return data
-                })
+                map((resp) => resp.data)
+                // map((data) => {
+                //     if (data.iActTipoId == 3) {
+                //         const preguntas = mapItemsBancoToEre(data.preguntas)
+                //         data.preguntas = mapData(preguntas)
+                //     }
+                //     return data
+                // })
             )
     }
     habilitarCalificacion(data) {

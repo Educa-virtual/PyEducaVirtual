@@ -47,6 +47,7 @@ export class EvaluacionEstudiantesComponent implements OnChanges {
 
     environment = environment.backend
     @Input() evaluacion
+    evaluacion1: { iTiempo: number | null } = { iTiempo: 120 }
 
     iPreguntaId: number = 0
     preguntas = []
@@ -340,5 +341,12 @@ export class EvaluacionEstudiantesComponent implements OnChanges {
     showRubrica(data) {
         this.dialogRubricaInfo.visible = true
         this.dialogRubricaInfo.header = data
+    }
+    // Ejemplo de datos
+
+    convertirATiempo(tiempoEnMinutos: number): string {
+        const horas = Math.floor(tiempoEnMinutos / 60)
+        const minutos = tiempoEnMinutos % 60
+        return `${horas} horas ${minutos} minutos`
     }
 }

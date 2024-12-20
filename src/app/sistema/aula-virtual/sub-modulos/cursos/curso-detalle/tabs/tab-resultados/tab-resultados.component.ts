@@ -377,7 +377,7 @@ export class TabResultadosComponent implements OnInit {
         //console.log('Unidad Seleccionada', item)
         console.log('Indice de la Unidad', idx)
     }
-    // muestra las notas del curso
+    // muestra las notas del curso x trimestre
     reporteNotasFinales: any[] = []
     obtenerReporteDenotasFinales() {
         console.log('idCurso:', this.iCursoId)

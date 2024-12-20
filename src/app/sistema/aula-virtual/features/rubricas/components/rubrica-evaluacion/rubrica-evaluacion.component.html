@@ -1,5 +1,5 @@
 <p-menu #menu [model]="items" [popup]="true" />
-@if (params.iInstrumentoId) {
+@if (data && data.iInstrumentoId) {
     <p-accordion
         class="w-full"
         collapseIcon="pi pi-chevron-down"
@@ -11,21 +11,23 @@
                     <div class="flex flex-column w-full">
                         <div class="flex">{{ data?.cInstrumentoNombre }}</div>
                     </div>
-                    <div class="">
-                        <button
-                            [ngClass]="{
-                                'border-none': true,
-                                'cursor-pointer': true,
-                            }"
-                            class="p-1 mx-1 p-button-rounded p-button-primary p-button-text"
-                            pButton
-                            (click)="
-                                $event.stopPropagation(); menu.toggle($event)
-                            "
-                        >
-                            <i class="pi pi-ellipsis-h text-blue-500"></i>
-                        </button>
-                    </div>
+                    @if(isMenuVisible()){
+                        <div class="">
+                            <button
+                                [ngClass]="{
+                                    'border-none': true,
+                                    'cursor-pointer': true,
+                                }"
+                                class="p-1 mx-1 p-button-rounded p-button-primary p-button-text"
+                                pButton
+                                (click)="
+                                    $event.stopPropagation(); menu.toggle($event)
+                                "
+                            >
+                                <i class="pi pi-ellipsis-h text-blue-500"></i>
+                            </button>
+                        </div>
+                    }
                 </span>
             </ng-template>
             <div class="flex gap-4 font-normal">

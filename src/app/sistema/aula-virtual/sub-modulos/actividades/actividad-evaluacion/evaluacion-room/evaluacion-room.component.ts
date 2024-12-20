@@ -38,6 +38,8 @@ import { ActividadListaComponent } from '../../components/actividad-lista/activi
 import { RubricaEvaluacionComponent } from '@/app/sistema/aula-virtual/features/rubricas/components/rubrica-evaluacion/rubrica-evaluacion.component'
 import { RubricaCalificarComponent } from '@/app/sistema/aula-virtual/features/rubricas/components/rubrica-calificar/rubrica-calificar.component'
 import { ToolbarPrimengComponent } from '../../../../../../shared/toolbar-primeng/toolbar-primeng.component'
+import { MenuItem } from 'primeng/api'
+import { CommunicationService } from '@/app/servicios/communication.service'
 @Component({
     selector: 'app-evaluacion-room',
     standalone: true,
@@ -82,6 +84,25 @@ import { ToolbarPrimengComponent } from '../../../../../../shared/toolbar-primen
     ],
 })
 export class EvaluacionRoomComponent implements OnInit, OnDestroy {
+    items: MenuItem[] = [
+        {
+            label: 'Acciones',
+            items: [
+                {
+                    label: 'Editar',
+                    icon: 'pi pi-pencil',
+                },
+                {
+                    label: 'Eliminar',
+                    icon: 'pi pi-trash',
+                },
+                {
+                    label: 'Publicar',
+                    icon: 'pi pi-send',
+                },
+            ],
+        },
+    ]
     @Input() ixActivadadId: string
     @Input() iActTopId: tipoActividadesKeys
 
@@ -121,6 +142,7 @@ export class EvaluacionRoomComponent implements OnInit, OnDestroy {
             cInstrumentoNombre: 'Sin instrumento de evaluación',
         },
     ]
+
 
     constructor(
         private _evaluacionService: ApiEvaluacionesService,

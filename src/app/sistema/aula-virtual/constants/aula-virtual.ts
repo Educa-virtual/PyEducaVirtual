@@ -166,3 +166,110 @@ export const actividadesConfigList: Partial<IActividad>[] = [
         cActTipoNombre: 'Material',
     },
 ]
+
+export const abecedario = [
+    {
+        code: 'a',
+        id: 0,
+    },
+    {
+        code: 'b',
+        id: 1,
+    },
+    {
+        code: 'c',
+        id: 2,
+    },
+    {
+        code: 'd',
+        id: 3,
+    },
+    {
+        code: 'e',
+        id: 4,
+    },
+    {
+        code: 'f',
+        id: 5,
+    },
+    {
+        code: 'g',
+        id: 6,
+    },
+    {
+        code: 'h',
+        id: 7,
+    },
+    {
+        code: 'i',
+        id: 8,
+    },
+    {
+        code: 'j',
+        id: 9,
+    },
+    {
+        code: 'k',
+        id: 10,
+    },
+    {
+        code: 'l',
+        id: 11,
+    },
+    {
+        code: 'm',
+        id: 12,
+    },
+    {
+        code: 'n',
+        id: 13,
+    },
+    {
+        code: 'ñ',
+        id: 14,
+    },
+    {
+        code: 'o',
+        id: 15,
+    },
+    {
+        code: 'p',
+        id: 16,
+    },
+    {
+        code: 'q',
+        id: 17,
+    },
+    {
+        code: 'r',
+        id: 18,
+    },
+    {
+        code: 's',
+        id: 19,
+    },
+    {
+        code: 't',
+        id: 20,
+    },
+    {
+        code: 'u',
+        id: 21,
+    },
+    {
+        code: 'v',
+        id: 22,
+    },
+    {
+        code: 'x',
+        id: 23,
+    },
+    {
+        code: 'y',
+        id: 24,
+    },
+    {
+        code: 'z',
+        id: 25,
+    },
+]

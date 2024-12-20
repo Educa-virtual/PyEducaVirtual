@@ -1,13 +1,26 @@
-@for (criterio of data?.criterios; track criterio.iCriterioId) {
-  <h1 class="font-bold text-xl">
-    {{criterio.cCriterioNombre}}
-  </h1>
-  @if (criterio.cCriterioDescripcion) {
-    <p>
-      {{criterio.cCriterioDescripcion}}
-    </p>
-  }
-  <app-table-primeng [enableCellSelection]="enableCellSelection" (selectedColumn)="selection($event)" (selectedRowDataChange)="selection($event)" [columnas]="structuredColumns(criterio.niveles)" [data]="structuredRows(criterio.niveles)"  [columnas]="columns"  [showCaption]="false" [showPaginator]="false">
-  
-  </app-table-primeng>
-}
+<div #contenidoImprimible class="w-full">
+    <section>
+        @for (criterio of data?.criterios; track criterio.iCriterioId) {
+            <h1 class="font-bold text-xl">
+                {{ criterio.cCriterioNombre }}
+            </h1>
+            @if (criterio.cCriterioDescripcion) {
+                <p>
+                    {{ criterio.cCriterioDescripcion }}
+                </p>
+            }
+            <app-table-primeng
+                [enableCellSelection]="enableCellSelection"
+                (selectedColumn)="selection($event)"
+                (selectedRowDataChange)="selection($event)"
+                [columnas]="structuredColumns(criterio.niveles)"
+                [data]="structuredRows(criterio.niveles)"
+                [columnas]="columns"
+                [showCaption]="false"
+                [showPaginator]="false"
+                [showSortIcon]="showSortIcon"
+            >
+            </app-table-primeng>
+        }
+    </section>
+</div>

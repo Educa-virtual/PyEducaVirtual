@@ -1,18 +1,21 @@
 <app-toolbar-primeng
     [title]="'Evaluación Formativa: ' + (evaluacion?.cEvaluacionTitulo || '')"
 >
-    <div class="flex flex-column">
-        <p class="flex flex-column text-white text-center text-2xl">
-            <i class="pi pi-clock mr-2 text-3xl"></i>
+    <p class="font-bold text-black">
+        <!-- Contador de preguntas -->
+        {{ iPreguntaId }} de {{ evaluacion?.preguntas?.length }}
+    </p>
+</app-toolbar-primeng>
+<div class="card bg-white shadow-lg rounded-lg p-4 h-64">
+    <div class="flex flex-column h-full justify-center">
+        <p class="flex flex-column text-black text-center text-2xl">
+            <i class="pi pi-clock mr-2 text-3xl text-red-500"></i>
             {{ tiempoEnMilisegundos ?? '00:00:00' }}
         </p>
-        <!-- Contador de preguntas -->
-        <p class="font-bold">
-            Pregunta {{ iPreguntaId }} de {{ evaluacion?.preguntas?.length }}
-        </p>
     </div>
-</app-toolbar-primeng>
-<div class="card">
+</div>
+
+<div class="grid">
     <div *ngIf="iPreguntaId === 0">
         <!-- Contenido inicial de la evaluación -->
         <div class="grid">
@@ -48,29 +51,45 @@
                     {{ evaluacion?.dtEvaluacionFin | date: 'h:mm a' }}
                 </p>
             </div>
-            <div class="col-12 md:col-3 mt-5">
+            <div class="col-6 md:col-4 lg:col-3 mt-3">
                 <div class="grid">
-                    <div class="col-6">
+                    <!-- Icono de Tiempo -->
+                    <div class="col-12 flex justify-content-center mb-4">
                         <img
                             src="assets/images/icons/tiempo.gif"
                             alt="Tiempo"
-                            width="100%"
+                            class="w-6rem md:w-8rem h-auto"
                         />
+
+                        <div class="text-center mt-3">
+                            Duracion:
+                            <h4 class="text-primary font-bold">
+                                {{
+                                    evaluacion?.iTiempo
+                                        ? convertirATiempo(evaluacion.iTiempo)
+                                        : '0 horas 0 minutos'
+                                }}
+                            </h4>
+                        </div>
                     </div>
-                    <div class="col-6 mt-4">
-                        <span>Duración:</span>
-                        <h1>
-                            {{ evaluacion?.iTiempo }} &nbsp;<span
-                                class="text-none"
-                                style="font-size: small"
-                                >minutos</span
+
+                    <!-- Total de Preguntas -->
+                    <div class="col-12 text-center mt-4">
+                        <p class="font-medium text-sm text-secondary">
+                            <span style="font-size: 18px"
+                                >Total preguntas:</span
                             >
-                        </h1>
+                            <span class="font-bold">
+                                <p-badge
+                                    [value]="evaluacion?.preguntas?.length || 0"
+                                    severity="info"
+                                    styleClass="ml-5"
+                                >
+                                </p-badge>
+                            </span>
+                        </p>
                     </div>
                 </div>
-                <p class="text-center mt-0">
-                    Total preguntas: {{ evaluacion?.preguntas?.length }}
-                </p>
             </div>
 
             <div
@@ -95,7 +114,28 @@
                         <div class="card">
                             <p-accordion [activeIndex]="0">
                                 Revise la Rubrica antes de iniciar Evaluacion:
+                                <app-rubrica-evaluacion
+                                    (clickNameRubrica)="showRubrica($event)"
+                                    class="w-full"
+                                ></app-rubrica-evaluacion>
                             </p-accordion>
+                        </div>
+                        <div>
+                            <p-dialog
+                                [modal]="true"
+                                [header]="
+                                    'Rubrica - ' + dialogRubricaInfo.header
+                                "
+                                [(visible)]="dialogRubricaInfo.visible"
+                                [style]="{ width: '75rem' }"
+                                [breakpoints]="{
+                                    '1199px': '75vw',
+                                    '575px': '90vw',
+                                }"
+                                [maximizable]="true"
+                            >
+                                <app-rubrica-calificar></app-rubrica-calificar>
+                            </p-dialog>
                         </div>
                     </p-panel>
                 </div>

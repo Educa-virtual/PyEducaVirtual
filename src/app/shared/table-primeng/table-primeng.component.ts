@@ -274,7 +274,12 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     @Output() selectedColumn = new EventEmitter()
 
     selectCell(col: any, field: string, row): void {
-        this.selectedColumn.emit([col, row.values[col.field].iNivelEvaId])
+        this.selectedColumn.emit([col, {
+            iCriterioId: row.values[col.field].iCriterioId,
+            iNivelEvaId: row.values[col.field].iNivelEvaId,
+            logros: row.values[col.field].logros,
+            row: row
+        }])
 
         // Si la celda seleccionada es la misma, la deseleccionamos
         if (this.selectedCells[row.values[col.field].iNivelEvaId] === field) {
@@ -292,6 +297,7 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     selectedCells: { [rowId: string]: string } = {};
 
     @Input() enableCellSelection
+    @Input() showSortIcon = true
 
     isCellSelected(rowId: any) {
         return this.selectedCells?.hasOwnProperty(rowId)

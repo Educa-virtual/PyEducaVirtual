@@ -20,6 +20,9 @@ import { GeneralService } from '@/app/servicios/general.service'
 import { BancoPreguntaListaComponent } from '@/app/sistema/evaluaciones/sub-evaluaciones/banco-preguntas/components/banco-pregunta-lista/banco-pregunta-lista.component'
 import { columnsBancoPreguntas } from '../../evaluacion-form/evaluacion-form-preguntas/evaluacion-form-preguntas'
 import { removeHTML } from '@/app/shared/utils/remove-html'
+import { generarIdAleatorio } from '@/app/shared/utils/random-id'
+import { ViewPreguntasComponent } from '../../../../aula-banco-preguntas/aula-banco-preguntas/components/view-preguntas/view-preguntas.component'
+import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 
 @Component({
     selector: 'app-list-preguntas',
@@ -29,6 +32,7 @@ import { removeHTML } from '@/app/shared/utils/remove-html'
         AulaBancoPreguntasComponent,
         PreguntasFormComponent,
         BancoPreguntaListaComponent,
+        ViewPreguntasComponent,
     ],
     templateUrl: './list-preguntas.component.html',
     styleUrl: './list-preguntas.component.scss',
@@ -41,6 +45,7 @@ export class ListPreguntasComponent implements OnChanges {
     private http = inject(HttpClient)
     private _GeneralService = inject(GeneralService)
     private _MessageService = inject(MessageService)
+    private _ConfirmationModalService = inject(ConfirmationModalService)
 
     @Input() data
     @Input() curso
@@ -50,6 +55,11 @@ export class ListPreguntasComponent implements OnChanges {
     showModalPreguntas: boolean = false
     showModalBancoPreguntas: boolean = false
     showModalEncabezadoPreguntas: boolean = false
+    showDetallePregunta: boolean = false
+    detallePreguntas = []
+    itemPreguntas = []
+    tituloDetallePregunta: string
+
     preguntasSeleccionadas = []
     jEnunciadoUrl: any = ''
     idEncabPregId
@@ -63,6 +73,13 @@ export class ListPreguntasComponent implements OnChanges {
             type: 'item',
             class: 'p-button-rounded p-button-primary p-button-text',
             isVisible: (row) => row.idEncabPregId,
+        },
+        {
+            labelTooltip: 'Ver',
+            icon: 'pi pi-eye',
+            accion: 'ver_preguntas',
+            type: 'item',
+            class: 'p-button-rounded p-button-info p-button-text',
         },
         {
             labelTooltip: 'Editar',
@@ -156,8 +173,29 @@ export class ListPreguntasComponent implements OnChanges {
                     i.json_alternativas = i.json_alternativas
                         ? JSON.parse(i.json_alternativas)
                         : i.json_alternativas
-                    i.cPreguntaNoHTML = removeHTML(i.cBancoPregunta)
+                    i.cPreguntaNoHTML = i.cBancoPregunta
+                        ? removeHTML(i.cBancoPregunta)
+                        : null
                 })
+                break
+            case 'ver_preguntas':
+                this.showDetallePregunta = true
+                this.handleVerPregunta(item)
+                break
+            case 'eliminar':
+                this._ConfirmationModalService.openConfirm({
+                    header: '¿Esta seguro de eliminar la pregunta ' + ' ?',
+                    accept: () => {
+                        this.eliminarPregunta(item)
+                    },
+                })
+                break
+            case 'EliminarxiEvalPregId':
+                this.obtenerBancoPreguntas()
+                break
+            case 'actualizar':
+                this.showModalPreguntas = true
+                this.handleVerPregunta(item)
                 break
         }
     }
@@ -174,12 +212,12 @@ export class ListPreguntasComponent implements OnChanges {
         if (encabezado) {
             this.showModalEncabezadoPreguntas = true
         } else {
+            this.detallePreguntas = []
             this.showModalPreguntas = true
         }
     }
 
     guardarActualizarPreguntaConAlternativas(data) {
-        console.log(data)
         this._ApiAulaBancoPreguntasService
             .guardarActualizarPreguntaConAlternativas(data)
             .subscribe({
@@ -297,5 +335,92 @@ export class ListPreguntasComponent implements OnChanges {
                 })
             },
         })
+    }
+
+    agregarPreguntas() {
+        this.preguntasSeleccionadas.map((item) => {
+            item = this.mapLocalPregunta(item)
+            return item
+        })
+        this.showModalBancoPreguntas = false
+        this.preguntasSeleccionadas.forEach((item) => {
+            item.opcion = 'GUARDARxBancoPreguntas'
+            item.iEncabPregId =
+                item.iEncabPregId === -1 ? null : item.iEncabPregId
+            item.iEvaluacionId = this.iEvaluacionId
+            const params = {
+                petition: 'post',
+                group: 'evaluaciones',
+                prefix: 'evaluacion-preguntas',
+                ruta: 'handleCrudOperation',
+                data: item,
+            }
+            this.getInformation(params, item.opcion)
+        })
+        this.preguntasSeleccionadas = []
+        this.obtenerBancoPreguntas()
+
+        //this.preguntas.push(...this.preguntasSeleccionadas)
+    }
+
+    mapLocalPregunta(pregunta) {
+        if (pregunta.iEncabPregId == -1) {
+            pregunta.isLocal = true
+            pregunta.iEvalPregId = generarIdAleatorio()
+        } else {
+            pregunta.preguntas = this.addLocalPreguntas(pregunta.preguntas)
+        }
+        return pregunta
+    }
+
+    addLocalPreguntas = (preguntas) => {
+        return preguntas.map((item) => {
+            item.isLocal = true
+            item.iEvalPregId = generarIdAleatorio()
+            return item
+        })
+    }
+    handleVerPregunta(item) {
+        const params = {
+            petition: 'post',
+            group: 'evaluaciones',
+            prefix: 'banco-preguntas',
+            ruta: 'handleCrudOperation',
+            data: {
+                opcion: 'CONSULTARxiBancoId',
+                iBancoId: item.iBancoId,
+                idEncabPregId: item.idEncabPregId,
+            },
+        }
+        this._GeneralService.getGralPrefix(params).subscribe({
+            next: (response) => {
+                if (response.validated) {
+                    this.detallePreguntas = response.data
+                    const index =
+                        this.preguntas.findIndex(
+                            (i) => i.iBancoId === item.iBancoId
+                        ) + 1
+                    this.tituloDetallePregunta = 'PREGUNTA #' + index
+                }
+            },
+            complete: () => {},
+            error: (error) => {
+                console.log(error)
+            },
+        })
+    }
+
+    eliminarPregunta(item) {
+        const params = {
+            petition: 'post',
+            group: 'evaluaciones',
+            prefix: 'evaluacion-preguntas',
+            ruta: 'handleCrudOperation',
+            data: {
+                opcion: 'EliminarxiEvalPregId',
+                iEvalPregId: item.iEvalPregId,
+            },
+        }
+        this.getInformation(params, 'EliminarxiEvalPregId')
     }
 }

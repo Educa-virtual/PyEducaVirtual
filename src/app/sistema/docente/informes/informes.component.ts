@@ -232,14 +232,14 @@ export class InformesComponent implements OnInit {
             (item) => item.iEstudianteId === id
         )
         this.curso = JSON.parse(filteredData[0].json_cursos)
-        console.log(filteredData[0].json_cursos)
+        console.log('datos de estudiante', this.curso, this.estudianteSelect)
     }
     // metodo para la accion switch para descargar
     accionDescargar({ accion }): void {
         switch (accion) {
             case 'descargar_pdf':
                 this.generarReporteDeLogrosAlcanzadosXYear()
-                console.log('Descargar pdf')
+                //console.log('Descargar pdf')
                 break
             case 'Descargar_Excel':
                 console.log('Descargar excel')
@@ -248,11 +248,15 @@ export class InformesComponent implements OnInit {
     }
     // metodo para descargar el reporte de logros alcanzados durante el año en pdf
     generarReporteDeLogrosAlcanzadosXYear() {
-        console.log('idDocente', this.idDocCursoId)
+        console.log(this.curso, this.estudianteSelect)
+        const datosEstudiante = JSON.stringify(this.estudianteSelect)
+        const datosCursoEstudiante = JSON.stringify(this.curso)
         const iSedeId = this.perfil['iSedeId']
         this._aulaService
             .generarReporteDeLogrosAlcanzadosXYear({
                 iSedeId: iSedeId,
+                datosEstudiante: datosEstudiante,
+                datosCursoEstudiante: datosCursoEstudiante,
             })
             .subscribe((response) => {
                 //console.log('Respuesta de Evaluacion:', response) // Para depuración

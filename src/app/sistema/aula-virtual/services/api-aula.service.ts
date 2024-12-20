@@ -265,7 +265,11 @@ export class ApiAulaService {
             }
         )
     }
-    generarReporteDeLogrosAlcanzadosXYear(params: { iSedeId }) {
+    generarReporteDeLogrosAlcanzadosXYear(params: {
+        iSedeId
+        datosEstudiante
+        datosCursoEstudiante
+    }) {
         return this._http.get(
             `${this.baseUrlApi}/aula-virtual/Resultado/generarReporteDeLogrosAlcanzadosXYear`,
             {

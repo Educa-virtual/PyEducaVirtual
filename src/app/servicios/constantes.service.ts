@@ -777,7 +777,7 @@ export class ConstantesService {
                 return notas_evaluaciones
             case 3:
                 return notas_evaluaciones
-            case 8:
+            case 80:
                 return estudiante
             case 5:
                 return registro_asistencia

@@ -39,7 +39,8 @@ import { RubricaEvaluacionComponent } from '@/app/sistema/aula-virtual/features/
 import { RubricaCalificarComponent } from '@/app/sistema/aula-virtual/features/rubricas/components/rubrica-calificar/rubrica-calificar.component'
 import { ToolbarPrimengComponent } from '../../../../../../shared/toolbar-primeng/toolbar-primeng.component'
 import { MenuItem } from 'primeng/api'
-import { CommunicationService } from '@/app/servicios/communication.service'
+import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
+
 @Component({
     selector: 'app-evaluacion-room',
     standalone: true,
@@ -143,7 +144,6 @@ export class EvaluacionRoomComponent implements OnInit, OnDestroy {
         },
     ]
 
-
     constructor(
         private _evaluacionService: ApiEvaluacionesService,
         private _constantesService: ConstantesService,
@@ -187,6 +187,8 @@ export class EvaluacionRoomComponent implements OnInit, OnDestroy {
     public iPerfilId: number
     public evaluacion
     public cEvaluacionInstrucciones
+    public DOCENTE = DOCENTE
+    public ESTUDIANTE = ESTUDIANTE
 
     ngOnInit() {
         this.params.iDocenteId = this._constantesService.iDocenteId

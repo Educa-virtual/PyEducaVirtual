@@ -43,6 +43,7 @@ export class ConfigResumenComponent implements OnInit {
     r_horas: any[]
     r_secciones: any[]
     configuracion: any[]
+    perfil: any[]
     bConfigEsBilingue: any = 0
     totalHoras: number = 0
     totalHorasPendientes: number = 0
@@ -59,6 +60,7 @@ export class ConfigResumenComponent implements OnInit {
     ) {
         this.items = this.stepService.itemsStep
         this.configuracion = this.stepService.configuracion
+        this.perfil = this.stepService.perfil
     }
 
     ngOnInit(): void {
@@ -172,6 +174,8 @@ export class ConfigResumenComponent implements OnInit {
                 totalHoras: this.totalHoras,
                 bConfigEsBilingue: this.bConfigEsBilingue,
                 totalHorasPendientes: this.totalHorasPendientes,
+                perfil: this.perfil,
+                configuracion: this.configuracion,
             },
         }
         this.query.generarPdf(params).subscribe({

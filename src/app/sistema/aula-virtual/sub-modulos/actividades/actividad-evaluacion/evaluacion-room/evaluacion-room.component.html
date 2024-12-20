@@ -1,4 +1,4 @@
-@if (iPerfilId === 7) {
+@if (iPerfilId === DOCENTE) {
     <section class="flex flex-column gap-4">
         <p-tabView styleClass="actividad-tabs">
             <p-tabPanel>
@@ -340,7 +340,7 @@
         </p-tabView>
     </section>
 }
-@if (iPerfilId === 8) {
+@if (iPerfilId === ESTUDIANTE) {
     <app-evaluacion-estudiantes
         [evaluacion]="evaluacion"
     ></app-evaluacion-estudiantes>

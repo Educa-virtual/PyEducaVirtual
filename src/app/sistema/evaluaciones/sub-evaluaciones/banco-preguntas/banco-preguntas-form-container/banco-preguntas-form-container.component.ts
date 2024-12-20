@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common'
-import { Component, inject, Input, OnInit } from '@angular/core'
+import { Component, inject, OnInit } from '@angular/core'
 import { FormBuilder, FormGroup } from '@angular/forms'
 import {
     crearFormularioBaseEncabezado,
@@ -10,6 +10,8 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog'
 import { ApiEvaluacionesRService } from '../../../services/api-evaluaciones-r.service'
 import { Subject, switchMap, takeUntil } from 'rxjs'
 import { sinEncabezadoObj } from '../components/banco-pregunta-encabezado-form/banco-pregunta-encabezado-form.component'
+import { CompartirFormularioEvaluacionService } from '../../../services/ereEvaluaciones/compartir-formulario-evaluacion.service'
+import { CompartirIdEvaluacionService } from '../../../services/ereEvaluaciones/compartir-id-evaluacion.service'
 
 @Component({
     selector: 'app-banco-preguntas-form-container',
@@ -25,22 +27,25 @@ export class BancoPreguntasFormContainerComponent implements OnInit {
     private _config = inject(DynamicDialogConfig)
     private _ref = inject(DynamicDialogRef)
     private _evaluacionesService = inject(ApiEvaluacionesRService)
-
     private unsubscribe$: Subject<boolean> = new Subject()
-
     public encabezados = []
     public encabezadosFiltered = []
     public pregunta
     public encabezadoMode: 'COMPLETADO' | 'EDITAR' = 'EDITAR'
-
     public modePregunta: 'CREAR' | 'EDITAR' = 'CREAR'
     private params = {}
-    public iEvaluacionId = this._config.data.iEvaluacionId //Aqui viene desde el Banco-Preguntas
-    @Input() payload: any //!ATRAE DE PADRE 1
+    //public iEvaluacionId = this._config.data.iEvaluacionId //Aqui viene desde el Banco-Preguntas
+    public iNivelGradoId
+    areas: any[] = [] // Aquí se almacenarán los datos
+
+    //@Input() payload: any //!ATRAE DE PADRE 1
     recibirPayloadForms: any
     private _apiEre = inject(ApiEvaluacionesRService)
     iDesempenoId: number
-    constructor() {
+    constructor(
+        private compartirFormularioEvaluacionService: CompartirFormularioEvaluacionService,
+        private compartiridEvaluacionService: CompartirIdEvaluacionService
+    ) {
         this.inicializarFormulario()
     }
 
@@ -53,16 +58,25 @@ export class BancoPreguntasFormContainerComponent implements OnInit {
         if (this._config.data.pregunta.iPreguntaId == 0) {
             this.modePregunta = 'CREAR'
         } else {
+            console.log(
+                'Editar Pregunta: ',
+                this._config.data.pregunta.iPreguntaId
+            )
             this.modePregunta = 'EDITAR'
             this.encabezadoMode = 'COMPLETADO'
+
+            console.log('Modo Pregunta Editar: ', this.modePregunta)
         }
         this.pregunta = this._config.data.pregunta
+        console.log(
+            'Id recibido en evaluacion :',
+            this.compartiridEvaluacionService.iEvaluacionIdStorage
+        )
 
         // Aquí verificamos que el iEvaluacionId llega correctamente
-        console.log('iEvaluacionId recibido en Form:', this.iEvaluacionId) // Asegúrate de que esta línea sea correcta
-        console.log('Payload recibido en el segundo padre:', this.payload)
+        // console.log('iEvaluacionId recibido en Form:', this.iEvaluacionId) // Asegúrate de que esta línea sea correcta
+        // console.log('Payload recibido en el segundo padre:', this.payload)
     }
-
     getData() {
         this.obtenerEncabezados()
     }
@@ -114,48 +128,73 @@ export class BancoPreguntasFormContainerComponent implements OnInit {
         })
     }
 
-    guardarConFlujoEncadenado(data: any) {
+    recibirPayloadForm(payloadEmitidoForms: any) {
+        console.log(
+            'Payload recibido desde el banco-preguntas-form >>>:',
+            payloadEmitidoForms
+        )
+        // Crear una copia modificada
+        this.recibirPayloadForms = {
+            ...payloadEmitidoForms, // Copia todas las propiedades originales
+            //iEvaluacionId: 679, //! Aqui cambiamos el ID de evaluacion
+            iEvaluacionId:
+                this.compartiridEvaluacionService.iEvaluacionIdStorage,
+        }
+
+        console.log('Payload modificado >>>:', this.recibirPayloadForms)
+    }
+
+    guardarPreguntasConFlujo(data: any) {
+        console.log(
+            'Valor actual de this.recibirPayloadForms:',
+            this.recibirPayloadForms
+        )
+
         if (this.recibirPayloadForms) {
             console.log(
                 'Insertando datos en el desempeño:',
                 this.recibirPayloadForms
             )
+
             // Llamar al servicio para insertar en la tabla "desempeños"
             this._apiEre
                 .insertarMatrizDesempeno(this.recibirPayloadForms) // Paso 1: Insertar desempeño
                 .pipe(
                     takeUntil(this.unsubscribe$), // Limpiar suscripciones
                     switchMap((resp: any) => {
-                        // Extraer el ID generado
-                        const iiDesempenoId = resp?.iDesempenoId
+                        const iiDesempenoId = resp?.iDesempenoId // Extraer ID
+
+                        console.log(
+                            'Respuesta Servidor GuardarPreguntaFlujo: ',
+                            resp
+                        )
                         console.log('ID generado:', iiDesempenoId)
 
-                        // Validar que el ID exista
                         if (!iiDesempenoId) {
                             throw new Error(
                                 'No se generó un iDesempeñoId válido.'
                             )
                         }
-                        // Convertir iDesempenoId a entero
-                        const iiiDesempenoId = parseInt(iiDesempenoId, 10) // Asegurarse de que sea un número
+
+                        // Convertir ID a número entero
+                        const iiiDesempenoId = parseInt(iiDesempenoId, 10)
                         console.log(
                             'ID de Desempeño recibido (convertido a número):',
                             iiiDesempenoId
                         )
 
-                        // Agregar el iDesempenoId al objeto `data` recibido
+                        // Paso 2: Preparar el objeto `data` con los valores adicionales
                         data.iDesempenoId = iiiDesempenoId
-                        //data.iCursoId = 3 // Valores adicionales
-                        data.iCursosNivelGradId = 2
-                        data.iNivelGradoId = 1
-                        data.iEspecialistaId = 2
+                        data.iCursosNivelGradId = 6 //!En este caso debe ser dinamico, dependiendo de los cursos.
+                        data.iNivelGradoId = 1 //!Aqui igual Dinamico
+                        data.iEspecialistaId = 2 //!Aqui igual Dinamico
 
                         console.log(
                             'Datos listos para guardar preguntas:',
                             data
                         )
 
-                        // Paso 2: Guardar en el banco de preguntas
+                        // Llamada al servicio para guardar preguntas
                         return this._evaluacionesService.guardarActualizarPreguntaConAlternativas(
                             data
                         )
@@ -164,41 +203,39 @@ export class BancoPreguntasFormContainerComponent implements OnInit {
                 .subscribe({
                     next: () => {
                         console.log('Flujo completo: Guardar pregunta exitosa')
-                        this.closeModal(data) // Cerrar modal opcionalmente
+                        this.closeModal(data)
                     },
                     error: (err) => {
                         console.error('Error en el flujo de inserción:', err)
+                        console.warn('Datos enviados:', data)
                     },
                 })
         } else {
             console.log('No se ha recibido el payload aún.')
+
+            // Si no se ha recibido payload, simplemente guardamos preguntas con datos básicos
+            data.iCursosNivelGradId = 6 //!aqui igual dinamico
+            data.iNivelGradoId = 1 //!aqui igual dinamico
+            data.iEspecialistaId = 1 //!aqui igual dinamico
+
+            console.log('Guardando preguntas sin payload de desempeño:', data)
+
+            // Guardar directamente en el banco de preguntas
+            this._evaluacionesService
+                .guardarActualizarPreguntaConAlternativas(data)
+                .subscribe({
+                    next: () => {
+                        console.log('Guardar banco de preguntas exitosa')
+                        this.closeModal(data)
+                    },
+                    error: (err) => {
+                        console.error(
+                            'Error al guardar banco de preguntas:',
+                            err
+                        )
+                    },
+                })
         }
-    }
-
-    guardarBancoPreguntas(data) {
-        // Aqui se puede poner datos agregados en data para insertar en la base de datos
-        data.iCursoId = 3
-        data.iNivelGradoId = 1
-        data.iEspecialistaId = 1
-        //console.table(data)
-        this._evaluacionesService
-            .guardarActualizarPreguntaConAlternativas(data)
-            .subscribe({
-                next: () => {
-                    this.closeModal(data)
-                    console.log('GuardarBancoPreguntas exitosa', data)
-                },
-            })
-    }
-
-    //Atreae padre 1
-    recibirPayloadForm(payloadEmitidoForms: any) {
-        console.log(
-            'Payload recibido desde el banco-preguntas-form >>>:',
-            payloadEmitidoForms
-        )
-
-        this.recibirPayloadForms = payloadEmitidoForms
     }
 
     closeModal(data) {

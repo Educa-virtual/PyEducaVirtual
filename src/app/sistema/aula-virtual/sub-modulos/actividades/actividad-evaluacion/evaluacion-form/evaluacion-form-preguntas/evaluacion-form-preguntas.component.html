@@ -18,7 +18,6 @@
             pButton
             class="p-button-primary gap-2"
             (click)="menuAgregacionPreguntas.toggle($event)"
-            [disabled]="mode === 'VIEW'"
             size="small"
         >
             <i class="pi pi-plus"></i>
@@ -62,28 +61,29 @@
             (selectedRowDataChange)="selectedRowDataChange($event)"
         />
     }
-
-    <div class="flex justify-content-end gap-2 pt-3">
-        <button
-            pButton
-            pRipple
-            label="Cancelar"
-            icon="pi pi-times"
-            class="p-button-secondary"
-            type="button"
-            size="small"
-            (click)="closeModalBancoPreguntas()"
-        ></button>
-        <button
-            pButton
-            pRipple
-            label="Agregar preguntas seleccionadas"
-            icon="pi pi-check"
-            size="small"
-            class="p-button-primary"
-            (click)="agregarPreguntas()"
-        ></button>
-    </div>
+    <ng-template pTemplate="footer">
+        <div class="flex justify-content-end gap-2 pt-3">
+            <button
+                pButton
+                pRipple
+                label="Cancelar"
+                icon="pi pi-times"
+                class="p-button-secondary"
+                type="button"
+                size="small"
+                (click)="closeModalBancoPreguntas()"
+            ></button>
+            <button
+                pButton
+                pRipple
+                label="Agregar preguntas seleccionadas"
+                icon="pi pi-check"
+                size="small"
+                class="p-button-primary"
+                (click)="agregarPreguntas()"
+            ></button>
+        </div>
+    </ng-template>
 </p-dialog>
 <app-preguntas-form
     [showModalPreguntas]="showModalPreguntas"

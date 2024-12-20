@@ -129,7 +129,7 @@ export class EvaluacionesComponent implements OnInit {
     }
     accionesPrincipal: IActionContainer[] = [
         {
-            labelTooltip: 'Agregar evaluación',
+            labelTooltip: 'Agregar evaluacións',
             text: 'Agregar Evaluación',
             icon: 'pi pi-plus',
             accion: 'seleccionar',

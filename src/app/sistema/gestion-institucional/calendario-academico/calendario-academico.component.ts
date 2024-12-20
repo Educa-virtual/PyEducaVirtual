@@ -1,14 +1,15 @@
 import { Component, OnInit } from '@angular/core' //OnChanges, OnDestroy
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
 import { ButtonModule } from 'primeng/button'
-import { InputNumberModule } from 'primeng/inputnumber'
-import { InputTextModule } from 'primeng/inputtext'
+// import { InputNumberModule } from 'primeng/inputnumber'
+// import { InputTextModule } from 'primeng/inputtext'
 import { InputTextareaModule } from 'primeng/inputtextarea'
 import { CalendarModule } from 'primeng/calendar'
 import { ChipsModule } from 'primeng/chips'
 import { TagModule } from 'primeng/tag'
+import { ToastModule } from 'primeng/toast'
 
-import { InputSwitchModule } from 'primeng/inputswitch'
+// import { InputSwitchModule } from 'primeng/inputswitch'
 
 import { MessageService } from 'primeng/api'
 import {
@@ -29,6 +30,7 @@ import {
     ContainerPageComponent,
 } from '@/app/shared/container-page/container-page.component'
 import { StepConfirmationService } from '@/app/servicios/confirm.service'
+import { PrimengModule } from '@/app/primeng.module'
 
 @Component({
     selector: 'app-calendario-academico',
@@ -39,12 +41,14 @@ import { StepConfirmationService } from '@/app/servicios/confirm.service'
         ReactiveFormsModule,
         FormsModule,
         DialogModule,
-        InputSwitchModule,
-        InputNumberModule,
-        InputTextModule,
+        // InputSwitchModule,
+        // InputNumberModule,
+        // InputTextModule,
         ContainerPageComponent,
         CalendarModule,
         ChipsModule,
+        ToastModule,
+        PrimengModule,
         TagModule,
         InputTextareaModule,
     ],
@@ -91,20 +95,20 @@ export class CalendarioAcademicoComponent implements OnInit {
 
     ngOnInit(): void {
         this.form = this.fb.group({
-            iYearId: [''],
+            iYearId: [0],
             cYearNombre: [null, Validators.required], // Control para "Descripcion año"
             cYearOficial: ['', Validators.required], // Control para "Año Oficial"
-            iYearEstado: [false], // Control para el switch "Estado"
+            iYearEstado: [0], // Control para el switch "Estado"
         })
 
         this.formCalendario = this.fb.group({
-            iYAcadId: [''],
-            iYearId: ['', Validators.required],
+            iYAcadId: [0],
+            iYearId: [0, Validators.required],
             dtYAcadInicio: ['', Validators.required],
             dYAcadFin: ['', Validators.required],
             cYAcadNombre: ['', Validators.required],
             cYAcadDescripcion: ['', Validators.required],
-            iEstado: [''],
+            iEstado: [0],
         })
 
         // peticiones al api
@@ -145,6 +149,11 @@ export class CalendarioAcademicoComponent implements OnInit {
                 },
                 error: (error) => {
                     console.error('Error fetching Años Académicos:', error)
+                    this.messageService.add({
+                        severity: 'danger',
+                        summary: 'Mensaje',
+                        detail: 'Error en ejecución',
+                    })
                 },
                 complete: () => {
                     console.log('Request completed')
@@ -162,7 +171,7 @@ export class CalendarioAcademicoComponent implements OnInit {
             text: 'Agregar Año Académico',
             icon: 'pi pi-plus',
             accion: 'agregar',
-            class: 'p-button-secondary',
+            class: 'p-button-primary',
         },
     ]
     selectedItems = []
@@ -211,7 +220,7 @@ export class CalendarioAcademicoComponent implements OnInit {
         {
             type: 'item',
             width: '5rem',
-            field: '',
+            field: 'item',
             header: 'Item',
             text_header: 'center',
             text: 'center',
@@ -318,7 +327,7 @@ export class CalendarioAcademicoComponent implements OnInit {
             console.log(this.form.value)
             //ALMACENAR LA INFORMACION
             this.query
-                .addAno({
+                .addYear({
                     json: JSON.stringify(this.form.value),
                     _opcion: 'addYear',
                 })
@@ -327,13 +336,24 @@ export class CalendarioAcademicoComponent implements OnInit {
                         console.log(data)
                     },
                     error: (error) => {
+                        console.log(error)
                         console.error('Error fetching turnos:', error)
+                        this.messageService.add({
+                            severity: 'danger',
+                            summary: 'Mensaje',
+                            detail: 'Error en ejecución',
+                        })
                     },
                     complete: () => {
                         console.log('Request completed')
                         this.visible = false
                         this.form.reset() // Restablece todos los valores a null
                         this.getYears()
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: 'Mensaje',
+                            detail: 'Proceso exitoso',
+                        })
                     },
                 })
         } else {
@@ -346,7 +366,7 @@ export class CalendarioAcademicoComponent implements OnInit {
             console.log(this.form.value)
             //ALMACENAR LA INFORMACION
             this.query
-                .addAno({
+                .updateYear({
                     json: JSON.stringify(this.form.value),
                     _opcion: 'updateYear',
                 })
@@ -355,9 +375,19 @@ export class CalendarioAcademicoComponent implements OnInit {
                         console.log(data)
                     },
                     error: (error) => {
-                        console.error('Error fetching turnos:', error)
+                        console.log('Error fetching turnos:', error)
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Mensaje',
+                            detail: 'Error en ejecución de actualización updateYear',
+                        })
                     },
                     complete: () => {
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: 'Mensaje',
+                            detail: 'Proceso exitoso',
+                        })
                         console.log('Request completed')
                         this.visible = false
                         this.form.reset() // Restablece todos los valores a null
@@ -370,7 +400,7 @@ export class CalendarioAcademicoComponent implements OnInit {
     }
     delete() {
         this.query
-            .addAno({
+            .deleteYear({
                 json: JSON.stringify(this.form.value),
                 _opcion: 'deleteYear',
             })
@@ -380,11 +410,21 @@ export class CalendarioAcademicoComponent implements OnInit {
                 },
                 error: (error) => {
                     console.error('Error fetching turnos:', error)
+                    this.messageService.add({
+                        severity: 'danger',
+                        summary: 'Mensaje',
+                        detail: 'Error de ejecución',
+                    })
                 },
                 complete: () => {
                     console.log('Request completed')
                     this.visible = false
                     this.getYears()
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Mensaje',
+                        detail: 'Proceso exitoso',
+                    })
                 },
             })
     }
@@ -397,7 +437,7 @@ export class CalendarioAcademicoComponent implements OnInit {
             console.log(this.formCalendario.value)
             //ALMACENAR LA INFORMACION
             this.query
-                .addAno({
+                .addYear({
                     json: JSON.stringify(this.formCalendario.value),
                     _opcion: 'addYearCalendario',
                 })
@@ -407,14 +447,29 @@ export class CalendarioAcademicoComponent implements OnInit {
                     },
                     error: (error) => {
                         console.error('Error fetching turnos:', error)
+                        this.messageService.add({
+                            severity: 'danger',
+                            summary: 'Mensaje',
+                            detail: 'Error de ejecución',
+                        })
                     },
                     complete: () => {
                         console.log('Request completed')
 
                         this.getYearCalendarios(this.formCalendario.value)
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: 'Mensaje',
+                            detail: 'Proceso exitoso',
+                        })
                     },
                 })
         } else {
+            this.messageService.add({
+                severity: 'warning',
+                summary: 'Mensaje',
+                detail: 'Formulario invalido',
+            })
             console.log(
                 'Formulario no válido - Calendario',
                 this.formCalendario.invalid
@@ -426,7 +481,7 @@ export class CalendarioAcademicoComponent implements OnInit {
             console.log(this.formCalendario.value)
             //ALMACENAR LA INFORMACION
             this.query
-                .addAno({
+                .updateYear({
                     json: JSON.stringify(this.formCalendario.value),
                     _opcion: 'updateYearCalendario',
                 })
@@ -436,10 +491,19 @@ export class CalendarioAcademicoComponent implements OnInit {
                     },
                     error: (error) => {
                         console.error('Error fetching year calendario:', error)
+                        this.messageService.add({
+                            severity: 'danger',
+                            summary: 'Mensaje',
+                            detail: 'Error de ejecución',
+                        })
                     },
                     complete: () => {
                         console.log('Request completed')
-
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: 'Mensaje',
+                            detail: 'Proceso exitoso',
+                        })
                         this.getYearCalendarios(this.formCalendario.value)
                         this.lema =
                             this.formCalendario.get('cYAcadDescripcion')?.value
@@ -447,15 +511,17 @@ export class CalendarioAcademicoComponent implements OnInit {
                 })
         } else {
             console.log(this.formCalendario.value)
-            console.log(
-                'Formulario no válido - Calendario',
-                this.formCalendario.invalid
-            )
+
+            this.messageService.add({
+                severity: 'warning',
+                summary: 'Mensaje',
+                detail: 'Formulario invalido',
+            })
         }
     }
     deleteCalendario() {
         this.query
-            .addAno({
+            .deleteYear({
                 json: JSON.stringify(this.formCalendario.value),
                 _opcion: 'deleteYearCalendario',
             })
@@ -465,10 +531,20 @@ export class CalendarioAcademicoComponent implements OnInit {
                 },
                 error: (error) => {
                     console.error('Error fetching calendario:', error)
+                    this.messageService.add({
+                        severity: 'danger',
+                        summary: 'Mensaje',
+                        detail: 'Error de ejecución',
+                    })
                 },
                 complete: () => {
                     console.log('Request completed')
                     this.getYearCalendarios(this.formCalendario.value)
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Mensaje',
+                        detail: 'Proceso exitoso',
+                    })
                 },
             })
     }

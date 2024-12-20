@@ -3,8 +3,14 @@
     [actions]="accionesPrincipal"
     (accionBtnItem)="accionBtnItemTable($event)"
 >
+    <p-toast />
+
     <div class="card">
-        <p-steps [model]="items" [readonly]="false"></p-steps>
+        <p-steps
+            [model]="items"
+            [readonly]="true"
+            class="basis-[50rem]"
+        ></p-steps>
     </div>
     <div class="card">
         <app-table-primeng
@@ -200,5 +206,8 @@
             </div>
         </form>
     </p-dialog>
-    <!-- 28806 ley de inspeccion --></app-container-page
->
+
+    <div class="flex justify-content-end">
+        <p-button (onClick)="confirm()" label="Siguiente" />
+    </div>
+</app-container-page>

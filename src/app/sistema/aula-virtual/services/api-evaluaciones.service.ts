@@ -34,6 +34,15 @@ export class ApiEvaluacionesService {
             .pipe(map((resp) => resp.data))
     }
 
+    actualizarRubricaEvaluacion(data) {
+        return this.http
+            .post<any>(
+                `${this.baseUrlApi}/evaluaciones/evaluacion/actualizarRubricaEvaluacion`,
+                data
+            )
+            .pipe(map((resp) => resp.data))
+    }
+
     guardarActualizarPreguntasEvaluacion(data) {
         return this.http.post<any>(
             `${this.baseUrlApi}/evaluaciones/evaluacion/guardarActualizarPreguntasEvaluacion`,
@@ -50,9 +59,51 @@ export class ApiEvaluacionesService {
     // Rubricas
 
     obtenerRubricas(params) {
+        console.log('solicitando rubricas')
+        console.log(params)
         return this.http
             .get<ApiResponse>(
                 `${this.baseUrlApi}/evaluaciones/instrumento-evaluaciones/rubrica`,
+                { params }
+            )
+            .pipe(map((resp) => resp.data))
+    }
+
+    obtenerRubricaEvaluacion(params) {
+        return this.http
+            .get<ApiResponse>(
+                `${this.baseUrlApi}/evaluaciones/instrumento-evaluaciones/obtenerRubricaEvaluacion`,
+                { params }
+            )
+            .pipe(map((resp) => resp.data))
+    }
+
+    deleteRubricaEvaluacion(params) {
+        return this.http
+            .post<ApiResponse>(
+                `${this.baseUrlApi}/evaluaciones/evaluacion/deleteRubricaEvaluacion`,
+                params 
+            )
+            .pipe(map((resp) => resp.data))
+    }
+
+    obtenerRubrica(params) {
+        console.log('solicitando rubrica')
+        console.log(params)
+        return this.http
+            .get<ApiResponse>(
+                `${this.baseUrlApi}/evaluaciones/instrumento-evaluaciones/obtenerRubrica`,
+                { params }
+            )
+            .pipe(map((resp) => resp.data))
+    }
+
+    obtenerRubricasConFiltro(params) {
+        console.log('solicitando rubricas')
+        console.log(params)
+        return this.http
+            .get<ApiResponse>(
+                `${this.baseUrlApi}/evaluaciones/instrumento-evaluaciones/obtenerRubricas`,
                 { params }
             )
             .pipe(map((resp) => resp.data))

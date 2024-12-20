@@ -42,6 +42,7 @@ export class BancoPreguntaInformacionFormComponent implements OnInit {
     @Input() tipoPreguntas = []
     @Input({ required: true }) controlKey = ''
     @Input() _iEvaluacionId: string | null = null // Aquí definimos el @Input
+    @Input() padreComponente: 'AULA-VIRTUAL' | 'BANCO-PREGUNTAS'
     @Output() payloadEmitido = new EventEmitter<any>() //Emitire el payload al Componente Padre
     // injeccion de dependencias
     private parentContainer = inject(ControlContainer)

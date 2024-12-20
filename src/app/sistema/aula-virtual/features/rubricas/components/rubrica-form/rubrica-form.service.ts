@@ -1,11 +1,15 @@
 import { inject, Injectable } from '@angular/core'
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms'
+import { Input } from '@angular/core'
 
 @Injectable({
     providedIn: 'root',
 })
 export class RubricaFormService {
     rubricaForm: FormGroup
+
+    firstRender = true
+    @Input() mode
     private _formBuilder = inject(FormBuilder)
 
     constructor() {}
@@ -16,6 +20,48 @@ export class RubricaFormService {
             cInstrumentoNombre: [null, [Validators.required]],
             cInstrumentoDescripcion: [''],
             criterios: this._formBuilder.array([]),
+        })
+    }
+
+    patchRubricaFormSelection(rubrica) {
+        this.rubricaForm.patchValue({
+            iInstrumentoId: rubrica.iInstrumentoId,
+            cInstrumentoNombre: rubrica.cInstrumentoNombre,
+            cInstrumentoDescripcion: rubrica.cInstrumentoDescripcion,
+        })
+
+        // patch criterios
+        this.patchCriterioFormSelection(rubrica.criterios)
+    }
+
+    patchCriterioFormSelection(criterios) {
+        const criteriosFormArray = this.rubricaForm.get(
+            'criterios'
+        ) as FormArray
+
+        criteriosFormArray.clear()
+
+        criterios.forEach((criterio) => {
+            // patch niveles
+            const niveles = criterio.niveles ?? []
+            const criterioFormGroup = this.criterioForm()
+            const nivelesFormArray = criterioFormGroup.get(
+                'niveles'
+            ) as FormArray
+
+            if (this.firstRender) {
+                nivelesFormArray.clear()
+                this.firstRender = false
+            }
+            
+            niveles.forEach((nivel) => {
+                const nivelFormGroup = this.nivelForm()
+                nivelFormGroup.patchValue(nivel)
+                nivelesFormArray.push(nivelFormGroup)
+            })
+
+            criterioFormGroup.patchValue(criterio)
+            criteriosFormArray.push(criterioFormGroup)
         })
     }
 
@@ -90,6 +136,7 @@ export class RubricaFormService {
             'criterios'
         ) as FormArray
 
+
         criterios.forEach((criterio) => {
             // patch niveles
             const niveles = criterio.niveles ?? []
@@ -98,6 +145,7 @@ export class RubricaFormService {
                 'niveles'
             ) as FormArray
 
+            
             niveles.forEach((nivel) => {
                 const nivelFormGroup = this.nivelForm()
                 nivelFormGroup.patchValue(nivel)

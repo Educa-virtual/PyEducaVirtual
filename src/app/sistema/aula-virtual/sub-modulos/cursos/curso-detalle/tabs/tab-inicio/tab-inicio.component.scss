@@ -31,3 +31,17 @@ p {
 p-orderList {
     flex-grow: 1; /* Para que el componente crezca ocupando el espacio disponible */
 }
+.hoverTable {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px;
+}
+.hoverTable tr th {
+    background-color: #e6e6ee;
+}
+.hoverTable tr:hover {
+    background-color: var(--highlight-bg);
+}
+tr {
+    font-size: 0.75rem;
+}

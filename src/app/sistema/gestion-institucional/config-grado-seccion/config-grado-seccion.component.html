@@ -22,7 +22,7 @@
 ) {
     <div>
         <app-container-page
-            title="Lista de configuración de maestros para grado y secciones"
+            title="Lista de secciones y grados asignados"
             [actions]="accionesPrincipal"
             (accionBtnItem)="accionBtnItemTable($event)"
         >
@@ -32,7 +32,7 @@
                     [showCaption]="true"
                     [data]="configuracion_lista"
                     (accionBtnItem)="accionBtnItemTable($event)"
-                    [showPaginator]="true"
+                    [showPaginator]="false"
                     [(selectedRowData)]="selectedItems"
                     [actions]="actions"
                 >

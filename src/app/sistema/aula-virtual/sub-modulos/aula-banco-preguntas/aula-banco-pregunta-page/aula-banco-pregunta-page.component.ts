@@ -7,6 +7,8 @@ import { Subject, takeUntil } from 'rxjs'
 import { GeneralService } from '@/app/servicios/general.service'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { ToolbarPrimengComponent } from '../../../../../shared/toolbar-primeng/toolbar-primeng.component'
+import { EvaluacionButtonAgregarPreguntasComponent } from '../../actividades/actividad-evaluacion/evaluacion-button-agregar-preguntas/evaluacion-button-agregar-preguntas.component'
+import { AulaBancoPreguntasService } from '../aula-banco-preguntas/aula-banco-.preguntas.service'
 
 @Component({
     selector: 'app-aula-banco-pregunta-page',
@@ -16,9 +18,11 @@ import { ToolbarPrimengComponent } from '../../../../../shared/toolbar-primeng/t
         CommonModule,
         AulaBancoPreguntasComponent,
         ToolbarPrimengComponent,
+        EvaluacionButtonAgregarPreguntasComponent,
     ],
     templateUrl: './aula-banco-pregunta-page.component.html',
     styleUrl: './aula-banco-pregunta-page.component.scss',
+    providers: [AulaBancoPreguntasService],
 })
 export class AulaBancoPreguntaPageComponent implements OnInit {
     @ViewChild(AulaBancoPreguntasComponent)
@@ -36,15 +40,36 @@ export class AulaBancoPreguntaPageComponent implements OnInit {
         iDocenteId: null,
         iCurrContId: null,
         iNivelCicloId: null,
+        iYearId: 0, // Nuevo parámetro para el año
+        iSeccionId: 0, // Nuevo parámetro para la sección
         busqueda: '',
         iTipoPregId: 0,
         iEvaluacionId: 0,
     }
+    tipoPreguntas = [
+        {
+            iTipoPregId: 0,
+            cTipoPregDescripcion: 'Todos',
+        },
+        {
+            iTipoPregId: 1,
+            cTipoPregDescripcion: 'Opción única',
+        },
+        {
+            iTipoPregId: 2,
+            cTipoPregDescripcion: 'Opción múltiple',
+        },
+        {
+            iTipoPregId: 3,
+            cTipoPregDescripcion: 'Opción libre',
+        },
+    ]
 
     private _constantesService = inject(ConstantesService)
     private unsubscribe$ = new Subject<boolean>()
     private _generalService = inject(GeneralService)
     private _store = inject(LocalStoreService)
+    menuAgregacionPreguntas: any
 
     ngOnInit() {
         const year = this._store.getItem('dremoYear')
@@ -93,4 +118,41 @@ export class AulaBancoPreguntaPageComponent implements OnInit {
                 },
             })
     }
+
+    private _aulaBancoPreguntasService = inject(AulaBancoPreguntasService)
+    agregarPreguntas() {
+        this.agregarEditarPregunta({
+            iPreguntaId: 0,
+            preguntas: [],
+            iEncabPregId: -1,
+        })
+    }
+    agregarEditarPregunta(pregunta) {
+        const refModal = this._aulaBancoPreguntasService.openPreguntaModal({
+            pregunta,
+            iCursoId: this.params.iCursoId,
+            tipoPreguntas: [],
+            iEvaluacionId: null,
+            padreComponente: 'AULA-VIRTUAL',
+        })
+        refModal.onClose.subscribe((result) => {
+            if (result) {
+                // const pregunta = this.mapLocalPregunta(result)
+                // this.preguntas.push(pregunta)
+                // this.preguntasSeleccionadasChange.emit(this.preguntas)
+            }
+        })
+    }
+    public years = [
+        { iYearId: 0, cYearNombre: 'Todos' },
+        { iYearId: 2023, cYearNombre: '2023' },
+        { iYearId: 2024, cYearNombre: '2024' },
+    ]
+
+    public secciones = [
+        { iSeccionId: 0, cSeccionNombre: 'Todas' },
+        { iSeccionId: 1, cSeccionNombre: 'A' },
+        { iSeccionId: 2, cSeccionNombre: 'B' },
+        { iSeccionId: 3, cSeccionNombre: 'C' },
+    ]
 }

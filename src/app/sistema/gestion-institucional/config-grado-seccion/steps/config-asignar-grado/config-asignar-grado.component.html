@@ -4,6 +4,501 @@
     (accionBtnItem)="accionBtnItemTable($event)"
 >
     <div class="card">
-        <p-steps [model]="items" [readonly]="false"></p-steps>
+        <p-steps [model]="items" [readonly]="true"></p-steps>
     </div>
 </app-container-page>
+<p-splitter
+    [panelSizes]="[30, 70]"
+    [style]="{ height: '400px' }"
+    styleClass="mb-5"
+>
+    <ng-template pTemplate>
+        <div class="col flex align-items-top" [style]="{ width: '100%' }">
+            <div
+                class="card flex flex-column align-items-top justify-content-top"
+            >
+                <div class="align-items-left">
+                    <p><strong>ESTRUCTURA DE GRADOS/EDADES</strong></p>
+                </div>
+                <!-- <p-tree [value]="files" selectionMode="checkbox" class="w-full md:w-30rem" [(selection)]="selectedFiles"
+                    (onNodeSelect)="nodeSelect($event)" (onNodeUnselect)="nodeUnselect($event)" /> -->
+                <div class="scrollable-panel">
+                    <app-tree-view-primeng
+                        [treeDataRaw]="rawData"
+                        [seccionesPorGrado]="lista"
+                    ></app-tree-view-primeng>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+    <ng-template pTemplate>
+        <div [style]="{ width: '100%' }" class="card">
+            <form [formGroup]="formSearch">
+                <div class="grid p-fluid mt-3">
+                    <div class="field col-12 md:col-10">
+                        <div class="separator-with-text">
+                            <span>Datos del área curricular</span>
+                        </div>
+                        <input
+                            pInputText
+                            type="hidden"
+                            formControlName="iProgId_search"
+                            class="p-inputtext-sm"
+                        />
+                    </div>
+                    <!-- <div class="field col-12 md:col-2" style="display: flex; align-items: center; gap: 0.5rem;">
+                        <p-tag [severity]="formSearch.get('buscador')?.value === 0 ? 'danger' : 'success'"
+                            [value]="formSearch.get('buscador')?.value === 0 ? 'Ocultar' : 'Mostrar'">
+                        </p-tag>
+                        <p-inputSwitch formControlName="buscador" [trueValue]="1" [falseValue]="0">
+                        </p-inputSwitch>
+
+                        
+                    </div> -->
+                    <div
+                        class="field col-12 md:col-2"
+                        style="display: flex; align-items: center; gap: 0.5rem"
+                    >
+                        <span
+                            [ngStyle]="{
+                                color:
+                                    formSearch.get('buscador')?.value === 0
+                                        ? 'red'
+                                        : 'green',
+                            }"
+                        >
+                            {{
+                                formSearch.get('buscador')?.value === 0
+                                    ? 'Ocultar'
+                                    : 'Mostrar'
+                            }}
+                        </span>
+                        <p-inputSwitch
+                            formControlName="buscador"
+                            [trueValue]="1"
+                            [falseValue]="0"
+                        >
+                        </p-inputSwitch>
+                    </div>
+
+                    <div
+                        class="field col-12 md:col-2"
+                        *ngIf="formSearch.get('buscador')?.value === 1"
+                    >
+                        <span class="p-float-label">
+                            <p-dropdown
+                                [options]="semestres"
+                                formControlName="iSemAcadId_search"
+                                optionLabel="cSemAcadNombre"
+                                [checkmark]="true"
+                                optionValue="iSemAcadId"
+                                [showClear]="true"
+                                [appendTo]="'body'"
+                                [showClear]="false"
+                                (onChange)="
+                                    onChange($event, 'searchNivelGrado')
+                                "
+                            />
+                            <label for="iSemAcadId_search">Año </label>
+                        </span>
+                    </div>
+                    <!-- <div class="field col-12 md:col-10" *ngIf="formSearch.get('buscador')?.value === 1">
+                        <span class="p-float-label">
+                            <p-dropdown [options]="planes" formControlName="iProgId_search" optionLabel="cProgNombre"
+                                [checkmark]="true" optionValue="iProgId" [showClear]="true" [appendTo]="'body'"
+                                [showClear]="false" (onChange)="onChange($event, 'searchPlan')" />
+                            <label for="iProgId_search">Plan </label>
+                        </span>
+                    </div> -->
+                    <div
+                        class="field col-12 md:col-2"
+                        *ngIf="formSearch.get('buscador')?.value === 1"
+                    >
+                        <span class="p-float-label">
+                            <p-dropdown
+                                [options]="grados"
+                                formControlName="iNivelGradoId_search"
+                                optionLabel="cGradoNombre"
+                                [checkmark]="true"
+                                optionValue="iNivelGradoId"
+                                [showClear]="false"
+                                [appendTo]="'body'"
+                                (onChange)="onChange($event, 'grado')"
+                            />
+
+                            <label for="iNivelGradoId_search">Grado</label>
+                        </span>
+                    </div>
+                    <div
+                        class="field col-12 md:col-3"
+                        *ngIf="formSearch.get('buscador')?.value === 1"
+                    >
+                        <span class="p-float-label">
+                            <p-dropdown
+                                [options]="modalidades"
+                                formControlName="iModalServId_search"
+                                optionLabel="cModalServNombre"
+                                [checkmark]="true"
+                                optionValue="iModalServId"
+                                [showClear]="false"
+                                [appendTo]="'body'"
+                                (onChange)="onChange($event, 'modalidad')"
+                            />
+                            <label for="iModalServId_search">Modalidad </label>
+                        </span>
+                    </div>
+
+                    <div
+                        class="field col-12 md:col-3"
+                        *ngIf="formSearch.get('buscador')?.value === 1"
+                    >
+                        <span class="p-float-label">
+                            <p-dropdown
+                                [options]="turnos"
+                                formControlName="iTurnoId_search"
+                                optionLabel="cTurnoNombre"
+                                [checkmark]="true"
+                                optionValue="iTurnoId"
+                                [showClear]="false"
+                                [appendTo]="'body'"
+                                (onChange)="onChange($event, 'turno')"
+                            />
+                            <label for="iTurnoId_search">Turno</label>
+                        </span>
+                    </div>
+
+                    <div
+                        class="field col-12 md:col-2"
+                        *ngIf="formSearch.get('buscador')?.value === 1"
+                    >
+                        <span class="p-float-label">
+                            <p-dropdown
+                                [options]="secciones"
+                                formControlName="iSeccionId_search"
+                                optionLabel="cSeccionNombre"
+                                [checkmark]="true"
+                                optionValue="iSeccionId"
+                                [filter]="false"
+                                [showClear]="false"
+                                [appendTo]="'body'"
+                                (onChange)="onChange($event, 'seccion')"
+                            />
+                            <label for="iSeccionId_search">Sección</label>
+                        </span>
+                    </div>
+                </div>
+            </form>
+
+            <!-- <p-table [value]="cursos" [tableStyle]="{ 'min-width': '50rem' }">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Area</th>
+                        <th>Docente</th>
+                        <th>ies_cursos</th>
+                        <th>T</th>
+                        <th>S</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-product>
+                    <tr>
+                        <td>{{ product.cCursoNombre }}</td>
+                        <td>{{ product.iDocenteId}}</td>
+                        <td>{{ product.iIeCursoId }}</td>
+                        <td>{{ product.iTurnoId }}</td>
+                        <td>{{ product.iSeccionId }}</td>
+                    </tr>
+                </ng-template>
+            </p-table> -->
+            <div class="card">
+                <app-table-primeng
+                    [columnas]="columns"
+                    [showCaption]="false"
+                    [data]="cursos"
+                    (accionBtnItem)="accionBtnItemTable($event)"
+                    [showPaginator]="false"
+                    [(selectedRowData)]="accionBtnItemTable"
+                    [actions]="actions"
+                    [scrollable]="true"
+                    scrollHeight="200px"
+                >
+                    <ng-container slot="caption-content"> </ng-container>
+                </app-table-primeng>
+            </div>
+        </div>
+    </ng-template>
+</p-splitter>
+
+<p-dialog
+    header="{{ caption }}"
+    [(visible)]="visible"
+    [style]="{ width: '90rem' }"
+    [modal]="true"
+    [contentStyle]="{ overflow: 'auto' }"
+>
+    <ng-content>
+        <!--Bloque para estructura-->
+        <p-splitter
+            [panelSizes]="[60, 40]"
+            [style]="{ height: '90%' }"
+            styleClass="mb-5"
+        >
+            <!--Bloque para buscador-->
+            <ng-template pTemplate>
+                <form [formGroup]="form">
+                    <div class="grid p-fluid mt-3">
+                        <input
+                            pInputText
+                            type="hidden"
+                            formControlName="idDocCursoId"
+                            class="p-inputtext-sm"
+                        />
+                        <input
+                            pInputText
+                            type="hidden"
+                            formControlName="iSemAcadId"
+                            class="p-inputtext-sm"
+                        />
+                        <input
+                            pInputText
+                            type="hidden"
+                            formControlName="iModalServId"
+                            class="p-inputtext-sm"
+                        />
+                        <input
+                            pInputText
+                            type="hidden"
+                            formControlName="iIeCursoId"
+                            class="p-inputtext-sm"
+                        />
+                        <input
+                            pInputText
+                            type="hidden"
+                            formControlName="iCursosNivelGradId"
+                            class="p-inputtext-sm"
+                        />
+                        <input
+                            pInputText
+                            type="hidden"
+                            formControlName="iCursosNivelGradId_ies_cursos"
+                            class="p-inputtext-sm"
+                        />
+                        <input
+                            pInputText
+                            type="hidden"
+                            formControlName="iDocenteId_ies_curso"
+                            class="p-inputtext-sm"
+                        />
+
+                        <div class="field col-12 md:col-10">
+                            <div class="separator-with-text">
+                                <span>Datos del área curricular</span>
+                            </div>
+                        </div>
+                        <div class="field col-12 md:col-2">
+                            <label for="iEstado">Estado:</label>
+                            <p-inputSwitch
+                                formControlName="iEstado"
+                                [trueValue]="1"
+                                [falseValue]="0"
+                            />
+                        </div>
+
+                        <div class="field col-12 md:col-4">
+                            <span class="p-float-label">
+                                <p-dropdown
+                                    [options]="turnos"
+                                    formControlName="iTurnoId"
+                                    optionLabel="cTurnoNombre"
+                                    [checkmark]="false"
+                                    optionValue="iTurnoId"
+                                    [showClear]="false"
+                                    [appendTo]="'body'"
+                                />
+                                <label for="iTurnoId">Turno</label>
+                            </span>
+                        </div>
+
+                        <div class="field col-12 md:col-4">
+                            <span class="p-float-label">
+                                <p-dropdown
+                                    [options]="grados"
+                                    formControlName="iNivelGradoId"
+                                    optionLabel="cGradoNombre"
+                                    [checkmark]="false"
+                                    optionValue="iNivelGradoId"
+                                    [showClear]="false"
+                                    (onChange)="onChange($event, 'grado')"
+                                />
+                                <label for="iNivelGradoId">Grado</label>
+                            </span>
+                        </div>
+
+                        <div class="field col-12 md:col-4">
+                            <span class="p-float-label">
+                                <p-dropdown
+                                    [options]="secciones"
+                                    formControlName="iSeccionId"
+                                    optionLabel="cSeccionNombre"
+                                    [checkmark]="false"
+                                    optionValue="iSeccionId"
+                                    [filter]="false"
+                                    [showClear]="false"
+                                    [appendTo]="'body'"
+                                />
+                                <label for="iIecursoId">Sección</label>
+                            </span>
+                        </div>
+
+                        <div class="field col-12 md:col-12">
+                            <span class="p-float-label">
+                                <p-dropdown
+                                    [options]="cursos"
+                                    formControlName="iCursoId"
+                                    optionLabel="cCursoNombre"
+                                    [checkmark]="false"
+                                    optionValue="iCursoId"
+                                    [filter]="false"
+                                    [showClear]="false"
+                                    [appendTo]="'body'"
+                                />
+                                <label for="iCursoId">Área curricular</label>
+                            </span>
+                        </div>
+
+                        <div class="field col-12 md:col-8">
+                            <div class="separator-with-text">
+                                <span>Datos del docente</span>
+                            </div>
+                        </div>
+                        <div class="field col-12 md:col-2">
+                            <span class="p-float-label">
+                                <input
+                                    pInputText
+                                    id="ihora_total"
+                                    formControlName="ihora_total"
+                                    aria-describedby="ihora_total-help"
+                                />
+                                <label for="ihora_total">Total (Hrs)</label>
+                            </span>
+                        </div>
+                        <div class="field col-12 md:col-2">
+                            <span class="p-float-label">
+                                <p-inputNumber
+                                    formControlName="ihora_disponible"
+                                    inputStyleClass="w-full"
+                                    [readonly]="true"
+                                    mode="decimal"
+                                >
+                                </p-inputNumber>
+                                <label for="ihora_disponible"
+                                    >Disponibles (Hrs)</label
+                                >
+                            </span>
+                            <small
+                                id="ihora_disponible-help"
+                                class="p-error"
+                                *ngIf="
+                                    form.get('ihora_disponible')?.invalid &&
+                                    form.get('ihora_disponible')?.touched
+                                "
+                            >
+                                Error en disponibilidad de horas
+                            </small>
+                        </div>
+
+                        <div class="field col-12 md:col-10">
+                            <span class="p-float-label">
+                                <p-dropdown
+                                    [options]="docentes"
+                                    formControlName="iDocenteId"
+                                    optionLabel="nombre_completo"
+                                    [checkmark]="true"
+                                    optionValue="iDocenteId"
+                                    [filter]="true"
+                                    [showClear]="true"
+                                    [appendTo]="'body'"
+                                    (onChange)="onChange($event, 'docente')"
+                                />
+
+                                <label for="iSemAcadId"
+                                    >Selecionar docente</label
+                                >
+                            </span>
+                        </div>
+
+                        <div class="field col-12 md:col-2">
+                            <span class="p-float-label">
+                                <p-inputNumber
+                                    formControlName="ihora_asignada"
+                                    inputStyleClass="w-full"
+                                    mode="decimal"
+                                >
+                                </p-inputNumber>
+                                <label for="ihora_asignada"
+                                    >Asignadas (Hrs)</label
+                                >
+                            </span>
+                        </div>
+                        <div class="field col-12 md:col-12">
+                            <span class="p-float-label">
+                                <input
+                                    pInputText
+                                    id="cDocCursoObsevaciones"
+                                    formControlName="cDocCursoObsevaciones"
+                                    aria-describedby="cDocCursoObsevaciones-help"
+                                />
+                                <label for="cDocCursoObsevaciones"
+                                    >Observaciones</label
+                                >
+                            </span>
+                        </div>
+                    </div>
+                    @if (c_accion === 'editar') {
+                        <p-button
+                            label="Editar"
+                            [disabled]="form.invalid"
+                            (onClick)="accionBtnItem('editar')"
+                            styleClass="p-button-warning"
+                        />
+                    }
+                    @if (c_accion === 'agregar') {
+                        <p-button
+                            label="Guardar"
+                            [disabled]="form.invalid"
+                            (onClick)="accionBtnItem('guardar')"
+                            styleClass="p-button-primary"
+                        />
+                    }
+                </form>
+            </ng-template>
+            <ng-template pTemplate>
+                <div [style]="{ width: '100%' }">
+                    <div class="card">
+                        <div class="field col-12 md:col-10">
+                            <div class="separator-with-text">
+                                <span
+                                    >Lista de Áreas Asignadas al docente (
+                                    {{ horas_asignadas }} Hrs)</span
+                                >
+                            </div>
+                        </div>
+                        <app-table-primeng
+                            [columnas]="columnaArea"
+                            [data]="lista_areas_docente"
+                            [showCaption]="false"
+                            [showPaginator]="false"
+                            (accionBtnItem)="accionBtnItemTable($event)"
+                            [(selectedRowData)]="accionBtnItemTable"
+                            [actions]="actionsArea"
+                        >
+                            <!-- <ng-container slot="caption-content"> </ng-container> -->
+                        </app-table-primeng>
+                    </div>
+                </div>
+            </ng-template>
+        </p-splitter>
+    </ng-content>
+</p-dialog>
+<div class="flex justify-content-end">
+    <p-button (onClick)="confirm()" label="Siguiente" />
+</div>

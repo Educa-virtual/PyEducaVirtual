@@ -1,0 +1,35 @@
+<div class="grid mt-4">
+    <div class="col-12 mt-5" align="center">
+        @switch (showIcon) {
+            @case ('ERROR') {
+                <img
+                    src="assets/images/icons/error.gif"
+                    alt="logo"
+                    width="20%"
+                />
+            }
+            @case ('NO-DATA') {
+                <img
+                    src="assets/images/icons/sin-datos.gif"
+                    alt="logo"
+                    width="20%"
+                />
+            }
+        }
+
+        <h4 class="text-primary">
+            {{ mensaje }}
+        </h4>
+        @if (showIcon === 'ERROR') {
+            <button
+                pButton
+                pRipple
+                type="button"
+                class="p-button-danger"
+                (click)="recargar()"
+            >
+                <i class="pi pi-sync"></i>&nbsp; Recargar
+            </button>
+        }
+    </div>
+</div>

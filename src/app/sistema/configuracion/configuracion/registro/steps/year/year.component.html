@@ -62,40 +62,16 @@
                     />
                 </p-inputGroup>
             </div>
-            <!-- <div>
-                <p-inputGroup>
-                    <p-inputGroupAddon>Inicio de año</p-inputGroupAddon>
-                    <p-calendar
-                        styleClass="w-full"
-                        formControlName="fechaInicio"
-                        [showIcon]="true"
-                        inputId="yearInicio"
+            <div>
+                <p-inputGroup class="mt-1">
+                    <app-input-file-upload
+                        class="w-full"
+                        label="Reglamento interno"
+                        acceptTypes="application/pdf"
+                        formControlName="reglamentoInterno"
                     />
                 </p-inputGroup>
-                <p-inputGroup>
-                    <p-inputGroupAddon>Fin de año</p-inputGroupAddon>
-                    <p-calendar
-                    styleClass="w-full"
-                    formControlName="fechaFin"
-                    [showIcon]="true"
-                    inputId="yearFin"
-                />
-                </p-inputGroup>
-            </div> -->
-            <!-- <div class="flex flex-column gap-1 relative">
-                <p-floatLabel>
-                    <p-calendar
-                        [style]="{ width: '100%' }"
-                        [inputStyle]="{ width: '100%' }"
-                        formControlName="fechaMatriculaRezagados"
-                        [showIcon]="true"
-                        inputId="matriculaRezagados"
-                    />
-                    <label for="matriculaRezagados"
-                        >Fecha matricula rezagados
-                    </label>
-                </p-floatLabel>
-            </div> -->
+            </div>
         </section>
         <div class="flex flex-column gap-7 flex-1">
             <div class="flex flex-column">
@@ -147,38 +123,5 @@
             [disabled]="!form.valid"
             label="Siguiente"
         />
-    </div>
-
-    <div class="navigator">
-        <p-confirmDialog
-            #cd
-            [acceptVisible]="false"
-            [rejectVisible]="false"
-            class="w-5"
-        >
-            <ng-template pTemplate="message" let-message>
-                <div
-                    class="flex flex-column align-items-center w-full gap-3 border-bottom-1 surface-border"
-                >
-                    <i class="pi pi-exclamation-circle text-6xl"></i>
-                    <p class="text-center">{{ message.message }}</p>
-                </div>
-            </ng-template>
-
-            <ng-template pTemplate="footer">
-                <button
-                    pButton
-                    label="Cancelar"
-                    (click)="cd.reject()"
-                    class="p-button-outlined w-8rem accept"
-                ></button>
-                <button
-                    pButton
-                    label="Confirmar"
-                    (click)="cd.accept()"
-                    class="w-8rem reject"
-                ></button>
-            </ng-template>
-        </p-confirmDialog>
     </div>
 </form>

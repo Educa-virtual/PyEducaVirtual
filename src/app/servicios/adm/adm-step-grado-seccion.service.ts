@@ -80,6 +80,7 @@ export class AdmStepGradoSeccionService {
     sede: []
     perfil: []
     anio: []
+    listaGrados: []
     itemsStep = [
         {
             label: 'Configuración',
@@ -89,12 +90,12 @@ export class AdmStepGradoSeccionService {
             label: 'Ambientes',
             routerLink: '/gestion-institucional/ambiente',
         },
+        // {
+        //     label: 'Grados',
+        //     routerLink: '/gestion-institucional/grado',
+        // },
         {
-            label: 'Grados',
-            routerLink: '/gestion-institucional/grado',
-        },
-        {
-            label: 'Secciones',
+            label: 'Grados y secciones',
             routerLink: '/gestion-institucional/seccion',
         },
         {
@@ -213,6 +214,138 @@ export class AdmStepGradoSeccionService {
         ]
     }
 
+    getTreeNodesPrimaria() {
+        return [
+            {
+                key: '0',
+                label: 'Fase Regular-Primaria',
+                data: 'Documents Folder',
+                expanded: true,
+                icon: 'pi pi-fw pi-folder',
+                children: [
+                    {
+                        key: '3',
+                        label: 'CICLO III',
+                        data: 'Documents Folder',
+                        icon: 'pi pi-fw pi-folder',
+                        children: [
+                            {
+                                key: '3-I',
+                                label: '1° Grado (2)',
+                                data: 'Work Folder',
+                                icon: 'pi pi-fw pi-cog',
+                                children: [
+                                    {
+                                        key: '0-0-0',
+                                        label: 'Seccion A',
+                                        icon: 'pi pi-fw pi-file',
+                                        data: 'Expenses Document',
+                                    },
+                                    {
+                                        key: '0-0-1',
+                                        label: 'Seccion B',
+                                        icon: 'pi pi-fw pi-file',
+                                        data: 'Resume Document',
+                                    },
+                                ],
+                            },
+                            {
+                                key: '3-II',
+                                label: '2° Grado (1)',
+                                data: 'Home Folder',
+                                icon: 'pi pi-fw pi-home',
+                                children: [
+                                    {
+                                        key: '0-1-0',
+                                        label: 'Seccion A',
+                                        icon: 'pi pi-fw pi-file',
+                                        data: 'Invoices for this month',
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                    {
+                        key: '4',
+                        label: 'CICLO IV',
+                        data: 'Events Folder',
+                        icon: 'pi pi-fw pi-folder',
+                        children: [
+                            {
+                                key: '4-III',
+                                label: '3° Grado',
+                                data: 'Work Folder',
+                                icon: 'pi pi-fw pi-cog',
+                                children: [
+                                    {
+                                        key: '0-0-0',
+                                        label: 'Expenses.doc',
+                                        icon: 'pi pi-fw pi-file',
+                                        data: 'Expenses Document',
+                                    },
+                                    {
+                                        key: '0-0-1',
+                                        label: 'Resume.doc',
+                                        icon: 'pi pi-fw pi-file',
+                                        data: 'Resume Document',
+                                    },
+                                ],
+                            },
+                            {
+                                key: '4-IV',
+                                label: '4° Grado',
+                                data: 'Work Folder',
+                                icon: 'pi pi-fw pi-cog',
+                                children: [
+                                    {
+                                        key: '0-0-0',
+                                        label: 'Expenses.doc',
+                                        icon: 'pi pi-fw pi-file',
+                                        data: 'Expenses Document',
+                                    },
+                                    {
+                                        key: '0-0-1',
+                                        label: 'Resume.doc',
+                                        icon: 'pi pi-fw pi-file',
+                                        data: 'Resume Document',
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                    {
+                        key: '5',
+                        label: 'CICLO V',
+                        data: 'Movies Folder',
+                        icon: 'pi pi-fw pi-folder',
+                        children: [
+                            {
+                                key: '5-V',
+                                icon: 'pi pi-fw pi-star-fill',
+                                label: 'Al Pacino',
+                                data: 'Pacino Movies',
+                                children: [
+                                    {
+                                        key: '2-0-0',
+                                        label: 'Scarface',
+                                        icon: 'pi pi-fw pi-video',
+                                        data: 'Scarface Movie',
+                                    },
+                                    {
+                                        key: '2-0-1',
+                                        label: 'Serpico',
+                                        icon: 'pi pi-fw pi-video',
+                                        data: 'Serpico Movie',
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                ],
+            },
+        ]
+    }
+
     setEstadoConfig(value: any) {
         // informacion de tabla estado de configuraciones
         this.configTipo = value
@@ -241,6 +374,10 @@ export class AdmStepGradoSeccionService {
     // Agregar un nuevo grado
     addGrado(newGrado: Grado): void {
         this.grados.push(newGrado)
+    }
+
+    getFilesPrimaria() {
+        return Promise.resolve(this.getTreeNodesPrimaria())
     }
 
     // Actualizar un grado por ID

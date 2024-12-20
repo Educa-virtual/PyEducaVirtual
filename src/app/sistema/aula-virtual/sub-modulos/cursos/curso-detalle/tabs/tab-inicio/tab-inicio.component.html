@@ -1,65 +1,104 @@
 <div class="grid">
-    <div class="col-3">
-        <p><strong>Código Area:</strong> ief7qu</p>
-        <p><strong>N° Estudiantes:</strong> 12</p>
-        <p><strong>Docente:</strong> Carlos Jose</p>
-        <p><strong>Tutor:</strong> Jose Maria</p>
-        <p><strong>Grado:</strong> 4to</p>
-        <p><strong>Sección:</strong> H</p>
-        <p><strong>Ciclo:</strong> VI</p>
-    </div>
-
-    <div class="col-9">
-        <label for="cTareaDescripcion"
-            >Anuncia algo aquí Para toda la clase</label
+    <div class="col-12 md:col-3">
+        <div class="card mb-2">
+            <div class="text-primary font-bold">Información General</div>
+            <p>
+                <strong>Docente:</strong><br />Carlos Jose Valderrama Eyzaguirre
+            </p>
+            <p><strong>Tutor:</strong><br />Jose Maria Callupe Delgado</p>
+            <ul class="list-none">
+                <li>
+                    <a
+                        ><i class="pi pi-book"></i>&nbsp;<b
+                            >Descargar Sílabo</b
+                        ></a
+                    >
+                </li>
+                <li>
+                    <a
+                        ><i class="pi pi-calendar"></i>&nbsp;<b
+                            >Descargar Horario
+                        </b></a
+                    >
+                </li>
+            </ul>
+            <!-- <p><strong>N° Estudiantes:</strong> 12</p> -->
+        </div>
+        <p-accordion
+            [multiple]="false"
+            expandIcon="pi pi-angle-right"
+            collapseIcon="pi pi-angle-down"
         >
-        <p-editor id="cTareaDescripcion"></p-editor>
-        <br />
-        <button pButton type="button" label="Link" icon="pi pi-link"></button>
-        <button
-            pButton
-            type="button"
-            label="Cancelar"
-            icon="pi pi-times"
-            class="p-button-danger"
-        ></button>
-        <button
-            pButton
-            type="button"
-            label="Publicar"
-            icon="pi pi-users"
-            class="p-button-success"
-        ></button>
+            <p-accordionTab header="" class="" iconPos="end">
+                <ng-template pTemplate="header">
+                    <div class="flex flex-column w-full">
+                        Lista de Estudiantes
+                    </div>
+
+                    <div class="flex align-items-end justify-content-end mx-4">
+                        12
+                    </div>
+                </ng-template>
+
+                <!-- <div class="flex justify-content-between gap-2 flex-column sm:flex-row flex-wrap">
+                        <p-iconField iconPosition="left">
+                            <p-inputIcon styleClass="pi pi-search text-md" />
+                            <input pInputText type="text" class="py-2" placeholder="Buscar" />
+                        </p-iconField>
+                    </div> -->
+                <!-- <div class="mt-1"></div> -->
+                <p-table class="hoverTable" [value]="data" [scrollable]="true">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th [style.width]="'100%'">Apellidos y Nombres</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-estudiante>
+                        <tr [pSelectableRow]="estudiante">
+                            <td>
+                                {{ estudiante.cEstPaterno }}
+                                {{ estudiante.cEstMaterno }},
+                                {{ estudiante.cEstNombres }}
+                                <br />
+                                <span class="font-italic">{{
+                                    estudiante.cCorreo
+                                }}</span>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </p-accordionTab>
+        </p-accordion>
     </div>
 
-    <p-orderList
-        [value]="null"
-        [listStyle]="{ 'max-height': '10rem' }"
-        header="List anuncio aqui"
-        [dragdrop]="false"
-    >
-        <ng-template let-product pTemplate="item">
-            <div class="flex flex-wrap p-12 align-items-center gap-12">
-                <img
-                    src="https://primefaces.org/cdn/primeng/images/demo/product/{{
-                        product.image
-                    }}"
-                    [alt]="product.name"
-                    class="w-4rem shadow-2 flex-shrink-0 border-round"
-                />
-                <div class="flex-1 flex flex-column gap-2">
-                    <span class="font-bold">{{ product.name }}</span>
-                    <div class="flex align-items-center gap-2">
-                        <i class="pi pi-tag text-sm"></i>
-                        <span>
-                            {{ product.category }}
-                        </span>
-                    </div>
-                </div>
-                <span class="font-bold text-900">
-                    {{ '$' + product.price }}
-                </span>
-            </div>
-        </ng-template>
-    </p-orderList>
+    <div class="col-12 md:col-9">
+        <div class="card">
+            <label for="cTareaDescripcion" class="font-bold"
+                >Anuncia algo aquí Para toda la clase</label
+            >
+            <div class="mt-2"></div>
+            <p-editor id="cTareaDescripcion"></p-editor>
+            <br />
+            <button
+                pButton
+                type="button"
+                label="Link"
+                icon="pi pi-link"
+            ></button>
+            <button
+                pButton
+                type="button"
+                label="Cancelar"
+                icon="pi pi-times"
+                class="p-button-danger"
+            ></button>
+            <button
+                pButton
+                type="button"
+                label="Publicar"
+                icon="pi pi-users"
+                class="p-button-success"
+            ></button>
+        </div>
+    </div>
 </div>

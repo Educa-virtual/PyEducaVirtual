@@ -67,6 +67,15 @@ export interface IActionTable {
 export class TablePrimengComponent implements OnChanges, OnInit {
     backend = environment.backend
 
+    getClass(rowData: any, classes: string): { [key: string]: boolean } {
+        const fieldValue = rowData[classes]
+        if (classes) {
+            return { [String(fieldValue)]: !!fieldValue } // Convertir a string y asegurarse de que sea un valor booleano.
+        } else {
+            return undefined
+        }
+    }
+
     @Output() accionBtnItem: EventEmitter<{ accion: any; item: any }> =
         new EventEmitter()
     @Output() selectedRowDataChange = new EventEmitter()
@@ -74,8 +83,8 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     @Input() selectionMode: 'single' | 'multiple' | null = null
     @Input() expandedRowKeys = {}
     @Input() dataKey: string
-
     @Input() showCaption: boolean = true
+    @Input() caption: string | undefined | null
     @Input() showPaginator: boolean = true
 
     @Input() selectedRowData
@@ -137,11 +146,16 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     ]
 
     @Input()
-    set columnas(value: IColumn[]) {
-        this._columnas = value.map((column) => ({
-            ...column,
-            selected: true,
-        }))
+    set columnas(value: IColumn[] | undefined) {
+        console.log
+        if (value) {
+            this._columnas = value.map((column) => ({
+                ...column,
+                selected: true,
+            }))
+        } else {
+            this._columnas = [] // Valor predeterminado en caso de undefined
+        }
     }
 
     get columnas(): IColumn[] {
@@ -226,6 +240,10 @@ export class TablePrimengComponent implements OnChanges, OnInit {
         if (changes.data?.currentValue) {
             this.data = changes.data.currentValue
         }
+        if (changes.columnas?.currentValue) {
+            this.columnas = changes.columnas.currentValue
+            this.columnasSeleccionadas = this.columnas
+        }
 
         if (changes.selectedRowData?.currentValue) {
             this.selectedRowData = changes.selectedRowData.currentValue
@@ -251,6 +269,38 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     onSelectionChange(event) {
         this.selectedRowData = event
         this.selectedRowDataChange.emit(event)
+    }
+
+    @Output() selectedColumn = new EventEmitter()
+
+    selectCell(col: any, field: string, row): void {
+        this.selectedColumn.emit([col, {
+            iCriterioId: row.values[col.field].iCriterioId,
+            iNivelEvaId: row.values[col.field].iNivelEvaId,
+            logros: row.values[col.field].logros,
+            row: row
+        }])
+
+        // Si la celda seleccionada es la misma, la deseleccionamos
+        if (this.selectedCells[row.values[col.field].iNivelEvaId] === field) {
+            delete this.selectedCells[row.values[col.field].iNivelEvaId]
+        } else {
+            this.selectedCells = {}
+            this.selectedCells[row.values[col.field].iNivelEvaId] = field // Asignar nueva celda seleccionada
+        }
+    }
+
+    selectRow(row: any, field: string): void {
+        this.selectedColumn.emit(row)
+    }
+
+    selectedCells: { [rowId: string]: string } = {};
+
+    @Input() enableCellSelection
+    @Input() showSortIcon = true
+
+    isCellSelected(rowId: any) {
+        return this.selectedCells?.hasOwnProperty(rowId)
     }
 
     openFile(item) {

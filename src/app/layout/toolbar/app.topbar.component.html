@@ -23,7 +23,7 @@
                 class="pi pi-bell"
                 pBadge
                 style="font-size: 2rem"
-                value="10+"
+                [value]="totalNotificaciones"
             ></i>
         </button>
         <app-anio-escolar
@@ -55,19 +55,20 @@
             >
                 {{ item.label }}
             </div>
-            <div
+            <!-- <div
                 class="flex align-items-center justify-content-center text-none text-primary mx-2"
             >
                 Ver
-            </div>
+            </div> -->
         </div>
     </ng-template>
     <ng-template pTemplate="item" let-item>
         <div pRipple class="flex align-items-center p-menuitem-link text-sm">
+            <!-- <span><ng-icon name="mat10k" /></span> -->
             <span [class]="item.icon" style="color: #3e67a9"></span>
             <span class="mx-3 text-none">{{
-                item.label.length > 40
-                    ? (item.label | slice: 0 : 40) + '...'
+                item.label.length > 100
+                    ? (item.label | slice: 0 : 100) + '...'
                     : item.label
             }}</span>
             <span

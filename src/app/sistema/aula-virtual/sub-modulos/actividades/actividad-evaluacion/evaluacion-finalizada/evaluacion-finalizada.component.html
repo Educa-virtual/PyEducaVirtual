@@ -1,0 +1,31 @@
+<h2><p>Esta en proceso de Evaluacion!</p></h2>
+<article class="card">
+    <h2>Recursos de Ayuda</h2>
+    @if (evaluacion?.cEvaluacionArchivoAdjunto.length === 8) {
+        <app-empty-section
+            class="w-full"
+            [message]="'Sin recursos asignados'"
+        ></app-empty-section>
+    } @else {
+        <app-recursos-lista
+            [files]="evaluacion?.cEvaluacionArchivoAdjunto ?? []"
+        ></app-recursos-lista>
+    }
+</article>
+
+<div class="grid p-fluid">
+    <div class="col-12">
+        <h2>
+            <label for="retroalimentacion" class="block mb-2"
+                >Retroalimentación</label
+            >
+        </h2>
+        <input
+            pInputText
+            type="text"
+            id="retroalimentacion"
+            placeholder="Verifique su retroalimentacion"
+            class="w-full"
+        />
+    </div>
+</div>

@@ -20,44 +20,56 @@
     [expandedRowKeys]="expandedRowKeys"
     [selectionMode]="selectionMode"
 >
-    @if (showCaption) {
+    <ng-container *ngIf="showCaption">
         <ng-template pTemplate="caption">
-            <div class="grid">
-                <div class="col-10" style="margin-left: -0.5rem">
-                    <p-inputGroup>
-                        <p-inputGroupAddon
-                            ><i class="pi pi-search"></i
-                        ></p-inputGroupAddon>
-                        <input
-                            pInputText
-                            [placeholder]="placeholder"
-                            (input)="
-                                dt.filterGlobal(
-                                    $any($event.target).value,
-                                    'contains'
-                                )
-                            "
-                        />
-                    </p-inputGroup>
-                </div>
-                <div class="col-2 align-content-center">
-                    <div class="flex flex-wrap gap-2 justify-content-end">
-                        <ng-content
-                            select="[slot='caption-content']"
-                        ></ng-content>
-                        <app-table-column-filter
-                            [columns]="columnas"
-                            (columnsChange)="onColumnSelected($event)"
-                        ></app-table-column-filter>
+            @if (caption) {
+                <div class="grid">
+                    <div
+                        class="p-2 w-full text-center"
+                        style="background-color: #e6e6ee"
+                    >
+                        {{ caption.toUpperCase() }}
                     </div>
                 </div>
-            </div>
+            } @else {
+                <div class="grid">
+                    <div class="col-10" style="margin-left: -0.5rem">
+                        <p-inputGroup>
+                            <p-inputGroupAddon
+                                ><i class="pi pi-search"></i
+                            ></p-inputGroupAddon>
+                            <input
+                                pInputText
+                                [placeholder]="placeholder"
+                                (input)="
+                                    dt.filterGlobal(
+                                        $any($event.target).value,
+                                        'contains'
+                                    )
+                                "
+                            />
+                        </p-inputGroup>
+                    </div>
+                    <div class="col-2 align-content-center">
+                        <div class="flex flex-wrap gap-2 justify-content-end">
+                            <ng-content
+                                select="[slot='caption-content']"
+                            ></ng-content>
+                            <app-table-column-filter
+                                [columns]="columnas"
+                                (columnsChange)="onColumnSelected($event)"
+                            ></app-table-column-filter>
+                        </div>
+                    </div>
+                </div>
+            }
         </ng-template>
-    }
+    </ng-container>
+
     <ng-template pTemplate="header" let-columns>
         <tr class="text-uppercase">
             @for (col of columnasSeleccionadas; track $index) {
-                <th [pSortableColumn]="col.field" [style.width]="col.width">
+                <th [pSortableColumn]="col.field" [style.width]="col.width" [pSortableColumnDisabled]="enableCellSelection">
                     @switch (col.type) {
                         @case ('actions') {
                             <div [style.text-align]="col.text_header">
@@ -76,7 +88,9 @@
                         @default {
                             <div [style.text-align]="col.text_header" class="">
                                 <span> {{ col.header }}</span>
-                                <p-sortIcon [field]="col.header"></p-sortIcon>
+                                @if (showSortIcon) {
+                                    <p-sortIcon [field]="col.header"></p-sortIcon>
+                                }
                             </div>
                         }
                     }
@@ -91,9 +105,12 @@
         let-rowIndex="rowIndex"
         let-expanded="expanded"
     >
-        <tr [pSelectableRow]="rowData">
+        <tr [pSelectableRow]="rowData" [ngClass]="getClass(rowData, 'class')">
             @for (col of columnasSeleccionadas; track $index; let i = $index) {
-                <td>
+                <td (click)="enableCellSelection && selectCell(col, col.field, rowData)" [ngClass]="{
+                    'SELECTED-CELL': enableCellSelection && isCellSelected(rowData.values?.[col.field]?.iNivelEvaId) || (rowData.values?.[col.field]?.logros != null),
+                    'cursor-pointer': enableCellSelection
+                }">
                     @if (col.type === 'expansion') {
                         <button
                             type="button"
@@ -109,6 +126,39 @@
                             "
                         ></button>
                     }
+
+                    @if (col.type === 'arrayColumn') {
+                        <p-button
+                            [text]="true"
+                            severity="secondary"
+                            class="p-col-12"
+                            (onClick)="accionBtn('select', rowData)"
+                        >
+                            <div
+                                class="perfiles-list-item text-left"
+                                tabindex="0"
+                            >
+                                <i class="pi pi-home"
+                                    ><strong> Aula : </strong
+                                    >{{ rowData[col.field].ambiente }}
+                                    <strong> Ciclo : </strong
+                                    >{{ rowData[col.field].ciclo }}</i
+                                >
+
+                                <br /><i class="pi pi-bookmark"
+                                    ><strong> Grado / Seccion : </strong
+                                    >{{ rowData[col.field].grado }} /
+                                    {{ rowData[col.field].seccion }}</i
+                                >
+
+                                <i class="pi pi-user"
+                                    ><strong> Estudiantes : </strong
+                                    >{{ rowData[col.field].estudiantes }}</i
+                                >
+                            </div>
+                        </p-button>
+                    }
+
                     @if (col.type === 'item') {
                         <div [style.text-align]="col.text">
                             <span>{{ rowIndex + 1 }}</span>
@@ -125,6 +175,11 @@
                     @if (col.type === 'text') {
                         <div [style.text-align]="col.text">
                             {{ rowData[col.field] }}
+                        </div>
+                    }
+                    @if (col.type === 'date') {
+                        <div [style.text-align]="col.text">
+                            {{ rowData[col.field] | date: 'dd/MM/YYYY' }}
                         </div>
                     }
                     @if (col.type === 'checkbox') {

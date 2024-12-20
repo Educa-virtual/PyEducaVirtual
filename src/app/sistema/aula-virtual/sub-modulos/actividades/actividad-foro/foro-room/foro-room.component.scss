@@ -437,3 +437,11 @@
         color: var(--primary-color-text) !important;
     }
 }
+.toggle-link {
+    background: none;
+    border: none;
+    color: #007bff;
+    cursor: pointer;
+    padding: 0;
+    font: inherit;
+}

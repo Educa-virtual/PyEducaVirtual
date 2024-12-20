@@ -140,12 +140,12 @@
                     </div>
                     <div class="col-12 md:col-4" [hidden]="iPerfilId !== 8">
                         <div class="card">
-                            <h4>Mi Nota</h4>
-                            <p-divider></p-divider>
-                            <p-inputGroup>
+                            <h4>Mi Retroalimentación descriptiva:</h4>
+                            <!-- <p-divider></p-divider> -->
+                            <!-- <p-inputGroup>
                                 <p-inputGroupAddon> Nota </p-inputGroupAddon>
                                 <input pInputText />
-                            </p-inputGroup>
+                            </p-inputGroup> -->
                             <p-divider></p-divider>
                             <p-inputGroup>
                                 <p-inputGroupAddon>
@@ -354,7 +354,7 @@
                                                                         }}
                                                                     </span>
                                                                     <!-- Para Leer mas.. -->
-                                                                    <!-- <a
+                                                                    <button
                                                                         (click)="
                                                                             toggleExpand(
                                                                                 respuestas
@@ -367,7 +367,7 @@
                                                                                 ? 'Leer menos'
                                                                                 : 'Leer más'
                                                                         }}
-                                                                    </a> -->
+                                                                    </button>
                                                                 </div>
                                                                 <div
                                                                     class="display flex"
@@ -437,7 +437,7 @@
                                                                             class="menu-container p-button-text"
                                                                             (click)="
                                                                                 itemRespuesta =
-                                                                                    respuestas?.iForoRptaId;
+                                                                                    respuestas;
                                                                                 menu.toggle(
                                                                                     $event
                                                                                 )
@@ -722,9 +722,9 @@
 >
     <form [formGroup]="foroFormCalf" class="flex flex-column gap-3 w-full">
         <div class="grid pt-2">
-            <!-- Mostrar la califcación -->
+            <!-- Mostrar la califcación comentada segun el requerimiento -->
             <!--  for="calificacion" [options]="calificacion"-->
-            <div class="col-12">
+            <!-- <div class="col-12">
                 <p-inputGroup>
                     <p-inputGroupAddon> Calificación </p-inputGroupAddon>
                     <p-dropdown
@@ -737,7 +737,7 @@
                         [showClear]="true"
                     ></p-dropdown>
                 </p-inputGroup>
-            </div>
+            </div> -->
             <!-- Mostrar descripción -->
             <div class="col-12">
                 <label for="descripcion" class="font-bold mt-1"

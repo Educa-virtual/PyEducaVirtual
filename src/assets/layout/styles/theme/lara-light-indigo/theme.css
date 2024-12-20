@@ -192,6 +192,8 @@
   --primary-700: #4547a9;
   --primary-800: #363885;
   --primary-900: #282960;
+
+  --red-75: rgba(233, 45, 45, 0.75);
 }
 
 .p-editor-container .p-editor-toolbar {
@@ -7468,5 +7470,8 @@
         color: var(--bg-header-modal) !important;
       }
     }
+  }
+  .p-overflow-hidden{
+    overflow: scroll !important;
   }
 }

@@ -1,5 +1,5 @@
 import { AdmStepGradoSeccionService } from '@/app/servicios/adm/adm-step-grado-seccion.service'
-import { Component, OnInit } from '@angular/core'
+import { Component, inject, OnInit } from '@angular/core'
 import { Router } from '@angular/router'
 
 import {
@@ -12,8 +12,9 @@ import {
     IActionTable,
     TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component'
-
-import { StepsModule } from 'primeng/steps'
+import { PrimengModule } from '@/app/primeng.module'
+//import { StepsModule } from 'primeng/steps'
+import { StepperModule } from 'primeng/stepper'
 import { DialogModule } from 'primeng/dialog'
 import { InputSwitchModule } from 'primeng/inputswitch'
 import { DropdownModule } from 'primeng/dropdown'
@@ -27,14 +28,15 @@ import {
     Validators,
 } from '@angular/forms'
 import { MessageService } from 'primeng/api'
-import { StepConfirmationService } from '@/app/servicios/confirm.service'
+import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 
 @Component({
     selector: 'app-config-ambiente',
     standalone: true,
     imports: [
         ReactiveFormsModule,
-        StepsModule,
+        //StepsModule,
+        StepperModule,
         ContainerPageComponent,
         TablePrimengComponent,
         DialogModule,
@@ -42,6 +44,7 @@ import { StepConfirmationService } from '@/app/servicios/confirm.service'
         InputTextModule,
         ButtonModule,
         InputSwitchModule,
+        PrimengModule,
     ],
     templateUrl: './config-ambiente.component.html',
     styleUrl: './config-ambiente.component.scss',
@@ -64,14 +67,13 @@ export class ConfigAmbienteComponent implements OnInit {
     configuracion: any[]
 
     ambientes: any[]
-
+    private _confirmService = inject(ConfirmationModalService)
     constructor(
         private stepService: AdmStepGradoSeccionService,
         private router: Router,
         private fb: FormBuilder,
         private messageService: MessageService,
-        private query: GeneralService,
-        private msg: StepConfirmationService
+        private query: GeneralService
     ) {
         //this.iSedeId = this.stepService.iSedeId
         this.items = this.stepService.itemsStep
@@ -258,6 +260,25 @@ export class ConfigAmbienteComponent implements OnInit {
     }
 
     // eventos de record set
+    confirm() {
+        this._confirmService.openConfiSave({
+            message: '¿Estás seguro de que deseas guardar y continuar?',
+            header: 'Advertencia de autoguardado',
+            icon: 'pi pi-exclamation-triangle',
+            accept: () => {
+                // Acción para eliminar el registro
+                this.router.navigate(['/gestion-institucional/seccion'])
+            },
+            reject: () => {
+                // Mensaje de cancelación (opcional)
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Cancelado',
+                    detail: 'Acción cancelada',
+                })
+            },
+        })
+    }
 
     accionBtnItemTable({ accion, item }) {
         if (accion === 'editar') {
@@ -292,25 +313,45 @@ export class ConfigAmbienteComponent implements OnInit {
             this.clearForm()
         }
         if (accion === 'eliminar') {
-            alert('Desea eliminar')
-            const params = {
-                esquema: 'acad',
-                tabla: 'iiee_ambientes',
-                campo: 'iIieeAmbienteId',
-                valorId: item.iIieeAmbienteId,
-            }
-            this.query.deleteAcademico(params).subscribe({
-                next: (data: any) => {
-                    console.log(data.data)
+            this._confirmService.openConfirm({
+                message: '¿Está seguro de que desea eliminar este elemento?',
+                header: 'Confirmación de eliminación',
+                icon: 'pi pi-exclamation-triangle',
+                accept: () => {
+                    // Acción a realizar al confirmar
+                    const params = {
+                        esquema: 'acad',
+                        tabla: 'iiee_ambientes',
+                        campo: 'iIieeAmbienteId',
+                        valorId: item.iIieeAmbienteId,
+                    }
+                    this.query.deleteAcademico(params).subscribe({
+                        next: (data: any) => {
+                            console.log(data.data)
+                        },
+                        error: (error) => {
+                            console.error('Error fetching ambiente:', error)
+                        },
+                        complete: () => {
+                            this.messageService.add({
+                                severity: 'success',
+                                summary: 'Mensaje',
+                                detail: 'Proceso exitoso',
+                            })
+                            console.log('Request completed')
+                            this.getAmbientes()
+                            this.visible = false
+                            this.clearForm()
+                        },
+                    })
                 },
-                error: (error) => {
-                    console.error('Error fetching ambiente:', error)
-                },
-                complete: () => {
-                    console.log('Request completed')
-                    this.getAmbientes()
-                    this.visible = false
-                    this.clearForm()
+                reject: () => {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Mensaje',
+                        detail: 'Proceso cancelado',
+                    })
+                    console.log('Acción cancelada')
                 },
             })
         }
@@ -342,6 +383,11 @@ export class ConfigAmbienteComponent implements OnInit {
                             console.error('Error fetching ambiente:', error)
                         },
                         complete: () => {
+                            this.messageService.add({
+                                severity: 'success',
+                                summary: 'Mensaje',
+                                detail: 'Proceso exitoso',
+                            })
                             console.log('Request completed')
                             this.getAmbientes()
                             this.visible = false
@@ -354,7 +400,6 @@ export class ConfigAmbienteComponent implements OnInit {
         }
         //updateAcademico
         if (accion === 'editar') {
-            alert('vas a modificar')
             if (this.form.valid) {
                 const params = {
                     esquema: 'acad',
@@ -383,7 +428,7 @@ export class ConfigAmbienteComponent implements OnInit {
                     condicion: this.form.get('iIieeAmbienteId')?.value,
                 }
 
-                console.log(params, 'parametros dem uodate')
+                console.log(params, 'parametros dem update')
                 this.query.updateAcademico(params).subscribe({
                     next: (data: any) => {
                         console.log(data.data)
@@ -395,6 +440,11 @@ export class ConfigAmbienteComponent implements OnInit {
                         // }
                     },
                     complete: () => {
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: 'Mensaje',
+                            detail: 'Proceso exitoso',
+                        })
                         console.log('Request completed')
                         this.getAmbientes()
                         this.visible = false
@@ -439,19 +489,20 @@ export class ConfigAmbienteComponent implements OnInit {
     }
     accionesPrincipal: IActionContainer[] = [
         {
+            labelTooltip: 'Retornar',
+            text: 'Retornar',
+            icon: 'pi pi-arrow-circle-left',
+            accion: 'retornar',
+            class: 'p-button-warning',
+        },
+        {
             labelTooltip: 'Crear Ambiente',
             text: 'Crear ambientes',
             icon: 'pi pi-plus',
             accion: 'agregar',
             class: 'p-button-primary',
         },
-        {
-            labelTooltip: 'Retornar',
-            text: 'Retornar',
-            icon: 'pi pi-plus',
-            accion: 'retornar',
-            class: 'p-button-warning',
-        },
+
         // {
         //     labelTooltip: 'Unificar Ambiente',
         //     text: 'Unificar ambientes',
@@ -495,10 +546,10 @@ export class ConfigAmbienteComponent implements OnInit {
         //     text: 'left',
         // },
         {
-            type: 'text',
+            type: 'item',
             width: '5rem',
-            field: 'iIieeAmbienteId',
-            header: 'Cod',
+            field: 'item',
+            header: 'N°',
             text_header: 'center',
             text: 'center',
         },

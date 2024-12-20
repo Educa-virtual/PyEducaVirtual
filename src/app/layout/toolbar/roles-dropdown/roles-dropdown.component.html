@@ -1,9 +1,4 @@
-<p-button
-    styleClass="border-0"
-    [text]="true"
-    severity="secondary"
-    (onClick)="showModal = true"
->
+<p-button [text]="true" severity="secondary" (onClick)="showModal = true">
     <div class="flex align-items-center gap-2">
         <i
             class="pi pi-graduation-cap"
@@ -17,7 +12,10 @@
                 >IE: {{ selectedPerfil.cEntNombreLargo }}</span
             >
             <span class="p-0 display-none"
-                >Cod. Modular: - Nivel: - / UGEL: -</span
+                >Cod. Modular:{{ selectedPerfil.cIieeCodigoModular }} - Nivel:{{
+                    selectedPerfil.cNivelTipoNombre
+                }}
+                - / UGEL: -</span
             >
         </div>
     </div>

@@ -5,6 +5,7 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-evaluaciones.service'
 import { Subject, takeUntil } from 'rxjs'
+import { ActivatedRoute, Router } from '@angular/router'
 
 @Component({
     selector: 'app-rubrica-form',
@@ -12,6 +13,7 @@ import { Subject, takeUntil } from 'rxjs'
     styleUrl: './rubrica-form.component.scss',
 })
 export class RubricaFormComponent implements OnInit, OnDestroy {
+    rubricas
     public rubricaForm: FormGroup
     public mode: 'EDITAR' | 'CREAR' | 'VIEW' = 'CREAR'
 
@@ -23,15 +25,24 @@ export class RubricaFormComponent implements OnInit, OnDestroy {
     private _constantesService = inject(ConstantesService)
     private _apiEvaluacionesServ = inject(ApiEvaluacionesService)
     private _unsubscribe$ = new Subject<boolean>()
-    private _config = inject(DynamicDialogConfig)
+    public _config = inject(DynamicDialogConfig)
+
+    public route = inject(ActivatedRoute)
 
     private _params = {
         iCursoId: null,
         idDocCursoId: null,
     }
-    constructor(private _rubricaFormService: RubricaFormService) {}
+    constructor(
+        private _rubricaFormService: RubricaFormService,
+        private router: Router,
+    ) {}
 
     ngOnInit() {
+        console.log('this.mode en form rubrica')
+        console.log(this._config.data.mode)
+
+        this.rubricas = this._config.data.rubricas
         this.rubrica = this._config.data.rubrica
         this._params.iCursoId = this._config.data.iCursoId
         this._params.idDocCursoId = this._config.data.idDocCursoId
@@ -42,7 +53,6 @@ export class RubricaFormComponent implements OnInit, OnDestroy {
         if (!this._params.idDocCursoId) {
             throw new Error('Error el idDocCursoId es requerido')
         }
-
         this.initForm()
         this.getData()
         this.handleMode()
@@ -53,6 +63,10 @@ export class RubricaFormComponent implements OnInit, OnDestroy {
             this.mode = 'EDITAR'
             this.patchValues()
         }
+    }
+
+    patchValuesSelection(rubrica: any) {
+        this._rubricaFormService.patchRubricaFormSelection(rubrica)
     }
 
     patchValues() {
@@ -75,8 +89,10 @@ export class RubricaFormComponent implements OnInit, OnDestroy {
     }
 
     initForm() {
+        console.log(this.rubricaForm)
         this._rubricaFormService.initRubricaForm()
         this.rubricaForm = this._rubricaFormService.rubricaForm
+        console.log(this.rubricaForm)
     }
 
     guardarActualizarRubrica() {
@@ -85,11 +101,38 @@ export class RubricaFormComponent implements OnInit, OnDestroy {
             this.rubricaForm.markAllAsTouched()
             return
         }
+        
         const data = this.rubricaForm.value
+
+        
+        if(this.route.queryParams['_value']?.iEvaluacionId){
+            this._apiEvaluacionesServ
+            .actualizarRubricaEvaluacion({
+                data: JSON.stringify({
+                    iInstrumentoId: data.iInstrumentoId,
+                }),
+                iEvaluacionId: this.route.queryParams['_value'].iEvaluacionId
+            })
+            .pipe(takeUntil(this._unsubscribe$))
+            .subscribe({
+                next: (data) => {
+                },
+            })
+        }
+
+        this.router.navigate([], {
+            queryParams: {
+                iInstrumentoId: data.iInstrumentoId,
+            },
+            queryParamsHandling: 'merge',
+            replaceUrl: true,
+        })
+
         data.iDocenteId = this._constantesService.iDocenteId
         data.iCredId = this._constantesService.iCredId
         data.idDocCursoId = this._params.idDocCursoId
         data.iCursoId = this._params.iCursoId
+
 
         this._apiEvaluacionesServ
             .guardarActualizarRubrica(data)

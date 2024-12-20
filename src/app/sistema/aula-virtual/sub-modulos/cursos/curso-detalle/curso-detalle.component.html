@@ -51,15 +51,25 @@
                 <app-tab-inicio></app-tab-inicio>
             }
             @case ('contenido') {
-                <app-tab-contenido [_iSilaboId]="iSilaboId"></app-tab-contenido>
+                <app-tab-contenido
+                    [_iSilaboId]="iSilaboId"
+                    [iCursoId]="curso?.iCursoId"
+                    [idDocCursoId]="curso?.idDocCursoId"
+                    [curso]="curso"
+                ></app-tab-contenido>
             }
-            @case ('estudiantes') {
+            <!-- @case ('estudiantes') {
                 <app-tab-estudiantes
                     [estudiantes]="estudiantes"
                 ></app-tab-estudiantes>
-            }
+            } -->
             @case ('resultados') {
-                <app-tab-resultados></app-tab-resultados>
+                <app-tab-resultados
+                    [_iSilaboId]="iSilaboId"
+                    [iCursoId]="curso?.iCursoId"
+                    [idDocCursoId]="curso?.idDocCursoId"
+                    [curso]="curso"
+                ></app-tab-resultados>
             }
             @case ('asistencia') {
                 <app-asistencia></app-asistencia>

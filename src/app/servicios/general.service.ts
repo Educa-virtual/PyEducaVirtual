@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
 import { environment } from '@/environments/environment'
+import { map } from 'rxjs'
 
 const baseUrl = environment.backendApi
 const baseUrlPublic = environment.backend
@@ -128,7 +129,6 @@ export class GeneralService {
             }
         )
     }
-
     getYear() {
         // devuelve informacion en tabla grl.years sin filtro
         return this.http.post(
@@ -141,43 +141,91 @@ export class GeneralService {
             }
         )
     }
+    addMaestro(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/gestionInstitucional/insertMaestro`,
+            data
+        )
+    }
 
-    addAno(data: any) {
+    addMaestroDetalle(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/gestionInstitucional/insertMaestroDetalle`,
+            data
+        )
+    }
+
+    addYear(data: any) {
         return this.http.post(
             `${baseUrl}/acad/calendarioAcademico/addYear`,
             data
         )
     }
+    updateYear(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/calendarioAcademico/updateYear`,
+            data
+        )
+    }
+
+    deleteYear(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/calendarioAcademico/deleteYear`,
+            data
+        )
+    }
+
+    addCalAcademico(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/calendarioAcademico/addCalAcademico`,
+            data
+        )
+    }
+
     addAmbienteAcademico(data: any) {
         return this.http.post(
-            `${baseUrl}/acad/calendarioAcademicos/addAmbiente`,
+            `${baseUrl}/acad/calendarioAcademico/addAmbiente`,
             data
         )
     }
 
     updateAcademico(data: any) {
         return this.http.post(
-            `${baseUrl}/acad/calendarioAcademicos/updateCalendario`,
+            `${baseUrl}/acad/calendarioAcademico/updateCalendario`,
             data
         )
     }
 
     deleteAcademico(data: any) {
         return this.http.post(
-            `${baseUrl}/acad/calendarioAcademicos/deleteCalendario`,
+            `${baseUrl}/acad/calendarioAcademico/deleteCalendario`,
+            data
+        )
+    }
+
+    searchTablaXwhere(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/calendarioAcademico/searchCalAcademico`,
             data
         )
     }
 
     searchCalAcademico(data: any) {
         return this.http.post(
-            `${baseUrl}/acad/calendarioAcademico/searchCalAcademico`,
+            `${baseUrl}/acad/calendarioAcademico/searchCalAcademico`, //procedimiento general
             data
         )
     }
+    searchCalendario(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/calendarioAcademico/searchAcademico`, // acad.SP_SEL_stepCalendarioAcademicoDesdeJsonOpcion
+            data
+        )
+    } //searchAcademico
+
     searchAmbienteAcademico(data: any) {
         return this.http.post(
-            `${baseUrl}/acad/calendarioAcademicos/searchAmbiente`,
+            `${baseUrl}/acad/calendarioAcademico/searchAmbiente`, //acad.SP_SEL_stepAmbienteAcademicoDesdeJsonOpcion
             data
         )
     }
@@ -194,5 +242,59 @@ export class GeneralService {
     }
     baseUrlPublic() {
         return baseUrlPublic
+    }
+    searchGradoCiclo(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/calendarioAcademico/searchGradoCiclo`,
+            data
+        )
+    }
+    searchPersonalIes(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/gestionInstitucional/listarPersonalIes`,
+            data
+        )
+    }
+    reporteHorasNivelGrado(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/gestionInstitucional/reporteHorasNivelGrado`,
+            data
+        )
+    }
+    reporteSeccionesNivelGrado(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/gestionInstitucional/reporteSeccionesNivelGrado`,
+            data
+        )
+    }
+
+    // Método para obtener datos desde el backend
+    getDatos(tabla: string, campos: string, where: any) {
+        return this.http
+            .post<any>(
+                `${baseUrl}/aula-virtual/Resultado/obtenerCalificacionesFinalesReporte`,
+                {
+                    tabla: 'detalle_matriculas',
+                    where,
+                    campos,
+                }
+            )
+            .pipe(
+                map((response) => {
+                    if (!response || !response.data) {
+                        throw new Error(
+                            'La respuesta no contiene datos válidos'
+                        )
+                    }
+                    return response.data
+                })
+                // map((data) => {
+                //     if (data.iActTipoId == 2) {
+                //         const preguntas = mapItemsBancoToEre(data.preguntas)
+                //         data.preguntas = mapData(preguntas)
+                //     }
+                //     return data
+                // })
+            )
     }
 }

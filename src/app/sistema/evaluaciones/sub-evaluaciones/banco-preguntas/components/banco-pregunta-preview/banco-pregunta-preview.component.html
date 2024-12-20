@@ -1,24 +1,81 @@
-@if (pregunta.preguntas !== undefined) {
-    <!-- encabezado  -->
-    <h1 class="mb-2">{{ pregunta.cPregContenido }}</h1>
-    <div class="mb-2" [innerHTML]="pregunta.cEncabPregContenido"></div>
-    <!-- contenido encabezado -->
-    <div class="flex flex-column gap-4">
-        @for (
-            preguntaItem of pregunta.preguntas;
-            track preguntaItem.iPreguntaId
-        ) {
-            <app-banco-pregunta-preview-item
-                [footerPreguntaTemplate]="footerPreguntaTemplate"
-                [customAlternativeTemplate]="customAlternativeTemplate"
-                [pregunta]="preguntaItem"
-            />
-        }
+@if (pregunta.json_alternativas !== undefined) {
+    <div class="grid">
+        <div class="col-12 md:col-5">
+            <label for="" class="mt-2 font-bold">Lista de Alternativas</label>
+            @for (
+                item of pregunta.json_alternativas;
+                track item;
+                let idx = $index
+            ) {
+                <div class="grid">
+                    <div class="col-12">
+                        <p-inputGroup class="mt-1">
+                            <p-inputGroupAddon>
+                                {{ idx + 1 }}
+                            </p-inputGroupAddon>
+                            <div class="w-full align-content-center">
+                                <div
+                                    class="ml-1"
+                                    [innerHTML]="item.cBancoAltDescripcion"
+                                ></div>
+                            </div>
+                            <p-button
+                                *ngIf="item.bBancoAltRptaCorrecta"
+                                icon="pi pi-check"
+                                [rounded]="true"
+                                [text]="true"
+                                size="small"
+                                severity="success"
+                            />
+                            <button
+                                type="button"
+                                [text]="true"
+                                pButton
+                                icon="pi pi-pencil"
+                                class="p-button-warning"
+                                size="small"
+                            >
+                                &nbsp;
+                            </button>
+                            <button
+                                type="button"
+                                [text]="true"
+                                pButton
+                                icon="pi pi-trash"
+                                class="p-button-danger"
+                                size="small"
+                            >
+                                &nbsp;
+                            </button>
+                        </p-inputGroup>
+                    </div>
+                </div>
+            }
+        </div>
     </div>
 } @else {
-    <app-banco-pregunta-preview-item
-        [footerPreguntaTemplate]="footerPreguntaTemplate"
-        [customAlternativeTemplate]="customAlternativeTemplate"
-        [pregunta]="pregunta"
-    />
+    @if (pregunta.preguntas !== undefined) {
+        <!-- encabezado  -->
+        <h1 class="mb-2">{{ pregunta.cPregContenido }}</h1>
+        <div class="mb-2" [innerHTML]="pregunta.cEncabPregContenido"></div>
+        <!-- contenido encabezado -->
+        <div class="flex flex-column gap-4">
+            @for (
+                preguntaItem of pregunta.preguntas;
+                track preguntaItem.iPreguntaId
+            ) {
+                <app-banco-pregunta-preview-item
+                    [footerPreguntaTemplate]="footerPreguntaTemplate"
+                    [customAlternativeTemplate]="customAlternativeTemplate"
+                    [pregunta]="preguntaItem"
+                />
+            }
+        </div>
+    } @else {
+        <app-banco-pregunta-preview-item
+            [footerPreguntaTemplate]="footerPreguntaTemplate"
+            [customAlternativeTemplate]="customAlternativeTemplate"
+            [pregunta]="pregunta"
+        />
+    }
 }

@@ -41,9 +41,9 @@ export type Layout = 'list' | 'grid'
         DropdownModule,
         TableModule,
         TablePrimengComponent,
-        AreaCardComponent,
         ButtonModule,
         CommonModule,
+        AreaCardComponent,
     ],
 })
 export class AreasComponent implements OnInit {
@@ -55,7 +55,7 @@ export class AreasComponent implements OnInit {
     public layout: Layout = 'list'
     public text: string = ''
     public searchText: Event
-    public areas: IArea[] = [] // Inicialmente vacío, se llenará con los datos de la API.
+    public area: IArea[] = [] // Inicialmente vacío, se llenará con los datos de la API.
     public sortField: string = ''
     public sortOrder: number = 0
     public iEvaluacionId: number | null = null // Para almacenar el ID de la evaluación.
@@ -135,8 +135,8 @@ export class AreasComponent implements OnInit {
 
                 // Procesar y mapear los datos al formato de IArea.
                 if (resp.data && Array.isArray(resp.data)) {
-                    this.areas = resp.data.map((item: any) => ({
-                        id: Number(item.iCursosNivelGradId), // Usamos iCursosNivelGradId como ID.
+                    this.area = resp.data.map((item: any) => ({
+                        id: Number(item.iCursosNivelGradId), // Usamos iCursoId como ID.
                         nombre: item.cCursoNombre || 'Sin nombre', // Nombre del curso.
                         descripcion:
                             item.cCursoDescripcion || 'Sin descripción', // Descripción del curso.
@@ -147,10 +147,10 @@ export class AreasComponent implements OnInit {
                     }))
                     // Guardar las áreas procesadas en el servicio
                     this.compartirFormularioEvaluacionService.setAreas(
-                        this.areas
+                        this.area
                     )
                 }
-                console.log('Datos procesados para áreas:', this.areas)
+                console.log('Datos procesados para áreas:', this.area)
             },
 
             error: (err) => {

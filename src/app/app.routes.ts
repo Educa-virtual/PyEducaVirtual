@@ -6,6 +6,7 @@ import { VerificacionComponent } from './shared/verificacion/verificacion.compon
 import { InicioComponent } from './sistema/inicio/inicio.component'
 import { NotfoundComponent } from './shared/notfound/notfound.component'
 import { RecoverPasswordComponent } from './shared/recover-password/recover-password.component'
+import { EnlacesAyudaComponent } from './enlaces-ayuda/enlaces-ayuda.component'
 
 export const routes: Routes = [
     { path: '', component: InicioComponent },
@@ -54,6 +55,8 @@ export const routes: Routes = [
 
     { path: 'login', component: LoginComponent },
 
+    { path: 'ayuda', component: EnlacesAyudaComponent },
+
     { path: 'verificacion', component: VerificacionComponent },
 
     { path: 'recover-password', component: RecoverPasswordComponent },
@@ -66,6 +69,23 @@ export const routes: Routes = [
                 (m) => m.ConfiguracionModule
             ),
     },
+    {
+        path: 'administrador',
+
+        loadChildren: () =>
+            import('./sistema/administrador/administrador.module').then(
+                (m) => m.AdministradorModule
+            ),
+    },
+    {
+        path: 'gestion-institucional',
+
+        loadChildren: () =>
+            import(
+                './sistema/gestion-institucional/gestion-institucional.module'
+            ).then((m) => m.GestionInstitucionalModule),
+    },
+
     {
         path: 'gestion-institucional',
 

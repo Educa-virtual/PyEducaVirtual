@@ -7,8 +7,8 @@ import {
     IActionTable,
     TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component'
-import { MenuItem } from 'primeng/api'
-import { Component, OnInit } from '@angular/core'
+import { MenuItem, MessageService } from 'primeng/api'
+import { Component, inject, OnInit } from '@angular/core'
 import { Router } from '@angular/router'
 import {
     ReactiveFormsModule,
@@ -28,6 +28,7 @@ import { StepsModule } from 'primeng/steps'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { InputNumberModule } from 'primeng/inputnumber'
 import { AdmStepGradoSeccionService } from '@/app/servicios/adm/adm-step-grado-seccion.service'
+import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 
 @Component({
     selector: 'app-config-grado-seccion',
@@ -78,12 +79,15 @@ export class ConfigGradoSeccionComponent implements OnInit {
     caption: string = '' // Etiqueta de modal
     selAnio: string
     config = []
+
+    private _confirmService = inject(ConfirmationModalService)
     constructor(
         public query: GeneralService,
         private fb: FormBuilder,
         private store: LocalStoreService,
         private router: Router,
-        private stepService: AdmStepGradoSeccionService
+        private stepService: AdmStepGradoSeccionService,
+        private messageService: MessageService
     ) {
         const perfil = this.store.getItem('dremoPerfil')
         console.log(perfil, 'perfil dremo', this.store)
@@ -142,14 +146,14 @@ export class ConfigGradoSeccionComponent implements OnInit {
                         cNivelTipoNombre:
                             this.stepService.perfil['cNivelTipoNombre'],
                         iSedeId: <number>this.iSedeId,
-                        iServEdId: 0,
+                        iServEdId: <number>0,
                         cConfigNroRslAprobacion: '',
                         cConfigUrlRslAprobacion: '',
                         cConfigDescripcion: '',
                         bConfigEsBilingue: false,
                         cEstadoConfigNombre: '',
                         cSedeNombre: '',
-                        iNivelTipoId: this.stepService.perfil['iNivelTipoId'],
+                        iNivelTipoId: this.stepService.iNivelTipoId,
                         cYAcadNombre: <number>this.sede[0].cYAcadNombre,
                     },
                 ]
@@ -261,13 +265,36 @@ export class ConfigGradoSeccionComponent implements OnInit {
 
         this.router.navigate(['configuracion/configuracion/years']) // Navega a YearsComponent
     }
+
+    confirm() {
+        this.router.navigate(['gestion-institucional/plan-estudio'])
+    }
     accionBtnItemTable({ accion, item }) {
         if (accion === 'agregar') {
             // this.selectedItems = []
             // this.selectedItems = [item]
+
+            //VALIDACION SI PUEDE
+            this._confirmService.openConfiSave({
+                header: 'Advertencia de configuracion',
+                message: 'La configuración para este año ya existe',
+                icon: 'pi pi-exclamation-triangle',
+                accept: () => {
+                    // Acción para eliminar el registro
+                },
+                reject: () => {
+                    // Mensaje de cancelación (opcional)
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Cancelado',
+                        detail: 'Acción cancelada',
+                    })
+                },
+            })
+
             this.opcion = 'seleccionar'
             this.caption = 'Seleccionar configuración'
-            this.visible = true
+            // this.visible = true
             // this.asignarPreguntas()
         }
         if (accion === 'editar') {
@@ -276,7 +303,7 @@ export class ConfigGradoSeccionComponent implements OnInit {
                     iConfigId: item.iConfigId,
                     iYAcadId: item.iYAcadId,
                     iEstadoConfigId: item.iEstadoConfigId,
-                    iNivelTipoId: item.NivelTipoId,
+                    iNivelTipoId: this.stepService.iNivelTipoId,
                     iSedeId: item.iSedeId,
                     iServEdId: item.iServEdId,
                     cConfigNroRslAprobacion: item.cConfigNroRslAprobacion,
@@ -290,6 +317,7 @@ export class ConfigGradoSeccionComponent implements OnInit {
                     cSedeNombre: '',
                     cModalServId: this.stepService.perfil['cNivelNombre'],
                     cYAcadNombre: <number>this.sede[0].cYAcadNombre,
+                    iProgId: this.stepService.perfil['iProgId'],
                 },
             ]
 
@@ -319,7 +347,6 @@ export class ConfigGradoSeccionComponent implements OnInit {
             // this.showDelete()
         }
         if (accion === 'select') {
-            alert('selecciono ' + item.cYAcadNombre)
             this.selAnio = 'El año a clonar es ' + item.cYAcadNombre
             console.log(item)
             // this.showDelete()
@@ -336,7 +363,7 @@ export class ConfigGradoSeccionComponent implements OnInit {
             text: 'Configuración',
             icon: 'pi pi-plus',
             accion: 'agregar',
-            class: 'p-button-secondary',
+            class: 'p-button-Primary',
         },
     ]
     selectedItems = []
@@ -359,10 +386,10 @@ export class ConfigGradoSeccionComponent implements OnInit {
     actionsLista: IActionTable[]
     columns = [
         {
-            type: 'text',
+            type: 'item',
             width: '5rem',
-            field: 'iConfigId',
-            header: 'Cod',
+            field: 'item',
+            header: '',
             text_header: 'left',
             text: 'left',
         },

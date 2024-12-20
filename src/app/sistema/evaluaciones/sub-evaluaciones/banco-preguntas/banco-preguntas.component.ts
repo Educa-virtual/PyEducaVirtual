@@ -77,11 +77,9 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
     public expandedRowKeys = {}
     public params = {
         bPreguntaEstado: -1,
-        //iCursoId: 1,
         iCursosNivelGradId: 0,
         iNivelTipoId: 1,
         iTipoPregId: 0,
-        // iEvaluacionId: 0,
     }
     public showModalBancoPreguntas: boolean = false
     public mostrarModalBaPrInformacion: boolean = false
@@ -90,12 +88,10 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
     public iEvaluacionIdS: number | null = null
     public informacionPregunta: any = null
     public informacinoBanco: any = null
-    // Datos seleccionados para la segunda tabla
     dataSeleccionado: any[] = [] // Aquí se guardarán las preguntas seleccionadas
     selectedItemsForm = []
     preguntaSelecionada: any[] = []
     preguntastocursos = []
-    // acciones Contenedor
     accionesPrincipal: IActionContainer[] = [
         {
             labelTooltip: 'Word',
@@ -111,28 +107,12 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             accion: 'agregar',
             class: 'p-button-secondary',
         },
-        // {
-        //     labelTooltip: 'asignar',
-        //     text: 'asignar',
-        //     icon: 'pi pi-plus',
-        //     accion: 'asignar',
-        //     class: 'p-button-secondary',
-        // },
     ]
 
     public data = []
 
     // Columnas Tabla Banco Preguntas
     columnas: IColumn[] = [
-        // {
-        //     field: '',
-        //     header: '',
-        //     type: 'expansion',
-        //     width: '2rem',
-        //     text: 'left',
-        //     text_header: 'left',
-        // },
-
         {
             field: 'checked',
             header: '',
@@ -176,14 +156,6 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
         },
     ]
     columnasSelect: IColumn[] = [
-        // {
-        //     field: '',
-        //     header: '',
-        //     type: 'expansion',
-        //     width: '2rem',
-        //     text: 'left',
-        //     text_header: 'left',
-        // },
         {
             field: 'checked',
             header: '',
@@ -328,6 +300,7 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
                     params['totalEstudiantes'] || '0',
                     10
                 ),
+                cantidad: 0,
             }
             this.iEvaluacionId = +params['iEvaluacionId'] // Asegúrate de convertir el valor a número
             console.log('Params:', this.queryParams)
@@ -496,12 +469,6 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
         this.selectedItems
         console.log('Cambios en selección:', event) // Este evento debería contener las filas seleccionadas
         console.log('Variable seleccionados:', this.selectedItems)
-
-        // this.selectedItemsForm
-        // console.log(
-        //     'Variable seleccionados selectedItemsForm:',
-        //     this.selectedItemsForm
-        // )
     }
 
     guardarPreguntasSeleccionadas(iEvaluacionId: number) {
@@ -551,31 +518,6 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             this.dataSeleccionado
         )
     }
-    // obtenerPreguntaSeleccionada(iEvaluacionId: number) {
-    //     if (!iEvaluacionId || iEvaluacionId < 0) {
-    //         console.error(
-    //             'El parámetro iEvaluacionIdS no está definido o es inválido'
-    //         )
-    //         return
-    //     }
-    //     this._apiEre.obtenerPreguntaSeleccionada(iEvaluacionId).subscribe({
-    //         next: (data) => {
-    //             //console.log('Preguntas seleccionadas:', data)
-    //             this.preguntasSeleccionadas = data // Guardamos las preguntas en una variable
-    //             console.log(
-    //                 'Datos completos de banco de preguntas:',
-    //                 this.preguntasSeleccionadas
-    //             )
-    //         },
-    //         error: (error) => {
-    //             console.error(
-    //                 'Error al obtener las preguntas seleccionadas:',
-    //                 error
-    //             )
-    //         },
-    //     })
-    // }
-
     //!
     obtenerPreguntaSeleccionada(iEvaluacionId: number) {
         if (!iEvaluacionId || iEvaluacionId < 0) {
@@ -619,9 +561,6 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             },
         })
     }
-
-    //!
-
     accionVerPreguntas(): void {
         this._apiEre
             .obtenerPreguntaInformacion(
@@ -707,8 +646,6 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
                         response.areas
                     )
                 }
-                //console.log('Respuesta de Evaluación:', iEvaluacionId)
-
                 // Mostrar mensaje de éxito
                 this._MessageService.add({
                     severity: 'success',

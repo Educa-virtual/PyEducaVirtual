@@ -6,7 +6,13 @@ import { TableModule } from 'primeng/table'
 import { InputTextModule } from 'primeng/inputtext'
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import { TablePrimengComponent } from '../../../../../shared/table-primeng/table-primeng.component'
-import { Component, inject, OnInit, TrackByFunction } from '@angular/core'
+import {
+    ChangeDetectorRef,
+    Component,
+    inject,
+    OnInit,
+    TrackByFunction,
+} from '@angular/core'
 import { IArea } from '../interfaces/area.interface'
 import { AreaCardComponent } from '../components/area-card/area-card.component'
 //import { CursoCardComponent } from '../components/curso-card/curso-card.component'
@@ -58,9 +64,14 @@ export class AreasComponent implements OnInit {
     preguntasSeleccionadas: any
     //@Input() _iEvaluacionId: string | null = null // Usamos _iEvaluacionId como input
     public params = {}
-
+    cantidadPreguntas: number = 0 // Valor inicial de la cantidad de preguntas
     private unsubscribe$: Subject<boolean> = new Subject()
     trackById: TrackByFunction<IArea>
+
+    //cantidadPreguntas: number
+    iEvaluacionIdd = 679 // ID de evaluación de prueba
+    iCursosNivelGradIdd = 6 // ID del curso/nivel de grado de prueba
+    nombreEvaluacionn: string = 'Evaluación de Prueba' // Nombre de la evaluación
     //!original
     // public onFilter(dv: DataView, event: Event) {
     //     dv.filter((event.target as HTMLInputElement).value)
@@ -79,6 +90,7 @@ export class AreasComponent implements OnInit {
         }
     }
     constructor(
+        private cdr: ChangeDetectorRef,
         private route: ActivatedRoute,
         private compartirFormularioEvaluacionService: CompartirFormularioEvaluacionService,
         private compartirIdEvaluacionService: CompartirIdEvaluacionService
@@ -170,5 +182,65 @@ export class AreasComponent implements OnInit {
                 )
             },
         })
+    }
+
+    // obtenerConteoPorCurso(): void {
+    //     const iEvaluacionId = 679 // ID de evaluación de prueba
+    //     const iCursosNivelGradId = 6 // ID del curso/nivel de grado de prueba
+    //     this._apiEre
+    //         .obtenerConteoPorCurso(iEvaluacionId, iCursosNivelGradId)
+    //         .subscribe({
+    //             next: (resp: any) => {
+    //                 console.log('Respuesta completa de la API:', resp)
+    //                 if (Array.isArray(resp)) {
+    //                     const conteoCurso = resp.length
+    //                     console.log('Conteo de curso:', conteoCurso)
+    //                     this.cantidadPreguntas = conteoCurso
+    //                     this.cdr.detectChanges() // Forzar detección de cambios
+    //                 } else {
+    //                     console.error('Respuesta inesperada:', resp)
+    //                 }
+    //             },
+    //             error: (err) => {
+    //                 console.error('Error al cargar datos:', err)
+    //             },
+    //         })
+    // }
+    obtenerConteoPorCurso(
+        iEvaluacionIdd: number,
+        iCursosNivelGradIdd: number
+    ): void {
+        this._apiEre
+            .obtenerConteoPorCurso(iEvaluacionIdd, iCursosNivelGradIdd)
+            .subscribe({
+                next: (resp: any) => {
+                    console.log('Respuesta completa de la API:', resp)
+                    if (Array.isArray(resp)) {
+                        // Asignar la cantidad de preguntas a cada área
+                        this.areas = resp.map((area) => ({
+                            ...area, // Mantener la estructura del área
+                            cantidadPreguntas: area.conteo || 0, // Asignar la cantidad de preguntas
+                        }))
+                        console.log(
+                            'Áreas con cantidad de preguntas:',
+                            this.areas
+                        )
+                        this.cdr.detectChanges() // Forzar detección de cambios
+                    } else {
+                        console.error('Respuesta inesperada:', resp)
+                    }
+                },
+                error: (err) => {
+                    console.error('Error al cargar datos:', err)
+                },
+            })
+    }
+
+    // Método para invocar la obtención de datos de las áreas
+    cargarConteoPorCurso(): void {
+        this.obtenerConteoPorCurso(
+            this.iEvaluacionIdd,
+            this.iCursosNivelGradIdd
+        )
     }
 }

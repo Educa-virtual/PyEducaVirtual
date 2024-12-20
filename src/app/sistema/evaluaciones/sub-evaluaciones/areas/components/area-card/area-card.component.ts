@@ -4,6 +4,7 @@ import {
     ChangeDetectionStrategy,
     Input,
     inject,
+    ChangeDetectorRef,
 } from '@angular/core'
 import { IArea } from '../../interfaces/area.interface'
 import { ButtonModule } from 'primeng/button'
@@ -26,6 +27,7 @@ export class AreaCardComponent {
     @Input() area: IArea
     @Input() _iEvaluacionId: number | null = null // Usamos _iEvaluacionId como input
     @Input() _nombreEvaluacion: string | null = null // Usamos _nombreEvaluacion como input
+    //@Input() cantidadPreguntas: number // Recibimos la cantidad de preguntas
     areas: any[] = []
     private _apiEre = inject(ApiEvaluacionesRService)
     private _MessageService = inject(MessageService)
@@ -43,11 +45,13 @@ export class AreaCardComponent {
         iTipoPregId: 0,
         // iEvaluacionId: 0,
     }
-    cantidadPreguntas: any
+    //cantidadPreguntas: number = 0 // Valor inicial de la cantidad de preguntas
+    @Input() cantidadPreguntas: number
     constructor(
         private router: Router,
         private compartirFormularioEvaluacionService: CompartirFormularioEvaluacionService,
-        private route: ActivatedRoute
+        private route: ActivatedRoute,
+        private cdr: ChangeDetectorRef
     ) {}
     ngOnInit(): void {
         // Verifica si el parámetro llega correctamente
@@ -68,11 +72,7 @@ export class AreaCardComponent {
             this._constantesService.nombres
         )
         this.obtenerPreguntaSeleccionada(this._iEvaluacionId)
-        this
-            .obtenerConteoPorCurso
-            // this._iEvaluacionId,
-            // this.params.iCursosNivelGradId
-            ()
+        //this.obtenerConteoPorCurso()
     }
     irABancoPreguntas(area: any): void {
         // Almacenar los datos en el servicio
@@ -217,17 +217,21 @@ export class AreaCardComponent {
     //!
     obtenerConteoPorCurso(): void {
         const iEvaluacionId = 679 // ID de evaluación de prueba
-        const iCursosNivelGradId = 2 // ID del curso/nivel de grado de prueba
+        const iCursosNivelGradId = 6 // ID del curso/nivel de grado de prueba
         this._apiEre
             .obtenerConteoPorCurso(iEvaluacionId, iCursosNivelGradId)
             .subscribe({
                 next: (resp: any) => {
-                    console.log(
-                        'Respuesta completa de la API Datos Especialistas Cursos:',
-                        resp
-                    )
+                    console.log('Respuesta completa de la API:', resp)
+                    if (Array.isArray(resp)) {
+                        const conteoCurso = resp.length
+                        console.log('Conteo de curso:', conteoCurso)
+                        this.cantidadPreguntas = conteoCurso
+                        this.cdr.detectChanges() // Forzar detección de cambios
+                    } else {
+                        console.error('Respuesta inesperada:', resp)
+                    }
                 },
-
                 error: (err) => {
                     console.error('Error al cargar datos:', err)
                 },

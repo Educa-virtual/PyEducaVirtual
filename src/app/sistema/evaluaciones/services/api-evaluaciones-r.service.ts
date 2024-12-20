@@ -206,43 +206,83 @@ export class ApiEvaluacionesRService {
             datapayload
         )
     }
-    generarPdfMatrizbyEvaluacionId(
-        _iEvaluacionIdtoMatriz: number,
-        areas: string // Cambié el nombre a 'areas'
-    ): Observable<any> {
-        console.log('Parámetros enviados al backend:', areas)
+    generarPdfMatrizbyEvaluacionId(baseParams): Observable<any> {
+        console.log('Parámetros enviados al backend:', baseParams)
         return this.http.get(
             `${this.baseUrl}/ere/Evaluaciones/generarPdfMatrizbyEvaluacionId`,
             {
                 params: {
-                    iEvaluacionId: _iEvaluacionIdtoMatriz.toString(),
-                    areas: areas, // Usa 'areas' aquí para coincidir con el nombre esperado por el backend
+                    ...baseParams,
                 },
                 responseType: 'blob' as 'json', // Asegúrate de que el responseType esté como 'blob'
             }
         )
     }
+    // obtenerEspDrem(params) {
+    //     return this.http.get(
+    //         `${this.baseUrl}/ere/Evaluaciones/obtenerEspDrem`,
 
-    obtenerEspDrem(params) {
-        return this.http.get(
-            `${this.baseUrl}/ere/Evaluaciones/obtenerEspDrem`,
-
-            { params }
-        )
-    }
+    //         { params }
+    //     )
+    // }
     obtenerEspDremCurso(
         iPersId: number,
         iEvaluacionId: number
     ): Observable<any> {
         const params = { iPersId, iEvaluacionId } // Enviar el iPersId como parámetro
-        console.log('Parámetros enviados al backend:', params)
+        //console.log('Parámetros enviados al backend:', params)
         return this.http.get(
             `${this.baseUrl}/ere/Evaluaciones/obtenerEspDremCurso`,
             { params }
         )
     }
+    //!
+    obtenerConteoPorCurso(
+        iEvaluacionId: number,
+        iCursosNivelGradId: number
+    ): Observable<any> {
+        // Crear parámetros para la solicitud
+        const params = {
+            iEvaluacionId: iEvaluacionId,
+            iCursosNivelGradId: iCursosNivelGradId,
+        }
+        // Realiza la solicitud GET con los parámetros
+        return this.http.get(
+            `${this.baseUrl}/ere/Evaluaciones/obtenerConteoPorCurso`,
+            { params }
+        )
+    }
+    //!
+    insertarPreguntaSeleccionada(data) {
+        return this.http.post(
+            `${this.baseUrl}/ere/Evaluaciones/insertarPreguntaSeleccionada`,
+            data
+        )
+    }
+    obtenerPreguntaSeleccionada(iEvaluacionId: number) {
+        return this.http.get(
+            `${this.baseUrl}/ere/Evaluaciones/obtenerPreguntaSeleccionada`,
+            {
+                params: {
+                    iEvaluacionId: iEvaluacionId.toString(), // Convertir a cadena si es necesario
+                },
+            }
+        )
+    }
 
-    //Banco de Preguntas ->
+    obtenerPreguntaInformacion(iEvaluacionId: number, iPreguntaIds: string) {
+        return this.http.get(
+            `${this.baseUrl}/ere/Evaluaciones/obtenerPreguntaInformacion`,
+            {
+                params: {
+                    iEvaluacionId: iEvaluacionId.toString(), // Convertir a cadena si es necesario
+                    iPreguntaIds: iPreguntaIds.toString(), // Convertir a cadena si es necesario
+                },
+            }
+        )
+    }
+
+    //Banco de Preguntas no tocar ->
     generarWordByPreguntasIds(baseParams) {
         const url = `${this.baseUrlBackend}/generarWordBancoPreguntasSeleccionadas`
         const params = new URLSearchParams({ ...baseParams })

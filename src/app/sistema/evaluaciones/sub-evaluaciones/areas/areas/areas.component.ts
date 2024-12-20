@@ -16,7 +16,7 @@ import { ActivatedRoute } from '@angular/router'
 import { ConstantesService } from '@/app/servicios/constantes.service' //!AQUI ESTA EL USUARIO
 //import { ApiEvaluacionesRService } from '../../../../services/api-evaluaciones-r.service'
 import { ApiEvaluacionesRService } from '../../../services/api-evaluaciones-r.service'
-import { Subject, takeUntil } from 'rxjs'
+import { Subject } from 'rxjs'
 import { CompartirFormularioEvaluacionService } from '../../../services/ereEvaluaciones/compartir-formulario-evaluacion.service'
 import { CompartirIdEvaluacionService } from '../../../services/ereEvaluaciones/compartir-id-evaluacion.service'
 import { CommonModule } from '@angular/common'
@@ -55,6 +55,7 @@ export class AreasComponent implements OnInit {
     public iEvaluacionId: number | null = null // Para almacenar el ID de la evaluación.
     public nombreEvaluacion: string | null = null // Para almacenar el nombre de la evaluación.
     selectedCursoId: number | null = null // Variable para almacenar el curso seleccionado
+    preguntasSeleccionadas: any
     //@Input() _iEvaluacionId: string | null = null // Usamos _iEvaluacionId como input
     public params = {}
 
@@ -101,32 +102,10 @@ export class AreasComponent implements OnInit {
             'EVALUACION SOTRAGE:',
             this.compartirIdEvaluacionService.iEvaluacionIdStorage
         )
-        //!
-        // console.log('iEvaluacionId: ---->', this.iEvaluacionId)
-        // console.log(
-        //     'Nombre de la evaluación ----->:',
-        //     this.compartirFormularioEvaluacionService.getcEvaluacionNombre()
-        // )
-
         this.obtenerEspDremCurso()
+        this.obtenerPreguntaSeleccionada(this.iEvaluacionId)
     }
-    obtenerEspDrem(): void {
-        this._apiEre
 
-            .obtenerEspDrem(this.params)
-
-            .pipe(takeUntil(this.unsubscribe$))
-
-            .subscribe({
-                next: (resp: any) => {
-                    console.log('Respuesta completa de la API:', resp)
-                },
-
-                error: (err) => {
-                    console.error('Error al cargar datos:', err)
-                },
-            })
-    }
     obtenerEspDremCurso(): void {
         const iPersId = this.ConstantesService.iPersId // Obtén el iPersId
         const iEvaluacionId = this.compartirIdEvaluacionService.iEvaluacionId // Obtén el iEvaluacionId
@@ -151,7 +130,7 @@ export class AreasComponent implements OnInit {
                             item.cCursoDescripcion || 'Sin descripción', // Descripción del curso.
                         seccion: item.cGradoRomanos || 'Sin sección', // Ejemplo: I.
                         grado: item.cGradoAbreviacion || 'Sin grado', // Ejemplo: 1ro.
-                        totalEstudiantes: 0, // Asumimos 0 porque no viene en la API.
+                        totalEstudiantes: 0, //!Cambiar esto y que se vea las preguntas.
                         nivel: 'Primaria', // Puedes ajustarlo según tu lógica o datos de la API.
                     }))
                     // Guardar las áreas procesadas en el servicio
@@ -164,6 +143,31 @@ export class AreasComponent implements OnInit {
 
             error: (err) => {
                 console.error('Error al cargar datos:', err)
+            },
+        })
+    }
+
+    obtenerPreguntaSeleccionada(iEvaluacionId: number) {
+        if (!iEvaluacionId || iEvaluacionId < 0) {
+            console.error(
+                'El parámetro iEvaluacionIdS no está definido o es inválido'
+            )
+            return
+        }
+        this._apiEre.obtenerPreguntaSeleccionada(iEvaluacionId).subscribe({
+            next: (data) => {
+                console.log('Preguntas seleccionadas:', data)
+                this.preguntasSeleccionadas = data // Guardamos las preguntas en una variable
+                console.log(
+                    'Datos completos de banco de preguntas:',
+                    this.preguntasSeleccionadas
+                )
+            },
+            error: (error) => {
+                console.error(
+                    'Error al obtener las preguntas seleccionadas:',
+                    error
+                )
             },
         })
     }

@@ -1,4 +1,11 @@
-import { Component, EventEmitter, inject, OnDestroy, OnInit, Output } from '@angular/core'
+import {
+    Component,
+    EventEmitter,
+    inject,
+    OnDestroy,
+    OnInit,
+    Output,
+} from '@angular/core'
 import { AccordionModule } from 'primeng/accordion'
 import { CommonModule } from '@angular/common'
 import { ActivatedRoute } from '@angular/router'
@@ -8,6 +15,7 @@ import { MenuModule } from 'primeng/menu'
 import { MenuItem } from 'primeng/api'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { CommunicationService } from '@/app/servicios/communication.service'
+import { DOCENTE } from '@/app/servicios/perfilesConstantes'
 
 @Component({
     selector: 'app-rubrica-evaluacion',
@@ -26,12 +34,15 @@ export class RubricaEvaluacionComponent implements OnInit, OnDestroy {
                     label: 'Eliminar',
                     icon: 'pi pi-trash',
                     command: () => this.deleteRubricaEvaluacion(),
-                    visible: this.constantesService.iPerfilId == 7 ? true : false
+                    visible:
+                        this.constantesService.iPerfilId == DOCENTE
+                            ? true
+                            : false,
                 },
                 {
                     label: 'Descargar',
                     icon: 'pi pi-download',
-                    command: () => this.communicationService.requestPrint()
+                    command: () => this.communicationService.requestPrint(),
                 },
             ],
         },
@@ -51,13 +62,12 @@ export class RubricaEvaluacionComponent implements OnInit, OnDestroy {
 
     private _evaluacionApiService = inject(ApiEvaluacionesService)
 
-    constructor(private route: ActivatedRoute,
+    constructor(
+        private route: ActivatedRoute,
         private constantesService: ConstantesService
-    
     ) {}
 
     ngOnInit(): void {
-
         console.log('constantesService')
         console.log(this.constantesService)
 
@@ -68,13 +78,11 @@ export class RubricaEvaluacionComponent implements OnInit, OnDestroy {
         })
     }
 
-    downloadRubrica(){
-
-    }
+    downloadRubrica() {}
     isMenuVisible(): boolean {
-        return this.items.some(group =>
-            group.items?.some(item => item.visible !== false)
-        );
+        return this.items.some((group) =>
+            group.items?.some((item) => item.visible !== false)
+        )
     }
     deleteRubricaEvaluacion() {
         if (this.params?.iEvaluacionId) {
@@ -88,7 +96,6 @@ export class RubricaEvaluacionComponent implements OnInit, OnDestroy {
                     },
                 })
         }
-        
     }
 
     getRubrica() {

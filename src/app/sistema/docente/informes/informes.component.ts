@@ -1,5 +1,5 @@
-import { Component, OnInit, inject, Input } from '@angular/core'
 import { CommonModule } from '@angular/common'
+import { Component, OnInit, inject, Input } from '@angular/core'
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import {
     TablePrimengComponent,
@@ -34,14 +34,22 @@ import { IconFieldModule } from 'primeng/iconfield'
 import { ButtonModule } from 'primeng/button'
 // nueva importaciones:
 import { OrderListModule } from 'primeng/orderlist'
-//import { Message, MessageService } from 'primeng/api'
 import { ApiAulaService } from '../../aula-virtual/services/api-aula.service'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { EditorModule } from 'primeng/editor'
 import { RemoveHTMLPipe } from '@/app/shared/pipes/remove-html.pipe'
 import { CursoDetalleComponent } from '../../aula-virtual/sub-modulos/cursos/curso-detalle/curso-detalle.component'
 import { ActivatedRoute } from '@angular/router'
-
+import {
+    FormBuilder,
+    FormGroup,
+    FormsModule,
+    ReactiveFormsModule,
+    Validators,
+} from '@angular/forms'
+import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
+import { Message, MessageService } from 'primeng/api'
+import { ToastModule } from 'primeng/toast'
 @Component({
     selector: 'app-informes',
     standalone: true,
@@ -49,6 +57,7 @@ import { ActivatedRoute } from '@angular/router'
     styleUrls: ['./informes.component.scss'],
     imports: [
         ContainerPageComponent,
+        ToastModule,
         CommonModule,
         EditorModule,
         TabViewModule,
@@ -67,6 +76,8 @@ import { ActivatedRoute } from '@angular/router'
         RemoveHTMLPipe,
         TablePrimengComponent,
         CursoDetalleComponent,
+        FormsModule,
+        ReactiveFormsModule,
     ],
     providers: [
         provideIcons({
@@ -81,14 +92,10 @@ import { ActivatedRoute } from '@angular/router'
     ],
 })
 export class InformesComponent implements OnInit {
-    //@Input() idDocCursoId
     private _aulaService = inject(ApiAulaService)
-    //private _activatedRoute = inject(ActivatedRoute)
-    // listenParams() {
-    // this.idDocCursoId =
-    //         this._activatedRoute.snapshot.queryParams['idDocCursoId']
+    private _formBuilder = inject(FormBuilder)
+    private _confirmService = inject(ConfirmationModalService)
 
-    // }
     @Input() actionses: IActionContainer[] = [
         {
             labelTooltip: 'Descargar Pdf',
@@ -97,23 +104,24 @@ export class InformesComponent implements OnInit {
             accion: 'descargar_pdf',
             class: 'p-button-danger',
         },
-        // {
-        //     labelTooltip: 'Descargar Excel',
-        //     text: 'Reporte Excel',
-        //     icon: 'pi pi-download',
-        //     accion: 'Descargar_Excel',
-        //     class: 'p-button-success',
-        // },
     ]
     idDocCursoId: any[] = []
     perfil: any[] = []
     curso: any[] = []
     notaEstudianteSelect: any[] = []
+    estudianteSelect: any[] = []
+    messages: Message[] | undefined
+
     public estudianteMatriculadosxGrado = []
+
+    public conclusionDescrpFinal: FormGroup = this._formBuilder.group({
+        conclusionDescripFinal: ['', [Validators.required]],
+    })
 
     constructor(
         private store: LocalStoreService,
-        private _activatedRoute: ActivatedRoute
+        private _activatedRoute: ActivatedRoute,
+        private messageService: MessageService
     ) {
         this.perfil = this.store.getItem('dremoPerfil')
         //para obtener el idDocCursoId
@@ -161,7 +169,14 @@ export class InformesComponent implements OnInit {
             text_header: 'center',
             text: 'center',
         },
-
+        {
+            type: 'text',
+            width: '10rem',
+            field: 'iPromedio',
+            header: 'Promedio Final',
+            text_header: 'center',
+            text: 'center',
+        },
         {
             type: 'text',
             width: '10rem',
@@ -179,7 +194,6 @@ export class InformesComponent implements OnInit {
         //     text: 'center',
         // },
     ]
-
     ngOnInit() {
         this.obtenerEstudianteXCurso()
     }
@@ -212,6 +226,7 @@ export class InformesComponent implements OnInit {
     }
     obtenerCursoEstudiante(estudiante) {
         this.notaEstudianteSelect = estudiante.Estudiante
+        this.estudianteSelect = estudiante
         const id = estudiante.iEstudianteId
         const filteredData = this.estudianteMatriculadosxGrado.filter(
             (item) => item.iEstudianteId === id
@@ -249,5 +264,84 @@ export class InformesComponent implements OnInit {
                 link.download = 'Reporte_logros' + '.pdf' // Nombre del archivo descargado
                 link.click()
             })
+    }
+    // metodo para limpiar las etiquetas
+    limpiarHTML(html: string): string {
+        const temporal = document.createElement('div') // Crear un div temporal
+        temporal.innerHTML = html // Insertar el HTML
+        return temporal.textContent || '' // Obtener solo el texto
+    }
+    //guardar conclusion descriptiva final de año
+    guardarPromedioDeLogroAlcanzado() {
+        const conclusionDescrp = this.conclusionDescrpFinal.value
+        const nombre = this.estudianteSelect['Estudiante']
+        const conclusionDescrpLimpia = this.limpiarHTML(
+            conclusionDescrp.conclusionDescripFinal
+        )
+
+        if (!this.estudianteSelect || this.estudianteSelect.length === 0) {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Seleccione un estudiante:',
+            })
+        }
+        const idMtricula = this.estudianteSelect['iMatrId']
+        const where = [
+            {
+                COLUMN_NAME: 'iMatrId',
+                VALUE: idMtricula,
+            },
+        ]
+
+        const registro: any = {
+            cMatrConclusionDescriptiva: conclusionDescrpLimpia,
+        }
+
+        if (conclusionDescrpLimpia == '') {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Tiene que agregar una conclusión descriptiva final',
+            })
+        } else {
+            this._confirmService.openConfiSave({
+                message: 'Recuerde que no podra retroceder',
+                header: `¿Esta seguro que desea guardar conclusión descriptiva a: ${nombre} ?`,
+                accept: () => {
+                    this._aulaService
+                        .guardarCalificacionEstudiante(
+                            'acad',
+                            'matricula',
+                            where,
+                            registro
+                        )
+                        .subscribe({
+                            next: (response) => {
+                                //this.obtenerReporteDenotasFinales()
+                                //this.mostrarModalConclusionDesc = false
+                                console.log('actualizar:', response)
+                                this.messageService.add({
+                                    severity: 'success',
+                                    summary: 'Éxito',
+                                    detail: 'Calificación guardada correctamente.',
+                                })
+                            },
+                            error: (error) => {
+                                console.log('Error en la actualización:', error)
+                            },
+                        })
+                    this.conclusionDescrpFinal.reset()
+                },
+                reject: () => {
+                    // Mensaje de cancelación (opcional)
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Cancelado',
+                        detail: 'Acción cancelada',
+                    })
+                },
+            })
+        }
     }
 }

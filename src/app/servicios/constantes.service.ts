@@ -1,5 +1,15 @@
 import { Injectable } from '@angular/core'
 import { LocalStoreService } from './local-store.service'
+import {
+    ADMINISTRADOR,
+    DIRECTOR_IE,
+    DOCENTE,
+    ESPECIALISTA_DREMO,
+    ESPECIALISTA_UGEL,
+    ESTUDIANTE,
+    JEFE_DE_PROGRAMA,
+    SUBDIRECTOR_IE,
+} from './perfilesConstantes'
 
 const store = new LocalStoreService()
 // const modulo = store.getItem('dremoModulo')
@@ -766,21 +776,21 @@ export class ConstantesService {
         if (!perfil) return first
         //console.log('perfiles', perfil)
         switch (Number(perfil.iPerfilId)) {
-            case 1:
+            case ADMINISTRADOR:
                 return administrador
-            case 2:
+            case ESPECIALISTA_DREMO:
                 return notas_evaluaciones
-            case 3:
+            case ESPECIALISTA_UGEL:
                 return notas_evaluaciones
-            case 8:
+            case ESTUDIANTE:
                 return estudiante
-            case 5:
+            case SUBDIRECTOR_IE:
                 return registro_asistencia
-            case 6:
+            case JEFE_DE_PROGRAMA:
                 return jefe_programa
-            case 7:
+            case DOCENTE:
                 return docente
-            case 4:
+            case DIRECTOR_IE:
                 return administracion
             default:
                 return first

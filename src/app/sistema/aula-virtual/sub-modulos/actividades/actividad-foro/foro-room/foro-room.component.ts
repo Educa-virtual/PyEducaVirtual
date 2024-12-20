@@ -29,6 +29,7 @@ import { EmptySectionComponent } from '@/app/shared/components/empty-section/emp
 import { Message } from 'primeng/api'
 import { WebsocketService } from '@/app/sistema/aula-virtual/services/websoket.service'
 import { TimeComponent } from '@/app/shared/time/time.component'
+import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
 //import { Toast } from 'primeng/toast';
 @Component({
     selector: 'app-foro-room',
@@ -64,6 +65,8 @@ import { TimeComponent } from '@/app/shared/time/time.component'
 export class ForoRoomComponent implements OnInit {
     @Input() ixActivadadId: string
     @Input() iActTopId: tipoActividadesKeys
+    public DOCENTE = DOCENTE
+    public ESTUDIANTE = ESTUDIANTE
 
     private GeneralService = inject(GeneralService)
     private _formBuilder = inject(FormBuilder)

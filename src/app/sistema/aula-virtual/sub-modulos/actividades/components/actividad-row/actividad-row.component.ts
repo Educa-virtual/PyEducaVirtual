@@ -15,6 +15,7 @@ import { MenuItem } from 'primeng/api'
 import { PrimengModule } from '@/app/primeng.module'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { IsIconTypePipe } from '@/app/shared/pipes/is-icon-type.pipe'
+import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
 
 @Component({
     selector: 'app-actividad-row',
@@ -40,6 +41,8 @@ export class ActividadRowComponent implements OnInit {
 
     private _constantesService = inject(ConstantesService)
     iPerfilId: number = null
+    public DOCENTE = DOCENTE
+    public ESTUDIANTE = ESTUDIANTE
     ngOnInit() {
         this.iPerfilId = this._constantesService.iPerfilId
     }

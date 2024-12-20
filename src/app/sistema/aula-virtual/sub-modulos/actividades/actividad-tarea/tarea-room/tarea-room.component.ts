@@ -21,6 +21,7 @@ import { ConfirmationService, MessageService } from 'primeng/api'
 import { RecursosListaComponent } from '../../../../../../shared/components/recursos-lista/recursos-lista.component'
 import { Table } from 'primeng/table'
 import { ScrollerModule } from 'primeng/scroller'
+import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
 
 @Component({
     selector: 'app-tarea-room',
@@ -54,6 +55,9 @@ export class TareaRoomComponent implements OnChanges, OnInit {
     students: any
 
     iPerfilId: number
+    public DOCENTE = DOCENTE
+    public ESTUDIANTE = ESTUDIANTE
+
     formTareas: any
     constructor(
         private messageService: MessageService,
@@ -70,7 +74,7 @@ export class TareaRoomComponent implements OnChanges, OnInit {
 
     ngOnInit() {
         this.iPerfilId = this._constantesService.iPerfilId
-        if (Number(this.iPerfilId) == 8) {
+        if (Number(this.iPerfilId) == ESTUDIANTE) {
             this.obtenerTareaxiTareaidxiEstudianteId()
         } else {
             this.obtenerEscalaCalificaciones()

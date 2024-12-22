@@ -64,7 +64,7 @@ export class RubricaCalificarComponent implements OnInit, OnDestroy {
         if (this.route.queryParams['_value'].iEvaluacionId) {
             this.params.iEvaluacionId =
                 this.route.queryParams['_value'].iEvaluacionId
-            this.params.iEvaluacionId =
+            this.params.iEstudianteId =
                 this.route.queryParams['_value']?.iEstudianteId ?? undefined
         }
         this.route.queryParamMap.subscribe((params) => {
@@ -196,11 +196,12 @@ export class RubricaCalificarComponent implements OnInit, OnDestroy {
 
         if (this.params?.iEvaluacionId) {
 
-            await firstValueFrom(this.httpService.postData('evaluaciones/evaluacion/guardarActualizarCalificacionRubricaEvaluacion', data[1])) 
+            await firstValueFrom(this.httpService.postData('evaluaciones/evaluacion/guardarActualizarCalificacionRubricaEvaluacion', {
+                ...this.params,
+                ...data[1],
+            })) 
             
-            const rubri = await firstValueFrom(this.httpService.postData('evaluaciones/instrumento-evaluaciones/obtenerRubricaEvaluacion', this.params))
-
-            console.log(rubri)
+            this.data =  (await firstValueFrom(this.httpService.getData('evaluaciones/instrumento-evaluaciones/obtenerRubricaEvaluacion', this.params))).data[0]
 
         }
     }

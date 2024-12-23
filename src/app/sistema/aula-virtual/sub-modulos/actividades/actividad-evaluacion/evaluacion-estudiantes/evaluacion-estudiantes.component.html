@@ -15,7 +15,7 @@
     </div>
 </div>
 
-<div class="grid">
+<div class="grid m-2">
     <div *ngIf="iPreguntaId === 0">
         <!-- Contenido inicial de la evaluación -->
         <div class="grid">
@@ -77,7 +77,7 @@
                     <div class="col-12 text-center mt-4">
                         <p class="font-medium text-sm text-secondary">
                             <span style="font-size: 18px"
-                                >Total preguntas:</span
+                                >Total Alternativas:</span
                             >
                             <span class="font-bold">
                                 <p-badge
@@ -134,7 +134,9 @@
                                 }"
                                 [maximizable]="true"
                             >
-                                <app-rubrica-calificar></app-rubrica-calificar>
+                                <app-rubrica-calificar
+                                    [enableViewSelections]="true"
+                                ></app-rubrica-calificar>
                             </p-dialog>
                         </div>
                     </p-panel>
@@ -186,7 +188,7 @@
                     <p class="font-bold">Pregunta {{ iPreguntaId }}</p>
                 </div>
                 <div class="col-12">
-                    <div [innerHTML]="itemPreguntas['cPregunta']"></div>
+                    <div [innerHTML]="itemPreguntas['cBancoPregunta']"></div>
                 </div>
                 @switch (itemPreguntas['iTipoPregId']) {
                     @case (1) {
@@ -218,13 +220,25 @@
                                     &nbsp;&nbsp;
                                     <div
                                         [innerHTML]="
-                                            alternativa[
-                                                'cAlternativaDescripcion'
-                                            ]
+                                            alternativa['cBancoAltDescripcion']
                                         "
                                     ></div>
                                 </div>
                             </div>
+                        </div>
+
+                        <div
+                            class="col-12 mt-3"
+                            *ngIf="itemPreguntas['cBancoTextoAyuda']"
+                        >
+                            <p-message
+                                styleClass="w-full"
+                                severity="info"
+                                [text]="
+                                    'Texto de ayuda: ' +
+                                    itemPreguntas['cBancoTextoAyuda']
+                                "
+                            ></p-message>
                         </div>
                     }
                     @case (2) {
@@ -254,13 +268,24 @@
                                     &nbsp;&nbsp;
                                     <div
                                         [innerHTML]="
-                                            alternativa[
-                                                'cAlternativaDescripcion'
-                                            ]
+                                            alternativa['cBancoAltDescripcion']
                                         "
                                     ></div>
                                 </div>
                             </div>
+                        </div>
+                        <div
+                            class="col-12 mt-3"
+                            *ngIf="itemPreguntas['cBancoTextoAyuda']"
+                        >
+                            <p-message
+                                styleClass="w-full"
+                                severity="info"
+                                [text]="
+                                    'Texto de ayuda: ' +
+                                    itemPreguntas['cBancoTextoAyuda']
+                                "
+                            ></p-message>
                         </div>
                     }
                     @case (3) {
@@ -295,7 +320,7 @@
                 <div class="col-6 grid">
                     @for (item of itemPreguntas['preguntas']; track item.id) {
                         <div class="col-12">
-                            <div [innerHTML]="item['cPregunta']"></div>
+                            <div [innerHTML]="item['cBancoPregunta']"></div>
                         </div>
 
                         @switch (item['iTipoPregId']) {
@@ -331,7 +356,7 @@
                                             <div
                                                 [innerHTML]="
                                                     alternativa[
-                                                        'cAlternativaDescripcion'
+                                                        'cBancoAltDescripcion'
                                                     ]
                                                 "
                                             ></div>
@@ -370,7 +395,7 @@
                                             <div
                                                 [innerHTML]="
                                                     alternativa[
-                                                        'cAlternativaDescripcion'
+                                                        'cBancoAltDescripcion'
                                                     ]
                                                 "
                                             ></div>

@@ -75,7 +75,7 @@ export class FormEvaluacionComponent implements OnChanges {
     formEvaluacion = this._FormBuilder.group({
         opcion: [''],
         iEvaluacionId: [],
-        iTipoEvalId: [],
+        iTipoEvalId: [1],
         iInstrumentoId: [],
         iEscalaCalifId: [],
         iDocenteId: [0, Validators.required],
@@ -92,7 +92,14 @@ export class FormEvaluacionComponent implements OnChanges {
         cEvaluacionArchivoAdjunto: [],
 
         dtInicio: [this.date],
-        dtFin: [this.date],
+        dtFin: [
+            new Date(
+                this.ajustarAHorarioDeMediaHora(new Date()).setHours(
+                    this.date.getHours() + 1
+                )
+            ),
+            Validators.required,
+        ],
 
         dFechaEvaluacionPublicacion: [],
         dFechaEvaluacionInico: [this.date],
@@ -101,8 +108,8 @@ export class FormEvaluacionComponent implements OnChanges {
         tHoraEvaluacionInico: [],
         tHoraEvaluacionFin: [],
 
-        fechaInicio: [],
-        fechaFin: [],
+        // fechaInicio: [],
+        // fechaFin: [],
 
         //TABLA: PROGRACION_ACTIVIDADES
         iProgActId: [],

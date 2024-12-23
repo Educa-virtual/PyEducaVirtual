@@ -1,5 +1,5 @@
 <div class="grid">
-    <div class="col-12 md:col-3">
+    <div class="col-12 md:col-4">
         <div class="card mb-2">
             <div class="text-primary font-bold">Información General</div>
             <p>
@@ -24,7 +24,7 @@
             </ul>
             <!-- <p><strong>N° Estudiantes:</strong> 12</p> -->
         </div>
-        <p-accordion
+        <!-- <p-accordion
             [multiple]="false"
             expandIcon="pi pi-angle-right"
             collapseIcon="pi pi-angle-down"
@@ -40,13 +40,13 @@
                     </div>
                 </ng-template>
 
-                <!-- <div class="flex justify-content-between gap-2 flex-column sm:flex-row flex-wrap">
+                <div class="flex justify-content-between gap-2 flex-column sm:flex-row flex-wrap">
                         <p-iconField iconPosition="left">
                             <p-inputIcon styleClass="pi pi-search text-md" />
                             <input pInputText type="text" class="py-2" placeholder="Buscar" />
                         </p-iconField>
-                    </div> -->
-                <!-- <div class="mt-1"></div> -->
+                    </div>
+                <div class="mt-1"></div>
                 <p-table class="hoverTable" [value]="data" [scrollable]="true">
                     <ng-template pTemplate="header">
                         <tr>
@@ -68,16 +68,36 @@
                     </ng-template>
                 </p-table>
             </p-accordionTab>
-        </p-accordion>
+        </p-accordion> -->
     </div>
 
-    <div class="col-12 md:col-9">
+    <div class="col-12 md:col-8">
         <div class="card">
-            <label for="cTareaDescripcion" class="font-bold"
+            <div class="col-12">
+                <label
+                    for=""
+                    class=""
+                    style="font-weight: bold; font-size: 16px"
+                >
+                    Anuncia algo aquí Para toda la clase
+                </label>
+            </div>
+            <!-- <label for="cTareaDescripcion" class="font-bold"
                 >Anuncia algo aquí Para toda la clase</label
+            > -->
+            <!-- <div class="mt-2"></div> -->
+            <p-toast></p-toast>
+            <form
+                [formGroup]="guardarPublicacion"
+                class="flex flex-column gap-3 w-full"
             >
-            <div class="mt-2"></div>
-            <p-editor id="cTareaDescripcion"></p-editor>
+                <p-editor
+                    id="cTareaDescripcion"
+                    placeholder="Agregar un comentario para los estudiantes..."
+                    formControlName="cForoDescripcion"
+                ></p-editor>
+            </form>
+
             <br />
             <button
                 pButton
@@ -98,7 +118,88 @@
                 label="Publicar"
                 icon="pi pi-users"
                 class="p-button-success"
+                (click)="guardarPublicacionDocente()"
             ></button>
         </div>
+    </div>
+    <div class="card col-12">
+        <div class="col-12 pb-2">
+            <label for="" class="" style="font-weight: bold; font-size: 16px">
+                Anuncios del curso:
+            </label>
+        </div>
+        <p-orderList class="listAlumno" [value]="anunciosDocente">
+            <ng-template
+                let-respuestas
+                of
+                comentarios
+                pTemplate="listItem"
+                let-i="index"
+            >
+                <!-- Agregar el length -->
+                @if (1 > 0) {
+                    <p-button
+                        [text]="true"
+                        severity="secondary"
+                        class="btnContorno"
+                    >
+                        <div class="perfiles-list-item text-left" tabindex="0">
+                            <div class="perfiles-list-detail">
+                                <div class="flex">
+                                    <div>
+                                        <img
+                                            src="assets/demo/images/matemit/user.png"
+                                            [alt]="respuestas.name"
+                                            class="w-3rem min-h-9 shadow-2 flex-shrink-0 btn"
+                                        />
+                                    </div>
+                                    <div>
+                                        <div class="pb-2 perfil-name">
+                                            <span class="user-name">
+                                                {{ respuestas.cNombres }}
+                                                {{
+                                                    respuestas?.dtCreado
+                                                        | date: 'short'
+                                                }}
+                                            </span>
+                                        </div>
+                                        <div
+                                            class=""
+                                            style="text-align: justify"
+                                        >
+                                            <span *ngIf="!respuestas.expanded">
+                                                {{
+                                                    respuestas?.cForoDescripcion
+                                                        | slice: 0 : 150
+                                                }}...
+                                            </span>
+
+                                            <!-- Para Leer mas.. -->
+                                            <button
+                                                (click)="
+                                                    toggleExpand(respuestas)
+                                                "
+                                                class="toggle-link"
+                                            >
+                                                {{
+                                                    respuestas.expanded
+                                                        ? 'Leer menos'
+                                                        : 'Leer más'
+                                                }}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </p-button>
+                } @else {
+                    <!-- <app-empty-section
+                        class="w-full"
+                        [message]="'Ningun Comentario'"
+                    ></app-empty-section> -->
+                }
+            </ng-template>
+        </p-orderList>
     </div>
 </div>

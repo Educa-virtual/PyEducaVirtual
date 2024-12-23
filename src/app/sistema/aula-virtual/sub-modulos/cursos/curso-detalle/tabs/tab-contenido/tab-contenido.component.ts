@@ -150,6 +150,7 @@ export class TabContenidoComponent implements OnInit {
         this._aulaService
             .contenidoSemanasProgramacionActividades({
                 iSilaboId: this._iSilaboId,
+                perfil: this.iPerfilId === DOCENTE ? 'DOCENTE' : 'ESTUDIANTE',
             })
             .pipe(takeUntil(this._unsubscribe$))
             .subscribe({
@@ -467,6 +468,7 @@ export class TabContenidoComponent implements OnInit {
                     [
                         '../',
                         'actividad',
+                        actividad.iProgActId,
                         actividad.ixActivadadId,
                         actividad.iActTipoId,
                     ],
@@ -476,6 +478,8 @@ export class TabContenidoComponent implements OnInit {
                                 this.actividadSelected['iEvaluacionId'],
                             iCursoId: this.iCursoId,
                             idDocCursoId: this.idDocCursoId,
+                            iEstudianteId: this._constantesService.iEstudianteId ?? undefined
+
                         },
                         relativeTo: this._activatedRoute,
                     }

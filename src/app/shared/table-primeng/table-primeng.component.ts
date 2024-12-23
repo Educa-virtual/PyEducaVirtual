@@ -1,4 +1,5 @@
 import { PrimengModule } from '@/app/primeng.module'
+import { ChangeDetectionStrategy } from "@angular/core";  
 import {
     Component,
     Output,
@@ -53,6 +54,7 @@ export interface IActionTable {
 }
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'app-table-primeng',
     templateUrl: './table-primeng.component.html',
     styleUrls: ['./table-primeng.component.scss'],
@@ -234,6 +236,7 @@ export class TablePrimengComponent implements OnChanges, OnInit {
 
     ngOnInit() {
         this.columnasSeleccionadas = this.columnas
+        this.selectedCells = {}
     }
 
     ngOnChanges(changes) {
@@ -273,22 +276,41 @@ export class TablePrimengComponent implements OnChanges, OnInit {
 
     @Output() selectedColumn = new EventEmitter()
 
-    selectCell(col: any, field: string, row): void {
-        this.selectedColumn.emit([col, {
-            iCriterioId: row.values[col.field].iCriterioId,
-            iNivelEvaId: row.values[col.field].iNivelEvaId,
-            logros: row.values[col.field].logros,
-            row: row
-        }])
+    findNivelLogroId(obj) {
+        for (const key in obj) {
+            if (obj[key]?.logros) {
+                const logro = obj[key].logros.find(logro => logro.iNivelLogroAlcId !== undefined);
+                if (logro) {
+                    return logro.iNivelLogroAlcId;
+                }
+            }
+        }
+        return null; // Si no se encuentra ningún id
+    }
+    
 
+    selectCell(col: any, field: string, row: any): void {
+        const nivelEvaId = row.values?.[field]?.iNivelEvaId;
+    
+        this.selectedColumn.emit([
+            col,
+            {
+                iCriterioId: row.values?.[field]?.iCriterioId,
+                iNivelEvaId: nivelEvaId,
+                iNivelLogroAlcId: this.findNivelLogroId(row.values),
+
+            },
+        ]);
+    
         // Si la celda seleccionada es la misma, la deseleccionamos
-        if (this.selectedCells[row.values[col.field].iNivelEvaId] === field) {
-            delete this.selectedCells[row.values[col.field].iNivelEvaId]
+        if (this.selectedCells[nivelEvaId] === field) {
+            delete this.selectedCells[nivelEvaId];
         } else {
             this.selectedCells = {}
-            this.selectedCells[row.values[col.field].iNivelEvaId] = field // Asignar nueva celda seleccionada
+            this.selectedCells[nivelEvaId] = field; // Asignar nueva celda seleccionada
         }
     }
+    
 
     selectRow(row: any, field: string): void {
         this.selectedColumn.emit(row)
@@ -297,11 +319,32 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     selectedCells: { [rowId: string]: string } = {};
 
     @Input() enableCellSelection
+    @Input() enableViewSelections
     @Input() showSortIcon = true
 
-    isCellSelected(rowId: any) {
-        return this.selectedCells?.hasOwnProperty(rowId)
+    firstLoadRubrica = true
+
+    isCellSelected(rowData: any, field: string): boolean {
+
+        console.log('selected estudiante')
+
+        const iNivelEvaId = rowData.values?.[field]?.iNivelEvaId;
+
+        if (rowData.values?.[field]?.logros != null && !this.selectedCells[iNivelEvaId]) {
+            this.selectedCells[iNivelEvaId] = field;
+    
+        }    
+        return this.selectedCells.hasOwnProperty(iNivelEvaId);
     }
+
+    isFirstCellSelected(rowData: any, field: string): boolean {
+        const iNivelEvaId = rowData.values?.[field]?.iNivelEvaId;
+
+
+        return this.selectedCells.hasOwnProperty(iNivelEvaId);
+    }
+    
+    
 
     openFile(item) {
         switch (Number(item.type)) {

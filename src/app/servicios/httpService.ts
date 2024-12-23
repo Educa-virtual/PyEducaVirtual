@@ -11,8 +11,10 @@ export class httpService {
 
     constructor(private http: HttpClient) {}
 
-    getData(endpoint: string): Observable<any> {
-        return this.http.get(`${this.apiURL}/${endpoint}`)
+    getData(endpoint: string, params?: { [key: string]: any }): Observable<any> {
+        return this.http.get(`${this.apiURL}/${endpoint}`, {
+            params
+        })
     }
 
     postData(endpoint: string, data: any): Observable<any> {

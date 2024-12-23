@@ -13,10 +13,11 @@ import {
     IColumn,
     TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component'
-import { Subject, Subscription, takeUntil } from 'rxjs'
+import { firstValueFrom, Subject, Subscription, takeUntil } from 'rxjs'
 import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-evaluaciones.service'
 import { ActivatedRoute } from '@angular/router'
 import { CommunicationService } from '@/app/servicios/communication.service'
+import { httpService } from '@/app/servicios/httpService'
 
 @Component({
     selector: 'app-rubrica-calificar',
@@ -28,38 +29,15 @@ import { CommunicationService } from '@/app/servicios/communication.service'
 })
 export class RubricaCalificarComponent implements OnInit, OnDestroy {
     @Input() enableCellSelection = false
-    columns: IColumn[] = [
-        {
-            type: 'text',
-            width: '5rem',
-            field: 'cCriterioNombre',
-            header: 'Nivel 1',
-            text_header: 'left',
-            text: 'left',
-        },
-        {
-            type: 'text',
-            width: '5rem',
-            field: 'cNivel2',
-            header: 'Nivel 2',
-            text_header: 'left',
-            text: 'left',
-        },
-        {
-            type: 'text',
-            width: '5rem',
-            field: 'cNivel3',
-            header: 'Nivel 3',
-            text_header: 'left',
-            text: 'left',
-        },
-    ]
+    @Input() enableViewSelections = false
+    columns: IColumn[] = []
 
     rubrica
 
     @Input() showSortIcon = false
     params = {
         iEvaluacionId: undefined,
+        iEstudianteId: undefined,
     }
     data
 
@@ -74,7 +52,8 @@ export class RubricaCalificarComponent implements OnInit, OnDestroy {
 
     constructor(
         private route: ActivatedRoute,
-        private communicationService: CommunicationService
+        private communicationService: CommunicationService,
+        private httpService: httpService
     ) {
         this.printSubscription =
             this.communicationService.printRequest$.subscribe(() =>
@@ -86,10 +65,12 @@ export class RubricaCalificarComponent implements OnInit, OnDestroy {
         if (this.route.queryParams['_value'].iEvaluacionId) {
             this.params.iEvaluacionId =
                 this.route.queryParams['_value'].iEvaluacionId
-            this.getRubrica()
+            this.params.iEstudianteId =
+                this.route.queryParams['_value']?.iEstudianteId ?? undefined
         }
         this.route.queryParamMap.subscribe((params) => {
             this.params.iEvaluacionId = params.get('iEvaluacionId')
+            this.params.iEstudianteId = params.get('iEstudianteId') ?? undefined
             this.getRubrica()
         })
     }
@@ -164,6 +145,19 @@ export class RubricaCalificarComponent implements OnInit, OnDestroy {
     structuredColumns(niveles: Array<any>) {
         let columns = []
 
+        if(!Array.isArray(niveles)){
+            return [
+                {
+                    type: 'text',
+                    width: '5rem',
+                    field: 'n/a',
+                    header: `Sin niveles`,
+                    text_header: 'left',
+                    text: 'left',
+                }
+            ]
+        }
+
         niveles.forEach((nivel, index) => {
             columns.push({
                 type: 'text',
@@ -179,12 +173,21 @@ export class RubricaCalificarComponent implements OnInit, OnDestroy {
     }
 
     structuredRows(niveles: Array<any>) {
+
+        if(!Array.isArray(niveles)){
+            return [
+                {
+                    'n/a': 'Sin niveles existentes',
+                }
+            ]
+        }
+
+
         const nivelesMap = niveles.map((nivel, index) => ({
             [`cNivelEvaDescripcion${index}`]: nivel.cNivelEvaDescripcion,
             iNivelEvaId: nivel.iNivelEvaId,
             iCriterioId: nivel.iCriterioId,
             logros: nivel.logros,
-
         }))
 
         const merged = nivelesMap.reduce((acc, curr, index) => {
@@ -211,8 +214,20 @@ export class RubricaCalificarComponent implements OnInit, OnDestroy {
         return [merged]
     }
 
-    selection(data) {
+    async selection(data) {
+        console.log('data')
         console.log(data)
+
+        if (this.params?.iEvaluacionId) {
+
+            await firstValueFrom(this.httpService.postData('evaluaciones/evaluacion/guardarActualizarCalificacionRubricaEvaluacion', {
+                ...this.params,
+                ...data[1],
+            })) 
+            
+            this.data =  (await firstValueFrom(this.httpService.getData('evaluaciones/instrumento-evaluaciones/obtenerRubricaEvaluacion', this.params))).data[0]
+
+        }
     }
 
     getRubrica() {

@@ -278,4 +278,18 @@ export class ApiAulaService {
             }
         )
     }
+    guardarAnucio(data) {
+        return this._http.post(
+            `${this.baseUrlApi}/aula-virtual/Anuncio/guardarAnuncio`,
+            data
+        )
+    }
+    obtenerAnunciosDocnt(params: { iForoCatId; iDocenteId }) {
+        return this._http.get(
+            `${this.baseUrlApi}/aula-virtual/Anuncio/obtenerAnunciosXDocente`,
+            {
+                params, // Enviar los datos como parámetros
+            }
+        )
+    }
 }

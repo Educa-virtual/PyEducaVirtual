@@ -86,32 +86,7 @@ import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmatio
     ],
 })
 export class EvaluacionRoomComponent implements OnInit, OnDestroy {
-    items: MenuItem[] = [
-        {
-            label: 'Acciones',
-            items: [
-                {
-                    label: 'Editar',
-                    icon: 'pi pi-pencil',
-                },
-                {
-                    label: 'Eliminar',
-                    icon: 'pi pi-trash',
-                    command: () => {
-                        this.eliminarEvaluacionxiEvaluacionId()
-                    },
-                },
-
-                {
-                    label: 'Publicar',
-                    icon: 'pi pi-send',
-                    command: () => {
-                        this.actualizarEvaluacionxiEvaluacionId()
-                    },
-                },
-            ],
-        },
-    ]
+    items: MenuItem[] = []
     @Input() ixActivadadId: string
     @Input() iProgActId: string
     @Input() iActTopId: tipoActividadesKeys
@@ -121,6 +96,7 @@ export class EvaluacionRoomComponent implements OnInit, OnDestroy {
     private _aulaService = inject(ApiAulaService)
     private _ConstantesService = inject(ConstantesService)
     private _ConfirmationModalService = inject(ConfirmationModalService)
+    private _evalService = inject(ApiEvaluacionesService)
 
     actividad = {
         iContenidoSemId: 1,
@@ -229,6 +205,48 @@ export class EvaluacionRoomComponent implements OnInit, OnDestroy {
                     this.evaluacion = resp
                     this.cEvaluacionInstrucciones =
                         this.evaluacion.cEvaluacionDescripcion
+                    if (this.evaluacion?.iEstado === 1) {
+                        this.items = [
+                            {
+                                items: [
+                                    {
+                                        label: 'Editar',
+                                        icon: 'pi pi-pencil',
+                                    },
+                                    {
+                                        label: 'Eliminar',
+                                        icon: 'pi pi-trash',
+                                        command: () => {
+                                            this.eliminarEvaluacionxiEvaluacionId()
+                                        },
+                                    },
+
+                                    {
+                                        label: 'Publicar',
+                                        icon: 'pi pi-send',
+                                        command: () => {
+                                            this.actualizarEvaluacionxiEvaluacionId()
+                                        },
+                                    },
+                                ],
+                            },
+                        ]
+                    }
+                    if (this.evaluacion?.iEstado === 2) {
+                        this.items = [
+                            {
+                                items: [
+                                    {
+                                        label: 'Anular Publicación',
+                                        icon: 'pi pi-times',
+                                        command: () => {
+                                            this.anularEvaluacionxiEvaluacionId()
+                                        },
+                                    },
+                                ],
+                            },
+                        ]
+                    }
                 },
             })
     }
@@ -257,9 +275,58 @@ export class EvaluacionRoomComponent implements OnInit, OnDestroy {
             .subscribe({
                 next: (resp) => {
                     console.log(resp)
+                    window.history.back()
                 },
             })
     }
 
-    actualizarEvaluacionxiEvaluacionId() {}
+    actualizarEvaluacionxiEvaluacionId() {
+        this._ConfirmationModalService.openConfirm({
+            header: '¿Esta seguro de publicar la evaluación?',
+            accept: () => {
+                this.publicarEvaluacion()
+            },
+        })
+    }
+
+    publicarEvaluacion() {
+        if (this.evaluacion.iEvaluacionId) {
+            const data = {
+                iEvaluacionId: this.ixActivadadId,
+                iCursoId: this.evaluacion.iCursoId,
+                iSeccionId: this.evaluacion.iSeccionId,
+                iGradoId: this.evaluacion.iGradoId,
+                iYAcadId: this._constantesService.iYAcadId,
+                iSemAcadId: this.evaluacion.iSemAcadId,
+                iNivelGradoId: this.evaluacion.iNivelGradoId,
+                iCurrId: this.evaluacion.iCurrId,
+                iEstado: 2,
+            }
+            this._evalService.publicarEvaluacion(data).subscribe({
+                next: () => {
+                    this.obtenerEvaluacion()
+                },
+            })
+        }
+    }
+
+    anularEvaluacionxiEvaluacionId() {
+        this._ConfirmationModalService.openConfirm({
+            header: '¿Esta seguro de anular la publicación de la evaluación?',
+            accept: () => {
+                this.anularPublicacionEvaluacion({
+                    iEvaluacionId: this.ixActivadadId,
+                })
+            },
+        })
+    }
+    anularPublicacionEvaluacion({ iEvaluacionId }) {
+        this._evalService
+            .anularPublicacionEvaluacion({ iEvaluacionId })
+            .subscribe({
+                next: () => {
+                    this.obtenerEvaluacion()
+                },
+            })
+    }
 }

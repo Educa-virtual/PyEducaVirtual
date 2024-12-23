@@ -1,4 +1,9 @@
-import { IActividad } from '@/app/sistema/aula-virtual/interfaces/actividad.interface'
+import {
+    EVALUACION,
+    FORO,
+    IActividad,
+    TAREA,
+} from '@/app/sistema/aula-virtual/interfaces/actividad.interface'
 import { CommonModule } from '@angular/common'
 import {
     Component,
@@ -16,6 +21,8 @@ import { PrimengModule } from '@/app/primeng.module'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { IsIconTypePipe } from '@/app/shared/pipes/is-icon-type.pipe'
 import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
+import { Router, ActivatedRoute } from '@angular/router'
+import { DialogService } from 'primeng/dynamicdialog'
 
 @Component({
     selector: 'app-actividad-row',
@@ -39,6 +46,12 @@ export class ActividadRowComponent implements OnInit {
 
     public accionesActividad: MenuItem[] | undefined
 
+    constructor(
+        private _dialogService: DialogService,
+        private router: Router,
+        private _activatedRoute: ActivatedRoute
+    ) {}
+
     private _constantesService = inject(ConstantesService)
     iPerfilId: number = null
     public DOCENTE = DOCENTE
@@ -47,8 +60,9 @@ export class ActividadRowComponent implements OnInit {
         this.iPerfilId = this._constantesService.iPerfilId
     }
     onAction(action: string, event: Event) {
-        this.actionSelected.emit({ actividad: this.actividad, action })
-        event.stopPropagation()
+        console.log(this.actividad, action, event)
+        // this.actionSelected.emit({ actividad: this.actividad, action })
+        // event.stopPropagation()
     }
     obtenerStyleActividad(iEstadoActividad) {
         let styleActividad = ''
@@ -64,5 +78,71 @@ export class ActividadRowComponent implements OnInit {
                 break
         }
         return styleActividad
+    }
+
+    actividadSelected
+    accionSeleccionada
+    actionSelect({
+        actividad,
+        action,
+    }: {
+        actividad: IActividad
+        action: string
+    }) {
+        this.actividadSelected = actividad
+        this.accionSeleccionada = action
+
+        if (actividad.iActTipoId === TAREA) {
+            this.handleTareaAction(action, actividad)
+            return
+        }
+
+        if (actividad.iActTipoId === EVALUACION) {
+            this.handleEvaluacionAction(action, actividad)
+            return
+        }
+
+        if (actividad.iActTipoId === FORO) {
+            this.handleForoAction(action, actividad)
+            return
+        }
+    }
+    handleEvaluacionAction(action: string, actividad: IActividad) {
+        this.router.navigate(
+            [
+                '../',
+                'actividad',
+                actividad.iProgActId,
+                actividad.ixActivadadId,
+                actividad.iActTipoId,
+            ],
+            {
+                queryParams: {
+                    iEvaluacionId: this.actividadSelected['iEvaluacionId'],
+                    // iCursoId: this.iCursoId,
+                    // idDocCursoId: this.idDocCursoId,
+                },
+                relativeTo: this._activatedRoute,
+            }
+        )
+    }
+
+    handleTareaAction(action: string, actividad: IActividad) {
+        this.router.navigate([
+            'aula-virtual/areas-curriculares/' +
+                'actividad' +
+                '/' +
+                actividad.ixActivadadId +
+                '/' +
+                actividad.iActTipoId,
+        ])
+    }
+    handleForoAction(action: string, actividad: IActividad) {
+        this.router.navigate(
+            ['../', 'actividad', actividad.ixActivadadId, actividad.iActTipoId],
+            {
+                relativeTo: this._activatedRoute,
+            }
+        )
     }
 }

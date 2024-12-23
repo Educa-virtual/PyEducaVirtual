@@ -47,6 +47,7 @@
         <div
             class="flex flex-column align-items-end justify-content-center gap-2"
         >
+            <!-- @if(iPerfilId===DOCENTE){ -->
             <button
                 [rounded]="true"
                 pButton
@@ -56,6 +57,13 @@
             >
                 <i class="pi pi-ellipsis-h text-blue-500"></i>
             </button>
+            <!-- }
+            @if(iPerfilId===ESTUDIANTE){
+            <button [rounded]="true" pButton pRipple class="p-1 mx-1 p-button-rounded p-button-primary w-full"
+                label="Ver" (click)="actionSelect({actividad:actividad,action:'VER'}) ">
+                <i class="pi pi-eye"></i>&nbsp;
+            </button>
+            } -->
         </div>
     </div>
 </div>

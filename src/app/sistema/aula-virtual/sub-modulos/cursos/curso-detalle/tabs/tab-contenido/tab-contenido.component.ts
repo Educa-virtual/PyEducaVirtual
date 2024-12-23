@@ -150,6 +150,7 @@ export class TabContenidoComponent implements OnInit {
         this._aulaService
             .contenidoSemanasProgramacionActividades({
                 iSilaboId: this._iSilaboId,
+                perfil: this.iPerfilId === DOCENTE ? 'DOCENTE' : 'ESTUDIANTE',
             })
             .pipe(takeUntil(this._unsubscribe$))
             .subscribe({

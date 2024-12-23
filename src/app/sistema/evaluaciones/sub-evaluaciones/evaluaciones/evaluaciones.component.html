@@ -83,7 +83,6 @@
             </div>
 
             <!-- AUTO -->
-
             <div class="field col-12 md:col-6">
                 <p-card header="" class="custom-card">
                     <div class="card-content">
@@ -165,4 +164,40 @@
             styleClass="p-button-warning mt-3"
         />
     </ng-template>
+</p-dialog>
+
+<p-dialog
+    #dialogBancoPreguntas
+    [header]="'Evaluacion: Cursos:'"
+    [modal]="true"
+    [(visible)]="showModalCursosEre"
+    [position]="'top'"
+    [maximizable]="true"
+    [style]="{ width: '80%' }"
+>
+    @defer (when showModalCursosEre) {
+        <!-- las preguntas seleccionadas -->
+
+        <!-- <app-banco-pregunta-lista
+            [columnas]="columnasSelect"
+            [data]="data"
+            [(selectedRowData)]="selectedItems"
+            (selectedRowDataChange)="onRowSelectionChange($event)"
+            [expandedRowKeys]="expandedRowKeys"
+            [accionesTabla]="accionesTablaSelect"
+            (accionBtnItemTable)="accionBtnItemTable($event)"
+        >
+        </app-banco-pregunta-lista> -->
+    }
+    <div class="flex justify-content-end gap-2 pt-3">
+        <button
+            pButton
+            pRipple
+            label="Cancelar"
+            icon="pi pi-times"
+            class="p-button-secondary"
+            type="button"
+            size="small"
+        ></button>
+    </div>
 </p-dialog>

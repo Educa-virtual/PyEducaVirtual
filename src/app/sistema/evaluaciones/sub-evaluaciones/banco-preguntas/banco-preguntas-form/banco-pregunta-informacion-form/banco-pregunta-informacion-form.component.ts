@@ -35,17 +35,6 @@ import { InputTextModule } from 'primeng/inputtext'
     styleUrl: './banco-pregunta-informacion-form.component.scss',
 })
 export class BancoPreguntaInformacionFormComponent implements OnInit {
-    @Input() tipoPreguntas = []
-    @Input({ required: true }) controlKey = ''
-    @Input() _iEvaluacionId: string | null = null // Aquí definimos el @Input
-    @Input() padreComponente: 'AULA-VIRTUAL' | 'BANCO-PREGUNTAS'
-    @Output() payloadEmitido = new EventEmitter<any>() //Emitire el payload al Componente Padre
-    // injeccion de dependencias
-    private parentContainer = inject(ControlContainer)
-    private _apiEre = inject(ApiEvaluacionesRService)
-    formGroup!: FormGroup
-    private unsubscribe$: Subject<boolean> = new Subject()
-    public params = {}
     value: string = '' //! Vinculamos el campo de texto a esta propiedad Cambiar Value en html y aqui
     matrizCompetencia: any[] = [] // Opciones para el dropdown
     matrizCapacidad: any[] = [] // Opciones para el dropdown
@@ -53,8 +42,18 @@ export class BancoPreguntaInformacionFormComponent implements OnInit {
     selectedCapacidad: any // Almacena la opción seleccionada
     selectediEvaluacionId: any // Almacena la opción seleccionada
     matrizCapacidadFiltrada: any[] = [] //Filtrar Capacidad
+    formGroup!: FormGroup
 
-    constructor() {}
+    @Input() tipoPreguntas = []
+    @Input({ required: true }) controlKey = ''
+    @Input() _iEvaluacionId: string | null = null // Aquí definimos el @Input
+    @Input() padreComponente: 'AULA-VIRTUAL' | 'BANCO-PREGUNTAS'
+    @Output() payloadEmitido = new EventEmitter<any>() //Emitire el payload al Componente Padre
+
+    public params = {}
+    private parentContainer = inject(ControlContainer)
+    private _apiEre = inject(ApiEvaluacionesRService)
+    private unsubscribe$: Subject<boolean> = new Subject()
 
     ngOnInit(): void {
         this.formGroup = this.parentFormGroup

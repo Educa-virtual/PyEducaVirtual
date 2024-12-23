@@ -116,7 +116,7 @@ export class RubricaEvaluacionComponent implements OnInit, OnDestroy {
             const sumaMaximos = criterios.reduce((acumulador, criterio) => {
                 // Obtener el valor máximo en el array "niveles"
                 const maxValor = Math.max(
-                    ...criterio.niveles.map((nivel) => nivel.iNivelEvaValor)
+                    ...criterio?.niveles?.map((nivel) => nivel.iNivelEvaValor ?? 0) ?? [0] 
                 )
                 return acumulador + maxValor
             }, 0)

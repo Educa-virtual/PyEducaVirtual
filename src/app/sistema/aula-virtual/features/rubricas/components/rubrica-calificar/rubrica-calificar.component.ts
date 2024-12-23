@@ -145,6 +145,19 @@ export class RubricaCalificarComponent implements OnInit, OnDestroy {
     structuredColumns(niveles: Array<any>) {
         let columns = []
 
+        if(!Array.isArray(niveles)){
+            return [
+                {
+                    type: 'text',
+                    width: '5rem',
+                    field: 'n/a',
+                    header: `Sin niveles`,
+                    text_header: 'left',
+                    text: 'left',
+                }
+            ]
+        }
+
         niveles.forEach((nivel, index) => {
             columns.push({
                 type: 'text',
@@ -160,6 +173,16 @@ export class RubricaCalificarComponent implements OnInit, OnDestroy {
     }
 
     structuredRows(niveles: Array<any>) {
+
+        if(!Array.isArray(niveles)){
+            return [
+                {
+                    'n/a': 'Sin niveles existentes',
+                }
+            ]
+        }
+
+
         const nivelesMap = niveles.map((nivel, index) => ({
             [`cNivelEvaDescripcion${index}`]: nivel.cNivelEvaDescripcion,
             iNivelEvaId: nivel.iNivelEvaId,

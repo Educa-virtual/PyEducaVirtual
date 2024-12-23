@@ -34,10 +34,7 @@ export class RubricaEvaluacionComponent implements OnInit, OnDestroy {
                     label: 'Eliminar',
                     icon: 'pi pi-trash',
                     command: () => this.deleteRubricaEvaluacion(),
-                    visible:
-                        this.constantesService.iPerfilId == DOCENTE
-                            ? true
-                            : false,
+                    visible: this.constantesService.iPerfilId == DOCENTE
                 },
                 {
                     label: 'Descargar',

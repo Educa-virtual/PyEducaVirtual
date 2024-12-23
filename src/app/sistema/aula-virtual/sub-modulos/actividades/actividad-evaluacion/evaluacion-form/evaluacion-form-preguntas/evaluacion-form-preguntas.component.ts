@@ -252,9 +252,20 @@ export class EvaluacionFormPreguntasComponent implements OnInit, OnDestroy {
             return
         }
 
-        const ids = this.preguntas
-            .map((item) => item.iBancoId)
-            .join(',')
+        // let preguntas_evaluacion = []
+
+        // this.preguntas.forEach((item) => {
+        //     if (item.iEncabPregId == -1) {
+        //         preguntas_evaluacion = [...preguntas_evaluacion, item]
+        //     } else {
+        //         preguntas_evaluacion = [
+        //             ...preguntas_evaluacion,
+        //             ...item.preguntas,
+        //         ]
+        //     }
+        // })
+
+        const ids = this.preguntas.map((item) => item.iBancoId).join(',')
 
         const params = {
             iCursoId: this.iCursoId,

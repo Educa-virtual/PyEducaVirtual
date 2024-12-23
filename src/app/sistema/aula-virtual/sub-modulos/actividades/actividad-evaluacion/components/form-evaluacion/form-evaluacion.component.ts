@@ -75,7 +75,7 @@ export class FormEvaluacionComponent implements OnChanges {
     formEvaluacion = this._FormBuilder.group({
         opcion: [''],
         iEvaluacionId: [],
-        iTipoEvalId: [],
+        iTipoEvalId: [1],
         iInstrumentoId: [],
         iEscalaCalifId: [],
         iDocenteId: [0, Validators.required],

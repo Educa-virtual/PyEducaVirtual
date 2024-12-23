@@ -127,7 +127,7 @@ export const columnsBancoPreguntas: IColumn[] = [
         type: 'text',
         width: '2rem',
         field: 'iTotalPreguntas',
-        header: '# Preguntas',
+        header: '# Alternativas',
         text_header: 'center',
         text: 'center',
     },

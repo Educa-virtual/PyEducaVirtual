@@ -29,6 +29,7 @@ import { httpService } from '@/app/servicios/httpService'
 })
 export class RubricaCalificarComponent implements OnInit, OnDestroy {
     @Input() enableCellSelection = false
+    @Input() enableViewSelections = false
     columns: IColumn[] = []
 
     rubrica

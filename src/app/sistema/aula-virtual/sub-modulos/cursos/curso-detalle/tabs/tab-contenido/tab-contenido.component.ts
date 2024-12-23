@@ -478,6 +478,8 @@ export class TabContenidoComponent implements OnInit {
                                 this.actividadSelected['iEvaluacionId'],
                             iCursoId: this.iCursoId,
                             idDocCursoId: this.idDocCursoId,
+                            iEstudianteId: this._constantesService.iEstudianteId ?? undefined
+
                         },
                         relativeTo: this._activatedRoute,
                     }

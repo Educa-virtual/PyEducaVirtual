@@ -49,6 +49,7 @@ export class RubricaEvaluacionComponent implements OnInit, OnDestroy {
     rubrica
     params = {
         iEvaluacionId: undefined,
+        iEstudianteId: undefined,
     }
 
     data
@@ -70,6 +71,7 @@ export class RubricaEvaluacionComponent implements OnInit, OnDestroy {
 
         this.route.queryParamMap.subscribe((params) => {
             this.params.iEvaluacionId = params.get('iEvaluacionId')
+            this.params.iEstudianteId = params.get('iEstudianteId') ?? undefined
 
             this.getRubrica()
         })

@@ -319,6 +319,7 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     selectedCells: { [rowId: string]: string } = {};
 
     @Input() enableCellSelection
+    @Input() enableViewSelections
     @Input() showSortIcon = true
 
     firstLoadRubrica = true

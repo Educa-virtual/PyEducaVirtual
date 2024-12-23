@@ -95,53 +95,46 @@ export class RubricaFormComponent implements OnInit, OnDestroy {
         console.log(this.rubricaForm)
     }
 
-    guardarActualizarRubrica() {
+    async guardarActualizarRubrica() {
         // validar formulario
         if (this.rubricaForm.invalid) {
             this.rubricaForm.markAllAsTouched()
             return
         }
         
-        const data = this.rubricaForm.value
+        const data = this.rubricaForm.value   
 
         
-        if(this.route.queryParams['_value']?.iEvaluacionId){
-            this._apiEvaluacionesServ
-            .actualizarRubricaEvaluacion({
-                data: JSON.stringify({
-                    iInstrumentoId: data.iInstrumentoId,
-                }),
-                iEvaluacionId: this.route.queryParams['_value'].iEvaluacionId
-            })
-            .pipe(takeUntil(this._unsubscribe$))
-            .subscribe({
-                next: (data) => {
-                },
-            })
-        }
-
-        this.router.navigate([], {
-            queryParams: {
-                iInstrumentoId: data.iInstrumentoId,
-            },
-            queryParamsHandling: 'merge',
-            replaceUrl: true,
-        })
 
         data.iDocenteId = this._constantesService.iDocenteId
         data.iCredId = this._constantesService.iCredId
         data.idDocCursoId = this._params.idDocCursoId
         data.iCursoId = this._params.iCursoId
 
+        const instrumento = await this._apiEvaluacionesServ.guardarActualizarRubrica(data)
 
-        this._apiEvaluacionesServ
-            .guardarActualizarRubrica(data)
-            .pipe(takeUntil(this._unsubscribe$))
-            .subscribe({
-                next: () => {
-                    this.closeModal('obtenerRubricas')
-                },
+        console.log(instrumento)
+
+        if(this.route.queryParams['_value']?.iEvaluacionId){
+
+            await this._apiEvaluacionesServ.actualizarRubricaEvaluacion({
+                data: JSON.stringify({
+                    iInstrumentoId: instrumento.iInstrumentoId ?? data.iInstrumentoId,
+                }),
+                iEvaluacionId: this.route.queryParams['_value'].iEvaluacionId
             })
+        } 
+
+        this.router.navigate([], {
+            queryParams: {
+                iInstrumentoId: instrumento.iInstrumentoId ?? data.iInstrumentoId,
+            },
+            queryParamsHandling: 'merge',
+            replaceUrl: true,
+        })
+
+        this.closeModal('obtenerRubricas')
+
     }
 
     closeModal(data) {

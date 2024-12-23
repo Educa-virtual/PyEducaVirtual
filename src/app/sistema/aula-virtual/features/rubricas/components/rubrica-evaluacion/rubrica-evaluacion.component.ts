@@ -34,10 +34,7 @@ export class RubricaEvaluacionComponent implements OnInit, OnDestroy {
                     label: 'Eliminar',
                     icon: 'pi pi-trash',
                     command: () => this.deleteRubricaEvaluacion(),
-                    visible:
-                        this.constantesService.iPerfilId == DOCENTE
-                            ? true
-                            : false,
+                    visible: this.constantesService.iPerfilId == DOCENTE
                 },
                 {
                     label: 'Descargar',
@@ -52,6 +49,7 @@ export class RubricaEvaluacionComponent implements OnInit, OnDestroy {
     rubrica
     params = {
         iEvaluacionId: undefined,
+        iEstudianteId: undefined,
     }
 
     data
@@ -73,6 +71,7 @@ export class RubricaEvaluacionComponent implements OnInit, OnDestroy {
 
         this.route.queryParamMap.subscribe((params) => {
             this.params.iEvaluacionId = params.get('iEvaluacionId')
+            this.params.iEstudianteId = params.get('iEstudianteId') ?? undefined
 
             this.getRubrica()
         })
@@ -117,7 +116,7 @@ export class RubricaEvaluacionComponent implements OnInit, OnDestroy {
             const sumaMaximos = criterios.reduce((acumulador, criterio) => {
                 // Obtener el valor máximo en el array "niveles"
                 const maxValor = Math.max(
-                    ...criterio.niveles.map((nivel) => nivel.iNivelEvaValor)
+                    ...criterio?.niveles?.map((nivel) => nivel.iNivelEvaValor ?? 0) ?? [0] 
                 )
                 return acumulador + maxValor
             }, 0)

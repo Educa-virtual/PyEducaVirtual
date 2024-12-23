@@ -29,6 +29,7 @@ import { httpService } from '@/app/servicios/httpService'
 })
 export class RubricaCalificarComponent implements OnInit, OnDestroy {
     @Input() enableCellSelection = false
+    @Input() enableViewSelections = false
     columns: IColumn[] = []
 
     rubrica
@@ -64,7 +65,7 @@ export class RubricaCalificarComponent implements OnInit, OnDestroy {
         if (this.route.queryParams['_value'].iEvaluacionId) {
             this.params.iEvaluacionId =
                 this.route.queryParams['_value'].iEvaluacionId
-            this.params.iEvaluacionId =
+            this.params.iEstudianteId =
                 this.route.queryParams['_value']?.iEstudianteId ?? undefined
         }
         this.route.queryParamMap.subscribe((params) => {
@@ -144,6 +145,19 @@ export class RubricaCalificarComponent implements OnInit, OnDestroy {
     structuredColumns(niveles: Array<any>) {
         let columns = []
 
+        if(!Array.isArray(niveles)){
+            return [
+                {
+                    type: 'text',
+                    width: '5rem',
+                    field: 'n/a',
+                    header: `Sin niveles`,
+                    text_header: 'left',
+                    text: 'left',
+                }
+            ]
+        }
+
         niveles.forEach((nivel, index) => {
             columns.push({
                 type: 'text',
@@ -159,6 +173,16 @@ export class RubricaCalificarComponent implements OnInit, OnDestroy {
     }
 
     structuredRows(niveles: Array<any>) {
+
+        if(!Array.isArray(niveles)){
+            return [
+                {
+                    'n/a': 'Sin niveles existentes',
+                }
+            ]
+        }
+
+
         const nivelesMap = niveles.map((nivel, index) => ({
             [`cNivelEvaDescripcion${index}`]: nivel.cNivelEvaDescripcion,
             iNivelEvaId: nivel.iNivelEvaId,
@@ -196,11 +220,12 @@ export class RubricaCalificarComponent implements OnInit, OnDestroy {
 
         if (this.params?.iEvaluacionId) {
 
-            await firstValueFrom(this.httpService.postData('evaluaciones/evaluacion/guardarActualizarCalificacionRubricaEvaluacion', data[1])) 
+            await firstValueFrom(this.httpService.postData('evaluaciones/evaluacion/guardarActualizarCalificacionRubricaEvaluacion', {
+                ...this.params,
+                ...data[1],
+            })) 
             
-            const rubri = await firstValueFrom(this.httpService.postData('evaluaciones/instrumento-evaluaciones/obtenerRubricaEvaluacion', this.params))
-
-            console.log(rubri)
+            this.data =  (await firstValueFrom(this.httpService.getData('evaluaciones/instrumento-evaluaciones/obtenerRubricaEvaluacion', this.params))).data[0]
 
         }
     }

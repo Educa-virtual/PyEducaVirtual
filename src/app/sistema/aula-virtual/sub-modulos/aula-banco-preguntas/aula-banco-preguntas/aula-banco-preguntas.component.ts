@@ -27,6 +27,7 @@ import { ConstantesService } from '@/app/servicios/constantes.service'
 import { ApiEvaluacionesRService } from '@/app/sistema/evaluaciones/services/api-evaluaciones-r.service'
 import { GeneralService } from '@/app/servicios/general.service'
 import { ViewPreguntasComponent } from './components/view-preguntas/view-preguntas.component'
+import { removeHTML } from '@/app/shared/utils/remove-html'
 
 @Component({
     selector: 'app-aula-banco-preguntas',
@@ -130,7 +131,11 @@ export class AulaBancoPreguntasComponent
                         ? 1
                         : item.preguntas.length
                 })
-
+                this.bancoPreguntas.forEach((i) => {
+                    i.cPreguntaNoHTML = i.cBancoPregunta
+                        ? removeHTML(i.cBancoPregunta)
+                        : null
+                })
                 this.expandedRowKeys = Object.assign({}, this.expandedRowKeys)
             },
         })

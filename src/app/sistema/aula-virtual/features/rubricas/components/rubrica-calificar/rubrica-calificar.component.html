@@ -11,6 +11,7 @@
             }
             <app-table-primeng
                 [enableCellSelection]="enableCellSelection"
+                [enableViewSelections]="enableViewSelections"
                 (selectedColumn)="selection($event)"
                 (selectedRowDataChange)="selection($event)"
                 [columnas]="structuredColumns(criterio.niveles)"

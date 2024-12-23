@@ -68,9 +68,27 @@
                                 >
                                     Alternativas
                                 </div>
+                            </div>
+                        </div>
+                        <div class="col-12 mt-1">
+                            <p-editor
+                                styleClass="w-full"
+                                [style]="{ height: '100px' }"
+                                placeholder="Ingrese la alternativa"
+                                [(ngModel)]="cAlternativa"
+                            />
+                        </div>
+                        <div class="col-12">
+                            <div class="flex font-bold justify-content-between">
                                 <div
-                                    class="flex align-items-center justify-content-center"
+                                    class="flex font-bold justify-content-start align-items-center"
                                 >
+                                    <span>¿Es Respuesta correcta?</span>
+                                    <p-inputSwitch
+                                        [(ngModel)]="bRptaCorreta"
+                                    ></p-inputSwitch>
+                                </div>
+                                <div>
                                     <button
                                         pButton
                                         pRipple
@@ -84,20 +102,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-12 mt-1">
-                            <p-editor
-                                styleClass="w-full"
-                                [style]="{ height: '100px' }"
-                                placeholder="Ingrese la alternativa"
-                                [(ngModel)]="cAlternativa"
-                            />
-                        </div>
-                        <div class="col-12">
-                            <div class="flex justify-content-end font-bold">
-                                ¿Es Respuesta correcta? &nbsp;&nbsp;
-                                <p-inputSwitch [(ngModel)]="bRptaCorreta" />
-                            </div>
-                        </div>
+
                         @if (bRptaCorreta) {
                             <div class="col-12">
                                 <p-editor

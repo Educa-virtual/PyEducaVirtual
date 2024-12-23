@@ -34,9 +34,9 @@ export class ApiAulaBancoPreguntasService {
             )
             .pipe(
                 map((resp) => resp['data']),
-                map((data) => {
-                    return mapItemsBancoToEre(data)
-                }),
+                // map((data) => {
+                //     return mapItemsBancoToEre(data)
+                // }),
                 map((data) => mapData(data))
             )
     }

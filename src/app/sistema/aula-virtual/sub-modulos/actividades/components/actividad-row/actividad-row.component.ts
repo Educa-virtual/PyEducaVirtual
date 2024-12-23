@@ -60,9 +60,9 @@ export class ActividadRowComponent implements OnInit {
         this.iPerfilId = this._constantesService.iPerfilId
     }
     onAction(action: string, event: Event) {
-        console.log(this.actividad, action, event)
-        // this.actionSelected.emit({ actividad: this.actividad, action })
-        // event.stopPropagation()
+        //console.log(this.actividad, action, event)
+        this.actionSelected.emit({ actividad: this.actividad, action })
+        event.stopPropagation()
     }
     obtenerStyleActividad(iEstadoActividad) {
         let styleActividad = ''

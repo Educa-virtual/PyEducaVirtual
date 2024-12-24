@@ -21,9 +21,16 @@ import { EVALUACION } from '@/app/sistema/aula-virtual/interfaces/actividad.inte
 import { MessageService } from 'primeng/api'
 import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
 
+/**
+ * @Component Decorator que define la metadata del componente `FormEvaluacionComponent`.
+ * Este componente representa un formulario de evaluación que permite la carga de archivos,
+ * la selección de preguntas, y otras funcionalidades relacionadas.
+ */
 @Component({
+    // Selector del componente para usarlo en plantillas HTML.
     selector: 'app-form-evaluacion',
     standalone: true,
+    // Módulos e importaciones que utiliza este componente.
     imports: [
         PrimengModule,
         NgIf,
@@ -33,6 +40,12 @@ import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.ser
     templateUrl: './form-evaluacion.component.html',
     styleUrl: './form-evaluacion.component.scss',
 })
+
+/**
+ * @class FormEvaluacionComponent
+ * Componente para gestionar el formulario de evaluaciones.
+ * Incluye funcionalidad para manejar evaluaciones, cursos y archivos relacionados.
+ */
 export class FormEvaluacionComponent implements OnChanges {
     private _FormBuilder = inject(FormBuilder)
     private _evaluacionService = inject(ApiEvaluacionesService)
@@ -54,6 +67,12 @@ export class FormEvaluacionComponent implements OnChanges {
     @Input() curso
     @Input() dataActividad
 
+    /**
+     * Fecha ajustada al horario más cercano de media hora.
+     * Se inicializa con el resultado del método `ajustarAHorarioDeMediaHora`.
+     * @type {Date}
+     */
+
     date = this.ajustarAHorarioDeMediaHora(new Date())
     cursos = []
     tipoEvaluaciones = []
@@ -65,13 +84,27 @@ export class FormEvaluacionComponent implements OnChanges {
         repository: false,
         image: false,
     }
-
+    /**
+     * Identificador único de la evaluación.
+     * @type {string}
+     */
     iEvaluacionId: string
+    /**
+     * Propiedad que define qué vista se mostrará en el componente.
+     * Puede tomar los valores:
+     * - 'FORM-EVALUACION': Muestra el formulario de evaluación.
+     * - 'LIST-PREGUNTAS': Muestra la lista de preguntas.
+     * - 'FORM-PREGUNTAS': Muestra el formulario de preguntas.
+     * @type {'FORM-EVALUACION' | 'LIST-PREGUNTAS' | 'FORM-PREGUNTAS'}
+     */
 
     showMostrarVista: 'FORM-EVALUACION' | 'LIST-PREGUNTAS' | 'FORM-PREGUNTAS' =
         'FORM-EVALUACION'
     titulo: string
 
+    /**
+     * Formulario de evaluación con múltiples campos para capturar información relevante.
+     */
     formEvaluacion = this._FormBuilder.group({
         opcion: [''],
         iEvaluacionId: [],
@@ -91,6 +124,10 @@ export class FormEvaluacionComponent implements OnChanges {
         iEvaluacionDuracionMinutos: [],
         cEvaluacionArchivoAdjunto: [],
 
+        /**
+         * Inicializa las fechas de inicio y fin para un formulario, con la fecha de inicio establecida
+         * en el valor de `this.date` y la fecha de fin ajustada a una hora posterior a la actual.
+         */
         dtInicio: [this.date],
         dtFin: [
             new Date(
@@ -108,10 +145,7 @@ export class FormEvaluacionComponent implements OnChanges {
         tHoraEvaluacionInico: [],
         tHoraEvaluacionFin: [],
 
-        // fechaInicio: [],
-        // fechaFin: [],
-
-        //TABLA: PROGRACION_ACTIVIDADES
+        //Tabla:Programacion de Actividades
         iProgActId: [],
         iContenidoSemId: [],
         iActTipoId: [EVALUACION],
@@ -122,7 +156,15 @@ export class FormEvaluacionComponent implements OnChanges {
         dtProgActPublicacion: [],
     })
 
+    /**
+     * Método que se ejecuta cuando hay cambios en las propiedades de entrada del componente.
+     * Se utilizan para actualizar valores y realizar acciones según los cambios detectados.
+     *
+     * @param {SimpleChanges} changes - Objeto que contiene los cambios detectados en las propiedades de entrada.
+     */
+
     ngOnChanges(changes) {
+        // Si el valor de 'showModalEvaluacion' cambia, se actualiza y se obtiene el tipo de evaluaciones
         if (changes.showModalEvaluacion?.currentValue) {
             this.showModalEvaluacion = changes.showModalEvaluacion.currentValue
             this.obtenerTipoEvaluaciones()
@@ -139,7 +181,7 @@ export class FormEvaluacionComponent implements OnChanges {
             this.dataActividad = changes.dataActividad.currentValue
             this.dataActividad?.ixActivadadId ? this.obtenerEvaluacion() : null
         }
-
+        // Lógica de control de vistas según el valor de 'showMostrarVista'
         switch (this.showMostrarVista) {
             case 'FORM-EVALUACION':
                 this.titulo =
@@ -149,11 +191,33 @@ export class FormEvaluacionComponent implements OnChanges {
                 break
         }
     }
+
+    /**
+     * Obtiene los tipos de evaluaciones a través de un servicio y los asigna a la variable tipoEvaluaciones.
+     *
+     * Esta función realiza una llamada al servicio `_evaluacionService` para obtener los tipos de evaluaciones
+     * y, al recibir la respuesta, asigna los datos a la propiedad `tipoEvaluaciones` del componente.
+     */
     obtenerTipoEvaluaciones() {
         this._evaluacionService.obtenerTipoEvaluaciones().subscribe((data) => {
             this.tipoEvaluaciones = data
         })
     }
+
+    /**
+     * Obtiene la evaluación de la actividad desde el servicio API y actualiza el formulario de evaluación.
+     *
+     * Realiza una llamada al servicio `obtenerActividad()` del servicio `_ApiAulaService` para obtener los
+     * datos de una evaluación basándose en el tipo de actividad y el ID de la actividad.
+     * Luego, actualiza los valores del formulario `formEvaluacion`, incluyendo:
+     * - Los valores de la evaluación, como archivo adjunto y fechas de inicio y fin.
+     *
+     * Se manejan las siguientes propiedades del formulario:
+     * - `cEvaluacionArchivoAdjunto`: URL de los archivos adjuntos de la evaluación.
+     * - `dtEvaluacionFin` y `dtEvaluacionInicio`: Fechas de fin y de inicio de la evaluación.
+     *
+     * @returns {void} No devuelve ningún valor, solo actualiza el formulario.
+     */
     obtenerEvaluacion() {
         this._ApiAulaService
             .obtenerActividad({
@@ -179,6 +243,25 @@ export class FormEvaluacionComponent implements OnChanges {
             })
     }
 
+    /**
+     * Maneja las acciones del botón según el tipo de acción recibido.
+     * Realiza diferentes operaciones como mostrar vistas, agregar archivos a la lista de URLs,
+     * guardar o actualizar información, o abrir un modal con preguntas dependiendo del valor de la acción.
+     *
+     * @param {Object} elemento - Objeto que contiene los parámetros necesarios para realizar la acción.
+     * @param {string} elemento.accion - Tipo de acción a realizar.
+     * @param {Object} elemento.item - Datos relacionados con la acción.
+     *
+     * Acciones disponibles:
+     * - 'close-modal': Cambia la vista mostrada a 'FORM-EVALUACION' y emite la acción y el item.
+     * - 'subir-file-evaluacion': Agrega un archivo a la lista de archivos con la ruta especificada.
+     * - 'url-evaluacion': Agrega una URL a la lista de archivos con la ruta proporcionada.
+     * - 'youtube-evaluacion': Agrega un enlace de YouTube a la lista de archivos.
+     * - 'GUARDAR' / 'ACTUALIZAR': Llama a la función `guardarActualizarFormInfo` para guardar o actualizar la información.
+     * - 'GUARDARxProgActxiEvaluacionId' / 'ACTUALIZARxProgActxiEvaluacionId': Obtiene el ID de la evaluación y abre un modal con preguntas relacionadas.
+     *
+     * @returns {void}
+     */
     accionBtn(elemento): void {
         const { accion } = elemento
         const { item } = elemento
@@ -228,6 +311,17 @@ export class FormEvaluacionComponent implements OnChanges {
         }
     }
 
+    /**
+     * Función para guardar o actualizar la información de la evaluación y la programación de actividades.
+     *
+     * Esta función obtiene los valores del formulario de evaluación, procesa las fechas y horas de inicio,
+     * fin y publicación de la evaluación, y luego construye un objeto `data` que es enviado al backend.
+     * Dependiendo de la opción seleccionada, se guarda o actualiza la información de la evaluación y la
+     * programación de actividades.
+     *
+     * @returns {void} No retorna ningún valor. La función se encarga de manejar el proceso de guardado o
+     *                  actualización.
+     */
     private guardarActualizarFormInfo() {
         this.formEvaluacion.controls.dFechaEvaluacionInico.setValue(
             this.formEvaluacion.value.dtInicio
@@ -334,6 +428,20 @@ export class FormEvaluacionComponent implements OnChanges {
 
         this.getInformation(params, data.opcion)
     }
+
+    /**
+     * Abre un modal de confirmación para agregar o actualizar preguntas.
+     * Dependiendo de la opción de evaluación ('GUARDAR' o 'ACTUALIZAR'), el modal muestra un mensaje
+     * con la acción correspondiente y actualiza el estado de la vista y el título del formulario.
+     *
+     * Si el usuario acepta la acción, la vista se cambia a 'LIST-PREGUNTAS' y el título se actualiza con
+     * la opción de evaluación y el nombre del curso. Si el usuario rechaza, se cierra el modal sin realizar
+     * ninguna acción adicional.
+     *
+     * @method openModalListPreguntas
+     * @returns {void} No devuelve ningún valor, solo ejecuta la lógica de apertura del modal y
+     * realiza cambios en el estado de la vista y título.
+     */
     openModalListPreguntas() {
         const accion =
             this.opcionEvaluacion === 'GUARDAR' ? 'agregar' : 'actualizar'
@@ -352,6 +460,12 @@ export class FormEvaluacionComponent implements OnChanges {
         })
     }
 
+    /**
+     * Obtiene información desde el servicio y ejecuta una acción con la respuesta.
+     *
+     * @param {any} params - Los parámetros necesarios para realizar la solicitud.
+     * @param {string} accion - La acción que se debe ejecutar una vez obtenida la respuesta.
+     */
     getInformation(params, accion) {
         this._GeneralService.getGralPrefix(params).subscribe({
             next: (response) => {
@@ -369,15 +483,23 @@ export class FormEvaluacionComponent implements OnChanges {
         })
     }
 
+    /**
+     * Ajusta la hora de la fecha proporcionada a la media hora más cercana.
+     * Si los minutos son menores o iguales a 30, los ajusta a 30. Si son mayores, ajusta a la siguiente hora.
+     *
+     * @param {Date} fecha - La fecha que se va a ajustar.
+     * @returns {Date} - La fecha ajustada con minutos en 0 o 30, y segundos y milisegundos en 0.
+     */
+
     ajustarAHorarioDeMediaHora(fecha) {
         const minutos = fecha.getMinutes() // Obtener los minutos actuales
         const minutosAjustados = minutos <= 30 ? 30 : 0 // Decidir si ajustar a 30 o 0 (hora siguiente)
         if (minutos > 30) {
             fecha.setHours(fecha.getHours() + 1) // Incrementar la hora si los minutos pasan de 30
         }
-        fecha.setMinutes(minutosAjustados) // Ajustar los minutos
-        fecha.setSeconds(0) // Opcional: Resetear los segundos a 0
-        fecha.setMilliseconds(0) // Opcional: Resetear los milisegundos a 0
+        fecha.setMinutes(minutosAjustados)
+        fecha.setSeconds(0)
+        fecha.setMilliseconds(0)
         return fecha
     }
 }

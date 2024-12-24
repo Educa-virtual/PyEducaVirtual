@@ -7,15 +7,19 @@
     [draggable]="false"
     [resizable]="false"
 >
+    <!-- Contenido principal del modal -->
     <ng-template pTemplate="content">
+        <!-- Controla qué vista mostrar según 'showMostrarVista' -->
         @switch (showMostrarVista) {
             @case ('FORM-EVALUACION') {
+                <!-- Formulario de evaluación -->
                 <form
                     [formGroup]="formEvaluacion"
                     class="mt-4"
                     *ngIf="formEvaluacion"
                 >
                     <div class="grid">
+                        <!-- Mensaje con información de la semana -->
                         <div class="col-12">
                             <p-message
                                 styleClass="w-full"
@@ -28,6 +32,8 @@
                                 "
                             ></p-message>
                         </div>
+
+                        <!-- Campo para el nombre de la evaluación -->
                         <div class="col-12">
                             <p-inputGroup>
                                 <p-inputGroupAddon>Nombre</p-inputGroupAddon>
@@ -39,6 +45,8 @@
                                 />
                             </p-inputGroup>
                         </div>
+
+                        <!-- Campo para la descripción de la evaluación -->
                         <div class="col-12">
                             <label for="descripcion" class="mt-1"
                                 >Descripción o Instrucciones
@@ -53,6 +61,7 @@
                                     [style]="{ height: '150px' }"
                                     placeholder="Ingrese la descripción o instrucciones"
                                 />
+                                <!-- Validación del campo requerido -->
                                 @if (
                                     formEvaluacion
                                         .get('cEvaluacionDescripcion')
@@ -66,40 +75,15 @@
                                 }
                             </div>
                         </div>
-                        <!-- comentando codigo desde aqui se puede seleccionar tipo de evalaucion
-                         <div class="col-12 md:col-4">
-                            <p-inputGroup>
-                                <p-inputGroupAddon>Tipo</p-inputGroupAddon>
-                                <p-dropdown
-                                    styleClass="w-full"
-                                    placeholder="Seleccione Tipo"
-                                    optionValue="iTipoEvalId"
-                                    formControlName="iTipoEvalId"
-                                    [options]="tipoEvaluaciones"
-                                    optionLabel="cTipoEvalNombre"
-                                    [styleClass]="
-                                        formEvaluacion.get('iTipoEvalId')
-                                            ?.invalid &&
-                                        formEvaluacion.get('iTipoEvalId')
-                                            ?.touched
-                                            ? 'w-full ng-dirty ng-invalid p-invalid'
-                                            : 'w-full'
-                                    "
-                                />
-                            </p-inputGroup>
-                            <div class="ml-7">
-                                @if (
-                                    formEvaluacion
-                                        .get('iTipoEvalId')
-                                        .hasError('required') &&
-                                    formEvaluacion.get('iTipoEvalId')?.touched
-                                ) {
-                                    <small class="text-red-500">
-                                        Este campo es requerido
-                                    </small>
-                                }
-                            </div>
-                        </div> -->
+
+                        <!-- Componente comentado para seleccionar tipo de evaluación -->
+                        <!--
+                        <div class="col-12 md:col-4">
+                            ...
+                        </div>
+                        -->
+
+                        <!-- Selección de Fecha y Hora de Inicio -->
                         <div class="col-12 md:col-6">
                             <p-inputGroup>
                                 <p-inputGroupAddon
@@ -118,6 +102,7 @@
                             </p-inputGroup>
                         </div>
 
+                        <!-- Selección de Fecha y Hora de Fin -->
                         <div class="col-12 md:col-6">
                             <p-inputGroup>
                                 <p-inputGroupAddon
@@ -135,6 +120,8 @@
                                 />
                             </p-inputGroup>
                         </div>
+
+                        <!-- Componente para subir archivos -->
                         <div class="col-12 mt-1">
                             <app-types-files-upload-primeng
                                 [nameFile]="'evaluacion'"
@@ -147,6 +134,8 @@
                     </div>
                 </form>
             }
+
+            <!-- Vista para la lista de preguntas -->
             @case ('LIST-PREGUNTAS') {
                 <app-list-preguntas
                     [data]="this.formEvaluacion.value"
@@ -157,10 +146,13 @@
             }
         }
     </ng-template>
+
+    <!-- Pie del modal con botones de acción -->
     <ng-template pTemplate="footer">
         <div class="flex justify-content-end gap-2">
             @switch (showMostrarVista) {
                 @case ('FORM-EVALUACION') {
+                    <!-- Botón de cancelar -->
                     <p-button
                         label="Cancelar"
                         severity="secondary"
@@ -168,6 +160,7 @@
                             accionBtn({ accion: 'close-modal', item: [] })
                         "
                     />
+                    <!-- Botón de acción dinámica -->
                     <p-button
                         [label]="opcionEvaluacion"
                         (onClick)="
@@ -179,4 +172,5 @@
         </div>
     </ng-template>
 </p-dialog>
+
 <p-toast></p-toast>

@@ -158,14 +158,17 @@ export class RubricaFormService {
     }
 
     duplicarCriterioToForm(index: number) {
-        const criterios = this.rubricaForm.get('criterios') as FormArray
-        const duplicado = criterios.at(index).value
-        duplicado.iCriterioId = 0
-
-        duplicado.niveles.map((nivel) => {
-            nivel.iNivelEvaId = 0
-        })
-
-        this.patchCriterioForm([duplicado])
+        const criterios = this.rubricaForm.get('criterios') as FormArray;
+        const original = criterios.at(index).value;
+    
+        const duplicado = JSON.parse(JSON.stringify(original));
+    
+        duplicado.iCriterioId = 0;
+        duplicado.niveles.forEach((nivel) => {
+            nivel.iNivelEvaId = 0;
+        });
+    
+        this.patchCriterioForm([duplicado]);
     }
+    
 }

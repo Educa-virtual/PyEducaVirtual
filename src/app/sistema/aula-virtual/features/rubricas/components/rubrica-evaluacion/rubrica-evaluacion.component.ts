@@ -8,7 +8,7 @@ import {
 } from '@angular/core'
 import { AccordionModule } from 'primeng/accordion'
 import { CommonModule } from '@angular/common'
-import { ActivatedRoute } from '@angular/router'
+import { ActivatedRoute, Router } from '@angular/router'
 import { Subject, takeUntil } from 'rxjs'
 import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-evaluaciones.service'
 import { MenuModule } from 'primeng/menu'
@@ -57,6 +57,7 @@ export class RubricaEvaluacionComponent implements OnInit, OnDestroy {
     @Output() clickNameRubrica = new EventEmitter()
 
     _unsubscribe$ = new Subject<boolean>()
+    private router = inject(Router)
 
     private _evaluacionApiService = inject(ApiEvaluacionesService)
 
@@ -106,6 +107,15 @@ export class RubricaEvaluacionComponent implements OnInit, OnDestroy {
                     next: (data) => {
                         this.data = Array.isArray(data) ? data[0] : undefined
                         console.log(this.data)
+
+                        if (this.data.iEstado) {
+                            this.router.navigate([], {
+                                queryParams: {
+                                    iEstado: this.data.iEstado
+                                },
+                                queryParamsHandling: 'merge'
+                            })
+                        }
                     },
                 })
         }

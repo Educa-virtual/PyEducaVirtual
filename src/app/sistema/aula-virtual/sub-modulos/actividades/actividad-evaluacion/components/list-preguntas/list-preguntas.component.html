@@ -1,9 +1,13 @@
+<!-- Estructura de la grilla principal -->
 <div class="grid mt-4">
+    <!-- Sección que muestra el título de la evaluación -->
     <div class="col-12 md:col-8">
         <h4 class="m-0 text-uppercase text-primary">
             Nombre de la Evaluación: {{ data.cEvaluacionTitulo }}
         </h4>
     </div>
+
+    <!-- Sección con botón para agregar preguntas -->
     <div class="col-12 md:col-4" align="right">
         <button
             pButton
@@ -14,6 +18,7 @@
             <span class="text-md">Agregar Preguntas</span>
         </button>
     </div>
+    <!-- Sección que muestra un mensaje cuando no hay preguntas en la lista -->
     <div class="col-12 mt-5" align="center" *ngIf="!preguntas.length">
         <img src="assets/images/icons/preguntas.gif" alt="logo" width="20%" />
         <h4 class="font-bold">Utilice este espacio para crear su examen.</h4>
@@ -22,6 +27,7 @@
             enunciado o banco de preguntas
         </h5>
     </div>
+    <!-- Sección que muestra la lista de preguntas si existen -->
     <div class="col-12 mt-5" align="center" *ngIf="preguntas.length">
         <app-banco-pregunta-lista
             [data]="preguntas"
@@ -33,7 +39,13 @@
         ></app-banco-pregunta-lista>
     </div>
 </div>
-
+<!--
+    p-menu: Componente de menú emergente de PrimeNG.
+    Este componente se utiliza para mostrar un menú contextual que se puede activar de manera dinámica.
+    Atributos del componente:
+    - #menuAgregacionPreguntas: Se le asigna una referencia local llamada "menuAgregacionPreguntas" para hacer referencia al menú dentro del componente.
+    - styleClass="w-29rem": Aplica una clase CSS personalizada al menú, en este caso, ajustando el ancho a 29 rem.
+-->
 <p-menu
     #menuAgregacionPreguntas
     [popup]="true"
@@ -42,7 +54,7 @@
     styleClass="w-29rem"
 >
 </p-menu>
-
+<!-- Dialogo para agregar preguntas al banco de preguntas -->
 <p-dialog
     #dialogBancoPreguntas
     [header]="'Agregar Preguntas del Banco de preguntas'"
@@ -85,6 +97,7 @@
     </ng-template>
 </p-dialog>
 
+<!-- Dialogo para agregar un enunciado de preguntas -->
 <p-dialog
     #dialogEncabezadoPreguntas
     [header]="'Agregar Enunciado de Preguntas'"
@@ -94,7 +107,9 @@
     [maximizable]="true"
     [style]="{ width: '100%' }"
 >
+    <!-- Contenido dentro del formulario -->
     <ng-content>
+        <!-- Formulario de encabezado de preguntas -->
         <form [formGroup]="formEncabezadoPreguntas" class="mt-4">
             <div class="col-12">
                 <p-inputGroup>
@@ -102,6 +117,7 @@
                     <input pInputText formControlName="cEncabPregTitulo" />
                 </p-inputGroup>
             </div>
+            <!-- Campo para el enlace del enunciado -->
             <div class="col-12">
                 <p-inputGroup>
                     <p-inputGroupAddon>
@@ -151,7 +167,7 @@
             </div>
         </form>
     </ng-content>
-
+    <!-- Botones de acción para cancelar o agregar encabezado -->
     <div class="flex justify-content-end gap-2 pt-3">
         <button
             pButton
@@ -163,6 +179,7 @@
             size="small"
             (click)="showModalEncabezadoPreguntas = false"
         ></button>
+        <!-- Botón para guardar el encabezado -->
         <button
             pButton
             pRipple
@@ -175,7 +192,11 @@
         ></button>
     </div>
 </p-dialog>
-
+<!-- Este es un componente que maneja el formulario de preguntas para una evaluación.
+     Se pasan varios parámetros al componente app-preguntas-form,
+     como el título de la evaluación, el identificador de la evaluación, el curso,
+     el ID del encabezado de preguntas y los detalles de las preguntas.
+     Además, se escucha un evento 'accionBtnItem' para manejar la acción del botón -->
 <app-preguntas-form
     [cEvaluacionTitulo]="data.cEvaluacionTitulo"
     [showModalPreguntas]="showModalPreguntas"
@@ -185,6 +206,7 @@
     (accionBtnItem)="accionBtn($event)"
     [data]="detallePreguntas"
 ></app-preguntas-form>
+<!-- Componente app-view-preguntas -->
 <app-view-preguntas
     [showDetallePregunta]="showDetallePregunta"
     [detallePreguntas]="detallePreguntas"

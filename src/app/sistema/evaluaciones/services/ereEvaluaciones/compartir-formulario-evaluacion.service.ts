@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core'
 import { ApiEvaluacionesRService } from '../api-evaluaciones-r.service'
-import { Subject, takeUntil } from 'rxjs'
+import { forkJoin, Subject, takeUntil } from 'rxjs'
 import { GeneralService } from '@/app/servicios/general.service'
 
 //import { BehaviorSubject } from 'rxjs'
@@ -106,10 +106,9 @@ export class CompartirFormularioEvaluacionService {
     setEvaluacionId(id: number): void {
         this._iEvaluacionId = id
     }
-    obtenerCursosSeleccionados(): Promise<any[]> {
+    obtenerCursosSeleccionados(): Promise<Map<number, boolean>> {
         return new Promise((resolve, reject) => {
             const evaluacionId = this._iEvaluacionId
-
             if (!evaluacionId) {
                 return reject('El ID de la evaluación no está definido.')
             }
@@ -119,53 +118,37 @@ export class CompartirFormularioEvaluacionService {
                 .pipe(takeUntil(this.unsubscribe$))
                 .subscribe({
                     next: (resp: any) => {
-                        const cursosSeleccionados = resp.cursos
-                            .map((curso: any) => ({
-                                iCursoNivelGradId: curso.iCursoNivelGradId,
-                                isSelected: curso.isSelected === '1', // Convertir a booleano
-                            }))
-                            .filter((curso: any) => curso.isSelected) // Filtrar los cursos seleccionados
+                        // Crear un mapa con los cursos seleccionados
+                        const cursosSeleccionados: Map<number, boolean> =
+                            new Map(
+                                resp.cursos.map((curso: any) => [
+                                    curso.iCursoNivelGradId as number, // Asegurar que sea número
+                                    curso.isSelected === '1', // Convertir "1" a true
+                                ])
+                            )
 
-                        // Estructuramos los cursos por nivel y grado
-                        const listaAgrupada = this.extraerAsignatura(
-                            resp.cursos
-                        )
-
-                        // Aplicar la selección a los cursos
-                        listaAgrupada.forEach((nivel: any) => {
+                        // Limpia la lista para evitar datos residuales
+                        this.lista.forEach((nivel: any) => {
                             Object.keys(nivel.grados).forEach((grado) => {
                                 nivel.grados[grado].forEach((curso: any) => {
-                                    // Si el curso está en el arreglo de cursos seleccionados, actualizar su estado
-                                    curso.isSelected = cursosSeleccionados.some(
-                                        (selectedCurso: any) =>
-                                            selectedCurso.iCursoNivelGradId ===
-                                            curso.iCursoNivelGradId
-                                    )
+                                    curso.isSelected = false // Resetear a false
                                 })
                             })
                         })
 
-                        // Filtrar los cursos con isSelected = true
-                        const cursosFiltrados = listaAgrupada
-                            .map((nivel: any) => ({
-                                ...nivel,
-                                grados: Object.keys(nivel.grados).reduce(
-                                    (acc: any, grado: string) => {
-                                        acc[grado] = nivel.grados[grado].filter(
-                                            (curso: any) => curso.isSelected
-                                        )
-                                        return acc
-                                    },
-                                    {}
-                                ),
-                            }))
-                            .filter((nivel: any) =>
-                                Object.keys(nivel.grados).some(
-                                    (grado) => nivel.grados[grado].length > 0
-                                )
-                            ) // Solo incluir niveles con cursos seleccionados
-
-                        resolve(cursosFiltrados)
+                        // Actualizar con los nuevos datos
+                        this.lista.forEach((nivel: any) => {
+                            Object.keys(nivel.grados).forEach((grado) => {
+                                nivel.grados[grado].forEach((curso: any) => {
+                                    // Si el curso está en el mapa, actualizamos su estado
+                                    curso.isSelected =
+                                        cursosSeleccionados.get(
+                                            curso.iCursoNivelGradId
+                                        ) || false
+                                })
+                            })
+                        })
+                        resolve(cursosSeleccionados)
                     },
                     error: (err) => {
                         console.error('Error al obtener cursos:', err)
@@ -175,6 +158,47 @@ export class CompartirFormularioEvaluacionService {
         })
     }
 
+    // Llamar a la función para obtener los datos de primaria y secundaria
+    searchAmbienteAcademico(): Promise<any[]> {
+        return new Promise((resolve, reject) => {
+            forkJoin({
+                primaria: this.query.searchAmbienteAcademico({
+                    json: JSON.stringify({
+                        iNivelGradoId: 3, // Primaria
+                    }),
+                    _opcion: 'getCursosNivelGrado',
+                }),
+                secundaria: this.query.searchAmbienteAcademico({
+                    json: JSON.stringify({
+                        iNivelGradoId: 4, // Secundaria
+                    }),
+                    _opcion: 'getCursosNivelGrado',
+                }),
+            }).subscribe({
+                next: (data: any) => {
+                    console.log('Datos recibidos de Primaria:', data.primaria)
+                    console.log(
+                        'Datos recibidos de Secundaria:',
+                        data.secundaria
+                    )
+
+                    // Combina los datos de primaria y secundaria
+                    const listaCombinada = [
+                        ...this.extraerAsignatura(data.primaria.data),
+                        ...this.extraerAsignatura(data.secundaria.data),
+                    ]
+
+                    console.log('Lista combinada:', listaCombinada)
+
+                    resolve(listaCombinada) // Devuelve la lista combinada
+                },
+                error: (err: any) => {
+                    console.error('Error al obtener los datos:', err)
+                    reject(err)
+                },
+            })
+        })
+    }
     // Función para estructurar los datos
     extraerAsignatura(data: any): any[] {
         console.log('Datos recibidos en extraerAsignatura:', data)
@@ -186,27 +210,23 @@ export class CompartirFormularioEvaluacionService {
 
         // Estructuramos los datos por nivel y grado
         const groupedData = data.reduce((acc: any, item: any) => {
-            console.log(acc)
-            console.log(item)
-            // item.isSelected = item.isSelected == 0 ? false : true
-            // const nivel = item.cNivelTipoNombre ?? 'Sin Descripción'
-            // const grado = item.cGradoAbreviacion ?? 'Sin Abreviación'
+            const nivel = item.cNivelTipoNombre ?? 'Sin Descripción'
+            const grado = item.cGradoAbreviacion ?? 'Sin Abreviación'
+            if (!acc[nivel]) {
+                acc[nivel] = [] // Cada nivel contiene grados
+            }
 
-            // if (!acc[nivel]) {
-            //     acc[nivel] = [] // Cada nivel contiene grados
-            // }
+            if (!acc[nivel][grado]) {
+                acc[nivel][grado] = [] // Cada grado contiene cursos
+            }
 
-            // if (!acc[nivel][grado]) {
-            //     acc[nivel][grado] = [] // Cada grado contiene cursos
-            // }
+            acc[nivel][grado].push({
+                iCursoNivelGradId: item.iCursosNivelGradId, // Nuevo campo
+                cCursoNombre: item.cCursoNombre ?? 'Sin Nombre',
+                isSelected: false, // Propiedad para checkbox
+            })
 
-            // acc[nivel][grado].push({
-            //     iCursoNivelGradId: item.iCursosNivelGradId, // Nuevo campo
-            //     cCursoNombre: item.cCursoNombre ?? 'Sin Nombre',
-            //     isSelected: false, // Propiedad para checkbox
-            // })
-
-            // return acc
+            return acc
         }, {})
 
         console.log('Datos agrupados:', groupedData)

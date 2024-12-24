@@ -1,7 +1,6 @@
 import { PrimengModule } from '@/app/primeng.module'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
-import { ModalPrimengComponent } from '@/app/shared/modal-primeng/modal-primeng.component'
 import { TypesFilesUploadPrimengComponent } from '@/app/shared/types-files-upload-primeng/types-files-upload-primeng.component'
 import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-evaluaciones.service'
 import { NgIf } from '@angular/common'
@@ -11,7 +10,6 @@ import {
     inject,
     Input,
     OnChanges,
-    OnInit,
     Output,
 } from '@angular/core'
 import { FormBuilder, Validators } from '@angular/forms'
@@ -21,13 +19,13 @@ import { GeneralService } from '@/app/servicios/general.service'
 import { ListPreguntasComponent } from '../list-preguntas/list-preguntas.component'
 import { EVALUACION } from '@/app/sistema/aula-virtual/interfaces/actividad.interface'
 import { MessageService } from 'primeng/api'
+import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.service'
 
 @Component({
     selector: 'app-form-evaluacion',
     standalone: true,
     imports: [
         PrimengModule,
-        ModalPrimengComponent,
         NgIf,
         TypesFilesUploadPrimengComponent,
         ListPreguntasComponent,
@@ -35,7 +33,7 @@ import { MessageService } from 'primeng/api'
     templateUrl: './form-evaluacion.component.html',
     styleUrl: './form-evaluacion.component.scss',
 })
-export class FormEvaluacionComponent implements OnChanges, OnInit {
+export class FormEvaluacionComponent implements OnChanges {
     private _FormBuilder = inject(FormBuilder)
     private _evaluacionService = inject(ApiEvaluacionesService)
     private _ConstantesService = inject(ConstantesService)
@@ -44,6 +42,7 @@ export class FormEvaluacionComponent implements OnChanges, OnInit {
     private _store = inject(LocalStoreService)
     private _GeneralService = inject(GeneralService)
     private _MessageService = inject(MessageService)
+    private _ApiAulaService = inject(ApiAulaService)
 
     @Output() accionBtnItem = new EventEmitter()
     @Input() showModalEvaluacion: boolean = false
@@ -53,8 +52,9 @@ export class FormEvaluacionComponent implements OnChanges, OnInit {
     @Input() idDocCursoId
     @Input() semanaEvaluacion
     @Input() curso
+    @Input() dataActividad
 
-    date = new Date()
+    date = this.ajustarAHorarioDeMediaHora(new Date())
     cursos = []
     tipoEvaluaciones = []
     filesUrl = []
@@ -75,7 +75,7 @@ export class FormEvaluacionComponent implements OnChanges, OnInit {
     formEvaluacion = this._FormBuilder.group({
         opcion: [''],
         iEvaluacionId: [],
-        iTipoEvalId: [],
+        iTipoEvalId: [1],
         iInstrumentoId: [],
         iEscalaCalifId: [],
         iDocenteId: [0, Validators.required],
@@ -92,7 +92,14 @@ export class FormEvaluacionComponent implements OnChanges, OnInit {
         cEvaluacionArchivoAdjunto: [],
 
         dtInicio: [this.date],
-        dtFin: [this.date],
+        dtFin: [
+            new Date(
+                this.ajustarAHorarioDeMediaHora(new Date()).setHours(
+                    this.date.getHours() + 1
+                )
+            ),
+            Validators.required,
+        ],
 
         dFechaEvaluacionPublicacion: [],
         dFechaEvaluacionInico: [this.date],
@@ -101,8 +108,8 @@ export class FormEvaluacionComponent implements OnChanges, OnInit {
         tHoraEvaluacionInico: [],
         tHoraEvaluacionFin: [],
 
-        fechaInicio: [],
-        fechaFin: [],
+        // fechaInicio: [],
+        // fechaFin: [],
 
         //TABLA: PROGRACION_ACTIVIDADES
         iProgActId: [],
@@ -115,13 +122,10 @@ export class FormEvaluacionComponent implements OnChanges, OnInit {
         dtProgActPublicacion: [],
     })
 
-    ngOnInit() {
-        this.obtenerTipoEvaluaciones()
-        this.obtenerCursos()
-    }
     ngOnChanges(changes) {
         if (changes.showModalEvaluacion?.currentValue) {
             this.showModalEvaluacion = changes.showModalEvaluacion.currentValue
+            this.obtenerTipoEvaluaciones()
         }
 
         if (changes.semanaEvaluacion?.currentValue) {
@@ -130,6 +134,12 @@ export class FormEvaluacionComponent implements OnChanges, OnInit {
         if (changes.curso?.currentValue) {
             this.curso = changes.curso.currentValue
         }
+
+        if (changes.dataActividad?.currentValue) {
+            this.dataActividad = changes.dataActividad.currentValue
+            this.dataActividad?.ixActivadadId ? this.obtenerEvaluacion() : null
+        }
+
         switch (this.showMostrarVista) {
             case 'FORM-EVALUACION':
                 this.titulo =
@@ -144,32 +154,29 @@ export class FormEvaluacionComponent implements OnChanges, OnInit {
             this.tipoEvaluaciones = data
         })
     }
-
-    obtenerCursos() {
-        const year = this._store.getItem('dremoYear')
-        const params = {
-            petition: 'post',
-            group: 'docente',
-            prefix: 'docente-cursos',
-            ruta: 'list', //'getDocentesCursos',
-            data: {
-                opcion: 'CONSULTARxiPersIdxiYearId',
-                iCredId: this._ConstantesService.iCredId,
-                valorBusqueda: year, //iYearId
-                iSemAcadId: null,
-                iIieeId: null,
-            },
-            params: { skipSuccessMessage: true },
-        }
-        this._GeneralService.getGralPrefix(params).subscribe({
-            next: (response) => {
-                this.cursos = response.data
-            },
-            complete: () => {},
-            error: (error) => {
-                console.log(error)
-            },
-        })
+    obtenerEvaluacion() {
+        this._ApiAulaService
+            .obtenerActividad({
+                iActTipoId: EVALUACION,
+                ixActivadadId: this.dataActividad?.ixActivadadId,
+            })
+            .subscribe({
+                next: (data) => {
+                    this.formEvaluacion.patchValue(data)
+                    //console.log(typeof this.formEvaluacion.value.cEvaluacionArchivoAdjunto)
+                    this.filesUrl =
+                        this.formEvaluacion.value.cEvaluacionArchivoAdjunto
+                    // this.filesUrl = this.formEvaluacion.value.cEvaluacionArchivoAdjunto.length>0
+                    //     ? JSON.parse(this.formEvaluacion.value.cEvaluacionArchivoAdjunto)
+                    //     : []
+                    this.formEvaluacion.controls.dtFin.setValue(
+                        new Date(this.formEvaluacion.value.dtEvaluacionFin)
+                    )
+                    this.formEvaluacion.controls.dtInicio.setValue(
+                        new Date(this.formEvaluacion.value.dtEvaluacionInicio)
+                    )
+                },
+            })
     }
 
     accionBtn(elemento): void {
@@ -208,16 +215,15 @@ export class FormEvaluacionComponent implements OnChanges, OnInit {
                 })
                 break
             case 'GUARDAR':
+            case 'ACTUALIZAR':
                 this.guardarActualizarFormInfo()
                 break
             case 'GUARDARxProgActxiEvaluacionId':
+            case 'ACTUALIZARxProgActxiEvaluacionId':
                 this.iEvaluacionId = item.length
                     ? item[0]['iEvaluacionId']
                     : null
                 this.openModalListPreguntas()
-                break
-            case 'ACTUALIZARxProgActxiEvaluacionId':
-                console.log(item)
                 break
         }
     }
@@ -234,7 +240,6 @@ export class FormEvaluacionComponent implements OnChanges, OnInit {
         data.iDocenteId = this._ConstantesService.iDocenteId
         data.iActTipoId = EVALUACION
         data.iContenidoSemId = this.semanaEvaluacion.iContenidoSemId
-        data.cEvaluacionArchivoAdjunto = JSON.stringify(this.filesUrl)
 
         let horaInicio: any = data.dFechaEvaluacionInico.toLocaleString(
             'en-GB',
@@ -310,26 +315,19 @@ export class FormEvaluacionComponent implements OnChanges, OnInit {
             return
         }
 
-        let prefix = ''
-        let group = ''
-        let ruta = ''
+        data.cEvaluacionArchivoAdjunto = JSON.stringify(this.filesUrl)
+
         if (this.opcionEvaluacion === 'GUARDAR') {
-            prefix = 'programacion-actividades'
-            group = 'aula-virtual'
             data.opcion = 'GUARDARxProgActxiEvaluacionId'
-            ruta = 'store'
         } else {
-            prefix = 'evaluaciones'
-            group = 'evaluaciones'
             data.opcion = 'ACTUALIZARxProgActxiEvaluacionId'
-            ruta = 'handleCrudOperation'
         }
 
         const params = {
             petition: 'post',
-            group: group,
-            prefix: prefix,
-            ruta: ruta,
+            group: 'aula-virtual',
+            prefix: 'programacion-actividades',
+            ruta: 'store',
             data: data,
             params: { skipSuccessMessage: true },
         }
@@ -337,12 +335,16 @@ export class FormEvaluacionComponent implements OnChanges, OnInit {
         this.getInformation(params, data.opcion)
     }
     openModalListPreguntas() {
+        const accion =
+            this.opcionEvaluacion === 'GUARDAR' ? 'agregar' : 'actualizar'
         this._ConfirmationModalService.openConfirm({
-            header: '¿Deseas agregar preguntas?',
+            header: '¿Deseas ' + accion + ' preguntas?',
             accept: () => {
                 this.showMostrarVista = 'LIST-PREGUNTAS'
                 this.titulo =
-                    'AGREGAR PREGUNTAS PARA: ' + this.curso?.cCursoNombre
+                    this.opcionEvaluacion +
+                    ' PREGUNTAS PARA: ' +
+                    this.curso?.cCursoNombre
             },
             reject: () => {
                 this.accionBtn({ accion: 'close-modal', item: [] })
@@ -365,5 +367,17 @@ export class FormEvaluacionComponent implements OnChanges, OnInit {
                 })
             },
         })
+    }
+
+    ajustarAHorarioDeMediaHora(fecha) {
+        const minutos = fecha.getMinutes() // Obtener los minutos actuales
+        const minutosAjustados = minutos <= 30 ? 30 : 0 // Decidir si ajustar a 30 o 0 (hora siguiente)
+        if (minutos > 30) {
+            fecha.setHours(fecha.getHours() + 1) // Incrementar la hora si los minutos pasan de 30
+        }
+        fecha.setMinutes(minutosAjustados) // Ajustar los minutos
+        fecha.setSeconds(0) // Opcional: Resetear los segundos a 0
+        fecha.setMilliseconds(0) // Opcional: Resetear los milisegundos a 0
+        return fecha
     }
 }

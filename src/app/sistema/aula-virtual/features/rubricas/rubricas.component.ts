@@ -22,6 +22,7 @@ import { ConstantesService } from '@/app/servicios/constantes.service'
 import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-evaluaciones.service'
 import { MenuItem } from 'primeng/api'
 import { DialogModule } from 'primeng/dialog'
+import { ActivatedRoute } from '@angular/router'
 
 const SELECTION_ACTION: IActionTable = {
     labelTooltip: 'Seleccionar',
@@ -104,12 +105,12 @@ export class RubricasComponent implements OnInit, OnDestroy {
                 {
                     label: 'Nueva rúbrica',
                     icon: 'pi pi-plus',
-                    command: () => this.handleActions({mode: 'CREAR'}),
+                    command: () => this.handleActions({ mode: 'CREAR' }),
                 },
                 {
                     label: 'Reutilizar rúbrica',
                     icon: 'pi pi-plus',
-                    command: () => this.handleActions({mode: 'VIEW'}),
+                    command: () => this.handleActions({ mode: 'VIEW' }),
                 },
             ],
         },
@@ -121,8 +122,18 @@ export class RubricasComponent implements OnInit, OnDestroy {
     private _confirmService = inject(ConfirmationModalService)
     private _constantesService = inject(ConstantesService)
 
+    constructor(public route: ActivatedRoute) {}
+
     ngOnInit() {
         this.params.iDocenteId = this._constantesService.iDocenteId
+
+        console.log('this.route.queryParams')
+        console.log(this.route.queryParams['_value'].iEstado != 2)
+
+        this.route.queryParams.subscribe((params) => {
+            console.log('iEstado')
+            console.log(params['iEstado'])
+        })
 
         this.getData()
         if (this.mode === 'SELECTION') {
@@ -130,7 +141,7 @@ export class RubricasComponent implements OnInit, OnDestroy {
         }
     }
 
-    handleActions({mode}) {
+    handleActions({ mode }) {
         this.modeFormRubrica = mode
         this.agregarInstrumentoEvaluacion()
     }
@@ -160,12 +171,13 @@ export class RubricasComponent implements OnInit, OnDestroy {
         const ref = this._dialogService.open(RubricaFormComponent, {
             ...MODAL_CONFIG,
             header,
+            maximizable: true,
             data: {
                 iCursoId: this.params.iCursoId,
                 idDocCursoId: this.params.idDocCursoId,
                 rubrica: item,
                 rubricas: this.data,
-                mode: this.modeFormRubrica
+                mode: this.modeFormRubrica,
             },
         })
         ref.onClose.pipe(takeUntil(this._unsubscribe$)).subscribe(() => {

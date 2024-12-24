@@ -5,7 +5,7 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-evaluaciones.service'
 import { Subject, takeUntil } from 'rxjs'
-import { Router } from '@angular/router'
+import { ActivatedRoute, Router } from '@angular/router'
 
 @Component({
     selector: 'app-rubrica-form',
@@ -26,6 +26,8 @@ export class RubricaFormComponent implements OnInit, OnDestroy {
     private _apiEvaluacionesServ = inject(ApiEvaluacionesService)
     private _unsubscribe$ = new Subject<boolean>()
     public _config = inject(DynamicDialogConfig)
+
+    public route = inject(ActivatedRoute)
 
     private _params = {
         iCursoId: null,
@@ -93,35 +95,45 @@ export class RubricaFormComponent implements OnInit, OnDestroy {
         console.log(this.rubricaForm)
     }
 
-    guardarActualizarRubrica() {
+    async guardarActualizarRubrica() {
         // validar formulario
         if (this.rubricaForm.invalid) {
             this.rubricaForm.markAllAsTouched()
             return
         }
-        const data = this.rubricaForm.value
 
-        this.router.navigate([], {
-            queryParams: {
-                iInstrumentoId: data.iInstrumentoId,
-            },
-            queryParamsHandling: 'merge',
-            replaceUrl: true,
-        })
+        const data = this.rubricaForm.value
 
         data.iDocenteId = this._constantesService.iDocenteId
         data.iCredId = this._constantesService.iCredId
         data.idDocCursoId = this._params.idDocCursoId
         data.iCursoId = this._params.iCursoId
 
-        this._apiEvaluacionesServ
-            .guardarActualizarRubrica(data)
-            .pipe(takeUntil(this._unsubscribe$))
-            .subscribe({
-                next: () => {
-                    this.closeModal('obtenerRubricas')
-                },
+        const instrumento =
+            await this._apiEvaluacionesServ.guardarActualizarRubrica(data)
+
+        console.log(instrumento)
+
+        if (this.route.queryParams['_value']?.iEvaluacionId) {
+            await this._apiEvaluacionesServ.actualizarRubricaEvaluacion({
+                data: JSON.stringify({
+                    iInstrumentoId:
+                        instrumento.iInstrumentoId ?? data.iInstrumentoId,
+                }),
+                iEvaluacionId: this.route.queryParams['_value'].iEvaluacionId,
             })
+        }
+
+        this.router.navigate([], {
+            queryParams: {
+                iInstrumentoId:
+                    instrumento.iInstrumentoId ?? data.iInstrumentoId,
+            },
+            queryParamsHandling: 'merge',
+            replaceUrl: true,
+        })
+
+        this.closeModal('obtenerRubricas')
     }
 
     closeModal(data) {

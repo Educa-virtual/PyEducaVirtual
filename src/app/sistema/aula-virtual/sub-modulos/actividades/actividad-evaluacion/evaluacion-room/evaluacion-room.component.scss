@@ -27,3 +27,7 @@
     padding-inline: 0;
     padding-block-end: 0;
 }
+
+:host ::ng-deep .p-menu .p-submenu-header {
+    display: none !important;
+}

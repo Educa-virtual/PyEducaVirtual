@@ -15,6 +15,7 @@ import { PerfilComponent } from './perfil/perfil.component'
 import { ActividadesNoLectivasComponent } from './actividades-no-lectivas/actividades-no-lectivas.component'
 import { MaterialEducativoComponent } from './material-educativo/material-educativo.component'
 import { CalendarioComponent } from './calendario/calendario.component'
+import { InformesComponent } from './informes/informes.component'
 
 @NgModule({
     imports: [
@@ -60,6 +61,10 @@ import { CalendarioComponent } from './calendario/calendario.component'
             {
                 path: 'calendario',
                 component: CalendarioComponent,
+            },
+            {
+                path: 'informes',
+                component: InformesComponent,
             },
         ]),
     ],

@@ -26,7 +26,7 @@ import { TooltipModule } from 'primeng/tooltip'
 export class TareaFormComponent implements OnChanges {
     // Crea una instancia de la clase DatePipe para formatear fechas en español
     pipe = new DatePipe('es-ES')
-    date = new Date()
+    date = this.ajustarAHorarioDeMediaHora(new Date())
     // Indica que el tipo de archivo "file" está habilitado o permitido.
     typesFiles = {
         file: true,
@@ -51,7 +51,6 @@ export class TareaFormComponent implements OnChanges {
     private _formBuilder = inject(FormBuilder)
     private GeneralService = inject(GeneralService)
     private ConstantesService = inject(ConstantesService)
-    minDate: Date
 
     ngOnChanges(changes): void {
         if (changes.contenidoSemana?.currentValue) {
@@ -86,7 +85,14 @@ export class TareaFormComponent implements OnChanges {
     public formTareas = this._formBuilder.group({
         bReutilizarTarea: [false],
         dtInicio: [this.date, Validators.required],
-        dtFin: [this.date, Validators.required],
+        dtFin: [
+            new Date(
+                this.ajustarAHorarioDeMediaHora(new Date()).setHours(
+                    this.date.getHours() + 1
+                )
+            ),
+            Validators.required,
+        ],
 
         iTareaId: [],
         cTareaTitulo: ['', [Validators.required]],
@@ -114,6 +120,18 @@ export class TareaFormComponent implements OnChanges {
         cProgActDescripcion: [''],
         dtProgActPublicacion: [],
     })
+
+    ajustarAHorarioDeMediaHora(fecha) {
+        const minutos = fecha.getMinutes() // Obtener los minutos actuales
+        const minutosAjustados = minutos <= 30 ? 30 : 0 // Decidir si ajustar a 30 o 0 (hora siguiente)
+        if (minutos > 30) {
+            fecha.setHours(fecha.getHours() + 1) // Incrementar la hora si los minutos pasan de 30
+        }
+        fecha.setMinutes(minutosAjustados) // Ajustar los minutos
+        fecha.setSeconds(0) // Opcional: Resetear los segundos a 0
+        fecha.setMilliseconds(0) // Opcional: Resetear los milisegundos a 0
+        return fecha
+    }
 
     getTareasxiCursoId() {
         // Verifica si la opción "bReutilizarTarea" en el formulario es verdadera
@@ -224,73 +242,44 @@ export class TareaFormComponent implements OnChanges {
     /*Esta función se encarga de formatear y establecer los valores de ciertos campos
  de un formulario, ajustando las fechas y horas a una zona horaria específica
   y asignando ciertos valores de campos a otros.*/
-
     submit() {
-        // Obtener las fechas de inicio y fin
-        let horaInicio = this.formTareas.value.dtInicio
-        let horaFin = this.formTareas.value.dtFin
-
-        // Sumar 30 minutos a las fechas (en milisegundos)
-        if (horaInicio && horaFin) {
-            horaInicio = new Date(horaInicio)
-            horaFin = new Date(horaFin)
-            horaInicio.setMinutes(horaInicio.getMinutes() + 30) // Sumar 30 minutos
-            horaFin.setMinutes(horaFin.getMinutes() + 30) // Sumar 30 minutos
-        }
-
-        // Convertir las fechas a formato correcto sin coma
-        const horaInicioStr =
-            horaInicio
-                ?.toLocaleString('en-GB', { timeZone: 'America/Lima' })
-                .replace(',', '') || ''
-        const horaFinStr =
-            horaFin
-                ?.toLocaleString('en-GB', { timeZone: 'America/Lima' })
-                .replace(',', '') || ''
-
-        // Establecer los valores en los controles de formulario
-        this.formTareas.controls.dtTareaInicio.setValue(horaInicioStr)
-        this.formTareas.controls.dtTareaFin.setValue(horaFinStr)
-        this.formTareas.controls.dtProgActInicio.setValue(horaInicioStr)
-        this.formTareas.controls.dtProgActFin.setValue(horaFinStr)
-
-        // Establecer el título de la lección
+        let horaInicio = this.formTareas.value.dtInicio.toLocaleString(
+            'en-GB',
+            { timeZone: 'America/Lima' }
+        )
+        let horaFin = this.formTareas.value.dtFin.toLocaleString('en-GB', {
+            timeZone: 'America/Lima',
+        })
+        horaInicio = horaInicio.replace(',', '')
+        horaFin = horaFin.replace(',', '')
+        this.formTareas.controls.dtTareaInicio.setValue(horaInicio)
+        this.formTareas.controls.dtTareaFin.setValue(horaFin)
+        this.formTareas.controls.dtProgActInicio.setValue(horaInicio)
+        this.formTareas.controls.dtProgActFin.setValue(horaFin)
         this.formTareas.controls.cProgActTituloLeccion.setValue(
             this.formTareas.value.cTareaTitulo
         )
-
-        // Limpiar la etiqueta de <p-editor> y obtener solo el texto plano
+        // Funcion para limpiar la etiqueta de p-editor
         const rawDescripcion =
             this.formTareas.controls.cTareaDescripcion.value || ''
-        const cleanDescripcion = this.stripHtml(rawDescripcion)
+        const tempElement = document.createElement('div')
+        tempElement.innerHTML = rawDescripcion // Insertamos el HTML en un elemento temporal
+        const cleanDescripcion = tempElement.innerText.trim() // Obtenemos solo el texto
 
         this.formTareas.controls.cTareaDescripcion.setValue(cleanDescripcion)
 
-        // Establecer la fecha de publicación
-        this.formTareas.controls.dtProgActPublicacion.setValue(horaFinStr)
-
-        // Convertir los archivos adjuntos en formato JSON
+        this.formTareas.controls.dtProgActPublicacion.setValue(horaFin)
         this.formTareas.controls.cTareaArchivoAdjunto.setValue(
             JSON.stringify(this.filesUrl)
         )
+        const value = this.formTareas.value
 
-        // Verificar si el formulario es inválido antes de emitir el evento
         if (this.formTareas.invalid) {
             this.formTareas.markAllAsTouched()
             return
         }
-
-        const value = this.formTareas.value
         this.submitEvent.emit(value)
     }
-
-    // Función para limpiar el HTML y obtener solo el texto
-    stripHtml(html: string): string {
-        const tempElement = document.createElement('div')
-        tempElement.innerHTML = html
-        return tempElement.innerText.trim()
-    }
-
     imports: [
         TooltipModule,
         // otros módulos necesarios

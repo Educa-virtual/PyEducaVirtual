@@ -4,6 +4,8 @@ import {
     ChangeDetectionStrategy,
     Input,
     inject,
+    OnChanges,
+    ChangeDetectorRef,
 } from '@angular/core'
 import { IArea } from '../../interfaces/area.interface'
 import { ButtonModule } from 'primeng/button'
@@ -12,6 +14,8 @@ import { TooltipModule } from 'primeng/tooltip'
 import { CompartirFormularioEvaluacionService } from '../../../../services/ereEvaluaciones/compartir-formulario-evaluacion.service'
 import { ApiEvaluacionesRService } from '../../../../services/api-evaluaciones-r.service'
 import { MessageService } from 'primeng/api'
+import { ConstantesService } from '@/app/servicios/constantes.service'
+import { ActivatedRoute } from '@angular/router'
 @Component({
     selector: 'app-area-card',
     standalone: true,
@@ -20,7 +24,7 @@ import { MessageService } from 'primeng/api'
     imports: [CommonModule, TooltipModule, ButtonModule, RouterModule],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AreaCardComponent {
+export class AreaCardComponent implements OnChanges {
     @Input() area: IArea
     @Input() _iEvaluacionId: number | null = null // Usamos _iEvaluacionId como input
     @Input() _nombreEvaluacion: string | null = null // Usamos _nombreEvaluacion como input
@@ -28,20 +32,32 @@ export class AreaCardComponent {
     private _apiEre = inject(ApiEvaluacionesRService)
     private _MessageService = inject(MessageService)
     iEvaluacionMatriz: number
+    private _constantesService = inject(ConstantesService)
+    private _route = inject(ActivatedRoute)
+    preguntasSeleccionadas: any[]
+    queryParams: any = {}
+    areaId: string | null = null
+    public params = {
+        bPreguntaEstado: -1,
+        iCursosNivelGradId: 0,
+        iNivelTipoId: 1,
+        iTipoPregId: 0,
+    }
+    @Input() cantidadPreguntas: number
     constructor(
         private router: Router,
-        private compartirFormularioEvaluacionService: CompartirFormularioEvaluacionService
+        private compartirFormularioEvaluacionService: CompartirFormularioEvaluacionService,
+        private route: ActivatedRoute,
+        private cdr: ChangeDetectorRef
     ) {}
     ngOnInit(): void {
-        // Verifica si el parámetro llega correctamente
-        console.log(
-            'A ver si llega a AreaCard el iEvaluacionId: ----->',
-            this._iEvaluacionId
-        )
-
-        // Obtener las áreas almacenadas en el servicio
-        this.areas = this.compartirFormularioEvaluacionService.getAreas()
-        console.log('Áreas obtenidas desde el servicio:', this.areas)
+        console.log(0)
+    }
+    ngOnChanges(changes) {
+        // console.log(changes)
+        if (changes.area.currentValue) {
+            this.area = changes.area.currentValue
+        }
     }
     irABancoPreguntas(area: any): void {
         // Almacenar los datos en el servicio
@@ -51,7 +67,7 @@ export class AreaCardComponent {
         this.compartirFormularioEvaluacionService.setGrado(area.grado)
         this.compartirFormularioEvaluacionService.setNivel(area.nivel)
         this.compartirFormularioEvaluacionService.setSeccion(area.seccion)
-        this.compartirFormularioEvaluacionService.setSeccion(area.nombreCurso)
+        this.compartirFormularioEvaluacionService.setAreasId(area.id)
         // Navegar a la nueva ruta sin parámetros en la URL
         this.router.navigate(['./', area.id, 'banco-preguntas'])
     }
@@ -67,49 +83,76 @@ export class AreaCardComponent {
      */
 
     generarPdfMatriz(iEvaluacionId: number, area: IArea) {
-        iEvaluacionId = this._iEvaluacionId
-        // Obtén las áreas desde el servicio
-        // const areas = this.compartirFormularioEvaluacionService.getAreas()
-        // console.log('Áreas obtenidas desde el servicio:', areas)
+        const params = {
+            iEvaluacionId: this._iEvaluacionId,
+            areaId: area.id,
+            nombreCurso: area.nombre,
+            nivel: area.nivel,
+            grado: area.grado,
+            seccion: area.seccion,
+            nombreEvaluacion: this._nombreEvaluacion,
+            especialista: this._constantesService.nombres,
+        }
 
-        // Convierte las áreas en una cadena JSON
-        const encodedAreas = JSON.stringify([area]) // Solo convertir a JSON string, no codificar
-        console.log('Cadena JSON de las áreas:', encodedAreas)
-        //!
-        this._apiEre
-            .generarPdfMatrizbyEvaluacionId(iEvaluacionId, encodedAreas)
-            .subscribe(
-                (response) => {
-                    console.log('Respuesta de Evaluacion:', iEvaluacionId) // Para depuración
+        this._apiEre.generarPdfMatrizbyEvaluacionId(params).subscribe(
+            (response) => {
+                // Se muestra un mensaje indicando que la descarga de la matriz ha comenzado
+                this._MessageService.add({
+                    severity: 'success',
+                    detail: 'Comienza la descarga de la Matriz',
+                })
 
-                    // Se muestra un mensaje indicando que la descarga de la matriz ha comenzado
-                    this._MessageService.add({
-                        severity: 'success',
-                        detail: 'Comienza la descarga de la Matriz',
-                    })
+                // Se crea un enlace de descarga para el archivo PDF generado
+                const blob = response as Blob // Asegúrate de que la respuesta sea un Blob
+                const link = document.createElement('a')
+                link.href = URL.createObjectURL(blob)
+                link.download =
+                    'matriz_evaluacion_' +
+                    area.nombre.toLocaleLowerCase() +
+                    '.pdf' // Nombre del archivo descargado
+                link.click()
+            },
+            (error) => {
+                // En caso de error, se determina el mensaje de error a mostrar
+                const errorMessage =
+                    error?.message ||
+                    'No hay datos suficientes para descargar la Matriz'
+                this._MessageService.add({
+                    severity: 'success', // Se cambió a "error" ya que es un fallo
+                    detail: errorMessage,
+                })
+            }
+        )
+    }
 
-                    // Se crea un enlace de descarga para el archivo PDF generado
-                    const blob = response as Blob // Asegúrate de que la respuesta sea un Blob
-                    const link = document.createElement('a')
-                    link.href = URL.createObjectURL(blob)
-                    link.download =
-                        'matriz_evaluacion_' +
-                        area.nombre.toLocaleLowerCase() +
-                        '.pdf' // Nombre del archivo descargado
-                    link.click()
-                },
-                (error) => {
-                    // En caso de error, se determina el mensaje de error a mostrar
-                    const errorMessage =
-                        error?.message ||
-                        'No hay datos suficientes para descargar la Matriz'
-
-                    // Se muestra un mensaje de error en el sistema
-                    this._MessageService.add({
-                        severity: 'success', // Se cambió a "error" ya que es un fallo
-                        detail: errorMessage,
-                    })
-                }
+    obtenerPreguntaSeleccionada(iEvaluacionId: number) {
+        if (!iEvaluacionId || iEvaluacionId < 0) {
+            console.error(
+                'El parámetro iEvaluacionId no está definido o es inválido'
             )
+            return
+        }
+        // Obtener el areaId dinámicamente desde la ruta
+        this.areaId = this.route.snapshot.paramMap.get('areaId')
+        if (this.areaId) {
+            this.params.iCursosNivelGradId = parseInt(this.areaId) // Convertir el areaId a número
+        }
+
+        this._apiEre.obtenerPreguntaSeleccionada(iEvaluacionId).subscribe({
+            next: (data: any[]) => {
+                // Convertir ambos valores a string para asegurar la comparación
+                this.preguntasSeleccionadas = data.filter(
+                    (item) =>
+                        item.iCursosNivelGradId.toString() ===
+                        this.params.iCursosNivelGradId.toString()
+                )
+            },
+            error: (error) => {
+                console.error(
+                    'Error al obtener las preguntas seleccionadas:',
+                    error
+                )
+            },
+        })
     }
 }

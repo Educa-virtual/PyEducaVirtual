@@ -38,6 +38,10 @@ import { ActividadListaComponent } from '../../components/actividad-lista/activi
 import { RubricaEvaluacionComponent } from '@/app/sistema/aula-virtual/features/rubricas/components/rubrica-evaluacion/rubrica-evaluacion.component'
 import { RubricaCalificarComponent } from '@/app/sistema/aula-virtual/features/rubricas/components/rubrica-calificar/rubrica-calificar.component'
 import { ToolbarPrimengComponent } from '../../../../../../shared/toolbar-primeng/toolbar-primeng.component'
+import { MenuItem } from 'primeng/api'
+import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
+import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
+
 @Component({
     selector: 'app-evaluacion-room',
     standalone: true,
@@ -82,13 +86,17 @@ import { ToolbarPrimengComponent } from '../../../../../../shared/toolbar-primen
     ],
 })
 export class EvaluacionRoomComponent implements OnInit, OnDestroy {
+    items: MenuItem[] = []
     @Input() ixActivadadId: string
+    @Input() iProgActId: string
     @Input() iActTopId: tipoActividadesKeys
 
     // injeccion de dependencias
     private _route = inject(ActivatedRoute)
     private _aulaService = inject(ApiAulaService)
     private _ConstantesService = inject(ConstantesService)
+    private _ConfirmationModalService = inject(ConfirmationModalService)
+    private _evalService = inject(ApiEvaluacionesService)
 
     actividad = {
         iContenidoSemId: 1,
@@ -165,6 +173,8 @@ export class EvaluacionRoomComponent implements OnInit, OnDestroy {
     public iPerfilId: number
     public evaluacion
     public cEvaluacionInstrucciones
+    public DOCENTE = DOCENTE
+    public ESTUDIANTE = ESTUDIANTE
 
     ngOnInit() {
         this.params.iDocenteId = this._constantesService.iDocenteId
@@ -195,6 +205,48 @@ export class EvaluacionRoomComponent implements OnInit, OnDestroy {
                     this.evaluacion = resp
                     this.cEvaluacionInstrucciones =
                         this.evaluacion.cEvaluacionDescripcion
+                    if (this.evaluacion?.iEstado === 1) {
+                        this.items = [
+                            {
+                                items: [
+                                    {
+                                        label: 'Editar',
+                                        icon: 'pi pi-pencil',
+                                    },
+                                    {
+                                        label: 'Eliminar',
+                                        icon: 'pi pi-trash',
+                                        command: () => {
+                                            this.eliminarEvaluacionxiEvaluacionId()
+                                        },
+                                    },
+
+                                    {
+                                        label: 'Publicar',
+                                        icon: 'pi pi-send',
+                                        command: () => {
+                                            this.actualizarEvaluacionxiEvaluacionId()
+                                        },
+                                    },
+                                ],
+                            },
+                        ]
+                    }
+                    if (this.evaluacion?.iEstado === 2) {
+                        this.items = [
+                            {
+                                items: [
+                                    {
+                                        label: 'Anular Publicación',
+                                        icon: 'pi pi-times',
+                                        command: () => {
+                                            this.anularEvaluacionxiEvaluacionId()
+                                        },
+                                    },
+                                ],
+                            },
+                        ]
+                    }
                 },
             })
     }
@@ -203,5 +255,78 @@ export class EvaluacionRoomComponent implements OnInit, OnDestroy {
     ngOnDestroy() {
         this.unsbscribe$.next(true)
         this.unsbscribe$.complete()
+    }
+    eliminarEvaluacionxiEvaluacionId() {
+        this._ConfirmationModalService.openConfirm({
+            header: '¿Está seguro de eliminar la evaluación?',
+            accept: () => {
+                this.eliminarEvaluacionPorId(
+                    this.iProgActId,
+                    this.iActTopId,
+                    this.ixActivadadId
+                )
+            },
+        })
+    }
+
+    private eliminarEvaluacionPorId(iProgActId, iActTipoId, ixActivadadId) {
+        this._aulaService
+            .eliminarActividad({ iProgActId, iActTipoId, ixActivadadId })
+            .subscribe({
+                next: (resp) => {
+                    console.log(resp)
+                    window.history.back()
+                },
+            })
+    }
+
+    actualizarEvaluacionxiEvaluacionId() {
+        this._ConfirmationModalService.openConfirm({
+            header: '¿Esta seguro de publicar la evaluación?',
+            accept: () => {
+                this.publicarEvaluacion()
+            },
+        })
+    }
+
+    publicarEvaluacion() {
+        if (this.evaluacion.iEvaluacionId) {
+            const data = {
+                iEvaluacionId: this.ixActivadadId,
+                iCursoId: this.evaluacion.iCursoId,
+                iSeccionId: this.evaluacion.iSeccionId,
+                iGradoId: this.evaluacion.iGradoId,
+                iYAcadId: this._constantesService.iYAcadId,
+                iSemAcadId: this.evaluacion.iSemAcadId,
+                iNivelGradoId: this.evaluacion.iNivelGradoId,
+                iCurrId: this.evaluacion.iCurrId,
+                iEstado: 2,
+            }
+            this._evalService.publicarEvaluacion(data).subscribe({
+                next: () => {
+                    this.obtenerEvaluacion()
+                },
+            })
+        }
+    }
+
+    anularEvaluacionxiEvaluacionId() {
+        this._ConfirmationModalService.openConfirm({
+            header: '¿Esta seguro de anular la publicación de la evaluación?',
+            accept: () => {
+                this.anularPublicacionEvaluacion({
+                    iEvaluacionId: this.ixActivadadId,
+                })
+            },
+        })
+    }
+    anularPublicacionEvaluacion({ iEvaluacionId }) {
+        this._evalService
+            .anularPublicacionEvaluacion({ iEvaluacionId })
+            .subscribe({
+                next: () => {
+                    this.obtenerEvaluacion()
+                },
+            })
     }
 }

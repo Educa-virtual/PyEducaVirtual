@@ -15,6 +15,8 @@ import { RecursosListaComponent } from '../../../../../../shared/components/recu
 //import { interval, Subscription } from 'rxjs';
 import { AccordionModule } from 'primeng/accordion'
 import { RubricasModule } from '../../../../features/rubricas/rubricas.module'
+import { RubricaEvaluacionComponent } from '../../../../features/rubricas/components/rubrica-evaluacion/rubrica-evaluacion.component'
+import { RubricaCalificarComponent } from '@/app/sistema/aula-virtual/features/rubricas/components/rubrica-calificar/rubrica-calificar.component'
 
 @Component({
     selector: 'app-evaluacion-estudiantes',
@@ -30,6 +32,8 @@ import { RubricasModule } from '../../../../features/rubricas/rubricas.module'
         RecursosListaComponent,
         AccordionModule,
         RubricasModule,
+        RubricaEvaluacionComponent,
+        RubricaCalificarComponent,
     ],
     templateUrl: './evaluacion-estudiantes.component.html',
     styleUrl: './evaluacion-estudiantes.component.scss',
@@ -43,6 +47,7 @@ export class EvaluacionEstudiantesComponent implements OnChanges {
 
     environment = environment.backend
     @Input() evaluacion
+    evaluacion1: { iTiempo: number | null } = { iTiempo: 120 }
 
     iPreguntaId: number = 0
     preguntas = []
@@ -326,5 +331,22 @@ export class EvaluacionEstudiantesComponent implements OnChanges {
         const minutes = Math.floor(this.timeRemaining / 60)
         const seconds = this.timeRemaining % 60
         return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+    }
+    //  mostrado la rubrica en vista estudiante
+    dialogRubricaInfo = {
+        visible: false,
+        header: undefined,
+    }
+
+    showRubrica(data) {
+        this.dialogRubricaInfo.visible = true
+        this.dialogRubricaInfo.header = data
+    }
+    // Ejemplo de datos
+
+    convertirATiempo(tiempoEnMinutos: number): string {
+        const horas = Math.floor(tiempoEnMinutos / 60)
+        const minutos = tiempoEnMinutos % 60
+        return `${horas} horas ${minutos} minutos`
     }
 }

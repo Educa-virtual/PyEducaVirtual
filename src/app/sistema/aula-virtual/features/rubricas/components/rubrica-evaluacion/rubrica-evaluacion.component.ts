@@ -1,11 +1,21 @@
-import { Component, EventEmitter, inject, OnDestroy, OnInit, Output } from '@angular/core'
+import {
+    Component,
+    EventEmitter,
+    inject,
+    OnDestroy,
+    OnInit,
+    Output,
+} from '@angular/core'
 import { AccordionModule } from 'primeng/accordion'
 import { CommonModule } from '@angular/common'
-import { ActivatedRoute } from '@angular/router'
+import { ActivatedRoute, Router } from '@angular/router'
 import { Subject, takeUntil } from 'rxjs'
 import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-evaluaciones.service'
 import { MenuModule } from 'primeng/menu'
 import { MenuItem } from 'primeng/api'
+import { ConstantesService } from '@/app/servicios/constantes.service'
+import { CommunicationService } from '@/app/servicios/communication.service'
+import { DOCENTE } from '@/app/servicios/perfilesConstantes'
 
 @Component({
     selector: 'app-rubrica-evaluacion',
@@ -24,13 +34,22 @@ export class RubricaEvaluacionComponent implements OnInit, OnDestroy {
                     label: 'Eliminar',
                     icon: 'pi pi-trash',
                     command: () => this.deleteRubricaEvaluacion(),
+                    visible: this.constantesService.iPerfilId == DOCENTE,
+                },
+                {
+                    label: 'Descargar',
+                    icon: 'pi pi-download',
+                    command: () => this.communicationService.requestPrint(),
                 },
             ],
         },
     ]
+    private communicationService = inject(CommunicationService)
+
     rubrica
     params = {
-        iInstrumentoId: undefined,
+        iEvaluacionId: undefined,
+        iEstudianteId: undefined,
     }
 
     data
@@ -38,32 +57,65 @@ export class RubricaEvaluacionComponent implements OnInit, OnDestroy {
     @Output() clickNameRubrica = new EventEmitter()
 
     _unsubscribe$ = new Subject<boolean>()
+    private router = inject(Router)
 
     private _evaluacionApiService = inject(ApiEvaluacionesService)
 
-    constructor(private route: ActivatedRoute) {}
+    constructor(
+        private route: ActivatedRoute,
+        private constantesService: ConstantesService
+    ) {}
 
     ngOnInit(): void {
+        console.log('constantesService')
+        console.log(this.constantesService)
+
         this.route.queryParamMap.subscribe((params) => {
-            this.params.iInstrumentoId = params.get('iInstrumentoId')
+            this.params.iEvaluacionId = params.get('iEvaluacionId')
+            this.params.iEstudianteId = params.get('iEstudianteId') ?? undefined
 
             this.getRubrica()
         })
     }
 
-    deleteRubricaEvaluacion() {
-        this.params.iInstrumentoId = null
+    downloadRubrica() {}
+    isMenuVisible(): boolean {
+        return this.items.some((group) =>
+            group.items?.some((item) => item.visible !== false)
+        )
     }
-
-    getRubrica() {
-        if (this.params?.iInstrumentoId) {
+    deleteRubricaEvaluacion() {
+        if (this.params?.iEvaluacionId) {
             this._evaluacionApiService
-                .obtenerRubrica(this.params)
+                .deleteRubricaEvaluacion(this.params)
                 .pipe(takeUntil(this._unsubscribe$))
                 .subscribe({
                     next: (data) => {
-                        this.data = Array.isArray(this._evaluacionApiService.rubrica) ? this._evaluacionApiService.rubrica[0] : undefined
+                        this.data = Array.isArray(data) ? data[0] : undefined
                         console.log(this.data)
+                    },
+                })
+        }
+    }
+
+    getRubrica() {
+        if (this.params?.iEvaluacionId) {
+            this._evaluacionApiService
+                .obtenerRubricaEvaluacion(this.params)
+                .pipe(takeUntil(this._unsubscribe$))
+                .subscribe({
+                    next: (data) => {
+                        this.data = Array.isArray(data) ? data[0] : undefined
+                        console.log(this.data)
+
+                        if (this.data.iEstado) {
+                            this.router.navigate([], {
+                                queryParams: {
+                                    iEstado: this.data.iEstado,
+                                },
+                                queryParamsHandling: 'merge',
+                            })
+                        }
                     },
                 })
         }
@@ -74,7 +126,9 @@ export class RubricaEvaluacionComponent implements OnInit, OnDestroy {
             const sumaMaximos = criterios.reduce((acumulador, criterio) => {
                 // Obtener el valor máximo en el array "niveles"
                 const maxValor = Math.max(
-                    ...criterio.niveles.map((nivel) => nivel.iNivelEvaValor)
+                    ...(criterio?.niveles?.map(
+                        (nivel) => nivel.iNivelEvaValor ?? 0
+                    ) ?? [0])
                 )
                 return acumulador + maxValor
             }, 0)

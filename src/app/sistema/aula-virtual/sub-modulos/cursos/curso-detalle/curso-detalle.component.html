@@ -48,7 +48,12 @@
     <div class="curso-detalle__content">
         @switch (tab) {
             @case ('inicio') {
-                <app-tab-inicio></app-tab-inicio>
+                <app-tab-inicio
+                    [_iSilaboId]="iSilaboId"
+                    [iCursoId]="curso?.iCursoId"
+                    [idDocCursoId]="curso?.idDocCursoId"
+                    [curso]="curso"
+                ></app-tab-inicio>
             }
             @case ('contenido') {
                 <app-tab-contenido

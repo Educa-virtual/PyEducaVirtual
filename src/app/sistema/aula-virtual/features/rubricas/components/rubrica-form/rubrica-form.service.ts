@@ -53,7 +53,7 @@ export class RubricaFormService {
                 nivelesFormArray.clear()
                 this.firstRender = false
             }
-            
+
             niveles.forEach((nivel) => {
                 const nivelFormGroup = this.nivelForm()
                 nivelFormGroup.patchValue(nivel)
@@ -136,7 +136,6 @@ export class RubricaFormService {
             'criterios'
         ) as FormArray
 
-
         criterios.forEach((criterio) => {
             // patch niveles
             const niveles = criterio.niveles ?? []
@@ -145,7 +144,6 @@ export class RubricaFormService {
                 'niveles'
             ) as FormArray
 
-            
             niveles.forEach((nivel) => {
                 const nivelFormGroup = this.nivelForm()
                 nivelFormGroup.patchValue(nivel)
@@ -159,10 +157,12 @@ export class RubricaFormService {
 
     duplicarCriterioToForm(index: number) {
         const criterios = this.rubricaForm.get('criterios') as FormArray
-        const duplicado = criterios.at(index).value
-        duplicado.iCriterioId = 0
+        const original = criterios.at(index).value
 
-        duplicado.niveles.map((nivel) => {
+        const duplicado = JSON.parse(JSON.stringify(original))
+
+        duplicado.iCriterioId = 0
+        duplicado.niveles.forEach((nivel) => {
             nivel.iNivelEvaId = 0
         })
 

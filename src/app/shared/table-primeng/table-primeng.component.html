@@ -69,7 +69,11 @@
     <ng-template pTemplate="header" let-columns>
         <tr class="text-uppercase">
             @for (col of columnasSeleccionadas; track $index) {
-                <th [pSortableColumn]="col.field" [style.width]="col.width" [pSortableColumnDisabled]="enableCellSelection">
+                <th
+                    [pSortableColumn]="col.field"
+                    [style.width]="col.width"
+                    [pSortableColumnDisabled]="enableCellSelection"
+                >
                     @switch (col.type) {
                         @case ('actions') {
                             <div [style.text-align]="col.text_header">
@@ -88,8 +92,10 @@
                         @default {
                             <div [style.text-align]="col.text_header" class="">
                                 <span> {{ col.header }}</span>
-                                @if (!enableCellSelection) {
-                                    <p-sortIcon [field]="col.header"></p-sortIcon>
+                                @if (showSortIcon) {
+                                    <p-sortIcon
+                                        [field]="col.header"
+                                    ></p-sortIcon>
                                 }
                             </div>
                         }
@@ -107,10 +113,18 @@
     >
         <tr [pSelectableRow]="rowData" [ngClass]="getClass(rowData, 'class')">
             @for (col of columnasSeleccionadas; track $index; let i = $index) {
-                <td (click)="enableCellSelection && selectCell(col, col.field, rowData)" [ngClass]="{
-                    'SELECTED-CELL': enableCellSelection && isCellSelected(rowData.values[col.field]?.iNivelEvaId),
-                    'cursor-pointer': enableCellSelection
-                }">
+                <td
+                    (click)="
+                        enableCellSelection &&
+                            selectCell(col, col.field, rowData)
+                    "
+                    [ngClass]="{
+                        'SELECTED-CELL':
+                            (enableViewSelections || enableCellSelection) &&
+                            rowData.values?.[col.field]?.logros !== null,
+                        'cursor-pointer': enableCellSelection,
+                    }"
+                >
                     @if (col.type === 'expansion') {
                         <button
                             type="button"

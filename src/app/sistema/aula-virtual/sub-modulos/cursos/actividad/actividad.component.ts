@@ -23,6 +23,7 @@ import { ForoRoomComponent } from '../../actividades/actividad-foro/foro-room/fo
 })
 export class ActividadComponent implements OnInit {
     @Input() ixActivadadId: string
+    @Input() iProgActId: string
     public iActTopId: tipoActividadesKeys
 
     private _router = inject(Router)

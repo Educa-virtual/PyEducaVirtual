@@ -1,7 +1,7 @@
 <article class="card p-0 border-1 surface-border overflow-hidden">
     <div class="area__image-container">
         <img
-            src="assets/demo/images/matemit/800_imagen.jpg"
+            src="assets/demo/images/product/bamboo-watch.jpg"
             [alt]="area.nombre"
             class="w-full h-full"
         />
@@ -11,19 +11,10 @@
         <h3 class="text-xl">
             {{ area.nombre }} {{ area.grado }} {{ area.seccion }}
         </h3>
-        <p class="">
-            {{ area.descripcion }}
-        </p>
     </div>
 
     <footer class="p-3 pt-0 flex align-items-center justify-content-between">
-        <span>{{ area.totalEstudiantes }} studiantes</span>
-        <!-- <p-button
-            icon="pi pi-external-link"
-            pTooltip="Matriz"
-            (click)="generarPdfMatriz(_iEvaluacionId, area)"
-        >
-        </p-button> -->
+        <span>{{ area.cantidad }} Preguntas</span>
         <p-button
             icon="pi pi-file-pdf"
             pTooltip="Descargar Matriz"
@@ -43,11 +34,5 @@
             icon="pi pi-external-link"
             pTooltip="Banco de Preguntas"
         ></p-button>
-
-        <!-- <p-button
-            (onClick)="irABancoPreguntas(area)"
-            icon="pi pi-external-link"
-            pTooltip="Banco de Preguntas"
-        ></p-button> -->
     </footer>
 </article>

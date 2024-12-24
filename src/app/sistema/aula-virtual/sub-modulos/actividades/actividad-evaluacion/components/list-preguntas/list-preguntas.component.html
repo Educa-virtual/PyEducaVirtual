@@ -1,7 +1,7 @@
 <div class="grid mt-4">
     <div class="col-12 md:col-8">
         <h4 class="m-0 text-uppercase text-primary">
-            Nombre de la Evaluación:{{ data.cEvaluacionTitulo }}
+            Nombre de la Evaluación: {{ data.cEvaluacionTitulo }}
         </h4>
     </div>
     <div class="col-12 md:col-4" align="right">
@@ -57,30 +57,32 @@
         <app-aula-banco-preguntas
             [mode]="'SELECTION'"
             [iEvaluacionId]="data.iEvaluacionId"
-            [iCursoId]="data.iCursoId"
+            [iCursoId]="curso.iCursoId"
             (selectedRowDataChange)="selectedRowDataChange($event)"
         />
     }
-
-    <div class="flex justify-content-end gap-2 pt-3">
-        <button
-            pButton
-            pRipple
-            label="Cancelar"
-            icon="pi pi-times"
-            class="p-button-secondary"
-            type="button"
-            size="small"
-        ></button>
-        <button
-            pButton
-            pRipple
-            label="Agregar preguntas seleccionadas"
-            icon="pi pi-check"
-            size="small"
-            class="p-button-primary"
-        ></button>
-    </div>
+    <ng-template pTemplate="footer">
+        <div class="flex justify-content-end gap-2 pt-3">
+            <button
+                pButton
+                pRipple
+                label="Cancelar"
+                icon="pi pi-times"
+                class="p-button-secondary"
+                type="button"
+                size="small"
+            ></button>
+            <button
+                pButton
+                pRipple
+                label="Agregar preguntas seleccionadas"
+                icon="pi pi-check"
+                size="small"
+                class="p-button-primary"
+                (click)="agregarPreguntas()"
+            ></button>
+        </div>
+    </ng-template>
 </p-dialog>
 
 <p-dialog
@@ -181,4 +183,11 @@
     [curso]="curso"
     [idEncabPregId]="idEncabPregId"
     (accionBtnItem)="accionBtn($event)"
+    [data]="detallePreguntas"
 ></app-preguntas-form>
+<app-view-preguntas
+    [showDetallePregunta]="showDetallePregunta"
+    [detallePreguntas]="detallePreguntas"
+    [titulo]="tituloDetallePregunta"
+    (accionBtnItem)="showDetallePregunta = false"
+></app-view-preguntas>

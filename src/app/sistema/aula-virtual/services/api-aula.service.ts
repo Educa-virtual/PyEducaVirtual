@@ -197,14 +197,14 @@ export class ApiAulaService {
                 { params }
             )
             .pipe(
-                map((resp) => resp.data),
-                map((data) => {
-                    if (data.iActTipoId == 3) {
-                        const preguntas = mapItemsBancoToEre(data.preguntas)
-                        data.preguntas = mapData(preguntas)
-                    }
-                    return data
-                })
+                map((resp) => resp.data)
+                // map((data) => {
+                //     if (data.iActTipoId == 3) {
+                //         const preguntas = mapItemsBancoToEre(data.preguntas)
+                //         data.preguntas = mapData(preguntas)
+                //     }
+                //     return data
+                // })
             )
     }
     habilitarCalificacion(data) {
@@ -248,7 +248,7 @@ export class ApiAulaService {
         )
         //.pipe(map((resp) => resp.data))
     }
-    generarReporteDeLogrosPdf(params: { iIeCursoId }) {
+    generarReporteDeLogrosPdf(params: { iIeCursoId; idDocCursoId }) {
         return this._http.get(
             `${this.baseUrlApi}/aula-virtual/Resultado/reporteDeLogros`,
             {
@@ -257,20 +257,39 @@ export class ApiAulaService {
             } // Asegúrate de que el responseType esté como 'blob'
         )
     }
-    // generarPdfMatrizbyEvaluacionId(
-    //     _iEvaluacionIdtoMatriz: number,
-    //     areas: string // Cambié el nombre a 'areas'
-    // ): Observable<any> {
-    //     console.log('Parámetros enviados al backend:', areas)
-    //     return this.http.get(
-    //         ${this.baseUrl}/ere/Evaluaciones/generarPdfMatrizbyEvaluacionId,
-    //         {
-    //             params: {
-    //                 iEvaluacionId: _iEvaluacionIdtoMatriz.toString(),
-    //                 areas: areas, // Usa 'areas' aquí para coincidir con el nombre esperado por el backend
-    //             },
-    //             responseType: 'blob' as 'json', // Asegúrate de que el responseType esté como 'blob'
-    //         }
-    //     )
-    // }
+    generarReporteDeLogroFinalDeYear(params: { iSedeId }) {
+        return this._http.get(
+            `${this.baseUrlApi}/aula-virtual/Resultado/reporteDeLogroFinalXYear`,
+            {
+                params, // Enviar los datos como parámetros
+            }
+        )
+    }
+    generarReporteDeLogrosAlcanzadosXYear(params: {
+        iSedeId
+        datosEstudiante
+        datosCursoEstudiante
+    }) {
+        return this._http.get(
+            `${this.baseUrlApi}/aula-virtual/Resultado/generarReporteDeLogrosAlcanzadosXYear`,
+            {
+                params, // Enviar los datos como parámetros
+                responseType: 'blob', // Indicar que la respuesta será un archivo Blob
+            }
+        )
+    }
+    guardarAnucio(data) {
+        return this._http.post(
+            `${this.baseUrlApi}/aula-virtual/Anuncio/guardarAnuncio`,
+            data
+        )
+    }
+    obtenerAnunciosDocnt(params: { iForoCatId; iDocenteId }) {
+        return this._http.get(
+            `${this.baseUrlApi}/aula-virtual/Anuncio/obtenerAnunciosXDocente`,
+            {
+                params, // Enviar los datos como parámetros
+            }
+        )
+    }
 }

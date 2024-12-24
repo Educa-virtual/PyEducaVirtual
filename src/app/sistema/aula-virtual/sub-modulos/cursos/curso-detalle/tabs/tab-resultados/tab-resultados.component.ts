@@ -43,6 +43,7 @@ import { CommonInputComponent } from '@/app/shared/components/common-input/commo
 import { ButtonModule } from 'primeng/button'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { TabsKeys } from '../tab.interface'
+import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
 @Component({
     selector: 'app-tab-resultados',
     standalone: true,
@@ -130,6 +131,8 @@ export class TabResultadosComponent implements OnInit {
     campos: string
     where: number
     iPerfilId: number
+    public DOCENTE = DOCENTE
+    public ESTUDIANTE = ESTUDIANTE
     iDocenteId: number
     private unsbscribe$ = new Subject<boolean>()
 
@@ -143,6 +146,7 @@ export class TabResultadosComponent implements OnInit {
         iEscalaCalifIdPeriodo1: ['', [Validators.required]],
     })
     public conclusionDescrp: FormGroup = this._formBuilder.group({
+        iEscalaCalifId: ['', [Validators.required]],
         cDetMatConclusionDescPromedio: ['', [Validators.required]],
     })
     constructor(private messageService: MessageService) {}
@@ -188,14 +192,14 @@ export class TabResultadosComponent implements OnInit {
             text_header: 'center',
             text: 'center',
         },
-        // {
-        //     type: 'text',
-        //     width: '10rem',
-        //     field: 'iEscalaCalifIdPeriodo4',
-        //     header: 'Promedio 04',
-        //     text_header: 'center',
-        //     text: 'center',
-        // },
+        {
+            type: 'text',
+            width: '10rem',
+            field: 'iEscalaCalifIdPromedio',
+            header: 'Promedio Final',
+            text_header: 'center',
+            text: 'center',
+        },
         {
             type: 'text',
             width: '10rem',
@@ -255,9 +259,12 @@ export class TabResultadosComponent implements OnInit {
     //exportar en pdf el reporte de notas finales:
     generarReporteDeLogrosPdf() {
         const value = this.iCursoId
+        const idDocente = this.idDocCursoId
+        console.log('idDocente', this.idDocCursoId)
         this._aulaService
             .generarReporteDeLogrosPdf({
                 iIeCursoId: value,
+                idDocCursoId: idDocente,
             })
             .subscribe(
                 (response) => {
@@ -374,7 +381,7 @@ export class TabResultadosComponent implements OnInit {
         //console.log('Unidad Seleccionada', item)
         console.log('Indice de la Unidad', idx)
     }
-    // muestra las notas del curso
+    // muestra las notas del curso x trimestre
     reporteNotasFinales: any[] = []
     obtenerReporteDenotasFinales() {
         console.log('idCurso:', this.iCursoId)
@@ -397,6 +404,7 @@ export class TabResultadosComponent implements OnInit {
         const conclusionDescrpLimpia = this.limpiarHTML(
             conclusionDescrp.cDetMatConclusionDescPromedio
         )
+        const idEscala = conclusionDescrp.iEscalaCalifId
         const where = [
             {
                 COLUMN_NAME: 'iDetMatrId',
@@ -404,6 +412,7 @@ export class TabResultadosComponent implements OnInit {
             },
         ]
         const registro: any = {
+            iEscalaCalifIdPromedio: idEscala,
             cDetMatConclusionDescPromedio: conclusionDescrpLimpia,
         }
         this._aulaService

@@ -6,6 +6,7 @@ import {
     Input,
     OnInit,
     signal,
+    OnChanges,
 } from '@angular/core'
 import { RemoveHTMLPipe } from '@/app/shared/pipes/remove-html.pipe'
 import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-evaluaciones.service'
@@ -20,6 +21,7 @@ import { EvaluacionHeaderComponent } from '../components/evaluacion-header/evalu
 import { NoDataComponent } from '../../../../../../../shared/no-data/no-data.component'
 import { SharedAnimations } from '@/app/shared/animations/shared-animations'
 import { RubricaCalificarComponent } from '@/app/sistema/aula-virtual/features/rubricas/components/rubrica-calificar/rubrica-calificar.component'
+import { Router } from '@angular/router'
 interface Leyenda {
     total: number
     text: string
@@ -77,9 +79,10 @@ const leyendas = {
     providers: [DialogService],
     animations: [SharedAnimations],
 })
-export class EvaluacionRoomCalificacionComponent implements OnInit {
+export class EvaluacionRoomCalificacionComponent implements OnInit, OnChanges {
     @Input({ required: true }) evaluacion
     @Input({ required: true }) iEvaluacionId: string
+    @Input() iEstado: number
 
     isExpand = false
     private _state = signal<EstudianteState>({
@@ -120,10 +123,22 @@ export class EvaluacionRoomCalificacionComponent implements OnInit {
     showListaEstudiantes: boolean = true
 
     updateSelectedEstudiante(value: any) {
-        this._state.update((state) => ({
-            ...state,
-            selectedEstudiante: value,
-        }))
+        this._state.update((state) => {
+            console.log('selectedEstudiante')
+            console.log(value)
+            this.router.navigate([], {
+                queryParams: {
+                    // iEvalPromId: value.iEvalPromId ?? undefined,
+                    iEstudianteId: value.iEstudianteId ?? undefined,
+                },
+                queryParamsHandling: 'merge',
+            })
+
+            return {
+                ...state,
+                selectedEstudiante: value,
+            }
+        })
     }
 
     get selectedEstudianteValue() {
@@ -135,11 +150,22 @@ export class EvaluacionRoomCalificacionComponent implements OnInit {
     private _dialogService = inject(DialogService)
     private _unsubscribe$ = new Subject<boolean>()
 
+    private router = inject(Router)
+
     public leyendasOrden = ['REVISADO', 'PROCESO', 'FALTA']
 
     constructor() {}
     ngOnInit() {
         this.getData()
+    }
+    ngOnChanges(changes) {
+        if (changes.iEstado?.currentValue) {
+            this.iEstado = changes.iEstado?.currentValue
+
+            if (this.iEstado === 2) {
+                this.getData()
+            }
+        }
     }
 
     getData() {

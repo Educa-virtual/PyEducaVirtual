@@ -16,31 +16,52 @@ import { BancoPreguntasModule } from './banco-preguntas.module'
 import { BancoPreguntaListaComponent } from './components/banco-pregunta-lista/banco-pregunta-lista.component'
 import { BancoPreguntasFormContainerComponent } from './banco-preguntas-form-container/banco-preguntas-form-container.component'
 import { CompartirFormularioEvaluacionService } from '../../services/ereEvaluaciones/compartir-formulario-evaluacion.service'
-
+import { GeneralService } from '@/app/servicios/general.service'
+import { DomSanitizer } from '@angular/platform-browser'
 // import { AulaBancoPreguntasComponent } from '@/app/sistema/aula-virtual/sub-modulos/aula-banco-preguntas/aula-banco-preguntas/aula-banco-preguntas.component'
+import { MenuItem, MessageService } from 'primeng/api'
+import { IArea } from '../areas/interfaces/area.interface'
+import { CompartirIdEvaluacionService } from '../../services/ereEvaluaciones/compartir-id-evaluacion.service'
+import { MenuModule } from 'primeng/menu'
+import { DialogModule } from 'primeng/dialog'
+import { CommonModule } from '@angular/common'
 @Component({
     selector: 'app-ere-preguntas',
     templateUrl: './banco-preguntas.component.html',
     standalone: true,
-    imports: [BancoPreguntasModule, BancoPreguntaListaComponent],
+    imports: [
+        BancoPreguntasModule,
+        BancoPreguntaListaComponent,
+        MenuModule,
+        DialogModule,
+        CommonModule,
+    ],
+    providers: [GeneralService],
     styleUrls: ['./banco-preguntas.component.scss'],
 })
 export class BancoPreguntasComponent implements OnInit, OnDestroy {
-    // Injeccion de dependencias
     private _dialogService = inject(DialogService)
     private _apiEre = inject(ApiEvaluacionesRService)
     private _apiEvaluacionesR = inject(ApiEvaluacionesRService)
     private _confirmationModalService = inject(ConfirmationModalService)
     private _route = inject(ActivatedRoute)
-
+    queryParams: any = {}
+    areaId: string | null = null
     nombreCurso: string | null = null
     grado: string | null = null
     nivel: string | null = null
     seccion: string | null = null
-
-    private unsubscribe$: Subject<boolean> = new Subject()
-
-    public area = {
+    nombrecEvaluacion: string | null = null
+    area: IArea | null = null // Declara la propiedad
+    public iEvaluacionId!: number // Propiedad para almacenar el ID de evaluación
+    public iPreguntaId!: number // Propiedad para almacenar el ID de evaluación
+    preguntasSeleccionadas: any // Aquí se guardarán las preguntas seleccionadas
+    preguntasInformacionBanco: any // Aquí se guardarán las preguntas seleccionadas
+    bancoPregunta: any
+    preguntasInformacion: any[] = [] // Aquí se guardarán las preguntas seleccionadas
+    unsubscribe$: Subject<boolean> = new Subject()
+    private _MessageService = inject(MessageService)
+    public areax = {
         nombreCurso: '',
         grado: '',
         seccion: '',
@@ -53,17 +74,23 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
     public nombreEvaluacion = []
     public tipoPreguntas = []
     public expandedRowKeys = {}
-
     public params = {
         bPreguntaEstado: -1,
-        iCursoId: 1,
+        iCursosNivelGradId: 0,
         iNivelTipoId: 1,
         iTipoPregId: 0,
-        iEvaluacionId: 0,
     }
-
+    public showModalBancoPreguntas: boolean = false
+    public mostrarModalBaPrInformacion: boolean = false
+    areas: any[] = []
     selectedItems = []
-    // acciones Contenedor
+    public iEvaluacionIdS: number | null = null
+    public informacionPregunta: any = null
+    public informacinoBanco: any = null
+    dataSeleccionado: any[] = [] // Aquí se guardarán las preguntas seleccionadas
+    selectedItemsForm = []
+    preguntaSelecionada: any[] = []
+    preguntastocursos = []
     accionesPrincipal: IActionContainer[] = [
         {
             labelTooltip: 'Word',
@@ -73,19 +100,8 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             class: 'p-button-info',
         },
         {
-            labelTooltip: 'Asignar Matriz',
-            text: 'Asignar Matriz',
-            icon: {
-                name: 'matGroupWork',
-                size: 'xs',
-                color: '',
-            },
-            accion: 'asignar',
-            class: 'p-button-primary',
-        },
-        {
             labelTooltip: 'Agregar Pregunta',
-            text: 'Agregar Preguntass',
+            text: 'Agregar Preguntas',
             icon: 'pi pi-plus',
             accion: 'agregar',
             class: 'p-button-secondary',
@@ -97,52 +113,29 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
     // Columnas Tabla Banco Preguntas
     columnas: IColumn[] = [
         {
-            field: '',
+            field: 'checked',
             header: '',
-            type: 'expansion',
-            width: '2rem',
+            type: 'checkbox',
+            width: '5rem',
             text: 'left',
-            text_header: 'left',
+            text_header: '',
+        },
+
+        {
+            field: 'cPregunta',
+            header: 'Pregunta',
+            type: 'text',
+            width: '5rem',
+            text: 'left',
+            text_header: 'Pregunta',
         },
         {
-            field: 'cEncabPregTitulo',
+            field: 'iEncabPregId',
             header: 'Encabezado',
             type: 'text',
             width: '5rem',
             text: 'left',
             text_header: 'Encabezado',
-        },
-        {
-            field: 'cTipoPregDescripcion',
-            header: 'Tipo Pregunta',
-            type: 'text',
-            width: '5rem',
-            text: 'left',
-            text_header: 'Tipo Pregunta',
-        },
-        {
-            field: 'time',
-            header: 'Tiempo',
-            type: 'text',
-            width: '5rem',
-            text: 'left',
-            text_header: 'Tiempo',
-        },
-        {
-            field: 'iPreguntaPeso',
-            header: 'Puntaje',
-            type: 'text',
-            width: '5rem',
-            text: 'left',
-            text_header: 'Puntaje',
-        },
-        {
-            field: 'iPreguntaNivel',
-            header: 'Nivel',
-            type: 'text',
-            width: '5rem',
-            text: 'left',
-            text_header: 'Nivel',
         },
         {
             field: 'cPreguntaClave',
@@ -153,18 +146,6 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             text_header: 'Clave',
         },
         {
-            field: 'bPreguntaEstado',
-            header: 'Estado',
-            type: 'estado',
-            width: '5rem',
-            text: 'left',
-            text_header: 'Estado',
-            customFalsy: {
-                trueText: 'Con Matriz',
-                falseText: 'Sin Matriz',
-            },
-        },
-        {
             field: '',
             header: 'Acciones',
             type: 'actions',
@@ -172,10 +153,44 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             text: 'left',
             text_header: '',
         },
+    ]
+    columnasSelect: IColumn[] = [
         {
             field: 'checked',
             header: '',
             type: 'checkbox',
+            width: '5rem',
+            text: 'left',
+            text_header: '',
+        },
+        {
+            field: 'cPregunta',
+            header: 'Pregunta',
+            type: 'text',
+            width: '5rem',
+            text: 'left',
+            text_header: 'Pregunta',
+        },
+        {
+            field: 'iEncabPregId',
+            header: 'Encabezado',
+            type: 'text',
+            width: '5rem',
+            text: 'left',
+            text_header: 'Encabezado',
+        },
+        {
+            field: 'cPreguntaClave',
+            header: 'Clave',
+            type: 'text',
+            width: '5rem',
+            text: 'left',
+            text_header: 'Clave',
+        },
+        {
+            field: '',
+            header: 'Acciones',
+            type: 'actions',
             width: '5rem',
             text: 'left',
             text_header: '',
@@ -199,57 +214,133 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             class: 'p-button-rounded p-button-danger p-button-text',
         },
         {
-            labelTooltip: 'Asignar Matriz',
-            icon: {
-                name: 'matGroupWork',
-                size: 'xs',
-            },
-            accion: 'asignar',
+            labelTooltip: 'Ver',
+            icon: 'pi pi-eye',
+            accion: 'ver',
             type: 'item',
-            class: 'p-button-rounded p-button-primary p-button-text',
+            class: 'p-button-rounded p-button-warning p-button-text',
+        },
+    ]
+    public accionesTablaSelect: IActionTable[] = [
+        {
+            labelTooltip: 'Ver',
+            icon: 'pi pi-eye',
+            accion: 'ver',
+            type: 'item',
+            class: 'p-button-rounded p-button-warning p-button-text',
+        },
+    ]
+
+    tiposAgrecacionPregunta: MenuItem[] = [
+        {
+            label: 'Nueva Pregunta',
+            icon: 'pi pi-plus',
+            command: () => {
+                // this.handleNuevaPregunta()
+                this.agregarEditarPregunta({
+                    iPreguntaId: 0,
+                    preguntas: [],
+                    iEncabPregId: -1,
+                })
+            },
+        },
+        {
+            label: 'Del banco de preguntas',
+            icon: 'pi pi-plus',
+            command: () => {
+                this.handleBancopregunta()
+            },
         },
     ]
     constructor(
-        private compartirFormularioEvaluacionService: CompartirFormularioEvaluacionService
-    ) {}
+        private compartirFormularioEvaluacionService: CompartirFormularioEvaluacionService,
+        private compartirIdEvaluacionService: CompartirIdEvaluacionService,
+        private query: GeneralService,
+        private sanitizer: DomSanitizer,
+        private route: ActivatedRoute
+    ) {
+        // Obtener el areaId dinámicamente desde la ruta
+        this.areaId = this.route.snapshot.paramMap.get('areaId')
+        console.log('Areas Id:', this.areaId)
+
+        // Si el areaId es válido, asignarlo a iCursosNivelGradId
+        if (this.areaId) {
+            this.params.iCursosNivelGradId = parseInt(this.areaId) // Convertirlo a número si es necesario
+        }
+    }
 
     ngOnInit() {
         this.getParamsByUrl()
         this.initializeData()
-        //this.fetchInitialData()
-        //this.obtenerBancoPreguntas()
-        this.obtenerDesempenos()
-        this.obtenerTipoPreguntas()
-        // Capturamos el parámetro iEvaluacionId de la URL
-        this._route.queryParams.subscribe((params) => {
-            this.evaluaciones = params['iEvaluacionId']
-            console.log(
-                'iEvaluacionId recibido en BancoPreguntasComponent:',
-                this.evaluaciones
-            )
-            this.nombreEvaluacion = params['nombreEvaluacion']
-            console.log(
-                'NombreEvaluacion recibido en BancoPreguntasComponent:',
-                this.nombreEvaluacion
-            )
+        this.fetchInitialData()
+        //this.getTipoAmbiente()
+
+        this.iEvaluacionIdS = this.compartirIdEvaluacionService.iEvaluacionId
+        console.log(
+            'Evaluacion Servicio ---->',
+            this.compartirIdEvaluacionService.iEvaluacionId
+        )
+        // Capturar el parámetro de la URL
+        this.areaId = this.route.snapshot.paramMap.get('areaId')
+        console.log('Areas Id:', this.areaId)
+
+        // Capturar los parámetros de consulta (queryParams)
+        this.route.queryParams.subscribe((params) => {
+            this.queryParams = params
+            // Construir el objeto area de tipo IArea
+            const area: IArea = {
+                id: this.areaId,
+                nombre: params['nombreCurso'],
+                seccion: params['seccion'],
+                grado: params['grado'],
+                nivel: params['nivel'],
+                descripcion: params['descripcion'] || 'Sin descripción', // Valor por defecto si no está disponible
+                totalEstudiantes: parseInt(
+                    params['totalEstudiantes'] || '0',
+                    10
+                ),
+                cantidad: 0,
+            }
+            this.iEvaluacionId = +params['iEvaluacionId'] // Asegúrate de convertir el valor a número
+            console.log('Params:', this.queryParams)
+            console.log('Objeto IArea:', area)
+
+            console.log('ID de Evaluación:', this.iEvaluacionId)
         })
-        this.nombreCurso =
+
+        //Capturamos el parámetro iEvaluacionId de la URL
+        // this._route.queryParams.subscribe((params) => {
+        //     this.evaluaciones = params['iEvaluacionId']
+        //     this.nombreEvaluacion = params['nombreEvaluacion']
+        // })
+
+        this.nombrecEvaluacion =
             this.compartirFormularioEvaluacionService.getcEvaluacionNombre()
         this.grado = this.compartirFormularioEvaluacionService.getGrado()
         this.nivel = this.compartirFormularioEvaluacionService.getNivel()
         this.seccion = this.compartirFormularioEvaluacionService.getSeccion()
 
         console.log('Datos recibidos:', {
-            nombreCurso: this.nombreCurso,
+            nombrecEvaluacion: this.nombrecEvaluacion,
             grado: this.grado,
             nivel: this.nivel,
             seccion: this.seccion,
         })
-    }
+        //!
 
+        this.obtenerPreguntaSeleccionada(this.iEvaluacionId)
+        this.compartirFormularioEvaluacionService.getAreasId()
+        console.log(
+            'ID de área:',
+            this.compartirFormularioEvaluacionService.getAreasId()
+        )
+    }
+    handleBancopregunta() {
+        this.showModalBancoPreguntas = true
+    }
     getParamsByUrl() {
         this._route.queryParams.subscribe((params) => {
-            this.area = {
+            this.areax = {
                 nombreCurso: params['nombreCurso'],
                 grado: params['grado'] ?? '',
                 seccion: params['seccion'] ?? '',
@@ -303,23 +394,252 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
     }
 
     obtenerBancoPreguntas() {
+        // Obtener el areaId dinámicamente desde la ruta
+        this.areaId = this.route.snapshot.paramMap.get('areaId')
+        console.log('Areas Id:', this.areaId)
+
+        // Si el areaId es válido, asignarlo a iCursosNivelGradId
+        if (this.areaId) {
+            this.params.iCursosNivelGradId = parseInt(this.areaId) // Convertirlo a número si es necesario
+        }
+
+        // Llamar a la API para obtener el banco de preguntas
         this._apiEre
             .obtenerBancoPreguntas(this.params)
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
                 next: (data) => {
-                    this.data = data
+                    console.log('Datos completos de banco de preguntas:', data)
+
+                    // Filtrar las preguntas por iCursosNivelGradId
+                    this.data = data.filter(
+                        (item) =>
+                            item.iCursosNivelGradId ===
+                            this.params.iCursosNivelGradId
+                    )
+
+                    // Expandir automáticamente las filas si es necesario
                     this.data.forEach((item) => {
                         this.expandedRowKeys[item.iPreguntaId] = true
                     })
-
                     this.expandedRowKeys = Object.assign(
                         {},
                         this.expandedRowKeys
                     )
-                    console.log('Datos de obtener banco preguntas:', data)
+                    console.log(
+                        'Datos filtrados de banco de preguntas:',
+                        this.data
+                    )
                 },
             })
+        console.log('Parámetros enviados:', this.params)
+    }
+    onRowSelectionChange(event: any) {
+        this.selectedItems
+        console.log('Cambios en selección:', event) // Este evento debería contener las filas seleccionadas
+        console.log('Variable seleccionados:', this.selectedItems)
+    }
+
+    guardarPreguntasSeleccionadas(iEvaluacionId: number) {
+        // Filtrar las preguntas seleccionadas que aún no están en `dataSeleccionado`
+        const nuevasPreguntas = this.selectedItems.filter(
+            (item) =>
+                !this.dataSeleccionado.some(
+                    (seleccionado) =>
+                        seleccionado.iPreguntaId === item.iPreguntaId
+                )
+        )
+
+        // Preparar el payload con todas las preguntas seleccionadas
+        const payload = {
+            iEvaluacionId: iEvaluacionId, // ID de evaluación
+            preguntas: nuevasPreguntas.map((pregunta) => ({
+                iPreguntaId: pregunta.iPreguntaId, // ID de cada pregunta
+            })),
+        }
+        console.log('Payload:', payload)
+        // Enviar el payload al backend en una sola solicitud
+        this._apiEre
+            .insertarPreguntaSeleccionada(payload) // Endpoint que maneja múltiples preguntas
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+                next: (response) => {
+                    console.log('Preguntas guardadas exitosamente:', response)
+
+                    // Actualizar la lista de seleccionados si se guardaron correctamente
+                    this.dataSeleccionado = [
+                        ...this.dataSeleccionado,
+                        ...nuevasPreguntas,
+                    ]
+                },
+                error: (error) => {
+                    console.error('Error al guardar las preguntas:', error)
+                },
+            })
+
+        // Limpiar las preguntas seleccionadas del formulario
+        this.selectedItems = []
+
+        // Log para confirmar el proceso
+        console.log('Payload enviado al backend:', payload)
+        console.log(
+            'Estado actualizado de preguntas seleccionadas:',
+            this.dataSeleccionado
+        )
+    }
+    //!
+    obtenerPreguntaSeleccionada(iEvaluacionId: number) {
+        if (!iEvaluacionId || iEvaluacionId < 0) {
+            console.error(
+                'El parámetro iEvaluacionId no está definido o es inválido'
+            )
+            return
+        }
+
+        // Obtener el areaId dinámicamente desde la ruta
+        this.areaId = this.route.snapshot.paramMap.get('areaId')
+        console.log('Area Id:', this.areaId)
+
+        // Si el areaId es válido, asignarlo a iCursosNivelGradId
+        if (this.areaId) {
+            this.params.iCursosNivelGradId = parseInt(this.areaId) // Convertir el areaId a número
+            console.log(
+                'iCursosNivelGradId asignado:',
+                this.params.iCursosNivelGradId
+            )
+        }
+
+        this._apiEre.obtenerPreguntaSeleccionada(iEvaluacionId).subscribe({
+            next: (data: any[]) => {
+                console.log('Datos sin filtrar:', data) // Verifica los datos originales
+
+                // Convertir ambos valores a string para asegurar la comparación
+                this.preguntasSeleccionadas = data.filter(
+                    (item) =>
+                        item.iCursosNivelGradId.toString() ===
+                        this.params.iCursosNivelGradId.toString()
+                )
+
+                console.log('Datos filtrados:', this.preguntasSeleccionadas)
+            },
+            error: (error) => {
+                console.error(
+                    'Error al obtener las preguntas seleccionadas:',
+                    error
+                )
+            },
+        })
+    }
+    accionVerPreguntas(): void {
+        this._apiEre
+            .obtenerPreguntaInformacion(
+                this.iEvaluacionId,
+                this.selectedItems.map((item) => item.iPreguntaId).join(',')
+            )
+            .subscribe({
+                next: (resp: any) => {
+                    console.log('Respuesta completa de la API:', resp)
+
+                    // Filtrar la respuesta para obtener solo la pregunta seleccionada
+                    const preguntaSeleccionada = resp.find(
+                        (pregunta: any) =>
+                            // pregunta.iPreguntaId ===
+                            // this.informacionPregunta.iPreguntaId
+                            parseInt(pregunta.iPreguntaId) ===
+                            parseInt(this.informacionPregunta.iPreguntaId)
+                    )
+
+                    if (preguntaSeleccionada) {
+                        this.preguntasInformacion = [preguntaSeleccionada] // Asignar la pregunta seleccionada
+                    } else {
+                        this.preguntasInformacion = [] // Si no se encuentra la pregunta, no se muestra nada
+                    }
+
+                    console.log(
+                        'Pregunta seleccionada del Const Pregunta Seleccionada:',
+                        preguntaSeleccionada
+                    )
+                    console.log(
+                        'Pregunta seleccionada de PreguntasInformacion:',
+                        this.preguntasInformacion
+                    )
+                },
+                error: (err) => {
+                    console.error('Error al cargar datos:', err)
+                },
+            })
+    }
+
+    generarPdfMatriz(): void {
+        if (this.selectedItems.length === 0) {
+            this._confirmationModalService.openAlert({
+                header: 'Debe seleccionar al menos una pregunta.',
+            })
+            return
+        }
+
+        let preguntas = []
+
+        // Procesar las preguntas seleccionadas
+        this.selectedItems.forEach((item) => {
+            if (item.iEncabPregId == -1) {
+                preguntas = [...preguntas, item] // Agregar la pregunta directamente si no tiene encabezado
+            } else {
+                preguntas = [...preguntas, ...item.preguntas] // Agregar preguntas anidadas si tienen encabezado
+            }
+        })
+
+        // Crear un array de IDs de preguntas
+        const ids = preguntas.map((item) => item.iPreguntaId).join(',')
+
+        const params = {
+            iEvaluacionId: this.iEvaluacionId,
+            nombreEvaluacion: this.nombrecEvaluacion,
+            areaId: this.areaId,
+            ids,
+            seccion: this.queryParams.seccion,
+            grado: this.queryParams.grado,
+            nivel: this.queryParams.nivel,
+            nombreCurso: this.queryParams.nombreCurso,
+        }
+        console.log('Parametros para el servicio:', params)
+        //!
+        // Llamar al servicio para generar el PDF
+        this._apiEre.generarPdfMatrizbyEvaluacionId(params).subscribe(
+            (response) => {
+                console.log('Respuesta del backend:', response)
+
+                if (response) {
+                    console.log(
+                        'Áreas decodificadas desde Laravel:',
+                        response.areas
+                    )
+                }
+                // Mostrar mensaje de éxito
+                this._MessageService.add({
+                    severity: 'success',
+                    detail: 'Comienza la descarga de la Matriz',
+                })
+
+                // Crear un enlace de descarga para el archivo PDF
+                const blob = response as Blob
+                const link = document.createElement('a')
+                link.href = URL.createObjectURL(blob)
+                link.download = `matriz_evaluacion.pdf`
+                link.click()
+            },
+            (error) => {
+                const errorMessage =
+                    error?.message ||
+                    'No hay datos suficientes para descargar la Matriz'
+
+                // Mostrar mensaje de error
+                this._MessageService.add({
+                    severity: 'error',
+                    detail: errorMessage,
+                })
+            }
+        )
     }
 
     obtenerTipoPreguntas() {
@@ -378,7 +698,8 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
         const ids = preguntas.map((item) => item.iPreguntaId).join(',')
 
         const params = {
-            iCursoId: this.params.iCursoId,
+            // iCursoId: this.params.iCursoId,
+            iCursosNivelGradId: this.params.iCursosNivelGradId,
             ids,
         }
         this._apiEvaluacionesR.generarWordByPreguntasIds(params)
@@ -396,6 +717,13 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
 
         if (accion === 'eliminar') {
             this.eliminarPregunta(item)
+        }
+        if (accion === 'ver') {
+            this.informacionPregunta = item
+            this.mostrarModalBaPrInformacion = true
+            //this.showModalBancoPreguntas = true
+            console.log('Informacion de la pregunta de ITEM', item)
+            this.accionVerPreguntas() // Llamar a la función
         }
     }
 
@@ -454,7 +782,8 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
                 data: {
                     tipoPreguntas: this.tipoPreguntas,
                     pregunta: pregunta,
-                    iCursoId: this.params.iCursoId,
+                    // iCursoId: this.params.iCursoId,
+                    iCursosNivelGradId: this.params.iCursosNivelGradId,
                     iEvaluacionId: this.evaluaciones, // Pasamos iEvaluacionId para el BancoPreguntaFormContainer
                 },
                 header:
@@ -469,7 +798,6 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             }
         })
     }
-
     // desuscribirse de los observables cuando se destruye el componente
     ngOnDestroy(): void {
         this.unsubscribe$.next(true)

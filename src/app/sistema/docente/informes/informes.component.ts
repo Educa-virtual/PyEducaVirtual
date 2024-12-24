@@ -213,6 +213,7 @@ export class InformesComponent implements OnInit {
         // @iYAcadId INT,
         // @iNivelGradoId INT
         const iSedeId = this.perfil['iSedeId']
+        console.log(iSedeId)
         this._aulaService
             .generarReporteDeLogroFinalDeYear({
                 iSedeId: iSedeId,

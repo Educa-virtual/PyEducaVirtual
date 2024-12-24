@@ -98,6 +98,8 @@ tr {
 /*para el borde de la lista*/
 :host ::ng-deep .perfiles-list-item {
     display: flex;
+    // background-color: red;
+    margin: 0%;
     border-radius: 8px; /* Radio del borde */
     border: 1px solid #ccc;
     border-radius: 8px;

@@ -71,7 +71,10 @@
                                             />
                                             <!--class="w-4rem min-h-9 shadow-2 flex-shrink-0 border-round"-->
                                             <div class="perfil-name">
-                                                {{ estudiante?.Estudiante }}
+                                                {{
+                                                    estudiante?.Estudiante
+                                                        | uppercase
+                                                }}
                                             </div>
                                         </div>
                                     </ng-template>

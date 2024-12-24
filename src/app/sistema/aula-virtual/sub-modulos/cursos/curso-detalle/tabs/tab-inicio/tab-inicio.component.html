@@ -135,66 +135,56 @@
                 comentarios
                 pTemplate="listItem"
                 let-i="index"
+                class="templateancios"
             >
                 <!-- Agregar el length -->
                 @if (1 > 0) {
-                    <p-button
-                        [text]="true"
-                        severity="secondary"
-                        class="btnContorno"
-                    >
-                        <div class="perfiles-list-item text-left" tabindex="0">
-                            <div class="perfiles-list-detail">
-                                <div class="flex">
-                                    <div>
-                                        <img
-                                            src="assets/demo/images/matemit/user.png"
-                                            [alt]="respuestas.name"
-                                            class="w-3rem min-h-9 shadow-2 flex-shrink-0 btn"
-                                        />
-                                    </div>
-                                    <div>
-                                        <div class="pb-2 perfil-name">
-                                            <b>
-                                                <span class="user-name">
-                                                    {{ respuestas.cNombres }}
-                                                    {{
-                                                        respuestas?.dtCreado
-                                                            | date: 'short'
-                                                    }}
-                                                </span>
-                                            </b>
-                                        </div>
-                                        <div
-                                            class=""
-                                            style="text-align: justify"
-                                        >
-                                            <span *ngIf="!respuestas.expanded">
+                    <div class="perfiles-list-item text-left" tabindex="0">
+                        <div class="perfiles-list-detail">
+                            <div class="flex">
+                                <div>
+                                    <img
+                                        src="assets/demo/images/matemit/user.png"
+                                        [alt]="respuestas.name"
+                                        class="w-3rem min-h-9 shadow-2 flex-shrink-0 btn"
+                                    />
+                                </div>
+                                <div>
+                                    <div class="pb-2 perfil-name">
+                                        <b>
+                                            <span class="user-name">
+                                                Doc: {{ respuestas.cNombres }} (
                                                 {{
-                                                    respuestas?.cForoDescripcion
-                                                        | slice: 0 : 150
-                                                }}...
-                                            </span>
-
-                                            <!-- Para Leer mas.. -->
-                                            <button
-                                                (click)="
-                                                    toggleExpand(respuestas)
-                                                "
-                                                class="toggle-link"
-                                            >
-                                                {{
-                                                    respuestas.expanded
-                                                        ? 'Leer menos'
-                                                        : 'Leer más'
+                                                    respuestas?.dtCreado
+                                                        | date: 'short'
                                                 }}
-                                            </button>
-                                        </div>
+                                                )
+                                            </span>
+                                        </b>
+                                    </div>
+                                    <div class="" style="text-align: justify">
+                                        <span *ngIf="!respuestas.expanded">
+                                            {{
+                                                respuestas?.cForoDescripcion
+                                                    | slice: 0 : 100
+                                            }}...
+                                        </span>
+                                        <!-- Para Leer mas.. -->
+                                        <button
+                                            (click)="toggleExpand(respuestas)"
+                                            class="toggle-link"
+                                        >
+                                            {{
+                                                respuestas.expanded
+                                                    ? 'Leer menos'
+                                                    : 'Leer más'
+                                            }}
+                                        </button>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </p-button>
+                    </div>
                 } @else {
                     <!-- <app-empty-section
                         class="w-full"

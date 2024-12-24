@@ -1,14 +1,16 @@
 @switch (mode) {
     @case ('SELECTION') {
-        <p-menu #menu [model]="items" [popup]="true" />
-        <button
-            pButton
-            size="small"
-            class="primary"
-            icon="pi pi-plus"
-            label="Agregar Rúbrica"
-            (click)="menu.toggle($event)"
-        ></button>
+        @if (route.queryParams['_value'].iEstado != 2) {
+            <p-menu #menu [model]="items" [popup]="true" />
+            <button
+                pButton
+                size="small"
+                class="primary"
+                icon="pi pi-plus"
+                label="Agregar Rúbrica"
+                (click)="menu.toggle($event)"
+            ></button>
+        }
     }
     @case ('NORMAL') {
         <p-dialog

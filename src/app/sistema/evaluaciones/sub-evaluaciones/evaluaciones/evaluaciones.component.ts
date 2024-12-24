@@ -43,9 +43,16 @@ import {
 } from '@/app/shared/container-page/container-page.component'
 import { CompartirIdEvaluacionService } from './../../services/ereEvaluaciones/compartir-id-evaluacion.service'
 import { PrimengModule } from '@/app/primeng.module'
-import { FormGroup } from '@angular/forms'
+
 import { MessageService } from 'primeng/api'
 import { Router } from '@angular/router'
+//Calendario
+import {
+    FormBuilder,
+    FormControl,
+    FormGroup,
+    ReactiveFormsModule,
+} from '@angular/forms'
 @Component({
     selector: 'app-evaluaciones',
     standalone: true,
@@ -55,6 +62,8 @@ import { Router } from '@angular/router'
         ButtonModule,
         DialogModule,
         InputTextModule,
+        ReactiveFormsModule,
+
         TablePrimengComponent,
         ContainerPageComponent,
         PrimengModule,
@@ -81,7 +90,8 @@ export class EvaluacionesComponent implements OnInit {
     selectedItemsAuto = []
     selectedItems = []
     cursosSeleccionados: any[] = []
-
+    fechaHoraInicio: Date | undefined
+    fechaHoraFin: Date | undefined
     @Output() opcionChange = new EventEmitter<string>()
     @Input() dataRow: any[] = [] // Los datos que recibe la tabla
     @Input() columnasRow: any[] = [] // Las columnas que muestra la tabla
@@ -99,13 +109,18 @@ export class EvaluacionesComponent implements OnInit {
     }
     public data = []
     public showModalCursosEre: boolean = false
+    form: FormGroup
+
     constructor(
         private router: Router,
         private compartirIdEvaluacionService: CompartirIdEvaluacionService,
         private compartirFormularioEvaluacionService: CompartirFormularioEvaluacionService,
         private messageService: MessageService,
-        private cdr: ChangeDetectorRef
-    ) {}
+        private cdr: ChangeDetectorRef,
+        private fb: FormBuilder
+    ) {
+        this.form = this.fb.group({})
+    }
 
     cursoSeleccionado: Map<number, boolean> = new Map()
     iiEvaluacionId: number // El ID de evaluación que quieras usar
@@ -123,26 +138,125 @@ export class EvaluacionesComponent implements OnInit {
         this.compartirFormularioEvaluacionService.setEvaluacionId(
             this.iiEvaluacionId
         )
+
+        this.form.valueChanges.subscribe((value) => {
+            console.log('Form value changes', value)
+        })
     }
     listaCursos: any[] = []
-
+    lista: any
+    objectKeys = Object.keys
     // Método para obtener los cursos seleccionados
-
+    // obtenerCursos(): void {
+    //     if (!this.iiEvaluacionId) {
+    //         console.warn('El ID de evaluación no está definido.')
+    //         return
+    //     }
+    //     // Llamar a searchAmbienteAcademico para obtener los datos estructurados
+    //     this.compartirFormularioEvaluacionService
+    //         .searchAmbienteAcademico()
+    //         .then((lista: any[]) => {
+    //             // Almacenar la lista en la propiedad `this.lista`
+    //             this.lista = lista
+    //             // Obtener los cursos seleccionados y combinarlos
+    //             return this.compartirFormularioEvaluacionService.obtenerCursosSeleccionados()
+    //         })
+    //         .then((cursosSeleccionadosMap: Map<number, boolean>) => {
+    //             // Filtrar solo los cursos seleccionados
+    //             this.listaCursos = this.lista
+    //                 .map((nivel: any) => ({
+    //                     nivel: nivel.nivel,
+    //                     grados: Object.keys(nivel.grados)
+    //                         .map((grado) => ({
+    //                             grado,
+    //                             cursos: nivel.grados[grado].filter(
+    //                                 (curso: any) =>
+    //                                     cursosSeleccionadosMap.get(
+    //                                         curso.iCursoNivelGradId
+    //                                     ) || false // Filtrar solo los seleccionados
+    //                             ),
+    //                         }))
+    //                         .filter((grado: any) => grado.cursos.length > 0), // Filtrar grados sin cursos
+    //                 }))
+    //                 .filter(
+    //                     (nivel: any) => nivel.grados.length > 0 // Filtrar niveles sin grados seleccionados
+    //                 )
+    //             console.log(
+    //                 'Lista de cursos seleccionados y estructurados:',
+    //                 this.listaCursos
+    //             )
+    //         })
+    //         .catch((error) => {
+    //             console.error('Error al obtener los cursos:', error)
+    //         })
+    // }
     obtenerCursos(): void {
-        if (this.iiEvaluacionId !== null) {
-            this.compartirFormularioEvaluacionService
-                .obtenerCursosSeleccionados()
-                .then((cursosAgrupados) => {
-                    this.listaCursos = cursosAgrupados // Almacenar los cursos agrupados
-                    console.log(
-                        'Cursos agrupados y con selección:',
-                        this.listaCursos
-                    )
-                })
-                .catch((error) => {
-                    console.error('Error al obtener cursos:', error)
-                })
+        if (!this.iiEvaluacionId) {
+            console.warn('El ID de evaluación no está definido.')
+            return
         }
+
+        // Llamar a searchAmbienteAcademico para obtener los datos estructurados
+        this.compartirFormularioEvaluacionService
+            .searchAmbienteAcademico()
+            .then((lista: any[]) => {
+                // Almacenar la lista en la propiedad `this.lista`
+                this.lista = lista
+
+                // Obtener los cursos seleccionados y combinarlos
+                return this.compartirFormularioEvaluacionService.obtenerCursosSeleccionados()
+            })
+            .then((cursosSeleccionadosMap: Map<number, boolean>) => {
+                // Estructurar la lista de cursos, eliminando los cursos no seleccionados
+                this.listaCursos = this.lista
+                    .map((nivel: any) => ({
+                        nivel: nivel.nivel,
+                        grados: Object.keys(nivel.grados)
+                            .map((grado) => ({
+                                grado,
+                                cursos: nivel.grados[grado].filter(
+                                    (curso: any) =>
+                                        cursosSeleccionadosMap.get(
+                                            curso.iCursoNivelGradId
+                                        ) || false
+                                ), // Solo seleccionados
+                            }))
+                            .filter((grado: any) => grado.cursos.length > 0), // Filtrar grados sin cursos seleccionados
+                    }))
+                    .filter((nivel: any) => nivel.grados.length > 0) // Filtrar niveles sin grados seleccionados
+
+                console.log(
+                    'Lista de cursos seleccionados y estructurados:',
+                    this.listaCursos
+                )
+
+                this.listaCursos.forEach((nivel) => {
+                    nivel.grados.forEach((grado) => {
+                        grado.cursos.forEach((curso) => {
+                            this.form.addControl(
+                                `${curso.cCursoNombre}${curso.iCursoNivelGradId}Inicio`,
+                                new FormControl()
+                            )
+                            this.form.addControl(
+                                `${curso.cCursoNombre}${curso.iCursoNivelGradId}Fin`,
+                                new FormControl()
+                            )
+                        })
+                    })
+                })
+
+                console.log('Form', this.form)
+            })
+            .catch((error) => {
+                console.error('Error al obtener los cursos:', error)
+            })
+
+        // this.form.addControl('cursosSeleccionados', this.fb.array([]))
+    }
+
+    toggleCurso(curso: any): void {
+        curso.isSelected = !curso.isSelected // Cambiar el estado seleccionado
+        console.log('Estado actualizado del curso:', curso)
     }
     toggleBotonc(): void {
         this.mostrarBoton = !this.mostrarBoton
@@ -558,5 +672,9 @@ export class EvaluacionesComponent implements OnInit {
     }
     modalActivarCursosEre() {
         this.showModalCursosEre = true
+    }
+    ngOnDestroy(): void {
+        this.unsubscribe$.next(true)
+        this.unsubscribe$.complete()
     }
 }

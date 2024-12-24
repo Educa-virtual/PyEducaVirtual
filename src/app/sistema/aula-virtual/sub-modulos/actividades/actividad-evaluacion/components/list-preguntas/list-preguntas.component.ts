@@ -37,7 +37,15 @@ import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmatio
     templateUrl: './list-preguntas.component.html',
     styleUrl: './list-preguntas.component.scss',
 })
+
+/**
+ * Componente para manejar preguntas dentro de una evaluación.
+ * Permite agregar, editar, eliminar y consultar preguntas, además de gestionar las operaciones relacionadas.
+ */
 export class ListPreguntasComponent implements OnChanges {
+    /**
+     * Evento que emite acciones de botones.
+     */
     @Output() accionBtnItem = new EventEmitter()
     private _ApiAulaBancoPreguntasService = inject(ApiAulaBancoPreguntasService)
     private _ConstantesService = inject(ConstantesService)
@@ -46,11 +54,21 @@ export class ListPreguntasComponent implements OnChanges {
     private _GeneralService = inject(GeneralService)
     private _MessageService = inject(MessageService)
     private _ConfirmationModalService = inject(ConfirmationModalService)
-
+    /**
+     * Datos de las preguntas que se están gestionando.
+     */
     @Input() data
+    /**
+     * Datos del curso al que pertenecen las preguntas.
+     */
     @Input() curso
+    /**
+     * ID de la evaluación que se está gestionando.
+     */
     @Input() iEvaluacionId: string
-
+    /**
+     * Estado de visibilidad de diferentes modales.
+     */
     showModal = true
     showModalPreguntas: boolean = false
     showModalBancoPreguntas: boolean = false
@@ -65,6 +83,9 @@ export class ListPreguntasComponent implements OnChanges {
     idEncabPregId
     preguntas = []
     columnas = columnsBancoPreguntas
+    /**
+     * Acciones disponibles para las preguntas.
+     */
     acciones = [
         {
             labelTooltip: 'Agregar Preguntas',
@@ -110,6 +131,10 @@ export class ListPreguntasComponent implements OnChanges {
         cEncabPregTitulo: [],
         cEncabPregContenido: ['', Validators.required],
     })
+    /**
+     * Detecta cambios en las entradas del componente.
+     * @param changes - Cambios detectados en las propiedades de entrada.
+     */
     ngOnChanges(changes) {
         if (changes.data?.currentValue) {
             this.data = changes.data.currentValue
@@ -120,6 +145,9 @@ export class ListPreguntasComponent implements OnChanges {
         }
     }
 
+    /**
+     * Menú con las opciones de adición de preguntas.
+     */
     tiposAgrecacionPregunta: MenuItem[] = [
         {
             label: 'Nueva Pregunta sin Enunciado',
@@ -143,7 +171,10 @@ export class ListPreguntasComponent implements OnChanges {
             },
         },
     ]
-
+    /**
+     * Maneja las acciones de los botones dentro de la lista de preguntas.
+     * @param elemento - Elemento que contiene la acción a realizar.
+     */
     accionBtn(elemento): void {
         const { accion } = elemento
         const { item } = elemento
@@ -199,15 +230,40 @@ export class ListPreguntasComponent implements OnChanges {
                 break
         }
     }
-
+    /**
+     * Muestra el modal del banco de preguntas.
+     *
+     * Este método cambia el valor de la variable `showModalBancoPreguntas` a `true`,
+     * lo que provoca que el modal correspondiente sea visible para el usuario.
+     *
+     * @function
+     * @memberof NombreDelComponente
+     */
     handleBancopregunta() {
         this.showModalBancoPreguntas = true
     }
-
+    /**
+     * Maneja el cambio en los datos de la fila seleccionada.
+     * Esta función actualiza el array `preguntasSeleccionadas` con los datos
+     * de la fila seleccionada, copiando los elementos del evento.
+     *
+     * @param {Object[]} event - El evento que contiene los datos de la fila seleccionada.
+     * @param {Object} event - El objeto del evento, que debe ser una lista o array de objetos.
+     * @returns {void}
+     */
     selectedRowDataChange(event) {
         this.preguntasSeleccionadas = [...event]
     }
 
+    /**
+     * Maneja el cambio en los datos de la fila seleccionada.
+     * Esta función actualiza el array `preguntasSeleccionadas` con los datos
+     * de la fila seleccionada, copiando los elementos del evento.
+     *
+     * @param {Object[]} event - El evento que contiene los datos de la fila seleccionada.
+     * @param {Object} event - El objeto del evento, que debe ser una lista o array de objetos.
+     * @returns {void} - No retorna ningún valor.
+     */
     handleNuevaPregunta(encabezado) {
         if (encabezado) {
             this.showModalEncabezadoPreguntas = true
@@ -216,6 +272,16 @@ export class ListPreguntasComponent implements OnChanges {
             this.showModalPreguntas = true
         }
     }
+    /**
+     * Guarda o actualiza una pregunta con sus alternativas en el sistema.
+     *
+     * @param {Object} data - Los datos de la pregunta y sus alternativas que se desean guardar o actualizar.
+     * @param {string} data.pregunta - La pregunta a guardar o actualizar.
+     * @param {Array} data.alternativas - Las alternativas asociadas a la pregunta.
+     * @param {number} [data.id] - El ID de la pregunta en caso de actualización. Si no se proporciona, se realiza una operación de inserción.
+     *
+     * @returns {void} - No retorna valor. Realiza una petición HTTP para guardar o actualizar los datos en el backend.
+     */
 
     guardarActualizarPreguntaConAlternativas(data) {
         this._ApiAulaBancoPreguntasService
@@ -231,6 +297,15 @@ export class ListPreguntasComponent implements OnChanges {
             })
     }
 
+    /**
+     * Maneja el cambio de archivo cuando se realiza una carga.
+     * Convierte el archivo a FormData y lo envía a un endpoint de backend.
+     * Luego actualiza el valor del campo correspondiente si la carga es exitosa.
+     *
+     * @param {any} evt El evento generado por la acción de cargar un archivo.
+     * @param {any} tipo El tipo de archivo que se está cargando (ej. 'enunciado').
+     * @returns {Promise<void>} Promesa que se resuelve cuando la operación de carga se completa.
+     */
     async onUploadChange(evt: any, tipo: any) {
         const file = evt.target.files[0]
 
@@ -266,7 +341,17 @@ export class ListPreguntasComponent implements OnChanges {
                 .toPromise()
         }
     }
-
+    /**
+     * Convierte un objeto en un FormData para ser enviado en una solicitud HTTP.
+     *
+     * Esta función toma un objeto como argumento, recorre sus claves y valores,
+     * y agrega cada par clave-valor al FormData, asegurándose de que los valores
+     * no sean cadenas vacías antes de agregarlos.
+     *
+     * @param {any} obj - El objeto que se convertirá en FormData. Debe ser un objeto
+     *                    con pares clave-valor donde los valores pueden ser de cualquier tipo.
+     * @returns {FormData} - El FormData generado a partir del objeto proporcionado.
+     */
     objectToFormData(obj: any) {
         const formData = new FormData()
         Object.keys(obj).forEach((key) => {
@@ -277,13 +362,28 @@ export class ListPreguntasComponent implements OnChanges {
 
         return formData
     }
-
+    /**
+     * Abre una nueva ventana o pestaña en el navegador con la ruta proporcionada.
+     *
+     * @param {string} item - El nombre o identificador del recurso que se desea abrir.
+     * @returns {void} - No retorna ningún valor.
+     */
     openLink(item) {
         if (!item) return
         const ruta = environment.backend + '/' + item
         window.open(ruta, '_blank')
     }
 
+    /**
+     * Guarda los datos del encabezado de preguntas en el formulario y realiza una operación de CRUD.
+     *
+     * Esta función asigna los valores a los controles del formulario `formEncabezadoPreguntas`
+     * y luego envía una petición para realizar la operación de guardado utilizando la función
+     * `getInformation`. La información enviada incluye detalles de la evaluación, el docente,
+     * el curso y el ciclo.
+     *
+     * @returns {void} No retorna ningún valor.
+     */
     guardarEncabezadoPreguntas() {
         this.formEncabezadoPreguntas.controls.opcion.setValue(
             'GUARDARxEncabezadoPreguntas'
@@ -307,6 +407,15 @@ export class ListPreguntasComponent implements OnChanges {
         }
         this.getInformation(params, this.formEncabezadoPreguntas.value.opcion)
     }
+    /**
+     * Realiza una consulta para obtener las preguntas del banco de preguntas para una evaluación específica.
+     *
+     * @function obtenerBancoPreguntas
+     * @description Esta función envía una solicitud para obtener el banco de preguntas asociado a una evaluación
+     *              mediante un procedimiento CRUD. Utiliza la ID de la evaluación (iEvaluacionId) para filtrar las preguntas.
+     *
+     * @returns {void} No retorna nada. Realiza una llamada a la función `getInformation` para obtener los datos.
+     */
     obtenerBancoPreguntas() {
         const params = {
             petition: 'post',
@@ -320,6 +429,17 @@ export class ListPreguntasComponent implements OnChanges {
         }
         this.getInformation(params, 'CONSULTARxiEvaluacionId')
     }
+
+    /**
+     * Obtiene información general de un servicio y ejecuta una acción con la respuesta.
+     *
+     * @param {any} params - Parámetros que se pasan al servicio para obtener la información.
+     * @param {string} accion - La acción que se ejecutará con la respuesta obtenida.
+     *
+     * @returns {void}
+     *
+     * @throws {Error} Si ocurre un error al obtener la información, se muestra un mensaje de error.
+     */
     getInformation(params, accion) {
         this._GeneralService.getGralPrefix(params).subscribe({
             next: (response) => {
@@ -337,6 +457,16 @@ export class ListPreguntasComponent implements OnChanges {
         })
     }
 
+    /**
+     * Agrega las preguntas seleccionadas al banco de preguntas y las guarda en la base de datos.
+     *
+     * Este método recorre las preguntas seleccionadas, mapea cada una de ellas con la función `mapLocalPregunta()`,
+     * y luego realiza una solicitud para guardar las preguntas en la base de datos. Finalmente, limpia las preguntas
+     * seleccionadas y actualiza el banco de preguntas.
+     *
+     * @function agregarPreguntas
+     * @returns {void}
+     */
     agregarPreguntas() {
         this.preguntasSeleccionadas.map((item) => {
             item = this.mapLocalPregunta(item)
@@ -363,6 +493,19 @@ export class ListPreguntasComponent implements OnChanges {
         //this.preguntas.push(...this.preguntasSeleccionadas)
     }
 
+    /**
+     * Mapea la pregunta local según su identificador.
+     * Si el identificador de la pregunta es -1, se marca como local y se genera un nuevo ID aleatorio.
+     * Si el identificador no es -1, se agregan preguntas locales adicionales.
+     *
+     * @param {Object} pregunta - El objeto pregunta que se está procesando.
+     * @param {number} pregunta.iEncabPregId - El ID del encabezado de la pregunta.
+     * @param {boolean} [pregunta.isLocal] - Indicador de si la pregunta es local (solo se agrega si iEncabPregId es -1).
+     * @param {number} pregunta.iEvalPregId - El ID de evaluación de la pregunta.
+     * @param {Array} pregunta.preguntas - Lista de preguntas adicionales que se deben procesar si iEncabPregId no es -1.
+     *
+     * @returns {Object} - El objeto pregunta procesado.
+     */
     mapLocalPregunta(pregunta) {
         if (pregunta.iEncabPregId == -1) {
             pregunta.isLocal = true
@@ -372,7 +515,15 @@ export class ListPreguntasComponent implements OnChanges {
         }
         return pregunta
     }
-
+    /**
+     * Función para agregar propiedades a un conjunto de preguntas.
+     *
+     * Esta función mapea un arreglo de preguntas, agregando una propiedad `isLocal` con valor `true`
+     * y generando un ID aleatorio para cada pregunta en la propiedad `iEvalPregId`.
+     *
+     * @param {Array} preguntas - Arreglo de preguntas que se modificarán.
+     * @returns {Array} - Nuevo arreglo de preguntas con las propiedades agregadas.
+     */
     addLocalPreguntas = (preguntas) => {
         return preguntas.map((item) => {
             item.isLocal = true
@@ -380,6 +531,20 @@ export class ListPreguntasComponent implements OnChanges {
             return item
         })
     }
+    /**
+     * Maneja la operación de consulta de detalles de una pregunta en el banco de preguntas.
+     *
+     * Esta función realiza una solicitud HTTP para obtener los detalles de una pregunta en el banco de preguntas
+     * a partir de un identificador específico y un encabezado de pregunta.
+     * Una vez obtenidos los datos, se actualiza la variable `detallePreguntas` con la respuesta,
+     * y se establece el título de la pregunta con su índice en el banco de preguntas.
+     *
+     * @param {Object} item - El objeto que contiene los datos de la pregunta que se va a consultar.
+     * @param {number} item.iBancoId - El identificador único del banco de preguntas.
+     * @param {number} item.idEncabPregId - El identificador del encabezado de la pregunta.
+     *
+     * @returns {void} No retorna ningún valor.
+     */
     handleVerPregunta(item) {
         const params = {
             petition: 'post',
@@ -409,7 +574,18 @@ export class ListPreguntasComponent implements OnChanges {
             },
         })
     }
-
+    /**
+     * Elimina una pregunta de la evaluación mediante el ID de la pregunta.
+     *
+     * @param {Object} item - El objeto que contiene los detalles de la pregunta a eliminar.
+     * @param {number} item.iEvalPregId - El ID de la pregunta que se desea eliminar.
+     *
+     * @returns {void}
+     *
+     * @description Esta función crea un objeto `params` con los datos necesarios para realizar
+     * una solicitud de eliminación de una pregunta a través de una operación CRUD.
+     * Luego llama a la función `getInformation` para enviar la solicitud con el método `post`.
+     */
     eliminarPregunta(item) {
         const params = {
             petition: 'post',

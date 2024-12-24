@@ -48,6 +48,20 @@ const routes: Routes = [
                 './sub-evaluaciones/competencias/competencias.component'
             ).then((c) => c.CompetenciasComponent),
     },
+    {
+        path: 'sub-evaluaciones/evaluacion-examen-ere',
+        loadComponent: () =>
+            import(
+                './sub-evaluaciones/evaluacion-examen-ere/evaluacion-examen-ere.component'
+            ).then((c) => c.EvaluacionExamenEreComponent),
+    },
+    {
+        path: 'sub-evaluaciones/examen-ere',
+        loadComponent: () =>
+            import('./sub-evaluaciones/examen-ere/examen-ere.component').then(
+                (c) => c.ExamenEreComponent
+            ),
+    },
 ]
 
 export default routes

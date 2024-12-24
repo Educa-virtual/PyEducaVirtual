@@ -40,7 +40,6 @@ import { CommonModule } from '@angular/common'
     styleUrls: ['./banco-preguntas.component.scss'],
 })
 export class BancoPreguntasComponent implements OnInit, OnDestroy {
-    // Injeccion de dependencias
     private _dialogService = inject(DialogService)
     private _apiEre = inject(ApiEvaluacionesRService)
     private _apiEvaluacionesR = inject(ApiEvaluacionesRService)
@@ -435,36 +434,6 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             })
         console.log('Parámetros enviados:', this.params)
     }
-
-    //!
-    // getTipoAmbiente() {
-    //     this.query
-
-    //         .searchCalAcademico({
-    //             esquema: 'ere',
-    //             tabla: 'preguntas',
-    //             campos: 'iPreguntaId,iDesempenoId,iTipoPregId,cPregunta,cPreguntaTextoAyuda,iPreguntaNivel,iPreguntaPeso,bPreguntaEstado,cPreguntaClave,iEstado,iSesionId,iEspecialistaId,iNivelGradoId,iEncabPregId,iCursosNivelGradId',
-    //             condicion: '1=1',
-    //         })
-    //         .subscribe({
-    //             next: (data: any) => {
-    //                 // Truncar los campos cPregunta y cPreguntaTextoAyuda
-    //                 this.preguntastocursos = data.data.map((pregunta: any) => ({
-    //                     ...pregunta,
-    //                     cPregunta:
-    //                         pregunta.cPregunta.length > 100
-    //                             ? pregunta.cPregunta.slice(0, 100) + '...'
-    //                             : pregunta.cPregunta,
-    //                 }))
-    //             },
-    //             error: (error) => {
-    //                 console.error('Error fetching Años Académicos:', error)
-    //             },
-    //             complete: () => {
-    //                 console.log('Request completed')
-    //             },
-    //         })
-    // }
     onRowSelectionChange(event: any) {
         this.selectedItems
         console.log('Cambios en selección:', event) // Este evento debería contener las filas seleccionadas

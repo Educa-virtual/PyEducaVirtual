@@ -114,6 +114,27 @@ const estudiante = [
                 icon: 'pi pi-fw pi-share-alt',
                 routerLink: ['ayuda'],
             },
+
+            {
+                label: 'Dremo ERE',
+                icon: 'pi pi-fw pi-user',
+                items: [
+                    {
+                        label: 'Evaluacion',
+                        icon: 'pi pi-fw pi-share-alt',
+                        routerLink: [
+                            '/evaluaciones/sub-evaluaciones/evaluacion-examen-ere',
+                        ],
+                    },
+                    {
+                        label: 'Examen',
+                        icon: 'pi pi-fw pi-share-alt',
+                        routerLink: [
+                            '/evaluaciones/sub-evaluaciones/examen-ere',
+                        ],
+                    },
+                ],
+            },
         ],
     },
 ]

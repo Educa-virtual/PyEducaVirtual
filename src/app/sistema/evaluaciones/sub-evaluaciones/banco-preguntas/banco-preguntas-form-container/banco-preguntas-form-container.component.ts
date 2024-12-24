@@ -21,27 +21,27 @@ import { CompartirIdEvaluacionService } from '../../../services/ereEvaluaciones/
     styleUrl: './banco-preguntas-form-container.component.scss',
 })
 export class BancoPreguntasFormContainerComponent implements OnInit {
+    areas: any[] = []
+    recibirPayloadForms: any
+    iDesempenoId: number
+
     public tipoPreguntas = []
-    private _formBuilder = inject(FormBuilder)
-    public bancoPreguntasForm: FormGroup
-    private _config = inject(DynamicDialogConfig)
-    private _ref = inject(DynamicDialogRef)
-    private _evaluacionesService = inject(ApiEvaluacionesRService)
-    private unsubscribe$: Subject<boolean> = new Subject()
     public encabezados = []
     public encabezadosFiltered = []
     public pregunta
     public encabezadoMode: 'COMPLETADO' | 'EDITAR' = 'EDITAR'
     public modePregunta: 'CREAR' | 'EDITAR' = 'CREAR'
-    private params = {}
-    //public iEvaluacionId = this._config.data.iEvaluacionId //Aqui viene desde el Banco-Preguntas
     public iNivelGradoId
-    areas: any[] = [] // Aquí se almacenarán los datos
+    public bancoPreguntasForm: FormGroup
 
-    //@Input() payload: any //!ATRAE DE PADRE 1
-    recibirPayloadForms: any
+    private params = {}
+    private _formBuilder = inject(FormBuilder)
+    private _config = inject(DynamicDialogConfig)
+    private _ref = inject(DynamicDialogRef)
+    private _evaluacionesService = inject(ApiEvaluacionesRService)
+    private unsubscribe$: Subject<boolean> = new Subject()
     private _apiEre = inject(ApiEvaluacionesRService)
-    iDesempenoId: number
+
     constructor(
         private compartirFormularioEvaluacionService: CompartirFormularioEvaluacionService,
         private compartiridEvaluacionService: CompartirIdEvaluacionService

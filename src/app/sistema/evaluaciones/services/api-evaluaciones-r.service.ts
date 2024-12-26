@@ -272,7 +272,6 @@ export class ApiEvaluacionesRService {
             }
         )
     }
-
     obtenerPreguntaInformacion(iEvaluacionId: number, iPreguntaIds: string) {
         return this.http.get(
             `${this.baseUrl}/ere/Evaluaciones/obtenerPreguntaInformacion`,
@@ -283,6 +282,17 @@ export class ApiEvaluacionesRService {
                 },
             }
         )
+    }
+    //Servicio Guardar Inicio Final Exm Areas
+    // guardarInicioFinalExmAreas(data) {
+    //     return this.http.post(
+    //         `${this.baseUrl}/ere/Evaluaciones/guardarInicioFinalExmAreas`,
+    //         data
+    //     )
+    // }
+    guardarInicioFinalExmAreas(datos: any): Observable<any> {
+        const url = `${this.baseUrl}/ere/Evaluaciones/guardarInicioFinalExmAreas` // Endpoint de Laravel
+        return this.http.post<any>(url, datos)
     }
 
     //Banco de Preguntas no tocar ->

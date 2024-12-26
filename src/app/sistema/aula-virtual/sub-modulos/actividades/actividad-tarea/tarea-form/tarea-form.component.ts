@@ -85,7 +85,14 @@ export class TareaFormComponent implements OnChanges {
     public formTareas = this._formBuilder.group({
         bReutilizarTarea: [false],
         dtInicio: [this.date, Validators.required],
-        dtFin: [new Date(this.ajustarAHorarioDeMediaHora(new Date()).setHours(this.date.getHours() + 1)), Validators.required],
+        dtFin: [
+            new Date(
+                this.ajustarAHorarioDeMediaHora(new Date()).setHours(
+                    this.date.getHours() + 1
+                )
+            ),
+            Validators.required,
+        ],
 
         iTareaId: [],
         cTareaTitulo: ['', [Validators.required]],
@@ -114,18 +121,17 @@ export class TareaFormComponent implements OnChanges {
         dtProgActPublicacion: [],
     })
 
-
     ajustarAHorarioDeMediaHora(fecha) {
-        const minutos = fecha.getMinutes(); // Obtener los minutos actuales
-        const minutosAjustados = minutos <= 30 ? 30 : 0; // Decidir si ajustar a 30 o 0 (hora siguiente)
+        const minutos = fecha.getMinutes() // Obtener los minutos actuales
+        const minutosAjustados = minutos <= 30 ? 30 : 0 // Decidir si ajustar a 30 o 0 (hora siguiente)
         if (minutos > 30) {
-          fecha.setHours(fecha.getHours() + 1); // Incrementar la hora si los minutos pasan de 30
+            fecha.setHours(fecha.getHours() + 1) // Incrementar la hora si los minutos pasan de 30
         }
-        fecha.setMinutes(minutosAjustados); // Ajustar los minutos
-        fecha.setSeconds(0); // Opcional: Resetear los segundos a 0
-        fecha.setMilliseconds(0); // Opcional: Resetear los milisegundos a 0
-        return fecha;
-      }
+        fecha.setMinutes(minutosAjustados) // Ajustar los minutos
+        fecha.setSeconds(0) // Opcional: Resetear los segundos a 0
+        fecha.setMilliseconds(0) // Opcional: Resetear los milisegundos a 0
+        return fecha
+    }
 
     getTareasxiCursoId() {
         // Verifica si la opción "bReutilizarTarea" en el formulario es verdadera

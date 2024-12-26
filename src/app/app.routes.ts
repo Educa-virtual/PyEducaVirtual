@@ -86,33 +86,6 @@ export const routes: Routes = [
             ).then((m) => m.GestionInstitucionalModule),
     },
 
-    {
-        path: 'gestion-institucional',
-
-        loadChildren: () =>
-            import(
-                './sistema/gestion-institucional/gestion-institucional.module'
-            ).then((m) => m.GestionInstitucionalModule),
-    },
-
-    {
-        path: 'comunicados',
-
-        loadChildren: () =>
-            import('./sistema/comunicados/comunicados.module').then(
-                (m) => m.ComunicadosModule
-            ),
-    },
-
-    {
-        path: 'bienestar',
-
-        loadChildren: () =>
-            import('./sistema/bienestar/bienestar.module').then(
-                (m) => m.BienestarModule
-            ),
-    },
-
     { path: 'notfound', component: NotfoundComponent },
 
     { path: '**', redirectTo: '/notfound' },

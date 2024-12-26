@@ -1,21 +1,24 @@
 import { Injectable } from '@angular/core'
-import { httpService } from './httpService'
-//import { BehaviorSubject } from 'rxjs'
+import { httpService } from '@/app/servicios/httpService'
+import { IDataService, ITableService } from '@/app/interfaces/api.interface'
 
 @Injectable({
     providedIn: 'root',
 })
-export class GenericApiService {
+export class ApiService {
     constructor(private http: httpService) {}
+    async getData(queryPayload: ITableService | IDataService[]) {
+        return await this.http.getData('/api/virtual/getData', queryPayload)
+    }
+    async insertData(queryPayload: ITableService | IDataService[]) {
+        return await this.http.postData('/api/virtual/insertData', queryPayload)
+    }
+    async updateData(queryPayload: ITableService | IDataService[]) {
+        return await this.http.putData('/api/virtual/updateData', queryPayload)
+    }
 
-    async getTableGeneric(campos) {
-        this.http.getData('/api/getTableGeneric', campos)
-    }
-    async insertTableGeneric(campos) {
-        this.http.postData('/api/insertTableGeneric', campos)
-    }
-    async updateTableGeneric(campos) {
-        this.http.putData('/api/updateTableGeneric', campos)
+    async deleteData(queryPayload: ITableService | IDataService[]) {
+        return this.http.deleteData('/api/virtual/deleteData', queryPayload)
     }
 
     // Para el constructor

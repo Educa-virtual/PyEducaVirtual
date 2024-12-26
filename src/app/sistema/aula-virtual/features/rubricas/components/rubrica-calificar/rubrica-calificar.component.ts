@@ -9,11 +9,8 @@ import {
 } from '@angular/core'
 import { AccordionModule } from 'primeng/accordion'
 import { CommonModule } from '@angular/common'
-import {
-    IColumn,
-    TablePrimengComponent,
-} from '@/app/shared/table-primeng/table-primeng.component'
-import { firstValueFrom, Subject, Subscription, takeUntil } from 'rxjs'
+import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
+import { Subject, Subscription, takeUntil } from 'rxjs'
 import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-evaluaciones.service'
 import { ActivatedRoute } from '@angular/router'
 import { CommunicationService } from '@/app/servicios/communication.service'
@@ -30,7 +27,6 @@ import { httpService } from '@/app/servicios/httpService'
 export class RubricaCalificarComponent implements OnInit, OnDestroy {
     @Input() enableCellSelection = false
     @Input() enableViewSelections = false
-    columns: IColumn[] = []
 
     rubrica
 
@@ -143,9 +139,9 @@ export class RubricaCalificarComponent implements OnInit, OnDestroy {
     ]
 
     structuredColumns(niveles: Array<any>) {
-        let columns = []
+        const columns = []
 
-        if(!Array.isArray(niveles)){
+        if (!Array.isArray(niveles)) {
             return [
                 {
                     type: 'text',
@@ -154,7 +150,7 @@ export class RubricaCalificarComponent implements OnInit, OnDestroy {
                     header: `Sin niveles`,
                     text_header: 'left',
                     text: 'left',
-                }
+                },
             ]
         }
 
@@ -173,15 +169,13 @@ export class RubricaCalificarComponent implements OnInit, OnDestroy {
     }
 
     structuredRows(niveles: Array<any>) {
-
-        if(!Array.isArray(niveles)){
+        if (!Array.isArray(niveles)) {
             return [
                 {
                     'n/a': 'Sin niveles existentes',
-                }
+                },
             ]
         }
-
 
         const nivelesMap = niveles.map((nivel, index) => ({
             [`cNivelEvaDescripcion${index}`]: nivel.cNivelEvaDescripcion,
@@ -219,14 +213,20 @@ export class RubricaCalificarComponent implements OnInit, OnDestroy {
         console.log(data)
 
         if (this.params?.iEvaluacionId) {
+            this.httpService.postData(
+                'evaluaciones/evaluacion/guardarActualizarCalificacionRubricaEvaluacion',
+                {
+                    ...this.params,
+                    ...data[1],
+                }
+            )
 
-            await firstValueFrom(this.httpService.postData('evaluaciones/evaluacion/guardarActualizarCalificacionRubricaEvaluacion', {
-                ...this.params,
-                ...data[1],
-            })) 
-            
-            this.data =  (await firstValueFrom(this.httpService.getData('evaluaciones/instrumento-evaluaciones/obtenerRubricaEvaluacion', this.params))).data[0]
-
+            this.data = (
+                (await this.httpService.getData(
+                    'evaluaciones/instrumento-evaluaciones/obtenerRubricaEvaluacion',
+                    this.params
+                )) as any
+            ).data[0]
         }
     }
 

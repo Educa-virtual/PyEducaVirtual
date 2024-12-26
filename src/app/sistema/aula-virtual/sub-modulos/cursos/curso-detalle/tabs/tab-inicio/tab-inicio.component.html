@@ -181,6 +181,26 @@
                                             }}
                                         </button>
                                     </div>
+                                    <!-- [style.display]="
+                                                !respuestas.iEstudianteId
+                                                    ? respuestas.iDocenteId ===
+                                                        iDocenteId
+                                                    : respuestas.iEstudianteId ===
+                                                        iEstudianteId
+                                            "
+                                            pButton -->
+                                    <div class="">
+                                        <button
+                                            type="button"
+                                            icon="pi pi-ellipsis-v"
+                                            class="menu-container p-button-text"
+                                            (click)="
+                                                itemRespuesta = respuestas;
+                                                menu.toggle($event)
+                                            "
+                                            aria-label="Abrir menú de configuración"
+                                        ></button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -195,3 +215,4 @@
         </p-orderList>
     </div>
 </div>
+<p-menu #menu [model]="menuItems" [popup]="true"> </p-menu>

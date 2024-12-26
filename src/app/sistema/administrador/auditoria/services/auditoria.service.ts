@@ -1,41 +1,48 @@
 import { httpService } from '@/app/servicios/httpService'
 import { Injectable } from '@angular/core'
-import { firstValueFrom } from 'rxjs'
 @Injectable({ providedIn: 'root' })
 export class AuditoriaService {
     constructor(private http: httpService) {}
 
     async getAuditoriaAccesos(filtroFecha) {
-        const data = await firstValueFrom(
-            this.http.getData(
-                `seg/auditoria/selAuditoriaAccesos?filtroFechaInicio=${filtroFecha.filtroFechaInicio}&filtroFechaFin=${filtroFecha.filtroFechaFin}`
-            )
+        const data: any = await this.http.getData(
+            'seg/auditoria/selAuditoriaAccesos',
+            {
+                filtroFechaInicio: filtroFecha.filtroFechaInicio,
+                filtroFechaFin: filtroFecha.filtroFechaFin,
+            }
         )
-        return data.data
+        return data?.data
     }
     async getAuditoriaAccesosFallidos(filtroFecha) {
-        const data = await firstValueFrom(
-            this.http.getData(
-                `seg/auditoria/selAuditoriaAccesosFallidos?filtroFechaInicio=${filtroFecha.filtroFechaInicio}&filtroFechaFin=${filtroFecha.filtroFechaFin}`
-            )
+        const data: any = await this.http.getData(
+            'seg/auditoria/selAuditoriaAccesosFallidos',
+            {
+                filtroFechaInicio: filtroFecha.filtroFechaInicio,
+                filtroFechaFin: filtroFecha.filtroFechaFin,
+            }
         )
-        return data.data
+        return data?.data
     }
     async getAuditoria(filtroFecha) {
-        const data = await firstValueFrom(
-            this.http.getData(
-                `seg/auditoria/selAuditoria?filtroFechaInicio=${filtroFecha.filtroFechaInicio}&filtroFechaFin=${filtroFecha.filtroFechaFin}`
-            )
+        const data: any = await this.http.getData(
+            'seg/auditoria/selAuditoria',
+            {
+                filtroFechaInicio: filtroFecha.filtroFechaInicio,
+                filtroFechaFin: filtroFecha.filtroFechaFin,
+            }
         )
-        return data.data
+        return data?.data
     }
     async getAuditoriaMiddleware(filtroFecha) {
-        const data = await firstValueFrom(
-            this.http.getData(
-                `seg/auditoria/selAuditoriaMiddleware?filtroFechaInicio=${filtroFecha.filtroFechaInicio}&filtroFechaFin=${filtroFecha.filtroFechaFin}`
-            )
+        const data: any = await this.http.getData(
+            'seg/auditoria/selAuditoriaMiddleware',
+            {
+                filtroFechaInicio: filtroFecha.filtroFechaInicio,
+                filtroFechaFin: filtroFecha.filtroFechaFin,
+            }
         )
-        return data.data
+        return data?.data
     }
     async get_auditoria_accesos_fallidos() {}
     async get_auditoria() {}

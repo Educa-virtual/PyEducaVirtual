@@ -2,7 +2,7 @@ import { ApiResponse } from '@/app/shared/interfaces/api-response.model'
 import { environment } from '@/environments/environment.template'
 import { HttpClient } from '@angular/common/http'
 import { inject, Injectable } from '@angular/core'
-import { firstValueFrom, map } from 'rxjs'
+import { map } from 'rxjs'
 import {
     mapData,
     mapItemsBancoToEre,
@@ -36,10 +36,11 @@ export class ApiEvaluacionesService {
     }
 
     async actualizarRubricaEvaluacion(data) {
-        const res = await firstValueFrom(
-            this.http2.postData('evaluaciones/evaluacion/actualizarRubricaEvaluacion', data)
+        const res: any = this.http2.postData(
+            'evaluaciones/evaluacion/actualizarRubricaEvaluacion',
+            data
         )
-        return res.data
+        return res?.data
     }
 
     guardarActualizarPreguntasEvaluacion(data) {
@@ -117,8 +118,6 @@ export class ApiEvaluacionesService {
             .pipe(map((resp) => resp.data))
     }
 
-    
-
     // guardarActualizarRubrica(data) {
     //     return this.http
     //         .post<ApiResponse>(
@@ -129,10 +128,11 @@ export class ApiEvaluacionesService {
     // }
 
     async guardarActualizarRubrica(data) {
-        const res = await firstValueFrom(
-            this.http2.postData('evaluaciones/instrumento-evaluaciones/rubrica', data)
+        const res: any = this.http2.postData(
+            'evaluaciones/instrumento-evaluaciones/rubrica',
+            data
         )
-        return res.data
+        return res?.data
     }
 
     eliminarRubrica({

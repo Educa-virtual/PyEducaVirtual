@@ -132,6 +132,8 @@ export class ActividadRowComponent implements OnInit {
             'aula-virtual/areas-curriculares/' +
                 'actividad' +
                 '/' +
+                actividad.iProgActId +
+                '/' +
                 actividad.ixActivadadId +
                 '/' +
                 actividad.iActTipoId,
@@ -139,8 +141,19 @@ export class ActividadRowComponent implements OnInit {
     }
     handleForoAction(action: string, actividad: IActividad) {
         this.router.navigate(
-            ['../', 'actividad', actividad.ixActivadadId, actividad.iActTipoId],
+            [
+                '../',
+                'actividad',
+                actividad.iProgActId,
+                actividad.ixActivadadId,
+                actividad.iActTipoId,
+            ],
             {
+                queryParams: {
+                    iEvaluacionId: this.actividadSelected['iForo'],
+                    // iCursoId: this.iCursoId,
+                    // idDocCursoId: this.idDocCursoId,
+                },
                 relativeTo: this._activatedRoute,
             }
         )

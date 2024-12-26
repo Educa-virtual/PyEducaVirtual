@@ -276,6 +276,8 @@ export class TabContenidoComponent implements OnInit {
                     'aula-virtual/areas-curriculares/' +
                         'actividad' +
                         '/' +
+                        actividad.iProgActId +
+                        '/' +
                         actividad.ixActivadadId +
                         '/' +
                         actividad.iActTipoId,
@@ -374,10 +376,18 @@ export class TabContenidoComponent implements OnInit {
                 [
                     '../',
                     'actividad',
+                    actividad.iProgActId,
                     actividad.ixActivadadId,
                     actividad.iActTipoId,
                 ],
                 {
+                    queryParams: {
+                        iEvaluacionId: this.actividadSelected['iForo'],
+                        iCursoId: this.iCursoId,
+                        idDocCursoId: this.idDocCursoId,
+                        iEstudianteId:
+                            this._constantesService.iEstudianteId ?? undefined,
+                    },
                     relativeTo: this._activatedRoute,
                 }
             )
@@ -478,8 +488,9 @@ export class TabContenidoComponent implements OnInit {
                                 this.actividadSelected['iEvaluacionId'],
                             iCursoId: this.iCursoId,
                             idDocCursoId: this.idDocCursoId,
-                            iEstudianteId: this._constantesService.iEstudianteId ?? undefined
-
+                            iEstudianteId:
+                                this._constantesService.iEstudianteId ??
+                                undefined,
                         },
                         relativeTo: this._activatedRoute,
                     }

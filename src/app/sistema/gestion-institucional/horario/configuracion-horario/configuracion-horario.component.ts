@@ -494,8 +494,6 @@ export class ConfiguracionHorarioComponent implements OnInit {
     }
 
     asignarHorario(area: any) {
-        alert(area.idDocCursoId + 'mensaje')
-
         this.registro = area
 
         if (area.idDocCursoId == null || area.idDocCursoId < 1) {

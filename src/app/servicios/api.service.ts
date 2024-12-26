@@ -7,18 +7,18 @@ import { IDataService, ITableService } from '@/app/interfaces/api.interface'
 })
 export class ApiService {
     constructor(private http: httpService) {}
-    async getTableGeneric(queryPayload: ITableService | IDataService) {
-        return await this.http.getData('/api/getTableGeneric', queryPayload)
+    async getData(queryPayload: ITableService | IDataService[]) {
+        return await this.http.getData('/api/virtual/getData', queryPayload)
     }
-    async insertTableGeneric(queryPayload: ITableService | IDataService) {
-        return await this.http.postData('/api/insertTableGeneric', queryPayload)
+    async insertData(queryPayload: ITableService | IDataService[]) {
+        return await this.http.postData('/api/virtual/insertData', queryPayload)
     }
-    async updateTableGeneric(queryPayload: ITableService | IDataService) {
-        return await this.http.putData('/api/updateTableGeneric', queryPayload)
+    async updateData(queryPayload: ITableService | IDataService[]) {
+        return await this.http.putData('/api/virtual/updateData', queryPayload)
     }
 
-    async deleteTableGeneric(queryPayload: ITableService | IDataService) {
-        return this.http.deleteData('/api/deleteTableGeneric', queryPayload)
+    async deleteData(queryPayload: ITableService | IDataService[]) {
+        return this.http.deleteData('/api/virtual/deleteData', queryPayload)
     }
 
     // Para el constructor

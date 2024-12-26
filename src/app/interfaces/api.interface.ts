@@ -1,17 +1,21 @@
 export interface ITableService {
     esquema: string
     tabla: string
-    data: IDataService
+    campoId?: string
+
+    data?: IDataService[]
 }
 
 export interface IDataService {
-    data: Array<{
-        campos: object
-        where:
-            | string
-            | {
-                  COLUMN_NAME: string
-                  VALUE: string
-              }
-    }>
+    campos?: {
+        [key: string]: string
+    }
+    valorId?: string
+    tablaHija?: string
+    where?:
+        | {
+              COLUMN_NAME: string
+              VALUE: string
+          }
+        | string
 }

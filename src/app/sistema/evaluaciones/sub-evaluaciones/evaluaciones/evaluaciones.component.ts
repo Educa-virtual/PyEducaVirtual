@@ -53,6 +53,7 @@ import {
     FormGroup,
     ReactiveFormsModule,
 } from '@angular/forms'
+import { ApiService } from '@/app/servicios/api.service'
 @Component({
     selector: 'app-evaluaciones',
     standalone: true,
@@ -124,7 +125,8 @@ export class EvaluacionesComponent implements OnInit {
         private compartirFormularioEvaluacionService: CompartirFormularioEvaluacionService,
         private messageService: MessageService,
         private cdr: ChangeDetectorRef,
-        private fb: FormBuilder
+        private fb: FormBuilder,
+        private apiservice: ApiService
     ) {
         this.form = this.fb.group({})
     }
@@ -153,11 +155,29 @@ export class EvaluacionesComponent implements OnInit {
     listaCursos: any[] = []
     lista: any
     objectKeys = Object.keys
-    obtenerCursos(): void {
+    async obtenerCursos() {
         if (!this.iiEvaluacionId) {
             console.warn('El ID de evaluación no está definido.')
             return
         }
+
+        const data = await this.apiservice.getData({
+            esquema: 'ere',
+            tabla: 'V_EvaluacionFechasCursos',
+            data: [
+                {
+                    campos: '*',
+                    where: 'iEvaluacionId=' + this.iiEvaluacionId,
+                },
+                {
+                    campos: '*',
+                    where: 'iEvaluacionId=' + 740,
+                },
+            ],
+        })
+
+        console.log('Si funciona chiki')
+        console.log(data)
 
         // Llamar a searchAmbienteAcademico para obtener los datos estructurados
         this.compartirFormularioEvaluacionService
@@ -223,73 +243,23 @@ export class EvaluacionesComponent implements OnInit {
     }
 
     // MÉTODO PARA GUARDAR INICIO FIN EXAMEN AREAS
-    guardarInicioFinalExmAreas() {
-        const fecha = this.form.value // Captura todos los valores del formulario
-        console.log('Form value changes', fecha)
-
-        // Función para formatear las fechas al formato 'YYYY-MM-DD HH:mm:ss'
-        const formatDate = (date: Date | null) => {
-            if (!date) return null // Si no hay fecha, regresa null
-            const year = date.getFullYear()
-            const month = String(date.getMonth() + 1).padStart(2, '0') // Mes comienza en 0
-            const day = String(date.getDate()).padStart(2, '0')
-            const hours = String(date.getHours()).padStart(2, '0')
-            const minutes = String(date.getMinutes()).padStart(2, '0')
-            const seconds = String(date.getSeconds()).padStart(2, '0')
-            return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
-        }
-
-        // Extraer los cursos con fechas
-        const datosCursos: any[] = []
-        this.listaCursos.forEach((nivel: any) => {
-            nivel.grados.forEach((grado: any) => {
-                grado.cursos.forEach((curso: any) => {
-                    const inicioControl = `${curso.cCursoNombre}${curso.iCursoNivelGradId}Inicio`
-                    const finControl = `${curso.cCursoNombre}${curso.iCursoNivelGradId}Fin`
-
-                    // Verificar si existen los valores en el formulario
-                    if (fecha[inicioControl] || fecha[finControl]) {
-                        datosCursos.push({
-                            iCursoNivelGradId: curso.iCursoNivelGradId, // ID del curso
-                            fechaInicio: formatDate(
-                                fecha[inicioControl] || null
-                            ), // Formatea fecha de inicio
-                            fechaFin: formatDate(fecha[finControl] || null), // Formatea fecha de fin
-                        })
-                    }
-                })
-            })
-        })
-
-        // Obtener solo los iCursoNivelGradId en un arreglo
-        const iCursoNivelGradIds = datosCursos.map(
-            (curso) => curso.iCursoNivelGradId
-        )
-
-        // Estructura final con iEvaluacionId y los datos de cursos
-        const datos = {
-            iEvaluacionId: this.iiEvaluacionId, // ID de evaluación
-            iCursoNivelGradId: iCursoNivelGradIds, // Lista de cursos con fechas
-            fechaIniFin: datosCursos, // Lista de cursos con fechas
-        }
-
-        // Aquí realizas la petición HTTP para actualizar en la base de datos
-        this._apiEre.guardarInicioFinalExmAreas(datos).subscribe(
-            (respuesta) => {
-                console.log('Actualización exitosa:', respuesta)
-            },
-            (error) => {
-                console.error('Error al actualizar:', error)
-            }
-        )
-
-        console.log('Datos a enviar al servidor:', datos)
-    }
-
     // guardarInicioFinalExmAreas() {
     //     const fecha = this.form.value // Captura todos los valores del formulario
     //     console.log('Form value changes', fecha)
 
+    //     // Función para formatear las fechas al formato 'YYYY-MM-DD HH:mm:ss'
+    //     const formatDate = (date: Date | null) => {
+    //         if (!date) return null // Si no hay fecha, regresa null
+    //         const year = date.getFullYear()
+    //         const month = String(date.getMonth() + 1).padStart(2, '0') // Mes comienza en 0
+    //         const day = String(date.getDate()).padStart(2, '0')
+    //         const hours = String(date.getHours()).padStart(2, '0')
+    //         const minutes = String(date.getMinutes()).padStart(2, '0')
+    //         const seconds = String(date.getSeconds()).padStart(2, '0')
+    //         return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
+    //     }
+
+    //     // Extraer los cursos con fechas
     //     const datosCursos: any[] = []
     //     this.listaCursos.forEach((nivel: any) => {
     //         nivel.grados.forEach((grado: any) => {
@@ -299,24 +269,12 @@ export class EvaluacionesComponent implements OnInit {
 
     //                 // Verificar si existen los valores en el formulario
     //                 if (fecha[inicioControl] || fecha[finControl]) {
-    //                     // Convertir las fechas a UTC sin zona horaria (sin "Z")
-    //                     const fechaInicio = fecha[inicioControl]
-    //                         ? new Date(fecha[inicioControl])
-    //                               .toISOString()
-    //                               .slice(0, 19)
-    //                               .replace('T', ' ') // Convertir a formato "Y-m-d H:i:s"
-    //                         : null
-    //                     const fechaFin = fecha[finControl]
-    //                         ? new Date(fecha[finControl])
-    //                               .toISOString()
-    //                               .slice(0, 19)
-    //                               .replace('T', ' ') // Convertir a formato "Y-m-d H:i:s"
-    //                         : null
-
     //                     datosCursos.push({
     //                         iCursoNivelGradId: curso.iCursoNivelGradId, // ID del curso
-    //                         fechaInicio: fechaInicio, // Fecha de inicio en formato "Y-m-d H:i:s"
-    //                         fechaFin: fechaFin, // Fecha de fin en formato "Y-m-d H:i:s"
+    //                         fechaInicio: formatDate(
+    //                             fecha[inicioControl] || null
+    //                         ), // Formatea fecha de inicio
+    //                         fechaFin: formatDate(fecha[finControl] || null), // Formatea fecha de fin
     //                     })
     //                 }
     //             })
@@ -331,11 +289,11 @@ export class EvaluacionesComponent implements OnInit {
     //     // Estructura final con iEvaluacionId y los datos de cursos
     //     const datos = {
     //         iEvaluacionId: this.iiEvaluacionId, // ID de evaluación
-    //         iCursoNivelGradId: iCursoNivelGradIds,
+    //         iCursoNivelGradId: iCursoNivelGradIds, // Lista de cursos con fechas
     //         fechaIniFin: datosCursos, // Lista de cursos con fechas
     //     }
 
-    //     // Realizar la petición HTTP para actualizar en la base de datos
+    //     // Aquí realizas la petición HTTP para actualizar en la base de datos
     //     this._apiEre.guardarInicioFinalExmAreas(datos).subscribe(
     //         (respuesta) => {
     //             console.log('Actualización exitosa:', respuesta)
@@ -347,7 +305,12 @@ export class EvaluacionesComponent implements OnInit {
 
     //     console.log('Datos a enviar al servidor:', datos)
     // }
-
+    async guardarInicioFinalExmAreas() {
+        return await this.apiservice.updateData({
+            esquema: 'ere',
+            tabla: 'evaluacion',
+        })
+    }
     //!
     toggleBotonc(): void {
         this.mostrarBoton = !this.mostrarBoton

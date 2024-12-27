@@ -105,12 +105,12 @@ export class RubricasComponent implements OnInit, OnDestroy {
                 {
                     label: 'Nueva rúbrica',
                     icon: 'pi pi-plus',
-                    command: () => this.handleActions({mode: 'CREAR'}),
+                    command: () => this.handleActions({ mode: 'CREAR' }),
                 },
                 {
                     label: 'Reutilizar rúbrica',
                     icon: 'pi pi-plus',
-                    command: () => this.handleActions({mode: 'VIEW'}),
+                    command: () => this.handleActions({ mode: 'VIEW' }),
                 },
             ],
         },
@@ -122,25 +122,18 @@ export class RubricasComponent implements OnInit, OnDestroy {
     private _confirmService = inject(ConfirmationModalService)
     private _constantesService = inject(ConstantesService)
 
-    constructor(
-        public route: ActivatedRoute
-    ){
-
-    }
+    constructor(public route: ActivatedRoute) {}
 
     ngOnInit() {
         this.params.iDocenteId = this._constantesService.iDocenteId
 
-        console.log('this.route.queryParams');
-        console.log(this.route.queryParams['_value'].iEstado != 2);
-        
+        console.log('this.route.queryParams')
+        console.log(this.route.queryParams['_value'].iEstado != 2)
 
         this.route.queryParams.subscribe((params) => {
-            console.log('iEstado');
-            console.log(params['iEstado']);
-            
+            console.log('iEstado')
+            console.log(params['iEstado'])
         })
-        
 
         this.getData()
         if (this.mode === 'SELECTION') {
@@ -148,7 +141,7 @@ export class RubricasComponent implements OnInit, OnDestroy {
         }
     }
 
-    handleActions({mode}) {
+    handleActions({ mode }) {
         this.modeFormRubrica = mode
         this.agregarInstrumentoEvaluacion()
     }
@@ -184,7 +177,7 @@ export class RubricasComponent implements OnInit, OnDestroy {
                 idDocCursoId: this.params.idDocCursoId,
                 rubrica: item,
                 rubricas: this.data,
-                mode: this.modeFormRubrica
+                mode: this.modeFormRubrica,
             },
         })
         ref.onClose.pipe(takeUntil(this._unsubscribe$)).subscribe(() => {

@@ -58,13 +58,14 @@ export class IesPersonalComponent implements OnInit {
         // private confirmationService: ConfirmationService,
     ) {
         const perfil = this.store.getItem('dremoPerfil')
-        // console.log(perfil, 'perfil dremo', this.store)
+        console.log(perfil, 'perfil dremo', this.store)
         this.iSedeId = perfil.iSedeId
-        this.iYAcadId = this.store.getItem('dremoYear')
     }
 
     ngOnInit(): void {
         console.log('implemntacion')
+        this.iYAcadId = this.store.getItem('dremoiYAcadId')
+        console.log(this.store)
         this.searchPersonal()
         this.getPersonas()
         this.getDocente()

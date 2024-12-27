@@ -69,7 +69,6 @@ export class PreguntasFormComponent implements OnChanges {
                 this.formBancoPreguntas.controls.iTipoPregId.setValue(
                     Number(data['iTipoPregId'])
                 )
-                console.log(this.alternativas)
             }
         }
     }

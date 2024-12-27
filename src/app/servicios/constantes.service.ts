@@ -126,13 +126,13 @@ const estudiante = [
                             '/evaluaciones/sub-evaluaciones/evaluacion-examen-ere',
                         ],
                     },
-                    {
-                        label: 'Examen',
-                        icon: 'pi pi-fw pi-share-alt',
-                        routerLink: [
-                            '/evaluaciones/sub-evaluaciones/examen-ere',
-                        ],
-                    },
+                    // {
+                    //     label: 'Examen',
+                    //     icon: 'pi pi-fw pi-share-alt',
+                    //     routerLink: [
+                    //         '/evaluaciones/sub-evaluaciones/evaluacion-examen-ere/examen-ere',
+                    //     ],
+                    // },
                 ],
             },
         ],

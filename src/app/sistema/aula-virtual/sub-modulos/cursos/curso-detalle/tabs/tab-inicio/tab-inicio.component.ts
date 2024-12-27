@@ -90,4 +90,43 @@ export class TabInicioComponent implements OnInit {
                 console.log(this.anunciosDocente)
             })
     }
+    itemRespuesta: any[] = []
+    // menu para editar y eliminar el comentario del foro
+    menuItems = [
+        {
+            label: 'Editar',
+            icon: 'pi pi-pencil',
+            command: () => this.editar(),
+        },
+        {
+            label: 'Eliminar',
+            icon: 'pi pi-trash',
+            command: () => this.eliminar(this.itemRespuesta),
+        },
+    ]
+
+    editar(): void {
+        // let respuestasForo = this.itemRespuesta
+        // console.log('Editar acción ejecutada', respuestasForo)
+        //iForoRptaId
+    }
+    eliminar(itemRespuesta: any): void {
+        const iForoRptaId = {
+            iForoRptaId: parseInt(itemRespuesta.iForoRptaId, 10),
+        }
+        console.log('Eliminar acción ejecutada01', iForoRptaId)
+        this._aulaService.eliminarRespuesta(iForoRptaId).subscribe({
+            next: (response) => {
+                //const mensaje = response?.message || 'Elemento eliminado sin respuesta del servidor';
+                console.log('Elemento eliminado correctamente:', response)
+                // Actualiza la lista local después de eliminar
+                // this.itemRespuesta = this.itemRespuesta.filter(
+                //     (item: any) => item.iForoRptaId !== respuestasForo
+                // );
+            },
+            error: (err) => {
+                console.error('Error al eliminar:', err)
+            },
+        })
+    }
 }

@@ -284,11 +284,11 @@ export class TabResultadosComponent implements OnInit {
                 //         'No hay datos suficientes para exportar nivel de logro'
 
                 //     // // Se muestra un mensaje de error en el sistema
-                //     // this.messageService.add({
-                //     //     severity: 'error',
-                //     //     summary: 'Error',
-                //     //     detail: 'revisar',
-                //     // })
+                //     this.messageService.add({
+                //         severity: 'error',
+                //         summary: 'Error',
+                //         detail: 'revisar',
+                //     })
                 // }
             )
     }
@@ -314,14 +314,14 @@ export class TabResultadosComponent implements OnInit {
             .subscribe({
                 next: (resp) => {
                     this.comentariosSelect = []
-                    console.log('obtener comentarios', resp)
+                    //console.log('obtener comentarios', resp)
                     resp.forEach((element) => {
                         element['foro'] = element['foro']
                             ? JSON.parse(element['foro'])
                             : []
                     })
                     this.comentariosSelect = resp.length ? resp[0]['foro'] : []
-                    console.log('Mis foros', this.comentariosSelect)
+                    //console.log('Mis foros', this.comentariosSelect)
 
                     this.comentarioSelectTareas = []
                     resp.forEach((element) => {
@@ -332,7 +332,7 @@ export class TabResultadosComponent implements OnInit {
                     this.comentarioSelectTareas = resp.length
                         ? resp[0]['tarea']
                         : []
-                    console.log('Mis tareas', this.comentarioSelectTareas)
+                    //console.log('Mis tareas', this.comentarioSelectTareas)
 
                     this.comentarioSelectEvaluaciones = []
                     resp.forEach((element) => {
@@ -569,6 +569,7 @@ export class TabResultadosComponent implements OnInit {
     unidades: any[] = []
     habilitarCalificacion() {
         const idYear = 3
+        console.log('fecha', idYear)
         const params = {
             iYAcadId: idYear,
             iCredId: this._constantesService.iCredId,

@@ -4,7 +4,7 @@ import { ToolbarPrimengComponent } from '@/app/shared/toolbar-primeng/toolbar-pr
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
 import { DropdownModule } from 'primeng/dropdown' // Importar el módulo
 import { forkJoin } from 'rxjs'
-import { Router } from '@angular/router'
+import { Router, RouterModule } from '@angular/router'
 
 interface Evaluacion {
     iEvaluacionId: number
@@ -16,7 +16,12 @@ interface Evaluacion {
 @Component({
     selector: 'app-evaluacion-examen-ere',
     standalone: true,
-    imports: [TablePrimengComponent, ToolbarPrimengComponent, DropdownModule],
+    imports: [
+        TablePrimengComponent,
+        ToolbarPrimengComponent,
+        DropdownModule,
+        RouterModule,
+    ],
     providers: [GeneralService],
     templateUrl: './evaluacion-examen-ere.component.html',
     styleUrl: './evaluacion-examen-ere.component.scss',
@@ -99,13 +104,14 @@ export class EvaluacionExamenEreComponent implements OnInit {
     ]
     accionBtnItem(elemento): void {
         const { accion } = elemento
+
         //const { item } = elemento
         switch (accion) {
             case 'examenEre':
                 this.router.navigate([
-                    '/evaluaciones/sub-evaluaciones/examen-ere',
+                    'evaluaciones/sub-evaluaciones/evaluacion-examen-ere/examen-ere',
                 ])
-                console.log('Llego la accion examenEre')
+                console.log('ruta')
                 break
         }
     }

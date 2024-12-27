@@ -177,6 +177,7 @@
 >
     @defer (when showModalCursosEre) {
         <div class="container" [formGroup]="form">
+            <!-- "form" -->
             <!-- Card por cada nivel -->
             <div class="card mt-3" *ngFor="let nivel of listaCursos">
                 <div class="card-header">
@@ -185,63 +186,76 @@
                 <div class="card-body">
                     <!-- Recorrer grados -->
                     <div *ngFor="let grado of nivel.grados">
-                        <h4>{{ grado.grado }}</h4>
+                        <!-- <h4>{{ grado.grado }}</h4> -->
                         <ul class="list-unstyled">
                             <!-- Recorrer cursos -->
                             <li *ngFor="let curso of grado.cursos" class="mb-4">
                                 <!-- Contenedor horizontal: Nombre del curso + calendarios -->
                                 <div
-                                    class="d-flex align-items-center"
+                                    class="d-flex align-items-center justify-content-between"
                                     style="gap: 20px; padding: 5px 0"
                                 >
-                                    <!-- Nombre del curso -->
-                                    <span
-                                        class="curso-nombre"
-                                        style="
-                                            font-weight: bold;
-                                            min-width: 150px;
-                                            padding-right: 50px;
-                                        "
+                                    <!-- Columna izquierda: Nombre del curso + grado -->
+                                    <div
+                                        class="d-flex flex-column"
+                                        style="min-width: 250px"
                                     >
-                                        {{ curso.cCursoNombre }}
-                                    </span>
+                                        <!-- Nombre del curso -->
+                                        <span
+                                            class="curso-nombre"
+                                            style="font-weight: bold"
+                                        >
+                                            {{ curso.cCursoNombre }}
+                                        </span>
 
-                                    <!-- Calendario de inicio -->
-                                    <p-calendar
-                                        formControlName="{{
-                                            curso.cCursoNombre +
-                                                curso.iCursoNivelGradId
-                                        }}Inicio"
-                                        [showTime]="true"
-                                        [hourFormat]="'24'"
-                                        [timeOnly]="false"
-                                        [showIcon]="true"
-                                        placeholder="Inicio"
-                                        inputId="fechaHoraInicio-{{
-                                            curso.cCursoNombre
-                                        }}"
-                                        [appendTo]="'body'"
-                                        styleClass="pr-5"
-                                    >
-                                    </p-calendar>
+                                        <!-- Grado del curso -->
+                                        <span
+                                            class="curso-grado"
+                                            style="font-weight: normal"
+                                        >
+                                            {{ grado.grado }} Grado
+                                        </span>
+                                    </div>
 
-                                    <!-- Calendario de fin -->
-                                    <p-calendar
-                                        formControlName="{{
-                                            curso.cCursoNombre +
-                                                curso.iCursoNivelGradId
-                                        }}Fin"
-                                        [showTime]="true"
-                                        [hourFormat]="'24'"
-                                        [timeOnly]="false"
-                                        [showIcon]="true"
-                                        placeholder="Fin"
-                                        inputId="fechaHoraFin-{{
-                                            curso.cCursoNombre
-                                        }}"
-                                        [appendTo]="'body'"
-                                    >
-                                    </p-calendar>
+                                    <!-- Columna derecha: Calendarios de inicio y fin -->
+                                    <div class="d-flex" style="gap: 20px">
+                                        <!-- Calendario de inicio -->
+                                        <p-calendar
+                                            formControlName="{{
+                                                curso.cCursoNombre +
+                                                    curso.iCursoNivelGradId
+                                            }}Inicio"
+                                            [showTime]="true"
+                                            [hourFormat]="'24'"
+                                            [timeOnly]="false"
+                                            [showIcon]="true"
+                                            placeholder="Inicio"
+                                            inputId="fechaHoraInicio-{{
+                                                curso.cCursoNombre
+                                            }}"
+                                            [appendTo]="'body'"
+                                            styleClass="pr-2"
+                                            class="calendar"
+                                        ></p-calendar>
+
+                                        <!-- Calendario de fin -->
+                                        <p-calendar
+                                            formControlName="{{
+                                                curso.cCursoNombre +
+                                                    curso.iCursoNivelGradId
+                                            }}Fin"
+                                            [showTime]="true"
+                                            [hourFormat]="'24'"
+                                            [timeOnly]="false"
+                                            [showIcon]="true"
+                                            placeholder="Fin"
+                                            inputId="fechaHoraFin-{{
+                                                curso.cCursoNombre
+                                            }}"
+                                            [appendTo]="'body'"
+                                            styleClass="pl-4"
+                                        ></p-calendar>
+                                    </div>
                                 </div>
 
                                 <!-- Línea separadora para cada curso -->
@@ -253,7 +267,6 @@
             </div>
         </div>
 
-        <!-- Mostrar mensaje si no hay datos -->
         <ng-template #noData>
             <p>No hay cursos disponibles para mostrar.</p>
         </ng-template>
@@ -270,6 +283,17 @@
             (click)="ngOnDestroy()"
             (click)="showModalCursosEre = false"
             (click)="form.reset()"
+        ></button>
+
+        <button
+            pButton
+            pRipple
+            label="Guardar"
+            icon="pi pi-times"
+            class="p-button-secondary"
+            type="button"
+            size="small"
+            (click)="guardarInicioFinalExmAreas()"
         ></button>
     </div>
 </p-dialog>

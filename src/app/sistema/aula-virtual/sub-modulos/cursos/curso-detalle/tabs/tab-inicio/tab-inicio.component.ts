@@ -80,7 +80,7 @@ export class TabInicioComponent implements OnInit {
     //datos de los anuncios
     obtenerAnuncios() {
         const idForo = 4
-        const idDocenteCurso = this.iCursoId
+        const idDocenteCurso = this.idDocCursoId
         this._aulaService
             .obtenerAnunciosDocnt({
                 iForoCatId: idForo,

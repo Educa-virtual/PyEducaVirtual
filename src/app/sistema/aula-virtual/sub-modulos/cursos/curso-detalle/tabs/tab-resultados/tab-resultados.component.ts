@@ -568,11 +568,12 @@ export class TabResultadosComponent implements OnInit {
     //obtener los periordos en un button
     unidades: any[] = []
     habilitarCalificacion() {
+        const idYear = 3
         const params = {
-            iYAcadId: this._constantesService.iYAcadId,
+            iYAcadId: idYear,
             iCredId: this._constantesService.iCredId,
         }
-        //console.log('año', params)
+        console.log('año', params)
         this._aulaService.habilitarCalificacion(params).subscribe((Data) => {
             this.unidades = Data['data']
             this.unidades = this.unidades.map((unidad) => {

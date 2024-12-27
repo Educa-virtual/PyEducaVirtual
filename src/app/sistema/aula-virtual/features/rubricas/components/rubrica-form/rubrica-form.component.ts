@@ -35,7 +35,7 @@ export class RubricaFormComponent implements OnInit, OnDestroy {
     }
     constructor(
         private _rubricaFormService: RubricaFormService,
-        private router: Router,
+        private router: Router
     ) {}
 
     ngOnInit() {
@@ -101,40 +101,39 @@ export class RubricaFormComponent implements OnInit, OnDestroy {
             this.rubricaForm.markAllAsTouched()
             return
         }
-        
-        const data = this.rubricaForm.value   
 
-        
+        const data = this.rubricaForm.value
 
         data.iDocenteId = this._constantesService.iDocenteId
         data.iCredId = this._constantesService.iCredId
         data.idDocCursoId = this._params.idDocCursoId
         data.iCursoId = this._params.iCursoId
 
-        const instrumento = await this._apiEvaluacionesServ.guardarActualizarRubrica(data)
+        const instrumento =
+            await this._apiEvaluacionesServ.guardarActualizarRubrica(data)
 
         console.log(instrumento)
 
-        if(this.route.queryParams['_value']?.iEvaluacionId){
-
+        if (this.route.queryParams['_value']?.iEvaluacionId) {
             await this._apiEvaluacionesServ.actualizarRubricaEvaluacion({
                 data: JSON.stringify({
-                    iInstrumentoId: instrumento.iInstrumentoId ?? data.iInstrumentoId,
+                    iInstrumentoId:
+                        instrumento.iInstrumentoId ?? data.iInstrumentoId,
                 }),
-                iEvaluacionId: this.route.queryParams['_value'].iEvaluacionId
+                iEvaluacionId: this.route.queryParams['_value'].iEvaluacionId,
             })
-        } 
+        }
 
         this.router.navigate([], {
             queryParams: {
-                iInstrumentoId: instrumento.iInstrumentoId ?? data.iInstrumentoId,
+                iInstrumentoId:
+                    instrumento.iInstrumentoId ?? data.iInstrumentoId,
             },
             queryParamsHandling: 'merge',
             replaceUrl: true,
         })
 
         this.closeModal('obtenerRubricas')
-
     }
 
     closeModal(data) {

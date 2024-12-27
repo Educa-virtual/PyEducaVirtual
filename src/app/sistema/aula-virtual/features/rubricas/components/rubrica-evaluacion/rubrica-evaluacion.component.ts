@@ -34,7 +34,7 @@ export class RubricaEvaluacionComponent implements OnInit, OnDestroy {
                     label: 'Eliminar',
                     icon: 'pi pi-trash',
                     command: () => this.deleteRubricaEvaluacion(),
-                    visible: this.constantesService.iPerfilId == DOCENTE
+                    visible: this.constantesService.iPerfilId == DOCENTE,
                 },
                 {
                     label: 'Descargar',
@@ -108,12 +108,12 @@ export class RubricaEvaluacionComponent implements OnInit, OnDestroy {
                         this.data = Array.isArray(data) ? data[0] : undefined
                         console.log(this.data)
 
-                        if (this.data.iEstado) {
+                        if (this.data?.iEstado) {
                             this.router.navigate([], {
                                 queryParams: {
-                                    iEstado: this.data.iEstado
+                                    iEstado: this.data.iEstado,
                                 },
-                                queryParamsHandling: 'merge'
+                                queryParamsHandling: 'merge',
                             })
                         }
                     },
@@ -126,7 +126,9 @@ export class RubricaEvaluacionComponent implements OnInit, OnDestroy {
             const sumaMaximos = criterios.reduce((acumulador, criterio) => {
                 // Obtener el valor máximo en el array "niveles"
                 const maxValor = Math.max(
-                    ...criterio?.niveles?.map((nivel) => nivel.iNivelEvaValor ?? 0) ?? [0] 
+                    ...(criterio?.niveles?.map(
+                        (nivel) => nivel.iNivelEvaValor ?? 0
+                    ) ?? [0])
                 )
                 return acumulador + maxValor
             }, 0)

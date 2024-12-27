@@ -47,3 +47,6 @@
 .btn {
     border-radius: 50%;
 }
+:host ::ng-deep .perfil-name {
+    color: black;
+}

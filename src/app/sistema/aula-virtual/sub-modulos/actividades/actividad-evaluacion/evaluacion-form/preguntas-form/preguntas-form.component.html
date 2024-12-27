@@ -141,6 +141,11 @@
                                         </p-inputGroupAddon>
                                         <div
                                             class="w-full align-content-center"
+                                            [class]="
+                                                item.bBancoAltRptaCorrecta
+                                                    ? 'bg-green-500 text-white'
+                                                    : ''
+                                            "
                                         >
                                             @if (item.bImage) {
                                                 <div class="ml-1 font-italic">

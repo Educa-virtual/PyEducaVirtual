@@ -22,6 +22,9 @@ import { RecursosListaComponent } from '../../../../../../shared/components/recu
 import { Table } from 'primeng/table'
 import { ScrollerModule } from 'primeng/scroller'
 import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
+import { RubricaCalificarComponent } from '../../../../features/rubricas/components/rubrica-calificar/rubrica-calificar.component'
+import { RubricasComponent } from '../../../../features/rubricas/rubricas.component'
+import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-evaluaciones.service'
 
 @Component({
     selector: 'app-tarea-room',
@@ -34,6 +37,8 @@ import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
         FormTransferirGrupoComponent,
         RecursosListaComponent,
         ScrollerModule,
+        RubricaCalificarComponent,
+        RubricasComponent,
     ],
 
     templateUrl: './tarea-room.component.html',
@@ -43,11 +48,19 @@ import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
 export class TareaRoomComponent implements OnChanges, OnInit {
     form: FormGroup
 
+    params = {
+        iCursoId: 0,
+        iDocenteId: 0,
+        idDocCursoId: 0,
+        iEvaluacionId: null,
+    }
+
     @Input() iTareaId: string
     private _dialogService = inject(DialogService)
     private GeneralService = inject(GeneralService)
     private _constantesService = inject(ConstantesService)
     private _confirmService = inject(ConfirmationModalService)
+    private _evaluacionService = inject(ApiEvaluacionesService)
     private _formBuilder = inject(FormBuilder)
     private _aulaService = inject(ApiAulaService)
     private confirmationService = inject(ConfirmationService)
@@ -215,6 +228,27 @@ export class TareaRoomComponent implements OnChanges, OnInit {
     notaTareaEstudianteGrupal: string = ''
     comentarioTareaEstudianteGrupal: string = ''
     FilesTareasEstudiantesGrupal = []
+
+    accionRubrica(elemento): void {
+        if (!elemento) return
+        this.obtenerRubricas()
+    }
+
+    rubricas = []
+
+    obtenerRubricas() {
+        const params = {
+            iDocenteId: this._constantesService.iDocenteId,
+        }
+        this._evaluacionService.obtenerRubricas(params).subscribe({
+            next: (data) => {
+                data.forEach((element) => {
+                    this.rubricas.push(element)
+                })
+            },
+        })
+    }
+
     public accionBtnItem(elemento) {
         const { accion } = elemento
         const { item } = elemento

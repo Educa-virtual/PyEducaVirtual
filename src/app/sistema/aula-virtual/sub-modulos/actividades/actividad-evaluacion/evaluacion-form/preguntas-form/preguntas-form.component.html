@@ -7,12 +7,12 @@
     [draggable]="false"
     [resizable]="false"
 >
-    <br />
+    <!-- <br />
     <div class="grid">
         <div class="card">
             {{ cEvaluacionTitulo }}
         </div>
-    </div>
+    </div> -->
 
     <ng-template pTemplate="content">
         <form [formGroup]="formBancoPreguntas" class="grid mt-4">
@@ -148,11 +148,15 @@
                                         </p-inputGroupAddon>
                                         <div
                                             class="w-full align-content-center"
-                                            [class]="
-                                                item.bBancoAltRptaCorrecta
-                                                    ? 'bg-green-500 text-white'
-                                                    : ''
-                                            "
+                                            [ngStyle]="{
+                                                'background-color':
+                                                    item.bBancoAltRptaCorrecta
+                                                        ? '#f3d097'
+                                                        : 'transparent',
+                                                color: item.bBancoAltRptaCorrecta
+                                                    ? '#808080'
+                                                    : 'inherit',
+                                            }"
                                         >
                                             @if (item.bImage) {
                                                 <div class="ml-1 font-italic">

@@ -107,6 +107,12 @@ tr {
     width: 100%;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra para dar profundidad */
 }
+//
+.menu-container {
+    margin-left: auto; /* Empuja el menú al extremo derecho */
+    display: flex;
+    // align-items: center;
+}
 .perfiles-list-item {
     display: flex;
     align-items: center;

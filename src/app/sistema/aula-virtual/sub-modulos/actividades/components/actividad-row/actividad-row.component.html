@@ -231,7 +231,6 @@
     <ng-template pTemplate="item" let-item>
         @if (item.isVisible ? item.isVisible(actividad) : true) {
             <button
-                pButton
                 class="gap-2 w-full flex p-button-text p-button-plain text-left"
                 (click)="onAction(item.accion, $event); menuActividad.hide()"
             >

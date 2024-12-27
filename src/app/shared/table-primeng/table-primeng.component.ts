@@ -1,5 +1,5 @@
 import { PrimengModule } from '@/app/primeng.module'
-import { ChangeDetectionStrategy } from "@angular/core";  
+import { ChangeDetectionStrategy } from '@angular/core'
 import {
     Component,
     Output,
@@ -236,10 +236,10 @@ export class TablePrimengComponent implements OnChanges, OnInit {
 
     ngOnInit() {
         this.columnasSeleccionadas = this.columnas
-        this.selectedCells = {}
+        //this.selectedCells = {}
     }
 
-    ngOnChanges(changes) {
+    ngOnChanges(changes: any) {
         if (changes.data?.currentValue) {
             this.data = changes.data.currentValue
         }
@@ -279,72 +279,68 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     findNivelLogroId(obj) {
         for (const key in obj) {
             if (obj[key]?.logros) {
-                const logro = obj[key].logros.find(logro => logro.iNivelLogroAlcId !== undefined);
+                const logro = obj[key].logros.find(
+                    (logro) => logro.iNivelLogroAlcId !== undefined
+                )
                 if (logro) {
-                    return logro.iNivelLogroAlcId;
+                    return logro.iNivelLogroAlcId
                 }
             }
         }
-        return null; // Si no se encuentra ningún id
+        return null // Si no se encuentra ningún id
     }
-    
 
     selectCell(col: any, field: string, row: any): void {
-        const nivelEvaId = row.values?.[field]?.iNivelEvaId;
-    
+        const nivelEvaId = row.values?.[field]?.iNivelEvaId
+
         this.selectedColumn.emit([
             col,
             {
                 iCriterioId: row.values?.[field]?.iCriterioId,
                 iNivelEvaId: nivelEvaId,
                 iNivelLogroAlcId: this.findNivelLogroId(row.values),
-
             },
-        ]);
-    
+        ])
+
         // Si la celda seleccionada es la misma, la deseleccionamos
-        if (this.selectedCells[nivelEvaId] === field) {
-            delete this.selectedCells[nivelEvaId];
-        } else {
-            this.selectedCells = {}
-            this.selectedCells[nivelEvaId] = field; // Asignar nueva celda seleccionada
-        }
-    }
-    
-
-    selectRow(row: any, field: string): void {
-        this.selectedColumn.emit(row)
+        // if (this.selectedCells[nivelEvaId] === field) {
+        //     delete this.selectedCells[nivelEvaId];
+        // } else {
+        //     this.selectedCells = {}
+        //     this.selectedCells[nivelEvaId] = field; // Asignar nueva celda seleccionada
+        // }
     }
 
-    selectedCells: { [rowId: string]: string } = {};
+    // selectRow(row: any, field: string): void {
+    //     this.selectedColumn.emit(row)
+    // }
+
+    // selectedCells: { [rowId: string]: string } = {};
 
     @Input() enableCellSelection
     @Input() enableViewSelections
     @Input() showSortIcon = true
 
-    firstLoadRubrica = true
+    // firstLoadRubrica = true
 
-    isCellSelected(rowData: any, field: string): boolean {
+    // isCellSelected(rowData: any, field: string): boolean {
 
-        console.log('selected estudiante')
+    //     console.log('selected estudiante')
 
-        const iNivelEvaId = rowData.values?.[field]?.iNivelEvaId;
+    //     const iNivelEvaId = rowData.values?.[field]?.iNivelEvaId;
 
-        if (rowData.values?.[field]?.logros != null && !this.selectedCells[iNivelEvaId]) {
-            this.selectedCells[iNivelEvaId] = field;
-    
-        }    
-        return this.selectedCells.hasOwnProperty(iNivelEvaId);
-    }
+    //     if (rowData.values?.[field]?.logros != null && !this.selectedCells[iNivelEvaId]) {
+    //         this.selectedCells[iNivelEvaId] = field;
 
-    isFirstCellSelected(rowData: any, field: string): boolean {
-        const iNivelEvaId = rowData.values?.[field]?.iNivelEvaId;
+    //     }
+    //    // return this.selectedCells.hasOwnProperty(iNivelEvaId);
+    // }
 
+    // isFirstCellSelected(rowData: any, field: string): boolean {
+    //     const iNivelEvaId = rowData.values?.[field]?.iNivelEvaId;
 
-        return this.selectedCells.hasOwnProperty(iNivelEvaId);
-    }
-    
-    
+    //     return this.selectedCells.hasOwnProperty(iNivelEvaId);
+    // }
 
     openFile(item) {
         switch (Number(item.type)) {

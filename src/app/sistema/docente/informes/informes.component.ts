@@ -232,7 +232,7 @@ export class InformesComponent implements OnInit {
         this.conclusionDescrpFinal.controls['conclusionDescripFinal'].setValue(
             this.descripcionFinalDeLogro
         )
-        console.log('decrip', this.descripcionFinalDeLogro)
+        //console.log('decrip', this.descripcionFinalDeLogro)
         this.estudianteSelect = estudiante
         const id = estudiante.iEstudianteId
         const filteredData = this.estudianteMatriculadosxGrado.filter(

@@ -50,8 +50,8 @@ export class ConfigFechasComponent implements OnInit {
     ) {
         const perfil = this.store.getItem('dremoPerfil')
         console.log(perfil, 'perfil dremo', this.store)
-        const year = this.store.getItem('dremoYear')
-        this.iYAcadId = year
+
+        this.iYAcadId = this.store.getItem('dremoiYAcadId')
 
         this.iSedeId = perfil.iSedeId
         this.iCalAcadId = perfil.iCalAcadId

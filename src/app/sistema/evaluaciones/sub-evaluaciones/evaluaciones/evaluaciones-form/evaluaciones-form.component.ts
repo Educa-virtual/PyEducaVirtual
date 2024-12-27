@@ -47,6 +47,8 @@ import { Stepper } from 'primeng/stepper'
 import { MessageService } from 'primeng/api'
 import { ToastModule } from 'primeng/toast'
 import { CalendarModule } from 'primeng/calendar'
+import { ConstantesService } from '@/app/servicios/constantes.service'
+
 interface TipoEvaluacion {
     idTipoEvalId: number
     cTipoEvalDescripcion: string
@@ -74,7 +76,6 @@ interface NivelEvaluacion {
         CommonInputComponent,
         ReactiveFormsModule,
         EvaluacionAreasComponent,
-
         StepperModule,
         CommonModule,
         DividerModule,
@@ -100,7 +101,7 @@ export class EvaluacionesFormComponent implements OnInit {
     }
     public data = []
     private _apiEre = inject(ApiEvaluacionesRService)
-    private _MessageService = inject(MessageService) //!Agregando Mensaje
+    private _MessageService = inject(MessageService) //Agregando Mensaje
     tipoEvaluacion: TipoEvaluacion[] | undefined
     iEvaluacionId: number
     selectedTipoEvaluacion: TipoEvaluacion | undefined
@@ -113,11 +114,9 @@ export class EvaluacionesFormComponent implements OnInit {
     @ViewChild('stepper') stepper: Stepper
     activeStep: number = 0 // Paso activo
     totalSteps = 3 // Total de pasos del stepper
-
     dtEvaluacionCreacion: Date | null = null // Esto guarda la fecha seleccionada
-
     // Declaración de la nueva propiedad
-    evaluacionCreadaId: number | null = null //! Asegúrate de declararla aquí
+    evaluacionCreadaId: number | null = null // Asegúrate de declararla aquí
 
     // Función para mostrar el valor en la consola
     logCalendarValue() {
@@ -127,7 +126,8 @@ export class EvaluacionesFormComponent implements OnInit {
         public _config: DynamicDialogConfig, // Inyección de configuración
         private compartirIdEvaluacionService: CompartirIdEvaluacionService, // Inyección del servicio
         private compartirFormularioEvaluacionService: CompartirFormularioEvaluacionService, // !Inyección del servicio
-        private fb: FormBuilder
+        private fb: FormBuilder,
+        private constantesService: ConstantesService
     ) {
         // Inicializar formulario reactivo
         this.evaluacionFormGroup = this.fb.group({
@@ -148,7 +148,6 @@ export class EvaluacionesFormComponent implements OnInit {
         })
     }
 
-    //!AQUI SE AGREGO LOS SERVICIOS
     // Método para enviar el formulario y guardar el dato en el servicio
     onSubmit(): void {
         const nombre = this.evaluacionFormGroup.get('cEvaluacionNombre')?.value
@@ -161,7 +160,6 @@ export class EvaluacionesFormComponent implements OnInit {
     enviarVarlorDesdeForm(): void {
         this.onSubmit()
     }
-    //!AQUI SE AGREGO LOS SERVICIOS
     // Función para manejar el botón de "Siguiente"
     handleNext() {
         if (this.activeStep === 0 && this.accion === 'ver') {
@@ -186,26 +184,21 @@ export class EvaluacionesFormComponent implements OnInit {
             this.activeStep++
             return
         }
-    } //!AQUI ES BACK
-
+    }
     // Función para manejar el botón "Atrás"
     handlePrevious() {
         if (this.activeStep > 0) {
             this.activeStep--
         }
-
         if (this.activeStep === 0 && this.accion === 'nuevo') {
             this.accion = 'editar' // Cambia a 'editar' cuando retrocedemos
-            console.log('GG Cambiando acción a EDITAR')
             this.iEvaluacionId = this.evaluacionCreadaId // iEvaluacionId es el ID creado al guardar
             // Luego de retroceder, ya estamos en modo edición
             this.iEvaluacionId = this.compartirIdEvaluacionService.iEvaluacionId
-            console.log('GG iEvaluacionId:', this.iEvaluacionId)
             // Asegúrate de asignar el valor de iEvaluacionId al formulario
             this.evaluacionFormGroup
                 .get('iEvaluacionId')
                 .setValue(this.iEvaluacionId)
-
             this.esModoEdicion = true
             console.log('GG Reasignado iEvaluacionId:', this.iEvaluacionId)
         }
@@ -219,17 +212,13 @@ export class EvaluacionesFormComponent implements OnInit {
         console.log('Formulario finalizado.')
         this._ref.close(data)
         console.log('Salir de Formulario')
-
-        // Resetear el formulario si es necesario
         this.evaluacionFormGroup.reset()
-        // Aquí va la lógica para finalizar el formulario
     }
 
     // Función para determinar si es el último paso
     get isLastStep(): boolean {
         return this.activeStep === this.totalSteps - 1
     }
-    //!TERMINA AQUI
     esModoEdicion: boolean = false // Cambiar a true si estás en modo edición
     ngOnInit() {
         if (this._config?.data?.evaluacion?.iEvaluacionId) {
@@ -251,11 +240,13 @@ export class EvaluacionesFormComponent implements OnInit {
         // Configura el formulario dependiendo de la acción
         if (this.accion === 'ver') {
             this.evaluacionFormGroup.disable() // Hacer el formulario solo lectura
+
             console.log('Formulario DESABILITADO', this.accion)
         } else if (this.accion === 'editar') {
             this.esModoEdicion = true
             this.ereVerEvaluacion() // Llenar el formulario con los datos para editar
         }
+        console.warn('SERVICIO: ', this.constantesService.iDocenteId)
     }
     ereCrearFormulario() {
         this.evaluacionFormGroup = this._formBuilder.group({
@@ -358,20 +349,12 @@ export class EvaluacionesFormComponent implements OnInit {
                         summary: 'Evaluación registrada',
                         detail: 'La evaluación se registró correctamente en el sistema.',
                     })
-                    //!Aqui va las evaluaciones para Servicios.
-                    // const nombre =
-                    //     this.evaluacionFormGroup.get('cEvaluacionNombre')?.value
-                    // // Guardar el valor en el servicio
-                    // this.compartirFormularioEvaluacionService.setcEvaluacionNombre(
-                    //     nombre
-                    // )
 
                     const nombreEvaluacion =
                         resp['data'][0]['cEvaluacionNombre'] // Obtiene el nombre de la respuesta
                     this.compartirFormularioEvaluacionService.setcEvaluacionNombre(
                         nombreEvaluacion
-                    ) // Guarda el nombre en el servicio
-                    //!Aqui va las evaluaciones para Servicios.
+                    )
                 },
                 error: (error) => {
                     console.error('Error al guardar la evaluación:', error) // Captura el error aquí

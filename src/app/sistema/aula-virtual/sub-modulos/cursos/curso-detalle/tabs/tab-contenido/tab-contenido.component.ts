@@ -381,6 +381,13 @@ export class TabContenidoComponent implements OnInit {
                     actividad.iActTipoId,
                 ],
                 {
+                    queryParams: {
+                        iEvaluacionId: this.actividadSelected['iForo'],
+                        iCursoId: this.iCursoId,
+                        idDocCursoId: this.idDocCursoId,
+                        iEstudianteId:
+                            this._constantesService.iEstudianteId ?? undefined,
+                    },
                     relativeTo: this._activatedRoute,
                 }
             )

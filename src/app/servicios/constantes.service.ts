@@ -16,7 +16,7 @@ const store = new LocalStoreService()
 const perfil = store.getItem('dremoPerfil')
 const verificado = store.getItem('dremoPerfilVerificado')
 const user = store.getItem('dremoUser')
-const iYAcadId = store.getItem('dremoYear')
+const iYAcadId = store.getItem('dremoiYAcadId')
 const inicio = {
     label: 'Inicio',
     icon: 'pi pi-fw pi-home',
@@ -797,9 +797,7 @@ const administracion = [
                             {
                                 label: 'Configuración de ERE',
                                 icon: 'pi pi-fw pi-circle',
-                                routerLink: [
-                                    '/gestion-institucional/IesPersonal',
-                                ],
+                                routerLink: ['/configuracion/configuracion'],
                             },
                             {
                                 label: 'Resultados de ERE',

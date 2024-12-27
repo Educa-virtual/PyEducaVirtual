@@ -1,6 +1,11 @@
 import { Injectable } from '@angular/core'
 import { httpService } from '@/app/servicios/httpService'
-import { ITableService } from '@/app/interfaces/api.interface'
+import {
+    IGetTableService,
+    IInsertTableService,
+    IUpdateTableService,
+    IDeleteTableService,
+} from '@/app/interfaces/api.interface'
 
 @Injectable({
     providedIn: 'root',
@@ -49,8 +54,30 @@ export class ApiService {
      * ]);
      * ```
      */
-    async getData(queryPayload: ITableService | ITableService[]) {
-        return await this.http.getData('virtual/getData', queryPayload)
+    async getData(queryPayload: IGetTableService | IGetTableService[]) {
+        const res = await this.http.getData('virtual/getData', queryPayload)
+
+        // Verificar si la respuesta es un array no vacío
+        return res.data.map((item) => {
+            // Decodificar valores JSON del objeto si son cadenas válidas en formato JSON
+
+            const decodedItem: Record<string, any> = {}
+
+            Object.entries(item).forEach(([key, value]) => {
+                try {
+                    // Si el valor es una cadena válida en formato JSON, decodificarla
+                    decodedItem[key] =
+                        typeof value == 'string' && value.startsWith('[{"')
+                            ? JSON.parse(value)
+                            : value
+                } catch (e) {
+                    // Si ocurre un error al decodificar, mantener el valor original
+                    decodedItem[key] = value
+                }
+            })
+
+            return decodedItem
+        })
     }
 
     /**
@@ -68,7 +95,9 @@ export class ApiService {
      * $query = $this->selDesdeTablaOVista('grl', 'personas');
      * ```
      */
-    async insertData(queryPayload: ITableService) {
+    async insertData(
+        queryPayload: IInsertTableService | IInsertTableService[]
+    ) {
         return await this.http.postData('virtual/insertData', queryPayload)
     }
 
@@ -79,7 +108,9 @@ export class ApiService {
      *                       Estos contienen los datos a actualizar.
      * @returns Una promesa que resuelve la respuesta del servidor, indicando si la operación de actualización fue exitosa.
      */
-    async updateData(queryPayload: ITableService) {
+    async updateData(
+        queryPayload: IUpdateTableService | IUpdateTableService[]
+    ) {
         return await this.http.putData('virtual/updateData', queryPayload)
     }
 
@@ -90,7 +121,9 @@ export class ApiService {
      *                       Estos contienen los datos o identificadores necesarios para eliminar los registros.
      * @returns Una promesa que resuelve la respuesta del servidor, indicando si la operación de eliminación fue exitosa.
      */
-    async deleteData(queryPayload: ITableService) {
+    async deleteData(
+        queryPayload: IDeleteTableService | IDeleteTableService[]
+    ) {
         return this.http.deleteData('virtual/deleteData', queryPayload)
     }
 }

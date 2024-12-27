@@ -21,7 +21,10 @@ export class httpService {
         this.dynamicToastService.createToast()
     }
 
-    async getData(endpoint: string, params?: { [key: string]: any }) {
+    async getData(
+        endpoint: string,
+        params?: { [key: string]: any }
+    ): Promise<any> {
         try {
             // Si los parámetros se pasan como objeto, los convertimos en una cadena de consulta
 

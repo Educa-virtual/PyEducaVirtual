@@ -161,11 +161,11 @@ export class EvaluacionesComponent implements OnInit {
             return
         }
 
-        const [data] = await this.apiservice.getData({
+        const data = await this.apiservice.getData({
             esquema: 'ere',
             tabla: 'V_EvaluacionFechasCursos',
             campos: '*',
-            where: 'iEvaluacionId=' + this.iiEvaluacionId,
+            where: 'iEvaluacionId=1',
         })
 
         const [example1, example2] = await this.apiservice.getData([
@@ -179,9 +179,10 @@ export class EvaluacionesComponent implements OnInit {
                 esquema: 'ere',
                 tabla: 'V_EvaluacionFechasCursos',
                 campos: '*',
-                where: 'iEvaluacionId=740',
+                where: 'iEvaluacionId=1',
             },
         ])
+
         console.log('Si funciona chiki')
         console.log(data, example1, example2)
 

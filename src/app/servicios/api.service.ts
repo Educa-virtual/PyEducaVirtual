@@ -32,7 +32,7 @@ export class ApiService {
      * 
      * @returns Un arreglo de objetos donde cada objeto representa un registro
      *          de la tabla consultada. Cada objeto puede tener propiedades que
-     *          son valores de tipo JSON, que serán automáticamente     
+     *          son valores de tipo JSON, que serán automáticamente
      *          decodificados si están en formato de cadena válida.
      * 
     
@@ -72,30 +72,50 @@ export class ApiService {
      * ```
      */
     async getData(queryPayload: IGetTableService | IGetTableService[]) {
-        // return await this.http.getData('virtual/getData', queryPayload)
+        // Realizar la solicitud HTTP y obtener los datos.
         const res = await this.http.getData('virtual/getData', queryPayload)
 
-        // Verificar si la respuesta es un array no vacío
-        return res.data.map((item) => {
-            // Decodificar valores JSON del objeto si son cadenas válidas en formato JSON
+        // Verificar si la respuesta contiene datos válidos.
+        if (res?.data?.length > 0) {
+            console.log('Datos obtenidos:', res.data)
 
-            const decodedItem: Record<string, any> = {}
+            // Procesar los datos y decodificar valores JSON en los registros.
+            return res.data.map((item) => {
+                const decodedItem: Record<string, any> = {}
 
-            Object.entries(item).forEach(([key, value]) => {
-                try {
-                    // Si el valor es una cadena válida en formato JSON, decodificarla
-                    decodedItem[key] =
-                        typeof value == 'string' && value.startsWith('[{"')
-                            ? JSON.parse(value)
-                            : value
-                } catch (e) {
-                    // Si ocurre un error al decodificar, mantener el valor original
-                    decodedItem[key] = value
+                // Asegurarse de que `item` no sea null o undefined antes de usar Object.entries
+                if (item && typeof item === 'object') {
+                    // Iterar sobre cada propiedad del objeto de datos.
+                    Object.entries(item).forEach(([key, value]) => {
+                        try {
+                            // Decodificar el valor si es una cadena JSON válida.
+                            decodedItem[key] =
+                                typeof value === 'string' &&
+                                value.startsWith('[{')
+                                    ? JSON.parse(value) // Decodificar JSON.
+                                    : value // Mantener el valor original si no es JSON.
+                        } catch (e) {
+                            // Si ocurre un error al decodificar, mantener el valor original.
+                            decodedItem[key] = value
+                            console.error(
+                                `Error al decodificar el campo ${key}:`,
+                                e
+                            )
+                        }
+                    })
+                } else {
+                    // Si `item` es nulo o no es un objeto, dejarlo como está.
+                    console.warn('Elemento no válido en los datos:', item)
+                    return item
                 }
-            })
 
-            return decodedItem
-        })
+                return decodedItem
+            })
+        } else {
+            // Si no hay datos o la respuesta está vacía, devolver los datos tal como están.
+            console.log('No se encontraron datos o la respuesta está vacía')
+            return res.data
+        }
     }
 
     /**

@@ -21,20 +21,19 @@ export class httpService {
         this.dynamicToastService.createToast()
     }
 
-    async getData(endpoint: string, params?: { [key: string]: any }) {
+    async getData(
+        endpoint: string,
+        params?: { [key: string]: any }
+    ): Promise<any> {
         try {
             // Si los parámetros se pasan como objeto, los convertimos en una cadena de consulta
 
             return await firstValueFrom(
-                this.http.post(
-                    `${this.apiURL}/${endpoint}`,
-                    { _method: 'GET', ...params },
-                    {
-                        headers: new HttpHeaders({
-                            'Content-Type': 'application/json',
-                        }),
-                    }
-                )
+                this.http.post(`${this.apiURL}/${endpoint}`, params, {
+                    headers: new HttpHeaders({
+                        'Content-Type': 'application/json',
+                    }),
+                })
             )
         } catch (error) {
             this.errorHandler.handleHttpError(error) // Delegar el manejo de errores al ErrorHandler

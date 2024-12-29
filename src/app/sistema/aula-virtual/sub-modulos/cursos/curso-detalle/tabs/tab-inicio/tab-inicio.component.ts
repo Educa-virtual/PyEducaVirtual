@@ -7,10 +7,11 @@ import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.ser
 //Message,
 import { MessageService } from 'primeng/api'
 import { GeneralService } from '@/app/servicios/general.service'
+import { ButtonModule } from 'primeng/button'
 @Component({
     selector: 'app-tab-inicio',
     standalone: true,
-    imports: [TableModule, PrimengModule],
+    imports: [TableModule, PrimengModule, ButtonModule],
     templateUrl: './tab-inicio.component.html',
     styleUrl: './tab-inicio.component.scss',
 })
@@ -79,11 +80,11 @@ export class TabInicioComponent implements OnInit {
     //datos de los anuncios
     obtenerAnuncios() {
         const idForo = 4
-        const idDocente = this.idDocCursoId
+        const idDocenteCurso = this.idDocCursoId
         this._aulaService
             .obtenerAnunciosDocnt({
                 iForoCatId: idForo,
-                iDocenteId: idDocente,
+                iDocenteId: idDocenteCurso,
             })
             .subscribe((data) => {
                 this.anunciosDocente = data['data']

@@ -39,20 +39,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="grid mb-4">
-                                <div
-                                    class="col-12 md:col-6 flex flex-column gap-2 align-items-start"
-                                >
-                                    <div
-                                        class="col-12 md:col-6 gap-2 flex flex-column"
-                                    >
-                                        <app-time
-                                            [inicio]="fechaInicio"
-                                            [fin]="fechaFin"
-                                        ></app-time>
-                                    </div>
-                                </div>
-                            </div>
+
                             <div class="grid mb-4">
                                 <div
                                     class="col-12 md:col-6 flex flex-column gap-2"
@@ -146,7 +133,10 @@
                         class="col-12 md:col-4"
                         [hidden]="iPerfilId !== ESTUDIANTE"
                     >
-                        <div class="card">
+                        <div
+                            class="card"
+                            *ngFor="let respuesta of respuestasForo"
+                        >
                             <h4>Mi Retroalimentación descriptiva:</h4>
                             <!-- <p-divider></p-divider> -->
                             <!-- <p-inputGroup>
@@ -156,9 +146,20 @@
                             <p-divider></p-divider>
                             <p-inputGroup>
                                 <p-inputGroupAddon>
-                                    Comentario Docente
+                                    Comentario Docente:
                                 </p-inputGroupAddon>
-                                <textarea pInputText rows="5"></textarea>
+                                <textarea
+                                    pInputText
+                                    rows="1"
+                                    id="comentarioDocente"
+                                    pInputTextarea
+                                    rows="5"
+                                    [disabled]="isDisabled"
+                                    class="p-inputtextarea-lg"
+                                    placeholder="Muestra Comentario Docente"
+                                >
+ {{ respuesta?.cForoRptaDocente }} </textarea
+                                >
                             </p-inputGroup>
                         </div>
                     </div>

@@ -559,7 +559,7 @@
                         <p-dropdown
                             formControlName="iEscalaCalifId"
                             [options]="calificacion"
-                            optionValue="iEscalaCalifId"
+                            optionValue="iEscalaCalifIdPromedio"
                             optionLabel="cEscalaCalifNombre"
                             placeholder="Seleccione una Calificación"
                             [style]="{ width: '100%' }"
@@ -573,12 +573,14 @@
                         >Descripción
                         <span class="text-red-500 text-xs"
                             >(*) Obligatorio</span
-                        ></label
-                    >
+                        >
+                        {{ estudianteSelect?.cDetMatConclusionDescPromedio }}
+                    </label>
                     <div class="mt-2 pt-2">
                         <p-editor
                             id="descripcion"
                             formControlName="cDetMatConclusionDescPromedio"
+                            placeholder="Escribe una conclusión descriptiva.... "
                             [style]="{ height: '150px' }"
                         />
                     </div>
@@ -595,6 +597,7 @@
                     class="p-button-secondary mx-3"
                     type="button"
                     size="small"
+                    (click)="cerrarModalDeCalif()"
                 ></button>
                 <button
                     pButton

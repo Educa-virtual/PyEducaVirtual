@@ -228,6 +228,10 @@ export class ListPreguntasComponent implements OnChanges {
                 this.showModalPreguntas = true
                 this.handleVerPregunta(item)
                 break
+            case 'agregar_preguntas':
+                this.showModalPreguntas = true
+                this.idEncabPregId = item.idEncabPregId
+                break
         }
     }
     /**

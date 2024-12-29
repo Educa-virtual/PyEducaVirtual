@@ -157,20 +157,27 @@ export class EvaluacionesComponent implements OnInit {
         const data = await this.apiservice.getData({
             esquema: 'ere',
             tabla: 'V_EvaluacionFechasCursos',
-            data: [
-                {
-                    campos: '*',
-                    where: 'iEvaluacionId=' + this.iiEvaluacionId,
-                },
-                {
-                    campos: '*',
-                    where: 'iEvaluacionId=' + 740,
-                },
-            ],
+            campos: '*',
+            where: 'iEvaluacionId=1',
         })
 
+        const [example1, example2] = await this.apiservice.getData([
+            {
+                esquema: 'ere',
+                tabla: 'V_EvaluacionFechasCursos',
+                campos: '*',
+                where: 'iEvaluacionId=' + this.iiEvaluacionId,
+            },
+            {
+                esquema: 'ere',
+                tabla: 'V_EvaluacionFechasCursos',
+                campos: '*',
+                where: 'iEvaluacionId=1',
+            },
+        ])
+
         console.log('Si funciona chiki')
-        console.log(data)
+        console.log(data, example1, example2)
 
         // Llamar a searchAmbienteAcademico para obtener los datos estructurados
         this.compartirFormularioEvaluacionService
@@ -297,10 +304,10 @@ export class EvaluacionesComponent implements OnInit {
     //     console.log('Datos a enviar al servidor:', datos)
     // }
     async guardarInicioFinalExmAreas() {
-        return await this.apiservice.updateData({
-            esquema: 'ere',
-            tabla: 'evaluacion',
-        })
+        // return await this.apiservice.updateData({
+        //     esquema: 'ere',
+        //     tabla: 'evaluacion',
+        // })
     }
     //!
     toggleBotonc(): void {

@@ -128,7 +128,7 @@ export class ApiEvaluacionesService {
     // }
 
     async guardarActualizarRubrica(data) {
-        const res: any = this.http2.postData(
+        const res: any = await this.http2.postData(
             'evaluaciones/instrumento-evaluaciones/rubrica',
             data
         )

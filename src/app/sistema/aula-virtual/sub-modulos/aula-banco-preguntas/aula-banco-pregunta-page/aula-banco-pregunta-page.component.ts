@@ -70,6 +70,7 @@ export class AulaBancoPreguntaPageComponent implements OnInit {
     private _generalService = inject(GeneralService)
     private _store = inject(LocalStoreService)
     menuAgregacionPreguntas: any
+    filtros: any
 
     ngOnInit() {
         const year = this._store.getItem('dremoYear')

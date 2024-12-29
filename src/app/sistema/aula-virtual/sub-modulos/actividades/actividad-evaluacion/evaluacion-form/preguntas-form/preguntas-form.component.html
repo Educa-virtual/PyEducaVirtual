@@ -1,5 +1,5 @@
 <p-dialog
-    [header]="'Nueva pregunta para: ' + cEvaluacionTitulo"
+    [header]="opcion + ' PREGUNTA : ' + cEvaluacionTitulo"
     [modal]="true"
     [(visible)]="showModalPreguntas"
     [style]="{ width: '100%', height: '100%' }"
@@ -7,6 +7,13 @@
     [draggable]="false"
     [resizable]="false"
 >
+    <!-- <br />
+    <div class="grid">
+        <div class="card">
+            {{ cEvaluacionTitulo }}
+        </div>
+    </div> -->
+
     <ng-template pTemplate="content">
         <form [formGroup]="formBancoPreguntas" class="grid mt-4">
             @if (this.formBancoPreguntas.value.iTipoPregId === null) {
@@ -141,6 +148,15 @@
                                         </p-inputGroupAddon>
                                         <div
                                             class="w-full align-content-center"
+                                            [ngStyle]="{
+                                                'background-color':
+                                                    item.bBancoAltRptaCorrecta
+                                                        ? '#f3d097'
+                                                        : 'transparent',
+                                                color: item.bBancoAltRptaCorrecta
+                                                    ? '#808080'
+                                                    : 'inherit',
+                                            }"
                                         >
                                             @if (item.bImage) {
                                                 <div class="ml-1 font-italic">

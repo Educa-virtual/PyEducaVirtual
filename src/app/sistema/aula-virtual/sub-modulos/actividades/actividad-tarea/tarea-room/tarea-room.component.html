@@ -83,6 +83,15 @@
                         <app-recursos-lista [files]="FilesTareas">
                         </app-recursos-lista>
                     </div>
+                    instrumentos
+                    <div>
+                        <app-rubricas
+                            [title]="'Rúbricas'"
+                            mode="SELECTION"
+                            [params]="params"
+                            (rubricaSelectedChange)="accionRubrica($event)"
+                        ></app-rubricas>
+                    </div>
                 </div>
                 <!-- Esta tarjeta se muestra solo si iPerfilId es 8, lo que indica que solo ciertos usuarios pueden ver este contenido -->
                 <div class="card col-6" [hidden]="iPerfilId !== ESTUDIANTE">

@@ -164,7 +164,7 @@ export class EvaluacionesFormComponent implements OnInit {
     enviarVarlorDesdeForm(): void {
         this.onSubmit()
     }
-    // Función para manejar el botón de "Siguiente"
+    //! Función para manejar el botón de "Siguiente"
     handleNext() {
         if (this.activeStep === 0 && this.accion === 'ver') {
             this.evaluacionFormGroup.disable() // Hacer el formulario solo lectura
@@ -172,38 +172,38 @@ export class EvaluacionesFormComponent implements OnInit {
         }
 
         if (this.activeStep === 0 && this.accion === 'editar') {
-            if (this.evaluacionFormGroup.invalid) {
-                // Marca los campos como tocados para que se muestren los errores
-                this.evaluacionFormGroup.markAllAsTouched()
+            //! if (this.evaluacionFormGroup.invalid) {
+            //     // Marca los campos como tocados para que se muestren los errores
+            //     this.evaluacionFormGroup.markAllAsTouched()
 
-                // Mostrar mensaje de error
-                this._MessageService.add({
-                    severity: 'error',
-                    summary: 'Formulario incompleto',
-                    detail: 'Por favor, completa todos los campos obligatorios antes de continuar.',
-                })
-                // Detener el flujo
-                return
-            }
+            //     // Mostrar mensaje de error
+            //     this._MessageService.add({
+            //         severity: 'error',
+            //         summary: 'Formulario incompleto',
+            //         detail: 'Por favor, completa todos los campos obligatorios antes de continuar.',
+            //     })
+            //     // Detener el flujo
+            //     return
+            // }
             this.esModoEdicion = true
             this.actualizarEvaluacion()
             //console.log('Formulario EDITAR DESDE HANDLE', this.accion)
         }
 
         if (this.activeStep === 0 && this.accion === 'nuevo') {
-            if (this.evaluacionFormGroup.invalid) {
-                // Marca los campos como tocados para que se muestren los errores
-                this.evaluacionFormGroup.markAllAsTouched()
+            //! if (this.evaluacionFormGroup.invalid) {
+            //     // Marca los campos como tocados para que se muestren los errores
+            //     this.evaluacionFormGroup.markAllAsTouched()
 
-                // Mostrar mensaje de error
-                this._MessageService.add({
-                    severity: 'error',
-                    summary: 'Formulario incompleto',
-                    detail: 'Por favor, completa todos los campos obligatorios antes de continuar.',
-                })
-                // Detener el flujo
-                return
-            }
+            //     // Mostrar mensaje de error
+            //     this._MessageService.add({
+            //         severity: 'error',
+            //         summary: 'Formulario incompleto',
+            //         detail: 'Por favor, completa todos los campos obligatorios antes de continuar.',
+            //     })
+            //     // Detener el flujo
+            //     return
+            // }
             // Si es válido, guardar la evaluación
             this.guardarEvaluacion()
             this.enviarVarlorDesdeForm()
@@ -229,10 +229,6 @@ export class EvaluacionesFormComponent implements OnInit {
             this.esModoEdicion = true
             //console.log('GG Reasignado iEvaluacionId:', this.iEvaluacionId)
         }
-    }
-    datosRecibidosIeParticipan(datos: any) {
-        //console.log('Datos recibidos del hijo:', datos)
-        this.datosRecIeParticipan = datos
     }
     // Finalizar el formulario
     finalizarFormulario(data) {

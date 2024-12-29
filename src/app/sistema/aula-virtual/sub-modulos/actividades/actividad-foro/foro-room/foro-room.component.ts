@@ -188,12 +188,13 @@ export class ForoRoomComponent implements OnInit {
             command: () => this.eliminar(this.itemRespuesta),
         },
     ]
-
+    //metodo para editar foro:
     editar(): void {
         // let respuestasForo = this.itemRespuesta
         // console.log('Editar acción ejecutada', respuestasForo)
         //iForoRptaId
     }
+    // metodo para eliminar foro
     eliminar(itemRespuesta: any): void {
         const iForoRptaId = {
             iForoRptaId: parseInt(itemRespuesta.iForoRptaId, 10),
@@ -247,6 +248,7 @@ export class ForoRoomComponent implements OnInit {
     closeEditor() {
         this.showEditor = false
     }
+    isDisabled: boolean = true
     selecEstudiante(estudianteId: number): void {
         this.estudianteSelectComent = estudianteId
         console.log('Hola estudiante', this.estudianteSelectComent)
@@ -283,6 +285,7 @@ export class ForoRoomComponent implements OnInit {
             if (resp?.validated) {
                 this.modelaCalificacionComen = false
                 this.getRespuestaF()
+                console.log(resp)
             }
         })
         console.log('Guardar Calificacion', where)
@@ -322,7 +325,7 @@ export class ForoRoomComponent implements OnInit {
                 },
             })
     }
-
+    // guardar comentario de estudiante foro
     sendComment() {
         const perfil = (this.iPerfilId = this._constantesService.iPerfilId)
         // const idPerfil = this.iEstudianteId
@@ -451,7 +454,7 @@ export class ForoRoomComponent implements OnInit {
 
         return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}.${milliseconds}`
     }
-    //getRespuestasForo
+    // obtener datos de las respuesta de los foros
     getRespuestaF() {
         this._aulaService
             .obtenerRespuestaForo({

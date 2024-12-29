@@ -159,16 +159,21 @@ export class EvaluacionExamenEreComponent implements OnInit {
                         )
                         const tipoEvalIds = Array.from(
                             new Set(
-                                this.evaluacionesEreDrop.map(
-                                    (item) => item.idTipoEvalId
-                                )
+                                this.evaluacionesEreDrop
+                                    .map((item) => item.idTipoEvalId)
+                                    .filter(
+                                        (id) => id !== undefined && id !== null
+                                    ) // Filtrar valores inválidos
                             )
                         )
+
                         const nivelEvalIds = Array.from(
                             new Set(
-                                this.evaluacionesEreDrop.map(
-                                    (item) => item.iNivelEvalId
-                                )
+                                this.evaluacionesEreDrop
+                                    .map((item) => item.iNivelEvalId)
+                                    .filter(
+                                        (id) => id !== undefined && id !== null
+                                    ) // Filtrar valores inválidos
                             )
                         )
                         const tipoEval$ = this.query.searchCalAcademico({

@@ -61,44 +61,43 @@ interface EvaluacionCopia {
     styleUrl: './ieparticipa.component.scss',
 })
 export class IeparticipaComponent implements OnInit {
-    @Input() _iEvaluacionId: number //ID de la evaluacion Form
-    @Output() datosEmitIeParticipan = new EventEmitter<any>() // Output para enviar el dato al padre
-    public cEvaluacionNombre: string | null = null //!Nombre del formulario Evaluacion
-    public evaluacionFormGroup: any
-
-    private unsubscribe$: Subject<boolean> = new Subject()
-
-    public params = {
-        iCompentenciaId: 0,
-        iCapacidadId: 0,
-        iDesempenioId: 0,
-        bPreguntaEstado: -1,
-    }
-    public data = []
-
-    private _apiEre = inject(ApiEvaluacionesRService)
-    public sourceProducts: any[] = [] // IEs no participantes
-    public targetProducts: any[] = [] // IEs participantes
-    public insParticipan: any[] = [] // InsParticipan
-    private _MessageService = inject(MessageService) //!Agregando Mensaje
     nivelTipo: NivelTipo[] | undefined
     selectedNivelTipo: NivelTipo | undefined
     Ugeles: Ugeles[] | undefined
     selectedUgeles: Ugeles | undefined
     EvaluacionCopia: EvaluacionCopia[] | undefined
     selectedEvaluacionCopia: EvaluacionCopia | number
-
     itemsToDelete: any
-
     evaluaciones: any[] = [] // Array para almacenar las evaluaciones obtenidas del API
     selectedEvaluacionId: number // ID de la evaluación seleccionada en el dropdown
-
     visible: boolean = false //Accion Editar, Ver, crear
     accion: string //Accion Editar, Ver, crear
     isDisabled: boolean // Indica si la sección está deshabilitada
-    //!Conteo de Ie participan y Ie no participan
+    //Conteo de Ie participan y Ie no participan
     participanCount: number = 0 // Conteo de instituciones que participan
     noParticipanCount: number = 0 // Conteo de instituciones que no participan
+    esModoEdicion: boolean = false // Cambiar a true si estás en modo edición
+    iEvaluacionId: number // Aquí se vincula el valor seleccionado
+
+    @Input() _iEvaluacionId: number //ID de la evaluacion Form
+    @Output() datosEmitIeParticipan = new EventEmitter<any>() // Output para enviar el dato al padre
+
+    public allIEs = [] // Lista completa de IE para filtrar los no participantes
+    public cEvaluacionNombre: string | null = null //Nombre del formulario Evaluacion
+    public evaluacionFormGroup: any
+    public params = {
+        iCompentenciaId: 0,
+        iCapacidadId: 0,
+        iDesempenioId: 0,
+        bPreguntaEstado: -1,
+    }
+    public sourceProducts: any[] = [] // IEs no participantes
+    public targetProducts: any[] = [] // IEs participantes
+    public insParticipan: any[] = [] // InsParticipan
+    public data = []
+    private unsubscribe$: Subject<boolean> = new Subject()
+    private _apiEre = inject(ApiEvaluacionesRService)
+    private _MessageService = inject(MessageService) //Agregando Mensaje
 
     constructor(
         private cdr: ChangeDetectorRef,
@@ -107,25 +106,22 @@ export class IeparticipaComponent implements OnInit {
         private _config: DynamicDialogConfig, // Inyectar configuración
         private evaluacionesService: ApiEvaluacionesRService // Inyecta el servicio -> Evaliacion Copiar
     ) {}
-    public allIEs = [] // Lista completa de IE para filtrar los no participantes
-    esModoEdicion: boolean = false // Cambiar a true si estás en modo edición
-    iEvaluacionId: number // Aquí se vincula el valor seleccionado
 
     ngOnInit() {
         // console.log('Valor recibido en _iEvaluacionId:', this._iEvaluacionId)
         // console.log('Iniciando componente con config:', this._config.data)
         // //console.log('iEvaluacionId recibido:', this._iEvaluacionId)
-        console.log(
-            'iEvaluacionId recibido:',
-            this.compartirIdEvaluacionService
-        )
-        //!Cambios servicio form
+        // console.log(
+        //     'iEvaluacionId recibido:',
+        //     this.compartirIdEvaluacionService
+        // )
+        //Cambios servicio form
         this.cEvaluacionNombre =
             this.compartirFormularioEvaluacionService.getcEvaluacionNombre()
-        console.log('Valor obtenido desde el servicio:', this.cEvaluacionNombre)
-        //!Cambios servicio form
+        //console.log('Valor obtenido desde el servicio:', this.cEvaluacionNombre)
+        //Cambios servicio form
         this.accion = this._config.data?.accion || 'crear'
-        console.log('Acción actual:', this.accion)
+        //console.log('Acción actual:', this.accion)
 
         this.obtenerNivelTipo()
         this.obtenerugel()
@@ -539,17 +535,9 @@ export class IeparticipaComponent implements OnInit {
 
             return nivelTipoMatch && ugelMatch && notInTarget
         })
-
-        // Filtrar los elementos en targetProducts (Participan)
-        // Solo se agregarán los productos seleccionados sin eliminar ninguno ya existente
         this.targetProducts = this.targetProducts.filter((product) => {
             return this.allIEs.some((ie) => ie.iIieeId === product.iIieeId)
         })
-
-        // Aquí se pueden agregar nuevos productos a targetProducts si es necesario, como:
-        // (por ejemplo, si algún producto es seleccionado de sourceProducts)
-
-        // Actualizar los conteos después de los cambios
         this.actualizarConteos()
     }
     onNivelTipoChange(event: any) {

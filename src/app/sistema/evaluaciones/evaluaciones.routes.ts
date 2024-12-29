@@ -62,7 +62,6 @@ const routes: Routes = [
                 './sub-evaluaciones/evaluacion-examen-ere/examen-ere/examen-ere.component'
             ).then((c) => c.ExamenEreComponent),
     },
-
     // {
     //     path: 'sub-evaluaciones/evaluacion-examen-ere',
     //     loadComponent: () =>
@@ -81,4 +80,5 @@ const routes: Routes = [
     // },
 ]
 
+export class AppRoutingModule {}
 export default routes

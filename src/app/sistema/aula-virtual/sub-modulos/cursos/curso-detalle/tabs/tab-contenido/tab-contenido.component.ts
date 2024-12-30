@@ -361,7 +361,7 @@ export class TabContenidoComponent implements OnInit {
         }
         if (action === 'ELIMINAR') {
             this._confirmService.openConfirm({
-                header: '¿Esta seguro de eliminar la evaluación?',
+                header: '¿Esta seguro de eliminar el Foro?',
                 accept: () => {
                     this.eliminarActividad(
                         actividad.iProgActId,

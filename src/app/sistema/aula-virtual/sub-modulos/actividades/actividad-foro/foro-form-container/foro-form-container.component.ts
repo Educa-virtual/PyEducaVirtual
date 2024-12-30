@@ -105,7 +105,7 @@ export class ForoFormContainerComponent implements OnInit {
     ngOnInit(): void {
         this.mostrarCategorias()
     }
-
+    // Mostrar las categorias que existen para foros
     mostrarCategorias() {
         const userId = 1
         this._aulaService.obtenerCategorias(userId).subscribe((Data) => {
@@ -113,10 +113,11 @@ export class ForoFormContainerComponent implements OnInit {
             console.log('Datos mit', this.categorias)
         })
     }
-
+    // Cerrar el modal
     closeModal(data) {
         this.ref.close(data)
     }
+    // Guardar foro
     submit() {
         let horaInicio = this.foroForm.value.dtInicio.toLocaleString('en-GB', {
             timeZone: 'America/Lima',
@@ -148,7 +149,6 @@ export class ForoFormContainerComponent implements OnInit {
         console.log('Guardar Foros', value)
         this.ref.close(value)
     }
-
     obtenerForoxiForoId(iForoId: string) {
         const params = {
             petition: 'post',
@@ -174,7 +174,6 @@ export class ForoFormContainerComponent implements OnInit {
         })
     }
     // acciones para subir los archivos
-
     accionBtnItem(elemento): void {
         const { accion } = elemento
         const { item } = elemento

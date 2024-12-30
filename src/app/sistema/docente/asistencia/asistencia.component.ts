@@ -157,8 +157,8 @@ export class AsistenciaComponent implements OnInit {
         const dia = new Date(this.fechaActual + 'T00:00:00')
         this.limitado = dia.getDay()
         this.fechaEspecifica = dia.toLocaleDateString('es-PE', this.confFecha)
-        this.horario
 
+        console.warn(this.horario)
         this.horario.map((fecha) => {
             if (
                 fecha.dtHorarioFecha == this.fechaActual &&

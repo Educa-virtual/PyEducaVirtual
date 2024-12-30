@@ -161,6 +161,16 @@
                                                 )
                                             </span>
                                         </b>
+                                        <p-button
+                                            type="button"
+                                            icon="pi pi-ellipsis-v"
+                                            class="menu-container p-button-text"
+                                            (click)="
+                                                itemRespuesta = respuestas;
+                                                menu.toggle($event)
+                                            "
+                                            aria-label="Abrir menú de configuración"
+                                        />
                                     </div>
                                     <div class="" style="text-align: justify">
                                         <span *ngIf="!respuestas.expanded">
@@ -189,18 +199,7 @@
                                                         iEstudianteId
                                             "
                                             pButton -->
-                                    <div class="">
-                                        <button
-                                            type="button"
-                                            icon="pi pi-ellipsis-v"
-                                            class="menu-container p-button-text"
-                                            (click)="
-                                                itemRespuesta = respuestas;
-                                                menu.toggle($event)
-                                            "
-                                            aria-label="Abrir menú de configuración"
-                                        ></button>
-                                    </div>
+                                    <div class=""></div>
                                 </div>
                             </div>
                         </div>

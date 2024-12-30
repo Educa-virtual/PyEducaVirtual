@@ -41,7 +41,8 @@ export class ErrorHandler {
         this.messageService.add({
             severity: 'error',
             summary: 'Error de conexión',
-            detail: error.error?.message || 'No se puede conectar al servidor.',
+            detail:
+                error?.error?.message || 'No se puede conectar al servidor.',
             life: 3000,
         })
     }
@@ -50,7 +51,7 @@ export class ErrorHandler {
         this.messageService.add({
             severity: 'warn',
             summary: 'Error del cliente',
-            detail: error.error?.message || 'Se produjo un error del cliente.',
+            detail: error?.error?.message || 'Se produjo un error del cliente.',
             life: 3000,
         })
     }
@@ -60,7 +61,7 @@ export class ErrorHandler {
             severity: 'error',
             summary: 'Error del servidor',
             detail:
-                error.error?.message ||
+                error?.error?.message ||
                 'Se produjo un error en el servidor. Inténtalo de nuevo más tarde.',
             life: 3000,
         })

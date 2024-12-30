@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core'
 import { httpService } from '@/app/servicios/httpService'
-import { IDataService, ITableService } from '@/app/interfaces/api.interface'
+import { ITableService } from '@/app/interfaces/api.interface'
 
 @Injectable({
     providedIn: 'root',
@@ -12,21 +12,63 @@ export class ApiService {
      * Realiza una solicitud HTTP GET para obtener datos del servidor.
      *
      * @param queryPayload - Un objeto o arreglo de objetos que puede ser de tipo `ITableService` o `IDataService[]`.
-     *                       Estos contienen los parámetros o filtros para la consulta.
-     * @returns Una promesa que resuelve la respuesta del servidor, que puede ser los datos obtenidos.
+     * Estos contienen los parámetros o filtros para la consulta.
+     * @returns Una promesa que resuelve la respuesta del servidor, que puede
+     * ser los datos obtenidos.
+     * @example Uso básico:
+     * ```ts
+     * const datos = await this.apiService.getData({
+     *     esquema: 'ere',
+     *     tabla: 'V_EvaluacionFechasCursos',
+     *     data: {
+     *         campos: '*',
+     *         where: 'iEvaluacionId = 679',
+     *     }
+     * });
+     * ```
+     *
+     * @example Uso con múltiples consultas:
+     * ```ts
+     * const datos = await this.apiService.getData([
+     *     {
+     *         esquema: 'ere',
+     *         tabla: 'V_EvaluacionFechasCursos',
+     *         data: {
+     *             campos: '*',
+     *             where: 'iEvaluacionId = 679',
+     *         }
+     *     },
+     *     {
+     *         esquema: 'acad',
+     *         tabla: 'V_CalendarioAcademico',
+     *         data: {
+     *             campos: '*',
+     *             where: 'iCalAcadId = 3',
+     *         }
+     *     }
+     * ]);
+     * ```
      */
-    async getData(queryPayload: ITableService | IDataService[]) {
+    async getData(queryPayload: ITableService | ITableService[]) {
         return await this.http.getData('virtual/getData', queryPayload)
     }
 
     /**
-     * Realiza una solicitud HTTP POST para insertar nuevos datos en el servidor.
+     * Realiza una solicitud HTTP POST para insertar nuevos datos en el
+     * servidor.
      *
-     * @param queryPayload - Un objeto o arreglo de objetos que puede ser de tipo `ITableService` o `IDataService[]`.
-     *                       Estos contienen los datos a insertar en el servidor.
-     * @returns Una promesa que resuelve la respuesta del servidor, indicando si la operación fue exitosa.
+     * @param queryPayload - Un objeto o arreglo de objetos que puede ser
+     * de tipo `ITableService` o `IDataService[]`.
+     *
+     * Estos contienen los datos a insertar en
+     * el servidor.
+     * @returns Una promesa que resuelve la respuesta del servidor, indicando * * si la operación fue exitosa.
+     * @example Uso básico:
+     * ```php
+     * $query = $this->selDesdeTablaOVista('grl', 'personas');
+     * ```
      */
-    async insertData(queryPayload: ITableService | IDataService[]) {
+    async insertData(queryPayload: ITableService) {
         return await this.http.postData('virtual/insertData', queryPayload)
     }
 
@@ -37,7 +79,7 @@ export class ApiService {
      *                       Estos contienen los datos a actualizar.
      * @returns Una promesa que resuelve la respuesta del servidor, indicando si la operación de actualización fue exitosa.
      */
-    async updateData(queryPayload: ITableService | IDataService[]) {
+    async updateData(queryPayload: ITableService) {
         return await this.http.putData('virtual/updateData', queryPayload)
     }
 
@@ -48,7 +90,7 @@ export class ApiService {
      *                       Estos contienen los datos o identificadores necesarios para eliminar los registros.
      * @returns Una promesa que resuelve la respuesta del servidor, indicando si la operación de eliminación fue exitosa.
      */
-    async deleteData(queryPayload: ITableService | IDataService[]) {
+    async deleteData(queryPayload: ITableService) {
         return this.http.deleteData('virtual/deleteData', queryPayload)
     }
 }

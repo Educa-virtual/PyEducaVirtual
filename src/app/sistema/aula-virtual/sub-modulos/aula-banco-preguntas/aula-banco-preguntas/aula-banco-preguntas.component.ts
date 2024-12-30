@@ -11,7 +11,6 @@ import {
 import { AulaBancoPreguntasModule } from '../aula-banco-preguntas.module'
 import {
     actionsContainer,
-    actionsTable,
     actionsTableModalAgregarBancoPreguntas,
     columnasModalAgregarBancoPreguntas,
     columns,
@@ -49,7 +48,7 @@ export class AulaBancoPreguntasComponent
     @Input({ required: true }) set iCursoId(value) {
         this.params.iCursoId = value
     }
-    public actionsTable = actionsTable
+    public actionsTable = actionsTableModalAgregarBancoPreguntas
     public actionsContainer = actionsContainer
     public columnas = columns
     public bancoPreguntas = []

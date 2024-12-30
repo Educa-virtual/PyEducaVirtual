@@ -15,7 +15,7 @@ export const columns: IColumn[] = [
     // },
     {
         field: 'iEncabezado',
-        header: 'Encabezado',
+        header: 'Enunciado',
         type: 'text',
         width: '1rem',
         text: 'center',
@@ -29,14 +29,14 @@ export const columns: IColumn[] = [
         text: 'left',
         text_header: 'left',
     },
-    {
-        type: 'text',
-        width: '1rem',
-        field: 'iPreguntaPeso',
-        header: 'Peso',
-        text_header: 'center',
-        text: 'center',
-    },
+    // {
+    //     type: 'text',
+    //     width: '1rem',
+    //     field: 'iPreguntaPeso',
+    //     header: 'Peso',
+    //     text_header: 'center',
+    //     text: 'center',
+    // },
     {
         type: 'text',
         width: '2rem',

@@ -26,10 +26,10 @@ export class UserAccountComponent implements OnInit {
         this.items = [
             {
                 items: [
-                    {
-                        label: 'Mi Perfil',
-                        icon: 'pi pi-user',
-                    },
+                    // {
+                    //     label: 'Mi Perfil',
+                    //     icon: 'pi pi-user',
+                    // },
                     {
                         label: 'Salir Sesión',
                         icon: 'pi pi-sign-out',

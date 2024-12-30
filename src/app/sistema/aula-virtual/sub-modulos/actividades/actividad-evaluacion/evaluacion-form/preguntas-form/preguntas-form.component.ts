@@ -218,9 +218,27 @@ export class PreguntasFormComponent implements OnChanges {
     cAlternativa: string = null
     cAlternativaExplicacion: string = null
     bRptaCorreta: boolean = false
-    agregarAlternativa() {
-        const letra = abecedario.find((i) => i.id === this.alternativas.length)
+    eliminarAlternativa(index: number) {
+        // Eliminar la alternativa en la posición indicada por index
+        this.alternativas.splice(index, 1)
 
+        console.log(this.alternativas)
+
+        this.alternativas.forEach((alternativa, i) => {
+            const letra = abecedario[i] // Obtiene la letra según el índice
+            alternativa.cBancoAltLetra = letra ? letra.code : '' // Asigna la nueva letra
+        })
+    }
+
+    agregarAlternativa() {
+        const letra = abecedario[this.alternativas.length]
+
+        if (!letra) {
+            console.error('No hay más letras disponibles para asignar.')
+            return
+        }
+
+        // Agregar una nueva alternativa
         this.alternativas.push({
             iBancoAltId: null,
             iBancoId: this.iBancoId,
@@ -230,9 +248,17 @@ export class PreguntasFormComponent implements OnChanges {
             cBancoAltExplicacionRpta: this.cAlternativaExplicacion,
             bImage: this.cAlternativa.includes('image') ? true : false,
         })
+
+        // Reiniciar los valores del formulario
         this.cAlternativa = null
         this.cAlternativaExplicacion = null
         this.bRptaCorreta = false
+
+        // Actualizar las letras de todas las alternativas
+        this.alternativas.forEach((alternativa, i) => {
+            const letra = abecedario[i] // Obtiene la letra según el índice
+            alternativa.cBancoAltLetra = letra ? letra.code : '' // Asigna la nueva letra
+        })
     }
 
     getInformation(params, accion) {

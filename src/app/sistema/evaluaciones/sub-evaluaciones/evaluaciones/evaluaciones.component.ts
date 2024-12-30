@@ -93,6 +93,7 @@ export class EvaluacionesComponent implements OnInit {
     cursosSeleccionados: any[] = []
     fechaHoraInicio: Date | undefined
     fechaHoraFin: Date | undefined
+
     @Output() opcionChange = new EventEmitter<string>()
     @Input() dataRow: any[] = [] // Los datos que recibe la tabla
     @Input() columnasRow: any[] = [] // Las columnas que muestra la tabla
@@ -112,13 +113,8 @@ export class EvaluacionesComponent implements OnInit {
     public showModalCursosEre: boolean = false
     form: FormGroup
 
-    private _formBuilder = inject(FormBuilder)
-    //form para obtener la variable
-    public guardarIniFinCurso: FormGroup = this._formBuilder.group({
-        // iForo: [''],
-        //cForoDescripcion: ['', [Validators.required]],
-        //iForoCatId: [4],
-    })
+    private _formBuilder = inject(FormBuilder) //form para obtener la variable
+    public guardarIniFinCurso: FormGroup = this._formBuilder.group({})
     constructor(
         private router: Router,
         private compartirIdEvaluacionService: CompartirIdEvaluacionService,
@@ -135,19 +131,16 @@ export class EvaluacionesComponent implements OnInit {
     iiEvaluacionId: number // El ID de evaluación que quieras usar
     ngOnInit() {
         this.obtenerEvaluacion()
-
         this.caption = 'Evaluaciones'
         this.dataSubject.subscribe((newData: any[]) => {
             this.data = newData
         })
         this.cEvaluacionNombre =
             this.compartirFormularioEvaluacionService.getcEvaluacionNombre()
-
         // Establece el ID de la evaluación
         this.compartirFormularioEvaluacionService.setEvaluacionId(
             this.iiEvaluacionId
         )
-
         this.form.valueChanges.subscribe((value) => {
             console.log('Form value changes', value)
         })
@@ -161,23 +154,94 @@ export class EvaluacionesComponent implements OnInit {
             return
         }
 
-        const data = await this.apiservice.getData({
-            esquema: 'ere',
-            tabla: 'V_EvaluacionFechasCursos',
-            data: [
-                {
-                    campos: '*',
-                    where: 'iEvaluacionId=' + this.iiEvaluacionId,
-                },
-                {
-                    campos: '*',
-                    where: 'iEvaluacionId=' + 740,
-                },
-            ],
-        })
+        // const [evaluacionCursos] = await this.apiservice.getData({
+        //     esquema: 'ere',
+        //     tabla: 'V_EvaluacionFechasCursos',
+        //     campos: '*',
+        //     where: 'iEvaluacionId = ' + this.iiEvaluacionId,
+        // })
 
-        console.log('Si funciona chiki')
-        console.log(data)
+        // console.log('Evaluación cursos:', evaluacionCursos)
+
+        // const agruparPorNivelYGrado = () => {
+        //     const niveles = {}
+
+        //     evaluacionCursos.cursos_niveles.forEach((data) => {
+        //         const { iNivelTipoId, cNivelTipoNombre } = data
+        //         const {
+        //             cGradoAbreviacion,
+        //             cCursoNombre,
+        //             dtExamenFechaInicio,
+        //             dtExamenFechaFin,
+        //             iCursoNivelGradId,
+        //         } = data
+
+        //         // Si el nivel no existe en el resultado, inicialízalo
+        //         if (!niveles[iNivelTipoId]) {
+        //             niveles[iNivelTipoId] = {
+        //                 iNivelTipoId,
+        //                 cNivelTipoNombre,
+        //                 grados: [],
+        //             }
+        //         }
+
+        //         // Buscar el grado dentro del nivel
+        //         let grado = niveles[iNivelTipoId].grados.find(
+        //             (g) => g.cGradoAbreviacion === cGradoAbreviacion
+        //         )
+
+        //         // Si el grado no existe, inicialízalo
+        //         if (!grado) {
+        //             grado = { cGradoAbreviacion, cursos: [] }
+        //             niveles[iNivelTipoId].grados.push(grado)
+        //         }
+
+        //         // Agregar el curso al grado correspondiente
+        //         grado.cursos.push({
+        //             iCursoNivelGradId,
+        //             cCursoNombre,
+        //             dtExamenFechaInicio,
+        //             dtExamenFechaFin,
+        //         })
+        //     })
+
+        //     // Convertir a un arreglo
+        //     return Object.values(niveles)
+        // }
+
+        // // Ejecutar la función
+        // const nivelesConGradosYCursos = agruparPorNivelYGrado()
+        // console.log(nivelesConGradosYCursos)
+
+        // this.listaCursos = nivelesConGradosYCursos
+
+        // this.listaCursos.forEach((nivel) => {
+        //     nivel.grados.forEach((grado) => {
+        //         grado.cursos.forEach((curso) => {
+        //             this.form.addControl(
+        //                 `${curso.cCursoNombre}${curso.iCursoNivelGradId}Inicio`,
+        //                 new FormControl(
+        //                     curso.dtExamenFechaInicio
+        //                         ? new Date(curso.dtExamenFechaInicio)
+        //                         : null
+        //                 )
+        //             )
+        //             this.form.addControl(
+        //                 `${curso.cCursoNombre}${curso.iCursoNivelGradId}Fin`,
+        //                 new FormControl(
+        //                     curso.dtExamenFechaFin
+        //                         ? new Date(curso.dtExamenFechaFin)
+        //                         : null
+        //                 )
+        //             )
+        //         })
+        //     })
+        // })
+
+        // console.log('this.form')
+        // console.log(this.form)
+
+        // this.listaCursos = evaluacionCursos.cursos_niveles
 
         // Llamar a searchAmbienteAcademico para obtener los datos estructurados
         this.compartirFormularioEvaluacionService
@@ -233,8 +297,17 @@ export class EvaluacionesComponent implements OnInit {
             .catch((error) => {
                 console.error('Error al obtener los cursos:', error)
             })
+    }
 
-        // this.form.addControl('cursosSeleccionados', this.fb.array([]))
+    selectedDate
+    onDateSelect(event: any) {
+        const selectedDate = event.value // Obtener la fecha seleccionada
+        this.selectedDate = {
+            ...event.value,
+            fecha: selectedDate,
+        }
+
+        console.log(event)
     }
 
     toggleCurso(curso: any): void {
@@ -306,10 +379,10 @@ export class EvaluacionesComponent implements OnInit {
     //     console.log('Datos a enviar al servidor:', datos)
     // }
     async guardarInicioFinalExmAreas() {
-        return await this.apiservice.updateData({
-            esquema: 'ere',
-            tabla: 'evaluacion',
-        })
+        // return await this.apiservice.updateData({
+        //     esquema: 'ere',
+        //     tabla: 'evaluacion',
+        // })
     }
     //!
     toggleBotonc(): void {
@@ -522,12 +595,10 @@ export class EvaluacionesComponent implements OnInit {
         // Asigna dinámicamente el valor seleccionado
         this.iiEvaluacionId = event.value
         console.log('Evaluación seleccionada:', this.iiEvaluacionId)
-
         // Establece el ID de la evaluación en el servicio
         this.compartirFormularioEvaluacionService.setEvaluacionId(
             this.iiEvaluacionId
         )
-
         // Mostrar el ID en consola para verificar
         console.warn('ID de Evaluación establecido:', this.iiEvaluacionId)
 
@@ -571,6 +642,7 @@ export class EvaluacionesComponent implements OnInit {
                     // Acceder y mostrar el contenido específico de la respuesta
                     if (resp && resp['data']) {
                         this.data = resp['data'] // Asignar la data obtenida
+                        console.log('Respuesta de la API:', resp)
                     } else {
                         console.warn(
                             'La respuesta no contiene la propiedad "data" o es nula:',
@@ -725,6 +797,13 @@ export class EvaluacionesComponent implements OnInit {
     modalActivarCursosEre() {
         this.showModalCursosEre = true
     }
+
+    removeControls() {
+        Object.keys(this.form.controls).forEach((controlName) => {
+            this.form.removeControl(controlName)
+        })
+    }
+
     ngOnDestroy(): void {
         this.unsubscribe$.next(true)
         this.unsubscribe$.complete()

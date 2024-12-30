@@ -302,6 +302,15 @@ export class ApiEvaluacionesRService {
         const fullUrl = `${url}?${params.toString()}`
         window.open(fullUrl, '_blank')
     }
+    // Banco de Preguntas no tocar ->
+    generarWordByEvaluacionId(baseParams) {
+        const url = `${this.baseUrlBackend}/generarWordBancoPreguntasSeleccionadas`
+        const params = new URLSearchParams({ ...baseParams })
+        const fullUrl = `${url}?${params.toString()}`
+
+        // Se abre la URL generada, que ahora solo contiene iEvaluacionId.
+        window.open(fullUrl, '_blank')
+    }
 
     eliminarPreguntaById(id) {
         return this.http.delete(

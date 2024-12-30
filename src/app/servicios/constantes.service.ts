@@ -50,6 +50,19 @@ const docente = [
                 label: 'Informes',
                 icon: 'pi pi-fw pi-objects-column',
                 routerLink: ['/docente/informes'],
+                routerLinkActiveOptions: { exact: false }, // Permite que subrutas coincidan
+                items: [
+                    {
+                        label: 'Logros Alcanzados',
+                        icon: 'pi pi-fw pi-share-alt',
+                        routerLink: ['/docente/informes'],
+                    },
+                    // {
+                    //     label: 'Reporte Asitencias',
+                    //     icon: 'pi pi-fw pi-share-alt',
+                    //     routerLink: [''],
+                    // },
+                ],
             },
             {
                 label: 'Mis Capacitaciones',
@@ -71,16 +84,16 @@ const docente = [
                 icon: 'pi pi-fw pi-folder',
                 routerLink: ['/aula-virtual/banco-preguntas'],
             },
-            {
-                label: 'Comunicados',
-                icon: 'pi pi-fw pi-folder',
-                routerLink: ['/comunicados/principal'],
-            },
-            {
-                label: 'bienestar',
-                icon: 'pi pi-fw pi-folder',
-                routerLink: ['/bienestar/principal'],
-            },
+            // {
+            //     label: 'Comunicados',
+            //     icon: 'pi pi-fw pi-folder',
+            //     routerLink: ['/comunicados/principal'],
+            // },
+            // {
+            //     label: 'bienestar',
+            //     icon: 'pi pi-fw pi-folder',
+            //     routerLink: ['/bienestar/principal'],
+            // },
         ],
     },
 ]

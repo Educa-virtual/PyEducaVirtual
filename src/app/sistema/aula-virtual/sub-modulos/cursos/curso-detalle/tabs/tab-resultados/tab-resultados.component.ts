@@ -235,14 +235,27 @@ export class TabResultadosComponent implements OnInit {
     }
     //Agregar conclusion descritiva final
     mostrarModalConclusionDesc: boolean = false
+    descrip: string
     accionBnt({ accion, item }): void {
         switch (accion) {
             case 'agregarConclusion':
-                this.mostrarModalConclusionDesc = true
-                this.estudianteSelect = item
-                console.log('Agregar descripcion', accion, item)
+                this.enviarDatosFinales(accion, item)
                 break
         }
+    }
+    //enviar datos al modal
+    enviarDatosFinales(accion, item) {
+        this.mostrarModalConclusionDesc = true
+        this.estudianteSelect = item
+        this.descrip = item.cDetMatConclusionDescPromedio
+        this.conclusionDescrp.controls[
+            'cDetMatConclusionDescPromedio'
+        ].setValue(this.descrip)
+        console.log('Agregar descripcion', accion, item, this.descrip)
+    }
+    //cerra el modal de calificacion
+    cerrarModalDeCalif() {
+        this.mostrarModalConclusionDesc = false
     }
     //Descargar reporte de notas finales de curso con switch
     accionDescargar({ accion }): void {
@@ -568,10 +581,10 @@ export class TabResultadosComponent implements OnInit {
     //obtener los periordos en un button
     unidades: any[] = []
     habilitarCalificacion() {
-        const idYear = 3
-        console.log('fecha', idYear)
+        // const idYear =
+        // console.log('fecha', idYear)
         const params = {
-            iYAcadId: idYear,
+            iYAcadId: this._constantesService.iYAcadId,
             iCredId: this._constantesService.iCredId,
         }
         console.log('año', params)

@@ -29,25 +29,27 @@ export interface IGetTableService {
 export interface IInsertTableService {
     esquema: string
     tabla: string
-    campos: {
-        [key: string]: string | number
-    }
+    campos:
+        | {
+              [key: string]: string | number
+          }
+        | string
 }
 
 export interface IUpdateTableService {
     esquema: string
     tabla: string
-    data: [
-        {
-            campos: {
-                [key: string]: string | number
-            }
-            where: {
-                COLUMN_NAME: string
-                VALUE: string | number
-            }
-        },
-    ]
+    campos:
+        | {
+              [key: string]: string | number
+          }
+        | string
+    where:
+        | {
+              COLUMN_NAME: string
+              VALUE: string | number
+          }
+        | string
 }
 
 export interface IDeleteTableService {

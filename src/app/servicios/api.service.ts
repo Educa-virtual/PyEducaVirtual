@@ -73,7 +73,96 @@ export class ApiService {
      */
     async getData(queryPayload: IGetTableService | IGetTableService[]) {
         // Realizar la solicitud HTTP y obtener los datos.
-        const res = await this.http.getData('virtual/getData', queryPayload)
+        return await this.formatData(
+            this.http.getData('virtual/getData', queryPayload)
+        )
+    }
+
+    /**
+     * Realiza una solicitud HTTP POST para insertar nuevos datos en el
+     * servidor.
+     *
+     * @param queryPayload - Un objeto o arreglo de objetos que puede ser
+     * de tipo `ITableService` o `IDataService[]`.
+     *
+     * Estos contienen los datos a insertar en
+     * el servidor.
+     * @returns Una promesa que resuelve la respuesta del servidor, indicando * * si la operación fue exitosa.
+     * @example Uso básico:
+     * ```php
+     * $query = $this->selDesdeTablaOVista('grl', 'personas');
+     * ```
+     */
+    async insertData(
+        queryPayload: IInsertTableService | IInsertTableService[]
+    ) {
+        if (Array.isArray(queryPayload)) {
+            queryPayload.forEach((item) => {
+                if (typeof item['campos'] === 'object') {
+                    item['campos'] = JSON.stringify(item['campos'])
+                }
+            })
+        }
+
+        if (typeof queryPayload['campos'] === 'object') {
+            queryPayload['campos'] = JSON.stringify(queryPayload['campos'])
+        }
+
+        return await this.formatData(
+            this.http.postData('virtual/insertData', queryPayload)
+        )
+    }
+
+    /**
+     * Realiza una solicitud HTTP PUT para actualizar datos existentes en el servidor.
+     *
+     * @param queryPayload - Un objeto o arreglo de objetos que puede ser de tipo `ITableService` o `IDataService[]`.
+     *                       Estos contienen los datos a actualizar.
+     * @returns Una promesa que resuelve la respuesta del servidor, indicando si la operación de actualización fue exitosa.
+     */
+    async updateData(
+        queryPayload: IUpdateTableService | IUpdateTableService[]
+    ) {
+        if (Array.isArray(queryPayload)) {
+            queryPayload.forEach((item) => {
+                if (typeof item['campos'] === 'object') {
+                    item['campos'] = JSON.stringify(item['campos'])
+                }
+                if (typeof item['where'] === 'object') {
+                    item['where'] = JSON.stringify(item['where'])
+                }
+            })
+        }
+
+        if (typeof queryPayload['campos'] === 'object') {
+            queryPayload['campos'] = JSON.stringify(queryPayload['campos'])
+        }
+        if (typeof queryPayload['where'] === 'object') {
+            queryPayload['where'] = JSON.stringify(queryPayload['where'])
+        }
+
+        return await this.formatData(
+            this.http.postData('virtual/updateData', queryPayload)
+        )
+    }
+
+    /**
+     * Realiza una solicitud HTTP DELETE para eliminar datos del servidor.
+     *
+     * @param queryPayload - Un objeto o arreglo de objetos que puede ser de tipo `ITableService` o `IDataService[]`.
+     *                       Estos contienen los datos o identificadores necesarios para eliminar los registros.
+     * @returns Una promesa que resuelve la respuesta del servidor, indicando si la operación de eliminación fue exitosa.
+     */
+    async deleteData(
+        queryPayload: IDeleteTableService | IDeleteTableService[]
+    ) {
+        return await this.formatData(
+            this.http.postData('virtual/deleteData', queryPayload)
+        )
+    }
+
+    async formatData(data: any) {
+        const res = await data
 
         // Verificar si la respuesta contiene datos válidos.
         if (res?.data?.length > 0) {
@@ -116,52 +205,5 @@ export class ApiService {
             console.log('No se encontraron datos o la respuesta está vacía')
             return res.data
         }
-    }
-
-    /**
-     * Realiza una solicitud HTTP POST para insertar nuevos datos en el
-     * servidor.
-     *
-     * @param queryPayload - Un objeto o arreglo de objetos que puede ser
-     * de tipo `ITableService` o `IDataService[]`.
-     *
-     * Estos contienen los datos a insertar en
-     * el servidor.
-     * @returns Una promesa que resuelve la respuesta del servidor, indicando * * si la operación fue exitosa.
-     * @example Uso básico:
-     * ```php
-     * $query = $this->selDesdeTablaOVista('grl', 'personas');
-     * ```
-     */
-    async insertData(
-        queryPayload: IInsertTableService | IInsertTableService[]
-    ) {
-        return await this.http.postData('virtual/insertData', queryPayload)
-    }
-
-    /**
-     * Realiza una solicitud HTTP PUT para actualizar datos existentes en el servidor.
-     *
-     * @param queryPayload - Un objeto o arreglo de objetos que puede ser de tipo `ITableService` o `IDataService[]`.
-     *                       Estos contienen los datos a actualizar.
-     * @returns Una promesa que resuelve la respuesta del servidor, indicando si la operación de actualización fue exitosa.
-     */
-    async updateData(
-        queryPayload: IUpdateTableService | IUpdateTableService[]
-    ) {
-        return await this.http.putData('virtual/updateData', queryPayload)
-    }
-
-    /**
-     * Realiza una solicitud HTTP DELETE para eliminar datos del servidor.
-     *
-     * @param queryPayload - Un objeto o arreglo de objetos que puede ser de tipo `ITableService` o `IDataService[]`.
-     *                       Estos contienen los datos o identificadores necesarios para eliminar los registros.
-     * @returns Una promesa que resuelve la respuesta del servidor, indicando si la operación de eliminación fue exitosa.
-     */
-    async deleteData(
-        queryPayload: IDeleteTableService | IDeleteTableService[]
-    ) {
-        return this.http.deleteData('virtual/deleteData', queryPayload)
     }
 }

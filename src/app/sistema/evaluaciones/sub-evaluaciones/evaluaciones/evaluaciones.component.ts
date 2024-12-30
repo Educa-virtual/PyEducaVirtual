@@ -54,6 +54,8 @@ import {
     ReactiveFormsModule,
 } from '@angular/forms'
 import { ApiService } from '@/app/servicios/api.service'
+import { IUpdateTableService } from '@/app/interfaces/api.interface'
+import { UtilService } from '@/app/servicios/utils.service'
 @Component({
     selector: 'app-evaluaciones',
     standalone: true,
@@ -122,7 +124,8 @@ export class EvaluacionesComponent implements OnInit {
         private messageService: MessageService,
         private cdr: ChangeDetectorRef,
         private fb: FormBuilder,
-        private apiservice: ApiService
+        private apiservice: ApiService,
+        private utils: UtilService
     ) {
         this.form = this.fb.group({})
     }
@@ -152,166 +155,174 @@ export class EvaluacionesComponent implements OnInit {
     listaCursos: any[] = []
     lista: any
     objectKeys = Object.keys
+
+    evaluacionCursos
     async obtenerCursos() {
         if (!this.iiEvaluacionId) {
             console.warn('El ID de evaluación no está definido.')
             return
         }
 
-        // const [evaluacionCursos] = await this.apiservice.getData({
-        //     esquema: 'ere',
-        //     tabla: 'V_EvaluacionFechasCursos',
-        //     campos: '*',
-        //     where: 'iEvaluacionId = ' + this.iiEvaluacionId,
-        // })
+        const [evaluacionCursos] = await this.apiservice.getData({
+            esquema: 'ere',
+            tabla: 'V_EvaluacionFechasCursos',
+            campos: '*',
+            where: 'iEvaluacionId = ' + this.iiEvaluacionId,
+        })
 
-        // console.log('Evaluación cursos:', evaluacionCursos)
+        this.evaluacionCursos = evaluacionCursos
 
-        // const agruparPorNivelYGrado = () => {
-        //     const niveles = {}
+        console.log('Evaluación cursos:', evaluacionCursos)
 
-        //     evaluacionCursos.cursos_niveles.forEach((data) => {
-        //         const { iNivelTipoId, cNivelTipoNombre } = data
-        //         const {
-        //             cGradoAbreviacion,
-        //             cCursoNombre,
-        //             dtExamenFechaInicio,
-        //             dtExamenFechaFin,
-        //             iCursoNivelGradId,
-        //         } = data
+        const agruparPorNivelYGrado = () => {
+            const niveles = {}
 
-        //         // Si el nivel no existe en el resultado, inicialízalo
-        //         if (!niveles[iNivelTipoId]) {
-        //             niveles[iNivelTipoId] = {
-        //                 iNivelTipoId,
-        //                 cNivelTipoNombre,
-        //                 grados: [],
-        //             }
-        //         }
+            evaluacionCursos.cursos_niveles.forEach((data) => {
+                const { iNivelTipoId, cNivelTipoNombre } = data
+                const {
+                    cGradoAbreviacion,
+                    cCursoNombre,
+                    dtExamenFechaInicio,
+                    dtExamenFechaFin,
+                    iCursoNivelGradId,
+                    iExamCurId,
+                } = data
 
-        //         // Buscar el grado dentro del nivel
-        //         let grado = niveles[iNivelTipoId].grados.find(
-        //             (g) => g.cGradoAbreviacion === cGradoAbreviacion
-        //         )
+                // Si el nivel no existe en el resultado, inicialízalo
+                if (!niveles[iNivelTipoId]) {
+                    niveles[iNivelTipoId] = {
+                        iNivelTipoId,
+                        cNivelTipoNombre,
+                        grados: [],
+                    }
+                }
 
-        //         // Si el grado no existe, inicialízalo
-        //         if (!grado) {
-        //             grado = { cGradoAbreviacion, cursos: [] }
-        //             niveles[iNivelTipoId].grados.push(grado)
-        //         }
+                // Buscar el grado dentro del nivel
+                let grado = niveles[iNivelTipoId].grados.find(
+                    (g) => g.cGradoAbreviacion === cGradoAbreviacion
+                )
 
-        //         // Agregar el curso al grado correspondiente
-        //         grado.cursos.push({
-        //             iCursoNivelGradId,
-        //             cCursoNombre,
-        //             dtExamenFechaInicio,
-        //             dtExamenFechaFin,
-        //         })
-        //     })
+                // Si el grado no existe, inicialízalo
+                if (!grado) {
+                    grado = { cGradoAbreviacion, cursos: [] }
+                    niveles[iNivelTipoId].grados.push(grado)
+                }
 
-        //     // Convertir a un arreglo
-        //     return Object.values(niveles)
-        // }
+                // Agregar el curso al grado correspondiente
+                grado.cursos.push({
+                    iExamCurId,
+                    iCursoNivelGradId,
+                    cCursoNombre,
+                    dtExamenFechaInicio,
+                    dtExamenFechaFin,
+                })
+            })
 
-        // // Ejecutar la función
-        // const nivelesConGradosYCursos = agruparPorNivelYGrado()
-        // console.log(nivelesConGradosYCursos)
+            // Convertir a un arreglo
+            return Object.values(niveles)
+        }
 
-        // this.listaCursos = nivelesConGradosYCursos
+        // Ejecutar la función
+        const nivelesConGradosYCursos = agruparPorNivelYGrado()
+        console.log(nivelesConGradosYCursos)
 
-        // this.listaCursos.forEach((nivel) => {
-        //     nivel.grados.forEach((grado) => {
-        //         grado.cursos.forEach((curso) => {
-        //             this.form.addControl(
-        //                 `${curso.cCursoNombre}${curso.iCursoNivelGradId}Inicio`,
-        //                 new FormControl(
-        //                     curso.dtExamenFechaInicio
-        //                         ? new Date(curso.dtExamenFechaInicio)
-        //                         : null
-        //                 )
-        //             )
-        //             this.form.addControl(
-        //                 `${curso.cCursoNombre}${curso.iCursoNivelGradId}Fin`,
-        //                 new FormControl(
-        //                     curso.dtExamenFechaFin
-        //                         ? new Date(curso.dtExamenFechaFin)
-        //                         : null
-        //                 )
-        //             )
-        //         })
-        //     })
-        // })
+        this.listaCursos = nivelesConGradosYCursos
 
-        // console.log('this.form')
+        this.listaCursos.forEach((nivel) => {
+            nivel.grados.forEach((grado) => {
+                grado.cursos.forEach((curso) => {
+                    this.form.addControl(
+                        `${curso.cCursoNombre}${curso.iCursoNivelGradId}[${curso.iExamCurId}]Inicio`,
+                        new FormControl(
+                            curso.dtExamenFechaInicio
+                                ? new Date(curso.dtExamenFechaInicio)
+                                : null
+                        )
+                    )
+                    this.form.addControl(
+                        `${curso.cCursoNombre}${curso.iCursoNivelGradId}[${curso.iExamCurId}]Fin`,
+                        new FormControl(
+                            curso.dtExamenFechaFin
+                                ? new Date(curso.dtExamenFechaFin)
+                                : null
+                        )
+                    )
+                })
+            })
+        })
+
+        // console.log('this.form */
         // console.log(this.form)
+
+        // this.apiservice.updateData({
+        //     esquema: 'ere',
+        //     tabla: 'examen_cursos',
+        //     campos: {
+        //         dtExamenFechaInicio: '',
+        //         dtExamenFechaFin: ''
+        //     },
+        //     where: {
+        //         COLUMN_NAME: 'iExamCurId',
+        //         VALUE: '12',
+        //     }
+        // })
 
         // this.listaCursos = evaluacionCursos.cursos_niveles
 
         // Llamar a searchAmbienteAcademico para obtener los datos estructurados
-        this.compartirFormularioEvaluacionService
-            .searchAmbienteAcademico()
-            .then((lista: any[]) => {
-                // Almacenar la lista en la propiedad `this.lista`
-                this.lista = lista
+        // this.compartirFormularioEvaluacionService
+        //     .searchAmbienteAcademico()
+        //     .then((lista: any[]) => {
+        //         // Almacenar la lista en la propiedad `this.lista`
+        //         this.lista = lista
 
-                // Obtener los cursos seleccionados y combinarlos
-                return this.compartirFormularioEvaluacionService.obtenerCursosSeleccionados()
-            })
-            .then((cursosSeleccionadosMap: Map<number, boolean>) => {
-                // Estructurar la lista de cursos, eliminando los cursos no seleccionados
-                this.listaCursos = this.lista
-                    .map((nivel: any) => ({
-                        nivel: nivel.nivel,
-                        grados: Object.keys(nivel.grados)
-                            .map((grado) => ({
-                                grado,
-                                cursos: nivel.grados[grado].filter(
-                                    (curso: any) =>
-                                        cursosSeleccionadosMap.get(
-                                            curso.iCursoNivelGradId
-                                        ) || false
-                                ), // Solo seleccionados
-                            }))
-                            .filter((grado: any) => grado.cursos.length > 0), // Filtrar grados sin cursos seleccionados
-                    }))
-                    .filter((nivel: any) => nivel.grados.length > 0) // Filtrar niveles sin grados seleccionados
+        //         // Obtener los cursos seleccionados y combinarlos
+        //         return this.compartirFormularioEvaluacionService.obtenerCursosSeleccionados()
+        //     })
+        //     .then((cursosSeleccionadosMap: Map<number, boolean>) => {
+        //         // Estructurar la lista de cursos, eliminando los cursos no seleccionados
+        //         this.listaCursos = this.lista
+        //             .map((nivel: any) => ({
+        //                 nivel: nivel.nivel,
+        //                 grados: Object.keys(nivel.grados)
+        //                     .map((grado) => ({
+        //                         grado,
+        //                         cursos: nivel.grados[grado].filter(
+        //                             (curso: any) =>
+        //                                 cursosSeleccionadosMap.get(
+        //                                     curso.iCursoNivelGradId
+        //                                 ) || false
+        //                         ), // Solo seleccionados
+        //                     }))
+        //                     .filter((grado: any) => grado.cursos.length > 0), // Filtrar grados sin cursos seleccionados
+        //             }))
+        //             .filter((nivel: any) => nivel.grados.length > 0) // Filtrar niveles sin grados seleccionados
 
-                console.log(
-                    'Lista de cursos seleccionados y estructurados:',
-                    this.listaCursos
-                )
+        //         console.log(
+        //             'Lista de cursos seleccionados y estructurados:',
+        //             this.listaCursos
+        //         )
 
-                this.listaCursos.forEach((nivel) => {
-                    nivel.grados.forEach((grado) => {
-                        grado.cursos.forEach((curso) => {
-                            this.form.addControl(
-                                `${curso.cCursoNombre}${curso.iCursoNivelGradId}Inicio`,
-                                new FormControl()
-                            )
-                            this.form.addControl(
-                                `${curso.cCursoNombre}${curso.iCursoNivelGradId}Fin`,
-                                new FormControl()
-                            )
-                        })
-                    })
-                })
+        //         this.listaCursos.forEach((nivel) => {
+        //             nivel.grados.forEach((grado) => {
+        //                 grado.cursos.forEach((curso) => {
+        //                     this.form.addControl(
+        //                         `${curso.cCursoNombre}${curso.iCursoNivelGradId}Inicio`,
+        //                         new FormControl()
+        //                     )
+        //                     this.form.addControl(
+        //                         `${curso.cCursoNombre}${curso.iCursoNivelGradId}Fin`,
+        //                         new FormControl()
+        //                     )
+        //                 })
+        //             })
+        //         })
 
-                console.log('Form', this.form)
-            })
-            .catch((error) => {
-                console.error('Error al obtener los cursos:', error)
-            })
-    }
-
-    selectedDate
-    onDateSelect(event: any) {
-        const selectedDate = event.value // Obtener la fecha seleccionada
-        this.selectedDate = {
-            ...event.value,
-            fecha: selectedDate,
-        }
-
-        console.log(event)
+        //         console.log('Form', this.form)
+        //     })
+        //     .catch((error) => {
+        //         console.error('Error al obtener los cursos:', error)
+        //     })
     }
 
     toggleCurso(curso: any): void {
@@ -386,6 +397,39 @@ export class EvaluacionesComponent implements OnInit {
         //     esquema: 'ere',
         //     tabla: 'evaluacion',
         // })
+        console.log(Object.keys(this.form.value))
+
+        const coincidencias: IUpdateTableService[] = [] // Arreglo para almacenar coincidencias
+
+        this.evaluacionCursos.cursos_niveles.forEach((data) => {
+            const inicioKey = `${data.cCursoNombre}${data.iCursoNivelGradId}[${data.iExamCurId}]Inicio`
+            const finKey = `${data.cCursoNombre}${data.iCursoNivelGradId}[${data.iExamCurId}]Fin`
+
+            const inicioValue = this.form.value[inicioKey] // Busca el valor de 'Inicio' en el formulario
+            const finValue = this.form.value[finKey] // Busca el valor de 'Fin' en el formulario
+
+            if (inicioValue || finValue) {
+                coincidencias.push({
+                    esquema: 'ere',
+                    tabla: 'examen_cursos',
+                    campos: {
+                        iExamCurId: data.iExamCurId,
+                        dtExamenFechaInicio: inicioValue || null, // Asigna el valor o null si no existe
+                        dtExamenFechaFin: finValue || null, // Asigna el valor o null si no existe
+                    },
+                    where: {
+                        COLUMN_NAME: 'iExamCurId',
+                        VALUE: data.iExamCurId,
+                    },
+                })
+            }
+        })
+
+        this.apiservice.updateData(coincidencias)
+        this.visible = false
+        this.showModalCursosEre = false
+        this.form.reset()
+        this.removeControls()
     }
     //!
     toggleBotonc(): void {

@@ -44,6 +44,8 @@ export class AreaCardComponent implements OnChanges {
         iTipoPregId: 0,
     }
     @Input() cantidadPreguntas: number
+
+    private _apiEvaluacionesR = inject(ApiEvaluacionesRService)
     constructor(
         private router: Router,
         private compartirFormularioEvaluacionService: CompartirFormularioEvaluacionService,
@@ -154,5 +156,16 @@ export class AreaCardComponent implements OnChanges {
                 )
             },
         })
+    }
+
+    generarWord() {
+        // Aquí, en lugar de enviar los ids, se envía el iEvaluacionId.
+        const params = {
+            iEvaluacionId: this._iEvaluacionId, // Se usa el iEvaluacionId aquí.
+            areaId: this.area.id,
+        }
+        console.log('Params para generar Word:', params)
+        // Se llama a la función que genera el Word con el iEvaluacionId.
+        this._apiEvaluacionesR.generarWordByEvaluacionId(params)
     }
 }

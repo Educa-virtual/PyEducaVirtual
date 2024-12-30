@@ -35,7 +35,7 @@ import { InputTextModule } from 'primeng/inputtext'
     styleUrl: './banco-pregunta-informacion-form.component.scss',
 })
 export class BancoPreguntaInformacionFormComponent implements OnInit {
-    value: string = '' //! Vinculamos el campo de texto a esta propiedad Cambiar Value en html y aqui
+    value: string = '' //Vinculamos el campo de texto a esta propiedad Cambiar Value en html y aqui
     matrizCompetencia: any[] = [] // Opciones para el dropdown
     matrizCapacidad: any[] = [] // Opciones para el dropdown
     selectedCompetencia: any // Almacena la opción seleccionada

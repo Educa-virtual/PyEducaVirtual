@@ -21,7 +21,7 @@
         appendTo="body"
     >
     </p-menu>
-    <div class="flex gap-4 justify-content-between flex-wrap">
+    <div class="card flex gap-4 justify-content-between flex-wrap">
         <div class="flex flex-column gap-1 flex-1">
             <label for="tipo-pregunta">Tipo Pregunta</label>
             <p-dropdown
@@ -51,9 +51,26 @@
             class="p-button-primary gap-2"
             (click)="menuAgregacionPreguntas.toggle($event)"
             size="small"
+            style="
+                width: 200px;
+                height: 40px;
+                background-color: #4b5563;
+                border: 1px;
+                border-radius: 8px;
+                padding: 5px 10px 5px 10px;
+            "
         >
             <i class="pi pi-plus"></i>
-            <span class="text-md">Agregar Preguntas</span>
+            <span
+                class="text-md"
+                style="
+                    font-size: 16px;
+                    width: 151px;
+                    height: 19px;
+                    font-weight: 700px;
+                "
+                >Agregar Preguntas</span
+            >
         </button>
     </div>
     <!-- preguntastocursos -->
@@ -100,7 +117,8 @@
             class="p-button-secondary"
             type="button"
             size="small"
-            (click)="mostrarModalBaPrInformacion = false"
+            (click)="ngOnDestroy()"
+            (click)="showModalBancoPreguntas = false"
         ></button>
         <button
             pButton

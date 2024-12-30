@@ -93,6 +93,7 @@ export class EvaluacionesComponent implements OnInit {
     cursosSeleccionados: any[] = []
     fechaHoraInicio: Date | undefined
     fechaHoraFin: Date | undefined
+
     @Output() opcionChange = new EventEmitter<string>()
     @Input() dataRow: any[] = [] // Los datos que recibe la tabla
     @Input() columnasRow: any[] = [] // Las columnas que muestra la tabla
@@ -112,13 +113,8 @@ export class EvaluacionesComponent implements OnInit {
     public showModalCursosEre: boolean = false
     form: FormGroup
 
-    private _formBuilder = inject(FormBuilder)
-    //form para obtener la variable
-    public guardarIniFinCurso: FormGroup = this._formBuilder.group({
-        // iForo: [''],
-        //cForoDescripcion: ['', [Validators.required]],
-        //iForoCatId: [4],
-    })
+    private _formBuilder = inject(FormBuilder) //form para obtener la variable
+    public guardarIniFinCurso: FormGroup = this._formBuilder.group({})
     constructor(
         private router: Router,
         private compartirIdEvaluacionService: CompartirIdEvaluacionService,
@@ -135,19 +131,16 @@ export class EvaluacionesComponent implements OnInit {
     iiEvaluacionId: number // El ID de evaluación que quieras usar
     ngOnInit() {
         this.obtenerEvaluacion()
-
         this.caption = 'Evaluaciones'
         this.dataSubject.subscribe((newData: any[]) => {
             this.data = newData
         })
         this.cEvaluacionNombre =
             this.compartirFormularioEvaluacionService.getcEvaluacionNombre()
-
         // Establece el ID de la evaluación
         this.compartirFormularioEvaluacionService.setEvaluacionId(
             this.iiEvaluacionId
         )
-
         this.form.valueChanges.subscribe((value) => {
             console.log('Form value changes', value)
         })
@@ -251,7 +244,7 @@ export class EvaluacionesComponent implements OnInit {
         // this.listaCursos = evaluacionCursos.cursos_niveles
 
         // Llamar a searchAmbienteAcademico para obtener los datos estructurados
-        this.compartirFormularioEvaluacionService   
+        this.compartirFormularioEvaluacionService
             .searchAmbienteAcademico()
             .then((lista: any[]) => {
                 // Almacenar la lista en la propiedad `this.lista`
@@ -304,8 +297,6 @@ export class EvaluacionesComponent implements OnInit {
             .catch((error) => {
                 console.error('Error al obtener los cursos:', error)
             })
-
-        // this.form.addControl('cursosSeleccionados', this.fb.array([]))
     }
 
     selectedDate
@@ -604,12 +595,10 @@ export class EvaluacionesComponent implements OnInit {
         // Asigna dinámicamente el valor seleccionado
         this.iiEvaluacionId = event.value
         console.log('Evaluación seleccionada:', this.iiEvaluacionId)
-
         // Establece el ID de la evaluación en el servicio
         this.compartirFormularioEvaluacionService.setEvaluacionId(
             this.iiEvaluacionId
         )
-
         // Mostrar el ID en consola para verificar
         console.warn('ID de Evaluación establecido:', this.iiEvaluacionId)
 
@@ -653,6 +642,7 @@ export class EvaluacionesComponent implements OnInit {
                     // Acceder y mostrar el contenido específico de la respuesta
                     if (resp && resp['data']) {
                         this.data = resp['data'] // Asignar la data obtenida
+                        console.log('Respuesta de la API:', resp)
                     } else {
                         console.warn(
                             'La respuesta no contiene la propiedad "data" o es nula:',
@@ -809,11 +799,10 @@ export class EvaluacionesComponent implements OnInit {
     }
 
     removeControls() {
-        Object.keys(this.form.controls).forEach(controlName => {
-          this.form.removeControl(controlName);
-        });
-      }
-    
+        Object.keys(this.form.controls).forEach((controlName) => {
+            this.form.removeControl(controlName)
+        })
+    }
 
     ngOnDestroy(): void {
         this.unsubscribe$.next(true)

@@ -104,18 +104,20 @@ export class EvaluacionExamenEreComponent implements OnInit {
     ]
     accionBtnItem(elemento): void {
         const { accion } = elemento
-
-        //const { item } = elemento
         switch (accion) {
             case 'examenEre':
+                // this.router.navigate([
+                //     'evaluaciones/sub-evaluaciones/evaluacion-examen-ere/examen-ere',
+                // ])
+                // console.log('ruta')
+                // Navegar a la ruta para cargar el componente hijo en el <router-outlet>
                 this.router.navigate([
                     'evaluaciones/sub-evaluaciones/evaluacion-examen-ere/examen-ere',
                 ])
-                console.log('ruta')
                 break
         }
     }
-    // Función que maneja el evento de selección del dropdown
+    //Función que maneja el evento de selección del dropdown
     onEvaluacionSeleccionada(event: any) {
         if (event && event.value) {
             const selectedEvaluacionId = event.value
@@ -143,27 +145,148 @@ export class EvaluacionExamenEreComponent implements OnInit {
             }))
     }
 
+    //!
+    // getEvaluacionesEre() {
+    //     this.query
+    //         .searchCalAcademico({
+    //             esquema: 'ere',
+    //             tabla: 'evaluacion',
+    //             campos: 'iEvaluacionId,cEvaluacionNombre,dtEvaluacionCreacion,idTipoEvalId,iNivelEvalId',
+    //             condicion: '1=1',
+    //         })
+    //         .subscribe({
+    //             next: (data: any) => {
+    //                 if (data && data.data && Array.isArray(data.data)) {
+    //                     this.evaluacionesEreDrop = data.data.sort(
+    //                         (a, b) => b.iEvaluacionId - a.iEvaluacionId
+    //                     )
+    //                     const tipoEvalIds = Array.from(
+    //                         new Set(
+    //                             this.evaluacionesEreDrop
+    //                                 .map((item) => item.idTipoEvalId)
+    //                                 .filter(
+    //                                     (id) => id !== undefined && id !== null
+    //                                 ) // Filtrar valores inválidos
+    //                         )
+    //                     )
+
+    //                     const nivelEvalIds = Array.from(
+    //                         new Set(
+    //                             this.evaluacionesEreDrop
+    //                                 .map((item) => item.iNivelEvalId)
+    //                                 .filter(
+    //                                     (id) => id !== undefined && id !== null
+    //                                 ) // Filtrar valores inválidos
+    //                         )
+    //                     )
+    //                     const tipoEval$ = this.query.searchCalAcademico({
+    //                         esquema: 'ere',
+    //                         tabla: 'tipo_evaluaciones',
+    //                         campos: 'idTipoEvalId,cTipoEvalDescripcion',
+    //                         condicion: `idTipoEvalId IN (${tipoEvalIds.join(',')})`,
+    //                     })
+
+    //                     const nivelEval$ = this.query.searchCalAcademico({
+    //                         esquema: 'ere',
+    //                         tabla: 'nivel_evaluaciones',
+    //                         campos: 'iNivelEvalId,cNivelEvalNombre',
+    //                         condicion: `iNivelEvalId IN (${nivelEvalIds.join(',')})`,
+    //                     })
+    //                     forkJoin([tipoEval$, nivelEval$]).subscribe({
+    //                         next: ([tipoEvalData, nivelEvalData]: [
+    //                             any,
+    //                             any,
+    //                         ]) => {
+    //                             if (
+    //                                 tipoEvalData &&
+    //                                 Array.isArray(tipoEvalData.data) &&
+    //                                 nivelEvalData &&
+    //                                 Array.isArray(nivelEvalData.data)
+    //                             ) {
+    //                                 const tipoEvalMap =
+    //                                     tipoEvalData.data.reduce(
+    //                                         (acc, item) => {
+    //                                             acc[item.idTipoEvalId] =
+    //                                                 item.cTipoEvalDescripcion
+    //                                             return acc
+    //                                         },
+    //                                         {} as { [key: number]: string }
+    //                                     )
+
+    //                                 const nivelEvalMap =
+    //                                     nivelEvalData.data.reduce(
+    //                                         (acc, item) => {
+    //                                             acc[item.iNivelEvalId] =
+    //                                                 item.cNivelEvalNombre
+    //                                             return acc
+    //                                         },
+    //                                         {} as { [key: number]: string }
+    //                                     )
+    //                                 this.evaluacionEreTable =
+    //                                     this.evaluacionesEreDrop.map(
+    //                                         (item: any) => ({
+    //                                             cItem: item.iEvaluacionId,
+    //                                             cEvaluacionNombre:
+    //                                                 item.cEvaluacionNombre ||
+    //                                                 'Sin nombre',
+    //                                             dtEvaluacionCreacion:
+    //                                                 item.dtEvaluacionCreacion
+    //                                                     ? new Date(
+    //                                                           item.dtEvaluacionCreacion
+    //                                                       ).toLocaleDateString()
+    //                                                     : 'Fecha no disponible',
+    //                                             idTipoEvalId:
+    //                                                 tipoEvalMap[
+    //                                                     item.idTipoEvalId
+    //                                                 ] || 'Desconocido',
+    //                                             iNivelEvalId:
+    //                                                 nivelEvalMap[
+    //                                                     item.iNivelEvalId
+    //                                                 ] || 'Desconocido',
+    //                                         })
+    //                                     )
+    //                                 this.nombreTipoEval =
+    //                                     this.evaluacionEreTable[4].idTipoEvalId
+    //                                 this.nombreNivelEval =
+    //                                     this.evaluacionEreTable[4].iNivelEvalId
+    //                             }
+    //                         },
+    //                     })
+    //                 }
+    //             },
+    //             error: (error) => {
+    //                 console.error('Error fetching:', error)
+    //             },
+    //             complete: () => {
+    //                 console.log('Request completed')
+    //             },
+    //         })
+    // }
+
     getEvaluacionesEre() {
         this.query
             .searchCalAcademico({
                 esquema: 'ere',
                 tabla: 'evaluacion',
-                campos: 'iEvaluacionId,cEvaluacionNombre,dtEvaluacionCreacion,idTipoEvalId,iNivelEvalId',
-                condicion: '1=1',
+                campos: 'iEvaluacionId,cEvaluacionNombre,dtEvaluacionCreacion,idTipoEvalId,iNivelEvalId,iEstado',
+                condicion: 'iEstado = 1', // Filtrar directamente en la base de datos
             })
             .subscribe({
                 next: (data: any) => {
+                    console.log('Datos recibidos:', data) // Verificar que los datos lleguen correctamente
                     if (data && data.data && Array.isArray(data.data)) {
+                        // No es necesario filtrar, ya que la base de datos ya devuelve solo las evaluaciones activas
                         this.evaluacionesEreDrop = data.data.sort(
                             (a, b) => b.iEvaluacionId - a.iEvaluacionId
                         )
+
                         const tipoEvalIds = Array.from(
                             new Set(
                                 this.evaluacionesEreDrop
                                     .map((item) => item.idTipoEvalId)
                                     .filter(
                                         (id) => id !== undefined && id !== null
-                                    ) // Filtrar valores inválidos
+                                    )
                             )
                         )
 
@@ -173,9 +296,10 @@ export class EvaluacionExamenEreComponent implements OnInit {
                                     .map((item) => item.iNivelEvalId)
                                     .filter(
                                         (id) => id !== undefined && id !== null
-                                    ) // Filtrar valores inválidos
+                                    )
                             )
                         )
+
                         const tipoEval$ = this.query.searchCalAcademico({
                             esquema: 'ere',
                             tabla: 'tipo_evaluaciones',
@@ -189,6 +313,7 @@ export class EvaluacionExamenEreComponent implements OnInit {
                             campos: 'iNivelEvalId,cNivelEvalNombre',
                             condicion: `iNivelEvalId IN (${nivelEvalIds.join(',')})`,
                         })
+
                         forkJoin([tipoEval$, nivelEval$]).subscribe({
                             next: ([tipoEvalData, nivelEvalData]: [
                                 any,
@@ -219,6 +344,7 @@ export class EvaluacionExamenEreComponent implements OnInit {
                                             },
                                             {} as { [key: number]: string }
                                         )
+
                                     this.evaluacionEreTable =
                                         this.evaluacionesEreDrop.map(
                                             (item: any) => ({
@@ -242,6 +368,7 @@ export class EvaluacionExamenEreComponent implements OnInit {
                                                     ] || 'Desconocido',
                                             })
                                         )
+
                                     this.nombreTipoEval =
                                         this.evaluacionEreTable[4].idTipoEvalId
                                     this.nombreNivelEval =

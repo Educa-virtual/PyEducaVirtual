@@ -48,6 +48,7 @@ import { MessageService } from 'primeng/api'
 import { ToastModule } from 'primeng/toast'
 import { CalendarModule } from 'primeng/calendar'
 import { ConstantesService } from '@/app/servicios/constantes.service'
+import { InputSwitchModule } from 'primeng/inputswitch'
 
 interface TipoEvaluacion {
     idTipoEvalId: number
@@ -62,6 +63,7 @@ interface NivelEvaluacion {
     selector: 'app-evaluaciones-form',
     standalone: true,
     imports: [
+        InputSwitchModule,
         ScrollPanelModule,
         ContainerPageComponent,
         StepsModule,
@@ -90,7 +92,6 @@ interface NivelEvaluacion {
 export class EvaluacionesFormComponent implements OnInit {
     @ViewChild(EvaluacionAreasComponent)
     evaluacionAreasComponent: EvaluacionAreasComponent
-
     datosRecIeParticipan: any[] = []
     tipoEvaluacion: TipoEvaluacion[] | undefined
     iEvaluacionId: number
@@ -106,6 +107,7 @@ export class EvaluacionesFormComponent implements OnInit {
     dtEvaluacionCreacion: Date | null = null // Esto guarda la fecha seleccionada
     evaluacionCreadaId: number | null = null // Asegúrate de declararla aquí
     esModoEdicion: boolean = false // Cambiar a true si estás en modo edición
+    checked: boolean = true // Inicializa con 'true' para que el switch esté encendido
 
     @ViewChild('stepper') stepper: Stepper
 
@@ -151,6 +153,7 @@ export class EvaluacionesFormComponent implements OnInit {
             dtEvaluacionLiberarMatriz: [null, Validators.required],
             dtEvaluacionLiberarCuadernillo: [null, Validators.required],
             dtEvaluacionLiberarResultados: [null, Validators.required],
+            iEstado: [null],
             iSesionId: [null],
         })
     }
@@ -164,7 +167,7 @@ export class EvaluacionesFormComponent implements OnInit {
     enviarVarlorDesdeForm(): void {
         this.onSubmit()
     }
-    //! Función para manejar el botón de "Siguiente"
+    // Función para manejar el botón de "Siguiente"
     handleNext() {
         if (this.activeStep === 0 && this.accion === 'ver') {
             this.evaluacionFormGroup.disable() // Hacer el formulario solo lectura
@@ -283,6 +286,7 @@ export class EvaluacionesFormComponent implements OnInit {
             dtEvaluacionLiberarMatriz: [null, Validators.required],
             dtEvaluacionLiberarCuadernillo: [null, Validators.required],
             dtEvaluacionLiberarResultados: [null, Validators.required],
+            iEstado: [null],
         })
     }
     ereVerEvaluacion() {
@@ -307,8 +311,16 @@ export class EvaluacionesFormComponent implements OnInit {
                     evaluacionData.dtEvaluacionLiberarCuadernillo,
                 dtEvaluacionLiberarResultados:
                     evaluacionData.dtEvaluacionLiberarResultados,
+                // Convertir 0 o 1 en un valor booleano para el input switch
+                iEstado:
+                    evaluacionData.iEstado === '1' ||
+                    evaluacionData.iEstado === 1,
             })
+            // Aquí estamos configurando el valor de `checked` para el input switch
+            this.checked =
+                evaluacionData.iEstado === '1' || evaluacionData.iEstado === 1
         }
+        console.warn('Datos enviados al servidor:', evaluacionData)
     }
     guardarEvaluacion() {
         const iSesionId = this.constantesService.iDocenteId // Si es un array, toma el primer valor
@@ -346,9 +358,10 @@ export class EvaluacionesFormComponent implements OnInit {
             dtEvaluacionLiberarResultados: this.evaluacionFormGroup.get(
                 'dtEvaluacionLiberarResultados'
             ).value,
-
+            iEstado: this.checked ? 1 : 0, // Usamos el valor de 'checked' para enviar 1 o 0
             iSesionId: iSesionId,
         }
+
         console.log(data)
         this._apiEre
             .guardarEvaluacion(data)
@@ -386,6 +399,7 @@ export class EvaluacionesFormComponent implements OnInit {
     actualizarEvaluacion() {
         const iSesionId = this.constantesService.iDocenteId // Si es un array, toma el primer valor
         console.warn('iSesionId', iSesionId)
+
         const data = {
             iEvaluacionId: Number(
                 this.evaluacionFormGroup.get('iEvaluacionId').value
@@ -427,6 +441,7 @@ export class EvaluacionesFormComponent implements OnInit {
             dtEvaluacionLiberarResultados: this.evaluacionFormGroup.get(
                 'dtEvaluacionLiberarResultados'
             ).value,
+            iEstado: this.evaluacionFormGroup.get('iEstado').value ? 1 : 0,
             iSesionId: iSesionId,
         }
         console.warn('Datos enviados para actualizar:', data)

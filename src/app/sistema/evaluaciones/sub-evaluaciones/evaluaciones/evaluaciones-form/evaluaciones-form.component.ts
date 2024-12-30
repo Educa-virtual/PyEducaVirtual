@@ -18,18 +18,13 @@ import { InputTextareaModule } from 'primeng/inputtextarea'
 //TAB
 import { TabViewModule } from 'primeng/tabview'
 import { DropdownModule } from 'primeng/dropdown'
-
 import { IeparticipaComponent } from '../ieparticipa/ieparticipa.component' //Referencia Componente IE
-
 import { EvaluacionAreasComponent } from './../evaluacion-areas/evaluacion-areas.component'
-
 import { ApiEvaluacionesRService } from '../../../services/api-evaluaciones-r.service'
 import { Subject, takeUntil } from 'rxjs'
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog'
 //Uso para separar y poner en vertical o horizonal
 import { DividerModule } from 'primeng/divider'
-
-import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import { ScrollPanelModule } from 'primeng/scrollpanel'
 import {
     FormBuilder,
@@ -40,7 +35,6 @@ import {
 import { CommonInputComponent } from '@/app/shared/components/common-input/common-input.component'
 import { StepperModule } from 'primeng/stepper'
 import { CommonModule } from '@angular/common'
-import { TablePrimengComponent } from '../../../../../shared/table-primeng/table-primeng.component'
 import { CardModule } from 'primeng/card'
 import { StepsModule } from 'primeng/steps'
 import { Stepper } from 'primeng/stepper'
@@ -65,7 +59,6 @@ interface NivelEvaluacion {
     imports: [
         InputSwitchModule,
         ScrollPanelModule,
-        ContainerPageComponent,
         StepsModule,
         ButtonModule,
         DialogModule,
@@ -81,7 +74,6 @@ interface NivelEvaluacion {
         StepperModule,
         CommonModule,
         DividerModule,
-        TablePrimengComponent,
         CardModule,
         ToastModule,
         CalendarModule,
@@ -175,38 +167,22 @@ export class EvaluacionesFormComponent implements OnInit {
         }
 
         if (this.activeStep === 0 && this.accion === 'editar') {
-            //! if (this.evaluacionFormGroup.invalid) {
-            //     // Marca los campos como tocados para que se muestren los errores
-            //     this.evaluacionFormGroup.markAllAsTouched()
-
-            //     // Mostrar mensaje de error
-            //     this._MessageService.add({
-            //         severity: 'error',
-            //         summary: 'Formulario incompleto',
-            //         detail: 'Por favor, completa todos los campos obligatorios antes de continuar.',
-            //     })
-            //     // Detener el flujo
-            //     return
-            // }
+            if (this.evaluacionFormGroup.invalid) {
+                // Marca los campos como tocados para que se muestren los errores
+                this.evaluacionFormGroup.markAllAsTouched()
+                return
+            }
             this.esModoEdicion = true
             this.actualizarEvaluacion()
             //console.log('Formulario EDITAR DESDE HANDLE', this.accion)
         }
 
         if (this.activeStep === 0 && this.accion === 'nuevo') {
-            //! if (this.evaluacionFormGroup.invalid) {
-            //     // Marca los campos como tocados para que se muestren los errores
-            //     this.evaluacionFormGroup.markAllAsTouched()
-
-            //     // Mostrar mensaje de error
-            //     this._MessageService.add({
-            //         severity: 'error',
-            //         summary: 'Formulario incompleto',
-            //         detail: 'Por favor, completa todos los campos obligatorios antes de continuar.',
-            //     })
-            //     // Detener el flujo
-            //     return
-            // }
+            if (this.evaluacionFormGroup.invalid) {
+                // Marca los campos como tocados para que se muestren los errores
+                this.evaluacionFormGroup.markAllAsTouched()
+                return
+            }
             // Si es válido, guardar la evaluación
             this.guardarEvaluacion()
             this.enviarVarlorDesdeForm()
@@ -320,7 +296,6 @@ export class EvaluacionesFormComponent implements OnInit {
             this.checked =
                 evaluacionData.iEstado === '1' || evaluacionData.iEstado === 1
         }
-        console.warn('Datos enviados al servidor:', evaluacionData)
     }
     guardarEvaluacion() {
         const iSesionId = this.constantesService.iDocenteId // Si es un array, toma el primer valor
@@ -371,16 +346,6 @@ export class EvaluacionesFormComponent implements OnInit {
                     this.iEvaluacionId = resp['data'][0]['iEvaluacionId'] // Captura el ID generado
                     this.compartirIdEvaluacionService.iEvaluacionId =
                         this.iEvaluacionId // Guardar en el servicio
-                    // console.log(
-                    //     'ID de Evaluación guardado:',
-                    //     this.iEvaluacionId
-                    // )
-                    //this.iEvaluacionId = resp['data'][0]['iEvaluacionId']
-                    this._MessageService.add({
-                        severity: 'success',
-                        summary: 'Evaluación registrada',
-                        detail: 'La evaluación se registró correctamente en el sistema.',
-                    })
 
                     const nombreEvaluacion =
                         resp['data'][0]['cEvaluacionNombre'] // Obtiene el nombre de la respuesta
@@ -398,7 +363,6 @@ export class EvaluacionesFormComponent implements OnInit {
     // Método para actualizar los datos en el backend
     actualizarEvaluacion() {
         const iSesionId = this.constantesService.iDocenteId // Si es un array, toma el primer valor
-        console.warn('iSesionId', iSesionId)
 
         const data = {
             iEvaluacionId: Number(
@@ -444,7 +408,7 @@ export class EvaluacionesFormComponent implements OnInit {
             iEstado: this.evaluacionFormGroup.get('iEstado').value ? 1 : 0,
             iSesionId: iSesionId,
         }
-        console.warn('Datos enviados para actualizar:', data)
+
         this._apiEre.actualizarEvaluacion(data).subscribe({
             next: (resp) => {
                 console.log('Evaluación actualizada:', resp)

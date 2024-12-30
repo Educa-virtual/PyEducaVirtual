@@ -86,14 +86,18 @@ tr {
 }
 //Leer mas
 .toggle-link {
+    background: none;
+    border: none;
+    color: #007bff;
+    cursor: pointer;
+    padding: 0;
+    font: inherit;
+}
+.toggle-link {
     color: #007bff;
     cursor: pointer;
     font-size: 0.9rem;
     margin-left: 5px;
-    background: none;
-    border: none;
-    font: inherit;
-    padding: 0;
 }
 /*para el borde de la lista*/
 :host ::ng-deep .perfiles-list-item {
@@ -150,4 +154,7 @@ tr {
     .p-button {
         margin-bottom: 0.5rem;
     }
+}
+:host ::ng-deep .perfil-name {
+    color: black;
 }

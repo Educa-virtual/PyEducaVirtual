@@ -13,20 +13,6 @@ import { RouterModule } from '@angular/router'
 import { environment } from '@/environments/environment'
 import { CommonModule } from '@angular/common'
 
-// interface ICurso {
-//     iExamCurId: number
-//     iCursoNivelGradId: number
-//     dtExamenFechaInicio: string
-//     dtExamenFechaFin: string
-//     cCursoNombre: string
-//     cCursoImagen: string
-//     iGradoId: number
-//     cGradoAbreviacion: string
-//     cGradoNombre: string
-//     iNivelTipoId: number
-//     cNivelTipoNombre: string
-// }
-
 @Component({
     selector: 'app-examen-ere',
     standalone: true,
@@ -46,55 +32,13 @@ import { CommonModule } from '@angular/common'
     styleUrl: './examen-ere.component.scss',
 })
 export class ExamenEreComponent implements OnInit {
-    // Define la interfaz para los cursos
-
-    // Lista de cursos tipada con la interfaz
-
-    // Lista de cursos que será iterada
     cursos = []
-    // Lista de cursos tipada con la interfaz ICurso
-    //ICursoEre: ICursoEre[] = []
-    //curso: ICurso
     constructor(
         private apiService: ApiService,
         private route: ActivatedRoute
     ) {}
 
     ngOnInit() {
-        //     this.route.queryParams.subscribe(async (params) => {
-        //         const response = await this.apiService.getData({
-        //             esquema: 'ere',
-        //             tabla: 'V_EvaluacionFechasCursos',
-        //             campos: '*',
-        //             where: 'iEvaluacionId=' + params['cIEvaluacion'],
-        //         })
-
-        //         // Mapear la respuesta de la API para que coincida con ICurso
-        //         if (response && response[0] && response[0].cursos_niveles) {
-        //             this.cursos = response[0].cursos_niveles.map((curso: any) => ({
-        //                 iExamCurId: curso.iExamCurId,
-        //                 iCursoNivelGradId: curso.iCursoNivelGradId, // Mapear id de la API al id del curso
-        //                 dtExamenFechaInicio: curso.dtExamenFechaInicio,
-        //                 dtExamenFechaFin: curso.dtExamenFechaFin,
-        //                 cCursoNombre: curso.cCursoNombre,
-        //                 cCursoImagen:
-        //                     curso.cCursoImagen || 'cursos/images/no-image.jpg',
-        //                 iGradoId: curso.iGradoId,
-        //                 cGradoAbreviacion: curso.cGradoAbreviacion,
-        //                 cGradoNombre: curso.cGradoNombre,
-        //                 iNivelTipoId: curso.iNivelTipoId,
-        //                 cNivelTipoNombre: curso.cNivelTipoNombre,
-        //             }))
-        //         } else {
-        //             this.cursos = [] // Si no hay datos, asigna un array vacío
-        //         }
-
-        //         console.log('Cursos:', this.cursos) // Verifica los datos en consola
-        //     })
-        // }
-        // trackByCursoId(index: number, curso: any): number | string {
-        //     return curso.iCursoId // Identificador único para trackBy
-        // }
         this.route.queryParams.subscribe(async (params) => {
             const response = await this.apiService.getData({
                 esquema: 'ere',
@@ -120,10 +64,10 @@ export class ExamenEreComponent implements OnInit {
                     cNivelTipoNombre: curso.cNivelTipoNombre,
                 }))
             } else {
-                this.cursos // Si no hay datos, asigna un array vacío
+                this.cursos
             }
 
-            console.log('Cursos:', this.cursos) // Verifica los datos en consola
+            console.log('Cursos:', this.cursos)
         })
     }
     backend = environment.backend

@@ -18,18 +18,13 @@ import { InputTextareaModule } from 'primeng/inputtextarea'
 //TAB
 import { TabViewModule } from 'primeng/tabview'
 import { DropdownModule } from 'primeng/dropdown'
-
 import { IeparticipaComponent } from '../ieparticipa/ieparticipa.component' //Referencia Componente IE
-
 import { EvaluacionAreasComponent } from './../evaluacion-areas/evaluacion-areas.component'
-
 import { ApiEvaluacionesRService } from '../../../services/api-evaluaciones-r.service'
 import { Subject, takeUntil } from 'rxjs'
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog'
 //Uso para separar y poner en vertical o horizonal
 import { DividerModule } from 'primeng/divider'
-
-import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import { ScrollPanelModule } from 'primeng/scrollpanel'
 import {
     FormBuilder,
@@ -40,7 +35,6 @@ import {
 import { CommonInputComponent } from '@/app/shared/components/common-input/common-input.component'
 import { StepperModule } from 'primeng/stepper'
 import { CommonModule } from '@angular/common'
-import { TablePrimengComponent } from '../../../../../shared/table-primeng/table-primeng.component'
 import { CardModule } from 'primeng/card'
 import { StepsModule } from 'primeng/steps'
 import { Stepper } from 'primeng/stepper'
@@ -65,7 +59,6 @@ interface NivelEvaluacion {
     imports: [
         InputSwitchModule,
         ScrollPanelModule,
-        ContainerPageComponent,
         StepsModule,
         ButtonModule,
         DialogModule,
@@ -81,7 +74,6 @@ interface NivelEvaluacion {
         StepperModule,
         CommonModule,
         DividerModule,
-        TablePrimengComponent,
         CardModule,
         ToastModule,
         CalendarModule,
@@ -178,14 +170,6 @@ export class EvaluacionesFormComponent implements OnInit {
             if (this.evaluacionFormGroup.invalid) {
                 // Marca los campos como tocados para que se muestren los errores
                 this.evaluacionFormGroup.markAllAsTouched()
-
-                // Mostrar mensaje de error
-                // this._MessageService.add({
-                //     severity: 'error',
-                //     summary: 'Formulario incompleto',
-                //     detail: 'Por favor, completa todos los campos obligatorios antes de continuar.',
-                // })
-                // Detener el flujo
                 return
             }
             this.esModoEdicion = true
@@ -197,14 +181,6 @@ export class EvaluacionesFormComponent implements OnInit {
             if (this.evaluacionFormGroup.invalid) {
                 // Marca los campos como tocados para que se muestren los errores
                 this.evaluacionFormGroup.markAllAsTouched()
-
-                // Mostrar mensaje de error
-                // this._MessageService.add({
-                //     severity: 'error',
-                //     summary: 'Formulario incompleto',
-                //     detail: 'Por favor, completa todos los campos obligatorios antes de continuar.',
-                // })
-                // Detener el flujo
                 return
             }
             // Si es válido, guardar la evaluación
@@ -370,16 +346,6 @@ export class EvaluacionesFormComponent implements OnInit {
                     this.iEvaluacionId = resp['data'][0]['iEvaluacionId'] // Captura el ID generado
                     this.compartirIdEvaluacionService.iEvaluacionId =
                         this.iEvaluacionId // Guardar en el servicio
-                    // console.log(
-                    //     'ID de Evaluación guardado:',
-                    //     this.iEvaluacionId
-                    // )
-                    //this.iEvaluacionId = resp['data'][0]['iEvaluacionId']
-                    // this._MessageService.add({
-                    //     severity: 'success',
-                    //     summary: 'Evaluación registrada',
-                    //     detail: 'La evaluación se registró correctamente en el sistema.',
-                    // })
 
                     const nombreEvaluacion =
                         resp['data'][0]['cEvaluacionNombre'] // Obtiene el nombre de la respuesta

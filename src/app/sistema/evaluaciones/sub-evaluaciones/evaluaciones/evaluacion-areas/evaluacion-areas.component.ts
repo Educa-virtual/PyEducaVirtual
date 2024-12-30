@@ -4,7 +4,7 @@ import {
     EventEmitter,
     inject,
     Input,
-    OnDestroy, //!Se cambio AQUI 08
+    OnDestroy,
     OnInit,
     Output,
 } from '@angular/core'
@@ -17,7 +17,6 @@ import { forkJoin, Subject, takeUntil } from 'rxjs'
 import { ICurso } from '../../../../aula-virtual/sub-modulos/cursos/interfaces/curso.interface'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { GeneralService } from '@/app/servicios/general.service'
-
 import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { DataViewModule, DataView } from 'primeng/dataview'
 import { CompartirIdEvaluacionService } from '../../../services/ereEvaluaciones/compartir-id-evaluacion.service'
@@ -54,7 +53,6 @@ export type Layout = 'list' | 'grid'
     templateUrl: './evaluacion-areas.component.html',
     styleUrl: './evaluacion-areas.component.scss',
 })
-//export class EvaluacionAreasComponent implements OnDestroy, OnInit { //!Se cambio AQUI 08
 export class EvaluacionAreasComponent implements OnDestroy, OnInit {
     lista: any[] = [] //Aqui se guarda Lista Cursos Nivel Tipo.
     options = ['list', 'grid']
@@ -89,19 +87,19 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
     }
 
     private _ref = inject(DynamicDialogRef)
-    private unsubscribe$ = new Subject<boolean>() //!Se cambio AQUI 08
+    private unsubscribe$ = new Subject<boolean>()
     private _constantesService = inject(ConstantesService)
     private _generalService = inject(GeneralService)
     private _store = inject(LocalStoreService)
     private _apiEre = inject(ApiEvaluacionesRService)
-    private _MessageService = inject(MessageService) //!Agregando Mensaje
+    private _MessageService = inject(MessageService)
 
     constructor(
         private store: LocalStoreService,
         private compartirIdEvaluacionService: CompartirIdEvaluacionService,
         private _config: DynamicDialogConfig, // Inyección de configuración
         private cdRef: ChangeDetectorRef,
-        private query: GeneralService, //!Usar para obtener Nivel y Curso.
+        private query: GeneralService,
         private compartirFormularioEvaluacionService: CompartirFormularioEvaluacionService
     ) {}
     ngOnInit(): void {

@@ -175,38 +175,38 @@ export class EvaluacionesFormComponent implements OnInit {
         }
 
         if (this.activeStep === 0 && this.accion === 'editar') {
-            //! if (this.evaluacionFormGroup.invalid) {
-            //     // Marca los campos como tocados para que se muestren los errores
-            //     this.evaluacionFormGroup.markAllAsTouched()
+            if (this.evaluacionFormGroup.invalid) {
+                // Marca los campos como tocados para que se muestren los errores
+                this.evaluacionFormGroup.markAllAsTouched()
 
-            //     // Mostrar mensaje de error
-            //     this._MessageService.add({
-            //         severity: 'error',
-            //         summary: 'Formulario incompleto',
-            //         detail: 'Por favor, completa todos los campos obligatorios antes de continuar.',
-            //     })
-            //     // Detener el flujo
-            //     return
-            // }
+                // Mostrar mensaje de error
+                // this._MessageService.add({
+                //     severity: 'error',
+                //     summary: 'Formulario incompleto',
+                //     detail: 'Por favor, completa todos los campos obligatorios antes de continuar.',
+                // })
+                // Detener el flujo
+                return
+            }
             this.esModoEdicion = true
             this.actualizarEvaluacion()
             //console.log('Formulario EDITAR DESDE HANDLE', this.accion)
         }
 
         if (this.activeStep === 0 && this.accion === 'nuevo') {
-            //! if (this.evaluacionFormGroup.invalid) {
-            //     // Marca los campos como tocados para que se muestren los errores
-            //     this.evaluacionFormGroup.markAllAsTouched()
+            if (this.evaluacionFormGroup.invalid) {
+                // Marca los campos como tocados para que se muestren los errores
+                this.evaluacionFormGroup.markAllAsTouched()
 
-            //     // Mostrar mensaje de error
-            //     this._MessageService.add({
-            //         severity: 'error',
-            //         summary: 'Formulario incompleto',
-            //         detail: 'Por favor, completa todos los campos obligatorios antes de continuar.',
-            //     })
-            //     // Detener el flujo
-            //     return
-            // }
+                // Mostrar mensaje de error
+                // this._MessageService.add({
+                //     severity: 'error',
+                //     summary: 'Formulario incompleto',
+                //     detail: 'Por favor, completa todos los campos obligatorios antes de continuar.',
+                // })
+                // Detener el flujo
+                return
+            }
             // Si es válido, guardar la evaluación
             this.guardarEvaluacion()
             this.enviarVarlorDesdeForm()
@@ -320,7 +320,6 @@ export class EvaluacionesFormComponent implements OnInit {
             this.checked =
                 evaluacionData.iEstado === '1' || evaluacionData.iEstado === 1
         }
-        console.warn('Datos enviados al servidor:', evaluacionData)
     }
     guardarEvaluacion() {
         const iSesionId = this.constantesService.iDocenteId // Si es un array, toma el primer valor
@@ -376,11 +375,11 @@ export class EvaluacionesFormComponent implements OnInit {
                     //     this.iEvaluacionId
                     // )
                     //this.iEvaluacionId = resp['data'][0]['iEvaluacionId']
-                    this._MessageService.add({
-                        severity: 'success',
-                        summary: 'Evaluación registrada',
-                        detail: 'La evaluación se registró correctamente en el sistema.',
-                    })
+                    // this._MessageService.add({
+                    //     severity: 'success',
+                    //     summary: 'Evaluación registrada',
+                    //     detail: 'La evaluación se registró correctamente en el sistema.',
+                    // })
 
                     const nombreEvaluacion =
                         resp['data'][0]['cEvaluacionNombre'] // Obtiene el nombre de la respuesta
@@ -398,7 +397,6 @@ export class EvaluacionesFormComponent implements OnInit {
     // Método para actualizar los datos en el backend
     actualizarEvaluacion() {
         const iSesionId = this.constantesService.iDocenteId // Si es un array, toma el primer valor
-        console.warn('iSesionId', iSesionId)
 
         const data = {
             iEvaluacionId: Number(
@@ -444,7 +442,7 @@ export class EvaluacionesFormComponent implements OnInit {
             iEstado: this.evaluacionFormGroup.get('iEstado').value ? 1 : 0,
             iSesionId: iSesionId,
         }
-        console.warn('Datos enviados para actualizar:', data)
+
         this._apiEre.actualizarEvaluacion(data).subscribe({
             next: (resp) => {
                 console.log('Evaluación actualizada:', resp)

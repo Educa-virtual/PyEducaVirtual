@@ -121,7 +121,6 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
         }
         console.log('iEvaluacionId recibido:', this._iEvaluacionId)
         if (this.accion === 'nuevo') {
-            console.log('NUEVO:', this.accion)
             this.searchAmbienteAcademico()
         }
         if (this.accion === 'ver') {
@@ -249,10 +248,7 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
         const evaluacionId =
             this.compartirIdEvaluacionService.iEvaluacionId ||
             this._iEvaluacionId
-        console.log(
-            'evaluacionId DE SERVICIO OBTENERPARTICIPACIONES:',
-            evaluacionId
-        )
+
         // Asegúrate de que iEvaluacionId y cursos están definidos
         if (!evaluacionId || !cursos || cursos.length === 0) {
             console.error(
@@ -306,13 +302,9 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
 
         // Verifica que haya cursos seleccionados
         if (this.selectedCursos.length === 0) {
-            console.log('No hay cursos seleccionados para actualizar')
             return
         }
-        console.log(
-            'Cursos seleccionados para actualizar:',
-            this.selectedCursos
-        )
+
         // Llama al servicio para actualizar cursos
         this._apiEre
             .actualizarCursos(iEvaluacionId, this.selectedCursos)
@@ -326,7 +318,6 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
                     console.error('Error al actualizar los cursos:', err)
                 },
                 complete: () => {
-                    console.log('AQUIIIIIIII')
                     this.closeModalEvent.emit(null) // Emitir el evento de cierre del modal
                 },
             })
@@ -379,7 +370,7 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
     }
 
     obtenerCursosEvaluacion(evaluacionId: number) {
-        console.log('Evaluacion ID:', evaluacionId)
+        evaluacionId
 
         return new Promise((resolve, reject) => {
             const evaluacionId =
@@ -391,11 +382,6 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
                 .pipe(takeUntil(this.unsubscribe$))
                 .subscribe({
                     next: (resp: any) => {
-                        console.log(
-                            'Cursos obtenidos desde el backend:',
-                            resp.cursos
-                        )
-
                         // Crear un mapa con los cursos obtenidos del backend
                         const cursosSeleccionados = new Map(
                             resp.cursos.map((curso: any) => [
@@ -415,17 +401,10 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
                                 })
                             })
                         })
-
-                        console.log(
-                            'Lista actualizada con selección:',
-                            this.lista
-                        )
-
                         // Forzar detección de cambios para actualizar la vista
                         this.cdRef.markForCheck()
 
                         resolve(resp.cursos)
-                        console.log('Resolve Cursos:', resolve(resp.cursos))
                     },
                     error: (err) => {
                         console.error('Error al obtener cursos:', err)
@@ -505,17 +484,11 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
             }),
         }).subscribe({
             next: (data: any) => {
-                // Procesamos los datos de primaria y secundaria
-                console.log('Datos recibidos de Primaria:', data.primaria)
-                console.log('Datos recibidos de Secundaria:', data.secundaria)
-
                 // Combinamos los datos
                 this.lista = [
                     ...this.extraerAsignatura(data.primaria.data),
                     ...this.extraerAsignatura(data.secundaria.data),
                 ]
-                console.log('Lista combinada:', this.lista)
-
                 this.obtenerCursosSeleccionados()
             },
             error: (err: any) => {
@@ -525,8 +498,6 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
     }
     // Función para estructurar los datos
     extraerAsignatura(data: any): any[] {
-        console.log('Datos recibidos en extraerAsignatura:', data)
-
         if (!Array.isArray(data)) {
             console.error('Error: Los datos no son un arreglo')
             return []
@@ -553,8 +524,6 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
             return acc
         }, {})
 
-        console.log('Datos agrupados:', groupedData)
-
         // Convertir el objeto agrupado en un arreglo
         return Object.keys(groupedData).map((nivel) => ({
             nivel,
@@ -568,6 +537,5 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
     onChange() {}
     closeModal(data) {
         this._ref.close(data)
-        console.log('Formulario de evaluación cancelado')
     }
 }

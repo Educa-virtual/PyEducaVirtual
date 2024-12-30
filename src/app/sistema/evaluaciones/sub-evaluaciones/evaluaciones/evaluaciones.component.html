@@ -181,7 +181,7 @@
             <!-- Card por cada nivel -->
             <div class="card mt-3" *ngFor="let nivel of listaCursos">
                 <div class="card-header">
-                    <h3 class="card-title">{{ nivel.nivel }}</h3>
+                    <h3 class="card-title">{{ nivel.cNivelTipoNombre }}</h3>
                 </div>
                 <div class="card-body">
                     <!-- Recorrer grados -->
@@ -213,7 +213,11 @@
                                             class="curso-grado"
                                             style="font-weight: normal"
                                         >
-                                            {{ grado.grado }} Grado
+                                            {{
+                                                grado.grado ??
+                                                    grado.cGradoAbreviacion
+                                            }}
+                                            Grado
                                         </span>
                                     </div>
 
@@ -233,6 +237,7 @@
                                             inputId="fechaHoraInicio-{{
                                                 curso.cCursoNombre
                                             }}"
+                                            (onSelect)="onDateSelect($event)"
                                             [appendTo]="'body'"
                                             styleClass="pr-2"
                                             class="calendar"
@@ -283,6 +288,7 @@
             (click)="ngOnDestroy()"
             (click)="showModalCursosEre = false"
             (click)="form.reset()"
+            (click)="removeControls()"
         ></button>
 
         <button

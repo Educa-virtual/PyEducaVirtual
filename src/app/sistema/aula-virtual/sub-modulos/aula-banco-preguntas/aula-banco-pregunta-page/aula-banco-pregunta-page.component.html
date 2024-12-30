@@ -1,31 +1,42 @@
 <app-toolbar-primeng title="Banco de Preguntas"></app-toolbar-primeng>
-
 <div class="card">
-    <div class="formgrid grid p-3">
+    <div class="grid">
         <!-- Filtros -->
-        <ng-container *ngFor="let filtro of filtros">
-            <div class="field col-12 md:col-6 lg:col-3">
-                <label [for]="filtro.id">{{ filtro.label }}</label>
+        <div class="col-12 lg:col-6">
+            <p-inputGroup>
+                <p-inputGroupAddon>Área Curricular</p-inputGroupAddon>
                 <p-dropdown
-                    [id]="filtro.id"
-                    [(ngModel)]="filtro.value"
-                    [optionValue]="filtro.optionValue"
-                    [options]="filtro.options"
-                    [optionLabel]="filtro.optionLabel"
-                    [placeholder]="filtro.placeholder"
+                    [(ngModel)]="params.iCursoId"
+                    optionValue="iCursoId"
+                    [options]="cursos"
+                    optionLabel="cCursoNombre"
                     styleClass="w-full"
                     (onChange)="obtenerBancoPreguntas()"
-                ></p-dropdown>
-            </div>
-        </ng-container>
+                />
+            </p-inputGroup>
+        </div>
 
+        <div class="col-12 lg:col-3">
+            <p-inputGroup>
+                <p-inputGroupAddon> Grado </p-inputGroupAddon>
+                <p-dropdown
+                    [(ngModel)]="params.iGradoId"
+                    optionValue="iGradoId"
+                    [options]="grados"
+                    optionLabel="cGrado"
+                    styleClass="w-full"
+                    (onChange)="obtenerBancoPreguntas()"
+                />
+            </p-inputGroup>
+        </div>
         <!-- Botón Agregar Preguntas alineado a la derecha -->
-        <div class="col-12 flex justify-content-end">
+        <div class="col-12 lg:col-3 flex justify-content-end">
             <button
+                [disabled]="params.iCursoId === 0"
                 pButton
                 type="button"
                 class="p-button-primary"
-                label="Agregar Preguntas"
+                label="Agregar preguntas"
                 icon="pi pi-plus"
                 (click)="agregarPreguntas()"
             ></button>

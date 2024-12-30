@@ -58,7 +58,7 @@ export class FormBibliografiaComponent implements OnChanges, OnInit, OnDestroy {
     }
 
     dataBibliografias = this.fb.group({
-        opcion: ['', Validators.required],
+        opcion: [''],
 
         iBiblioId: [''],
         iTipoBiblioId: ['', Validators.required],
@@ -67,7 +67,7 @@ export class FormBibliografiaComponent implements OnChanges, OnInit, OnDestroy {
         cBiblioTitulo: ['', Validators.required],
         cBiblioAnioEdicion: ['', Validators.required],
         cBiblioEditorial: ['', Validators.required],
-        cBiblioUrl: [''],
+        cBiblioUrl: ['', Validators.required],
         iEstado: [1],
         iSesionId: [null],
         dtCreado: [null],

@@ -251,7 +251,7 @@ export class EvaluacionesComponent implements OnInit {
         // this.listaCursos = evaluacionCursos.cursos_niveles
 
         // Llamar a searchAmbienteAcademico para obtener los datos estructurados
-        this.compartirFormularioEvaluacionService
+        this.compartirFormularioEvaluacionService   
             .searchAmbienteAcademico()
             .then((lista: any[]) => {
                 // Almacenar la lista en la propiedad `this.lista`
@@ -809,10 +809,11 @@ export class EvaluacionesComponent implements OnInit {
     }
 
     removeControls() {
-        Object.keys(this.form.controls).forEach((controlName) => {
-            this.form.removeControl(controlName)
-        })
-    }
+        Object.keys(this.form.controls).forEach(controlName => {
+          this.form.removeControl(controlName);
+        });
+      }
+    
 
     ngOnDestroy(): void {
         this.unsubscribe$.next(true)

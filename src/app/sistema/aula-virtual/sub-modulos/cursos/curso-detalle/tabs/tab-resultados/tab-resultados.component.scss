@@ -77,3 +77,6 @@
     display: flex;
     margin-top: 10px; /* Espacio entre el editor y el botón */
 }
+:host ::ng-deep .perfil-name {
+    color: black;
+}

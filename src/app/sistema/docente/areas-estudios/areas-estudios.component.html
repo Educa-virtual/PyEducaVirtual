@@ -157,7 +157,7 @@
                                 >
                                     <i class="pi pi-chevron-down"></i>
                                 </button>
-                                <button
+                                <!-- <button
                                     pTooltip="Descargar Lista de Estudiantes"
                                     tooltipPosition="top"
                                     [rounded]="true"
@@ -166,7 +166,7 @@
                                     class="p-1 mx-1 p-button-rounded p-button-success p-button-text"
                                 >
                                     <i class="pi pi-file-excel"></i>
-                                </button>
+                                </button> -->
                                 <button
                                     pTooltip="Descargar Programación Curricular"
                                     tooltipPosition="top"
@@ -191,6 +191,9 @@
                                     cSeccion: item.cSeccion,
                                     cCicloRomanos: item.cCicloRomanos,
                                     cNivelNombreCursos: item.cNivelNombreCursos,
+                                    iCursoId: item.iCursoId,
+                                    idDocCursoId: item.idDocCursoId,
+                                    iNivelCicloId: item.iNivelCicloId,
                                 }"
                                 label="Acceder"
                                 icon="pi pi-arrow-right"
@@ -222,7 +225,6 @@
                                 {{ item.pInasistencia }} %
                             </td>
                         }
-
                         <td style="text-align: center">
                             <p-button
                                 severity="success"
@@ -234,6 +236,9 @@
                                     cSeccion: item.cSeccion,
                                     cCicloRomanos: item.cCicloRomanos,
                                     cNivelNombreCursos: item.cNivelNombreCursos,
+                                    iCursoId: item.iCursoId,
+                                    idDocCursoId: item.idDocCursoId,
+                                    iNivelCicloId: item.iNivelCicloId,
                                 }"
                                 label="Acceder"
                                 icon="pi pi-arrow-right"

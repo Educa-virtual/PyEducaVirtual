@@ -113,9 +113,13 @@
                 </ng-template>
 
                 <div class="grid m-0">
-                    <div class="col-12">
+                    <div class="col-12 mb-1">
                         @for (ficha of item.cCuadernoUrl; track ficha.id) {
                             @if (ficha.typePortafolio === 1) {
+                                <p class="text-primary">
+                                    <i class="pi pi-list"></i>&nbsp;Ficha de
+                                    Actividades de Aprendizaje
+                                </p>
                                 <p-inputGroup>
                                     <p-inputGroupAddon>
                                         <i
@@ -167,6 +171,10 @@
                                 </p-inputGroup>
                             }
                             @if (ficha.typePortafolio === 2) {
+                                <p class="text-primary mt-2">
+                                    <i class="pi pi-list"></i>&nbsp;Cuaderno de
+                                    Campo
+                                </p>
                                 <p-inputGroup class="mt-3">
                                     <p-inputGroupAddon>
                                         <i
@@ -219,6 +227,10 @@
                             }
                         }
                         @if (!item.bFichas) {
+                            <p class="text-primary">
+                                <i class="pi pi-list"></i>&nbsp;Ficha de
+                                Actividades de Aprendizaje
+                            </p>
                             <p-inputGroup>
                                 <p-inputGroupAddon>
                                     <i
@@ -266,6 +278,10 @@
                             </p-inputGroup>
                         }
                         @if (!item.bCuadernos) {
+                            <p class="text-primary mt-2">
+                                <i class="pi pi-list"></i>&nbsp;Cuadernos de
+                                Campo
+                            </p>
                             <p-inputGroup class="mt-3">
                                 <p-inputGroupAddon>
                                     <i
@@ -313,7 +329,11 @@
                             </p-inputGroup>
                         }
                     </div>
-                    <div class="col-12">
+                    <div class="col-12 mt-1">
+                        <p class="text-primary">
+                            <i class="pi pi-list"></i>&nbsp;Instrumentos de
+                            Evaluación
+                        </p>
                         <p-inputGroup>
                             <p-inputGroupAddon>
                                 <i
@@ -340,7 +360,11 @@
                             </button>
                         </p-inputGroup>
                     </div>
-                    <div class="col-12">
+                    <div class="col-12 mt-1">
+                        <p class="text-primary">
+                            <i class="pi pi-list"></i>&nbsp;Registro de
+                            Evaluación
+                        </p>
                         <p-inputGroup>
                             <p-inputGroupAddon>
                                 <i

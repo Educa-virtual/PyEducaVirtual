@@ -173,12 +173,7 @@ export class IeparticipaComponent implements OnInit {
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
                 next: (resp: unknown) => {
-                    console.log('Datos obtenidos de obtenerNivelTipo:', resp) // Imprime la respuesta completa
                     this.nivelTipo = resp['data']
-                    console.log(
-                        'Nivel tipo asignado a this.nivelTipo:',
-                        this.nivelTipo
-                    )
                 },
             })
     }
@@ -188,14 +183,12 @@ export class IeparticipaComponent implements OnInit {
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
                 next: (resp: unknown) => {
-                    //console.log('Datos obtenidos de Ugel:', resp) // Imprime la respuesta completa
                     this.Ugeles = resp['data']
                 },
             })
     }
     IEparticipan(event: any) {
         const itemsMoved = event.items
-        console.log('Moviendo a Participan AQUI:', itemsMoved)
 
         // Elimina de sourceProducts los elementos que se mueven a targetProducts
         itemsMoved.forEach((item) => {
@@ -230,7 +223,7 @@ export class IeparticipaComponent implements OnInit {
                         detail: 'Las instituciones educativas se han editado correctamente en el sistema.',
                     })
                 }
-                console.log('Guardado exitoso:', response)
+                console.log(response)
             },
             (error) => console.error('Error al guardar:', error)
         )
@@ -241,7 +234,6 @@ export class IeparticipaComponent implements OnInit {
 
     IEnoparticipan(event: any) {
         const itemsMoved = event.items
-        console.log('Moviendo a No Participan AQUI:', itemsMoved)
 
         // Elimina de targetProducts los elementos que se mueven a sourceProducts
         itemsMoved.forEach((item) => {
@@ -378,11 +370,6 @@ export class IeparticipaComponent implements OnInit {
     obtenerParticipaciones(): Observable<any[]> {
         const evaluacionId = this._iEvaluacionId
         if (!evaluacionId) {
-            // Si no hay un ID de evaluación, devolver las instituciones sin participaciones
-            console.log(
-                'No se ha definido un ID de evaluación, cargando instituciones...'
-            )
-            // Llamar a obtenerIE() y devolver el resultado
             return this.obtenerIE() // Ya es un Observable<any[]>, las instituciones no participan
         }
 
@@ -490,11 +477,6 @@ export class IeparticipaComponent implements OnInit {
                     // Modo "nuevo": todas las instituciones están en no participantes
                     this.sourceProducts = [...instituciones]
                     this.targetProducts = [] // Vacío porque no hay participantes
-                    console.log(
-                        'Nuevo: Todas las instituciones no participantes',
-                        this.sourceProducts
-                    )
-
                     // Actualizar los conteos después de asignar los datos
                     this.actualizarConteos()
                 } else if (evaluacionId) {
@@ -520,21 +502,8 @@ export class IeparticipaComponent implements OnInit {
                                 this.sourceProducts = [...instituciones]
                                 this.targetProducts = []
                             }
-
-                            console.log(
-                                'Instituciones participantes:',
-                                this.targetProducts
-                            )
-                            console.log(
-                                'Instituciones no participantes:',
-                                this.sourceProducts
-                            )
-
                             // Actualizar los conteos después de procesar los datos
                             this.actualizarConteos()
-
-                            // this.datosEmitIeParticipan.emit(this.targetProducts)
-                            // this.actualizarConteos()
                         },
                         error: (error) =>
                             console.error(
@@ -618,9 +587,9 @@ export class IeparticipaComponent implements OnInit {
     actualizarConteos(): void {
         // Validar que sourceProducts y targetProducts tengan datos
         if (!this.sourceProducts || !this.targetProducts) {
-            console.error(
-                'Error: sourceProducts o targetProducts no están definidos.'
-            )
+            // console.error(
+            //     'Error: sourceProducts o targetProducts no están definidos.'
+            // )
             this.participanCount = 0
             this.noParticipanCount = 0
             return
@@ -652,9 +621,5 @@ export class IeparticipaComponent implements OnInit {
         // Actualizar los conteos
         this.participanCount = filteredParticipan.length
         this.noParticipanCount = filteredNoParticipan.length
-
-        console.log('Datos actuales de targetProducts:', this.targetProducts)
-        console.log('Participan:', this.participanCount)
-        console.log('No participan:', this.noParticipanCount)
     }
 }

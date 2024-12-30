@@ -132,6 +132,7 @@ export class EvaluacionesComponent implements OnInit {
 
     cursoSeleccionado: Map<number, boolean> = new Map()
     iiEvaluacionId: number // El ID de evaluación que quieras usar
+    nombreEvaluacion: string
     ngOnInit() {
         this.obtenerEvaluacion()
         this.caption = 'Evaluaciones'
@@ -144,8 +145,11 @@ export class EvaluacionesComponent implements OnInit {
         this.compartirFormularioEvaluacionService.setEvaluacionId(
             this.iiEvaluacionId
         )
+        this.compartirFormularioEvaluacionService.setcEvaluacionNombre(
+            this.cEvaluacionNombre
+        )
         this.form.valueChanges.subscribe((value) => {
-            console.log('Form value changes', value)
+            value
         })
     }
     listaCursos: any[] = []
@@ -323,7 +327,6 @@ export class EvaluacionesComponent implements OnInit {
 
     toggleCurso(curso: any): void {
         curso.isSelected = !curso.isSelected // Cambiar el estado seleccionado
-        console.log('Estado actualizado del curso:', curso)
     }
 
     // MÉTODO PARA GUARDAR INICIO FIN EXAMEN AREAS
@@ -632,20 +635,24 @@ export class EvaluacionesComponent implements OnInit {
         }
         if (accion === 'fechaPublicacion') {
             this.modalActivarCursosEre()
-            this.onEvaluacionSeleccionada({ value: item.iEvaluacionId })
+            this.onEvaluacionSeleccionada({
+                value: item.iEvaluacionId,
+                value1: item.cEvaluacionNombre,
+            })
         }
     }
     onEvaluacionSeleccionada(event: any) {
         // Asigna dinámicamente el valor seleccionado
         this.iiEvaluacionId = event.value
-        console.log('Evaluación seleccionada:', this.iiEvaluacionId)
+
         // Establece el ID de la evaluación en el servicio
         this.compartirFormularioEvaluacionService.setEvaluacionId(
             this.iiEvaluacionId
         )
-        // Mostrar el ID en consola para verificar
-        console.warn('ID de Evaluación establecido:', this.iiEvaluacionId)
-
+        this.nombreEvaluacion = event.value1
+        this.compartirFormularioEvaluacionService.setcEvaluacionNombre(
+            this.nombreEvaluacion
+        )
         // Llamar al servicio para obtener los cursos seleccionados
         this.obtenerCursos()
     }

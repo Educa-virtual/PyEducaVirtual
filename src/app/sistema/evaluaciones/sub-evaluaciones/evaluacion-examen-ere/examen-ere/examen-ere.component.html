@@ -1,50 +1,80 @@
 <app-container-page [title]="'Mis Áreas Curriculares'" [actions]="[]">
-    <p-dataView>
-        <!-- #dv
-        [value]="cursos"
-        [paginator]="layout === 'list' ? false : true"
-        [rows]="10"
-        filterBy="cCursoNombre"
-        [sortField]="sortField"
-        [sortOrder]="sortOrder"
-        [layout]="layout" -->
+    <div class="container">
+        <article
+            *ngFor="let curso of cursos"
+            class="card p-0 p border-1 flex flex-column surface-border overflow-hidden h-full post-module"
+        >
+            <div class="curso__image-container img-transition">
+                <img
+                    [src]="backend + '/' + curso.cCursoImagen"
+                    [alt]="curso.cCursoNombre"
+                    class="w-full h-full"
+                    (error)="updateUrl(curso)"
+                />
+            </div>
+            <div class="flex flex-column h-13rem justify-content-between pb-3">
+                <div class="p-3">
+                    <h3 class="text-xl">
+                        {{ curso.cGradoAbreviacion }} {{ curso.cCursoNombre }}
+                    </h3>
+                    <!-- <p class="">
+                Grado: {{ curso.cGradoNombre }} - Nivel:
+                {{ curso.cNivelTipoNombre }}
+            </p> -->
+                    <p class="">
+                        Inicio del Examen:
+                        {{ curso.dtExamenFechaInicio | date: 'short' }}
+                    </p>
+                    <p class="">
+                        Fin del Examen:
+                        {{ curso.dtExamenFechaFin | date: 'short' }}
+                    </p>
+                </div>
+                <div class="flex">
+                    <footer
+                        class="flex w-full justify-content-between align-items-center"
+                    >
+                        <p-button
+                            [routerLink]="['./', curso.iExamCurId]"
+                            [queryParams]="{
+                                cCursoNombre: curso.cCursoNombre,
+                                cGradoAbreviacion: curso.cGradoAbreviacion,
+                                cNivelTipoNombre: curso.cNivelTipoNombre,
+                                cGradoNombre: curso.cGradoNombre,
+                                dtExamenFechaInicio: curso.dtExamenFechaInicio,
+                                dtExamenFechaFin: curso.dtExamenFechaFin,
+                            }"
+                            label="Rendir"
+                            styleClass="p-button-link"
+                        ></p-button>
+
+                        <p-button
+                            [routerLink]="['./', curso.iExamCurId]"
+                            [queryParams]="{
+                                cCursoNombre: curso.cCursoNombre,
+                                cGradoAbreviacion: curso.cGradoAbreviacion,
+                                cNivelTipoNombre: curso.cNivelTipoNombre,
+                                cGradoNombre: curso.cGradoNombre,
+                                dtExamenFechaInicio: curso.dtExamenFechaInicio,
+                                dtExamenFechaFin: curso.dtExamenFechaFin,
+                            }"
+                            label="Resultados"
+                            styleClass="p-button-link"
+                        ></p-button>
+                    </footer>
+                </div>
+            </div>
+        </article>
+        <!-- 
+<app-container-page [title]="'Mis Áreas Curriculares'" [actions]="[]">
+    <p-dataView #dv [rows]="10" filterBy="cCursoNombre">
         <ng-template pTemplate="header">
             <div
                 class="flex flex-column md:flex-row md:justify-content-between gap-2"
-            >
-                <p-iconField iconPosition="left">
-                    <p-inputIcon styleClass="pi pi-search" />
-                    <!-- <input
-                        pInputText
-                        type="text"
-                        [(ngModel)]="text"
-                        (input)="onFilter(dv, $event)"
-                        placeholder="Buscar por curso"
-                    /> -->
-                </p-iconField>
-
-                <div class="flex justify-end">
-                    <!-- <p-selectButton
-                        [(ngModel)]="layout"
-                        [options]="options"
-                        [allowEmpty]="false"
-                        (onChange)="text = ''"
-                    >
-                        <ng-template pTemplate="item" let-item>
-                            <i
-                                class="pi"
-                                [ngClass]="{
-                                    'pi-bars': item === 'list',
-                                    'pi-th-large': item === 'grid',
-                                }"
-                            ></i>
-                        </ng-template>
-                    </p-selectButton> -->
-                </div>
-            </div>
+            ></div>
         </ng-template>
         <ng-template let-products pTemplate="gridItem">
-            <!-- <div class="cursos gap-4 py-2">
+            <div class="cursos gap-4 py-2">
                 @for (curso of cursos; track curso) {
                     <app-curso-card
                         #dv
@@ -52,13 +82,9 @@
                         [curso]="curso"
                     ></app-curso-card>
                 }
-            </div> -->
+            </div>
         </ng-template>
     </p-dataView>
-    <!-- @if (layout === 'list') {
-        <app-areas-estudios
-            [searchText]="searchText"
-            [data]="cursos"
-        ></app-areas-estudios>
-    } -->
+</app-container-page> -->
+    </div>
 </app-container-page>

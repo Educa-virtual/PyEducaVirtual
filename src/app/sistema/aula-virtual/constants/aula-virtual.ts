@@ -5,7 +5,6 @@ import {
     FORO,
     EVALUACION,
     VIDEO_CONFERENCIA,
-    MATERIAL,
     IActividad,
 } from '../interfaces/actividad.interface'
 import { ConstantesService } from '@/app/servicios/constantes.service'
@@ -131,13 +130,13 @@ export const actividadesConfig: Record<
         cActTipoNombre: 'Video Conferencia',
         iActTipoId: VIDEO_CONFERENCIA,
     },
-    [MATERIAL]: {
-        'icon-color': 'text-indigo-500',
-        'bg-color': 'bg-indigo-500 text-white',
-        icon: 'matDescription',
-        cActTipoNombre: 'Material',
-        iActTipoId: MATERIAL,
-    },
+    // [MATERIAL]: {
+    //     'icon-color': 'text-indigo-500',
+    //     'bg-color': 'bg-indigo-500 text-white',
+    //     icon: 'matDescription',
+    //     cActTipoNombre: 'Material',
+    //     iActTipoId: MATERIAL,
+    // },
 }
 
 export const actividadesConfigList: Partial<IActividad>[] = [

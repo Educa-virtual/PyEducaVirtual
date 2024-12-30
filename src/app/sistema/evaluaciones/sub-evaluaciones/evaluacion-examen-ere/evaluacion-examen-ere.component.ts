@@ -34,6 +34,7 @@ export class EvaluacionExamenEreComponent implements OnInit {
     nivelEvalMap: any = []
     nombreTipoEval: string = ''
     nombreNivelEval: string = ''
+    selectedSection: string = '' // Estado para gestionar la selección
 
     constructor(
         private query: GeneralService,
@@ -47,7 +48,7 @@ export class EvaluacionExamenEreComponent implements OnInit {
         {
             type: 'item',
             width: '1rem',
-            field: 'cItem',
+            field: 'cIEvaluacion',
             header: 'Nº',
             text_header: 'center',
             text: 'center',
@@ -106,14 +107,22 @@ export class EvaluacionExamenEreComponent implements OnInit {
         const { accion } = elemento
         switch (accion) {
             case 'examenEre':
-                // this.router.navigate([
-                //     'evaluaciones/sub-evaluaciones/evaluacion-examen-ere/examen-ere',
-                // ])
-                // console.log('ruta')
                 // Navegar a la ruta para cargar el componente hijo en el <router-outlet>
-                this.router.navigate([
-                    'evaluaciones/sub-evaluaciones/evaluacion-examen-ere/examen-ere',
-                ])
+                this.router.navigate(
+                    [
+                        'evaluaciones/sub-evaluaciones/evaluacion-examen-ere/examen-ere',
+                    ],
+                    {
+                        queryParams: {
+                            // iEvalPromId: value.iEvalPromId ?? undefined,
+                            cIEvaluacion:
+                                elemento.item.cIEvaluacion ?? undefined,
+                        },
+                        queryParamsHandling: 'merge',
+                    }
+                )
+                console.warn('ruta', elemento)
+
                 break
         }
     }
@@ -137,7 +146,7 @@ export class EvaluacionExamenEreComponent implements OnInit {
                     evaluacion.iEvaluacionId === selectedEvaluacionId
             )
             .map((item) => ({
-                cItem: item.iEvaluacionId,
+                cIEvaluacion: item.iEvaluacionId,
                 cEvaluacionNombre: item.cEvaluacionNombre || 'Sin nombre',
                 dtEvaluacionCreacion: formatDate(item.dtEvaluacionCreacion),
                 idTipoEvalId: this.nombreTipoEval,
@@ -225,7 +234,7 @@ export class EvaluacionExamenEreComponent implements OnInit {
     //                                 this.evaluacionEreTable =
     //                                     this.evaluacionesEreDrop.map(
     //                                         (item: any) => ({
-    //                                             cItem: item.iEvaluacionId,
+    //                                             cIEvaluacion: item.iEvaluacionId,
     //                                             cEvaluacionNombre:
     //                                                 item.cEvaluacionNombre ||
     //                                                 'Sin nombre',
@@ -348,7 +357,8 @@ export class EvaluacionExamenEreComponent implements OnInit {
                                     this.evaluacionEreTable =
                                         this.evaluacionesEreDrop.map(
                                             (item: any) => ({
-                                                cItem: item.iEvaluacionId,
+                                                cIEvaluacion:
+                                                    item.iEvaluacionId,
                                                 cEvaluacionNombre:
                                                     item.cEvaluacionNombre ||
                                                     'Sin nombre',

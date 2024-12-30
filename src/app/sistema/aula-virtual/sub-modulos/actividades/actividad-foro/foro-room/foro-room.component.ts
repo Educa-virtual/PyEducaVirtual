@@ -29,6 +29,8 @@ import { EmptySectionComponent } from '@/app/shared/components/empty-section/emp
 import { Message } from 'primeng/api'
 import { WebsocketService } from '@/app/sistema/aula-virtual/services/websoket.service'
 import { TimeComponent } from '@/app/shared/time/time.component'
+import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
+import { LocalStoreService } from '@/app/servicios/local-store.service'
 //import { Toast } from 'primeng/toast';
 @Component({
     selector: 'app-foro-room',
@@ -64,6 +66,8 @@ import { TimeComponent } from '@/app/shared/time/time.component'
 export class ForoRoomComponent implements OnInit {
     @Input() ixActivadadId: string
     @Input() iActTopId: tipoActividadesKeys
+    public DOCENTE = DOCENTE
+    public ESTUDIANTE = ESTUDIANTE
 
     private GeneralService = inject(GeneralService)
     private _formBuilder = inject(FormBuilder)
@@ -144,7 +148,16 @@ export class ForoRoomComponent implements OnInit {
         iDocenteId: [''],
         iForoRptaId: [''],
     })
-    constructor(private websocketService: WebsocketService) {}
+    perfil: any[] = []
+    constructor(
+        private websocketService: WebsocketService,
+        private store: LocalStoreService
+        //private _activatedRoute: ActivatedRoute,
+        //private messageService: MessageService
+    ) {
+        this.perfil = this.store.getItem('dremoPerfil')
+        //para obtener el idDocCursoId
+    }
 
     selectedItems = []
     ngOnInit(): void {
@@ -224,6 +237,7 @@ export class ForoRoomComponent implements OnInit {
     //     this.foroFormComnt.patchValue(respuestasForo)
     // }
     openModalCalificacion(respuestasForoEstudiant) {
+        console.log('estudiante seleccionado', this.estudianteSelectComent)
         this.modelaCalificacionComen = true
         this.perfilSelect = respuestasForoEstudiant
     }
@@ -242,22 +256,36 @@ export class ForoRoomComponent implements OnInit {
         temporal.innerHTML = html // Insertar el HTML
         return temporal.textContent || '' // Obtener solo el texto
     }
+    //calificar comentario de estudiante
     calificarComnt() {
-        const rpta = this.respuestasForo.find(
-            (i) => i.EstudianteId === this.perfilSelect.EstudianteId
-        )
-        this.foroFormCalf.controls['iForoRptaId'].setValue(rpta.iForoRptaId)
-        const value = this.foroFormCalf.value
-        const nn = value.cForoRptaDocente
-        const conclusionFinalDocente = this.limpiarHTML(nn)
-        value.cForoRptaDocente = conclusionFinalDocente
-        this._aulaService.calificarForoDocente(value).subscribe((resp: any) => {
+        const idEstudiante = Number(this.perfilSelect.iEstudianteId)
+        const idForoId = Number(this.foro.iForoId)
+
+        const rpta = this.foroFormCalf.value
+        const resput = rpta.cForoRptaDocente
+        const respuestDocLimpia = this.limpiarHTML(resput)
+        const where = {
+            iEstudianteId: idEstudiante,
+            iForoId: idForoId,
+            cForoRptDocente: respuestDocLimpia,
+        }
+        console.log('estudiante seleccionadodddd', where)
+
+        // const rpta = this.respuestasForo.find(
+        //     (i) => i.EstudianteId === this.perfilSelect.EstudianteId
+        // )
+        // this.foroFormCalf.controls['iForoRptaId'].setValue(rpta.iForoRptaId)
+        // const value = this.foroFormCalf.value
+        // const nn = value.cForoRptaDocente
+        // const conclusionFinalDocente = this.limpiarHTML(nn)
+        // value.cForoRptaDocente = conclusionFinalDocente
+        this._aulaService.calificarForoDocente(where).subscribe((resp: any) => {
             if (resp?.validated) {
                 this.modelaCalificacionComen = false
                 this.getRespuestaF()
             }
         })
-        console.log('Guardar Calificacion', value)
+        console.log('Guardar Calificacion', where)
         this.foroFormCalf.reset()
     }
     startReply(index: number) {
@@ -297,14 +325,22 @@ export class ForoRoomComponent implements OnInit {
 
     sendComment() {
         const perfil = (this.iPerfilId = this._constantesService.iPerfilId)
-        if (perfil == 8) {
-            this.iEstudianteId = this._constantesService.iEstudianteId
+        // const idPerfil = this.iEstudianteId
+        // console.log('hola', idPerfil);
+        if (perfil == 80) {
+            this.iEstudianteId = Number(this._constantesService.iEstudianteId)
+            const value = this.foroFormComntAl.value
+            const comentarioEstudiante = value.cForoRptaRespuesta
+            const comentarioEstudianteLimpio =
+                this.limpiarHTML(comentarioEstudiante)
+            value.cForoRptaRespuesta = comentarioEstudianteLimpio
             const comment = {
                 ...this.foroFormComntAl.value,
                 iForoId: this.ixActivadadId,
                 iEstudianteId: this.iEstudianteId,
             }
             console.log('comentarios: ', comment)
+
             this._aulaService.guardarRespuesta(comment).subscribe({
                 next: (resp: any) => {
                     console.log('respuesta completa', resp)
@@ -324,6 +360,7 @@ export class ForoRoomComponent implements OnInit {
                     console.error('Comentario:', error)
                 },
             })
+            this.foroFormComntAl.reset()
         } else {
             this.iDocenteId = this._constantesService.iDocenteId
             const comment = {

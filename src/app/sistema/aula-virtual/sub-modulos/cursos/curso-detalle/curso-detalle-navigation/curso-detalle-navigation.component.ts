@@ -30,11 +30,11 @@ export class CursoDetalleNavigationComponent implements OnInit {
                 icon: 'pi pi-book',
                 tab: 'contenido',
             },
-            {
-                title: 'Estudiantes',
-                icon: 'pi pi-users',
-                tab: 'estudiantes',
-            },
+            // {
+            //     title: 'Estudiantes',
+            //     icon: 'pi pi-users',
+            //     tab: 'estudiantes',
+            // },
             {
                 title: 'Resultado',
                 icon: 'pi pi-users',

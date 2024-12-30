@@ -42,6 +42,8 @@ import { RemoveHTMLPipe } from '@/app/shared/pipes/remove-html.pipe'
 import { CommonInputComponent } from '@/app/shared/components/common-input/common-input.component'
 import { ButtonModule } from 'primeng/button'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
+import { TabsKeys } from '../tab.interface'
+import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
 @Component({
     selector: 'app-tab-resultados',
     standalone: true,
@@ -82,6 +84,11 @@ import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmatio
 export class TabResultadosComponent implements OnInit {
     @Input() ixActivadadId: string
     @Input() iActTopId: tipoActividadesKeys
+    @Input() area: TabsKeys
+    @Input() iCursoId
+    @Input() _iSilaboId
+    @Input() idDocCursoId
+    @Input() curso
 
     private GeneralService = inject(GeneralService)
     private _formBuilder = inject(FormBuilder)
@@ -116,12 +123,16 @@ export class TabResultadosComponent implements OnInit {
     //-------
     iEstudianteId: number
     estudianteSelect = null
-    public comentariosSelect
+    public comentariosSelect = []
+    public comentarioSelectTareas = []
+    public comentarioSelectEvaluaciones = []
     messages: Message[] | undefined
     tabla: string
     campos: string
     where: number
     iPerfilId: number
+    public DOCENTE = DOCENTE
+    public ESTUDIANTE = ESTUDIANTE
     iDocenteId: number
     private unsbscribe$ = new Subject<boolean>()
 
@@ -135,6 +146,7 @@ export class TabResultadosComponent implements OnInit {
         iEscalaCalifIdPeriodo1: ['', [Validators.required]],
     })
     public conclusionDescrp: FormGroup = this._formBuilder.group({
+        iEscalaCalifId: ['', [Validators.required]],
         cDetMatConclusionDescPromedio: ['', [Validators.required]],
     })
     constructor(private messageService: MessageService) {}
@@ -180,14 +192,14 @@ export class TabResultadosComponent implements OnInit {
             text_header: 'center',
             text: 'center',
         },
-        // {
-        //     type: 'text',
-        //     width: '10rem',
-        //     field: 'iEscalaCalifIdPeriodo4',
-        //     header: 'Promedio 04',
-        //     text_header: 'center',
-        //     text: 'center',
-        // },
+        {
+            type: 'text',
+            width: '10rem',
+            field: 'iEscalaCalifIdPromedio',
+            header: 'Promedio Final',
+            text_header: 'center',
+            text: 'center',
+        },
         {
             type: 'text',
             width: '10rem',
@@ -217,11 +229,11 @@ export class TabResultadosComponent implements OnInit {
     // Inicializamos
     ngOnInit() {
         this.obtenerIdPerfil()
-        this.getEstudiantesMatricula()
         this.mostrarCalificacion()
         this.obtenerReporteDenotasFinales()
         this.habilitarCalificacion()
     }
+    //Agregar conclusion descritiva final
     mostrarModalConclusionDesc: boolean = false
     accionBnt({ accion, item }): void {
         switch (accion) {
@@ -236,12 +248,49 @@ export class TabResultadosComponent implements OnInit {
     accionDescargar({ accion }): void {
         switch (accion) {
             case 'descargar_pdf':
+                this.generarReporteDeLogrosPdf()
                 console.log('Descargar pdf')
                 break
             case 'Descargar_Excel':
                 console.log('Descargar excel')
                 break
         }
+    }
+    //exportar en pdf el reporte de notas finales:
+    generarReporteDeLogrosPdf() {
+        const value = this.iCursoId
+        const idDocente = this.idDocCursoId
+        console.log('idDocente', this.idDocCursoId)
+        this._aulaService
+            .generarReporteDeLogrosPdf({
+                iIeCursoId: value,
+                idDocCursoId: idDocente,
+            })
+            .subscribe(
+                (response) => {
+                    //console.log('Respuesta de Evaluacion:', response) // Para depuración
+                    // Crear un Blob con la respuesta del backend
+                    const blob = response as Blob // Asegúrate de que la respuesta sea un Blob
+                    const link = document.createElement('a')
+                    //console.log('imprimer01', blob)
+                    link.href = URL.createObjectURL(blob)
+                    link.download = 'Reporte_logros' + '.pdf' // Nombre del archivo descargado
+                    link.click()
+                }
+                // (error) => {
+                //     // En caso de error, se determina el mensaje de error a mostrar
+                //     const errorMessage =
+                //         error?.message ||
+                //         'No hay datos suficientes para exportar nivel de logro'
+
+                //     // // Se muestra un mensaje de error en el sistema
+                //     // this.messageService.add({
+                //     //     severity: 'error',
+                //     //     summary: 'Error',
+                //     //     detail: 'revisar',
+                //     // })
+                // }
+            )
     }
     //obtener los perfiles
     obtenerIdPerfil() {
@@ -253,24 +302,61 @@ export class TabResultadosComponent implements OnInit {
     // Obtenemos los datos de estudiante que el docente hico su retroalimentación por alumno
     obtenerComnt(estudiantes) {
         //this.mostrarDiv = !this.mostrarDiv // Cambia el estado de visibilida
-        this.estudianteEv = estudiantes.nombrecompleto
+        this.estudianteEv = estudiantes.completoalumno
         this.estudianteSeleccionado = estudiantes
+        console.log('Estudiante select', estudiantes)
         this._aulaService
             .obtenerResultados({
                 iEstudianteId: estudiantes.iEstudianteId,
-                idDocCursoId: estudiantes.iCursoId,
+                idDocCursoId: estudiantes.iIeCursoId,
             })
             .pipe(takeUntil(this.unsbscribe$))
             .subscribe({
                 next: (resp) => {
-                    this.messages = [
-                        {
-                            severity: 'info',
-                            detail: resp?.iEscalaCalifId,
-                        },
-                    ]
-                    this.comentariosSelect = resp
-                    console.log('obtener comentarior', resp)
+                    this.comentariosSelect = []
+                    console.log('obtener comentarios', resp)
+                    resp.forEach((element) => {
+                        element['foro'] = element['foro']
+                            ? JSON.parse(element['foro'])
+                            : []
+                    })
+                    this.comentariosSelect = resp.length ? resp[0]['foro'] : []
+                    console.log('Mis foros', this.comentariosSelect)
+
+                    this.comentarioSelectTareas = []
+                    resp.forEach((element) => {
+                        element['tarea'] = element['tarea']
+                            ? JSON.parse(element['tarea'])
+                            : []
+                    })
+                    this.comentarioSelectTareas = resp.length
+                        ? resp[0]['tarea']
+                        : []
+                    console.log('Mis tareas', this.comentarioSelectTareas)
+
+                    this.comentarioSelectEvaluaciones = []
+                    resp.forEach((element) => {
+                        element['evaluacion'] = element['evaluacion']
+                            ? JSON.parse(element['evaluacion'])
+                            : []
+                    })
+                    this.comentarioSelectEvaluaciones = resp.length
+                        ? resp[0]['evaluacion']
+                        : []
+                    console.log(
+                        'Mis evaluaciones',
+                        this.comentarioSelectEvaluaciones
+                    )
+                    //console.log(resp)
+                    //comentariosForo
+                    //comentariosTareas
+
+                    // this.messages = [
+                    //     {
+                    //         severity: 'info',
+                    //         detail: resp?.iEscalaCalifId,
+                    //     },
+                    // ]
                 },
             })
     }
@@ -295,19 +381,21 @@ export class TabResultadosComponent implements OnInit {
         //console.log('Unidad Seleccionada', item)
         console.log('Indice de la Unidad', idx)
     }
-    // muestra las notas del curso
+    // muestra las notas del curso x trimestre
     reporteNotasFinales: any[] = []
-
     obtenerReporteDenotasFinales() {
-        const userId = 1
+        console.log('idCurso:', this.iCursoId)
+        const value = this.iCursoId
         this._aulaService
-            .obtenerReporteFinalDeNotas(userId)
+            .obtenerReporteFinalDeNotas({
+                iIeCursoId: value,
+            })
             .subscribe((Data) => {
                 this.reporteNotasFinales = Data['data']
+                console.log(this.reporteNotasFinales)
                 // Mapear las calificaciones en letras a reporteNotasFinales
-                console.log('Mostrar notas finales', this.reporteNotasFinales)
+                //console.log('Mostrar notas finales', this.reporteNotasFinales)
                 this.calificacion
-                console.log(this.calificacion)
             })
     }
     // Metodo para guardar la conclusión descriptiva final
@@ -316,6 +404,7 @@ export class TabResultadosComponent implements OnInit {
         const conclusionDescrpLimpia = this.limpiarHTML(
             conclusionDescrp.cDetMatConclusionDescPromedio
         )
+        const idEscala = conclusionDescrp.iEscalaCalifId
         const where = [
             {
                 COLUMN_NAME: 'iDetMatrId',
@@ -323,6 +412,7 @@ export class TabResultadosComponent implements OnInit {
             },
         ]
         const registro: any = {
+            iEscalaCalifIdPromedio: idEscala,
             cDetMatConclusionDescPromedio: conclusionDescrpLimpia,
         }
         this._aulaService
@@ -478,11 +568,12 @@ export class TabResultadosComponent implements OnInit {
     //obtener los periordos en un button
     unidades: any[] = []
     habilitarCalificacion() {
+        const idYear = 3
         const params = {
-            iYAcadId: this._constantesService.iYAcadId,
+            iYAcadId: idYear,
             iCredId: this._constantesService.iCredId,
         }
-        //console.log('año', params)
+        console.log('año', params)
         this._aulaService.habilitarCalificacion(params).subscribe((Data) => {
             this.unidades = Data['data']
             this.unidades = this.unidades.map((unidad) => {
@@ -501,36 +592,5 @@ export class TabResultadosComponent implements OnInit {
             })
             //console.log('Mostrar fechas', this.unidades)
         })
-    }
-    // mostrar los estudiantes
-    getInformation(params) {
-        this.GeneralService.getGralPrefix(params).subscribe({
-            next: (response) => {
-                this.estudiantes = response.data
-                //console.log('lista de estudiante', this.estudiantes)
-            },
-            complete: () => {},
-            error: (error) => {
-                console.log(error)
-            },
-        })
-    }
-    getEstudiantesMatricula() {
-        const params = {
-            petition: 'post',
-            group: 'aula-virtual',
-            prefix: 'matricula',
-            ruta: 'list',
-            data: {
-                opcion: 'CONSULTAR-ESTUDIANTESxiSemAcadIdxiYAcadIdxiCurrId',
-                iSemAcadId:
-                    '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-                iYAcadId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-                iCurrId: '2jdp2ERVe0QYG8agql5J1ybONbOMzW93KvLNZ7okAmD4xXBrwe',
-            },
-            params: { skipSuccessMessage: true },
-        }
-
-        this.getInformation(params)
     }
 }

@@ -1,0 +1,29 @@
+<app-toolbar-primeng title="Examen ERE" />
+
+<div class="card">
+    <div class="formgrid grid p-3">
+        <!-- Filtro Evaluacion -->
+        <!-- <div class="field col-12 md:col-6 lg:col-3">
+            <label for="evaluacion">Evaluacion</label>
+            <p-dropdown
+                id="evaluacion"
+                [options]="evaluacionesEreDrop"
+                optionValue="iEvaluacionId"
+                optionLabel="cEvaluacionNombre"
+                placeholder="Seleccione una evaluación"
+                styleClass="w-full"
+                (onChange)="onEvaluacionSeleccionada($event)"
+            ></p-dropdown>
+        </div> -->
+    </div>
+
+    <!-- Tabla Evaluacion -->
+    <app-table-primeng
+        [columnas]="columns"
+        [actions]="actions"
+        [data]="evaluacionEreTable"
+        [showCaption]="true"
+        [tableStyle]="null"
+        (accionBtnItem)="accionBtnItem($event)"
+    />
+</div>

@@ -40,16 +40,37 @@ export class AulaBancoPreguntaPageComponent implements OnInit {
         iDocenteId: null,
         iCurrContId: null,
         iNivelCicloId: null,
+        iYearId: 0, // Nuevo parámetro para el año
+        iSeccionId: 0, // Nuevo parámetro para la sección
         busqueda: '',
         iTipoPregId: 0,
         iEvaluacionId: 0,
     }
+    tipoPreguntas = [
+        {
+            iTipoPregId: 0,
+            cTipoPregDescripcion: 'Todos',
+        },
+        {
+            iTipoPregId: 1,
+            cTipoPregDescripcion: 'Opción única',
+        },
+        {
+            iTipoPregId: 2,
+            cTipoPregDescripcion: 'Opción múltiple',
+        },
+        {
+            iTipoPregId: 3,
+            cTipoPregDescripcion: 'Opción libre',
+        },
+    ]
 
     private _constantesService = inject(ConstantesService)
     private unsubscribe$ = new Subject<boolean>()
     private _generalService = inject(GeneralService)
     private _store = inject(LocalStoreService)
     menuAgregacionPreguntas: any
+    filtros: any
 
     ngOnInit() {
         const year = this._store.getItem('dremoYear')
@@ -123,4 +144,16 @@ export class AulaBancoPreguntaPageComponent implements OnInit {
             }
         })
     }
+    public years = [
+        { iYearId: 0, cYearNombre: 'Todos' },
+        { iYearId: 2023, cYearNombre: '2023' },
+        { iYearId: 2024, cYearNombre: '2024' },
+    ]
+
+    public secciones = [
+        { iSeccionId: 0, cSeccionNombre: 'Todas' },
+        { iSeccionId: 1, cSeccionNombre: 'A' },
+        { iSeccionId: 2, cSeccionNombre: 'B' },
+        { iSeccionId: 3, cSeccionNombre: 'C' },
+    ]
 }

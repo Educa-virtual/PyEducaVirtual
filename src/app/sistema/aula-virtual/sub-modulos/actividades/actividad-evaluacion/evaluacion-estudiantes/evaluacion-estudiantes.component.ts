@@ -13,6 +13,10 @@ import { environment } from '@/environments/environment'
 import { EmptySectionComponent } from '../../../../../../shared/components/empty-section/empty-section.component'
 import { RecursosListaComponent } from '../../../../../../shared/components/recursos-lista/recursos-lista.component'
 //import { interval, Subscription } from 'rxjs';
+import { AccordionModule } from 'primeng/accordion'
+import { RubricasModule } from '../../../../features/rubricas/rubricas.module'
+import { RubricaEvaluacionComponent } from '../../../../features/rubricas/components/rubrica-evaluacion/rubrica-evaluacion.component'
+import { RubricaCalificarComponent } from '@/app/sistema/aula-virtual/features/rubricas/components/rubrica-calificar/rubrica-calificar.component'
 
 @Component({
     selector: 'app-evaluacion-estudiantes',
@@ -26,6 +30,10 @@ import { RecursosListaComponent } from '../../../../../../shared/components/recu
         NgxDocViewerModule,
         EmptySectionComponent,
         RecursosListaComponent,
+        AccordionModule,
+        RubricasModule,
+        RubricaEvaluacionComponent,
+        RubricaCalificarComponent,
     ],
     templateUrl: './evaluacion-estudiantes.component.html',
     styleUrl: './evaluacion-estudiantes.component.scss',
@@ -39,6 +47,7 @@ export class EvaluacionEstudiantesComponent implements OnChanges {
 
     environment = environment.backend
     @Input() evaluacion
+    evaluacion1: { iTiempo: number | null } = { iTiempo: 120 }
 
     iPreguntaId: number = 0
     preguntas = []
@@ -47,6 +56,10 @@ export class EvaluacionEstudiantesComponent implements OnChanges {
     display: boolean
     timeRemaining: number
     cTareaEstudianteComentarioDocente: any
+    selectedEstudiante: any
+    toggleSection: any
+    sections: any
+    tabs: any
 
     ngOnChanges(changes) {
         if (changes.evaluacion?.currentValue) {
@@ -243,7 +256,11 @@ export class EvaluacionEstudiantesComponent implements OnChanges {
                 break
         }
     }
-
+    /**
+     * Método para obtener información y manejar respuestas en función de una acción específica.
+     * @param {any} params - Parámetros necesarios para realizar la solicitud al servicio.
+     * @param {string} accion - Nombre de la acción asociada a esta solicitud, utilizado para identificarla en el flujo.
+     */
     getInformation(params, accion) {
         this._GeneralService.getGralPrefix(params).subscribe({
             next: (response) => {
@@ -309,10 +326,27 @@ export class EvaluacionEstudiantesComponent implements OnChanges {
                 .substr(11, 8)
         }, 1000)
     }
-
+    // { // Calcula el número de minutos restantes dividiendo el tiempo restante por 60 y redondeando hacia abajo
     getFormattedTime(): string {
         const minutes = Math.floor(this.timeRemaining / 60)
         const seconds = this.timeRemaining % 60
         return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+    }
+    //  mostrado la rubrica en vista estudiante
+    dialogRubricaInfo = {
+        visible: false,
+        header: undefined,
+    }
+
+    showRubrica(data) {
+        this.dialogRubricaInfo.visible = true
+        this.dialogRubricaInfo.header = data
+    }
+    // Ejemplo de datos
+
+    convertirATiempo(tiempoEnMinutos: number): string {
+        const horas = Math.floor(tiempoEnMinutos / 60)
+        const minutos = tiempoEnMinutos % 60
+        return `${horas} horas ${minutos} minutos`
     }
 }

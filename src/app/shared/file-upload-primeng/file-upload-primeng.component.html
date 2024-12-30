@@ -1,11 +1,14 @@
-<p-fileUpload
-    mode="basic"
-    chooseLabel="Subir Archivo"
-    chooseIcon="pi pi-upload"
-    name="demo[]"
-    url="https://www.primefaces.org/cdn/api/upload.php"
-    accept=".pdf"
-    maxFileSize="100000000"
-    (onUpload)="onUpload($event)"
-    [auto]="true"
-/>
+<button
+    pButton
+    pRipple
+    type="button"
+    severity="primary"
+    class="p-button-primary btn-file-image"
+>
+    <i class="pi pi-upload"></i
+    ><input
+        type="file"
+        (change)="onUploadChange($event)"
+        accept=".pdf "
+    />&nbsp;<b>Subir Archivo</b>
+</button>

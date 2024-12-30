@@ -2,7 +2,7 @@ export const TABS = {
     inicio: 'INICIO',
     contenido: 'CONTENIDO',
     evaluaciones: 'EVALUACIONES',
-    estudiantes: 'ESTUDIANTES',
+    // estudiantes: 'ESTUDIANTES',
     resultados: 'Resultados',
     asistencia: 'Asistencia',
     'banco-preguntas': 'Banco de Preguntas',

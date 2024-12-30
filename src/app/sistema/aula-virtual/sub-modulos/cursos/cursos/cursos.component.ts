@@ -18,6 +18,7 @@ import { ButtonModule } from 'primeng/button'
 import { AreasEstudiosComponent } from '../../../../docente/areas-estudios/areas-estudios.component'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { PrimengModule } from '@/app/primeng.module'
+import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
 
 export type Layout = 'list' | 'grid'
 @Component({
@@ -93,10 +94,10 @@ export class CursosComponent implements OnDestroy, OnInit {
         const year = this.store.getItem('dremoYear')
         const perfil = this.store.getItem('dremoPerfil')
         switch (Number(perfil.iPerfilId)) {
-            case 7:
+            case DOCENTE:
                 this.getCursosDocente(year)
                 break
-            case 8:
+            case ESTUDIANTE:
                 this.getCursosEstudiante(year)
                 break
         }

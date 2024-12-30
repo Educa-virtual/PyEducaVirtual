@@ -48,6 +48,37 @@ const routes: Routes = [
                 './sub-evaluaciones/competencias/competencias.component'
             ).then((c) => c.CompetenciasComponent),
     },
+    {
+        path: 'sub-evaluaciones/evaluacion-examen-ere',
+        loadComponent: () =>
+            import(
+                './sub-evaluaciones/evaluacion-examen-ere/evaluacion-examen-ere.component'
+            ).then((c) => c.EvaluacionExamenEreComponent),
+    },
+    {
+        path: 'sub-evaluaciones/evaluacion-examen-ere/examen-ere',
+        loadComponent: () =>
+            import(
+                './sub-evaluaciones/evaluacion-examen-ere/examen-ere/examen-ere.component'
+            ).then((c) => c.ExamenEreComponent),
+    },
+
+    // {
+    //     path: 'sub-evaluaciones/evaluacion-examen-ere',
+    //     loadComponent: () =>
+    //         import(
+    //             './sub-evaluaciones/evaluacion-examen-ere/evaluacion-examen-ere.component'
+    //         ).then((c) => c.EvaluacionExamenEreComponent),
+    //     children: [
+    //         {
+    //             path: 'examen-ere', // Ruta hija
+    //             loadComponent: () =>
+    //                 import(
+    //                     './sub-evaluaciones/evaluacion-examen-ere/examen-ere/examen-ere.component'
+    //                 ).then((c) => c.ExamenEreComponent),
+    //         },
+    //     ],
+    // },
 ]
 
 export default routes

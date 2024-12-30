@@ -1,3 +1,13 @@
+<!--/**
+ * Botón para agregar preguntas, dependiendo de si `menu` está definido o no.
+ * Si `menu` está presente, se usa un método para mostrar un menú para la agregación de preguntas.
+ * Si no está presente, se maneja la agregación de preguntas directamente.
+ *
+ * @param {boolean} menu - Si es `true`, se activa el menú de agregación de preguntas,
+ *                          de lo contrario se activa la función `handleNuevaPregunta`.
+ * @param {string} mode - El modo de la interfaz de usuario. Si está en `'VIEW'`,
+ *                        el botón estará deshabilitado.
+ *-->
 @if (menu) {
     <button
         pButton
@@ -21,6 +31,9 @@
         <span class="text-md">Agregar Preguntas</span>
     </button>
 }
+
+<!-- Componente p-menu de PrimeNG para mostrar un menú de selección en formato popup -->
+
 <p-menu
     #menuAgregacionPreguntas
     [popup]="true"
@@ -28,7 +41,7 @@
     appendTo="body"
 >
 </p-menu>
-
+<!-- Modal de diálogo para agregar preguntas desde el banco de preguntas -->
 <p-dialog
     #dialogBancoPreguntas
     [header]="'Agregar Preguntas del Banco de preguntas'"

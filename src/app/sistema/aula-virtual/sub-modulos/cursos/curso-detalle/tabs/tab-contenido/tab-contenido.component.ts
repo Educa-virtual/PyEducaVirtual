@@ -42,6 +42,7 @@ import { FullCalendarModule } from '@fullcalendar/angular'
 import { TareaFormContainerComponent } from '../../../../actividades/actividad-tarea/tarea-form-container/tarea-form-container.component'
 import { FormEvaluacionComponent } from '../../../../actividades/actividad-evaluacion/components/form-evaluacion/form-evaluacion.component'
 import { NoDataComponent } from '../../../../../../../shared/no-data/no-data.component'
+import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
 
 @Component({
     selector: 'app-tab-contenido',
@@ -116,6 +117,8 @@ export class TabContenidoComponent implements OnInit {
     ) {}
 
     iPerfilId: number = null
+    public DOCENTE = DOCENTE
+    public ESTUDIANTE = ESTUDIANTE
     ngOnInit(): void {
         this.iPerfilId = this._constantesService.iPerfilId
         const today = new Date()
@@ -147,12 +150,15 @@ export class TabContenidoComponent implements OnInit {
         this._aulaService
             .contenidoSemanasProgramacionActividades({
                 iSilaboId: this._iSilaboId,
+                perfil: this.iPerfilId === DOCENTE ? 'DOCENTE' : 'ESTUDIANTE',
             })
             .pipe(takeUntil(this._unsubscribe$))
             .subscribe({
                 next: (data) => {
                     this.loadingContenidoSemanas = false
                     this.contenidoSemanas = data
+                    // console.log('contenido semanas')
+                    // console.log(this.contenidoSemanas)
                 },
                 error: (error) => {
                     console.log(error)
@@ -270,6 +276,8 @@ export class TabContenidoComponent implements OnInit {
                     'aula-virtual/areas-curriculares/' +
                         'actividad' +
                         '/' +
+                        actividad.iProgActId +
+                        '/' +
                         actividad.ixActivadadId +
                         '/' +
                         actividad.iActTipoId,
@@ -368,10 +376,18 @@ export class TabContenidoComponent implements OnInit {
                 [
                     '../',
                     'actividad',
+                    actividad.iProgActId,
                     actividad.ixActivadadId,
                     actividad.iActTipoId,
                 ],
                 {
+                    queryParams: {
+                        iEvaluacionId: this.actividadSelected['iForo'],
+                        iCursoId: this.iCursoId,
+                        idDocCursoId: this.idDocCursoId,
+                        iEstudianteId:
+                            this._constantesService.iEstudianteId ?? undefined,
+                    },
                     relativeTo: this._activatedRoute,
                 }
             )
@@ -408,6 +424,7 @@ export class TabContenidoComponent implements OnInit {
     tituloEvaluacion: string
     opcionEvaluacion: string
     semanaEvaluacion
+    dataActividad
     handleEvaluacionAction(action: string, actividad: IActividad) {
         switch (action) {
             case 'CREAR':
@@ -418,7 +435,7 @@ export class TabContenidoComponent implements OnInit {
                 this.opcionEvaluacion =
                     action === 'CREAR' ? 'GUARDAR' : 'ACTUALIZAR'
                 this.semanaEvaluacion = this.semanaSeleccionada
-
+                this.dataActividad = actividad
                 // const ref = this._dialogService.open(
                 //     EvaluacionFormContainerComponent,
                 //     {
@@ -455,23 +472,25 @@ export class TabContenidoComponent implements OnInit {
                 })
                 break
             case 'VER':
-                console.log('semana')
-                console.log(this.semanaSeleccionada)
-                localStorage.setItem(
-                    'dremoCurso',
-                    JSON.stringify(this.semanaSeleccionada)
-                )
+                console.log('actividades')
+                console.log(this.actividadSelected)
                 this.router.navigate(
                     [
                         '../',
                         'actividad',
+                        actividad.iProgActId,
                         actividad.ixActivadadId,
                         actividad.iActTipoId,
                     ],
                     {
                         queryParams: {
+                            iEvaluacionId:
+                                this.actividadSelected['iEvaluacionId'],
                             iCursoId: this.iCursoId,
                             idDocCursoId: this.idDocCursoId,
+                            iEstudianteId:
+                                this._constantesService.iEstudianteId ??
+                                undefined,
                         },
                         relativeTo: this._activatedRoute,
                     }

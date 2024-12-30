@@ -1,51 +1,42 @@
 <app-toolbar-primeng title="Banco de Preguntas"></app-toolbar-primeng>
+
 <div class="card">
-    <div class="grid">
-        <div class="col-12 lg:col-5">
-            <p-inputGroup>
-                <p-inputGroupAddon>Área Curricular</p-inputGroupAddon>
+    <div class="formgrid grid p-3">
+        <!-- Filtros -->
+        <ng-container *ngFor="let filtro of filtros">
+            <div class="field col-12 md:col-6 lg:col-3">
+                <label [for]="filtro.id">{{ filtro.label }}</label>
                 <p-dropdown
-                    [(ngModel)]="params.iCursoId"
-                    optionValue="iCursoId"
-                    [options]="cursos"
-                    optionLabel="cCursoNombre"
+                    [id]="filtro.id"
+                    [(ngModel)]="filtro.value"
+                    [optionValue]="filtro.optionValue"
+                    [options]="filtro.options"
+                    [optionLabel]="filtro.optionLabel"
+                    [placeholder]="filtro.placeholder"
                     styleClass="w-full"
-                    inputId="cursos"
                     (onChange)="obtenerBancoPreguntas()"
-                />
-            </p-inputGroup>
-        </div>
-        <div class="col-12 lg:col-4">
-            <p-inputGroup>
-                <p-inputGroupAddon> Tipo Pregunta </p-inputGroupAddon>
-                <p-dropdown
-                    optionValue="iTipoPregId"
-                    [options]="[]"
-                    optionLabel="cTipoPregDescripcion"
-                    styleClass="w-full"
-                />
-            </p-inputGroup>
-        </div>
-        <div class="col-12 lg:col-3">
-            <div class="flex flex-wrap gap-2 justify-content-end">
-                <button
-                    pButton
-                    class="p-button-primary gap-2"
-                    size="small"
-                    (click)="agregarPreguntas()"
-                    [disabled]="params.iCursoId === 0"
-                >
-                    <i class="pi pi-plus"></i>
-                    <span class="text-md">Agregar Preguntas</span>
-                </button>
+                ></p-dropdown>
             </div>
+        </ng-container>
+
+        <!-- Botón Agregar Preguntas alineado a la derecha -->
+        <div class="col-12 flex justify-content-end">
+            <button
+                pButton
+                type="button"
+                class="p-button-primary"
+                label="Agregar Preguntas"
+                icon="pi pi-plus"
+                (click)="agregarPreguntas()"
+            ></button>
         </div>
-        <div class="col-12">
-            <app-aula-banco-preguntas
-                [iCursoId]="params.iCursoId"
-                [params]="params"
-            >
-            </app-aula-banco-preguntas>
-        </div>
+    </div>
+
+    <!-- Tabla Banco de Preguntas -->
+    <div class="col-12">
+        <app-aula-banco-preguntas
+            [iCursoId]="params.iCursoId"
+            [params]="params"
+        ></app-aula-banco-preguntas>
     </div>
 </div>

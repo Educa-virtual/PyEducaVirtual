@@ -5,8 +5,6 @@
                 [(value)]="semana"
                 [enableService]="false"
                 [closable]="false"
-                pTooltip="Mensaje de error o advertencia"
-                tooltipPosition="top"
             />
             @if (!formTareas.value.iTareaId) {
                 <!-- es boton que activa y descativa la tarea-->
@@ -18,10 +16,7 @@
                     />
                 </div> -->
             }
-            <p-inputGroup
-                pTooltip="Ingresa el título de la tarea"
-                tooltipPosition="top"
-            >
+            <p-inputGroup>
                 <p-inputGroupAddon> Título </p-inputGroupAddon>
 
                 @if (this.formTareas.value.bReutilizarTarea) {
@@ -46,8 +41,6 @@
                         [showClear]="true"
                         [emptyMessage]="' '"
                         (ngModelChange)="getFilterIndicaciones($event)"
-                        pTooltip="Selecciona o escribe el título de la tarea"
-                        tooltipPosition="top"
                     >
                         <ng-template let-item pTemplate="item">
                             <div>{{ item.cTareaTitulo }}</div>
@@ -58,8 +51,6 @@
                         pInputText
                         class="flex-auto w-full"
                         formControlName="cTareaTitulo"
-                        pTooltip="Ingresa el título de la tarea"
-                        tooltipPosition="top"
                     />
                 }
             </p-inputGroup>
@@ -76,17 +67,12 @@
                 <p-editor
                     id="descripcion"
                     formControlName="cTareaDescripcion"
-                    [style]="{ height: 'auto' }"
-                    pTooltip="Proporcione una descripción detallada de la tarea"
-                    tooltipPosition="top"
+                    [style]="{ height: '80px', width: '100%' }"
                 />
             </div>
         </div>
         <div class="col-12 md:col-6">
-            <p-inputGroup
-                pTooltip="Seleccione la fecha y hora de inicio de la tarea"
-                tooltipPosition="top"
-            >
+            <p-inputGroup>
                 <p-inputGroupAddon> Fecha - Hora de Inicio </p-inputGroupAddon>
                 <!-- Componente de calendario para seleccionar una fecha y hora -->
                 <p-calendar
@@ -124,8 +110,6 @@
                 [typesFiles]="typesFiles"
                 (actionTypesFileUpload)="accionBtnItem($event)"
                 [filesUrl]="filesUrl"
-                pTooltip="Seleccione los archivos asociados a la tarea"
-                tooltipPosition="top"
             ></app-types-files-upload-primeng>
         </div>
     </div>

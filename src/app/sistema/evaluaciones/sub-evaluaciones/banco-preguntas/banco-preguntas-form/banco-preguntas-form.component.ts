@@ -70,10 +70,12 @@ const alternativasLabel = {
     providers: [provideIcons({ matListAlt })],
 })
 export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
+    payloadRecibido: any
+
     @Output() closeModalChange = new EventEmitter()
     @Output() submitChange = new EventEmitter()
     @Output() encabezadoChange = new EventEmitter()
-
+    @Output() payloadEmitidoForm = new EventEmitter<any>()
     @Input() public tipoPreguntas = []
     @Input() public encabezados = []
     @Input() public bancoPreguntasForm: FormGroup
@@ -82,14 +84,39 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
     @Input() public columnasPreguntas = columnasListaPreguntaForm
     @Input() public accionesPreguntas = accionesTablaListaPreguntaForm
     @Input() _iEvaluacionId: string | null = null // Aquí definimos el @Input
+    @Input() payload: any
+    @Input() padreComponente: 'AULA-VIRTUAL' | 'BANCO-PREGUNTAS'
+    @Input() public modePregunta: 'EDITAR' | 'CREAR' = 'CREAR'
+    @Input() public encabezadoMode: 'COMPLETADO' | 'EDITAR' = 'EDITAR'
+
+    public formMode: 'SUB-PREGUNTAS' | 'UNA-PREGUNTA' = 'UNA-PREGUNTA'
+    public showFooterSteps = true
+    public pasos: MenuItem[] = [
+        {
+            id: '0',
+            label: 'Encabezado',
+        },
+        {
+            id: '1',
+            label: 'Información Pregunta',
+        },
+    ]
+    public activeIndex = 0
+    public bancoPreguntaActiveIndex = 0
+    public customOptions = []
+    public preguntas = []
+    public alternativas = []
+    public alternativasEliminadas = []
+    public preguntaSelected = null
+    public preguntasEliminar = []
     private _apiEre = inject(ApiEvaluacionesRService)
     private _pregunta
     private _FormBuilder = inject(FormBuilder)
-    payloadRecibido: any
-    @Input() payload: any
-    @Output() payloadEmitidoForm = new EventEmitter<any>()
-    @Input() padreComponente: 'AULA-VIRTUAL' | 'BANCO-PREGUNTAS'
-
+    // Injeccion de depedencias
+    private _formBuilder = inject(FormBuilder)
+    private _evaluacionesService = inject(ApiEvaluacionesRService)
+    private _confirmationModalService = inject(ConfirmationModalService)
+    private unsubscribe$: Subject<boolean> = new Subject()
     // si envia la pregunta se hace el patch del formulario
     @Input()
     set pregunta(pregunta) {
@@ -111,6 +138,7 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
             this.handleSinEncabezado()
         }
         if (this.modePregunta === 'EDITAR') {
+            console.log('Banco Preguntas Form - Editar Pregunta >>>', pregunta)
             if (pregunta.iTipoPregId === 3) {
                 this.agregarQuitarAlternativasPaso('QUITAR')
             }
@@ -123,44 +151,14 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
         return this._pregunta
     }
 
-    public customOptions = []
-    public preguntas = []
-    public alternativas = []
-
-    @Input() public modePregunta: 'EDITAR' | 'CREAR' = 'CREAR'
-    @Input() public encabezadoMode: 'COMPLETADO' | 'EDITAR' = 'EDITAR'
-    public formMode: 'SUB-PREGUNTAS' | 'UNA-PREGUNTA' = 'UNA-PREGUNTA'
-    public showFooterSteps = true
-    public pasos: MenuItem[] = [
-        {
-            id: '0',
-            label: 'Encabezado',
-        },
-        {
-            id: '1',
-            label: 'Información Pregunta',
-        },
-    ]
-    public activeIndex = 0
-    public bancoPreguntaActiveIndex = 0
-
-    // Injeccion de depedencias
-    private _formBuilder = inject(FormBuilder)
-    private _evaluacionesService = inject(ApiEvaluacionesRService)
-    private _confirmationModalService = inject(ConfirmationModalService)
-
     public evaluacionesService = this._evaluacionesService
-    private unsubscribe$: Subject<boolean> = new Subject()
-    public alternativasEliminadas = []
-    public preguntaSelected = null
-    public preguntasEliminar = []
 
     ngOnInit() {
         // Aqui llego la iEvaluacion desde BancoPreguntasForm
-        console.log(
-            'iEvaluacionId recibido desde form Click Agregar Pregunta :',
-            this._iEvaluacionId
-        )
+        // console.log(
+        //     'iEvaluacionId recibido desde form Click Agregar Pregunta :',
+        //     this._iEvaluacionId
+        // )
         // escuchar cambio tipo pregunta
         this.listenTipoPregunta()
         // Llenar el formulario paso 1 basado en la seleccion de la cabecera.
@@ -566,14 +564,10 @@ export class BancoPreguntasFormComponent implements OnInit, OnDestroy {
         }
         this.submitChange.emit(data)
     }
-
-    //! Método que recibe el payload desde el hijo
     recibirPayload(payload: any) {
         console.log('Payload recibido desde el hijo Banco Pregunta:', payload)
         this.payloadRecibido = payload
-
         const payloadEmitidoForms = payload
-        // Emitir el payload al componente padre
         this.payloadEmitidoForm.emit(payloadEmitidoForms)
     }
 

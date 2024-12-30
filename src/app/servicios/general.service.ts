@@ -212,20 +212,20 @@ export class GeneralService {
 
     searchCalAcademico(data: any) {
         return this.http.post(
-            `${baseUrl}/acad/calendarioAcademico/searchCalAcademico`,
+            `${baseUrl}/acad/calendarioAcademico/searchCalAcademico`, //procedimiento general
             data
         )
     }
     searchCalendario(data: any) {
         return this.http.post(
-            `${baseUrl}/acad/calendarioAcademico/selCalAcademico`,
+            `${baseUrl}/acad/calendarioAcademico/searchAcademico`, // acad.SP_SEL_stepCalendarioAcademicoDesdeJsonOpcion
             data
         )
-    }
+    } //searchAcademico
 
     searchAmbienteAcademico(data: any) {
         return this.http.post(
-            `${baseUrl}/acad/calendarioAcademico/searchAmbiente`,
+            `${baseUrl}/acad/calendarioAcademico/searchAmbiente`, //acad.SP_SEL_stepAmbienteAcademicoDesdeJsonOpcion
             data
         )
     }

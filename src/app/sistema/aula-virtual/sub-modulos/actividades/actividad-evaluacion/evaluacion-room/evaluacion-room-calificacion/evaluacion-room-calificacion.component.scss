@@ -6,11 +6,12 @@
     max-height: 100dvh;
     overflow-y: scroll;
 }
-.leyenda-tareas {
+.leyenda-evaluacion {
     display: flex;
     flex-wrap: nowrap;
     justify-content: center;
     align-items: center;
+    line-height: 1;
 }
 :host ::ng-deep p-inputGroupAddon {
     background-color: var(--highlight-bg) !important;

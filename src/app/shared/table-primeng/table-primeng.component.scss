@@ -46,3 +46,11 @@ tr {
 .DELETE {
     box-shadow: inset 0.4rem 0 0 0 #f6abab;
 }
+
+.SELECTED-COLUMN {
+    background-color: #4cc08c;
+}
+
+.SELECTED-CELL {
+    background-color: #bee5ff;
+}

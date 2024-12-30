@@ -12,7 +12,7 @@
             <div class="flex grid tab-content">
                 <div
                     class="card"
-                    [class]="iPerfilId !== 8 ? 'col-12' : 'col-6'"
+                    [class]="iPerfilId !== ESTUDIANTE ? 'col-12' : 'col-6'"
                 >
                     <h2>Tarea: {{ data?.cTareaTitulo }}</h2>
                     <div class="grid">
@@ -85,7 +85,7 @@
                     </div>
                 </div>
                 <!-- Esta tarjeta se muestra solo si iPerfilId es 8, lo que indica que solo ciertos usuarios pueden ver este contenido -->
-                <div class="card col-6" [hidden]="iPerfilId !== 8">
+                <div class="card col-6" [hidden]="iPerfilId !== ESTUDIANTE">
                     <!-- Verifica si hay una tarea individual para el estudiante y no es una tarea grupal -->
 
                     @if (
@@ -97,10 +97,9 @@
                             class="card-body m-3"
                             [hidden]="iEstadoEstudianteTarea !== '0'"
                         >
-                            <h4>Entregar Tarea</h4>
+                            <h4>Entregar Tareas</h4>
                             <p-divider></p-divider>
                             <!-- Componente para subir archivos, configurado para recibir los archivos de tareas de estudiantes -->
-
                             <div
                                 class="flex align-items-center justify-content-center"
                             >
@@ -367,7 +366,7 @@
             </div>
         </p-tabPanel>
 
-        @if (iPerfilId !== 8) {
+        @if (iPerfilId !== ESTUDIANTE) {
             <p-tabPanel>
                 <!-- Este es un contenedor de plantilla para un encabezado fijo con la clase 'header-fixed'. -->
                 <ng-template pTemplate="header" class="header-fixed">

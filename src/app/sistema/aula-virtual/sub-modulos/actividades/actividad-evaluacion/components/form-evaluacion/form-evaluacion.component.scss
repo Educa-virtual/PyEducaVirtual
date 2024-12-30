@@ -9,3 +9,6 @@
 .p-button {
     background-color: var(--bg-header-modal) !important;
 }
+:host ::ng-deep p-message .p-inline-message {
+    justify-content: start !important;
+}

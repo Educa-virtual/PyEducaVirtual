@@ -1,19 +1,26 @@
 <app-container-page
     [title]="
-        'Banco de Preguntas - ' +
-        area.nivel +
+        'Preguntas - ' +
+        areax.nivel +
         ' ' +
-        area.nombreCurso +
+        areax.nombreCurso +
         ' ' +
-        area.grado +
+        areax.grado +
         '' +
-        area.seccion +
+        areax.seccion +
         ' - ' +
-        area.nombreEvaluacion
+        areax.nombreEvaluacion
     "
     [actions]="accionesPrincipal"
     (accionBtnItem)="accionBtnItem($event)"
 >
+    <p-menu
+        #menuAgregacionPreguntas
+        [popup]="true"
+        [model]="tiposAgrecacionPregunta"
+        appendTo="body"
+    >
+    </p-menu>
     <div class="flex gap-4 justify-content-between flex-wrap">
         <div class="flex flex-column gap-1 flex-1">
             <label for="tipo-pregunta">Tipo Pregunta</label>
@@ -39,13 +46,161 @@
                 (onChange)="obtenerBancoPreguntas()"
             />
         </div>
+        <button
+            pButton
+            class="p-button-primary gap-2"
+            (click)="menuAgregacionPreguntas.toggle($event)"
+            size="small"
+        >
+            <i class="pi pi-plus"></i>
+            <span class="text-md">Agregar Preguntas</span>
+        </button>
     </div>
+    <!-- preguntastocursos -->
     <app-banco-pregunta-lista
         [columnas]="columnas"
-        [data]="data"
+        [data]="preguntasSeleccionadas"
         [(selectedRowData)]="selectedItems"
+        (selectedRowDataChange)="onRowSelectionChange($event)"
         [expandedRowKeys]="expandedRowKeys"
         [accionesTabla]="accionesTabla"
         (accionBtnItemTable)="accionBtnItemTable($event)"
     />
 </app-container-page>
+
+<p-dialog
+    #dialogBancoPreguntas
+    [header]="'Agregar Preguntas del Banco de preguntas'"
+    [modal]="true"
+    [(visible)]="showModalBancoPreguntas"
+    [position]="'top'"
+    [maximizable]="true"
+    [style]="{ width: '80%' }"
+>
+    @defer (when showModalBancoPreguntas) {
+        <!-- las preguntas seleccionadas -->
+
+        <app-banco-pregunta-lista
+            [columnas]="columnasSelect"
+            [data]="data"
+            [(selectedRowData)]="selectedItems"
+            (selectedRowDataChange)="onRowSelectionChange($event)"
+            [expandedRowKeys]="expandedRowKeys"
+            [accionesTabla]="accionesTablaSelect"
+            (accionBtnItemTable)="accionBtnItemTable($event)"
+        >
+        </app-banco-pregunta-lista>
+    }
+    <div class="flex justify-content-end gap-2 pt-3">
+        <button
+            pButton
+            pRipple
+            label="Cancelar"
+            icon="pi pi-times"
+            class="p-button-secondary"
+            type="button"
+            size="small"
+            (click)="mostrarModalBaPrInformacion = false"
+        ></button>
+        <button
+            pButton
+            pRipple
+            label="Agregar preguntas seleccionadas"
+            icon="pi pi-check"
+            size="small"
+            class="p-button-primary"
+            (click)="guardarPreguntasSeleccionadas(iEvaluacionId)"
+        ></button>
+        <!-- (click)="agregarEditarPregunta(data)" -->
+    </div>
+</p-dialog>
+
+<p-dialog
+    #dialogBancoPreguntas
+    [header]="'Ver Preguntas'"
+    [modal]="true"
+    [(visible)]="mostrarModalBaPrInformacion"
+    [position]="'top'"
+    [maximizable]="true"
+    [style]="{ width: '80%' }"
+>
+    @defer (when mostrarModalBaPrInformacion) {
+        <!-- las preguntas seleccionadas -->
+        <div *ngIf="preguntasInformacion.length > 0">
+            <h3>Información de la Pregunta</h3>
+            <ul>
+                <li *ngFor="let pregunta of preguntasInformacion">
+                    <!-- <p><strong>ID:</strong> {{ pregunta.iPreguntaId }}</p> -->
+                    <p>
+                        <strong>Capacidad Nombre:</strong>
+                        {{ pregunta.cCapacidadNombre }}
+                    </p>
+                    <p>
+                        <strong>Capacidad Descripción:</strong>
+                        {{ pregunta.cCapacidadDescripcion }}
+                    </p>
+                    <p>
+                        <strong>Competencia:</strong>
+                        {{ pregunta.cCompetenciaNombre }}
+                    </p>
+                    <p>
+                        <strong>Curso:</strong>
+                        {{ pregunta.cCursoNombre }}
+                    </p>
+                    <p>
+                        <strong>Desempeño:</strong>
+                        {{ pregunta.cDesempenoDescripcion }}
+                    </p>
+                    <p>
+                        <strong>Nombre Evaluacion:</strong>
+                        {{ pregunta.cEvaluacionNombre }}
+                    </p>
+                    <p>
+                        <strong>Nivel: </strong>
+                        {{ pregunta.cNivelNombre }}
+                    </p>
+
+                    <p>
+                        <strong>Pregunta: </strong>
+                        {{ pregunta.cPregunta }}
+                    </p>
+                    <p>
+                        <strong>Texto Ayuda: </strong>
+                        {{ pregunta.cPreguntaTextoAyuda }}
+                    </p>
+
+                    <p>
+                        <strong>Clave: </strong>
+                        {{ pregunta.cPreguntaClave }}
+                    </p>
+                </li>
+            </ul>
+        </div>
+        <div *ngIf="preguntasInformacion.length === 0">
+            <p>No se encontró información para esta pregunta.</p>
+        </div>
+    }
+    <div class="flex justify-content-end gap-2 pt-3">
+        <button
+            pButton
+            pRipple
+            label="Salir"
+            icon="pi pi-times"
+            class="p-button-secondary"
+            type="button"
+            size="small"
+            (click)="ngOnDestroy()"
+            (click)="mostrarModalBaPrInformacion = false"
+        ></button>
+        <!-- <button
+            pButton
+            pRipple
+            label="Agregar preguntas seleccionadas"
+            icon="pi pi-check"
+            size="small"
+            class="p-button-primary"
+            (click)="guardarPreguntasSeleccionadas(iEvaluacionId)"
+        ></button> -->
+        <!-- (click)="agregarEditarPregunta(data)" -->
+    </div>
+</p-dialog>

@@ -1,12 +1,22 @@
 import { Injectable } from '@angular/core'
 import { LocalStoreService } from './local-store.service'
+import {
+    ADMINISTRADOR,
+    DIRECTOR_IE,
+    DOCENTE,
+    ESPECIALISTA_DREMO,
+    ESPECIALISTA_UGEL,
+    ESTUDIANTE,
+    JEFE_DE_PROGRAMA,
+    SUBDIRECTOR_IE,
+} from './perfilesConstantes'
 
 const store = new LocalStoreService()
 // const modulo = store.getItem('dremoModulo')
 const perfil = store.getItem('dremoPerfil')
 const verificado = store.getItem('dremoPerfilVerificado')
 const user = store.getItem('dremoUser')
-const iYAcadId = store.getItem('dremoYear')
+const iYAcadId = store.getItem('dremoiYAcadId')
 const inicio = {
     label: 'Inicio',
     icon: 'pi pi-fw pi-home',
@@ -61,6 +71,16 @@ const docente = [
                 icon: 'pi pi-fw pi-folder',
                 routerLink: ['/aula-virtual/banco-preguntas'],
             },
+            {
+                label: 'Comunicados',
+                icon: 'pi pi-fw pi-folder',
+                routerLink: ['/comunicados/principal'],
+            },
+            {
+                label: 'bienestar',
+                icon: 'pi pi-fw pi-folder',
+                routerLink: ['/bienestar/principal'],
+            },
         ],
     },
 ]
@@ -93,6 +113,27 @@ const estudiante = [
                 label: 'Enlaces de ayuda',
                 icon: 'pi pi-fw pi-share-alt',
                 routerLink: ['ayuda'],
+            },
+
+            {
+                label: 'Dremo ERE',
+                icon: 'pi pi-fw pi-user',
+                items: [
+                    {
+                        label: 'Evaluacion',
+                        icon: 'pi pi-fw pi-share-alt',
+                        routerLink: [
+                            '/evaluaciones/sub-evaluaciones/evaluacion-examen-ere',
+                        ],
+                    },
+                    // {
+                    //     label: 'Examen',
+                    //     icon: 'pi pi-fw pi-share-alt',
+                    //     routerLink: [
+                    //         '/evaluaciones/sub-evaluaciones/evaluacion-examen-ere/examen-ere',
+                    //     ],
+                    // },
+                ],
             },
         ],
     },
@@ -199,11 +240,6 @@ const notas_evaluaciones = [
                 routerLink: ['/evaluaciones'],
             },
             {
-                label: 'Mis Áreas Curriculares',
-                icon: 'pi pi-fw pi-folder',
-                routerLink: ['/evaluaciones/areas'],
-            },
-            {
                 label: 'Configurar Modulo',
                 icon: 'pi pi-fw pi-book',
                 routerLink: ['/evaluaciones'],
@@ -219,14 +255,14 @@ const notas_evaluaciones = [
                         //routerLink: ['/especialista-ugel/ver-evaluacion'],
                         items: [
                             {
-                                label: 'Banco de Preguntas',
-                                icon: 'pi pi-fw pi-folder',
-                                routerLink: ['/evaluaciones/areas'],
-                            },
-                            {
                                 label: 'Evaluaciones',
                                 icon: 'pi pi-fw pi-calendar',
                                 routerLink: ['/evaluaciones/evaluaciones'],
+                            },
+                            {
+                                label: 'Banco de Preguntas',
+                                icon: 'pi pi-fw pi-folder',
+                                routerLink: ['/evaluaciones/areas'],
                             },
                             {
                                 label: 'Dashboard',
@@ -658,6 +694,12 @@ const administracion = [
                         icon: 'pi pi-fw pi-cog',
                         routerLink: ['/gestion-institucional/fechas'],
                     },
+
+                    {
+                        label: 'Diseño curricular',
+                        icon: 'pi pi-fw pi-circle',
+                        routerLink: ['/configuracion/configuracion'],
+                    },
                 ],
                 //ConfigGradoSeccion
             },
@@ -667,54 +709,103 @@ const administracion = [
                 icon: 'pi pi-fw pi-cog',
                 items: [
                     {
-                        label: 'Apertura de año escolar',
-                        icon: 'pi pi-fw pi-circle',
-                        routerLink: ['/configuracion/configuracion'],
-                    },
-                    {
-                        label: 'Fechas especiales',
-                        icon: 'pi pi-fw pi-circle',
-                        routerLink: ['/configuracion/configuracion'],
+                        label: 'Configuración',
+                        icon: 'pi pi-fw pi-cog',
+                        items: [
+                            {
+                                label: 'Apertura de año escolar',
+                                icon: 'pi pi-fw pi-circle',
+                                routerLink: ['/configuracion/configuracion'],
+                            },
+                            {
+                                label: 'Fechas especiales',
+                                icon: 'pi pi-fw pi-circle',
+                                routerLink: ['/gestion-institucional/fechas'],
+                            },
+                            {
+                                label: 'Actualizar Datos de la I.E.',
+                                icon: 'pi pi-fw pi-circle',
+                                routerLink: ['/configuracion/configuracion'],
+                            },
+                        ],
+                        //ConfigGradoSeccion
                     },
 
                     {
-                        label: 'Personal de IE',
-                        icon: 'pi pi-fw pi-circle',
-                        routerLink: ['/gestion-institucional/IesPersonal'],
+                        label: 'Gestión de estudiantes',
+                        icon: 'pi pi-fw pi-cog',
+                        items: [
+                            {
+                                label: 'Ingresar estudiante',
+                                icon: 'pi pi-fw pi-circle',
+                                badge: 'NEW',
+                                // routerLink: ['/'],
+                            },
+                            {
+                                label: 'Traslado estudiante',
+                                icon: 'pi pi-fw pi-circle',
+                                badge: 'NEW',
+                                // routerLink: ['/'],
+                            },
+                        ],
+                        //ConfigGradoSeccion
                     },
+
                     {
-                        label: 'Cargos',
-                        icon: 'pi pi-fw pi-circle',
-                        routerLink: ['/configuracion/configuracion'],
-                    },
-                    {
-                        label: 'Diseño curricular',
-                        icon: 'pi pi-fw pi-circle',
-                        routerLink: ['/configuracion/configuracion'],
+                        label: 'Gestión de Personal',
+                        icon: 'pi pi-fw pi-cog',
+                        items: [
+                            {
+                                label: 'Personal de IE',
+                                icon: 'pi pi-fw pi-circle',
+                                routerLink: [
+                                    '/gestion-institucional/IesPersonal',
+                                ],
+                            },
+                            {
+                                label: 'Cargos',
+                                icon: 'pi pi-fw pi-circle',
+                                routerLink: ['/configuracion/configuracion'],
+                            },
+                        ],
+                        //ConfigGradoSeccion
                     },
                     {
                         label: 'Configuracion de grados y secciones',
-                        icon: 'pi pi-fw pi-circle',
-                        badge: 'NEW',
+                        icon: 'pi pi-fw pi-cog',
                         routerLink: [
                             '/gestion-institucional/configGradoSeccion',
                         ],
                     },
+
                     {
-                        label: 'Programa de estudio',
-                        icon: 'pi pi-fw pi-circle',
-                        badge: 'NEW',
-                        routerLink: ['/'],
+                        label: 'Configuracion de horarios',
+                        icon: 'pi pi-fw pi-cog',
+                        routerLink: [
+                            '/gestion-institucional/configurar-horario',
+                        ],
                     },
                     {
-                        label: 'Actualizar Datos de la I.E.',
-                        icon: 'pi pi-fw pi-circle',
-                        routerLink: ['/configuracion/configuracion'],
+                        label: 'horarios',
+                        icon: 'pi pi-fw pi-cog',
+                        routerLink: ['/gestion-institucional/horario'],
                     },
                     {
-                        label: 'Aprendizaje',
-                        icon: 'pi pi-fw pi-circle',
-                        routerLink: ['/configuracion/configuracion'],
+                        label: 'Evaluación - ERE',
+                        icon: 'pi pi-fw pi-cog',
+                        items: [
+                            {
+                                label: 'Configuración de ERE',
+                                icon: 'pi pi-fw pi-circle',
+                                routerLink: ['/configuracion/configuracion'],
+                            },
+                            {
+                                label: 'Resultados de ERE',
+                                icon: 'pi pi-fw pi-circle',
+                                routerLink: ['/configuracion/configuracion'],
+                            },
+                        ],
+                        //ConfigGradoSeccion
                     },
                 ],
             },
@@ -771,21 +862,21 @@ export class ConstantesService {
         if (!perfil) return first
         //console.log('perfiles', perfil)
         switch (Number(perfil.iPerfilId)) {
-            case 1:
+            case ADMINISTRADOR:
                 return administrador
-            case 2:
+            case ESPECIALISTA_DREMO:
                 return notas_evaluaciones
-            case 3:
+            case ESPECIALISTA_UGEL:
                 return notas_evaluaciones
-            case 8:
+            case ESTUDIANTE:
                 return estudiante
-            case 5:
+            case SUBDIRECTOR_IE:
                 return registro_asistencia
-            case 6:
+            case JEFE_DE_PROGRAMA:
                 return jefe_programa
-            case 7:
+            case DOCENTE:
                 return docente
-            case 4:
+            case DIRECTOR_IE:
                 return administracion
             default:
                 return first

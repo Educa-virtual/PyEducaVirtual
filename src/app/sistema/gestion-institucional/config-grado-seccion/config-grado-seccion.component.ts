@@ -7,8 +7,8 @@ import {
     IActionTable,
     TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component'
-import { MenuItem } from 'primeng/api'
-import { Component, OnInit } from '@angular/core'
+import { MenuItem, MessageService } from 'primeng/api'
+import { Component, inject, OnInit } from '@angular/core'
 import { Router } from '@angular/router'
 import {
     ReactiveFormsModule,
@@ -28,6 +28,7 @@ import { StepsModule } from 'primeng/steps'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { InputNumberModule } from 'primeng/inputnumber'
 import { AdmStepGradoSeccionService } from '@/app/servicios/adm/adm-step-grado-seccion.service'
+import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 
 @Component({
     selector: 'app-config-grado-seccion',
@@ -78,12 +79,15 @@ export class ConfigGradoSeccionComponent implements OnInit {
     caption: string = '' // Etiqueta de modal
     selAnio: string
     config = []
+
+    private _confirmService = inject(ConfirmationModalService)
     constructor(
         public query: GeneralService,
         private fb: FormBuilder,
         private store: LocalStoreService,
         private router: Router,
-        private stepService: AdmStepGradoSeccionService
+        private stepService: AdmStepGradoSeccionService,
+        private messageService: MessageService
     ) {
         const perfil = this.store.getItem('dremoPerfil')
         console.log(perfil, 'perfil dremo', this.store)
@@ -269,9 +273,28 @@ export class ConfigGradoSeccionComponent implements OnInit {
         if (accion === 'agregar') {
             // this.selectedItems = []
             // this.selectedItems = [item]
+
+            //VALIDACION SI PUEDE
+            this._confirmService.openConfiSave({
+                header: 'Advertencia de configuracion',
+                message: 'La configuración para este año ya existe',
+                icon: 'pi pi-exclamation-triangle',
+                accept: () => {
+                    // Acción para eliminar el registro
+                },
+                reject: () => {
+                    // Mensaje de cancelación (opcional)
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Cancelado',
+                        detail: 'Acción cancelada',
+                    })
+                },
+            })
+
             this.opcion = 'seleccionar'
             this.caption = 'Seleccionar configuración'
-            this.visible = true
+            // this.visible = true
             // this.asignarPreguntas()
         }
         if (accion === 'editar') {

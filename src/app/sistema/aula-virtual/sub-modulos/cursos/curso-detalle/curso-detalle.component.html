@@ -48,7 +48,12 @@
     <div class="curso-detalle__content">
         @switch (tab) {
             @case ('inicio') {
-                <app-tab-inicio></app-tab-inicio>
+                <app-tab-inicio
+                    [_iSilaboId]="iSilaboId"
+                    [iCursoId]="curso?.iCursoId"
+                    [idDocCursoId]="curso?.idDocCursoId"
+                    [curso]="curso"
+                ></app-tab-inicio>
             }
             @case ('contenido') {
                 <app-tab-contenido
@@ -58,13 +63,18 @@
                     [curso]="curso"
                 ></app-tab-contenido>
             }
-            @case ('estudiantes') {
+            <!-- @case ('estudiantes') {
                 <app-tab-estudiantes
                     [estudiantes]="estudiantes"
                 ></app-tab-estudiantes>
-            }
+            } -->
             @case ('resultados') {
-                <app-tab-resultados></app-tab-resultados>
+                <app-tab-resultados
+                    [_iSilaboId]="iSilaboId"
+                    [iCursoId]="curso?.iCursoId"
+                    [idDocCursoId]="curso?.idDocCursoId"
+                    [curso]="curso"
+                ></app-tab-resultados>
             }
             @case ('asistencia') {
                 <app-asistencia></app-asistencia>

@@ -31,3 +31,117 @@ p {
 p-orderList {
     flex-grow: 1; /* Para que el componente crezca ocupando el espacio disponible */
 }
+.hoverTable {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px;
+}
+.hoverTable tr th {
+    background-color: #e6e6ee;
+}
+.hoverTable tr:hover {
+    background-color: var(--highlight-bg);
+}
+tr {
+    font-size: 0.75rem;
+}
+// -----------------------------------------
+// altura de listar estudiantes
+:host ::ng-deep .cdk-drop-list {
+    max-height: 500px;
+    border: none;
+}
+// borrar las barras al costado
+:host ::ng-deep .listAlumno .p-orderlist-controls {
+    display: none;
+    height: 600px;
+}
+// estilo de listar estudiantes
+:host ::ng-deep .perfilesList {
+    border-radius: 8px; /* Radio del borde */
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 1px 1px 1px 1px;
+    width: 100%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra para dar profundidad */
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    img {
+        width: 150px;
+        box-shadow:
+            0 3px 6px rgba(0, 0, 0, 0.16),
+            0 3px 6px rgba(0, 0, 0, 0.23);
+        margin-right: 2rem;
+    }
+}
+/*El icono de los perfiles de los comentarios y participantes*/
+.btn {
+    border-radius: 50%; /* Si quieres hacerla circular */
+}
+// 3867149912 codigo de cacelación del plan de claro
+.button-container {
+    display: flex;
+    margin-top: 10px; /* Espacio entre el editor y el botón */
+}
+//Leer mas
+.toggle-link {
+    color: #007bff;
+    cursor: pointer;
+    font-size: 0.9rem;
+    margin-left: 5px;
+    background: none;
+    border: none;
+    font: inherit;
+    padding: 0;
+}
+/*para el borde de la lista*/
+:host ::ng-deep .perfiles-list-item {
+    display: flex;
+    // background-color: red;
+    margin: 0%;
+    border-radius: 8px; /* Radio del borde */
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 1px 1px 1px 1px;
+    width: 100%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra para dar profundidad */
+}
+.perfiles-list-item {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    width: 100%;
+
+    img {
+        width: 150px;
+        box-shadow:
+            0 3px 6px rgba(0, 0, 0, 0.16),
+            0 3px 6px rgba(0, 0, 0, 0.23);
+        margin-right: 2rem;
+    }
+
+    .product-list-detail {
+        flex: 1 1 0;
+    }
+
+    .p-rating {
+        margin: 0 0 0.5rem 0;
+    }
+
+    .product-price {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        align-self: flex-end;
+    }
+
+    .product-list-action {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .p-button {
+        margin-bottom: 0.5rem;
+    }
+}

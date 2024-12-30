@@ -8,6 +8,7 @@ import { Input } from '@angular/core'
 export class RubricaFormService {
     rubricaForm: FormGroup
 
+    firstRender = true
     @Input() mode
     private _formBuilder = inject(FormBuilder)
 
@@ -19,6 +20,48 @@ export class RubricaFormService {
             cInstrumentoNombre: [null, [Validators.required]],
             cInstrumentoDescripcion: [''],
             criterios: this._formBuilder.array([]),
+        })
+    }
+
+    patchRubricaFormSelection(rubrica) {
+        this.rubricaForm.patchValue({
+            iInstrumentoId: rubrica.iInstrumentoId,
+            cInstrumentoNombre: rubrica.cInstrumentoNombre,
+            cInstrumentoDescripcion: rubrica.cInstrumentoDescripcion,
+        })
+
+        // patch criterios
+        this.patchCriterioFormSelection(rubrica.criterios)
+    }
+
+    patchCriterioFormSelection(criterios) {
+        const criteriosFormArray = this.rubricaForm.get(
+            'criterios'
+        ) as FormArray
+
+        criteriosFormArray.clear()
+
+        criterios.forEach((criterio) => {
+            // patch niveles
+            const niveles = criterio.niveles ?? []
+            const criterioFormGroup = this.criterioForm()
+            const nivelesFormArray = criterioFormGroup.get(
+                'niveles'
+            ) as FormArray
+
+            if (this.firstRender) {
+                nivelesFormArray.clear()
+                this.firstRender = false
+            }
+
+            niveles.forEach((nivel) => {
+                const nivelFormGroup = this.nivelForm()
+                nivelFormGroup.patchValue(nivel)
+                nivelesFormArray.push(nivelFormGroup)
+            })
+
+            criterioFormGroup.patchValue(criterio)
+            criteriosFormArray.push(criterioFormGroup)
         })
     }
 
@@ -114,10 +157,12 @@ export class RubricaFormService {
 
     duplicarCriterioToForm(index: number) {
         const criterios = this.rubricaForm.get('criterios') as FormArray
-        const duplicado = criterios.at(index).value
-        duplicado.iCriterioId = 0
+        const original = criterios.at(index).value
 
-        duplicado.niveles.map((nivel) => {
+        const duplicado = JSON.parse(JSON.stringify(original))
+
+        duplicado.iCriterioId = 0
+        duplicado.niveles.forEach((nivel) => {
             nivel.iNivelEvaId = 0
         })
 

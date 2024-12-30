@@ -1,4 +1,4 @@
-@if (iPerfilId !== 8) {
+@if (iPerfilId !== ESTUDIANTE) {
     <section class="flex flex-column gap-4">
         <p-tabView styleClass="actividad-tabs">
             <!-- calificar a estudiante  -->
@@ -71,8 +71,8 @@
                             </div>
                             <p-orderList
                                 class="listAlumno"
-                                [value]="estudiantes"
-                                filterBy="nombrecompleto"
+                                [value]="reporteNotasFinales"
+                                filterBy="completoalumno"
                                 filterPlaceholder="Buscar...."
                             >
                                 <ng-template
@@ -98,7 +98,7 @@
                                         <!--class="w-4rem min-h-9 shadow-2 flex-shrink-0 border-round"-->
                                         <div class="perfil-name">
                                             {{
-                                                estudiante?.nombrecompleto
+                                                estudiante?.completoalumno
                                                     | uppercase
                                             }}
                                         </div>
@@ -215,6 +215,12 @@
                                                     'max-height': '400px',
                                                 }"
                                                 sortMode="multiple"
+                                                [paginator]="true"
+                                                [rows]="5"
+                                                [rowsPerPageOptions]="[
+                                                    5, 10, 20,
+                                                ]"
+                                                sortMode="multiple"
                                             >
                                                 <ng-template pTemplate="header">
                                                     <tr>
@@ -273,12 +279,12 @@
 
                                                         <td>
                                                             {{
-                                                                comentario?.cForoTitulo
+                                                                comentario?.cProgActTituloLeccion
                                                             }}
                                                         </td>
                                                         <td>
                                                             {{
-                                                                comentario?.dtForoPublicacion
+                                                                comentario?.dtProgActInicio
                                                             }}
                                                         </td>
                                                         <td>
@@ -295,19 +301,200 @@
                                         </div>
                                     </p-accordionTab>
                                     <p-accordionTab header="Actividad Tarea">
-                                        <p>
-                                            Sed ut perspiciatis unde omnis iste
-                                            natus error sit voluptatem
-                                            accusantium...
-                                        </p>
+                                        <div class="card">
+                                            <p-table
+                                                [value]="comentarioSelectTareas"
+                                                [tableStyle]="{
+                                                    'min-width': '60rem',
+                                                }"
+                                                [tableStyle]="{
+                                                    'max-height': '400px',
+                                                }"
+                                                sortMode="multiple"
+                                                [paginator]="true"
+                                                [rows]="5"
+                                                [rowsPerPageOptions]="[
+                                                    5, 10, 20,
+                                                ]"
+                                                sortMode="multiple"
+                                            >
+                                                <ng-template pTemplate="header">
+                                                    <tr>
+                                                        <th
+                                                            pSortableColumn="code"
+                                                            style="
+                                                                width: 1%;
+                                                                text-align: center;
+                                                            "
+                                                        >
+                                                            #
+                                                        </th>
+                                                        <th
+                                                            pSortableColumn="name"
+                                                            style="width: 20%"
+                                                        >
+                                                            Nombre Actividad
+                                                            <p-sortIcon
+                                                                field="name"
+                                                            />
+                                                        </th>
+                                                        <th
+                                                            pSortableColumn="name"
+                                                            style="width: 20%"
+                                                        >
+                                                            Fecha de Actividad
+                                                            <p-sortIcon
+                                                                field="name"
+                                                            />
+                                                        </th>
+                                                        <th
+                                                            pSortableColumn="category"
+                                                            style="width: 20%"
+                                                        >
+                                                            Retroalimentación
+                                                            <p-sortIcon
+                                                                field="category"
+                                                            />
+                                                        </th>
+                                                    </tr>
+                                                </ng-template>
+                                                <ng-template
+                                                    pTemplate="body"
+                                                    let-comentario
+                                                    let-rowIndex="rowIndex"
+                                                >
+                                                    <tr>
+                                                        <td
+                                                            style="
+                                                                width: 10px;
+                                                                text-align: center;
+                                                            "
+                                                        >
+                                                            {{ rowIndex + 1 }}
+                                                        </td>
+
+                                                        <td>
+                                                            {{
+                                                                comentario?.cProgActTituloLeccion
+                                                            }}
+                                                        </td>
+                                                        <td>
+                                                            {{
+                                                                comentario?.dtProgActInicio
+                                                            }}
+                                                        </td>
+                                                        <td>
+                                                            {{
+                                                                comentario
+                                                                    ? comentario.cTareaEstudianteComentarioDocente
+                                                                    : (''
+                                                                      | removeHTML)
+                                                            }}
+                                                        </td>
+                                                    </tr>
+                                                </ng-template>
+                                            </p-table>
+                                        </div>
                                     </p-accordionTab>
                                     <p-accordionTab
                                         header="Actividad Evaluación"
                                     >
-                                        <p>
-                                            At vero eos et accusamus et iusto
-                                            odio dignissimos...
-                                        </p>
+                                        <div class="card">
+                                            <p-table
+                                                [value]="
+                                                    comentarioSelectEvaluaciones
+                                                "
+                                                [tableStyle]="{
+                                                    'min-width': '60rem',
+                                                }"
+                                                [tableStyle]="{
+                                                    'max-height': '400px',
+                                                }"
+                                                sortMode="multiple"
+                                                [paginator]="true"
+                                                [rows]="5"
+                                                [rowsPerPageOptions]="[
+                                                    5, 10, 20,
+                                                ]"
+                                                sortMode="multiple"
+                                            >
+                                                <ng-template pTemplate="header">
+                                                    <tr>
+                                                        <th
+                                                            pSortableColumn="code"
+                                                            style="
+                                                                width: 1%;
+                                                                text-align: center;
+                                                            "
+                                                        >
+                                                            #
+                                                        </th>
+                                                        <th
+                                                            pSortableColumn="name"
+                                                            style="width: 20%"
+                                                        >
+                                                            Nombre Actividad
+                                                            <p-sortIcon
+                                                                field="name"
+                                                            />
+                                                        </th>
+                                                        <th
+                                                            pSortableColumn="name"
+                                                            style="width: 20%"
+                                                        >
+                                                            Fecha de Actividad
+                                                            <p-sortIcon
+                                                                field="name"
+                                                            />
+                                                        </th>
+                                                        <th
+                                                            pSortableColumn="category"
+                                                            style="width: 20%"
+                                                        >
+                                                            Retroalimentación
+                                                            <p-sortIcon
+                                                                field="category"
+                                                            />
+                                                        </th>
+                                                    </tr>
+                                                </ng-template>
+                                                <ng-template
+                                                    pTemplate="body"
+                                                    let-comentario
+                                                    let-rowIndex="rowIndex"
+                                                >
+                                                    <tr>
+                                                        <td
+                                                            style="
+                                                                width: 10px;
+                                                                text-align: center;
+                                                            "
+                                                        >
+                                                            {{ rowIndex + 1 }}
+                                                        </td>
+
+                                                        <td>
+                                                            {{
+                                                                comentario?.cProgActTituloLeccion
+                                                            }}
+                                                        </td>
+                                                        <td>
+                                                            {{
+                                                                comentario?.dtProgActInicio
+                                                            }}
+                                                        </td>
+                                                        <td>
+                                                            {{
+                                                                comentario
+                                                                    ? comentario.cConclusionDescriptiva
+                                                                    : (''
+                                                                      | removeHTML)
+                                                            }}
+                                                        </td>
+                                                    </tr>
+                                                </ng-template>
+                                            </p-table>
+                                        </div>
                                     </p-accordionTab>
                                 </p-accordion>
                             </div>
@@ -365,8 +552,10 @@
                 <!-- Mostrar la califcación comentada segun el requerimiento -->
                 <!--  for="calificacion" [options]="calificacion"-->
                 <div class="col-12">
-                    <!-- <p-inputGroup>
-                        <p-inputGroupAddon> Calificación </p-inputGroupAddon>
+                    <p-inputGroup>
+                        <p-inputGroupAddon>
+                            Nivel de Logro final:
+                        </p-inputGroupAddon>
                         <p-dropdown
                             formControlName="iEscalaCalifId"
                             [options]="calificacion"
@@ -376,7 +565,7 @@
                             [style]="{ width: '100%' }"
                             [showClear]="true"
                         ></p-dropdown>
-                    </p-inputGroup> -->
+                    </p-inputGroup>
                 </div>
                 <!-- Mostrar descripción -->
                 <div class="col-12">

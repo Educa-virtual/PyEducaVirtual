@@ -42,16 +42,18 @@ import {
     IActionContainer,
 } from '@/app/shared/container-page/container-page.component'
 import { CompartirIdEvaluacionService } from './../../services/ereEvaluaciones/compartir-id-evaluacion.service'
-
 import { PrimengModule } from '@/app/primeng.module'
-import { CommonInputComponent } from '../../../../shared/components/common-input/common-input.component'
-import { IeparticipaComponent } from './ieparticipa/ieparticipa.component'
-import { EvaluacionAreasComponent } from './evaluacion-areas/evaluacion-areas.component'
-import { FormGroup } from '@angular/forms'
+
 import { MessageService } from 'primeng/api'
 import { Router } from '@angular/router'
-//import { Checkbox } from 'primeng/checkbox'
-//import { I } from '@fullcalendar/core/internal-common'
+//Calendario
+import {
+    FormBuilder,
+    FormControl,
+    FormGroup,
+    ReactiveFormsModule,
+} from '@angular/forms'
+import { ApiService } from '@/app/servicios/api.service'
 @Component({
     selector: 'app-evaluaciones',
     standalone: true,
@@ -61,71 +63,257 @@ import { Router } from '@angular/router'
         ButtonModule,
         DialogModule,
         InputTextModule,
+        ReactiveFormsModule,
+
         TablePrimengComponent,
         ContainerPageComponent,
         PrimengModule,
-        CommonInputComponent,
-        IeparticipaComponent,
-        EvaluacionAreasComponent,
     ],
     providers: [DialogService],
     templateUrl: './evaluaciones.component.html',
     styleUrl: './evaluaciones.component.scss',
 })
 export class EvaluacionesComponent implements OnInit {
-    public cEvaluacionNombre: string | null = null //!Nombre del formulario Evaluacion
+    dataSubject = new BehaviorSubject<any[]>([])
+    mostrarBoton: boolean = false
+    iEvaluacionId: number
+    customers!: any
+    visible: boolean = false
+    opcion: string = 'seleccionar'
     isDialogVisible: boolean = false
+    caption: any
+    formCapas: any
+    evaluacionFormGroup: FormGroup<any>
+    tipoEvaluacion: any[]
+    nivelEvaluacion: any[]
+    acciones: any
+    selectedRow: any[] = [] // Aquí se almacena la fila seleccionada
+    selectedItemsAuto = []
+    selectedItems = []
+    cursosSeleccionados: any[] = []
+    fechaHoraInicio: Date | undefined
+    fechaHoraFin: Date | undefined
+    @Output() opcionChange = new EventEmitter<string>()
+    @Input() dataRow: any[] = [] // Los datos que recibe la tabla
+    @Input() columnasRow: any[] = [] // Las columnas que muestra la tabla
 
+    private _dialogService = inject(DialogService)
+    private _apiEre = inject(ApiEvaluacionesRService)
+    private _MessageService = inject(MessageService)
     private unsubscribe$: Subject<boolean> = new Subject()
+    public cEvaluacionNombre: string
     public params = {
         iCompentenciaId: 0,
         iCapacidadId: 0,
         iDesempenioId: 0,
         bPreguntaEstado: -1,
     }
-
     public data = []
-    private _dialogService = inject(DialogService)
-    private _apiEre = inject(ApiEvaluacionesRService)
-    private _MessageService = inject(MessageService)
-    customers!: any
-    visible: boolean = false
-    opcion: string = 'seleccionar'
-    @Output() opcionChange = new EventEmitter<string>()
+    public showModalCursosEre: boolean = false
+    form: FormGroup
 
-    // Variable para manejar datos reactivos
-    dataSubject = new BehaviorSubject<any[]>([]) // Reactivo para actualizar la tabla automáticamente
-
-    mostrarBoton: boolean = false // Controla la visibilidad del botón
-    iEvaluacionId: number //!Aqui puse para guardar el IevaluacionId 2610
-
-    //!AQUI TERMINO
+    private _formBuilder = inject(FormBuilder)
+    //form para obtener la variable
+    public guardarIniFinCurso: FormGroup = this._formBuilder.group({
+        // iForo: [''],
+        //cForoDescripcion: ['', [Validators.required]],
+        //iForoCatId: [4],
+    })
     constructor(
-        private router: Router, //!Rutas
-        // private customerService: CustomerService,
+        private router: Router,
         private compartirIdEvaluacionService: CompartirIdEvaluacionService,
         private compartirFormularioEvaluacionService: CompartirFormularioEvaluacionService,
         private messageService: MessageService,
-        private cdr: ChangeDetectorRef
-    ) {}
+        private cdr: ChangeDetectorRef,
+        private fb: FormBuilder,
+        private apiservice: ApiService
+    ) {
+        this.form = this.fb.group({})
+    }
 
+    cursoSeleccionado: Map<number, boolean> = new Map()
+    iiEvaluacionId: number // El ID de evaluación que quieras usar
     ngOnInit() {
         this.obtenerEvaluacion()
 
         this.caption = 'Evaluaciones'
         this.dataSubject.subscribe((newData: any[]) => {
-            this.data = newData // Actualizar los datos en el componente
-            console.log('DATOS DE LA DATA EN OBTENER EVALUACIONES', this.data)
+            this.data = newData
         })
-        //!Servicio para compartir dato
         this.cEvaluacionNombre =
             this.compartirFormularioEvaluacionService.getcEvaluacionNombre()
-        console.log('Valor obtenido desde el servicio:', this.cEvaluacionNombre)
+
+        // Establece el ID de la evaluación
+        this.compartirFormularioEvaluacionService.setEvaluacionId(
+            this.iiEvaluacionId
+        )
+
+        this.form.valueChanges.subscribe((value) => {
+            console.log('Form value changes', value)
+        })
+    }
+    listaCursos: any[] = []
+    lista: any
+    objectKeys = Object.keys
+    async obtenerCursos() {
+        if (!this.iiEvaluacionId) {
+            console.warn('El ID de evaluación no está definido.')
+            return
+        }
+
+        const data = await this.apiservice.getData({
+            esquema: 'ere',
+            tabla: 'V_EvaluacionFechasCursos',
+            data: [
+                {
+                    campos: '*',
+                    where: 'iEvaluacionId=' + this.iiEvaluacionId,
+                },
+                {
+                    campos: '*',
+                    where: 'iEvaluacionId=' + 740,
+                },
+            ],
+        })
+
+        console.log('Si funciona chiki')
+        console.log(data)
+
+        // Llamar a searchAmbienteAcademico para obtener los datos estructurados
+        this.compartirFormularioEvaluacionService
+            .searchAmbienteAcademico()
+            .then((lista: any[]) => {
+                // Almacenar la lista en la propiedad `this.lista`
+                this.lista = lista
+
+                // Obtener los cursos seleccionados y combinarlos
+                return this.compartirFormularioEvaluacionService.obtenerCursosSeleccionados()
+            })
+            .then((cursosSeleccionadosMap: Map<number, boolean>) => {
+                // Estructurar la lista de cursos, eliminando los cursos no seleccionados
+                this.listaCursos = this.lista
+                    .map((nivel: any) => ({
+                        nivel: nivel.nivel,
+                        grados: Object.keys(nivel.grados)
+                            .map((grado) => ({
+                                grado,
+                                cursos: nivel.grados[grado].filter(
+                                    (curso: any) =>
+                                        cursosSeleccionadosMap.get(
+                                            curso.iCursoNivelGradId
+                                        ) || false
+                                ), // Solo seleccionados
+                            }))
+                            .filter((grado: any) => grado.cursos.length > 0), // Filtrar grados sin cursos seleccionados
+                    }))
+                    .filter((nivel: any) => nivel.grados.length > 0) // Filtrar niveles sin grados seleccionados
+
+                console.log(
+                    'Lista de cursos seleccionados y estructurados:',
+                    this.listaCursos
+                )
+
+                this.listaCursos.forEach((nivel) => {
+                    nivel.grados.forEach((grado) => {
+                        grado.cursos.forEach((curso) => {
+                            this.form.addControl(
+                                `${curso.cCursoNombre}${curso.iCursoNivelGradId}Inicio`,
+                                new FormControl()
+                            )
+                            this.form.addControl(
+                                `${curso.cCursoNombre}${curso.iCursoNivelGradId}Fin`,
+                                new FormControl()
+                            )
+                        })
+                    })
+                })
+
+                console.log('Form', this.form)
+            })
+            .catch((error) => {
+                console.error('Error al obtener los cursos:', error)
+            })
+
+        // this.form.addControl('cursosSeleccionados', this.fb.array([]))
     }
 
-    // Método para alternar el estado del botón
+    toggleCurso(curso: any): void {
+        curso.isSelected = !curso.isSelected // Cambiar el estado seleccionado
+        console.log('Estado actualizado del curso:', curso)
+    }
+
+    // MÉTODO PARA GUARDAR INICIO FIN EXAMEN AREAS
+    // guardarInicioFinalExmAreas() {
+    //     const fecha = this.form.value // Captura todos los valores del formulario
+    //     console.log('Form value changes', fecha)
+
+    //     // Función para formatear las fechas al formato 'YYYY-MM-DD HH:mm:ss'
+    //     const formatDate = (date: Date | null) => {
+    //         if (!date) return null // Si no hay fecha, regresa null
+    //         const year = date.getFullYear()
+    //         const month = String(date.getMonth() + 1).padStart(2, '0') // Mes comienza en 0
+    //         const day = String(date.getDate()).padStart(2, '0')
+    //         const hours = String(date.getHours()).padStart(2, '0')
+    //         const minutes = String(date.getMinutes()).padStart(2, '0')
+    //         const seconds = String(date.getSeconds()).padStart(2, '0')
+    //         return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
+    //     }
+
+    //     // Extraer los cursos con fechas
+    //     const datosCursos: any[] = []
+    //     this.listaCursos.forEach((nivel: any) => {
+    //         nivel.grados.forEach((grado: any) => {
+    //             grado.cursos.forEach((curso: any) => {
+    //                 const inicioControl = `${curso.cCursoNombre}${curso.iCursoNivelGradId}Inicio`
+    //                 const finControl = `${curso.cCursoNombre}${curso.iCursoNivelGradId}Fin`
+
+    //                 // Verificar si existen los valores en el formulario
+    //                 if (fecha[inicioControl] || fecha[finControl]) {
+    //                     datosCursos.push({
+    //                         iCursoNivelGradId: curso.iCursoNivelGradId, // ID del curso
+    //                         fechaInicio: formatDate(
+    //                             fecha[inicioControl] || null
+    //                         ), // Formatea fecha de inicio
+    //                         fechaFin: formatDate(fecha[finControl] || null), // Formatea fecha de fin
+    //                     })
+    //                 }
+    //             })
+    //         })
+    //     })
+
+    //     // Obtener solo los iCursoNivelGradId en un arreglo
+    //     const iCursoNivelGradIds = datosCursos.map(
+    //         (curso) => curso.iCursoNivelGradId
+    //     )
+
+    //     // Estructura final con iEvaluacionId y los datos de cursos
+    //     const datos = {
+    //         iEvaluacionId: this.iiEvaluacionId, // ID de evaluación
+    //         iCursoNivelGradId: iCursoNivelGradIds, // Lista de cursos con fechas
+    //         fechaIniFin: datosCursos, // Lista de cursos con fechas
+    //     }
+
+    //     // Aquí realizas la petición HTTP para actualizar en la base de datos
+    //     this._apiEre.guardarInicioFinalExmAreas(datos).subscribe(
+    //         (respuesta) => {
+    //             console.log('Actualización exitosa:', respuesta)
+    //         },
+    //         (error) => {
+    //             console.error('Error al actualizar:', error)
+    //         }
+    //     )
+
+    //     console.log('Datos a enviar al servidor:', datos)
+    // }
+    async guardarInicioFinalExmAreas() {
+        return await this.apiservice.updateData({
+            esquema: 'ere',
+            tabla: 'evaluacion',
+        })
+    }
+    //!
     toggleBotonc(): void {
-        this.mostrarBoton = !this.mostrarBoton // Cambia true/false
+        this.mostrarBoton = !this.mostrarBoton
     }
     accionesPrincipal: IActionContainer[] = [
         {
@@ -137,7 +325,6 @@ export class EvaluacionesComponent implements OnInit {
         },
     ]
     opcionesAuto: IActionTable[] = []
-    // Aqui va la columas con anterioridad
     columnasBase: IColumn[] = [
         {
             field: 'cTipoEvalDescripcion',
@@ -195,8 +382,7 @@ export class EvaluacionesComponent implements OnInit {
         },
         ...this.columnasBase,
     ]
-    selectedItemsAuto = []
-    selectedItems = []
+
     public accionesTabla: IActionTable[] = [
         {
             labelTooltip: 'Ver',
@@ -213,33 +399,22 @@ export class EvaluacionesComponent implements OnInit {
             class: 'p-button-rounded p-button-warning p-button-text',
         },
         {
-            labelTooltip: 'BancoPreguntas', //!Se consulta de aqui
+            labelTooltip: 'Banco Preguntas',
             icon: 'pi pi-cog',
             accion: 'BancoPreguntas',
             type: 'item',
             class: 'p-button-rounded p-button-warning p-button-text',
         },
-        // {
-        //     labelTooltip: 'DescargarMatriz', //!Se consulta de aqui
-        //     icon: 'pi pi-file-export',
-        //     accion: 'DescargarMatriz',
-        //     type: 'item',
-        //     class: 'p-button-rounded p-button-warning p-button-text',
-        // },
+        {
+            labelTooltip: 'Asignar Fecha de publicación',
+            icon: 'pi pi-align-justify',
+            accion: 'fechaPublicacion',
+            type: 'item',
+            class: 'p-button-rounded p-button-warning p-button-text',
+        },
     ]
-    caption: any
-    formCapas: any
-    evaluacionFormGroup: FormGroup<any>
-    tipoEvaluacion: any[]
-    nivelEvaluacion: any[]
-    acciones: any
 
-    //!AQUI CAMBIE MOSTRAR ROW
-    @Input() dataRow: any[] = [] // Los datos que recibe la tabla
-    @Input() columnasRow: any[] = [] // Las columnas que muestra la tabla
-    selectedRow: any[] = [] // Aquí se almacena la fila seleccionada
     onRowSelect(event: any) {
-        console.log('Datos de la fila seleccionada:', 'event', event) // Verifica los datos seleccionados
         this.selectedRow = [event]
         //this.selectedRowData.emit(this.selectedRow) // Emite los datos al componente padre
     }
@@ -262,17 +437,26 @@ export class EvaluacionesComponent implements OnInit {
         })
     }
 
-    //!
-    // Método para actualizar los datos
+    /**
+     * Actualiza los datos de una evaluación específica obteniéndolos del servidor.
+     *
+     * @param evaluacion Objeto que contiene información de la evaluación, incluyendo `iEvaluacionId`,
+     *                   que es el identificador único de la evaluación.
+     *
+     * Ejemplo del objeto `evaluacion` esperado:
+     * ```json
+     * {
+     *   "iEvaluacionId": 123
+     * }
+     * ```
+     */
     actualizarDatos(evaluacion: any) {
         const params = { id: evaluacion.iEvaluacionId }
-
         this._apiEre
             .obtenerEvaluacion(params)
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
                 next: (resp: any) => {
-                    console.log('Respuesta de la actualización:', resp) // Para depuración
                     if (resp.status === 'Success') {
                         // Verificar que el status sea 'Success'
                         this._MessageService.add({
@@ -281,9 +465,7 @@ export class EvaluacionesComponent implements OnInit {
                             detail: 'La evaluación se actualizó correctamente.',
                         })
                         this.dataSubject.next(resp.data) // Emitir los nuevos datos al dataSubject
-                        console.log('Datos actualizados:', resp.data) // Para depuración
                     } else {
-                        console.log('Error en la respuesta:', resp) // Para depuración
                         this._MessageService.add({
                             severity: 'error',
                             summary: 'Error',
@@ -307,10 +489,8 @@ export class EvaluacionesComponent implements OnInit {
         if (accion === 'seleccionar') {
             this.selectedItems = []
             this.selectedItems = [item]
-            // this.asignarPreguntas()
         }
         if (accion === 'editar') {
-            console.log('AQUI ESTA EL EDITAR', accion)
             this.agregarEditarPregunta(item)
         }
 
@@ -327,65 +507,33 @@ export class EvaluacionesComponent implements OnInit {
             this.actualizarDatos(item)
         }
         if (accion === 'BancoPreguntas') {
-            // Usar el servicio para almacenar los datos
             this.compartirFormularioEvaluacionService.setcEvaluacionNombre(
                 item.cEvaluacionNombre
             )
-            // Enviar el IevaluacionId
             this.compartirIdEvaluacionService.iEvaluacionId = item.iEvaluacionId
-            // Navegar a la página de destino sin pasar parámetros en la URL
             this.router.navigate(['/evaluaciones/areas'])
         }
-        if (accion === 'DescargarMatriz') {
-            // Llamada a la función generarPdfMatriz
-            //const _iEvaluacionIdtoMatriz = item.iEvaluacionId
-            //this.generarPdfMatriz(_iEvaluacionIdtoMatriz)
+        if (accion === 'fechaPublicacion') {
+            this.modalActivarCursosEre()
+            this.onEvaluacionSeleccionada({ value: item.iEvaluacionId })
         }
     }
-    //!MATRIZ
-    /**
-     * Función que genera y descarga un PDF de la matriz de evaluación correspondiente a un ID de evaluación.
-     *
-     * Esta función se comunica con el backend (API) para generar un PDF basado en el ID de evaluación proporcionado.
-     * Si la generación del PDF es exitosa, inicia la descarga del archivo PDF. Si ocurre un error, muestra un mensaje
-     * de error indicando la razón.
-     *
-     * @param {number} iEvaluacionId - El ID de la evaluación para la cual se generará la matriz PDF.
-     */
-    // generarPdfMatriz(iEvaluacionId: number) {
-    //     // Llamada al backend para generar el PDF de la matriz
-    //     this._apiEre.generarPdfMatrizbyEvaluacionId(iEvaluacionId).subscribe(
-    //         (response) => {
-    //             console.log('Respuesta de Laravel:', response)
+    onEvaluacionSeleccionada(event: any) {
+        // Asigna dinámicamente el valor seleccionado
+        this.iiEvaluacionId = event.value
+        console.log('Evaluación seleccionada:', this.iiEvaluacionId)
 
-    //             // Se muestra un mensaje indicando que la descarga de la matriz ha comenzado
-    //             this._MessageService.add({
-    //                 severity: 'success',
-    //                 detail: 'Comienza la descarga de la Matriz',
-    //             })
+        // Establece el ID de la evaluación en el servicio
+        this.compartirFormularioEvaluacionService.setEvaluacionId(
+            this.iiEvaluacionId
+        )
 
-    //             // Se crea un enlace de descarga para el archivo PDF generado
-    //             const blob = response as Blob // Asegúrate de que la respuesta sea un Blob
-    //             const link = document.createElement('a')
-    //             link.href = URL.createObjectURL(blob)
-    //             link.download = 'matriz_evaluacion.pdf' // Nombre del archivo descargado
-    //             link.click()
-    //         },
-    //         (error) => {
-    //             // En caso de error, se determina el mensaje de error a mostrar
-    //             const errorMessage =
-    //                 error?.message ||
-    //                 'No hay datos suficientes para descargar la Matriz'
+        // Mostrar el ID en consola para verificar
+        console.warn('ID de Evaluación establecido:', this.iiEvaluacionId)
 
-    //             // Se muestra un mensaje de error en el sistema
-    //             this._MessageService.add({
-    //                 severity: 'success', // Se cambió a "error" ya que es un fallo
-    //                 detail: errorMessage,
-    //             })
-    //         }
-    //     )
-    // }
-
+        // Llamar al servicio para obtener los cursos seleccionados
+        this.obtenerCursos()
+    }
     verEreEvaluacion(evaluacion) {
         // Obtener el nombre de la evaluación
         const nombreEvaluacion =
@@ -420,19 +568,9 @@ export class EvaluacionesComponent implements OnInit {
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
                 next: (resp: unknown) => {
-                    // Mostrar toda la respuesta del servidor
-                    console.log(
-                        'Respuesta completa de obtenerEvaluacion:',
-                        resp
-                    )
-
                     // Acceder y mostrar el contenido específico de la respuesta
                     if (resp && resp['data']) {
                         this.data = resp['data'] // Asignar la data obtenida
-                        console.log(
-                            'Datos obtenidos y asignados a this.data:',
-                            this.data[0]['cEvaluacionNombre']
-                        )
                     } else {
                         console.warn(
                             'La respuesta no contiene la propiedad "data" o es nula:',
@@ -465,12 +603,6 @@ export class EvaluacionesComponent implements OnInit {
                 // Si no existe un valor válido, asignamos un valor por defecto
                 nombreEvaluacion = '' //Manda el nombre
             }
-
-            // Depuración: ver el nombre final que se asigna
-            // console.log(
-            //     'Nombre asignado para la nueva evaluación:',
-            //     nombreEvaluacion
-            // )
         } else {
             // Para el caso 'editar', obtenemos el nombre desde el objeto de evaluación
             nombreEvaluacion =
@@ -519,7 +651,7 @@ export class EvaluacionesComponent implements OnInit {
         }
     }
 
-    //!CREANDO COPIA DE EVALUACION
+    //CREANDO COPIA DE EVALUACION
     copiarEvaluacion(iEvaluacionId: number): Promise<any[]> {
         return new Promise((resolve, reject) => {
             //this.copiarEvaluacion(iEvaluacionId)
@@ -580,11 +712,6 @@ export class EvaluacionesComponent implements OnInit {
                 this.caption = 'Registrar'
 
                 break
-            case 'sel-manual':
-                break
-            case 'capa1':
-                this.visible = false
-                break
             case 'formularioEvaluacion':
                 this.visible = false
                 this.opcion = 'formularioEvaluacion'
@@ -594,5 +721,12 @@ export class EvaluacionesComponent implements OnInit {
                 this.agregarEditarPregunta({ iEvaluacionId: null })
                 break
         }
+    }
+    modalActivarCursosEre() {
+        this.showModalCursosEre = true
+    }
+    ngOnDestroy(): void {
+        this.unsubscribe$.next(true)
+        this.unsubscribe$.complete()
     }
 }

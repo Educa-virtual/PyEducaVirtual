@@ -113,6 +113,7 @@ export class ApiAulaService {
                             'La respuesta no contiene datos válidos'
                         )
                     }
+                    console.log(response.data)
                     return response.data
                 })
                 // map((data) => {
@@ -196,14 +197,14 @@ export class ApiAulaService {
                 { params }
             )
             .pipe(
-                map((resp) => resp.data),
-                map((data) => {
-                    if (data.iActTipoId == 3) {
-                        const preguntas = mapItemsBancoToEre(data.preguntas)
-                        data.preguntas = mapData(preguntas)
-                    }
-                    return data
-                })
+                map((resp) => resp.data)
+                // map((data) => {
+                //     if (data.iActTipoId == 3) {
+                //         const preguntas = mapItemsBancoToEre(data.preguntas)
+                //         data.preguntas = mapData(preguntas)
+                //     }
+                //     return data
+                // })
             )
     }
     habilitarCalificacion(data) {
@@ -238,11 +239,57 @@ export class ApiAulaService {
             )
             .pipe(map((resp) => resp.data))
     }
-    obtenerReporteFinalDeNotas(data) {
+    obtenerReporteFinalDeNotas(params: { iIeCursoId }) {
         return this._http.get(
             `${this.baseUrlApi}/aula-virtual/Resultado/obtenerReporteFinalNotas`,
-            data
+            {
+                params,
+            }
         )
         //.pipe(map((resp) => resp.data))
+    }
+    generarReporteDeLogrosPdf(params: { iIeCursoId; idDocCursoId }) {
+        return this._http.get(
+            `${this.baseUrlApi}/aula-virtual/Resultado/reporteDeLogros`,
+            {
+                params, // Enviar los datos como parámetros
+                responseType: 'blob', // Indicar que la respuesta será un archivo Blob
+            } // Asegúrate de que el responseType esté como 'blob'
+        )
+    }
+    generarReporteDeLogroFinalDeYear(params: { iSedeId }) {
+        return this._http.get(
+            `${this.baseUrlApi}/aula-virtual/Resultado/reporteDeLogroFinalXYear`,
+            {
+                params, // Enviar los datos como parámetros
+            }
+        )
+    }
+    generarReporteDeLogrosAlcanzadosXYear(params: {
+        iSedeId
+        datosEstudiante
+        datosCursoEstudiante
+    }) {
+        return this._http.get(
+            `${this.baseUrlApi}/aula-virtual/Resultado/generarReporteDeLogrosAlcanzadosXYear`,
+            {
+                params, // Enviar los datos como parámetros
+                responseType: 'blob', // Indicar que la respuesta será un archivo Blob
+            }
+        )
+    }
+    guardarAnucio(data) {
+        return this._http.post(
+            `${this.baseUrlApi}/aula-virtual/Anuncio/guardarAnuncio`,
+            data
+        )
+    }
+    obtenerAnunciosDocnt(params: { iForoCatId; iDocenteId }) {
+        return this._http.get(
+            `${this.baseUrlApi}/aula-virtual/Anuncio/obtenerAnunciosXDocente`,
+            {
+                params, // Enviar los datos como parámetros
+            }
+        )
     }
 }

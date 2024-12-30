@@ -1,4 +1,3 @@
-import { LeyendaComponent } from '@/app/shared/components/leyenda/leyenda.component'
 import { CommonModule } from '@angular/common'
 import {
     Component,
@@ -7,10 +6,8 @@ import {
     Input,
     OnInit,
     signal,
+    OnChanges,
 } from '@angular/core'
-import { EvaluacionInfoComponent } from '@/app/sistema/aula-virtual/sub-modulos/actividades/actividad-evaluacion/evaluacion-room/components/evaluacion-info/evaluacion-info.component'
-import { EmptySectionComponent } from '@/app/shared/components/empty-section/empty-section.component'
-import { BancoPreguntaPreviewItemComponent } from '@/app/sistema/evaluaciones/sub-evaluaciones/banco-preguntas/components/banco-pregunta-preview/banco-pregunta-preview-item/banco-pregunta-preview-item.component'
 import { RemoveHTMLPipe } from '@/app/shared/pipes/remove-html.pipe'
 import { ApiEvaluacionesService } from '@/app/sistema/aula-virtual/services/api-evaluaciones.service'
 import { Subject, takeUntil } from 'rxjs'
@@ -20,8 +17,11 @@ import { DialogService } from 'primeng/dynamicdialog'
 import { EvaluacionPreguntaCalificacionComponent } from '../evaluacion-pregunta-calificacion/evaluacion-pregunta-calificacion.component'
 import { MODAL_CONFIG } from '@/app/shared/constants/modal.config'
 import { ToolbarPrimengComponent } from '../../../../../../../shared/toolbar-primeng/toolbar-primeng.component'
-import { AppTopBarComponent } from '../../../../../../../layout/toolbar/app.topbar.component'
-
+import { EvaluacionHeaderComponent } from '../components/evaluacion-header/evaluacion-header.component'
+import { NoDataComponent } from '../../../../../../../shared/no-data/no-data.component'
+import { SharedAnimations } from '@/app/shared/animations/shared-animations'
+import { RubricaCalificarComponent } from '@/app/sistema/aula-virtual/features/rubricas/components/rubrica-calificar/rubrica-calificar.component'
+import { Router } from '@angular/router'
 interface Leyenda {
     total: number
     text: string
@@ -67,22 +67,22 @@ const leyendas = {
     imports: [
         CommonModule,
         PrimengModule,
-        LeyendaComponent,
-        EvaluacionInfoComponent,
-        EmptySectionComponent,
         RemoveHTMLPipe,
-        BancoPreguntaPreviewItemComponent,
         EvaluacionPreguntaComponent,
         ToolbarPrimengComponent,
-        AppTopBarComponent,
+        EvaluacionHeaderComponent,
+        NoDataComponent,
+        RubricaCalificarComponent,
     ],
     templateUrl: './evaluacion-room-calificacion.component.html',
     styleUrl: './evaluacion-room-calificacion.component.scss',
     providers: [DialogService],
+    animations: [SharedAnimations],
 })
-export class EvaluacionRoomCalificacionComponent implements OnInit {
+export class EvaluacionRoomCalificacionComponent implements OnInit, OnChanges {
     @Input({ required: true }) evaluacion
     @Input({ required: true }) iEvaluacionId: string
+    @Input() iEstado: number
 
     isExpand = false
     private _state = signal<EstudianteState>({
@@ -118,12 +118,27 @@ export class EvaluacionRoomCalificacionComponent implements OnInit {
     dv: any
     tareasFalta: any
     tareasCulminado: any
+    evaluacionEstudiante: any
+
+    showListaEstudiantes: boolean = true
 
     updateSelectedEstudiante(value: any) {
-        this._state.update((state) => ({
-            ...state,
-            selectedEstudiante: value,
-        }))
+        this._state.update((state) => {
+            console.log('selectedEstudiante')
+            console.log(value)
+            this.router.navigate([], {
+                queryParams: {
+                    // iEvalPromId: value.iEvalPromId ?? undefined,
+                    iEstudianteId: value.iEstudianteId ?? undefined,
+                },
+                queryParamsHandling: 'merge',
+            })
+
+            return {
+                ...state,
+                selectedEstudiante: value,
+            }
+        })
     }
 
     get selectedEstudianteValue() {
@@ -135,11 +150,22 @@ export class EvaluacionRoomCalificacionComponent implements OnInit {
     private _dialogService = inject(DialogService)
     private _unsubscribe$ = new Subject<boolean>()
 
+    private router = inject(Router)
+
     public leyendasOrden = ['REVISADO', 'PROCESO', 'FALTA']
 
     constructor() {}
     ngOnInit() {
         this.getData()
+    }
+    ngOnChanges(changes) {
+        if (changes.iEstado?.currentValue) {
+            this.iEstado = changes.iEstado?.currentValue
+
+            if (this.iEstado === 2) {
+                this.getData()
+            }
+        }
     }
 
     getData() {
@@ -258,10 +284,21 @@ export class EvaluacionRoomCalificacionComponent implements OnInit {
     }
 
     public seleccionarEvaluacion() {
+        this.showListaEstudiantes = false
         this.obtenerEvaluacionRespuestasEstudiante()
     }
 
     guardarEvaluacionEstudiantesxDocente() {}
+
+    accionBtnItem(elemento): void {
+        const { accion } = elemento
+        //const { item } = elemento
+        switch (accion) {
+            case 'abrir-lista-estudiantes':
+                this.showListaEstudiantes = true
+                break
+        }
+    }
 }
 
 export class TopbarComponent {

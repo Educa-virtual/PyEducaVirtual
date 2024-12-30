@@ -17,6 +17,7 @@ import {
     IActionTable,
 } from '@/app/shared/table-primeng/table-primeng.component'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
+import { LocalStoreService } from '@/app/servicios/local-store.service'
 @Component({
     selector: 'app-config-resumen',
     standalone: true,
@@ -42,6 +43,7 @@ export class ConfigResumenComponent implements OnInit {
     r_horas: any[]
     r_secciones: any[]
     configuracion: any[]
+    perfil: any[]
     bConfigEsBilingue: any = 0
     totalHoras: number = 0
     totalHorasPendientes: number = 0
@@ -53,10 +55,12 @@ export class ConfigResumenComponent implements OnInit {
         private router: Router,
         private fb: FormBuilder,
         private messageService: MessageService,
-        private query: GeneralService
+        private query: GeneralService,
+        private store: LocalStoreService
     ) {
         this.items = this.stepService.itemsStep
         this.configuracion = this.stepService.configuracion
+        this.perfil = this.stepService.perfil
     }
 
     ngOnInit(): void {
@@ -156,6 +160,41 @@ export class ConfigResumenComponent implements OnInit {
             })
     }
 
+    reportePDFResumenAmbientes() {
+        const params = {
+            petition: 'post',
+            group: 'acad',
+            prefix: 'gestionInstitucional',
+            ruta: 'reportePDFResumenAmbientes',
+            data: {
+                iNivelTipoId: this.configuracion[0].iNivelTipoId,
+                total_aulas: this.total_aulas,
+                r_horas: this.r_horas,
+                secciones: this.r_secciones,
+                totalHoras: this.totalHoras,
+                bConfigEsBilingue: this.bConfigEsBilingue,
+                totalHorasPendientes: this.totalHorasPendientes,
+                perfil: this.perfil,
+                configuracion: this.configuracion,
+            },
+        }
+        this.query.generarPdf(params).subscribe({
+            next: (response) => {
+                const blob = new Blob([response], { type: 'application/pdf' })
+                const url = window.URL.createObjectURL(blob)
+                const a = document.createElement('a')
+                a.href = url
+                a.download = 'archivo.pdf'
+                a.click()
+                window.URL.revokeObjectURL(url)
+            },
+            complete: () => {},
+            error: (error) => {
+                console.log(error)
+            },
+        })
+    }
+
     confirm() {
         this._confirmService.openConfiSave({
             message: '¿Estás seguro de que deseas guardar y continuar?',
@@ -177,11 +216,10 @@ export class ConfigResumenComponent implements OnInit {
             },
         })
     }
-    getDocente() {}
-    getAmbiente() {}
 
     accionBtnItemTable({ accion, item }) {
-        if (accion === 'editar') {
+        if (accion === 'reporte') {
+            this.reportePDFResumenAmbientes()
             console.log(item, 'btnTable')
         }
     }
@@ -190,7 +228,7 @@ export class ConfigResumenComponent implements OnInit {
             labelTooltip: 'generar resumen',
             text: 'Generar resumen',
             icon: 'pi pi-file-pdf',
-            accion: 'agregar',
+            accion: 'reporte',
             class: 'p-button-danger',
         },
     ]

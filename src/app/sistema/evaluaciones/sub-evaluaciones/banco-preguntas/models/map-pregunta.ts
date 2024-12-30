@@ -29,7 +29,7 @@ export const mapAlternativa = (alternativa) => {
 
 // mapea los datos de la pregunta encabezado
 export const mapEncabezado = (encabezado) => {
-    encabezado.cPreguntaNoHTML = removeHTML(encabezado.cPregunta)
+    encabezado.cPreguntaNoHTML = removeHTML(encabezado.cEncabPregTitulo)
     encabezado.iEncabPregId = encabezado.idEncabPregId
     encabezado.logros = []
     const ids = []

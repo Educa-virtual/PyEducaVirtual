@@ -7,6 +7,7 @@ import {
     mapData,
     mapItemsBancoToEre,
 } from '../../evaluaciones/sub-evaluaciones/banco-preguntas/models/pregunta-data-transformer'
+import { httpService } from '@/app/servicios/httpService'
 
 @Injectable({
     providedIn: 'root',
@@ -15,7 +16,7 @@ export class ApiEvaluacionesService {
     private baseUrlApi = environment.backendApi
     private baseUrl = environment.backend
     private http = inject(HttpClient)
-    constructor() {}
+    constructor(private http2: httpService) {}
 
     obtenerTipoEvaluaciones() {
         return this.http
@@ -34,6 +35,14 @@ export class ApiEvaluacionesService {
             .pipe(map((resp) => resp.data))
     }
 
+    async actualizarRubricaEvaluacion(data) {
+        const res: any = this.http2.postData(
+            'evaluaciones/evaluacion/actualizarRubricaEvaluacion',
+            data
+        )
+        return res?.data
+    }
+
     guardarActualizarPreguntasEvaluacion(data) {
         return this.http.post<any>(
             `${this.baseUrlApi}/evaluaciones/evaluacion/guardarActualizarPreguntasEvaluacion`,
@@ -50,6 +59,8 @@ export class ApiEvaluacionesService {
     // Rubricas
 
     obtenerRubricas(params) {
+        console.log('solicitando rubricas')
+        console.log(params)
         return this.http
             .get<ApiResponse>(
                 `${this.baseUrlApi}/evaluaciones/instrumento-evaluaciones/rubrica`,
@@ -58,13 +69,70 @@ export class ApiEvaluacionesService {
             .pipe(map((resp) => resp.data))
     }
 
-    guardarActualizarRubrica(data) {
+    obtenerRubricaEvaluacion(params) {
         return this.http
-            .post<ApiResponse>(
-                `${this.baseUrlApi}/evaluaciones/instrumento-evaluaciones/rubrica`,
-                data
+            .get<ApiResponse>(
+                `${this.baseUrlApi}/evaluaciones/instrumento-evaluaciones/obtenerRubricaEvaluacion`,
+                { params }
             )
             .pipe(map((resp) => resp.data))
+    }
+
+    guardarCalificacionRubricaEvaluacion(params) {
+        return this.http
+            .post<ApiResponse>(
+                `${this.baseUrlApi}/evaluaciones/evaluacion/guardarActualizarCalificacionRubricaEvaluacion`,
+                params
+            )
+            .pipe(map((resp) => resp.data))
+    }
+
+    deleteRubricaEvaluacion(params) {
+        return this.http
+            .post<ApiResponse>(
+                `${this.baseUrlApi}/evaluaciones/evaluacion/deleteRubricaEvaluacion`,
+                params
+            )
+            .pipe(map((resp) => resp.data))
+    }
+
+    obtenerRubrica(params) {
+        console.log('solicitando rubrica')
+        console.log(params)
+        return this.http
+            .get<ApiResponse>(
+                `${this.baseUrlApi}/evaluaciones/instrumento-evaluaciones/obtenerRubrica`,
+                { params }
+            )
+            .pipe(map((resp) => resp.data))
+    }
+
+    obtenerRubricasConFiltro(params) {
+        console.log('solicitando rubricas')
+        console.log(params)
+        return this.http
+            .get<ApiResponse>(
+                `${this.baseUrlApi}/evaluaciones/instrumento-evaluaciones/obtenerRubricas`,
+                { params }
+            )
+            .pipe(map((resp) => resp.data))
+    }
+
+    // guardarActualizarRubrica(data) {
+    //     return this.http
+    //         .post<ApiResponse>(
+    //             `${this.baseUrlApi}/evaluaciones/instrumento-evaluaciones/rubrica`,
+    //             data
+    //         )
+    //         .pipe(map((resp) => resp.data))
+    // }
+
+    async guardarActualizarRubrica(data) {
+        const res: any = this.http2.postData(
+            'evaluaciones/instrumento-evaluaciones/rubrica',
+            data
+        )
+        return res?.data
     }
 
     eliminarRubrica({

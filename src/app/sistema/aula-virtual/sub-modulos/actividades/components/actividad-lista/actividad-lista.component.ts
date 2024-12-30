@@ -12,10 +12,15 @@ import { PrimengModule } from '@/app/primeng.module'
     styleUrl: './actividad-lista.component.scss',
 })
 export class ActividadListaComponent {
-    @Input({ required: true }) actividades: IActividad[]
+    @Input({ required: true }) actividades: IActividad[] | any
 
     @Output() actionSelected = new EventEmitter<{
         actividad: IActividad
         action: string
     }>()
+
+    // ngOnInit(): void {
+    //     console.log('this.actividades')
+    //     console.log(this.actividades)
+    // }
 }

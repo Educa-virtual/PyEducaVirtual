@@ -1,10 +1,4 @@
-import {
-    Component,
-    OnInit,
-    OnChanges,
-    OnDestroy,
-    SimpleChanges,
-} from '@angular/core'
+import { Component, OnInit } from '@angular/core'
 import { Router } from '@angular/router'
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
 import { AuditoriaService } from '../services/auditoria.service'
@@ -42,7 +36,7 @@ import * as XLSX from 'xlsx'
     styleUrl: './accesos.component.scss',
     providers: [],
 })
-export class AccesosComponent implements OnInit, OnChanges, OnDestroy {
+export class AccesosComponent implements OnInit {
     form: FormGroup
     data
     selectRowData
@@ -160,15 +154,7 @@ export class AccesosComponent implements OnInit, OnChanges, OnDestroy {
             filtroFecha: [[new Date(), new Date()]],
         })
     }
-    ngOnChanges(changes: SimpleChanges): void {
-        throw new Error('Method not implemented.', changes)
-    }
-    ngOnDestroy(): void {
-        throw new Error('Method not implemented.')
-    }
-    // ngOnChanges(changes: SimpleChanges): void {
-    //     throw new Error('Method not implemented.')
-    //  }
+
     async ngOnInit() {
         if (
             this.form.value.filtroFecha[0] != null &&

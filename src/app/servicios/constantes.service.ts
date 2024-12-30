@@ -84,16 +84,16 @@ const docente = [
                 icon: 'pi pi-fw pi-folder',
                 routerLink: ['/aula-virtual/banco-preguntas'],
             },
-            {
-                label: 'Comunicados',
-                icon: 'pi pi-fw pi-folder',
-                routerLink: ['/comunicados/principal'],
-            },
-            {
-                label: 'bienestar',
-                icon: 'pi pi-fw pi-folder',
-                routerLink: ['/bienestar/principal'],
-            },
+            // {
+            //     label: 'Comunicados',
+            //     icon: 'pi pi-fw pi-folder',
+            //     routerLink: ['/comunicados/principal'],
+            // },
+            // {
+            //     label: 'bienestar',
+            //     icon: 'pi pi-fw pi-folder',
+            //     routerLink: ['/bienestar/principal'],
+            // },
         ],
     },
 ]

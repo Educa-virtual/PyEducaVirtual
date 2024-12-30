@@ -16,10 +16,16 @@
                     optionValue="iTipoBiblioId"
                     formControlName="iTipoBiblioId"
                 />
-                <!-- @if(dataBibliografias.controls.iTipoBiblioId?.invalid && dataBibliografias.controls.iTipoBiblioId?.errors?.['required']){
-                <small class="p-error block">
-                    Tipo de Bibliografía es requerido</small>
-                } -->
+                @if (
+                    dataBibliografias
+                        .get('iTipoBiblioId')
+                        .hasError('required') &&
+                    dataBibliografias.get('iTipoBiblioId')?.touched
+                ) {
+                    <small class="text-red-500">
+                        Este campo es requerido.
+                    </small>
+                }
             </div>
             <div class="field col-12 md:col-8">
                 <label for="">Autor</label>
@@ -28,6 +34,16 @@
                     class="flex-auto w-full"
                     formControlName="cBiblioAutor"
                 />
+                @if (
+                    dataBibliografias
+                        .get('cBiblioAutor')
+                        .hasError('required') &&
+                    dataBibliografias.get('cBiblioAutor')?.touched
+                ) {
+                    <small class="text-red-500">
+                        Este campo es requerido.
+                    </small>
+                }
             </div>
             <div class="field col-12 md:col-12">
                 <label for="">Título</label>
@@ -36,14 +52,35 @@
                     class="flex-auto w-full"
                     formControlName="cBiblioTitulo"
                 />
+                @if (
+                    dataBibliografias
+                        .get('cBiblioTitulo')
+                        .hasError('required') &&
+                    dataBibliografias.get('cBiblioTitulo')?.touched
+                ) {
+                    <small class="text-red-500">
+                        Este campo es requerido.
+                    </small>
+                }
             </div>
             <div class="field col-12 md:col-2">
                 <label for="">Año</label>
                 <input
                     pInputText
+                    type="number"
                     class="flex-auto w-full"
                     formControlName="cBiblioAnioEdicion"
                 />
+                @if (
+                    dataBibliografias
+                        .get('cBiblioAnioEdicion')
+                        .hasError('required') &&
+                    dataBibliografias.get('cBiblioAnioEdicion')?.touched
+                ) {
+                    <small class="text-red-500">
+                        Este campo es requerido.
+                    </small>
+                }
             </div>
             <div class="field col-12 md:col-4">
                 <label for="">Editorial</label>
@@ -52,6 +89,16 @@
                     class="flex-auto w-full"
                     formControlName="cBiblioEditorial"
                 />
+                @if (
+                    dataBibliografias
+                        .get('cBiblioEditorial')
+                        .hasError('required') &&
+                    dataBibliografias.get('cBiblioEditorial')?.touched
+                ) {
+                    <small class="text-red-500">
+                        Este campo es requerido.
+                    </small>
+                }
             </div>
             <div class="field col-12 md:col-8">
                 <label for="">Url</label>
@@ -60,6 +107,14 @@
                     class="flex-auto w-full"
                     formControlName="cBiblioUrl"
                 />
+                @if (
+                    dataBibliografias.get('cBiblioUrl').hasError('required') &&
+                    dataBibliografias.get('cBiblioUrl')?.touched
+                ) {
+                    <small class="text-red-500">
+                        Este campo es requerido.
+                    </small>
+                }
             </div>
         </div>
     </form>
@@ -70,6 +125,7 @@
             (onClick)="accionBtn({ accion: 'close-modal', item: [] })"
         />
         <p-button
+            [disabled]="this.dataBibliografias.invalid"
             [label]="option"
             (onClick)="accionBtn({ accion: option, item: [] })"
         />

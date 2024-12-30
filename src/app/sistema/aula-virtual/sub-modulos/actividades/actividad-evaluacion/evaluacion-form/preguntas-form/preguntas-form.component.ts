@@ -222,15 +222,11 @@ export class PreguntasFormComponent implements OnChanges {
         // Eliminar la alternativa en la posición indicada por index
         this.alternativas.splice(index, 1)
 
-        // Actualizar las letras de las alternativas restantes
+        console.log(this.alternativas)
+
         this.alternativas.forEach((alternativa, i) => {
-            // Verifica si hay una letra disponible en el abecedario para el índice
-            const letra = abecedario[i]
-            if (letra) {
-                alternativa.cBancoAltLetra = letra // Asigna la letra
-            } else {
-                alternativa.cBancoAltLetra = '' // Si no hay letra disponible, asigna una cadena vacía
-            }
+            const letra = abecedario[i] // Obtiene la letra según el índice
+            alternativa.cBancoAltLetra = letra ? letra.code : '' // Asigna la nueva letra
         })
     }
 

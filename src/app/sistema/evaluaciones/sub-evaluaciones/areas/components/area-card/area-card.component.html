@@ -11,14 +11,21 @@
         <h3 class="text-xl">
             {{ area.nombre }} {{ area.grado }} {{ area.seccion }}
         </h3>
+        <span>{{ area.cantidad }} Preguntas</span>
     </div>
 
     <footer class="p-3 pt-0 flex align-items-center justify-content-between">
-        <span>{{ area.cantidad }} Preguntas</span>
+        <br />
         <p-button
             icon="pi pi-file-pdf"
             pTooltip="Descargar Matriz"
             (click)="generarPdfMatriz(_iEvaluacionId, area)"
+        >
+        </p-button>
+        <p-button
+            icon="pi pi-file-word"
+            pTooltip="Descargar Word"
+            (click)="generarWord()"
         >
         </p-button>
         <p-button

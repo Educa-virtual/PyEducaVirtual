@@ -361,13 +361,12 @@ export class TabContenidoComponent implements OnInit {
         }
         if (action === 'ELIMINAR') {
             this._confirmService.openConfirm({
-                header: '¿Esta seguro de eliminar la evaluación?',
+                header:
+                    '¿Esta seguro de eliminar el Foro: ' +
+                    actividad['cProgActTituloLeccion'] +
+                    ' ?',
                 accept: () => {
-                    this.eliminarActividad(
-                        actividad.iProgActId,
-                        actividad.iActTipoId,
-                        actividad.ixActivadadId
-                    )
+                    this.deleteForosxiForoId(actividad)
                 },
             })
         }
@@ -585,6 +584,27 @@ export class TabContenidoComponent implements OnInit {
             ruta: 'delete',
             data: actividad,
             params: { skipSuccessMessage: true },
+        }
+        this._generalService.getGralPrefix(params).subscribe({
+            next: (resp) => {
+                if (resp.validated) {
+                    this.obtenerContenidoSemanas()
+                }
+            },
+        })
+    }
+
+    deleteForosxiForoId(actividad) {
+        const params = {
+            petition: 'post',
+            group: 'aula-virtual',
+            prefix: 'foros',
+            ruta: 'eliminarxiForoId',
+            data: {
+                opcion: 'ELIMINARxiForoId',
+                valorBusqueda: null,
+                iForoId: actividad.ixActivadadId,
+            },
         }
         this._generalService.getGralPrefix(params).subscribe({
             next: (resp) => {

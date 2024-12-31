@@ -71,13 +71,13 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
     ngOnInit() {
         this.iPerfilId = this._constantesService.iPerfilId
         this.items = [
-            {
-                label: 'Fichas de Aprendizaje',
-                icon: 'pi pi-angle-right',
-                command: () => {
-                    this.goSection('ficha-aprendizaje')
-                },
-            },
+            // {
+            //     label: 'Fichas de Aprendizaje',
+            //     icon: 'pi pi-angle-right',
+            //     command: () => {
+            //         this.goSection('ficha-aprendizaje')
+            //     },
+            // },
             {
                 label: 'Programación curricular',
                 icon: 'pi pi-angle-right',
@@ -86,18 +86,18 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
                 },
             },
 
-            {
-                label: 'Sesiones de Aprendizaje',
-                icon: 'pi pi-angle-right',
-                command: () => {
-                    this.goSection('sesion-aprendizaje')
-                },
-            },
-            {
-                label: 'Registro de evaluación',
-                icon: 'pi pi-angle-right',
-                command: () => {},
-            },
+            // {
+            //     label: 'Sesiones de Aprendizaje',
+            //     icon: 'pi pi-angle-right',
+            //     command: () => {
+            //         this.goSection('sesion-aprendizaje')
+            //     },
+            // },
+            // {
+            //     label: 'Registro de evaluación',
+            //     icon: 'pi pi-angle-right',
+            //     command: () => {},
+            // },
             {
                 label: 'Material Educativo',
                 icon: 'pi pi-angle-right',
@@ -105,21 +105,21 @@ export class AreasEstudiosComponent implements OnInit, OnDestroy, OnChanges {
                     this.goSection('material-educativo')
                 },
             },
-            {
-                label: 'Cuaderno de campo',
-                icon: 'pi pi-angle-right',
-                command: () => {},
-            },
-            {
-                label: 'Instrumentos de Evaluación',
-                icon: 'pi pi-angle-right',
-                command: () => {},
-            },
-            {
-                label: 'Plan de trabajo',
-                icon: 'pi pi-angle-right',
-                command: () => {},
-            },
+            // {
+            //     label: 'Cuaderno de campo',
+            //     icon: 'pi pi-angle-right',
+            //     command: () => {},
+            // },
+            // {
+            //     label: 'Instrumentos de Evaluación',
+            //     icon: 'pi pi-angle-right',
+            //     command: () => {},
+            // },
+            // {
+            //     label: 'Plan de trabajo',
+            //     icon: 'pi pi-angle-right',
+            //     command: () => {},
+            // },
             {
                 label: 'Asistencia',
                 icon: 'pi pi-angle-right',

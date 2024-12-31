@@ -4,6 +4,7 @@ import { RecursosListaComponent } from '@/app/shared/components/recursos-lista/r
 import { IconComponent } from '@/app/shared/icon/icon.component'
 import { TypesFilesUploadPrimengComponent } from '@/app/shared/types-files-upload-primeng/types-files-upload-primeng.component'
 import { Component, Input, OnChanges } from '@angular/core'
+import { EvaluacionPreguntaRubricaComponent } from '../../actividad-evaluacion/evaluacion-room/evaluacion-pregunta-calificacion/evaluacion-pregunta-rubrica/evaluacion-pregunta-rubrica.component'
 
 @Component({
     selector: 'app-tarea-room-estudiantes',
@@ -13,6 +14,7 @@ import { Component, Input, OnChanges } from '@angular/core'
         IconComponent,
         RecursosListaComponent,
         TypesFilesUploadPrimengComponent,
+        EvaluacionPreguntaRubricaComponent,
     ],
     templateUrl: './tarea-room-estudiantes.component.html',
     styleUrl: './tarea-room-estudiantes.component.scss',

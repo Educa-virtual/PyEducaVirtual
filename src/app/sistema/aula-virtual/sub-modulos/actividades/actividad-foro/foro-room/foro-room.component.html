@@ -33,7 +33,7 @@
                                         class="col-12 md:col-6 gap-2 flex flex-column"
                                     >
                                         <span class="font-bold text-xl"
-                                            >Catergoria:</span
+                                            >Catergoría:</span
                                         >
                                         {{ foro?.cForoCatDescripcion }}
                                     </div>
@@ -121,7 +121,7 @@
                                     size="sm"
                                 />
                                 <h3 class="text-lg m-0">Descripción:</h3>
-                                {{ foro?.cForoDescripcion | removeHTML }}
+                                {{ foro?.cForoDescripcion }}
                             </div>
 
                             <div
@@ -133,7 +133,10 @@
                         class="col-12 md:col-4"
                         [hidden]="iPerfilId !== ESTUDIANTE"
                     >
-                        <div class="card">
+                        <div
+                            class="card"
+                            *ngFor="let respuesta of respuestasForo"
+                        >
                             <h4>Mi Retroalimentación descriptiva:</h4>
                             <!-- <p-divider></p-divider> -->
                             <!-- <p-inputGroup>
@@ -143,9 +146,20 @@
                             <p-divider></p-divider>
                             <p-inputGroup>
                                 <p-inputGroupAddon>
-                                    Comentario Docente
+                                    Comentario Docente:
                                 </p-inputGroupAddon>
-                                <textarea pInputText rows="5"></textarea>
+                                <textarea
+                                    pInputText
+                                    rows="1"
+                                    id="comentarioDocente"
+                                    pInputTextarea
+                                    rows="5"
+                                    [disabled]="isDisabled"
+                                    class="p-inputtextarea-lg"
+                                    placeholder="Muestra Comentario Docente"
+                                >
+ {{ respuesta?.cForoRptaDocente }} </textarea
+                                >
                             </p-inputGroup>
                         </div>
                     </div>

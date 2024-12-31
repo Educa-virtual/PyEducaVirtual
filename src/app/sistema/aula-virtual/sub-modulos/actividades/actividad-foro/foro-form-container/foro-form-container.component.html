@@ -206,7 +206,7 @@
 >
     <div class="grid">
         @if (typeUpload === 'file') {
-            <div class="col-12 text-center">
+            <div class="col-12 text-center mt-3">
                 <app-file-upload-primeng
                     [nameFile]="'tareas'"
                     [nameOption]="'tareas'"
@@ -215,7 +215,7 @@
             </div>
         }
         @if (typeUpload === 'url') {
-            <div class="col-12">
+            <div class="col-12 mt-3">
                 <p-inputGroup>
                     <p-inputGroupAddon>
                         <i class="pi pi-link"></i>
@@ -244,7 +244,7 @@
             </div>
         }
         @if (typeUpload === 'youtube') {
-            <div class="col-12">
+            <div class="col-12 mt-3">
                 <p-inputGroup>
                     <p-inputGroupAddon>
                         <i class="pi pi-youtube" style="color: #c4302b"></i>

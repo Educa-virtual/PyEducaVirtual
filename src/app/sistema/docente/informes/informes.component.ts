@@ -50,6 +50,8 @@ import {
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { Message, MessageService } from 'primeng/api'
 import { ToastModule } from 'primeng/toast'
+import { MessagesModule } from 'primeng/messages'
+import { ConstantesService } from '@/app/servicios/constantes.service'
 @Component({
     selector: 'app-informes',
     standalone: true,
@@ -57,6 +59,7 @@ import { ToastModule } from 'primeng/toast'
     styleUrls: ['./informes.component.scss'],
     imports: [
         ContainerPageComponent,
+        MessagesModule,
         ToastModule,
         CommonModule,
         EditorModule,
@@ -95,6 +98,10 @@ export class InformesComponent implements OnInit {
     private _aulaService = inject(ApiAulaService)
     private _formBuilder = inject(FormBuilder)
     private _confirmService = inject(ConfirmationModalService)
+    private _MessageService = inject(MessageService)
+    private _constantesService = inject(ConstantesService)
+
+    mensaje: Message[] = []
 
     @Input() actionses: IActionContainer[] = [
         {
@@ -106,7 +113,7 @@ export class InformesComponent implements OnInit {
         },
     ]
     idDocCursoId: any[] = []
-    perfil: any[] = []
+    perfil: any
     curso: any[] = []
     notaEstudianteSelect: any[] = []
     descripcionFinalDeLogro: string
@@ -197,6 +204,18 @@ export class InformesComponent implements OnInit {
     ]
     ngOnInit() {
         this.obtenerEstudianteXCurso()
+        this.mostrarDatosAltutor()
+    }
+    // mostrar los datos del anuncio
+    mostrarDatosAltutor() {
+        //const year = this._constantesService.iYAcadId
+        this.mensaje = [
+            {
+                severity: 'info',
+                detail: 'En esta sección podrá visualizar sus logros alcanzados del estudiantes durante el año escolar',
+            },
+        ]
+        console.log(this.perfil)
     }
     //un load para el boton guardar
     loading: boolean = false
@@ -207,7 +226,7 @@ export class InformesComponent implements OnInit {
             this.loading = false
         }, 2000)
     }
-    //Obtener datos del estudiantes y sus logros alcanzados x cursos
+    //Obtener datos del estudiantes y sus logros alcanzados por todos los cursos
     obtenerEstudianteXCurso() {
         // @iSedeId INT,
         // @iSeccionId INT,
@@ -232,7 +251,7 @@ export class InformesComponent implements OnInit {
         this.conclusionDescrpFinal.controls['conclusionDescripFinal'].setValue(
             this.descripcionFinalDeLogro
         )
-        console.log('decrip', this.descripcionFinalDeLogro)
+        //console.log('decrip', this.descripcionFinalDeLogro)
         this.estudianteSelect = estudiante
         const id = estudiante.iEstudianteId
         const filteredData = this.estudianteMatriculadosxGrado.filter(

@@ -17,6 +17,24 @@
                                 let-nextCallback="nextCallback"
                             >
                                 <div class="formgrid grid flex">
+                                    <!-- Estado de la Evaluacion -->
+                                    <div
+                                        class="field flex flex-column col-4 md:col-3 align-items-start justify-content-top"
+                                    >
+                                        <label
+                                            for="tipo-pregunta"
+                                            class="text-center"
+                                            >Estado de la Evaluación</label
+                                        >
+                                        <p-inputSwitch
+                                            [(ngModel)]="checked"
+                                            [formControl]="
+                                                evaluacionFormGroup.get(
+                                                    'iEstado'
+                                                )
+                                            "
+                                        ></p-inputSwitch>
+                                    </div>
                                     <!-- Tipo Evaluación -->
                                     <div
                                         class="field flex flex-column col-12 md:col-4"
@@ -25,7 +43,6 @@
                                             >Tipo evaluación</label
                                         >
                                         <p-dropdown
-                                            required="true"
                                             styleClass="w-full"
                                             optionValue="idTipoEvalId"
                                             formControlName="idTipoEvalId"
@@ -59,7 +76,7 @@
 
                                     <!-- Nivel Evaluación -->
                                     <div
-                                        class="field flex flex-column col-12 md:col-4"
+                                        class="field flex flex-column col-12 md:col-2"
                                     >
                                         <label for="nivel-pregunta"
                                             >Nivel evaluación</label
@@ -98,7 +115,7 @@
 
                                     <!-- Fecha de creación -->
 
-                                    <div class="field col-12 md:col-4">
+                                    <div class="field col-12 md:col-3">
                                         <app-common-input
                                             controlKey="dtEvaluacionCreacion"
                                             type="date"
@@ -154,8 +171,6 @@
                                         ></app-common-input>
                                     </div>
                                 </div>
-
-                                <!-- Observación -->
                                 <div class="formgrid grid">
                                     <div class="field col">
                                         <label for="observacion"
@@ -167,10 +182,31 @@
                                             pInputTextarea
                                             formControlName="cEvaluacionObs"
                                             class="w-full"
+                                            [ngClass]="{
+                                                'border-red-500':
+                                                    evaluacionFormGroup.get(
+                                                        'cEvaluacionObs'
+                                                    )?.invalid &&
+                                                    evaluacionFormGroup.get(
+                                                        'cEvaluacionObs'
+                                                    )?.touched,
+                                            }"
                                         ></textarea>
+                                        <small
+                                            *ngIf="
+                                                evaluacionFormGroup
+                                                    .get('cEvaluacionObs')
+                                                    ?.hasError('required') &&
+                                                evaluacionFormGroup.get(
+                                                    'cEvaluacionObs'
+                                                )?.touched
+                                            "
+                                            class="text-red-500"
+                                        >
+                                            Este campo es requerido
+                                        </small>
                                     </div>
                                 </div>
-
                                 <!-- Fechas de Liberación -->
                                 <div class="formgrid grid flex">
                                     <div
@@ -204,7 +240,7 @@
                             </ng-template>
                         </p-stepperPanel>
 
-                        <!-- !Segundo Panel: Instituciones Educativas -->
+                        <!-- Segundo Panel: Instituciones Educativas -->
                         <p-stepperPanel
                             #stepper
                             header="Instituciones Educativas"
@@ -219,9 +255,6 @@
                                         [_iEvaluacionId]="
                                             this._config.data.evaluacion
                                                 .iEvaluacionId
-                                        "
-                                        (datosEmitIeParticipan)="
-                                            datosRecibidosIeParticipan($event)
                                         "
                                     ></app-ieparticipa>
                                 </div>

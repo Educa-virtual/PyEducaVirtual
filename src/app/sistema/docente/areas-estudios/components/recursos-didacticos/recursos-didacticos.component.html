@@ -36,6 +36,28 @@
         [rows]="100"
         [globalFilterFields]="['cRecDidacticoNombre']"
     >
+        <ng-template pTemplate="caption">
+            <div class="grid">
+                <div class="col-12" style="margin-left: -0.5rem">
+                    <p-inputGroup>
+                        <p-inputGroupAddon
+                            ><i class="pi pi-search"></i
+                        ></p-inputGroupAddon>
+                        <input
+                            pInputText
+                            [placeholder]="'Buscar recurso didáctico'"
+                            (input)="
+                                dt.filterGlobal(
+                                    $any($event.target).value,
+                                    'contains'
+                                )
+                            "
+                        />
+                    </p-inputGroup>
+                </div>
+            </div>
+        </ng-template>
+
         <ng-template pTemplate="header">
             <tr>
                 <th style="width: 1rem">#</th>

@@ -27,7 +27,7 @@ import { RecursosListaComponent } from '@/app/shared/components/recursos-lista/r
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { EmptySectionComponent } from '@/app/shared/components/empty-section/empty-section.component'
 import { Message } from 'primeng/api'
-import { WebsocketService } from '@/app/sistema/aula-virtual/services/websoket.service'
+// import { WebsocketService } from '@/app/sistema/aula-virtual/services/websoket.service'
 import { TimeComponent } from '@/app/shared/time/time.component'
 import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
@@ -150,7 +150,7 @@ export class ForoRoomComponent implements OnInit {
     })
     perfil: any[] = []
     constructor(
-        private websocketService: WebsocketService,
+        // private websocketService: WebsocketService,
         private store: LocalStoreService
         //private _activatedRoute: ActivatedRoute,
         //private messageService: MessageService
@@ -199,7 +199,7 @@ export class ForoRoomComponent implements OnInit {
         const iForoRptaId = {
             iForoRptaId: parseInt(itemRespuesta.iForoRptaId, 10),
         }
-        console.log('Eliminar acción ejecutada01', iForoRptaId)
+        // console.log('Eliminar acción ejecutada01', iForoRptaId)
         this._aulaService.eliminarRespuesta(iForoRptaId).subscribe({
             next: (response) => {
                 //const mensaje = response?.message || 'Elemento eliminado sin respuesta del servidor';
@@ -238,7 +238,7 @@ export class ForoRoomComponent implements OnInit {
     //     this.foroFormComnt.patchValue(respuestasForo)
     // }
     openModalCalificacion(respuestasForoEstudiant) {
-        console.log('estudiante seleccionado', this.estudianteSelectComent)
+        // console.log('estudiante seleccionado', this.estudianteSelectComent)
         this.modelaCalificacionComen = true
         this.perfilSelect = respuestasForoEstudiant
     }
@@ -251,7 +251,7 @@ export class ForoRoomComponent implements OnInit {
     isDisabled: boolean = true
     selecEstudiante(estudianteId: number): void {
         this.estudianteSelectComent = estudianteId
-        console.log('Hola estudiante', this.estudianteSelectComent)
+        // console.log('Hola estudiante', this.estudianteSelectComent)
     }
     limpiarHTML(html: string): string {
         const temporal = document.createElement('div') // Crear un div temporal
@@ -271,7 +271,7 @@ export class ForoRoomComponent implements OnInit {
             iForoId: idForoId,
             cForoRptDocente: respuestDocLimpia,
         }
-        console.log('estudiante seleccionadodddd', where)
+        // console.log('estudiante seleccionadodddd', where)
 
         // const rpta = this.respuestasForo.find(
         //     (i) => i.EstudianteId === this.perfilSelect.EstudianteId
@@ -352,10 +352,10 @@ export class ForoRoomComponent implements OnInit {
                         this.getRespuestaF()
                         this.foroFormComntAl.get('cForoRptaRespuesta')?.reset()
                         // Enviar comentario a través de WebSocket
-                        this.websocketService.sendMessage({
-                            type: 'newComment',
-                            data: comment?.cForoRptaRespuesta,
-                        })
+                        // this.websocketService.sendMessage({
+                        //     type: 'newComment',
+                        //     data: comment?.cForoRptaRespuesta,
+                        // })
                         console.log('que envias', comment?.cForoRptaRespuesta)
                     }
                 },
@@ -378,10 +378,10 @@ export class ForoRoomComponent implements OnInit {
                         this.getRespuestaF()
                         this.foroFormComntAl.get('cForoRptaRespuesta')?.reset()
                         // Enviar comentario a través de WebSocket
-                        this.websocketService.sendMessage({
-                            type: 'newComment',
-                            data: comment?.cForoRptaRespuesta,
-                        })
+                        // this.websocketService.sendMessage({
+                        //     type: 'newComment',
+                        //     data: comment?.cForoRptaRespuesta,
+                        // })
                     }
                 },
                 error: (error) => {
@@ -414,7 +414,7 @@ export class ForoRoomComponent implements OnInit {
                         },
                     ]
                     this.foro = resp
-                    console.log('obtener datos de foro01', resp)
+                    // console.log('obtener datos de foro01', resp)
                     this.FilesTareas = this.foro?.cForoUrl
                         ? JSON.parse(this.foro?.cForoUrl)
                         : []

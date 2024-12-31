@@ -71,7 +71,7 @@ export class ApiEvaluacionesService {
 
     obtenerRubricaEvaluacion(params) {
         return this.http
-            .get<ApiResponse>(
+            .post<ApiResponse>(
                 `${this.baseUrlApi}/evaluaciones/instrumento-evaluaciones/obtenerRubricaEvaluacion`,
                 { params }
             )

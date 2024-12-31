@@ -1,10 +1,10 @@
 import { environment } from '@/environments/environment'
 import { HttpClient, HttpHeaders } from '@angular/common/http'
 import { Injectable } from '@angular/core'
-import { MessageService } from 'primeng/api'
+// import { MessageService } from 'primeng/api'
 import { firstValueFrom } from 'rxjs'
 import { ErrorHandler } from './error.handler'
-import { DynamicToastService } from '@/app/servicios/dynamicToast.service'
+// import { DynamicToastService } from '@/app/servicios/dynamicToast.service'
 
 @Injectable({
     providedIn: 'root',
@@ -14,11 +14,11 @@ export class httpService {
 
     constructor(
         private http: HttpClient,
-        private messageService: MessageService,
-        private dynamicToastService: DynamicToastService,
+        // private messageService: MessageService,
+        // private dynamicToastService: DynamicToastService,
         private errorHandler: ErrorHandler
     ) {
-        this.dynamicToastService.createToast()
+        // this.dynamicToastService.createToast()
     }
 
     async getData(

@@ -1,6 +1,6 @@
 <p-dialog
     header="{{ caption }}"
-    [(visible)]="visible"
+    [(visible)]="open_modal"
     [style]="{ width: '90rem' }"
     [modal]="true"
     [contentStyle]="{ overflow: 'auto' }"
@@ -187,7 +187,7 @@
                                     [filter]="true"
                                     [showClear]="true"
                                     [appendTo]="'body'"
-                                    (onChange)="onChange($event, 'docente')"
+                                    (onChange)="this.searchListaAreaDocente()"
                                 />
 
                                 <label for="iSemAcadId"
@@ -257,7 +257,7 @@
                             [data]="lista_areas_docente"
                             [showCaption]="false"
                             [showPaginator]="false"
-                            (accionBtnItem)="accionBtnItem($event)"
+                            (accionBtnItem)="accionBtnItemTable($event)"
                             [(selectedRowData)]="selectedItems"
                             [actions]="actionsArea"
                         >

@@ -781,14 +781,12 @@ const administracion = [
                     {
                         label: 'Configuracion de horarios',
                         icon: 'pi pi-fw pi-cog',
-                        routerLink: [
-                            '/gestion-institucional/configurar-horario',
-                        ],
+                        routerLink: ['/horario/configurar-horario'],
                     },
                     {
                         label: 'horarios',
                         icon: 'pi pi-fw pi-cog',
-                        routerLink: ['/gestion-institucional/horario'],
+                        routerLink: ['/horario/horario'],
                     },
                     {
                         label: 'Evaluación - ERE',

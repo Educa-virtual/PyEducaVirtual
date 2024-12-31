@@ -19,7 +19,7 @@ export class GridHorarioComponent implements OnChanges {
     @Output() filtrarCurso = new EventEmitter()
     @Output() filtrarActividad = new EventEmitter()
 
-    @Input() inicio
+    @Input() bloque_horario
     @Input() horarios
     @Input() events
     @Input() curricula
@@ -117,13 +117,74 @@ export class GridHorarioComponent implements OnChanges {
         // Más registros...
     }
 
+    // procesarRegistros() {
+    //     const intervalos: Set<string> = new Set()
+    //     console.log(this.bloque_horario, 'items grid')
+    //     // Paso 1: Dividir los intervalos según los registros
+    //     this.horarios.forEach((registro) => {
+    //         const inicio = this.convertirHoraAFecha(registro.inicio)
+    //         const fin = this.convertirHoraAFecha(registro.fin)
+
+    //         // Dividimos el rango en bloques de 45 minutos
+    //         let actual = new Date(inicio)
+    //         while (actual < fin) {
+    //             const siguiente = new Date(actual.getTime() + 45 * 60 * 1000)
+    //             const bloqueInicio = this.formatearHora(actual)
+    //             const bloqueFin = this.formatearHora(
+    //                 siguiente > fin ? fin : siguiente
+    //             )
+    //             intervalos.add(`${bloqueInicio}-${bloqueFin}`)
+    //             actual = siguiente
+    //         }
+    //     })
+
+    //     // Paso 2: Ordenar los bloques de tiempo
+    //     this.bloques = Array.from(intervalos).sort((a, b) => {
+    //         const [horaA] = a.split('-')
+    //         const [horaB] = b.split('-')
+    //         return (
+    //             this.convertirHoraAFecha(horaA).getTime() -
+    //             this.convertirHoraAFecha(horaB).getTime()
+    //         )
+    //     })
+
+    //     // Paso 3: Construir el horario basado en los bloques
+    //     this.bloques.forEach((bloque) => {
+    //         const [inicio, fin] = bloque.split('-')
+    //         this.horario[bloque] = {}
+    //         this.dias.forEach((dia) => {
+    //             const registro = this.horarios.find(
+    //                 (r) =>
+    //                     r.dia === dia &&
+    //                     this.estaDentroDelRango(inicio, fin, r.inicio, r.fin)
+    //             )
+    //             this.horario[bloque][dia] = registro
+    //                 ? {
+    //                       asignatura: registro.asignatura,
+    //                       profesor: registro.profesor,
+    //                   }
+    //                 : null
+    //         })
+    //     })
+    // }
+
     procesarRegistros() {
         const intervalos: Set<string> = new Set()
 
-        // Paso 1: Dividir los intervalos según los registros
-        this.horarios.forEach((registro) => {
-            const inicio = this.convertirHoraAFecha(registro.inicio)
-            const fin = this.convertirHoraAFecha(registro.fin)
+        // Validación del array de horas
+        if (
+            !this.bloque_horario ||
+            !Array.isArray(this.bloque_horario) ||
+            this.bloque_horario.length === 0
+        ) {
+            console.error('El array de horas no está definido o está vacío.')
+            return
+        }
+
+        // Paso 1: Procesar los registros utilizando el array de horarios
+        this.bloque_horario.forEach((hora) => {
+            const inicio = this.convertirHoraAFecha(hora.inicio)
+            const fin = this.convertirHoraAFecha(hora.fin)
 
             // Dividimos el rango en bloques de 45 minutos
             let actual = new Date(inicio)

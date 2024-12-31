@@ -1,1 +1,293 @@
-<p>block-horario works!</p>
+<div class="grid">
+    <div class="xl:col-4 sm:col-12 md:col-12">
+        <form [formGroup]="formGenerador">
+            <div class="card m-2" style="padding: 12px">
+                <p-card header="Generar bloque">
+                    <div class="grid" style="padding: 10px">
+                        <div class="field col-12 md:col-12">
+                            <span class="p-float-label">
+                                <input
+                                    pInputText
+                                    id="cHorarioIeNombre"
+                                    formControlName="cHorarioIeNombre"
+                                    aria-describedby="cHorarioIeNombre-help"
+                                    styleClass="w-full"
+                                />
+                                <label for="cHorarioIeNombre"
+                                    >Descripción de horario</label
+                                >
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="grid" style="padding: 10px">
+                        <div class="col-6">
+                            <span class="p-float-label">
+                                <p-inputNumber
+                                    formControlName="n_bloque"
+                                    inputStyleClass="w-full"
+                                    mode="decimal"
+                                />
+                                <label for="n_bloque">N° de Bloques</label>
+                            </span>
+                        </div>
+
+                        <div class="col-6">
+                            <span class="p-float-label">
+                                <p-inputNumber
+                                    formControlName="n_receso"
+                                    inputStyleClass="w-full"
+                                    mode="decimal"
+                                />
+                                <!-- inputId="nota-numero-{{
+              $index
+          }}" -->
+
+                                <label for="n_receso">N° de Receso</label>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="grid" style="padding: 10px">
+                        <div class="col-6">
+                            <span class="p-float-label">
+                                <p-calendar
+                                    formControlName="dtInicio"
+                                    [iconDisplay]="'input'"
+                                    [showIcon]="true"
+                                    [timeOnly]="true"
+                                    [disabledDays]="[0, 6]"
+                                    inputId="icondisplay"
+                                >
+                                </p-calendar>
+
+                                <label for="dtInicio">inicio</label>
+                            </span>
+                        </div>
+
+                        <div class="col-6">
+                            <span class="p-float-label">
+                                <p-calendar
+                                    formControlName="dtFin"
+                                    [iconDisplay]="'input'"
+                                    [showIcon]="true"
+                                    [timeOnly]="true"
+                                    [disabledDays]="[0, 6]"
+                                    inputId="icondisplay"
+                                >
+                                </p-calendar>
+
+                                <label for="dtFin">fin</label>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="grid" style="padding: 10px">
+                        <div class="col-6">
+                            <span class="p-float-label">
+                                <p-inputNumber
+                                    formControlName="h_bloque"
+                                    inputStyleClass="w-full"
+                                    mode="decimal"
+                                    min="45"
+                                    max="50"
+                                    placeholder="45 - 50"
+                                />
+                                <label for="h_bloque">Hora de Bloques</label>
+                            </span>
+                        </div>
+                        <div class="col-2"></div>
+                        <div class="col-4">
+                            <p-button
+                                severity="secondary"
+                                (click)="generar()"
+                                label="Generar"
+                                [disabled]="formGenerador.invalid"
+                            />
+                        </div>
+                    </div>
+                </p-card>
+            </div>
+        </form>
+
+        <!-- <form [formGroup]="form">
+
+      <div class="card m-2">
+        <div class="grid" style="padding: 5px;">
+
+          <div class="field col-12 md:col-8">
+            <span class="p-float-label">
+              <input pInputText id="cHorarioIeNombre" formControlName="cHorarioIeNombre"
+                aria-describedby="cHorarioIeNombre-help" styleClass="w-full" />
+              <label for="cHorarioIeNombre">Descripción de horario</label>
+            </span>
+          </div>
+
+          <div class="col-6">
+            <span class="p-float-label">
+              <p-calendar formControlName="dtHorarioHInicio" [iconDisplay]="'input'" [showIcon]="true" [timeOnly]="true"
+                [disabledDays]="[0, 6]" inputId="icondisplay">
+              </p-calendar>
+
+              <label for="dtHorarioHInicio">inicio</label>
+            </span>
+          </div>
+
+          <div class="col-6">
+            <span class="p-float-label">
+              <p-calendar formControlName="dtHorarioHFin" [iconDisplay]="'input'" [showIcon]="true" [timeOnly]="true"
+                [disabledDays]="[0, 6]" inputId="icondisplay">
+              </p-calendar>
+
+              <label for="dtHorarioHFin">fin</label>
+            </span>
+          </div>
+
+          <br /><br />
+          <div class="col-12">
+            <span class="p-float-label">
+              <p-dropdown [options]="bloques" formControlName="iBloqueHorarioId" optionLabel="cBloqueHorarioNombre"
+                [checkmark]="false" optionValue="iTipoBloqueId" [filter]="false" [showClear]="false" class="w-full"
+                styleClass="w-full" />
+
+              <label for="iBloqueHorarioId">Bloque</label>
+            </span>
+          </div>
+          <div class="col-12">
+            <p-button severity="success" (click)="addItem()" label="Agregar" [disabled]="form.invalid" />
+
+          </div>
+
+        </div>
+      </div>
+    </form> -->
+    </div>
+
+    <div class="xl:col-8 sm:col-12 md:col-12">
+        <div class="card m-2">
+            @if (visble_block_generado) {
+                <p-card header="Distribución de bloques">
+                    <div class="grid">
+                        <div class="col-12">
+                            <form [formGroup]="form">
+                                <!-- FormArray -->
+                                <div formArrayName="bloques">
+                                    <!-- Iterar sobre los bloques -->
+                                    <div
+                                        *ngFor="
+                                            let bloque of bloquesFormArray.controls;
+                                            let i = index
+                                        "
+                                        [formGroupName]="i"
+                                    >
+                                        <div class="bloque-item">
+                                            <div class="grid">
+                                                <div class="col-2">
+                                                    <span class="p-float-label">
+                                                        <input
+                                                            formControlName="inicio"
+                                                            type="time"
+                                                            id="inicio"
+                                                        />
+                                                    </span>
+                                                </div>
+                                                <div class="col-2">
+                                                    <span class="p-float-label">
+                                                        <input
+                                                            formControlName="fin"
+                                                            type="time"
+                                                            id="fin-{{ i }}"
+                                                        />
+                                                    </span>
+                                                </div>
+                                                <div class="col-3">
+                                                    <span class="p-float-label">
+                                                        <select
+                                                            formControlName="tipo"
+                                                            id="tipo-{{ i }}"
+                                                        >
+                                                            <option
+                                                                value="Bloque"
+                                                            >
+                                                                Bloque
+                                                            </option>
+                                                            <option
+                                                                value="Receso"
+                                                            >
+                                                                Receso
+                                                            </option>
+                                                        </select>
+                                                    </span>
+                                                </div>
+                                                <div class="col-3">
+                                                    <span class="p-float-label">
+                                                        <input
+                                                            formControlName="descripcion"
+                                                            type="text"
+                                                            id="descripcion-{{
+                                                                i
+                                                            }}"
+                                                        />
+                                                    </span>
+                                                </div>
+                                                <div class="col-2">
+                                                    <button
+                                                        type="button"
+                                                        class="p-button-danger"
+                                                        (click)="
+                                                            eliminarBloque(i)
+                                                        "
+                                                    >
+                                                        Eliminar
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Botones generales -->
+                                <div class="mt-3" style="padding: 10px">
+                                    <p-button
+                                        severity="success"
+                                        (click)="agregarBloque()"
+                                        label="Agregar bloque"
+                                    />
+
+                                    <p-button
+                                        severity="primary"
+                                        (click)="guardar()"
+                                        [disabled]="form.invalid"
+                                        label="Guardar"
+                                    />
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </p-card>
+            }
+            @if (visible_block_registrado) {
+                <p-card header="Distibución de bloques">
+                    <div class="grid">
+                        <div class="col-12">
+                            <ul>
+                                <li
+                                    *ngFor="let item of items"
+                                    class="list-item"
+                                >
+                                    {{ item.inicio }} - {{ item.fin }}
+                                    <span> {{ item.bloque }} </span>
+                                    <button
+                                        class="delete-btn"
+                                        (click)="removeItem(item.id)"
+                                    >
+                                        x
+                                    </button>
+                                </li>
+                            </ul>
+                            <!-- <p-button severity="primary" (click)="procesar()" label="Procesar" [disabled]="form.invalid" /> -->
+                        </div>
+                    </div>
+                </p-card>
+            }
+        </div>
+    </div>
+</div>

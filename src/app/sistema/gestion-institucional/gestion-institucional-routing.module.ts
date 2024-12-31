@@ -12,8 +12,8 @@ import { ConfigAsignarGradoComponent } from './config-grado-seccion/steps/config
 import { ConfigResumenComponent } from './config-grado-seccion/steps/config-resumen/config-resumen.component'
 import { ConfigFechasComponent } from './config-fechas/config-fechas.component'
 import { IesPersonalComponent } from './ies-personal/ies-personal.component'
-import { HorarioComponent } from './horario/horario.component'
-import { ConfiguracionHorarioComponent } from './horario/configuracion-horario/configuracion-horario.component'
+//import { HorarioComponent } from './horario/horario.component'
+//import { ConfiguracionHorarioComponent } from './horario/configuracion-horario/configuracion-horario.component'
 
 const routes: Routes = [
     { path: 'calendarioAcademico', component: CalendarioAcademicoComponent },
@@ -28,8 +28,23 @@ const routes: Routes = [
     { path: 'resumen', component: ConfigResumenComponent },
     { path: 'fechas', component: ConfigFechasComponent },
     { path: 'IesPersonal', component: IesPersonalComponent },
-    { path: 'horario', component: HorarioComponent },
-    { path: 'configurar-horario', component: ConfiguracionHorarioComponent },
+    // { path: 'horario', component: HorarioComponent },
+    //{ path: 'configurar-horario', component: ConfiguracionHorarioComponent },
+
+    {
+        path: 'horario',
+        loadComponent: () =>
+            import('./horario/horario.component').then(
+                (c) => c.HorarioComponent
+            ),
+    },
+    {
+        path: 'configurar-horario',
+        loadComponent: () =>
+            import(
+                './horario/configuracion-horario/configuracion-horario.component'
+            ).then((c) => c.ConfiguracionHorarioComponent),
+    },
 ]
 
 @NgModule({

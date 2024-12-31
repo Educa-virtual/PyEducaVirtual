@@ -55,7 +55,7 @@
                 </form>
 
                 <br />
-                <button
+                <!-- <button
                     pButton
                     type="button"
                     label="Link"
@@ -67,7 +67,7 @@
                     label="Cancelar"
                     icon="pi pi-times"
                     class="p-button-danger"
-                ></button>
+                ></button> -->
                 <button
                     pButton
                     type="button"
@@ -96,88 +96,75 @@
             >
                 <!-- Agregar el length -->
                 @if (1 > 0) {
-                    <p-button
-                        [text]="true"
-                        severity="secondary"
-                        class="btnContorno"
-                    >
-                        <div class="perfiles-list-item text-left" tabindex="0">
-                            <div class="perfiles-list-detail">
-                                <div class="flex">
-                                    <div>
-                                        <img
-                                            src="assets/demo/images/matemit/user.png"
-                                            [alt]="respuestas.name"
-                                            class="w-3rem min-h-9 shadow-2 flex-shrink-0 btn"
-                                        />
+                    <div class="perfiles-list-item text-left" tabindex="0">
+                        <div class="perfiles-list-detail">
+                            <div class="flex">
+                                <div>
+                                    <img
+                                        src="assets/demo/images/matemit/user.png"
+                                        [alt]="respuestas.name"
+                                        class="w-3rem min-h-9 shadow-2 flex-shrink-0 btn"
+                                    />
+                                </div>
+                                <div>
+                                    <div class="pb-2 perfil-name">
+                                        <b>
+                                            <span class="perfil-name">
+                                                Doc:
+                                                {{ respuestas.cNombres }} (
+                                                {{
+                                                    respuestas?.dtCreado
+                                                        | date: 'short'
+                                                }}
+                                                )
+                                            </span>
+                                        </b>
+                                        <!-- Button para la accion de eliminar y editar -->
+                                        <!-- <p-button
+                                        type="button"
+                                        icon="pi pi-ellipsis-v"
+                                        class="menu-container p-button-text"
+                                        (click)="
+                                            itemRespuesta = respuestas;
+                                            menu.toggle($event)
+                                        "
+                                        aria-label="Abrir menú de configuración"
+                                    /> -->
                                     </div>
-                                    <div>
-                                        <div class="pb-2 perfil-name">
-                                            <b>
-                                                <span class="perfil-name">
-                                                    Doc:
-                                                    {{ respuestas.cNombres }} (
-                                                    {{
-                                                        respuestas?.dtCreado
-                                                            | date: 'short'
-                                                    }}
-                                                    )
-                                                </span>
-                                            </b>
-                                            <!-- Button para la accion de eliminar y editar -->
-                                            <!-- <p-button
-                                            type="button"
-                                            icon="pi pi-ellipsis-v"
-                                            class="menu-container p-button-text"
-                                            (click)="
-                                                itemRespuesta = respuestas;
-                                                menu.toggle($event)
-                                            "
-                                            aria-label="Abrir menú de configuración"
-                                        /> -->
-                                        </div>
-                                        <div
-                                            class=""
-                                            style="text-align: justify"
+                                    <div class="" style="text-align: justify">
+                                        <span *ngIf="!respuestas.expanded">
+                                            {{
+                                                respuestas?.cForoDescripcion
+                                                    | slice: 0 : 150
+                                            }}...
+                                        </span>
+                                        <span *ngIf="respuestas.expanded">
+                                            {{ respuestas?.cForoDescripcion }}
+                                        </span>
+                                        <!-- Para Leer mas.. -->
+                                        <button
+                                            (click)="toggleExpand(respuestas)"
+                                            class="toggle-link"
                                         >
-                                            <span *ngIf="!respuestas.expanded">
-                                                {{
-                                                    respuestas?.cForoDescripcion
-                                                        | slice: 0 : 150
-                                                }}...
-                                            </span>
-                                            <span *ngIf="respuestas.expanded">
-                                                {{
-                                                    respuestas?.cForoDescripcion
-                                                }}
-                                            </span>
-                                            <!-- Para Leer mas.. -->
-                                            <button
-                                                (click)="
-                                                    toggleExpand(respuestas)
-                                                "
-                                                class="toggle-link"
-                                            >
-                                                {{
-                                                    respuestas.expanded
-                                                        ? 'Leer menos'
-                                                        : 'Leer más'
-                                                }}
-                                            </button>
-                                        </div>
-                                        <!-- [style.display]="
-                                                !respuestas.iEstudianteId
-                                                    ? respuestas.iDocenteId ===
-                                                        iDocenteId
-                                                    : respuestas.iEstudianteId ===
-                                                        iEstudianteId
-                                            "
-                                            pButton -->
+                                            {{
+                                                respuestas.expanded
+                                                    ? 'Leer menos'
+                                                    : 'Leer más'
+                                            }}
+                                        </button>
                                     </div>
+                                    <!-- [style.display]="
+                                            !respuestas.iEstudianteId
+                                                ? respuestas.iDocenteId ===
+                                                    iDocenteId
+                                                : respuestas.iEstudianteId ===
+                                                    iEstudianteId
+                                        "
+                                        pButton -->
                                 </div>
                             </div>
                         </div>
-                    </p-button>
+                    </div>
                 } @else {
                     <!-- <app-empty-section
                         class="w-full"

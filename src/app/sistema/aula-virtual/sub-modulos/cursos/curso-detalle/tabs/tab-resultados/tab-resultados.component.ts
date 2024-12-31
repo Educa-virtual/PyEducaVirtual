@@ -239,6 +239,7 @@ export class TabResultadosComponent implements OnInit {
     accionBnt({ accion, item }): void {
         switch (accion) {
             case 'agregarConclusion':
+                // this.mostrarModalConclusionDesc = true
                 this.enviarDatosFinales(accion, item)
                 break
         }
@@ -247,10 +248,10 @@ export class TabResultadosComponent implements OnInit {
     enviarDatosFinales(accion, item) {
         this.mostrarModalConclusionDesc = true
         this.estudianteSelect = item
-        this.descrip = item.cDetMatConclusionDescPromedio
-        this.conclusionDescrp.controls[
-            'cDetMatConclusionDescPromedio'
-        ].setValue(this.descrip)
+        // this.descrip = item.cDetMatConclusionDescPromedio
+        // this.conclusionDescrp.controls[
+        //     'cDetMatConclusionDescPromedio'
+        // ].setValue(this.descrip)
         console.log('Agregar descripcion', accion, item, this.descrip)
     }
     //cerra el modal de calificacion
@@ -317,7 +318,7 @@ export class TabResultadosComponent implements OnInit {
         //this.mostrarDiv = !this.mostrarDiv // Cambia el estado de visibilida
         this.estudianteEv = estudiantes.completoalumno
         this.estudianteSeleccionado = estudiantes
-        console.log('Estudiante select', estudiantes)
+        // console.log('Estudiante select', estudiantes)
         this._aulaService
             .obtenerResultados({
                 iEstudianteId: estudiantes.iEstudianteId,
@@ -356,10 +357,10 @@ export class TabResultadosComponent implements OnInit {
                     this.comentarioSelectEvaluaciones = resp.length
                         ? resp[0]['evaluacion']
                         : []
-                    console.log(
-                        'Mis evaluaciones',
-                        this.comentarioSelectEvaluaciones
-                    )
+                    // console.log(
+                    //     'Mis evaluaciones',
+                    //     this.comentarioSelectEvaluaciones
+                    // )
                     //console.log(resp)
                     //comentariosForo
                     //comentariosTareas
@@ -392,7 +393,7 @@ export class TabResultadosComponent implements OnInit {
     selectUnidad(item: any, idx: number): void {
         this.unidad = idx
         //console.log('Unidad Seleccionada', item)
-        console.log('Indice de la Unidad', idx)
+        // console.log('Indice de la Unidad', idx)
     }
     // muestra las notas del curso x trimestre
     reporteNotasFinales: any[] = []
@@ -405,7 +406,7 @@ export class TabResultadosComponent implements OnInit {
             })
             .subscribe((Data) => {
                 this.reporteNotasFinales = Data['data']
-                console.log(this.reporteNotasFinales)
+                // console.log(this.reporteNotasFinales)
                 // Mapear las calificaciones en letras a reporteNotasFinales
                 //console.log('Mostrar notas finales', this.reporteNotasFinales)
                 this.calificacion
@@ -428,6 +429,7 @@ export class TabResultadosComponent implements OnInit {
             iEscalaCalifIdPromedio: idEscala,
             cDetMatConclusionDescPromedio: conclusionDescrpLimpia,
         }
+        // console.log(registro, conclusionDescrp)
         this._aulaService
             .guardarCalificacionEstudiante(
                 'acad',
@@ -468,106 +470,110 @@ export class TabResultadosComponent implements OnInit {
                 summary: 'Error',
                 detail: 'Seleccione un estudiante:',
             })
-        }
-        const fechaActual = new Date()
-        const where = [
-            {
-                COLUMN_NAME: 'iDetMatrId',
-                VALUE: this.estudianteSeleccionado.iDetMatrId,
-            },
-        ]
-        console.log('where', where)
-        const registro: any = {}
-        if (!this.unidad) {
-            this.unidades.find((i, index) => {
-                if (i.iEstado) {
-                    this.unidad = index
-                }
-            })
-        }
-        //console.log(this.unidad)
-        switch (this.unidad) {
-            case 0:
-                registro.cDetMatrConclusionDesc1 = conclusionFinalDocente
-                registro.iEscalaCalifIdPeriodo1 =
-                    resultadosEstudiantesf.iEscalaCalifIdPeriodo1
-                registro.dtDetMatrPeriodo1 = fechaActual
-                break
-            case 1:
-                registro.cDetMatrConclusionDesc2 = conclusionFinalDocente
-                registro.iEscalaCalifIdPeriodo2 =
-                    resultadosEstudiantesf.iEscalaCalifIdPeriodo1
-                registro.dtDetMatrPeriodo2 = fechaActual
-                break
-            case 2:
-                registro.cDetMatrConclusionDesc3 = conclusionFinalDocente
-                registro.iEscalaCalifIdPeriodo3 =
-                    resultadosEstudiantesf.iEscalaCalifIdPeriodo1
-                registro.dtDetMatrPeriodo3 = fechaActual
-                break
-            case 3:
-                registro.cDetMatrConclusionDesc4 = conclusionFinalDocente
-                registro.iEscalaCalifIdPeriodo4 =
-                    resultadosEstudiantesf.iEscalaCalifIdPeriodo1
-                registro.dtDetMatrPeriodo4 = fechaActual
-                break
-            case 4:
-                registro.iEscalaCalifIdRecuperacion =
-                    resultadosEstudiantesf.iEscalaCalifIdPeriodo1
-                registro.dtDetMatrRecuperacion = fechaActual
-                break
-
-            default:
-                console.log('No se a encontrado la unidad')
-        }
-        if (
-            conclusionFinalDocente == '' ||
-            this.califcFinal.value.iEscalaCalifIdPeriodo1 == null
-        ) {
-            this.messageService.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: 'Tiene que agregar una conclusión descriptiva y el nivel de logro',
-            })
         } else {
-            this._confirmService.openConfiSave({
-                message: 'Recuerde que no podra retroceder',
-                header: '¿Esta seguro que desea guardar conclusión descriptiva?',
-                accept: () => {
-                    // Acción para guardar la conclusion descritiva final
-                    this._aulaService
-                        .guardarCalificacionEstudiante(
-                            'acad',
-                            'detalle_matriculas',
-                            where,
-                            registro
-                        )
-                        .subscribe({
-                            next: (response) => {
-                                this.califcFinal.reset()
-                                //actualiza la tabla de reporte de notas:
-                                this.obtenerReporteDenotasFinales()
-                                console.log('actualizar:', response)
-                                this.messageService.add({
-                                    severity: 'success',
-                                    summary: 'Éxito',
-                                    detail: 'Calificación guardada correctamente.',
-                                })
-                            },
-                            error: (error) => {
-                                console.log('Error en la actualización:', error)
-                            },
+            const fechaActual = new Date()
+            const where = [
+                {
+                    COLUMN_NAME: 'iDetMatrId',
+                    VALUE: this.estudianteSeleccionado.iDetMatrId,
+                },
+            ]
+            console.log('where', where)
+            const registro: any = {}
+            if (!this.unidad) {
+                this.unidades.find((i, index) => {
+                    if (i.iEstado) {
+                        this.unidad = index
+                    }
+                })
+            }
+            //console.log(this.unidad)
+            switch (this.unidad) {
+                case 0:
+                    registro.cDetMatrConclusionDesc1 = conclusionFinalDocente
+                    registro.iEscalaCalifIdPeriodo1 =
+                        resultadosEstudiantesf.iEscalaCalifIdPeriodo1
+                    registro.dtDetMatrPeriodo1 = fechaActual
+                    break
+                case 1:
+                    registro.cDetMatrConclusionDesc2 = conclusionFinalDocente
+                    registro.iEscalaCalifIdPeriodo2 =
+                        resultadosEstudiantesf.iEscalaCalifIdPeriodo1
+                    registro.dtDetMatrPeriodo2 = fechaActual
+                    break
+                case 2:
+                    registro.cDetMatrConclusionDesc3 = conclusionFinalDocente
+                    registro.iEscalaCalifIdPeriodo3 =
+                        resultadosEstudiantesf.iEscalaCalifIdPeriodo1
+                    registro.dtDetMatrPeriodo3 = fechaActual
+                    break
+                case 3:
+                    registro.cDetMatrConclusionDesc4 = conclusionFinalDocente
+                    registro.iEscalaCalifIdPeriodo4 =
+                        resultadosEstudiantesf.iEscalaCalifIdPeriodo1
+                    registro.dtDetMatrPeriodo4 = fechaActual
+                    break
+                case 4:
+                    registro.iEscalaCalifIdRecuperacion =
+                        resultadosEstudiantesf.iEscalaCalifIdPeriodo1
+                    registro.dtDetMatrRecuperacion = fechaActual
+                    break
+
+                default:
+                    console.log('No se a encontrado la unidad')
+            }
+            if (
+                conclusionFinalDocente == '' ||
+                this.califcFinal.value.iEscalaCalifIdPeriodo1 == null
+            ) {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'Tiene que agregar una conclusión descriptiva y el nivel de logro',
+                })
+            } else {
+                this._confirmService.openConfiSave({
+                    message: 'Recuerde que no podra retroceder',
+                    header: '¿Esta seguro que desea guardar conclusión descriptiva?',
+                    accept: () => {
+                        // Acción para guardar la conclusion descritiva final
+                        this._aulaService
+                            .guardarCalificacionEstudiante(
+                                'acad',
+                                'detalle_matriculas',
+                                where,
+                                registro
+                            )
+                            .subscribe({
+                                next: (response) => {
+                                    this.califcFinal.reset()
+                                    //actualiza la tabla de reporte de notas:
+                                    this.obtenerReporteDenotasFinales()
+                                    console.log('actualizar:', response)
+                                    this.messageService.add({
+                                        severity: 'success',
+                                        summary: 'Éxito',
+                                        detail: 'Calificación guardada correctamente.',
+                                    })
+                                },
+                                error: (error) => {
+                                    console.log(
+                                        'Error en la actualización:',
+                                        error
+                                    )
+                                },
+                            })
+                    },
+                    reject: () => {
+                        // Mensaje de cancelación (opcional)
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Cancelado',
+                            detail: 'Acción cancelada',
                         })
-                },
-                reject: () => {
-                    // Mensaje de cancelación (opcional)
-                    this.messageService.add({
-                        severity: 'error',
-                        summary: 'Cancelado',
-                        detail: 'Acción cancelada',
-                    })
-                },
-            })
+                    },
+                })
+            }
         }
     }
     //mostrar las escalas de calificacioón
@@ -581,10 +587,10 @@ export class TabResultadosComponent implements OnInit {
     //obtener los periordos en un button
     unidades: any[] = []
     habilitarCalificacion() {
-        // const idYear =
-        // console.log('fecha', idYear)
+        const idYear = 3 //this._constantesService.iYAcadId
+        console.log('fecha', idYear)
         const params = {
-            iYAcadId: this._constantesService.iYAcadId,
+            iYAcadId: idYear,
             iCredId: this._constantesService.iCredId,
         }
         console.log('año', params)

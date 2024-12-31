@@ -60,7 +60,7 @@ export class AppTopBarComponent implements OnInit {
 
     ngOnInit() {
         const user = this.store.getItem('dremoUser')
-
+        console.log(user)
         const year = this.store.getItem('dremoYear')
         this.years = user.years
         this.selectedYear = year ? year : null

@@ -4,8 +4,6 @@ import { DataViewModule } from 'primeng/dataview'
 import { IconFieldModule } from 'primeng/iconfield'
 import { InputIconModule } from 'primeng/inputicon'
 import { InputTextModule } from 'primeng/inputtext'
-import { AreasEstudiosComponent } from '../../../../docente/areas-estudios/areas-estudios.component'
-import { CursoCardComponent } from '../../../../aula-virtual/sub-modulos/cursos/components/curso-card/curso-card.component'
 import { ButtonModule } from 'primeng/button'
 import { ApiService } from '@/app/servicios/api.service'
 import { ActivatedRoute } from '@angular/router'
@@ -24,14 +22,13 @@ import { CommonModule } from '@angular/common'
         IconFieldModule,
         InputIconModule,
         InputTextModule,
-        AreasEstudiosComponent,
-        CursoCardComponent,
         ButtonModule,
     ],
     templateUrl: './examen-ere.component.html',
     styleUrl: './examen-ere.component.scss',
 })
 export class ExamenEreComponent implements OnInit {
+    cEvaluacionNombre: string
     cursos = []
     constructor(
         private apiService: ApiService,
@@ -40,13 +37,14 @@ export class ExamenEreComponent implements OnInit {
 
     ngOnInit() {
         this.route.queryParams.subscribe(async (params) => {
+            // Obtén el nombre de la evaluación desde los parámetros
+            this.cEvaluacionNombre = params['cEvaluacionNombre'] || 'Sin Nombre'
             const response = await this.apiService.getData({
                 esquema: 'ere',
                 tabla: 'V_EvaluacionFechasCursos',
                 campos: '*',
                 where: 'iEvaluacionId=' + params['cIEvaluacion'],
             })
-
             // Mapear la respuesta de la API para que coincida con ICurso
             if (response && response[0] && response[0].cursos_niveles) {
                 this.cursos = response[0].cursos_niveles.map((curso: any) => ({

@@ -168,7 +168,7 @@
 
 <p-dialog
     #dialogBancoPreguntas
-    header="Agregar fechas de Publicación ERE"
+    header="Agregar fechas de Publicación ERE:  {{ cEvaluacionNombre }} "
     [modal]="true"
     [(visible)]="showModalCursosEre"
     [position]="'top'"
@@ -176,6 +176,7 @@
     [style]="{ width: '80%' }"
 >
     @defer (when showModalCursosEre) {
+        <br />
         <div>Agregar fechas de Publicación Areas Curriculares</div>
 
         <div class="container" [formGroup]="form">

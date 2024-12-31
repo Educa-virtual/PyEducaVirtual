@@ -74,7 +74,7 @@ export class BancoPreguntaInformacionFormComponent implements OnInit {
     get parentFormGroup() {
         return this.parentContainer.control?.get(this.controlKey) as FormGroup
     }
-    //!MatrizCompetencias
+    //MatrizCompetencias
     obtenerMatrizCompetencias(): void {
         this._apiEre
             .obtenerMatrizCompetencias(this.params)
@@ -101,7 +101,7 @@ export class BancoPreguntaInformacionFormComponent implements OnInit {
                 },
             })
     }
-    //!MatrizCapacidades
+    //MatrizCapacidades
     obtenerMatrizCapacidades(): void {
         this._apiEre
             .obtenerMatrizCapacidades(this.params)

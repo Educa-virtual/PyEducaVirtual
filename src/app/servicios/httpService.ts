@@ -18,7 +18,7 @@ export class httpService {
         private dynamicToastService: DynamicToastService,
         private errorHandler: ErrorHandler
     ) {
-        this.dynamicToastService.createToast()
+        // this.dynamicToastService.createToast()
     }
 
     async getData(

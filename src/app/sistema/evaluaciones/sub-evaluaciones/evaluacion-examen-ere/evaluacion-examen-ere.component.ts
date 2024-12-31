@@ -117,6 +117,8 @@ export class EvaluacionExamenEreComponent implements OnInit {
                             // iEvalPromId: value.iEvalPromId ?? undefined,
                             cIEvaluacion:
                                 elemento.item.cIEvaluacion ?? undefined,
+                            cEvaluacionNombre:
+                                elemento.item.cEvaluacionNombre ?? undefined,
                         },
                         queryParamsHandling: 'merge',
                     }
@@ -153,124 +155,6 @@ export class EvaluacionExamenEreComponent implements OnInit {
                 iNivelEvalId: this.nombreNivelEval,
             }))
     }
-
-    //!
-    // getEvaluacionesEre() {
-    //     this.query
-    //         .searchCalAcademico({
-    //             esquema: 'ere',
-    //             tabla: 'evaluacion',
-    //             campos: 'iEvaluacionId,cEvaluacionNombre,dtEvaluacionCreacion,idTipoEvalId,iNivelEvalId',
-    //             condicion: '1=1',
-    //         })
-    //         .subscribe({
-    //             next: (data: any) => {
-    //                 if (data && data.data && Array.isArray(data.data)) {
-    //                     this.evaluacionesEreDrop = data.data.sort(
-    //                         (a, b) => b.iEvaluacionId - a.iEvaluacionId
-    //                     )
-    //                     const tipoEvalIds = Array.from(
-    //                         new Set(
-    //                             this.evaluacionesEreDrop
-    //                                 .map((item) => item.idTipoEvalId)
-    //                                 .filter(
-    //                                     (id) => id !== undefined && id !== null
-    //                                 ) // Filtrar valores inválidos
-    //                         )
-    //                     )
-
-    //                     const nivelEvalIds = Array.from(
-    //                         new Set(
-    //                             this.evaluacionesEreDrop
-    //                                 .map((item) => item.iNivelEvalId)
-    //                                 .filter(
-    //                                     (id) => id !== undefined && id !== null
-    //                                 ) // Filtrar valores inválidos
-    //                         )
-    //                     )
-    //                     const tipoEval$ = this.query.searchCalAcademico({
-    //                         esquema: 'ere',
-    //                         tabla: 'tipo_evaluaciones',
-    //                         campos: 'idTipoEvalId,cTipoEvalDescripcion',
-    //                         condicion: `idTipoEvalId IN (${tipoEvalIds.join(',')})`,
-    //                     })
-
-    //                     const nivelEval$ = this.query.searchCalAcademico({
-    //                         esquema: 'ere',
-    //                         tabla: 'nivel_evaluaciones',
-    //                         campos: 'iNivelEvalId,cNivelEvalNombre',
-    //                         condicion: `iNivelEvalId IN (${nivelEvalIds.join(',')})`,
-    //                     })
-    //                     forkJoin([tipoEval$, nivelEval$]).subscribe({
-    //                         next: ([tipoEvalData, nivelEvalData]: [
-    //                             any,
-    //                             any,
-    //                         ]) => {
-    //                             if (
-    //                                 tipoEvalData &&
-    //                                 Array.isArray(tipoEvalData.data) &&
-    //                                 nivelEvalData &&
-    //                                 Array.isArray(nivelEvalData.data)
-    //                             ) {
-    //                                 const tipoEvalMap =
-    //                                     tipoEvalData.data.reduce(
-    //                                         (acc, item) => {
-    //                                             acc[item.idTipoEvalId] =
-    //                                                 item.cTipoEvalDescripcion
-    //                                             return acc
-    //                                         },
-    //                                         {} as { [key: number]: string }
-    //                                     )
-
-    //                                 const nivelEvalMap =
-    //                                     nivelEvalData.data.reduce(
-    //                                         (acc, item) => {
-    //                                             acc[item.iNivelEvalId] =
-    //                                                 item.cNivelEvalNombre
-    //                                             return acc
-    //                                         },
-    //                                         {} as { [key: number]: string }
-    //                                     )
-    //                                 this.evaluacionEreTable =
-    //                                     this.evaluacionesEreDrop.map(
-    //                                         (item: any) => ({
-    //                                             cIEvaluacion: item.iEvaluacionId,
-    //                                             cEvaluacionNombre:
-    //                                                 item.cEvaluacionNombre ||
-    //                                                 'Sin nombre',
-    //                                             dtEvaluacionCreacion:
-    //                                                 item.dtEvaluacionCreacion
-    //                                                     ? new Date(
-    //                                                           item.dtEvaluacionCreacion
-    //                                                       ).toLocaleDateString()
-    //                                                     : 'Fecha no disponible',
-    //                                             idTipoEvalId:
-    //                                                 tipoEvalMap[
-    //                                                     item.idTipoEvalId
-    //                                                 ] || 'Desconocido',
-    //                                             iNivelEvalId:
-    //                                                 nivelEvalMap[
-    //                                                     item.iNivelEvalId
-    //                                                 ] || 'Desconocido',
-    //                                         })
-    //                                     )
-    //                                 this.nombreTipoEval =
-    //                                     this.evaluacionEreTable[4].idTipoEvalId
-    //                                 this.nombreNivelEval =
-    //                                     this.evaluacionEreTable[4].iNivelEvalId
-    //                             }
-    //                         },
-    //                     })
-    //                 }
-    //             },
-    //             error: (error) => {
-    //                 console.error('Error fetching:', error)
-    //             },
-    //             complete: () => {
-    //                 console.log('Request completed')
-    //             },
-    //         })
-    // }
 
     getEvaluacionesEre() {
         this.query

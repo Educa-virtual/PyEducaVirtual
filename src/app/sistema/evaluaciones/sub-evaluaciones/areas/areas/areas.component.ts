@@ -113,6 +113,7 @@ export class AreasComponent implements OnInit {
                     this.area.filter((item) => {
                         this.iCursosNivelGradId.push(item.id)
                     })
+                    console.warn(this.area)
                     // Guardar las áreas procesadas en el servicio
                     this.compartirFormularioEvaluacionService.setAreas(
                         this.area
@@ -154,6 +155,8 @@ export class AreasComponent implements OnInit {
     datos: any
     areaData = []
     obtenerConteoPorCurso(): void {
+        this.areaData = this.area
+
         this.datos = {
             iEvaluacionId: this.iEvaluacionId,
             iCursosNivelGradId: this.iCursosNivelGradId,

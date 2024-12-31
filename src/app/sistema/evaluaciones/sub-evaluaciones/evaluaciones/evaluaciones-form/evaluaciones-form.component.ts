@@ -168,6 +168,11 @@ export class EvaluacionesFormComponent implements OnInit {
 
         if (this.activeStep === 0 && this.accion === 'editar') {
             if (this.evaluacionFormGroup.invalid) {
+                this._MessageService.add({
+                    severity: 'error',
+                    summary: 'Rellenar los campos',
+                    detail: 'Rellene todos los campos para editar la evaluación.',
+                })
                 // Marca los campos como tocados para que se muestren los errores
                 this.evaluacionFormGroup.markAllAsTouched()
                 return
@@ -179,6 +184,11 @@ export class EvaluacionesFormComponent implements OnInit {
 
         if (this.activeStep === 0 && this.accion === 'nuevo') {
             if (this.evaluacionFormGroup.invalid) {
+                this._MessageService.add({
+                    severity: 'error',
+                    summary: 'Rellenar los campos',
+                    detail: 'Rellene todos los campos para crear la evaluación.',
+                })
                 // Marca los campos como tocados para que se muestren los errores
                 this.evaluacionFormGroup.markAllAsTouched()
                 return
@@ -352,6 +362,11 @@ export class EvaluacionesFormComponent implements OnInit {
                     this.compartirFormularioEvaluacionService.setcEvaluacionNombre(
                         nombreEvaluacion
                     )
+                    this._MessageService.add({
+                        severity: 'success',
+                        summary: 'Se guardo con exitoso',
+                        detail: 'La evaluacion se ha guardado con éxito.',
+                    })
                 },
                 error: (error) => {
                     console.error('Error al guardar la evaluación:', error) // Captura el error aquí
@@ -411,7 +426,12 @@ export class EvaluacionesFormComponent implements OnInit {
 
         this._apiEre.actualizarEvaluacion(data).subscribe({
             next: (resp) => {
-                console.log('Evaluación actualizada:', resp)
+                this._MessageService.add({
+                    severity: 'success',
+                    summary: 'Actualizado con exitoso',
+                    detail: 'La evaluacion se ha actualizado con éxito.',
+                })
+                resp
             },
             error: (error) => {
                 console.error('Error al actualizar la evaluación:', error)

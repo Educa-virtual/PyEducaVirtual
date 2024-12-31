@@ -117,7 +117,6 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
             default:
                 break
         }
-        console.log('iEvaluacionId recibido:', this._iEvaluacionId)
         if (this.accion === 'nuevo') {
             this.searchAmbienteAcademico()
         }

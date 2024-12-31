@@ -250,79 +250,6 @@ export class EvaluacionesComponent implements OnInit {
                 })
             })
         })
-
-        // console.log('this.form */
-        // console.log(this.form)
-
-        // this.apiservice.updateData({
-        //     esquema: 'ere',
-        //     tabla: 'examen_cursos',
-        //     campos: {
-        //         dtExamenFechaInicio: '',
-        //         dtExamenFechaFin: ''
-        //     },
-        //     where: {
-        //         COLUMN_NAME: 'iExamCurId',
-        //         VALUE: '12',
-        //     }
-        // })
-
-        // this.listaCursos = evaluacionCursos.cursos_niveles
-
-        // Llamar a searchAmbienteAcademico para obtener los datos estructurados
-        // this.compartirFormularioEvaluacionService
-        //     .searchAmbienteAcademico()
-        //     .then((lista: any[]) => {
-        //         // Almacenar la lista en la propiedad `this.lista`
-        //         this.lista = lista
-
-        //         // Obtener los cursos seleccionados y combinarlos
-        //         return this.compartirFormularioEvaluacionService.obtenerCursosSeleccionados()
-        //     })
-        //     .then((cursosSeleccionadosMap: Map<number, boolean>) => {
-        //         // Estructurar la lista de cursos, eliminando los cursos no seleccionados
-        //         this.listaCursos = this.lista
-        //             .map((nivel: any) => ({
-        //                 nivel: nivel.nivel,
-        //                 grados: Object.keys(nivel.grados)
-        //                     .map((grado) => ({
-        //                         grado,
-        //                         cursos: nivel.grados[grado].filter(
-        //                             (curso: any) =>
-        //                                 cursosSeleccionadosMap.get(
-        //                                     curso.iCursoNivelGradId
-        //                                 ) || false
-        //                         ), // Solo seleccionados
-        //                     }))
-        //                     .filter((grado: any) => grado.cursos.length > 0), // Filtrar grados sin cursos seleccionados
-        //             }))
-        //             .filter((nivel: any) => nivel.grados.length > 0) // Filtrar niveles sin grados seleccionados
-
-        //         console.log(
-        //             'Lista de cursos seleccionados y estructurados:',
-        //             this.listaCursos
-        //         )
-
-        //         this.listaCursos.forEach((nivel) => {
-        //             nivel.grados.forEach((grado) => {
-        //                 grado.cursos.forEach((curso) => {
-        //                     this.form.addControl(
-        //                         `${curso.cCursoNombre}${curso.iCursoNivelGradId}Inicio`,
-        //                         new FormControl()
-        //                     )
-        //                     this.form.addControl(
-        //                         `${curso.cCursoNombre}${curso.iCursoNivelGradId}Fin`,
-        //                         new FormControl()
-        //                     )
-        //                 })
-        //             })
-        //         })
-
-        //         console.log('Form', this.form)
-        //     })
-        //     .catch((error) => {
-        //         console.error('Error al obtener los cursos:', error)
-        //     })
     }
 
     toggleCurso(curso: any): void {
@@ -334,17 +261,17 @@ export class EvaluacionesComponent implements OnInit {
     //     const fecha = this.form.value // Captura todos los valores del formulario
     //     console.log('Form value changes', fecha)
 
-    //     // Función para formatear las fechas al formato 'YYYY-MM-DD HH:mm:ss'
-    //     const formatDate = (date: Date | null) => {
-    //         if (!date) return null // Si no hay fecha, regresa null
-    //         const year = date.getFullYear()
-    //         const month = String(date.getMonth() + 1).padStart(2, '0') // Mes comienza en 0
-    //         const day = String(date.getDate()).padStart(2, '0')
-    //         const hours = String(date.getHours()).padStart(2, '0')
-    //         const minutes = String(date.getMinutes()).padStart(2, '0')
-    //         const seconds = String(date.getSeconds()).padStart(2, '0')
-    //         return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
-    //     }
+    // // Función para formatear las fechas al formato 'YYYY-MM-DD HH:mm:ss'
+    // const formatDate = (date: Date | null) => {
+    //     if (!date) return null // Si no hay fecha, regresa null
+    //     const year = date.getFullYear()
+    //     const month = String(date.getMonth() + 1).padStart(2, '0') // Mes comienza en 0
+    //     const day = String(date.getDate()).padStart(2, '0')
+    //     const hours = String(date.getHours()).padStart(2, '0')
+    //     const minutes = String(date.getMinutes()).padStart(2, '0')
+    //     const seconds = String(date.getSeconds()).padStart(2, '0')
+    //     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
+    // }
 
     //     // Extraer los cursos con fechas
     //     const datosCursos: any[] = []
@@ -392,12 +319,59 @@ export class EvaluacionesComponent implements OnInit {
 
     //     console.log('Datos a enviar al servidor:', datos)
     // }
+    // async guardarInicioFinalExmAreas() {
+    //     // return await this.apiservice.updateData({
+    //     //     esquema: 'ere',
+    //     //     tabla: 'evaluacion',
+    //     // })
+    //     console.log(Object.keys(this.form.value))
+
+    //     const coincidencias: IUpdateTableService[] = [] // Arreglo para almacenar coincidencias
+
+    //     this.evaluacionCursos.cursos_niveles.forEach((data) => {
+    //         const inicioKey = `${data.cCursoNombre}${data.iCursoNivelGradId}[${data.iExamCurId}]Inicio`
+    //         const finKey = `${data.cCursoNombre}${data.iCursoNivelGradId}[${data.iExamCurId}]Fin`
+
+    //         const inicioValue = this.form.value[inicioKey] // Busca el valor de 'Inicio' en el formulario
+    //         const finValue = this.form.value[finKey] // Busca el valor de 'Fin' en el formulario
+
+    //         if (inicioValue || finValue) {
+    //             coincidencias.push({
+    //                 esquema: 'ere',
+    //                 tabla: 'examen_cursos',
+    //                 campos: {
+    //                     iExamCurId: data.iExamCurId,
+    //                     dtExamenFechaInicio:
+    //                         this.utils.convertToSQLDateTime(inicioValue) ||
+    //                         null, // Asigna el valor o null si no existe
+    //                     dtExamenFechaFin:
+    //                         this.utils.convertToSQLDateTime(finValue) || null, // Asigna el valor o null si no existe
+    //                 },
+    //                 where: {
+    //                     COLUMN_NAME: 'iExamCurId',
+    //                     VALUE: data.iExamCurId,
+    //                 },
+    //             })
+    //         }
+    //     })
+
+    //     this.apiservice.updateData(coincidencias)
+    //     this.visible = false
+    //     this.showModalCursosEre = false
+    //     this.form.reset()
+    //     this.removeControls()
+    // }
     async guardarInicioFinalExmAreas() {
-        // return await this.apiservice.updateData({
-        //     esquema: 'ere',
-        //     tabla: 'evaluacion',
-        // })
-        console.log(Object.keys(this.form.value))
+        const formatDate = (date: Date | null) => {
+            if (!date) return null // Si no hay fecha, regresa null
+            const day = String(date.getDate()).padStart(2, '0')
+            const month = String(date.getMonth() + 1).padStart(2, '0') // Mes comienza en 0
+            const year = date.getFullYear()
+            const hours = String(date.getHours()).padStart(2, '0')
+            const minutes = String(date.getMinutes()).padStart(2, '0')
+            const seconds = String(date.getSeconds()).padStart(2, '0')
+            return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`
+        }
 
         const coincidencias: IUpdateTableService[] = [] // Arreglo para almacenar coincidencias
 
@@ -405,10 +379,15 @@ export class EvaluacionesComponent implements OnInit {
             const inicioKey = `${data.cCursoNombre}${data.iCursoNivelGradId}[${data.iExamCurId}]Inicio`
             const finKey = `${data.cCursoNombre}${data.iCursoNivelGradId}[${data.iExamCurId}]Fin`
 
-            const inicioValue = this.form.value[inicioKey] // Busca el valor de 'Inicio' en el formulario
-            const finValue = this.form.value[finKey] // Busca el valor de 'Fin' en el formulario
+            // Obtén los valores de inicio y fin del formulario
+            const inicioValue = this.form.value[inicioKey]
+            const finValue = this.form.value[finKey]
 
-            if (inicioValue || finValue) {
+            // Formatea las fechas antes de enviarlas
+            const formattedInicio = formatDate(inicioValue)
+            const formattedFin = formatDate(finValue)
+
+            if (formattedInicio || formattedFin) {
                 coincidencias.push({
                     esquema: 'ere',
                     tabla: 'examen_cursos',
@@ -427,13 +406,15 @@ export class EvaluacionesComponent implements OnInit {
                 })
             }
         })
+        // Envía los datos al servicio para actualizar en la base de datos
+        await this.apiservice.updateData(coincidencias)
 
-        this.apiservice.updateData(coincidencias)
         this.visible = false
         this.showModalCursosEre = false
         this.form.reset()
         this.removeControls()
     }
+
     //!
     toggleBotonc(): void {
         this.mostrarBoton = !this.mostrarBoton
@@ -450,10 +431,18 @@ export class EvaluacionesComponent implements OnInit {
     opcionesAuto: IActionTable[] = []
     columnasBase: IColumn[] = [
         {
+            field: 'cEvaluacionNombre',
+            header: 'Nombre evaluación',
+            type: 'text',
+            width: '7rem',
+            text: 'left',
+            text_header: 'Clave',
+        },
+        {
             field: 'cTipoEvalDescripcion',
             header: 'Tipo evaluación',
             type: 'text',
-            width: '5rem',
+            width: '1rem',
             text: 'left',
             text_header: 'Tipo evaluación',
         },
@@ -461,7 +450,7 @@ export class EvaluacionesComponent implements OnInit {
             field: 'cNivelEvalNombre',
             header: 'Nivel evaluación',
             type: 'text',
-            width: '5rem',
+            width: '3rem',
             text: 'left',
             text_header: 'Puntaje',
         },
@@ -469,17 +458,9 @@ export class EvaluacionesComponent implements OnInit {
             field: 'dtEvaluacionCreacion',
             header: 'Fecha creación',
             type: 'text',
-            width: '5rem',
+            width: '3rem',
             text: 'left',
             text_header: 'Nivel',
-        },
-        {
-            field: 'cEvaluacionNombre',
-            header: 'Nombre evaluación',
-            type: 'text',
-            width: '5rem',
-            text: 'left',
-            text_header: 'Clave',
         },
     ]
     //COPIANDO COLUMNA PARA MODAL
@@ -642,6 +623,7 @@ export class EvaluacionesComponent implements OnInit {
                 value: item.iEvaluacionId,
                 value1: item.cEvaluacionNombre,
             })
+            console.log('Nombre:', item.cEvaluacionNombre)
         }
     }
     onEvaluacionSeleccionada(event: any) {
@@ -750,10 +732,6 @@ export class EvaluacionesComponent implements OnInit {
             },
             header: header, // Aquí asignamos el header dinámico
         })
-
-        // Imprimir el modal ref para ver cómo se abre
-        console.log('MODAL DE AGREGAR EDITAR PREGUNTA', refModal)
-
         // Suscribirse al cierre del modal para actualizar las evaluaciones
         refModal.onClose.subscribe((result) => {
             if (result) {

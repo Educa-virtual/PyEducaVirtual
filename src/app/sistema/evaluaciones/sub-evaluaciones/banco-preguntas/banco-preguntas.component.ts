@@ -307,14 +307,8 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             nivel: this.nivel,
             seccion: this.seccion,
         })
-        //!
-
         this.obtenerPreguntaSeleccionada(this.iEvaluacionId)
         this.compartirFormularioEvaluacionService.getAreasId()
-        console.log(
-            'ID de área:',
-            this.compartirFormularioEvaluacionService.getAreasId()
-        )
     }
     handleBancopregunta() {
         this.showModalBancoPreguntas = true
@@ -407,10 +401,19 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
                         {},
                         this.expandedRowKeys
                     )
-                    console.log(
-                        'Datos filtrados de banco de preguntas:',
-                        this.data
-                    )
+                    // console.log(
+                    //     'Datos filtrados de banco de preguntas:',
+                    //     this.data
+                    // )
+                    this.data = this.data.map((pregunta) => {
+                        return {
+                            ...pregunta,
+                            cPregunta: pregunta.cPregunta.replace(
+                                /<[^>]+>/g,
+                                ''
+                            ),
+                        }
+                    })
                 },
             })
         console.log('Parámetros enviados:', this.params)
@@ -430,7 +433,6 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
                         seleccionado.iPreguntaId === item.iPreguntaId
                 )
         )
-
         // Preparar el payload con todas las preguntas seleccionadas
         const payload = {
             iEvaluacionId: iEvaluacionId, // ID de evaluación
@@ -438,15 +440,13 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
                 iPreguntaId: pregunta.iPreguntaId, // ID de cada pregunta
             })),
         }
-        console.log('Payload:', payload)
         // Enviar el payload al backend en una sola solicitud
         this._apiEre
             .insertarPreguntaSeleccionada(payload) // Endpoint que maneja múltiples preguntas
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
                 next: (response) => {
-                    console.log('Preguntas guardadas exitosamente:', response)
-
+                    response
                     // Actualizar la lista de seleccionados si se guardaron correctamente
                     this.dataSeleccionado = [
                         ...this.dataSeleccionado,
@@ -468,7 +468,6 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             this.dataSeleccionado
         )
     }
-    //!
     obtenerPreguntaSeleccionada(iEvaluacionId: number) {
         if (!iEvaluacionId || iEvaluacionId < 0) {
             console.error(
@@ -500,6 +499,22 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
                         item.iCursosNivelGradId.toString() ===
                         this.params.iCursosNivelGradId.toString()
                 )
+
+                console.log(this.preguntaSelecionada)
+
+                this.preguntasSeleccionadas = this.preguntasSeleccionadas.map(
+                    (pregunta) => {
+                        return {
+                            ...pregunta,
+                            cPregunta: pregunta.cPregunta.replace(
+                                /<[^>]+>/g,
+                                ''
+                            ),
+                        }
+                    }
+                )
+
+                // this.preguntasSeleccionadas = data
 
                 console.log('Datos filtrados:', this.preguntasSeleccionadas)
             },

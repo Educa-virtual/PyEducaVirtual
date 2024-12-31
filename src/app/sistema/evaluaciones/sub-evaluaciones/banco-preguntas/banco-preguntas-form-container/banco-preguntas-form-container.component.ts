@@ -132,7 +132,7 @@ export class BancoPreguntasFormContainerComponent implements OnInit {
         // Crear una copia modificada
         this.recibirPayloadForms = {
             ...payloadEmitidoForms, // Copia todas las propiedades originales
-            //iEvaluacionId: 679, //! Aqui cambiamos el ID de evaluacion
+            //iEvaluacionId: 679, // Aqui cambiamos el ID de evaluacion
             iEvaluacionId:
                 this.compartiridEvaluacionService.iEvaluacionIdStorage,
         }
@@ -181,9 +181,9 @@ export class BancoPreguntasFormContainerComponent implements OnInit {
 
                         // Paso 2: Preparar el objeto `data` con los valores adicionales
                         data.iDesempenoId = iiiDesempenoId
-                        data.iCursosNivelGradId = 6 //!En este caso debe ser dinamico, dependiendo de los cursos.
-                        data.iNivelGradoId = 1 //!Aqui igual Dinamico
-                        data.iEspecialistaId = 2 //!Aqui igual Dinamico
+                        data.iCursosNivelGradId = 6 //En este caso debe ser dinamico, dependiendo de los cursos.
+                        data.iNivelGradoId = 1 //Aqui igual Dinamico
+                        data.iEspecialistaId = 2 //Aqui igual Dinamico
 
                         console.log(
                             'Datos listos para guardar preguntas:',
@@ -210,9 +210,9 @@ export class BancoPreguntasFormContainerComponent implements OnInit {
             console.log('No se ha recibido el payload aún.')
 
             // Si no se ha recibido payload, simplemente guardamos preguntas con datos básicos
-            data.iCursosNivelGradId = 6 //!aqui igual dinamico
-            data.iNivelGradoId = 1 //!aqui igual dinamico
-            data.iEspecialistaId = 1 //!aqui igual dinamico
+            data.iCursosNivelGradId = 6 //aqui igual dinamico
+            data.iNivelGradoId = 1 //aqui igual dinamico
+            data.iEspecialistaId = 1 //aqui igual dinamico
 
             console.log('Guardando preguntas sin payload de desempeño:', data)
 

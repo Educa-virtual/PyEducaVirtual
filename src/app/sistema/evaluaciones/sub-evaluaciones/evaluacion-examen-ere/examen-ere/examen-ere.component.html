@@ -1,4 +1,7 @@
-<app-container-page [title]="'Mis Áreas Curriculares'" [actions]="[]">
+<app-container-page
+    [title]="'Áreas Curriculares ERE: ' + cEvaluacionNombre"
+    [actions]="[]"
+>
     <div class="container">
         <article
             *ngFor="let curso of cursos"

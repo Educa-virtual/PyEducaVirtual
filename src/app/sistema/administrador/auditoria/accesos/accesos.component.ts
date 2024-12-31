@@ -172,6 +172,8 @@ export class AccesosComponent implements OnInit {
 
         this.dataExport = this.data
 
+        console.log(this.data)
+
         this.data = this.data.map((acceso, index) => ({
             index: index + 1,
             cCredUsuario: acceso.cCredUsuario,

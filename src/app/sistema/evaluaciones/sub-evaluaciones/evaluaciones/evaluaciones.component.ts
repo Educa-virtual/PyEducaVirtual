@@ -393,8 +393,11 @@ export class EvaluacionesComponent implements OnInit {
                     tabla: 'examen_cursos',
                     campos: {
                         iExamCurId: data.iExamCurId,
-                        dtExamenFechaInicio: formattedInicio, // Fecha formateada
-                        dtExamenFechaFin: formattedFin, // Fecha formateada
+                        dtExamenFechaInicio:
+                            this.utils.convertToSQLDateTime(inicioValue) ||
+                            null, // Asigna el valor o null si no existe
+                        dtExamenFechaFin:
+                            this.utils.convertToSQLDateTime(finValue) || null, // Asigna el valor o null si no existe
                     },
                     where: {
                         COLUMN_NAME: 'iExamCurId',

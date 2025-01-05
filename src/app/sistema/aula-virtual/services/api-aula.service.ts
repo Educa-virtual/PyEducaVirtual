@@ -132,6 +132,24 @@ export class ApiAulaService {
             data
         )
     }
+    obtenerResptDocente(params: { iEstudianteId; iForoId }) {
+        return this._http.get(
+            `${this.baseUrlApi}/aula-virtual/contenidos/foro/obtenerReptdocente`,
+            { params }
+        )
+        // .pipe(
+        //     map((response) => {
+        //         if (!response || !response.data) {
+        //             throw new Error(
+        //                 'La respuesta no contiene datos válidos'
+        //             )
+        //         }
+        //         console.log(response.data)
+        //         return response.data
+        //     })
+
+        // )
+    }
     // guardar la calificación de la unidad
     guardarCalificacionEstudiante(
         esquema: string,

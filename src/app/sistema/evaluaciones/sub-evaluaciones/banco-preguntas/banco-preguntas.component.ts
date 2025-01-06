@@ -122,7 +122,14 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
         //     text: 'left',
         //     text_header: '',
         // },
-
+        // {
+        //     field: 'iEncabPregId',
+        //     header: 'Encabezado',
+        //     type: 'text',
+        //     width: '5rem',
+        //     text: 'left',
+        //     text_header: 'Encabezado',
+        // },
         {
             field: 'cPregunta',
             header: 'Pregunta',
@@ -132,12 +139,20 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             text_header: 'Pregunta',
         },
         {
-            field: 'iEncabPregId',
-            header: 'Encabezado',
+            field: 'iTipoPregId',
+            header: 'Tipo de Pregunta',
             type: 'text',
             width: '5rem',
             text: 'left',
-            text_header: 'Encabezado',
+            text_header: 'Pregunta',
+        },
+        {
+            field: 'iPreguntaPeso',
+            header: 'Peso',
+            type: 'text',
+            width: '5rem',
+            text: 'left',
+            text_header: 'Clave',
         },
         {
             field: 'cPreguntaClave',
@@ -147,6 +162,7 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             text: 'left',
             text_header: 'Clave',
         },
+
         {
             field: '',
             header: 'Acciones',
@@ -165,6 +181,15 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             text: 'left',
             text_header: '',
         },
+
+        // {
+        //     field: 'iEncabPregId',
+        //     header: 'Encabezado',
+        //     type: 'text',
+        //     width: '5rem',
+        //     text: 'left',
+        //     text_header: 'Encabezado',
+        // },
         {
             field: 'cPregunta',
             header: 'Pregunta',
@@ -174,12 +199,12 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             text_header: 'Pregunta',
         },
         {
-            field: 'iEncabPregId',
-            header: 'Encabezado',
+            field: 'iTipoPregId',
+            header: 'Tipo de Pregunta',
             type: 'text',
             width: '5rem',
             text: 'left',
-            text_header: 'Encabezado',
+            text_header: 'Pregunta',
         },
         {
             field: 'cPreguntaClave',
@@ -189,14 +214,14 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             text: 'left',
             text_header: 'Clave',
         },
-        {
-            field: '',
-            header: 'Acciones',
-            type: 'actions',
-            width: '5rem',
-            text: 'left',
-            text_header: '',
-        },
+        // {
+        //     field: '',
+        //     header: 'Acciones',
+        //     type: 'actions',
+        //     width: '5rem',
+        //     text: 'left',
+        //     text_header: '',
+        // },
     ]
 
     // Acciones tabla Banco Preguntas
@@ -215,22 +240,22 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             type: 'item',
             class: 'p-button-rounded p-button-danger p-button-text',
         },
-        {
-            labelTooltip: 'Ver',
-            icon: 'pi pi-eye',
-            accion: 'ver',
-            type: 'item',
-            class: 'p-button-rounded p-button-warning p-button-text',
-        },
+        // {
+        //     labelTooltip: 'Ver',
+        //     icon: 'pi pi-eye',
+        //     accion: 'ver',
+        //     type: 'item',
+        //     class: 'p-button-rounded p-button-warning p-button-text',
+        // },
     ]
     public accionesTablaSelect: IActionTable[] = [
-        {
-            labelTooltip: 'Ver',
-            icon: 'pi pi-eye',
-            accion: 'ver',
-            type: 'item',
-            class: 'p-button-rounded p-button-warning p-button-text',
-        },
+        // {
+        //     labelTooltip: 'Ver',
+        //     icon: 'pi pi-eye',
+        //     accion: 'ver',
+        //     type: 'item',
+        //     class: 'p-button-rounded p-button-warning p-button-text',
+        // },
     ]
 
     constructor(
@@ -401,23 +426,27 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
                         {},
                         this.expandedRowKeys
                     )
-                    // console.log(
-                    //     'Datos filtrados de banco de preguntas:',
-                    //     this.data
-                    // )
-                    this.data = this.data.map((pregunta) => {
-                        return {
+                    this.data = data
+                        .filter(
+                            (pregunta, index, self) =>
+                                index ===
+                                self.findIndex(
+                                    (p) =>
+                                        p.iPreguntaId === pregunta.iPreguntaId
+                                )
+                        )
+                        .map((pregunta) => ({
                             ...pregunta,
                             cPregunta: pregunta.cPregunta.replace(
                                 /<[^>]+>/g,
                                 ''
                             ),
-                        }
-                    })
+                        }))
                 },
             })
         console.log('Parámetros enviados:', this.params)
     }
+
     onRowSelectionChange(event: any) {
         this.selectedItems
         console.log('Cambios en selección:', event) // Este evento debería contener las filas seleccionadas
@@ -425,7 +454,6 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
     }
 
     guardarPreguntasSeleccionadas(iEvaluacionId: number) {
-        // Filtrar las preguntas seleccionadas que aún no están en `dataSeleccionado`
         const nuevasPreguntas = this.selectedItems.filter(
             (item) =>
                 !this.dataSeleccionado.some(
@@ -433,41 +461,33 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
                         seleccionado.iPreguntaId === item.iPreguntaId
                 )
         )
-        // Preparar el payload con todas las preguntas seleccionadas
         const payload = {
-            iEvaluacionId: iEvaluacionId, // ID de evaluación
+            iEvaluacionId: iEvaluacionId,
             preguntas: nuevasPreguntas.map((pregunta) => ({
-                iPreguntaId: pregunta.iPreguntaId, // ID de cada pregunta
+                iPreguntaId: pregunta.iPreguntaId,
             })),
         }
-        // Enviar el payload al backend en una sola solicitud
         this._apiEre
-            .insertarPreguntaSeleccionada(payload) // Endpoint que maneja múltiples preguntas
+            .insertarPreguntaSeleccionada(payload)
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
                 next: (response) => {
                     response
-                    // Actualizar la lista de seleccionados si se guardaron correctamente
+
                     this.dataSeleccionado = [
                         ...this.dataSeleccionado,
                         ...nuevasPreguntas,
                     ]
+                    this.obtenerPreguntaSeleccionada(iEvaluacionId)
                 },
                 error: (error) => {
                     console.error('Error al guardar las preguntas:', error)
                 },
             })
-
         // Limpiar las preguntas seleccionadas del formulario
         this.selectedItems = []
-
-        // Log para confirmar el proceso
-        console.log('Payload enviado al backend:', payload)
-        console.log(
-            'Estado actualizado de preguntas seleccionadas:',
-            this.dataSeleccionado
-        )
     }
+
     obtenerPreguntaSeleccionada(iEvaluacionId: number) {
         if (!iEvaluacionId || iEvaluacionId < 0) {
             console.error(
@@ -475,18 +495,10 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             )
             return
         }
-
-        // Obtener el areaId dinámicamente desde la ruta
         this.areaId = this.route.snapshot.paramMap.get('areaId')
-        console.log('Area Id:', this.areaId)
-
         // Si el areaId es válido, asignarlo a iCursosNivelGradId
         if (this.areaId) {
             this.params.iCursosNivelGradId = parseInt(this.areaId) // Convertir el areaId a número
-            console.log(
-                'iCursosNivelGradId asignado:',
-                this.params.iCursosNivelGradId
-            )
         }
 
         this._apiEre.obtenerPreguntaSeleccionada(iEvaluacionId).subscribe({
@@ -500,22 +512,71 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
                         this.params.iCursosNivelGradId.toString()
                 )
 
-                console.log(this.preguntaSelecionada)
+                // console.log(this.preguntaSelecionada)
 
-                this.preguntasSeleccionadas = this.preguntasSeleccionadas.map(
-                    (pregunta) => {
-                        return {
+                // this.preguntasSeleccionadas = this.preguntasSeleccionadas.map(
+                //     (pregunta) => {
+                //         return {
+                //             ...pregunta,
+                //             cPregunta: pregunta.cPregunta.replace(
+                //                 /<[^>]+>/g,
+                //                 ''
+                //             ),
+                //         }
+                //     }
+                // )
+                // Verificar si la pregunta ya existe antes de agregarla
+                this.preguntasSeleccionadas =
+                    this.preguntasSeleccionadas.reduce((acc, pregunta) => {
+                        // Eliminar etiquetas HTML de cPregunta
+                        const preguntaLimpia = {
+                            ...pregunta,
+                            cPregunta: pregunta.cPregunta
+                                .replace(/<[^>]+>/g, '')
+                                .trim(),
+                        }
+
+                        // Comprobar si la pregunta ya existe por su ID
+                        const existe = acc.some(
+                            (item) =>
+                                item.iPreguntaId === preguntaLimpia.iPreguntaId
+                        )
+
+                        // Si no existe, agregarla
+                        if (!existe) {
+                            acc.push(preguntaLimpia)
+                        }
+
+                        return acc
+                    }, [])
+
+                console.log(
+                    'Preguntas seleccionadas sin duplicados:',
+                    this.preguntasSeleccionadas
+                )
+
+                // Verificar si alguna pregunta ya existe en la lista
+                this.preguntasSeleccionadas.forEach((pregunta) => {
+                    const existeDuplicado = this.preguntasSeleccionadas.some(
+                        (item) => item.iPreguntaId === pregunta.iPreguntaId
+                    )
+
+                    if (existeDuplicado) {
+                        console.warn(
+                            `La pregunta con ID ${pregunta.iPreguntaId} ya está duplicada.`
+                        )
+                    } else {
+                        // Eliminar etiquetas HTML y agregar la pregunta
+                        const nuevaPregunta = {
                             ...pregunta,
                             cPregunta: pregunta.cPregunta.replace(
                                 /<[^>]+>/g,
                                 ''
                             ),
                         }
+                        this.preguntasSeleccionadas.push(nuevaPregunta)
                     }
-                )
-
-                // this.preguntasSeleccionadas = data
-
+                })
                 console.log('Datos filtrados:', this.preguntasSeleccionadas)
             },
             error: (error) => {
@@ -527,43 +588,22 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
         })
     }
     accionVerPreguntas(): void {
-        this._apiEre
-            .obtenerPreguntaInformacion(
-                this.iEvaluacionId,
-                this.selectedItems.map((item) => item.iPreguntaId).join(',')
-            )
-            .subscribe({
-                next: (resp: any) => {
-                    console.log('Respuesta completa de la API:', resp)
+        this._apiEre.obtenerPreguntaInformacion(this.iEvaluacionId).subscribe({
+            next: (resp: any) => {
+                console.log('Respuesta completa de la API:', resp)
 
-                    // Filtrar la respuesta para obtener solo la pregunta seleccionada
-                    const preguntaSeleccionada = resp.find(
-                        (pregunta: any) =>
-                            // pregunta.iPreguntaId ===
-                            // this.informacionPregunta.iPreguntaId
-                            parseInt(pregunta.iPreguntaId) ===
-                            parseInt(this.informacionPregunta.iPreguntaId)
-                    )
+                // Asignar directamente las preguntas recibidas
+                this.preguntasInformacion = resp
 
-                    if (preguntaSeleccionada) {
-                        this.preguntasInformacion = [preguntaSeleccionada] // Asignar la pregunta seleccionada
-                    } else {
-                        this.preguntasInformacion = [] // Si no se encuentra la pregunta, no se muestra nada
-                    }
-
-                    console.log(
-                        'Pregunta seleccionada del Const Pregunta Seleccionada:',
-                        preguntaSeleccionada
-                    )
-                    console.log(
-                        'Pregunta seleccionada de PreguntasInformacion:',
-                        this.preguntasInformacion
-                    )
-                },
-                error: (err) => {
-                    console.error('Error al cargar datos:', err)
-                },
-            })
+                console.log(
+                    'Información de preguntas recibidas:',
+                    this.preguntasInformacion
+                )
+            },
+            error: (err) => {
+                console.error('Error al cargar datos:', err)
+            },
+        })
     }
 
     generarPdfMatriz(): void {
@@ -598,8 +638,7 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             nivel: this.queryParams.nivel,
             nombreCurso: this.queryParams.nombreCurso,
         }
-        console.log('Parametros para el servicio:', params)
-        //!
+        //console.log('Parametros para el servicio:', params)
         // Llamar al servicio para generar el PDF
         this._apiEre.generarPdfMatrizbyEvaluacionId(params).subscribe(
             (response) => {
@@ -675,7 +714,7 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             },
         },
     ]
-    //! manejar las acciones AGREGARPRUEBA
+    // manejar las acciones AGREGARPRUEBA
     accionBtnItem(action) {
         if (action.accion === 'agregar') {
             this.agregarEditarPregunta({
@@ -731,7 +770,23 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
         }
 
         if (accion === 'eliminar') {
-            this.eliminarPregunta(item)
+            this.informacionPregunta = item
+            this._apiEre
+                .eliminarPregunta(this.iEvaluacionId, item.iPreguntaId)
+                .subscribe({
+                    next: (response) => {
+                        console.log('Respuesta del backend:', response)
+                        // Actualizar la tabla después de eliminar
+                        this.preguntasSeleccionadas =
+                            this.preguntasSeleccionadas.filter(
+                                (pregunta) =>
+                                    pregunta.iPreguntaId !== item.iPreguntaId
+                            )
+                    },
+                    error: (error) => {
+                        console.error('Error al eliminar la pregunta:', error)
+                    },
+                })
         }
         if (accion === 'ver') {
             this.informacionPregunta = item

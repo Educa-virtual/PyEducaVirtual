@@ -272,17 +272,18 @@ export class ApiEvaluacionesRService {
             }
         )
     }
-    obtenerPreguntaInformacion(iEvaluacionId: number, iPreguntaIds: string) {
+    obtenerPreguntaInformacion(iEvaluacionId: number) {
         return this.http.get(
             `${this.baseUrl}/ere/Evaluaciones/obtenerPreguntaInformacion`,
             {
                 params: {
                     iEvaluacionId: iEvaluacionId.toString(), // Convertir a cadena si es necesario
-                    iPreguntaIds: iPreguntaIds.toString(), // Convertir a cadena si es necesario
+                    // iPreguntaIds: iPreguntaIds.toString(), // Convertir a cadena si es necesario
                 },
             }
         )
     }
+
     //Servicio Guardar Inicio Final Exm Areas
     // guardarInicioFinalExmAreas(data) {
     //     return this.http.post(
@@ -344,6 +345,15 @@ export class ApiEvaluacionesRService {
                 `${this.baseUrl}/ere/alternativas/obtenerAlternativaByPreguntaId/${id}`
             )
             .pipe(map((resp) => resp['data']))
+    }
+    eliminarPregunta(
+        iEvaluacionId: number,
+        iPreguntaId: number
+    ): Observable<any> {
+        return this.http.delete(
+            `${this.baseUrl}/ere/Evaluaciones/eliminarPregunta`,
+            { params: { iEvaluacionId, iPreguntaId } }
+        )
     }
 
     // encabezados preguntas

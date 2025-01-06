@@ -24,6 +24,7 @@ import { Subject } from 'rxjs'
 import { CompartirFormularioEvaluacionService } from '../../../services/ereEvaluaciones/compartir-formulario-evaluacion.service'
 import { CompartirIdEvaluacionService } from '../../../services/ereEvaluaciones/compartir-id-evaluacion.service'
 import { CommonModule } from '@angular/common'
+import { FormsModule } from '@angular/forms'
 export type Layout = 'list' | 'grid'
 @Component({
     selector: 'app-areas',
@@ -31,6 +32,7 @@ export type Layout = 'list' | 'grid'
     templateUrl: './areas.component.html',
     styleUrl: './areas.component.scss',
     imports: [
+        FormsModule,
         ContainerPageComponent,
         DataViewModule,
         InputTextModule,
@@ -66,6 +68,7 @@ export class AreasComponent implements OnInit {
     cantidadPreguntas: number
     iCursosNivelGradId: any = [] // ID del curso/nivel de grado de prueba
     nombreEvaluacionn: string = 'Evaluación de Prueba' // Nombre de la evaluación
+
     public onFilter(dv: DataView, event: Event) {
         const text = (event.target as HTMLInputElement).value
         this.cursos = this.data
@@ -155,7 +158,7 @@ export class AreasComponent implements OnInit {
     datos: any
     areaData = []
     obtenerConteoPorCurso(): void {
-        this.areaData = this.area
+        // this.areaData = this.area
 
         this.datos = {
             iEvaluacionId: this.iEvaluacionId,

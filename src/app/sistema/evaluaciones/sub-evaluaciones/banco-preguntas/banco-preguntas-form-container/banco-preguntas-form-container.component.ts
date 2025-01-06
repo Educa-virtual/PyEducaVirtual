@@ -207,12 +207,11 @@ export class BancoPreguntasFormContainerComponent implements OnInit {
                     },
                 })
         } else {
-            console.log('No se ha recibido el payload aún.')
-
+            data.iDesempenoId = 81
             // Si no se ha recibido payload, simplemente guardamos preguntas con datos básicos
-            data.iCursosNivelGradId = 6 //aqui igual dinamico
+            data.iCursosNivelGradId = 2 //aqui igual dinamico
             data.iNivelGradoId = 1 //aqui igual dinamico
-            data.iEspecialistaId = 1 //aqui igual dinamico
+            data.iEspecialistaId = 2 //aqui igual dinamico
 
             console.log('Guardando preguntas sin payload de desempeño:', data)
 

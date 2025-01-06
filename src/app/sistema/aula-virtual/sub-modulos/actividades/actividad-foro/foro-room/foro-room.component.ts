@@ -103,7 +103,8 @@ export class ForoRoomComponent implements OnInit {
     display = false
     nombrecompleto
 
-    public foro
+    foro: any
+    resptDocente: any
     iPerfilId: number
     iEstudianteId: number
     iDocenteId: number
@@ -173,6 +174,7 @@ export class ForoRoomComponent implements OnInit {
         this.obtenerForo()
         this.getRespuestaF()
         this.getEstudiantesMatricula()
+        // this.obtenerResptDocente()
     }
     itemRespuesta: any[] = []
     // menu para editar y eliminar el comentario del foro
@@ -237,6 +239,7 @@ export class ForoRoomComponent implements OnInit {
     //     this.estudianteSelect = respuestasForo
     //     this.foroFormComnt.patchValue(respuestasForo)
     // }
+
     openModalCalificacion(respuestasForoEstudiant) {
         // console.log('estudiante seleccionado', this.estudianteSelectComent)
         this.modelaCalificacionComen = true
@@ -281,15 +284,16 @@ export class ForoRoomComponent implements OnInit {
         // const nn = value.cForoRptaDocente
         // const conclusionFinalDocente = this.limpiarHTML(nn)
         // value.cForoRptaDocente = conclusionFinalDocente
-        this._aulaService.calificarForoDocente(where).subscribe((resp: any) => {
-            if (resp?.validated) {
-                this.modelaCalificacionComen = false
-                this.getRespuestaF()
-                console.log(resp)
-            }
-        })
-        console.log('Guardar Calificacion', where)
-        this.foroFormCalf.reset()
+        console.log(where, this.foro)
+        // this._aulaService.calificarForoDocente(where).subscribe((resp: any) => {
+        //     if (resp?.validated) {
+        //         this.modelaCalificacionComen = false
+        //         this.getRespuestaF()
+        //         console.log(resp)
+        //     }
+        // })
+        // console.log('Guardar Calificacion', where)
+        // this.foroFormCalf.reset()
     }
     startReply(index: number) {
         this.selectedCommentIndex = index // Guarda el índice del comentario seleccionado
@@ -414,6 +418,7 @@ export class ForoRoomComponent implements OnInit {
                         },
                     ]
                     this.foro = resp
+                    this.obtenerResptDocente()
                     // console.log('obtener datos de foro01', resp)
                     this.FilesTareas = this.foro?.cForoUrl
                         ? JSON.parse(this.foro?.cForoUrl)
@@ -432,6 +437,26 @@ export class ForoRoomComponent implements OnInit {
                         )
                     }
                 },
+            })
+    }
+    // obtener retroalimentacion de docente a estudiante x su comentario
+    obtenerResptDocente() {
+        const idEstudiante = Number(this.iEstudianteId)
+        const idForoId = Number(this.foro.iForoId)
+
+        // const where = {
+        //     iEstudianteId: idEstudiante,
+        //     iForoId: idForoId
+        // }
+        // console.log(where)
+        this._aulaService
+            .obtenerResptDocente({
+                iEstudianteId: idEstudiante,
+                iForoId: idForoId,
+            })
+            .subscribe((Data) => {
+                this.resptDocente = Data['data']
+                console.log(this.resptDocente)
             })
     }
     formatDateISO(date: string | number | Date): string {

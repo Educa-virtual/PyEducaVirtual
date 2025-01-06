@@ -46,11 +46,11 @@ export class RubricaCalificarComponent implements OnInit, OnDestroy {
     @ViewChild('contenidoImprimible', { static: true })
     contenidoImprimible!: ElementRef
 
-    constructor(
-        private route: ActivatedRoute,
-        private communicationService: CommunicationService,
-        private httpService: httpService
-    ) {
+    private communicationService = inject(CommunicationService)
+
+    private route = inject(ActivatedRoute)
+
+    constructor(private httpService: httpService) {
         this.printSubscription =
             this.communicationService.printRequest$.subscribe(() =>
                 this.imprimir()
@@ -224,7 +224,9 @@ export class RubricaCalificarComponent implements OnInit, OnDestroy {
             this.data = (
                 (await this.httpService.getData(
                     'evaluaciones/instrumento-evaluaciones/obtenerRubricaEvaluacion',
-                    this.params
+                    {
+                        params: this.params,
+                    }
                 )) as any
             ).data[0]
         }

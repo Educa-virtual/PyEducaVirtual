@@ -8,6 +8,8 @@ import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.ser
 import { MessageService } from 'primeng/api'
 import { GeneralService } from '@/app/servicios/general.service'
 import { ButtonModule } from 'primeng/button'
+import { ConstantesService } from '@/app/servicios/constantes.service'
+import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
 @Component({
     selector: 'app-tab-inicio',
     standalone: true,
@@ -25,7 +27,12 @@ export class TabInicioComponent implements OnInit {
     private _formBuilder = inject(FormBuilder)
     private _aulaService = inject(ApiAulaService)
     private GeneralService = inject(GeneralService)
+    private _constantesService = inject(ConstantesService)
 
+    public DOCENTE = DOCENTE
+    public ESTUDIANTE = ESTUDIANTE
+
+    iPerfilId: number
     anunciosDocente: any[] = []
 
     //form para obtener la variable
@@ -38,6 +45,7 @@ export class TabInicioComponent implements OnInit {
     constructor(private messageService: MessageService) {}
     //Inicializamos
     ngOnInit(): void {
+        this.iPerfilId = this._constantesService.iPerfilId
         this.obtenerAnuncios()
     }
     // metodo para limpiar las etiquetas

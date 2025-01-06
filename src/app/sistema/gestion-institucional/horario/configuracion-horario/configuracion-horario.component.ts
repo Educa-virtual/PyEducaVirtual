@@ -641,12 +641,12 @@ export class ConfiguracionHorarioComponent implements OnInit {
         if ((area.idDocCursoId ?? 0) < 1) {
             this.visible_docente = true
             this.caption_docente = 'Registrar docente de ' + area.cCursoNombre
-            alert('mensaje dentro de if')
+            //  alert('mensaje dentro de if')
         } else {
             this.visible_horario = true
             this.caption = 'Registrar horario de ' + area.cCursoNombre
             this.option = 'crear'
-            alert('mensaje dentro de else')
+            // alert('mensaje dentro de else')
         }
 
         console.log(area, 'area en configuración')
@@ -680,6 +680,7 @@ export class ConfiguracionHorarioComponent implements OnInit {
                 },
                 complete: () => {
                     console.log('Request completed')
+                    this.searchListarAsignaturas() // refresca los registros
                 },
             })
     }
@@ -720,7 +721,12 @@ export class ConfiguracionHorarioComponent implements OnInit {
     getFormattedTime(date: Date): string {
         const formattedDate = new Date(date)
         formattedDate.setSeconds(0)
-        return formattedDate.toLocaleTimeString() // Ajusta el formato según sea necesario
+        return formattedDate.toLocaleTimeString('en-US', { hour12: false }) // Ajusta el formato según sea necesario
+    }
+
+    formatTimeToSQL(time: string): string {
+        const date = new Date(`1970-01-01T${time}`)
+        return date.toTimeString().split(' ')[0] // Devuelve 'HH:mm:ss'
     }
 
     getConfig(dia: number): string {

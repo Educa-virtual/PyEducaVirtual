@@ -255,126 +255,18 @@ export class EvaluacionesComponent implements OnInit {
     toggleCurso(curso: any): void {
         curso.isSelected = !curso.isSelected // Cambiar el estado seleccionado
     }
-
-    // MÉTODO PARA GUARDAR INICIO FIN EXAMEN AREAS
-    // guardarInicioFinalExmAreas() {
-    //     const fecha = this.form.value // Captura todos los valores del formulario
-    //     console.log('Form value changes', fecha)
-
-    // // Función para formatear las fechas al formato 'YYYY-MM-DD HH:mm:ss'
-    // const formatDate = (date: Date | null) => {
-    //     if (!date) return null // Si no hay fecha, regresa null
-    //     const year = date.getFullYear()
-    //     const month = String(date.getMonth() + 1).padStart(2, '0') // Mes comienza en 0
-    //     const day = String(date.getDate()).padStart(2, '0')
-    //     const hours = String(date.getHours()).padStart(2, '0')
-    //     const minutes = String(date.getMinutes()).padStart(2, '0')
-    //     const seconds = String(date.getSeconds()).padStart(2, '0')
-    //     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
-    // }
-
-    //     // Extraer los cursos con fechas
-    //     const datosCursos: any[] = []
-    //     this.listaCursos.forEach((nivel: any) => {
-    //         nivel.grados.forEach((grado: any) => {
-    //             grado.cursos.forEach((curso: any) => {
-    //                 const inicioControl = `${curso.cCursoNombre}${curso.iCursoNivelGradId}Inicio`
-    //                 const finControl = `${curso.cCursoNombre}${curso.iCursoNivelGradId}Fin`
-
-    //                 // Verificar si existen los valores en el formulario
-    //                 if (fecha[inicioControl] || fecha[finControl]) {
-    //                     datosCursos.push({
-    //                         iCursoNivelGradId: curso.iCursoNivelGradId, // ID del curso
-    //                         fechaInicio: formatDate(
-    //                             fecha[inicioControl] || null
-    //                         ), // Formatea fecha de inicio
-    //                         fechaFin: formatDate(fecha[finControl] || null), // Formatea fecha de fin
-    //                     })
-    //                 }
-    //             })
-    //         })
-    //     })
-
-    //     // Obtener solo los iCursoNivelGradId en un arreglo
-    //     const iCursoNivelGradIds = datosCursos.map(
-    //         (curso) => curso.iCursoNivelGradId
-    //     )
-
-    //     // Estructura final con iEvaluacionId y los datos de cursos
-    //     const datos = {
-    //         iEvaluacionId: this.iiEvaluacionId, // ID de evaluación
-    //         iCursoNivelGradId: iCursoNivelGradIds, // Lista de cursos con fechas
-    //         fechaIniFin: datosCursos, // Lista de cursos con fechas
-    //     }
-
-    //     // Aquí realizas la petición HTTP para actualizar en la base de datos
-    //     this._apiEre.guardarInicioFinalExmAreas(datos).subscribe(
-    //         (respuesta) => {
-    //             console.log('Actualización exitosa:', respuesta)
-    //         },
-    //         (error) => {
-    //             console.error('Error al actualizar:', error)
-    //         }
-    //     )
-
-    //     console.log('Datos a enviar al servidor:', datos)
-    // }
-    // async guardarInicioFinalExmAreas() {
-    //     // return await this.apiservice.updateData({
-    //     //     esquema: 'ere',
-    //     //     tabla: 'evaluacion',
-    //     // })
-    //     console.log(Object.keys(this.form.value))
-
-    //     const coincidencias: IUpdateTableService[] = [] // Arreglo para almacenar coincidencias
-
-    //     this.evaluacionCursos.cursos_niveles.forEach((data) => {
-    //         const inicioKey = `${data.cCursoNombre}${data.iCursoNivelGradId}[${data.iExamCurId}]Inicio`
-    //         const finKey = `${data.cCursoNombre}${data.iCursoNivelGradId}[${data.iExamCurId}]Fin`
-
-    //         const inicioValue = this.form.value[inicioKey] // Busca el valor de 'Inicio' en el formulario
-    //         const finValue = this.form.value[finKey] // Busca el valor de 'Fin' en el formulario
-
-    //         if (inicioValue || finValue) {
-    //             coincidencias.push({
-    //                 esquema: 'ere',
-    //                 tabla: 'examen_cursos',
-    //                 campos: {
-    //                     iExamCurId: data.iExamCurId,
-    //                     dtExamenFechaInicio:
-    //                         this.utils.convertToSQLDateTime(inicioValue) ||
-    //                         null, // Asigna el valor o null si no existe
-    //                     dtExamenFechaFin:
-    //                         this.utils.convertToSQLDateTime(finValue) || null, // Asigna el valor o null si no existe
-    //                 },
-    //                 where: {
-    //                     COLUMN_NAME: 'iExamCurId',
-    //                     VALUE: data.iExamCurId,
-    //                 },
-    //             })
-    //         }
-    //     })
-
-    //     this.apiservice.updateData(coincidencias)
-    //     this.visible = false
-    //     this.showModalCursosEre = false
-    //     this.form.reset()
-    //     this.removeControls()
-    // }
     async guardarInicioFinalExmAreas() {
-        const formatDate = (date: Date | null) => {
-            if (!date) return null // Si no hay fecha, regresa null
-            const day = String(date.getDate()).padStart(2, '0')
-            const month = String(date.getMonth() + 1).padStart(2, '0') // Mes comienza en 0
-            const year = date.getFullYear()
-            const hours = String(date.getHours()).padStart(2, '0')
-            const minutes = String(date.getMinutes()).padStart(2, '0')
-            const seconds = String(date.getSeconds()).padStart(2, '0')
-            return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`
-        }
-
+        // const formatDate = (date: Date | null) => {
+        //     if (!date) return null // Si no hay fecha, regresa null
+        //     const day = String(date.getDate()).padStart(2, '0')
+        //     const month = String(date.getMonth() + 1).padStart(2, '0') // Mes comienza en 0
+        //     const year = date.getFullYear()
+        //     const hours = String(date.getHours()).padStart(2, '0')
+        //     const minutes = String(date.getMinutes()).padStart(2, '0')
+        //     const seconds = String(date.getSeconds()).padStart(2, '0')
+        //     return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`
+        // }
         const coincidencias: IUpdateTableService[] = [] // Arreglo para almacenar coincidencias
-
         this.evaluacionCursos.cursos_niveles.forEach((data) => {
             const inicioKey = `${data.cCursoNombre}${data.iCursoNivelGradId}[${data.iExamCurId}]Inicio`
             const finKey = `${data.cCursoNombre}${data.iCursoNivelGradId}[${data.iExamCurId}]Fin`
@@ -384,10 +276,10 @@ export class EvaluacionesComponent implements OnInit {
             const finValue = this.form.value[finKey]
 
             // Formatea las fechas antes de enviarlas
-            const formattedInicio = formatDate(inicioValue)
-            const formattedFin = formatDate(finValue)
-
-            if (formattedInicio || formattedFin) {
+            // const formattedInicio = formatDate(inicioValue)
+            // const formattedFin = formatDate(finValue)
+            //if (formattedInicio || formattedFin) {
+            if (inicioValue || finValue) {
                 coincidencias.push({
                     esquema: 'ere',
                     tabla: 'examen_cursos',
@@ -414,8 +306,6 @@ export class EvaluacionesComponent implements OnInit {
         this.form.reset()
         this.removeControls()
     }
-
-    //!
     toggleBotonc(): void {
         this.mostrarBoton = !this.mostrarBoton
     }
@@ -525,7 +415,6 @@ export class EvaluacionesComponent implements OnInit {
     closeDialog(evaluacion: any) {
         // Aquí va la lógica para finalizar el formulario
         this.visible = false
-
         // Llamar a actualizarDatos automáticamente al cerrar
         this.actualizarDatos(evaluacion)
     }

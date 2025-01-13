@@ -7,43 +7,32 @@ import {
     OnInit,
     Output,
 } from '@angular/core'
-
 /*GRILLA */
-
 import { TableModule } from 'primeng/table'
 import { CommonModule } from '@angular/common'
-
 /*BOTONES */
 import { ButtonModule } from 'primeng/button'
-
 /*MODAL */
 import { DialogModule } from 'primeng/dialog'
-
 /*INPUT TEXT */
 import { InputTextModule } from 'primeng/inputtext'
-
 import { EvaluacionesFormComponent } from '../evaluaciones/evaluaciones-form/evaluaciones-form.component'
 import { CompartirFormularioEvaluacionService } from './../../services/ereEvaluaciones/compartir-formulario-evaluacion.service'
-
 import { DialogService } from 'primeng/dynamicdialog'
 import { MODAL_CONFIG } from '@/app/shared/constants/modal.config'
-
 import {
     IActionTable,
     IColumn,
     TablePrimengComponent,
 } from '../../../../shared/table-primeng/table-primeng.component'
-
 import { ApiEvaluacionesRService } from '../../services/api-evaluaciones-r.service'
 import { BehaviorSubject, Subject, takeUntil } from 'rxjs'
-
 import {
     ContainerPageComponent,
     IActionContainer,
 } from '@/app/shared/container-page/container-page.component'
 import { CompartirIdEvaluacionService } from './../../services/ereEvaluaciones/compartir-id-evaluacion.service'
 import { PrimengModule } from '@/app/primeng.module'
-
 import { MessageService } from 'primeng/api'
 import { Router } from '@angular/router'
 //Calendario
@@ -56,6 +45,7 @@ import {
 import { ApiService } from '@/app/servicios/api.service'
 import { IUpdateTableService } from '@/app/interfaces/api.interface'
 import { UtilService } from '@/app/servicios/utils.service'
+import { ConstantesService } from '@/app/servicios/constantes.service'
 @Component({
     selector: 'app-evaluaciones',
     standalone: true,
@@ -95,6 +85,9 @@ export class EvaluacionesComponent implements OnInit {
     cursosSeleccionados: any[] = []
     fechaHoraInicio: Date | undefined
     fechaHoraFin: Date | undefined
+    cursoSeleccionado: Map<number, boolean> = new Map()
+    iiEvaluacionId: number // El ID de evaluación que quieras usar
+    nombreEvaluacion: string
 
     @Output() opcionChange = new EventEmitter<string>()
     @Input() dataRow: any[] = [] // Los datos que recibe la tabla
@@ -115,6 +108,7 @@ export class EvaluacionesComponent implements OnInit {
     public showModalCursosEre: boolean = false
     form: FormGroup
 
+    private ConstantesService = inject(ConstantesService)
     private _formBuilder = inject(FormBuilder) //form para obtener la variable
     public guardarIniFinCurso: FormGroup = this._formBuilder.group({})
     constructor(
@@ -130,9 +124,6 @@ export class EvaluacionesComponent implements OnInit {
         this.form = this.fb.group({})
     }
 
-    cursoSeleccionado: Map<number, boolean> = new Map()
-    iiEvaluacionId: number // El ID de evaluación que quieras usar
-    nombreEvaluacion: string
     ngOnInit() {
         this.obtenerEvaluacion()
         this.caption = 'Evaluaciones'
@@ -165,18 +156,22 @@ export class EvaluacionesComponent implements OnInit {
 
         const [evaluacionCursos] = await this.apiservice.getData({
             esquema: 'ere',
-            tabla: 'V_EvaluacionFechasCursos',
+            tabla: 'V_EspecialistasEvaluacionesCursos',
             campos: '*',
             where: 'iEvaluacionId = ' + this.iiEvaluacionId,
         })
 
+        // Verifica si la respuesta tiene la propiedad 'cursos_niveles'
+        if (!evaluacionCursos || !evaluacionCursos.cursos_niveles) {
+            console.error(
+                'No se encontró la propiedad cursos_niveles en la respuesta'
+            )
+            return
+        }
+
         this.evaluacionCursos = evaluacionCursos
-
-        console.log('Evaluación cursos:', evaluacionCursos)
-
         const agruparPorNivelYGrado = () => {
             const niveles = {}
-
             evaluacionCursos.cursos_niveles.forEach((data) => {
                 const { iNivelTipoId, cNivelTipoNombre } = data
                 const {
@@ -188,7 +183,6 @@ export class EvaluacionesComponent implements OnInit {
                     iExamCurId,
                 } = data
 
-                // Si el nivel no existe en el resultado, inicialízalo
                 if (!niveles[iNivelTipoId]) {
                     niveles[iNivelTipoId] = {
                         iNivelTipoId,
@@ -197,18 +191,15 @@ export class EvaluacionesComponent implements OnInit {
                     }
                 }
 
-                // Buscar el grado dentro del nivel
                 let grado = niveles[iNivelTipoId].grados.find(
                     (g) => g.cGradoAbreviacion === cGradoAbreviacion
                 )
 
-                // Si el grado no existe, inicialízalo
                 if (!grado) {
                     grado = { cGradoAbreviacion, cursos: [] }
                     niveles[iNivelTipoId].grados.push(grado)
                 }
 
-                // Agregar el curso al grado correspondiente
                 grado.cursos.push({
                     iExamCurId,
                     iCursoNivelGradId,
@@ -218,16 +209,11 @@ export class EvaluacionesComponent implements OnInit {
                 })
             })
 
-            // Convertir a un arreglo
             return Object.values(niveles)
         }
 
-        // Ejecutar la función
         const nivelesConGradosYCursos = agruparPorNivelYGrado()
-        console.log(nivelesConGradosYCursos)
-
         this.listaCursos = nivelesConGradosYCursos
-
         this.listaCursos.forEach((nivel) => {
             nivel.grados.forEach((grado) => {
                 grado.cursos.forEach((curso) => {
@@ -251,6 +237,7 @@ export class EvaluacionesComponent implements OnInit {
             })
         })
     }
+    //!New
 
     toggleCurso(curso: any): void {
         curso.isSelected = !curso.isSelected // Cambiar el estado seleccionado
@@ -309,6 +296,7 @@ export class EvaluacionesComponent implements OnInit {
     toggleBotonc(): void {
         this.mostrarBoton = !this.mostrarBoton
     }
+
     accionesPrincipal: IActionContainer[] = [
         {
             labelTooltip: 'Agregar evaluacións',

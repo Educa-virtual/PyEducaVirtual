@@ -1,20 +1,13 @@
-//Agregar Servicio de Evaluacion
-//!Se agrego el afterviewinit
 import { CompartirIdEvaluacionService } from './../../../services/ereEvaluaciones/compartir-id-evaluacion.service'
-//import { CompartirFormularioEvaluacionService } from './../../../services/ereEvaluaciones/compartir-formulario-evaluacion.service'
 import { CompartirFormularioEvaluacionService } from './../../../services/ereEvaluaciones/compartir-formulario-evaluacion.service'
 import { Component, inject, OnInit, ViewChild } from '@angular/core'
-
 /*BOTONES */
 import { ButtonModule } from 'primeng/button'
-
 /*MODAL */
 import { DialogModule } from 'primeng/dialog'
-
 /*INPUT TEXT */
 import { InputTextModule } from 'primeng/inputtext'
 import { InputTextareaModule } from 'primeng/inputtextarea'
-
 //TAB
 import { TabViewModule } from 'primeng/tabview'
 import { DropdownModule } from 'primeng/dropdown'
@@ -118,10 +111,6 @@ export class EvaluacionesFormComponent implements OnInit {
     private _apiEre = inject(ApiEvaluacionesRService)
     private _MessageService = inject(MessageService) //Agregando Mensaje
 
-    // Función para mostrar el valor en la consola
-    logCalendarValue() {
-        console.log('Valor del calendario:', this.dtEvaluacionCreacion)
-    }
     constructor(
         public _config: DynamicDialogConfig, // Inyección de configuración
         private compartirIdEvaluacionService: CompartirIdEvaluacionService, // Inyección del servicio
@@ -145,11 +134,16 @@ export class EvaluacionesFormComponent implements OnInit {
             dtEvaluacionLiberarMatriz: [null, Validators.required],
             dtEvaluacionLiberarCuadernillo: [null, Validators.required],
             dtEvaluacionLiberarResultados: [null, Validators.required],
+            cEvaluacionIUrlCuadernillo: [null, Validators.required], // URL de la cuadernillo
+            cEvaluacionUrlHojaRespuestas: [null, Validators.required], // URL de la hoja de respuestas
             iEstado: [null],
             iSesionId: [null],
         })
     }
-
+    // Función para mostrar el valor en la consola
+    logCalendarValue() {
+        console.log('Valor del calendario:', this.dtEvaluacionCreacion)
+    }
     // Método para enviar el formulario y guardar el dato en el servicio
     onSubmit(): void {
         const nombre = this.evaluacionFormGroup.get('cEvaluacionNombre')?.value
@@ -273,6 +267,8 @@ export class EvaluacionesFormComponent implements OnInit {
             dtEvaluacionLiberarCuadernillo: [null, Validators.required],
             dtEvaluacionLiberarResultados: [null, Validators.required],
             iEstado: [null],
+            cEvaluacionIUrlCuadernillo: [null, Validators.required], // URL de la cuadernillo
+            cEvaluacionUrlHojaRespuestas: [null, Validators.required], // URL de la hoja de respuestas
         })
     }
     ereVerEvaluacion() {
@@ -301,6 +297,10 @@ export class EvaluacionesFormComponent implements OnInit {
                 iEstado:
                     evaluacionData.iEstado === '1' ||
                     evaluacionData.iEstado === 1,
+                cEvaluacionIUrlCuadernillo:
+                    evaluacionData.cEvaluacionIUrlCuadernillo,
+                cEvaluacionUrlHojaRespuestas:
+                    evaluacionData.cEvaluacionUrlHojaRespuestas,
             })
             // Aquí estamos configurando el valor de `checked` para el input switch
             this.checked =
@@ -345,6 +345,12 @@ export class EvaluacionesFormComponent implements OnInit {
             ).value,
             iEstado: this.checked ? 1 : 0, // Usamos el valor de 'checked' para enviar 1 o 0
             iSesionId: iSesionId,
+            cEvaluacionIUrlCuadernillo: this.evaluacionFormGroup.get(
+                'cEvaluacionIUrlCuadernillo'
+            ).value,
+            cEvaluacionUrlHojaRespuestas: this.evaluacionFormGroup.get(
+                'cEvaluacionUrlHojaRespuestas'
+            ).value,
         }
 
         console.log(data)
@@ -422,6 +428,13 @@ export class EvaluacionesFormComponent implements OnInit {
             ).value,
             iEstado: this.evaluacionFormGroup.get('iEstado').value ? 1 : 0,
             iSesionId: iSesionId,
+
+            cEvaluacionIUrlCuadernillo: this.evaluacionFormGroup.get(
+                'cEvaluacionIUrlCuadernillo'
+            ).value,
+            cEvaluacionUrlHojaRespuestas: this.evaluacionFormGroup.get(
+                'cEvaluacionUrlHojaRespuestas'
+            ).value,
         }
 
         this._apiEre.actualizarEvaluacion(data).subscribe({

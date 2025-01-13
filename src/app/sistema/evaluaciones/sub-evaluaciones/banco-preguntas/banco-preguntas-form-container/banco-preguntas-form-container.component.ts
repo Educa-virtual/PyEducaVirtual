@@ -50,8 +50,18 @@ export class BancoPreguntasFormContainerComponent implements OnInit {
     }
 
     ngOnInit() {
+        console.warn(
+            'CURSO GRADO',
+            this.compartirFormularioEvaluacionService.getGrado()
+        )
         this.getData()
-        console.log('Data de Banco preguntas Llega', this._config)
+        console.warn('Data de Banco preguntas Llega', this._config)
+        console.warn('iCursoNivelGradId :', this._config.data.iCursoNivelGradId)
+        console.warn(
+            'iCursosNivelGradId:',
+            this._config?.data?.iCursosNivelGradId
+        )
+
         this.tipoPreguntas = this._config.data.tipoPreguntas.filter((item) => {
             return item.iTipoPregId !== 0
         })
@@ -171,7 +181,6 @@ export class BancoPreguntasFormContainerComponent implements OnInit {
                                 'No se generó un iDesempeñoId válido.'
                             )
                         }
-
                         // Convertir ID a número entero
                         const iiiDesempenoId = parseInt(iiDesempenoId, 10)
                         console.log(
@@ -179,9 +188,12 @@ export class BancoPreguntasFormContainerComponent implements OnInit {
                             iiiDesempenoId
                         )
 
+                        const iCursoNivelGradId =
+                            this._config?.data?.iCursosNivelGradId
+                        console.warn('iCursoNivelGradId:', iCursoNivelGradId)
                         // Paso 2: Preparar el objeto `data` con los valores adicionales
                         data.iDesempenoId = iiiDesempenoId
-                        data.iCursosNivelGradId = 6 //En este caso debe ser dinamico, dependiendo de los cursos.
+                        data.iCursosNivelGradId = iCursoNivelGradId //En este caso debe ser dinamico, dependiendo de los cursos.
                         data.iNivelGradoId = 1 //Aqui igual Dinamico
                         data.iEspecialistaId = 2 //Aqui igual Dinamico
 
@@ -207,9 +219,11 @@ export class BancoPreguntasFormContainerComponent implements OnInit {
                     },
                 })
         } else {
+            const iCursoNivelGradId = this._config?.data?.iCursosNivelGradId
+            console.warn('iCursoNivelGradId:', iCursoNivelGradId)
             data.iDesempenoId = 81
             // Si no se ha recibido payload, simplemente guardamos preguntas con datos básicos
-            data.iCursosNivelGradId = 2 //aqui igual dinamico
+            data.iCursosNivelGradId = iCursoNivelGradId //aqui igual dinamico
             data.iNivelGradoId = 1 //aqui igual dinamico
             data.iEspecialistaId = 2 //aqui igual dinamico
 

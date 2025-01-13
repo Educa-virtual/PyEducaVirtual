@@ -279,21 +279,24 @@ export class ForoRoomComponent implements OnInit {
         // const rpta = this.respuestasForo.find(
         //     (i) => i.EstudianteId === this.perfilSelect.EstudianteId
         // )
-        // this.foroFormCalf.controls['iForoRptaId'].setValue(rpta.iForoRptaId)
-        // const value = this.foroFormCalf.value
-        // const nn = value.cForoRptaDocente
-        // const conclusionFinalDocente = this.limpiarHTML(nn)
-        // value.cForoRptaDocente = conclusionFinalDocente
-        console.log(where, this.foro)
-        // this._aulaService.calificarForoDocente(where).subscribe((resp: any) => {
-        //     if (resp?.validated) {
-        //         this.modelaCalificacionComen = false
-        //         this.getRespuestaF()
-        //         console.log(resp)
-        //     }
-        // })
-        // console.log('Guardar Calificacion', where)
-        // this.foroFormCalf.reset()
+        this.foroFormCalf.controls['iForoRptaId'].setValue(rpta.iForoRptaId)
+        const value = this.foroFormCalf.value
+        const nn = value.cForoRptaDocente
+        const conclusionFinalDocente = this.limpiarHTML(nn)
+        value.cForoRptaDocente = conclusionFinalDocente
+        // console.log(where, this.foro)
+        this._aulaService.calificarForoDocente(where).subscribe((resp: any) => {
+            if (resp?.validated) {
+                this.modelaCalificacionComen = false
+                this.getRespuestaF()
+                console.log(resp)
+            }
+        })
+        console.log('Guardar Calificacion', where)
+        this.foroFormCalf.reset()
+    }
+    cerrarmodal() {
+        this.modelaCalificacionComen = false
     }
     startReply(index: number) {
         this.selectedCommentIndex = index // Guarda el índice del comentario seleccionado

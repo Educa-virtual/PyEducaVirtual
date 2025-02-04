@@ -37,6 +37,7 @@ export class ActividadesNoLectivasComponent implements OnInit {
     ]
     date = new Date()
     showModal: boolean = false
+    //Define las acciones disponibles en el contenedor de acciones.
     actionsContainer = [
         {
             labelTooltip: 'Agregar',
@@ -53,6 +54,8 @@ export class ActividadesNoLectivasComponent implements OnInit {
         //     class: 'p-button-danger',
         // },
     ]
+    //Define las acciones disponibles en la lista de elementos.
+
     actions = [
         {
             labelTooltip: 'Editar',
@@ -75,6 +78,8 @@ export class ActividadesNoLectivasComponent implements OnInit {
     titulo: string = ''
     opcion: string = ''
     informacion
+    //Columnas de la tabla de actividades no lectivas.
+
     columns = [
         {
             type: 'item',
@@ -125,7 +130,7 @@ export class ActividadesNoLectivasComponent implements OnInit {
             text: 'center',
         },
     ]
-
+    //Método de inicialización del componente
     ngOnInit() {
         !this.tiposCargaNoLectivas.length
             ? this.obtenerTiposCargaNoLectivas()
@@ -133,6 +138,7 @@ export class ActividadesNoLectivasComponent implements OnInit {
         this.obtenerCargaNoLectivasxTiposDedicaciones()
         this.obtenerCargaNoLectivas()
     }
+    //Maneja las acciones de los botones dentro del componente
     accionBtnItem(elemento): void {
         const { accion } = elemento
         const { item } = elemento
@@ -208,6 +214,7 @@ export class ActividadesNoLectivasComponent implements OnInit {
                 break
         }
     }
+    //Obtiene los tipos de carga no lectivas desde el servicio
 
     obtenerTiposCargaNoLectivas() {
         const params = {
@@ -222,6 +229,8 @@ export class ActividadesNoLectivasComponent implements OnInit {
         }
         this.getInformation(params, params.ruta + '-' + params.prefix)
     }
+    //Obtiene la carga no lectiva por tipos de dedicaciones
+
     obtenerCargaNoLectivasxTiposDedicaciones() {
         const iYearId = this._LocalStoreService.getItem('dremoYear')
         const params = {
@@ -257,6 +266,7 @@ export class ActividadesNoLectivasComponent implements OnInit {
         const iYearId = this._LocalStoreService.getItem('dremoYear')
         item.iDocenteId = this._ConstantesService.iDocenteId
         item.valorBusqueda = iYearId
+        // Determinar si la operación es guardar o actualizar
         const ruta = item.opcion === 'GUARDAR' ? 'store' : 'update'
         const prefix =
             item.opcion === 'GUARDAR'
@@ -282,6 +292,7 @@ export class ActividadesNoLectivasComponent implements OnInit {
         item.cDetCargaNoLectEvidencias = item.cDetCargaNoLectEvidencias
             ? JSON.stringify(item.cDetCargaNoLectEvidencias)
             : null
+        // Parámetros de la petición
         const params = {
             petition: 'post',
             group: 'docente',
@@ -292,7 +303,12 @@ export class ActividadesNoLectivasComponent implements OnInit {
         }
         this.getInformation(params, params.ruta + '-' + params.prefix)
     }
-
+    /**
+     * Realiza una petición al servicio general y gestiona la respuesta.
+     *
+     * @param params - Parámetros de la petición a realizar.
+     * @param accion - Acción asociada a la petición, utilizada para manejar la respuesta.
+     */
     getInformation(params, accion) {
         this._GeneralService.getGralPrefix(params).subscribe({
             next: (response) => {

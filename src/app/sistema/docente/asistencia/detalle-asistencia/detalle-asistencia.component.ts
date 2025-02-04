@@ -4,6 +4,9 @@ import { ContainerPageComponent } from '../../../../shared/container-page/contai
 import { BtnLoadingComponent } from '../../../../shared/btn-loading/btn-loading.component'
 import { Router } from '@angular/router'
 
+/**
+ * Componente que muestra el detalle de asistencia de los docentes.
+ */
 @Component({
     selector: 'app-detalle-asistencia',
     standalone: true,
@@ -34,6 +37,7 @@ export class DetalleAsistenciaComponent {
             text_header: 'center',
             text: 'justify',
         },
+        // Columnas dinámicas para los días de asistencia (del 1 al 19)
         {
             type: 'text',
             width: '1rem',
@@ -187,6 +191,9 @@ export class DetalleAsistenciaComponent {
             text: 'center',
         },
     ]
+    /**
+     * Datos de asistencia de los docentes.
+     */
     data = [
         {
             cNombres: 'Jhoand Velasquez Ticona',
@@ -233,6 +240,9 @@ export class DetalleAsistenciaComponent {
             cDia19: 'P',
         },
     ]
+    /**
+     * Redirige al usuario a la página de asistencia de docentes.
+     */
     goBack() {
         this.router.navigate(['./docente/asistencia'])
     }

@@ -98,20 +98,24 @@ export class FormActividadesNoLectivasComponent implements OnChanges {
 
         switch (accion) {
             case 'close-modal':
+                // Emitir evento para cerrar el modal
                 this.accionBtnItem.emit({ accion, item })
                 break
             case this.opcion:
+                // Convertir la lista de archivos a JSON si existen, de lo contrario, asignar null
                 this.formDetalleCargaNoLectivas.controls[
                     'cDetCargaNoLectEvidencias'
                 ].setValue(
                     this.filesUrl.length ? JSON.stringify(this.filesUrl) : null
                 )
+                // Emitir evento con los datos actualizados del formulario
                 this.accionBtnItem.emit({
                     accion,
                     item: this.formDetalleCargaNoLectivas.value,
                 })
                 break
             case 'subir-file-detalle-carga-no-lectivas':
+                // Agregar un archivo a la lista de archivos
                 this.filesUrl.push({
                     type: 1, //1->file
                     nameType: 'file',
@@ -121,6 +125,7 @@ export class FormActividadesNoLectivasComponent implements OnChanges {
                 })
                 break
             case 'url-detalle-carga-no-lectivas':
+                // Agregar una URL a la lista de archivos
                 this.filesUrl.push({
                     type: 2, //2->url
                     nameType: 'url',
@@ -130,6 +135,7 @@ export class FormActividadesNoLectivasComponent implements OnChanges {
                 })
                 break
             case 'youtube-detalle-carga-no-lectivas':
+                // Agregar un enlace de YouTube a la lista de archivos
                 this.filesUrl.push({
                     type: 3, //3->youtube
                     nameType: 'youtube',
@@ -139,6 +145,7 @@ export class FormActividadesNoLectivasComponent implements OnChanges {
                 })
                 break
             case 'subir-image-detalle-carga-no-lectivas':
+                // Agregar una imagen a la lista de archivos
                 this.filesUrl.push({
                     type: 5, //5->image
                     nameType: 'image',

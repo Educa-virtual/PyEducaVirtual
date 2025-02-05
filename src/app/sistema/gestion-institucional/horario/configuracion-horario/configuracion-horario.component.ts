@@ -687,13 +687,13 @@ export class ConfiguracionHorarioComponent implements OnInit {
 
     addBlockHorario(registro: any) {
         console.table(registro)
-        const hoy = new Date().toISOString().split('T')[0] // Obtiene la fecha actual en formato YYYY-MM-DD
+        // const hoy = new Date().toISOString().split('T')[0] // Obtiene la fecha actual en formato YYYY-MM-DD
         const _array = registro.map((horario) => ({
             ...horario,
             iSedeId: this.perfil.iSedeId,
             iTurnoId: this.iTurnoId,
-            inicio: new Date(`${hoy} ${horario.inicio}`), // Formato ISO 8601
-            fin: new Date(`${hoy} ${horario.fin}`),
+            inicio: horario.inicio, // Formato ISO 8601
+            fin: horario.fin,
         }))
         console.log(_array, 'registro de componente add sin formate')
         this.query

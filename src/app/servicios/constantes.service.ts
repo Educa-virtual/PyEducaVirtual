@@ -703,6 +703,11 @@ const administracion = [
                 ],
                 //ConfigGradoSeccion
             },
+            {
+                label: 'Gestión de traslado',
+                icon: 'pi pi-fw pi-circle',
+                routerLink: ['/gestion-institucional/gestion-traslados'],
+            },
 
             {
                 label: 'Administración de la IE',

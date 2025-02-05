@@ -28,15 +28,37 @@ const routes: Routes = [
     { path: 'resumen', component: ConfigResumenComponent },
     { path: 'fechas', component: ConfigFechasComponent },
     { path: 'IesPersonal', component: IesPersonalComponent },
+
     // { path: 'horario', component: HorarioComponent },
     //{ path: 'configurar-horario', component: ConfiguracionHorarioComponent },
-
     {
         path: 'horario',
         loadComponent: () =>
             import('./horario/horario.component').then(
                 (c) => c.HorarioComponent
             ),
+    },
+
+    {
+        path: 'gestion-traslados',
+        loadComponent: () =>
+            import('./gestion-traslados/gestion-traslados.component').then(
+                (c) => c.GestionTrasladosComponent
+            ),
+    },
+    {
+        path: 'traslado-externo',
+        loadComponent: () =>
+            import(
+                './gestion-traslados/traslado-externo/traslado-externo.component'
+            ).then((c) => c.TrasladoExternoComponent),
+    },
+    {
+        path: 'traslado-interno',
+        loadComponent: () =>
+            import(
+                './gestion-traslados/traslado-interno/traslado-interno.component'
+            ).then((c) => c.TrasladoInternoComponent),
     },
     {
         path: 'configurar-horario',

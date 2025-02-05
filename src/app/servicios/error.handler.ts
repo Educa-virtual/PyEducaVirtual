@@ -23,25 +23,12 @@ export class ErrorHandler {
         }
     }
 
-    // private handleHttpError(error: HttpErrorResponse): void {
-    //   if (error.status === 0) {
-    //     this.showConnectionError(error);
-    //   } else if (error.status >= 400 && error.status < 500) {
-    //     this.showClientError(error);
-    //   } else if (error.status >= 500) {
-    //     this.showServerError(error);
-    //   }
-    //   // else {
-    //   //   this.showUnknownError(error);
-    //   // }
-
-    // }
-
     private showConnectionError(error: HttpErrorResponse): void {
         this.messageService.add({
             severity: 'error',
             summary: 'Error de conexión',
-            detail: error.error?.message || 'No se puede conectar al servidor.',
+            detail:
+                error?.error?.message || 'No se puede conectar al servidor.',
             life: 3000,
         })
     }
@@ -50,7 +37,7 @@ export class ErrorHandler {
         this.messageService.add({
             severity: 'warn',
             summary: 'Error del cliente',
-            detail: error.error?.message || 'Se produjo un error del cliente.',
+            detail: error?.error?.message || 'Se produjo un error del cliente.',
             life: 3000,
         })
     }
@@ -60,22 +47,9 @@ export class ErrorHandler {
             severity: 'error',
             summary: 'Error del servidor',
             detail:
-                error.error?.message ||
+                error?.error?.message ||
                 'Se produjo un error en el servidor. Inténtalo de nuevo más tarde.',
             life: 3000,
         })
     }
-
-    // private showUnknownError(error: unknown): void {
-    //   this.messageService.add({
-    //     severity: 'error',
-    //     summary: 'Error inesperado',
-    //     detail: error?.error?.message|| 'Se produjo un error desconocido.',
-    //     life: 3000,
-    //   });
-    // }
-
-    // private handleUnknownError(error: unknown): void {
-    //   this.showUnknownError(error);
-    // }
 }

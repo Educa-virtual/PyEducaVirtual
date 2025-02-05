@@ -71,7 +71,7 @@ export class ApiEvaluacionesService {
 
     obtenerRubricaEvaluacion(params) {
         return this.http
-            .get<ApiResponse>(
+            .post<ApiResponse>(
                 `${this.baseUrlApi}/evaluaciones/instrumento-evaluaciones/obtenerRubricaEvaluacion`,
                 { params }
             )
@@ -128,7 +128,7 @@ export class ApiEvaluacionesService {
     // }
 
     async guardarActualizarRubrica(data) {
-        const res: any = this.http2.postData(
+        const res: any = await this.http2.postData(
             'evaluaciones/instrumento-evaluaciones/rubrica',
             data
         )

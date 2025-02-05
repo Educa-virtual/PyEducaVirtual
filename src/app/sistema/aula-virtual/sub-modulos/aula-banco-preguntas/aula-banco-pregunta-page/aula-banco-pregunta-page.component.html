@@ -1,73 +1,42 @@
 <app-toolbar-primeng title="Banco de Preguntas"></app-toolbar-primeng>
-
 <div class="card">
-    <div class="formgrid grid p-3">
-        <!-- Filtro Año -->
-        <div class="field col-12 md:col-6 lg:col-3">
-            <label for="years">Año</label>
-            <p-dropdown
-                id="years"
-                [(ngModel)]="params.iYearId"
-                optionValue="iYearId"
-                [options]="years"
-                optionLabel="cYearNombre"
-                placeholder="Seleccione un año"
-                styleClass="w-full"
-                (onChange)="obtenerBancoPreguntas()"
-            ></p-dropdown>
-        </div>
-        <!-- Área Curricular -->
-        <div class="field col-12 md:col-6 lg:col-3">
-            <label for="cursos">Área Curricular</label>
-            <p-dropdown
-                id="cursos"
-                [(ngModel)]="params.iCursoId"
-                optionValue="iCursoId"
-                [options]="cursos"
-                optionLabel="cCursoNombre"
-                placeholder="Seleccione un curso"
-                styleClass="w-full"
-                (onChange)="obtenerBancoPreguntas()"
-            ></p-dropdown>
+    <div class="grid">
+        <!-- Filtros -->
+        <div class="col-12 lg:col-6">
+            <p-inputGroup>
+                <p-inputGroupAddon>Área Curricular</p-inputGroupAddon>
+                <p-dropdown
+                    [(ngModel)]="params.iCursoId"
+                    optionValue="iCursoId"
+                    [options]="cursos"
+                    optionLabel="cCursoNombre"
+                    styleClass="w-full"
+                    (onChange)="obtenerBancoPreguntas()"
+                />
+            </p-inputGroup>
         </div>
 
-        <!-- Tipo Pregunta -->
-        <div class="field col-12 md:col-6 lg:col-3">
-            <label for="tipoPreguntas">Tipo Pregunta</label>
-            <p-dropdown
-                id="tipoPreguntas"
-                [(ngModel)]="params.iTipoPregId"
-                optionValue="iTipoPregId"
-                [options]="tipoPreguntas"
-                optionLabel="cTipoPregDescripcion"
-                placeholder="Seleccione tipo"
-                styleClass="w-full"
-                (onChange)="obtenerBancoPreguntas()"
-            ></p-dropdown>
+        <div class="col-12 lg:col-3">
+            <p-inputGroup>
+                <p-inputGroupAddon> Grado </p-inputGroupAddon>
+                <p-dropdown
+                    [(ngModel)]="params.iGradoId"
+                    optionValue="iGradoId"
+                    [options]="grados"
+                    optionLabel="cGrado"
+                    styleClass="w-full"
+                    (onChange)="obtenerBancoPreguntas()"
+                />
+            </p-inputGroup>
         </div>
-
-        <!-- Filtro Sección -->
-        <div class="field col-12 md:col-6 lg:col-3">
-            <label for="secciones">Sección</label>
-            <p-dropdown
-                id="secciones"
-                [(ngModel)]="params.iSeccionId"
-                optionValue="iSeccionId"
-                [options]="secciones"
-                optionLabel="cSeccionNombre"
-                placeholder="Seleccione una sección"
-                styleClass="w-full"
-                (onChange)="obtenerBancoPreguntas()"
-            ></p-dropdown>
-        </div>
-
         <!-- Botón Agregar Preguntas alineado a la derecha -->
-        <div class="col-12 flex justify-content-end">
+        <div class="col-12 lg:col-3 flex justify-content-end">
             <button
+                [disabled]="params.iCursoId === 0"
                 pButton
                 type="button"
                 class="p-button-primary"
-                label="Agregar Preguntas"
+                label="Agregar preguntas"
                 icon="pi pi-plus"
                 (click)="agregarPreguntas()"
             ></button>

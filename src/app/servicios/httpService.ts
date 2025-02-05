@@ -1,10 +1,10 @@
 import { environment } from '@/environments/environment'
 import { HttpClient, HttpHeaders } from '@angular/common/http'
 import { Injectable } from '@angular/core'
-import { MessageService } from 'primeng/api'
+// import { MessageService } from 'primeng/api'
 import { firstValueFrom } from 'rxjs'
 import { ErrorHandler } from './error.handler'
-import { DynamicToastService } from '@/app/servicios/dynamicToast.service'
+// import { DynamicToastService } from '@/app/servicios/dynamicToast.service'
 
 @Injectable({
     providedIn: 'root',
@@ -14,18 +14,25 @@ export class httpService {
 
     constructor(
         private http: HttpClient,
-        private messageService: MessageService,
-        private dynamicToastService: DynamicToastService,
+        // private messageService: MessageService,
+        // private dynamicToastService: DynamicToastService,
         private errorHandler: ErrorHandler
     ) {
-        this.dynamicToastService.createToast()
+        // this.dynamicToastService.createToast()
     }
 
-    async getData(endpoint: string, params?: { [key: string]: any }) {
+    async getData(
+        endpoint: string,
+        params?: { [key: string]: any }
+    ): Promise<any> {
         try {
+            // Si los parámetros se pasan como objeto, los convertimos en una cadena de consulta
+
             return await firstValueFrom(
-                this.http.get(`${this.apiURL}/${endpoint}`, {
-                    params,
+                this.http.post(`${this.apiURL}/${endpoint}`, params, {
+                    headers: new HttpHeaders({
+                        'Content-Type': 'application/json',
+                    }),
                 })
             )
         } catch (error) {
@@ -84,11 +91,11 @@ export class httpService {
     async deleteData(endpoint: string, data: any) {
         try {
             return await firstValueFrom(
-                this.http.delete(`${this.apiURL}/${endpoint}`, {
+                this.http.post(`${this.apiURL}/${endpoint}`, {
                     headers: new HttpHeaders({
                         'Content-Type': 'application/json',
                     }),
-                    body: data, // En el caso de que necesites enviar datos en el cuerpo de la solicitud DELETE
+                    body: data,
                 })
             )
         } catch (error) {

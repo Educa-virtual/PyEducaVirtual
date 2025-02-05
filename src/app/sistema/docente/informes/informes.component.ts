@@ -50,6 +50,8 @@ import {
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { Message, MessageService } from 'primeng/api'
 import { ToastModule } from 'primeng/toast'
+import { MessagesModule } from 'primeng/messages'
+import { ConstantesService } from '@/app/servicios/constantes.service'
 @Component({
     selector: 'app-informes',
     standalone: true,
@@ -57,6 +59,7 @@ import { ToastModule } from 'primeng/toast'
     styleUrls: ['./informes.component.scss'],
     imports: [
         ContainerPageComponent,
+        MessagesModule,
         ToastModule,
         CommonModule,
         EditorModule,
@@ -95,6 +98,10 @@ export class InformesComponent implements OnInit {
     private _aulaService = inject(ApiAulaService)
     private _formBuilder = inject(FormBuilder)
     private _confirmService = inject(ConfirmationModalService)
+    private _MessageService = inject(MessageService)
+    private _constantesService = inject(ConstantesService)
+
+    mensaje: Message[] = []
 
     @Input() actionses: IActionContainer[] = [
         {
@@ -106,9 +113,10 @@ export class InformesComponent implements OnInit {
         },
     ]
     idDocCursoId: any[] = []
-    perfil: any[] = []
+    perfil: any
     curso: any[] = []
     notaEstudianteSelect: any[] = []
+    descripcionFinalDeLogro: string
     estudianteSelect: any[] = []
     messages: Message[] | undefined
 
@@ -196,6 +204,18 @@ export class InformesComponent implements OnInit {
     ]
     ngOnInit() {
         this.obtenerEstudianteXCurso()
+        this.mostrarDatosAltutor()
+    }
+    // mostrar los datos del anuncio
+    mostrarDatosAltutor() {
+        //const year = this._constantesService.iYAcadId
+        this.mensaje = [
+            {
+                severity: 'info',
+                detail: 'En esta sección podrá visualizar sus logros alcanzados del estudiantes durante el año escolar',
+            },
+        ]
+        console.log(this.perfil)
     }
     //un load para el boton guardar
     loading: boolean = false
@@ -206,7 +226,7 @@ export class InformesComponent implements OnInit {
             this.loading = false
         }, 2000)
     }
-    //Obtener datos del estudiantes y sus logros alcanzados x cursos
+    //Obtener datos del estudiantes y sus logros alcanzados por todos los cursos
     obtenerEstudianteXCurso() {
         // @iSedeId INT,
         // @iSeccionId INT,
@@ -227,6 +247,11 @@ export class InformesComponent implements OnInit {
     }
     obtenerCursoEstudiante(estudiante) {
         this.notaEstudianteSelect = estudiante.Estudiante
+        this.descripcionFinalDeLogro = estudiante.cMatrConclusionDescriptiva
+        this.conclusionDescrpFinal.controls['conclusionDescripFinal'].setValue(
+            this.descripcionFinalDeLogro
+        )
+        //console.log('decrip', this.descripcionFinalDeLogro)
         this.estudianteSelect = estudiante
         const id = estudiante.iEstudianteId
         const filteredData = this.estudianteMatriculadosxGrado.filter(
@@ -249,26 +274,49 @@ export class InformesComponent implements OnInit {
     }
     // metodo para descargar el reporte de logros alcanzados durante el año en pdf
     generarReporteDeLogrosAlcanzadosXYear() {
-        console.log(this.curso, this.estudianteSelect)
+        //console.log(this.curso, this.estudianteSelect)
         const datosEstudiante = JSON.stringify(this.estudianteSelect)
         const datosCursoEstudiante = JSON.stringify(this.curso)
+        const nombre = this.estudianteSelect['Estudiante']
         const iSedeId = this.perfil['iSedeId']
-        this._aulaService
-            .generarReporteDeLogrosAlcanzadosXYear({
-                iSedeId: iSedeId,
-                datosEstudiante: datosEstudiante,
-                datosCursoEstudiante: datosCursoEstudiante,
+        if (!this.estudianteSelect || this.estudianteSelect.length === 0) {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Seleccione un estudiante para generar el reporte de logros :',
             })
-            .subscribe((response) => {
-                //console.log('Respuesta de Evaluacion:', response) // Para depuración
-                // Crear un Blob con la respuesta del backend
-                const blob = response as Blob // Asegúrate de que la respuesta sea un Blob
-                const link = document.createElement('a')
-                //console.log('imprimer01', blob)
-                link.href = URL.createObjectURL(blob)
-                link.download = 'Reporte_logros' + '.pdf' // Nombre del archivo descargado
-                link.click()
+        } else {
+            this._confirmService.openConfiSave({
+                message: 'Recuerde que son datos de ayuda',
+                header: `¿Esta seguro de descargar en PDF el nivel de logro de: ${nombre} ?`,
+                accept: () => {
+                    this._aulaService
+                        .generarReporteDeLogrosAlcanzadosXYear({
+                            iSedeId: iSedeId,
+                            datosEstudiante: datosEstudiante,
+                            datosCursoEstudiante: datosCursoEstudiante,
+                        })
+                        .subscribe((response) => {
+                            //console.log('Respuesta de Evaluacion:', response) // Para depuración
+                            // Crear un Blob con la respuesta del backend
+                            const blob = response as Blob // Asegúrate de que la respuesta sea un Blob
+                            const link = document.createElement('a')
+                            //console.log('imprimer01', blob)
+                            link.href = URL.createObjectURL(blob)
+                            link.download = 'Reporte_logros' + '.pdf' // Nombre del archivo descargado
+                            link.click()
+                        })
+                },
+                reject: () => {
+                    // Mensaje de cancelación (opcional)
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Cancelado',
+                        detail: 'Acción cancelada',
+                    })
+                },
             })
+        }
     }
     // metodo para limpiar las etiquetas
     limpiarHTML(html: string): string {
@@ -290,63 +338,66 @@ export class InformesComponent implements OnInit {
                 summary: 'Error',
                 detail: 'Seleccione un estudiante:',
             })
-        }
-        const idMtricula = this.estudianteSelect['iMatrId']
-        const where = [
-            {
-                COLUMN_NAME: 'iMatrId',
-                VALUE: idMtricula,
-            },
-        ]
-
-        const registro: any = {
-            cMatrConclusionDescriptiva: conclusionDescrpLimpia,
-        }
-
-        if (conclusionDescrpLimpia == '') {
-            this.messageService.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: 'Tiene que agregar una conclusión descriptiva final',
-            })
         } else {
-            this._confirmService.openConfiSave({
-                message: 'Recuerde que no podra retroceder',
-                header: `¿Esta seguro que desea guardar conclusión descriptiva a: ${nombre} ?`,
-                accept: () => {
-                    this._aulaService
-                        .guardarCalificacionEstudiante(
-                            'acad',
-                            'matricula',
-                            where,
-                            registro
-                        )
-                        .subscribe({
-                            next: (response) => {
-                                //this.obtenerReporteDenotasFinales()
-                                //this.mostrarModalConclusionDesc = false
-                                console.log('actualizar:', response)
-                                this.messageService.add({
-                                    severity: 'success',
-                                    summary: 'Éxito',
-                                    detail: 'Calificación guardada correctamente.',
-                                })
-                            },
-                            error: (error) => {
-                                console.log('Error en la actualización:', error)
-                            },
+            const idMtricula = this.estudianteSelect['iMatrId']
+            const where = [
+                {
+                    COLUMN_NAME: 'iMatrId',
+                    VALUE: idMtricula,
+                },
+            ]
+
+            const registro: any = {
+                cMatrConclusionDescriptiva: conclusionDescrpLimpia,
+            }
+            if (conclusionDescrpLimpia == '') {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'Tiene que agregar una conclusión descriptiva final',
+                })
+            } else {
+                this._confirmService.openConfiSave({
+                    message: 'Recuerde que no podra retroceder',
+                    header: `¿Esta seguro que desea guardar conclusión descriptiva a: ${nombre} ?`,
+                    accept: () => {
+                        this._aulaService
+                            .guardarCalificacionEstudiante(
+                                'acad',
+                                'matricula',
+                                where,
+                                registro
+                            )
+                            .subscribe({
+                                next: (response) => {
+                                    //this.obtenerReporteDenotasFinales()
+                                    //this.mostrarModalConclusionDesc = false
+                                    console.log('actualizar:', response)
+                                    this.messageService.add({
+                                        severity: 'success',
+                                        summary: 'Éxito',
+                                        detail: 'Calificación guardada correctamente.',
+                                    })
+                                },
+                                error: (error) => {
+                                    console.log(
+                                        'Error en la actualización:',
+                                        error
+                                    )
+                                },
+                            })
+                        this.conclusionDescrpFinal.reset()
+                    },
+                    reject: () => {
+                        // Mensaje de cancelación (opcional)
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Cancelado',
+                            detail: 'Acción cancelada',
                         })
-                    this.conclusionDescrpFinal.reset()
-                },
-                reject: () => {
-                    // Mensaje de cancelación (opcional)
-                    this.messageService.add({
-                        severity: 'error',
-                        summary: 'Cancelado',
-                        detail: 'Acción cancelada',
-                    })
-                },
-            })
+                    },
+                })
+            }
         }
     }
 }

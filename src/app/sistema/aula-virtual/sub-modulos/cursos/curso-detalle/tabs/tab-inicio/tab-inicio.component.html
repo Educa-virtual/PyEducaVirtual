@@ -1,125 +1,82 @@
-<div class="grid">
-    <div class="col-12 md:col-4">
-        <div class="card mb-2">
-            <div class="text-primary font-bold">Información General</div>
-            <p>
-                <strong>Docente:</strong><br />Carlos Jose Valderrama Eyzaguirre
-            </p>
-            <p><strong>Tutor:</strong><br />Jose Maria Callupe Delgado</p>
-            <ul class="list-none">
-                <li>
-                    <a
-                        ><i class="pi pi-book"></i>&nbsp;<b
-                            >Descargar Sílabo</b
-                        ></a
-                    >
-                </li>
-                <li>
-                    <a
-                        ><i class="pi pi-calendar"></i>&nbsp;<b
-                            >Descargar Horario
-                        </b></a
-                    >
-                </li>
-            </ul>
-            <!-- <p><strong>N° Estudiantes:</strong> 12</p> -->
-        </div>
-        <!-- <p-accordion
-            [multiple]="false"
-            expandIcon="pi pi-angle-right"
-            collapseIcon="pi pi-angle-down"
-        >
-            <p-accordionTab header="" class="" iconPos="end">
-                <ng-template pTemplate="header">
-                    <div class="flex flex-column w-full">
-                        Lista de Estudiantes
-                    </div>
-
-                    <div class="flex align-items-end justify-content-end mx-4">
-                        12
-                    </div>
-                </ng-template>
-
-                <div class="flex justify-content-between gap-2 flex-column sm:flex-row flex-wrap">
-                        <p-iconField iconPosition="left">
-                            <p-inputIcon styleClass="pi pi-search text-md" />
-                            <input pInputText type="text" class="py-2" placeholder="Buscar" />
-                        </p-iconField>
-                    </div>
-                <div class="mt-1"></div>
-                <p-table class="hoverTable" [value]="data" [scrollable]="true">
-                    <ng-template pTemplate="header">
-                        <tr>
-                            <th [style.width]="'100%'">Apellidos y Nombres</th>
-                        </tr>
-                    </ng-template>
-                    <ng-template pTemplate="body" let-estudiante>
-                        <tr [pSelectableRow]="estudiante">
-                            <td>
-                                {{ estudiante.cEstPaterno }}
-                                {{ estudiante.cEstMaterno }},
-                                {{ estudiante.cEstNombres }}
-                                <br />
-                                <span class="font-italic">{{
-                                    estudiante.cCorreo
-                                }}</span>
-                            </td>
-                        </tr>
-                    </ng-template>
-                </p-table>
-            </p-accordionTab>
-        </p-accordion> -->
-    </div>
-
-    <div class="col-12 md:col-8">
-        <div class="card">
-            <div class="col-12">
-                <label
-                    for=""
-                    class=""
-                    style="font-weight: bold; font-size: 16px"
-                >
-                    Anuncia algo aquí Para toda la clase
-                </label>
+<div class="">
+    <div class="grid">
+        <!-- <div class="col-12 md:col-4">
+            <div class="card mb-2">
+                <div class="text-primary font-bold">Información General</div>
+                <p>
+                    <strong>Docente:</strong><br />Carlos Jose Valderrama
+                    Eyzaguirre
+                </p>
+                <p><strong>Tutor:</strong><br />Jose Maria Callupe Delgado</p>
+                <ul class="list-none">
+                    <li>
+                        <a
+                            ><i class="pi pi-book"></i>&nbsp;<b
+                                >Descargar Sílabo</b
+                            ></a
+                        >
+                    </li>
+                    <li>
+                        <a
+                            ><i class="pi pi-calendar"></i>&nbsp;<b
+                                >Descargar Horario
+                            </b></a
+                        >
+                    </li>
+                </ul>
+               
             </div>
-            <!-- <label for="cTareaDescripcion" class="font-bold"
-                >Anuncia algo aquí Para toda la clase</label
-            > -->
-            <!-- <div class="mt-2"></div> -->
-            <p-toast></p-toast>
-            <form
-                [formGroup]="guardarPublicacion"
-                class="flex flex-column gap-3 w-full"
-            >
-                <p-editor
-                    id="cTareaDescripcion"
-                    placeholder="Agregar un comentario para los estudiantes..."
-                    formControlName="cForoDescripcion"
-                ></p-editor>
-            </form>
+        </div> -->
+        <div class="col-12 md:col-12" [hidden]="iPerfilId !== DOCENTE">
+            <div class="card">
+                <div class="col-12">
+                    <label
+                        for=""
+                        class=""
+                        style="font-weight: bold; font-size: 16px"
+                    >
+                        Anuncia algo aquí para toda la clase:
+                    </label>
+                </div>
+                <!-- <label for="cTareaDescripcion" class="font-bold"
+                    >Anuncia algo aquí Para toda la clase</label
+                > -->
+                <!-- <div class="mt-2"></div> -->
+                <p-toast></p-toast>
+                <form
+                    [formGroup]="guardarPublicacion"
+                    class="flex flex-column gap-3 w-full"
+                >
+                    <p-editor
+                        id="cTareaDescripcion"
+                        placeholder="Agregar un comentario para los estudiantes..."
+                        formControlName="cForoDescripcion"
+                    ></p-editor>
+                </form>
 
-            <br />
-            <button
-                pButton
-                type="button"
-                label="Link"
-                icon="pi pi-link"
-            ></button>
-            <button
-                pButton
-                type="button"
-                label="Cancelar"
-                icon="pi pi-times"
-                class="p-button-danger"
-            ></button>
-            <button
-                pButton
-                type="button"
-                label="Publicar"
-                icon="pi pi-users"
-                class="p-button-success"
-                (click)="guardarPublicacionDocente()"
-            ></button>
+                <br />
+                <!-- <button
+                    pButton
+                    type="button"
+                    label="Link"
+                    icon="pi pi-link"
+                ></button>
+                <button
+                    pButton
+                    type="button"
+                    label="Cancelar"
+                    icon="pi pi-times"
+                    class="p-button-danger"
+                ></button> -->
+                <button
+                    pButton
+                    type="button"
+                    label="Publicar"
+                    icon="pi pi-users"
+                    class="p-button-success"
+                    (click)="guardarPublicacionDocente()"
+                ></button>
+            </div>
         </div>
     </div>
     <div class="card col-12">
@@ -152,8 +109,9 @@
                                 <div>
                                     <div class="pb-2 perfil-name">
                                         <b>
-                                            <span class="user-name">
-                                                Doc: {{ respuestas.cNombres }} (
+                                            <span class="perfil-name">
+                                                Doc:
+                                                {{ respuestas.cNombres }} (
                                                 {{
                                                     respuestas?.dtCreado
                                                         | date: 'short'
@@ -161,13 +119,27 @@
                                                 )
                                             </span>
                                         </b>
+                                        <!-- Button para la accion de eliminar y editar -->
+                                        <!-- <p-button
+                                        type="button"
+                                        icon="pi pi-ellipsis-v"
+                                        class="menu-container p-button-text"
+                                        (click)="
+                                            itemRespuesta = respuestas;
+                                            menu.toggle($event)
+                                        "
+                                        aria-label="Abrir menú de configuración"
+                                    /> -->
                                     </div>
                                     <div class="" style="text-align: justify">
                                         <span *ngIf="!respuestas.expanded">
                                             {{
                                                 respuestas?.cForoDescripcion
-                                                    | slice: 0 : 100
+                                                    | slice: 0 : 150
                                             }}...
+                                        </span>
+                                        <span *ngIf="respuestas.expanded">
+                                            {{ respuestas?.cForoDescripcion }}
                                         </span>
                                         <!-- Para Leer mas.. -->
                                         <button
@@ -181,6 +153,14 @@
                                             }}
                                         </button>
                                     </div>
+                                    <!-- [style.display]="
+                                            !respuestas.iEstudianteId
+                                                ? respuestas.iDocenteId ===
+                                                    iDocenteId
+                                                : respuestas.iEstudianteId ===
+                                                    iEstudianteId
+                                        "
+                                        pButton -->
                                 </div>
                             </div>
                         </div>
@@ -195,3 +175,4 @@
         </p-orderList>
     </div>
 </div>
+<p-menu #menu [model]="menuItems" [popup]="true"> </p-menu>

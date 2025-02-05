@@ -7,7 +7,6 @@ import { Subject, takeUntil } from 'rxjs'
 import { GeneralService } from '@/app/servicios/general.service'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { ToolbarPrimengComponent } from '../../../../../shared/toolbar-primeng/toolbar-primeng.component'
-import { EvaluacionButtonAgregarPreguntasComponent } from '../../actividades/actividad-evaluacion/evaluacion-button-agregar-preguntas/evaluacion-button-agregar-preguntas.component'
 import { AulaBancoPreguntasService } from '../aula-banco-preguntas/aula-banco-.preguntas.service'
 
 @Component({
@@ -18,7 +17,6 @@ import { AulaBancoPreguntasService } from '../aula-banco-preguntas/aula-banco-.p
         CommonModule,
         AulaBancoPreguntasComponent,
         ToolbarPrimengComponent,
-        EvaluacionButtonAgregarPreguntasComponent,
     ],
     templateUrl: './aula-banco-pregunta-page.component.html',
     styleUrl: './aula-banco-pregunta-page.component.scss',
@@ -35,6 +33,8 @@ export class AulaBancoPreguntaPageComponent implements OnInit {
         },
     ]
 
+    grados = []
+
     params = {
         iCursoId: 0,
         iDocenteId: null,
@@ -45,35 +45,20 @@ export class AulaBancoPreguntaPageComponent implements OnInit {
         busqueda: '',
         iTipoPregId: 0,
         iEvaluacionId: 0,
+        iGradoId: 0,
     }
-    tipoPreguntas = [
-        {
-            iTipoPregId: 0,
-            cTipoPregDescripcion: 'Todos',
-        },
-        {
-            iTipoPregId: 1,
-            cTipoPregDescripcion: 'Opción única',
-        },
-        {
-            iTipoPregId: 2,
-            cTipoPregDescripcion: 'Opción múltiple',
-        },
-        {
-            iTipoPregId: 3,
-            cTipoPregDescripcion: 'Opción libre',
-        },
-    ]
 
     private _constantesService = inject(ConstantesService)
     private unsubscribe$ = new Subject<boolean>()
     private _generalService = inject(GeneralService)
     private _store = inject(LocalStoreService)
     menuAgregacionPreguntas: any
+    filtros: any
 
     ngOnInit() {
         const year = this._store.getItem('dremoYear')
         this.getCursosDocente(year)
+        this.obtenerGrados()
     }
 
     obtenerBancoPreguntas() {
@@ -98,6 +83,33 @@ export class AulaBancoPreguntaPageComponent implements OnInit {
         this.obtenerCursos(params)
     }
 
+    obtenerGrados() {
+        const params = {
+            petition: 'post',
+            group: 'acad',
+            prefix: 'grados',
+            ruta: 'handleCrudOperation', //'getDocentesCursos',
+            data: {
+                opcion: 'CONSULTAR',
+                iCredId: this._constantesService.iCredId,
+            },
+        }
+        this._generalService.getGralPrefix(params).subscribe({
+            next: (response) => {
+                this.grados = [
+                    {
+                        iGradoId: 0,
+                        cGrado: 'Todos',
+                    },
+                    ...response.data,
+                ]
+            },
+            complete: () => {},
+            error: (error) => {
+                console.log(error)
+            },
+        })
+    }
     obtenerCursos(params) {
         this._generalService
             .getGralPrefix(params)

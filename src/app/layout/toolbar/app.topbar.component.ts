@@ -60,7 +60,6 @@ export class AppTopBarComponent implements OnInit {
 
     ngOnInit() {
         const user = this.store.getItem('dremoUser')
-
         const year = this.store.getItem('dremoYear')
         this.years = user.years
         this.selectedYear = year ? year : null
@@ -101,8 +100,10 @@ export class AppTopBarComponent implements OnInit {
         }, 200)
     }
     changeYear(value) {
+        const year = this.years.find((item) => item.iYearId === value)
         this.router.navigate(['./'])
         this.store.setItem('dremoYear', value)
+        this.store.setItem('dremoiYAcadId', year.iYAcadId)
         setTimeout(() => {
             window.location.reload()
         }, 200)

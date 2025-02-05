@@ -8,7 +8,6 @@ import {
     Output,
     OnChanges,
 } from '@angular/core'
-import { FileUploadEvent } from 'primeng/fileupload'
 
 @Component({
     selector: 'app-file-upload-primeng',
@@ -33,8 +32,8 @@ export class FileUploadPrimengComponent implements OnChanges {
         }
     }
 
-    async onUpload(elemento: FileUploadEvent) {
-        const filesToUpload = <Array<File>>elemento.files
+    async onUploadChange(evt) {
+        const filesToUpload = evt.target.files
 
         if (filesToUpload.length) {
             const archivoFile = filesToUpload[0]

@@ -22,29 +22,6 @@
                     *ngFor="let curso of nivel.grados[grado]"
                     class="field-checkbox"
                 >
-                    <!-- <label class="custom-checkbox">
-                        <input
-                            type="checkbox"
-                            [disabled]="isDisabled"
-                            [(ngModel)]="curso.isSelected"
-                            name="curso{{ curso.cCursoNombre }}"
-                            [disabled]="isDisabled"
-                            (change)="onCursoSelect(curso)"
-                        />
-                        <span class="checkmark"></span>
-                        {{ curso.cCursoNombre }}
-                    </label> -->
-                    <!-- <p-checkbox
-                        [(ngModel)]="curso.isSelected"
-                        [binary]="true"
-                        [disabled]="isDisabled"
-                        inputId="curso{{ curso.cCursoNombre }}"
-                        (onChange)="onCursoSelect(curso)"
-                    >
-                    </p-checkbox>
-                    <label for="curso{{ curso.cCursoNombre }}">
-                        {{ curso.cCursoNombre }}
-                    </label> -->
                     <p-checkbox
                         [(ngModel)]="curso.isSelected"
                         [binary]="true"

@@ -272,7 +272,6 @@ export class ApiEvaluacionesRService {
             }
         )
     }
-
     obtenerPreguntaInformacion(iEvaluacionId: number, iPreguntaIds: string) {
         return this.http.get(
             `${this.baseUrl}/ere/Evaluaciones/obtenerPreguntaInformacion`,
@@ -284,12 +283,32 @@ export class ApiEvaluacionesRService {
             }
         )
     }
+    //Servicio Guardar Inicio Final Exm Areas
+    // guardarInicioFinalExmAreas(data) {
+    //     return this.http.post(
+    //         `${this.baseUrl}/ere/Evaluaciones/guardarInicioFinalExmAreas`,
+    //         data
+    //     )
+    // }
+    guardarInicioFinalExmAreas(datos: any): Observable<any> {
+        const url = `${this.baseUrl}/ere/Evaluaciones/guardarInicioFinalExmAreas` // Endpoint de Laravel
+        return this.http.post<any>(url, datos)
+    }
 
     //Banco de Preguntas no tocar ->
     generarWordByPreguntasIds(baseParams) {
         const url = `${this.baseUrlBackend}/generarWordBancoPreguntasSeleccionadas`
         const params = new URLSearchParams({ ...baseParams })
         const fullUrl = `${url}?${params.toString()}`
+        window.open(fullUrl, '_blank')
+    }
+    // Banco de Preguntas no tocar ->
+    generarWordByEvaluacionId(baseParams) {
+        const url = `${this.baseUrlBackend}/generarWordBancoPreguntasSeleccionadas`
+        const params = new URLSearchParams({ ...baseParams })
+        const fullUrl = `${url}?${params.toString()}`
+
+        // Se abre la URL generada, que ahora solo contiene iEvaluacionId.
         window.open(fullUrl, '_blank')
     }
 

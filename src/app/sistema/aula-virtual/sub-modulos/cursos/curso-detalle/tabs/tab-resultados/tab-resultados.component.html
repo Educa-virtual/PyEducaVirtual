@@ -573,12 +573,13 @@
                         >Descripción
                         <span class="text-red-500 text-xs"
                             >(*) Obligatorio</span
-                        ></label
-                    >
+                        >
+                    </label>
                     <div class="mt-2 pt-2">
                         <p-editor
                             id="descripcion"
                             formControlName="cDetMatConclusionDescPromedio"
+                            placeholder="Escribe una conclusión descriptiva.... "
                             [style]="{ height: '150px' }"
                         />
                     </div>
@@ -595,6 +596,7 @@
                     class="p-button-secondary mx-3"
                     type="button"
                     size="small"
+                    (click)="cerrarModalDeCalif()"
                 ></button>
                 <button
                     pButton
@@ -611,4 +613,6 @@
         </div>
     </p-dialog>
 }
-<label for="">Hola sr: Estudiante</label>
+<div [hidden]="iPerfilId !== ESTUDIANTE">
+    <label for="">Hola sr: Estudiante</label>
+</div>

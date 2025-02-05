@@ -1,5 +1,76 @@
 <ng-container [formGroup]="formGroup">
     <div class="formgrid grid">
+        <!-- Matriz de Competencias fuera del formulario reactivo -->
+        <div class="field flex flex-column col-12 md:col-6">
+            <label for="matriz-competencia">Matriz de Competencias</label>
+            <p-dropdown
+                styleClass="w-full"
+                optionValue="iCompetenciaId"
+                [(ngModel)]="selectedCompetencia"
+                (onChange)="onCompetenciaChange($event)"
+                [options]="matrizCompetencia"
+                optionLabel="cCompetenciaNombre"
+                [ngModelOptions]="{ standalone: true }"
+                [styleClass]="
+                    formGroup.get('iCompetenciaId')?.invalid &&
+                    formGroup.get('iCompetenciaId')?.touched
+                        ? 'w-full ng-dirty ng-invalid p-invalid'
+                        : 'w-full'
+                "
+            ></p-dropdown>
+            <small
+                *ngIf="
+                    formGroup.get('iCompetenciaId')?.hasError('required') &&
+                    formGroup.get('iCompetenciaId')?.touched
+                "
+                class="text-red-500"
+            >
+                Este campo es requerido
+            </small>
+        </div>
+        <!-- Matriz de Capacidades -->
+        <div class="field flex flex-column col-12 md:col-6">
+            <label for="matriz-capacidad">Matriz de capacidad</label>
+            <p-dropdown
+                styleClass="w-full"
+                optionValue="iCapacidadId"
+                [(ngModel)]="selectedCapacidad"
+                (onChange)="onCapacidadChange($event)"
+                [options]="matrizCapacidadFiltrada"
+                optionLabel="cCapacidadNombre"
+                [ngModelOptions]="{ standalone: true }"
+                (ngModelChange)="onCapacidadChange($event)"
+                [styleClass]="
+                    formGroup.get('iCapacidadId')?.invalid &&
+                    formGroup.get('iCapacidadId')?.touched
+                        ? 'w-full ng-dirty ng-invalid p-invalid'
+                        : 'w-full'
+                "
+            ></p-dropdown>
+            <small
+                *ngIf="
+                    formGroup.get('iCapacidadId')?.hasError('required') &&
+                    formGroup.get('iCapacidadId')?.touched
+                "
+                class="text-red-500"
+            >
+                Este campo es requerido
+            </small>
+        </div>
+        <!-- Matriz de Desempeño fuera del formulario reactivo -->
+        <div class="field flex flex-column col-12 md:col-6">
+            <label for="matriz-desempeno">Matriz de Desempeño</label>
+            <!-- Campo de texto para cDesempenoDescripcion -->
+
+            <input
+                type="text"
+                pInputText
+                [(ngModel)]="value"
+                [ngModelOptions]="{ standalone: true }"
+                placeholder="Descripción del desempeño"
+                (ngModelChange)="onDesempenoDescripcionChange()"
+            />
+        </div>
         <!-- Tipo de Preguntas -->
         <div class="field flex flex-column col-12 md:col-6">
             <label for="tipo-pregunta">Tipo pregunta</label>
@@ -23,7 +94,7 @@
                 <small class="text-red-500"> Este campo es requerido </small>
             }
         </div>
-        <!--! Se cambio tamaño de class="field col-12 md:col-6" a md:col-3 -->
+        <!--Se cambio tamaño de class="field col-12 md:col-6" a md:col-3 -->
         @if (formGroup.get('iPreguntaNivel') !== null) {
             <div class="field col-12 md:col-3">
                 <app-common-input

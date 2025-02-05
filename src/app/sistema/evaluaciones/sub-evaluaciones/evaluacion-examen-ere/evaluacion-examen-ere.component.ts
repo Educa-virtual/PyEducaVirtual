@@ -4,7 +4,7 @@ import { ToolbarPrimengComponent } from '@/app/shared/toolbar-primeng/toolbar-pr
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
 import { DropdownModule } from 'primeng/dropdown' // Importar el módulo
 import { forkJoin } from 'rxjs'
-import { Router } from '@angular/router'
+import { Router, RouterModule } from '@angular/router'
 
 interface Evaluacion {
     iEvaluacionId: number
@@ -16,7 +16,12 @@ interface Evaluacion {
 @Component({
     selector: 'app-evaluacion-examen-ere',
     standalone: true,
-    imports: [TablePrimengComponent, ToolbarPrimengComponent, DropdownModule],
+    imports: [
+        TablePrimengComponent,
+        ToolbarPrimengComponent,
+        DropdownModule,
+        RouterModule,
+    ],
     providers: [GeneralService],
     templateUrl: './evaluacion-examen-ere.component.html',
     styleUrl: './evaluacion-examen-ere.component.scss',
@@ -29,6 +34,7 @@ export class EvaluacionExamenEreComponent implements OnInit {
     nivelEvalMap: any = []
     nombreTipoEval: string = ''
     nombreNivelEval: string = ''
+    selectedSection: string = '' // Estado para gestionar la selección
 
     constructor(
         private query: GeneralService,
@@ -42,7 +48,7 @@ export class EvaluacionExamenEreComponent implements OnInit {
         {
             type: 'item',
             width: '1rem',
-            field: 'cItem',
+            field: 'cIEvaluacion',
             header: 'Nº',
             text_header: 'center',
             text: 'center',
@@ -99,17 +105,30 @@ export class EvaluacionExamenEreComponent implements OnInit {
     ]
     accionBtnItem(elemento): void {
         const { accion } = elemento
-        //const { item } = elemento
         switch (accion) {
             case 'examenEre':
-                this.router.navigate([
-                    '/evaluaciones/sub-evaluaciones/examen-ere',
-                ])
-                console.log('Llego la accion examenEre')
+                // Navegar a la ruta para cargar el componente hijo en el <router-outlet>
+                this.router.navigate(
+                    [
+                        'evaluaciones/sub-evaluaciones/evaluacion-examen-ere/examen-ere',
+                    ],
+                    {
+                        queryParams: {
+                            // iEvalPromId: value.iEvalPromId ?? undefined,
+                            cIEvaluacion:
+                                elemento.item.cIEvaluacion ?? undefined,
+                            cEvaluacionNombre:
+                                elemento.item.cEvaluacionNombre ?? undefined,
+                        },
+                        queryParamsHandling: 'merge',
+                    }
+                )
+                console.warn('ruta', elemento)
+
                 break
         }
     }
-    // Función que maneja el evento de selección del dropdown
+    //Función que maneja el evento de selección del dropdown
     onEvaluacionSeleccionada(event: any) {
         if (event && event.value) {
             const selectedEvaluacionId = event.value
@@ -129,7 +148,7 @@ export class EvaluacionExamenEreComponent implements OnInit {
                     evaluacion.iEvaluacionId === selectedEvaluacionId
             )
             .map((item) => ({
-                cItem: item.iEvaluacionId,
+                cIEvaluacion: item.iEvaluacionId,
                 cEvaluacionNombre: item.cEvaluacionNombre || 'Sin nombre',
                 dtEvaluacionCreacion: formatDate(item.dtEvaluacionCreacion),
                 idTipoEvalId: this.nombreTipoEval,
@@ -142,29 +161,38 @@ export class EvaluacionExamenEreComponent implements OnInit {
             .searchCalAcademico({
                 esquema: 'ere',
                 tabla: 'evaluacion',
-                campos: 'iEvaluacionId,cEvaluacionNombre,dtEvaluacionCreacion,idTipoEvalId,iNivelEvalId',
-                condicion: '1=1',
+                campos: 'iEvaluacionId,cEvaluacionNombre,dtEvaluacionCreacion,idTipoEvalId,iNivelEvalId,iEstado',
+                condicion: 'iEstado = 1', // Filtrar directamente en la base de datos
             })
             .subscribe({
                 next: (data: any) => {
+                    console.log('Datos recibidos:', data) // Verificar que los datos lleguen correctamente
                     if (data && data.data && Array.isArray(data.data)) {
+                        // No es necesario filtrar, ya que la base de datos ya devuelve solo las evaluaciones activas
                         this.evaluacionesEreDrop = data.data.sort(
                             (a, b) => b.iEvaluacionId - a.iEvaluacionId
                         )
+
                         const tipoEvalIds = Array.from(
                             new Set(
-                                this.evaluacionesEreDrop.map(
-                                    (item) => item.idTipoEvalId
-                                )
+                                this.evaluacionesEreDrop
+                                    .map((item) => item.idTipoEvalId)
+                                    .filter(
+                                        (id) => id !== undefined && id !== null
+                                    )
                             )
                         )
+
                         const nivelEvalIds = Array.from(
                             new Set(
-                                this.evaluacionesEreDrop.map(
-                                    (item) => item.iNivelEvalId
-                                )
+                                this.evaluacionesEreDrop
+                                    .map((item) => item.iNivelEvalId)
+                                    .filter(
+                                        (id) => id !== undefined && id !== null
+                                    )
                             )
                         )
+
                         const tipoEval$ = this.query.searchCalAcademico({
                             esquema: 'ere',
                             tabla: 'tipo_evaluaciones',
@@ -178,6 +206,7 @@ export class EvaluacionExamenEreComponent implements OnInit {
                             campos: 'iNivelEvalId,cNivelEvalNombre',
                             condicion: `iNivelEvalId IN (${nivelEvalIds.join(',')})`,
                         })
+
                         forkJoin([tipoEval$, nivelEval$]).subscribe({
                             next: ([tipoEvalData, nivelEvalData]: [
                                 any,
@@ -208,10 +237,12 @@ export class EvaluacionExamenEreComponent implements OnInit {
                                             },
                                             {} as { [key: number]: string }
                                         )
+
                                     this.evaluacionEreTable =
                                         this.evaluacionesEreDrop.map(
                                             (item: any) => ({
-                                                cItem: item.iEvaluacionId,
+                                                cIEvaluacion:
+                                                    item.iEvaluacionId,
                                                 cEvaluacionNombre:
                                                     item.cEvaluacionNombre ||
                                                     'Sin nombre',
@@ -231,6 +262,7 @@ export class EvaluacionExamenEreComponent implements OnInit {
                                                     ] || 'Desconocido',
                                             })
                                         )
+
                                     this.nombreTipoEval =
                                         this.evaluacionEreTable[4].idTipoEvalId
                                     this.nombreNivelEval =

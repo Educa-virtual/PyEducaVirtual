@@ -108,7 +108,7 @@ export class RubricaEvaluacionComponent implements OnInit, OnDestroy {
                         this.data = Array.isArray(data) ? data[0] : undefined
                         console.log(this.data)
 
-                        if (this.data.iEstado) {
+                        if (this.data?.iEstado) {
                             this.router.navigate([], {
                                 queryParams: {
                                     iEstado: this.data.iEstado,

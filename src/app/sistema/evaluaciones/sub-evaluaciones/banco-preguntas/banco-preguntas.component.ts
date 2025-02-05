@@ -18,7 +18,6 @@ import { BancoPreguntasFormContainerComponent } from './banco-preguntas-form-con
 import { CompartirFormularioEvaluacionService } from '../../services/ereEvaluaciones/compartir-formulario-evaluacion.service'
 import { GeneralService } from '@/app/servicios/general.service'
 import { DomSanitizer } from '@angular/platform-browser'
-// import { AulaBancoPreguntasComponent } from '@/app/sistema/aula-virtual/sub-modulos/aula-banco-preguntas/aula-banco-preguntas/aula-banco-preguntas.component'
 import { MenuItem, MessageService } from 'primeng/api'
 import { IArea } from '../areas/interfaces/area.interface'
 import { CompartirIdEvaluacionService } from '../../services/ereEvaluaciones/compartir-id-evaluacion.service'
@@ -40,11 +39,6 @@ import { CommonModule } from '@angular/common'
     styleUrls: ['./banco-preguntas.component.scss'],
 })
 export class BancoPreguntasComponent implements OnInit, OnDestroy {
-    private _dialogService = inject(DialogService)
-    private _apiEre = inject(ApiEvaluacionesRService)
-    private _apiEvaluacionesR = inject(ApiEvaluacionesRService)
-    private _confirmationModalService = inject(ConfirmationModalService)
-    private _route = inject(ActivatedRoute)
     queryParams: any = {}
     areaId: string | null = null
     nombreCurso: string | null = null
@@ -53,14 +47,20 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
     seccion: string | null = null
     nombrecEvaluacion: string | null = null
     area: IArea | null = null // Declara la propiedad
-    public iEvaluacionId!: number // Propiedad para almacenar el ID de evaluación
-    public iPreguntaId!: number // Propiedad para almacenar el ID de evaluación
     preguntasSeleccionadas: any // Aquí se guardarán las preguntas seleccionadas
     preguntasInformacionBanco: any // Aquí se guardarán las preguntas seleccionadas
     bancoPregunta: any
     preguntasInformacion: any[] = [] // Aquí se guardarán las preguntas seleccionadas
     unsubscribe$: Subject<boolean> = new Subject()
-    private _MessageService = inject(MessageService)
+    areas: any[] = []
+    selectedItems = []
+    dataSeleccionado: any[] = [] // Aquí se guardarán las preguntas seleccionadas
+    selectedItemsForm = []
+    preguntaSelecionada: any[] = []
+    preguntastocursos = []
+
+    public iEvaluacionId!: number // Propiedad para almacenar el ID de evaluación
+    public iPreguntaId!: number // Propiedad para almacenar el ID de evaluación
     public areax = {
         nombreCurso: '',
         grado: '',
@@ -82,44 +82,46 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
     }
     public showModalBancoPreguntas: boolean = false
     public mostrarModalBaPrInformacion: boolean = false
-    areas: any[] = []
-    selectedItems = []
     public iEvaluacionIdS: number | null = null
     public informacionPregunta: any = null
     public informacinoBanco: any = null
-    dataSeleccionado: any[] = [] // Aquí se guardarán las preguntas seleccionadas
-    selectedItemsForm = []
-    preguntaSelecionada: any[] = []
-    preguntastocursos = []
+
+    private _dialogService = inject(DialogService)
+    private _apiEre = inject(ApiEvaluacionesRService)
+    private _apiEvaluacionesR = inject(ApiEvaluacionesRService)
+    private _confirmationModalService = inject(ConfirmationModalService)
+    private _route = inject(ActivatedRoute)
+    private _MessageService = inject(MessageService)
+
     accionesPrincipal: IActionContainer[] = [
-        {
-            labelTooltip: 'Word',
-            text: 'Word',
-            icon: 'pi pi-file-word',
-            accion: 'generar-word',
-            class: 'p-button-info',
-        },
-        {
-            labelTooltip: 'Agregar Pregunta',
-            text: 'Agregar Preguntas',
-            icon: 'pi pi-plus',
-            accion: 'agregar',
-            class: 'p-button-secondary',
-        },
+        // {
+        //     labelTooltip: 'Word',
+        //     text: 'Word',
+        //     icon: 'pi pi-file-word',
+        //     accion: 'generar-word',
+        //     class: 'p-button-info',
+        // },
+        // {
+        //     labelTooltip: 'Agregar Pregunta',
+        //     text: 'Agregar Preguntas',
+        //     icon: 'pi pi-plus',
+        //     accion: 'agregar',
+        //     class: 'p-button-secondary',
+        // },
     ]
 
     public data = []
 
     // Columnas Tabla Banco Preguntas
     columnas: IColumn[] = [
-        {
-            field: 'checked',
-            header: '',
-            type: 'checkbox',
-            width: '5rem',
-            text: 'left',
-            text_header: '',
-        },
+        // {
+        //     field: 'checked',
+        //     header: '',
+        //     type: 'checkbox',
+        //     width: '5rem',
+        //     text: 'left',
+        //     text_header: '',
+        // },
 
         {
             field: 'cPregunta',
@@ -231,27 +233,6 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
         },
     ]
 
-    tiposAgrecacionPregunta: MenuItem[] = [
-        {
-            label: 'Nueva Pregunta',
-            icon: 'pi pi-plus',
-            command: () => {
-                // this.handleNuevaPregunta()
-                this.agregarEditarPregunta({
-                    iPreguntaId: 0,
-                    preguntas: [],
-                    iEncabPregId: -1,
-                })
-            },
-        },
-        {
-            label: 'Del banco de preguntas',
-            icon: 'pi pi-plus',
-            command: () => {
-                this.handleBancopregunta()
-            },
-        },
-    ]
     constructor(
         private compartirFormularioEvaluacionService: CompartirFormularioEvaluacionService,
         private compartirIdEvaluacionService: CompartirIdEvaluacionService,
@@ -326,14 +307,8 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             nivel: this.nivel,
             seccion: this.seccion,
         })
-        //!
-
         this.obtenerPreguntaSeleccionada(this.iEvaluacionId)
         this.compartirFormularioEvaluacionService.getAreasId()
-        console.log(
-            'ID de área:',
-            this.compartirFormularioEvaluacionService.getAreasId()
-        )
     }
     handleBancopregunta() {
         this.showModalBancoPreguntas = true
@@ -426,10 +401,19 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
                         {},
                         this.expandedRowKeys
                     )
-                    console.log(
-                        'Datos filtrados de banco de preguntas:',
-                        this.data
-                    )
+                    // console.log(
+                    //     'Datos filtrados de banco de preguntas:',
+                    //     this.data
+                    // )
+                    this.data = this.data.map((pregunta) => {
+                        return {
+                            ...pregunta,
+                            cPregunta: pregunta.cPregunta.replace(
+                                /<[^>]+>/g,
+                                ''
+                            ),
+                        }
+                    })
                 },
             })
         console.log('Parámetros enviados:', this.params)
@@ -449,7 +433,6 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
                         seleccionado.iPreguntaId === item.iPreguntaId
                 )
         )
-
         // Preparar el payload con todas las preguntas seleccionadas
         const payload = {
             iEvaluacionId: iEvaluacionId, // ID de evaluación
@@ -457,15 +440,13 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
                 iPreguntaId: pregunta.iPreguntaId, // ID de cada pregunta
             })),
         }
-        console.log('Payload:', payload)
         // Enviar el payload al backend en una sola solicitud
         this._apiEre
             .insertarPreguntaSeleccionada(payload) // Endpoint que maneja múltiples preguntas
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
                 next: (response) => {
-                    console.log('Preguntas guardadas exitosamente:', response)
-
+                    response
                     // Actualizar la lista de seleccionados si se guardaron correctamente
                     this.dataSeleccionado = [
                         ...this.dataSeleccionado,
@@ -487,7 +468,6 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
             this.dataSeleccionado
         )
     }
-    //!
     obtenerPreguntaSeleccionada(iEvaluacionId: number) {
         if (!iEvaluacionId || iEvaluacionId < 0) {
             console.error(
@@ -519,6 +499,22 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
                         item.iCursosNivelGradId.toString() ===
                         this.params.iCursosNivelGradId.toString()
                 )
+
+                console.log(this.preguntaSelecionada)
+
+                this.preguntasSeleccionadas = this.preguntasSeleccionadas.map(
+                    (pregunta) => {
+                        return {
+                            ...pregunta,
+                            cPregunta: pregunta.cPregunta.replace(
+                                /<[^>]+>/g,
+                                ''
+                            ),
+                        }
+                    }
+                )
+
+                // this.preguntasSeleccionadas = data
 
                 console.log('Datos filtrados:', this.preguntasSeleccionadas)
             },
@@ -658,8 +654,28 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
                 },
             })
     }
-
-    // manejar las acciones
+    tiposAgrecacionPregunta: MenuItem[] = [
+        {
+            label: 'Nueva Pregunta',
+            icon: 'pi pi-plus',
+            command: () => {
+                // this.handleNuevaPregunta()
+                this.agregarEditarPregunta({
+                    iPreguntaId: 0,
+                    preguntas: [],
+                    iEncabPregId: -1,
+                })
+            },
+        },
+        {
+            label: 'Del banco de preguntas',
+            icon: 'pi pi-plus',
+            command: () => {
+                this.handleBancopregunta()
+            },
+        },
+    ]
+    //! manejar las acciones AGREGARPRUEBA
     accionBtnItem(action) {
         if (action.accion === 'agregar') {
             this.agregarEditarPregunta({
@@ -698,7 +714,6 @@ export class BancoPreguntasComponent implements OnInit, OnDestroy {
         const ids = preguntas.map((item) => item.iPreguntaId).join(',')
 
         const params = {
-            // iCursoId: this.params.iCursoId,
             iCursosNivelGradId: this.params.iCursosNivelGradId,
             ids,
         }

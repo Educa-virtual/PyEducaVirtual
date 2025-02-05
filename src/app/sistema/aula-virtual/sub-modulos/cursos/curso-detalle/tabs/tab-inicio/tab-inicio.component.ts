@@ -7,10 +7,13 @@ import { ApiAulaService } from '@/app/sistema/aula-virtual/services/api-aula.ser
 //Message,
 import { MessageService } from 'primeng/api'
 import { GeneralService } from '@/app/servicios/general.service'
+import { ButtonModule } from 'primeng/button'
+import { ConstantesService } from '@/app/servicios/constantes.service'
+import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
 @Component({
     selector: 'app-tab-inicio',
     standalone: true,
-    imports: [TableModule, PrimengModule],
+    imports: [TableModule, PrimengModule, ButtonModule],
     templateUrl: './tab-inicio.component.html',
     styleUrl: './tab-inicio.component.scss',
 })
@@ -24,7 +27,12 @@ export class TabInicioComponent implements OnInit {
     private _formBuilder = inject(FormBuilder)
     private _aulaService = inject(ApiAulaService)
     private GeneralService = inject(GeneralService)
+    private _constantesService = inject(ConstantesService)
 
+    public DOCENTE = DOCENTE
+    public ESTUDIANTE = ESTUDIANTE
+
+    iPerfilId: number
     anunciosDocente: any[] = []
 
     //form para obtener la variable
@@ -37,6 +45,7 @@ export class TabInicioComponent implements OnInit {
     constructor(private messageService: MessageService) {}
     //Inicializamos
     ngOnInit(): void {
+        this.iPerfilId = this._constantesService.iPerfilId
         this.obtenerAnuncios()
     }
     // metodo para limpiar las etiquetas
@@ -79,15 +88,54 @@ export class TabInicioComponent implements OnInit {
     //datos de los anuncios
     obtenerAnuncios() {
         const idForo = 4
-        const idDocente = this.idDocCursoId
+        const idDocenteCurso = this.idDocCursoId
         this._aulaService
             .obtenerAnunciosDocnt({
                 iForoCatId: idForo,
-                iDocenteId: idDocente,
+                iDocenteId: idDocenteCurso,
             })
             .subscribe((data) => {
                 this.anunciosDocente = data['data']
                 console.log(this.anunciosDocente)
             })
+    }
+    itemRespuesta: any[] = []
+    // menu para editar y eliminar el comentario del foro
+    menuItems = [
+        {
+            label: 'Editar',
+            icon: 'pi pi-pencil',
+            command: () => this.editar(),
+        },
+        {
+            label: 'Eliminar',
+            icon: 'pi pi-trash',
+            command: () => this.eliminar(this.itemRespuesta),
+        },
+    ]
+
+    editar(): void {
+        // let respuestasForo = this.itemRespuesta
+        // console.log('Editar acción ejecutada', respuestasForo)
+        //iForoRptaId
+    }
+    eliminar(itemRespuesta: any): void {
+        const iForoRptaId = {
+            iForoRptaId: parseInt(itemRespuesta.iForoRptaId, 10),
+        }
+        console.log('Eliminar acción ejecutada01', iForoRptaId)
+        this._aulaService.eliminarRespuesta(iForoRptaId).subscribe({
+            next: (response) => {
+                //const mensaje = response?.message || 'Elemento eliminado sin respuesta del servidor';
+                console.log('Elemento eliminado correctamente:', response)
+                // Actualiza la lista local después de eliminar
+                // this.itemRespuesta = this.itemRespuesta.filter(
+                //     (item: any) => item.iForoRptaId !== respuestasForo
+                // );
+            },
+            error: (err) => {
+                console.error('Error al eliminar:', err)
+            },
+        })
     }
 }

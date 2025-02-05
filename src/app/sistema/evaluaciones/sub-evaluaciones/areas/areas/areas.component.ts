@@ -106,13 +106,14 @@ export class AreasComponent implements OnInit {
                             item.cCursoDescripcion || 'Sin descripción', // Descripción del curso.
                         seccion: item.cGradoRomanos || 'Sin sección', // Ejemplo: I.
                         grado: item.cGradoAbreviacion || 'Sin grado', // Ejemplo: 1ro.
-                        totalEstudiantes: 0, //!Cambiar esto y que se vea las preguntas.
+                        totalEstudiantes: 0, //Cambiar esto y que se vea las preguntas.
                         nivel: 'Primaria', // Puedes ajustarlo según tu lógica o datos de la API.
                         cantidad: null,
                     }))
                     this.area.filter((item) => {
                         this.iCursosNivelGradId.push(item.id)
                     })
+                    console.warn(this.area)
                     // Guardar las áreas procesadas en el servicio
                     this.compartirFormularioEvaluacionService.setAreas(
                         this.area
@@ -154,6 +155,8 @@ export class AreasComponent implements OnInit {
     datos: any
     areaData = []
     obtenerConteoPorCurso(): void {
+        this.areaData = this.area
+
         this.datos = {
             iEvaluacionId: this.iEvaluacionId,
             iCursosNivelGradId: this.iCursosNivelGradId,

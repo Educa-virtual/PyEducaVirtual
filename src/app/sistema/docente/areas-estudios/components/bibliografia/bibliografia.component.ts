@@ -1,6 +1,6 @@
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
-import { Component, Input, OnChanges, OnDestroy } from '@angular/core'
+import { Component, inject, Input, OnChanges, OnDestroy } from '@angular/core'
 import { FormBibliografiaComponent } from '../form-bibliografia/form-bibliografia.component'
 import { GeneralService } from '@/app/servicios/general.service'
 import { ConstantesService } from '@/app/servicios/constantes.service'
@@ -8,6 +8,7 @@ import { FormBuilder } from '@angular/forms'
 import { ConfirmationService, MessageService } from 'primeng/api'
 import { ConfirmDialogModule } from 'primeng/confirmdialog'
 import { Subject, takeUntil } from 'rxjs'
+import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 interface Data {
     accessToken: string
     refreshToken: string
@@ -30,6 +31,8 @@ interface Data {
     styleUrl: './bibliografia.component.scss',
 })
 export class BibliografiaComponent implements OnChanges, OnDestroy {
+    private _ConfirmationModalService = inject(ConfirmationModalService)
+
     @Input() iSilaboId: string
     private unsubscribe$ = new Subject<boolean>()
     constructor(
@@ -155,7 +158,15 @@ export class BibliografiaComponent implements OnChanges, OnDestroy {
                 this.option = accion === 'agregar' ? 'Agregar' : 'Actualizar'
                 break
             case 'eliminar':
-                this.deleteBibliografias(item)
+                this._ConfirmationModalService.openConfirm({
+                    header:
+                        '¿Esta seguro de eliminar la bibliografía ' +
+                        item['cBiblioTitulo'] +
+                        ' ?',
+                    accept: () => {
+                        this.deleteBibliografias(item)
+                    },
+                })
                 break
             case 'close-modal':
                 this.showModal = false
@@ -215,33 +226,17 @@ export class BibliografiaComponent implements OnChanges, OnDestroy {
         this.getInformation(params, false)
     }
     deleteBibliografias(item) {
-        this.confirmationService.confirm({
-            message: 'Desea eliminar estudiante ' + item.cBiblioTitulo + ' ?',
-            header: 'Eliminar Estudiante',
-            acceptButtonStyleClass: 'p-button-secondary p-mr-2', // Agregar margen derecho al botón Aceptar
-            rejectButtonStyleClass: 'p-button-info p-button-text p-ml-2', // Agregar margen izquierdo al botón Rechazar
-            acceptIcon: 'none',
-            rejectIcon: 'none',
-            acceptLabel: 'Si',
-            rejectLabel: 'Cancelar',
-
-            accept: () => {
-                item.opcion = 'ELIMINARxiBiblioId'
-                item.iCredId = this.ConstantesService.iCredId
-                const params = {
-                    petition: 'post',
-                    group: 'docente',
-                    prefix: 'bibliografias',
-                    ruta: 'store',
-                    data: item,
-                    params: { skipSuccessMessage: true },
-                }
-                this.getInformation(params, true)
-            },
-            reject: () => {
-                // Acción al rechazar
-            },
-        })
+        item.opcion = 'ELIMINARxiBiblioId'
+        item.iCredId = this.ConstantesService.iCredId
+        const params = {
+            petition: 'post',
+            group: 'docente',
+            prefix: 'bibliografias',
+            ruta: 'store',
+            data: item,
+            params: { skipSuccessMessage: true },
+        }
+        this.getInformation(params, true)
     }
 
     getInformation(params, api) {

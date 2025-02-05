@@ -53,6 +53,9 @@ import {
     FormGroup,
     ReactiveFormsModule,
 } from '@angular/forms'
+import { ApiService } from '@/app/servicios/api.service'
+import { IUpdateTableService } from '@/app/interfaces/api.interface'
+import { UtilService } from '@/app/servicios/utils.service'
 @Component({
     selector: 'app-evaluaciones',
     standalone: true,
@@ -92,6 +95,7 @@ export class EvaluacionesComponent implements OnInit {
     cursosSeleccionados: any[] = []
     fechaHoraInicio: Date | undefined
     fechaHoraFin: Date | undefined
+
     @Output() opcionChange = new EventEmitter<string>()
     @Input() dataRow: any[] = [] // Los datos que recibe la tabla
     @Input() columnasRow: any[] = [] // Las columnas que muestra la tabla
@@ -111,153 +115,307 @@ export class EvaluacionesComponent implements OnInit {
     public showModalCursosEre: boolean = false
     form: FormGroup
 
+    private _formBuilder = inject(FormBuilder) //form para obtener la variable
+    public guardarIniFinCurso: FormGroup = this._formBuilder.group({})
     constructor(
         private router: Router,
         private compartirIdEvaluacionService: CompartirIdEvaluacionService,
         private compartirFormularioEvaluacionService: CompartirFormularioEvaluacionService,
         private messageService: MessageService,
         private cdr: ChangeDetectorRef,
-        private fb: FormBuilder
+        private fb: FormBuilder,
+        private apiservice: ApiService,
+        private utils: UtilService
     ) {
         this.form = this.fb.group({})
     }
 
     cursoSeleccionado: Map<number, boolean> = new Map()
     iiEvaluacionId: number // El ID de evaluación que quieras usar
+    nombreEvaluacion: string
     ngOnInit() {
         this.obtenerEvaluacion()
-
         this.caption = 'Evaluaciones'
         this.dataSubject.subscribe((newData: any[]) => {
             this.data = newData
         })
         this.cEvaluacionNombre =
             this.compartirFormularioEvaluacionService.getcEvaluacionNombre()
-
         // Establece el ID de la evaluación
         this.compartirFormularioEvaluacionService.setEvaluacionId(
             this.iiEvaluacionId
         )
-
+        this.compartirFormularioEvaluacionService.setcEvaluacionNombre(
+            this.cEvaluacionNombre
+        )
         this.form.valueChanges.subscribe((value) => {
-            console.log('Form value changes', value)
+            value
         })
     }
     listaCursos: any[] = []
     lista: any
     objectKeys = Object.keys
-    // Método para obtener los cursos seleccionados
-    // obtenerCursos(): void {
-    //     if (!this.iiEvaluacionId) {
-    //         console.warn('El ID de evaluación no está definido.')
-    //         return
-    //     }
-    //     // Llamar a searchAmbienteAcademico para obtener los datos estructurados
-    //     this.compartirFormularioEvaluacionService
-    //         .searchAmbienteAcademico()
-    //         .then((lista: any[]) => {
-    //             // Almacenar la lista en la propiedad `this.lista`
-    //             this.lista = lista
-    //             // Obtener los cursos seleccionados y combinarlos
-    //             return this.compartirFormularioEvaluacionService.obtenerCursosSeleccionados()
-    //         })
-    //         .then((cursosSeleccionadosMap: Map<number, boolean>) => {
-    //             // Filtrar solo los cursos seleccionados
-    //             this.listaCursos = this.lista
-    //                 .map((nivel: any) => ({
-    //                     nivel: nivel.nivel,
-    //                     grados: Object.keys(nivel.grados)
-    //                         .map((grado) => ({
-    //                             grado,
-    //                             cursos: nivel.grados[grado].filter(
-    //                                 (curso: any) =>
-    //                                     cursosSeleccionadosMap.get(
-    //                                         curso.iCursoNivelGradId
-    //                                     ) || false // Filtrar solo los seleccionados
-    //                             ),
-    //                         }))
-    //                         .filter((grado: any) => grado.cursos.length > 0), // Filtrar grados sin cursos
-    //                 }))
-    //                 .filter(
-    //                     (nivel: any) => nivel.grados.length > 0 // Filtrar niveles sin grados seleccionados
-    //                 )
-    //             console.log(
-    //                 'Lista de cursos seleccionados y estructurados:',
-    //                 this.listaCursos
-    //             )
-    //         })
-    //         .catch((error) => {
-    //             console.error('Error al obtener los cursos:', error)
-    //         })
-    // }
-    obtenerCursos(): void {
+
+    evaluacionCursos
+    async obtenerCursos() {
         if (!this.iiEvaluacionId) {
             console.warn('El ID de evaluación no está definido.')
             return
         }
 
-        // Llamar a searchAmbienteAcademico para obtener los datos estructurados
-        this.compartirFormularioEvaluacionService
-            .searchAmbienteAcademico()
-            .then((lista: any[]) => {
-                // Almacenar la lista en la propiedad `this.lista`
-                this.lista = lista
+        const [evaluacionCursos] = await this.apiservice.getData({
+            esquema: 'ere',
+            tabla: 'V_EvaluacionFechasCursos',
+            campos: '*',
+            where: 'iEvaluacionId = ' + this.iiEvaluacionId,
+        })
 
-                // Obtener los cursos seleccionados y combinarlos
-                return this.compartirFormularioEvaluacionService.obtenerCursosSeleccionados()
-            })
-            .then((cursosSeleccionadosMap: Map<number, boolean>) => {
-                // Estructurar la lista de cursos, eliminando los cursos no seleccionados
-                this.listaCursos = this.lista
-                    .map((nivel: any) => ({
-                        nivel: nivel.nivel,
-                        grados: Object.keys(nivel.grados)
-                            .map((grado) => ({
-                                grado,
-                                cursos: nivel.grados[grado].filter(
-                                    (curso: any) =>
-                                        cursosSeleccionadosMap.get(
-                                            curso.iCursoNivelGradId
-                                        ) || false
-                                ), // Solo seleccionados
-                            }))
-                            .filter((grado: any) => grado.cursos.length > 0), // Filtrar grados sin cursos seleccionados
-                    }))
-                    .filter((nivel: any) => nivel.grados.length > 0) // Filtrar niveles sin grados seleccionados
+        this.evaluacionCursos = evaluacionCursos
 
-                console.log(
-                    'Lista de cursos seleccionados y estructurados:',
-                    this.listaCursos
+        console.log('Evaluación cursos:', evaluacionCursos)
+
+        const agruparPorNivelYGrado = () => {
+            const niveles = {}
+
+            evaluacionCursos.cursos_niveles.forEach((data) => {
+                const { iNivelTipoId, cNivelTipoNombre } = data
+                const {
+                    cGradoAbreviacion,
+                    cCursoNombre,
+                    dtExamenFechaInicio,
+                    dtExamenFechaFin,
+                    iCursoNivelGradId,
+                    iExamCurId,
+                } = data
+
+                // Si el nivel no existe en el resultado, inicialízalo
+                if (!niveles[iNivelTipoId]) {
+                    niveles[iNivelTipoId] = {
+                        iNivelTipoId,
+                        cNivelTipoNombre,
+                        grados: [],
+                    }
+                }
+
+                // Buscar el grado dentro del nivel
+                let grado = niveles[iNivelTipoId].grados.find(
+                    (g) => g.cGradoAbreviacion === cGradoAbreviacion
                 )
 
-                this.listaCursos.forEach((nivel) => {
-                    nivel.grados.forEach((grado) => {
-                        grado.cursos.forEach((curso) => {
-                            this.form.addControl(
-                                `${curso.cCursoNombre}${curso.iCursoNivelGradId}Inicio`,
-                                new FormControl()
-                            )
-                            this.form.addControl(
-                                `${curso.cCursoNombre}${curso.iCursoNivelGradId}Fin`,
-                                new FormControl()
-                            )
-                        })
-                    })
+                // Si el grado no existe, inicialízalo
+                if (!grado) {
+                    grado = { cGradoAbreviacion, cursos: [] }
+                    niveles[iNivelTipoId].grados.push(grado)
+                }
+
+                // Agregar el curso al grado correspondiente
+                grado.cursos.push({
+                    iExamCurId,
+                    iCursoNivelGradId,
+                    cCursoNombre,
+                    dtExamenFechaInicio,
+                    dtExamenFechaFin,
                 })
-
-                console.log('Form', this.form)
-            })
-            .catch((error) => {
-                console.error('Error al obtener los cursos:', error)
             })
 
-        // this.form.addControl('cursosSeleccionados', this.fb.array([]))
+            // Convertir a un arreglo
+            return Object.values(niveles)
+        }
+
+        // Ejecutar la función
+        const nivelesConGradosYCursos = agruparPorNivelYGrado()
+        console.log(nivelesConGradosYCursos)
+
+        this.listaCursos = nivelesConGradosYCursos
+
+        this.listaCursos.forEach((nivel) => {
+            nivel.grados.forEach((grado) => {
+                grado.cursos.forEach((curso) => {
+                    this.form.addControl(
+                        `${curso.cCursoNombre}${curso.iCursoNivelGradId}[${curso.iExamCurId}]Inicio`,
+                        new FormControl(
+                            curso.dtExamenFechaInicio
+                                ? new Date(curso.dtExamenFechaInicio)
+                                : null
+                        )
+                    )
+                    this.form.addControl(
+                        `${curso.cCursoNombre}${curso.iCursoNivelGradId}[${curso.iExamCurId}]Fin`,
+                        new FormControl(
+                            curso.dtExamenFechaFin
+                                ? new Date(curso.dtExamenFechaFin)
+                                : null
+                        )
+                    )
+                })
+            })
+        })
     }
 
     toggleCurso(curso: any): void {
         curso.isSelected = !curso.isSelected // Cambiar el estado seleccionado
-        console.log('Estado actualizado del curso:', curso)
     }
+
+    // MÉTODO PARA GUARDAR INICIO FIN EXAMEN AREAS
+    // guardarInicioFinalExmAreas() {
+    //     const fecha = this.form.value // Captura todos los valores del formulario
+    //     console.log('Form value changes', fecha)
+
+    // // Función para formatear las fechas al formato 'YYYY-MM-DD HH:mm:ss'
+    // const formatDate = (date: Date | null) => {
+    //     if (!date) return null // Si no hay fecha, regresa null
+    //     const year = date.getFullYear()
+    //     const month = String(date.getMonth() + 1).padStart(2, '0') // Mes comienza en 0
+    //     const day = String(date.getDate()).padStart(2, '0')
+    //     const hours = String(date.getHours()).padStart(2, '0')
+    //     const minutes = String(date.getMinutes()).padStart(2, '0')
+    //     const seconds = String(date.getSeconds()).padStart(2, '0')
+    //     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
+    // }
+
+    //     // Extraer los cursos con fechas
+    //     const datosCursos: any[] = []
+    //     this.listaCursos.forEach((nivel: any) => {
+    //         nivel.grados.forEach((grado: any) => {
+    //             grado.cursos.forEach((curso: any) => {
+    //                 const inicioControl = `${curso.cCursoNombre}${curso.iCursoNivelGradId}Inicio`
+    //                 const finControl = `${curso.cCursoNombre}${curso.iCursoNivelGradId}Fin`
+
+    //                 // Verificar si existen los valores en el formulario
+    //                 if (fecha[inicioControl] || fecha[finControl]) {
+    //                     datosCursos.push({
+    //                         iCursoNivelGradId: curso.iCursoNivelGradId, // ID del curso
+    //                         fechaInicio: formatDate(
+    //                             fecha[inicioControl] || null
+    //                         ), // Formatea fecha de inicio
+    //                         fechaFin: formatDate(fecha[finControl] || null), // Formatea fecha de fin
+    //                     })
+    //                 }
+    //             })
+    //         })
+    //     })
+
+    //     // Obtener solo los iCursoNivelGradId en un arreglo
+    //     const iCursoNivelGradIds = datosCursos.map(
+    //         (curso) => curso.iCursoNivelGradId
+    //     )
+
+    //     // Estructura final con iEvaluacionId y los datos de cursos
+    //     const datos = {
+    //         iEvaluacionId: this.iiEvaluacionId, // ID de evaluación
+    //         iCursoNivelGradId: iCursoNivelGradIds, // Lista de cursos con fechas
+    //         fechaIniFin: datosCursos, // Lista de cursos con fechas
+    //     }
+
+    //     // Aquí realizas la petición HTTP para actualizar en la base de datos
+    //     this._apiEre.guardarInicioFinalExmAreas(datos).subscribe(
+    //         (respuesta) => {
+    //             console.log('Actualización exitosa:', respuesta)
+    //         },
+    //         (error) => {
+    //             console.error('Error al actualizar:', error)
+    //         }
+    //     )
+
+    //     console.log('Datos a enviar al servidor:', datos)
+    // }
+    // async guardarInicioFinalExmAreas() {
+    //     // return await this.apiservice.updateData({
+    //     //     esquema: 'ere',
+    //     //     tabla: 'evaluacion',
+    //     // })
+    //     console.log(Object.keys(this.form.value))
+
+    //     const coincidencias: IUpdateTableService[] = [] // Arreglo para almacenar coincidencias
+
+    //     this.evaluacionCursos.cursos_niveles.forEach((data) => {
+    //         const inicioKey = `${data.cCursoNombre}${data.iCursoNivelGradId}[${data.iExamCurId}]Inicio`
+    //         const finKey = `${data.cCursoNombre}${data.iCursoNivelGradId}[${data.iExamCurId}]Fin`
+
+    //         const inicioValue = this.form.value[inicioKey] // Busca el valor de 'Inicio' en el formulario
+    //         const finValue = this.form.value[finKey] // Busca el valor de 'Fin' en el formulario
+
+    //         if (inicioValue || finValue) {
+    //             coincidencias.push({
+    //                 esquema: 'ere',
+    //                 tabla: 'examen_cursos',
+    //                 campos: {
+    //                     iExamCurId: data.iExamCurId,
+    //                     dtExamenFechaInicio:
+    //                         this.utils.convertToSQLDateTime(inicioValue) ||
+    //                         null, // Asigna el valor o null si no existe
+    //                     dtExamenFechaFin:
+    //                         this.utils.convertToSQLDateTime(finValue) || null, // Asigna el valor o null si no existe
+    //                 },
+    //                 where: {
+    //                     COLUMN_NAME: 'iExamCurId',
+    //                     VALUE: data.iExamCurId,
+    //                 },
+    //             })
+    //         }
+    //     })
+
+    //     this.apiservice.updateData(coincidencias)
+    //     this.visible = false
+    //     this.showModalCursosEre = false
+    //     this.form.reset()
+    //     this.removeControls()
+    // }
+    async guardarInicioFinalExmAreas() {
+        const formatDate = (date: Date | null) => {
+            if (!date) return null // Si no hay fecha, regresa null
+            const day = String(date.getDate()).padStart(2, '0')
+            const month = String(date.getMonth() + 1).padStart(2, '0') // Mes comienza en 0
+            const year = date.getFullYear()
+            const hours = String(date.getHours()).padStart(2, '0')
+            const minutes = String(date.getMinutes()).padStart(2, '0')
+            const seconds = String(date.getSeconds()).padStart(2, '0')
+            return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`
+        }
+
+        const coincidencias: IUpdateTableService[] = [] // Arreglo para almacenar coincidencias
+
+        this.evaluacionCursos.cursos_niveles.forEach((data) => {
+            const inicioKey = `${data.cCursoNombre}${data.iCursoNivelGradId}[${data.iExamCurId}]Inicio`
+            const finKey = `${data.cCursoNombre}${data.iCursoNivelGradId}[${data.iExamCurId}]Fin`
+
+            // Obtén los valores de inicio y fin del formulario
+            const inicioValue = this.form.value[inicioKey]
+            const finValue = this.form.value[finKey]
+
+            // Formatea las fechas antes de enviarlas
+            const formattedInicio = formatDate(inicioValue)
+            const formattedFin = formatDate(finValue)
+
+            if (formattedInicio || formattedFin) {
+                coincidencias.push({
+                    esquema: 'ere',
+                    tabla: 'examen_cursos',
+                    campos: {
+                        iExamCurId: data.iExamCurId,
+                        dtExamenFechaInicio:
+                            this.utils.convertToSQLDateTime(inicioValue) ||
+                            null, // Asigna el valor o null si no existe
+                        dtExamenFechaFin:
+                            this.utils.convertToSQLDateTime(finValue) || null, // Asigna el valor o null si no existe
+                    },
+                    where: {
+                        COLUMN_NAME: 'iExamCurId',
+                        VALUE: data.iExamCurId,
+                    },
+                })
+            }
+        })
+        // Envía los datos al servicio para actualizar en la base de datos
+        await this.apiservice.updateData(coincidencias)
+
+        this.visible = false
+        this.showModalCursosEre = false
+        this.form.reset()
+        this.removeControls()
+    }
+
+    //!
     toggleBotonc(): void {
         this.mostrarBoton = !this.mostrarBoton
     }
@@ -273,10 +431,18 @@ export class EvaluacionesComponent implements OnInit {
     opcionesAuto: IActionTable[] = []
     columnasBase: IColumn[] = [
         {
+            field: 'cEvaluacionNombre',
+            header: 'Nombre evaluación',
+            type: 'text',
+            width: '7rem',
+            text: 'left',
+            text_header: 'Clave',
+        },
+        {
             field: 'cTipoEvalDescripcion',
             header: 'Tipo evaluación',
             type: 'text',
-            width: '5rem',
+            width: '1rem',
             text: 'left',
             text_header: 'Tipo evaluación',
         },
@@ -284,7 +450,7 @@ export class EvaluacionesComponent implements OnInit {
             field: 'cNivelEvalNombre',
             header: 'Nivel evaluación',
             type: 'text',
-            width: '5rem',
+            width: '3rem',
             text: 'left',
             text_header: 'Puntaje',
         },
@@ -292,17 +458,9 @@ export class EvaluacionesComponent implements OnInit {
             field: 'dtEvaluacionCreacion',
             header: 'Fecha creación',
             type: 'text',
-            width: '5rem',
+            width: '3rem',
             text: 'left',
             text_header: 'Nivel',
-        },
-        {
-            field: 'cEvaluacionNombre',
-            header: 'Nombre evaluación',
-            type: 'text',
-            width: '5rem',
-            text: 'left',
-            text_header: 'Clave',
         },
     ]
     //COPIANDO COLUMNA PARA MODAL
@@ -352,15 +510,13 @@ export class EvaluacionesComponent implements OnInit {
             class: 'p-button-rounded p-button-warning p-button-text',
         },
         {
-            labelTooltip: 'Asignar Fecha de publicacion',
-            icon: 'pi pi-cog',
+            labelTooltip: 'Asignar Fecha de publicación',
+            icon: 'pi pi-align-justify',
             accion: 'fechaPublicacion',
             type: 'item',
             class: 'p-button-rounded p-button-warning p-button-text',
         },
     ]
-
-    //!AQUI CAMBIE MOSTRAR ROW
 
     onRowSelect(event: any) {
         this.selectedRow = [event]
@@ -463,22 +619,25 @@ export class EvaluacionesComponent implements OnInit {
         }
         if (accion === 'fechaPublicacion') {
             this.modalActivarCursosEre()
-            this.onEvaluacionSeleccionada({ value: item.iEvaluacionId })
+            this.onEvaluacionSeleccionada({
+                value: item.iEvaluacionId,
+                value1: item.cEvaluacionNombre,
+            })
+            console.log('Nombre:', item.cEvaluacionNombre)
         }
     }
     onEvaluacionSeleccionada(event: any) {
         // Asigna dinámicamente el valor seleccionado
         this.iiEvaluacionId = event.value
-        console.log('Evaluación seleccionada:', this.iiEvaluacionId)
 
         // Establece el ID de la evaluación en el servicio
         this.compartirFormularioEvaluacionService.setEvaluacionId(
             this.iiEvaluacionId
         )
-
-        // Mostrar el ID en consola para verificar
-        console.warn('ID de Evaluación establecido:', this.iiEvaluacionId)
-
+        this.nombreEvaluacion = event.value1
+        this.compartirFormularioEvaluacionService.setcEvaluacionNombre(
+            this.nombreEvaluacion
+        )
         // Llamar al servicio para obtener los cursos seleccionados
         this.obtenerCursos()
     }
@@ -519,6 +678,7 @@ export class EvaluacionesComponent implements OnInit {
                     // Acceder y mostrar el contenido específico de la respuesta
                     if (resp && resp['data']) {
                         this.data = resp['data'] // Asignar la data obtenida
+                        console.log('Respuesta de la API:', resp)
                     } else {
                         console.warn(
                             'La respuesta no contiene la propiedad "data" o es nula:',
@@ -572,10 +732,6 @@ export class EvaluacionesComponent implements OnInit {
             },
             header: header, // Aquí asignamos el header dinámico
         })
-
-        // Imprimir el modal ref para ver cómo se abre
-        console.log('MODAL DE AGREGAR EDITAR PREGUNTA', refModal)
-
         // Suscribirse al cierre del modal para actualizar las evaluaciones
         refModal.onClose.subscribe((result) => {
             if (result) {
@@ -673,6 +829,13 @@ export class EvaluacionesComponent implements OnInit {
     modalActivarCursosEre() {
         this.showModalCursosEre = true
     }
+
+    removeControls() {
+        Object.keys(this.form.controls).forEach((controlName) => {
+            this.form.removeControl(controlName)
+        })
+    }
+
     ngOnDestroy(): void {
         this.unsubscribe$.next(true)
         this.unsubscribe$.complete()

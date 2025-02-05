@@ -1,182 +1,159 @@
 <!-- [actions]="[]" -->
 <app-container-page [title]="'Mis Informes'" [actions]="[]">
     <section class="flex flex-column gap-4">
-        <p-tabView styleClass="actividad-tabs">
-            <p-tabPanel>
-                <ng-template pTemplate="header" class="header">
-                    <div class="flex align-items-center flex-column gap-2">
-                        <app-icon name="matListAlt"></app-icon>
-                        <span class="font-bold white-space-nowrap m-0">
-                            Reporte de Logros Alcanzados
-                        </span>
-                    </div>
-                </ng-template>
-                <div class="card col-12">
-                    <div class="col-12 mb-2">
-                        <app-container-page-accionb
-                            [actions]=""
-                            (accionBtnItem)="accionDescargar($event)"
-                        ></app-container-page-accionb>
-                    </div>
-                    <div class="card col-12">
-                        <div class="grid">
-                            <!-- lista de participantes... -->
-                            <div class="col-12 md:col-4">
-                                <div class="pb-2">
-                                    <label
-                                        for=""
-                                        class=""
-                                        style="
-                                            font-weight: bold;
-                                            font-size: 16px;
-                                        "
-                                        >Seleccionar estudiante:
-                                    </label>
-                                </div>
-                                <!-- [value]="reporteNotasFinales" -->
-                                <p-orderList
-                                    [value]="estudianteMatriculadosxGrado"
-                                    class="listAlumno"
-                                    filterBy="completoalumno"
-                                    filterPlaceholder="Buscar...."
+        <p-messages
+            [(value)]="mensaje"
+            [enableService]="false"
+            [closable]="false"
+        />
+        @if (perfil) {
+            <div class="text-primary mt-0 mb-0">
+                IE: {{ perfil?.cIieeNombre }}
+                / GRADO: /SECCIÓN: A
+                <!-- <span
+                    [style]="
+                        informacion?.iFalta === '0.00' ? '' : 'color: red'
+                    "
+                >
+                    Falta: {{ informacion?.iFalta || 0 }}</span
+                > -->
+            </div>
+        }
+        <div class="card col-12 mt-0">
+            <div class="col-12 mb-2">
+                <app-container-page-accionb
+                    [actions]=""
+                    (accionBtnItem)="accionDescargar($event)"
+                ></app-container-page-accionb>
+            </div>
+            <div class="card col-12">
+                <div class="grid">
+                    <!-- lista de participantes... -->
+                    <div class="col-12 md:col-4">
+                        <div class="pb-2">
+                            <label
+                                for=""
+                                class=""
+                                style="font-weight: bold; font-size: 16px"
+                                >Seleccionar estudiante:
+                            </label>
+                        </div>
+                        <!-- [value]="reporteNotasFinales" -->
+                        <p-orderList
+                            [value]="estudianteMatriculadosxGrado"
+                            class="listAlumno"
+                            filterBy="completoalumno"
+                            filterPlaceholder="Buscar...."
+                        >
+                            <ng-template
+                                let-estudiante
+                                of
+                                comentarios
+                                pTemplate="listItem"
+                                let-i="index"
+                            >
+                                <!-- (keydown.enter)="
+                                        obtenerComnt(estudiante)
+                                    "  -->
+                                <div
+                                    class="perfilesList"
+                                    tabindex="0"
+                                    (click)="obtenerCursoEstudiante(estudiante)"
+                                    (keydown.enter)="
+                                        obtenerCursoEstudiante(estudiante)
+                                    "
                                 >
-                                    <ng-template
-                                        let-estudiante
-                                        of
-                                        comentarios
-                                        pTemplate="listItem"
-                                        let-i="index"
-                                    >
-                                        <!-- (keydown.enter)="
-                                                obtenerComnt(estudiante)
-                                            "  -->
-                                        <div
-                                            class="perfilesList"
-                                            tabindex="0"
-                                            (click)="
-                                                obtenerCursoEstudiante(
-                                                    estudiante
-                                                )
-                                            "
-                                            (keydown.enter)="
-                                                obtenerCursoEstudiante(
-                                                    estudiante
-                                                )
-                                            "
-                                        >
-                                            <img
-                                                src="assets/demo/images/matemit/perfil.png"
-                                                alt=""
-                                                class="w-3rem btn"
-                                            />
-                                            <!--class="w-4rem min-h-9 shadow-2 flex-shrink-0 border-round"-->
-                                            <div class="perfil-name">
-                                                {{
-                                                    estudiante?.Estudiante
-                                                        | uppercase
-                                                }}
-                                            </div>
-                                        </div>
-                                    </ng-template>
-                                </p-orderList>
+                                    <img
+                                        src="assets/demo/images/matemit/perfil.png"
+                                        alt=""
+                                        class="w-3rem btn"
+                                    />
+                                    <!--class="w-4rem min-h-9 shadow-2 flex-shrink-0 border-round"-->
+                                    <div class="perfil-name">
+                                        {{ estudiante?.Estudiante | uppercase }}
+                                    </div>
+                                </div>
+                            </ng-template>
+                        </p-orderList>
+                    </div>
+                    <!-- lista de reporte final de logros -->
+                    <div class="md:col-8">
+                        <div class="pb-2">
+                            <label
+                                for=""
+                                class=""
+                                style="font-weight: bold; font-size: 16px"
+                                >Boleta de notas de:
+                                {{ notaEstudianteSelect }}
+                            </label>
+                        </div>
+                        <div class="card">
+                            <div class="col">
+                                <app-table-primeng
+                                    [columnas]="columnasTabla"
+                                    [data]="curso"
+                                >
+                                    <!-- [data]="reporteNotasFinales"
+                                            (accionBtnItem)="accionBnt($event)"
+                                            [actions]="accionesTabla" -->
+                                </app-table-primeng>
                             </div>
-                            <!-- lista de reporte final de logros -->
-                            <div class="md:col-8">
-                                <div class="pb-2">
-                                    <label
-                                        for=""
-                                        class=""
-                                        style="
-                                            font-weight: bold;
-                                            font-size: 16px;
-                                        "
-                                        >Boleta de notas de:
-                                        {{ notaEstudianteSelect }}
-                                    </label>
-                                </div>
-                                <div class="card">
-                                    <div class="col">
-                                        <app-table-primeng
-                                            [columnas]="columnasTabla"
-                                            [data]="curso"
-                                        >
-                                            <!-- [data]="reporteNotasFinales"
-                                                    (accionBtnItem)="accionBnt($event)"
-                                                    [actions]="accionesTabla" -->
-                                        </app-table-primeng>
-                                    </div>
-                                    <br />
-                                    <label
-                                        for=""
-                                        class=""
-                                        style="
-                                            font-weight: bold;
-                                            font-size: 16px;
-                                        "
-                                        >Conclusión descriptiva final:
-                                        <!-- Retroalimentación de logros alcanzados -->
-                                    </label>
-                                    <!-- id="descripcion"
-                                            placeholder="Escribe un Comentario... "
-                                            formControlName="cForoRptaRespuesta" -->
-                                    <p-toast></p-toast>
-                                    <form [formGroup]="conclusionDescrpFinal">
-                                        <p-editor
-                                            id="descripcion"
-                                            placeholder="Escribe una conclusión descriptiva.... "
-                                            formControlName="conclusionDescripFinal"
-                                        >
-                                            <ng-template pTemplate="header">
-                                                <span class="ql-formats">
-                                                    <button
-                                                        type="button"
-                                                        class="ql-bold"
-                                                        aria-label="Bold"
-                                                    ></button>
-                                                    <button
-                                                        type="button"
-                                                        class="ql-italic"
-                                                        aria-label="Italic"
-                                                    ></button>
-                                                    <button
-                                                        type="button"
-                                                        class="ql-underline"
-                                                        aria-label="Underline"
-                                                    ></button>
-                                                </span>
-                                            </ng-template>
-                                        </p-editor>
-                                    </form>
-                                    <div
-                                        class="col-12 flex flex-wrap gap-2 justify-content-end"
+                            <br />
+                            <label
+                                for=""
+                                class=""
+                                style="font-weight: bold; font-size: 16px"
+                                >Conclusión descriptiva final:
+                                <!-- Retroalimentación de logros alcanzados -->
+                            </label>
+                            <!-- id="descripcion"
+                                    placeholder="Escribe un Comentario... "
+                                    formControlName="cForoRptaRespuesta" -->
+                            <p-toast></p-toast>
+                            <form [formGroup]="conclusionDescrpFinal">
+                                <p-editor
+                                    id="descripcion"
+                                    placeholder="Escribe una conclusión descriptiva.... "
+                                    formControlName="conclusionDescripFinal"
+                                >
                                     >
-                                        <p-button
-                                            label="Guardar"
-                                            icon="pi pi-check"
-                                            class="p-button-success"
-                                            [loading]="loading"
-                                            (onClick)="load()"
-                                            (click)="
-                                                guardarPromedioDeLogroAlcanzado()
-                                            "
-                                        />
-                                    </div>
-                                </div>
+                                    <ng-template pTemplate="header">
+                                        <span class="ql-formats">
+                                            <button
+                                                type="button"
+                                                class="ql-bold"
+                                                aria-label="Bold"
+                                            ></button>
+                                            <button
+                                                type="button"
+                                                class="ql-italic"
+                                                aria-label="Italic"
+                                            ></button>
+                                            <button
+                                                type="button"
+                                                class="ql-underline"
+                                                aria-label="Underline"
+                                            ></button>
+                                        </span>
+                                    </ng-template>
+                                </p-editor>
+                            </form>
+                            <div
+                                class="col-12 flex flex-wrap gap-2 justify-content-end"
+                            >
+                                <p-button
+                                    label="Guardar"
+                                    icon="pi pi-check"
+                                    class="p-button-success"
+                                    [loading]="loading"
+                                    (onClick)="load()"
+                                    (click)="guardarPromedioDeLogroAlcanzado()"
+                                />
                             </div>
                         </div>
                     </div>
                 </div>
-            </p-tabPanel>
-            <p-tabPanel>
-                <ng-template pTemplate="header" class="header">
-                    <div class="flex align-items-center flex-column gap-2">
-                        <app-icon name="matListAlt"></app-icon>
-                        <span class="font-bold white-space-nowrap m-0">
-                            Reporte Asitencias
-                        </span>
-                    </div>
-                </ng-template>
-            </p-tabPanel>
-        </p-tabView>
+            </div>
+        </div>
     </section>
 </app-container-page>

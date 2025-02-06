@@ -829,7 +829,7 @@ const administracion = [
             },
             {
                 label: 'Generar Reportes y Estadisticas',
-                icon: 'pi pi-fw pi-share-alt',
+                icon: 'pi pi-chart-scatter',
                 items: [
                     {
                         label: 'Reportes Academicos',

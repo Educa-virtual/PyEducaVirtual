@@ -1,1 +1,42 @@
-<p>reporte works!</p>
+<section class="flex flex-column gap-4">
+    <div class="flex flex-column">
+        <!-- titulo -->
+        <div class="grid">
+            <p-toolbar class="col-12">
+                <div class="block">
+                    <h2 class="text-primary text-white font-bold block">
+                        GENERACION DE REPORTES ACADEMICOS
+                    </h2>
+                </div>
+            </p-toolbar>
+        </div>
+        <!-- contenido -->
+        <div class="flex bg-white p-3">
+            <div class="card w-full">
+                <p-tabView>
+                    <p-tabPanel header="Bimestre">
+                        <p-dropdown
+                            [options]="periodos"
+                            [(ngModel)]="selectedCity"
+                            placeholder="Seleccionar Bimestre"
+                        />
+                    </p-tabPanel>
+                    <p-tabPanel header="Trimestre">
+                        <p-dropdown
+                            [options]="trimestre"
+                            [(ngModel)]="selectedCity"
+                            placeholder="Seleccionar trimestre"
+                        />
+                    </p-tabPanel>
+                    <p-tabPanel header="Anual">
+                        <p-dropdown
+                            [options]="anuales"
+                            [(ngModel)]="selectedCity"
+                            placeholder="Seleccionar Año"
+                        />
+                    </p-tabPanel>
+                </p-tabView>
+            </div>
+        </div>
+    </div>
+</section>

@@ -17,7 +17,7 @@ import { almenosUnNivelActivo } from './validators'
 @Component({
     selector: 'app-evaluacion-pregunta-rubrica',
     standalone: true,
-    imports: [CommonModule, PrimengModule],
+    imports: [PrimengModule, CommonModule],
     templateUrl: './evaluacion-pregunta-rubrica.component.html',
     styleUrl: './evaluacion-pregunta-rubrica.component.scss',
 })

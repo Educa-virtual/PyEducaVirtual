@@ -10,8 +10,8 @@ import { Component, Input } from '@angular/core'
     imports: [
         CommonModule,
         PrimengModule,
-        IconComponent,
         EditorOnlyViewDirective,
+        IconComponent,
     ],
     templateUrl: './evaluacion-pregunta-alternativa.component.html',
     styleUrl: './evaluacion-pregunta-alternativa.component.scss',

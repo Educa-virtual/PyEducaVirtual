@@ -16,6 +16,10 @@ import { HorarioComponent } from './horario/horario.component'
 import { ConfiguracionHorarioComponent } from './horario/configuracion-horario/configuracion-horario.component'
 import { ReporteComponent } from './reporte/reporte.component'
 import { EstadisticaComponent } from './estadistica/estadistica.component'
+import { GestionTrasladosComponent } from './gestion-traslados/gestion-traslados.component'
+import { GestionVacantesComponent } from './gestion-vacantes/gestion-vacantes.component'
+//import { HorarioComponent } from './horario/horario.component'
+//import { ConfiguracionHorarioComponent } from './horario/configuracion-horario/configuracion-horario.component'
 
 const routes: Routes = [
     { path: 'calendarioAcademico', component: CalendarioAcademicoComponent },
@@ -34,6 +38,47 @@ const routes: Routes = [
     { path: 'configurar-horario', component: ConfiguracionHorarioComponent },
     { path: 'reporte', component: ReporteComponent },
     { path: 'estadistica', component: EstadisticaComponent },
+    { path: 'gestion-traslados', component: GestionTrasladosComponent },
+    { path: 'gestion-vacantes', component: GestionVacantesComponent },
+
+    // { path: 'horario', component: HorarioComponent },
+    //{ path: 'configurar-horario', component: ConfiguracionHorarioComponent },
+    {
+        path: 'horario',
+        loadComponent: () =>
+            import('./horario/horario.component').then(
+                (c) => c.HorarioComponent
+            ),
+    },
+
+    // {
+    //     path: 'gestion-traslados',
+    //     loadComponent: () =>
+    //         import('./gestion-traslados/gestion-traslados.component').then(
+    //             (c) => c.GestionTrasladosComponent
+    //         ),
+    // },
+    {
+        path: 'traslado-externo',
+        loadComponent: () =>
+            import(
+                './gestion-traslados/traslado-externo/traslado-externo.component'
+            ).then((c) => c.TrasladoExternoComponent),
+    },
+    {
+        path: 'traslado-interno',
+        loadComponent: () =>
+            import(
+                './gestion-traslados/traslado-interno/traslado-interno.component'
+            ).then((c) => c.TrasladoInternoComponent),
+    },
+    {
+        path: 'configurar-horario',
+        loadComponent: () =>
+            import(
+                './horario/configuracion-horario/configuracion-horario.component'
+            ).then((c) => c.ConfiguracionHorarioComponent),
+    },
 ]
 
 @NgModule({

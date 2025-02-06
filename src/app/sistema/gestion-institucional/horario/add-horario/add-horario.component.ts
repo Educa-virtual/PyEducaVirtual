@@ -19,8 +19,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 })
 export class AddHorarioComponent implements OnChanges, OnInit {
     @Output() addHorario = new EventEmitter()
-    @Input() registro
-    @Input() visible
+    @Input() area
+    @Input() visible_horario
     @Input() titulo
     @Input() docentes
 
@@ -45,7 +45,7 @@ export class AddHorarioComponent implements OnChanges, OnInit {
     constructor(private fb: FormBuilder) {}
 
     ngOnInit() {
-        console.log(this.registro, ' registro en com if onit')
+        console.log(this.area, ' registro en com if onit')
         this.form = this.fb.group({
             iDiaId: ['', Validators.required],
             iDocenteId: [{ value: '', disabled: true }, Validators.required],
@@ -56,23 +56,26 @@ export class AddHorarioComponent implements OnChanges, OnInit {
             cCursoNombre: [''],
         })
 
-        if (this.visible) {
+        if (this.visible_horario) {
             this.open_modal = false
-            console.log(this.registro, ' registro en com if visible')
+            console.log(this.area, ' registro en com if visible_horario')
             this.mostrarModal()
         }
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        if (this.visible) {
-            console.log(this.registro, ' registro en com if visible')
+        if (this.visible_horario) {
+            console.log(this.area, ' registro en com if visible_horario')
             this.mostrarModal()
         }
 
-        if (changes['visible'] && changes['visible'].currentValue) {
-            console.log(this.visible, ' registro en com if')
-            if (this.visible) {
-                console.log(this.registro, ' registro en com if visible')
+        if (
+            changes['visible_horario'] &&
+            changes['visible_horario'].currentValue
+        ) {
+            console.log(this.visible_horario, ' registro en com if')
+            if (this.visible_horario) {
+                console.log(this.area, ' area en com if visible')
                 this.mostrarModal()
             }
         }
@@ -80,10 +83,10 @@ export class AddHorarioComponent implements OnChanges, OnInit {
     mostrarModal() {
         this.open_modal = true
 
-        if (this.registro.iDocenteId > 0) {
-            console.log(this.registro, 'this.registro add')
-            this.form.get('iDocenteId').setValue(this.registro.iDocenteId)
-            this.form.get('idDocCursoId').setValue(this.registro.idDocCursoId)
+        if (this.area.iDocenteId > 0) {
+            console.log(this.area, 'this.area add')
+            this.form.get('iDocenteId').setValue(this.area.iDocenteId)
+            this.form.get('idDocCursoId').setValue(this.area.idDocCursoId)
             this.form.get('iDocenteId')?.disable()
         } else {
             this.form.get('iDocenteId')?.enable()
@@ -92,8 +95,8 @@ export class AddHorarioComponent implements OnChanges, OnInit {
     accionBtnItem(event: any) {
         switch (event) {
             case 'guardar':
-                const registro = this.form.value
-                this.addHorario.emit(registro)
+                const area = this.form.value
+                this.addHorario.emit(area)
                 break
         }
     }

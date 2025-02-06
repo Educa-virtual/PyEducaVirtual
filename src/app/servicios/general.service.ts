@@ -216,6 +216,57 @@ export class GeneralService {
             data
         )
     }
+
+    searchMatriculas(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/matricula/searchMatriculas`,
+            data
+        )
+    }
+
+    getTipoIdentificaciones(data: any) {
+        return this.http.post(`${baseUrl}/grl/listTipoIdentificaciones`, data)
+    }
+
+    getTurnos(data: any) {
+        return this.http.get(
+            `${baseUrl}/acad/calendarioAcademico/selTurnosModalidades`,
+            data
+        )
+    }
+
+    deleteMatricula(data: any) {
+        return this.http.post(`${baseUrl}/acad/matricula/deleteMatricula`, data)
+    }
+
+    validarEstudiante(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/matricula/validarEstudiante`,
+            data
+        )
+    }
+
+    validarRepresentante(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/matricula/validarRepresentante`,
+            data
+        )
+    }
+
+    guardarMatricula(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/matricula/guardarMatricula`,
+            data
+        )
+    }
+
+    searchNivelGrado(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/matricula/searchNivelGrado`,
+            data
+        )
+    }
+
     searchCalendario(data: any) {
         return this.http.post(
             `${baseUrl}/acad/calendarioAcademico/searchAcademico`, // acad.SP_SEL_stepCalendarioAcademicoDesdeJsonOpcion

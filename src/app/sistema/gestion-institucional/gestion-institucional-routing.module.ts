@@ -14,6 +14,7 @@ import { ConfigFechasComponent } from './config-fechas/config-fechas.component'
 import { IesPersonalComponent } from './ies-personal/ies-personal.component'
 import { HorarioComponent } from './horario/horario.component'
 import { ConfiguracionHorarioComponent } from './horario/configuracion-horario/configuracion-horario.component'
+import { GestionMatriculasComponent } from '../gestion-institucional/matriculas/gestion-matriculas.component'
 
 const routes: Routes = [
     { path: 'calendarioAcademico', component: CalendarioAcademicoComponent },
@@ -30,6 +31,7 @@ const routes: Routes = [
     { path: 'IesPersonal', component: IesPersonalComponent },
     { path: 'horario', component: HorarioComponent },
     { path: 'configurar-horario', component: ConfiguracionHorarioComponent },
+    { path: 'gestion-matriculas', component: GestionMatriculasComponent },
 ]
 
 @NgModule({

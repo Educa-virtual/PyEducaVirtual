@@ -765,6 +765,22 @@ const administracion = [
                     },
 
                     {
+                        label: 'Gestión de Matriculas',
+                        icon: 'pi pi-fw pi-cog',
+                        items: [
+                            {
+                                label: 'Ver solicitudes',
+                                icon: 'pi pi-fw pi-list',
+                                badge: '',
+                                routerLink: [
+                                    '/gestion-institucional/gestion-matriculas',
+                                ],
+                            },
+                        ],
+                        //ConfigGradoSeccion
+                    },
+
+                    {
                         label: 'Gestión de Personal',
                         icon: 'pi pi-fw pi-cog',
                         items: [

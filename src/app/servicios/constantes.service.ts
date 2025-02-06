@@ -827,6 +827,22 @@ const administracion = [
                 icon: 'pi pi-fw pi-share-alt',
                 routerLink: ['ayuda'],
             },
+            {
+                label: 'Generar Reportes y Estadisticas',
+                icon: 'pi pi-fw pi-share-alt',
+                items: [
+                    {
+                        label: 'Reportes Academicos',
+                        icon: 'pi pi-fw pi-circle',
+                        routerLink: ['/gestion-institucional/reporte'],
+                    },
+                    {
+                        label: 'Estadistica de logros de aprendizje',
+                        icon: 'pi pi-fw pi-circle',
+                        routerLink: ['/gestion-institucional/estadistica'],
+                    },
+                ],
+            },
         ],
     },
 ]

@@ -273,7 +273,7 @@ export class ConfigGradoSeccionComponent implements OnInit {
         if (accion === 'agregar') {
             // this.selectedItems = []
             // this.selectedItems = [item]
-
+            this.visible = true
             //VALIDACION SI PUEDE
             this._confirmService.openConfiSave({
                 header: 'Advertencia de configuracion',
@@ -281,6 +281,7 @@ export class ConfigGradoSeccionComponent implements OnInit {
                 icon: 'pi pi-exclamation-triangle',
                 accept: () => {
                     // Acción para eliminar el registro
+                    this.opcion = 'seleccionar'
                 },
                 reject: () => {
                     // Mensaje de cancelación (opcional)

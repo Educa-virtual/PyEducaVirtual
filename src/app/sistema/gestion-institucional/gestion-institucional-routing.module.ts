@@ -12,6 +12,8 @@ import { ConfigAsignarGradoComponent } from './config-grado-seccion/steps/config
 import { ConfigResumenComponent } from './config-grado-seccion/steps/config-resumen/config-resumen.component'
 import { ConfigFechasComponent } from './config-fechas/config-fechas.component'
 import { IesPersonalComponent } from './ies-personal/ies-personal.component'
+import { GestionTrasladosComponent } from './gestion-traslados/gestion-traslados.component'
+import { GestionVacantesComponent } from './gestion-vacantes/gestion-vacantes.component'
 //import { HorarioComponent } from './horario/horario.component'
 //import { ConfiguracionHorarioComponent } from './horario/configuracion-horario/configuracion-horario.component'
 
@@ -28,6 +30,8 @@ const routes: Routes = [
     { path: 'resumen', component: ConfigResumenComponent },
     { path: 'fechas', component: ConfigFechasComponent },
     { path: 'IesPersonal', component: IesPersonalComponent },
+    { path: 'gestion-traslados', component: GestionTrasladosComponent },
+    { path: 'gestion-vacantes', component: GestionVacantesComponent },
 
     // { path: 'horario', component: HorarioComponent },
     //{ path: 'configurar-horario', component: ConfiguracionHorarioComponent },
@@ -39,13 +43,13 @@ const routes: Routes = [
             ),
     },
 
-    {
-        path: 'gestion-traslados',
-        loadComponent: () =>
-            import('./gestion-traslados/gestion-traslados.component').then(
-                (c) => c.GestionTrasladosComponent
-            ),
-    },
+    // {
+    //     path: 'gestion-traslados',
+    //     loadComponent: () =>
+    //         import('./gestion-traslados/gestion-traslados.component').then(
+    //             (c) => c.GestionTrasladosComponent
+    //         ),
+    // },
     {
         path: 'traslado-externo',
         loadComponent: () =>

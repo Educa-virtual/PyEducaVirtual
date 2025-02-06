@@ -69,27 +69,62 @@ export class TrasladoInternoComponent implements OnInit {
             cGradoEdadAnterior: '1° Secundaria',
             cValidacion: 'Validado',
         },
+        {
+            iTipoConstancia: 6,
+            nEstudianteDni: 45037011,
+            cEstudianteNombre: 'Gonzales, Juan',
+            cGradoEdadAnterior: '1° Secundaria',
+            cValidacion: 'Validado',
+        },
+        {
+            iTipoConstancia: 7,
+            nEstudianteDni: 45037011,
+            cEstudianteNombre: 'Gonzales, Juan',
+            cGradoEdadAnterior: '1° Secundaria',
+            cValidacion: 'Validado',
+        },
+        {
+            iTipoConstancia: 8,
+            nEstudianteDni: 45037011,
+            cEstudianteNombre: 'Gonzales, Juan',
+            cGradoEdadAnterior: '1° Secundaria',
+            cValidacion: 'Validado',
+        },
+        {
+            iTipoConstancia: 9,
+            nEstudianteDni: 45037011,
+            cEstudianteNombre: 'Gonzales, Juan',
+            cGradoEdadAnterior: '1° Secundaria',
+            cValidacion: 'Validado',
+        },
+        {
+            iTipoConstancia: 10,
+            nEstudianteDni: 45037011,
+            cEstudianteNombre: 'Gonzales, Juan',
+            cGradoEdadAnterior: '1° Secundaria',
+            cValidacion: 'Validado',
+        },
     ]
     tipo_constancia: any[] = [
         {
             iTipoConstancia: 1,
-            cTipoConstancia: 'Constancia de Estudios',
+            cTipoConstancia: 'Primero',
         },
         {
             iTipoConstancia: 2,
-            cTipoConstancia: 'Constancia de Matrícula',
+            cTipoConstancia: 'Segundo',
         },
         {
             iTipoConstancia: 3,
-            cTipoConstancia: 'Constancia de Egreso',
+            cTipoConstancia: 'Tercero',
         },
         {
             iTipoConstancia: 4,
-            cTipoConstancia: 'Constancia de Conducta',
+            cTipoConstancia: 'Cuarto',
         },
         {
             iTipoConstancia: 5,
-            cTipoConstancia: 'Constancia de Notas',
+            cTipoConstancia: 'quinto',
         },
     ]
 
@@ -129,6 +164,8 @@ export class TrasladoInternoComponent implements OnInit {
                 cTipoConstancia: [0, Validators.required],
                 cEstadoConstancia: [0, Validators.required],
                 cAnioDestino: [0, Validators.required],
+                cDisponible: [0, Validators.required],
+                cVacantes: [0, Validators.required],
             })
         } catch (error) {
             //this.router.navigate(['/gestion-institucional/configGradoSeccion'])

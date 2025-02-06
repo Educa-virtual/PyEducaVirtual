@@ -1,4 +1,9 @@
 import {
+    Component,
+    OnInit,
+    // SimpleChanges,
+} from '@angular/core'
+import {
     ContainerPageComponent,
     IActionContainer,
 } from '@/app/shared/container-page/container-page.component'
@@ -6,11 +11,7 @@ import {
     IColumn,
     TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component'
-import {
-    Component,
-    OnInit,
-    // SimpleChanges,
-} from '@angular/core'
+
 import {
     FormBuilder,
     FormGroup,
@@ -120,8 +121,6 @@ export class GestionTrasladosComponent implements OnInit {
             //this.router.navigate(['/gestion-institucional/configGradoSeccion'])
         }
     }
-
-    showModeCreateDialog() {}
 
     trasladar(elemento): void {
         const { accion } = elemento

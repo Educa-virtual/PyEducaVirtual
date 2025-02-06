@@ -3,7 +3,7 @@
     [actions]="accionesPrincipal"
     (accionBtnItem)="trasladar($event)"
 >
-    <form>
+    <form [formGroup]="form">
         <fieldset>
             <legend>Filtros de busqueda</legend>
             <div class="grid p-fluid mt-3">

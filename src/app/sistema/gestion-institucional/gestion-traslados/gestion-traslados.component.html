@@ -1,0 +1,66 @@
+<app-container-page
+    title="Gestion de solicitudes de traslado"
+    [actions]="accionesPrincipal"
+    (accionBtnItem)="trasladar($event)"
+>
+    <form [formGroup]="form">
+        <fieldset>
+            <legend>Filtros de busqueda</legend>
+            <div class="grid p-fluid mt-3">
+                <div class="field col-12 md:col-4">
+                    <span class="p-float-label">
+                        <p-dropdown
+                            [style]="{ width: '100%' }"
+                            [options]="tipo_constancia"
+                            [selectOnFocus]="1"
+                            optionLabel="cTipoConstancia"
+                            optionValue="iTipoConstancia"
+                            formControlName="cTipoConstancia"
+                        />
+                        <label for="cTipoConstancia">Tipo de Constancia</label>
+                    </span>
+                </div>
+                <div class="field col-12 md:col-4">
+                    <span class="p-float-label">
+                        <p-dropdown
+                            [style]="{ width: '100%' }"
+                            [options]="tipo_constancia"
+                            [selectOnFocus]="1"
+                            optionLabel="iTipoConstancia"
+                            optionValue="cTipoConstancia"
+                            formControlName="cEstadoConstancia"
+                        />
+                        <label for="cEstadoConstancia"
+                            >Estado de Constancia</label
+                        >
+                    </span>
+                </div>
+                <div class="field col-12 md:col-4">
+                    <span class="p-float-label">
+                        <p-dropdown
+                            [style]="{ width: '100%' }"
+                            [options]="anio_constancia"
+                            [selectOnFocus]="1"
+                            optionLabel="cAnioConstancia"
+                            optionValue="iAnioConstancia"
+                            formControlName="cAnioDestino"
+                        />
+                        <label for="cAnioDestino">Año destino</label>
+                    </span>
+                </div>
+            </div>
+        </fieldset>
+        <!-- <p-checkbox formControlName="city" value="New York" inputId="ny" label="Traslado de IE" />
+        <p-checkbox formControlName="city" value="New York" inputId="ny" label="Traslado de nivel" /> -->
+    </form>
+
+    <p-dialog header="Registrar traslado" [(visible)]="visible">
+        @if (modal === 'interno') {
+            <app-traslado-interno></app-traslado-interno>
+        } @else {
+            <app-traslado-externo></app-traslado-externo>
+        }
+    </p-dialog>
+
+    <app-table-primeng [columnas]="columns"> </app-table-primeng>
+</app-container-page>

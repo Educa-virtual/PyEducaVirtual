@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core'
 import { RouterModule } from '@angular/router'
 import { PersonasComponent } from './personas/personas.component'
-import { GestionTrasladosComponent } from './gestion-traslados/gestion-traslados.component'
 
 @NgModule({
     imports: [
@@ -23,8 +22,6 @@ import { GestionTrasladosComponent } from './gestion-traslados/gestion-traslados
                         (c) => c.PersonalModule
                     ),
             },
-
-            { path: 'gestion-traslados', component: GestionTrasladosComponent },
         ]),
     ],
     exports: [RouterModule],

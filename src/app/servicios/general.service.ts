@@ -255,6 +255,9 @@ export class GeneralService {
             data
         )
     }
+    searchHorarioIes(data: any) {
+        return this.http.post(`${baseUrl}/acad/horario/listarHorarioIes`, data)
+    }
     reporteHorasNivelGrado(data: any) {
         return this.http.post(
             `${baseUrl}/acad/gestionInstitucional/reporteHorasNivelGrado`,

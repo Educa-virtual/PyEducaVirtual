@@ -1,0 +1,95 @@
+<!-- <app-container-page title="Gestion de solicitudes de traslado" [actions]="accionesPrincipal"> -->
+<form [formGroup]="form">
+    <fieldset>
+        <legend>Filtros de busqueda</legend>
+        <div class="grid p-fluid mt-3">
+            <div class="field col-12 md:col-4">
+                <span class="p-float-label">
+                    <p-dropdown
+                        [style]="{ width: '100%' }"
+                        [options]="tipo_constancia"
+                        [selectOnFocus]="1"
+                        optionLabel="cTipoConstancia"
+                        optionValue="iTipoConstancia"
+                        formControlName="cTipoConstancia"
+                    />
+                    <label for="cTipoConstancia">Grado/Edad a matricular</label>
+                </span>
+            </div>
+            <div class="field col-12 md:col-4">
+                <span class="p-float-label">
+                    <p-dropdown
+                        [style]="{ width: '100%' }"
+                        [options]="tipo_constancia"
+                        [selectOnFocus]="1"
+                        optionLabel="cTipoConstancia"
+                        optionValue="iTipoConstancia"
+                        formControlName="cEstadoConstancia"
+                    />
+                    <label for="cEstadoConstancia">Sección</label>
+                </span>
+            </div>
+            <div class="field col-12 md:col-4">
+                <button
+                    pButton
+                    [label]="'Listar estudiantes'"
+                    icon="pi pi-check"
+                    size="small"
+                    class="p-button-primary"
+                ></button>
+            </div>
+        </div>
+
+        <div class="grid p-fluid mt-3">
+            <div class="field col-12 md:col-4">
+                <span class="p-float-label">
+                    <input
+                        pInputText
+                        id="cVacantes"
+                        formControlName="cVacantes"
+                        aria-describedby="cVacantes-help"
+                    />
+                    <label for="cVacantes">Vacantes</label>
+                </span>
+            </div>
+            <div class="field col-12 md:col-4">
+                <span class="p-float-label">
+                    <input
+                        pInputText
+                        id="cDisponible"
+                        formControlName="cDisponible"
+                        aria-describedby="cDisponible-help"
+                    />
+                    <label for="cDisponible">Disponible</label>
+                </span>
+            </div>
+            <div class="field col-12 md:col-4">
+                <button
+                    pButton
+                    [label]="'Registrar traslado'"
+                    icon="pi pi-check"
+                    size="small"
+                    class="p-button-success"
+                ></button>
+            </div>
+        </div>
+    </fieldset>
+    <!-- <p-checkbox formControlName="city" value="New York" inputId="ny" label="Traslado de IE" />
+    <p-checkbox formControlName="city" value="New York" inputId="ny" label="Traslado de nivel" /> -->
+</form>
+
+<app-table-primeng
+    [columnas]="columns"
+    [data]="data"
+    (selectedRowDataChange)="selectRow($event)"
+>
+</app-table-primeng>
+
+<!-- [data]="data"
+            [selectedRowData]="isExpand ? data[0] : null"
+            [scrollable]="true"
+            scrollHeight="flex"
+            [showCaption]="false"
+            [showPaginator]="true"
+            selectionMode="single"
+            (selectedRowDataChange)="selectRow($event)" -->

@@ -57,7 +57,7 @@
                     </div> -->
 
             <div
-                class="field col-12 md:col-3"
+                class="field col-12 md:col-2"
                 *ngIf="formSearch.get('buscador')?.value === 1"
             >
                 <span class="p-float-label">
@@ -96,7 +96,7 @@
                 </span>
             </div>
             <div
-                class="field col-12 md:col-3"
+                class="field col-12 md:col-2"
                 *ngIf="formSearch.get('buscador')?.value === 1"
             >
                 <span class="p-float-label">
@@ -132,6 +132,23 @@
                     <label for="iTurnoId_search">Turno</label>
                 </span>
             </div>
+            <div
+                class="field col-12 md:col-2"
+                *ngIf="formSearch.get('buscador')?.value === 1"
+            >
+                <span class="p-float-label">
+                    <p-dropdown
+                        [options]="horarios"
+                        formControlName="iHorarioIeId_search"
+                        optionLabel="cHorarioIeNombre"
+                        [checkmark]="true"
+                        optionValue="iHorarioIeId"
+                        [showClear]="false"
+                        (onChange)="onChange($event, 'horario')"
+                    />
+                    <label for="iHorarioIeId_search">Horario</label>
+                </span>
+            </div>
 
             <div
                 class="field col-12 md:col-2"
@@ -155,30 +172,42 @@
         </div>
     </form>
 </div>
-
-<app-grid-horario
-    [events]="1"
-    [curricula]="areas"
-    [horarios]="registros"
-    (filtrarCurso)="asignarHorario($event)"
->
-</app-grid-horario>
-
-<app-add-horario
-    [registro]="registro"
-    [visible]="visible"
-    [titulo]="caption"
-    [docentes]="docentes"
-    [option]="option"
-    (addHorario)="addHorario($event)"
->
-</app-add-horario>
-
+@if (visible_grid) {
+    <app-grid-horario
+        [events]="1"
+        [curricula]="areas"
+        [bloque_horario]="items"
+        [horarios]="registros"
+        (filtrarCurso)="asignarHorario($event)"
+    >
+    </app-grid-horario>
+}
+@if (visible_bloque) {
+    <app-block-horario
+        [items]="items"
+        [horarios]="horarios"
+        [visible_bloque]="visible_bloque"
+        (addBlockHorario)="addBlockHorario($event)"
+    >
+    </app-block-horario>
+}
+@if (visible_horario) {
+    <app-add-horario
+        [area]="area"
+        [visible_horario]="visible_horario"
+        [titulo]="caption"
+        [docentes]="docentes"
+        [option]="option"
+        (addHorario)="addHorario($event)"
+    >
+    </app-add-horario>
+}
 <app-add-docente
     [configuracion]="configuracion"
     [minimo]="minimo"
     [caption]="caption_docente"
-    [visible]="visible_docente"
+    [area]="area"
+    [visible_docente]="visible_docente"
     [turnos]="turnos"
     [grados]="grados"
     [secciones]="secciones"
@@ -187,98 +216,9 @@
     [c_accion]=""
     [horas_asignadas]="horas_asignadas"
     [lista_areas_docente]="lista_areas_docente"
+    [iTurnoId]="iTurnoId"
+    [iSeccionId]="iSeccionId"
+    [iModalServId]="iModalServId"
     (filtrarDocente)="(docente)"
 >
 </app-add-docente>
-<!-- <p-table [value]="areas" [tableStyle]="{ 'min-width': '50rem' }">
-                <ng-template pTemplate="header">
-                    <tr>
-                        <th>Area</th>
-                        <th>Docente</th>
-                        <th>ies_areas</th>
-                        <th>T</th>
-                        <th>S</th>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-product>
-                    <tr>
-                        <td>{{ product.cCursoNombre }}</td>
-                        <td>{{ product.iDocenteId}}</td>
-                        <td>{{ product.iIeCursoId }}</td>
-                        <td>{{ product.iTurnoId }}</td>
-                        <td>{{ product.iSeccionId }}</td>
-                    </tr>
-                </ng-template>
-            </p-table> -->
-<!-- <div class="card">
-                <app-table-primeng
-                    [columnas]="columns"
-                    [showCaption]="false"
-                    [data]="areas"
-                    (accionBtnItem)="accionBtnItemTable($event)"
-                    [showPaginator]="false"
-                    [(selectedRowData)]="accionBtnItemTable"
-                    [actions]="actions"
-                    [scrollable]="true"
-                    scrollHeight="200px"
-                >
-                    <ng-container slot="caption-content"> </ng-container>
-                </app-table-primeng>
-            </div> -->
-
-<!-- <div class="container">
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-body">
-                        <h3>Configuración de Horarios</h3>
-                        <hr>
-                        <div class="form-group">
-                            <label for="h">Seleccione Ciclo Académico</label>
-                            <select  class="form-control form-control-rounded" [(ngModel)]="cicloAcad" (change)="getconfig()">
-                                <option *ngFor="let c of ciclos" [value]="c.iControlCicloAcad">{{ c.iControlCicloAcad }}</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="v1">Hora de Inicio de Actividades</label>
-                            <input type="time"  class="form-control" [(ngModel)]="horaInicio">
-                        </div>
-                        <div class="form-group">
-                            <label for="v1">Hora de Fin de Actividades</label>
-                            <input type="time"  class="form-control" [(ngModel)]="horaFin">
-                        </div>
-                        <div class="form-group">
-                            <label for="v1">Selecciones los Dias Laborables</label>
-                            <ul>
-                                <li>
-                                    <input type="checkbox" [(ngModel)]="lunes" [value]="0"><label for="">Lunes</label>
-                                </li>
-                                <li>
-                                    <input type="checkbox" [(ngModel)]="martes" [value]="0"><label for="">Martes</label>
-                                </li>
-                                <li>
-                                    <input type="checkbox" [(ngModel)]="miercoles" [value]="0"><label for="">Miercoles</label>
-                                </li>
-                                <li>
-                                    <input type="checkbox" [(ngModel)]="jueves" [value]="0"><label for="">Jueves</label>
-                                </li>
-                                <li>
-                                    <input type="checkbox" [(ngModel)]="viernes" [value]="0"><label for="">Viernes</label>
-                                </li>
-                                <li>
-                                    <input type="checkbox" [(ngModel)]="sabado" [value]="0"><label for="">Sabado</label>
-                                </li>
-                                <li>
-                                    <input type="checkbox" [(ngModel)]="domingo" [value]="0"><label for="">Domingo</label>
-                                </li>
-
-                            </ul>
-                        </div>
-                        <div class="container">
-                            <button class="btn btn-primary" >Guardar Cambios</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div> -->

@@ -10,14 +10,50 @@ import { CommonModule } from '@angular/common'
     styleUrl: './reporte.component.scss',
 })
 export class ReporteComponent implements OnInit {
-    periodos: string[] = undefined
-    trimestre: string[] = undefined
-    anuales = undefined
-    selectedCity = undefined
-
+    productService = undefined
+    identidad: any
+    nota: any
+    nivel: any
     ngOnInit() {
-        this.periodos = ['1 bimestre', '2 bimestre', '3 bimestre', '4 bimestre']
-        this.trimestre = ['1 trimestre', '2 trimestre', '3 trimestre']
-        this.anuales = [2022, 2023, 2024]
+        this.identidad = [{ nombre: 'car', paterno: 'chu', materno: 'flo' }]
+        this.nota = [
+            {
+                indice: '1',
+                curricular: 'matematica',
+                year1: '11',
+                year2: '12',
+                year3: '12',
+                year4: '12',
+                year5: '12',
+            },
+            {
+                indice: '2',
+                curricular: 'ingles',
+                year1: '11',
+                year2: '12',
+                year3: '12',
+                year4: '12',
+                year5: '12',
+            },
+            {
+                indice: '3',
+                curricular: 'comunicaicon',
+                year1: '11',
+                year2: '12',
+                year3: '12',
+                year4: '12',
+                year5: '12',
+            },
+            {
+                indice: '4',
+                curricular: 'situacion final',
+                year1: 'aprobado',
+                year2: 'aprobado',
+                year3: 'aprobado',
+                year4: 'aprobado',
+                year5: 'aprobado',
+            },
+        ]
+        this.nivel = [{ name: 'Primaria' }, { name: 'Secundaria' }]
     }
 }

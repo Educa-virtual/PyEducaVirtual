@@ -13,3 +13,7 @@
         }
     }
 }
+:host ::ng-deep .p-fieldset .p-fieldset-legend {
+    background-color: #ffffff !important;
+    border: 0px;
+}

@@ -11,31 +11,110 @@
             </p-toolbar>
         </div>
         <!-- contenido -->
-        <div class="flex bg-white p-3">
+        <div class="flex">
             <div class="card w-full">
-                <p-tabView>
-                    <p-tabPanel header="Bimestre">
+                <p-fieldset>
+                    <ng-template pTemplate="header"
+                        >Buscar por Estudiante</ng-template
+                    >
+
+                    <div class="flex">
+                        <p-floatLabel class="mr-1">
+                            <input id="DNI" type="text" pInputText />
+                            <label for="DNI">DNI</label>
+                        </p-floatLabel>
+                        <p-button class="mr-1" label="Buscar" />
+                        <button
+                            pButton
+                            pRipple
+                            label="Limpiar"
+                            class="p-button-warning"
+                        ></button>
                         <p-dropdown
-                            [options]="periodos"
-                            [(ngModel)]="selectedCity"
-                            placeholder="Seleccionar Bimestre"
+                            class="ml-1"
+                            [options]="nivel"
+                            optionLabel="name"
+                            placeholder="Elegir Nivel de Estudios"
                         />
-                    </p-tabPanel>
-                    <p-tabPanel header="Trimestre">
-                        <p-dropdown
-                            [options]="trimestre"
-                            [(ngModel)]="selectedCity"
-                            placeholder="Seleccionar trimestre"
-                        />
-                    </p-tabPanel>
-                    <p-tabPanel header="Anual">
-                        <p-dropdown
-                            [options]="anuales"
-                            [(ngModel)]="selectedCity"
-                            placeholder="Seleccionar Año"
-                        />
-                    </p-tabPanel>
-                </p-tabView>
+                    </div>
+                </p-fieldset>
+                <br />
+                <p-table
+                    [value]="identidad"
+                    [tableStyle]="{ 'min-width': '50rem' }"
+                >
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>#</th>
+                            <th>Apellido Paterno</th>
+                            <th>Apellido Materno</th>
+                            <th>Nombre</th>
+                            <th>Seleccionar</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-identidad>
+                        <tr>
+                            <td>1</td>
+                            <td>{{ identidad.paterno }}</td>
+                            <td>{{ identidad.materno }}</td>
+                            <td>{{ identidad.nombre }}</td>
+                            <td>
+                                <button
+                                    pButton
+                                    pRipple
+                                    label="Ver"
+                                    class="p-button-primary mr-1"
+                                ></button>
+                                <button
+                                    pButton
+                                    pRipple
+                                    label="PDF"
+                                    class="p-button-danger"
+                                ></button>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+                <br />
+                <p-table [value]="nota" [tableStyle]="{ 'min-width': '50rem' }">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>#</th>
+                            <th>Areas Curricular</th>
+                            <th>
+                                <div>Grado : 1</div>
+                                <div>Año : 1</div>
+                            </th>
+                            <th>
+                                <div>Grado : 2</div>
+                                <div>Año : 2</div>
+                            </th>
+                            <th>
+                                <div>Grado : 3</div>
+                                <div>Año : 3</div>
+                            </th>
+                            <th>
+                                <div>Grado : 4</div>
+                                <div>Año : 4</div>
+                            </th>
+                            <th>
+                                <div>Grado : 5</div>
+                                <div>Año : 5</div>
+                            </th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-nota>
+                        <tr>
+                            <td>{{ nota.indice }}</td>
+                            <td>{{ nota.curricular }}</td>
+                            <td>{{ nota.year1 }}</td>
+                            <td>{{ nota.year2 }}</td>
+                            <td>{{ nota.year3 }}</td>
+                            <td>{{ nota.year4 }}</td>
+                            <td>{{ nota.year5 }}</td>
+                        </tr>
+                    </ng-template>
+                </p-table>
             </div>
         </div>
     </div>

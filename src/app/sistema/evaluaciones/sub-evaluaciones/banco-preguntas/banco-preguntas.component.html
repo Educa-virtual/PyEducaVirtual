@@ -120,8 +120,7 @@
             class="p-button-secondary"
             type="button"
             size="small"
-            (click)="ngOnDestroy()"
-            (click)="showModalBancoPreguntas = false"
+            (click)="ngOnDestroy(); showModalBancoPreguntas = false"
         ></button>
         <button
             pButton
@@ -130,7 +129,10 @@
             icon="pi pi-check"
             size="small"
             class="p-button-primary"
-            (click)="guardarPreguntasSeleccionadas(iEvaluacionId)"
+            (click)="
+                guardarPreguntasSeleccionadas(iEvaluacionId);
+                showModalBancoPreguntas = false
+            "
         ></button>
         <!-- (click)="agregarEditarPregunta(data)" -->
     </div>
@@ -193,6 +195,22 @@
                     <p>
                         <strong>Clave: </strong>
                         {{ pregunta.cPreguntaClave }}
+                    </p>
+                    <p>
+                        <strong>Alternativas: </strong>
+                        {{ pregunta.cAlternativaDescripcion }}
+                    </p>
+                    <p>
+                        <strong>Alternativa Letra: </strong>
+                        {{ pregunta.cAlternativaLetra }}
+                    </p>
+                    <p>
+                        <strong>Letra Correcta: </strong>
+                        {{ pregunta.bAlternativaCorrecta }}
+                    </p>
+                    <p>
+                        <strong>Explicacion: </strong>
+                        {{ pregunta.cAlternativaExplicacion }}
                     </p>
                 </li>
             </ul>

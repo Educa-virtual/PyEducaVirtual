@@ -3,13 +3,13 @@
         class="flex flex-column md:flex-row md:justify-content-between gap-2 padding:100px"
     >
         <p-inputGroup>
-            <p-inputGroupAddon> Seleccine una Ugel </p-inputGroupAddon>
+            <p-inputGroupAddon> Seleccione Ugel </p-inputGroupAddon>
             <!-- Componente de calendario para seleccionar una fecha y hora -->
             <p-dropdown
                 [options]="Ugeles"
                 [(ngModel)]="selectedUgeles"
                 optionLabel="cUgelNombre"
-                placeholder="Seleccione"
+                placeholder="Seleccionar"
                 styleClass="w-full"
                 class="flex-1"
                 (onChange)="onUgelChange($event)"
@@ -17,13 +17,13 @@
             ></p-dropdown>
         </p-inputGroup>
         <p-inputGroup>
-            <p-inputGroupAddon>Seleccione un nivel</p-inputGroupAddon>
+            <p-inputGroupAddon>Seleccione nivel</p-inputGroupAddon>
             <!-- Componente de calendario para seleccionar una fecha y hora -->
             <p-dropdown
                 [options]="nivelTipo"
                 [(ngModel)]="selectedNivelTipo"
                 optionLabel="cNivelTipoNombre"
-                placeholder="Seleccione"
+                placeholder="Seleccionar"
                 styleClass="w-full"
                 class="flex-1"
                 (onChange)="onNivelTipoChange($event)"

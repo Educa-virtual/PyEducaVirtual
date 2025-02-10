@@ -233,7 +233,7 @@ export class InformesComponent implements OnInit {
         // @iYAcadId INT,
         // @iNivelGradoId INT
         const iSedeId = this.perfil['iSedeId']
-        console.log(iSedeId)
+        console.log('Sede', iSedeId)
         this._aulaService
             .generarReporteDeLogroFinalDeYear({
                 iSedeId: iSedeId,
@@ -242,7 +242,10 @@ export class InformesComponent implements OnInit {
                 // const registro = data['data']
                 // this.curso = JSON.parse(registro.json_cursos);
                 this.estudianteMatriculadosxGrado = data['data']
-                console.log(this.estudianteMatriculadosxGrado)
+                console.log(
+                    'Estudiantes x Grado ',
+                    this.estudianteMatriculadosxGrado
+                )
             })
     }
     obtenerCursoEstudiante(estudiante) {

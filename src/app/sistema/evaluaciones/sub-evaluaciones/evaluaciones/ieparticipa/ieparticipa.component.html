@@ -30,6 +30,20 @@
                 [disabled]="accion === 'ver'"
             ></p-dropdown>
         </p-inputGroup>
+        <p-inputGroup>
+            <p-inputGroupAddon>Tipo I.E</p-inputGroupAddon>
+            <!-- Componente de calendario para seleccionar una fecha y hora -->
+            <p-dropdown
+                [options]="nivelTipo"
+                [(ngModel)]="selectedNivelTipo"
+                optionLabel="cNivelTipoNombre"
+                placeholder="Seleccionar"
+                styleClass="w-full"
+                class="flex-1"
+                (onChange)="onNivelTipoChange($event)"
+                [disabled]="accion === 'ver'"
+            ></p-dropdown>
+        </p-inputGroup>
     </div>
     <br />
     <!-- <p>{{ cEvaluacionNombre }}</p> -->

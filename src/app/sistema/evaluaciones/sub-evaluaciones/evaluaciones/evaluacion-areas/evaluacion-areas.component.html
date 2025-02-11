@@ -30,12 +30,24 @@
                         inputId="'curso_' + curso.iCursoNivelGradId"
                         (onChange)="onCursoSelect(curso)"
                     ></p-checkbox>
-                    <label
-                        [for]="'curso_' + curso.iCursoNivelGradId"
-                        (onclick)="abrirModalFechaHora()"
-                    >
+                    <label [for]="'curso_' + curso.iCursoNivelGradId">
                         {{ curso.cCursoNombre }}
                     </label>
+                    <div class="align-items-end" *ngIf="curso.isSelected">
+                        <p-inputGroup>
+                            <!-- Componente de calendario para seleccionar una fecha y hora -->
+                            <p-calendar
+                                controlKey="dtFin"
+                                [iconDisplay]="'input'"
+                                placeholder="Fecha de Evaluación"
+                                styleClass="w-full"
+                                class="pl-3 border-none"
+                                [showIcon]="true"
+                                inputId="dtFin"
+                                appendTo="body"
+                            />
+                        </p-inputGroup>
+                    </div>
                 </div>
             </div>
         </div>

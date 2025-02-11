@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { FormsModule } from '@angular/forms'
 import { HttpClient } from '@angular/common/http'
-
 // Importaciones de PrimeNG
 import { ToolbarModule } from 'primeng/toolbar'
 import { FieldsetModule } from 'primeng/fieldset'
@@ -35,9 +34,10 @@ export class EstadisticaComponent implements OnInit {
     grado: any[] = [] // Se llenará con los datos del backend
 
     merito = [
-        { label: 'Excelente', value: 'A' },
-        { label: 'Bueno', value: 'B' },
-        { label: 'Regular', value: 'C' },
+        { label: 'General', value: 1 },
+        { label: '5 Primeros Puestos', value: 2 },
+        { label: 'Decimo Superior', value: 3 },
+        { label: 'Quinto Superior', value: 4 },
     ]
 
     constructor(private http: HttpClient) {}
@@ -68,15 +68,37 @@ export class EstadisticaComponent implements OnInit {
     }
 
     buscar() {
-        console.log(
-            'Buscando datos para:',
-            this.selectedYear,
-            this.selectedGrado,
-            this.selectedMerito
-        )
-        this.identidad = [
-            { nombre: 'Juan Pérez', nota: 95 },
-            { nombre: 'Ana López', nota: 88 },
-        ]
+        // Reiniciar los datos antes de agregar nuevos para evitar duplicados
+        this.identidad = []
+
+        // Simulación de datos con estructura correcta
+        this.identidad.push({
+            merito: this.selectedMerito
+                ? this.selectedMerito.label
+                : 'No especificado',
+            grado: this.selectedGrado
+                ? this.selectedGrado.label
+                : 'No especificado',
+            fecha: new Date().toLocaleDateString(),
+            valor: 'pi pi-refresh', // Estado del reporte
+            generado: 'pi pi-check-circle', // Estado generado
+        })
+    }
+
+    generar() {
+        if (!this.selectedYear || !this.selectedGrado || !this.selectedMerito) {
+            alert(
+                'Por favor, seleccione Año Escolar, Grado y Tipo de Orden de Mérito.'
+            )
+            return
+        }
+
+        const parametros = {
+            year: this.selectedYear.value,
+            grado: this.selectedGrado.value,
+            merito: this.selectedMerito.value,
+        }
+
+        console.log('Enviando datos para generación del reporte:', parametros)
     }
 }

@@ -1,89 +1,131 @@
 <!-- <app-container-page title="Gestion de solicitudes de traslado" [actions]="accionesPrincipal"> -->
-<form [formGroup]="form">
-    <fieldset>
-        <legend>Filtros de busqueda</legend>
-        <div class="grid p-fluid mt-3">
-            <div class="field col-12 md:col-4">
-                <span class="p-float-label">
-                    <p-dropdown
-                        [style]="{ width: '100%' }"
-                        [options]="tipo_constancia"
-                        [selectOnFocus]="1"
-                        optionLabel="cTipoConstancia"
-                        optionValue="iTipoConstancia"
-                        formControlName="cTipoConstancia"
-                    />
-                    <label for="cTipoConstancia">Grado/Edad a matricular</label>
-                </span>
-            </div>
-            <div class="field col-12 md:col-4">
-                <span class="p-float-label">
-                    <p-dropdown
-                        [style]="{ width: '100%' }"
-                        [options]="tipo_constancia"
-                        [selectOnFocus]="1"
-                        optionLabel="cTipoConstancia"
-                        optionValue="iTipoConstancia"
-                        formControlName="cEstadoConstancia"
-                    />
-                    <label for="cEstadoConstancia">Sección</label>
-                </span>
-            </div>
-            <div class="field col-12 md:col-4">
-                <button
-                    pButton
-                    [label]="'Listar estudiantes'"
-                    icon="pi pi-check"
-                    size="small"
-                    class="p-button-primary"
-                ></button>
-            </div>
-        </div>
+<div class="grid p-fluid mt-2">
+    <div class="field col-12 md:col-5">
+        <form [formGroup]="form">
+            <p-fieldset
+                legend="Filtros de busqueda"
+                [toggleable]="true"
+                [collapsed]="false"
+            >
+                <div class="grid p-fluid mt-3">
+                    <div class="field col-12 md:col-6">
+                        <span class="p-float-label">
+                            <p-dropdown
+                                [style]="{ width: '100%' }"
+                                [options]="grados"
+                                [filter]="true"
+                                filterBy="cGradoNombre"
+                                optionLabel="cGradoNombre"
+                                optionValue="iGradoId"
+                                formControlName="iGrados"
+                            />
+                            <label for="cTipoConstancia"
+                                >Grado a matricular</label
+                            >
+                        </span>
+                    </div>
+                    <div class="field col-12 md:col-6">
+                        <span class="p-float-label">
+                            <p-dropdown
+                                [style]="{ width: '100%' }"
+                                [options]="secciones"
+                                [filter]="true"
+                                filterBy="cSeccionDescripcion"
+                                optionLabel="cSeccionDescripcion"
+                                optionValue="iSeccionId"
+                                formControlName="iseccion"
+                            />
+                            <label for="cEstadoConstancia">Sección</label>
+                        </span>
+                    </div>
 
-        <div class="grid p-fluid mt-3">
-            <div class="field col-12 md:col-4">
-                <span class="p-float-label">
-                    <input
-                        pInputText
-                        id="cVacantes"
-                        formControlName="cVacantes"
-                        aria-describedby="cVacantes-help"
-                    />
-                    <label for="cVacantes">Vacantes</label>
-                </span>
-            </div>
-            <div class="field col-12 md:col-4">
-                <span class="p-float-label">
-                    <input
-                        pInputText
-                        id="cDisponible"
-                        formControlName="cDisponible"
-                        aria-describedby="cDisponible-help"
-                    />
-                    <label for="cDisponible">Disponible</label>
-                </span>
-            </div>
-            <div class="field col-12 md:col-4">
-                <button
-                    pButton
-                    [label]="'Registrar traslado'"
-                    icon="pi pi-check"
-                    size="small"
-                    class="p-button-success"
-                ></button>
-            </div>
-        </div>
-    </fieldset>
-    <!-- <p-checkbox formControlName="city" value="New York" inputId="ny" label="Traslado de IE" />
-    <p-checkbox formControlName="city" value="New York" inputId="ny" label="Traslado de nivel" /> -->
-</form>
-
-<app-table-primeng
-    [columnas]="columns"
-    [data]="data"
-    (selectedRowDataChange)="selectRow($event)"
->
-</app-table-primeng>
+                    <div class="field col-12 md:col-12">
+                        <button
+                            pButton
+                            [label]="'Listar estudiantes'"
+                            icon="pi pi-list"
+                            size="small"
+                            class="p-button-primary"
+                        ></button>
+                    </div>
+                </div>
+            </p-fieldset>
+            <p-fieldset
+                legend="Disponibilidad de vacantes"
+                [toggleable]="true"
+                [collapsed]="false"
+            >
+                <div class="grid p-fluid mt-3">
+                    <div class="field col-12 md:col-6">
+                        <span class="p-float-label">
+                            <input
+                                pInputText
+                                id="cVacantesRegular"
+                                formControlName="cVacantesRegular"
+                                aria-describedby="cVacantesRegular-help"
+                            />
+                            <label for="cVacantesRegular"
+                                >Vacantes Regular</label
+                            >
+                        </span>
+                    </div>
+                    <div class="field col-12 md:col-6">
+                        <span class="p-float-label">
+                            <input
+                                pInputText
+                                id="cVacantesNEE"
+                                formControlName="cVacantesNEE"
+                                aria-describedby="cVacantesNEE-help"
+                            />
+                            <label for="cVacantesNEE">Disponible</label>
+                        </span>
+                    </div>
+                    <div class="field col-12 md:col-6">
+                        <span class="p-float-label">
+                            <input
+                                pInputText
+                                id="cVacantes"
+                                formControlName="cVacantes"
+                                aria-describedby="cVacantes-help"
+                            />
+                            <label for="cVacantes">Vacantes</label>
+                        </span>
+                    </div>
+                    <div class="field col-12 md:col-6">
+                        <span class="p-float-label">
+                            <input
+                                pInputText
+                                id="cDisponible"
+                                formControlName="cDisponible"
+                                aria-describedby="cDisponible-help"
+                            />
+                            <label for="cDisponible">Disponible</label>
+                        </span>
+                    </div>
+                    <div class="field col-12 md:col-12">
+                        <button
+                            pButton
+                            [label]="'Registrar traslado'"
+                            icon="pi pi-save"
+                            size="small"
+                            class="p-button-success"
+                        ></button>
+                    </div>
+                </div>
+            </p-fieldset>
+            <!-- <p-checkbox formControlName="city" value="New York" inputId="ny" label="Traslado de IE" />
+            <p-checkbox formControlName="city" value="New York" inputId="ny" label="Traslado de nivel" /> -->
+        </form>
+    </div>
+    <div class="field col-12 md:col-7">
+        <app-table-primeng
+            [columnas]="columns"
+            [data]="data"
+            (selectedRowDataChange)="selectRow($event)"
+        >
+        </app-table-primeng>
+    </div>
+</div>
 
 <!-- [data]="data"
             [selectedRowData]="isExpand ? data[0] : null"

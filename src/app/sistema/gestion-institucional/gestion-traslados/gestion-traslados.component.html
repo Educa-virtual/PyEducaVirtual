@@ -3,58 +3,78 @@
     [actions]="accionesPrincipal"
     (accionBtnItem)="trasladar($event)"
 >
+    <p-toast />
+    <!-- <div class="grid p-fluid mt-2">
+        <div class="field col-12 md:col-5">
+
+        </div>
+        <div class="field col-12 md:col-7"> -->
     <form [formGroup]="form">
-        <fieldset>
-            <legend>Filtros de busqueda</legend>
+        <p-fieldset
+            legend="Filtros de busqueda"
+            [toggleable]="true"
+            [collapsed]="false"
+        >
             <div class="grid p-fluid mt-3">
                 <div class="field col-12 md:col-4">
                     <span class="p-float-label">
                         <p-dropdown
                             [style]="{ width: '100%' }"
-                            [options]="tipo_constancia"
-                            [selectOnFocus]="1"
-                            optionLabel="cTipoConstancia"
-                            optionValue="iTipoConstancia"
-                            formControlName="cTipoConstancia"
+                            [options]="tipo_traslados"
+                            optionLabel="cTipoTrasladoIE"
+                            optionValue="iTipoTrasladoIEId"
+                            formControlName="cTipoTraslado"
+                            [filter]="true"
+                            id="cTipoTraslado"
                         />
-                        <label for="cTipoConstancia">Tipo de Constancia</label>
+                        <label for="cTipoTraslado">Tipo de Traslado</label>
                     </span>
                 </div>
                 <div class="field col-12 md:col-4">
                     <span class="p-float-label">
                         <p-dropdown
                             [style]="{ width: '100%' }"
-                            [options]="tipo_constancia"
-                            [selectOnFocus]="1"
-                            optionLabel="iTipoConstancia"
-                            optionValue="cTipoConstancia"
-                            formControlName="cEstadoConstancia"
+                            [options]="estados"
+                            optionLabel="cEstadoTraslado"
+                            optionValue="iEstadoTraslado"
+                            onclick="accionCboItem($event)"
+                            [filter]="true"
+                            id="cEstadoTraslado"
                         />
-                        <label for="cEstadoConstancia"
-                            >Estado de Constancia</label
-                        >
+                        <label for="cEstadoTraslado">Estado de Traslado</label>
                     </span>
                 </div>
                 <div class="field col-12 md:col-4">
                     <span class="p-float-label">
                         <p-dropdown
                             [style]="{ width: '100%' }"
-                            [options]="anio_constancia"
-                            [selectOnFocus]="1"
-                            optionLabel="cAnioConstancia"
-                            optionValue="iAnioConstancia"
-                            formControlName="cAnioDestino"
+                            [options]="anio_escolar"
+                            optionLabel="iYearId"
+                            [filter]="true"
+                            (onChange)="
+                                accionCboItem($event.value, 'cAnioTraslado')
+                            "
+                            optionValue="iYAcadId"
+                            formControlName="cAnioTraslado"
+                            id="cAnioTraslado"
                         />
-                        <label for="cAnioDestino">Año destino</label>
+                        <label for="cAnioTraslado">Año destino</label>
                     </span>
                 </div>
             </div>
-        </fieldset>
+        </p-fieldset>
         <!-- <p-checkbox formControlName="city" value="New York" inputId="ny" label="Traslado de IE" />
-        <p-checkbox formControlName="city" value="New York" inputId="ny" label="Traslado de nivel" /> -->
+                <p-checkbox formControlName="city" value="New York" inputId="ny" label="Traslado de nivel" /> -->
     </form>
-
-    <p-dialog header="Registrar traslado" [(visible)]="visible">
+    <!-- </div>
+    </div> -->
+    <p-dialog
+        [header]="title"
+        [(visible)]="visible"
+        [style]="{ width: '85rem' }"
+        [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+        [maximizable]="true"
+    >
         @if (modal === 'interno') {
             <app-traslado-interno></app-traslado-interno>
         } @else {
@@ -62,5 +82,6 @@
         }
     </p-dialog>
 
-    <app-table-primeng [columnas]="columns"> </app-table-primeng>
+    <app-table-primeng [data]="registros_traslados" [columnas]="columns">
+    </app-table-primeng>
 </app-container-page>

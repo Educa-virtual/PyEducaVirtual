@@ -320,106 +320,32 @@ export class EvaluacionesFormComponent implements OnInit {
         }
 
         console.log('datos que se guardaran', data)
-        // this._apiEre
-        //     .guardarEvaluacion(data)
-        //     .pipe(takeUntil(this.unsubscribe$))
-        //     .subscribe({
-        //         next: (resp: any) => {
-        //             this.iEvaluacionId = resp['data'][0]['iEvaluacionId'] // Captura el ID generado
-        //             this.compartirIdEvaluacionService.iEvaluacionId =
-        //                 this.iEvaluacionId // Guardar en el servicio
+        this._apiEre
+            .guardarEvaluacion(data)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+                next: (resp: any) => {
+                    this.iEvaluacionId = resp['data'][0]['iEvaluacionId'] // Captura el ID generado
+                    this.compartirIdEvaluacionService.iEvaluacionId =
+                        this.iEvaluacionId // Guardar en el servicio
 
-        //             const nombreEvaluacion =
-        //                 resp['data'][0]['cEvaluacionNombre'] // Obtiene el nombre de la respuesta
-        //             this.compartirFormularioEvaluacionService.setcEvaluacionNombre(
-        //                 nombreEvaluacion
-        //             )
-        //             this._MessageService.add({
-        //                 severity: 'success',
-        //                 summary: 'Se guardo con exitoso',
-        //                 detail: 'La evaluacion se ha guardado con éxito.',
-        //             })
-        //         },
-        //         error: (error) => {
-        //             console.error('Error al guardar la evaluación:', error) // Captura el error aquí
-        //             //alert('Error en el servidor: ' + JSON.stringify(error))
-        //         },
-        //     })
+                    const nombreEvaluacion =
+                        resp['data'][0]['cEvaluacionNombre'] // Obtiene el nombre de la respuesta
+                    this.compartirFormularioEvaluacionService.setcEvaluacionNombre(
+                        nombreEvaluacion
+                    )
+                    this._MessageService.add({
+                        severity: 'success',
+                        summary: 'Se guardo con exitoso',
+                        detail: 'La evaluacion se ha guardado con éxito.',
+                    })
+                },
+                error: (error) => {
+                    console.error('Error al guardar la evaluación:', error) // Captura el error aquí
+                    //alert('Error en el servidor: ' + JSON.stringify(error))
+                },
+            })
     }
-    // el anterior metodo guardar..
-    // guardarEvaluacion() {
-    //     const iSesionId = this.constantesService.iDocenteId // Si es un array, toma el primer valor
-    //     const data = {
-    //         idTipoEvalId: this.evaluacionFormGroup.get('idTipoEvalId').value,
-    //         iNivelEvalId: this.evaluacionFormGroup.get('iNivelEvalId').value,
-    //         dtEvaluacionCreacion: this.evaluacionFormGroup.get(
-    //             'dtEvaluacionCreacion'
-    //         ).value,
-    //         cEvaluacionNombre:
-    //             this.evaluacionFormGroup.get('cEvaluacionNombre').value,
-    //         cEvaluacionDescripcion: this.evaluacionFormGroup.get(
-    //             'cEvaluacionDescripcion'
-    //         ).value,
-    //         cEvaluacionUrlDrive: this.evaluacionFormGroup.get(
-    //             'cEvaluacionUrlDrive'
-    //         ).value,
-    //         cEvaluacionUrlPlantilla: this.evaluacionFormGroup.get(
-    //             'cEvaluacionUrlPlantilla'
-    //         ).value,
-    //         cEvaluacionUrlManual: this.evaluacionFormGroup.get(
-    //             'cEvaluacionUrlManual'
-    //         ).value,
-    //         cEvaluacionUrlMatriz: this.evaluacionFormGroup.get(
-    //             'cEvaluacionUrlMatriz'
-    //         ).value,
-    //         cEvaluacionObs:
-    //             this.evaluacionFormGroup.get('cEvaluacionObs').value,
-    //         dtEvaluacionLiberarMatriz: this.evaluacionFormGroup.get(
-    //             'dtEvaluacionLiberarMatriz'
-    //         ).value,
-    //         dtEvaluacionLiberarCuadernillo: this.evaluacionFormGroup.get(
-    //             'dtEvaluacionLiberarCuadernillo'
-    //         ).value,
-    //         dtEvaluacionLiberarResultados: this.evaluacionFormGroup.get(
-    //             'dtEvaluacionLiberarResultados'
-    //         ).value,
-    //         iEstado: this.checked ? 1 : 0, // Usamos el valor de 'checked' para enviar 1 o 0
-    //         iSesionId: iSesionId,
-    //         cEvaluacionIUrlCuadernillo: this.evaluacionFormGroup.get(
-    //             'cEvaluacionIUrlCuadernillo'
-    //         ).value,
-    //         cEvaluacionUrlHojaRespuestas: this.evaluacionFormGroup.get(
-    //             'cEvaluacionUrlHojaRespuestas'
-    //         ).value,
-    //     }
-
-    //     console.log(data)
-    //     this._apiEre
-    //         .guardarEvaluacion(data)
-    //         .pipe(takeUntil(this.unsubscribe$))
-    //         .subscribe({
-    //             next: (resp: any) => {
-    //                 this.iEvaluacionId = resp['data'][0]['iEvaluacionId'] // Captura el ID generado
-    //                 this.compartirIdEvaluacionService.iEvaluacionId =
-    //                     this.iEvaluacionId // Guardar en el servicio
-
-    //                 const nombreEvaluacion =
-    //                     resp['data'][0]['cEvaluacionNombre'] // Obtiene el nombre de la respuesta
-    //                 this.compartirFormularioEvaluacionService.setcEvaluacionNombre(
-    //                     nombreEvaluacion
-    //                 )
-    //                 this._MessageService.add({
-    //                     severity: 'success',
-    //                     summary: 'Se guardo con exitoso',
-    //                     detail: 'La evaluacion se ha guardado con éxito.',
-    //                 })
-    //             },
-    //             error: (error) => {
-    //                 console.error('Error al guardar la evaluación:', error) // Captura el error aquí
-    //                 //alert('Error en el servidor: ' + JSON.stringify(error))
-    //             },
-    //         })
-    // }
 
     // Método para actualizar los datos en el backend
     actualizarEvaluacion() {

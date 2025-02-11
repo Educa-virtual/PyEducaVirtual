@@ -31,7 +31,7 @@
                                                 styleClass="w-full"
                                                 optionValue="idTipoEvalId"
                                                 placeholder="Seleccionar"
-                                                controlKey="idTipoEvalId"
+                                                formControlName="idTipoEvalId"
                                                 [options]="tipoEvaluacion"
                                                 optionLabel="cTipoEvalDescripcion"
                                                 [styleClass]="
@@ -49,10 +49,10 @@
                                         <small
                                             *ngIf="
                                                 evaluacionFormGroup
-                                                    .get('iNivelEvalId')
+                                                    .get('idTipoEvalId')
                                                     ?.hasError('required') &&
                                                 evaluacionFormGroup.get(
-                                                    'iNivelEvalId'
+                                                    'idTipoEvalId'
                                                 )?.touched
                                             "
                                             class="text-red-500"
@@ -74,7 +74,7 @@
                                                 styleClass="w-full"
                                                 placeholder="Seleccionar"
                                                 optionValue="iNivelEvalId"
-                                                controlKey="iNivelEvalId"
+                                                formControlName="iNivelEvalId"
                                                 [options]="nivelEvaluacion"
                                                 optionLabel="cNivelEvalNombre"
                                                 [styleClass]="
@@ -92,10 +92,10 @@
                                         <small
                                             *ngIf="
                                                 evaluacionFormGroup
-                                                    .get('iNivelEvalId')
+                                                    .get('idTipoEvalId')
                                                     ?.hasError('required') &&
                                                 evaluacionFormGroup.get(
-                                                    'iNivelEvalId'
+                                                    'idTipoEvalId'
                                                 )?.touched
                                             "
                                             class="text-red-500"
@@ -125,7 +125,7 @@
                                             <p-editor
                                                 id="descripcion"
                                                 placeholder="Escribe una Descripción "
-                                                controlKey="cEvaluacionDescripcion"
+                                                formControlName="cEvaluacionDescripcion"
                                                 [style]="{
                                                     height: 'auto',
                                                     overflow: 'hidden',
@@ -148,16 +148,14 @@
                                     <div class="col-12 md:col-6">
                                         <p-inputGroup>
                                             <p-inputGroupAddon>
-                                                Fecha - Hora de Inicio
+                                                Fecha de Inicio
                                             </p-inputGroupAddon>
                                             <!-- Componente de calendario para seleccionar una fecha y hora -->
                                             <p-calendar
-                                                controlKey="dtInicio"
+                                                formControlName="dtEvaluacionFechaInicio"
                                                 [iconDisplay]="'input'"
                                                 styleClass="w-full"
                                                 [showIcon]="true"
-                                                [showTime]="true"
-                                                [hourFormat]="'24'"
                                                 inputId="dtInicio"
                                                 appendTo="body"
                                             />
@@ -167,16 +165,16 @@
                                     <div class="col-12 md:col-6">
                                         <p-inputGroup>
                                             <p-inputGroupAddon>
-                                                Fecha - Hora Fin
+                                                Fecha Fin
                                             </p-inputGroupAddon>
                                             <!-- Componente de calendario para seleccionar una fecha y hora -->
                                             <p-calendar
-                                                controlKey="dtFin"
+                                                formControlName="dtEvaluacionFechaFin"
                                                 [iconDisplay]="'input'"
+                                                dateFormat="dd/mm/yy"
                                                 styleClass="w-full"
                                                 [showIcon]="true"
-                                                [showTime]="true"
-                                                [hourFormat]="'24'"
+                                                placeholder=""
                                                 inputId="dtFin"
                                                 appendTo="body"
                                             />

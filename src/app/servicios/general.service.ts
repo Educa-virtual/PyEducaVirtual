@@ -217,6 +217,20 @@ export class GeneralService {
         )
     }
 
+    searchGradoSeccion(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/matricula/searchGradoSeccion`,
+            data
+        )
+    }
+
+    guardarEstudiante(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/matricula/guardarEstudiante`,
+            data
+        )
+    }
+
     searchMatriculas(data: any) {
         return this.http.post(
             `${baseUrl}/acad/matricula/searchMatriculas`,
@@ -233,6 +247,18 @@ export class GeneralService {
             `${baseUrl}/acad/calendarioAcademico/selTurnosModalidades`,
             data
         )
+    }
+
+    getDepartamentos() {
+        return this.http.get(`${baseUrl}/grl/getDepartamentos`)
+    }
+
+    searchProvincias(data: any) {
+        return this.http.post(`${baseUrl}/grl/searchProvincias`, data)
+    }
+
+    searchDistritos(data: any) {
+        return this.http.post(`${baseUrl}/grl/searchDistritos`, data)
     }
 
     deleteMatricula(data: any) {

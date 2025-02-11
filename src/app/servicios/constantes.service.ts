@@ -752,7 +752,9 @@ const administracion = [
                                 label: 'Ingresar estudiante',
                                 icon: 'pi pi-fw pi-circle',
                                 badge: 'NEW',
-                                // routerLink: ['/'],
+                                routerLink: [
+                                    '/gestion-institucional/estudiante/registro',
+                                ],
                             },
                             {
                                 label: 'Traslado estudiante',
@@ -769,12 +771,24 @@ const administracion = [
                         icon: 'pi pi-fw pi-cog',
                         items: [
                             {
-                                label: 'Ver solicitudes',
-                                icon: 'pi pi-fw pi-list',
+                                label: 'Registrar solicitudes',
+                                icon: 'pi pi-fw pi-file-plus',
                                 badge: '',
                                 routerLink: [
                                     '/gestion-institucional/gestion-matriculas',
                                 ],
+                            },
+                            {
+                                label: 'Procesar solicitudes',
+                                icon: 'pi pi-fw pi-list-check',
+                                badge: '',
+                                routerLink: ['/gestion-institucional/procesar'],
+                            },
+                            {
+                                label: 'Ver matriculados',
+                                icon: 'pi pi-fw pi-verified',
+                                badge: '',
+                                routerLink: ['/'],
                             },
                         ],
                         //ConfigGradoSeccion

@@ -1,24 +1,23 @@
-import { Component, inject, OnInit } from '@angular/core'
 import { PrimengModule } from '@/app/primeng.module'
-import {
-    IActionTable,
-    TablePrimengComponent,
-} from '@/app/shared/table-primeng/table-primeng.component'
-
-import { Router } from '@angular/router'
-import { FormBuilder, FormGroup, Validators } from '@angular/forms'
-import { MessageService } from 'primeng/api'
 import { GeneralService } from '@/app/servicios/general.service'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
-import { InputNumberModule } from 'primeng/inputnumber'
+import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import {
     ContainerPageComponent,
     IActionContainer,
 } from '@/app/shared/container-page/container-page.component'
-import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
+import {
+    IActionTable,
+    TablePrimengComponent,
+} from '@/app/shared/table-primeng/table-primeng.component'
+import { Component, inject } from '@angular/core'
+import { FormBuilder, FormGroup, Validators } from '@angular/forms'
+import { Router } from '@angular/router'
+import { MessageService } from 'primeng/api'
+import { InputNumberModule } from 'primeng/inputnumber'
 
 @Component({
-    selector: 'app-gestion-matriculas',
+    selector: 'app-familia',
     standalone: true,
     imports: [
         PrimengModule,
@@ -26,13 +25,11 @@ import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmatio
         InputNumberModule,
         TablePrimengComponent,
     ],
-    templateUrl: './gestion-matriculas.component.html',
-    styleUrl: './gestion-matriculas.component.scss',
+    templateUrl: './familia.component.html',
+    styleUrl: './familia.component.scss',
 })
-export class GestionMatriculasComponent implements OnInit {
-    formMatricula: FormGroup
-    formEstudiante: FormGroup
-    formRepresentante: FormGroup
+export class FamiliaComponent {
+    form: FormGroup
 
     activeStep: number = 0 // Paso activo
     totalSteps = 3 // Total de pasos del stepper
@@ -40,20 +37,29 @@ export class GestionMatriculasComponent implements OnInit {
     sede: any[]
     iSedeId: number
     iYAcadId: number
-    matriculas: any[]
+    familiares: any[]
     option: boolean = false
 
     visible: boolean = false //mostrar dialogo
     caption: string = '' // titulo o cabecera de dialogo
     c_accion: string //valos de las acciones
 
+    relaciones: Array<object>
     tipo_documentos: Array<object>
     nivel_grados: Array<object>
     turnos: Array<object>
     secciones: Array<object>
-    tipo_matriculas: Array<object>
     estados_civiles: Array<object>
     sexos: Array<object>
+    paises: Array<object>
+    departamentos: Array<object>
+    provincias: Array<object>
+    distritos: Array<object>
+    grados_instruccion: Array<object>
+    ocupaciones: Array<object>
+    religiones: Array<object>
+    lenguas: Array<object>
+    etnias: Array<object>
 
     private _MessageService = inject(MessageService) // dialog Mensaje simple
     private _confirmService = inject(ConfirmationModalService) // componente de dialog mensaje
@@ -78,51 +84,39 @@ export class GestionMatriculasComponent implements OnInit {
         this.iYAcadId = this.store.getItem('dremoiYAcadId')
 
         this.searchGradoSeccion()
+        this.getRelaciones()
         this.getTipoDocumento()
-        this.getNivelGrados()
-        this.getTurnos()
         this.getEstadosCiviles()
-        this.getTipoMatricula()
+        this.getPaises()
+        this.getDepartamentos()
+        this.getGradosInstruccion()
+        this.getOcupaciones()
+        this.getReligiones()
+        this.getLenguas()
+        this.getEtnias()
+
         this.sexos = [
             { nombre: 'MASCULINO', id: 'M' },
             { nombre: 'FEMENINO', id: 'F' },
         ]
 
         try {
-            this.formMatricula = this.fb.group({
-                iMatrId: [0], // PK tabla matricula
-                iEstudianteId: [{ value: 0, disabled: true }], // FK tabla grl.persona para estudiante
-                iNivelGradoId: [0, Validators.required], // FK tabla acad.nivel_grados
-                iTurnoId: [0, Validators.required], // FK tabla acad.turno
-                iSeccionId: [0, Validators.required], // FK tabla acad.seccion
-                dtMatrFecha: ['', Validators.required],
-                iTipoMatrId: [0, Validators.required], // FK tabla acad.tipo_matricula
-                bMatrDiscap: [false],
-                bMatrPariente: [false],
-                cObservacion: [''],
-            })
-            this.formEstudiante = this.fb.group({
-                iEstudianteId: [{ value: 0, disabled: true }], // FK tabla grl.persona para estudiante
-                iPersIdEstudiante: [{ value: 0, disabled: true }], // FK tabla grl.persona para estudiante
-                iTipoIdentIdEstudiante: [0, Validators.required],
-                cPersDocumentoEstudiante: ['', Validators.required],
-                cPersNombreEstudiante: ['', Validators.required],
-                cPersPaternoEstudiante: ['', Validators.required],
-                cPersMaternoEstudiante: [''],
-                dPersNacimientoEstudiante: ['', Validators.required],
-                cPersSexoEstudiante: ['', Validators.required],
-                iTipoEstCivIdEstudiante: [0],
-            })
-            this.formRepresentante = this.fb.group({
-                iPersIdRepresentante: [{ value: 0, disabled: true }], // FK tabla grl.persona para representante
-                iTipoIdentIdRepresentante: [0, Validators.required],
-                cPersDocumentoRepresentante: ['', Validators.required],
-                cPersNombreRepresentante: ['', Validators.required],
-                cPersPaternoRepresentante: ['', Validators.required],
-                cPersMaternoRepresentante: [''],
-                dPersNacimientoRepresentante: ['', Validators.required],
-                cPersSexoRepresentante: ['', Validators.required],
-                iTipoEstCivIdRepresentante: [0],
+            this.form = this.fb.group({
+                iPersId: [{ value: 0, disabled: true }], // FK tabla grl.persona para familiar
+                iTipoIdentId: [0, Validators.required],
+                cPersDocumento: ['', Validators.required],
+                cPersNombre: ['', Validators.required],
+                cPersPaterno: ['', Validators.required],
+                cPersMaterno: [''],
+                dPersNacimiento: [''],
+                cPersSexo: [null, Validators.required],
+                iTipoEstCivId: [0],
+                cPersPais: [0],
+                iDepartamentoId: [0],
+                iProvinciaId: [0],
+                iDistritoId: [0],
+                cPersLenguaMaterna: [0],
+                cPersRelacion: [0],
             })
         } catch (error) {
             console.log(error, 'error de variables')
@@ -137,7 +131,7 @@ export class GestionMatriculasComponent implements OnInit {
         }
         if (accion === 'agregar') {
             this.c_accion = accion
-            this.formMatricula.get('iMatrId')?.enable()
+            this.form.get('iPersId')?.enable()
             this.caption = 'Registrar solicitud'
             this.clearForm()
             this.visible = true
@@ -148,11 +142,8 @@ export class GestionMatriculasComponent implements OnInit {
     }
     accionBtnItem(accion) {
         switch (accion) {
-            case 'validar_estudiante':
-                this.validarEstudiante()
-                break
-            case 'validar_representante':
-                this.validarRepresentante()
+            case 'validar':
+                this.validar()
                 break
             case 'guardar':
                 this.addSolicitud()
@@ -174,17 +165,19 @@ export class GestionMatriculasComponent implements OnInit {
 
     searchGradoSeccion() {
         this.query
-            .searchGradoSeccion({
-                iSedeId: this.iSedeId,
-                iYAcadId: this.iYAcadId,
+            .searchTablaXwhere({
+                esquema: 'grl',
+                tabla: 'personas',
+                campos: '*',
+                condicion: "cPersDocumento LIKE '%9%'",
             })
             .subscribe({
                 next: (data: any) => {
-                    this.matriculas = data.data
-                    console.log(this.matriculas, 'matriculas')
+                    this.familiares = data.data
+                    console.log(this.familiares, 'familiares')
                 },
                 error: (error) => {
-                    console.error('Error al obtener matriculas:', error)
+                    console.error('Error al obtener familiares:', error)
                 },
                 complete: () => {},
             })
@@ -192,37 +185,15 @@ export class GestionMatriculasComponent implements OnInit {
 
     // Función para manejar el botón de "Siguiente"
     handleNext() {
-        if (this.activeStep === 0) {
-            if (this.formEstudiante.invalid) {
+        if (this.activeStep === 2) {
+            if (this.form.invalid) {
                 this._MessageService.add({
                     severity: 'error',
                     summary: 'Rellenar los campos',
-                    detail: 'Rellene todos los campos para continuar',
+                    detail: 'Rellene todos los campos para registrar al familiar del estudiante',
                 })
                 // Marca los campos como tocados para que se muestren los errores
-                this.formEstudiante.markAllAsTouched()
-                return
-            }
-        } else if (this.activeStep === 1) {
-            if (this.formRepresentante.invalid) {
-                this._MessageService.add({
-                    severity: 'error',
-                    summary: 'Rellenar los campos',
-                    detail: 'Rellene todos los campos para continuar',
-                })
-                // Marca los campos como tocados para que se muestren los errores
-                this.formRepresentante.markAllAsTouched()
-                return
-            }
-        } else if (this.activeStep === 2) {
-            if (this.formMatricula.invalid) {
-                this._MessageService.add({
-                    severity: 'error',
-                    summary: 'Rellenar los campos',
-                    detail: 'Rellene todos los campos para registrar la matrícula',
-                })
-                // Marca los campos como tocados para que se muestren los errores
-                this.formMatricula.markAllAsTouched()
+                this.form.markAllAsTouched()
                 return
             }
         }
@@ -244,12 +215,7 @@ export class GestionMatriculasComponent implements OnInit {
         this.query
             .guardarMatricula({
                 matricula: JSON.stringify({
-                    iMatrId: this.formMatricula.value.iMatrId,
-                    iTipoMatrId: this.formMatricula.value.iTipoMatrId,
-                    iNivelGradoId: this.formMatricula.value.iGradoId,
-                    iTurnoId: this.formMatricula.value.iTurnoId,
-                    iSeccionId: this.formMatricula.value.iSeccionId,
-                    iEstudianteId: this.formMatricula.value.iEstudianteId,
+                    iPersId: this.form.value.iPersId,
                 }),
             })
             .subscribe({
@@ -270,17 +236,17 @@ export class GestionMatriculasComponent implements OnInit {
             })
     }
     updateSolicitud() {
-        if (this.formMatricula.valid) {
+        if (this.form.valid) {
             const params = {
                 esquema: 'acad',
                 tabla: 'matricula',
                 json: JSON.stringify({
-                    iGradoId: this.formMatricula.value.iGradoId,
-                    iTipoMatrId: this.formMatricula.value.iTipoMatrId,
-                    iTurnoId: this.formMatricula.value.iTurnoId,
+                    iGradoId: this.form.value.iGradoId,
+                    iTipoMatrId: this.form.value.iTipoMatrId,
+                    iTurnoId: this.form.value.iTurnoId,
                 }),
                 campo: 'iMatrId',
-                condicion: this.formMatricula.get('iMatrId')?.value,
+                condicion: this.form.get('iMatrId')?.value,
             }
 
             console.log(params, 'parametros update')
@@ -300,7 +266,7 @@ export class GestionMatriculasComponent implements OnInit {
                 },
             })
         } else {
-            console.log('Formulario no válido', this.formMatricula.invalid)
+            console.log('Formulario no válido', this.form.invalid)
         }
     }
 
@@ -346,13 +312,23 @@ export class GestionMatriculasComponent implements OnInit {
         })
     }
     clearForm() {
-        this.formEstudiante.reset()
-        this.formRepresentante.reset()
-        this.formMatricula.reset()
-        this.formMatricula.get('iMatrId')?.setValue(0)
-        this.formMatricula.get('iEstudianteId')?.setValue(0)
-        this.formEstudiante.get('iPersIdEstudiante')?.setValue(0)
-        this.formRepresentante.get('iPersIdRepresentante')?.setValue(0)
+        this.form.reset()
+        this.form.get('iPersId')?.setValue(0)
+    }
+
+    getRelaciones() {
+        this.relaciones = [
+            { nombre: 'PADRE', id: '1' },
+            { nombre: 'MADRE', id: '2' },
+            { nombre: 'HERMANO', id: '3' },
+            { nombre: 'HERMANA', id: '4' },
+            { nombre: 'ABUELO', id: '5' },
+            { nombre: 'ABUELA', id: '6' },
+            { nombre: 'TIO', id: '7' },
+            { nombre: 'TIA', id: '8' },
+            { nombre: 'PRIMO', id: '9' },
+            { nombre: 'PRIMA', id: '10' },
+        ]
     }
 
     getTipoDocumento() {
@@ -372,59 +348,6 @@ export class GestionMatriculasComponent implements OnInit {
             complete: () => {
                 console.log('Request completed')
             },
-        })
-    }
-
-    getNivelGrados() {
-        this.query
-            .searchGradoCiclo({
-                iNivelTipoId: 3,
-            })
-            .subscribe({
-                next: (data: any) => {
-                    const item = data.data
-                    this.nivel_grados = item.map((grado) => ({
-                        iNivelGradoId: grado.iNivelGradoId,
-                        cGradoNombre: grado.cGradoNombre,
-                        cGradoAbreviacion: grado.cGradoAbreviacion,
-                        cNivelGrado:
-                            grado.cNivelTipoNombre +
-                            ' ' +
-                            grado.cGradoAbreviacion +
-                            ' (' +
-                            grado.cGradoNombre +
-                            ')',
-                    }))
-                    console.log(this.nivel_grados, 'nivel grados')
-                },
-                error: (error) => {
-                    console.error('Error consultando nivel grados:', error)
-                    this.messageService.add({
-                        severity: 'danger',
-                        summary: 'Mensaje',
-                        detail: 'Error en ejecución',
-                    })
-                },
-                complete: () => {
-                    console.log('Request completed')
-                },
-            })
-    }
-
-    getTurnos() {
-        this.query.getTurnos({}).subscribe({
-            next: (data: any) => {
-                const item = data.data.turnos
-                this.turnos = item.map((turno) => ({
-                    iTurnoId: turno.iTurnoId,
-                    cTurnoNombre: turno.cTurnoNombre,
-                }))
-                console.log(this.turnos, 'turnos')
-            },
-            error: (error) => {
-                console.error('Error obteniendo turnos:', error)
-            },
-            complete: () => {},
         })
     }
 
@@ -459,28 +382,42 @@ export class GestionMatriculasComponent implements OnInit {
             })
     }
 
-    getTipoMatricula() {
+    getPaises() {
+        this.paises = [
+            { nombre: 'ARGENTINA', id: 'AR' },
+            { nombre: 'BOLIVIA', id: 'BO' },
+            { nombre: 'BRASIL', id: 'BR' },
+            { nombre: 'CHILE', id: 'CL' },
+            { nombre: 'COLOMBIA', id: 'CO' },
+            { nombre: 'ECUADOR', id: 'EC' },
+            { nombre: 'GUATEMALA', id: 'GT' },
+            { nombre: 'MEXICO', id: 'MX' },
+            { nombre: 'PARAGUAY', id: 'PY' },
+            { nombre: 'PERU', id: 'PE' },
+            { nombre: 'URUGUAY', id: 'UY' },
+            { nombre: 'VENEZUELA', id: 'VE' },
+        ]
+    }
+
+    getDepartamentos() {
         this.query
             .searchTablaXwhere({
-                esquema: 'acad',
-                tabla: 'tipo_matriculas',
+                esquema: 'grl',
+                tabla: 'departamentos',
                 campos: '*',
                 condicion: '1 = 1',
             })
             .subscribe({
                 next: (data: any) => {
                     const item = data.data
-                    this.tipo_matriculas = item.map((tipo_matricula) => ({
-                        iTipoMatrId: tipo_matricula.iTipoMatrId,
-                        cTipoMatrNombre: tipo_matricula.cTipoMatrNombre,
+                    this.departamentos = item.map((departamento) => ({
+                        id: departamento.iDptoId,
+                        nombre: departamento.cDptoNombre,
                     }))
-                    console.log(this.tipo_matriculas, 'tipos de matriculas')
+                    console.log(this.departamentos, 'departamentos')
                 },
                 error: (error) => {
-                    console.error(
-                        'Error obteniendo tipos de matriculas:',
-                        error
-                    )
+                    console.error('Error obteniendo departamentos:', error)
                     this.messageService.add({
                         severity: 'danger',
                         summary: 'Mensaje',
@@ -493,96 +430,148 @@ export class GestionMatriculasComponent implements OnInit {
             })
     }
 
-    validarEstudiante() {
+    getProvincias() {
+        this.query
+            .searchTablaXwhere({
+                esquema: 'grl',
+                tabla: 'provincias',
+                campos: '*',
+                condicion: 'iDptoId = ' + this.form.value.iDepartamentoId,
+            })
+            .subscribe({
+                next: (data: any) => {
+                    const item = data.data
+                    this.provincias = item.map((provincia) => ({
+                        id: provincia.iPrvnId,
+                        nombre: provincia.cPrvnNombre,
+                    }))
+                    console.log(this.provincias, 'provincias')
+                },
+                error: (error) => {
+                    console.error('Error obteniendo provincias:', error)
+                    this.messageService.add({
+                        severity: 'danger',
+                        summary: 'Mensaje',
+                        detail: 'Error en ejecución',
+                    })
+                },
+                complete: () => {
+                    console.log('Request completed')
+                },
+            })
+    }
+
+    getDistritos() {
+        this.query
+            .searchTablaXwhere({
+                esquema: 'grl',
+                tabla: 'distritos',
+                campos: '*',
+                condicion: 'iPrvnId = ' + this.form.value.iProvinciaId,
+            })
+            .subscribe({
+                next: (data: any) => {
+                    const item = data.data
+                    this.distritos = item.map((distrito) => ({
+                        id: distrito.iDsttId,
+                        nombre: distrito.cDsttNombre,
+                    }))
+                    console.log(this.distritos, 'distritos')
+                },
+                error: (error) => {
+                    console.error('Error obteniendo distritos:', error)
+                    this.messageService.add({
+                        severity: 'danger',
+                        summary: 'Mensaje',
+                        detail: 'Error en ejecución',
+                    })
+                },
+                complete: () => {
+                    console.log('Request completed')
+                },
+            })
+    }
+
+    getGradosInstruccion() {
+        this.grados_instruccion = [
+            { nombre: 'SUPERIOR UNIVERSITARIO', id: '1' },
+            { nombre: 'SUPERIOR TECNICO', id: '2' },
+            { nombre: 'SECUNDARIA', id: '3' },
+            { nombre: 'PRIMARIA', id: '4' },
+            { nombre: 'SIN ESTUDIOS', id: '5' },
+        ]
+    }
+
+    getOcupaciones() {
+        this.ocupaciones = [
+            { nombre: 'INGENIERO', id: '1' },
+            { nombre: 'CONTADOR', id: '1' },
+            { nombre: 'ABOGADO', id: '1' },
+            { nombre: 'ENFERMERO', id: '2' },
+            { nombre: 'MEDICO', id: '3' },
+            { nombre: 'DOCENTE', id: '4' },
+            { nombre: 'COMERCIANTE', id: '5' },
+            { nombre: 'INDEPENDIENTE', id: '6' },
+        ]
+    }
+
+    getReligiones() {
+        this.religiones = [
+            { nombre: 'CATOLICO', id: '1' },
+            { nombre: 'PROTESTANTE', id: '2' },
+            { nombre: 'ATEO', id: '3' },
+        ]
+    }
+
+    getLenguas() {
+        this.lenguas = [
+            { nombre: 'ESPAÑOL', id: '1' },
+            { nombre: 'QUECHUA', id: '2' },
+            { nombre: 'AYMARA', id: '3' },
+            { nombre: 'INGLÉS', id: '4' },
+        ]
+    }
+
+    getEtnias() {
+        this.etnias = [
+            { nombre: 'MESTIZO', id: '1' },
+            { nombre: 'AFROAMERICANO', id: '2' },
+        ]
+    }
+
+    validar() {
         this.query
             .validarEstudiante({
-                iTipoIdentId: this.formEstudiante.value.iTipoIdentIdEstudiante,
-                cPersDocumento:
-                    this.formEstudiante.value.cPersDocumentoEstudiante,
+                iTipoIdentId: this.form.value.iTipoIdentId,
+                cPersDocumento: this.form.value.cPersDocumento,
             })
             .subscribe({
                 next: (data: any) => {
                     const persona = data.data.persona
                     const estudiante = data.data.estudiante
-                    this.formEstudiante
+                    this.form
                         .get('iEstudianteId')
                         ?.setValue(estudiante.iEstudianteId)
-                    this.formEstudiante
-                        .get('iPersIdEstudiante')
-                        ?.setValue(persona.iPersId)
-                    this.formEstudiante
-                        .get('cPersNombreEstudiante')
-                        ?.setValue(persona.cPersNombre)
-                    this.formEstudiante
-                        .get('cPersPaternoEstudiante')
+                    this.form.get('iPersId')?.setValue(persona.iPersId)
+                    this.form.get('cPersNombre')?.setValue(persona.cPersNombre)
+                    this.form
+                        .get('cPersPaterno')
                         ?.setValue(persona.cPersPaterno)
-                    this.formEstudiante
-                        .get('cPersMaternoEstudiante')
+                    this.form
+                        .get('cPersMaterno')
                         ?.setValue(persona.cPersMaterno)
-                    this.formEstudiante
-                        .get('dPersNacimientoEstudiante')
+                    this.form
+                        .get('dPersNacimiento')
                         ?.setValue(
                             persona ? new Date(persona.dPersNacimiento) : null
                         )
-                    this.formEstudiante
-                        .get('cPersSexoEstudiante')
-                        ?.setValue(persona.cPersSexo)
-                    this.formEstudiante
-                        .get('iTipoEstCivIdEstudiante')
+                    this.form.get('cPersSexo')?.setValue(persona.cPersSexo)
+                    this.form
+                        .get('iTipoEstCivId')
                         ?.setValue(persona.iTipoEstCivId)
                 },
                 error: (error) => {
-                    console.error('Error validando estudiante:', error)
-                    this.messageService.add({
-                        severity: 'danger',
-                        summary: 'Mensaje',
-                        detail: 'Error en ejecución',
-                    })
-                },
-                complete: () => {
-                    console.log('Request completed')
-                },
-            })
-    }
-
-    validarRepresentante() {
-        this.query
-            .validarRepresentante({
-                iTipoIdentId:
-                    this.formRepresentante.value.iTipoIdentIdRepresentante,
-                cPersDocumento:
-                    this.formRepresentante.value.cPersDocumentoRepresentante,
-            })
-            .subscribe({
-                next: (data: any) => {
-                    const persona = data.data.persona
-                    this.formRepresentante
-                        .get('iPersIdRepresentante')
-                        ?.setValue(persona.iPersId)
-                    this.formRepresentante
-                        .get('cPersNombreRepresentante')
-                        ?.setValue(persona.cPersNombre)
-                    this.formRepresentante
-                        .get('cPersPaternoRepresentante')
-                        ?.setValue(persona.cPersPaterno)
-                    this.formRepresentante
-                        .get('cPersMaternoRepresentante')
-                        ?.setValue(persona.cPersMaterno)
-                    this.formRepresentante
-                        .get('dPersNacimientoRepresentante')
-                        ?.setValue(
-                            persona ? new Date(persona.dPersNacimiento) : null
-                        )
-                    this.formRepresentante
-                        .get('cPersSexoRepresentante')
-                        ?.setValue(persona.cPersSexo)
-                    this.formRepresentante
-                        .get('iTipoEstCivIdRepresentante')
-                        ?.setValue(persona.iTipoEstCivId)
-                    console.log(data.data, 'datos del representante')
-                },
-                error: (error) => {
-                    console.error('Error validando representante:', error)
+                    console.error('Error validando familiar:', error)
                     this.messageService.add({
                         severity: 'danger',
                         summary: 'Mensaje',
@@ -601,8 +590,8 @@ export class GestionMatriculasComponent implements OnInit {
     }
     accionesPrincipal: IActionContainer[] = [
         {
-            labelTooltip: 'Registrar solicitud',
-            text: 'Registrar solicitud',
+            labelTooltip: 'Registrar familiar',
+            text: 'Registrar familiar',
             icon: 'pi pi-plus',
             accion: 'agregar',
             class: 'p-button-primary',
@@ -636,54 +625,45 @@ export class GestionMatriculasComponent implements OnInit {
             text: 'left',
         },
         {
+            type: 'radio',
+            width: '5rem',
+            field: '',
+            header: 'Rep. Legal',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
             type: 'text',
             width: '5rem',
-            field: 'cTurnoNombre',
-            header: 'Turno',
-            text_header: 'center',
-            text: 'center',
+            field: '',
+            header: 'Relación',
+            text_header: 'left',
+            text: 'left',
         },
         {
             type: 'text',
             width: '5rem',
-            field: 'cGradoAbreviacion',
-            header: 'Grado',
+            field: 'cPersDocumento',
+            header: 'Documento',
             text_header: 'center',
             text: 'center',
         },
         {
             type: 'text',
-            width: '6rem',
-            field: 'cSeccionNombre',
-            header: 'Seccion',
-            text_header: 'center',
-            text: 'center',
-        },
-        {
-            type: 'text',
-            width: '6rem',
-            field: 'iDetConfCantEstudiantes',
-            header: 'Vacantes',
-            text_header: 'center',
-            text: 'center',
-        },
-        {
-            type: 'text',
-            width: '8rem',
-            field: 'inscritos',
-            header: 'Matriculados',
-            text_header: 'center',
-            text: 'center',
+            width: '10rem',
+            field: 'cPersNombre',
+            header: 'Nombre Completo',
+            text_header: 'left',
+            text: 'left',
         },
         {
             type: 'boolean',
             width: '5rem',
-            field: 'bAmbienteEstado',
-            header: 'Estado',
+            field: '',
+            header: 'Celular',
             text_header: 'center',
             text: 'center',
         },
-
         {
             type: 'actions',
             width: '3rem',

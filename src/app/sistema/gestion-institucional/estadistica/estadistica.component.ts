@@ -1,80 +1,82 @@
 import { Component, OnInit } from '@angular/core'
-import { PrimengModule } from '@/app/primeng.module'
 import { CommonModule } from '@angular/common'
+import { FormsModule } from '@angular/forms'
+import { HttpClient } from '@angular/common/http'
+
+// Importaciones de PrimeNG
+import { ToolbarModule } from 'primeng/toolbar'
+import { FieldsetModule } from 'primeng/fieldset'
+import { DropdownModule } from 'primeng/dropdown'
+import { TableModule } from 'primeng/table'
+import { ButtonModule } from 'primeng/button'
+
 @Component({
-    selector: 'app-estadistica',
     standalone: true,
-    imports: [PrimengModule, CommonModule],
+    selector: 'app-estadistica',
     templateUrl: './estadistica.component.html',
-    styleUrl: './estadistica.component.scss',
+    styleUrls: ['./estadistica.component.scss'],
+    imports: [
+        CommonModule,
+        FormsModule,
+        ToolbarModule,
+        FieldsetModule,
+        DropdownModule,
+        TableModule,
+        ButtonModule,
+    ],
 })
 export class EstadisticaComponent implements OnInit {
-    productService = undefined
-    identidad: any
-    nota: any
-    escolar: any
-    grado: any
-    merito: any
+    selectedYear: any
+    selectedGrado: any
+    selectedMerito: any
+    identidad: any[] = []
+
+    escolar: any[] = [] // Se llenará con los datos del backend
+    grado: any[] = [] // Se llenará con los datos del backend
+
+    merito = [
+        { label: 'Excelente', value: 'A' },
+        { label: 'Bueno', value: 'B' },
+        { label: 'Regular', value: 'C' },
+    ]
+
+    constructor(private http: HttpClient) {}
+
     ngOnInit() {
+        this.obtenerAniosYGrados()
+    }
+
+    obtenerAniosYGrados() {
+        this.http
+            .get<any>('http://localhost:8000/api/estadistica/anios-academicos')
+            .subscribe(
+                (response) => {
+                    this.escolar = response.anios.map((anio: any) => ({
+                        label: anio.iYearId,
+                        value: anio.iYAcadId,
+                    }))
+
+                    this.grado = response.grados.map((grado: any) => ({
+                        label: grado.cGradoNombre,
+                        value: grado.iGradoId,
+                    }))
+                },
+                (error) => {
+                    console.error('Error al obtener los datos:', error)
+                }
+            )
+    }
+
+    buscar() {
+        console.log(
+            'Buscando datos para:',
+            this.selectedYear,
+            this.selectedGrado,
+            this.selectedMerito
+        )
         this.identidad = [
-            {
-                merito: 'general',
-                grado: 'primero',
-                fecha: '2025-05-05',
-                valor: 'pi pi-file-pdf',
-                generado: 'pi pi-info-circle',
-            },
-        ]
-        this.nota = [
-            {
-                indice: '1',
-                curricular: 'matematica',
-                year1: '11',
-                year2: '12',
-                year3: '12',
-                year4: '12',
-                year5: '12',
-            },
-            {
-                indice: '2',
-                curricular: 'ingles',
-                year1: '11',
-                year2: '12',
-                year3: '12',
-                year4: '12',
-                year5: '12',
-            },
-            {
-                indice: '3',
-                curricular: 'comunicaicon',
-                year1: '11',
-                year2: '12',
-                year3: '12',
-                year4: '12',
-                year5: '12',
-            },
-            {
-                indice: '4',
-                curricular: 'situacion final',
-                year1: 'aprobado',
-                year2: 'aprobado',
-                year3: 'aprobado',
-                year4: 'aprobado',
-                year5: 'aprobado',
-            },
-        ]
-        this.escolar = [{ year: 2023 }, { year: 2024 }, { year: 2025 }]
-        this.merito = [
-            { nombre: 'GENERAL' },
-            { nombre: '5 PRIMEROS PUESTOS' },
-            { nombre: 'DECIMO SUPERIOR' },
-            { nombre: 'QUINTO SUPERIOR' },
-            { nombre: 'TERCIO SUPERIOR' },
-        ]
-        this.grado = [
-            { numero: 'primero' },
-            { numero: 'segundo' },
-            { numero: 'tercero' },
+            { nombre: 'Juan Pérez', nota: 95 },
+            { nombre: 'Ana López', nota: 88 },
         ]
     }
 }

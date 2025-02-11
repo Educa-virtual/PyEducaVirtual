@@ -5,7 +5,7 @@
             <p-toolbar class="col-12">
                 <div class="block">
                     <h2 class="text-primary text-white font-bold block">
-                        GENERACION DE REPORTES ACADEMICOS
+                        GENERACIÓN DE REPORTES ACADÉMICOS
                     </h2>
                 </div>
             </p-toolbar>
@@ -17,31 +17,36 @@
                     <ng-template pTemplate="header"
                         >Buscar por Estudiante</ng-template
                     >
-
                     <div class="flex">
                         <p-floatLabel class="mr-1">
-                            <input id="DNI" type="text" pInputText />
-                            <label for="DNI">DNI</label>
+                            <input
+                                id="DNI"
+                                type="text"
+                                pInputText
+                                [(ngModel)]="documento"
+                                maxlength="8"
+                            />
+                            <label for="DNI">Documento de Identidad</label>
                         </p-floatLabel>
-                        <p-button class="mr-1" label="Buscar" />
+                        <p-button
+                            class="mr-1"
+                            label="Buscar"
+                            (click)="buscarDocumento()"
+                        />
                         <button
                             pButton
                             pRipple
                             label="Limpiar"
                             class="p-button-warning"
+                            (click)="limpiar()"
                         ></button>
-                        <p-dropdown
-                            class="ml-1"
-                            [options]="nivel"
-                            optionLabel="name"
-                            placeholder="Elegir Nivel de Estudios"
-                        />
                     </div>
                 </p-fieldset>
                 <br />
                 <p-table
                     [value]="identidad"
                     [tableStyle]="{ 'min-width': '50rem' }"
+                    *ngIf="persona"
                 >
                     <ng-template pTemplate="header">
                         <tr>
@@ -64,6 +69,7 @@
                                     pRipple
                                     label="Ver"
                                     class="p-button-primary mr-1"
+                                    (click)="mostrarHistorial()"
                                 ></button>
                                 <button
                                     pButton
@@ -76,42 +82,35 @@
                     </ng-template>
                 </p-table>
                 <br />
-                <p-table [value]="nota" [tableStyle]="{ 'min-width': '50rem' }">
+                <p-table
+                    [value]="fila"
+                    [tableStyle]="{ 'min-width': '50rem' }"
+                    *ngIf="historico"
+                >
                     <ng-template pTemplate="header">
                         <tr>
                             <th>#</th>
                             <th>Areas Curricular</th>
-                            <th>
-                                <div>Grado : 1</div>
-                                <div>Año : 1</div>
-                            </th>
-                            <th>
-                                <div>Grado : 2</div>
-                                <div>Año : 2</div>
-                            </th>
-                            <th>
-                                <div>Grado : 3</div>
-                                <div>Año : 3</div>
-                            </th>
-                            <th>
-                                <div>Grado : 4</div>
-                                <div>Año : 4</div>
-                            </th>
-                            <th>
-                                <div>Grado : 5</div>
-                                <div>Año : 5</div>
+                            <th *ngFor="let col of columna">
+                                <div>Año : {{ col.cYAcadNombre }}</div>
+                                <div>Grado : {{ col.cGradoAbreviacion }}</div>
                             </th>
                         </tr>
                     </ng-template>
-                    <ng-template pTemplate="body" let-nota>
+                    <ng-template pTemplate="body" let-fila let-index="rowIndex">
                         <tr>
-                            <td>{{ nota.indice }}</td>
-                            <td>{{ nota.curricular }}</td>
-                            <td>{{ nota.year1 }}</td>
-                            <td>{{ nota.year2 }}</td>
-                            <td>{{ nota.year3 }}</td>
-                            <td>{{ nota.year4 }}</td>
-                            <td>{{ nota.year5 }}</td>
+                            <td>{{ index + 1 }}</td>
+                            <td>{{ fila.cCursoNombre }}</td>
+                            @for (fl of fila.nota; track $index) {
+                                <td>{{ fl.promedio }}</td>
+                            }
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="footer">
+                        <tr>
+                            <td *ngFor="let fin of final">
+                                {{ fin.promedio }}
+                            </td>
                         </tr>
                     </ng-template>
                 </p-table>

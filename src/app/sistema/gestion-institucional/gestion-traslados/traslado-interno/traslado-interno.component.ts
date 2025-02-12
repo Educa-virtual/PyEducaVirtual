@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core'
+import { Component, HostListener, inject, OnInit } from '@angular/core'
 import {
     ContainerPageComponent,
     IActionContainer,
 } from '@/app/shared/container-page/container-page.component'
 import {
+    IActionTable,
     IColumn,
     TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component'
@@ -18,6 +19,7 @@ import { PrimengModule } from '@/app/primeng.module'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { MessageService } from 'primeng/api'
 import { GeneralService } from '@/app/servicios/general.service'
+import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 
 @Component({
     selector: 'app-traslado-interno',
@@ -40,6 +42,7 @@ export class TrasladoInternoComponent implements OnInit {
     secciones: any[] = []
     params_nivel: string
     vacantes: any[]
+    lista_pendiente: boolean = false
 
     data: any[] = [
         {
@@ -113,51 +116,7 @@ export class TrasladoInternoComponent implements OnInit {
             cValidacion: 'Validado',
         },
     ]
-    tipo_constancia: any[] = [
-        {
-            iTipoConstancia: 1,
-            cTipoConstancia: 'Primero',
-        },
-        {
-            iTipoConstancia: 2,
-            cTipoConstancia: 'Segundo',
-        },
-        {
-            iTipoConstancia: 3,
-            cTipoConstancia: 'Tercero',
-        },
-        {
-            iTipoConstancia: 4,
-            cTipoConstancia: 'Cuarto',
-        },
-        {
-            iTipoConstancia: 5,
-            cTipoConstancia: 'quinto',
-        },
-    ]
-
-    anio_constancia: any[] = [
-        {
-            iAnioConstancia: 1,
-            cAnioConstancia: '2021',
-        },
-        {
-            iAnioConstancia: 2,
-            cAnioConstancia: '2022',
-        },
-        {
-            iAnioConstancia: 3,
-            cAnioConstancia: '2023',
-        },
-        {
-            iAnioConstancia: 4,
-            cAnioConstancia: '2024',
-        },
-        {
-            iAnioConstancia: 5,
-            cAnioConstancia: '2025',
-        },
-    ]
+    private _confirmService = inject(ConfirmationModalService)
 
     constructor(
         private fb: FormBuilder,
@@ -203,7 +162,6 @@ export class TrasladoInternoComponent implements OnInit {
             .subscribe({
                 next: (data: any) => {
                     this.grados = data.data
-                    console.log('this.grados', this.grados)
                 },
                 error: (error) => {
                     console.error('Error fetching grados:', error)
@@ -244,8 +202,21 @@ export class TrasladoInternoComponent implements OnInit {
         // grado 3-8 primaria  9-13 secundaria 1-2 inicial
     }
 
+    btnItem(opcion: string) {
+        switch (opcion) {
+            case 'pendientes': {
+                this.lista_pendiente = false
+                break
+            }
+            case 'listar': {
+                this.lista_pendiente = true
+                break
+            }
+        }
+    }
     selectRow(data) {
         this.selectRowData = data
+        console.log(this.selectRowData)
     }
 
     searchVacantes(iYearId, iSedeId) {
@@ -291,6 +262,49 @@ export class TrasladoInternoComponent implements OnInit {
                 },
             })
     }
+
+    confirmar() {
+        // const cant = this.selectRowData.length()
+        this._confirmService.openConfiSave({
+            header: 'Advertencia de procesamiento',
+            message: '¿Desea registrar estudiantes para trasladar?',
+            icon: 'pi pi-exclamation-triangle',
+            accept: () => {
+                this.trasladararEstudiante()
+            },
+            reject: () => {
+                // Mensaje de cancelación (opcional)
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Cancelado',
+                    detail: 'Acción cancelada',
+                })
+            },
+        })
+    }
+
+    trasladararEstudiante() {
+        // implementar para registrar traslados
+    }
+
+    //-------------------atajos --------------------------
+    @HostListener('window:keydown.control.b', ['$event'])
+    onCtrlB(event: KeyboardEvent) {
+        event.preventDefault() // Evita acciones predeterminadas del navegador
+        console.log('Ctrl + B presionado')
+        this.confirmar()
+        // Aquí puedes ejecutar cualquier lógica
+    }
+
+    @HostListener('window:keydown.control.s', ['$event'])
+    onCtrlS(event: KeyboardEvent) {
+        event.preventDefault() // Evita acciones predeterminadas del navegador
+        console.log('Ctrl + S presionado')
+        this.confirmar()
+        // Aquí puedes ejecutar cualquier lógica
+    }
+    ///////-----------------------------------
+
     columns: IColumn[] = [
         {
             type: 'item',
@@ -357,6 +371,61 @@ export class TrasladoInternoComponent implements OnInit {
             icon: 'pi pi-plus',
             accion: 'interno',
             class: 'p-button-primary',
+        },
+    ]
+
+    actions: IActionTable[] = [
+        {
+            labelTooltip: 'Eliminar',
+            icon: 'pi pi-trash',
+            accion: 'eliminar',
+            type: 'item',
+            class: 'p-button-rounded p-button-danger p-button-text',
+        },
+    ]
+
+    columns_registrados: IColumn[] = [
+        {
+            type: 'item',
+            width: '5%',
+            field: 'item',
+            header: 'Nro',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'text',
+            width: '15%',
+            field: 'nEstudianteDni',
+            header: 'DNI',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'text',
+            width: '40%',
+            field: 'cEstudianteNombre',
+            header: 'Apellidos y Nombres',
+            text_header: 'center',
+            text: 'center',
+        },
+
+        {
+            type: 'text',
+            width: '30',
+            field: 'cGradoEdadAnterior',
+            header: 'Grado/edad (Año anterior)',
+            text_header: 'center',
+            text: 'center',
+        },
+
+        {
+            type: 'actions',
+            width: '10%',
+            field: '',
+            header: 'Eliminar',
+            text_header: 'center',
+            text: 'center',
         },
     ]
 }

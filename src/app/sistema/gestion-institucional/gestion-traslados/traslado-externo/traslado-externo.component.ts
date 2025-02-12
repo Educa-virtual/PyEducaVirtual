@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core'
+import { Component, HostListener, inject, OnInit } from '@angular/core'
 import {
     ContainerPageComponent,
     IActionContainer,
@@ -18,6 +18,7 @@ import { MessageService } from 'primeng/api'
 import { GeneralService } from '@/app/servicios/general.service'
 import { PrimengModule } from '@/app/primeng.module'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
+import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 
 @Component({
     selector: 'app-traslado-externo',
@@ -40,9 +41,16 @@ export class TrasladoExternoComponent implements OnInit {
     tipo_documentos: any[] = []
     matriculas: any[]
     instituciones: any[]
-    grados: any[]
+    grados_institucion: any // para la institucion
+    grados_origen: any // institucion de origen de estudiante
+    grados_all: any // general para procesar
     year_Academicos: any
     perfil: any
+    result: any
+
+    btnValidar: boolean = false
+
+    private _confirmService = inject(ConfirmationModalService)
 
     constructor(
         private fb: FormBuilder,
@@ -53,12 +61,13 @@ export class TrasladoExternoComponent implements OnInit {
 
     ngOnInit(): void {
         this.perfil = this.store.getItem('dremoPerfil')
-
+        const iNivelTipoId = this.perfil.iNivelTipoId
         console.log(this.perfil)
         this.getTipoTraslado() // consulta tipo de traslados
         this.getTipoDocumento() // consulta tipo de documentos
         this.getIntitucionEducativa() // institucion educativa
-        this.getNivelTipoId() // consulta los grados que cuenta
+        this.getNivelTipoId(Number(iNivelTipoId), 'institucion') // consulta los grados que cuenta la Institucion educativa
+
         this.getYear() // consulta años
 
         // throw new Error('Method not implemented.')
@@ -68,7 +77,10 @@ export class TrasladoExternoComponent implements OnInit {
                 cTipoTraslado: [0, Validators.required],
                 cEstadoConstancia: [0, Validators.required],
                 iIieeId: [{ value: 0, disabled: true }, Validators.required],
-                cDocumentoEstudiante: [null, Validators.required],
+                cDocumentoEstudiante: [
+                    { value: null, disabled: true },
+                    Validators.required,
+                ],
                 cDocumento: [null, Validators.required],
                 iYearId: [{ value: 0, disabled: true }, Validators.required],
                 cUltimoGradoEstudio: [
@@ -169,22 +181,50 @@ export class TrasladoExternoComponent implements OnInit {
         })
     }
 
-    getNivelTipoId() {
+    //Filtra grados y secciones de la Institucion educativa segun su tiponivel
+    getNivelTipoId(id: number, option: string) {
+        console.log('getNivelTipoId', id)
+
         this.query
             .searchGradoCiclo({
-                iNivelTipoId: this.perfil.iNivelTipoId,
+                iNivelTipoId: id,
             })
             .subscribe({
                 next: (data: any) => {
-                    this.grados = data.data
-                    console.log('this.grados', this.grados)
+                    this.grados_all = data.data.map((item: any) => ({
+                        ...item, // Mantiene todos los campos originales
+                        nombreCompleto: `${item.cGradoNombre} - ${item.cNivelTipoNombre} - ${item.cCicloNombre}`, // Nuevo campo concatenando dos valores
+                    }))
+
+                    switch (option) {
+                        case 'origen': {
+                            this.grados_origen = this.grados_all
+                            break
+                        }
+                        case 'institucion': {
+                            this.grados_institucion = this.grados_all
+                            break
+                        }
+                    }
                 },
                 error: (error) => {
                     console.error('Error fetching grados:', error)
                 },
             })
     }
-
+    btnItem(option: string) {
+        switch (option) {
+            case 'TipoDocumento': {
+                this.form.controls['cDocumentoEstudiante'].enable()
+                this.btnValidar = true
+                break
+            }
+            default: {
+                this.btnValidar = false
+                break
+            }
+        }
+    }
     validarDNI() {
         const cDocumentoEstudiante = this.form.value.cDocumentoEstudiante //{ dni: this.form.value.cDocumentoEstudiante }];
 
@@ -239,6 +279,10 @@ export class TrasladoExternoComponent implements OnInit {
                             cMatrConclusionDescriptiva:
                                 m.cMatrConclusionDescriptiva,
                         }))
+                        this.getNivelTipoId(
+                            Number(this.matriculas[0].iNivelTipoId),
+                            'institucion'
+                        )
 
                         this.form.controls['iIieeId']?.setValue(
                             this.matriculas[0].iIieeId.toString()
@@ -257,12 +301,148 @@ export class TrasladoExternoComponent implements OnInit {
                         this.form.controls['cUltimoGradoEstudio'].enable()
 
                         //consulta los grados y ciclos
-
                         //alert(this.estudiante[0].cEstNombres + ' ' + this.estudiante[0].cEstMaterno + ' ' + this.estudiante[0].cEstPaterno )
                     },
                 })
         }
     }
+
+    // eventos de record set
+    confirm() {
+        const dni = this.form.value.cDocumentoEstudiante
+        const documento = Number(this.form.value.cDocumento)
+        alert(documento)
+        //validar documento
+        if (!dni || dni.trim() === '') {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Cancelado',
+                detail: 'Número de documento vacio',
+            })
+            return
+        } else {
+            const menssage =
+                '¿Estás seguro de que deseas validar informacíon del estudiante ' +
+                dni +
+                '?'
+            this._confirmService.openConfiSave({
+                header: 'Advertencia de procesamiento',
+                message: menssage,
+                icon: 'pi pi-exclamation-triangle',
+                accept: () => {
+                    //Validar documento
+                    switch (documento) {
+                        case 1: // DNI 8
+                            if (dni.length != 8) {
+                                this.messageService.add({
+                                    severity: 'error',
+                                    summary: 'Cancelado',
+                                    detail: 'Número de caracteres distinto a 8',
+                                })
+                                return
+                            } else {
+                                this.validarDNI()
+                            }
+                            break
+
+                        case 2: // RUC 11
+                            if (dni.length != 11) {
+                                this.messageService.add({
+                                    severity: 'error',
+                                    summary: 'Cancelado',
+                                    detail: 'Número de caracteres distinto a 11',
+                                })
+                                return
+                            } else {
+                                this.validarDNI()
+                            }
+                            break
+                        case 3: //CDE 5 - 20
+                            if (dni.length <= 5) {
+                                this.messageService.add({
+                                    severity: 'error',
+                                    summary: 'Cancelado',
+                                    detail: 'Número de caracteres menor a 6',
+                                })
+                                return
+                            } else {
+                                this.validarDNI()
+                            }
+                            break
+                        case 4: // OTD
+                            if (dni.length <= 5) {
+                                this.messageService.add({
+                                    severity: 'error',
+                                    summary: 'Cancelado',
+                                    detail: 'Número de caracteres menor a 6',
+                                })
+                                return
+                            } else {
+                                this.validarDNI()
+                            }
+                            break
+                        default: // OTD
+                            this.messageService.add({
+                                severity: 'error',
+                                summary: 'Cancelado',
+                                detail: 'No selecciono el tipo de documento',
+                            })
+                            return
+                            break
+                    }
+                },
+                reject: () => {
+                    // Mensaje de cancelación (opcional)
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Cancelado',
+                        detail: 'Acción cancelada',
+                    })
+                },
+            })
+        }
+    }
+
+    confirmarTraslado() {
+        // const cant = this.selectRowData.length()
+        this._confirmService.openConfiSave({
+            header: 'Advertencia de procesamiento',
+            message: '¿Desea registrar estudiantes para trasladar?',
+            icon: 'pi pi-exclamation-triangle',
+            accept: () => {
+                this.registrarTraslado()
+            },
+            reject: () => {
+                // Mensaje de cancelación (opcional)
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Cancelado',
+                    detail: 'Acción cancelada',
+                })
+            },
+        })
+    }
+    registrarTraslado() {
+        // para implementar
+    }
+
+    //-------------------atajos --------------------------
+    @HostListener('window:keydown.control.b', ['$event'])
+    onCtrlB(event: KeyboardEvent) {
+        event.preventDefault() // Evita acciones predeterminadas del navegador
+        console.log('Ctrl + B presionado')
+        this.confirm()
+        // Aquí puedes ejecutar cualquier lógica
+    }
+
+    @HostListener('window:keydown.control.s', ['$event'])
+    onCtrlS(event: KeyboardEvent) {
+        event.preventDefault() // Evita acciones predeterminadas del navegador
+        console.log('Ctrl + S presionado')
+        this.confirm()
+        // Aquí puedes ejecutar cualquier lógica
+    }
+    ///////-----------------------------------
 
     columns: IColumn[] = [
         {

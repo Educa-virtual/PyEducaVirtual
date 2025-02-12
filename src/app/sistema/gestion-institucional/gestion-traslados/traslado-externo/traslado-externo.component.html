@@ -1,4 +1,5 @@
 <div class="grid p-fluid mt-2">
+    <p-toast />
     <div class="field col-12 md:col-4">
         <div class="grid p-fluid mt-1">
             <p-fieldset
@@ -99,6 +100,7 @@
                                 optionLabel="cTipoIdentSigla"
                                 optionValue="iTipoIdentId"
                                 formControlName="cDocumento"
+                                (onChange)="btnItem('TipoDocumento')"
                             />
                             <label for="cDocumento">Documento</label>
                         </span>
@@ -115,16 +117,18 @@
                             <label for="cDocumentoEstudiante">Número</label>
                         </span>
                     </div>
-                    <div class="field col-12 md:col-3">
-                        <button
-                            pButton
-                            [label]="'Validar información'"
-                            icon="pi pi-check"
-                            size="small"
-                            (click)="validarDNI()"
-                        ></button>
-                        <!-- (click)="guardarActualizarRubrica()" -->
-                    </div>
+                    @if (btnValidar) {
+                        <div class="field col-12 md:col-4">
+                            <button
+                                pButton
+                                [label]="'Validar información'"
+                                icon="pi pi-check"
+                                size="small"
+                                (click)="confirm()"
+                            ></button>
+                            <!-- (click)="guardarActualizarRubrica()" -->
+                        </div>
+                    }
                 </div>
 
                 <div class="grid p-fluid mt-2">
@@ -164,11 +168,11 @@
                         <span class="p-float-label">
                             <p-dropdown
                                 [style]="{ width: '100%' }"
-                                [options]="grados"
+                                [options]="grados_all"
                                 optionValue="iGradoId"
-                                optionLabel="cGradoNombre"
+                                optionLabel="nombreCompleto"
                                 [filter]="true"
-                                filterBy="cGradoNombre"
+                                filterBy="nombreCompleto"
                                 formControlName="cUltimoGradoEstudio"
                             />
                             <label for="cUltimoGradoEstudio"
@@ -194,8 +198,8 @@
                         <span class="p-float-label">
                             <p-dropdown
                                 [style]="{ width: '100%' }"
-                                [options]="grados"
-                                optionLabel="cGradoNombre"
+                                [options]="grados_institucion"
+                                optionLabel="nombreCompleto"
                                 optionValue="iGradoId"
                                 formControlName="cGradoTrasladar"
                             />
@@ -272,6 +276,8 @@
                             icon="pi pi-check"
                             size="small"
                             class="p-button-success"
+                            [disabled]="form.invalid"
+                            (click)="confirmarTraslado()"
                         ></button>
                     </div>
                 </div>

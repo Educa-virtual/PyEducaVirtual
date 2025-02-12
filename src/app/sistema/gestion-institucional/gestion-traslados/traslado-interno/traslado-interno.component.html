@@ -17,11 +17,9 @@
                                 filterBy="cGradoNombre"
                                 optionLabel="cGradoNombre"
                                 optionValue="iGradoId"
-                                formControlName="iGrados"
+                                formControlName="iGrado"
                             />
-                            <label for="cTipoConstancia"
-                                >Grado a matricular</label
-                            >
+                            <label for="iGrado">Grado a matricular</label>
                         </span>
                     </div>
                     <div class="field col-12 md:col-6">
@@ -33,21 +31,34 @@
                                 filterBy="cSeccionDescripcion"
                                 optionLabel="cSeccionDescripcion"
                                 optionValue="iSeccionId"
-                                formControlName="iseccion"
+                                formControlName="iSeccion"
                             />
-                            <label for="cEstadoConstancia">Sección</label>
+                            <label for="iSeccion">Sección</label>
                         </span>
                     </div>
-
-                    <div class="field col-12 md:col-12">
-                        <button
-                            pButton
-                            [label]="'Listar estudiantes'"
-                            icon="pi pi-list"
-                            size="small"
-                            class="p-button-primary"
-                        ></button>
-                    </div>
+                    @if (lista_pendiente) {
+                        <div class="field col-12 md:col-12">
+                            <button
+                                pButton
+                                [label]="'Estudiantes pendientes'"
+                                icon="pi pi-list"
+                                size="small"
+                                (click)="btnItem('pendientes')"
+                                class="p-button-danger"
+                            ></button>
+                        </div>
+                    } @else {
+                        <div class="field col-12 md:col-12">
+                            <button
+                                pButton
+                                [label]="'Listar estudiantes'"
+                                icon="pi pi-list"
+                                size="small"
+                                (click)="btnItem('listar')"
+                                class="p-button-primary"
+                            ></button>
+                        </div>
+                    }
                 </div>
             </p-fieldset>
             <p-fieldset
@@ -109,6 +120,7 @@
                             icon="pi pi-save"
                             size="small"
                             class="p-button-success"
+                            (click)="confirmar()"
                         ></button>
                     </div>
                 </div>
@@ -118,12 +130,30 @@
         </form>
     </div>
     <div class="field col-12 md:col-7">
-        <app-table-primeng
+        @if (lista_pendiente) {
+            <!-- <app-table-primeng
             [columnas]="columns"
             [data]="data"
-            (selectedRowDataChange)="selectRow($event)"
-        >
-        </app-table-primeng>
+            (selectedRowDataChange)="selectRow($event)">
+        </app-table-primeng> -->
+
+            <app-table-primeng
+                [columnas]="columns_registrados"
+                [showCaption]="true"
+                [data]="data"
+                [showPaginator]="true"
+                [actions]="actions"
+            >
+                <!-- <ng-container slot="caption-content"> </ng-container> -->
+            </app-table-primeng>
+        } @else {
+            <app-table-primeng
+                [columnas]="columns"
+                [data]="data"
+                (selectedRowDataChange)="selectRow($event)"
+            >
+            </app-table-primeng>
+        }
     </div>
 </div>
 

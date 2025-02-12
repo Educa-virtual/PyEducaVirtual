@@ -152,11 +152,12 @@
                                             </p-inputGroupAddon>
                                             <!-- Componente de calendario para seleccionar una fecha y hora -->
                                             <p-calendar
-                                                formControlName="dtEvaluacionFechaInicio"
+                                                controlKey="dtEvaluacionFechaInicio"
                                                 [iconDisplay]="'input'"
                                                 styleClass="w-full"
                                                 [showIcon]="true"
-                                                inputId="dtInicio"
+                                                type="date"
+                                                inputId="dtEvaluacionFechaInicio"
                                                 appendTo="body"
                                             />
                                         </p-inputGroup>

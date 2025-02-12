@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core'
 import { environment } from '@/environments/environment.template'
 import { HttpClient } from '@angular/common/http'
-import { catchError, map, Observable, tap, throwError } from 'rxjs'
+import { map, Observable, catchError, tap, throwError } from 'rxjs' //catchError, , tap, throwError
 import { mapData } from '../sub-evaluaciones/banco-preguntas/models/pregunta-data-transformer'
 
 @Injectable({
@@ -27,6 +27,25 @@ export class ApiEvaluacionesRService {
                     return throwError(error)
                 })
             )
+    }
+
+    obtenerEvaluacionNuevo(iEvaluacionId): Observable<any> {
+        return this.http
+            .get(
+                `${this.baseUrl}/ere/evaluaciones/obtenerEvaluacion?iEvaluacionId=${iEvaluacionId}`
+            )
+            .pipe(map((resp) => resp['data']))
+    }
+
+    obtenerAreasPorEvaluacionyEspecialista(
+        iPersId,
+        iEvaluacionId
+    ): Observable<any> {
+        return this.http
+            .get(
+                `${this.baseUrl}/ere/evaluaciones/obtenerAreasPorEvaluacionyEspecialista?iPersId=${iPersId}&iEvaluacionId=${iEvaluacionId}`
+            )
+            .pipe(map((resp) => resp['data']))
     }
 
     obtenerTipoPreguntas() {
@@ -308,7 +327,6 @@ export class ApiEvaluacionesRService {
         const params = new URLSearchParams({ ...baseParams })
         const fullUrl = `${url}?${params.toString()}`
 
-        // Se abre la URL generada, que ahora solo contiene iEvaluacionId.
         window.open(fullUrl, '_blank')
     }
 

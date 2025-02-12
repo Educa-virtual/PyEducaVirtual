@@ -181,16 +181,21 @@
                                             </div>
                                             <div class="col">
                                                 <p-toast></p-toast>
-                                                <p-button
-                                                    label="Guardar"
-                                                    icon="pi pi-check"
-                                                    class="p-button-success"
-                                                    [loading]="loading"
-                                                    (onClick)="load()"
-                                                    (click)="
-                                                        guardaCalificacionFinalUnidad()
-                                                    "
-                                                />
+                                                <div>
+                                                    <p-button
+                                                        label="Guardar"
+                                                        icon="pi pi-check"
+                                                        class="p-button-success"
+                                                        [disabled]="
+                                                            desactivarUnidad()
+                                                        "
+                                                        [loading]="loading"
+                                                        (onClick)="load()"
+                                                        (click)="
+                                                            guardaCalificacionFinalUnidad()
+                                                        "
+                                                    />
+                                                </div>
                                             </div>
                                         </div>
                                     </form>

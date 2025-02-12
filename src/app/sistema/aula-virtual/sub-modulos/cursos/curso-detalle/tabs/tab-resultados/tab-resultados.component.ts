@@ -104,13 +104,13 @@ export class TabResultadosComponent implements OnInit {
             accion: 'descargar_pdf',
             class: 'p-button-danger',
         },
-        {
-            labelTooltip: 'Descargar Excel',
-            text: 'Reporte Excel',
-            icon: 'pi pi-download',
-            accion: 'Descargar_Excel',
-            class: 'p-button-success',
-        },
+        // {
+        //     labelTooltip: 'Descargar Excel',
+        //     text: 'Reporte Excel',
+        //     icon: 'pi pi-download',
+        //     accion: 'Descargar_Excel',
+        //     class: 'p-button-success',
+        // },
     ]
     estudiantes: any[] = []
     reporteDeNotas: any[] = []
@@ -139,7 +139,6 @@ export class TabResultadosComponent implements OnInit {
     unidad: number
     idcurso: number
     mostrarDiv: boolean = false // Variable para controlar la visibilidad
-
     califcnFinal: any[] = []
     public califcFinal: FormGroup = this._formBuilder.group({
         cDetMatrConclusionDesc1: ['', [Validators.required]],
@@ -394,6 +393,10 @@ export class TabResultadosComponent implements OnInit {
         this.unidad = idx
         //console.log('Unidad Seleccionada', item)
         // console.log('Indice de la Unidad', idx)
+    }
+    // para desacctivar el boton guardar conclusion descritiva
+    desactivarUnidad(): boolean {
+        return this.unidades.some((item) => item.iEstado === '0')
     }
     // muestra las notas del curso x trimestre
     reporteNotasFinales: any[] = []

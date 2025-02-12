@@ -44,6 +44,7 @@ import { ButtonModule } from 'primeng/button'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { TabsKeys } from '../tab.interface'
 import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
+import { TooltipModule } from 'primeng/tooltip'
 @Component({
     selector: 'app-tab-resultados',
     standalone: true,
@@ -51,6 +52,7 @@ import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
     styleUrls: ['./tab-resultados.component.scss'],
     imports: [
         TablePrimengComponent,
+        TooltipModule,
         ButtonModule,
         RemoveHTMLPipe,
         TabViewModule,

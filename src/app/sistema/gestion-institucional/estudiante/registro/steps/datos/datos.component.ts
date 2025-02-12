@@ -2,6 +2,7 @@ import { PrimengModule } from '@/app/primeng.module'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { GeneralService } from '@/app/servicios/general.service'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
+import { CompartirMatriculasService } from '@/app/sistema/gestion-institucional/services/compartir.matriculas.service'
 import { Component, inject } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { MessageService } from 'primeng/api'
@@ -16,21 +17,20 @@ import { MessageService } from 'primeng/api'
 export class DatosComponent {
     form: FormGroup
 
-    tipo_documentos: Array<object>
+    tipos_documentos: Array<object>
     sexos: Array<object>
     nacionalidades: Array<object>
     departamentos: Array<object>
     provincias: Array<object>
     distritos: Array<object>
     lenguas: Array<object>
-    etnias: Array<object>
-    religiones: Array<object>
     tipos_contacto: Array<object>
 
     private _MessageService = inject(MessageService) // dialog Mensaje simple
     private _confirmService = inject(ConfirmationModalService) // componente de dialog mensaje
 
     constructor(
+        private compartirMatriculasService: CompartirMatriculasService,
         private constantesService: ConstantesService,
         private fb: FormBuilder,
         private messageService: MessageService,
@@ -38,18 +38,19 @@ export class DatosComponent {
     ) {}
 
     ngOnInit(): void {
-        this.getTipoDocumento()
-        this.getSexos()
-        this.getNacionalidades()
-        this.getDepartamentos()
-        this.getLenguas()
-        this.getEtnias()
-        this.getReligiones()
-        this.getTiposContacto()
+        this.tipos_documentos =
+            this.compartirMatriculasService.getTiposDocumentos()
+        this.sexos = this.compartirMatriculasService.getSexos()
+        this.nacionalidades =
+            this.compartirMatriculasService.getNacionalidades()
+        this.departamentos = this.compartirMatriculasService.getDepartamentos()
+        this.lenguas = this.compartirMatriculasService.getLenguas()
+        this.tipos_contacto = this.compartirMatriculasService.getTiposContacto()
 
         try {
             this.form = this.fb.group({
-                iPersId: [{ value: 0, disabled: true }], // FK tabla grl.persona para familiar
+                iEstudianteId: [{ value: 0, disabled: true }], // PK
+                iPersId: [{ value: 0, disabled: true }], // FK tabla grl.personas
                 iTipoIdentId: [null, Validators.required],
                 cPersDocumento: ['', Validators.required],
                 cPersPaterno: ['', Validators.required],
@@ -64,204 +65,69 @@ export class DatosComponent {
                 iDptoId: [null, Validators.required],
                 iPrvnId: [null, Validators.required],
                 iDsttId: [null, Validators.required],
-                iLenguaMaterna: [null],
-                iLenguaSecundaria: [null],
-                iEtnia: [null],
-                cPersEmail: [null],
+                iLenguaId: [null],
+                iLenguaSecundariaId: [null],
                 iTipoConId: [null],
                 cPersConNombre: [null],
-                iReligionId: [null],
                 iCredId: this.constantesService.iCredId,
             })
         } catch (error) {
             console.log(error, 'error de variables')
         }
+
+        this.form.get('iDptoId').valueChanges.subscribe((value) => {
+            this.getProvincias(value)
+        })
+
+        this.form.get('iPrvnId').valueChanges.subscribe((value) => {
+            this.getDistritos(value)
+        })
+
+        this.setFormEstudiante()
     }
 
-    getTipoDocumento() {
-        this.tipo_documentos = [
-            { nombre: 'DOCUMENTO NACIONAL DE IDENTIDAD', id: '1' },
-            { nombre: 'CARNET DE EXTRANJERIA', id: '2' },
-            { nombre: 'PERMISO TEMPORAL DE PERMANENCIA', id: '3' },
-            { nombre: 'PASAPORTE', id: '4' },
-            { nombre: 'SIN DOCUMENTO DE IDENTIDAD', id: '5' },
-        ]
+    getProvincias(iDptoId: number) {
+        this.provincias = this.compartirMatriculasService.getProvincias(iDptoId)
+        console.log(this.provincias, 'provincias')
     }
 
-    getSexos() {
-        this.sexos = [
-            { nombre: 'MASCULINO', id: 'M' },
-            { nombre: 'FEMENINO', id: 'F' },
-        ]
+    getDistritos(iPrvnId: number) {
+        this.distritos = this.compartirMatriculasService.getDistritos(iPrvnId)
     }
 
-    getNacionalidades() {
+    setFormEstudiante() {
+        if (this.compartirMatriculasService.getiEstudianteId() == null) {
+            return null
+        }
         this.query
-            .searchTablaXwhere({
-                esquema: 'grl',
-                tabla: 'nacionalidades',
-                campos: '*',
-                condicion: '1 = 1',
+            .searchEstudiante({
+                iEstudianteId:
+                    this.compartirMatriculasService.getiEstudianteId(),
             })
             .subscribe({
                 next: (data: any) => {
-                    const item = data.data
-                    this.nacionalidades = item.map((nacionalidad) => ({
-                        id: nacionalidad.iNacionId,
-                        nombre: nacionalidad.cNacionNombre,
-                    }))
-                    console.log(this.nacionalidades, 'nacionalidades')
+                    const item = data.data[0]
+                    this.form.get('iEstudianteId')?.setValue(item.iEstudianteId)
+                    this.form.get('iPersId')?.setValue(item.iPersId)
+                    this.form.get('iTipoIdentId')?.setValue(item.iTipoIdentId)
+                    this.form
+                        .get('cPersDocumento')
+                        ?.setValue(item.cPersDocumento)
+                    this.form.get('cPersNombre')?.setValue(item.cPersNombre)
+                    this.form.get('cPersPaterno')?.setValue(item.cPersPaterno)
+                    this.form.get('cPersMaterno')?.setValue(item.cPersMaterno)
+                    this.form
+                        .get('dPersNacimiento')
+                        ?.setValue(
+                            item.dPersNacimiento
+                                ? new Date(item.dPersNacimiento)
+                                : null
+                        )
+                    this.form.get('cPersSexo')?.setValue(item.cPersSexo)
+                    this.form.get('iTipoEstCivId')?.setValue(item.iTipoEstCivId)
                 },
                 error: (error) => {
-                    console.error('Error obteniendo nacionalidades:', error)
-                    this.messageService.add({
-                        severity: 'danger',
-                        summary: 'Mensaje',
-                        detail: 'Error en ejecución',
-                    })
-                },
-                complete: () => {
-                    console.log('Request completed')
-                },
-            })
-    }
-
-    getDepartamentos() {
-        this.query
-            .searchTablaXwhere({
-                esquema: 'grl',
-                tabla: 'departamentos',
-                campos: '*',
-                condicion: '1 = 1',
-            })
-            .subscribe({
-                next: (data: any) => {
-                    const item = data.data
-                    this.departamentos = item.map((departamento) => ({
-                        id: departamento.iDptoId,
-                        nombre: departamento.cDptoNombre,
-                    }))
-                    console.log(this.departamentos, 'departamentos')
-                },
-                error: (error) => {
-                    console.error('Error obteniendo departamentos:', error)
-                    this.messageService.add({
-                        severity: 'danger',
-                        summary: 'Mensaje',
-                        detail: 'Error en ejecución',
-                    })
-                },
-                complete: () => {
-                    console.log('Request completed')
-                },
-            })
-    }
-
-    getProvincias() {
-        this.query
-            .searchTablaXwhere({
-                esquema: 'grl',
-                tabla: 'provincias',
-                campos: '*',
-                condicion: 'iDptoId = ' + this.form.value.iDepartamentoId,
-            })
-            .subscribe({
-                next: (data: any) => {
-                    const item = data.data
-                    this.provincias = item.map((provincia) => ({
-                        id: provincia.iPrvnId,
-                        nombre: provincia.cPrvnNombre,
-                    }))
-                    console.log(this.provincias, 'provincias')
-                },
-                error: (error) => {
-                    console.error('Error obteniendo provincias:', error)
-                    this.messageService.add({
-                        severity: 'danger',
-                        summary: 'Mensaje',
-                        detail: 'Error en ejecución',
-                    })
-                },
-                complete: () => {
-                    console.log('Request completed')
-                },
-            })
-    }
-
-    getDistritos() {
-        this.query
-            .searchTablaXwhere({
-                esquema: 'grl',
-                tabla: 'distritos',
-                campos: '*',
-                condicion: 'iPrvnId = ' + this.form.value.iProvinciaId,
-            })
-            .subscribe({
-                next: (data: any) => {
-                    const item = data.data
-                    this.distritos = item.map((distrito) => ({
-                        id: distrito.iDsttId,
-                        nombre: distrito.cDsttNombre,
-                    }))
-                    console.log(this.distritos, 'distritos')
-                },
-                error: (error) => {
-                    console.error('Error obteniendo distritos:', error)
-                    this.messageService.add({
-                        severity: 'danger',
-                        summary: 'Mensaje',
-                        detail: 'Error en ejecución',
-                    })
-                },
-                complete: () => {
-                    console.log('Request completed')
-                },
-            })
-    }
-
-    getLenguas() {
-        this.lenguas = [
-            { nombre: 'ESPAÑOL', id: '1' },
-            { nombre: 'QUECHUA', id: '2' },
-            { nombre: 'AYMARA', id: '3' },
-            { nombre: 'INGLÉS', id: '4' },
-        ]
-    }
-
-    getEtnias() {
-        this.etnias = [
-            { nombre: 'MESTIZO', id: '1' },
-            { nombre: 'AFROAMERICANO', id: '2' },
-        ]
-    }
-
-    getReligiones() {
-        this.religiones = [
-            { nombre: 'CATOLICO', id: '1' },
-            { nombre: 'PROTESTANTE', id: '2' },
-            { nombre: 'ATEO', id: '3' },
-        ]
-    }
-
-    getTiposContacto() {
-        this.query
-            .searchTablaXwhere({
-                esquema: 'grl',
-                tabla: 'tipos_contactos',
-                campos: '*',
-                condicion: '1 = 1',
-            })
-            .subscribe({
-                next: (data: any) => {
-                    const item = data.data
-                    this.tipos_contacto = item.map((tipo_contacto) => ({
-                        id: tipo_contacto.iTipoConId,
-                        nombre: tipo_contacto.cTipoConNombre,
-                    }))
-                    console.log(this.tipos_contacto, 'tipos_contactos')
-                },
-                error: (error) => {
-                    console.error('Error obteniendo tipos_contactos:', error)
+                    console.error('Error obteniendo estudiante:', error)
                     this.messageService.add({
                         severity: 'danger',
                         summary: 'Mensaje',
@@ -278,6 +144,10 @@ export class DatosComponent {
         this.query.guardarEstudiante(this.form.value).subscribe({
             next: (data: any) => {
                 console.log(data, 'agregar estudiante')
+                this.compartirMatriculasService.setiEstudianteId(
+                    data.data[0].iEstudianteId
+                )
+                this.compartirMatriculasService.setActiveIndex('1')
             },
             error: (error) => {
                 console.error('Error guardando estudiante:', error)

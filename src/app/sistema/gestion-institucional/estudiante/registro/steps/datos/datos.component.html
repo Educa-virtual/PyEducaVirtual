@@ -1,12 +1,20 @@
 <form [formGroup]="form">
     <br />
 
+    <input
+        type="hidden"
+        formControlName="iEstudianteId"
+        class="p-inputtext-sm"
+    />
+
+    <input type="hidden" formControlName="iPersId" class="p-inputtext-sm" />
+
     <p-fieldset legend="Información general">
         <div class="grid p-fluid mt-3">
             <div class="field col-12 md:col-6">
                 <span class="p-float-label">
                     <p-dropdown
-                        [options]="tipo_documentos"
+                        [options]="tipos_documentos"
                         formControlName="iTipoIdentId"
                         optionLabel="nombre"
                         optionValue="id"
@@ -138,7 +146,6 @@
                         [filter]="true"
                         [showClear]="true"
                         [appendTo]="'body'"
-                        (onChange)="getProvincias()"
                     />
                     <label for="iDptoId">Departamento</label>
                 </span>
@@ -153,7 +160,6 @@
                         [filter]="true"
                         [showClear]="true"
                         [appendTo]="'body'"
-                        (onChange)="getDistritos()"
                     />
                     <label for="iPrvnId">Provincia</label>
                 </span>
@@ -177,13 +183,13 @@
 
     <br />
 
-    <p-fieldset legend="Lengua / Autoidentificación étnica">
+    <p-fieldset legend="Lengua">
         <div class="grid p-fluid mt-3">
             <div class="field col-12 md:col-4">
                 <span class="p-float-label">
                     <p-dropdown
                         [options]="lenguas"
-                        formControlName="iLenguaMaterna"
+                        formControlName="iLenguaId"
                         optionLabel="nombre"
                         [checkmark]="true"
                         optionValue="id"
@@ -191,14 +197,14 @@
                         [showClear]="true"
                         [appendTo]="'body'"
                     />
-                    <label for="iLenguaMaterna">Lengua Materna</label>
+                    <label for="iLenguaId">Lengua Materna</label>
                 </span>
             </div>
             <div class="field col-12 md:col-4">
                 <span class="p-float-label">
                     <p-dropdown
                         [options]="lenguas"
-                        formControlName="iLenguaSecundaria"
+                        formControlName="iLenguaSecundariaId"
                         optionLabel="nombre"
                         [checkmark]="true"
                         optionValue="id"
@@ -206,24 +212,9 @@
                         [showClear]="true"
                         [appendTo]="'body'"
                     />
-                    <label for="iLenguaSecundaria"
+                    <label for="iLenguaSecundariaId"
                         >Lengua Materna Secundaria</label
                     >
-                </span>
-            </div>
-            <div class="field col-12 md:col-4">
-                <span class="p-float-label">
-                    <p-dropdown
-                        [options]="etnias"
-                        formControlName="iEtnia"
-                        optionLabel="nombre"
-                        [checkmark]="true"
-                        optionValue="id"
-                        [filter]="true"
-                        [showClear]="true"
-                        [appendTo]="'body'"
-                    />
-                    <label for="iEtnia">Autoidentificación étnica</label>
                 </span>
             </div>
         </div>
@@ -308,27 +299,6 @@
                         aria-describedby="cPersConNombre-help"
                     />
                     <label for="cPersConNombre">Dato de contacto</label>
-                </span>
-            </div>
-        </div>
-    </p-fieldset>
-
-    <br />
-
-    <p-fieldset legend="Otros datos adicionales">
-        <div class="grid p-fluid mt-3">
-            <div class="field col-12 md:col-4">
-                <span class="p-float-label">
-                    <p-dropdown
-                        [options]="religiones"
-                        formControlName="iReligionId"
-                        optionLabel="nombre"
-                        optionValue="id"
-                        [filter]="true"
-                        [showClear]="true"
-                        [appendTo]="'body'"
-                    />
-                    <label for="iReligionId">Religion</label>
                 </span>
             </div>
         </div>

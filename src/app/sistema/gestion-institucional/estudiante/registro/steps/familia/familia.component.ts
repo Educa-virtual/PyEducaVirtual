@@ -1,4 +1,5 @@
 import { PrimengModule } from '@/app/primeng.module'
+import { ConstantesService } from '@/app/servicios/constantes.service'
 import { GeneralService } from '@/app/servicios/general.service'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
@@ -10,6 +11,7 @@ import {
     IActionTable,
     TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component'
+import { CompartirMatriculasService } from '@/app/sistema/gestion-institucional/services/compartir.matriculas.service'
 import { Component, inject } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { Router } from '@angular/router'
@@ -34,9 +36,6 @@ export class FamiliaComponent {
     activeStep: number = 0 // Paso activo
     totalSteps = 3 // Total de pasos del stepper
 
-    sede: any[]
-    iSedeId: number
-    iYAcadId: number
     familiares: any[]
     option: boolean = false
 
@@ -44,22 +43,16 @@ export class FamiliaComponent {
     caption: string = '' // titulo o cabecera de dialogo
     c_accion: string //valos de las acciones
 
-    relaciones: Array<object>
-    tipo_documentos: Array<object>
-    nivel_grados: Array<object>
-    turnos: Array<object>
-    secciones: Array<object>
+    tipos_familiares: Array<object>
+    tipos_documentos: Array<object>
     estados_civiles: Array<object>
     sexos: Array<object>
-    paises: Array<object>
+    nacionalidades: Array<object>
     departamentos: Array<object>
     provincias: Array<object>
     distritos: Array<object>
-    grados_instruccion: Array<object>
-    ocupaciones: Array<object>
-    religiones: Array<object>
     lenguas: Array<object>
-    etnias: Array<object>
+    tipos_contacto: Array<object>
 
     private _MessageService = inject(MessageService) // dialog Mensaje simple
     private _confirmService = inject(ConfirmationModalService) // componente de dialog mensaje
@@ -69,11 +62,12 @@ export class FamiliaComponent {
         private fb: FormBuilder,
         private messageService: MessageService,
         private query: GeneralService,
-        private store: LocalStoreService
+        private store: LocalStoreService,
+        private compartirMatriculasService: CompartirMatriculasService,
+        private constantesService: ConstantesService
     ) {
         const perfil = this.store.getItem('dremoPerfil')
         console.log(perfil, 'perfil dremo', this.store)
-        this.iSedeId = perfil.iSedeId
     }
 
     get isLastStep(): boolean {
@@ -81,42 +75,42 @@ export class FamiliaComponent {
     }
 
     ngOnInit(): void {
-        this.iYAcadId = this.store.getItem('dremoiYAcadId')
+        this.tipos_familiares =
+            this.compartirMatriculasService.getTiposFamiliares()
+        this.tipos_documentos =
+            this.compartirMatriculasService.getTiposDocumentos()
+        this.estados_civiles =
+            this.compartirMatriculasService.getEstadosCiviles()
+        this.sexos = this.compartirMatriculasService.getSexos()
+        this.nacionalidades =
+            this.compartirMatriculasService.getNacionalidades()
+        this.departamentos = this.compartirMatriculasService.getDepartamentos()
+        this.lenguas = this.compartirMatriculasService.getLenguas()
 
-        this.searchGradoSeccion()
-        this.getRelaciones()
-        this.getTipoDocumento()
-        this.getEstadosCiviles()
-        this.getPaises()
-        this.getDepartamentos()
-        this.getGradosInstruccion()
-        this.getOcupaciones()
-        this.getReligiones()
-        this.getLenguas()
-        this.getEtnias()
-
-        this.sexos = [
-            { nombre: 'MASCULINO', id: 'M' },
-            { nombre: 'FEMENINO', id: 'F' },
-        ]
+        this.searchFamiliares()
 
         try {
             this.form = this.fb.group({
-                iPersId: [{ value: 0, disabled: true }], // FK tabla grl.persona para familiar
+                iPersId: [{ value: 0, disabled: true }], // PK
+                iTipoFamiliarId: [0, Validators.required],
                 iTipoIdentId: [0, Validators.required],
                 cPersDocumento: ['', Validators.required],
                 cPersNombre: ['', Validators.required],
                 cPersPaterno: ['', Validators.required],
                 cPersMaterno: [''],
-                dPersNacimiento: [''],
+                dPersNacimiento: [Validators.required],
                 cPersSexo: [null, Validators.required],
                 iTipoEstCivId: [0],
-                cPersPais: [0],
-                iDepartamentoId: [0],
-                iProvinciaId: [0],
-                iDistritoId: [0],
-                cPersLenguaMaterna: [0],
-                cPersRelacion: [0],
+                iNacionId: [0],
+                iDptoId: [0],
+                iPrvnId: [0],
+                iDsttId: [0],
+                cPersDomicNombre: [''],
+                iLenguaId: [0],
+                iLenguaSecundariaId: [0],
+                iTipoConId: [0],
+                cPersConNombre: [0],
+                iCredId: this.constantesService.iCredId,
             })
         } catch (error) {
             console.log(error, 'error de variables')
@@ -151,7 +145,6 @@ export class FamiliaComponent {
                 break
             case 'editar':
                 this.updateSolicitud()
-                this.getTipoDocumento()
                 this.visible = false
                 break
         }
@@ -163,7 +156,7 @@ export class FamiliaComponent {
         // validar longitud de documento de identificacion
     }
 
-    searchGradoSeccion() {
+    searchFamiliares() {
         this.query
             .searchTablaXwhere({
                 esquema: 'grl',
@@ -235,6 +228,7 @@ export class FamiliaComponent {
                 },
             })
     }
+
     updateSolicitud() {
         if (this.form.valid) {
             const params = {
@@ -287,6 +281,7 @@ export class FamiliaComponent {
             },
         })
     }
+
     deleteSolicitud(id: number) {
         const params = {
             esquema: 'acad',
@@ -311,123 +306,10 @@ export class FamiliaComponent {
             },
         })
     }
+
     clearForm() {
         this.form.reset()
         this.form.get('iPersId')?.setValue(0)
-    }
-
-    getRelaciones() {
-        this.relaciones = [
-            { nombre: 'PADRE', id: '1' },
-            { nombre: 'MADRE', id: '2' },
-            { nombre: 'HERMANO', id: '3' },
-            { nombre: 'HERMANA', id: '4' },
-            { nombre: 'ABUELO', id: '5' },
-            { nombre: 'ABUELA', id: '6' },
-            { nombre: 'TIO', id: '7' },
-            { nombre: 'TIA', id: '8' },
-            { nombre: 'PRIMO', id: '9' },
-            { nombre: 'PRIMA', id: '10' },
-        ]
-    }
-
-    getTipoDocumento() {
-        this.query.getTipoIdentificaciones({}).subscribe({
-            next: (data: any) => {
-                const item = data.data
-                this.tipo_documentos = item.map((tipo_documento) => ({
-                    iTipoIdentId: tipo_documento.iTipoIdentId,
-                    cTipoIdentNombre: tipo_documento.cTipoIdentNombre,
-                    cTipoIdentSigla: tipo_documento.cTipoIdentSigla,
-                }))
-                console.log(this.tipo_documentos, 'tipos de documentos')
-            },
-            error: (error) => {
-                console.error('Error procedimiento BD:', error)
-            },
-            complete: () => {
-                console.log('Request completed')
-            },
-        })
-    }
-
-    getEstadosCiviles() {
-        this.query
-            .searchTablaXwhere({
-                esquema: 'grl',
-                tabla: 'tipos_estados_civiles',
-                campos: '*',
-                condicion: '1 = 1',
-            })
-            .subscribe({
-                next: (data: any) => {
-                    const item = data.data
-                    this.estados_civiles = item.map((estado_civil) => ({
-                        iTipoEstCivId: estado_civil.iTipoEstCivId,
-                        cTipoEstCivilNombre: estado_civil.cTipoEstCivilNombre,
-                    }))
-                    console.log(this.estados_civiles, 'estados civiles')
-                },
-                error: (error) => {
-                    console.error('Error obteniendo estados civiles:', error)
-                    this.messageService.add({
-                        severity: 'danger',
-                        summary: 'Mensaje',
-                        detail: 'Error en ejecución',
-                    })
-                },
-                complete: () => {
-                    console.log('Request completed')
-                },
-            })
-    }
-
-    getPaises() {
-        this.paises = [
-            { nombre: 'ARGENTINA', id: 'AR' },
-            { nombre: 'BOLIVIA', id: 'BO' },
-            { nombre: 'BRASIL', id: 'BR' },
-            { nombre: 'CHILE', id: 'CL' },
-            { nombre: 'COLOMBIA', id: 'CO' },
-            { nombre: 'ECUADOR', id: 'EC' },
-            { nombre: 'GUATEMALA', id: 'GT' },
-            { nombre: 'MEXICO', id: 'MX' },
-            { nombre: 'PARAGUAY', id: 'PY' },
-            { nombre: 'PERU', id: 'PE' },
-            { nombre: 'URUGUAY', id: 'UY' },
-            { nombre: 'VENEZUELA', id: 'VE' },
-        ]
-    }
-
-    getDepartamentos() {
-        this.query
-            .searchTablaXwhere({
-                esquema: 'grl',
-                tabla: 'departamentos',
-                campos: '*',
-                condicion: '1 = 1',
-            })
-            .subscribe({
-                next: (data: any) => {
-                    const item = data.data
-                    this.departamentos = item.map((departamento) => ({
-                        id: departamento.iDptoId,
-                        nombre: departamento.cDptoNombre,
-                    }))
-                    console.log(this.departamentos, 'departamentos')
-                },
-                error: (error) => {
-                    console.error('Error obteniendo departamentos:', error)
-                    this.messageService.add({
-                        severity: 'danger',
-                        summary: 'Mensaje',
-                        detail: 'Error en ejecución',
-                    })
-                },
-                complete: () => {
-                    console.log('Request completed')
-                },
-            })
     }
 
     getProvincias() {
@@ -436,7 +318,7 @@ export class FamiliaComponent {
                 esquema: 'grl',
                 tabla: 'provincias',
                 campos: '*',
-                condicion: 'iDptoId = ' + this.form.value.iDepartamentoId,
+                condicion: 'iDptoId = ' + this.form.value.iDptoId,
             })
             .subscribe({
                 next: (data: any) => {
@@ -467,7 +349,7 @@ export class FamiliaComponent {
                 esquema: 'grl',
                 tabla: 'distritos',
                 campos: '*',
-                condicion: 'iPrvnId = ' + this.form.value.iProvinciaId,
+                condicion: 'iPrvnId = ' + this.form.value.iPrvnId,
             })
             .subscribe({
                 next: (data: any) => {
@@ -490,53 +372,6 @@ export class FamiliaComponent {
                     console.log('Request completed')
                 },
             })
-    }
-
-    getGradosInstruccion() {
-        this.grados_instruccion = [
-            { nombre: 'SUPERIOR UNIVERSITARIO', id: '1' },
-            { nombre: 'SUPERIOR TECNICO', id: '2' },
-            { nombre: 'SECUNDARIA', id: '3' },
-            { nombre: 'PRIMARIA', id: '4' },
-            { nombre: 'SIN ESTUDIOS', id: '5' },
-        ]
-    }
-
-    getOcupaciones() {
-        this.ocupaciones = [
-            { nombre: 'INGENIERO', id: '1' },
-            { nombre: 'CONTADOR', id: '1' },
-            { nombre: 'ABOGADO', id: '1' },
-            { nombre: 'ENFERMERO', id: '2' },
-            { nombre: 'MEDICO', id: '3' },
-            { nombre: 'DOCENTE', id: '4' },
-            { nombre: 'COMERCIANTE', id: '5' },
-            { nombre: 'INDEPENDIENTE', id: '6' },
-        ]
-    }
-
-    getReligiones() {
-        this.religiones = [
-            { nombre: 'CATOLICO', id: '1' },
-            { nombre: 'PROTESTANTE', id: '2' },
-            { nombre: 'ATEO', id: '3' },
-        ]
-    }
-
-    getLenguas() {
-        this.lenguas = [
-            { nombre: 'ESPAÑOL', id: '1' },
-            { nombre: 'QUECHUA', id: '2' },
-            { nombre: 'AYMARA', id: '3' },
-            { nombre: 'INGLÉS', id: '4' },
-        ]
-    }
-
-    getEtnias() {
-        this.etnias = [
-            { nombre: 'MESTIZO', id: '1' },
-            { nombre: 'AFROAMERICANO', id: '2' },
-        ]
     }
 
     validar() {
@@ -588,6 +423,7 @@ export class FamiliaComponent {
     handleActions(actions) {
         console.log(actions)
     }
+
     accionesPrincipal: IActionContainer[] = [
         {
             labelTooltip: 'Registrar familiar',
@@ -597,7 +433,9 @@ export class FamiliaComponent {
             class: 'p-button-primary',
         },
     ]
+
     selectedItems = []
+
     actions: IActionTable[] = [
         {
             labelTooltip: 'Editar',
@@ -614,7 +452,9 @@ export class FamiliaComponent {
             class: 'p-button-rounded p-button-primary p-button-text',
         },
     ]
+
     actionsLista: IActionTable[]
+
     columns = [
         {
             type: 'item',

@@ -231,6 +231,20 @@ export class GeneralService {
         )
     }
 
+    searchEstudiante(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/matricula/searchEstudiante`,
+            data
+        )
+    }
+
+    searchRepresentante(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/matricula/searchRepresentante`,
+            data
+        )
+    }
+
     searchMatriculas(data: any) {
         return this.http.post(
             `${baseUrl}/acad/matricula/searchMatriculas`,

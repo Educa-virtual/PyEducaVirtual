@@ -8,6 +8,7 @@ import { StepsModule } from 'primeng/steps'
 import { Subscription } from 'rxjs'
 import { FormBuilder } from '@angular/forms'
 import { GeneralService } from '@/app/servicios/general.service'
+import { CompartirMatriculasService } from '../../services/compartir.matriculas.service'
 
 @Component({
     selector: 'app-registro',
@@ -23,6 +24,8 @@ export class RegistroComponent implements OnInit, OnDestroy {
     items: MenuItem[]
     paises: Array<object>
     departamentos: Array<object>
+    iEstudianteId: string
+    iPersId: string
 
     routeLink = 0
 
@@ -31,10 +34,12 @@ export class RegistroComponent implements OnInit, OnDestroy {
         private messageService: MessageService,
         private query: GeneralService,
         private router: Router,
-        private confirmationService: ConfirmationService
+        private confirmationService: ConfirmationService,
+        private compartirMatriculasService: CompartirMatriculasService
     ) {}
 
     ngOnInit() {
+        this.iEstudianteId = this.compartirMatriculasService.getiEstudianteId()
         this.items = [
             {
                 label: 'Datos del estudiante',
@@ -43,16 +48,20 @@ export class RegistroComponent implements OnInit, OnDestroy {
             {
                 label: 'Representante Legal',
                 routerLink: 'representante',
+                // disabled: !this.iEstudianteId,
             },
             {
                 label: 'Discapacidad y otras Condiciones',
                 routerLink: 'discapacidad',
+                // disabled: !this.iEstudianteId,
             },
             {
                 label: 'Familia',
                 routerLink: 'familia',
+                // disabled: !this.iEstudianteId,
             },
         ]
+        this.setActiveIndexSteps()
     }
 
     actionsContainer = [
@@ -73,5 +82,10 @@ export class RegistroComponent implements OnInit, OnDestroy {
         if (this.subscription) {
             this.subscription.unsubscribe()
         }
+        this.compartirMatriculasService.clearData()
+    }
+
+    setActiveIndexSteps(index: string = '0') {
+        return index ?? this.compartirMatriculasService.getActiveIndex()
     }
 }

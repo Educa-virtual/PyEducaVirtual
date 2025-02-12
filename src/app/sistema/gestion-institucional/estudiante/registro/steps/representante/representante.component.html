@@ -1,13 +1,15 @@
-<form>
+<form [formGroup]="form">
     <br />
+
+    <input type="hidden" formControlName="iPersId" class="p-inputtext-sm" />
 
     <p-fieldset legend="Relación con el estudiante">
         <div class="grid p-fluid mt-3">
             <div class="field col-12 md:col-6">
                 <span class="p-float-label">
                     <p-dropdown
-                        [options]="relaciones"
-                        name="cPersRelacion"
+                        [options]="tipos_familiares"
+                        formControlName="iTipoFamiliarId"
                         optionLabel="nombre"
                         [checkmark]="true"
                         optionValue="id"
@@ -15,13 +17,13 @@
                         [showClear]="true"
                         [appendTo]="'body'"
                     />
-                    <label for="cPersRelacion">Relación / Parentesco</label>
+                    <label for="iTipoFamiliarId">Relación / Parentesco *</label>
                 </span>
             </div>
             <div class="field col-12 md:col-6">
                 <p-checkbox
                     value="true"
-                    inputId="bPersCohabitante"
+                    formControlName="bPersCohabitante"
                     label="Vive con el estudiante"
                 />
             </div>
@@ -35,25 +37,25 @@
             <div class="field col-12 md:col-6">
                 <span class="p-float-label">
                     <p-dropdown
-                        [options]="tipo_documentos"
-                        name="iTipoIdentId"
+                        [options]="tipos_documentos"
+                        formControlName="iTipoIdentId"
                         optionLabel="nombre"
                         optionValue="id"
                         [filter]="true"
                         [showClear]="true"
                         [appendTo]="'body'"
                     />
-                    <label for="iTipoIdentId">Tipo de documento</label>
+                    <label for="iTipoIdentId">Tipo de documento *</label>
                 </span>
             </div>
             <div class="field col-6 md:col-4">
                 <span class="p-float-label">
                     <input
                         pInputText
-                        name="cPersDocumento"
+                        formControlName="cPersDocumento"
                         aria-describedby="cPersDocumento-help"
                     />
-                    <label for="cPersDocumento">Documento</label>
+                    <label for="cPersDocumento">Documento *</label>
                 </span>
             </div>
             <div class="field col-6 md:col-2">
@@ -65,10 +67,10 @@
                     <input
                         pInputText
                         id="cPersPaterno"
-                        name="cPersPaterno"
+                        formControlName="cPersPaterno"
                         aria-describedby="cPersPaterno-help"
                     />
-                    <label for="cPersPaterno">Primer Apellido</label>
+                    <label for="cPersPaterno">Primer Apellido *</label>
                 </span>
             </div>
             <div class="field col-12 md:col-4">
@@ -76,7 +78,7 @@
                     <input
                         pInputText
                         id="cPersMaterno"
-                        name="cPersMaterno"
+                        formControlName="cPersMaterno"
                         aria-describedby="cPersMaterno-help"
                     />
                     <label for="cPersMaterno">Segundo Apellido</label>
@@ -88,17 +90,17 @@
                     <input
                         pInputText
                         id="cPersNombre"
-                        name="cPersNombre"
+                        formControlName="cPersNombre"
                         aria-describedby="cPersNombre-help"
                     />
-                    <label for="cPersNombre">Nombres</label>
+                    <label for="cPersNombre">Nombres *</label>
                 </span>
             </div>
             <div class="field col-12 md:col-6">
                 <span class="p-float-label">
                     <p-dropdown
                         [options]="estados_civiles"
-                        name="iTipoEstCivId"
+                        formControlName="iTipoEstCivId"
                         optionLabel="nombre"
                         [checkmark]="true"
                         optionValue="id"
@@ -113,7 +115,7 @@
                 <span class="p-float-label">
                     <p-dropdown
                         [options]="sexos"
-                        name="cPersSexo"
+                        formControlName="cPersSexo"
                         optionLabel="nombre"
                         [checkmark]="true"
                         optionValue="id"
@@ -121,7 +123,7 @@
                         [showClear]="true"
                         [appendTo]="'body'"
                     />
-                    <label for="cPersSexo">Sexo</label>
+                    <label for="cPersSexo">Sexo *</label>
                 </span>
             </div>
         </div>
@@ -134,8 +136,8 @@
             <div class="field col-12 md:col-4">
                 <span class="p-float-label">
                     <p-dropdown
-                        [options]="paises"
-                        name="cPersPais"
+                        [options]="nacionalidades"
+                        formControlName="iNacionId"
                         optionLabel="nombre"
                         [checkmark]="true"
                         optionValue="id"
@@ -143,19 +145,19 @@
                         [showClear]="true"
                         [appendTo]="'body'"
                     />
-                    <label for="cPersPais">País</label>
+                    <label for="iNacionId">Nacionalidad</label>
                 </span>
             </div>
             <div class="field col-12 md:col-4">
                 <span class="p-float-label">
                     <p-calendar
-                        name="dPersNacimiento"
+                        formControlName="dPersNacimiento"
                         [iconDisplay]="'input'"
                         [showIcon]="true"
                         inputId="dPersNacimiento"
                         [appendTo]="'body'"
                     />
-                    <label for="dPersNacimiento">Fecha de nacimiento</label>
+                    <label for="dPersNacimiento">Fecha de nacimiento *</label>
                 </span>
             </div>
         </div>
@@ -165,54 +167,48 @@
 
     <p-fieldset legend="Dirección actual">
         <div class="grid p-fluid mt-3">
-            <div class="field col-12">
-                <p-checkbox
-                    value="true"
-                    inputId="bDireccionDni"
-                    label="Tiene la misma dirección del documento de identidad"
-                />
-            </div>
-
             <div class="field col-12 md:col-4">
                 <span class="p-float-label">
                     <p-dropdown
                         [options]="departamentos"
-                        name="iDepartamentoId"
+                        formControlName="iDptoId"
                         optionLabel="nombre"
                         optionValue="id"
                         [filter]="true"
                         [showClear]="true"
                         [appendTo]="'body'"
+                        (onChange)="getProvincias()"
                     />
-                    <label for="iDepartamentoId">Departamento</label>
+                    <label for="iDptoId">Departamento</label>
                 </span>
             </div>
             <div class="field col-12 md:col-4">
                 <span class="p-float-label">
                     <p-dropdown
                         [options]="provincias"
-                        name="iProvinciaId"
+                        formControlName="iPrvnId"
                         optionLabel="nombre"
                         optionValue="id"
                         [filter]="true"
                         [showClear]="true"
                         [appendTo]="'body'"
+                        (onChange)="getDistritos()"
                     />
-                    <label for="iProvinciaId">Provincia</label>
+                    <label for="iPrvnId">Provincia</label>
                 </span>
             </div>
             <div class="field col-12 md:col-4">
                 <span class="p-float-label">
                     <p-dropdown
                         [options]="distritos"
-                        name="iDistritoId"
+                        formControlName="iDsttId"
                         optionLabel="nombre"
                         optionValue="id"
                         [filter]="true"
                         [showClear]="true"
                         [appendTo]="'body'"
                     />
-                    <label for="iDistritoId">Distrito</label>
+                    <label for="iDsttId">Distrito</label>
                 </span>
             </div>
 
@@ -220,10 +216,10 @@
                 <span class="p-float-label">
                     <input
                         pInputText
-                        name="cPersDireccion"
-                        aria-describedby="cPersDireccion-help"
+                        formControlName="cPersDomicilio"
+                        aria-describedby="cPersDomicilio-help"
                     />
-                    <label for="cPersDireccion">Dirección</label>
+                    <label for="cPersDomicilio">Dirección</label>
                 </span>
             </div>
         </div>
@@ -237,7 +233,7 @@
                 <span class="p-float-label">
                     <p-dropdown
                         [options]="lenguas"
-                        name="cPersLenguaMaterna"
+                        formControlName="iLenguaId"
                         optionLabel="nombre"
                         [checkmark]="true"
                         optionValue="id"
@@ -245,14 +241,14 @@
                         [showClear]="true"
                         [appendTo]="'body'"
                     />
-                    <label for="cPersLenguaMaterna">Lengua Materna</label>
+                    <label for="iLenguaId">Lengua Materna</label>
                 </span>
             </div>
             <div class="field col-12 md:col-4">
                 <span class="p-float-label">
                     <p-dropdown
                         [options]="lenguas"
-                        name="cPersLenguaSecundaria"
+                        formControlName="iLenguaSecundariaId"
                         optionLabel="nombre"
                         [checkmark]="true"
                         optionValue="id"
@@ -260,24 +256,9 @@
                         [showClear]="true"
                         [appendTo]="'body'"
                     />
-                    <label for="cPersLenguaSecundaria"
+                    <label for="iLenguaSecundariaId"
                         >Lengua Materna Secundaria</label
                     >
-                </span>
-            </div>
-            <div class="field col-12 md:col-4">
-                <span class="p-float-label">
-                    <p-dropdown
-                        [options]="etnias"
-                        name="cPersEtnia"
-                        optionLabel="nombre"
-                        [checkmark]="true"
-                        optionValue="id"
-                        [filter]="true"
-                        [showClear]="true"
-                        [appendTo]="'body'"
-                    />
-                    <label for="cPersEtnia">Autoidentificación étnica</label>
                 </span>
             </div>
         </div>
@@ -289,73 +270,89 @@
         <div class="grid p-fluid mt-3">
             <div class="field col-12 md:col-4">
                 <span class="p-float-label">
-                    <input pInputText type="email" name="cPersEmail" />
-                    <label for="cPersEmail">Correo electrónico</label>
+                    <p-dropdown
+                        [options]="tipos_contacto"
+                        formControlName="iTipoConId"
+                        optionLabel="nombre"
+                        [checkmark]="true"
+                        optionValue="id"
+                        [filter]="true"
+                        [showClear]="true"
+                        [appendTo]="'body'"
+                    />
+                    <label for="iTipoConId">Tipo de contacto</label>
                 </span>
             </div>
-            <div class="field col-12 md:col-4">
+            <div class="field col-12 md:col-8">
                 <span class="p-float-label">
-                    <input pInputText type="tel" name="cPersTel" />
-                    <label for="cPersTel">Teléfono Fijo</label>
+                    <input
+                        pInputText
+                        formControlName="cPersConNombre"
+                        aria-describedby="cPersConNombre-help"
+                    />
+                    <label for="cPersConNombre">Dato de contacto</label>
                 </span>
             </div>
+
             <div class="field col-12 md:col-4">
                 <span class="p-float-label">
-                    <input pInputText type="cel" name="cPersCel" />
-                    <label for="cPersCel">Teléfono celular</label>
+                    <p-dropdown
+                        [options]="tipos_contacto"
+                        formControlName="iTipoConId"
+                        optionLabel="nombre"
+                        [checkmark]="true"
+                        optionValue="id"
+                        [filter]="true"
+                        [showClear]="true"
+                        [appendTo]="'body'"
+                    />
+                    <label for="iTipoConId">Tipo de contacto</label>
+                </span>
+            </div>
+            <div class="field col-12 md:col-8">
+                <span class="p-float-label">
+                    <input
+                        pInputText
+                        formControlName="cPersConNombre"
+                        aria-describedby="cPersConNombre-help"
+                    />
+                    <label for="cPersConNombre">Dato de contacto</label>
+                </span>
+            </div>
+
+            <div class="field col-12 md:col-4">
+                <span class="p-float-label">
+                    <p-dropdown
+                        [options]="tipos_contacto"
+                        formControlName="iTipoConId"
+                        optionLabel="nombre"
+                        [checkmark]="true"
+                        optionValue="id"
+                        [filter]="true"
+                        [showClear]="true"
+                        [appendTo]="'body'"
+                    />
+                    <label for="iTipoConId">Tipo de contacto</label>
+                </span>
+            </div>
+            <div class="field col-12 md:col-8">
+                <span class="p-float-label">
+                    <input
+                        pInputText
+                        formControlName="cPersConNombre"
+                        aria-describedby="cPersConNombre-help"
+                    />
+                    <label for="cPersConNombre">Dato de contacto</label>
                 </span>
             </div>
         </div>
     </p-fieldset>
 
-    <br />
-
-    <p-fieldset legend="Otros datos adicionales">
-        <div class="grid p-fluid mt-3">
-            <div class="field col-12 md:col-4">
-                <span class="p-float-label">
-                    <p-dropdown
-                        [options]="grados_instruccion"
-                        name="iGradoInstruccionId"
-                        optionLabel="nombre"
-                        optionValue="id"
-                        [filter]="true"
-                        [showClear]="true"
-                        [appendTo]="'body'"
-                    />
-                    <label for="iGradoInstruccionId"
-                        >Grado de Instrucción</label
-                    >
-                </span>
-            </div>
-            <div class="field col-12 md:col-4">
-                <span class="p-float-label">
-                    <p-dropdown
-                        [options]="ocupaciones"
-                        name="iOcupacionId"
-                        optionLabel="nombre"
-                        optionValue="id"
-                        [filter]="true"
-                        [showClear]="true"
-                        [appendTo]="'body'"
-                    />
-                    <label for="iOcupacionId">Ocupacion</label>
-                </span>
-            </div>
-            <div class="field col-12 md:col-4">
-                <span class="p-float-label">
-                    <p-dropdown
-                        [options]="religiones"
-                        name="iReligionId"
-                        optionLabel="nombre"
-                        optionValue="id"
-                        [filter]="true"
-                        [showClear]="true"
-                        [appendTo]="'body'"
-                    />
-                    <label for="iReligionId">Religion</label>
-                </span>
-            </div>
-        </div>
-    </p-fieldset>
+    <div class="grid p-fluid mt-3">
+        <p-button
+            label="Guardar"
+            (onClick)="guardarRepresentante()"
+            styleClass="p-button-primary"
+        />
+    </div>
 </form>

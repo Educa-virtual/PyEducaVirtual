@@ -1,5 +1,11 @@
 import { PrimengModule } from '@/app/primeng.module'
-import { Component } from '@angular/core'
+import { ConstantesService } from '@/app/servicios/constantes.service'
+import { GeneralService } from '@/app/servicios/general.service'
+import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
+import { CompartirMatriculasService } from '@/app/sistema/gestion-institucional/services/compartir.matriculas.service'
+import { Component, inject } from '@angular/core'
+import { FormBuilder, FormGroup, Validators } from '@angular/forms'
+import { MessageService } from 'primeng/api'
 
 @Component({
     selector: 'app-representante',
@@ -9,164 +15,158 @@ import { Component } from '@angular/core'
     styleUrl: './representante.component.scss',
 })
 export class RepresentanteComponent {
-    tipo_documentos: Array<object>
+    form: FormGroup
+
+    tipos_familiares: Array<object>
+    tipos_documentos: Array<object>
     estados_civiles: Array<object>
-    relaciones: Array<object>
     sexos: Array<object>
-    paises: Array<object>
+    nacionalidades: Array<object>
     departamentos: Array<object>
     provincias: Array<object>
     distritos: Array<object>
     lenguas: Array<object>
-    etnias: Array<object>
-    religiones: Array<object>
-    grados_instruccion: Array<object>
-    ocupaciones: Array<object>
+    tipos_contacto: Array<object>
+
+    private _MessageService = inject(MessageService) // dialog Mensaje simple
+    private _confirmService = inject(ConfirmationModalService) // componente de dialog mensaje
+
+    constructor(
+        private compartirMatriculasService: CompartirMatriculasService,
+        private constantesService: ConstantesService,
+        private fb: FormBuilder,
+        private messageService: MessageService,
+        private query: GeneralService
+    ) {}
 
     ngOnInit(): void {
-        this.getTipoDocumento()
-        this.getEstadosCiviles()
-        this.getSexos()
-        this.getPaises()
-        this.getDepartamentos()
-        this.getProvincias()
-        this.getDistritos()
-        this.getLenguas()
-        this.getEtnias()
-        this.getReligiones()
-        this.getRelaciones()
-        this.getGradosInstruccion()
-        this.getOcupaciones()
+        this.tipos_familiares =
+            this.compartirMatriculasService.getTiposFamiliares()
+        this.tipos_documentos =
+            this.compartirMatriculasService.getTiposDocumentos()
+        this.estados_civiles =
+            this.compartirMatriculasService.getEstadosCiviles()
+        this.sexos = this.compartirMatriculasService.getSexos()
+        this.nacionalidades =
+            this.compartirMatriculasService.getNacionalidades()
+        this.departamentos = this.compartirMatriculasService.getDepartamentos()
+        this.lenguas = this.compartirMatriculasService.getLenguas()
+
+        try {
+            this.form = this.fb.group({
+                iPersId: [{ value: 0, disabled: true }], // PK
+                iTipoFamiliarId: [null, Validators.required],
+                iTipoIdentId: [null, Validators.required],
+                cPersDocumento: ['', Validators.required],
+                cPersPaterno: ['', Validators.required],
+                cPersMaterno: [''],
+                cPersNombre: ['', Validators.required],
+                iTipoEstCivId: [null],
+                cPersSexo: [null, Validators.required],
+                iNacionId: [null],
+                cPersCertificado: [''],
+                dPersNacimiento: [''],
+                bPersCohabitante: [false],
+                cPersDomicilio: [''],
+                iPaisId: [null, Validators.required],
+                iDptoId: [null, Validators.required],
+                iPrvnId: [null, Validators.required],
+                iDsttId: [null, Validators.required],
+                iLenguaId: [null],
+                iLenguaSecundariaId: [null],
+                iTipoConId: [null],
+                cPersConNombre: [null],
+                iCredId: this.constantesService.iCredId,
+            })
+        } catch (error) {
+            console.log(error, 'error de variables')
+        }
+
+        this.setFormRepresentante()
     }
 
-    getTipoDocumento() {
-        this.tipo_documentos = [
-            { nombre: 'DOCUMENTO NACIONAL DE IDENTIDAD', id: '1' },
-            { nombre: 'CARNET DE EXTRANJERIA', id: '2' },
-            { nombre: 'PERMISO TEMPORAL DE PERMANENCIA', id: '3' },
-            { nombre: 'PASAPORTE', id: '4' },
-        ]
-    }
-
-    getEstadosCiviles() {
-        this.estados_civiles = [
-            { nombre: 'SOLTERO', id: '1' },
-            { nombre: 'CASADO', id: '2' },
-            { nombre: 'VIUDO', id: '3' },
-        ]
-    }
-
-    getSexos() {
-        this.sexos = [
-            { nombre: 'MASCULINO', id: 'M' },
-            { nombre: 'FEMENINO', id: 'F' },
-        ]
-    }
-
-    getPaises() {
-        this.paises = [
-            { nombre: 'ARGENTINA', id: 'AR' },
-            { nombre: 'BOLIVIA', id: 'BO' },
-            { nombre: 'BRASIL', id: 'BR' },
-            { nombre: 'CHILE', id: 'CL' },
-            { nombre: 'COLOMBIA', id: 'CO' },
-            { nombre: 'ECUADOR', id: 'EC' },
-            { nombre: 'GUATEMALA', id: 'GT' },
-            { nombre: 'MEXICO', id: 'MX' },
-            { nombre: 'PARAGUAY', id: 'PY' },
-            { nombre: 'PERU', id: 'PE' },
-            { nombre: 'URUGUAY', id: 'UY' },
-            { nombre: 'VENEZUELA', id: 'VE' },
-        ]
-    }
-
-    getDepartamentos() {
-        this.departamentos = [
-            { nombre: 'MOQUEGUA', id: '1' },
-            { nombre: 'TACNA', id: '2' },
-            { nombre: 'PUNO', id: '3' },
-            { nombre: 'CUZCO', id: '4' },
-            { nombre: 'LIMA', id: '5' },
-        ]
+    setFormRepresentante() {
+        if (
+            this.compartirMatriculasService.getiPersRepresentanteLegalId() ==
+            null
+        ) {
+            return null
+        }
+        this.query
+            .searchRepresentante({
+                iEstudianteId:
+                    this.compartirMatriculasService.getiEstudianteId(),
+            })
+            .subscribe({
+                next: (data: any) => {
+                    const item = data.data[0]
+                    this.form.get('iPersId')?.setValue(item.iPersId)
+                    this.form
+                        .get('iTipoFamiliarId')
+                        ?.setValue(item.iTipoFamiliarId)
+                    this.form.get('iTipoIdentId')?.setValue(item.iTipoIdentId)
+                    this.form
+                        .get('cPersDocumento')
+                        ?.setValue(item.cPersDocumento)
+                    this.form.get('cPersNombre')?.setValue(item.cPersNombre)
+                    this.form.get('cPersPaterno')?.setValue(item.cPersPaterno)
+                    this.form.get('cPersMaterno')?.setValue(item.cPersMaterno)
+                    this.form
+                        .get('dPersNacimiento')
+                        ?.setValue(
+                            item.dPersNacimiento
+                                ? new Date(item.dPersNacimiento)
+                                : null
+                        )
+                    this.form.get('cPersSexo')?.setValue(item.cPersSexo)
+                    this.form.get('iTipoEstCivId')?.setValue(item.iTipoEstCivId)
+                },
+                error: (error) => {
+                    console.error('Error obteniendo representante:', error)
+                    this.messageService.add({
+                        severity: 'danger',
+                        summary: 'Mensaje',
+                        detail: 'Error en ejecución',
+                    })
+                },
+                complete: () => {
+                    console.log('Request completed')
+                },
+            })
     }
 
     getProvincias() {
-        this.provincias = [
-            { nombre: 'MARISCAL DOMINGO NIETO', id: '1' },
-            { nombre: 'ILO', id: '2' },
-            { nombre: 'GENERAL SANCHEZ CERRO', id: '3' },
-        ]
+        this.provincias = this.compartirMatriculasService.getProvincias(
+            this.form.value.iDptoId
+        )
     }
 
     getDistritos() {
-        this.distritos = [
-            { nombre: 'ILO', id: '1' },
-            { nombre: 'EL ALGARROBAL', id: '2' },
-            { nombre: 'PACOCHA', id: '3' },
-            { nombre: 'SAMEGUA', id: '4' },
-            { nombre: 'SAN ANTONIO', id: '5' },
-        ]
+        this.distritos = this.compartirMatriculasService.getDistritos(
+            this.form.value.iPrvnId
+        )
     }
 
-    getLenguas() {
-        this.lenguas = [
-            { nombre: 'ESPAÑOL', id: '1' },
-            { nombre: 'QUECHUA', id: '2' },
-            { nombre: 'AYMARA', id: '3' },
-            { nombre: 'INGLÉS', id: '4' },
-        ]
-    }
-
-    getEtnias() {
-        this.etnias = [
-            { nombre: 'MESTIZO', id: '1' },
-            { nombre: 'AFROAMERICANO', id: '2' },
-        ]
-    }
-
-    getReligiones() {
-        this.religiones = [
-            { nombre: 'CATOLICO', id: '1' },
-            { nombre: 'PROTESTANTE', id: '2' },
-            { nombre: 'ATEO', id: '3' },
-        ]
-    }
-
-    getRelaciones() {
-        this.relaciones = [
-            { nombre: 'PADRE', id: '1' },
-            { nombre: 'MADRE', id: '2' },
-            { nombre: 'HERMANO', id: '3' },
-            { nombre: 'HERMANA', id: '4' },
-            { nombre: 'ABUELO', id: '5' },
-            { nombre: 'ABUELA', id: '6' },
-            { nombre: 'TIO', id: '7' },
-            { nombre: 'TIA', id: '8' },
-            { nombre: 'PRIMO', id: '9' },
-            { nombre: 'PRIMA', id: '10' },
-        ]
-    }
-
-    getGradosInstruccion() {
-        this.grados_instruccion = [
-            { nombre: 'SUPERIOR UNIVERSITARIO', id: '1' },
-            { nombre: 'SUPERIOR TECNICO', id: '2' },
-            { nombre: 'SECUNDARIA', id: '3' },
-            { nombre: 'PRIMARIA', id: '4' },
-            { nombre: 'SIN ESTUDIOS', id: '5' },
-        ]
-    }
-
-    getOcupaciones() {
-        this.ocupaciones = [
-            { nombre: 'INGENIERO', id: '1' },
-            { nombre: 'CONTADOR', id: '1' },
-            { nombre: 'ABOGADO', id: '1' },
-            { nombre: 'ENFERMERO', id: '2' },
-            { nombre: 'MEDICO', id: '3' },
-            { nombre: 'DOCENTE', id: '4' },
-            { nombre: 'COMERCIANTE', id: '5' },
-            { nombre: 'INDEPENDIENTE', id: '6' },
-        ]
+    guardarRepresentante() {
+        this.query.guardarEstudiante(this.form.value).subscribe({
+            next: (data: any) => {
+                console.log(data, 'agregar estudiante')
+                this.compartirMatriculasService.setiEstudianteId(
+                    data.data[0].iEstudianteId
+                )
+                this.compartirMatriculasService.setActiveIndex('1')
+            },
+            error: (error) => {
+                console.error('Error guardando estudiante:', error)
+                this.messageService.add({
+                    severity: 'danger',
+                    summary: 'Mensaje',
+                    detail: 'Error en ejecución',
+                })
+            },
+            complete: () => {
+                console.log('Request completed')
+            },
+        })
     }
 }

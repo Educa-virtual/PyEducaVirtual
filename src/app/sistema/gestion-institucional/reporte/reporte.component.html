@@ -76,6 +76,7 @@
                                     pRipple
                                     label="PDF"
                                     class="p-button-danger"
+                                    (click)="mostrarReporte()"
                                 ></button>
                             </td>
                         </tr>
@@ -106,13 +107,13 @@
                             }
                         </tr>
                     </ng-template>
-                    <ng-template pTemplate="footer">
+                    <!-- <ng-template pTemplate="footer">
                         <tr>
                             <td *ngFor="let fin of final">
                                 {{ fin.promedio }}
                             </td>
                         </tr>
-                    </ng-template>
+                    </ng-template> -->
                 </p-table>
             </div>
         </div>

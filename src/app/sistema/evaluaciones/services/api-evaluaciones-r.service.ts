@@ -1,23 +1,26 @@
 import { inject, Injectable } from '@angular/core'
 import { environment } from '@/environments/environment.template'
 import { HttpClient } from '@angular/common/http'
-import { catchError, map, Observable, tap, throwError } from 'rxjs'
+import { map, Observable, catchError, tap, throwError } from 'rxjs' //catchError, , tap, throwError
 import { mapData } from '../sub-evaluaciones/banco-preguntas/models/pregunta-data-transformer'
 
 @Injectable({
     providedIn: 'root',
 })
 export class ApiEvaluacionesRService {
-    private baseUrl = environment.backendApi
-    private baseUrlBackend = environment.backend
+    private urlBackendApi = environment.backendApi
+    private urlBackend = environment.backend
     private http = inject(HttpClient)
     constructor() {}
 
     obtenerEvaluacion(params) {
         return this.http
-            .get(`${this.baseUrl}/ere/Evaluaciones/ereObtenerEvaluacion`, {
-                params,
-            })
+            .get(
+                `${this.urlBackendApi}/ere/Evaluaciones/ereObtenerEvaluacion`,
+                {
+                    params,
+                }
+            )
             .pipe(
                 tap((response) =>
                     console.log('Respuesta de la API:', response)
@@ -29,32 +32,56 @@ export class ApiEvaluacionesRService {
             )
     }
 
+    obtenerEvaluacionNuevo(iEvaluacionId): Observable<any> {
+        return this.http
+            .get(
+                `${this.urlBackendApi}/ere/evaluaciones/obtenerEvaluacion?iEvaluacionId=${iEvaluacionId}`
+            )
+            .pipe(map((resp) => resp['data']))
+    }
+
+    obtenerAreasPorEvaluacionyEspecialista(
+        iPersId,
+        iEvaluacionId
+    ): Observable<any> {
+        return this.http
+            .get(
+                `${this.urlBackendApi}/ere/evaluaciones/obtenerAreasPorEvaluacionyEspecialista?iPersId=${iPersId}&iEvaluacionId=${iEvaluacionId}`
+            )
+            .pipe(map((resp) => resp['data']))
+    }
+
     obtenerTipoPreguntas() {
         return this.http
             .get(
-                `${this.baseUrl}/evaluaciones/tipo-preguntas/obtenerTipoPreguntas`
+                `${this.urlBackendApi}/evaluaciones/tipo-preguntas/obtenerTipoPreguntas`
             )
             .pipe(map((resp) => resp['data']))
     }
 
     obtenerUgeles(params) {
-        return this.http.get(`${this.baseUrl}/ere/Ugeles/obtenerUgeles`, {
+        return this.http.get(`${this.urlBackendApi}/ere/Ugeles/obtenerUgeles`, {
             params,
         })
     }
     obtenerIE(params) {
-        return this.http.get(`${this.baseUrl}/ere/ie/obtenerIE`, { params })
+        return this.http.get(`${this.urlBackendApi}/ere/ie/obtenerIE`, {
+            params,
+        })
     }
 
     obtenerNivelTipo(params) {
-        return this.http.get(`${this.baseUrl}/ere/nivelTipo/obtenerNivelTipo`, {
-            params,
-        })
+        return this.http.get(
+            `${this.urlBackendApi}/ere/nivelTipo/obtenerNivelTipo`,
+            {
+                params,
+            }
+        )
     }
     //Tengo estos cursos en el backend
     obtenerCursos(params) {
         return this.http.post(
-            `${this.baseUrl}/ere/Evaluaciones/obtenerCursos`,
+            `${this.urlBackendApi}/ere/Evaluaciones/obtenerCursos`,
             {
                 params,
             }
@@ -63,7 +90,7 @@ export class ApiEvaluacionesRService {
     //Tengo estos cursos seleccionados del backend
     obtenerCursosEvaluacion(iEvaluacionId: number): Observable<any> {
         return this.http.get(
-            `${this.baseUrl}/ere/Evaluaciones/evaluaciones/${iEvaluacionId}/cursos`
+            `${this.urlBackendApi}/ere/Evaluaciones/evaluaciones/${iEvaluacionId}/cursos`
         )
     }
     //Insertar cursos
@@ -72,7 +99,7 @@ export class ApiEvaluacionesRService {
         selectedCursos: { iCursoNivelGradId: number }[]
     }): Observable<any> {
         return this.http.post(
-            `${this.baseUrl}/ere/Evaluaciones/insertarCursos`,
+            `${this.urlBackendApi}/ere/Evaluaciones/insertarCursos`,
             data
         )
     }
@@ -81,7 +108,7 @@ export class ApiEvaluacionesRService {
         selectedCursos: { iCursoNivelGradId: number }[]
     }): Observable<any> {
         return this.http.delete(
-            `${this.baseUrl}/ere/Evaluaciones/eliminarCursos`,
+            `${this.urlBackendApi}/ere/Evaluaciones/eliminarCursos`,
             { body: data }
         )
     }
@@ -94,11 +121,11 @@ export class ApiEvaluacionesRService {
             cursos: cursos,
         }
 
-        return this.http.put(this.baseUrl, body)
+        return this.http.put(this.urlBackendApi, body)
     }
     obtenerEvaluacionesCopia(params) {
         return this.http.get(
-            `${this.baseUrl}/ere/Evaluaciones/obtenerEvaluacionCopia2`,
+            `${this.urlBackendApi}/ere/Evaluaciones/obtenerEvaluacionCopia2`,
             {
                 params,
             }
@@ -106,24 +133,27 @@ export class ApiEvaluacionesRService {
     }
     obtenerTipoEvaluacion(params) {
         return this.http.get(
-            `${this.baseUrl}/ere/tipoEvaluacion/obtenerTipoEvaluacion`,
+            `${this.urlBackendApi}/ere/tipoEvaluacion/obtenerTipoEvaluacion`,
             { params }
         )
     }
     obtenerNivelEvaluacion(params) {
         return this.http.get(
-            `${this.baseUrl}/ere/nivelEvaluacion/obtenerNivelEvaluacion`,
+            `${this.urlBackendApi}/ere/nivelEvaluacion/obtenerNivelEvaluacion`,
             { params }
         )
     }
     // insert_Code_New
     guardarEvaluacion(data: any) {
-        return this.http.post(`${this.baseUrl}/ere/Evaluaciones/guardar`, data)
+        return this.http.post(
+            `${this.urlBackendApi}/ere/Evaluaciones/guardar`,
+            data
+        )
     }
     // Método para actualizar una evaluación
     actualizarEvaluacion(data: any) {
         return this.http.put(
-            `${this.baseUrl}/ere/Evaluaciones/actualizar/${data.iEvaluacionId}`,
+            `${this.urlBackendApi}/ere/Evaluaciones/actualizar/${data.iEvaluacionId}`,
             data
         )
     }
@@ -135,32 +165,32 @@ export class ApiEvaluacionesRService {
     obtenerParticipaciones(iEvaluacionId: number): Observable<any> {
         return this.http.get(
             //obtenerParticipaciones/{iEvaluacionId}
-            `${this.baseUrl}/ere/Evaluaciones/obtenerParticipaciones/${iEvaluacionId}`
+            `${this.urlBackendApi}/ere/Evaluaciones/obtenerParticipaciones/${iEvaluacionId}`
         )
     }
     //!
     guardarActualizarPreguntaConAlternativas(data) {
         return this.http.post(
-            `${this.baseUrl}/ere/preguntas/guardarActualizarPreguntaConAlternativas`,
+            `${this.urlBackendApi}/ere/preguntas/guardarActualizarPreguntaConAlternativas`,
             data
         )
     }
     guardarParticipacion(data) {
         return this.http.post(
-            `${this.baseUrl}/ere/Evaluaciones/guardarParticipacion`,
+            `${this.urlBackendApi}/ere/Evaluaciones/guardarParticipacion`,
             data
         )
     }
 
     eliminarParticipacion(participaciones: any[]): Observable<any> {
         return this.http.delete(
-            `${this.baseUrl}/ere/Evaluaciones/eliminarParticipacion`,
+            `${this.urlBackendApi}/ere/Evaluaciones/eliminarParticipacion`,
             { body: { participaciones: participaciones } } // Enviamos un array de objetos con iIieeId e iEvaluacionId
         )
     }
     IEparticipanall(data) {
         return this.http.post(
-            `${this.baseUrl}/ere/Evaluaciones/IEparticipanall`,
+            `${this.urlBackendApi}/ere/Evaluaciones/IEparticipanall`,
             data
         )
     }
@@ -174,42 +204,42 @@ export class ApiEvaluacionesRService {
             cursos: cursos,
         }
         return this.http.put(
-            `${this.baseUrl}/ere/Evaluaciones/actualizarCursos`,
+            `${this.urlBackendApi}/ere/Evaluaciones/actualizarCursos`,
             data
         )
     }
     //!Agregando Copiar ActualizarEvaluacion
     copiarEvaluacion(iEvaluacionId: number) {
         return this.http.post(
-            `${this.baseUrl}/ere/Evaluaciones/copiarEvaluacion`,
+            `${this.urlBackendApi}/ere/Evaluaciones/copiarEvaluacion`,
             { iEvaluacionIdOriginal: iEvaluacionId }
         )
     }
     //!MatrizCompetencias
     obtenerMatrizCompetencias(params) {
         return this.http.get(
-            `${this.baseUrl}/ere/Evaluaciones/obtenerMatrizCompetencias`,
+            `${this.urlBackendApi}/ere/Evaluaciones/obtenerMatrizCompetencias`,
             { params }
         )
     }
     //!Matriz Capacidades
     obtenerMatrizCapacidades(params) {
         return this.http.get(
-            `${this.baseUrl}/ere/Evaluaciones/obtenerMatrizCapacidades`,
+            `${this.urlBackendApi}/ere/Evaluaciones/obtenerMatrizCapacidades`,
             { params }
         )
     }
     //!Matriz Desempeno
     insertarMatrizDesempeno(datapayload: any) {
         return this.http.post(
-            `${this.baseUrl}/ere/Evaluaciones/insertarMatrizDesempeno`,
+            `${this.urlBackendApi}/ere/Evaluaciones/insertarMatrizDesempeno`,
             datapayload
         )
     }
     generarPdfMatrizbyEvaluacionId(baseParams): Observable<any> {
         console.log('Parámetros enviados al backend:', baseParams)
         return this.http.get(
-            `${this.baseUrl}/ere/Evaluaciones/generarPdfMatrizbyEvaluacionId`,
+            `${this.urlBackendApi}/ere/Evaluaciones/generarPdfMatrizbyEvaluacionId`,
             {
                 params: {
                     ...baseParams,
@@ -232,7 +262,7 @@ export class ApiEvaluacionesRService {
         const params = { iPersId, iEvaluacionId } // Enviar el iPersId como parámetro
         //console.log('Parámetros enviados al backend:', params)
         return this.http.get(
-            `${this.baseUrl}/ere/Evaluaciones/obtenerEspDremCurso`,
+            `${this.urlBackendApi}/ere/Evaluaciones/obtenerEspDremCurso`,
             { params }
         )
     }
@@ -251,20 +281,20 @@ export class ApiEvaluacionesRService {
     // }
     obtenerConteoPorCurso(data) {
         return this.http.post(
-            `${this.baseUrl}/ere/Evaluaciones/obtenerConteoPorCurso`,
+            `${this.urlBackendApi}/ere/Evaluaciones/obtenerConteoPorCurso`,
             data
         )
     }
     //!
     insertarPreguntaSeleccionada(data) {
         return this.http.post(
-            `${this.baseUrl}/ere/Evaluaciones/insertarPreguntaSeleccionada`,
+            `${this.urlBackendApi}/ere/Evaluaciones/insertarPreguntaSeleccionada`,
             data
         )
     }
     obtenerPreguntaSeleccionada(iEvaluacionId: number) {
         return this.http.get(
-            `${this.baseUrl}/ere/Evaluaciones/obtenerPreguntaSeleccionada`,
+            `${this.urlBackendApi}/ere/Evaluaciones/obtenerPreguntaSeleccionada`,
             {
                 params: {
                     iEvaluacionId: iEvaluacionId.toString(), // Convertir a cadena si es necesario
@@ -274,7 +304,7 @@ export class ApiEvaluacionesRService {
     }
     obtenerPreguntaInformacion(iEvaluacionId: number) {
         return this.http.get(
-            `${this.baseUrl}/ere/Evaluaciones/obtenerPreguntaInformacion`,
+            `${this.urlBackendApi}/ere/Evaluaciones/obtenerPreguntaInformacion`,
             {
                 params: {
                     iEvaluacionId: iEvaluacionId.toString(), // Convertir a cadena si es necesario
@@ -292,57 +322,56 @@ export class ApiEvaluacionesRService {
     //     )
     // }
     guardarInicioFinalExmAreas(datos: any): Observable<any> {
-        const url = `${this.baseUrl}/ere/Evaluaciones/guardarInicioFinalExmAreas` // Endpoint de Laravel
+        const url = `${this.urlBackendApi}/ere/Evaluaciones/guardarInicioFinalExmAreas` // Endpoint de Laravel
         return this.http.post<any>(url, datos)
     }
 
     //Banco de Preguntas no tocar ->
     generarWordByPreguntasIds(baseParams) {
-        const url = `${this.baseUrlBackend}/generarWordBancoPreguntasSeleccionadas`
+        const url = `${this.urlBackend}/generarWordBancoPreguntasSeleccionadas`
         const params = new URLSearchParams({ ...baseParams })
         const fullUrl = `${url}?${params.toString()}`
         window.open(fullUrl, '_blank')
     }
     // Banco de Preguntas no tocar ->
     generarWordByEvaluacionId(baseParams) {
-        const url = `${this.baseUrlBackend}/generarWordBancoPreguntasSeleccionadas`
+        const url = `${this.urlBackend}/generarWordBancoPreguntasSeleccionadas`
         const params = new URLSearchParams({ ...baseParams })
         const fullUrl = `${url}?${params.toString()}`
 
-        // Se abre la URL generada, que ahora solo contiene iEvaluacionId.
         window.open(fullUrl, '_blank')
     }
 
     eliminarPreguntaById(id) {
         return this.http.delete(
-            `${this.baseUrl}/ere/preguntas/eliminarBancoPreguntasById/${id}`
+            `${this.urlBackendApi}/ere/preguntas/eliminarBancoPreguntasById/${id}`
         )
     }
 
     actualizarBancoPreguntas(data) {
         return this.http.patch(
-            `${this.baseUrl}/ere/preguntas/actualizarBancoPreguntas`,
+            `${this.urlBackendApi}/ere/preguntas/actualizarBancoPreguntas`,
             data
         )
     }
 
     guardarActualizarAlternativa(data) {
         return this.http.post(
-            `${this.baseUrl}/ere/alternativas/guardarActualizarAlternativa`,
+            `${this.urlBackendApi}/ere/alternativas/guardarActualizarAlternativa`,
             data
         )
     }
 
     eliminarAlternativaById(id) {
         return this.http.delete(
-            `${this.baseUrl}/ere/alternativas/eliminarAlternativaById/${id}`
+            `${this.urlBackendApi}/ere/alternativas/eliminarAlternativaById/${id}`
         )
     }
 
     obtenerAlternativaByPreguntaId(id) {
         return this.http
             .get(
-                `${this.baseUrl}/ere/alternativas/obtenerAlternativaByPreguntaId/${id}`
+                `${this.urlBackendApi}/ere/alternativas/obtenerAlternativaByPreguntaId/${id}`
             )
             .pipe(map((resp) => resp['data']))
     }
@@ -360,35 +389,38 @@ export class ApiEvaluacionesRService {
 
     guardarActualizarPreguntas(data) {
         return this.http.post(
-            `${this.baseUrl}/ere/encabezado-preguntas/guardarActualizarEncabezadoPregunta`,
+            `${this.urlBackendApi}/ere/encabezado-preguntas/guardarActualizarEncabezadoPregunta`,
             data
         )
     }
 
     obtenerEncabezadosPreguntas(params) {
         return this.http
-            .get(`${this.baseUrl}/ere/preguntas/obtenerEncabezadosPreguntas`, {
-                params,
-            })
+            .get(
+                `${this.urlBackendApi}/ere/preguntas/obtenerEncabezadosPreguntas`,
+                {
+                    params,
+                }
+            )
             .pipe(map((resp) => resp['data']))
     }
 
     eliminarEncabezadoPreguntaById(id) {
         return this.http.delete(
-            `${this.baseUrl}/ere/encabezado-preguntas/eliminarEncabezadoPreguntaById/${id}`
+            `${this.urlBackendApi}/ere/encabezado-preguntas/eliminarEncabezadoPreguntaById/${id}`
         )
     }
 
     actualizarMatrizPreguntas(data) {
         return this.http.patch(
-            `${this.baseUrl}/ere/preguntas/actualizarMatrizPreguntas`,
+            `${this.urlBackendApi}/ere/preguntas/actualizarMatrizPreguntas`,
             data
         )
     }
 
     obtenerBancoPreguntas(params) {
         return this.http
-            .get(`${this.baseUrl}/ere/preguntas/obtenerBancoPreguntas`, {
+            .get(`${this.urlBackendApi}/ere/preguntas/obtenerBancoPreguntas`, {
                 params,
             })
             .pipe(
@@ -399,7 +431,7 @@ export class ApiEvaluacionesRService {
 
     obtenerCompetencias(params) {
         return this.http
-            .get(`${this.baseUrl}/ere/competencias/obtenerCompetencias`, {
+            .get(`${this.urlBackendApi}/ere/competencias/obtenerCompetencias`, {
                 params,
             })
             .pipe(map((resp) => resp['data']))
@@ -407,21 +439,30 @@ export class ApiEvaluacionesRService {
 
     obtenerCapacidades(params) {
         return this.http.get(
-            `${this.baseUrl}/ere/capacidades/obtenerCapacidades`,
+            `${this.urlBackendApi}/ere/capacidades/obtenerCapacidades`,
             { params }
         )
     }
 
     obtenerDesempenos(params) {
         return this.http
-            .get(`${this.baseUrl}/ere/desempenos/obtenerDesempenos`, { params })
+            .get(`${this.urlBackendApi}/ere/desempenos/obtenerDesempenos`, {
+                params,
+            })
             .pipe(map((resp) => resp['data']))
     }
 
     generarWordEvaluacionByIds(baseParams) {
-        const url = `${this.baseUrlBackend}/generarWordEvaluacionByIds`
+        const url = `${this.urlBackend}/generarWordEvaluacionByIds`
         const params = new URLSearchParams({ ...baseParams })
         const fullUrl = `${url}?${params.toString()}`
         window.open(fullUrl, '_blank')
+    }
+
+    exportarPreguntasPorArea(params) {
+        const url = `${this.urlBackendApi}/ere/evaluaciones/${params.iEvaluacionId}/areas/${params.iCursoId}/exportar-preguntas`
+        //const params = new URLSearchParams({ ...baseParams })
+        //const fullUrl = `${url}?${params.toString()}`
+        window.open(url, '_blank')
     }
 }

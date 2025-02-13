@@ -35,6 +35,10 @@ export const routes: Routes = [
                 loadChildren: () =>
                     import('./sistema/evaluaciones/evaluaciones.routes'),
             },
+            {
+                path: 'ere',
+                loadChildren: () => import('./sistema/ere/ere.routes'),
+            },
             // Ruta de Especialista
             {
                 path: 'especialista-ugel',

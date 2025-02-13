@@ -14,4 +14,5 @@ export interface ICurso {
     cCursoImagen?: string
     idDocCursoId?: string
     iNivelCicloId?: any
+    iCantidadPreguntas?: number
 }

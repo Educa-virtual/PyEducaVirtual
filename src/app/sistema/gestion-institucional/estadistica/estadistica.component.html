@@ -1,130 +1,67 @@
-<section class="flex flex-column gap-4">
-    <div class="flex flex-column">
-        <!-- titulo -->
-        <div class="grid">
-            <p-toolbar class="col-12">
-                <div class="block">
-                    <h2 class="text-primary text-white font-bold block">
-                        ESTADISTICA DE RANKING DE LOGROS DE APRENDIZAJE
-                    </h2>
-                </div>
-            </p-toolbar>
+<div class="container">
+    <p-toolbar class="col-12">
+        <div class="p-toolbar-group-left">
+            <h2>Estadística</h2>
         </div>
-        <!-- contenido -->
-        <div class="flex">
-            <div class="card w-full">
-                <p-fieldset>
-                    <ng-template pTemplate="header"
-                        >Orden de Merito</ng-template
-                    >
-                    <div class="flex">
-                        <p-dropdown
-                            class="ml-1"
-                            [options]="escolar"
-                            optionLabel="year"
-                            placeholder="Año Escolar"
-                        />
-                        <p-dropdown
-                            class="ml-1"
-                            [options]="grado"
-                            optionLabel="numero"
-                            placeholder="Grado"
-                        />
-                        <p-dropdown
-                            class="ml-1"
-                            [options]="merito"
-                            optionLabel="nombre"
-                            placeholder="Tipo de Orden de Meritos"
-                        />
-                        <button
-                            pButton
-                            pRipple
-                            label="Buscar"
-                            class="p-button-primary ml-1"
-                        ></button>
-                        <button
-                            pButton
-                            pRipple
-                            label="Generar"
-                            class="p-button-primary ml-1"
-                        ></button>
-                    </div>
-                </p-fieldset>
-                <br />
-                <p-table
-                    [value]="identidad"
-                    [tableStyle]="{ 'min-width': '50rem' }"
-                >
-                    <ng-template pTemplate="header">
-                        <tr>
-                            <th>#</th>
-                            <th>Orden de Merito</th>
-                            <th>Grado</th>
-                            <th>Fecha de Generacion</th>
-                            <th>Reporte Sin valor Oficial</th>
-                            <th>Generado</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </ng-template>
-                    <ng-template pTemplate="body" let-identidad>
-                        <tr>
-                            <td>1</td>
-                            <td>{{ identidad.merito }}</td>
-                            <td>{{ identidad.grado }}</td>
-                            <td>{{ identidad.fecha }}</td>
-                            <td>
-                                <button
-                                    pButton
-                                    pRipple
-                                    class="{{ identidad.valor }} mr-1"
-                                    disabled
-                                ></button>
-                            </td>
-                            <td>
-                                <button
-                                    pButton
-                                    pRipple
-                                    class="{{ identidad.generado }} mr-1"
-                                ></button>
-                            </td>
-                            <td>
-                                <button
-                                    pButton
-                                    pRipple
-                                    class="pi pi-file-pdf mr-1"
-                                    disabled
-                                ></button>
-                                <button
-                                    pButton
-                                    pRipple
-                                    class="pi pi-trash mr-1"
-                                    disabled
-                                ></button>
-                                <button
-                                    pButton
-                                    pRipple
-                                    class="pi pi-refresh"
-                                ></button>
-                            </td>
-                        </tr>
-                    </ng-template>
-                </p-table>
-                <br />
-                <div class="grid mt-5">
-                    <div class="col">
-                        <p class="pi pi-refresh font-bold">Procesando</p>
-                    </div>
-                    <div class="col">
-                        <p class="pi pi-check-circle font-bold">Procedado</p>
-                    </div>
-                    <div class="col">
-                        <p class="pi pi-info-circle font-bold">Actualizar</p>
-                    </div>
-                    <div class="col">
-                        <p class="pi pi-ban font-bold">Reprocesar</p>
-                    </div>
-                </div>
+    </p-toolbar>
+
+    <p-fieldset legend="Filtros">
+        <div class="p-grid">
+            <div class="p-col-12 p-md-4">
+                <label for="year">Año:</label>
+                <p-dropdown
+                    id="year"
+                    [options]="escolar"
+                    [(ngModel)]="selectedYear"
+                    placeholder="Seleccione un año"
+                ></p-dropdown>
+            </div>
+            <div class="p-col-12 p-md-4">
+                <label for="grado">Grado:</label>
+                <p-dropdown
+                    id="grado"
+                    [options]="grado"
+                    [(ngModel)]="selectedGrado"
+                    placeholder="Seleccione un grado"
+                ></p-dropdown>
+            </div>
+            <div class="p-col-12 p-md-4">
+                <label for="merito">Mérito:</label>
+                <p-dropdown
+                    id="merito"
+                    [options]="merito"
+                    [(ngModel)]="selectedMerito"
+                    placeholder="Seleccione mérito"
+                ></p-dropdown>
             </div>
         </div>
-    </div>
-</section>
+        <div class="p-text-center">
+            <button
+                pButton
+                type="button"
+                label="Buscar"
+                icon="pi pi-search"
+                (click)="buscar()"
+            ></button>
+        </div>
+    </p-fieldset>
+
+    <p-table
+        *ngIf="identidad.length > 0"
+        [value]="identidad"
+        [tableStyle]="{ 'min-width': '50rem' }"
+    >
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Nombre</th>
+                <th>Nota</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-item>
+            <tr>
+                <td>{{ item.nombre }}</td>
+                <td>{{ item.nota }}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>

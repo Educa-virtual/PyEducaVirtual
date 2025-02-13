@@ -13,6 +13,7 @@ import { ICurso } from '@/app/sistema/aula-virtual/sub-modulos/cursos/interfaces
 import { environment } from '@/environments/environment.template'
 import { CommonModule } from '@angular/common'
 import { ApiEvaluacionesRService } from '@/app/sistema/evaluaciones/services/api-evaluaciones-r.service'
+import { Router } from '@angular/router'
 
 @Component({
     selector: 'app-gestionar-preguntas-card',
@@ -23,6 +24,7 @@ import { ApiEvaluacionesRService } from '@/app/sistema/evaluaciones/services/api
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GestionarPreguntasCardComponent implements OnInit {
+    private router: Router = inject(Router)
     private evaluacionesService = inject(ApiEvaluacionesRService)
     @Input() iEvaluacionIdHashed: string = ''
     backend = environment.backend
@@ -36,7 +38,12 @@ export class GestionarPreguntasCardComponent implements OnInit {
                 label: 'Gestionar preguntas',
                 icon: 'pi pi-angle-right',
                 command: () => {
-                    this.gestionarPreguntas()
+                    console.log(
+                        `ere/evaluaciones/${this.iEvaluacionIdHashed}/gestionar-preguntas/areas/${this.curso.iCursoId}`
+                    )
+                    this.router.navigate([
+                        `ere/evaluaciones/${this.iEvaluacionIdHashed}/gestionar-preguntas/areas/${this.curso.iCursoId}`,
+                    ])
                 },
             },
             {
@@ -48,7 +55,7 @@ export class GestionarPreguntasCardComponent implements OnInit {
                 label: 'Exportar a Word',
                 icon: 'pi pi-angle-right',
                 command: () => {
-                    this.exportarPreguntasAWord()
+                    this.exportarPreguntasPorArea()
                 },
             },
             {
@@ -68,16 +75,15 @@ export class GestionarPreguntasCardComponent implements OnInit {
         item.cCursoImagen = 'cursos/images/no-image.jpg'
     }
 
-    gestionarPreguntas() {
-        console.log('ID ES ' + this.curso.iCursoId)
-    }
-
-    exportarPreguntasAWord() {
-        const params = {
-            iEvaluacionId: this.iEvaluacionIdHashed,
-            areaId: this.curso.iCursoId,
+    exportarPreguntasPorArea() {
+        if (this.curso.iCantidadPreguntas == 0) {
+            alert('No hay preguntas para exportar')
+        } else {
+            const params = {
+                iEvaluacionId: this.iEvaluacionIdHashed,
+                iCursoId: this.curso.iCursoId,
+            }
+            this.evaluacionesService.exportarPreguntasPorArea(params)
         }
-        // Se llama a la función que genera el Word con el iEvaluacionId.
-        this.evaluacionesService.generarWordByEvaluacionId(params)
     }
 }

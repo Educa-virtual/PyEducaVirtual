@@ -15,7 +15,7 @@
             - {{ curso.cGradoAbreviacion.toString().substring(0, 1) }}° grado -
             {{ curso.cNivelTipoNombre.toString().replace('Educación ', '') }}
         </h3>
-        <p class="">0/20 preguntas</p>
+        <p class="">{{ curso.iCantidadPreguntas }} preguntas</p>
     </div>
     <footer class="p-3 pt-0 flex align-items-center justify-content-between">
         <button

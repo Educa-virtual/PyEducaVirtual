@@ -103,7 +103,7 @@ export class GestionarPreguntasComponent implements OnInit {
             .subscribe({
                 next: (respuesta) => {
                     this.cursosInicial = respuesta.map((curso: ICurso) => ({
-                        iCursoId: curso.idDocCursoId,
+                        //iCursoId: curso.idDocCursoId,
                         ...curso,
                     }))
                     this.cursos = this.cursosInicial

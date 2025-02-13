@@ -8,7 +8,7 @@ import { FieldsetModule } from 'primeng/fieldset'
 import { DropdownModule } from 'primeng/dropdown'
 import { TableModule } from 'primeng/table'
 import { ButtonModule } from 'primeng/button'
-
+import { ConstantesService } from '@/app/servicios/constantes.service'
 @Component({
     standalone: true,
     selector: 'app-estadistica',
@@ -32,7 +32,8 @@ export class EstadisticaComponent implements OnInit {
 
     escolar: any[] = [] // Se llenará con los datos del backend
     grado: any[] = [] // Se llenará con los datos del backend
-
+    codigo: any
+    iiee: any
     merito = [
         { label: 'General', value: 1 },
         { label: '5 Primeros Puestos', value: 2 },
@@ -40,7 +41,13 @@ export class EstadisticaComponent implements OnInit {
         { label: 'Quinto Superior', value: 4 },
     ]
 
-    constructor(private http: HttpClient) {}
+    constructor(
+        private http: HttpClient,
+        private ConstantesService: ConstantesService
+    ) {
+        this.codigo = this.ConstantesService.codModular
+        this.iiee = this.ConstantesService.iIieeId
+    }
 
     ngOnInit() {
         this.obtenerAniosYGrados()
@@ -55,18 +62,26 @@ export class EstadisticaComponent implements OnInit {
                         label: anio.iYearId,
                         value: anio.iYAcadId,
                     }))
-
-                    this.grado = response.grados.map((grado: any) => ({
-                        label: grado.cGradoNombre,
-                        value: grado.iGradoId,
-                    }))
                 },
                 (error) => {
                     console.error('Error al obtener los datos:', error)
                 }
             )
+        // Obtener grados filtrados por sede
+        this.http
+            .get<any>(
+                `http://localhost:8000/api/estadistica/grados-por-sede/${this.iiee}`
+            )
+            .subscribe(
+                (response) => {
+                    this.grado = response.grados.map((grado: any) => ({
+                        label: grado.cGradoNombre,
+                        value: grado.iNivelGradoId,
+                    }))
+                },
+                (error) => console.error('Error al obtener grados:', error)
+            )
     }
-
     buscar() {
         // Reiniciar los datos antes de agregar nuevos para evitar duplicados
         this.identidad = []
@@ -97,6 +112,8 @@ export class EstadisticaComponent implements OnInit {
             year: this.selectedYear.value,
             grado: this.selectedGrado.value,
             merito: this.selectedMerito.value,
+            cmodular: this.codigo,
+            SedeID: this.iiee,
         }
 
         console.log('Enviando datos para generación del reporte:', parametros)

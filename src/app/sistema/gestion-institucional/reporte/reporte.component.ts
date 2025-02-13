@@ -50,13 +50,13 @@ export class ReporteComponent {
             petition: 'post',
             group: 'aula-virtual',
             prefix: 'academico',
-            ruta: 'obtener_reporte',
+            ruta: 'reporte_academico',
             data: {
                 cPersDocumento: this.documento,
                 iIieeId: this.iiee,
             },
         }
-        this.getInformation(params, 'obtenerReporte')
+        this.getReportePdf(params)
     }
     mostrarHistorial() {
         this.historial = JSON.parse(this.datos[0]['historial'])
@@ -118,7 +118,23 @@ export class ReporteComponent {
             complete: () => {},
         })
     }
-
+    getReportePdf(data: any) {
+        this.GeneralService.generarPdf(data).subscribe({
+            next: (response) => {
+                const blob = new Blob([response], { type: 'application/pdf' })
+                const url = window.URL.createObjectURL(blob)
+                const a = document.createElement('a')
+                a.href = url
+                a.download = 'archivo.pdf'
+                a.click()
+                window.URL.revokeObjectURL(url)
+            },
+            complete: () => {},
+            error: (error) => {
+                console.log(error)
+            },
+        })
+    }
     accionBtnItem(event): void {
         const { accion } = event
         const { item } = event
@@ -136,8 +152,6 @@ export class ReporteComponent {
                     ]
                     this.persona = true
                 }
-                break
-            case 'obtenerReporte':
                 break
         }
     }

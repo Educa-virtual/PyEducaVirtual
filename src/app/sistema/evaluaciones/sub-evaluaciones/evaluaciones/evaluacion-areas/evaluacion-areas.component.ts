@@ -9,7 +9,7 @@ import {
     Output,
 } from '@angular/core'
 import { InputTextModule } from 'primeng/inputtext'
-import { FormsModule } from '@angular/forms'
+import { FormBuilder, FormGroup, FormsModule, Validators } from '@angular/forms'
 import { CardModule } from 'primeng/card'
 import { CommonModule } from '@angular/common'
 import { DividerModule } from 'primeng/divider'
@@ -28,6 +28,8 @@ import { ReactiveFormsModule } from '@angular/forms' // Importar ReactiveFormsMo
 import { DropdownModule } from 'primeng/dropdown'
 import { MessageService } from 'primeng/api'
 import { CompartirFormularioEvaluacionService } from '../../../services/ereEvaluaciones/compartir-formulario-evaluacion.service'
+import { DialogModule } from 'primeng/dialog'
+import { PrimengModule } from '@/app/primeng.module'
 //import { ToastModule } from 'primeng/toast'
 interface NivelTipo {
     cNivelTipoNombre: string
@@ -39,6 +41,7 @@ export type Layout = 'list' | 'grid'
     standalone: true,
     imports: [
         InputTextModule,
+        DialogModule,
         FormsModule,
         CardModule,
         CommonModule,
@@ -49,6 +52,7 @@ export type Layout = 'list' | 'grid'
         ButtonModule,
         ReactiveFormsModule, // Asegúrate de que ReactiveFormsModule esté importado
         DropdownModule,
+        PrimengModule,
     ],
     templateUrl: './evaluacion-areas.component.html',
     styleUrl: './evaluacion-areas.component.scss',
@@ -64,6 +68,7 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
     accion: string //Accion Editar, Ver, crear
     isDisabled: boolean
     cursosSeleccionados: any[] = []
+    horaSeleccionada: Date = new Date() // Guarda la hora seleccionada
 
     @Input() _iEvaluacionId: number
     @Input() datosRecIeParticipanToAreas: any[] = [] // Recibir el dato desde el padre
@@ -79,6 +84,7 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
     public sortField: string = ''
     public sortOrder: number = 0
     public layout: Layout = 'list'
+    modalFechaHora: boolean = false // mostrar modal.
     public params = {
         iCompentenciaId: 0,
         iCapacidadId: 0,
@@ -93,6 +99,7 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
     private _store = inject(LocalStoreService)
     private _apiEre = inject(ApiEvaluacionesRService)
     private _MessageService = inject(MessageService)
+    private _formBuilder = inject(FormBuilder)
 
     constructor(
         private store: LocalStoreService,
@@ -102,6 +109,14 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
         private query: GeneralService,
         private compartirFormularioEvaluacionService: CompartirFormularioEvaluacionService
     ) {}
+    // Obtener los datos del formulario de la fecha y la hora de la evaluación
+    public fechForm: FormGroup = this._formBuilder.group({
+        //iEscalaCalifId: [],
+        iForoRptaId: ['', [Validators.required]],
+        cForoRptaDocente: ['', [Validators.required]],
+        //nForoRptaNota: [],
+        //cForoDescripcion: [],
+    })
     ngOnInit(): void {
         // Determinar el modo
         this.accion = this._config.data?.accion || 'crear'
@@ -534,5 +549,11 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
     onChange() {}
     closeModal(data) {
         this._ref.close(data)
+    }
+    abrirModalFechaHora() {
+        this.modalFechaHora = true
+    }
+    agregarTime() {
+        this.modalFechaHora = false
     }
 }

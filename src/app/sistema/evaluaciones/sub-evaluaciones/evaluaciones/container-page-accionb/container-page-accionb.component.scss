@@ -1,0 +1,14 @@
+::ng-deep .custom-dropdown .p-dropdown {
+    background-color: #1b5583 !important; /* Verde */
+    color: white !important;
+    border-radius: 8px;
+    color: white;
+}
+
+::ng-deep .custom-dropdown .p-dropdown .p-dropdown-label {
+    color: white !important; /* Hace el texto blanco */
+}
+
+::ng-deep .custom-dropdown .p-dropdown .p-dropdown-trigger {
+    color: white !important; /* Hace el icono del dropdown blanco */
+}

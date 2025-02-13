@@ -36,6 +36,8 @@ import { ToastModule } from 'primeng/toast'
 import { CalendarModule } from 'primeng/calendar'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { InputSwitchModule } from 'primeng/inputswitch'
+import { EditorModule } from 'primeng/editor'
+import { PrimengModule } from '@/app/primeng.module'
 
 interface TipoEvaluacion {
     idTipoEvalId: number
@@ -51,6 +53,7 @@ interface NivelEvaluacion {
     standalone: true,
     imports: [
         InputSwitchModule,
+        EditorModule,
         ScrollPanelModule,
         StepsModule,
         ButtonModule,
@@ -70,6 +73,7 @@ interface NivelEvaluacion {
         CardModule,
         ToastModule,
         CalendarModule,
+        PrimengModule,
     ],
     templateUrl: './evaluaciones-form.component.html',
     styleUrl: './evaluaciones-form.component.scss',
@@ -126,18 +130,8 @@ export class EvaluacionesFormComponent implements OnInit {
             cEvaluacionNombre: [null, [Validators.required]],
             cEvaluacionDescripcion: [null, [Validators.required]],
             cEvaluacionUrlDrive: [null, [Validators.required]],
-            cEvaluacionUrlPlantilla: [null, [Validators.required]],
-            cEvaluacionUrlManual: [null, [Validators.required]],
-            cEvaluacionUrlMatriz: [null, [Validators.required]],
-            cEvaluacionObs: [null, [Validators.required]],
-            dtEvaluacionCreacion: [null, Validators.required],
-            dtEvaluacionLiberarMatriz: [null, Validators.required],
-            dtEvaluacionLiberarCuadernillo: [null, Validators.required],
-            dtEvaluacionLiberarResultados: [null, Validators.required],
-            cEvaluacionIUrlCuadernillo: [null, Validators.required], // URL de la cuadernillo
-            cEvaluacionUrlHojaRespuestas: [null, Validators.required], // URL de la hoja de respuestas
-            iEstado: [null],
-            iSesionId: [null],
+            dtEvaluacionFechaInicio: [null, [Validators.required]],
+            dtEvaluacionFechaFin: [null, [Validators.required]],
         })
     }
     // Función para mostrar el valor en la consola
@@ -177,6 +171,7 @@ export class EvaluacionesFormComponent implements OnInit {
         }
 
         if (this.activeStep === 0 && this.accion === 'nuevo') {
+            console.log(this.evaluacionFormGroup)
             if (this.evaluacionFormGroup.invalid) {
                 this._MessageService.add({
                     severity: 'error',
@@ -258,19 +253,11 @@ export class EvaluacionesFormComponent implements OnInit {
             cEvaluacionNombre: [null, [Validators.required]],
             cEvaluacionDescripcion: [null, [Validators.required]],
             cEvaluacionUrlDrive: [null, [Validators.required]],
-            cEvaluacionUrlPlantilla: [null, [Validators.required]],
-            cEvaluacionUrlManual: [null, [Validators.required]],
-            cEvaluacionUrlMatriz: [null, [Validators.required]],
-            cEvaluacionObs: [null, [Validators.required]],
-            dtEvaluacionCreacion: [null, Validators.required],
-            dtEvaluacionLiberarMatriz: [null, Validators.required],
-            dtEvaluacionLiberarCuadernillo: [null, Validators.required],
-            dtEvaluacionLiberarResultados: [null, Validators.required],
-            iEstado: [null],
-            cEvaluacionIUrlCuadernillo: [null, Validators.required], // URL de la cuadernillo
-            cEvaluacionUrlHojaRespuestas: [null, Validators.required], // URL de la hoja de respuestas
+            dtEvaluacionFechaInicio: [null, [Validators.required]],
+            dtEvaluacionFechaFin: [null, [Validators.required]],
         })
     }
+
     ereVerEvaluacion() {
         const evaluacionData = this._config.data.evaluacion // Obtener los datos del modal
         if (evaluacionData) {
@@ -282,39 +269,17 @@ export class EvaluacionesFormComponent implements OnInit {
                 cEvaluacionNombre: evaluacionData.cEvaluacionNombre,
                 cEvaluacionDescripcion: evaluacionData.cEvaluacionDescripcion,
                 cEvaluacionUrlDrive: evaluacionData.cEvaluacionUrlDrive,
-                cEvaluacionUrlPlantilla: evaluacionData.cEvaluacionUrlPlantilla,
-                cEvaluacionUrlManual: evaluacionData.cEvaluacionUrlManual,
-                cEvaluacionUrlMatriz: evaluacionData.cEvaluacionUrlMatriz,
-                cEvaluacionObs: evaluacionData.cEvaluacionObs,
-                dtEvaluacionCreacion: evaluacionData.dtEvaluacionCreacion,
-                dtEvaluacionLiberarMatriz:
-                    evaluacionData.dtEvaluacionLiberarMatriz,
-                dtEvaluacionLiberarCuadernillo:
-                    evaluacionData.dtEvaluacionLiberarCuadernillo,
-                dtEvaluacionLiberarResultados:
-                    evaluacionData.dtEvaluacionLiberarResultados,
-                // Convertir 0 o 1 en un valor booleano para el input switch
-                iEstado:
-                    evaluacionData.iEstado === '1' ||
-                    evaluacionData.iEstado === 1,
-                cEvaluacionIUrlCuadernillo:
-                    evaluacionData.cEvaluacionIUrlCuadernillo,
-                cEvaluacionUrlHojaRespuestas:
-                    evaluacionData.cEvaluacionUrlHojaRespuestas,
+                dtEvaluacionFechaInicio: [null, [Validators.required]],
+                dtEvaluacionFechaFin: [null, [Validators.required]],
             })
-            // Aquí estamos configurando el valor de `checked` para el input switch
-            this.checked =
-                evaluacionData.iEstado === '1' || evaluacionData.iEstado === 1
         }
     }
     guardarEvaluacion() {
-        const iSesionId = this.constantesService.iDocenteId // Si es un array, toma el primer valor
+        // const iSesionId = this.constantesService.iDocenteId // Si es un array, toma el primer valor
+        // console.log(this.evaluacionFormGroup.get('idTipoEvalId').value)
         const data = {
             idTipoEvalId: this.evaluacionFormGroup.get('idTipoEvalId').value,
             iNivelEvalId: this.evaluacionFormGroup.get('iNivelEvalId').value,
-            dtEvaluacionCreacion: this.evaluacionFormGroup.get(
-                'dtEvaluacionCreacion'
-            ).value,
             cEvaluacionNombre:
                 this.evaluacionFormGroup.get('cEvaluacionNombre').value,
             cEvaluacionDescripcion: this.evaluacionFormGroup.get(
@@ -323,37 +288,15 @@ export class EvaluacionesFormComponent implements OnInit {
             cEvaluacionUrlDrive: this.evaluacionFormGroup.get(
                 'cEvaluacionUrlDrive'
             ).value,
-            cEvaluacionUrlPlantilla: this.evaluacionFormGroup.get(
-                'cEvaluacionUrlPlantilla'
+            dtEvaluacionFechaInicio: this.evaluacionFormGroup.get(
+                'dtEvaluacionFechaInicio'
             ).value,
-            cEvaluacionUrlManual: this.evaluacionFormGroup.get(
-                'cEvaluacionUrlManual'
-            ).value,
-            cEvaluacionUrlMatriz: this.evaluacionFormGroup.get(
-                'cEvaluacionUrlMatriz'
-            ).value,
-            cEvaluacionObs:
-                this.evaluacionFormGroup.get('cEvaluacionObs').value,
-            dtEvaluacionLiberarMatriz: this.evaluacionFormGroup.get(
-                'dtEvaluacionLiberarMatriz'
-            ).value,
-            dtEvaluacionLiberarCuadernillo: this.evaluacionFormGroup.get(
-                'dtEvaluacionLiberarCuadernillo'
-            ).value,
-            dtEvaluacionLiberarResultados: this.evaluacionFormGroup.get(
-                'dtEvaluacionLiberarResultados'
-            ).value,
-            iEstado: this.checked ? 1 : 0, // Usamos el valor de 'checked' para enviar 1 o 0
-            iSesionId: iSesionId,
-            cEvaluacionIUrlCuadernillo: this.evaluacionFormGroup.get(
-                'cEvaluacionIUrlCuadernillo'
-            ).value,
-            cEvaluacionUrlHojaRespuestas: this.evaluacionFormGroup.get(
-                'cEvaluacionUrlHojaRespuestas'
+            dtEvaluacionFechaFin: this.evaluacionFormGroup.get(
+                'dtEvaluacionFechaFin'
             ).value,
         }
 
-        console.log(data)
+        console.log('datos que se guardaran', data)
         this._apiEre
             .guardarEvaluacion(data)
             .pipe(takeUntil(this.unsubscribe$))
@@ -380,10 +323,9 @@ export class EvaluacionesFormComponent implements OnInit {
                 },
             })
     }
-
-    // Método para actualizar los datos en el backend
+    // Método para actualizar los datos en la base de datos
     actualizarEvaluacion() {
-        const iSesionId = this.constantesService.iDocenteId // Si es un array, toma el primer valor
+        // const iSesionId = this.constantesService.iDocenteId // Si es un array, toma el primer valor
 
         const data = {
             iEvaluacionId: Number(
@@ -395,9 +337,6 @@ export class EvaluacionesFormComponent implements OnInit {
             iNivelEvalId: Number(
                 this.evaluacionFormGroup.get('iNivelEvalId').value
             ),
-            dtEvaluacionCreacion: this.evaluacionFormGroup.get(
-                'dtEvaluacionCreacion'
-            ).value,
             cEvaluacionNombre:
                 this.evaluacionFormGroup.get('cEvaluacionNombre').value,
             cEvaluacionDescripcion: this.evaluacionFormGroup.get(
@@ -406,37 +345,11 @@ export class EvaluacionesFormComponent implements OnInit {
             cEvaluacionUrlDrive: this.evaluacionFormGroup.get(
                 'cEvaluacionUrlDrive'
             ).value,
-            cEvaluacionUrlPlantilla: this.evaluacionFormGroup.get(
-                'cEvaluacionUrlPlantilla'
-            ).value,
-            cEvaluacionUrlManual: this.evaluacionFormGroup.get(
-                'cEvaluacionUrlManual'
-            ).value,
-            cEvaluacionUrlMatriz: this.evaluacionFormGroup.get(
-                'cEvaluacionUrlMatriz'
-            ).value,
-            cEvaluacionObs:
-                this.evaluacionFormGroup.get('cEvaluacionObs').value,
-            dtEvaluacionLiberarMatriz: this.evaluacionFormGroup.get(
-                'dtEvaluacionLiberarMatriz'
-            ).value,
-            dtEvaluacionLiberarCuadernillo: this.evaluacionFormGroup.get(
-                'dtEvaluacionLiberarCuadernillo'
-            ).value,
-            dtEvaluacionLiberarResultados: this.evaluacionFormGroup.get(
-                'dtEvaluacionLiberarResultados'
-            ).value,
-            iEstado: this.evaluacionFormGroup.get('iEstado').value ? 1 : 0,
-            iSesionId: iSesionId,
-
-            cEvaluacionIUrlCuadernillo: this.evaluacionFormGroup.get(
-                'cEvaluacionIUrlCuadernillo'
-            ).value,
-            cEvaluacionUrlHojaRespuestas: this.evaluacionFormGroup.get(
-                'cEvaluacionUrlHojaRespuestas'
-            ).value,
+            dtInicio: this.evaluacionFormGroup.get('dtEvaluacionFechaInicio')
+                .value,
+            dtFin: this.evaluacionFormGroup.get('dtEvaluacionFechaFin').value,
         }
-
+        console.log('datos para acualizar', data)
         this._apiEre.actualizarEvaluacion(data).subscribe({
             next: (resp) => {
                 this._MessageService.add({

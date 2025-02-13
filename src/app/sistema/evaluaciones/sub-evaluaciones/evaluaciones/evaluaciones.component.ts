@@ -31,6 +31,7 @@ import {
     ContainerPageComponent,
     IActionContainer,
 } from '@/app/shared/container-page/container-page.component'
+//
 import { CompartirIdEvaluacionService } from './../../services/ereEvaluaciones/compartir-id-evaluacion.service'
 import { PrimengModule } from '@/app/primeng.module'
 import { MessageService } from 'primeng/api'
@@ -46,6 +47,7 @@ import { ApiService } from '@/app/servicios/api.service'
 import { IUpdateTableService } from '@/app/interfaces/api.interface'
 import { UtilService } from '@/app/servicios/utils.service'
 import { ConstantesService } from '@/app/servicios/constantes.service'
+import { ContainerPageAccionbComponent } from './container-page-accionb/container-page-accionb.component'
 @Component({
     selector: 'app-evaluaciones',
     standalone: true,
@@ -60,6 +62,7 @@ import { ConstantesService } from '@/app/servicios/constantes.service'
         TablePrimengComponent,
         ContainerPageComponent,
         PrimengModule,
+        ContainerPageAccionbComponent,
     ],
     providers: [DialogService],
     templateUrl: './evaluaciones.component.html',
@@ -142,6 +145,14 @@ export class EvaluacionesComponent implements OnInit {
         this.form.valueChanges.subscribe((value) => {
             value
         })
+    }
+    ejecutarAccion(event: { accion: string; item: IActionContainer }) {
+        console.log('Acción seleccionada:', event.accion)
+        if (event.accion === 'agregar') {
+            // Lógica para agregar
+        } else if (event.accion === 'descargar_pdf') {
+            // Lógica para descargar PDF
+        }
     }
     listaCursos: any[] = []
     lista: any
@@ -300,7 +311,14 @@ export class EvaluacionesComponent implements OnInit {
     accionesPrincipal: IActionContainer[] = [
         {
             labelTooltip: 'Agregar evaluacións',
-            text: 'Agregar Evaluación',
+            text: 'Crear Evaluación',
+            icon: 'pi pi-plus',
+            accion: 'seleccionar',
+            class: 'p-button-lg',
+        },
+        {
+            labelTooltip: 'Importar evaluacións',
+            text: 'Importar Evaluación',
             icon: 'pi pi-plus',
             accion: 'seleccionar',
             class: 'p-button-lg',

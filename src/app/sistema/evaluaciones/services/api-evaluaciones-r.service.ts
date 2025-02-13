@@ -380,7 +380,7 @@ export class ApiEvaluacionesRService {
         iPreguntaId: number
     ): Observable<any> {
         return this.http.delete(
-            `${this.baseUrl}/ere/Evaluaciones/eliminarPregunta`,
+            `${this.urlBackendApi}/ere/Evaluaciones/eliminarPregunta`,
             { params: { iEvaluacionId, iPreguntaId } }
         )
     }

@@ -270,13 +270,13 @@ const notas_evaluaciones = [
                             {
                                 label: 'Evaluaciones',
                                 icon: 'pi pi-fw pi-calendar',
-                                routerLink: ['/evaluaciones/evaluaciones'],
+                                routerLink: ['/ere/evaluaciones'],
                             },
-                            {
-                                label: 'Preguntas',
-                                icon: 'pi pi-fw pi-question',
-                                routerLink: ['/evaluaciones/preguntas'],
-                            },
+                            // {
+                            //     label: 'Preguntas',
+                            //     icon: 'pi pi-fw pi-question',
+                            //     routerLink: ['/evaluaciones/preguntas'],
+                            // },
                             {
                                 label: 'Banco de Preguntas',
                                 icon: 'pi pi-fw pi-folder',

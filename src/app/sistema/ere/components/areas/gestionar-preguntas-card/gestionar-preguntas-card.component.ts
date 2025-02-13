@@ -38,11 +38,8 @@ export class GestionarPreguntasCardComponent implements OnInit {
                 label: 'Gestionar preguntas',
                 icon: 'pi pi-angle-right',
                 command: () => {
-                    console.log(
-                        `ere/evaluaciones/${this.iEvaluacionIdHashed}/gestionar-preguntas/areas/${this.curso.iCursoId}`
-                    )
                     this.router.navigate([
-                        `ere/evaluaciones/${this.iEvaluacionIdHashed}/gestionar-preguntas/areas/${this.curso.iCursoId}`,
+                        `ere/evaluaciones/${this.iEvaluacionIdHashed}/gestionar-preguntas/areas/${this.curso.iCursosNivelGradId}`,
                     ])
                 },
             },

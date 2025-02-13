@@ -15,4 +15,5 @@ export interface ICurso {
     idDocCursoId?: string
     iNivelCicloId?: any
     iCantidadPreguntas?: number
+    iCursosNivelGradId?: string
 }

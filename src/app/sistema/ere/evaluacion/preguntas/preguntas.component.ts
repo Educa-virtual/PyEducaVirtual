@@ -4,7 +4,7 @@ import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmatio
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import { ApiEvaluacionesRService } from '@/app/sistema/evaluaciones/services/api-evaluaciones-r.service'
 import { NgIf } from '@angular/common'
-import { Component, inject, OnInit } from '@angular/core'
+import { Component, inject, Input, OnInit } from '@angular/core'
 import { EditorComponent, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular'
 import { MenuItem, MessageService } from 'primeng/api'
 import { abecedario } from '@/app/sistema/aula-virtual/constants/aula-virtual'
@@ -31,8 +31,8 @@ export class PreguntasComponent implements OnInit {
 
     private backendApi = environment.backendApi
 
-    iEvaluacionId = '795'
-    iCursoNivelGradId = '2'
+    @Input() iEvaluacionId
+    @Input() iCursoNivelGradId
     data
     matrizCompetencia = []
     matrizCapacidad = []

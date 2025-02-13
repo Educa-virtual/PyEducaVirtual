@@ -78,13 +78,6 @@ const routes: Routes = [
     //         },
     //     ],
     // },
-    {
-        path: 'preguntas',
-        loadComponent: () =>
-            import('../ere/evaluacion/preguntas/preguntas.component').then(
-                (c) => c.PreguntasComponent
-            ),
-    },
 ]
 
 export class AppRoutingModule {}

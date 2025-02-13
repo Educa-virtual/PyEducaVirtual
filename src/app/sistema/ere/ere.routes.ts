@@ -14,6 +14,27 @@ const routes: Routes = [
             ).then((c) => c.GestionarPreguntasComponent),
         pathMatch: 'full',
     },
+    {
+        path: 'evaluaciones',
+        loadComponent: () =>
+            import(
+                '../evaluaciones/sub-evaluaciones/evaluaciones/evaluaciones.component'
+            ).then((c) => c.EvaluacionesComponent),
+    },
+    {
+        path: 'evaluaciones',
+        loadComponent: () =>
+            import(
+                '../evaluaciones/sub-evaluaciones/evaluaciones/evaluaciones.component'
+            ).then((c) => c.EvaluacionesComponent),
+    },
+    {
+        path: 'evaluaciones/:iEvaluacionId/gestionar-preguntas/areas/:iCursoNivelGradId',
+        loadComponent: () =>
+            import('./evaluacion/preguntas/preguntas.component').then(
+                (c) => c.PreguntasComponent
+            ),
+    },
 ]
 
 export class AppRoutingModule {}

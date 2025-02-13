@@ -6,6 +6,7 @@ import {
     Input,
     OnInit,
     Output,
+    OnDestroy,
 } from '@angular/core'
 /*GRILLA */
 import { TableModule } from 'primeng/table'
@@ -68,7 +69,7 @@ import { ContainerPageAccionbComponent } from './container-page-accionb/containe
     templateUrl: './evaluaciones.component.html',
     styleUrl: './evaluaciones.component.scss',
 })
-export class EvaluacionesComponent implements OnInit {
+export class EvaluacionesComponent implements OnInit, OnDestroy {
     dataSubject = new BehaviorSubject<any[]>([])
     mostrarBoton: boolean = false
     iEvaluacionId: number
@@ -510,7 +511,11 @@ export class EvaluacionesComponent implements OnInit {
                 item.cEvaluacionNombre
             )
             this.compartirIdEvaluacionService.iEvaluacionId = item.iEvaluacionId
-            this.router.navigate(['/evaluaciones/areas'])
+            this.router.navigate([
+                'ere/evaluaciones/' +
+                    item.iEvaluacionIdxHash +
+                    '/gestionar-preguntas',
+            ])
         }
         if (accion === 'fechaPublicacion') {
             this.modalActivarCursosEre()

@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core'
 import { PrimengModule } from '@/app/primeng.module'
 import { CommonModule } from '@angular/common'
 import { GeneralService } from '@/app/servicios/general.service'
+import { ConstantesService } from '@/app/servicios/constantes.service'
 import { FormsModule } from '@angular/forms'
 @Component({
     selector: 'app-reporte',
@@ -21,6 +22,11 @@ export class ReporteComponent {
     columna = []
     fila: any = []
     final: any
+    iiee: any
+    constructor(private ConstantesService: ConstantesService) {
+        this.iiee = this.ConstantesService.iIieeId
+    }
+
     limpiar() {
         this.documento = ''
         this.persona = false
@@ -31,12 +37,26 @@ export class ReporteComponent {
             petition: 'post',
             group: 'aula-virtual',
             prefix: 'academico',
-            ruta: 'reporte_academico',
+            ruta: 'obtener_datos',
             data: {
                 cPersDocumento: this.documento,
+                iIieeId: this.iiee,
             },
         }
         this.getInformation(params, 'obtenerHistorial')
+    }
+    mostrarReporte() {
+        const params = {
+            petition: 'post',
+            group: 'aula-virtual',
+            prefix: 'academico',
+            ruta: 'obtener_reporte',
+            data: {
+                cPersDocumento: this.documento,
+                iIieeId: this.iiee,
+            },
+        }
+        this.getInformation(params, 'obtenerReporte')
     }
     mostrarHistorial() {
         this.historial = JSON.parse(this.datos[0]['historial'])
@@ -116,6 +136,8 @@ export class ReporteComponent {
                     ]
                     this.persona = true
                 }
+                break
+            case 'obtenerReporte':
                 break
         }
     }

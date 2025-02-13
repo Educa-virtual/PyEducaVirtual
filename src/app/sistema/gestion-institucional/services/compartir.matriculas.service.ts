@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core'
 import { GeneralService } from '@/app/servicios/general.service'
+import { Observable } from 'rxjs'
+import { map } from 'rxjs/operators'
+import { of } from 'rxjs'
 
 //import { BehaviorSubject } from 'rxjs'
 
@@ -7,6 +10,8 @@ import { GeneralService } from '@/app/servicios/general.service'
     providedIn: 'root',
 })
 export class CompartirMatriculasService {
+    constructor(private query: GeneralService) {}
+
     lista: any[] = []
 
     tipos_documentos: Array<object>
@@ -19,6 +24,7 @@ export class CompartirMatriculasService {
     distritos: Array<object>
     lenguas: Array<object>
     tipos_contacto: Array<object>
+    religiones: Array<object>
 
     private activeIndex: string
     private iEstudianteId: string | null = null
@@ -98,133 +104,94 @@ export class CompartirMatriculasService {
 
     getTiposFamiliares() {
         if (!this.tipos_familiares) {
-            this.query
+            return this.query
                 .searchTablaXwhere({
                     esquema: 'obe',
                     tabla: 'tipo_familiares',
                     campos: '*',
                     condicion: '1 = 1',
                 })
-                .subscribe({
-                    next: (data: any) => {
-                        const item = data.data
-                        this.tipos_familiares = item.map((documento) => ({
+                .pipe(
+                    map((data: any) => {
+                        const items = data.data
+                        this.tipos_familiares = items.map((documento) => ({
                             id: documento.iTipoFamiliarId,
                             nombre: documento.cTipoFamiliarDescripcion,
                         }))
-                        console.log(
-                            this.tipos_familiares,
-                            'tipos de familiares'
-                        )
-                    },
-                    error: (error) => {
-                        console.error(
-                            'Error obteniendo tipos de familiares:',
-                            error
-                        )
-                    },
-                    complete: () => {
-                        console.log('Request completed')
-                    },
-                })
+                        return this.tipos_familiares
+                    })
+                )
         }
-        return this.tipos_familiares
+        return of(this.tipos_familiares)
     }
 
     getNacionalidades() {
         if (!this.nacionalidades) {
-            this.query
+            return this.query
                 .searchTablaXwhere({
                     esquema: 'grl',
                     tabla: 'nacionalidades',
                     campos: '*',
                     condicion: '1 = 1',
                 })
-                .subscribe({
-                    next: (data: any) => {
-                        const item = data.data
-                        this.nacionalidades = item.map((nacionalidad) => ({
+                .pipe(
+                    map((data: any) => {
+                        const items = data.data
+                        this.nacionalidades = items.map((nacionalidad) => ({
                             id: nacionalidad.iNacionId,
                             nombre: nacionalidad.cNacionNombre,
                         }))
-                        console.log(this.nacionalidades, 'nacionalidades')
-                    },
-                    error: (error) => {
-                        console.error('Error obteniendo nacionalidades:', error)
-                    },
-                    complete: () => {
-                        console.log('Request completed')
-                    },
-                })
+                        return this.nacionalidades
+                    })
+                )
         }
-        return this.nacionalidades
+        return of(this.nacionalidades)
     }
 
     getTiposDocumentos() {
         if (!this.tipos_documentos) {
-            this.query
+            return this.query
                 .searchTablaXwhere({
                     esquema: 'grl',
                     tabla: 'tipos_Identificaciones',
                     campos: '*',
                     condicion: '1 = 1',
                 })
-                .subscribe({
-                    next: (data: any) => {
-                        const item = data.data
-                        this.tipos_documentos = item.map((documento) => ({
+                .pipe(
+                    map((data: any) => {
+                        const items = data.data
+                        this.tipos_documentos = items.map((documento) => ({
                             id: documento.iTipoIdentId,
                             nombre: documento.cTipoIdentNombre,
                         }))
-                        console.log(
-                            this.tipos_documentos,
-                            'tipos de documentos'
-                        )
-                    },
-                    error: (error) => {
-                        console.error(
-                            'Error obteniendo tipos de documentos:',
-                            error
-                        )
-                    },
-                    complete: () => {
-                        console.log('Request completed')
-                    },
-                })
+                        return this.tipos_documentos
+                    })
+                )
         }
-        return this.tipos_documentos
+        return of(this.tipos_documentos)
     }
 
     getEstadosCiviles() {
-        if (!this.estados_civiles) {
-            this.query
+        if (!this.departamentos) {
+            return this.query
                 .searchTablaXwhere({
                     esquema: 'grl',
                     tabla: 'tipos_estados_civiles',
                     campos: '*',
                     condicion: '1 = 1',
                 })
-                .subscribe({
-                    next: (data: any) => {
-                        const item = data.data
-                        this.estados_civiles = item.map((documento) => ({
+                .pipe(
+                    map((data: any) => {
+                        const items = data.data
+                        this.estados_civiles = items.map((documento) => ({
                             id: documento.iTipoEstCivId,
                             nombre: documento.cTipoEstCivilNombre,
                         }))
-                        console.log(this.estados_civiles, 'estados civiles')
-                    },
-                    error: (error) => {
-                        console.error(
-                            'Error obteniendo estados civiles:',
-                            error
-                        )
-                    },
-                    complete: () => {
-                        console.log('Request completed')
-                    },
-                })
+                        return this.estados_civiles
+                    })
+                )
         }
-        return this.estados_civiles
+        return of(this.estados_civiles)
     }
 
     getSexos() {
@@ -237,93 +204,73 @@ export class CompartirMatriculasService {
         return this.sexos
     }
 
-    getDepartamentos() {
+    getDepartamentos(): Observable<Array<object>> {
         if (!this.departamentos) {
-            this.query
+            return this.query
                 .searchTablaXwhere({
                     esquema: 'grl',
                     tabla: 'departamentos',
                     campos: '*',
                     condicion: '1 = 1',
                 })
-                .subscribe({
-                    next: (data: any) => {
-                        const item = data.data
-                        this.departamentos = item.map((departamento) => ({
-                            id: departamento.iDptoId,
-                            nombre: departamento.cDptoNombre,
-                        }))
-                        console.log(this.departamentos, 'departamentos')
-                    },
-                    error: (error) => {
-                        console.error('Error obteniendo departamentos:', error)
-                    },
-                    complete: () => {
-                        console.log('Request completed')
-                    },
-                })
+                .pipe(
+                    map((data: any) => {
+                        const departamentos = data.data
+                        this.departamentos = departamentos.map(
+                            (departamento) => ({
+                                id: departamento.iDptoId,
+                                nombre: departamento.cDptoNombre,
+                            })
+                        )
+                        return this.departamentos
+                    })
+                )
         }
-        return this.departamentos
+        return of(this.departamentos)
     }
 
-    getProvincias(iDptoId: number) {
+    getProvincias(iDptoId: number): Observable<Array<object>> {
         if (!iDptoId) {
             return null
         }
-        this.query
+        return this.query
             .searchTablaXwhere({
                 esquema: 'grl',
                 tabla: 'provincias',
                 campos: '*',
                 condicion: 'iDptoId = ' + iDptoId,
             })
-            .subscribe({
-                next: (data: any) => {
-                    const item = data.data
-                    this.provincias = item.map((provincia) => ({
+            .pipe(
+                map((data: any) => {
+                    const items = data.data
+                    return items.map((provincia) => ({
                         id: provincia.iPrvnId,
                         nombre: provincia.cPrvnNombre,
                     }))
-                    console.log(this.provincias, 'provincias')
-                },
-                error: (error) => {
-                    console.error('Error obteniendo provincias:', error)
-                },
-                complete: () => {
-                    console.log('Request completed')
-                },
-            })
-        return this.provincias
+                })
+            )
     }
 
     getDistritos(iPrvnId: number) {
         if (!iPrvnId) {
             return null
         }
-        this.query
+        return this.query
             .searchTablaXwhere({
                 esquema: 'grl',
                 tabla: 'distritos',
                 campos: '*',
                 condicion: 'iPrvnId = ' + iPrvnId,
             })
-            .subscribe({
-                next: (data: any) => {
-                    const item = data.data
-                    this.distritos = item.map((distrito) => ({
+            .pipe(
+                map((data: any) => {
+                    const items = data.data
+                    return items.map((distrito) => ({
                         id: distrito.iDsttId,
                         nombre: distrito.cDsttNombre,
                     }))
-                    console.log(this.distritos, 'distritos')
-                },
-                error: (error) => {
-                    console.error('Error obteniendo distritos:', error)
-                },
-                complete: () => {
-                    console.log('Request completed')
-                },
-            })
-        return this.distritos
+                })
+            )
     }
 
     getLenguas() {
@@ -340,35 +287,47 @@ export class CompartirMatriculasService {
 
     getTiposContacto() {
         if (!this.tipos_contacto) {
-            this.query
+            return this.query
                 .searchTablaXwhere({
                     esquema: 'grl',
                     tabla: 'tipos_contactos',
                     campos: '*',
                     condicion: '1 = 1',
                 })
-                .subscribe({
-                    next: (data: any) => {
-                        const item = data.data
-                        this.tipos_contacto = item.map((tipo_contacto) => ({
+                .pipe(
+                    map((data: any) => {
+                        const items = data.data
+                        this.tipos_contacto = items.map((tipo_contacto) => ({
                             id: tipo_contacto.iTipoConId,
                             nombre: tipo_contacto.cTipoConNombre,
                         }))
-                        console.log(this.tipos_contacto, 'tipos_contactos')
-                    },
-                    error: (error) => {
-                        console.error(
-                            'Error obteniendo tipos_contactos:',
-                            error
-                        )
-                    },
-                    complete: () => {
-                        console.log('Request completed')
-                    },
-                })
+                        return this.tipos_contacto
+                    })
+                )
         }
-        return this.tipos_contacto
+        return of(this.tipos_contacto)
     }
 
-    constructor(private query: GeneralService) {}
+    getReligiones() {
+        if (!this.religiones) {
+            return this.query
+                .searchTablaXwhere({
+                    esquema: 'obe',
+                    tabla: 'religiones',
+                    campos: '*',
+                    condicion: '1 = 1',
+                })
+                .pipe(
+                    map((data: any) => {
+                        const items = data.data
+                        this.religiones = items.map((religion) => ({
+                            id: religion.iReligionId,
+                            nombre: religion.cReligionNombre,
+                        }))
+                        return this.religiones
+                    })
+                )
+        }
+        return of(this.religiones)
+    }
 }

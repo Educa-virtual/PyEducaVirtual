@@ -224,6 +224,10 @@ export class GeneralService {
         )
     }
 
+    searchDataEnUrl(data: any, url: string) {
+        return this.http.post(`${baseUrl}${url}`, data)
+    }
+
     guardarEstudiante(data: any) {
         return this.http.post(
             `${baseUrl}/acad/matricula/guardarEstudiante`,

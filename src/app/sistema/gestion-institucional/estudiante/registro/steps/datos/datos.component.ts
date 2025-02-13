@@ -38,14 +38,25 @@ export class DatosComponent {
     ) {}
 
     ngOnInit(): void {
-        this.tipos_documentos =
-            this.compartirMatriculasService.getTiposDocumentos()
-        this.sexos = this.compartirMatriculasService.getSexos()
-        this.nacionalidades =
-            this.compartirMatriculasService.getNacionalidades()
-        this.departamentos = this.compartirMatriculasService.getDepartamentos()
+        this.compartirMatriculasService
+            .getTiposDocumentos()
+            .subscribe((data) => {
+                this.tipos_documentos = data
+            })
+        this.compartirMatriculasService
+            .getNacionalidades()
+            .subscribe((data) => {
+                this.nacionalidades = data
+            })
+        this.compartirMatriculasService.getDepartamentos().subscribe((data) => {
+            this.departamentos = data
+        })
+        this.compartirMatriculasService.getTiposContacto().subscribe((data) => {
+            this.tipos_contacto = data
+        })
+
         this.lenguas = this.compartirMatriculasService.getLenguas()
-        this.tipos_contacto = this.compartirMatriculasService.getTiposContacto()
+        this.sexos = this.compartirMatriculasService.getSexos()
 
         try {
             this.form = this.fb.group({
@@ -87,12 +98,19 @@ export class DatosComponent {
     }
 
     getProvincias(iDptoId: number) {
-        this.provincias = this.compartirMatriculasService.getProvincias(iDptoId)
-        console.log(this.provincias, 'provincias')
+        this.compartirMatriculasService.getProvincias(iDptoId).subscribe({
+            next: (data) => {
+                this.provincias = data
+            },
+        })
     }
 
     getDistritos(iPrvnId: number) {
-        this.distritos = this.compartirMatriculasService.getDistritos(iPrvnId)
+        this.compartirMatriculasService.getDistritos(iPrvnId).subscribe({
+            next: (data) => {
+                this.distritos = data
+            },
+        })
     }
 
     setFormEstudiante() {

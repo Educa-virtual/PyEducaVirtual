@@ -4,6 +4,68 @@
     (accionBtnItem)="accionBtnItemTable($event)"
 >
     <div class="card">
+        <div class="grid p-fluid mt-3">
+            <div class="field col-12 md:col-3">
+                <span class="p-float-label">
+                    <p-dropdown
+                        [options]="nivel_grados"
+                        name="iNivelGradoId"
+                        optionLabel="nombre"
+                        optionValue="id"
+                        [filter]="true"
+                        [showClear]="true"
+                        [appendTo]="'body'"
+                    ></p-dropdown>
+                    <label for="iNivelGradoId">Grado</label>
+                </span>
+            </div>
+
+            <div class="field col-12 md:col-3">
+                <span class="p-float-label">
+                    <p-dropdown
+                        [options]="turnos"
+                        name="iTurnoId"
+                        optionLabel="nombre"
+                        optionValue="id"
+                        [filter]="true"
+                        [showClear]="true"
+                        [appendTo]="'body'"
+                    ></p-dropdown>
+                    <label for="iTurnoId">Turno</label>
+                </span>
+            </div>
+
+            <div class="field col-12 md:col-3">
+                <span class="p-float-label">
+                    <p-dropdown
+                        [options]="secciones"
+                        name="iSeccionId"
+                        optionLabel="nombre"
+                        optionValue="id"
+                        [filter]="true"
+                        [showClear]="true"
+                        [appendTo]="'body'"
+                    ></p-dropdown>
+                    <label for="iSeccionId">Sección</label>
+                </span>
+            </div>
+
+            <div class="field col-12 md:col-3">
+                <span class="p-float-label">
+                    <p-dropdown
+                        [options]="tipo_matriculas"
+                        name="iTipoMatrId"
+                        optionLabel="nombre"
+                        optionValue="id"
+                        [filter]="true"
+                        [showClear]="true"
+                        [appendTo]="'body'"
+                    ></p-dropdown>
+                    <label for="iTipoMatrId">Tipo</label>
+                </span>
+            </div>
+        </div>
+
         <app-table-primeng
             [columnas]="columns"
             [showCaption]="true"
@@ -21,493 +83,3 @@
         <p-toast />
     </div>
 </app-container-page>
-
-<p-dialog
-    header="{{ caption }}"
-    [(visible)]="visible"
-    [style]="{ width: '56rem' }"
-    [modal]="true"
-    [contentStyle]="{ overflow: 'auto' }"
-    (onClose)="clearForm()"
->
-    <ng-content>
-        <p-stepper #stepper [linear]="true" [(activeStep)]="activeStep">
-            <!-- Primer panel: Datos del estudiante -->
-            <p-stepperPanel header="Datos del estudiante">
-                <ng-template
-                    pTemplate="content"
-                    let-nextCallback="nextCallback"
-                >
-                    <form [formGroup]="formEstudiante">
-                        <div class="grid p-fluid mt-3">
-                            <input
-                                pInputText
-                                type="hidden"
-                                formControlName="iEstudianteId"
-                                class="p-inputtext-sm"
-                            />
-                            <input
-                                pInputText
-                                type="hidden"
-                                formControlName="iPersIdEstudiante"
-                                class="p-inputtext-sm"
-                            />
-
-                            <div class="field col-12 md:col-4">
-                                <span class="p-float-label">
-                                    <p-dropdown
-                                        [options]="tipo_documentos"
-                                        formControlName="iTipoIdentIdEstudiante"
-                                        optionLabel="cTipoIdentNombre"
-                                        [checkmark]="true"
-                                        optionValue="iTipoIdentId"
-                                        [filter]="true"
-                                        [showClear]="true"
-                                        [appendTo]="'body'"
-                                        (onChange)="
-                                            onTipoIdentificacionSeleccionado(
-                                                $event
-                                            )
-                                        "
-                                    />
-                                    <label for="iTipoIdentIdEstudiante"
-                                        >Tipo de documento</label
-                                    >
-                                </span>
-                            </div>
-                            <div class="field col-12 md:col-4">
-                                <span class="p-float-label">
-                                    <input
-                                        pInputText
-                                        id="cPersDocumentoEstudiante"
-                                        formControlName="cPersDocumentoEstudiante"
-                                        aria-describedby="cPersDocumento-help"
-                                    />
-                                    <label for="cPersDocumentoEstudiante"
-                                        >Documento</label
-                                    >
-                                </span>
-                            </div>
-                            <div class="field col-12 md:col-4">
-                                <p-button
-                                    label="Validar"
-                                    (onClick)="
-                                        accionBtnItem('validar_estudiante')
-                                    "
-                                    styleClass="p-button-warning"
-                                />
-                            </div>
-
-                            <div class="field col-12 md:col-4">
-                                <span class="p-float-label">
-                                    <input
-                                        pInputText
-                                        id="cPersNombreEstudiante"
-                                        formControlName="cPersNombreEstudiante"
-                                        aria-describedby="cPersNombre-help"
-                                    />
-                                    <label for="cPersNombreEstudiante"
-                                        >Nombres</label
-                                    >
-                                </span>
-                            </div>
-                            <div class="field col-12 md:col-4">
-                                <span class="p-float-label">
-                                    <input
-                                        pInputText
-                                        id="cPersPaternoEstudiante"
-                                        formControlName="cPersPaternoEstudiante"
-                                        aria-describedby="cPersPaterno-help"
-                                    />
-                                    <label for="cPersPaternoEstudiante"
-                                        >Primer Apellido</label
-                                    >
-                                </span>
-                            </div>
-                            <div class="field col-12 md:col-4">
-                                <span class="p-float-label">
-                                    <input
-                                        pInputText
-                                        id="cPersMaternoEstudiante"
-                                        formControlName="cPersMaternoEstudiante"
-                                        aria-describedby="cPersMaterno-help"
-                                    />
-                                    <label for="cPersMaternoEstudiante"
-                                        >Segundo Apellido</label
-                                    >
-                                </span>
-                            </div>
-
-                            <div class="field col-12 md:col-4">
-                                <span class="p-float-label">
-                                    <p-calendar
-                                        formControlName="dPersNacimientoEstudiante"
-                                        [iconDisplay]="'input'"
-                                        [showIcon]="true"
-                                        inputId="dPersNacimiento"
-                                        [appendTo]="'body'"
-                                    />
-                                    <label for="dPersNacimientoEstudiante"
-                                        >Fecha de nacimiento</label
-                                    >
-                                </span>
-                            </div>
-                            <div class="field col-12 md:col-4">
-                                <span class="p-float-label">
-                                    <p-dropdown
-                                        [options]="sexos"
-                                        formControlName="cPersSexoEstudiante"
-                                        optionLabel="nombre"
-                                        [checkmark]="true"
-                                        optionValue="id"
-                                        [filter]="true"
-                                        [showClear]="true"
-                                        [appendTo]="'body'"
-                                    />
-                                    <label for="cPersSexoEstudiante"
-                                        >Sexo</label
-                                    >
-                                </span>
-                            </div>
-                            <div class="field col-12 md:col-4">
-                                <span class="p-float-label">
-                                    <p-dropdown
-                                        [options]="estados_civiles"
-                                        formControlName="iTipoEstCivIdEstudiante"
-                                        optionLabel="cTipoEstCivilNombre"
-                                        [checkmark]="true"
-                                        optionValue="iTipoEstCivId"
-                                        [filter]="true"
-                                        [showClear]="true"
-                                        [appendTo]="'body'"
-                                    />
-                                    <label for="iTipoEstCivIdEstudiante"
-                                        >Estado Civil</label
-                                    >
-                                </span>
-                            </div>
-                        </div>
-                    </form>
-                </ng-template>
-            </p-stepperPanel>
-
-            <!-- Segundo panel: Datos del representante -->
-            <p-stepperPanel #stepper header="Datos del representante">
-                <ng-template
-                    pTemplate="content"
-                    let-prevCallback="prevCallback"
-                    let-nextCallback="nextCallback"
-                >
-                    <form [formGroup]="formRepresentante">
-                        <div class="grid p-fluid mt-3">
-                            <input
-                                pInputText
-                                type="hidden"
-                                formControlName="iPersIdRepresentante"
-                                class="p-inputtext-sm"
-                            />
-
-                            <div class="field col-12 md:col-4">
-                                <span class="p-float-label">
-                                    <p-dropdown
-                                        [options]="tipo_documentos"
-                                        formControlName="iTipoIdentIdRepresentante"
-                                        optionLabel="cTipoIdentNombre"
-                                        [checkmark]="true"
-                                        optionValue="iTipoIdentId"
-                                        [filter]="true"
-                                        [showClear]="true"
-                                        [appendTo]="'body'"
-                                    />
-                                    <label for="iTipoIdentIdRepresentante"
-                                        >Tipo de documento</label
-                                    >
-                                </span>
-                            </div>
-                            <div class="field col-12 md:col-4">
-                                <span class="p-float-label">
-                                    <input
-                                        pInputText
-                                        id="cPersNombreRepresentante"
-                                        formControlName="cPersDocumentoRepresentante"
-                                        aria-describedby="cPersDocumento-help"
-                                    />
-                                    <label for="cPersDocumentoRepresentante"
-                                        >Documento</label
-                                    >
-                                </span>
-                            </div>
-                            <div class="field col-12 md:col-4">
-                                <p-button
-                                    label="Validar"
-                                    (onClick)="
-                                        accionBtnItem('validar_representante')
-                                    "
-                                    styleClass="p-button-warning"
-                                />
-                            </div>
-
-                            <div class="field col-12 md:col-4">
-                                <span class="p-float-label">
-                                    <input
-                                        pInputText
-                                        id="cPersNombreRepresentante"
-                                        formControlName="cPersNombreRepresentante"
-                                        aria-describedby="cPersNombreRepresentante-help"
-                                    />
-                                    <label for="cPersNombreRepresentante"
-                                        >Nombres</label
-                                    >
-                                </span>
-                            </div>
-                            <div class="field col-12 md:col-4">
-                                <span class="p-float-label">
-                                    <input
-                                        pInputText
-                                        id="cPersPaternoRepresentante"
-                                        formControlName="cPersPaternoRepresentante"
-                                        aria-describedby="cPersPaternoRepresentante-help"
-                                    />
-                                    <label for="cPersPaternoRepresentante"
-                                        >Primer Apellido</label
-                                    >
-                                </span>
-                            </div>
-                            <div class="field col-12 md:col-4">
-                                <span class="p-float-label">
-                                    <input
-                                        pInputText
-                                        id="cPersMaternoRepresentante"
-                                        formControlName="cPersMaternoRepresentante"
-                                        aria-describedby="cPersMaternoRepresentante-help"
-                                    />
-                                    <label for="cPersMaternoRepresentante"
-                                        >Segundo Apellido</label
-                                    >
-                                </span>
-                            </div>
-
-                            <div class="field col-12 md:col-4">
-                                <span class="p-float-label">
-                                    <p-calendar
-                                        formControlName="dPersNacimientoRepresentante"
-                                        [iconDisplay]="'input'"
-                                        [showIcon]="true"
-                                        inputId="dPersNacimiento"
-                                        [appendTo]="'body'"
-                                    />
-                                    <label for="dPersNacimientoRepresentante"
-                                        >Fecha de nacimiento</label
-                                    >
-                                </span>
-                            </div>
-                            <div class="field col-12 md:col-4">
-                                <span class="p-float-label">
-                                    <p-dropdown
-                                        [options]="sexos"
-                                        formControlName="cPersSexoRepresentante"
-                                        optionLabel="nombre"
-                                        [checkmark]="true"
-                                        optionValue="id"
-                                        [filter]="true"
-                                        [showClear]="true"
-                                        [appendTo]="'body'"
-                                    />
-                                    <label for="iTipoIdentIdRepresentante"
-                                        >Sexo</label
-                                    >
-                                </span>
-                            </div>
-                            <div class="field col-12 md:col-4">
-                                <span class="p-float-label">
-                                    <p-dropdown
-                                        [options]="estados_civiles"
-                                        formControlName="iTipoEstCivIdRepresentante"
-                                        optionLabel="cTipoEstCivilNombre"
-                                        [checkmark]="true"
-                                        optionValue="iTipoEstCivId"
-                                        [filter]="true"
-                                        [showClear]="true"
-                                        [appendTo]="'body'"
-                                    />
-                                    <label for="iTipoEstCivIdRepresentante"
-                                        >Estado Civil</label
-                                    >
-                                </span>
-                            </div>
-                        </div>
-                    </form>
-                </ng-template>
-            </p-stepperPanel>
-
-            <!-- Tercer panel: Detalle de matrícula -->
-            <p-stepperPanel #stepper header="Detalle de matrícula">
-                <ng-template
-                    pTemplate="content"
-                    let-prevCallback="prevCallback"
-                >
-                    <form [formGroup]="formMatricula">
-                        <div class="grid p-fluid mt-3">
-                            <input
-                                pInputText
-                                type="hidden"
-                                formControlName="iMatrId"
-                                class="p-inputtext-sm"
-                            />
-
-                            <div class="field col-12 md:col-4">
-                                <span class="p-float-label">
-                                    <p-dropdown
-                                        [options]="nivel_grados"
-                                        formControlName="iNivelGradoId"
-                                        optionLabel="cNivelGrado"
-                                        [checkmark]="true"
-                                        optionValue="iNivelGradoId"
-                                        [filter]="true"
-                                        [showClear]="true"
-                                        [appendTo]="'body'"
-                                    />
-                                    <label for="iNivelGradoId"
-                                        >Seleccionar grado</label
-                                    >
-                                </span>
-                            </div>
-                            <div class="field col-12 md:col-4">
-                                <span class="p-float-label">
-                                    <p-dropdown
-                                        [options]="turnos"
-                                        formControlName="iTurnoId"
-                                        optionLabel="cTurnoNombre"
-                                        [checkmark]="true"
-                                        optionValue="iTurnoId"
-                                        [filter]="true"
-                                        [showClear]="true"
-                                        [appendTo]="'body'"
-                                    />
-                                    <label for="iTurnoId"
-                                        >Seleccionar turno</label
-                                    >
-                                </span>
-                            </div>
-                            <div class="field col-12 md:col-4">
-                                <span class="p-float-label">
-                                    <p-dropdown
-                                        [options]="secciones"
-                                        formControlName="iSeccionId"
-                                        optionLabel="cSeccionNombre"
-                                        [checkmark]="true"
-                                        optionValue="iSeccionId"
-                                        [filter]="true"
-                                        [showClear]="true"
-                                        [appendTo]="'body'"
-                                    />
-                                    <label for="iSeccionId"
-                                        >Seleccionar sección</label
-                                    >
-                                </span>
-                            </div>
-
-                            <div class="field col-12 md:col-6">
-                                <span class="p-float-label">
-                                    <p-calendar
-                                        formControlName="dtMatrFecha"
-                                        [iconDisplay]="'input'"
-                                        [showIcon]="true"
-                                        inputId="dtMatrFecha"
-                                        [appendTo]="'body'"
-                                    />
-                                    <label for="dtMatrFecha"
-                                        >Fecha de matrícula</label
-                                    >
-                                </span>
-                            </div>
-                            <div class="field col-12 md:col-6">
-                                <span class="p-float-label">
-                                    <p-dropdown
-                                        [options]="tipo_matriculas"
-                                        formControlName="iTipoMatrId"
-                                        optionLabel="cTipoMatrNombre"
-                                        [checkmark]="true"
-                                        optionValue="iTipoMatrId"
-                                        [showClear]="true"
-                                        [filter]="true"
-                                        [appendTo]="'body'"
-                                    />
-                                    <label for="iTipoMatrId"
-                                        >Tipo de matrícula</label
-                                    >
-                                </span>
-                            </div>
-
-                            <div class="field col-12 md:col-6">
-                                <p-checkbox
-                                    formControlName="bMatrDiscap"
-                                    value="true"
-                                    inputId="bMatrDiscap"
-                                    label="Tiene discapacidad"
-                                />
-                            </div>
-
-                            <div class="field col-12 md:col-6">
-                                <p-checkbox
-                                    formControlName="bMatrPariente"
-                                    value="true"
-                                    inputId="bMatrPariente"
-                                    label="Tiene hermano/a inscrito en la IE"
-                                />
-                            </div>
-
-                            <div class="field col-12 md:col-12">
-                                <span class="p-float-label">
-                                    <input
-                                        pInputText
-                                        id="cObservacion"
-                                        formControlName="cObservacion"
-                                        aria-describedby="cObservacion-help"
-                                    />
-                                    <label for="cObservacion"
-                                        >Observación</label
-                                    >
-                                </span>
-                            </div>
-                        </div>
-                    </form>
-                </ng-template>
-            </p-stepperPanel>
-        </p-stepper>
-
-        <div
-            class="flex pt-4"
-            [class.justify-content-end]="activeStep === 0"
-            [class.justify-content-between]="activeStep !== 0"
-        >
-            <p-button
-                label="Atrás"
-                (click)="handlePrevious()"
-                [className]="activeStep === 0 ? 'hidden' : ''"
-                [disabled]="activeStep === 0"
-            ></p-button>
-            <p-button
-                *ngIf="!isLastStep"
-                [label]="activeStep === 0 ? 'Siguiente' : 'Siguiente'"
-                (click)="handleNext()"
-            ></p-button>
-            @if (c_accion === 'editar') {
-                <p-button
-                    label="Editar"
-                    [disabled]="formMatricula.invalid"
-                    (onClick)="accionBtnItem('editar')"
-                    styleClass="p-button-warning"
-                />
-            }
-            @if (c_accion === 'agregar') {
-                <p-button
-                    label="Guardar"
-                    [disabled]="formMatricula.invalid"
-                    (onClick)="accionBtnItem('guardar')"
-                    styleClass="p-button-primary"
-                />
-            }
-        </div>
-    </ng-content>
-</p-dialog>

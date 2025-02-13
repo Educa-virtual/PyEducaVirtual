@@ -75,16 +75,31 @@ export class FamiliaComponent {
     }
 
     ngOnInit(): void {
-        this.tipos_familiares =
-            this.compartirMatriculasService.getTiposFamiliares()
-        this.tipos_documentos =
-            this.compartirMatriculasService.getTiposDocumentos()
-        this.estados_civiles =
-            this.compartirMatriculasService.getEstadosCiviles()
+        this.compartirMatriculasService
+            .getTiposFamiliares()
+            .subscribe((data) => {
+                this.tipos_familiares = data
+            })
+        this.compartirMatriculasService
+            .getTiposDocumentos()
+            .subscribe((data) => {
+                this.tipos_documentos = data
+            })
+        this.compartirMatriculasService
+            .getEstadosCiviles()
+            .subscribe((data) => {
+                this.estados_civiles = data
+            })
+        this.compartirMatriculasService
+            .getNacionalidades()
+            .subscribe((data) => {
+                this.nacionalidades = data
+            })
+        this.compartirMatriculasService.getDepartamentos().subscribe((data) => {
+            this.departamentos = data
+        })
+
         this.sexos = this.compartirMatriculasService.getSexos()
-        this.nacionalidades =
-            this.compartirMatriculasService.getNacionalidades()
-        this.departamentos = this.compartirMatriculasService.getDepartamentos()
         this.lenguas = this.compartirMatriculasService.getLenguas()
 
         this.searchFamiliares()
@@ -115,6 +130,14 @@ export class FamiliaComponent {
         } catch (error) {
             console.log(error, 'error de variables')
         }
+
+        this.form.get('iDptoId').valueChanges.subscribe((value) => {
+            this.getProvincias(value)
+        })
+
+        this.form.get('iPrvnId').valueChanges.subscribe((value) => {
+            this.getDistritos(value)
+        })
     }
 
     accionBtnItemTable({ accion }) {
@@ -312,66 +335,20 @@ export class FamiliaComponent {
         this.form.get('iPersId')?.setValue(0)
     }
 
-    getProvincias() {
-        this.query
-            .searchTablaXwhere({
-                esquema: 'grl',
-                tabla: 'provincias',
-                campos: '*',
-                condicion: 'iDptoId = ' + this.form.value.iDptoId,
-            })
-            .subscribe({
-                next: (data: any) => {
-                    const item = data.data
-                    this.provincias = item.map((provincia) => ({
-                        id: provincia.iPrvnId,
-                        nombre: provincia.cPrvnNombre,
-                    }))
-                    console.log(this.provincias, 'provincias')
-                },
-                error: (error) => {
-                    console.error('Error obteniendo provincias:', error)
-                    this.messageService.add({
-                        severity: 'danger',
-                        summary: 'Mensaje',
-                        detail: 'Error en ejecución',
-                    })
-                },
-                complete: () => {
-                    console.log('Request completed')
-                },
-            })
+    getProvincias(iDptoId: number) {
+        this.compartirMatriculasService.getProvincias(iDptoId).subscribe({
+            next: (data) => {
+                this.provincias = data
+            },
+        })
     }
 
-    getDistritos() {
-        this.query
-            .searchTablaXwhere({
-                esquema: 'grl',
-                tabla: 'distritos',
-                campos: '*',
-                condicion: 'iPrvnId = ' + this.form.value.iPrvnId,
-            })
-            .subscribe({
-                next: (data: any) => {
-                    const item = data.data
-                    this.distritos = item.map((distrito) => ({
-                        id: distrito.iDsttId,
-                        nombre: distrito.cDsttNombre,
-                    }))
-                    console.log(this.distritos, 'distritos')
-                },
-                error: (error) => {
-                    console.error('Error obteniendo distritos:', error)
-                    this.messageService.add({
-                        severity: 'danger',
-                        summary: 'Mensaje',
-                        detail: 'Error en ejecución',
-                    })
-                },
-                complete: () => {
-                    console.log('Request completed')
-                },
-            })
+    getDistritos(iPrvnId: number) {
+        this.compartirMatriculasService.getDistritos(iPrvnId).subscribe({
+            next: (data) => {
+                this.distritos = data
+            },
+        })
     }
 
     validar() {

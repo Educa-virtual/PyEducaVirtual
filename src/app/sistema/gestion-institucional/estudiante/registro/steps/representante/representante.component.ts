@@ -40,16 +40,31 @@ export class RepresentanteComponent {
     ) {}
 
     ngOnInit(): void {
-        this.tipos_familiares =
-            this.compartirMatriculasService.getTiposFamiliares()
-        this.tipos_documentos =
-            this.compartirMatriculasService.getTiposDocumentos()
-        this.estados_civiles =
-            this.compartirMatriculasService.getEstadosCiviles()
+        this.compartirMatriculasService
+            .getTiposFamiliares()
+            .subscribe((data) => {
+                this.tipos_familiares = data
+            })
+        this.compartirMatriculasService
+            .getTiposDocumentos()
+            .subscribe((data) => {
+                this.tipos_documentos = data
+            })
+        this.compartirMatriculasService
+            .getEstadosCiviles()
+            .subscribe((data) => {
+                this.estados_civiles = data
+            })
+        this.compartirMatriculasService
+            .getNacionalidades()
+            .subscribe((data) => {
+                this.nacionalidades = data
+            })
+        this.compartirMatriculasService.getDepartamentos().subscribe((data) => {
+            this.departamentos = data
+        })
+
         this.sexos = this.compartirMatriculasService.getSexos()
-        this.nacionalidades =
-            this.compartirMatriculasService.getNacionalidades()
-        this.departamentos = this.compartirMatriculasService.getDepartamentos()
         this.lenguas = this.compartirMatriculasService.getLenguas()
 
         try {
@@ -81,6 +96,14 @@ export class RepresentanteComponent {
         } catch (error) {
             console.log(error, 'error de variables')
         }
+
+        this.form.get('iDptoId').valueChanges.subscribe((value) => {
+            this.getProvincias(value)
+        })
+
+        this.form.get('iPrvnId').valueChanges.subscribe((value) => {
+            this.getDistritos(value)
+        })
 
         this.setFormRepresentante()
     }
@@ -135,16 +158,20 @@ export class RepresentanteComponent {
             })
     }
 
-    getProvincias() {
-        this.provincias = this.compartirMatriculasService.getProvincias(
-            this.form.value.iDptoId
-        )
+    getProvincias(iDptoId: number) {
+        this.compartirMatriculasService.getProvincias(iDptoId).subscribe({
+            next: (data) => {
+                this.provincias = data
+            },
+        })
     }
 
-    getDistritos() {
-        this.distritos = this.compartirMatriculasService.getDistritos(
-            this.form.value.iPrvnId
-        )
+    getDistritos(iPrvnId: number) {
+        this.compartirMatriculasService.getDistritos(iPrvnId).subscribe({
+            next: (data) => {
+                this.distritos = data
+            },
+        })
     }
 
     guardarRepresentante() {

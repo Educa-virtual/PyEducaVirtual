@@ -756,12 +756,6 @@ const administracion = [
                                     '/gestion-institucional/estudiante/registro',
                                 ],
                             },
-                            {
-                                label: 'Traslado estudiante',
-                                icon: 'pi pi-fw pi-circle',
-                                badge: 'NEW',
-                                // routerLink: ['/'],
-                            },
                         ],
                         //ConfigGradoSeccion
                     },
@@ -771,7 +765,7 @@ const administracion = [
                         icon: 'pi pi-fw pi-cog',
                         items: [
                             {
-                                label: 'Registrar solicitudes',
+                                label: 'Gestionar matriculas',
                                 icon: 'pi pi-fw pi-file-plus',
                                 badge: '',
                                 routerLink: [
@@ -779,16 +773,12 @@ const administracion = [
                                 ],
                             },
                             {
-                                label: 'Procesar solicitudes',
-                                icon: 'pi pi-fw pi-list-check',
+                                label: 'Matrículo Individual',
+                                icon: 'pi pi-fw pi-file-plus',
                                 badge: '',
-                                routerLink: ['/gestion-institucional/procesar'],
-                            },
-                            {
-                                label: 'Ver matriculados',
-                                icon: 'pi pi-fw pi-verified',
-                                badge: '',
-                                routerLink: ['/'],
+                                routerLink: [
+                                    '/gestion-institucional/matriculas/registro-individual',
+                                ],
                             },
                         ],
                         //ConfigGradoSeccion

@@ -1,0 +1,538 @@
+<app-container-page
+    *ngIf="data"
+    [title]="
+        'Gestionar preguntas de ' +
+        data?.cCursoNombre +
+        ' - ' +
+        data?.cGradoAbreviacion +
+        ' - ' +
+        data?.cNivelTipoNombre +
+        ''
+    "
+    [actions]="[]"
+>
+    <div class="grid">
+        <div class="col-12 md:col-6 align-content-center font-bold">
+            <b style="font-size: 18px"
+                >Evaluación: {{ data?.cEvaluacionNombre || '-' }} -
+                {{ data?.cNivelEvalNombre || '' }}</b
+            ><br />
+            <!-- <small>Nota: Los datos ingresados se guardan de forma automática.</small> -->
+        </div>
+        <div class="col-12 md:col-3 text-center align-content-center font-bold">
+            <span style="font-size: 18px">Total Preguntas:</span>
+            <span>
+                <p-badge
+                    [value]="preguntas?.length || 0"
+                    severity="info"
+                    styleClass="ml-2"
+                    badgeSize="large"
+                >
+                </p-badge>
+            </span>
+        </div>
+        <div class="col-12 md:col-3 text-right">
+            <button
+                pButton
+                class="p-button-primary gap-2"
+                (click)="menuAgregarPreguntas.toggle($event)"
+            >
+                <i class="pi pi-plus"></i>
+                <span class="text-md">Agregar</span>
+            </button>
+            <p-menu
+                #menuAgregarPreguntas
+                [popup]="true"
+                [model]="tiposAgregarPregunta"
+                appendTo="body"
+                styleClass="w-20rem"
+            >
+            </p-menu>
+        </div>
+        @if (!preguntas.length) {
+            <div class="col-12">
+                <p-divider></p-divider>
+                <div class="p-4 rounded">
+                    <div class="m-4 text-center border-dashed rounded p-4">
+                        <img
+                            src="./assets/images/icons/noData.png"
+                            width="60"
+                            alt=""
+                        /><br />
+                        <h5>No se encontraron preguntas en esta evaluación</h5>
+                    </div>
+                </div>
+            </div>
+        } @else {
+            <div class="col-12">
+                <p-accordion [activeIndex]="0" styleClass="w-full">
+                    @for (list of preguntas; track list; let id = $index) {
+                        <p-accordionTab iconPos="end">
+                            <ng-template pTemplate="header">
+                                <span
+                                    class="flex align-items-center justify-content-center w-full"
+                                >
+                                    <span class="font-bold whitespace-nowrap">{{
+                                        '#' + (id + 1) + ' ' + list.title
+                                    }}</span>
+                                    <p-button
+                                        icon="pi pi-trash"
+                                        iconPos="left"
+                                        severity="danger"
+                                        class="ml-auto mr-2"
+                                        [rounded]="true"
+                                        [text]="true"
+                                        (onClick)="
+                                            $event.stopPropagation();
+                                            confirmarEliminarPregunta(
+                                                id + 1,
+                                                list
+                                            )
+                                        "
+                                    ></p-button>
+                                </span>
+                            </ng-template>
+                            @for (
+                                item of list.pregunta;
+                                track item;
+                                let idx = $index
+                            ) {
+                                <div class="grid">
+                                    @if (item.bEncabezado) {
+                                        <div class="col-12 md:col-7">
+                                            <label
+                                                for="enunciado"
+                                                class="mt-1 font-bold"
+                                                >Descripción del Enunciado
+                                                <span
+                                                    class="text-red-500 text-xs"
+                                                    >(*) Obligatorio</span
+                                                ></label
+                                            >
+                                            <editor
+                                                [init]="initEnunciado"
+                                                [(ngModel)]="encabezado"
+                                            />
+                                            {{ encabezado }}
+                                        </div>
+                                        <div class="col-12 md:col-5">
+                                            <div class="grid">
+                                                <div class="col-12">
+                                                    <label
+                                                        for="matriz"
+                                                        class="mt-1 font-bold"
+                                                        >Matriz
+                                                        <span
+                                                            class="text-red-500 text-xs"
+                                                            >(*)
+                                                            Obligatorio</span
+                                                        ></label
+                                                    >
+                                                </div>
+                                                <div class="col-12">
+                                                    <p-inputGroup>
+                                                        <p-inputGroupAddon
+                                                            >Competencia</p-inputGroupAddon
+                                                        >
+                                                        <p-dropdown
+                                                            styleClass="w-full"
+                                                            placeholder="Seleccione la Competencia"
+                                                            optionValue="iCompetenciaId"
+                                                            [options]="
+                                                                matrizCompetencia
+                                                            "
+                                                            optionLabel="cCompetenciaNombre"
+                                                        />
+                                                    </p-inputGroup>
+                                                </div>
+                                                <div class="col-12">
+                                                    <p-inputGroup>
+                                                        <p-inputGroupAddon
+                                                            >Capacidad</p-inputGroupAddon
+                                                        >
+                                                        <p-dropdown
+                                                            styleClass="w-full"
+                                                            placeholder="Seleccione la Capacidad"
+                                                            optionValue="iCompetenciaId"
+                                                            [options]="[]"
+                                                            optionLabel="cCompetenciaNombre"
+                                                        />
+                                                    </p-inputGroup>
+                                                </div>
+                                                <div class="col-12">
+                                                    <p-inputGroup>
+                                                        <p-inputGroupAddon
+                                                            >Desempeño
+                                                        </p-inputGroupAddon>
+                                                        <input
+                                                            type="text"
+                                                            pInputText
+                                                            placeholder="Ingrese el desempeño"
+                                                            [(ngModel)]="
+                                                                item.cDesempenoDescripcion
+                                                            "
+                                                        />
+                                                    </p-inputGroup>
+                                                </div>
+                                                <div class="col-12">
+                                                    <label
+                                                        for="enunciado"
+                                                        class="mt-1 font-bold"
+                                                        >Pregunta
+                                                        <span
+                                                            class="text-red-500 text-xs"
+                                                            >(*)
+                                                            Obligatorio</span
+                                                        ></label
+                                                    >
+                                                    <editor [init]="init" />
+                                                </div>
+
+                                                <div class="col-12 mt-1">
+                                                    <div
+                                                        class="flex font-bold justify-content-between"
+                                                    >
+                                                        <div
+                                                            class="flex font-bold justify-content-start align-items-center"
+                                                        >
+                                                            Lista de
+                                                            Alternativas
+                                                        </div>
+                                                        <div>
+                                                            <button
+                                                                pButton
+                                                                pRipple
+                                                                type="button"
+                                                                class="p-button-primary"
+                                                            >
+                                                                <i
+                                                                    class="pi pi-plus"
+                                                                ></i
+                                                                >&nbsp; Añadir
+                                                                Alternativa
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    @for (
+                                                        item of alternativas;
+                                                        track item;
+                                                        let idx = $index
+                                                    ) {
+                                                        <p-inputGroup
+                                                            class="mt-1"
+                                                        >
+                                                            <p-inputGroupAddon>
+                                                                {{
+                                                                    item.cBancoAltLetra
+                                                                }}
+                                                            </p-inputGroupAddon>
+                                                            <input
+                                                                type="text"
+                                                                pInputText
+                                                                placeholder="Ingrese la alternativa"
+                                                            />
+                                                        </p-inputGroup>
+                                                        <div
+                                                            class="flex justify-content-end"
+                                                        >
+                                                            <p-button
+                                                                *ngIf="
+                                                                    item.bBancoAltRptaCorrecta
+                                                                "
+                                                                icon="pi pi-check"
+                                                                [rounded]="true"
+                                                                [text]="true"
+                                                                size="small"
+                                                                severity="success"
+                                                            />
+                                                            <button
+                                                                type="button"
+                                                                pButton
+                                                                [text]="true"
+                                                                icon="pi pi-trash"
+                                                                class="p-button-danger"
+                                                                size="small"
+                                                            >
+                                                                &nbsp;
+                                                            </button>
+                                                            <button
+                                                                type="button"
+                                                                pButton
+                                                                [text]="true"
+                                                                icon="pi pi-image"
+                                                                class="p-button-primary"
+                                                                size="small"
+                                                            >
+                                                                &nbsp;
+                                                            </button>
+                                                            <p-checkbox
+                                                                [label]="
+                                                                    'Respuesta Correcta'
+                                                                "
+                                                                name="group"
+                                                            />
+                                                        </div>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    } @else {
+                                        <div class="col-12">
+                                            <label
+                                                for="matriz"
+                                                class="mt-1 font-bold"
+                                                >Matriz
+                                                <span
+                                                    class="text-red-500 text-xs"
+                                                    >(*) Obligatorio</span
+                                                ></label
+                                            >
+                                        </div>
+                                        <div class="col-12 md:col-12 lg:col-6">
+                                            <p-inputGroup>
+                                                <p-inputGroupAddon
+                                                    >Competencia</p-inputGroupAddon
+                                                >
+                                                <p-dropdown
+                                                    styleClass="w-full"
+                                                    placeholder="Seleccione la Competencia"
+                                                    optionValue="iCompetenciaId"
+                                                    [options]="
+                                                        matrizCompetencia
+                                                    "
+                                                    optionLabel="cCompetenciaNombre"
+                                                    [(ngModel)]="
+                                                        item.iCompetenciaId
+                                                    "
+                                                    [filter]="true"
+                                                    filterBy="cCompetenciaNombre"
+                                                    [showClear]="true"
+                                                />
+                                            </p-inputGroup>
+                                        </div>
+                                        <div class="col-12 md:col-12 lg:col-6">
+                                            <p-inputGroup>
+                                                <p-inputGroupAddon
+                                                    >Capacidad</p-inputGroupAddon
+                                                >
+                                                <p-dropdown
+                                                    styleClass="w-full"
+                                                    placeholder="Seleccione la Capacidad"
+                                                    optionValue="iCapacidadId"
+                                                    [options]="matrizCapacidad"
+                                                    optionLabel="cCapacidadNombre"
+                                                    [(ngModel)]="
+                                                        item.iCapacidadId
+                                                    "
+                                                    [filter]="true"
+                                                    filterBy="cCapacidadNombre"
+                                                    [showClear]="true"
+                                                />
+                                            </p-inputGroup>
+                                        </div>
+                                        <div class="col-12 md:col-12">
+                                            <p-inputGroup>
+                                                <p-inputGroupAddon
+                                                    >Desempeño
+                                                </p-inputGroupAddon>
+                                                <input
+                                                    type="text"
+                                                    pInputText
+                                                    placeholder="Ingrese el desempeño"
+                                                    [(ngModel)]="
+                                                        item.cDesempenoDescripcion
+                                                    "
+                                                />
+                                            </p-inputGroup>
+                                        </div>
+                                        <div class="col-12">
+                                            <label
+                                                for="enunciado"
+                                                class="mt-1 font-bold"
+                                                >Pregunta
+                                                <span
+                                                    class="text-red-500 text-xs"
+                                                    >(*) Obligatorio</span
+                                                ></label
+                                            >
+                                            <editor
+                                                [init]="init"
+                                                [(ngModel)]="item.cPregunta"
+                                            />
+                                        </div>
+
+                                        <div class="col-12 mt-1">
+                                            <div
+                                                class="flex font-bold text-center"
+                                            >
+                                                <div
+                                                    class="flex font-bold align-items-center text-primary"
+                                                >
+                                                    Lista de Alternativas
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            @for (
+                                                alternativa of item.alternativas;
+                                                track alternativa;
+                                                let ida = $index
+                                            ) {
+                                                <div
+                                                    class="p-2"
+                                                    [ngStyle]="{
+                                                        'border-left':
+                                                            alternativa.bAlternativaCorrecta
+                                                                ? '4px solid #22c55e'
+                                                                : 'inherit',
+                                                        background:
+                                                            alternativa.bAlternativaCorrecta
+                                                                ? 'rgb(227 253 237)'
+                                                                : 'transparent',
+                                                    }"
+                                                >
+                                                    <p-inputGroup class="mt-1">
+                                                        <p-inputGroupAddon>
+                                                            {{
+                                                                alternativa.cAlternativaLetra
+                                                            }}
+                                                        </p-inputGroupAddon>
+                                                        <input
+                                                            type="text"
+                                                            pInputText
+                                                            placeholder="Ingrese la alternativa"
+                                                            [(ngModel)]="
+                                                                alternativa.cAlternativaDescripcion
+                                                            "
+                                                        />
+                                                        <button
+                                                            type="button"
+                                                            pButton
+                                                            [text]="true"
+                                                            icon="pi pi-trash"
+                                                            class="p-button-danger"
+                                                            size="small"
+                                                            (click)="
+                                                                eliminarAlternativa(
+                                                                    ida,
+                                                                    item.alternativas
+                                                                )
+                                                            "
+                                                        >
+                                                            &nbsp;
+                                                        </button>
+                                                        <button
+                                                            pButton
+                                                            type="button"
+                                                            [text]="true"
+                                                            class="p-button-primary btn-file-image"
+                                                            size="small"
+                                                        >
+                                                            <i
+                                                                class="pi pi-image"
+                                                            ></i
+                                                            ><input
+                                                                type="file"
+                                                                accept="image/*"
+                                                                (change)="
+                                                                    onUploadChange(
+                                                                        $event,
+                                                                        alternativa
+                                                                    )
+                                                                "
+                                                            />
+                                                        </button>
+                                                        <p-checkbox
+                                                            [label]="
+                                                                'Respuesta Correcta'
+                                                            "
+                                                            [inputId]="
+                                                                alternativa.iAlternativaId
+                                                            "
+                                                            [value]="
+                                                                alternativa
+                                                            "
+                                                            [(ngModel)]="
+                                                                alternativa.bAlternativaCorrecta
+                                                            "
+                                                            [binary]="true"
+                                                            (onChange)="
+                                                                cambiarEstadoCheckbox(
+                                                                    alternativa.iAlternativaId,
+                                                                    item.alternativas
+                                                                )
+                                                            "
+                                                        />
+                                                    </p-inputGroup>
+                                                    @if (
+                                                        alternativa.bAlternativaCorrecta
+                                                    ) {
+                                                        <p-inputGroup
+                                                            class="mt-1"
+                                                        >
+                                                            <p-inputGroupAddon>
+                                                                Explicación
+                                                            </p-inputGroupAddon>
+                                                            <input
+                                                                type="text"
+                                                                pInputText
+                                                                placeholder="Ingrese la explicación"
+                                                                [(ngModel)]="
+                                                                    alternativa.cAlternativaExplicacion
+                                                                "
+                                                            />
+                                                        </p-inputGroup>
+                                                    }
+                                                </div>
+                                            }
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="text-center">
+                                                <button
+                                                    pButton
+                                                    pRipple
+                                                    type="button"
+                                                    class="p-button-primary pulse"
+                                                    (click)="
+                                                        agregarAlternativa(
+                                                            item.alternativas
+                                                        )
+                                                    "
+                                                >
+                                                    <i class="pi pi-plus"></i
+                                                    >&nbsp; Añadir Alternativa
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="text-center">
+                                                <button
+                                                    pButton
+                                                    pRipple
+                                                    type="button"
+                                                    class="p-button-success btn-block"
+                                                    (click)="
+                                                        guardarPreguntaSinEncabezado(
+                                                            false,
+                                                            list
+                                                        )
+                                                    "
+                                                >
+                                                    <i class="pi pi-check"></i
+                                                    >&nbsp; Guardar Pregunta
+                                                </button>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        </p-accordionTab>
+                    }
+                </p-accordion>
+            </div>
+        }
+    </div>
+</app-container-page>
+<p-toast></p-toast>

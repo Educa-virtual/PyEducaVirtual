@@ -273,6 +273,11 @@ const notas_evaluaciones = [
                                 routerLink: ['/evaluaciones/evaluaciones'],
                             },
                             {
+                                label: 'Preguntas',
+                                icon: 'pi pi-fw pi-question',
+                                routerLink: ['/evaluaciones/preguntas'],
+                            },
+                            {
                                 label: 'Banco de Preguntas',
                                 icon: 'pi pi-fw pi-folder',
                                 routerLink: ['/evaluaciones/areas'],
@@ -905,8 +910,7 @@ export class ConstantesService {
             case ESPECIALISTA_DREMO:
                 return notas_evaluaciones
             case ESPECIALISTA_UGEL:
-                // return notas_evaluaciones
-                return docente
+                return notas_evaluaciones
             case ESTUDIANTE:
                 return estudiante
             case SUBDIRECTOR_IE:

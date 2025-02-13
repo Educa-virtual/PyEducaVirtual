@@ -307,7 +307,7 @@ export class EvaluacionesComponent implements OnInit {
     toggleBotonc(): void {
         this.mostrarBoton = !this.mostrarBoton
     }
-
+    // el buton select
     accionesPrincipal: IActionContainer[] = [
         {
             labelTooltip: 'Agregar evaluacións',
@@ -316,15 +316,17 @@ export class EvaluacionesComponent implements OnInit {
             accion: 'seleccionar',
             class: 'p-button-lg',
         },
-        {
-            labelTooltip: 'Importar evaluacións',
-            text: 'Importar Evaluación',
-            icon: 'pi pi-plus',
-            accion: 'seleccionar',
-            class: 'p-button-lg',
-        },
+        // comentado xk aun no se implemento la funcion importar.
+        // {
+        //     labelTooltip: 'Importar evaluacións',
+        //     text: 'Importar Evaluación',
+        //     icon: 'pi pi-plus',
+        //     accion: 'seleccionar',
+        //     class: 'p-button-lg',
+        // },
     ]
     opcionesAuto: IActionTable[] = []
+    // nombre de las columnas de listar evaluaciones
     columnasBase: IColumn[] = [
         {
             field: 'cEvaluacionNombre',
@@ -351,8 +353,16 @@ export class EvaluacionesComponent implements OnInit {
             text_header: 'Puntaje',
         },
         {
-            field: 'dtEvaluacionCreacion',
-            header: 'Fecha creación',
+            field: 'dtEvaluacionFechaInicio',
+            header: 'Fecha Inicio',
+            type: 'text',
+            width: '4rem',
+            text: 'left',
+            text_header: 'Nivel',
+        },
+        {
+            field: 'dtEvaluacionFechaInicio',
+            header: 'Fecha Fin',
             type: 'text',
             width: '3rem',
             text: 'left',
@@ -382,7 +392,7 @@ export class EvaluacionesComponent implements OnInit {
         },
         ...this.columnasBase,
     ]
-
+    // Acciones del listar evaluaciones creadas
     public accionesTabla: IActionTable[] = [
         {
             labelTooltip: 'Ver',
@@ -395,6 +405,13 @@ export class EvaluacionesComponent implements OnInit {
             labelTooltip: 'Editar',
             icon: 'pi pi-pencil',
             accion: 'editar',
+            type: 'item',
+            class: 'p-button-rounded p-button-warning p-button-text',
+        },
+        {
+            labelTooltip: 'Eliminar',
+            icon: 'pi pi-trash',
+            accion: 'eliminar',
             type: 'item',
             class: 'p-button-rounded p-button-warning p-button-text',
         },
@@ -413,7 +430,6 @@ export class EvaluacionesComponent implements OnInit {
             class: 'p-button-rounded p-button-warning p-button-text',
         },
     ]
-
     onRowSelect(event: any) {
         this.selectedRow = [event]
         //this.selectedRowData.emit(this.selectedRow) // Emite los datos al componente padre
@@ -685,10 +701,6 @@ export class EvaluacionesComponent implements OnInit {
         const { accion } = elemento
 
         switch (accion) {
-            case 'seleccionar':
-                this.visible = true
-                this.opcion = 'seleccionar'
-                break
             case 'agregar':
                 this.agregarEditarPregunta({
                     iEvaluacionId: 0,
@@ -711,7 +723,8 @@ export class EvaluacionesComponent implements OnInit {
                 this.caption = 'Registrar'
 
                 break
-            case 'formularioEvaluacion':
+            // formulario de crear evaluación ERE
+            case 'seleccionar':
                 this.visible = false
                 this.opcion = 'formularioEvaluacion'
                 this.formCapas = 'formularioEvaluacion'

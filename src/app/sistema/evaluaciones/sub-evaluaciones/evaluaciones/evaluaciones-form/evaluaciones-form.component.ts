@@ -288,10 +288,10 @@ export class EvaluacionesFormComponent implements OnInit {
             cEvaluacionUrlDrive: this.evaluacionFormGroup.get(
                 'cEvaluacionUrlDrive'
             ).value,
-            dtEvaluacionFechaInicio: this.evaluacionFormGroup.get(
+            dtEvaluacionFechaInici: this.evaluacionFormGroup.get(
                 'dtEvaluacionFechaInicio'
             ).value,
-            dtEvaluacionFechaFin: this.evaluacionFormGroup.get(
+            dtEvaluacionFechaFi: this.evaluacionFormGroup.get(
                 'dtEvaluacionFechaFin'
             ).value,
         }

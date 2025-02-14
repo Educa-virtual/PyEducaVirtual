@@ -35,7 +35,7 @@ import {
 //
 import { CompartirIdEvaluacionService } from './../../services/ereEvaluaciones/compartir-id-evaluacion.service'
 import { PrimengModule } from '@/app/primeng.module'
-import { MessageService } from 'primeng/api'
+import { MenuItem, MessageService } from 'primeng/api'
 import { Router } from '@angular/router'
 //Calendario
 import {
@@ -131,7 +131,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
     ) {
         this.form = this.fb.group({})
     }
-
+    resetSelect: boolean = false
     ngOnInit() {
         this.obtenerEvaluacion()
         this.caption = 'Evaluaciones'
@@ -313,22 +313,27 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
         this.mostrarBoton = !this.mostrarBoton
     }
     // el buton select
-    accionesPrincipal: IActionContainer[] = [
+    accionesPrincipal: MenuItem[] = [
         {
-            labelTooltip: 'Agregar evaluacións',
-            text: 'Crear Evaluación',
-            icon: 'pi pi-plus',
-            accion: 'seleccionar',
-            class: 'p-button-lg',
+            items: [
+                {
+                    label: 'Crear evaluación',
+                    icon: 'pi pi-plus',
+                    accion: 'seleccionar',
+                    command: () => {
+                        // funcion
+                    },
+                },
+                //comentado xk aun no se implemento la funcion importar.
+                // {
+                //     label: 'Importar evaluación',
+                //     icon: 'pi pi-plus',
+                //     command: () => {
+                //         // funcion
+                //     },
+                // },
+            ],
         },
-        // comentado xk aun no se implemento la funcion importar.
-        // {
-        //     labelTooltip: 'Importar evaluacións',
-        //     text: 'Importar Evaluación',
-        //     icon: 'pi pi-plus',
-        //     accion: 'seleccionar',
-        //     class: 'p-button-lg',
-        // },
     ]
     opcionesAuto: IActionTable[] = []
     // nombre de las columnas de listar evaluaciones
@@ -606,6 +611,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
         // Abrir el modal con el header dinámico
         const refModal = this._dialogService.open(EvaluacionesFormComponent, {
             ...MODAL_CONFIG,
+            maximizable: true,
             data: {
                 accion: 'ver', // Acción específica para ver
                 evaluacion: evaluacion, // Datos de la evaluación
@@ -678,6 +684,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
         // Abre el modal con el header dinámico y los datos correspondientes
         const refModal = this._dialogService.open(EvaluacionesFormComponent, {
             ...MODAL_CONFIG,
+            maximizable: true,
             data: {
                 accion: accion, // Acción (nuevo o editar)
                 evaluacion: evaluacion, // Datos de la evaluación a editar (si existe)
@@ -687,7 +694,9 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
         // Suscribirse al cierre del modal para actualizar las evaluaciones
         refModal.onClose.subscribe((result) => {
             console.log(result)
+            this.opcion = null
             // if (result) {
+            this.resetSelect = true
             this.obtenerEvaluacion() // Actualizar la lista de evaluaciones después de cerrar el modal
             // }
         })
@@ -741,7 +750,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
     // manejar las acciones
     accionBtnItem(elemento) {
         const { accion } = elemento
-
+        console.log(elemento)
         switch (accion) {
             case 'agregar':
                 this.agregarEditarPregunta({
@@ -771,6 +780,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
                 this.opcion = 'formularioEvaluacion'
                 this.formCapas = 'formularioEvaluacion'
                 this.isDialogVisible = true
+                this.resetSelect = false
 
                 this.agregarEditarPregunta({ iEvaluacionId: null })
                 break

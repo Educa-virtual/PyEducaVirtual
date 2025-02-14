@@ -1,8 +1,7 @@
 import { PrimengModule } from '@/app/primeng.module'
-import { IconComponent } from '@/app/shared/icon/icon.component'
 import { IIcon } from '@/app/shared/icon/icon.interface'
-import { IsIconTypePipe } from '@/app/shared/pipes/is-icon-type.pipe'
 import { Component, EventEmitter, Input, Output } from '@angular/core'
+import { MenuItem } from 'primeng/api'
 
 export interface IActionContainer {
     labelTooltip: string
@@ -17,48 +16,25 @@ export interface IActionContainer {
     standalone: true,
     templateUrl: './container-page-accionb.component.html',
     styleUrls: ['./container-page-accionb.component.scss'],
-    imports: [PrimengModule, IconComponent, IsIconTypePipe],
+    imports: [PrimengModule],
 })
 export class ContainerPageAccionbComponent {
     @Output() accionBtnItem = new EventEmitter()
-    @Input() title: string = 'Titulo'
-    @Input() subtitle?: string
-
-    // Lista de acciones que se mostrarán en el select
-    @Input() actions: IActionContainer[] = [
+    @Input() title: string = ''
+    @Input() actions: MenuItem[] | undefined = [
         {
-            labelTooltip: 'Agregar',
-            text: 'Agregar',
-            icon: 'pi pi-plus',
-            accion: 'agregar',
-            class: 'p-button-primary',
-        },
-        {
-            labelTooltip: 'Descargar Pdf',
-            text: 'Descargar Pdf',
-            icon: 'pi pi-file-pdf',
-            accion: 'descargar_pdf',
-            class: 'p-button-danger',
-        },
-        {
-            labelTooltip: 'Descargar Excel',
-            text: 'Descargar Excel',
-            icon: 'pi pi-download',
-            accion: 'descargar_excel',
-            class: 'p-button-success',
+            items: [
+                {
+                    label: 'Menu 1',
+                    icon: 'pi pi-list',
+                },
+            ],
         },
     ]
-
-    // Variable para almacenar la acción seleccionada en el select
-    selectedAction: IActionContainer | null = null
-
-    // Método que ejecuta la acción seleccionada
-    accionBtn() {
-        if (this.selectedAction) {
-            this.accionBtnItem.emit({
-                accion: this.selectedAction.accion,
-                item: this.selectedAction,
-            })
-        }
+    accionBtn(accion) {
+        this.accionBtnItem.emit({
+            accion: accion,
+            item: accion,
+        })
     }
 }

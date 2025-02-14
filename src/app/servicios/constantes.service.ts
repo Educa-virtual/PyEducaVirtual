@@ -277,11 +277,11 @@ const notas_evaluaciones = [
                             //     icon: 'pi pi-fw pi-question',
                             //     routerLink: ['/evaluaciones/preguntas'],
                             // },
-                            {
+                            /*{
                                 label: 'Banco de Preguntas',
                                 icon: 'pi pi-fw pi-folder',
                                 routerLink: ['/evaluaciones/areas'],
-                            },
+                            },*/
                             {
                                 label: 'Dashboard',
                                 icon: 'pi pi-fw pi-user',

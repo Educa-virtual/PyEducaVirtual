@@ -19,10 +19,12 @@ export class ReporteComponent {
     documento: string = ''
     identidad: any // datos del alumno
     historial: any[]
-    columna = []
-    fila: any = []
+    columna = [] // almacena los años y grados de los estudiantes por busqueda por estudiante
+    fila: any = [] // almacena el area curricular y sus notas las notas de los estudiantes por busqueda por estudiante
     final: any
     iiee: any
+    curricular: any
+
     constructor(private ConstantesService: ConstantesService) {
         this.iiee = this.ConstantesService.iIieeId
     }

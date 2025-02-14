@@ -137,15 +137,15 @@
                         >
                         <div class="flex">
                             <p-dropdown
-                                [options]="curricular"
-                                [(ngModel)]="curricular"
-                                optionLabel="curricular"
-                                placeholder="Seleccionar Area Curricular"
+                                [options]="grados"
+                                optionLabel="cGradoNombre"
+                                optionValue="iGradoId"
+                                placeholder="Seleccionar grado"
                             />
                             <p-button
                                 class="mr-1"
                                 label="Buscar"
-                                (click)="buscarDocumento()"
+                                (click)="buscar()"
                             />
                         </div>
                     </p-fieldset>

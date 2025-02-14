@@ -24,15 +24,20 @@ export class ReporteComponent {
     final: any
     iiee: any
     curricular: any
+    grados: any[]
 
     constructor(private ConstantesService: ConstantesService) {
         this.iiee = this.ConstantesService.iIieeId
+        this.grados = JSON.parse(this.ConstantesService.grados)
     }
 
     limpiar() {
         this.documento = ''
         this.persona = false
         this.historico = false
+    }
+    buscar() {
+        console.log(this.grados)
     }
     buscarDocumento() {
         const params = {

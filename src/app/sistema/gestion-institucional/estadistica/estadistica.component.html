@@ -22,16 +22,16 @@
                         <!-- Selección de Año Escolar -->
                         <p-dropdown
                             class="ml-1"
-                            [options]="escolar"
-                            [(ngModel)]="selectedYear"
-                            optionLabel="label"
+                            [options]="years"
+                            optionLabel="cYearNombre"
+                            optionValue="iYAcadId"
                             placeholder="Año Escolar"
-                        ></p-dropdown>
+                        />
 
                         <!-- Selección de Grado -->
                         <p-dropdown
                             class="ml-1"
-                            [options]="grados"
+                            [options]="grado"
                             optionLabel="cGradoNombre"
                             optionValue="iGradoId"
                             placeholder="Grado"

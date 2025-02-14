@@ -1,29 +1,15 @@
 import { Component, OnInit, inject } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { FormsModule } from '@angular/forms'
-import { HttpClient } from '@angular/common/http'
 import { GeneralService } from '@/app/servicios/general.service'
-// Importaciones de PrimeNG
-import { ToolbarModule } from 'primeng/toolbar'
-import { FieldsetModule } from 'primeng/fieldset'
-import { DropdownModule } from 'primeng/dropdown'
-import { TableModule } from 'primeng/table'
-import { ButtonModule } from 'primeng/button'
 import { ConstantesService } from '@/app/servicios/constantes.service'
+import { PrimengModule } from '@/app/primeng.module'
 @Component({
     standalone: true,
     selector: 'app-estadistica',
     templateUrl: './estadistica.component.html',
     styleUrls: ['./estadistica.component.scss'],
-    imports: [
-        CommonModule,
-        FormsModule,
-        ToolbarModule,
-        FieldsetModule,
-        DropdownModule,
-        TableModule,
-        ButtonModule,
-    ],
+    imports: [CommonModule, FormsModule, PrimengModule],
 })
 export class EstadisticaComponent implements OnInit {
     private GeneralService = inject(GeneralService)
@@ -34,8 +20,9 @@ export class EstadisticaComponent implements OnInit {
 
     escolar: any[] = [] // Se llenará con los datos del backend
     datos = [] // Se llenará con los datos del backend
-    grados = []
+    grado: any[]
     codigo: any
+    years: any
     iiee: any
     merito = [
         { label: 'General', value: 1 },
@@ -44,77 +31,24 @@ export class EstadisticaComponent implements OnInit {
         { label: 'Quinto Superior', value: 4 },
     ]
 
-    constructor(
-        private http: HttpClient,
-        private ConstantesService: ConstantesService
-    ) {
-        this.codigo = this.ConstantesService.codModular
+    constructor(private ConstantesService: ConstantesService) {
+        this.grado = JSON.parse(this.ConstantesService.grados)
+        this.years = this.ConstantesService.years
+        console.table(this.years)
         this.iiee = this.ConstantesService.iIieeId
     }
 
     ngOnInit() {
-        this.obtenerAniosYGrados()
+        return
     }
 
-    obtenerAniosYGrados() {
-        const params = {
-            petition: 'post',
-            group: 'aula-virtual',
-            prefix: 'academico',
-            ruta: 'estadistica/grados-por-sede',
-            data: {
-                iIieeId: this.iiee,
-            },
-        }
-        this.getInformation(params, 'obtenerGrado')
-        // this.http
-        //     .get<any>('http://localhost:8000/api/estadistica/anios-academicos')
-        //     .subscribe(
-        //         (response) => {
-        //             this.escolar = response.anios.map((anio: any) => ({
-        //                 label: anio.iYearId,
-        //                 value: anio.iYAcadId,
-        //             }))
-        //         },
-        //         (error) => {
-        //             console.error('Error al obtener los datos:', error)
-        //         }
-        //     )
-        // // Obtener grados filtrados por sede
-        // this.http
-        //     .get<any>(
-        //         `http://localhost:8000/api/estadistica/grados-por-sede/${this.iiee}`
-        //     )
-        //     .subscribe(
-        //         (response) => {
-        //             this.grado = response.grados.map((grado: any) => ({
-        //                 label: grado.cGradoNombre,
-        //                 value: grado.iGradoId,
-        //             }))
-        //         },
-        //         (error) => console.error('Error al obtener grados:', error)
-        //     )
-    }
     buscar() {
         // Reiniciar los datos antes de agregar nuevos para evitar duplicados
         this.identidad = []
-
-        // Simulación de datos con estructura correcta
-        this.identidad.push({
-            merito: this.selectedMerito
-                ? this.selectedMerito.label
-                : 'No especificado',
-            grado: this.selectedGrado
-                ? this.selectedGrado.label
-                : 'No especificado',
-            fecha: new Date().toLocaleDateString(),
-            valor: 'pi pi-refresh', // Estado del reporte
-            generado: 'pi pi-check-circle', // Estado generado
-        })
     }
 
     generar() {
-        if (!this.selectedYear || !this.selectedGrado || !this.selectedMerito) {
+        if (!this.years || !this.grado || !this.merito) {
             alert(
                 'Por favor, seleccione Año Escolar, Grado y Tipo de Orden de Mérito.'
             )
@@ -128,21 +62,6 @@ export class EstadisticaComponent implements OnInit {
             SedeID: this.iiee,
         }
         console.log('Parámetros enviados:', parametros)
-        this.http
-            .post<any>(
-                'http://localhost:8000/api/estadistica/generar-reporte',
-                parametros
-            )
-            .subscribe(
-                (response) => {
-                    console.log('Reporte generado:', response.reporte)
-                    alert('Reporte generado con éxito.')
-                },
-                (error) => {
-                    console.error('Error al generar el reporte:', error)
-                    alert('Hubo un error al generar el reporte.')
-                }
-            )
     }
     getInformation(params, accion) {
         this.GeneralService.getGralPrefix(params).subscribe({
@@ -176,8 +95,7 @@ export class EstadisticaComponent implements OnInit {
 
         switch (accion) {
             case 'obtenerGrado':
-                this.grados = item
-                console.log(this.grados)
+                console.log(item)
                 break
         }
     }

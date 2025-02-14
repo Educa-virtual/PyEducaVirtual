@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core'
+import { Component, OnInit, inject } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { FormsModule } from '@angular/forms'
 import { HttpClient } from '@angular/common/http'
+import { GeneralService } from '@/app/servicios/general.service'
 // Importaciones de PrimeNG
 import { ToolbarModule } from 'primeng/toolbar'
 import { FieldsetModule } from 'primeng/fieldset'
@@ -25,13 +26,15 @@ import { ConstantesService } from '@/app/servicios/constantes.service'
     ],
 })
 export class EstadisticaComponent implements OnInit {
+    private GeneralService = inject(GeneralService)
     selectedYear: any
     selectedGrado: any
     selectedMerito: any
     identidad: any[] = []
 
     escolar: any[] = [] // Se llenará con los datos del backend
-    grado: any[] = [] // Se llenará con los datos del backend
+    grado = [] // Se llenará con los datos del backend
+    grados: any
     codigo: any
     iiee: any
     merito = [
@@ -54,33 +57,43 @@ export class EstadisticaComponent implements OnInit {
     }
 
     obtenerAniosYGrados() {
-        this.http
-            .get<any>('http://localhost:8000/api/estadistica/anios-academicos')
-            .subscribe(
-                (response) => {
-                    this.escolar = response.anios.map((anio: any) => ({
-                        label: anio.iYearId,
-                        value: anio.iYAcadId,
-                    }))
-                },
-                (error) => {
-                    console.error('Error al obtener los datos:', error)
-                }
-            )
-        // Obtener grados filtrados por sede
-        this.http
-            .get<any>(
-                `http://localhost:8000/api/estadistica/grados-por-sede/${this.iiee}`
-            )
-            .subscribe(
-                (response) => {
-                    this.grado = response.grados.map((grado: any) => ({
-                        label: grado.cGradoNombre,
-                        value: grado.iNivelGradoId,
-                    }))
-                },
-                (error) => console.error('Error al obtener grados:', error)
-            )
+        const params = {
+            petition: 'post',
+            group: 'aula-virtual',
+            prefix: 'academico',
+            ruta: 'estadistica/grados-por-sede',
+            data: {
+                iIieeId: this.iiee,
+            },
+        }
+        this.getInformation(params, 'obtenerGrado')
+        // this.http
+        //     .get<any>('http://localhost:8000/api/estadistica/anios-academicos')
+        //     .subscribe(
+        //         (response) => {
+        //             this.escolar = response.anios.map((anio: any) => ({
+        //                 label: anio.iYearId,
+        //                 value: anio.iYAcadId,
+        //             }))
+        //         },
+        //         (error) => {
+        //             console.error('Error al obtener los datos:', error)
+        //         }
+        //     )
+        // // Obtener grados filtrados por sede
+        // this.http
+        //     .get<any>(
+        //         `http://localhost:8000/api/estadistica/grados-por-sede/${this.iiee}`
+        //     )
+        //     .subscribe(
+        //         (response) => {
+        //             this.grado = response.grados.map((grado: any) => ({
+        //                 label: grado.cGradoNombre,
+        //                 value: grado.iGradoId,
+        //             }))
+        //         },
+        //         (error) => console.error('Error al obtener grados:', error)
+        //     )
     }
     buscar() {
         // Reiniciar los datos antes de agregar nuevos para evitar duplicados
@@ -112,10 +125,58 @@ export class EstadisticaComponent implements OnInit {
             year: this.selectedYear.value,
             grado: this.selectedGrado.value,
             merito: this.selectedMerito.value,
-            cmodular: this.codigo,
             SedeID: this.iiee,
         }
+        console.log('Parámetros enviados:', parametros)
+        this.http
+            .post<any>(
+                'http://localhost:8000/api/estadistica/generar-reporte',
+                parametros
+            )
+            .subscribe(
+                (response) => {
+                    console.log('Reporte generado:', response.reporte)
+                    alert('Reporte generado con éxito.')
+                },
+                (error) => {
+                    console.error('Error al generar el reporte:', error)
+                    alert('Hubo un error al generar el reporte.')
+                }
+            )
+    }
+    getInformation(params, accion) {
+        this.GeneralService.getGralPrefix(params).subscribe({
+            next: (response: any) => {
+                this.accionBtnItem({ accion, item: response?.data })
+            },
+            complete: () => {},
+        })
+    }
+    getReportePdf(data: any) {
+        this.GeneralService.generarPdf(data).subscribe({
+            next: (response) => {
+                const blob = new Blob([response], { type: 'application/pdf' })
+                const url = window.URL.createObjectURL(blob)
+                const a = document.createElement('a')
+                a.href = url
+                a.download = 'archivo.pdf'
+                a.click()
+                window.URL.revokeObjectURL(url)
+            },
+            complete: () => {},
+            error: (error) => {
+                console.log(error)
+            },
+        })
+    }
+    accionBtnItem(event): void {
+        const { accion } = event
+        const { item } = event
 
-        console.log('Enviando datos para generación del reporte:', parametros)
+        switch (accion) {
+            case 'obtenerGrado':
+                this.grado = item
+                break
+        }
     }
 }

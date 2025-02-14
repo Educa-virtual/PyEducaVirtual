@@ -45,6 +45,8 @@
                                 [showIcon]="true"
                                 inputId="dtFin"
                                 appendTo="body"
+                                [(ngModel)]="curso.dtExamenFechaInicio"
+                                (onSelect)="onCursoSelect(curso)"
                             />
                         </p-inputGroup>
                     </div>

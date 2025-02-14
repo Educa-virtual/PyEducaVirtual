@@ -362,7 +362,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
             text_header: 'Nivel',
         },
         {
-            field: 'dtEvaluacionFechaInicio',
+            field: 'dtEvaluacionFechaFin',
             header: 'Fecha Fin',
             type: 'text',
             width: '3rem',
@@ -653,9 +653,10 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
         })
         // Suscribirse al cierre del modal para actualizar las evaluaciones
         refModal.onClose.subscribe((result) => {
-            if (result) {
-                this.obtenerEvaluacion() // Actualizar la lista de evaluaciones después de cerrar el modal
-            }
+            console.log(result)
+            // if (result) {
+            this.obtenerEvaluacion() // Actualizar la lista de evaluaciones después de cerrar el modal
+            // }
         })
     }
 

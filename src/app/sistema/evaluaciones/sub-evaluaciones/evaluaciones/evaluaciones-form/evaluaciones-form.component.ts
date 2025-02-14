@@ -261,6 +261,7 @@ export class EvaluacionesFormComponent implements OnInit {
     ereVerEvaluacion() {
         const evaluacionData = this._config.data.evaluacion // Obtener los datos del modal
         if (evaluacionData) {
+            console.log(evaluacionData)
             //console.log(evaluacionData.dtEvaluacionCreacion)
             this.evaluacionFormGroup.patchValue({
                 iEvaluacionId: evaluacionData.iEvaluacionId,
@@ -269,8 +270,8 @@ export class EvaluacionesFormComponent implements OnInit {
                 cEvaluacionNombre: evaluacionData.cEvaluacionNombre,
                 cEvaluacionDescripcion: evaluacionData.cEvaluacionDescripcion,
                 cEvaluacionUrlDrive: evaluacionData.cEvaluacionUrlDrive,
-                dtEvaluacionFechaInicio: [null, [Validators.required]],
-                dtEvaluacionFechaFin: [null, [Validators.required]],
+                dtEvaluacionFechaInicio: evaluacionData.dtEvaluacionFechaInicio,
+                dtEvaluacionFechaFin: evaluacionData.dtEvaluacionFechaFin,
             })
         }
     }
@@ -289,10 +290,10 @@ export class EvaluacionesFormComponent implements OnInit {
             cEvaluacionUrlDrive: this.evaluacionFormGroup.get(
                 'cEvaluacionUrlDrive'
             ).value,
-            dtEvaluacionFechaInici: this.evaluacionFormGroup.get(
+            dtEvaluacionFechaInicio: this.evaluacionFormGroup.get(
                 'dtEvaluacionFechaInicio'
             ).value,
-            dtEvaluacionFechaFi: this.evaluacionFormGroup.get(
+            dtEvaluacionFechaFin: this.evaluacionFormGroup.get(
                 'dtEvaluacionFechaFin'
             ).value,
             iEstado: estado,
@@ -347,9 +348,12 @@ export class EvaluacionesFormComponent implements OnInit {
             cEvaluacionUrlDrive: this.evaluacionFormGroup.get(
                 'cEvaluacionUrlDrive'
             ).value,
-            dtInicio: this.evaluacionFormGroup.get('dtEvaluacionFechaInicio')
-                .value,
-            dtFin: this.evaluacionFormGroup.get('dtEvaluacionFechaFin').value,
+            dtEvaluacionFechaInicio: this.evaluacionFormGroup.get(
+                'dtEvaluacionFechaInicio'
+            ).value,
+            dtEvaluacionFechaFin: this.evaluacionFormGroup.get(
+                'dtEvaluacionFechaFin'
+            ).value,
         }
         console.log('datos para acualizar', data)
         this._apiEre.actualizarEvaluacion(data).subscribe({

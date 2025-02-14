@@ -78,7 +78,7 @@ export class GestionarPreguntasCardComponent implements OnInit {
         } else {
             const params = {
                 iEvaluacionId: this.iEvaluacionIdHashed,
-                iCursoId: this.curso.iCursoId,
+                iCursosNivelGradId: this.curso.iCursosNivelGradId,
             }
             this.evaluacionesService.exportarPreguntasPorArea(params)
         }

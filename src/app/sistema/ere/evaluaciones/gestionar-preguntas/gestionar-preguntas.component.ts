@@ -1,15 +1,7 @@
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import { CommonModule } from '@angular/common'
 import { Component, inject, OnInit } from '@angular/core'
-import { CardModule } from 'primeng/card'
-import { DataView, DataViewModule } from 'primeng/dataview'
-import { TableModule } from 'primeng/table'
-import { IconFieldModule } from 'primeng/iconfield'
-import { InputIconModule } from 'primeng/inputicon'
-import { InputTextModule } from 'primeng/inputtext'
-import { DropdownModule } from 'primeng/dropdown'
-import { ButtonModule } from 'primeng/button'
-import { SplitButtonModule } from 'primeng/splitbutton'
+import { DataView } from 'primeng/dataview'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 
 import { PrimengModule } from '@/app/primeng.module'
@@ -19,6 +11,8 @@ import { ICurso } from '@/app/sistema/aula-virtual/sub-modulos/cursos/interfaces
 import { environment } from '@/environments/environment.template'
 import { ActivatedRoute } from '@angular/router'
 import { ApiEvaluacionesRService } from '@/app/sistema/evaluaciones/services/api-evaluaciones-r.service'
+import { MessagesModule } from 'primeng/messages'
+import { Message } from 'primeng/api'
 
 export type Layout = 'list' | 'grid'
 
@@ -28,17 +22,8 @@ export type Layout = 'list' | 'grid'
     imports: [
         CommonModule,
         ContainerPageComponent,
-        CardModule,
-        DataViewModule,
-        TableModule,
-        IconFieldModule,
-        InputIconModule,
-        InputTextModule,
-        DropdownModule,
-        ButtonModule,
-        ButtonModule,
         PrimengModule,
-        SplitButtonModule,
+        MessagesModule,
         GestionarPreguntasCardComponent,
     ],
     templateUrl: './gestionar-preguntas.component.html',
@@ -57,10 +42,9 @@ export class GestionarPreguntasComponent implements OnInit {
     layout: Layout = 'grid'
     backend = environment.backend
     options = ['grid']
+    mostrarMensajeVacio: boolean = false
+    mensajeInfo: Message[] | undefined
 
-    //datos: any[] = []
-    //iPersId: number = 10
-    //iEvaluacionId: number = 799
     constructor(private route: ActivatedRoute) {}
 
     public onFilter(dv: DataView, event: Event) {
@@ -74,6 +58,12 @@ export class GestionarPreguntasComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.mensajeInfo = [
+            {
+                severity: 'info',
+                detail: 'No hay áreas seleccionables para el usuario actual',
+            },
+        ]
         this.route.params.subscribe((params) => {
             this.iEvaluacionIdHashed = params['iEvaluacionId']
         })
@@ -107,8 +97,10 @@ export class GestionarPreguntasComponent implements OnInit {
                         ...curso,
                     }))
                     this.cursos = this.cursosInicial
+                    this.mostrarMensajeVacio = false
                 },
                 error: (error) => {
+                    this.mostrarMensajeVacio = true
                     console.error('Error obteniendo datos', error)
                 },
             })

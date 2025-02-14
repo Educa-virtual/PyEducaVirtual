@@ -460,7 +460,7 @@ export class ApiEvaluacionesRService {
     }
 
     exportarPreguntasPorArea(params) {
-        const url = `${this.urlBackendApi}/ere/evaluaciones/${params.iEvaluacionId}/areas/${params.iCursoId}/exportar-preguntas`
+        const url = `${this.urlBackendApi}/ere/evaluaciones/${params.iEvaluacionId}/areas/${params.iCursosNivelGradId}/exportar-preguntas`
         //const params = new URLSearchParams({ ...baseParams })
         //const fullUrl = `${url}?${params.toString()}`
         window.open(url, '_blank')

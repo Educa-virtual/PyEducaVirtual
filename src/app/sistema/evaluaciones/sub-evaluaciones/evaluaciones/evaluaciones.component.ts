@@ -49,6 +49,8 @@ import { IUpdateTableService } from '@/app/interfaces/api.interface'
 import { UtilService } from '@/app/servicios/utils.service'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { ContainerPageAccionbComponent } from './container-page-accionb/container-page-accionb.component'
+import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
+import { GeneralService } from '@/app/servicios/general.service'
 @Component({
     selector: 'app-evaluaciones',
     standalone: true,
@@ -101,6 +103,8 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
     private _apiEre = inject(ApiEvaluacionesRService)
     private _MessageService = inject(MessageService)
     private unsubscribe$: Subject<boolean> = new Subject()
+    private _confirmService = inject(ConfirmationModalService) //intersector de eliminar
+    private _generalService = inject(GeneralService)
     public cEvaluacionNombre: string
     public params = {
         iCompentenciaId: 0,
@@ -523,7 +527,15 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
             this.actualizarDatos(item)
         }
         if (accion === 'eliminar') {
-            this.actualizarDatos(item)
+            this._confirmService.openConfirm({
+                header:
+                    '¿Esta seguro de eliminar la Evaluación: ' +
+                    item['cEvaluacionNombre'] +
+                    ' ?',
+                accept: () => {
+                    this.eliminarEvaluacionXId(item)
+                },
+            })
         }
         if (accion === 'BancoPreguntas') {
             this.compartirFormularioEvaluacionService.setcEvaluacionNombre(
@@ -544,6 +556,27 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
             })
             console.log('Nombre:', item.cEvaluacionNombre)
         }
+    }
+    eliminarEvaluacionXId(item) {
+        const params = {
+            petition: 'post',
+            group: 'ere',
+            prefix: 'evaluacion',
+            ruta: 'handleCrudOperation',
+            data: {
+                opcion: 'ELIMINARxiEvaluacionId',
+                valorBusqueda: null,
+                iEvaluacionId: item.iEvaluacionId,
+            },
+        }
+        console.log('datos para eliminar', params)
+        this._generalService.getGralPrefix(params).subscribe({
+            next: (resp) => {
+                if (resp.validated) {
+                    this.obtenerEvaluacion()
+                }
+            },
+        })
     }
     onEvaluacionSeleccionada(event: any) {
         // Asigna dinámicamente el valor seleccionado

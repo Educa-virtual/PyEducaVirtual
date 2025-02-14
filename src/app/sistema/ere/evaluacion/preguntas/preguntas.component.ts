@@ -30,6 +30,7 @@ export class PreguntasComponent implements OnInit {
     private http = inject(HttpClient)
 
     private backendApi = environment.backendApi
+    backend = environment.backend
 
     @Input() iEvaluacionId
     @Input() iCursoNivelGradId
@@ -49,8 +50,6 @@ export class PreguntasComponent implements OnInit {
             'alignleft aligncenter alignright alignjustify | bullist numlist | ' +
             'image table',
         height: 400,
-        language_url: 'assets/js/tinymce/es.js',
-        language: 'es',
     }
     initEnunciado: EditorComponent['init'] = {
         base_url: '/tinymce', // Root for resources
@@ -99,20 +98,21 @@ export class PreguntasComponent implements OnInit {
         {
             label: 'Nueva Pregunta con Enunciado',
             icon: 'pi pi-plus',
-            command: () => {
-                this.handleNuevaPregunta(true)
-            },
+            // command: () => {
+            //     this.handleNuevaPregunta(true)
+            // },
         },
-        // {
-        //   label: 'Agregar del banco de preguntas',
-        //   icon: 'pi pi-plus',
-        //   // command: () => {
-        //   //   this.handleBancopregunta()
-        //   // },
-        // },
+        {
+            label: 'Agregar del banco de preguntas',
+            icon: 'pi pi-plus',
+            // command: () => {
+            //   this.handleBancopregunta()
+            // },
+        },
     ]
 
     handleNuevaPregunta(encabezado) {
+        this.guardarPreguntaSinEncabezadoSinData()
         console.log(encabezado)
         // this.preguntas.push({
         //   title: encabezado ? 'Pregunta con enunciado' : 'Pregunta sin enunciado',
@@ -190,13 +190,36 @@ export class PreguntasComponent implements OnInit {
         }
         this.getInformation(params, params.data.opcion)
     }
-
+    guardarPreguntaSinEncabezadoSinData() {
+        const params = {
+            petition: 'post',
+            group: 'ere',
+            prefix: 'preguntas',
+            ruta: 'handleCrudOperation',
+            data: {
+                opcion: 'GUARDAR-PREGUNTAS',
+                valorBusqueda: this.iEvaluacionId,
+                iCursosNivelGradId: this.iCursoNivelGradId,
+            },
+        }
+        this.getInformation(params, params.data.opcion)
+    }
     guardarPreguntaSinEncabezado(encabezado, pregunta) {
         const preguntas = pregunta.pregunta
         if (!encabezado) {
             const data = preguntas.length ? preguntas[0] : null
             let error = false
             data.opcion = 'ACTUALIZARxiDesempenoId'
+            data.iEvaluacionId = this.iEvaluacionId
+            data.iCursosNivelGradId = this.iCursoNivelGradId
+            if (!data.alternativas) {
+                this._MessageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'No hay alternativas ingresadas',
+                })
+                return
+            }
             data.alternativas.forEach((alternativa) => {
                 {
                     if (
@@ -254,15 +277,18 @@ export class PreguntasComponent implements OnInit {
             }
         })
     }
-    agregarAlternativa(alternativas) {
-        alternativas.push({
+    agregarAlternativa(preguntas) {
+        if (!preguntas['alternativas']) {
+            preguntas['alternativas'] = []
+        }
+        preguntas.alternativas.push({
             bAlternativaCorrecta: false,
             cAlternativaDescripcion: null,
             cAlternativaExplicacion: null,
             cAlternativaLetra: null,
             iAlternativaId: null,
         })
-        this.ordenarAlternativaLetra(alternativas)
+        this.ordenarAlternativaLetra(preguntas.alternativas)
     }
 
     eliminarAlternativa(index: number, alternativas) {
@@ -288,6 +314,9 @@ export class PreguntasComponent implements OnInit {
     }
 
     ordenarAlternativaLetra(alternativas) {
+        if (!alternativas) {
+            return
+        }
         alternativas.forEach((alternativa, i) => {
             const letra = abecedario[i] // Obtiene la letra según el índice
             alternativa.cAlternativaLetra = letra ? letra.code : '' // Asigna la nueva letra
@@ -304,18 +333,24 @@ export class PreguntasComponent implements OnInit {
                 const evaluaciones = item.length
                     ? JSON.parse(item[0]['evaluaciones'])
                     : []
+                // console.log(item)
+                if (!evaluaciones) {
+                    return
+                }
                 evaluaciones.forEach((evaluacion) => {
                     this.ordenarAlternativaLetra(evaluacion.alternativas)
                 })
 
-                console.log(evaluaciones)
-
                 let total = 0
                 for (const key in evaluaciones) {
-                    evaluaciones[key]['iCompetenciaId'] =
-                        evaluaciones[key]['iCompetenciaId'].toString()
-                    evaluaciones[key]['iCapacidadId'] =
-                        evaluaciones[key]['iCapacidadId'].toString()
+                    if (evaluaciones[key]['iCompetenciaId']) {
+                        evaluaciones[key]['iCompetenciaId'] =
+                            evaluaciones[key]['iCompetenciaId'].toString()
+                    }
+                    if (evaluaciones[key]['iCapacidadId']) {
+                        evaluaciones[key]['iCapacidadId'] =
+                            evaluaciones[key]['iCapacidadId'].toString()
+                    }
 
                     if (total == 0) {
                         const itemSinEncabezado = evaluaciones.filter(
@@ -346,6 +381,25 @@ export class PreguntasComponent implements OnInit {
                         }
                     }
                 }
+                this.preguntas.forEach((pregunta) => {
+                    {
+                        if (pregunta.pregunta.length > 1) {
+                            pregunta['iEncabPregId'] =
+                                pregunta.pregunta[0]['iEncabPregId']
+                            pregunta['cEncabPregContenido'] =
+                                pregunta.pregunta[0]['cEncabPregContenido']
+                            pregunta['iCompetenciaId'] =
+                                pregunta.pregunta[0]['iCompetenciaId']
+                            pregunta['iCapacidadId'] =
+                                pregunta.pregunta[0]['iCapacidadId']
+                            pregunta['cDesempenoDescripcion'] =
+                                pregunta.pregunta[0]['cDesempenoDescripcion']
+                            pregunta['cPregunta'] =
+                                pregunta.pregunta[0]['cPregunta']
+                        }
+                    }
+                })
+                console.log(this.preguntas)
                 break
             case 'ACTUALIZARxiPreguntaIdxbPreguntaEstado':
                 this._MessageService.add({
@@ -369,6 +423,9 @@ export class PreguntasComponent implements OnInit {
                     detail: 'Se guardó correctamente la pregunta',
                 })
                 break
+            case 'GUARDAR-PREGUNTAS':
+                this.obtenerPreguntasxiEvaluacionIdxiCursoNivelGradId()
+                break
         }
     }
 
@@ -384,12 +441,7 @@ export class PreguntasComponent implements OnInit {
                 .pipe(
                     map((event: any) => {
                         if (event.validated) {
-                            alternativa.cAlternativaDescripcion = event.data
-                            // this.cPortafolioItinerario = []
-                            //                       this.cPortafolioItinerario.push({
-                            //                           name: file.name,
-                            //                           ruta: event.data,
-                            //                       })
+                            alternativa.cAlternativaImagen = event.data
                         }
                     }),
                     catchError((err: any) => {
@@ -409,5 +461,8 @@ export class PreguntasComponent implements OnInit {
         })
 
         return formData
+    }
+    updateUrl(item) {
+        item.cAlternativaImagen = 'users/no-image.png'
     }
 }

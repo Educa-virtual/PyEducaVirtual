@@ -181,11 +181,9 @@ export class FamiliaComponent {
 
     searchFamiliares() {
         this.query
-            .searchTablaXwhere({
-                esquema: 'grl',
-                tabla: 'personas',
-                campos: '*',
-                condicion: "cPersDocumento LIKE '%9%'",
+            .searchEstudianteFamiliares({
+                iEstudianteId:
+                    this.compartirMatriculasService.getiEstudianteId(),
             })
             .subscribe({
                 next: (data: any) => {
@@ -439,12 +437,12 @@ export class FamiliaComponent {
             field: 'item',
             header: '',
             text_header: 'left',
-            text: 'left',
+            text: 'center',
         },
         {
             type: 'radio',
             width: '5rem',
-            field: '',
+            field: 'bEsRepresentante',
             header: 'Rep. Legal',
             text_header: 'center',
             text: 'center',
@@ -452,7 +450,7 @@ export class FamiliaComponent {
         {
             type: 'text',
             width: '5rem',
-            field: '',
+            field: 'cTipoFamiliarDescripcion',
             header: 'Relación',
             text_header: 'left',
             text: 'left',
@@ -474,12 +472,12 @@ export class FamiliaComponent {
             text: 'left',
         },
         {
-            type: 'boolean',
+            type: 'text',
             width: '5rem',
             field: '',
             header: 'Celular',
             text_header: 'center',
-            text: 'center',
+            text: 'left',
         },
         {
             type: 'actions',

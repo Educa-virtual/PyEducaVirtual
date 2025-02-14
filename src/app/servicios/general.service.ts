@@ -230,21 +230,32 @@ export class GeneralService {
 
     guardarEstudiante(data: any) {
         return this.http.post(
-            `${baseUrl}/acad/matricula/guardarEstudiante`,
+            `${baseUrl}/acad/estudiante/guardarEstudiante`,
             data
         )
     }
 
+    guardarPersonaFamiliar(data: any) {
+        return this.http.post(`${baseUrl}/grl/guardarPersonaFamiliar`, data)
+    }
+
     searchEstudiante(data: any) {
         return this.http.post(
-            `${baseUrl}/acad/matricula/searchEstudiante`,
+            `${baseUrl}/acad/estudiante/searchEstudiante`,
             data
         )
     }
 
     searchRepresentante(data: any) {
         return this.http.post(
-            `${baseUrl}/acad/matricula/searchRepresentante`,
+            `${baseUrl}/acad/estudiante/searchRepresentante`,
+            data
+        )
+    }
+
+    searchEstudianteFamiliares(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/estudiante/searchFamiliares`,
             data
         )
     }
@@ -285,14 +296,14 @@ export class GeneralService {
 
     validarEstudiante(data: any) {
         return this.http.post(
-            `${baseUrl}/acad/matricula/validarEstudiante`,
+            `${baseUrl}/acad/estudiante/validarEstudiante`,
             data
         )
     }
 
     validarRepresentante(data: any) {
         return this.http.post(
-            `${baseUrl}/acad/matricula/validarRepresentante`,
+            `${baseUrl}/acad/estudiante/validarRepresentante`,
             data
         )
     }

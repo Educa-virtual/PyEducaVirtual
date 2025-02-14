@@ -23,7 +23,7 @@
             <div class="field col-12 md:col-6">
                 <p-checkbox
                     value="true"
-                    formControlName="bPersCohabitante"
+                    formControlName="bFamiliarVivoConEl"
                     label="Vive con el estudiante"
                 />
             </div>
@@ -218,129 +218,6 @@
                         aria-describedby="cPersDomicilio-help"
                     />
                     <label for="cPersDomicilio">Dirección</label>
-                </span>
-            </div>
-        </div>
-    </p-fieldset>
-
-    <br />
-
-    <p-fieldset legend="Lengua / Autoidentificación étnica">
-        <div class="grid p-fluid mt-3">
-            <div class="field col-12 md:col-4">
-                <span class="p-float-label">
-                    <p-dropdown
-                        [options]="lenguas"
-                        formControlName="iLenguaId"
-                        optionLabel="nombre"
-                        [checkmark]="true"
-                        optionValue="id"
-                        [filter]="true"
-                        [showClear]="true"
-                        [appendTo]="'body'"
-                    />
-                    <label for="iLenguaId">Lengua Materna</label>
-                </span>
-            </div>
-            <div class="field col-12 md:col-4">
-                <span class="p-float-label">
-                    <p-dropdown
-                        [options]="lenguas"
-                        formControlName="iLenguaSecundariaId"
-                        optionLabel="nombre"
-                        [checkmark]="true"
-                        optionValue="id"
-                        [filter]="true"
-                        [showClear]="true"
-                        [appendTo]="'body'"
-                    />
-                    <label for="iLenguaSecundariaId"
-                        >Lengua Materna Secundaria</label
-                    >
-                </span>
-            </div>
-        </div>
-    </p-fieldset>
-
-    <br />
-
-    <p-fieldset legend="Datos de contacto">
-        <div class="grid p-fluid mt-3">
-            <div class="field col-12 md:col-4">
-                <span class="p-float-label">
-                    <p-dropdown
-                        [options]="tipos_contacto"
-                        formControlName="iTipoConId"
-                        optionLabel="nombre"
-                        [checkmark]="true"
-                        optionValue="id"
-                        [filter]="true"
-                        [showClear]="true"
-                        [appendTo]="'body'"
-                    />
-                    <label for="iTipoConId">Tipo de contacto</label>
-                </span>
-            </div>
-            <div class="field col-12 md:col-8">
-                <span class="p-float-label">
-                    <input
-                        pInputText
-                        formControlName="cPersConNombre"
-                        aria-describedby="cPersConNombre-help"
-                    />
-                    <label for="cPersConNombre">Dato de contacto</label>
-                </span>
-            </div>
-
-            <div class="field col-12 md:col-4">
-                <span class="p-float-label">
-                    <p-dropdown
-                        [options]="tipos_contacto"
-                        formControlName="iTipoConId"
-                        optionLabel="nombre"
-                        [checkmark]="true"
-                        optionValue="id"
-                        [filter]="true"
-                        [showClear]="true"
-                        [appendTo]="'body'"
-                    />
-                    <label for="iTipoConId">Tipo de contacto</label>
-                </span>
-            </div>
-            <div class="field col-12 md:col-8">
-                <span class="p-float-label">
-                    <input
-                        pInputText
-                        formControlName="cPersConNombre"
-                        aria-describedby="cPersConNombre-help"
-                    />
-                    <label for="cPersConNombre">Dato de contacto</label>
-                </span>
-            </div>
-
-            <div class="field col-12 md:col-4">
-                <span class="p-float-label">
-                    <p-dropdown
-                        [options]="tipos_contacto"
-                        formControlName="iTipoConId"
-                        optionLabel="nombre"
-                        [checkmark]="true"
-                        optionValue="id"
-                        [filter]="true"
-                        [showClear]="true"
-                        [appendTo]="'body'"
-                    />
-                    <label for="iTipoConId">Tipo de contacto</label>
-                </span>
-            </div>
-            <div class="field col-12 md:col-8">
-                <span class="p-float-label">
-                    <input
-                        pInputText
-                        formControlName="cPersConNombre"
-                        aria-describedby="cPersConNombre-help"
-                    />
-                    <label for="cPersConNombre">Dato de contacto</label>
                 </span>
             </div>
         </div>

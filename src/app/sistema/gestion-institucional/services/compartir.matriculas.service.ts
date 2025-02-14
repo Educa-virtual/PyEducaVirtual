@@ -243,10 +243,11 @@ export class CompartirMatriculasService {
             .pipe(
                 map((data: any) => {
                     const items = data.data
-                    return items.map((provincia) => ({
+                    this.distritos = items.map((provincia) => ({
                         id: provincia.iPrvnId,
                         nombre: provincia.cPrvnNombre,
                     }))
+                    return this.distritos
                 })
             )
     }
@@ -265,10 +266,13 @@ export class CompartirMatriculasService {
             .pipe(
                 map((data: any) => {
                     const items = data.data
-                    return items.map((distrito) => ({
+                    this.distritos = items.map((distrito) => ({
                         id: distrito.iDsttId,
                         nombre: distrito.cDsttNombre,
+                        ubigeo: distrito.cDsttCodigo,
+                        ubigeo_inei: distrito.cDsttCodigoINEI,
                     }))
+                    return this.distritos
                 })
             )
     }

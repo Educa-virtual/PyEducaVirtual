@@ -79,18 +79,16 @@ export class RepresentanteComponent {
                 iTipoEstCivId: [null],
                 cPersSexo: [null, Validators.required],
                 iNacionId: [null],
-                cPersCertificado: [''],
-                dPersNacimiento: [''],
-                bPersCohabitante: [false],
+                dPersNacimiento: ['', Validators.required],
                 cPersDomicilio: [''],
-                iPaisId: [null, Validators.required],
-                iDptoId: [null, Validators.required],
-                iPrvnId: [null, Validators.required],
-                iDsttId: [null, Validators.required],
-                iLenguaId: [null],
-                iLenguaSecundariaId: [null],
-                iTipoConId: [null],
-                cPersConNombre: [null],
+                iPaisId: [null],
+                iDptoId: [null],
+                iPrvnId: [null],
+                iDsttId: [null],
+                bEsRepresentante: [true],
+                iOcupacionId: [null],
+                bFamiliarVivoConEl: [false],
+                iGradoInstId: [null],
                 iCredId: this.constantesService.iCredId,
             })
         } catch (error) {
@@ -134,6 +132,16 @@ export class RepresentanteComponent {
                     this.form.get('cPersNombre')?.setValue(item.cPersNombre)
                     this.form.get('cPersPaterno')?.setValue(item.cPersPaterno)
                     this.form.get('cPersMaterno')?.setValue(item.cPersMaterno)
+                    this.form.get('cPersSexo')?.setValue(item.cPersSexo)
+                    this.form.get('iTipoEstCivId')?.setValue(item.iTipoEstCivId)
+                    this.form.get('iNacionId')?.setValue(item.iNacionId)
+                    this.form
+                        .get('cPersDomicilio')
+                        ?.setValue(item.cPersDomicilio)
+                    this.form.get('iPaisId')?.setValue(item.iPaisId)
+                    this.form.get('iDptoId')?.setValue(item.iDptoId)
+                    this.form.get('iPrvnId')?.setValue(item.iPrvnId)
+                    this.form.get('iDsttId')?.setValue(item.iDsttId)
                     this.form
                         .get('dPersNacimiento')
                         ?.setValue(
@@ -141,8 +149,6 @@ export class RepresentanteComponent {
                                 ? new Date(item.dPersNacimiento)
                                 : null
                         )
-                    this.form.get('cPersSexo')?.setValue(item.cPersSexo)
-                    this.form.get('iTipoEstCivId')?.setValue(item.iTipoEstCivId)
                 },
                 error: (error) => {
                     console.error('Error obteniendo representante:', error)
@@ -175,13 +181,13 @@ export class RepresentanteComponent {
     }
 
     guardarRepresentante() {
-        this.query.guardarEstudiante(this.form.value).subscribe({
+        this.query.guardarPersonaFamiliar(this.form.value).subscribe({
             next: (data: any) => {
                 console.log(data, 'agregar estudiante')
-                this.compartirMatriculasService.setiEstudianteId(
-                    data.data[0].iEstudianteId
+                this.compartirMatriculasService.setiPersRepresentanteLegalId(
+                    data.data[0].iPersId
                 )
-                this.compartirMatriculasService.setActiveIndex('1')
+                this.compartirMatriculasService.setActiveIndex('2')
             },
             error: (error) => {
                 console.error('Error guardando estudiante:', error)

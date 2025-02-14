@@ -522,6 +522,9 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
         if (accion === 'actualizar') {
             this.actualizarDatos(item)
         }
+        if (accion === 'eliminar') {
+            this.actualizarDatos(item)
+        }
         if (accion === 'BancoPreguntas') {
             this.compartirFormularioEvaluacionService.setcEvaluacionNombre(
                 item.cEvaluacionNombre

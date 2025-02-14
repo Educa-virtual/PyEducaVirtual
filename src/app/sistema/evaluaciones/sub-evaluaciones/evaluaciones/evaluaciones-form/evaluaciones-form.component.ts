@@ -277,6 +277,7 @@ export class EvaluacionesFormComponent implements OnInit {
     guardarEvaluacion() {
         // const iSesionId = this.constantesService.iDocenteId // Si es un array, toma el primer valor
         // console.log(this.evaluacionFormGroup.get('idTipoEvalId').value)
+        const estado = 1
         const data = {
             idTipoEvalId: this.evaluacionFormGroup.get('idTipoEvalId').value,
             iNivelEvalId: this.evaluacionFormGroup.get('iNivelEvalId').value,
@@ -294,6 +295,7 @@ export class EvaluacionesFormComponent implements OnInit {
             dtEvaluacionFechaFi: this.evaluacionFormGroup.get(
                 'dtEvaluacionFechaFin'
             ).value,
+            iEstado: estado,
         }
 
         console.log('datos que se guardaran', data)

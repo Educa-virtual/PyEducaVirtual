@@ -14,7 +14,7 @@
         <p-tabView class="mt-2">
             <p-tabPanel header="Estudiante">
                 <!-- contenido de busqueda por estudiante-->
-                <div class="flex">
+                <div class="block mt-3">
                     <p-fieldset class="w-full">
                         <ng-template pTemplate="header"
                             >Buscar por Estudiante</ng-template
@@ -44,7 +44,8 @@
                             ></button>
                         </div>
                     </p-fieldset>
-                    <br />
+                </div>
+                <div class="block mt-3">
                     <p-table
                         [value]="identidad"
                         [tableStyle]="{ 'min-width': '50rem' }"
@@ -84,7 +85,8 @@
                             </tr>
                         </ng-template>
                     </p-table>
-                    <br />
+                </div>
+                <div class="block mt-3">
                     <p-table
                         [value]="fila"
                         [tableStyle]="{ 'min-width': '50rem' }"
@@ -127,8 +129,8 @@
                 <!-- fin del contenido de busqueda por alumno -->
             </p-tabPanel>
             <p-tabPanel header="Grados">
-                <!-- contenido de busqueda por estudiante-->
-                <div class="flex">
+                <!-- contenido de busqueda por grados-->
+                <div class="block mt-3">
                     <p-fieldset class="w-full">
                         <ng-template pTemplate="header"
                             >Buscar por Grados</ng-template
@@ -148,7 +150,7 @@
                         </div>
                     </p-fieldset>
                 </div>
-                <div class="flex">
+                <div class="block mt-3">
                     <p-table
                         [value]="identidad"
                         [tableStyle]="{ 'min-width': '50rem' }"
@@ -188,7 +190,8 @@
                             </tr>
                         </ng-template>
                     </p-table>
-                    <br />
+                </div>
+                <div class="block mt-3">
                     <p-table
                         [value]="fila"
                         [tableStyle]="{ 'min-width': '50rem' }"

@@ -33,8 +33,8 @@ export class EstadisticaComponent implements OnInit {
     identidad: any[] = []
 
     escolar: any[] = [] // Se llenará con los datos del backend
-    grado = [] // Se llenará con los datos del backend
-    grados: any
+    datos = [] // Se llenará con los datos del backend
+    grados = []
     codigo: any
     iiee: any
     merito = [
@@ -147,6 +147,7 @@ export class EstadisticaComponent implements OnInit {
     getInformation(params, accion) {
         this.GeneralService.getGralPrefix(params).subscribe({
             next: (response: any) => {
+                console.log(response)
                 this.accionBtnItem({ accion, item: response?.data })
             },
             complete: () => {},
@@ -175,7 +176,8 @@ export class EstadisticaComponent implements OnInit {
 
         switch (accion) {
             case 'obtenerGrado':
-                this.grado = item
+                this.grados = item
+                console.log(this.grados)
                 break
         }
     }

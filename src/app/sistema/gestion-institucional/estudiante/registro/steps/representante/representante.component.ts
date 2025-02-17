@@ -2,8 +2,9 @@ import { PrimengModule } from '@/app/primeng.module'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { GeneralService } from '@/app/servicios/general.service'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
-import { CompartirMatriculasService } from '@/app/sistema/gestion-institucional/services/compartir.matriculas.service'
-import { Component, inject } from '@angular/core'
+import { CompartirEstudianteService } from '@/app/sistema/gestion-institucional/services/compartir-estudiante.service'
+import { DatosEstudianteService } from '@/app/sistema/gestion-institucional/services/datos-estudiante-service'
+import { Component, inject, OnInit } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { MessageService } from 'primeng/api'
 
@@ -14,7 +15,7 @@ import { MessageService } from 'primeng/api'
     templateUrl: './representante.component.html',
     styleUrl: './representante.component.scss',
 })
-export class RepresentanteComponent {
+export class RepresentanteComponent implements OnInit {
     form: FormGroup
 
     tipos_familiares: Array<object>
@@ -32,7 +33,8 @@ export class RepresentanteComponent {
     private _confirmService = inject(ConfirmationModalService) // componente de dialog mensaje
 
     constructor(
-        private compartirMatriculasService: CompartirMatriculasService,
+        private datosEstudianteService: DatosEstudianteService,
+        private compartirEstudianteService: CompartirEstudianteService,
         private constantesService: ConstantesService,
         private fb: FormBuilder,
         private messageService: MessageService,
@@ -40,36 +42,31 @@ export class RepresentanteComponent {
     ) {}
 
     ngOnInit(): void {
-        this.compartirMatriculasService
-            .getTiposFamiliares()
-            .subscribe((data) => {
-                this.tipos_familiares = data
-            })
-        this.compartirMatriculasService
-            .getTiposDocumentos()
-            .subscribe((data) => {
-                this.tipos_documentos = data
-            })
-        this.compartirMatriculasService
-            .getEstadosCiviles()
-            .subscribe((data) => {
-                this.estados_civiles = data
-            })
-        this.compartirMatriculasService
-            .getNacionalidades()
-            .subscribe((data) => {
-                this.nacionalidades = data
-            })
-        this.compartirMatriculasService.getDepartamentos().subscribe((data) => {
+        this.datosEstudianteService.getTiposFamiliares().subscribe((data) => {
+            this.tipos_familiares = data
+        })
+        this.datosEstudianteService.getTiposDocumentos().subscribe((data) => {
+            this.tipos_documentos = data
+        })
+        this.datosEstudianteService.getEstadosCiviles().subscribe((data) => {
+            this.estados_civiles = data
+        })
+        this.datosEstudianteService.getNacionalidades().subscribe((data) => {
+            this.nacionalidades = data
+        })
+        this.datosEstudianteService.getDepartamentos().subscribe((data) => {
             this.departamentos = data
         })
 
-        this.sexos = this.compartirMatriculasService.getSexos()
-        this.lenguas = this.compartirMatriculasService.getLenguas()
+        this.sexos = this.datosEstudianteService.getSexos()
+        this.lenguas = this.datosEstudianteService.getLenguas()
 
         try {
             this.form = this.fb.group({
-                iPersId: [{ value: 0, disabled: true }], // PK
+                iPersId: [
+                    this.compartirEstudianteService.getiPersId(),
+                    Validators.required,
+                ], // PK
                 iTipoFamiliarId: [null, Validators.required],
                 iTipoIdentId: [null, Validators.required],
                 cPersDocumento: ['', Validators.required],
@@ -103,20 +100,26 @@ export class RepresentanteComponent {
             this.getDistritos(value)
         })
 
+        if (this.compartirEstudianteService.getiPersId()) {
+            this.form
+                .get('iPersId')
+                ?.setValue(this.compartirEstudianteService.getiPersId())
+        }
+
         this.setFormRepresentante()
     }
 
     setFormRepresentante() {
         if (
-            this.compartirMatriculasService.getiPersRepresentanteLegalId() ==
+            this.compartirEstudianteService.getiPersRepresentanteLegalId() ==
             null
         ) {
             return null
         }
-        this.query
+        this.datosEstudianteService
             .searchRepresentante({
                 iEstudianteId:
-                    this.compartirMatriculasService.getiEstudianteId(),
+                    this.compartirEstudianteService.getiEstudianteId(),
             })
             .subscribe({
                 next: (data: any) => {
@@ -165,7 +168,7 @@ export class RepresentanteComponent {
     }
 
     getProvincias(iDptoId: number) {
-        this.compartirMatriculasService.getProvincias(iDptoId).subscribe({
+        this.datosEstudianteService.getProvincias(iDptoId).subscribe({
             next: (data) => {
                 this.provincias = data
             },
@@ -173,7 +176,7 @@ export class RepresentanteComponent {
     }
 
     getDistritos(iPrvnId: number) {
-        this.compartirMatriculasService.getDistritos(iPrvnId).subscribe({
+        this.datosEstudianteService.getDistritos(iPrvnId).subscribe({
             next: (data) => {
                 this.distritos = data
             },
@@ -181,25 +184,30 @@ export class RepresentanteComponent {
     }
 
     guardarRepresentante() {
-        this.query.guardarPersonaFamiliar(this.form.value).subscribe({
-            next: (data: any) => {
-                console.log(data, 'agregar estudiante')
-                this.compartirMatriculasService.setiPersRepresentanteLegalId(
-                    data.data[0].iPersId
-                )
-                this.compartirMatriculasService.setActiveIndex('2')
-            },
-            error: (error) => {
-                console.error('Error guardando estudiante:', error)
-                this.messageService.add({
-                    severity: 'danger',
-                    summary: 'Mensaje',
-                    detail: 'Error en ejecución',
-                })
-            },
-            complete: () => {
-                console.log('Request completed')
-            },
+        this.form.patchValue({
+            iPersId: this.compartirEstudianteService.getiPersId(),
         })
+        this.datosEstudianteService
+            .guardarPersonaFamiliar(this.form.value)
+            .subscribe({
+                next: (data: any) => {
+                    console.log(data, 'agregar representante')
+                    this.compartirEstudianteService.setiPersRepresentanteLegalId(
+                        data.data[0].iPersId
+                    )
+                    this.compartirEstudianteService.setActiveIndex('2')
+                },
+                error: (error) => {
+                    console.error('Error guardando representante:', error)
+                    this.messageService.add({
+                        severity: 'danger',
+                        summary: 'Mensaje',
+                        detail: 'Error en ejecución',
+                    })
+                },
+                complete: () => {
+                    console.log('Request completed')
+                },
+            })
     }
 }

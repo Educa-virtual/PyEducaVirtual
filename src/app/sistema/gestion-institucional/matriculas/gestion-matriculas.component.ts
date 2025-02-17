@@ -6,9 +6,7 @@ import {
 } from '@/app/shared/table-primeng/table-primeng.component'
 
 import { Router } from '@angular/router'
-import { FormBuilder, FormGroup } from '@angular/forms'
 import { MessageService } from 'primeng/api'
-import { GeneralService } from '@/app/servicios/general.service'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { InputNumberModule } from 'primeng/inputnumber'
 import {
@@ -17,6 +15,7 @@ import {
 } from '@/app/shared/container-page/container-page.component'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { ConstantesService } from '@/app/servicios/constantes.service'
+import { DatosMatriculaService } from '../services/datos-matricula.service'
 
 @Component({
     selector: 'app-gestion-matriculas',
@@ -31,10 +30,6 @@ import { ConstantesService } from '@/app/servicios/constantes.service'
     styleUrl: './gestion-matriculas.component.scss',
 })
 export class GestionMatriculasComponent implements OnInit {
-    formMatricula: FormGroup
-    formEstudiante: FormGroup
-    formRepresentante: FormGroup
-
     activeStep: number = 0 // Paso activo
     totalSteps = 3 // Total de pasos del stepper
 
@@ -61,11 +56,10 @@ export class GestionMatriculasComponent implements OnInit {
 
     constructor(
         private router: Router,
-        private fb: FormBuilder,
         private messageService: MessageService,
-        private query: GeneralService,
         private store: LocalStoreService,
-        private constantesService: ConstantesService
+        private constantesService: ConstantesService,
+        private datosMatriculaService: DatosMatriculaService
     ) {
         const perfil = this.store.getItem('dremoPerfil')
         console.log(perfil, 'perfil dremo', this.store)
@@ -96,14 +90,13 @@ export class GestionMatriculasComponent implements OnInit {
     accionBtnItem(accion) {
         switch (accion) {
             case 'editar':
-                this.updateMatricula()
                 this.visible = false
                 break
         }
     }
 
     searchMatriculas() {
-        this.query
+        this.datosMatriculaService
             .searchMatriculas({
                 iSedeId: this.iSedeId,
                 iYAcadId: this.iYAcadId,
@@ -121,54 +114,9 @@ export class GestionMatriculasComponent implements OnInit {
             })
     }
 
-    updateMatricula() {
-        if (this.formMatricula.valid) {
-            const params = {
-                esquema: 'acad',
-                tabla: 'matricula',
-                json: JSON.stringify({
-                    iGradoId: this.formMatricula.value.iGradoId,
-                    iTipoMatrId: this.formMatricula.value.iTipoMatrId,
-                    iTurnoId: this.formMatricula.value.iTurnoId,
-                }),
-                campo: 'iMatrId',
-                condicion: this.formMatricula.get('iMatrId')?.value,
-            }
-
-            console.log(params, 'parametros update')
-            this.query.updateAcademico(params).subscribe({
-                next: (data: any) => {
-                    console.log(data.data)
-                },
-                error: (error) => {
-                    console.log(error, 'error al actualizar')
-                },
-                complete: () => {
-                    this.messageService.add({
-                        severity: 'success',
-                        summary: 'Mensaje',
-                        detail: 'Proceso exitoso',
-                    })
-                },
-            })
-        } else {
-            console.log('Formulario no válido', this.formMatricula.invalid)
-        }
-    }
-
-    clearForm() {
-        this.formEstudiante.reset()
-        this.formRepresentante.reset()
-        this.formMatricula.reset()
-        this.formMatricula.get('iMatrId')?.setValue(0)
-        this.formMatricula.get('iEstudianteId')?.setValue(0)
-        this.formEstudiante.get('iPersIdEstudiante')?.setValue(0)
-        this.formRepresentante.get('iPersIdRepresentante')?.setValue(0)
-    }
-
     getNivelGrados() {
-        this.query
-            .searchGradoCiclo({
+        this.datosMatriculaService
+            .searchGradoSeccion({
                 iNivelTipoId: 3,
             })
             .subscribe({
@@ -201,13 +149,10 @@ export class GestionMatriculasComponent implements OnInit {
     }
 
     getSecciones() {
-        this.query
-            .searchDataEnUrl(
-                {
-                    iNivelTipoId: 3,
-                },
-                '/acad/matricula/searchSecciones'
-            )
+        this.datosMatriculaService
+            .searchGradoSeccion({
+                iNivelTipoId: 3,
+            })
             .subscribe({
                 next: (data: any) => {
                     const item = data.data

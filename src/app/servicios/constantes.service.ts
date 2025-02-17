@@ -766,18 +766,26 @@ const administracion = [
                         items: [
                             {
                                 label: 'Gestionar matriculas',
-                                icon: 'pi pi-fw pi-file-plus',
+                                icon: 'pi pi-fw pi-file-edit',
                                 badge: '',
                                 routerLink: [
                                     '/gestion-institucional/gestion-matriculas',
                                 ],
                             },
                             {
-                                label: 'Matrículo Individual',
+                                label: 'Matrícula Individual',
                                 icon: 'pi pi-fw pi-file-plus',
                                 badge: '',
                                 routerLink: [
-                                    '/gestion-institucional/matriculas/registro-individual',
+                                    '/gestion-institucional/matricula-individual',
+                                ],
+                            },
+                            {
+                                label: 'Matrícula Masiva',
+                                icon: 'pi pi-fw pi-file-import',
+                                badge: '',
+                                routerLink: [
+                                    '/gestion-institucional/matricula-masiva',
                                 ],
                             },
                         ],

@@ -3,14 +3,19 @@ import { GeneralService } from '@/app/servicios/general.service'
 import { Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 import { of } from 'rxjs'
+import { HttpClient, HttpHeaders } from '@angular/common/http'
+import { environment } from '@/environments/environment.template'
 
-//import { BehaviorSubject } from 'rxjs'
+const baseUrl = environment.backendApi
 
 @Injectable({
     providedIn: 'root',
 })
-export class CompartirMatriculasService {
-    constructor(private query: GeneralService) {}
+export class DatosEstudianteService {
+    constructor(
+        private query: GeneralService,
+        private http: HttpClient
+    ) {}
 
     lista: any[] = []
 
@@ -26,80 +31,50 @@ export class CompartirMatriculasService {
     tipos_contacto: Array<object>
     religiones: Array<object>
 
-    private activeIndex: string
-    private iEstudianteId: string | null = null
-    private iPersId: string | null = null
-    private iPersRepresentanteLegalId: string | null = null
-
-    clearData() {
-        this.activeIndex = '0'
-        this.iEstudianteId = null
-        this.iPersId = null
-        this.iPersRepresentanteLegalId = null
-        localStorage.removeItem('activeIndex')
-        localStorage.removeItem('iEstudianteId')
-        localStorage.removeItem('iPersId')
-        localStorage.removeItem('iPersRepresentanteLegalId')
+    guardarEstudiante(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/estudiante/guardarEstudiante`,
+            data
+        )
     }
 
-    setActiveIndex(index: string | null) {
-        this.activeIndex = index
-        localStorage.setItem('activeIndex', index)
+    guardarPersonaFamiliar(data: any) {
+        return this.http.post(`${baseUrl}/grl/guardarPersonaFamiliar`, data)
     }
 
-    getActiveIndex(): string | null {
-        if (!this.activeIndex) {
-            this.activeIndex =
-                localStorage.getItem('activeIndex') == 'null'
-                    ? null
-                    : localStorage.getItem('activeIndex')
-        }
-        return this.activeIndex
+    searchEstudiante(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/estudiante/searchEstudiante`,
+            data
+        )
     }
 
-    setiEstudianteId(id: string | null) {
-        this.iEstudianteId = id
-        localStorage.setItem('iEstudianteId', id)
+    searchRepresentante(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/estudiante/searchRepresentante`,
+            data
+        )
     }
 
-    getiEstudianteId(): string | null {
-        if (!this.iEstudianteId) {
-            this.iEstudianteId =
-                localStorage.getItem('iEstudianteId') == 'null'
-                    ? null
-                    : localStorage.getItem('iEstudianteId')
-        }
-        return this.iEstudianteId
+    searchEstudianteFamiliares(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/estudiante/searchFamiliares`,
+            data
+        )
     }
 
-    setiPersId(id: string | null) {
-        this.iPersId = id
-        localStorage.setItem('iPersId', id)
+    validarEstudiante(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/estudiante/validarEstudiante`,
+            data
+        )
     }
 
-    getiPersId(): string | null {
-        if (!this.iPersId) {
-            this.iPersId =
-                localStorage.getItem('iPersId') == 'null'
-                    ? null
-                    : localStorage.getItem('iPersId')
-        }
-        return this.iPersId
-    }
-
-    setiPersRepresentanteLegalId(id: string | null) {
-        this.iPersRepresentanteLegalId = id
-        localStorage.setItem('iPersRepresentanteLegalId', id)
-    }
-
-    getiPersRepresentanteLegalId(): string | null {
-        if (!this.iPersRepresentanteLegalId) {
-            this.iPersRepresentanteLegalId =
-                localStorage.getItem('iPersRepresentanteLegalId') == 'null'
-                    ? null
-                    : localStorage.getItem('iPersRepresentanteLegalId')
-        }
-        return this.iPersRepresentanteLegalId
+    validarRepresentante(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/estudiante/validarRepresentante`,
+            data
+        )
     }
 
     getTiposFamiliares() {
@@ -333,5 +308,17 @@ export class CompartirMatriculasService {
                 )
         }
         return of(this.religiones)
+    }
+
+    subirArchivo(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/estudiante/importarEstudiantesPadresExcel`,
+            data,
+            {
+                headers: new HttpHeaders({
+                    Accept: 'application/json',
+                }),
+            }
+        )
     }
 }

@@ -1,5 +1,5 @@
 import { PrimengModule } from '@/app/primeng.module'
-import { Component } from '@angular/core'
+import { Component, OnInit } from '@angular/core'
 
 @Component({
     selector: 'app-discapacidad',
@@ -8,7 +8,7 @@ import { Component } from '@angular/core'
     templateUrl: './discapacidad.component.html',
     styleUrl: './discapacidad.component.scss',
 })
-export class DiscapacidadComponent {
+export class DiscapacidadComponent implements OnInit {
     tiene_discapacidad: Array<object>
     tiene_condicion: Array<object>
 

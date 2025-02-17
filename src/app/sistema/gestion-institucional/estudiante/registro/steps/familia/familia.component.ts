@@ -11,8 +11,9 @@ import {
     IActionTable,
     TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component'
-import { CompartirMatriculasService } from '@/app/sistema/gestion-institucional/services/compartir.matriculas.service'
-import { Component, inject } from '@angular/core'
+import { CompartirEstudianteService } from '@/app/sistema/gestion-institucional/services/compartir-estudiante.service'
+import { DatosEstudianteService } from '@/app/sistema/gestion-institucional/services/datos-estudiante-service'
+import { Component, inject, OnInit } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { Router } from '@angular/router'
 import { MessageService } from 'primeng/api'
@@ -30,7 +31,7 @@ import { InputNumberModule } from 'primeng/inputnumber'
     templateUrl: './familia.component.html',
     styleUrl: './familia.component.scss',
 })
-export class FamiliaComponent {
+export class FamiliaComponent implements OnInit {
     form: FormGroup
 
     activeStep: number = 0 // Paso activo
@@ -63,7 +64,8 @@ export class FamiliaComponent {
         private messageService: MessageService,
         private query: GeneralService,
         private store: LocalStoreService,
-        private compartirMatriculasService: CompartirMatriculasService,
+        private compartirEstudianteService: CompartirEstudianteService,
+        private datosEstudianteService: DatosEstudianteService,
         private constantesService: ConstantesService
     ) {
         const perfil = this.store.getItem('dremoPerfil')
@@ -75,38 +77,30 @@ export class FamiliaComponent {
     }
 
     ngOnInit(): void {
-        this.compartirMatriculasService
-            .getTiposFamiliares()
-            .subscribe((data) => {
-                this.tipos_familiares = data
-            })
-        this.compartirMatriculasService
-            .getTiposDocumentos()
-            .subscribe((data) => {
-                this.tipos_documentos = data
-            })
-        this.compartirMatriculasService
-            .getEstadosCiviles()
-            .subscribe((data) => {
-                this.estados_civiles = data
-            })
-        this.compartirMatriculasService
-            .getNacionalidades()
-            .subscribe((data) => {
-                this.nacionalidades = data
-            })
-        this.compartirMatriculasService.getDepartamentos().subscribe((data) => {
+        this.datosEstudianteService.getTiposFamiliares().subscribe((data) => {
+            this.tipos_familiares = data
+        })
+        this.datosEstudianteService.getTiposDocumentos().subscribe((data) => {
+            this.tipos_documentos = data
+        })
+        this.datosEstudianteService.getEstadosCiviles().subscribe((data) => {
+            this.estados_civiles = data
+        })
+        this.datosEstudianteService.getNacionalidades().subscribe((data) => {
+            this.nacionalidades = data
+        })
+        this.datosEstudianteService.getDepartamentos().subscribe((data) => {
             this.departamentos = data
         })
 
-        this.sexos = this.compartirMatriculasService.getSexos()
-        this.lenguas = this.compartirMatriculasService.getLenguas()
+        this.sexos = this.datosEstudianteService.getSexos()
+        this.lenguas = this.datosEstudianteService.getLenguas()
 
         this.searchFamiliares()
 
         try {
             this.form = this.fb.group({
-                iPersId: [{ value: 0, disabled: true }], // PK
+                iPersId: [0, Validators.required], // PK
                 iTipoFamiliarId: [0, Validators.required],
                 iTipoIdentId: [0, Validators.required],
                 cPersDocumento: ['', Validators.required],
@@ -163,11 +157,11 @@ export class FamiliaComponent {
                 this.validar()
                 break
             case 'guardar':
-                this.addSolicitud()
+                // this.addSolicitud()
                 this.visible = false
                 break
             case 'editar':
-                this.updateSolicitud()
+                // this.updateSolicitud()
                 this.visible = false
                 break
         }
@@ -180,10 +174,10 @@ export class FamiliaComponent {
     }
 
     searchFamiliares() {
-        this.query
+        this.datosEstudianteService
             .searchEstudianteFamiliares({
                 iEstudianteId:
-                    this.compartirMatriculasService.getiEstudianteId(),
+                    this.compartirEstudianteService.getiEstudianteId(),
             })
             .subscribe({
                 next: (data: any) => {
@@ -225,116 +219,13 @@ export class FamiliaComponent {
         }
     }
 
-    addSolicitud() {
-        this.query
-            .guardarMatricula({
-                matricula: JSON.stringify({
-                    iPersId: this.form.value.iPersId,
-                }),
-            })
-            .subscribe({
-                next: (data: any) => {
-                    console.log(data, 'agregar solicitud')
-                },
-                error: (error) => {
-                    console.error('Error agregando solicitud:', error)
-                    this.messageService.add({
-                        severity: 'danger',
-                        summary: 'Mensaje',
-                        detail: 'Error en ejecución',
-                    })
-                },
-                complete: () => {
-                    console.log('Request completed')
-                },
-            })
-    }
-
-    updateSolicitud() {
-        if (this.form.valid) {
-            const params = {
-                esquema: 'acad',
-                tabla: 'matricula',
-                json: JSON.stringify({
-                    iGradoId: this.form.value.iGradoId,
-                    iTipoMatrId: this.form.value.iTipoMatrId,
-                    iTurnoId: this.form.value.iTurnoId,
-                }),
-                campo: 'iMatrId',
-                condicion: this.form.get('iMatrId')?.value,
-            }
-
-            console.log(params, 'parametros update')
-            this.query.updateAcademico(params).subscribe({
-                next: (data: any) => {
-                    console.log(data.data)
-                },
-                error: (error) => {
-                    console.log(error, 'error al actualizar')
-                },
-                complete: () => {
-                    this.messageService.add({
-                        severity: 'success',
-                        summary: 'Mensaje',
-                        detail: 'Proceso exitoso',
-                    })
-                },
-            })
-        } else {
-            console.log('Formulario no válido', this.form.invalid)
-        }
-    }
-
-    confirmSolicitud(recordId: number) {
-        this._confirmService.openConfirm({
-            message: '¿Estás seguro de que deseas eliminar esta solicitud?',
-            header: 'Confirmación de eliminación',
-            icon: 'pi pi-exclamation-triangle',
-            accept: () => {
-                this.deleteSolicitud(recordId)
-            },
-            reject: () => {
-                this.messageService.add({
-                    severity: 'error',
-                    summary: 'Cancelado',
-                    detail: 'Acción cancelada',
-                })
-            },
-        })
-    }
-
-    deleteSolicitud(id: number) {
-        const params = {
-            esquema: 'acad',
-            tabla: 'matricula',
-            campo: 'iMatrId',
-            valorId: id,
-        }
-        this.query.deleteMatricula(params).subscribe({
-            next: (data: any) => {
-                console.log(data.data)
-            },
-            error: (error) => {
-                console.error('Error eliminando solicitud de matricula:', error)
-            },
-            complete: () => {
-                this.messageService.add({
-                    severity: 'success',
-                    summary: 'Eliminado',
-                    detail: 'Registro eliminado correctamente',
-                })
-                console.log('Request completed')
-            },
-        })
-    }
-
     clearForm() {
         this.form.reset()
         this.form.get('iPersId')?.setValue(0)
     }
 
     getProvincias(iDptoId: number) {
-        this.compartirMatriculasService.getProvincias(iDptoId).subscribe({
+        this.datosEstudianteService.getProvincias(iDptoId).subscribe({
             next: (data) => {
                 this.provincias = data
             },
@@ -342,7 +233,7 @@ export class FamiliaComponent {
     }
 
     getDistritos(iPrvnId: number) {
-        this.compartirMatriculasService.getDistritos(iPrvnId).subscribe({
+        this.datosEstudianteService.getDistritos(iPrvnId).subscribe({
             next: (data) => {
                 this.distritos = data
             },
@@ -350,7 +241,7 @@ export class FamiliaComponent {
     }
 
     validar() {
-        this.query
+        this.datosEstudianteService
             .validarEstudiante({
                 iTipoIdentId: this.form.value.iTipoIdentId,
                 cPersDocumento: this.form.value.cPersDocumento,

@@ -8,7 +8,7 @@ import { StepsModule } from 'primeng/steps'
 import { Subscription } from 'rxjs'
 import { FormBuilder } from '@angular/forms'
 import { GeneralService } from '@/app/servicios/general.service'
-import { CompartirMatriculasService } from '../../services/compartir.matriculas.service'
+import { CompartirEstudianteService } from '../../services/compartir-estudiante.service'
 
 @Component({
     selector: 'app-registro',
@@ -35,11 +35,11 @@ export class RegistroComponent implements OnInit, OnDestroy {
         private query: GeneralService,
         private router: Router,
         private confirmationService: ConfirmationService,
-        private compartirMatriculasService: CompartirMatriculasService
+        private compartirEstudianteService: CompartirEstudianteService
     ) {}
 
     ngOnInit() {
-        this.iEstudianteId = this.compartirMatriculasService.getiEstudianteId()
+        this.iEstudianteId = this.compartirEstudianteService.getiEstudianteId()
         this.items = [
             {
                 label: 'Datos del estudiante',
@@ -82,10 +82,10 @@ export class RegistroComponent implements OnInit, OnDestroy {
         if (this.subscription) {
             this.subscription.unsubscribe()
         }
-        this.compartirMatriculasService.clearData()
+        this.compartirEstudianteService.clearData()
     }
 
     setActiveIndexSteps(index: string = '0') {
-        return index ?? this.compartirMatriculasService.getActiveIndex()
+        return index ?? this.compartirEstudianteService.getActiveIndex()
     }
 }

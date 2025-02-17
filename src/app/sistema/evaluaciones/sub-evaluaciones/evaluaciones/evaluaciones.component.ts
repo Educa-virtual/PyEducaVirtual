@@ -51,11 +51,13 @@ import { ConstantesService } from '@/app/servicios/constantes.service'
 import { ContainerPageAccionbComponent } from './container-page-accionb/container-page-accionb.component'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { GeneralService } from '@/app/servicios/general.service'
+import { ContainerPreguntasComponent } from '@/app/shared/container-preguntas/container-preguntas.component'
 @Component({
     selector: 'app-evaluaciones',
     standalone: true,
     imports: [
         TableModule,
+        ContainerPreguntasComponent,
         CommonModule,
         ButtonModule,
         DialogModule,

@@ -975,6 +975,8 @@ export class ConstantesService {
     nombre = user ? user.cPersNombre : null
     codModular = perfil ? perfil.cIieeCodigoModular : null
     iIieeId = perfil ? perfil.iIieeId : null
+    iSedeId = perfil ? perfil.iSedeId : null
     grados = perfil ? perfil.grados : null
     years = user ? user.years : null
+    cIieeNombre = perfil ? perfil.cIieeNombre : null
 }

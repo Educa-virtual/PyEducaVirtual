@@ -26,6 +26,7 @@
                             optionLabel="cYearNombre"
                             optionValue="iYAcadId"
                             placeholder="Año Escolar"
+                            [(ngModel)]="selectYear"
                         />
 
                         <!-- Selección de Grado -->
@@ -35,6 +36,7 @@
                             optionLabel="cGradoNombre"
                             optionValue="iGradoId"
                             placeholder="Grado"
+                            [(ngModel)]="selectedGrado"
                         ></p-dropdown>
 
                         <!-- Selección de Orden de Mérito -->
@@ -61,7 +63,7 @@
                             pRipple
                             label="Generar"
                             class="p-button-primary ml-1"
-                            (click)="generar()"
+                            (click)="generarReporte()"
                         ></button>
                     </div>
                 </p-fieldset>
@@ -97,15 +99,14 @@
                                 <p-button
                                     pButton
                                     pRipple
-                                    class="{{ identidad.valor }} mr-1"
-                                    disabled
+                                    class="pi pi-file-pdf mr-1"
                                 />
                             </td>
                             <td>
                                 <p-button
                                     pButton
                                     pRipple
-                                    class="{{ identidad.generado }} mr-1"
+                                    class="pi pi-check-circle"
                                 />
                             </td>
                             <td>
@@ -113,13 +114,11 @@
                                     pButton
                                     pRipple
                                     class="pi pi-file-pdf mr-1"
-                                    disabled
                                 />
                                 <p-button
                                     pButton
                                     pRipple
                                     class="pi pi-trash mr-1"
-                                    disabled
                                 />
                                 <p-button
                                     pButton

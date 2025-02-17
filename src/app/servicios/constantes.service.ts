@@ -702,6 +702,11 @@ const administracion = [
                             '/gestion-institucional/calendarioAcademico',
                         ],
                     },
+                    {
+                        label: 'Información de la Institución',
+                        icon: 'pi pi-wrench',
+                        routerLink: ['/gestion-institucional/Informacion-ie'],
+                    },
                 ],
             },
 

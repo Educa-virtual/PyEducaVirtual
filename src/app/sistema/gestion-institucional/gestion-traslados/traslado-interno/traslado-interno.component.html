@@ -143,6 +143,8 @@
                 [data]="data"
                 [showPaginator]="true"
                 [actions]="actions"
+                [tableStyle]="{ border: '1px solid black' }"
+                (accionBtnItem)="accionBtnItemTable($event)"
             >
                 <!-- <ng-container slot="caption-content"> </ng-container> -->
             </app-table-primeng>

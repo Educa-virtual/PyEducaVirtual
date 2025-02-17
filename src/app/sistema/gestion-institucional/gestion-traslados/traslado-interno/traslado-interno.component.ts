@@ -287,6 +287,16 @@ export class TrasladoInternoComponent implements OnInit {
         // implementar para registrar traslados
     }
 
+    accionBtnItemTable({ accion, item }) {
+        if (accion === 'eliminar') {
+            this.deleteMatricula(item)
+        }
+    }
+
+    deleteMatricula(id) {
+        // implementar
+        console.log(id)
+    }
     //-------------------atajos --------------------------
     @HostListener('window:keydown.control.b', ['$event'])
     onCtrlB(event: KeyboardEvent) {
@@ -308,7 +318,7 @@ export class TrasladoInternoComponent implements OnInit {
     columns: IColumn[] = [
         {
             type: 'item',
-            width: '5rem',
+            width: '5%',
             field: 'item',
             header: 'Nro',
             text_header: 'center',
@@ -316,7 +326,7 @@ export class TrasladoInternoComponent implements OnInit {
         },
         {
             type: 'text',
-            width: '5rem',
+            width: '15%',
             field: 'nEstudianteDni',
             header: 'DNI',
             text_header: 'center',
@@ -324,7 +334,7 @@ export class TrasladoInternoComponent implements OnInit {
         },
         {
             type: 'text',
-            width: '5rem',
+            width: '35%',
             field: 'cEstudianteNombre',
             header: 'Apellidos y Nombres',
             text_header: 'center',
@@ -333,7 +343,7 @@ export class TrasladoInternoComponent implements OnInit {
 
         {
             type: 'text',
-            width: '5rem',
+            width: '25%',
             field: 'cGradoEdadAnterior',
             header: 'Grado/edad (Año anterior)',
             text_header: 'center',
@@ -341,15 +351,15 @@ export class TrasladoInternoComponent implements OnInit {
         },
         {
             type: 'text',
-            width: '5rem',
+            width: '15%',
             field: 'cValidacion',
-            header: 'Validación DNI',
+            header: 'Validación',
             text_header: 'center',
             text: 'center',
         },
         {
             type: 'checkbox',
-            width: '5rem',
+            width: '5%',
             field: 'checkbox',
             header: '',
             text_header: 'center',
@@ -395,7 +405,7 @@ export class TrasladoInternoComponent implements OnInit {
         },
         {
             type: 'text',
-            width: '15%',
+            width: '20%',
             field: 'nEstudianteDni',
             header: 'DNI',
             text_header: 'center',
@@ -418,12 +428,11 @@ export class TrasladoInternoComponent implements OnInit {
             text_header: 'center',
             text: 'center',
         },
-
         {
             type: 'actions',
-            width: '10%',
+            width: '5%',
             field: '',
-            header: 'Eliminar',
+            header: '',
             text_header: 'center',
             text: 'center',
         },

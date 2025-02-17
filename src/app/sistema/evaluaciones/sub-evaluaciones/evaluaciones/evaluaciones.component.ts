@@ -52,6 +52,7 @@ import { ContainerPageAccionbComponent } from './container-page-accionb/containe
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { GeneralService } from '@/app/servicios/general.service'
 import { ContainerPreguntasComponent } from '@/app/shared/container-preguntas/container-preguntas.component'
+
 @Component({
     selector: 'app-evaluaciones',
     standalone: true,
@@ -96,6 +97,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
     cursoSeleccionado: Map<number, boolean> = new Map()
     iiEvaluacionId: number // El ID de evaluación que quieras usar
     nombreEvaluacion: string
+    iPerfil: number
 
     @Output() opcionChange = new EventEmitter<string>()
     @Input() dataRow: any[] = [] // Los datos que recibe la tabla
@@ -107,6 +109,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
     private unsubscribe$: Subject<boolean> = new Subject()
     private _confirmService = inject(ConfirmationModalService) //intersector de eliminar
     private _generalService = inject(GeneralService)
+    private _constantesService = inject(ConstantesService) // traer los idGlobales
     public cEvaluacionNombre: string
     public params = {
         iCompentenciaId: 0,
@@ -118,9 +121,12 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
     public showModalCursosEre: boolean = false
     form: FormGroup
 
-    private ConstantesService = inject(ConstantesService)
     private _formBuilder = inject(FormBuilder) //form para obtener la variable
     public guardarIniFinCurso: FormGroup = this._formBuilder.group({})
+
+    // Variable donde se almacenan las acciones filtradas
+    // public accionesTabla: IActionTable[] = [];
+
     constructor(
         private router: Router,
         private compartirIdEvaluacionService: CompartirIdEvaluacionService,
@@ -134,8 +140,10 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
         this.form = this.fb.group({})
     }
     resetSelect: boolean = false
+    // se inicializa..
     ngOnInit() {
         this.obtenerEvaluacion()
+        this.obtenerPerfil()
         this.caption = 'Evaluaciones'
         this.dataSubject.subscribe((newData: any[]) => {
             this.data = newData
@@ -152,6 +160,18 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
         this.form.valueChanges.subscribe((value) => {
             value
         })
+    }
+
+    // obtener idPerfil
+    iPerfilId: number
+    iPerfilUsuario
+    obtenerPerfil() {
+        this.iPerfilId = this._constantesService.iPerfilId
+        console.log('idPerfil', this.iPerfilId)
+
+        this.iPerfilUsuario = {
+            rol: 'admin',
+        }
     }
     ejecutarAccion(event: { accion: string; item: IActionContainer }) {
         console.log('Acción seleccionada:', event.accion)
@@ -229,7 +249,6 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
 
             return Object.values(niveles)
         }
-
         const nivelesConGradosYCursos = agruparPorNivelYGrado()
         this.listaCursos = nivelesConGradosYCursos
         this.listaCursos.forEach((nivel) => {
@@ -403,7 +422,8 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
             text: 'center',
         },
         ...this.columnasBase,
-    ]
+    ] // Perfil del usuario
+
     // Acciones del listar evaluaciones creadas
     public accionesTabla: IActionTable[] = [
         {
@@ -412,6 +432,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
             accion: 'ver',
             type: 'item',
             class: 'p-button-rounded p-button-warning p-button-text',
+            // visible: perfilUsuario.rol === 'admin'
         },
         {
             labelTooltip: 'Editar',
@@ -442,6 +463,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
             class: 'p-button-rounded p-button-warning p-button-text',
         },
     ]
+    // ].filter(accion => accion.visible !== false);
     onRowSelect(event: any) {
         this.selectedRow = [event]
         //this.selectedRowData.emit(this.selectedRow) // Emite los datos al componente padre

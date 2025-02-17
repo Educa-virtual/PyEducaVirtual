@@ -16,11 +16,11 @@
         >
         </app-table-primeng>
     </div>
-    <app-container-preguntas
+    <!-- <app-container-preguntas
         [pregunta]="'¿Cuál es la capital de Francia?'"
         [alternativas]="['Madrid', 'París', 'Berlín', 'Roma', 'N/A']"
     >
-    </app-container-preguntas>
+    </app-container-preguntas> -->
 </app-container-page-accionb>
 
 <p-dialog
@@ -87,7 +87,7 @@
                                         <div class="col-6">
                                             <p-inputGroup>
                                                 <p-inputGroupAddon
-                                                    >Fecha - Hora
+                                                    >Hora de
                                                     Inicio</p-inputGroupAddon
                                                 >
                                                 <p-calendar
@@ -115,8 +115,7 @@
                                         <div class="col-6">
                                             <p-inputGroup>
                                                 <p-inputGroupAddon
-                                                    >Fecha - Hora
-                                                    Fin</p-inputGroupAddon
+                                                    >Hora Fin</p-inputGroupAddon
                                                 >
                                                 <p-calendar
                                                     formControlName="{{
@@ -161,7 +160,7 @@
                 pRipple
                 label="Cancelar"
                 icon="pi pi-times"
-                class="p-button-secondary"
+                class="align-items-start p-button-secondary"
                 type="button"
                 size="small"
                 (click)="ngOnDestroy()"
@@ -175,7 +174,7 @@
                 pRipple
                 label="Guardar"
                 icon="pi pi-times"
-                class="p-button-secondary"
+                class="p-button-primary"
                 type="button"
                 size="small"
                 (click)="guardarInicioFinalExmAreas()"

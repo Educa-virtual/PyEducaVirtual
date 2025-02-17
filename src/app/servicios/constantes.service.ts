@@ -905,7 +905,8 @@ export class ConstantesService {
             case ESPECIALISTA_DREMO:
                 return notas_evaluaciones
             case ESPECIALISTA_UGEL:
-                return notas_evaluaciones
+                // return notas_evaluaciones
+                return docente
             case ESTUDIANTE:
                 return estudiante
             case SUBDIRECTOR_IE:

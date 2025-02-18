@@ -702,6 +702,11 @@ const administracion = [
                             '/gestion-institucional/calendarioAcademico',
                         ],
                     },
+                    {
+                        label: 'Información de la Institución',
+                        icon: 'pi pi-wrench',
+                        routerLink: ['/gestion-institucional/Informacion-ie'],
+                    },
                 ],
             },
 
@@ -921,7 +926,8 @@ export class ConstantesService {
             case ESPECIALISTA_DREMO:
                 return notas_evaluaciones
             case ESPECIALISTA_UGEL:
-                return notas_evaluaciones
+                // return notas_evaluaciones
+                return docente
             case ESTUDIANTE:
                 return estudiante
             case SUBDIRECTOR_IE:

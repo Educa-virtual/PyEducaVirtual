@@ -1,180 +1,289 @@
-<form [formGroup]="form">
-    <fieldset>
-        <legend>Ingresar información para el traslado</legend>
-        <div class="grid p-fluid mt-2">
-            <div class="field col-12 md:col-6">
-                <span class="p-float-label">
-                    <p-dropdown
-                        [style]="{ width: '100%' }"
-                        [options]="tipo_constancia"
-                        [selectOnFocus]="1"
-                        optionLabel="cTipoConstancia"
-                        optionValue="iTipoConstancia"
-                        formControlName="cTipoTraslado"
+<div class="grid p-fluid mt-2">
+    <p-toast />
+    <div class="field col-12 md:col-4">
+        <div class="grid p-fluid mt-1">
+            <p-fieldset
+                legend="Datos del estudiante"
+                [toggleable]="true"
+                [style]="{ width: '100%' }"
+            >
+                <!-- <p-avatar image="assets/images/logo-proyecto.svg" class="mr-2" size="xlarge" shape="circle" /> -->
+                <div class="field col-12">
+                    <img
+                        src="assets/images/logo-proyecto.svg"
+                        alt="Logo del proyecto"
+                        height="90"
+                        style="
+                            margin-left: 40%;
+                            border-radius: 50%;
+                            overflow: hidden;
+                        "
                     />
-                    <label for="cTipoConstancia">Tipo de Traslado</label>
-                </span>
-            </div>
+                </div>
+                <div class="field col-12" style="width: 100%">
+                    <!-- @if (estudiante.length > 0) { -->
 
-            <div class="field col-12 md:col-6">
-                <span class="p-float-label">
-                    <p-dropdown
-                        [style]="{ width: '100%' }"
-                        [options]="tipo_constancia"
-                        [selectOnFocus]="1"
-                        filterBy="cTipoConstancia"
-                        optionLabel="cTipoConstancia"
-                        optionValue="iTipoConstancia"
-                        formControlName="cIEOrigen"
-                    />
-                    <label for="cTipoConstancia">I.E. Origen</label>
-                </span>
-            </div>
-        </div>
-        <div class="grid p-fluid mt-3">
-            <div class="field col-12 md:col-4">
-                <span class="p-float-label">
-                    <p-dropdown
-                        [style]="{ width: '100%' }"
-                        [options]="tipo_constancia"
-                        [selectOnFocus]="1"
-                        filterBy="cTipoConstancia"
-                        optionLabel="cTipoConstancia"
-                        optionValue="iTipoConstancia"
-                        formControlName="cDocumentoEstudiante"
-                    />
-                    <label for="cTipoConstancia">Documento</label>
-                </span>
-            </div>
+                    <p *ngIf="estudiante && estudiante.length > 0">
+                        <li>
+                            Identificación: {{ estudiante[0].cPersDocumento }}
+                        </li>
+                        <li>Ubigeo: {{ estudiante[0].cEstUbigeo }}</li>
+                        <li>
+                            Ubigeo de nacimiento:
+                            {{ estudiante[0].cEstUbigeoNacimiento }}
+                        </li>
+                        <li>Dirección: {{ estudiante[0].cEstDireccion }}</li>
+                        <!-- } -->
+                    </p>
+                    <p *ngIf="estudiante && estudiante.length > 0">
+                        <li>Nombres: {{ estudiante[0].cEstNombres }}</li>
+                        <li>
+                            Apellido paterno: {{ estudiante[0].cEstPaterno }}
+                        </li>
+                        <li>
+                            Apellido materno: {{ estudiante[0].cEstMaterno }}
+                        </li>
 
-            <div class="field col-12 md:col-4">
-                <span class="p-float-label">
-                    <input
-                        pInputText
-                        id="cDocumento"
-                        formControlName="cDocumento"
-                        aria-describedby="cDocumento-help"
-                    />
-                    <label for="cDocumento">Número</label>
-                </span>
-            </div>
-            <div class="field col-12 md:col-4">
-                <span class="p-float-label">
-                    <p-dropdown
-                        [style]="{ width: '100%' }"
-                        [options]="tipo_constancia"
-                        [selectOnFocus]="1"
-                        filterBy="cTipoConstancia"
-                        optionLabel="cTipoConstancia"
-                        optionValue="iTipoConstancia"
-                        formControlName="cUltimoAnioEstudio"
-                    />
-                    <label for="cTipoConstancia">Ultimo año de estudios</label>
-                </span>
-            </div>
-        </div>
-        <div class="grid p-fluid mt-4">
-            <div class="field col-12 md:col-3">
-                <span class="p-float-label">
-                    <p-dropdown
-                        [style]="{ width: '100%' }"
-                        [options]="tipo_constancia"
-                        [selectOnFocus]="1"
-                        optionLabel="iTipoConstancia"
-                        optionValue="cTipoConstancia"
-                        formControlName="cUltimoGradoEstudio"
-                    />
-                    <label for="cEstadoConstancia"
-                        >Ultimo Grado de Estudio</label
-                    >
-                </span>
-            </div>
-            <div class="field col-12 md:col-3">
-                <span class="p-float-label">
-                    <p-dropdown
-                        [style]="{ width: '100%' }"
-                        [options]="anio_constancia"
-                        [selectOnFocus]="1"
-                        optionLabel="cAnioConstancia"
-                        optionValue="iAnioConstancia"
-                        formControlName="cGradoTrasladar"
-                    />
-                    <label for="cGradoTrasladar">Grado a trasladar</label>
-                </span>
-            </div>
-            <div class="field col-12 md:col-3">
-                <p-calendar
-                    styleClass="w-full"
-                    class="flex"
-                    [iconDisplay]="'input'"
-                    appendTo="body"
-                    [showOnFocus]="false"
-                    inputId="birth_date"
-                    [showIcon]="true"
-                    formControlName="dFechaTraslado"
-                />
-            </div>
-            <div class="field col-12 md:col-3">
-                <button
-                    pButton
-                    [label]="'Validar información'"
-                    icon="pi pi-check"
-                    size="small"
-                ></button>
-                <!-- (click)="guardarActualizarRubrica()" -->
-            </div>
-        </div>
-    </fieldset>
-    <fieldset>
-        <legend>Declaracion Jurada</legend>
-        <div class="grid p-fluid mt-2">
-            <div class="field col-12 md:col-8">
-                <p-checkbox
-                    formControlName="cDeclaracionJurada"
-                    [binary]="true"
-                    label="Declaro haber recibido los siguientes documentos"
-                />
-                <ul>
-                    <p-checkbox
-                        formControlName="cDeclaracionJurada"
-                        [binary]="true"
-                        label="Copia de DNI"
-                    />
-                </ul>
-                <ul>
-                    <p-checkbox
-                        formControlName="cDeclaracionJurada"
-                        [binary]="true"
-                        label="Ficha única de matrícula"
-                    />
-                </ul>
-                <ul>
-                    <p-checkbox
-                        formControlName="cDeclaracionJurada"
-                        [binary]="true"
-                        label="Certificado de estudios"
-                    />
-                </ul>
-                <ul>
-                    <p-checkbox
-                        formControlName="cDeclaracionJurada"
-                        [binary]="true"
-                        label="Otros(CE, PAS, PN o DJ)"
-                    />
-                </ul>
-            </div>
+                        <!-- } -->
+                    </p>
+                    <p *ngIf="estudiante && estudiante.length > 0">
+                        <li>
+                            Dato Paterno: {{ estudiante[0].cEstNombrePadre }}
+                        </li>
+                        <li>
+                            Dato Materno: {{ estudiante[0].cEstNombreMadre }}
+                        </li>
+                        <!-- } -->
+                    </p>
+                    <p *ngIf="estudiante && estudiante.length > 0">
+                        <li>
+                            Último grado cursado:
+                            {{ matriculas[0].iNivelGradoId }}
+                        </li>
+                        <li>Último año: {{ matriculas[0].iYearId }}</li>
+                        <li>
+                            Conclusion del año:
+                            {{ matriculas[0].cMatrConclusionDescriptiva }}
+                        </li>
 
-            <div class="field col-12 md:col-4">
-                <button
-                    pButton
-                    [label]="'Registrar traslado'"
-                    icon="pi pi-check"
-                    size="small"
-                    class="p-button-success"
-                ></button>
-            </div>
+                        <li>
+                            Codigo Modular IE:
+                            {{ matriculas[0].cIieeCodigoModular }}
+                        </li>
+                        <li>Ultimo IE: {{ matriculas[0].cIieeNombre }}</li>
+
+                        <li>
+                            Dirección IE: {{ matriculas[0].cIieeDireccion }}
+                        </li>
+                        <li>Sede: {{ matriculas[0].cSedeNombre }}</li>
+
+                        <!-- } -->
+                    </p>
+                </div>
+            </p-fieldset>
         </div>
-    </fieldset>
-    <!-- <p-checkbox formControlName="city" value="New York" inputId="ny" label="Traslado de IE" />
-      <p-checkbox formControlName="city" value="New York" inputId="ny" label="Traslado de nivel" /> -->
-</form>
+    </div>
+    <div class="field col-12 md:col-8">
+        <form [formGroup]="form">
+            <p-fieldset
+                legend="Ingresar información para el traslado"
+                [toggleable]="true"
+                [collapsed]="false"
+            >
+                <div class="grid p-fluid mt-3">
+                    <div class="field col-12 md:col-4">
+                        <span class="p-float-label">
+                            <p-dropdown
+                                [style]="{ width: '100%' }"
+                                [options]="tipo_documentos"
+                                filterBy="cTipoIdentSigla"
+                                optionLabel="cTipoIdentSigla"
+                                optionValue="iTipoIdentId"
+                                formControlName="cDocumento"
+                                (onChange)="btnItem('TipoDocumento')"
+                            />
+                            <label for="cDocumento">Documento</label>
+                        </span>
+                    </div>
+
+                    <div class="field col-12 md:col-4">
+                        <span class="p-float-label">
+                            <input
+                                pInputText
+                                id="cDocumentoEstudiante"
+                                formControlName="cDocumentoEstudiante"
+                                aria-describedby="cDocumentoEstudiante-help"
+                            />
+                            <label for="cDocumentoEstudiante">Número</label>
+                        </span>
+                    </div>
+                    @if (btnValidar) {
+                        <div class="field col-12 md:col-4">
+                            <button
+                                pButton
+                                [label]="'Validar información'"
+                                icon="pi pi-check"
+                                size="small"
+                                (click)="confirm()"
+                            ></button>
+                            <!-- (click)="guardarActualizarRubrica()" -->
+                        </div>
+                    }
+                </div>
+
+                <div class="grid p-fluid mt-2">
+                    <div class="field col-12 md:col-6">
+                        <span class="p-float-label">
+                            <p-dropdown
+                                [style]="{ width: '100%' }"
+                                [options]="tipo_traslados"
+                                optionLabel="cTipoTrasladoIE"
+                                optionValue="iTipoTrasladoIEId"
+                                formControlName="cTipoTraslado"
+                            />
+                            <label for="cTipoConstancia"
+                                >Tipo de Traslado</label
+                            >
+                        </span>
+                    </div>
+
+                    <div class="field col-12 md:col-6">
+                        <span class="p-float-label">
+                            <p-dropdown
+                                [style]="{ width: '100%' }"
+                                [options]="instituciones"
+                                [filter]="true"
+                                filterBy="cIieeNombre"
+                                optionLabel="cIieeNombre"
+                                optionValue="iIieeId"
+                                formControlName="iIieeId"
+                            />
+                            <label for="iIieeId">I.E. Origen</label>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="grid p-fluid mt-4">
+                    <div class="field col-12 md:col-3">
+                        <span class="p-float-label">
+                            <p-dropdown
+                                [style]="{ width: '100%' }"
+                                [options]="grados_all"
+                                optionValue="iGradoId"
+                                optionLabel="nombreCompleto"
+                                [filter]="true"
+                                filterBy="nombreCompleto"
+                                formControlName="cUltimoGradoEstudio"
+                            />
+                            <label for="cUltimoGradoEstudio"
+                                >Último Grado cursado</label
+                            >
+                        </span>
+                    </div>
+                    <div class="field col-12 md:col-3">
+                        <span class="p-float-label">
+                            <p-dropdown
+                                [style]="{ width: '100%' }"
+                                [options]="year_Academicos"
+                                [filter]="true"
+                                filterBy="iYearId"
+                                optionLabel="iYearId"
+                                optionValue="iYearId"
+                                formControlName="iYearId"
+                            />
+                            <label for="iYearId">Ultimo año de estudios</label>
+                        </span>
+                    </div>
+                    <div class="field col-12 md:col-3">
+                        <span class="p-float-label">
+                            <p-dropdown
+                                [style]="{ width: '100%' }"
+                                [options]="grados_institucion"
+                                optionLabel="nombreCompleto"
+                                optionValue="iGradoId"
+                                formControlName="cGradoTrasladar"
+                            />
+                            <label for="cGradoTrasladar"
+                                >Grado a trasladar</label
+                            >
+                        </span>
+                    </div>
+                    <div class="field col-12 md:col-3">
+                        <span class="p-float-label">
+                            <p-calendar
+                                styleClass="w-full"
+                                class="flex"
+                                [iconDisplay]="'input'"
+                                appendTo="body"
+                                [showOnFocus]="false"
+                                inputId="birth_date"
+                                [showIcon]="true"
+                                formControlName="dFechaTraslado"
+                            />
+                            <label for="dFechaTraslado"
+                                >Fecha de traslado</label
+                            >
+                        </span>
+                    </div>
+                </div>
+            </p-fieldset>
+            <p-fieldset
+                legend="Declaracion Jurada"
+                [toggleable]="true"
+                [collapsed]="true"
+            >
+                <div class="grid p-fluid mt-2">
+                    <div class="field col-12 md:col-8">
+                        <p-checkbox
+                            formControlName="cDeclaracionJurada"
+                            [binary]="true"
+                            label="Declaro haber recibido los siguientes documentos"
+                        />
+                        <ul>
+                            <p-checkbox
+                                formControlName="cDeclaracionJurada"
+                                [binary]="true"
+                                label="Copia de DNI"
+                            />
+                        </ul>
+                        <ul>
+                            <p-checkbox
+                                formControlName="cDeclaracionJurada"
+                                [binary]="true"
+                                label="Ficha única de matrícula"
+                            />
+                        </ul>
+                        <ul>
+                            <p-checkbox
+                                formControlName="cDeclaracionJurada"
+                                [binary]="true"
+                                label="Certificado de estudios"
+                            />
+                        </ul>
+                        <ul>
+                            <p-checkbox
+                                formControlName="cDeclaracionJurada"
+                                [binary]="true"
+                                label="Otros(CE, PAS, PN o DJ)"
+                            />
+                        </ul>
+                    </div>
+
+                    <div class="field col-12 md:col-4">
+                        <button
+                            pButton
+                            [label]="'Registrar traslado'"
+                            icon="pi pi-check"
+                            size="small"
+                            class="p-button-success"
+                            [disabled]="form.invalid"
+                            (click)="confirmarTraslado()"
+                        ></button>
+                    </div>
+                </div>
+            </p-fieldset>
+            <!-- <p-checkbox formControlName="city" value="New York" inputId="ny" label="Traslado de IE" />
+            <p-checkbox formControlName="city" value="New York" inputId="ny" label="Traslado de nivel" /> -->
+        </form>
+    </div>
+</div>

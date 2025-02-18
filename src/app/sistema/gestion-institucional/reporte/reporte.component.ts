@@ -4,12 +4,15 @@ import { CommonModule } from '@angular/common'
 import { GeneralService } from '@/app/servicios/general.service'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { FormsModule } from '@angular/forms'
+import { MessageService } from 'primeng/api'
+import { FormatoService } from '@/app/servicios/formato.service'
 @Component({
     selector: 'app-reporte',
     standalone: true,
     imports: [PrimengModule, CommonModule, FormsModule],
     templateUrl: './reporte.component.html',
     styleUrl: './reporte.component.scss',
+    providers: [MessageService],
 })
 export class ReporteComponent {
     private GeneralService = inject(GeneralService)
@@ -25,10 +28,26 @@ export class ReporteComponent {
     iiee: any
     curricular: any
     grados: any[]
+    years: any[]
+    selectYear: any[]
+    selectGrado: any[]
+    areasColumnas: string[]
+    estudianteFilas: string[]
+    academicoGrado: string[]
+    notas: string[]
+    areas: any[] = []
+    secciones: any[] = []
+    showGrados: boolean = false
+    ListGarados: string
 
-    constructor(private ConstantesService: ConstantesService) {
+    constructor(
+        private messageService: MessageService,
+        private ConstantesService: ConstantesService,
+        private formatoService: FormatoService
+    ) {
         this.iiee = this.ConstantesService.iIieeId
         this.grados = JSON.parse(this.ConstantesService.grados)
+        this.years = this.ConstantesService.years
     }
 
     limpiar() {
@@ -36,8 +55,43 @@ export class ReporteComponent {
         this.persona = false
         this.historico = false
     }
-    buscar() {
-        console.log(this.grados)
+    buscarGrado() {
+        const params = {
+            petition: 'post',
+            group: 'aula-virtual',
+            prefix: 'academico',
+            ruta: 'obtener_academico_grado',
+            data: {
+                iGrado: this.selectGrado,
+                iYear: this.selectYear,
+                iIieeId: this.iiee,
+            },
+        }
+        this.getInformation(params, 'obtenerAcademicoGrado')
+    }
+    // Genera la tabla de grados
+    generarListaGrados() {
+        if (this.notas) {
+            this.showGrados = true
+            const indexGrado = this.grados.findIndex(
+                (item) => item.iGradoId == this.selectGrado
+            )
+            this.ListGarados = `${this.grados[indexGrado]['cGradoNombre']} (${this.grados[indexGrado]['cGradoAbreviacion']})`
+
+            this.notas.map((item) => {
+                const verSeccion = this.secciones.find(
+                    (sec) => sec['seccion'] == item['cSeccionNombre']
+                )
+                if (!verSeccion) {
+                    this.secciones.push({ seccion: item['cSeccionNombre'] })
+                }
+            })
+        } else {
+            console.log(
+                this.formatoService.standardizeDateTime('2025-02-18 14:30')
+            )
+            //this.messageService.add({ severity: 'error', summary: 'Mensaje', detail: 'No existen datos' });
+        }
     }
     buscarDocumento() {
         const params = {
@@ -159,6 +213,11 @@ export class ReporteComponent {
                     ]
                     this.persona = true
                 }
+                break
+            case 'obtenerAcademicoGrado':
+                this.academicoGrado = item
+                this.notas = JSON.parse(this.academicoGrado[0]['notas'])
+                this.generarListaGrados()
                 break
         }
     }

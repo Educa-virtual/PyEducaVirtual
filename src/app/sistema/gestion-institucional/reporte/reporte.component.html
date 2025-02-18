@@ -137,7 +137,17 @@
                         >
                         <div class="flex">
                             <p-dropdown
+                                class="mr-1"
+                                [options]="years"
+                                [(ngModel)]="selectYear"
+                                optionLabel="cYearNombre"
+                                optionValue="iYAcadId"
+                                placeholder="Seleccionar Año"
+                            />
+                            <p-dropdown
+                                class="mr-1"
                                 [options]="grados"
+                                [(ngModel)]="selectGrado"
                                 optionLabel="cGradoNombre"
                                 optionValue="iGradoId"
                                 placeholder="Seleccionar grado"
@@ -145,47 +155,35 @@
                             <p-button
                                 class="mr-1"
                                 label="Buscar"
-                                (click)="buscar()"
+                                (click)="buscarGrado()"
                             />
                         </div>
                     </p-fieldset>
                 </div>
                 <div class="block mt-3">
                     <p-table
-                        [value]="identidad"
+                        [value]="secciones"
                         [tableStyle]="{ 'min-width': '50rem' }"
-                        *ngIf="persona"
+                        *ngIf="showGrados"
                     >
                         <ng-template pTemplate="header">
                             <tr>
                                 <th>#</th>
-                                <th>Apellido Paterno</th>
-                                <th>Apellido Materno</th>
-                                <th>Nombre</th>
-                                <th>Seleccionar</th>
+                                <th>Grado</th>
+                                <th>Seccion</th>
                             </tr>
                         </ng-template>
-                        <ng-template pTemplate="body" let-identidad>
+                        <ng-template
+                            pTemplate="body"
+                            let-secciones
+                            let-index="rowIndex"
+                        >
                             <tr>
-                                <td>1</td>
-                                <td>{{ identidad.paterno }}</td>
-                                <td>{{ identidad.materno }}</td>
-                                <td>{{ identidad.nombre }}</td>
                                 <td>
-                                    <button
-                                        pButton
-                                        pRipple
-                                        label="Ver"
-                                        class="p-button-primary mr-1"
-                                        (click)="mostrarHistorial()"
-                                    ></button>
-                                    <button
-                                        pButton
-                                        pRipple
-                                        label="PDF"
-                                        class="p-button-danger"
-                                        (click)="mostrarReporte()"
-                                    ></button>
+                                    {{ index + 1 }}
+                                </td>
+                                <td>
+                                    {{ ListGarados }}
                                 </td>
                             </tr>
                         </ng-template>

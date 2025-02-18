@@ -25,7 +25,7 @@
 
 <p-dialog
     #dialogBancoPreguntas
-    header="Agregar fechas de Publicación ERE:  {{ cEvaluacionNombre }} "
+    header="Agregar hora de Publicación ERE:  {{ cEvaluacionNombre }} "
     [modal]="true"
     [(visible)]="showModalCursosEre"
     [position]="'top'"
@@ -35,7 +35,6 @@
     @defer (when showModalCursosEre) {
         <br />
         <div>Agregar fechas de Publicación Areas Curriculares</div>
-
         <div class="container" [formGroup]="form">
             <!-- "form" -->
             <!-- Card por cada nivel -->
@@ -48,42 +47,19 @@
                     <div *ngFor="let grado of nivel.grados">
                         <!-- <h4>{{ grado.grado }}</h4> -->
                         <ul class="list-unstyled m-0 p-0">
-                            <!-- Recorrer cursos -->
-                            <li
-                                *ngFor="let curso of grado.cursos"
-                                class="list-none"
-                            >
-                                <!-- Contenedor horizontal: Nombre del curso + calendarios -->
-                                <div class="grid">
-                                    <div
-                                        class="flex align-content-center col-3"
-                                    >
-                                        <span
-                                            class="curso-nombre"
-                                            style="font-weight: bold"
-                                        >
-                                            {{ curso.cCursoNombre }}
-                                        </span>
-
-                                        <span> &nbsp; - &nbsp; </span>
-
-                                        <!-- Grado del curso -->
-                                        <span
-                                            class="curso-grado"
-                                            style="font-weight: normal"
-                                        >
-                                            {{
-                                                grado.grado ??
-                                                    grado.cGradoAbreviacion
-                                            }}
-                                            Grado
-                                        </span>
-                                    </div>
-
+                            <!-- mostrar los cursos en accordion -->
+                            <p-accordion [activeIndex]="0">
+                                <p-accordionTab
+                                    [header]="
+                                        curso.cCursoNombre +
+                                        ' - ' +
+                                        (grado.grado ?? grado.cGradoAbreviacion)
+                                    "
+                                    *ngFor="let curso of grado.cursos"
+                                >
                                     <!-- Columna derecha: Calendarios de inicio y fin -->
-                                    <div class="grid col-9">
+                                    <div class="grid col">
                                         <!-- Calendario de inicio -->
-
                                         <div class="col-6">
                                             <p-inputGroup>
                                                 <p-inputGroupAddon
@@ -138,11 +114,8 @@
                                             </p-inputGroup>
                                         </div>
                                     </div>
-                                </div>
-
-                                <!-- Línea separadora para cada curso -->
-                                <hr class="mt-3 mb-0" />
-                            </li>
+                                </p-accordionTab>
+                            </p-accordion>
                         </ul>
                     </div>
                 </div>
@@ -173,7 +146,7 @@
                 pButton
                 pRipple
                 label="Guardar"
-                icon="pi pi-times"
+                icon="pi pi-check"
                 class="p-button-primary"
                 type="button"
                 size="small"

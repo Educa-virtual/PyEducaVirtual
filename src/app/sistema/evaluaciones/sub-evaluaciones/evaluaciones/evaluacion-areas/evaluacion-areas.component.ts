@@ -165,6 +165,7 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
     onCursoSelect(curso: any): void {
         //const iEvaluacionId = this.compartirIdEvaluacionService.iEvaluacionId
         const iEvaluacionId_ = this._iEvaluacionId
+        console.log('datos de los estudiante', curso.isSelected)
         if (curso.isSelected) {
             this.insertarCursos([curso], iEvaluacionId_)
         } else {
@@ -201,7 +202,7 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
         // Determinar qué valor de iEvaluacionId usar
         const id =
             iEvaluacionId || this.compartirIdEvaluacionService.iEvaluacionId
-
+        // console.log('datos de idEvaluacion', id)
         // Validar si se proporcionó un `iEvaluacionId` válido
         if (!id) {
             console.error('No se ha proporcionado un iEvaluacionId válido')

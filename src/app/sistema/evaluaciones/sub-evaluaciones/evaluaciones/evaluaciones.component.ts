@@ -52,7 +52,7 @@ import { ContainerPageAccionbComponent } from './container-page-accionb/containe
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { GeneralService } from '@/app/servicios/general.service'
 import { ContainerPreguntasComponent } from '@/app/shared/container-preguntas/container-preguntas.component'
-
+import { AccordionModule } from 'primeng/accordion'
 @Component({
     selector: 'app-evaluaciones',
     standalone: true,
@@ -64,7 +64,7 @@ import { ContainerPreguntasComponent } from '@/app/shared/container-preguntas/co
         DialogModule,
         InputTextModule,
         ReactiveFormsModule,
-
+        AccordionModule,
         TablePrimengComponent,
         ContainerPageComponent,
         PrimengModule,
@@ -98,6 +98,11 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
     iiEvaluacionId: number // El ID de evaluación que quieras usar
     nombreEvaluacion: string
     iPerfil: number
+    tabs = [
+        { title: 'Title 1', content: 'Content 1' },
+        { title: 'Title 2', content: 'Content 2' },
+        { title: 'Title 3', content: 'Content 3' },
+    ]
 
     @Output() opcionChange = new EventEmitter<string>()
     @Input() dataRow: any[] = [] // Los datos que recibe la tabla
@@ -583,7 +588,8 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
                 value: item.iEvaluacionId,
                 value1: item.cEvaluacionNombre,
             })
-            console.log('Nombre:', item.cEvaluacionNombre)
+            this.cEvaluacionNombre = item.cEvaluacionNombre
+            console.log('Nombre:', item.cEvaluacionNombre, item.iEvaluacionId)
         }
     }
     eliminarEvaluacionXId(item) {
@@ -608,6 +614,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
         })
     }
     onEvaluacionSeleccionada(event: any) {
+        // console.log('Evento recibido:', event); // Verifica qué valores llegan
         // Asigna dinámicamente el valor seleccionado
         this.iiEvaluacionId = event.value
 

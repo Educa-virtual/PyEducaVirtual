@@ -11,11 +11,19 @@ import { abecedario } from '@/app/sistema/aula-virtual/constants/aula-virtual'
 import { HttpClient } from '@angular/common/http'
 import { environment } from '@/environments/environment'
 import { catchError, map, throwError } from 'rxjs'
+import { ConstantesService } from '@/app/servicios/constantes.service'
+import { FormImportarBancoPreguntasComponent } from './componentes/form-importar-banco-preguntas/form-importar-banco-preguntas.component'
 
 @Component({
     selector: 'app-preguntas',
     standalone: true,
-    imports: [PrimengModule, ContainerPageComponent, EditorComponent, NgIf],
+    imports: [
+        PrimengModule,
+        ContainerPageComponent,
+        EditorComponent,
+        NgIf,
+        FormImportarBancoPreguntasComponent,
+    ],
     templateUrl: './preguntas.component.html',
     styleUrl: './preguntas.component.scss',
     providers: [
@@ -28,6 +36,7 @@ export class PreguntasComponent implements OnInit {
     private _apiEre = inject(ApiEvaluacionesRService)
     private _ConfirmationModalService = inject(ConfirmationModalService)
     private http = inject(HttpClient)
+    private _ConstantesService = inject(ConstantesService)
 
     private backendApi = environment.backendApi
     backend = environment.backend
@@ -37,6 +46,7 @@ export class PreguntasComponent implements OnInit {
     data
     matrizCompetencia = []
     matrizCapacidad = []
+    nIndexAcordionTab: number = null
 
     init: EditorComponent['init'] = {
         base_url: '/tinymce', // Root for resources
@@ -59,7 +69,6 @@ export class PreguntasComponent implements OnInit {
         placeholder: 'Escribe aqui...',
         height: 1000,
         plugins: 'lists image table',
-        statusbar: false,
         toolbar:
             'undo redo | forecolor backcolor | bold italic underline strikethrough | ' +
             'alignleft aligncenter alignright alignjustify | bullist numlist | ' +
@@ -67,26 +76,9 @@ export class PreguntasComponent implements OnInit {
     }
     encabezado = ''
     preguntas = []
-    alternativas = [
-        {
-            cBancoAltLetra: 'a',
-            bBancoAltRptaCorrecta: '',
-            bImage: '',
-            cBancoAltDescripcion: '',
-        },
-        {
-            cBancoAltLetra: 'b',
-            bBancoAltRptaCorrecta: '',
-            bImage: '',
-            cBancoAltDescripcion: '',
-        },
-        {
-            cBancoAltLetra: 'c',
-            bBancoAltRptaCorrecta: '',
-            bImage: '',
-            cBancoAltDescripcion: '',
-        },
-    ]
+    alternativas = []
+    showModalBancoPreguntas: boolean = false
+
     tiposAgregarPregunta: MenuItem[] = [
         {
             label: 'Nueva Pregunta sin Enunciado',
@@ -98,27 +90,28 @@ export class PreguntasComponent implements OnInit {
         {
             label: 'Nueva Pregunta con Enunciado',
             icon: 'pi pi-plus',
-            // command: () => {
-            //     this.handleNuevaPregunta(true)
-            // },
+            command: () => {
+                this.handleNuevaPregunta(true)
+            },
         },
         {
             label: 'Agregar del banco de preguntas',
             icon: 'pi pi-plus',
-            // command: () => {
-            //   this.handleBancopregunta()
-            // },
+            command: () => {
+                this.accionBtnItem({
+                    accion: 'importar-banco-preguntas',
+                    item: null,
+                })
+            },
         },
     ]
 
-    handleNuevaPregunta(encabezado) {
-        this.guardarPreguntaSinEncabezadoSinData()
-        console.log(encabezado)
-        // this.preguntas.push({
-        //   title: encabezado ? 'Pregunta con enunciado' : 'Pregunta sin enunciado',
-        //   bEncabezado: encabezado,
-        //   cPregunta: ''
-        // })
+    handleNuevaPregunta(enunciado) {
+        if (!enunciado) {
+            this.guardarPreguntaSinEnunciadoSinData()
+        } else {
+            this.guardarPreguntaConEnunciadoSinData()
+        }
     }
 
     ngOnInit() {
@@ -166,8 +159,7 @@ export class PreguntasComponent implements OnInit {
 
     confirmarEliminarPregunta(positicion, pregunta) {
         this._ConfirmationModalService.openConfirm({
-            header:
-                '¿Esta seguro de eliminar la pregunta #' + positicion + ' ?',
+            header: '¿Esta seguro de eliminar el item #' + positicion + ' ?',
             accept: () => {
                 this.eliminarPregunta(pregunta?.pregunta)
             },
@@ -175,8 +167,8 @@ export class PreguntasComponent implements OnInit {
     }
 
     eliminarPregunta(pregunta) {
-        const iPreguntaId = pregunta.length ? pregunta[0]['iPreguntaId'] : null
-        if (!iPreguntaId) return
+        const itemPregunta = pregunta.length ? pregunta[0] : null
+        if (!itemPregunta) return
 
         const params = {
             petition: 'post',
@@ -185,12 +177,29 @@ export class PreguntasComponent implements OnInit {
             ruta: 'handleCrudOperation',
             data: {
                 opcion: 'ACTUALIZARxiPreguntaIdxbPreguntaEstado',
-                iPreguntaId: iPreguntaId,
+                iPreguntaId: itemPregunta.iPreguntaId,
+                iEncabPregId: itemPregunta.iEncabPregId,
             },
         }
         this.getInformation(params, params.data.opcion)
     }
-    guardarPreguntaSinEncabezadoSinData() {
+    handleNuevaPreguntaConEnunciadoSinData(item) {
+        const params = {
+            petition: 'post',
+            group: 'ere',
+            prefix: 'preguntas',
+            ruta: 'handleCrudOperation',
+            data: {
+                opcion: 'GUARDAR-PREGUNTAS',
+                valorBusqueda: this.iEvaluacionId,
+                iCursosNivelGradId: this.iCursoNivelGradId,
+                iEncabPregId: item.iEncabPregId,
+            },
+        }
+        this.getInformation(params, params.data.opcion)
+    }
+
+    guardarPreguntaSinEnunciadoSinData() {
         const params = {
             petition: 'post',
             group: 'ere',
@@ -204,67 +213,90 @@ export class PreguntasComponent implements OnInit {
         }
         this.getInformation(params, params.data.opcion)
     }
-    guardarPreguntaSinEncabezado(encabezado, pregunta) {
-        const preguntas = pregunta.pregunta
-        if (!encabezado) {
-            const data = preguntas.length ? preguntas[0] : null
-            let error = false
-            data.opcion = 'ACTUALIZARxiDesempenoId'
-            data.iEvaluacionId = this.iEvaluacionId
-            data.iCursosNivelGradId = this.iCursoNivelGradId
-            if (!data.alternativas) {
-                this._MessageService.add({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: 'No hay alternativas ingresadas',
-                })
-                return
-            }
-            data.alternativas.forEach((alternativa) => {
-                {
-                    if (
-                        alternativa.cAlternativaDescripcion == '' ||
-                        alternativa.cAlternativaDescripcion == null
-                    ) {
-                        error = true
-                    }
-                }
-            })
-            if (error) {
-                this._MessageService.add({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: 'Todas las alternativas debe tener una descripción y/o contenido',
-                })
-                return
-            }
-            error = true
-            data.alternativas.forEach((alternativa) => {
-                {
-                    if (alternativa.bAlternativaCorrecta) {
-                        error = false
-                    }
-                }
-            })
-            if (error) {
-                this._MessageService.add({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: 'No indicó la alternativa correcta, revise por favor.',
-                })
-                return
-            }
-            data.json_alternativas = JSON.stringify(data.alternativas)
-
-            const params = {
-                petition: 'post',
-                group: 'ere',
-                prefix: 'desempenos',
-                ruta: 'handleCrudOperation',
-                data: data,
-            }
-            this.getInformation(params, params.data.opcion)
+    guardarPreguntaConEnunciadoSinData() {
+        const params = {
+            petition: 'post',
+            group: 'ere',
+            prefix: 'encabezado-preguntas',
+            ruta: 'handleCrudOperation',
+            data: {
+                opcion: 'GUARDAR-ENCABEZADO-PREGUNTAS',
+                valorBusqueda: this.iEvaluacionId,
+                iCursosNivelGradId: this.iCursoNivelGradId,
+                iCredId: this._ConstantesService.iCredId,
+            },
         }
+        this.getInformation(params, params.data.opcion)
+    }
+    guardarPreguntaConData(encabezado, pregunta, contenido) {
+        const preguntas = pregunta.pregunta
+        const data = !encabezado
+            ? preguntas.length
+                ? preguntas[0]
+                : null
+            : pregunta
+        let error = false
+        data.opcion = !encabezado
+            ? 'ACTUALIZARxiDesempenoId'
+            : 'ACTUALIZARxiEncabPregId'
+        data.cEncabPregContenido = !encabezado ? '' : contenido
+        data.iEvaluacionId = this.iEvaluacionId
+        data.iCursosNivelGradId = this.iCursoNivelGradId
+        if (!data.alternativas) {
+            this._MessageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'No hay alternativas ingresadas',
+            })
+            return
+        }
+        data.alternativas.forEach((alternativa) => {
+            {
+                if (
+                    alternativa.cAlternativaDescripcion == '' ||
+                    alternativa.cAlternativaDescripcion == null
+                ) {
+                    error = true
+                }
+            }
+        })
+        if (error) {
+            this._MessageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Todas las alternativas debe tener una descripción y/o contenido',
+            })
+            return
+        }
+        error = true
+        data.alternativas.forEach((alternativa) => {
+            {
+                if (alternativa.bAlternativaCorrecta) {
+                    error = false
+                }
+                alternativa.cAlternativaImagen === 'users/no-image.png'
+                    ? (alternativa.cAlternativaImagen = '')
+                    : ''
+            }
+        })
+        if (error) {
+            this._MessageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'No indicó la alternativa correcta, revise por favor.',
+            })
+            return
+        }
+        data.json_alternativas = JSON.stringify(data.alternativas)
+
+        const params = {
+            petition: 'post',
+            group: 'ere',
+            prefix: !encabezado ? 'desempenos' : 'encabezado-preguntas',
+            ruta: 'handleCrudOperation',
+            data: data,
+        }
+        this.getInformation(params, params.data.opcion)
     }
 
     cambiarEstadoCheckbox(iAlternativaId, alternativas) {
@@ -333,7 +365,7 @@ export class PreguntasComponent implements OnInit {
                 const evaluaciones = item.length
                     ? JSON.parse(item[0]['evaluaciones'])
                     : []
-                // console.log(item)
+                // console.log(evaluaciones)
                 if (!evaluaciones) {
                     return
                 }
@@ -341,7 +373,7 @@ export class PreguntasComponent implements OnInit {
                     this.ordenarAlternativaLetra(evaluacion.alternativas)
                 })
 
-                let total = 0
+                // let total = 0
                 for (const key in evaluaciones) {
                     if (evaluaciones[key]['iCompetenciaId']) {
                         evaluaciones[key]['iCompetenciaId'] =
@@ -352,35 +384,51 @@ export class PreguntasComponent implements OnInit {
                             evaluaciones[key]['iCapacidadId'].toString()
                     }
 
-                    if (total == 0) {
-                        const itemSinEncabezado = evaluaciones.filter(
-                            (i) =>
-                                !i.iEncabPregId &&
-                                i.iPreguntaId ===
-                                    evaluaciones[key]['iPreguntaId']
-                        )
-                        if (itemSinEncabezado.length) {
-                            this.preguntas.push({
-                                pregunta: itemSinEncabezado,
-                                title: 'Pregunta sin enunciado',
-                            })
-                            total = 0
-                        }
-                        const itemConEncabezado = evaluaciones.filter(
-                            (i) =>
-                                i.iEncabPregId &&
-                                i.iEncabPregId ===
-                                    evaluaciones[key]['iEncabPregId']
-                        )
-                        if (itemConEncabezado.length) {
-                            this.preguntas.push({
-                                pregunta: itemConEncabezado,
-                                title: 'Pregunta con enunciado',
-                            })
-                            total = total + 1
-                        }
+                    // if (total == 0) {
+                    const itemSinEncabezado = evaluaciones.filter(
+                        (i) =>
+                            !i.iEncabPregId &&
+                            i.iPreguntaId === evaluaciones[key]['iPreguntaId']
+                    )
+                    if (itemSinEncabezado.length) {
+                        this.preguntas.push({
+                            pregunta: itemSinEncabezado,
+                            title: 'Pregunta sin enunciado',
+                            iEncabPregId: null,
+                        })
+                        // total = 0
                     }
+                    const itemConEncabezado = evaluaciones.filter(
+                        (i) =>
+                            i.iEncabPregId &&
+                            i.iEncabPregId === evaluaciones[key]['iEncabPregId']
+                    )
+                    if (itemConEncabezado.length) {
+                        this.preguntas.push({
+                            pregunta: itemConEncabezado,
+                            title: 'Pregunta con enunciado',
+                            iEncabPregId: evaluaciones[key]['iEncabPregId'],
+                        })
+                        // total = total + 1
+                    }
+                    // }
                 }
+                let sinEncabezado = []
+                sinEncabezado = this.preguntas.filter((i) => !i.iEncabPregId)
+
+                let conEncabezado = []
+                conEncabezado = this.preguntas.filter(
+                    (value, index, self) =>
+                        index ===
+                        self.findIndex(
+                            (t) =>
+                                t.iEncabPregId === value.iEncabPregId &&
+                                value.iEncabPregId
+                        )
+                )
+                this.preguntas = []
+                this.preguntas = [...sinEncabezado, ...conEncabezado]
+                // console.log(this.preguntas)
                 this.preguntas.forEach((pregunta) => {
                     {
                         if (pregunta.pregunta.length > 1) {
@@ -399,7 +447,7 @@ export class PreguntasComponent implements OnInit {
                         }
                     }
                 })
-                console.log(this.preguntas)
+                //console.log(this.preguntas)
                 break
             case 'ACTUALIZARxiPreguntaIdxbPreguntaEstado':
                 this._MessageService.add({
@@ -410,6 +458,7 @@ export class PreguntasComponent implements OnInit {
                 this.obtenerPreguntasxiEvaluacionIdxiCursoNivelGradId()
                 break
             case 'ACTUALIZARxiDesempenoId':
+            case 'ACTUALIZARxiEncabPregId':
                 this._MessageService.add({
                     severity: 'success',
                     summary: 'Actualizado',
@@ -424,7 +473,14 @@ export class PreguntasComponent implements OnInit {
                 })
                 break
             case 'GUARDAR-PREGUNTAS':
+            case 'GUARDAR-ENCABEZADO-PREGUNTAS':
                 this.obtenerPreguntasxiEvaluacionIdxiCursoNivelGradId()
+                break
+            case 'importar-banco-preguntas':
+                this.showModalBancoPreguntas = true
+                break
+            case 'close-modal':
+                this.showModalBancoPreguntas = false
                 break
         }
     }

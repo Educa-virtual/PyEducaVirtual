@@ -65,9 +65,13 @@
             </div>
         } @else {
             <div class="col-12">
-                <p-accordion [activeIndex]="0" styleClass="w-full">
+                <p-accordion styleClass="w-full">
                     @for (list of preguntas; track list; let id = $index) {
-                        <p-accordionTab iconPos="end">
+                        <p-accordionTab
+                            iconPos="end"
+                            (click)="nIndexAcordionTab = id"
+                            [ngClass]="{ indexTab: nIndexAcordionTab === id }"
+                        >
                             <ng-template pTemplate="header">
                                 <span
                                     class="flex align-items-center justify-content-center w-full"
@@ -100,10 +104,9 @@
                                 <div class="grid">
                                     @if (item.bEncabezado) {
                                         @if (
-                                            list.pregunta.length > 1 &&
-                                            idx === 0
+                                            list.pregunta.length && idx === 0
                                         ) {
-                                            <div class="col-12 md:col-7">
+                                            <div class="col-12 md:col-6">
                                                 <label
                                                     for="enunciado"
                                                     class="mt-1 font-bold"
@@ -120,89 +123,50 @@
                                                     "
                                                 />
                                             </div>
-                                            <div class="col-12 md:col-5">
+                                            <div class="col-12 md:col-6">
                                                 <div class="grid">
                                                     <div class="col-12">
-                                                        <label
-                                                            for="matriz"
-                                                            class="mt-1 font-bold"
-                                                            >Matriz
-                                                            <span
-                                                                class="text-red-500 text-xs"
-                                                                >(*)
-                                                                Obligatorio</span
-                                                            ></label
+                                                        <p-toolbar
+                                                            styleClass="w-full"
                                                         >
-                                                    </div>
-                                                    <div class="col-12">
-                                                        <p-inputGroup>
-                                                            <p-inputGroupAddon
-                                                                >Competencia</p-inputGroupAddon
+                                                            <ng-template
+                                                                pTemplate="start"
                                                             >
-                                                            <p-dropdown
-                                                                styleClass="w-full"
-                                                                placeholder="Seleccione la Competencia"
-                                                                optionValue="iCompetenciaId"
-                                                                [options]="
-                                                                    matrizCompetencia
-                                                                "
-                                                                optionLabel="cCompetenciaNombre"
-                                                                [(ngModel)]="
-                                                                    item.iCompetenciaId
-                                                                "
-                                                                [filter]="true"
-                                                                filterBy="cCompetenciaNombre"
-                                                                [showClear]="
-                                                                    true
-                                                                "
-                                                            />
-                                                        </p-inputGroup>
-                                                    </div>
-                                                    <div class="col-12">
-                                                        <p-inputGroup>
-                                                            <p-inputGroupAddon
-                                                                >Capacidad</p-inputGroupAddon
+                                                                <div
+                                                                    class="text-primary font-bold"
+                                                                >
+                                                                    Lista de
+                                                                    Preguntas
+                                                                </div>
+                                                            </ng-template>
+
+                                                            <ng-template
+                                                                pTemplate="end"
                                                             >
-                                                            <p-dropdown
-                                                                styleClass="w-full"
-                                                                placeholder="Seleccione la Capacidad"
-                                                                optionValue="iCapacidadId"
-                                                                [options]="
-                                                                    matrizCapacidad
-                                                                "
-                                                                optionLabel="cCapacidadNombre"
-                                                                [(ngModel)]="
-                                                                    item.iCapacidadId
-                                                                "
-                                                                [filter]="true"
-                                                                filterBy="cCapacidadNombre"
-                                                                [showClear]="
-                                                                    true
-                                                                "
-                                                            />
-                                                        </p-inputGroup>
+                                                                <button
+                                                                    pButton
+                                                                    class="p-button-primary"
+                                                                    size="small"
+                                                                    (click)="
+                                                                        handleNuevaPreguntaConEnunciadoSinData(
+                                                                            item
+                                                                        )
+                                                                    "
+                                                                >
+                                                                    <i
+                                                                        class="pi pi-plus"
+                                                                    ></i>
+                                                                    <span
+                                                                        class="text-md"
+                                                                        >Agregar
+                                                                        Pregunta</span
+                                                                    >
+                                                                </button>
+                                                            </ng-template>
+                                                        </p-toolbar>
                                                     </div>
                                                     <div class="col-12">
-                                                        <p-inputGroup>
-                                                            <p-inputGroupAddon
-                                                                >Desempeño
-                                                            </p-inputGroupAddon>
-                                                            <input
-                                                                type="text"
-                                                                pInputText
-                                                                placeholder="Ingrese el desempeño"
-                                                                [(ngModel)]="
-                                                                    item.cDesempenoDescripcion
-                                                                "
-                                                            />
-                                                        </p-inputGroup>
-                                                    </div>
-                                                    <!---->
-                                                    <div
-                                                        class="col-12 grid w-full"
-                                                    >
                                                         <p-accordion
-                                                            [activeIndex]="0"
                                                             styleClass="w-full"
                                                         >
                                                             @for (
@@ -240,11 +204,104 @@
                                                                                     true
                                                                                 "
                                                                                 (onClick)="
-                                                                                    $event.stopPropagation()
+                                                                                    $event.stopPropagation();
+                                                                                    confirmarEliminarPregunta(
+                                                                                        key +
+                                                                                            1,
+                                                                                        list
+                                                                                    )
                                                                                 "
                                                                             ></p-button>
                                                                         </span>
                                                                     </ng-template>
+                                                                    <div
+                                                                        class="col-12"
+                                                                    >
+                                                                        <label
+                                                                            for="matriz"
+                                                                            class="mt-1 font-bold"
+                                                                            >Matriz
+                                                                            <span
+                                                                                class="text-red-500 text-xs"
+                                                                                >(*)
+                                                                                Obligatorio</span
+                                                                            ></label
+                                                                        >
+                                                                    </div>
+                                                                    <div
+                                                                        class="col-12"
+                                                                    >
+                                                                        <p-inputGroup>
+                                                                            <p-inputGroupAddon
+                                                                                >Competencia</p-inputGroupAddon
+                                                                            >
+                                                                            <p-dropdown
+                                                                                styleClass="w-full"
+                                                                                placeholder="Seleccione la Competencia"
+                                                                                optionValue="iCompetenciaId"
+                                                                                [options]="
+                                                                                    matrizCompetencia
+                                                                                "
+                                                                                optionLabel="cCompetenciaNombre"
+                                                                                [(ngModel)]="
+                                                                                    encab.iCompetenciaId
+                                                                                "
+                                                                                [filter]="
+                                                                                    true
+                                                                                "
+                                                                                filterBy="cCompetenciaNombre"
+                                                                                [showClear]="
+                                                                                    true
+                                                                                "
+                                                                            />
+                                                                        </p-inputGroup>
+                                                                    </div>
+                                                                    <div
+                                                                        class="col-12"
+                                                                    >
+                                                                        <p-inputGroup>
+                                                                            <p-inputGroupAddon
+                                                                                >Capacidad</p-inputGroupAddon
+                                                                            >
+                                                                            <p-dropdown
+                                                                                styleClass="w-full"
+                                                                                placeholder="Seleccione la Capacidad"
+                                                                                optionValue="iCapacidadId"
+                                                                                [options]="
+                                                                                    matrizCapacidad
+                                                                                "
+                                                                                optionLabel="cCapacidadNombre"
+                                                                                [(ngModel)]="
+                                                                                    encab.iCapacidadId
+                                                                                "
+                                                                                [filter]="
+                                                                                    true
+                                                                                "
+                                                                                filterBy="cCapacidadNombre"
+                                                                                [showClear]="
+                                                                                    true
+                                                                                "
+                                                                            />
+                                                                        </p-inputGroup>
+                                                                    </div>
+                                                                    <div
+                                                                        class="col-12"
+                                                                    >
+                                                                        <p-inputGroup>
+                                                                            <p-inputGroupAddon
+                                                                                >Desempeño
+                                                                            </p-inputGroupAddon>
+                                                                            <input
+                                                                                type="text"
+                                                                                pInputText
+                                                                                placeholder="Ingrese el desempeño"
+                                                                                [(ngModel)]="
+                                                                                    encab.cDesempenoDescripcion
+                                                                                "
+                                                                            />
+                                                                        </p-inputGroup>
+                                                                    </div>
+
                                                                     <div
                                                                         class="col-12"
                                                                     >
@@ -263,7 +320,7 @@
                                                                                 init
                                                                             "
                                                                             [(ngModel)]="
-                                                                                item.cPregunta
+                                                                                encab.cPregunta
                                                                             "
                                                                         />
                                                                     </div>
@@ -286,7 +343,12 @@
                                                                                     pButton
                                                                                     pRipple
                                                                                     type="button"
-                                                                                    class="p-button-primary"
+                                                                                    class="p-button-primary pulse"
+                                                                                    (click)="
+                                                                                        agregarAlternativa(
+                                                                                            encab
+                                                                                        )
+                                                                                    "
                                                                                 >
                                                                                     <i
                                                                                         class="pi pi-plus"
@@ -373,7 +435,7 @@
                                                                                         (click)="
                                                                                             eliminarAlternativa(
                                                                                                 keyx,
-                                                                                                item.alternativas
+                                                                                                alternativa.alternativas
                                                                                             )
                                                                                         "
                                                                                     >
@@ -421,7 +483,7 @@
                                                                                         (onChange)="
                                                                                             cambiarEstadoCheckbox(
                                                                                                 alternativa.iAlternativaId,
-                                                                                                item.alternativas
+                                                                                                alternativa.alternativas
                                                                                             )
                                                                                         "
                                                                                     />
@@ -448,16 +510,43 @@
                                                                             </div>
                                                                         }
                                                                     </div>
-                                                                    <p-divider></p-divider>
+                                                                    <div
+                                                                        class="col-12"
+                                                                    >
+                                                                        <div
+                                                                            class="text-center"
+                                                                        >
+                                                                            <button
+                                                                                pButton
+                                                                                pRipple
+                                                                                type="button"
+                                                                                class="p-button-success btn-block"
+                                                                                (click)="
+                                                                                    guardarPreguntaConData(
+                                                                                        true,
+                                                                                        encab,
+                                                                                        item.cEncabPregContenido
+                                                                                    )
+                                                                                "
+                                                                            >
+                                                                                <i
+                                                                                    class="pi pi-check"
+                                                                                ></i
+                                                                                >&nbsp;
+                                                                                Guardar
+                                                                                Pregunta
+                                                                            </button>
+                                                                        </div>
+                                                                    </div>
                                                                 </p-accordionTab>
                                                             }
                                                         </p-accordion>
                                                     </div>
+
                                                     <!---->
                                                 </div>
                                             </div>
                                         }
-
                                     } @else {
                                         <div class="col-12">
                                             <label
@@ -713,9 +802,10 @@
                                                     type="button"
                                                     class="p-button-success btn-block"
                                                     (click)="
-                                                        guardarPreguntaSinEncabezado(
+                                                        guardarPreguntaConData(
                                                             false,
-                                                            list
+                                                            list,
+                                                            null
                                                         )
                                                     "
                                                 >
@@ -734,4 +824,8 @@
         }
     </div>
 </app-container-page>
+<app-form-importar-banco-preguntas
+    [showModal]="showModalBancoPreguntas"
+    (accionBtnItem)="accionBtnItem($event)"
+></app-form-importar-banco-preguntas>
 <p-toast></p-toast>

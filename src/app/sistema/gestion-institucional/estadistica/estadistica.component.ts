@@ -17,13 +17,21 @@ export class EstadisticaComponent implements OnInit {
     selectedGrado: any
     selectedMerito: any
     identidad: any[] = []
-
+    selectYear: any
     escolar: any[] = [] // Se llenará con los datos del backend
     datos = [] // Se llenará con los datos del backend
     grado: any[]
     codigo: any
     years: any
+    yearid: any
+    yearValue: any
+    gradoValue: any
+    gradoid: any
+    meritoid: any
     iiee: any
+    Isede: any
+    cIieeNombre: any
+    codModular: any
     merito = [
         { label: 'General', value: 1 },
         { label: '5 Primeros Puestos', value: 2 },
@@ -34,8 +42,10 @@ export class EstadisticaComponent implements OnInit {
     constructor(private ConstantesService: ConstantesService) {
         this.grado = JSON.parse(this.ConstantesService.grados)
         this.years = this.ConstantesService.years
-        console.table(this.years)
         this.iiee = this.ConstantesService.iIieeId
+        this.Isede = this.ConstantesService.iSedeId
+        this.cIieeNombre = this.ConstantesService.cIieeNombre
+        this.codModular = this.ConstantesService.codModular
     }
 
     ngOnInit() {
@@ -47,21 +57,58 @@ export class EstadisticaComponent implements OnInit {
         this.identidad = []
     }
 
-    generar() {
-        if (!this.years || !this.grado || !this.merito) {
-            alert(
-                'Por favor, seleccione Año Escolar, Grado y Tipo de Orden de Mérito.'
+    generarReporte() {
+        if (!this.selectYear || !this.selectedGrado || !this.selectedMerito) {
+            console.error(
+                'Debe seleccionar Año Escolar, Grado y Orden de Mérito'
             )
             return
         }
 
-        const parametros = {
-            year: this.selectedYear.value,
-            grado: this.selectedGrado.value,
-            merito: this.selectedMerito.value,
-            SedeID: this.iiee,
+        this.years.map((item) => {
+            if (item['iYAcadId'] == this.selectYear) {
+                this.yearValue = item['cYearNombre']
+            }
+        })
+        this.grado.map((item) => {
+            if (item['iGradoId'] == this.selectedGrado) {
+                this.gradoValue = item['cGradoNombre']
+            }
+        })
+
+        const params = {
+            petition: 'post',
+            group: 'aula-virtual',
+            prefix: 'academico',
+            ruta: 'reporte_ranking',
+            data: {
+                cIieeNombre: this.cIieeNombre,
+                year: this.yearValue,
+                grado: this.gradoValue,
+                merito: this.selectedMerito.label,
+                codModular: this.codModular,
+                sede: this.Isede,
+                yearid: this.selectYear,
+                gradoid: this.selectedGrado,
+                meritoid: this.selectedMerito.value,
+            },
         }
-        console.log('Parámetros enviados:', parametros)
+        this.getReportePdf(params)
+
+        // Fecha de hoy
+        const today = new Date().toLocaleDateString() // Formato "dd/mm/yyyy" (puedes ajustarlo según tu necesidad)
+
+        // Crear el objeto para la tabla con los datos
+        const rowData = {
+            merito: this.selectedMerito.label,
+            grado: this.gradoValue,
+            fecha: today, // Fecha actual
+            valor: 'Sin Valor Oficial', // Puedes modificar este valor según tu lógica
+            generado: 'Generado', // Puedes modificar este valor según tu lógica
+        }
+
+        // Asignar los datos a la variable 'identidad' para mostrar en la tabla
+        this.identidad = [rowData]
     }
     getInformation(params, accion) {
         this.GeneralService.getGralPrefix(params).subscribe({

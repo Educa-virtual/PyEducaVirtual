@@ -21,6 +21,7 @@ export interface IActionContainer {
 export class ContainerPageAccionbComponent {
     @Output() accionBtnItem = new EventEmitter()
     @Input() title: string = ''
+    @Input() titleBtn: string = ''
     @Input() actions: MenuItem[] | undefined = [
         {
             items: [

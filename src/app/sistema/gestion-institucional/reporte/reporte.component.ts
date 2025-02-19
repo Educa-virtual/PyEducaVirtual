@@ -72,7 +72,6 @@ export class ReporteComponent {
         this.tablaEstudiantes = []
 
         // Agrupar los estudiantes por nombre y agregar las notas correspondientes.
-
         const estudiantesAgrupados = this.alumnos.reduce(
             (
                 acc,
@@ -100,6 +99,17 @@ export class ReporteComponent {
         // Convertir el objeto en un array para la tabla
         this.tablaEstudiantes = Object.values(estudiantesAgrupados)
         this.habilitar = false
+    }
+    calcularPromedio(estudiante: any): number {
+        const notas = this.cursos
+            .map((curso) => estudiante[curso])
+            .filter((nota) => typeof nota === 'number')
+        if (notas.length === 0) return 0
+        const suma = notas.reduce(
+            (acc, nota) => acc + ((nota * 3) / 8 + 2.5),
+            0
+        )
+        return suma / notas.length
     }
     reporteGrado() {
         const params = {

@@ -47,6 +47,7 @@
                 </div>
                 <div class="block mt-3">
                     <p-table
+                        styleClass="p-datatable-gridlines"
                         [value]="identidad"
                         [tableStyle]="{ 'min-width': '50rem' }"
                         *ngIf="persona"
@@ -88,6 +89,7 @@
                 </div>
                 <div class="block mt-3">
                     <p-table
+                        styleClass="p-datatable-gridlines"
                         [value]="fila"
                         [tableStyle]="{ 'min-width': '50rem' }"
                         *ngIf="historico"
@@ -162,6 +164,7 @@
                 </div>
                 <div class="block mt-3">
                     <p-table
+                        styleClass="p-datatable-gridlines"
                         [value]="secciones"
                         [tableStyle]="{ 'min-width': '50rem' }"
                         *ngIf="showGrados"
@@ -211,16 +214,38 @@
                 <div class="block mt-3">
                     <p-toast />
                     <p-table
+                        [rows]="10"
+                        [rowsPerPageOptions]="[10, 25, 50]"
+                        [paginator]="true"
+                        styleClass="p-datatable-gridlines"
                         [value]="tablaEstudiantes"
+                        [scrollable]="true"
+                        scrollHeight="600px"
                         [tableStyle]="{ 'min-width': '50rem' }"
                         *ngIf="showAlumnos"
                     >
                         <ng-template pTemplate="header">
                             <tr>
+                                <th colspan="2"></th>
+                                <th
+                                    class="surface-100 text-center"
+                                    colspan="10"
+                                >
+                                    ÁREAS CURRICULAR
+                                </th>
+                                <th
+                                    class="bg-green-300 text-center"
+                                    colspan="10"
+                                >
+                                    ÁREAS POR ADECUAR (RVM 094-2020-MINEDU)
+                                </th>
+                                <th rowspan="2">Promedio</th>
+                            </tr>
+                            <tr>
                                 <th>#</th>
                                 <th>Nombres y Apellidos</th>
                                 <th
-                                    class="surface-200"
+                                    class="surface-100"
                                     *ngFor="let col of cursos"
                                 >
                                     {{ col }}
@@ -250,8 +275,17 @@
                                     <!-- Si no tiene nota, mostrar un guion. -->
                                 </td>
                                 <td *ngFor="let curso of cursos">
-                                    {{ tablaEstudiantes[curso] / 2 || '-' }}
+                                    {{
+                                        (tablaEstudiantes[curso] * 3) / 8 +
+                                            2.5 || '-'
+                                    }}
                                     <!-- Si no tiene nota, mostrar un guion. -->
+                                </td>
+                                <td>
+                                    {{
+                                        calcularPromedio(tablaEstudiantes)
+                                            | number: '1.2-3'
+                                    }}
                                 </td>
                             </tr>
                         </ng-template>

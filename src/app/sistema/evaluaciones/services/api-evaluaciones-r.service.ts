@@ -461,7 +461,12 @@ export class ApiEvaluacionesRService {
     }
 
     exportarPreguntasPorArea(params) {
-        const url = `${this.urlBackendAspNet}/api/ere/evaluaciones/${params.iEvaluacionId}/areas/${params.iCursosNivelGradId}/exportar-preguntas`
+        const url = `${this.urlBackendAspNet}/api/ere/evaluaciones/${params.iEvaluacionId}/areas/${params.iCursosNivelGradId}/archivo-preguntas`
+        window.open(url, '_blank')
+    }
+
+    descargarPreguntasPorArea(params) {
+        const url = `${this.urlBackend}/api/ere/evaluaciones/${params.iEvaluacionId}/areas/${params.iCursosNivelGradId}/archivo-preguntas`
         window.open(url, '_blank')
     }
 }

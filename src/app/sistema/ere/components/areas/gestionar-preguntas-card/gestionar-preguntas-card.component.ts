@@ -63,7 +63,9 @@ export class GestionarPreguntasCardComponent implements OnInit {
             {
                 label: 'Descargar PDF',
                 icon: 'pi pi-angle-right',
-                command: () => {},
+                command: () => {
+                    this.descargarPreguntasPorArea()
+                },
             },
         ]
     }
@@ -81,6 +83,18 @@ export class GestionarPreguntasCardComponent implements OnInit {
                 iCursosNivelGradId: this.curso.iCursosNivelGradId,
             }
             this.evaluacionesService.exportarPreguntasPorArea(params)
+        }
+    }
+
+    descargarPreguntasPorArea() {
+        if (this.curso.iCantidadPreguntas == 0) {
+            alert('No hay preguntas para exportar')
+        } else {
+            const params = {
+                iEvaluacionId: this.iEvaluacionIdHashed,
+                iCursosNivelGradId: this.curso.iCursosNivelGradId,
+            }
+            this.evaluacionesService.descargarPreguntasPorArea(params)
         }
     }
 }

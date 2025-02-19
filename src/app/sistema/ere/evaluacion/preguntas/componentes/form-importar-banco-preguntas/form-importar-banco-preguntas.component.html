@@ -1,8 +1,42 @@
 <app-modal-primeng
-    [title]="'Importar del Banco de Preguntas'"
+    [title]="'Agregar preguntas del Banco de Preguntas'"
     [showModal]="showModal"
-    [width]="'55rem'"
+    [width]="'80rem'"
     (accionBtnItem)="accionBtn($event)"
 >
-    <small>Se encuentra en construcción</small>
+    <div class="mt-4">
+        <div class="grid">
+            <!-- Filtros -->
+            <div class="col-12 md:col-4">
+                <p-inputGroup>
+                    <p-inputGroupAddon>Origen Preguntas:</p-inputGroupAddon>
+                    <p-dropdown
+                        optionValue="iOrigenId"
+                        [options]="origen"
+                        optionLabel="cOrigen"
+                        styleClass="w-full"
+                    />
+                </p-inputGroup>
+            </div>
+
+            <div class="col-12 md:col-8">
+                <p-inputGroup>
+                    <p-inputGroupAddon> Docente </p-inputGroupAddon>
+                    <p-dropdown
+                        optionValue="iDocenteId"
+                        [options]="docentes"
+                        optionLabel="cDocente"
+                        styleClass="w-full"
+                    />
+                </p-inputGroup>
+            </div>
+        </div>
+        <div class="col-12">
+            <app-aula-banco-preguntas
+                [mode]="'SELECTION'"
+                [iCursoId]="params.iCursoId"
+                [params]="params"
+            ></app-aula-banco-preguntas>
+        </div>
+    </div>
 </app-modal-primeng>

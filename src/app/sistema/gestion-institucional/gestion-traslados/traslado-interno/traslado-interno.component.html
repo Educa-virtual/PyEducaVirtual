@@ -1,0 +1,169 @@
+<!-- <app-container-page title="Gestion de solicitudes de traslado" [actions]="accionesPrincipal"> -->
+<div class="grid p-fluid mt-2">
+    <div class="field col-12 md:col-5">
+        <form [formGroup]="form">
+            <p-fieldset
+                legend="Filtros de busqueda"
+                [toggleable]="true"
+                [collapsed]="false"
+            >
+                <div class="grid p-fluid mt-3">
+                    <div class="field col-12 md:col-6">
+                        <span class="p-float-label">
+                            <p-dropdown
+                                [style]="{ width: '100%' }"
+                                [options]="grados"
+                                [filter]="true"
+                                filterBy="cGradoNombre"
+                                optionLabel="cGradoNombre"
+                                optionValue="iGradoId"
+                                formControlName="iGrado"
+                            />
+                            <label for="iGrado">Grado a matricular</label>
+                        </span>
+                    </div>
+                    <div class="field col-12 md:col-6">
+                        <span class="p-float-label">
+                            <p-dropdown
+                                [style]="{ width: '100%' }"
+                                [options]="secciones"
+                                [filter]="true"
+                                filterBy="cSeccionDescripcion"
+                                optionLabel="cSeccionDescripcion"
+                                optionValue="iSeccionId"
+                                formControlName="iSeccion"
+                            />
+                            <label for="iSeccion">Sección</label>
+                        </span>
+                    </div>
+                    @if (lista_pendiente) {
+                        <div class="field col-12 md:col-12">
+                            <button
+                                pButton
+                                [label]="'Estudiantes pendientes'"
+                                icon="pi pi-list"
+                                size="small"
+                                (click)="btnItem('pendientes')"
+                                class="p-button-danger"
+                            ></button>
+                        </div>
+                    } @else {
+                        <div class="field col-12 md:col-12">
+                            <button
+                                pButton
+                                [label]="'Listar estudiantes'"
+                                icon="pi pi-list"
+                                size="small"
+                                (click)="btnItem('listar')"
+                                class="p-button-primary"
+                            ></button>
+                        </div>
+                    }
+                </div>
+            </p-fieldset>
+            <p-fieldset
+                legend="Disponibilidad de vacantes"
+                [toggleable]="true"
+                [collapsed]="false"
+            >
+                <div class="grid p-fluid mt-3">
+                    <div class="field col-12 md:col-6">
+                        <span class="p-float-label">
+                            <input
+                                pInputText
+                                id="cVacantesRegular"
+                                formControlName="cVacantesRegular"
+                                aria-describedby="cVacantesRegular-help"
+                            />
+                            <label for="cVacantesRegular"
+                                >Vacantes Regular</label
+                            >
+                        </span>
+                    </div>
+                    <div class="field col-12 md:col-6">
+                        <span class="p-float-label">
+                            <input
+                                pInputText
+                                id="cVacantesNEE"
+                                formControlName="cVacantesNEE"
+                                aria-describedby="cVacantesNEE-help"
+                            />
+                            <label for="cVacantesNEE">Disponible</label>
+                        </span>
+                    </div>
+                    <div class="field col-12 md:col-6">
+                        <span class="p-float-label">
+                            <input
+                                pInputText
+                                id="cVacantes"
+                                formControlName="cVacantes"
+                                aria-describedby="cVacantes-help"
+                            />
+                            <label for="cVacantes">Vacantes</label>
+                        </span>
+                    </div>
+                    <div class="field col-12 md:col-6">
+                        <span class="p-float-label">
+                            <input
+                                pInputText
+                                id="cDisponible"
+                                formControlName="cDisponible"
+                                aria-describedby="cDisponible-help"
+                            />
+                            <label for="cDisponible">Disponible</label>
+                        </span>
+                    </div>
+                    <div class="field col-12 md:col-12">
+                        <button
+                            pButton
+                            [label]="'Registrar traslado'"
+                            icon="pi pi-save"
+                            size="small"
+                            class="p-button-success"
+                            (click)="confirmar()"
+                        ></button>
+                    </div>
+                </div>
+            </p-fieldset>
+            <!-- <p-checkbox formControlName="city" value="New York" inputId="ny" label="Traslado de IE" />
+            <p-checkbox formControlName="city" value="New York" inputId="ny" label="Traslado de nivel" /> -->
+        </form>
+    </div>
+    <div class="field col-12 md:col-7">
+        @if (lista_pendiente) {
+            <!-- <app-table-primeng
+            [columnas]="columns"
+            [data]="data"
+            (selectedRowDataChange)="selectRow($event)">
+        </app-table-primeng> -->
+
+            <app-table-primeng
+                [columnas]="columns_registrados"
+                [showCaption]="true"
+                [data]="data"
+                [showPaginator]="true"
+                [actions]="actions"
+                [tableStyle]="{ border: '1px solid black' }"
+                (accionBtnItem)="accionBtnItemTable($event)"
+            >
+                <!-- <ng-container slot="caption-content"> </ng-container> -->
+            </app-table-primeng>
+        } @else {
+            <app-table-primeng
+                [columnas]="columns"
+                [data]="data"
+                (selectedRowDataChange)="selectRow($event)"
+            >
+            </app-table-primeng>
+        }
+    </div>
+</div>
+
+<!-- [data]="data"
+            [selectedRowData]="isExpand ? data[0] : null"
+            [scrollable]="true"
+            scrollHeight="flex"
+            [showCaption]="false"
+            [showPaginator]="true"
+            selectionMode="single"
+            (selectedRowDataChange)="selectRow($event)" -->

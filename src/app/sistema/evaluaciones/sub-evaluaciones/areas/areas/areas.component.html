@@ -1,5 +1,5 @@
 <app-container-page
-    [title]="'Áreas curriculares : ' + nombreEvaluacion"
+    [title]="'Áreas curriculares ERE : ' + nombreEvaluacion"
     [actions]="[]"
 >
     <p-dataView
@@ -25,7 +25,16 @@
                         placeholder="Buscar..."
                     />
                 </p-iconField>
-                <p-dropdown
+
+                <div class="flex justify-center">
+                    <input
+                        pInputText
+                        [disabled]="true"
+                        [(ngModel)]="nombreEvaluacion"
+                    />
+                </div>
+
+                <!-- <p-dropdown
                     [options]="[]"
                     placeholder="Todos los Periodos"
                     styleClass="w-full"
@@ -40,9 +49,9 @@
                     class="flex-1"
                     [emptyMessage]="'2023'"
                 >
-                </p-dropdown>
+                </p-dropdown> 
 
-                <p-dataViewLayoutOptions></p-dataViewLayoutOptions>
+                <p-dataViewLayoutOptions></p-dataViewLayoutOptions>-->
             </div>
         </ng-template>
         <ng-template let-products pTemplate="listItem">

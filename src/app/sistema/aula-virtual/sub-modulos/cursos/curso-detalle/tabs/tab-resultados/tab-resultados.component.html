@@ -185,11 +185,21 @@
                                                     label="Guardar"
                                                     icon="pi pi-check"
                                                     class="p-button-success"
+                                                    [disabled]="
+                                                        desactivarUnidad()
+                                                    "
                                                     [loading]="loading"
                                                     (onClick)="load()"
                                                     (click)="
                                                         guardaCalificacionFinalUnidad()
                                                     "
+                                                    [pTooltip]="
+                                                        desactivarUnidad()
+                                                            ? 'No se puede guardar, alguna unidad está inactiva'
+                                                            : ''
+                                                    "
+                                                    tooltipPosition="top"
+                                                    tooltipStyleClass="custom-tooltip"
                                                 />
                                             </div>
                                         </div>

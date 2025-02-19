@@ -14,6 +14,14 @@ import { ConfigFechasComponent } from './config-fechas/config-fechas.component'
 import { IesPersonalComponent } from './ies-personal/ies-personal.component'
 import { HorarioComponent } from './horario/horario.component'
 import { ConfiguracionHorarioComponent } from './horario/configuracion-horario/configuracion-horario.component'
+import { ReporteComponent } from './reporte/reporte.component'
+import { EstadisticaComponent } from './estadistica/estadistica.component'
+import { GestionTrasladosComponent } from './gestion-traslados/gestion-traslados.component'
+import { GestionVacantesComponent } from './gestion-vacantes/gestion-vacantes.component'
+import { InformacionComponent } from './informacion/informacion.component'
+
+//import { HorarioComponent } from './horario/horario.component'
+//import { ConfiguracionHorarioComponent } from './horario/configuracion-horario/configuracion-horario.component'
 import { GestionMatriculasComponent } from './matriculas/gestion-matriculas.component'
 import { MatriculaMasivaComponent } from './matriculas/matricula-masiva/matricula-masiva.component'
 import { MatriculaIndividualComponent } from './matriculas/matricula-individual/matricula-individual.component'
@@ -33,6 +41,49 @@ const routes: Routes = [
     { path: 'IesPersonal', component: IesPersonalComponent },
     { path: 'horario', component: HorarioComponent },
     { path: 'configurar-horario', component: ConfiguracionHorarioComponent },
+    { path: 'reporte', component: ReporteComponent },
+    { path: 'estadistica', component: EstadisticaComponent },
+    { path: 'gestion-traslados', component: GestionTrasladosComponent },
+    { path: 'gestion-vacantes', component: GestionVacantesComponent },
+    { path: 'Informacion-ie', component: InformacionComponent },
+    // { path: 'horario', component: HorarioComponent },
+    //{ path: 'configurar-horario', component: ConfiguracionHorarioComponent },
+    {
+        path: 'horario',
+        loadComponent: () =>
+            import('./horario/horario.component').then(
+                (c) => c.HorarioComponent
+            ),
+    },
+
+    // {
+    //     path: 'gestion-traslados',
+    //     loadComponent: () =>
+    //         import('./gestion-traslados/gestion-traslados.component').then(
+    //             (c) => c.GestionTrasladosComponent
+    //         ),
+    // },
+    {
+        path: 'traslado-externo',
+        loadComponent: () =>
+            import(
+                './gestion-traslados/traslado-externo/traslado-externo.component'
+            ).then((c) => c.TrasladoExternoComponent),
+    },
+    {
+        path: 'traslado-interno',
+        loadComponent: () =>
+            import(
+                './gestion-traslados/traslado-interno/traslado-interno.component'
+            ).then((c) => c.TrasladoInternoComponent),
+    },
+    {
+        path: 'configurar-horario',
+        loadComponent: () =>
+            import(
+                './horario/configuracion-horario/configuracion-horario.component'
+            ).then((c) => c.ConfiguracionHorarioComponent),
+    },
     { path: 'gestion-matriculas', component: GestionMatriculasComponent },
     { path: 'matricula-individual', component: MatriculaIndividualComponent },
     { path: 'matricula-masiva', component: MatriculaMasivaComponent },

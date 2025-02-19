@@ -744,11 +744,55 @@ export class ConfigSeccionComponent implements OnInit {
             text_header: 'left',
             text: 'left',
         },
+        // {
+        //     type: 'arrayColumn',
+        //     width: '35%',
+        //     field: 'arrayAmbientes',
+        //     header: 'Ambiente',
+        //     text_header: 'center',
+        //     text: 'center',
+        // },
         {
-            type: 'arrayColumn',
-            width: '35%',
-            field: 'arrayAmbientes',
+            type: 'text',
+            width: '5rem',
+            field: 'cAmbienteNombre',
             header: 'Ambiente',
+            text_header: 'center',
+            text: 'center',
+        },
+
+        {
+            type: 'text',
+            width: '5rem',
+            field: 'cGradoNombre',
+            header: 'Grado',
+            text_header: 'center',
+            text: 'center',
+        },
+
+        {
+            type: 'text',
+            width: '5rem',
+            field: 'cCicloRomanos',
+            header: 'Ciclo',
+            text_header: 'center',
+            text: 'center',
+        },
+
+        {
+            type: 'text',
+            width: '5rem',
+            field: 'cSeccionNombre',
+            header: 'Aula',
+            text_header: 'center',
+            text: 'center',
+        },
+
+        {
+            type: 'text',
+            width: '5rem',
+            field: 'iDetConfCantEstudiantes',
+            header: 'Foro',
             text_header: 'center',
             text: 'center',
         },
@@ -770,14 +814,14 @@ export class ConfigSeccionComponent implements OnInit {
             text_header: 'center',
             text: 'center',
         },
-        {
-            type: 'text',
-            width: '5rem',
-            field: 'cModalServNombre',
-            header: 'Servicio',
-            text_header: 'center',
-            text: 'center',
-        },
+        // {
+        //     type: 'text',
+        //     width: '5rem',
+        //     field: 'cModalServNombre',
+        //     header: 'Servicio',
+        //     text_header: 'center',
+        //     text: 'center',
+        // },
 
         {
             type: 'actions',

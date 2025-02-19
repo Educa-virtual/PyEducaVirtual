@@ -30,6 +30,7 @@ import { DynamicDialogConfig } from 'primeng/dynamicdialog'
 import { ReactiveFormsModule } from '@angular/forms'
 import { CommonModule } from '@angular/common'
 import { MessageService } from 'primeng/api'
+import { PrimengModule } from '@/app/primeng.module'
 interface NivelTipo {
     cNivelTipoNombre: string
     iNivelTipoId: string
@@ -56,6 +57,7 @@ interface EvaluacionCopia {
         FormsModule,
         ReactiveFormsModule,
         CommonModule,
+        PrimengModule,
     ],
     templateUrl: './ieparticipa.component.html',
     styleUrl: './ieparticipa.component.scss',

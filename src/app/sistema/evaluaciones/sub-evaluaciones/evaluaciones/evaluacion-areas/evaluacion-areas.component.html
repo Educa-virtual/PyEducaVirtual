@@ -2,6 +2,52 @@
     <div
         class="flex flex-column md:flex-row md:justify-content-between gap-2 padding:100px"
     ></div>
+    <p-accordion [activeIndex]="0">
+        <p-accordionTab
+            *ngFor="let nivel of lista; let nivelIndex = index"
+            [header]="nivel.nivel"
+        >
+            <p-table [value]="cursos">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Nombre de Área</th>
+                        <th *ngFor="let grado of objectKeys(nivel.grados)">
+                            {{ grado }}
+                        </th>
+                        <th>Fecha de Evaluación</th>
+                        <th>Cant. Preguntas</th>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="body" let-curso>
+                    <tr>
+                        <td>{{ curso.cCursoNombre }}</td>
+                        <td *ngFor="let grado of objectKeys(nivel.grados)">
+                            <p-checkbox
+                                [binary]="true"
+                                [disabled]="isDisabled"
+                            ></p-checkbox>
+                        </td>
+                        <td>{{ curso.fechaEvaluacion || 'N/A' }}</td>
+                        <td>{{ curso.cantPreguntas || 0 }}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </p-accordionTab>
+    </p-accordion>
+
+    <!-- <p-accordion [activeIndex]="0">
+        <p-accordionTab [header]="nivel.nivel" *ngFor="let nivel of lista">
+            <app-table-primeng
+                [columnas]="columnas"
+                [data]="cursos"
+                [showCaption]="false"     
+                [showPaginator]="false"       
+            >
+            </app-table-primeng>
+        </p-accordionTab>
+    </p-accordion> -->
+
     <div class="flex justify-content-between">
         <div class="card" *ngFor="let nivel of lista">
             <!-- Título: Nivel -->

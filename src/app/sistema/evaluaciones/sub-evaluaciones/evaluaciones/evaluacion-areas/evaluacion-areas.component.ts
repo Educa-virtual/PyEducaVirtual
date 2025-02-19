@@ -30,7 +30,14 @@ import { MessageService } from 'primeng/api'
 import { CompartirFormularioEvaluacionService } from '../../../services/ereEvaluaciones/compartir-formulario-evaluacion.service'
 import { DialogModule } from 'primeng/dialog'
 import { PrimengModule } from '@/app/primeng.module'
+// IActionTable,
+import {
+    IColumn,
+    TablePrimengComponent,
+} from '@/app/shared/table-primeng/table-primeng.component'
 //import { ToastModule } from 'primeng/toast'
+import { TableModule } from 'primeng/table'
+import { ToastModule } from 'primeng/toast'
 interface NivelTipo {
     cNivelTipoNombre: string
     iNivelTipoId: string
@@ -41,6 +48,9 @@ export type Layout = 'list' | 'grid'
     standalone: true,
     imports: [
         InputTextModule,
+        TableModule,
+        ToastModule,
+        TablePrimengComponent,
         DialogModule,
         FormsModule,
         CardModule,
@@ -117,7 +127,10 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
         //nForoRptaNota: [],
         //cForoDescripcion: [],
     })
+
     ngOnInit(): void {
+        // Inicializar evaluaciones con valores vacíos
+        this.getCursos()
         // Determinar el modo
         this.accion = this._config.data?.accion || 'crear'
         //console.log('Acción actual:', this.accion)
@@ -143,6 +156,89 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
             this.searchAmbienteAcademico()
         }
     }
+    // -------------------------------New Código de select areas y grados que participan en la ERE
+    // onCheckboxChange(nivelIndex: number, areaIndex: number, grado: string) {
+    //     console.log(
+    //       `Cambio en ${this.niveles[nivelIndex].nombre} - ${this.niveles[nivelIndex].areas[areaIndex].nombre}, Grado: ${grado}, Seleccionado:`,
+    //       this.niveles[nivelIndex].areas[areaIndex].evaluaciones[grado]
+    //     );
+    //   }
+    columnas: IColumn[] = [
+        {
+            field: 'cCursoNombre',
+            header: 'Nombre de Área',
+            type: 'text',
+            width: '7rem',
+            text: 'left',
+            text_header: 'Clave',
+        },
+        {
+            field: 'cTipoEvalDescripcion',
+            header: '1º',
+            type: 'item-checkbox',
+            width: '1rem',
+            text: 'left',
+            text_header: 'Tipo evaluación',
+        },
+        {
+            field: 'cNivelEvalNombre',
+            header: '2º',
+            type: 'item-checkbox',
+            width: '3rem',
+            text: 'left',
+            text_header: 'Puntaje',
+        },
+        {
+            field: 'dtEvaluacionFechaInicio',
+            header: '3º',
+            type: 'item-checkbox',
+            width: '3rem',
+            text: 'left',
+            text_header: 'Nivel',
+        },
+        {
+            field: 'dtEvaluacionFechaFin1',
+            header: '4º',
+            type: 'item-checkbox',
+            width: '3rem',
+            text: 'left',
+            text_header: 'Nivel',
+        },
+        {
+            field: 'dtEvaluacionFechaFin2',
+            header: '5º',
+            type: 'item-checkbox',
+            width: '3rem',
+            text: 'left',
+            text_header: 'Nivel',
+        },
+        {
+            field: 'dtEvaluacionFechaFin3',
+            header: '6º',
+            type: 'item-checkbox',
+            width: '3rem',
+            text: 'left',
+            text_header: 'Nivel',
+        },
+        {
+            field: 'dtEvaluacionFechaFin',
+            header: 'Fecha de Evaluación',
+            type: 'input',
+            width: '3rem',
+            text: 'left',
+            text_header: 'Nivel',
+        },
+        {
+            field: 'dtEvaluacionFechaFin',
+            header: 'Cant. Preguntas',
+            type: 'input',
+            width: '3rem',
+            text: 'left',
+            text_header: 'Nivel',
+        },
+    ]
+
+    // -------------------------
     separarPorNivelIeParticipan() {
         // Filtrar los datos para Educación Primaria
         const datosPrimaria = this.datosRecIeParticipanToAreas.filter(
@@ -373,6 +469,8 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
                         ...curso,
                     }))
                     this.data = this.cursos
+
+                    console.log('datos', this.data)
                 },
                 complete: () => {},
                 error: (error) => {

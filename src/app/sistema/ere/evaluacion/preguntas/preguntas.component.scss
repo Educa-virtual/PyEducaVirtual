@@ -86,3 +86,7 @@
     border-right: 1px solid #d1d5db;
     border-bottom: 1px solid #d1d5db;
 }
+
+.indexTab ::ng-deep .p-accordion-header-link {
+    //background-color: var(--green-100) !important;
+}

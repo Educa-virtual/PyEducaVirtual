@@ -8,6 +8,7 @@ import { mapData } from '../sub-evaluaciones/banco-preguntas/models/pregunta-dat
     providedIn: 'root',
 })
 export class ApiEvaluacionesRService {
+    private urlBackendAspNet = environment.backendAspNet
     private urlBackendApi = environment.backendApi
     private urlBackend = environment.backend
     private http = inject(HttpClient)
@@ -460,9 +461,7 @@ export class ApiEvaluacionesRService {
     }
 
     exportarPreguntasPorArea(params) {
-        const url = `${this.urlBackendApi}/ere/evaluaciones/${params.iEvaluacionId}/areas/${params.iCursosNivelGradId}/exportar-preguntas`
-        //const params = new URLSearchParams({ ...baseParams })
-        //const fullUrl = `${url}?${params.toString()}`
+        const url = `${this.urlBackendAspNet}/api/ere/evaluaciones/${params.iEvaluacionId}/areas/${params.iCursosNivelGradId}/exportar-preguntas`
         window.open(url, '_blank')
     }
 }

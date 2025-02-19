@@ -5,7 +5,6 @@ import { GeneralService } from '@/app/servicios/general.service'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { FormsModule } from '@angular/forms'
 import { MessageService } from 'primeng/api'
-import { FormatoService } from '@/app/servicios/formato.service'
 @Component({
     selector: 'app-reporte',
     standalone: true,
@@ -16,34 +15,33 @@ import { FormatoService } from '@/app/servicios/formato.service'
 })
 export class ReporteComponent {
     private GeneralService = inject(GeneralService)
+    persona = false
+    historico = false
     datos = []
-    persona: boolean = false //  muestra la tabla de la identidad del estudiante
-    historico: boolean = false //  muestra la tabla del historico del estudiante
-    documento: string = ''
-    identidad: any // datos del alumno
-    historial: any[]
+    secciones = []
     columna = [] // almacena los años y grados de los estudiantes por busqueda por estudiante
-    fila: any = [] // almacena el area curricular y sus notas las notas de los estudiantes por busqueda por estudiante
+    fila = [] // almacena el area curricular y sus notas las notas de los estudiantes por busqueda por estudiante
+    documento = ''
+    showGrados = false
+    showAlumnos = false
+    iiee = ''
+    grados = []
+    years = []
+    identidad: any
+    historial: any[]
     final: any
-    iiee: any
-    curricular: any
-    grados: any[]
-    years: any[]
+    curricular = []
     selectYear: any[]
     selectGrado: any[]
     areasColumnas: string[]
     estudianteFilas: string[]
     academicoGrado: string[]
     notas: string[]
-    areas: any[] = []
-    secciones: any[] = []
-    showGrados: boolean = false
     ListGarados: string
-
+    alumnos = []
     constructor(
         private messageService: MessageService,
-        private ConstantesService: ConstantesService,
-        private formatoService: FormatoService
+        private ConstantesService: ConstantesService
     ) {
         this.iiee = this.ConstantesService.iIieeId
         this.grados = JSON.parse(this.ConstantesService.grados)
@@ -54,6 +52,68 @@ export class ReporteComponent {
         this.documento = ''
         this.persona = false
         this.historico = false
+    }
+    buscarAlumnos(grupo: string) {
+        this.notas.map((item) => {
+            if (item['cSeccionNombre'] == grupo) {
+                this.alumnos.push(item)
+            }
+        })
+        console.table(this.alumnos)
+        this.showAlumnos = true
+        this.organizarEstudiantes()
+    }
+    cursos: string[] = []
+    tablaEstudiantes: any[] = []
+    organizarEstudiantes() {
+        this.cursos = Array.from(
+            new Set(this.alumnos.map((e) => e.cCursoNombre))
+        ) // Obtener lista de cursos únicos.
+        this.tablaEstudiantes = []
+
+        // Agrupar los estudiantes por nombre y agregar las notas correspondientes.
+
+        const estudiantesAgrupados = this.alumnos.reduce(
+            (
+                acc,
+                {
+                    iEstudianteId,
+                    cEstNombres,
+                    cEstPaterno,
+                    cEstMaterno,
+                    cCursoNombre,
+                    nDetMatrPromedio,
+                }
+            ) => {
+                if (!acc[iEstudianteId]) {
+                    acc[iEstudianteId] = {
+                        cEstNombres,
+                        cEstPaterno,
+                        cEstMaterno,
+                    } // Inicializar el objeto del estudiante.
+                }
+                acc[iEstudianteId][cCursoNombre] = nDetMatrPromedio // Agregar la nota al curso correspondiente.
+                return acc
+            },
+            {}
+        )
+        console.log(estudiantesAgrupados)
+        // Convertir el objeto en un array para la tabla
+        this.tablaEstudiantes = Object.values(estudiantesAgrupados)
+    }
+    reporteGrado() {
+        const params = {
+            petition: 'post',
+            group: 'aula-virtual',
+            prefix: 'academico',
+            ruta: 'reporte_grado',
+            data: {
+                cursos: this.documento,
+                alumnos: this.iiee,
+            },
+        }
+        console.log(this.iiee)
+        this.getReportePdf(params)
     }
     buscarGrado() {
         const params = {
@@ -80,17 +140,24 @@ export class ReporteComponent {
 
             this.notas.map((item) => {
                 const verSeccion = this.secciones.find(
-                    (sec) => sec['seccion'] == item['cSeccionNombre']
+                    (list) => list['seccion'] == item['cSeccionNombre']
                 )
                 if (!verSeccion) {
                     this.secciones.push({ seccion: item['cSeccionNombre'] })
                 }
+                const verArea = this.curricular.find(
+                    (element) => element['area'] == item['cCursoNombre']
+                )
+                if (!verArea) {
+                    this.curricular.push({ area: item['cCursoNombre'] })
+                }
             })
         } else {
-            console.log(
-                this.formatoService.standardizeDateTime('2025-02-18 14:30')
-            )
-            //this.messageService.add({ severity: 'error', summary: 'Mensaje', detail: 'No existen datos' });
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Mensaje',
+                detail: 'No existen datos',
+            })
         }
     }
     buscarDocumento() {
@@ -117,6 +184,7 @@ export class ReporteComponent {
                 iIieeId: this.iiee,
             },
         }
+        console.log(this.iiee)
         this.getReportePdf(params)
     }
     mostrarHistorial() {

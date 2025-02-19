@@ -985,4 +985,5 @@ export class ConstantesService {
     grados = perfil ? perfil.grados : null
     years = user ? user.years : null
     cIieeNombre = perfil ? perfil.cIieeNombre : null
+    nivelTipo = perfil ? perfil.iNivelTipoId : null
 }

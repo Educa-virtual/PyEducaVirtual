@@ -867,7 +867,7 @@ const administracion = [
                         routerLink: ['/gestion-institucional/reporte'],
                     },
                     {
-                        label: 'Estadistica de logros de aprendizje',
+                        label: 'Reporte Orden de Mérito',
                         icon: 'pi pi-fw pi-circle',
                         routerLink: ['/gestion-institucional/estadistica'],
                     },

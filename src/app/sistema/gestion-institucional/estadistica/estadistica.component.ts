@@ -101,7 +101,7 @@ export class EstadisticaComponent implements OnInit {
     }
     descargarPdf(url: string): void {
         if (url) {
-            window.open(url, '_blank') // Abre el PDF en una nueva pestaña
+            window.open(url, '_blank')
         } else {
             console.warn('No se encontró la URL del PDF.')
         }
@@ -158,13 +158,20 @@ export class EstadisticaComponent implements OnInit {
         }
     }
     obtenerReportes() {
+        if (!this.selectYear || !this.selectedGrado) {
+            console.error('Debe seleccionar Año Escolar y Grado')
+            return
+        }
+
         const params = {
             petition: 'post',
             group: 'aula-virtual',
             prefix: 'academico',
             ruta: 'obtener-reportes',
             data: {
+                year: this.selectYear,
                 codModular: this.codModular,
+                grado: this.selectedGrado,
             },
         }
         this.getInformation(params, 'obtenerReportes')

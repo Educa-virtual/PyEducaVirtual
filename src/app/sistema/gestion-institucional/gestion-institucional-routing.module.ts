@@ -18,6 +18,8 @@ import { ReporteComponent } from './reporte/reporte.component'
 import { EstadisticaComponent } from './estadistica/estadistica.component'
 import { GestionTrasladosComponent } from './gestion-traslados/gestion-traslados.component'
 import { GestionVacantesComponent } from './gestion-vacantes/gestion-vacantes.component'
+import { InformacionComponent } from './informacion/informacion.component'
+
 //import { HorarioComponent } from './horario/horario.component'
 //import { ConfiguracionHorarioComponent } from './horario/configuracion-horario/configuracion-horario.component'
 
@@ -40,7 +42,7 @@ const routes: Routes = [
     { path: 'estadistica', component: EstadisticaComponent },
     { path: 'gestion-traslados', component: GestionTrasladosComponent },
     { path: 'gestion-vacantes', component: GestionVacantesComponent },
-
+    { path: 'Informacion-ie', component: InformacionComponent },
     // { path: 'horario', component: HorarioComponent },
     //{ path: 'configurar-horario', component: ConfiguracionHorarioComponent },
     {

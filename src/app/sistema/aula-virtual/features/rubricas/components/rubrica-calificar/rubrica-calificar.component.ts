@@ -224,7 +224,9 @@ export class RubricaCalificarComponent implements OnInit, OnDestroy {
             this.data = (
                 (await this.httpService.getData(
                     'evaluaciones/instrumento-evaluaciones/obtenerRubricaEvaluacion',
-                    this.params
+                    {
+                        params: this.params,
+                    }
                 )) as any
             ).data[0]
         }

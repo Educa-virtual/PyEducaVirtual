@@ -187,10 +187,19 @@
         <p-messages [(value)]="mensaje" [enableService]="false" [closable]="true" />
     </div> -->
     <div class="flex justify-content-end">
-        <p-button
-            (onClick)="confirm()"
-            [disabled]="!form.valid"
-            label="Siguiente"
-        />
+        @if (btnNuevo) {
+            <p-button
+                (onClick)="confirm()"
+                [disabled]="!form.valid"
+                label="Registrar configuración"
+            />
+        } @else {
+            <p-button
+                (onClick)="confirm()"
+                [disabled]="!form.valid"
+                label="Actualizar configuración"
+                severity="warning"
+            />
+        }
     </div>
 </app-container-page>

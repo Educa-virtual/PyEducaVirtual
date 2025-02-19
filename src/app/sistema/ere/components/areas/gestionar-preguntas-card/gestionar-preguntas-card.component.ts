@@ -87,14 +87,10 @@ export class GestionarPreguntasCardComponent implements OnInit {
     }
 
     descargarPreguntasPorArea() {
-        if (this.curso.iCantidadPreguntas == 0) {
-            alert('No hay preguntas para exportar')
-        } else {
-            const params = {
-                iEvaluacionId: this.iEvaluacionIdHashed,
-                iCursosNivelGradId: this.curso.iCursosNivelGradId,
-            }
-            this.evaluacionesService.descargarPreguntasPorArea(params)
+        const params = {
+            iEvaluacionId: this.iEvaluacionIdHashed,
+            iCursosNivelGradId: this.curso.iCursosNivelGradId,
         }
+        this.evaluacionesService.descargarPreguntasPorArea(params)
     }
 }

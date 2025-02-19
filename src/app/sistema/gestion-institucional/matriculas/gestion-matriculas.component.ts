@@ -9,13 +9,11 @@ import { Router } from '@angular/router'
 import { MessageService } from 'primeng/api'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { InputNumberModule } from 'primeng/inputnumber'
-import {
-    ContainerPageComponent,
-    IActionContainer,
-} from '@/app/shared/container-page/container-page.component'
+import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { DatosMatriculaService } from '../services/datos-matricula.service'
+import { FormBuilder, FormGroup } from '@angular/forms'
 
 @Component({
     selector: 'app-gestion-matriculas',
@@ -30,8 +28,7 @@ import { DatosMatriculaService } from '../services/datos-matricula.service'
     styleUrl: './gestion-matriculas.component.scss',
 })
 export class GestionMatriculasComponent implements OnInit {
-    activeStep: number = 0 // Paso activo
-    totalSteps = 3 // Total de pasos del stepper
+    form: FormGroup
 
     sede: any[]
     iSedeId: number
@@ -43,6 +40,7 @@ export class GestionMatriculasComponent implements OnInit {
     caption: string = '' // titulo o cabecera de dialogo
     c_accion: string //valos de las acciones
 
+    grados_secciones_turnos: Array<object>
     tipo_documentos: Array<object>
     nivel_grados: Array<object>
     turnos: Array<object>
@@ -59,38 +57,52 @@ export class GestionMatriculasComponent implements OnInit {
         private messageService: MessageService,
         private store: LocalStoreService,
         private constantesService: ConstantesService,
-        private datosMatriculaService: DatosMatriculaService
+        private datosMatriculaService: DatosMatriculaService,
+        private fb: FormBuilder
     ) {
         const perfil = this.store.getItem('dremoPerfil')
         console.log(perfil, 'perfil dremo', this.store)
         this.iSedeId = perfil.iSedeId
     }
 
-    get isLastStep(): boolean {
-        return this.activeStep === this.totalSteps - 1
-    }
-
     ngOnInit(): void {
         this.iYAcadId = this.store.getItem('dremoiYAcadId')
 
+        try {
+            this.form = this.fb.group({
+                iNivelGradoId: [null],
+                iTurnoId: [null],
+                iSeccionId: [null],
+                iTipoMatrId: [null],
+            })
+        } catch (error) {
+            console.log(error, 'error de formulario')
+        }
         this.searchMatriculas()
-        this.getNivelGrados()
+        this.searchGradoSeccionTurno()
+
+        this.form.get('iNivelGradoId').valueChanges.subscribe((value) => {
+            this.filterTurnos(value)
+        })
+        this.form.get('iTurnoId').valueChanges.subscribe((value) => {
+            this.filterSecciones(value)
+        })
     }
 
     accionBtnItemTable({ accion }) {
         if (accion === 'editar') {
-            this.c_accion = accion
-            this.caption = 'Editar solicitud'
-            this.visible = true
+            // TODO : Editar matricula
         }
-        if (accion === 'registrar') {
-            this.router.navigate(['/estudiante/registro'])
+        if (accion === 'anular') {
+            // TODO: Anular matricula
         }
     }
     accionBtnItem(accion) {
         switch (accion) {
-            case 'editar':
-                this.visible = false
+            case 'agregar':
+                this.router.navigate([
+                    '/gestion-institucional/matricula-individual',
+                ])
                 break
         }
     }
@@ -114,33 +126,22 @@ export class GestionMatriculasComponent implements OnInit {
             })
     }
 
-    getNivelGrados() {
+    searchGradoSeccionTurno() {
         this.datosMatriculaService
-            .searchGradoSeccion({
-                iNivelTipoId: 3,
+            .searchGradoSeccionTurno({
+                opcion: 'TODO',
+                iSedeId: this.iSedeId,
+                iYAcadId: this.iYAcadId,
+                iCredSesionId: this.constantesService.iCredId,
             })
             .subscribe({
                 next: (data: any) => {
-                    const item = data.data
-                    this.nivel_grados = item.map((grado) => ({
-                        id: grado.iNivelGradoId,
-                        nombre:
-                            grado.cNivelTipoNombre +
-                            ' ' +
-                            grado.cGradoAbreviacion +
-                            ' (' +
-                            grado.cGradoNombre +
-                            ')',
-                    }))
-                    console.log(this.nivel_grados, 'nivel grados')
+                    console.log(data.data)
+                    this.grados_secciones_turnos = data.data
+                    this.filterGrados()
                 },
                 error: (error) => {
                     console.error('Error consultando nivel grados:', error)
-                    this.messageService.add({
-                        severity: 'danger',
-                        summary: 'Mensaje',
-                        detail: 'Error en ejecución',
-                    })
                 },
                 complete: () => {
                     console.log('Request completed')
@@ -148,38 +149,76 @@ export class GestionMatriculasComponent implements OnInit {
             })
     }
 
-    getSecciones() {
-        this.datosMatriculaService
-            .searchGradoSeccion({
-                iNivelTipoId: 3,
-            })
-            .subscribe({
-                next: (data: any) => {
-                    const item = data.data
-                    this.nivel_grados = item.map((grado) => ({
-                        id: grado.iNivelGradoId,
-                        nombre:
-                            grado.cNivelTipoNombre +
-                            ' ' +
-                            grado.cGradoAbreviacion +
-                            ' (' +
-                            grado.cGradoNombre +
-                            ')',
-                    }))
-                    console.log(this.nivel_grados, 'nivel grados')
-                },
-                error: (error) => {
-                    console.error('Error consultando nivel grados:', error)
-                    this.messageService.add({
-                        severity: 'danger',
-                        summary: 'Mensaje',
-                        detail: 'Error en ejecución',
-                    })
-                },
-                complete: () => {
-                    console.log('Request completed')
-                },
-            })
+    filterGrados() {
+        this.nivel_grados = this.grados_secciones_turnos.reduce(
+            (prev: any, current: any) => {
+                const x = prev.find(
+                    (item) =>
+                        item.id === current.iNivelGradoId &&
+                        item.nombre === current.cGradoNombre
+                )
+                if (!x) {
+                    return prev.concat([
+                        {
+                            id: current.iNivelGradoId,
+                            nombre: current.cGradoNombre,
+                        },
+                    ])
+                } else {
+                    return prev
+                }
+            },
+            []
+        )
+        console.log(this.nivel_grados, 'nivel grados')
+    }
+
+    filterTurnos(iNivelGradoId: any) {
+        this.turnos = this.grados_secciones_turnos.reduce(
+            (prev: any, current: any) => {
+                const x = prev.find(
+                    (item) =>
+                        item.id === current.iTurnoId &&
+                        item.nombre === current.cTurnoNombre
+                )
+                if (!x && current.iNivelGradoId === iNivelGradoId) {
+                    return prev.concat([
+                        {
+                            id: current.iTurnoId,
+                            nombre: current.cTurnoNombre,
+                        },
+                    ])
+                } else {
+                    return prev
+                }
+            },
+            []
+        )
+        console.log(this.turnos, 'turnos')
+    }
+
+    filterSecciones(iNivelGradoId: any) {
+        this.secciones = this.grados_secciones_turnos.reduce(
+            (prev: any, current: any) => {
+                const x = prev.find(
+                    (item) =>
+                        item.id === current.iSeccionId &&
+                        item.nombre === current.cSeccionNombre
+                )
+                if (!x && current.iNivelGradoId === iNivelGradoId) {
+                    return prev.concat([
+                        {
+                            id: current.iSeccionId,
+                            nombre: current.cSeccionNombre,
+                        },
+                    ])
+                } else {
+                    return prev
+                }
+            },
+            []
+        )
+        console.log(this.secciones, 'secciones')
     }
 
     //Maquetar tablas
@@ -187,15 +226,9 @@ export class GestionMatriculasComponent implements OnInit {
         console.log(actions)
     }
 
-    accionesPrincipal: IActionContainer[] = [
-        {
-            labelTooltip: 'Registrar solicitud',
-            text: 'Registrar solicitud',
-            icon: 'pi pi-plus',
-            accion: 'agregar',
-            class: 'p-button-primary',
-        },
-    ]
+    agregarMatricula() {
+        this.router.navigate(['/gestion-institucional/matricula-individual'])
+    }
 
     selectedItems = []
 
@@ -230,7 +263,7 @@ export class GestionMatriculasComponent implements OnInit {
         {
             type: 'text',
             width: '10rem',
-            field: 'nombreCompleto',
+            field: '_cPersNomape',
             header: 'Estudiante',
             text_header: 'left',
             text: 'left',
@@ -260,10 +293,10 @@ export class GestionMatriculasComponent implements OnInit {
             text: 'center',
         },
         {
-            type: 'boolean',
+            type: 'text',
             width: '5rem',
-            field: '',
-            header: 'Estado',
+            field: 'cTipoMatrNombre',
+            header: 'Tipo',
             text_header: 'center',
             text: 'center',
         },

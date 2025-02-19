@@ -1,8 +1,26 @@
-<app-container-page
-    title="Gestionar solicitudes de matrícula"
-    [actions]="accionesPrincipal"
-    (accionBtnItem)="accionBtnItemTable($event)"
->
+<p-panel>
+    <ng-template pTemplate="header">
+        <div class="flex flex-column gap-2">
+            <h3 class="m-0 text-uppercase text-primary">
+                Matrícula individual
+            </h3>
+        </div>
+    </ng-template>
+    <ng-template pTemplate="icons" class="flex flex-column flex-1">
+        <div class="flex flex-wrap gap-2 justify-content-end">
+            <button
+                size="small"
+                [rounded]="true"
+                pButton
+                pTooltip="Registrar matrícula"
+                tooltipPosition="top"
+                (click)="agregarMatricula()"
+            >
+                <i class="pi pi-plus"></i>
+                <span class="ml-2 hidden sm:block">Registar matrícula</span>
+            </button>
+        </div>
+    </ng-template>
     <div class="card">
         <div class="grid p-fluid mt-3">
             <div class="field col-12 md:col-3">
@@ -79,7 +97,4 @@
         </app-table-primeng>
         <ng-container slot="caption-content"> </ng-container>
     </div>
-    <div class="card flex justify-content-center gap-2">
-        <p-toast />
-    </div>
-</app-container-page>
+</p-panel>

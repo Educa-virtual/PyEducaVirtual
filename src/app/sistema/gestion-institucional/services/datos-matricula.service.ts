@@ -24,9 +24,9 @@ export class DatosMatriculaService {
     tipos_contacto: Array<object>
     religiones: Array<object>
 
-    searchGradoSeccion(data: any) {
+    searchGradoSeccionTurno(data: any) {
         return this.http.post(
-            `${baseUrl}/acad/matricula/searchGradoSeccion`,
+            `${baseUrl}/acad/matricula/searchGradoSeccionTurnoConf`,
             data
         )
     }
@@ -38,9 +38,9 @@ export class DatosMatriculaService {
         )
     }
 
-    getTurnos(data: any) {
-        return this.http.get(
-            `${baseUrl}/acad/calendarioAcademico/selTurnosModalidades`,
+    searchGradoSeccionTurnoConf(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/matricula/searchGradoSeccionTurnoConf`,
             data
         )
     }

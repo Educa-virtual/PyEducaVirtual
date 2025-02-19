@@ -310,6 +310,10 @@ export class DatosEstudianteService {
         return of(this.religiones)
     }
 
+    buscarCodigo(data: any) {
+        return this.http.post(`${baseUrl}/acad/estudiante/buscarCodigo`, data)
+    }
+
     subirArchivo(data: any) {
         return this.http.post(
             `${baseUrl}/acad/estudiante/importarEstudiantesPadresExcel`,

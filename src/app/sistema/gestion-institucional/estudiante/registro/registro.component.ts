@@ -51,11 +51,6 @@ export class RegistroComponent implements OnInit, OnDestroy {
                 // disabled: !this.iEstudianteId,
             },
             {
-                label: 'Discapacidad y otras Condiciones',
-                routerLink: 'discapacidad',
-                // disabled: !this.iEstudianteId,
-            },
-            {
                 label: 'Familia',
                 routerLink: 'familia',
                 // disabled: !this.iEstudianteId,
@@ -69,13 +64,13 @@ export class RegistroComponent implements OnInit, OnDestroy {
             labelTooltip: 'Regresar',
             text: 'Regresar',
             icon: 'pi pi-arrow-left',
-            accion: '',
+            accion: 'salir',
             class: 'p-button-primary',
         },
     ]
 
     inicio() {
-        this.router.navigate(['estudiante']) // Navega a DatosComponent
+        this.router.navigate(['/']) // Navega a inicio
     }
 
     ngOnDestroy() {

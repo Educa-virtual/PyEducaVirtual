@@ -32,6 +32,9 @@ export class EstadisticaComponent implements OnInit {
     Isede: any
     cIieeNombre: any
     codModular: any
+    reporteParams: any
+    respuestaRecord: any
+    respuestatabla: any
     merito = [
         { label: 'General', value: 1 },
         { label: '5 Primeros Puestos', value: 2 },
@@ -54,7 +57,7 @@ export class EstadisticaComponent implements OnInit {
 
     buscar() {
         // Reiniciar los datos antes de agregar nuevos para evitar duplicados
-        this.identidad = []
+        // this.identidad = []
     }
 
     generarReporte() {
@@ -80,7 +83,7 @@ export class EstadisticaComponent implements OnInit {
             petition: 'post',
             group: 'aula-virtual',
             prefix: 'academico',
-            ruta: 'reporte_ranking',
+            ruta: 'guardar_record',
             data: {
                 cIieeNombre: this.cIieeNombre,
                 year: this.yearValue,
@@ -93,27 +96,19 @@ export class EstadisticaComponent implements OnInit {
                 meritoid: this.selectedMerito.value,
             },
         }
-        this.getReportePdf(params)
 
-        // Fecha de hoy
-        const today = new Date().toLocaleDateString() // Formato "dd/mm/yyyy" (puedes ajustarlo según tu necesidad)
-
-        // Crear el objeto para la tabla con los datos
-        const rowData = {
-            merito: this.selectedMerito.label,
-            grado: this.gradoValue,
-            fecha: today, // Fecha actual
-            valor: 'Sin Valor Oficial', // Puedes modificar este valor según tu lógica
-            generado: 'Generado', // Puedes modificar este valor según tu lógica
+        this.getInformation(params, 'guardarRecord')
+    }
+    descargarPdf(url: string): void {
+        if (url) {
+            window.open(url, '_blank') // Abre el PDF en una nueva pestaña
+        } else {
+            console.warn('No se encontró la URL del PDF.')
         }
-
-        // Asignar los datos a la variable 'identidad' para mostrar en la tabla
-        this.identidad = [rowData]
     }
     getInformation(params, accion) {
         this.GeneralService.getGralPrefix(params).subscribe({
             next: (response: any) => {
-                console.log(response)
                 this.accionBtnItem({ accion, item: response?.data })
             },
             complete: () => {},
@@ -137,13 +132,41 @@ export class EstadisticaComponent implements OnInit {
         })
     }
     accionBtnItem(event): void {
-        const { accion } = event
-        const { item } = event
+        const { accion, item } = event
 
         switch (accion) {
-            case 'obtenerGrado':
-                console.log(item)
+            case 'guardarRecord':
+                // this.respuestaRecord = item;
+                // console.log(item)
+                // Llamar a obtenerReportes() después de guardar el registro
+                // this.obtenerReportes();
+                this.obtenerReportes()
+                break
+            case 'obtenerReportes':
+                if (item && Array.isArray(item)) {
+                    this.identidad = item.map((reporte: any) => ({
+                        merito: reporte.cTipoOrdenMerito,
+                        grado: reporte.cGrado,
+                        fecha: reporte.dtReporteCreacion,
+                        url: reporte.cUrlGenerado,
+                    }))
+                } else {
+                    console.warn('No se encontraron reportes.')
+                    this.identidad = []
+                }
                 break
         }
+    }
+    obtenerReportes() {
+        const params = {
+            petition: 'post',
+            group: 'aula-virtual',
+            prefix: 'academico',
+            ruta: 'obtener-reportes',
+            data: {
+                codModular: this.codModular,
+            },
+        }
+        this.getInformation(params, 'obtenerReportes')
     }
 }

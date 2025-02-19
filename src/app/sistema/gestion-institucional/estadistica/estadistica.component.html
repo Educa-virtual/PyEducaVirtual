@@ -54,7 +54,7 @@
                             pRipple
                             label="Buscar"
                             class="p-button-primary ml-1"
-                            (click)="buscar()"
+                            (click)="obtenerReportes()"
                         ></button>
 
                         <!-- Botón Generar -->
@@ -72,6 +72,8 @@
                 <!-- Tabla de Resultados -->
                 <p-table
                     [value]="identidad"
+                    [paginator]="true"
+                    [rows]="5"
                     [tableStyle]="{ 'min-width': '50rem' }"
                 >
                     <ng-template pTemplate="header">
@@ -99,31 +101,38 @@
                                 <p-button
                                     pButton
                                     pRipple
-                                    class="pi pi-file-pdf mr-1"
+                                    icon="pi pi-file-pdf"
+                                    class="p-button-rounded p-button-danger p-button-text mr-1"
+                                    (click)="descargarPdf(identidad.url)"
                                 />
                             </td>
                             <td>
                                 <p-button
                                     pButton
                                     pRipple
-                                    class="pi pi-check-circle"
+                                    icon="pi pi-check-circle"
+                                    class="p-button-rounded p-button-success p-button-text mr-1"
                                 />
                             </td>
                             <td>
                                 <p-button
                                     pButton
                                     pRipple
-                                    class="pi pi-file-pdf mr-1"
+                                    icon="pi pi-file-pdf"
+                                    class="p-button-rounded p-button-danger p-button-text mr-1"
+                                    (click)="descargarPdf(identidad.url)"
                                 />
                                 <p-button
                                     pButton
                                     pRipple
-                                    class="pi pi-trash mr-1"
+                                    icon="pi pi-trash"
+                                    class="p-button-rounded p-button-danger p-button-text mr-1"
                                 />
                                 <p-button
                                     pButton
                                     pRipple
-                                    class="pi pi-refresh"
+                                    icon="pi pi-refresh"
+                                    class="p-button-rounded p-button-info p-button-text"
                                 />
                             </td>
                         </tr>

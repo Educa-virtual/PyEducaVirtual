@@ -301,7 +301,33 @@
                                                                             />
                                                                         </p-inputGroup>
                                                                     </div>
-
+                                                                    @if (
+                                                                        isSecundaria
+                                                                    ) {
+                                                                        <div
+                                                                            class="col-12"
+                                                                        >
+                                                                            <p-inputGroup>
+                                                                                <p-inputGroupAddon
+                                                                                    >Peso</p-inputGroupAddon
+                                                                                >
+                                                                                <p-dropdown
+                                                                                    [(ngModel)]="
+                                                                                        encab.iPreguntaPeso
+                                                                                    "
+                                                                                    [options]="
+                                                                                        preguntaPeso
+                                                                                    "
+                                                                                    optionValue="iPreguntaPesoId"
+                                                                                    optionLabel="cPreguntaPesoNombre"
+                                                                                    placeholder="Peso Pregunta"
+                                                                                    [style]="{
+                                                                                        width: '100%',
+                                                                                    }"
+                                                                                ></p-dropdown>
+                                                                            </p-inputGroup>
+                                                                        </div>
+                                                                    }
                                                                     <div
                                                                         class="col-12"
                                                                     >
@@ -601,7 +627,13 @@
                                                 />
                                             </p-inputGroup>
                                         </div>
-                                        <div class="col-12 md:col-12">
+                                        <div
+                                            [class]="
+                                                isSecundaria
+                                                    ? 'col-12 md:col-8'
+                                                    : 'col-12 md:col-12'
+                                            "
+                                        >
                                             <p-inputGroup>
                                                 <p-inputGroupAddon
                                                     >Desempeño
@@ -616,6 +648,27 @@
                                                 />
                                             </p-inputGroup>
                                         </div>
+                                        @if (isSecundaria) {
+                                            <div class="col-12 md:col-4">
+                                                <p-inputGroup>
+                                                    <p-inputGroupAddon
+                                                        >Peso</p-inputGroupAddon
+                                                    >
+                                                    <p-dropdown
+                                                        [(ngModel)]="
+                                                            item.iPreguntaPeso
+                                                        "
+                                                        [options]="preguntaPeso"
+                                                        optionValue="iPreguntaPesoId"
+                                                        optionLabel="cPreguntaPesoNombre"
+                                                        placeholder="Peso Pregunta"
+                                                        [style]="{
+                                                            width: '100%',
+                                                        }"
+                                                    ></p-dropdown>
+                                                </p-inputGroup>
+                                            </div>
+                                        }
                                         <div class="col-12">
                                             <label
                                                 for="enunciado"

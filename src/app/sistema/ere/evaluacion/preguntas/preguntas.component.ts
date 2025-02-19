@@ -47,7 +47,21 @@ export class PreguntasComponent implements OnInit {
     matrizCompetencia = []
     matrizCapacidad = []
     nIndexAcordionTab: number = null
-
+    isSecundaria: boolean = false
+    preguntaPeso = [
+        {
+            iPreguntaPesoId: 1,
+            cPreguntaPesoNombre: '1: Baja',
+        },
+        {
+            iPreguntaPesoId: 2,
+            cPreguntaPesoNombre: '2: Media',
+        },
+        {
+            iPreguntaPesoId: 3,
+            cPreguntaPesoNombre: '3: Alta',
+        },
+    ]
     init: EditorComponent['init'] = {
         base_url: '/tinymce', // Root for resources
         suffix: '.min', // Suffix to use when loading resources
@@ -230,6 +244,14 @@ export class PreguntasComponent implements OnInit {
     }
     guardarPreguntaConData(encabezado, pregunta, contenido) {
         const preguntas = pregunta.pregunta
+
+        if (!this.isSecundaria && !encabezado) {
+            preguntas.forEach((item) => (item.iPreguntaPeso = 1))
+        }
+        if (!this.isSecundaria && encabezado) {
+            pregunta.iPreguntaPeso = 1
+        }
+
         const data = !encabezado
             ? preguntas.length
                 ? preguntas[0]
@@ -361,6 +383,8 @@ export class PreguntasComponent implements OnInit {
         switch (accion) {
             case 'CONSULTARxiEvaluacionIdxiCursoNivelGradId':
                 this.data = item.length ? item[0] : []
+                this.isSecundaria =
+                    this.data.iNivelTipoId === '4' ? true : false
                 this.preguntas = []
                 const evaluaciones = item.length
                     ? JSON.parse(item[0]['evaluaciones'])

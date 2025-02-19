@@ -300,4 +300,23 @@ export class GeneralService {
                 // })
             )
     }
+
+    //GESTION DE TRASLADOS
+    searhTipoTraslados() {
+        return this.http.post(
+            `${baseUrl}/acad/calendarioAcademico/searchCalAcademico`,
+            {
+                esquema: 'acad',
+                tabla: 'tipos_traslado_ies',
+                campos: '*',
+                condicion: '1=1',
+            }
+        )
+    }
+    obtenerInformacionEstudianteDNI(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/gestionInstitucional/obtenerInformacionEstudianteDNI`,
+            data
+        )
+    }
 }

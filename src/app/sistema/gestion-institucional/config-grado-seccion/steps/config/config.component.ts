@@ -18,7 +18,6 @@ import { PrimengModule } from '@/app/primeng.module'
 import { MessageService } from 'primeng/api'
 import { HttpEvent } from '@angular/common/http'
 import { GeneralService } from '@/app/servicios/general.service'
-import { ConfirmationService } from 'primeng/api'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 
 interface UploadEvent {
@@ -40,7 +39,6 @@ interface UploadEvent {
     styleUrl: './config.component.scss',
 })
 export class ConfigComponent implements OnInit {
-    private confirmationService = inject(ConfirmationService)
     mensaje: Message[] = [
         {
             severity: 'info',
@@ -61,6 +59,8 @@ export class ConfigComponent implements OnInit {
     enlace: string = ''
     event: []
 
+    btnNuevo: boolean
+
     typesFiles = {
         //archivos
         file: true,
@@ -77,7 +77,9 @@ export class ConfigComponent implements OnInit {
         cServEdNombre: string
     }[]
     configuracion: any = {}
+    // private confirmationService = inject(ConfirmationService)
     private _confirmService = inject(ConfirmationModalService)
+
     constructor(
         private stepService: AdmStepGradoSeccionService,
         private router: Router,
@@ -95,6 +97,8 @@ export class ConfigComponent implements OnInit {
     ngOnInit(): void {
         const url = this.query.baseUrlPublic()
         console.log(this.configuracion, 'this.configuracion')
+        this.mensajeInformativo()
+
         try {
             this.form = this.fb.group({
                 iConfigId: [this.configuracion[0].iConfigId], // tabla acad.configuraciones
@@ -143,6 +147,35 @@ export class ConfigComponent implements OnInit {
         }
 
         this.getServicioAtencion()
+    }
+
+    mensajeInformativo() {
+        const option = Number(this.configuracion[0].iEstado)
+        let title: string
+        if (option === 0) {
+            title = 'Registro nuevo'
+            this.btnNuevo = true
+        } else {
+            title = 'Editar registro'
+            this.btnNuevo = false
+        }
+
+        this._confirmService.openConfiSave({
+            message: '¿Está seguro de que desea configurar los ambientes?',
+            header: title,
+            icon: 'pi pi-exclamation-triangle',
+            accept: () => {
+                // Acción a realizar al confirmar
+                console.log('Eliminado')
+            },
+            reject: () => {
+                // Acción a realizar al rechazar
+
+                this.router.navigate([
+                    '/gestion-institucional/configGradoSeccion',
+                ])
+            },
+        })
     }
 
     accionBtn(elemento): void {
@@ -200,9 +233,9 @@ export class ConfigComponent implements OnInit {
         }
     }
     getServicioAtencion() {
-        if (<number>this.perfil['iNivelTipoId'] > 0) {
-            const where =
-                'iNivelTipoId =' + this.stepService.perfil['iNivelTipoId']
+        alert(this.configuracion[0].iNivelTipoId)
+        if (Number(this.configuracion[0].iNivelTipoId) > 0) {
+            const where = 'iNivelTipoId =' + this.configuracion[0].iNivelTipoId
 
             this.query
                 .searchCalAcademico({
@@ -215,7 +248,9 @@ export class ConfigComponent implements OnInit {
                     next: (data: any) => {
                         this.serv_atencion = data.data
                         this.iServId = this.serv_atencion[0].iServEdId
-
+                        this.form.controls['iServEdId'].setValue(
+                            this.serv_atencion[0].iServEdId
+                        )
                         console.log(this.serv_atencion)
                     },
                     error: (error) => {
@@ -236,7 +271,7 @@ export class ConfigComponent implements OnInit {
     }
 
     confirmar() {
-        this.confirmationService.confirm({
+        this._confirmService.openConfiSave({
             message: '¿Está seguro de que desea eliminar este elemento?',
             header: 'Confirmación de eliminación',
             icon: 'pi pi-exclamation-triangle',

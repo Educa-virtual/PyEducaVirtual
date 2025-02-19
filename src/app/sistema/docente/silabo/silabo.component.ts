@@ -44,6 +44,7 @@ export class SilaboComponent implements OnInit, OnDestroy {
     @Input() idDocCursoId: string
 
     activeStepper: number = 0
+    nivelTipo: string
     private unsubscribe$ = new Subject<boolean>()
 
     constructor(
@@ -52,7 +53,9 @@ export class SilaboComponent implements OnInit, OnDestroy {
         private ConstantesService: ConstantesService,
         private fb: FormBuilder,
         private messageService: MessageService
-    ) {}
+    ) {
+        this.nivelTipo = this.ConstantesService.nivelTipo
+    }
 
     silabo = [
         { iSilabo: 1, cSilaboTitle: 'Información General', icon: 'pi-info' },

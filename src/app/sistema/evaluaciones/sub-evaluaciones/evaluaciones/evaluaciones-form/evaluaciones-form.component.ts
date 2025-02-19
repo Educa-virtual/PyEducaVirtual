@@ -1,20 +1,13 @@
-//Agregar Servicio de Evaluacion
-//!Se agrego el afterviewinit
 import { CompartirIdEvaluacionService } from './../../../services/ereEvaluaciones/compartir-id-evaluacion.service'
-//import { CompartirFormularioEvaluacionService } from './../../../services/ereEvaluaciones/compartir-formulario-evaluacion.service'
 import { CompartirFormularioEvaluacionService } from './../../../services/ereEvaluaciones/compartir-formulario-evaluacion.service'
 import { Component, inject, OnInit, ViewChild } from '@angular/core'
-
 /*BOTONES */
 import { ButtonModule } from 'primeng/button'
-
 /*MODAL */
 import { DialogModule } from 'primeng/dialog'
-
 /*INPUT TEXT */
 import { InputTextModule } from 'primeng/inputtext'
 import { InputTextareaModule } from 'primeng/inputtextarea'
-
 //TAB
 import { TabViewModule } from 'primeng/tabview'
 import { DropdownModule } from 'primeng/dropdown'
@@ -43,6 +36,8 @@ import { ToastModule } from 'primeng/toast'
 import { CalendarModule } from 'primeng/calendar'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { InputSwitchModule } from 'primeng/inputswitch'
+import { EditorModule } from 'primeng/editor'
+import { PrimengModule } from '@/app/primeng.module'
 
 interface TipoEvaluacion {
     idTipoEvalId: number
@@ -58,6 +53,7 @@ interface NivelEvaluacion {
     standalone: true,
     imports: [
         InputSwitchModule,
+        EditorModule,
         ScrollPanelModule,
         StepsModule,
         ButtonModule,
@@ -77,6 +73,7 @@ interface NivelEvaluacion {
         CardModule,
         ToastModule,
         CalendarModule,
+        PrimengModule,
     ],
     templateUrl: './evaluaciones-form.component.html',
     styleUrl: './evaluaciones-form.component.scss',
@@ -118,10 +115,6 @@ export class EvaluacionesFormComponent implements OnInit {
     private _apiEre = inject(ApiEvaluacionesRService)
     private _MessageService = inject(MessageService) //Agregando Mensaje
 
-    // Función para mostrar el valor en la consola
-    logCalendarValue() {
-        console.log('Valor del calendario:', this.dtEvaluacionCreacion)
-    }
     constructor(
         public _config: DynamicDialogConfig, // Inyección de configuración
         private compartirIdEvaluacionService: CompartirIdEvaluacionService, // Inyección del servicio
@@ -137,19 +130,14 @@ export class EvaluacionesFormComponent implements OnInit {
             cEvaluacionNombre: [null, [Validators.required]],
             cEvaluacionDescripcion: [null, [Validators.required]],
             cEvaluacionUrlDrive: [null, [Validators.required]],
-            cEvaluacionUrlPlantilla: [null, [Validators.required]],
-            cEvaluacionUrlManual: [null, [Validators.required]],
-            cEvaluacionUrlMatriz: [null, [Validators.required]],
-            cEvaluacionObs: [null, [Validators.required]],
-            dtEvaluacionCreacion: [null, Validators.required],
-            dtEvaluacionLiberarMatriz: [null, Validators.required],
-            dtEvaluacionLiberarCuadernillo: [null, Validators.required],
-            dtEvaluacionLiberarResultados: [null, Validators.required],
-            iEstado: [null],
-            iSesionId: [null],
+            dtInicio: ['', [Validators.required]],
+            dtFin: ['', [Validators.required]],
         })
     }
-
+    // Función para mostrar el valor en la consola
+    logCalendarValue() {
+        console.log('Valor del calendario:', this.dtEvaluacionCreacion)
+    }
     // Método para enviar el formulario y guardar el dato en el servicio
     onSubmit(): void {
         const nombre = this.evaluacionFormGroup.get('cEvaluacionNombre')?.value
@@ -183,16 +171,17 @@ export class EvaluacionesFormComponent implements OnInit {
         }
 
         if (this.activeStep === 0 && this.accion === 'nuevo') {
-            if (this.evaluacionFormGroup.invalid) {
-                this._MessageService.add({
-                    severity: 'error',
-                    summary: 'Rellenar los campos',
-                    detail: 'Rellene todos los campos para crear la evaluación.',
-                })
-                // Marca los campos como tocados para que se muestren los errores
-                this.evaluacionFormGroup.markAllAsTouched()
-                return
-            }
+            console.log(this.evaluacionFormGroup)
+            // if (this.evaluacionFormGroup.invalid) {
+            //     this._MessageService.add({
+            //         severity: 'error',
+            //         summary: 'Rellenar los campos',
+            //         detail: 'Rellene todos los campos para crear la evaluación.',
+            //     })
+            //     // Marca los campos como tocados para que se muestren los errores
+            //     this.evaluacionFormGroup.markAllAsTouched()
+            //     return
+            // }
             // Si es válido, guardar la evaluación
             this.guardarEvaluacion()
             this.enviarVarlorDesdeForm()
@@ -257,64 +246,67 @@ export class EvaluacionesFormComponent implements OnInit {
         }
     }
     ereCrearFormulario() {
-        this.evaluacionFormGroup = this._formBuilder.group({
-            iEvaluacionId: [null],
-            idTipoEvalId: [null, [Validators.required]],
-            iNivelEvalId: [null, [Validators.required]],
-            cEvaluacionNombre: [null, [Validators.required]],
-            cEvaluacionDescripcion: [null, [Validators.required]],
-            cEvaluacionUrlDrive: [null, [Validators.required]],
-            cEvaluacionUrlPlantilla: [null, [Validators.required]],
-            cEvaluacionUrlManual: [null, [Validators.required]],
-            cEvaluacionUrlMatriz: [null, [Validators.required]],
-            cEvaluacionObs: [null, [Validators.required]],
-            dtEvaluacionCreacion: [null, Validators.required],
-            dtEvaluacionLiberarMatriz: [null, Validators.required],
-            dtEvaluacionLiberarCuadernillo: [null, Validators.required],
-            dtEvaluacionLiberarResultados: [null, Validators.required],
-            iEstado: [null],
-        })
+        // this.evaluacionFormGroup = this._formBuilder.group({
+        //     iEvaluacionId: [null],
+        //     idTipoEvalId: [null, [Validators.required]],
+        //     iNivelEvalId: [null, [Validators.required]],
+        //     cEvaluacionNombre: [null, [Validators.required]],
+        //     cEvaluacionDescripcion: [null, [Validators.required]],
+        //     cEvaluacionUrlDrive: [null, [Validators.required]],
+        //     cEvaluacionUrlPlantilla: [null, [Validators.required]],
+        //     cEvaluacionUrlManual: [null, [Validators.required]],
+        //     cEvaluacionUrlMatriz: [null, [Validators.required]],
+        //     cEvaluacionObs: [null, [Validators.required]],
+        //     dtEvaluacionCreacion: [null, Validators.required],
+        //     dtEvaluacionLiberarMatriz: [null, Validators.required],
+        //     dtEvaluacionLiberarCuadernillo: [null, Validators.required],
+        //     dtEvaluacionLiberarResultados: [null, Validators.required],
+        //     iEstado: [null],
+        //     cEvaluacionIUrlCuadernillo: [null, Validators.required], // URL de la cuadernillo
+        //     cEvaluacionUrlHojaRespuestas: [null, Validators.required], // URL de la hoja de respuestas
+        // })
     }
     ereVerEvaluacion() {
-        const evaluacionData = this._config.data.evaluacion // Obtener los datos del modal
-        if (evaluacionData) {
-            //console.log(evaluacionData.dtEvaluacionCreacion)
-            this.evaluacionFormGroup.patchValue({
-                iEvaluacionId: evaluacionData.iEvaluacionId,
-                idTipoEvalId: evaluacionData.idTipoEvalId,
-                iNivelEvalId: evaluacionData.iNivelEvalId,
-                cEvaluacionNombre: evaluacionData.cEvaluacionNombre,
-                cEvaluacionDescripcion: evaluacionData.cEvaluacionDescripcion,
-                cEvaluacionUrlDrive: evaluacionData.cEvaluacionUrlDrive,
-                cEvaluacionUrlPlantilla: evaluacionData.cEvaluacionUrlPlantilla,
-                cEvaluacionUrlManual: evaluacionData.cEvaluacionUrlManual,
-                cEvaluacionUrlMatriz: evaluacionData.cEvaluacionUrlMatriz,
-                cEvaluacionObs: evaluacionData.cEvaluacionObs,
-                dtEvaluacionCreacion: evaluacionData.dtEvaluacionCreacion,
-                dtEvaluacionLiberarMatriz:
-                    evaluacionData.dtEvaluacionLiberarMatriz,
-                dtEvaluacionLiberarCuadernillo:
-                    evaluacionData.dtEvaluacionLiberarCuadernillo,
-                dtEvaluacionLiberarResultados:
-                    evaluacionData.dtEvaluacionLiberarResultados,
-                // Convertir 0 o 1 en un valor booleano para el input switch
-                iEstado:
-                    evaluacionData.iEstado === '1' ||
-                    evaluacionData.iEstado === 1,
-            })
-            // Aquí estamos configurando el valor de `checked` para el input switch
-            this.checked =
-                evaluacionData.iEstado === '1' || evaluacionData.iEstado === 1
-        }
+        // const evaluacionData = this._config.data.evaluacion // Obtener los datos del modal
+        // if (evaluacionData) {
+        //     //console.log(evaluacionData.dtEvaluacionCreacion)
+        //     this.evaluacionFormGroup.patchValue({
+        //         iEvaluacionId: evaluacionData.iEvaluacionId,
+        //         idTipoEvalId: evaluacionData.idTipoEvalId,
+        //         iNivelEvalId: evaluacionData.iNivelEvalId,
+        //         cEvaluacionNombre: evaluacionData.cEvaluacionNombre,
+        //         cEvaluacionDescripcion: evaluacionData.cEvaluacionDescripcion,
+        //         cEvaluacionUrlDrive: evaluacionData.cEvaluacionUrlDrive,
+        //         cEvaluacionUrlPlantilla: evaluacionData.cEvaluacionUrlPlantilla,
+        //         cEvaluacionUrlManual: evaluacionData.cEvaluacionUrlManual,
+        //         cEvaluacionUrlMatriz: evaluacionData.cEvaluacionUrlMatriz,
+        //         cEvaluacionObs: evaluacionData.cEvaluacionObs,
+        //         dtEvaluacionCreacion: evaluacionData.dtEvaluacionCreacion,
+        //         dtEvaluacionLiberarMatriz:
+        //             evaluacionData.dtEvaluacionLiberarMatriz,
+        //         dtEvaluacionLiberarCuadernillo:
+        //             evaluacionData.dtEvaluacionLiberarCuadernillo,
+        //         dtEvaluacionLiberarResultados:
+        //             evaluacionData.dtEvaluacionLiberarResultados,
+        //         // Convertir 0 o 1 en un valor booleano para el input switch
+        //         iEstado:
+        //             evaluacionData.iEstado === '1' ||
+        //             evaluacionData.iEstado === 1,
+        //         cEvaluacionIUrlCuadernillo:
+        //             evaluacionData.cEvaluacionIUrlCuadernillo,
+        //         cEvaluacionUrlHojaRespuestas:
+        //             evaluacionData.cEvaluacionUrlHojaRespuestas,
+        //     })
+        //     // Aquí estamos configurando el valor de `checked` para el input switch
+        //     this.checked =
+        //         evaluacionData.iEstado === '1' || evaluacionData.iEstado === 1
+        // }
     }
     guardarEvaluacion() {
-        const iSesionId = this.constantesService.iDocenteId // Si es un array, toma el primer valor
+        // const iSesionId = this.constantesService.iDocenteId // Si es un array, toma el primer valor
         const data = {
             idTipoEvalId: this.evaluacionFormGroup.get('idTipoEvalId').value,
             iNivelEvalId: this.evaluacionFormGroup.get('iNivelEvalId').value,
-            dtEvaluacionCreacion: this.evaluacionFormGroup.get(
-                'dtEvaluacionCreacion'
-            ).value,
             cEvaluacionNombre:
                 this.evaluacionFormGroup.get('cEvaluacionNombre').value,
             cEvaluacionDescripcion: this.evaluacionFormGroup.get(
@@ -323,57 +315,111 @@ export class EvaluacionesFormComponent implements OnInit {
             cEvaluacionUrlDrive: this.evaluacionFormGroup.get(
                 'cEvaluacionUrlDrive'
             ).value,
-            cEvaluacionUrlPlantilla: this.evaluacionFormGroup.get(
-                'cEvaluacionUrlPlantilla'
-            ).value,
-            cEvaluacionUrlManual: this.evaluacionFormGroup.get(
-                'cEvaluacionUrlManual'
-            ).value,
-            cEvaluacionUrlMatriz: this.evaluacionFormGroup.get(
-                'cEvaluacionUrlMatriz'
-            ).value,
-            cEvaluacionObs:
-                this.evaluacionFormGroup.get('cEvaluacionObs').value,
-            dtEvaluacionLiberarMatriz: this.evaluacionFormGroup.get(
-                'dtEvaluacionLiberarMatriz'
-            ).value,
-            dtEvaluacionLiberarCuadernillo: this.evaluacionFormGroup.get(
-                'dtEvaluacionLiberarCuadernillo'
-            ).value,
-            dtEvaluacionLiberarResultados: this.evaluacionFormGroup.get(
-                'dtEvaluacionLiberarResultados'
-            ).value,
-            iEstado: this.checked ? 1 : 0, // Usamos el valor de 'checked' para enviar 1 o 0
-            iSesionId: iSesionId,
+            dtInicio: this.evaluacionFormGroup.get('dtInicio').value,
+            dtFin: this.evaluacionFormGroup.get('dtFin').value,
         }
 
-        console.log(data)
-        this._apiEre
-            .guardarEvaluacion(data)
-            .pipe(takeUntil(this.unsubscribe$))
-            .subscribe({
-                next: (resp: any) => {
-                    this.iEvaluacionId = resp['data'][0]['iEvaluacionId'] // Captura el ID generado
-                    this.compartirIdEvaluacionService.iEvaluacionId =
-                        this.iEvaluacionId // Guardar en el servicio
+        console.log('datos que se guardaran', data)
+        // this._apiEre
+        //     .guardarEvaluacion(data)
+        //     .pipe(takeUntil(this.unsubscribe$))
+        //     .subscribe({
+        //         next: (resp: any) => {
+        //             this.iEvaluacionId = resp['data'][0]['iEvaluacionId'] // Captura el ID generado
+        //             this.compartirIdEvaluacionService.iEvaluacionId =
+        //                 this.iEvaluacionId // Guardar en el servicio
 
-                    const nombreEvaluacion =
-                        resp['data'][0]['cEvaluacionNombre'] // Obtiene el nombre de la respuesta
-                    this.compartirFormularioEvaluacionService.setcEvaluacionNombre(
-                        nombreEvaluacion
-                    )
-                    this._MessageService.add({
-                        severity: 'success',
-                        summary: 'Se guardo con exitoso',
-                        detail: 'La evaluacion se ha guardado con éxito.',
-                    })
-                },
-                error: (error) => {
-                    console.error('Error al guardar la evaluación:', error) // Captura el error aquí
-                    //alert('Error en el servidor: ' + JSON.stringify(error))
-                },
-            })
+        //             const nombreEvaluacion =
+        //                 resp['data'][0]['cEvaluacionNombre'] // Obtiene el nombre de la respuesta
+        //             this.compartirFormularioEvaluacionService.setcEvaluacionNombre(
+        //                 nombreEvaluacion
+        //             )
+        //             this._MessageService.add({
+        //                 severity: 'success',
+        //                 summary: 'Se guardo con exitoso',
+        //                 detail: 'La evaluacion se ha guardado con éxito.',
+        //             })
+        //         },
+        //         error: (error) => {
+        //             console.error('Error al guardar la evaluación:', error) // Captura el error aquí
+        //             //alert('Error en el servidor: ' + JSON.stringify(error))
+        //         },
+        //     })
     }
+    // el anterior metodo guardar..
+    // guardarEvaluacion() {
+    //     const iSesionId = this.constantesService.iDocenteId // Si es un array, toma el primer valor
+    //     const data = {
+    //         idTipoEvalId: this.evaluacionFormGroup.get('idTipoEvalId').value,
+    //         iNivelEvalId: this.evaluacionFormGroup.get('iNivelEvalId').value,
+    //         dtEvaluacionCreacion: this.evaluacionFormGroup.get(
+    //             'dtEvaluacionCreacion'
+    //         ).value,
+    //         cEvaluacionNombre:
+    //             this.evaluacionFormGroup.get('cEvaluacionNombre').value,
+    //         cEvaluacionDescripcion: this.evaluacionFormGroup.get(
+    //             'cEvaluacionDescripcion'
+    //         ).value,
+    //         cEvaluacionUrlDrive: this.evaluacionFormGroup.get(
+    //             'cEvaluacionUrlDrive'
+    //         ).value,
+    //         cEvaluacionUrlPlantilla: this.evaluacionFormGroup.get(
+    //             'cEvaluacionUrlPlantilla'
+    //         ).value,
+    //         cEvaluacionUrlManual: this.evaluacionFormGroup.get(
+    //             'cEvaluacionUrlManual'
+    //         ).value,
+    //         cEvaluacionUrlMatriz: this.evaluacionFormGroup.get(
+    //             'cEvaluacionUrlMatriz'
+    //         ).value,
+    //         cEvaluacionObs:
+    //             this.evaluacionFormGroup.get('cEvaluacionObs').value,
+    //         dtEvaluacionLiberarMatriz: this.evaluacionFormGroup.get(
+    //             'dtEvaluacionLiberarMatriz'
+    //         ).value,
+    //         dtEvaluacionLiberarCuadernillo: this.evaluacionFormGroup.get(
+    //             'dtEvaluacionLiberarCuadernillo'
+    //         ).value,
+    //         dtEvaluacionLiberarResultados: this.evaluacionFormGroup.get(
+    //             'dtEvaluacionLiberarResultados'
+    //         ).value,
+    //         iEstado: this.checked ? 1 : 0, // Usamos el valor de 'checked' para enviar 1 o 0
+    //         iSesionId: iSesionId,
+    //         cEvaluacionIUrlCuadernillo: this.evaluacionFormGroup.get(
+    //             'cEvaluacionIUrlCuadernillo'
+    //         ).value,
+    //         cEvaluacionUrlHojaRespuestas: this.evaluacionFormGroup.get(
+    //             'cEvaluacionUrlHojaRespuestas'
+    //         ).value,
+    //     }
+
+    //     console.log(data)
+    //     this._apiEre
+    //         .guardarEvaluacion(data)
+    //         .pipe(takeUntil(this.unsubscribe$))
+    //         .subscribe({
+    //             next: (resp: any) => {
+    //                 this.iEvaluacionId = resp['data'][0]['iEvaluacionId'] // Captura el ID generado
+    //                 this.compartirIdEvaluacionService.iEvaluacionId =
+    //                     this.iEvaluacionId // Guardar en el servicio
+
+    //                 const nombreEvaluacion =
+    //                     resp['data'][0]['cEvaluacionNombre'] // Obtiene el nombre de la respuesta
+    //                 this.compartirFormularioEvaluacionService.setcEvaluacionNombre(
+    //                     nombreEvaluacion
+    //                 )
+    //                 this._MessageService.add({
+    //                     severity: 'success',
+    //                     summary: 'Se guardo con exitoso',
+    //                     detail: 'La evaluacion se ha guardado con éxito.',
+    //                 })
+    //             },
+    //             error: (error) => {
+    //                 console.error('Error al guardar la evaluación:', error) // Captura el error aquí
+    //                 //alert('Error en el servidor: ' + JSON.stringify(error))
+    //             },
+    //         })
+    // }
 
     // Método para actualizar los datos en el backend
     actualizarEvaluacion() {
@@ -422,6 +468,13 @@ export class EvaluacionesFormComponent implements OnInit {
             ).value,
             iEstado: this.evaluacionFormGroup.get('iEstado').value ? 1 : 0,
             iSesionId: iSesionId,
+
+            cEvaluacionIUrlCuadernillo: this.evaluacionFormGroup.get(
+                'cEvaluacionIUrlCuadernillo'
+            ).value,
+            cEvaluacionUrlHojaRespuestas: this.evaluacionFormGroup.get(
+                'cEvaluacionUrlHojaRespuestas'
+            ).value,
         }
 
         this._apiEre.actualizarEvaluacion(data).subscribe({

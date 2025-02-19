@@ -107,6 +107,7 @@ import { NgModule } from '@angular/core'
 import { ConfirmationService, MessageService } from 'primeng/api'
 import { FullCalendarModule } from '@fullcalendar/angular'
 import { GeneralService } from './servicios/general.service'
+
 @NgModule({
     imports: [
         AvatarModule,

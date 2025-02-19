@@ -1,0 +1,264 @@
+<section class="flex flex-column gap-4">
+    <div class="flex flex-column">
+        <!-- titulo -->
+        <div class="grid">
+            <p-toolbar class="col-12">
+                <div class="block">
+                    <h2 class="text-primary text-white font-bold block">
+                        GENERACIÓN DE REPORTES ACADÉMICOS
+                    </h2>
+                </div>
+            </p-toolbar>
+        </div>
+
+        <p-tabView class="mt-2">
+            <p-tabPanel header="Estudiante">
+                <!-- contenido de busqueda por estudiante-->
+                <div class="block mt-3">
+                    <p-fieldset class="w-full">
+                        <ng-template pTemplate="header"
+                            >Buscar por Estudiante</ng-template
+                        >
+                        <div class="flex">
+                            <p-floatLabel class="mr-1">
+                                <input
+                                    id="DNI"
+                                    type="text"
+                                    pInputText
+                                    [(ngModel)]="documento"
+                                    maxlength="8"
+                                />
+                                <label for="DNI">Documento de Identidad</label>
+                            </p-floatLabel>
+                            <p-button
+                                class="mr-1"
+                                label="Buscar"
+                                (click)="buscarDocumento()"
+                            />
+                            <button
+                                pButton
+                                pRipple
+                                label="Limpiar"
+                                class="p-button-warning"
+                                (click)="limpiar()"
+                            ></button>
+                        </div>
+                    </p-fieldset>
+                </div>
+                <div class="block mt-3">
+                    <p-table
+                        [value]="identidad"
+                        [tableStyle]="{ 'min-width': '50rem' }"
+                        *ngIf="persona"
+                    >
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th>#</th>
+                                <th>Apellido Paterno</th>
+                                <th>Apellido Materno</th>
+                                <th>Nombre</th>
+                                <th>Seleccionar</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-identidad>
+                            <tr>
+                                <td>1</td>
+                                <td>{{ identidad.paterno }}</td>
+                                <td>{{ identidad.materno }}</td>
+                                <td>{{ identidad.nombre }}</td>
+                                <td>
+                                    <button
+                                        pButton
+                                        pRipple
+                                        label="Ver"
+                                        class="p-button-primary mr-1"
+                                        (click)="mostrarHistorial()"
+                                    ></button>
+                                    <button
+                                        pButton
+                                        pRipple
+                                        label="PDF"
+                                        class="p-button-danger"
+                                        (click)="mostrarReporte()"
+                                    ></button>
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+                <div class="block mt-3">
+                    <p-table
+                        [value]="fila"
+                        [tableStyle]="{ 'min-width': '50rem' }"
+                        *ngIf="historico"
+                    >
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th>#</th>
+                                <th>Areas Curricular</th>
+                                <th *ngFor="let col of columna">
+                                    <div>Año : {{ col.cYAcadNombre }}</div>
+                                    <div>
+                                        Grado : {{ col.cGradoAbreviacion }}
+                                    </div>
+                                </th>
+                            </tr>
+                        </ng-template>
+                        <ng-template
+                            pTemplate="body"
+                            let-fila
+                            let-index="rowIndex"
+                        >
+                            <tr>
+                                <td>{{ index + 1 }}</td>
+                                <td>{{ fila.cCursoNombre }}</td>
+                                @for (fl of fila.nota; track $index) {
+                                    <td>{{ fl.promedio }}</td>
+                                }
+                            </tr>
+                        </ng-template>
+                        <!-- <ng-template pTemplate="footer">
+                                    <tr>
+                                        <td *ngFor="let fin of final">
+                                            {{ fin.promedio }}
+                                        </td>
+                                    </tr>
+                                </ng-template> -->
+                    </p-table>
+                </div>
+                <!-- fin del contenido de busqueda por alumno -->
+            </p-tabPanel>
+            <p-tabPanel header="Grados">
+                <!-- contenido de busqueda por grados-->
+                <div class="block mt-3">
+                    <p-fieldset class="w-full">
+                        <ng-template pTemplate="header"
+                            >Buscar por Grados</ng-template
+                        >
+                        <div class="flex">
+                            <p-dropdown
+                                class="mr-1"
+                                [options]="years"
+                                [(ngModel)]="selectYear"
+                                optionLabel="cYearNombre"
+                                optionValue="iYAcadId"
+                                placeholder="Seleccionar Año"
+                            />
+                            <p-dropdown
+                                class="mr-1"
+                                [options]="grados"
+                                [(ngModel)]="selectGrado"
+                                optionLabel="cGradoNombre"
+                                optionValue="iGradoId"
+                                placeholder="Seleccionar grado"
+                            />
+                            <p-button
+                                class="mr-1"
+                                label="Buscar"
+                                (click)="buscarGrado()"
+                            />
+                        </div>
+                    </p-fieldset>
+                </div>
+                <div class="block mt-3">
+                    <p-table
+                        [value]="secciones"
+                        [tableStyle]="{ 'min-width': '50rem' }"
+                        *ngIf="showGrados"
+                    >
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th>#</th>
+                                <th>Grado</th>
+                                <th>Seccion</th>
+                                <th>Seleccionar</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template
+                            pTemplate="body"
+                            let-secciones
+                            let-index="rowIndex"
+                        >
+                            <tr>
+                                <td>
+                                    {{ index + 1 }}
+                                </td>
+                                <td>
+                                    {{ ListGarados }}
+                                </td>
+                                <td>
+                                    {{ secciones.seccion }}
+                                </td>
+                                <td>
+                                    <p-button
+                                        class="mr-1"
+                                        label="Buscar"
+                                        (click)="
+                                            buscarAlumnos(secciones.seccion)
+                                        "
+                                    />
+                                    <p-button
+                                        class="mr-1"
+                                        label="reporte"
+                                        (click)="reporteGrado()"
+                                        [disabled]="habilitar"
+                                    />
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+                <div class="block mt-3">
+                    <p-toast />
+                    <p-table
+                        [value]="tablaEstudiantes"
+                        [tableStyle]="{ 'min-width': '50rem' }"
+                        *ngIf="showAlumnos"
+                    >
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th>#</th>
+                                <th>Nombres y Apellidos</th>
+                                <th
+                                    class="surface-200"
+                                    *ngFor="let col of cursos"
+                                >
+                                    {{ col }}
+                                </th>
+                                <th
+                                    class="bg-green-300"
+                                    *ngFor="let col of cursos"
+                                >
+                                    {{ col }}
+                                </th>
+                            </tr>
+                        </ng-template>
+                        <ng-template
+                            pTemplate="body"
+                            let-tablaEstudiantes
+                            let-index="rowIndex"
+                        >
+                            <tr>
+                                <td>{{ index + 1 }}</td>
+                                <td>
+                                    {{ tablaEstudiantes.cEstNombres }}
+                                    {{ tablaEstudiantes.cEstPaterno }}
+                                    {{ tablaEstudiantes.cEstMaterno }}
+                                </td>
+                                <td *ngFor="let curso of cursos">
+                                    {{ tablaEstudiantes[curso] || '-' }}
+                                    <!-- Si no tiene nota, mostrar un guion. -->
+                                </td>
+                                <td *ngFor="let curso of cursos">
+                                    {{ tablaEstudiantes[curso] / 2 || '-' }}
+                                    <!-- Si no tiene nota, mostrar un guion. -->
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+                <!-- fin del contenido de busqueda por alumno -->
+            </p-tabPanel>
+        </p-tabView>
+    </div>
+</section>

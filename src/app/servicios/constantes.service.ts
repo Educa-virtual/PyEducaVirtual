@@ -864,6 +864,22 @@ const administracion = [
                 icon: 'pi pi-fw pi-share-alt',
                 routerLink: ['ayuda'],
             },
+            {
+                label: 'Generar Reportes y Estadisticas',
+                icon: 'pi pi-chart-scatter',
+                items: [
+                    {
+                        label: 'Reportes Academicos',
+                        icon: 'pi pi-fw pi-circle',
+                        routerLink: ['/gestion-institucional/reporte'],
+                    },
+                    {
+                        label: 'Estadistica de logros de aprendizje',
+                        icon: 'pi pi-fw pi-circle',
+                        routerLink: ['/gestion-institucional/estadistica'],
+                    },
+                ],
+            },
         ],
     },
 ]
@@ -970,4 +986,11 @@ export class ConstantesService {
         ? user.cPersNombre + ' ' + user.cPersPaterno + ' ' + user.cPersMaterno
         : null
     nombre = user ? user.cPersNombre : null
+    codModular = perfil ? perfil.cIieeCodigoModular : null
+    iIieeId = perfil ? perfil.iIieeId : null
+    iSedeId = perfil ? perfil.iSedeId : null
+    grados = perfil ? perfil.grados : null
+    years = user ? user.years : null
+    cIieeNombre = perfil ? perfil.cIieeNombre : null
+    nivelTipo = perfil ? perfil.iNivelTipoId : null
 }

@@ -707,6 +707,13 @@ const administracion = [
                         icon: 'pi pi-wrench',
                         routerLink: ['/gestion-institucional/Informacion-ie'],
                     },
+                    {
+                        label: 'Sincronizar archivos',
+                        icon: 'pi pi-wrench',
+                        routerLink: [
+                            '/gestion-institucional/sincronizar-archivo',
+                        ],
+                    },
                 ],
             },
 

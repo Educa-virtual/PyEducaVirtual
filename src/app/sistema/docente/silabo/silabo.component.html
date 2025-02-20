@@ -185,9 +185,21 @@
                                 [formGroup]="dataSilabo"
                                 class="field col-12 md:col-5"
                             >
-                                <label for=""
-                                    >Descripción de la Unidad Didáctica</label
+                                <label
+                                    for=""
+                                    *ngIf="
+                                        !(
+                                            nivelTipo === '3' ||
+                                            nivelTipo === '4'
+                                        );
+                                        else tipos
+                                    "
                                 >
+                                    Descripción de la Unidad Didáctica</label
+                                >
+                                <ng-template #tipos>
+                                    Descripcion de Área curricular
+                                </ng-template>
                                 <p-editor
                                     formControlName="cSilaboDescripcionCurso"
                                     [style]="{

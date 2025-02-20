@@ -120,11 +120,12 @@ export class ReporteComponent {
             prefix: 'academico',
             ruta: 'reporte_grado',
             data: {
-                cursos: this.cursos,
-                alumnos: this.alumnos,
+                cursos: JSON.stringify(this.cursos),
+                alumnos: JSON.stringify(this.alumnos),
             },
         }
         this.getReportePdf(params)
+        //this.getInformation(params,'test')
     }
     buscarGrado() {
         const params = {
@@ -178,7 +179,7 @@ export class ReporteComponent {
             prefix: 'academico',
             ruta: 'obtener_datos',
             data: {
-                cPersDocumento: this.documento,
+                cPersDocumento: this.tablaEstudiantes,
                 iIieeId: this.iiee,
             },
         }
@@ -298,6 +299,9 @@ export class ReporteComponent {
                 this.academicoGrado = item
                 this.notas = JSON.parse(this.academicoGrado[0]['notas'])
                 this.generarListaGrados()
+                break
+            case 'test':
+                // console.table(item)
                 break
         }
     }

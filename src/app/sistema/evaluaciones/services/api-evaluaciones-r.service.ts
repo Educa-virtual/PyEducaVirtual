@@ -466,7 +466,12 @@ export class ApiEvaluacionesRService {
     }
 
     descargarPreguntasPorArea(params) {
-        const url = `${this.urlBackend}/api/ere/evaluaciones/${params.iEvaluacionId}/areas/${params.iCursosNivelGradId}/archivo-preguntas`
+        const url = `${this.urlBackendApi}/ere/evaluaciones/${params.iEvaluacionId}/areas/${params.iCursosNivelGradId}/archivo-preguntas`
+        window.open(url, '_blank')
+    }
+
+    descargarMatrizPorEvaluacionArea(params) {
+        const url = `${this.urlBackendApi}/ere/evaluaciones/${params.iEvaluacionId}/areas/${params.iCursosNivelGradId}/matriz-competencias`
         window.open(url, '_blank')
     }
 }

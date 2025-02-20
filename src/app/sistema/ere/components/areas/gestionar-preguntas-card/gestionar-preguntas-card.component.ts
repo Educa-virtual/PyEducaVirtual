@@ -46,7 +46,9 @@ export class GestionarPreguntasCardComponent implements OnInit {
             {
                 label: 'Descargar matriz',
                 icon: 'pi pi-angle-right',
-                command: () => {},
+                command: () => {
+                    this.descargarMatrizPorEvaluacionArea()
+                },
             },
             {
                 label: 'Exportar a Word',
@@ -92,5 +94,13 @@ export class GestionarPreguntasCardComponent implements OnInit {
             iCursosNivelGradId: this.curso.iCursosNivelGradId,
         }
         this.evaluacionesService.descargarPreguntasPorArea(params)
+    }
+
+    descargarMatrizPorEvaluacionArea() {
+        const params = {
+            iEvaluacionId: this.iEvaluacionIdHashed,
+            iCursosNivelGradId: this.curso.iCursosNivelGradId,
+        }
+        this.evaluacionesService.descargarMatrizPorEvaluacionArea(params)
     }
 }

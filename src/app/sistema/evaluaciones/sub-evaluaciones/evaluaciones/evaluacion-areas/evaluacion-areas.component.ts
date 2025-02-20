@@ -157,12 +157,6 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
         }
     }
     // -------------------------------New Código de select areas y grados que participan en la ERE
-    // onCheckboxChange(nivelIndex: number, areaIndex: number, grado: string) {
-    //     console.log(
-    //       `Cambio en ${this.niveles[nivelIndex].nombre} - ${this.niveles[nivelIndex].areas[areaIndex].nombre}, Grado: ${grado}, Seleccionado:`,
-    //       this.niveles[nivelIndex].areas[areaIndex].evaluaciones[grado]
-    //     );
-    //   }
     columnas: IColumn[] = [
         {
             field: 'cCursoNombre',
@@ -237,7 +231,6 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
             text_header: 'Nivel',
         },
     ]
-
     // -------------------------
     separarPorNivelIeParticipan() {
         // Filtrar los datos para Educación Primaria

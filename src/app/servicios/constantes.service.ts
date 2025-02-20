@@ -849,76 +849,9 @@ const administracion = [
                         routerLink: ['/configuracion/configuracion'],
                     },
                     {
-                        label: 'ERE',
-                        icon: 'pi pi-fw pi-sign-in',
-                        //routerLink: ['/especialista-ugel/ver-evaluacion'],
-                        items: [
-                            {
-                                label: 'Evaluaciones',
-                                icon: 'pi pi-fw pi-calendar',
-                                routerLink: ['/ere/evaluaciones'],
-                            },
-                            // {
-                            //     label: 'Preguntas',
-                            //     icon: 'pi pi-fw pi-question',
-                            //     routerLink: ['/evaluaciones/preguntas'],
-                            // },
-                            /*{
-                                label: 'Banco de Preguntas',
-                                icon: 'pi pi-fw pi-folder',
-                                routerLink: ['/evaluaciones/areas'],
-                            },*/
-                            // {
-                            //     label: 'Dashboard',
-                            //     icon: 'pi pi-fw pi-user',
-                            //     routerLink: [
-                            //         '/especialista-ugel/ver-evaluacion',
-                            //     ],
-                            // },
-                            // {
-                            //     label: 'Informes',
-                            //     icon: 'pi pi-fw pi-sign-in',
-                            //     //routerLink: ['/especialista-ugel/ver-evaluacion'],
-                            //     items: [
-                            //         {
-                            //             label: 'I.E',
-                            //             icon: 'pi pi-fw pi-user',
-                            //             routerLink: [
-                            //                 '/especialista-ugel/institucion-educativa',
-                            //             ],
-                            //         },
-                            //         {
-                            //             label: 'Distritos',
-                            //             icon: 'pi pi-fw pi-user',
-                            //             routerLink: [
-                            //                 '/especialista-ugel/distritos-informe',
-                            //             ],
-                            //         },
-                            //         {
-                            //             label: 'Respuesta',
-                            //             icon: 'pi pi-fw pi-user',
-                            //             routerLink: [
-                            //                 '/especialista-ugel/respuesta-evaluacion',
-                            //             ],
-                            //         },
-
-                            //         {
-                            //             label: 'Est. Archivos',
-                            //             icon: 'pi pi-fw pi-user',
-                            //             routerLink: [
-                            //                 '/especialista-ugel/estado-archivos',
-                            //             ],
-                            //         },
-                            //         {
-                            //             label: 'Proc. Archivo. DRE',
-                            //             icon: 'pi pi-fw pi-user',
-                            //             routerLink: [
-                            //                 '/especialista-ugel/procesar-archivos',
-                            //             ],
-                            //         },
-                            //     ],
-                            // },
-                        ],
+                        label: 'Evaluaciones',
+                        icon: 'pi pi-fw pi-calendar',
+                        routerLink: ['/ere/evaluaciones'],
                     },
                 ],
                 //ConfigGradoSeccion

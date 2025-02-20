@@ -794,6 +794,13 @@ const administracion = [
                         ],
                     },
                     {
+                        label: 'Registro de vacantes',
+                        icon: 'pi pi-book',
+                        routerLink: [
+                            '/gestion-institucional/registro-vacantes',
+                        ],
+                    },
+                    {
                         label: 'Informe de vacantes',
                         icon: 'pi pi-file-import',
                         routerLink: ['/gestion-institucional/gestion-vacantes'],

@@ -1,0 +1,15 @@
+<app-container-page
+    title="Datos del estudiante"
+    [actions]="actionsContainer"
+    (accionBtnItem)="inicio()"
+>
+    <div class="card">
+        <p-steps
+            styleClass="w-full overflow-scroll"
+            [model]="items"
+            [activeIndex]="setActiveIndexSteps()"
+            [readonly]="false"
+        ></p-steps>
+    </div>
+    <router-outlet></router-outlet>
+</app-container-page>

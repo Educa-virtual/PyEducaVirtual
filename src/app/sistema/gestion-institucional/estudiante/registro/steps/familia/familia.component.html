@@ -1,0 +1,446 @@
+<br />
+
+<app-container-page
+    title="Listado de familiares"
+    [actions]="accionesPrincipal"
+    (accionBtnItem)="accionBtnItemTable($event)"
+>
+    <app-table-primeng
+        [columnas]="columns"
+        [showCaption]="true"
+        [data]="familiares"
+        (accionBtnItem)="accionBtnItemTable($event)"
+        [showPaginator]="true"
+        [(selectedRowData)]="selectedItems"
+        [actions]="actions"
+        [showAdvancedFilter]="true"
+    >
+    </app-table-primeng>
+    <ng-container slot="caption-content"> </ng-container>
+</app-container-page>
+
+<p-dialog
+    header="{{ caption }}"
+    [(visible)]="visible"
+    [style]="{ width: '56rem' }"
+    [modal]="true"
+    [contentStyle]="{ overflow: 'auto' }"
+    (onClose)="clearForm()"
+>
+    <ng-content>
+        <form [formGroup]="form">
+            <p-stepper #stepper [(activeStep)]="activeStep">
+                <!-- Primer panel: Información general -->
+                <p-stepperPanel header="Información general">
+                    <ng-template
+                        pTemplate="content"
+                        let-nextCallback="nextCallback"
+                    >
+                        <div class="grid p-fluid mt-3">
+                            <input
+                                type="hidden"
+                                formControlName="iPersId"
+                                class="p-inputtext-sm"
+                            />
+
+                            <div class="field col-12 md:col-6">
+                                <span class="p-float-label">
+                                    <p-dropdown
+                                        [options]="tipos_familiares"
+                                        formControlName="iTipoFamiliarId"
+                                        optionLabel="nombre"
+                                        [checkmark]="true"
+                                        optionValue="id"
+                                        [filter]="true"
+                                        [showClear]="true"
+                                        [appendTo]="'body'"
+                                    />
+                                    <label for="iTipoFamiliarId"
+                                        >Relación / Parentesco *</label
+                                    >
+                                </span>
+                            </div>
+                            <div class="field col-12 md:col-6">
+                                <span class="p-float-label">
+                                    <p-dropdown
+                                        [options]="sexos"
+                                        formControlName="cPersSexo"
+                                        optionLabel="nombre"
+                                        [checkmark]="true"
+                                        optionValue="id"
+                                        [filter]="true"
+                                        [showClear]="true"
+                                        [appendTo]="'body'"
+                                    />
+                                    <label for="cPersSexo">Sexo *</label>
+                                </span>
+                            </div>
+
+                            <div class="field col-12 md:col-6">
+                                <span class="p-float-label">
+                                    <p-dropdown
+                                        [options]="tipos_documentos"
+                                        formControlName="iTipoIdentId"
+                                        optionLabel="nombre"
+                                        [checkmark]="true"
+                                        optionValue="id"
+                                        [filter]="true"
+                                        [showClear]="true"
+                                        [appendTo]="'body'"
+                                    />
+                                    <label for="iTipoIdentId"
+                                        >Tipo de documento *</label
+                                    >
+                                </span>
+                            </div>
+                            <div class="field col-12 md:col-4">
+                                <span class="p-float-label">
+                                    <input
+                                        pInputText
+                                        id="cPersDocumento"
+                                        formControlName="cPersDocumento"
+                                        aria-describedby="cPersDocumento-help"
+                                    />
+                                    <label for="cPersDocumento"
+                                        >Documento *</label
+                                    >
+                                </span>
+                            </div>
+                            <div class="field col-12 md:col-2">
+                                <p-button
+                                    label="Validar"
+                                    (onClick)="accionBtnItem('validar_')"
+                                    styleClass="p-button-warning"
+                                />
+                            </div>
+
+                            <div class="field col-12 md:col-6">
+                                <span class="p-float-label">
+                                    <input
+                                        pInputText
+                                        id="cPersNombre"
+                                        formControlName="cPersNombre"
+                                        aria-describedby="cPersNombre-help"
+                                    />
+                                    <label for="cPersNombre">Nombres *</label>
+                                </span>
+                            </div>
+                            <div class="field col-12 md:col-6">
+                                <span class="p-float-label">
+                                    <input
+                                        pInputText
+                                        id="cPersPaterno"
+                                        formControlName="cPersPaterno"
+                                        aria-describedby="cPersPaterno-help"
+                                    />
+                                    <label for="cPersPaterno"
+                                        >Primer Apellido *</label
+                                    >
+                                </span>
+                            </div>
+
+                            <div class="field col-12 md:col-6">
+                                <span class="p-float-label">
+                                    <input
+                                        pInputText
+                                        id="cPersMaterno"
+                                        formControlName="cPersMaterno"
+                                        aria-describedby="cPersMaterno-help"
+                                    />
+                                    <label for="cPersMaterno"
+                                        >Segundo Apellido *</label
+                                    >
+                                </span>
+                            </div>
+                            <div class="field col-12 md:col-6">
+                                <span class="p-float-label">
+                                    <p-dropdown
+                                        [options]="estados_civiles"
+                                        formControlName="iTipoEstCivId"
+                                        optionLabel="nombre"
+                                        [checkmark]="true"
+                                        optionValue="id"
+                                        [filter]="true"
+                                        [showClear]="true"
+                                        [appendTo]="'body'"
+                                    />
+                                    <label for="iTipoEstCivId"
+                                        >Estado Civil</label
+                                    >
+                                </span>
+                            </div>
+
+                            <div class="field col-12 md:col-6">
+                                <span class="p-float-label">
+                                    <p-calendar
+                                        formControlName="dPersNacimiento"
+                                        [iconDisplay]="'input'"
+                                        [showIcon]="true"
+                                        inputId="dPersNacimiento"
+                                        [appendTo]="'body'"
+                                    />
+                                    <label for="dPersNacimiento"
+                                        >Fecha de nacimiento *</label
+                                    >
+                                </span>
+                            </div>
+                            <div class="field col-12 md:col-6">
+                                <span class="p-float-label">
+                                    <p-dropdown
+                                        [options]="nacionalidades"
+                                        formControlName="iNacionId"
+                                        optionLabel="nombre"
+                                        [checkmark]="true"
+                                        optionValue="id"
+                                        [filter]="true"
+                                        [showClear]="true"
+                                        [appendTo]="'body'"
+                                    />
+                                    <label for="cPersPais">Nacionalidad</label>
+                                </span>
+                            </div>
+                        </div>
+                    </ng-template>
+                </p-stepperPanel>
+
+                <!-- Segundo panel: Datos de nacimiento y contacto -->
+                <p-stepperPanel #stepper header="Ubicación y contacto">
+                    <ng-template
+                        pTemplate="content"
+                        let-prevCallback="prevCallback"
+                        let-nextCallback="nextCallback"
+                    >
+                        <div class="grid p-fluid mt-3">
+                            <div class="field col-12 md:col-4">
+                                <span class="p-float-label">
+                                    <p-dropdown
+                                        [options]="departamentos"
+                                        formControlName="iDptoId"
+                                        optionLabel="nombre"
+                                        optionValue="id"
+                                        [filter]="true"
+                                        [showClear]="true"
+                                        [appendTo]="'body'"
+                                    />
+                                    <label for="iDptoId">Departamento</label>
+                                </span>
+                            </div>
+                            <div class="field col-12 md:col-4">
+                                <span class="p-float-label">
+                                    <p-dropdown
+                                        [options]="provincias"
+                                        formControlName="iPrvnId"
+                                        optionLabel="nombre"
+                                        optionValue="id"
+                                        [filter]="true"
+                                        [showClear]="true"
+                                        [appendTo]="'body'"
+                                    />
+                                    <label for="iPrvnId">Provincia</label>
+                                </span>
+                            </div>
+                            <div class="field col-12 md:col-4">
+                                <span class="p-float-label">
+                                    <p-dropdown
+                                        [options]="distritos"
+                                        formControlName="iDsttId"
+                                        optionLabel="nombre"
+                                        optionValue="id"
+                                        [filter]="true"
+                                        [showClear]="true"
+                                        [appendTo]="'body'"
+                                    />
+                                    <label for="iDsttId">Distrito</label>
+                                </span>
+                            </div>
+
+                            <div class="field col-12">
+                                <span class="p-float-label">
+                                    <input
+                                        pInputText
+                                        formControlName="cPersDomicNombre"
+                                        aria-describedby="cPersDomicNombre-help"
+                                    />
+                                    <label for="cPersDireccion"
+                                        >Dirección</label
+                                    >
+                                </span>
+                            </div>
+
+                            <div class="field col-12 md:col-4">
+                                <span class="p-float-label">
+                                    <p-dropdown
+                                        [options]="tipos_contacto"
+                                        formControlName="iTipoConId"
+                                        optionLabel="nombre"
+                                        [checkmark]="true"
+                                        optionValue="id"
+                                        [filter]="true"
+                                        [showClear]="true"
+                                        [appendTo]="'body'"
+                                    />
+                                    <label for="iTipoConId"
+                                        >Tipo de contacto</label
+                                    >
+                                </span>
+                            </div>
+                            <div class="field col-12 md:col-8">
+                                <span class="p-float-label">
+                                    <input
+                                        pInputText
+                                        formControlName="cPersConNombre"
+                                        aria-describedby="cPersConNombre-help"
+                                    />
+                                    <label for="cPersConNombre"
+                                        >Dato de contacto</label
+                                    >
+                                </span>
+                            </div>
+
+                            <div class="field col-12 md:col-4">
+                                <span class="p-float-label">
+                                    <p-dropdown
+                                        [options]="tipos_contacto"
+                                        formControlName="iTipoConId"
+                                        optionLabel="nombre"
+                                        [checkmark]="true"
+                                        optionValue="id"
+                                        [filter]="true"
+                                        [showClear]="true"
+                                        [appendTo]="'body'"
+                                    />
+                                    <label for="iTipoConId"
+                                        >Tipo de contacto</label
+                                    >
+                                </span>
+                            </div>
+                            <div class="field col-12 md:col-8">
+                                <span class="p-float-label">
+                                    <input
+                                        pInputText
+                                        formControlName="cPersConNombre"
+                                        aria-describedby="cPersConNombre-help"
+                                    />
+                                    <label for="cPersConNombre"
+                                        >Dato de contacto</label
+                                    >
+                                </span>
+                            </div>
+
+                            <div class="field col-12 md:col-4">
+                                <span class="p-float-label">
+                                    <p-dropdown
+                                        [options]="tipos_contacto"
+                                        formControlName="iTipoConId"
+                                        optionLabel="nombre"
+                                        [checkmark]="true"
+                                        optionValue="id"
+                                        [filter]="true"
+                                        [showClear]="true"
+                                        [appendTo]="'body'"
+                                    />
+                                    <label for="iTipoConId"
+                                        >Tipo de contacto</label
+                                    >
+                                </span>
+                            </div>
+                            <div class="field col-12 md:col-8">
+                                <span class="p-float-label">
+                                    <input
+                                        pInputText
+                                        formControlName="cPersConNombre"
+                                        aria-describedby="cPersConNombre-help"
+                                    />
+                                    <label for="cPersConNombre"
+                                        >Dato de contacto</label
+                                    >
+                                </span>
+                            </div>
+                        </div>
+                    </ng-template>
+                </p-stepperPanel>
+
+                <!-- Tercer panel: Otros datos adicionales -->
+                <p-stepperPanel #stepper header="Adicionales">
+                    <ng-template
+                        pTemplate="content"
+                        let-prevCallback="prevCallback"
+                    >
+                        <div class="grid p-fluid mt-3">
+                            <div class="field col-12 md:col-4">
+                                <span class="p-float-label">
+                                    <p-dropdown
+                                        [options]="lenguas"
+                                        formControlName="iLenguaId"
+                                        optionLabel="nombre"
+                                        [checkmark]="true"
+                                        optionValue="id"
+                                        [filter]="true"
+                                        [showClear]="true"
+                                        [appendTo]="'body'"
+                                    />
+                                    <label for="iLenguaId"
+                                        >Lengua Materna</label
+                                    >
+                                </span>
+                            </div>
+                            <div class="field col-12 md:col-4">
+                                <span class="p-float-label">
+                                    <p-dropdown
+                                        [options]="lenguas"
+                                        formControlName="iLenguaSecundariaId"
+                                        optionLabel="nombre"
+                                        [checkmark]="true"
+                                        optionValue="id"
+                                        [filter]="true"
+                                        [showClear]="true"
+                                        [appendTo]="'body'"
+                                    />
+                                    <label for="iLenguaSecundariaId"
+                                        >Lengua Materna Secundaria</label
+                                    >
+                                </span>
+                            </div>
+                        </div>
+                    </ng-template>
+                </p-stepperPanel>
+            </p-stepper>
+        </form>
+
+        <div
+            class="flex pt-4"
+            [class.justify-content-end]="activeStep === 0"
+            [class.justify-content-between]="activeStep !== 0"
+        >
+            <p-button
+                label="Atrás"
+                (click)="handlePrevious()"
+                [className]="activeStep === 0 ? 'hidden' : ''"
+                [disabled]="activeStep === 0"
+            ></p-button>
+            <p-button
+                *ngIf="!isLastStep"
+                [label]="activeStep === 0 ? 'Siguiente' : 'Siguiente'"
+                (click)="handleNext()"
+            ></p-button>
+            @if (c_accion === 'editar') {
+                <p-button
+                    label="Editar"
+                    [className]="activeStep !== 2 ? 'hidden' : ''"
+                    [disabled]="form.invalid"
+                    (onClick)="accionBtnItem('editar')"
+                    styleClass="p-button-warning"
+                />
+            }
+            @if (c_accion === 'agregar') {
+                <p-button
+                    label="Guardar"
+                    [className]="activeStep !== 2 ? 'hidden' : ''"
+                    [disabled]="form.invalid"
+                    (onClick)="accionBtnItem('guardar')"
+                    styleClass="p-button-primary"
+                />
+            }
+        </div>
+    </ng-content>
+</p-dialog>

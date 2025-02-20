@@ -8,68 +8,34 @@ import {
     OnInit,
     Output,
 } from '@angular/core'
-import { InputTextModule } from 'primeng/inputtext'
-import { FormBuilder, FormGroup, FormsModule, Validators } from '@angular/forms'
-import { CardModule } from 'primeng/card'
-import { CommonModule } from '@angular/common'
-import { DividerModule } from 'primeng/divider'
+import { FormBuilder } from '@angular/forms'
 import { forkJoin, Subject, takeUntil } from 'rxjs'
 import { ICurso } from '../../../../aula-virtual/sub-modulos/cursos/interfaces/curso.interface'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { GeneralService } from '@/app/servicios/general.service'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
-import { DataViewModule, DataView } from 'primeng/dataview'
 import { CompartirIdEvaluacionService } from '../../../services/ereEvaluaciones/compartir-id-evaluacion.service'
-import { CheckboxModule } from 'primeng/checkbox'
 import { ApiEvaluacionesRService } from '../../../services/api-evaluaciones-r.service'
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog'
-import { ButtonModule } from 'primeng/button'
-import { ReactiveFormsModule } from '@angular/forms' // Importar ReactiveFormsModule
-import { DropdownModule } from 'primeng/dropdown'
 import { MessageService } from 'primeng/api'
 import { CompartirFormularioEvaluacionService } from '../../../services/ereEvaluaciones/compartir-formulario-evaluacion.service'
-import { DialogModule } from 'primeng/dialog'
 import { PrimengModule } from '@/app/primeng.module'
-// IActionTable,
-import {
-    IColumn,
-    TablePrimengComponent,
-} from '@/app/shared/table-primeng/table-primeng.component'
-//import { ToastModule } from 'primeng/toast'
-import { TableModule } from 'primeng/table'
-import { ToastModule } from 'primeng/toast'
+
 interface NivelTipo {
     cNivelTipoNombre: string
     iNivelTipoId: string
 }
-export type Layout = 'list' | 'grid'
+
 @Component({
     selector: 'app-evaluacion-areas',
     standalone: true,
-    imports: [
-        InputTextModule,
-        TableModule,
-        ToastModule,
-        TablePrimengComponent,
-        DialogModule,
-        FormsModule,
-        CardModule,
-        CommonModule,
-        DividerModule,
-        InputTextModule,
-        DataViewModule,
-        CheckboxModule,
-        ButtonModule,
-        ReactiveFormsModule, // Asegúrate de que ReactiveFormsModule esté importado
-        DropdownModule,
-        PrimengModule,
-    ],
+    imports: [PrimengModule],
     templateUrl: './evaluacion-areas.component.html',
     styleUrl: './evaluacion-areas.component.scss',
 })
 export class EvaluacionAreasComponent implements OnDestroy, OnInit {
     lista: any[] = [] //Aqui se guarda Lista Cursos Nivel Tipo.
-    options = ['list', 'grid']
+
     objectKeys = Object.keys
     datosPrimaria: any[] = []
     datosSecundaria: any[] = []
@@ -93,8 +59,7 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
     public text: string = ''
     public sortField: string = ''
     public sortOrder: number = 0
-    public layout: Layout = 'list'
-    modalFechaHora: boolean = false // mostrar modal.
+
     public params = {
         iCompentenciaId: 0,
         iCapacidadId: 0,
@@ -119,137 +84,23 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
         private query: GeneralService,
         private compartirFormularioEvaluacionService: CompartirFormularioEvaluacionService
     ) {}
-    // Obtener los datos del formulario de la fecha y la hora de la evaluación
-    public fechForm: FormGroup = this._formBuilder.group({
-        //iEscalaCalifId: [],
-        iForoRptaId: ['', [Validators.required]],
-        cForoRptaDocente: ['', [Validators.required]],
-        //nForoRptaNota: [],
-        //cForoDescripcion: [],
-    })
 
     ngOnInit(): void {
         // Inicializar evaluaciones con valores vacíos
         this.getCursos()
-        // Determinar el modo
         this.accion = this._config.data?.accion || 'crear'
-        //console.log('Acción actual:', this.accion)
-        const modulo = this._store.getItem('dremoModulo')
-        switch (Number(modulo.iModuloId)) {
-            case 2:
-                this.layout = 'list'
+        switch (this.accion) {
+            case 'nuevo':
+            case 'editar':
+                this.searchAmbienteAcademico()
                 break
-            case 1:
-                this.layout = 'grid'
+            case 'ver':
+                this.searchAmbienteAcademico()
+                this.isDisabled = true
                 break
-            default:
-                break
-        }
-        if (this.accion === 'nuevo') {
-            this.searchAmbienteAcademico()
-        }
-        if (this.accion === 'ver') {
-            this.searchAmbienteAcademico()
-            this.isDisabled = true // Deshabilita visualmente la sección
-        }
-        if (this.accion === 'editar') {
-            this.searchAmbienteAcademico()
         }
     }
-    // -------------------------------New Código de select areas y grados que participan en la ERE
-    columnas: IColumn[] = [
-        {
-            field: 'cCursoNombre',
-            header: 'Nombre de Área',
-            type: 'text',
-            width: '7rem',
-            text: 'left',
-            text_header: 'Clave',
-        },
-        {
-            field: 'cTipoEvalDescripcion',
-            header: '1º',
-            type: 'item-checkbox',
-            width: '1rem',
-            text: 'left',
-            text_header: 'Tipo evaluación',
-        },
-        {
-            field: 'cNivelEvalNombre',
-            header: '2º',
-            type: 'item-checkbox',
-            width: '3rem',
-            text: 'left',
-            text_header: 'Puntaje',
-        },
-        {
-            field: 'dtEvaluacionFechaInicio',
-            header: '3º',
-            type: 'item-checkbox',
-            width: '3rem',
-            text: 'left',
-            text_header: 'Nivel',
-        },
-        {
-            field: 'dtEvaluacionFechaFin1',
-            header: '4º',
-            type: 'item-checkbox',
-            width: '3rem',
-            text: 'left',
-            text_header: 'Nivel',
-        },
-        {
-            field: 'dtEvaluacionFechaFin2',
-            header: '5º',
-            type: 'item-checkbox',
-            width: '3rem',
-            text: 'left',
-            text_header: 'Nivel',
-        },
-        {
-            field: 'dtEvaluacionFechaFin3',
-            header: '6º',
-            type: 'item-checkbox',
-            width: '3rem',
-            text: 'left',
-            text_header: 'Nivel',
-        },
-        {
-            field: 'dtEvaluacionFechaFin',
-            header: 'Fecha de Evaluación',
-            type: 'input',
-            width: '3rem',
-            text: 'left',
-            text_header: 'Nivel',
-        },
-        {
-            field: 'dtEvaluacionFechaFin',
-            header: 'Cant. Preguntas',
-            type: 'input',
-            width: '3rem',
-            text: 'left',
-            text_header: 'Nivel',
-        },
-    ]
-    // -------------------------
-    separarPorNivelIeParticipan() {
-        // Filtrar los datos para Educación Primaria
-        const datosPrimaria = this.datosRecIeParticipanToAreas.filter(
-            (item: any) => item.cNivelTipoNombre === 'Educación Primaria'
-        )
 
-        // Filtrar los datos para Educación Secundaria
-        const datosSecundaria = this.datosRecIeParticipanToAreas.filter(
-            (item: any) => item.cNivelTipoNombre === 'Educación Secundaria'
-        )
-
-        console.log('Datos de Educación Primaria:', datosPrimaria)
-        console.log('Datos de Educación Secundaria:', datosSecundaria)
-
-        // Opcional: Almacena los datos en propiedades para usarlos en el componente
-        this.datosPrimaria = datosPrimaria
-        this.datosSecundaria = datosSecundaria
-    }
     //Funcion de oncoruseSelect
     onCursoSelect(curso: any): void {
         //const iEvaluacionId = this.compartirIdEvaluacionService.iEvaluacionId
@@ -260,32 +111,7 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
             this.eliminarCursos([curso], iEvaluacionId_)
         }
     }
-    // Función para insertar o eliminar cursos seleccionados
-    actualizarCursosSeleccionados(): void {
-        const iEvaluacionId = this.compartirIdEvaluacionService.iEvaluacionId // Obtener el iEvaluacionId
-        // Filtra los cursos seleccionados y crea un array con `iCursoId` y `isSelected`
-        this.selectedCursos = this.cursos.map((curso) => ({
-            iCursoId: curso.iCursoId,
-            isSelected: curso.isSelected,
-        }))
 
-        // Dividir los cursos en seleccionados y deseleccionados
-        const cursosSeleccionados = this.selectedCursos.filter(
-            (curso) => curso.isSelected
-        )
-        const cursosDeseleccionados = this.selectedCursos.filter(
-            (curso) => !curso.isSelected
-        )
-        // Si hay cursos seleccionados, insertarlos en la base de datos
-        if (cursosSeleccionados.length > 0) {
-            this.insertarCursos(cursosSeleccionados, iEvaluacionId)
-        }
-
-        // Si hay cursos deseleccionados, eliminarlos de la base de datos
-        if (cursosDeseleccionados.length > 0) {
-            this.eliminarCursos(cursosDeseleccionados, iEvaluacionId)
-        }
-    }
     insertarCursos(cursos: any[], iEvaluacionId: number): void {
         // Determinar qué valor de iEvaluacionId usar
         const id =
@@ -391,51 +217,7 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
                 },
             })
     }
-    // Método para actualizar cursos en el backend
-    actualizarCursos(): void {
-        const iEvaluacionId = this.compartirIdEvaluacionService.iEvaluacionId
 
-        // Filtra los cursos seleccionados y crea un array con `iCursoId` y `isSelected`
-        this.selectedCursos = this.cursos.map((curso) => ({
-            iCursoId: curso.iCursoId,
-            isSelected: curso.isSelected,
-        }))
-
-        // Verifica que haya cursos seleccionados
-        if (this.selectedCursos.length === 0) {
-            return
-        }
-
-        // Llama al servicio para actualizar cursos
-        this._apiEre
-            .actualizarCursos(iEvaluacionId, this.selectedCursos)
-            .pipe(takeUntil(this.unsubscribe$))
-            .subscribe({
-                next: (resp) => {
-                    console.log('Cursos actualizados correctamente:', resp)
-                    // Aquí podrías agregar alguna lógica adicional, como notificaciones al usuario
-                },
-                error: (err) => {
-                    console.error('Error al actualizar los cursos:', err)
-                },
-                complete: () => {
-                    this.closeModalEvent.emit(null) // Emitir el evento de cierre del modal
-                },
-            })
-    }
-
-    public onFilter(dv: DataView, event: Event) {
-        const text = (event.target as HTMLInputElement).value
-        this.cursos = this.data
-        dv.value = this.data
-        if (text.length > 1) {
-            dv.filter(text)
-            this.cursos = dv.filteredValue
-        }
-        if (this.layout === 'list') {
-            this.searchText = event
-        }
-    }
     getCursos() {
         const year = this.store.getItem('dremoYear')
         const params = {
@@ -640,11 +422,5 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
     onChange() {}
     closeModal(data) {
         this._ref.close(data)
-    }
-    abrirModalFechaHora() {
-        this.modalFechaHora = true
-    }
-    agregarTime() {
-        this.modalFechaHora = false
     }
 }

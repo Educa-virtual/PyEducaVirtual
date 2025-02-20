@@ -1,0 +1,33 @@
+:host {
+    display: block;
+}
+
+:host ::ng-deep .actividad-tabs .p-tabview-nav {
+    display: flex;
+    justify-content: space-between;
+}
+
+:host ::ng-deep .actividad-tabs .p-tabview-nav li {
+    flex: 1;
+}
+
+:host ::ng-deep .actividad-tabs .p-tabview-nav li a {
+    text-align: center;
+    width: 100%;
+    display: block;
+    color: inherit;
+}
+
+:host ::ng-deep .actividad-tabs .p-tabview-nav li.p-highlight a {
+    color: var(--primary-color);
+}
+
+:host ::ng-deep .p-tabview .p-tabview-panels {
+    background-color: transparent;
+    padding-inline: 0;
+    padding-block-end: 0;
+}
+
+:host ::ng-deep .p-menu .p-submenu-header {
+    display: none !important;
+}

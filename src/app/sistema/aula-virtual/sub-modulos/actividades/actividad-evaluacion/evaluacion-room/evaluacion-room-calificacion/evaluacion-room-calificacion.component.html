@@ -1,0 +1,167 @@
+<app-toolbar-primeng
+    [title]="
+        'Evaluación Formativa: ' +
+        (evaluacion?.cEvaluacionTitulo || 'Título no disponible')
+    "
+></app-toolbar-primeng>
+<app-evaluacion-header
+    [selectedEstudianteValue]="selectedEstudianteValue"
+    [showListaEstudiantes]="showListaEstudiantes"
+    (accionBtnItem)="accionBtnItem($event)"
+></app-evaluacion-header>
+<div class="grid mt-3">
+    <div
+        class="col-12 w-full flex flex-column gap-4 md:flex-row md:align-items-start align-items-stretch"
+    >
+        <!-- Panel Izquierdo -->
+        <div
+            class="flex-column card"
+            style="overflow-y: auto; max-height: 500px"
+            *ngIf="showListaEstudiantes"
+            [@animate]="{
+                value: '*',
+                params: {
+                    x: '50px',
+                    opacity: '0',
+                    delay: '400ms',
+                    duration: '700ms',
+                },
+            }"
+        >
+            <div>
+                <h4 class="text-primary">Lista de Estudiantes</h4>
+                <div
+                    class="flex justify-content-between gap-2 flex-column sm:flex-row flex-wrap"
+                >
+                    <p-iconField iconPosition="left">
+                        <p-inputIcon styleClass="pi pi-search text-md" />
+                        <input
+                            pInputText
+                            type="text"
+                            class="py-2"
+                            (input)="onGlobalFilter(dv, $event)"
+                            placeholder="Buscar"
+                        />
+                    </p-iconField>
+                </div>
+                <p-table
+                    [value]="evaluacionesEstudiantes()"
+                    selectionMode="single"
+                    [selection]="selectedEstudianteValue"
+                    (selectionChange)="updateSelectedEstudiante($event)"
+                    dataKey="iEstudianteId"
+                    (onRowSelect)="seleccionarEvaluacion()"
+                    [scrollable]="true"
+                    scrollHeight="250px"
+                >
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>Apellidos y Nombres</th>
+                            <th>Estado</th>
+                            <!-- <th>Puntaje Final</th> -->
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-estudiante>
+                        <tr [pSelectableRow]="estudiante">
+                            <td>
+                                {{ estudiante.cEstPaterno }}
+                                {{ estudiante.cEstMaterno }} <br />
+                                {{ estudiante.cEstNombres }}
+                            </td>
+                            <td>
+                                <span
+                                    class="block w-1rem h-1rem border-circle"
+                                    [ngClass]="{
+                                        'bg-red-500':
+                                            estudiante.cEstado === 'FALTA',
+                                        'bg-yellow-500':
+                                            estudiante.cEstado === 'PROCESO',
+                                        'bg-green-500':
+                                            estudiante.cEstado === 'REVISADO',
+                                    }"
+                                ></span>
+                            </td>
+                            <!-- <td>{{ estudiante.cNotaFinal }}</td> -->
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+        </div>
+
+        <!-- Panel Derecho -->
+
+        <div class="flex flex-column flex-1 gap-4">
+            <ng-container *ngIf="!!selectedEstudiante(); else emptySection">
+                <p-tabView>
+                    <p-tabPanel header="Rúbrica">
+                        <app-rubrica-calificar [enableCellSelection]="true" class="w-full">
+                        </app-rubrica-calificar>
+                    </p-tabPanel>
+                    <p-tabPanel header="Preguntas">
+                        <div class="flex flex-column gap-4 preguntas-container">
+                            <p-accordion [multiple]="true">
+                                <ng-container
+                                    *ngFor="
+                                        let pregunta of selectedEstudiante()
+                                            .preguntas;
+                                        let i = index
+                                    "
+                                >
+                                    <p-accordionTab [selected]="true">
+                                        <ng-template pTemplate="header">
+                                            <div class="ellipsis">
+                                                @if (
+                                                    pregunta['idEncabPregId'] >
+                                                    0
+                                                ) {
+                                                    <span>{{
+                                                        pregunta[
+                                                            'cEncabPregTitulo'
+                                                        ]
+                                                    }}</span>
+                                                } @else {
+                                                    <span>{{
+                                                        pregunta['cPregunta']
+                                                            | removeHTML
+                                                    }}</span>
+                                                }
+                                            </div>
+                                        </ng-template>
+                                        <app-evaluacion-pregunta
+                                            (calificarPreguntaChange)="
+                                                calificarPregunta($event)
+                                            "
+                                            [pregunta]="pregunta"
+                                        ></app-evaluacion-pregunta>
+                                    </p-accordionTab>
+                                </ng-container>
+                            </p-accordion>
+                        </div>
+                    </p-tabPanel>
+                </p-tabView>
+                <!-- <div class="card">
+                    <div class="flex justify-content-between flex-wrap">
+                        <div class="flex align-items-center justify-content-center font-bold">
+                            <h4 class="text-primary">Preguntas</h4>
+                        </div>
+                        <div class="flex align-items-center justify-content-center">
+                            <button pButton pRipple type="button" class="p-button-primary">
+                                <i class="pi pi-check"></i>&nbsp; Calificar
+                            </button>
+                        </div>
+                    </div>
+                </div> -->
+            </ng-container>
+            <ng-template #emptySection>
+                <div align="center" class="card">
+                    <app-no-data
+                        [showIcon]="'NO-DATA'"
+                        [mensaje]="
+                            'No ha seleccionado a ningún estudiante para calificar'
+                        "
+                    ></app-no-data>
+                </div>
+            </ng-template>
+        </div>
+    </div>
+</div>

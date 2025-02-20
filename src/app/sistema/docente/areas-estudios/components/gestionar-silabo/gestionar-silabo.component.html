@@ -1,0 +1,30 @@
+<div class="grid">
+    <p-toolbar class="col-12">
+        <div class="p-toolbar-group-start">
+            <h4 class="text-white font-bold">
+                <div class="text-lg">Gestionar Programación Curricular</div>
+                <p>{{ cCursoNombre }}</p>
+            </h4>
+        </div>
+        <div class="p-toolbar-group-end">
+            <!-- <p-tag
+                severity="warning"
+                [value]="
+                    'Avance de la programación curricular: ' +
+                    iAvanceSilabo +
+                    '%'
+                "
+            /> -->
+            <p-button
+                icon="pi pi-undo"
+                pTooltip="Regresar"
+                tooltipPosition="top"
+                [rounded]="true"
+                (onClick)="goAreasEstudio()"
+            />
+        </div>
+    </p-toolbar>
+    <div class="col-12">
+        <app-silabo [idDocCursoId]="idDocCursoId"></app-silabo>
+    </div>
+</div>

@@ -1,0 +1,45 @@
+<div class="container">
+    <div class="header">
+        <h1 class="title">Videollamadas y reuniones para todos</h1>
+        <p class="subtitle">
+            Conecta, colabora y celebra desde cualquier lugar con Google Meet
+        </p>
+    </div>
+
+    <div class="buttons p-fluid">
+        <!-- Botón para crear nueva reunión con tooltip -->
+        <a
+            pButton
+            label="Nueva reunión"
+            icon="pi pi-video"
+            class="p-button-primary create-meeting"
+            href="https://meet.google.com/new"
+            target="_blank"
+            pTooltip="Crea una nueva reunión en Google Meet"
+            tooltipPosition="top"
+        >
+        </a>
+
+        <!-- Campo de texto para ingresar código o enlace con tooltip -->
+        <input
+            pInputText
+            type="text"
+            placeholder="Introduce un código o enlace"
+            class="meeting-code"
+            [(ngModel)]="meetingInput"
+            pTooltip="Ingresa el código o enlace de la reunión"
+            tooltipPosition="top"
+        />
+
+        <!-- Botón para unirse a la reunión con tooltip -->
+        <button
+            pButton
+            label="Unirme"
+            icon="pi pi-check"
+            class="p-button-secondary join-meeting"
+            (click)="joinMeeting()"
+            pTooltip="Haz clic para unirte a la reunión"
+            tooltipPosition="top"
+        ></button>
+    </div>
+</div>

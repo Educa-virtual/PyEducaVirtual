@@ -1,0 +1,85 @@
+<!--/**
+ * Botón para agregar preguntas, dependiendo de si `menu` está definido o no.
+ * Si `menu` está presente, se usa un método para mostrar un menú para la agregación de preguntas.
+ * Si no está presente, se maneja la agregación de preguntas directamente.
+ *
+ * @param {boolean} menu - Si es `true`, se activa el menú de agregación de preguntas,
+ *                          de lo contrario se activa la función `handleNuevaPregunta`.
+ * @param {string} mode - El modo de la interfaz de usuario. Si está en `'VIEW'`,
+ *                        el botón estará deshabilitado.
+ *-->
+@if (menu) {
+    <button
+        pButton
+        class="p-button-primary gap-2"
+        (click)="menuAgregacionPreguntas.toggle($event)"
+        [disabled]="mode === 'VIEW'"
+        size="small"
+    >
+        <i class="pi pi-plus"></i>
+        <span class="text-md">Agregar Preguntas</span>
+    </button>
+} @else {
+    <button
+        pButton
+        class="p-button-primary gap-2"
+        (click)="handleNuevaPregunta()"
+        [disabled]="mode === 'VIEW'"
+        size="small"
+    >
+        <i class="pi pi-plus"></i>
+        <span class="text-md">Agregar Preguntas</span>
+    </button>
+}
+
+<!-- Componente p-menu de PrimeNG para mostrar un menú de selección en formato popup -->
+
+<p-menu
+    #menuAgregacionPreguntas
+    [popup]="true"
+    [model]="tiposAgrecacionPregunta"
+    appendTo="body"
+>
+</p-menu>
+<!-- Modal de diálogo para agregar preguntas desde el banco de preguntas -->
+<p-dialog
+    #dialogBancoPreguntas
+    [header]="'Agregar Preguntas del Banco de preguntas'"
+    [modal]="true"
+    [(visible)]="showModalBancoPreguntas"
+    [position]="'top'"
+    [maximizable]="true"
+    [style]="{ width: '100%' }"
+>
+    @defer (when showModalBancoPreguntas) {
+        <!-- las preguntas seleccionadas -->
+        <app-aula-banco-preguntas
+            [mode]="'SELECTION'"
+            [iEvaluacionId]="iEvaluacionId"
+            [iCursoId]="iCursoId"
+            (selectedRowDataChange)="selectedRowDataChange($event)"
+        />
+    }
+
+    <div class="flex justify-content-end gap-2 pt-3">
+        <button
+            pButton
+            pRipple
+            label="Cancelar"
+            icon="pi pi-times"
+            class="p-button-secondary"
+            type="button"
+            size="small"
+            (click)="closeModalBancoPreguntas()"
+        ></button>
+        <button
+            pButton
+            pRipple
+            label="Agregar preguntas seleccionadas"
+            icon="pi pi-check"
+            size="small"
+            class="p-button-primary"
+            (click)="agregarPreguntas()"
+        ></button>
+    </div>
+</p-dialog>

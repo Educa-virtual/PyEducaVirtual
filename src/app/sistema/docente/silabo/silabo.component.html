@@ -1,0 +1,306 @@
+<p-stepper [(activeStep)]="activeStepper">
+    @for (item of silabo; track item.iSilabo) {
+        <p-stepperPanel>
+            <ng-template
+                pTemplate="header"
+                let-onClick="onClick"
+                let-index="index"
+            >
+                <button
+                    class="bg-transparent border-none inline-flex flex-column gap-2"
+                    (click)="
+                        onClick.emit(); getSilabo(this.activeStepper, true, [])
+                    "
+                    [pTooltip]="item.cSilaboTitle"
+                    tooltipPosition="top"
+                >
+                    <span
+                        class="border-round border-2 w-3rem h-3rem inline-flex align-items-center justify-content-center"
+                        [ngClass]="{
+                            'bg-primary border-primary': index <= activeStepper,
+                            'border-primary': index > activeStepper,
+                        }"
+                    >
+                        <p
+                            class="font-bold"
+                            [style]="
+                                index > activeStepper
+                                    ? 'color: var(--primary-color)'
+                                    : ''
+                            "
+                        >
+                            {{ index + 1 }}
+                        </p>
+                        <!-- <i class="pi {{item.icon}}" [style]="index > activeStepper ? 'color: var(--primary-color)' :''"></i> -->
+                    </span>
+                </button>
+            </ng-template>
+            <ng-template
+                pTemplate="content"
+                let-prevCallback="prevCallback"
+                let-nextCallback="nextCallback"
+                let-index="index"
+            >
+                <div class="border-noround text-uppercase">
+                    <h4>{{ item.cSilaboTitle }}</h4>
+                    <p-divider></p-divider>
+                </div>
+                @switch (activeStepper) {
+                    @case (0) {
+                        @if (dataInformation.length > 0) {
+                            <form>
+                                <div class="formgrid grid">
+                                    <div
+                                        class="field col-12 md:col-12"
+                                        *ngIf="
+                                            !(
+                                                nivelTipo === '3' ||
+                                                nivelTipo === '4'
+                                            )
+                                        "
+                                    >
+                                        <label for=""
+                                            >Programa de Estudios</label
+                                        >
+                                        <input
+                                            type="text"
+                                            class="w-full p-inputtext-sm opacity-100"
+                                            pInputText
+                                            [placeholder]="
+                                                dataInformation[0][
+                                                    'cProgNombre'
+                                                ] || ''
+                                            "
+                                            disabled
+                                        />
+                                    </div>
+                                    <div
+                                        class="field col-12 md:col-12"
+                                        *ngIf="
+                                            !(
+                                                nivelTipo === '3' ||
+                                                nivelTipo === '4'
+                                            )
+                                        "
+                                    >
+                                        <label for="">Módulo Formativo</label>
+                                        <input
+                                            type="text"
+                                            class="w-full p-inputtext-sm opacity-100"
+                                            pInputText
+                                            placeholder=""
+                                            disabled
+                                        />
+                                    </div>
+                                    <div
+                                        class="field col-12"
+                                        *ngIf="
+                                            !(
+                                                nivelTipo === '3' ||
+                                                nivelTipo === '4'
+                                            )
+                                        "
+                                    >
+                                        <label for=""
+                                            >Unidades Didácticas</label
+                                        >
+                                        <input
+                                            type="text"
+                                            class="w-full p-inputtext-sm opacity-100"
+                                            pInputText
+                                            placeholder=""
+                                            disabled
+                                        />
+                                    </div>
+                                    <div
+                                        class="field col-12 md:col-8"
+                                        *ngIf="
+                                            !(
+                                                nivelTipo === '3' ||
+                                                nivelTipo === '4'
+                                            )
+                                        "
+                                    >
+                                        <label for="">Carga Horaria</label>
+                                        <input
+                                            type="text"
+                                            class="w-full p-inputtext-sm opacity-100"
+                                            pInputText
+                                            placeholder=""
+                                            disabled
+                                        />
+                                    </div>
+                                    <div
+                                        class="field col-12 md:col-4"
+                                        *ngIf="
+                                            !(
+                                                nivelTipo === '3' ||
+                                                nivelTipo === '4'
+                                            )
+                                        "
+                                    >
+                                        <label for="state"
+                                            >Nro de Créditos</label
+                                        >
+                                        <input
+                                            type="text"
+                                            class="w-full p-inputtext-sm opacity-100"
+                                            pInputText
+                                            placeholder=""
+                                            disabled
+                                        />
+                                    </div>
+                                    <div class="field col-12 md:col-12">
+                                        <label for="state"
+                                            >Perfil del Egreso</label
+                                        >
+                                        <textarea
+                                            class="w-full p-inputtext-sm opacity-100"
+                                            pInputTextarea
+                                            [placeholder]="
+                                                dataInformation[0][
+                                                    'cCurrPerfilEgresado'
+                                                ] || ''
+                                            "
+                                            rows="5"
+                                            disabled
+                                        ></textarea>
+                                    </div>
+                                </div>
+                            </form>
+                        }
+
+                        <div class="flex pt-4 justify-content-end">
+                            <p-button
+                                (onClick)="nextCallback.emit()"
+                                label="Siguiente"
+                                icon="pi pi-arrow-right"
+                                iconPos="right"
+                            />
+                        </div>
+                    }
+                    @case (1) {
+                        <div class="formgrid grid">
+                            <form
+                                [formGroup]="dataSilabo"
+                                class="field col-12 md:col-5"
+                            >
+                                <label for=""
+                                    >Descripción de la Unidad Didáctica</label
+                                >
+                                <p-editor
+                                    formControlName="cSilaboDescripcionCurso"
+                                    [style]="{
+                                        height: '120px',
+                                    }"
+                                />
+                                <br />
+                                <label for="">Capacidad </label>
+                                <p-editor
+                                    formControlName="cSilaboCapacidad"
+                                    [style]="{
+                                        height: '120px',
+                                    }"
+                                />
+                            </form>
+
+                            <div class="field col-12 md:col-7">
+                                <app-metodologia
+                                    [iSilaboId]="
+                                        this.dataSilabo.value.iSilaboId
+                                    "
+                                    [tipoMetodologias]="tipoMetodologias"
+                                ></app-metodologia>
+                            </div>
+                        </div>
+
+                        <div class="flex pt-4 justify-content-between">
+                            <p-button
+                                (onClick)="prevCallback.emit()"
+                                label="Anterior"
+                                severity="secondary"
+                                icon="pi pi-arrow-left"
+                            />
+                            <p-button
+                                (onClick)="nextCallback.emit()"
+                                label="Siguiente"
+                                icon="pi pi-arrow-right"
+                                iconPos="right"
+                            />
+                        </div>
+                    }
+                    @case (2) {
+                        <app-recursos-didacticos
+                            [iSilaboId]="this.dataSilabo.value.iSilaboId"
+                        ></app-recursos-didacticos>
+                        <div class="flex pt-4 justify-content-between">
+                            <p-button
+                                (onClick)="prevCallback.emit()"
+                                label="Anterior"
+                                severity="secondary"
+                                icon="pi pi-arrow-left"
+                            />
+                            <p-button
+                                (onClick)="nextCallback.emit()"
+                                label="Siguiente"
+                                icon="pi pi-arrow-right"
+                                iconPos="right"
+                            />
+                        </div>
+                    }
+                    @case (3) {
+                        <app-actividades-aprendizaje-evaluacion
+                            [iSilaboId]="this.dataSilabo.value.iSilaboId"
+                        ></app-actividades-aprendizaje-evaluacion>
+                        <div class="flex pt-4 justify-content-between">
+                            <p-button
+                                (onClick)="prevCallback.emit()"
+                                label="Anterior"
+                                severity="secondary"
+                                icon="pi pi-arrow-left"
+                            />
+                            <p-button
+                                (onClick)="nextCallback.emit()"
+                                label="Siguiente"
+                                icon="pi pi-arrow-right"
+                                iconPos="right"
+                            />
+                        </div>
+                    }
+                    @case (4) {
+                        <app-evaluacion
+                            [iSilaboId]="this.dataSilabo.value.iSilaboId"
+                        ></app-evaluacion>
+                        <div class="flex pt-4 justify-content-between">
+                            <p-button
+                                (onClick)="prevCallback.emit()"
+                                label="Anterior"
+                                severity="secondary"
+                                icon="pi pi-arrow-left"
+                            />
+                            <p-button
+                                (onClick)="nextCallback.emit()"
+                                label="Siguiente"
+                                icon="pi pi-arrow-right"
+                                iconPos="right"
+                            />
+                        </div>
+                    }
+                    @case (5) {
+                        <app-bibliografia
+                            [iSilaboId]="this.dataSilabo.value.iSilaboId"
+                        ></app-bibliografia>
+                        <div class="flex pt-4 justify-content-start">
+                            <p-button
+                                (onClick)="prevCallback.emit()"
+                                label="Anterior"
+                                severity="secondary"
+                                icon="pi pi-arrow-left"
+                            />
+                        </div>
+                    }
+                }
+            </ng-template>
+        </p-stepperPanel>
+    }
+</p-stepper>

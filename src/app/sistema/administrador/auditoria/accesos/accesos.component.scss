@@ -1,0 +1,22 @@
+:host ::ng-deep p-dropdown > div {
+    width: max-content;
+}
+
+:host {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    width: 100%;
+}
+
+:host ::ng-deep .p-panel-icons button {
+    background-color: #fff;
+    border-color: none;
+}
+
+.card {
+    background: #f9fafb;
+    padding: 2rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+}

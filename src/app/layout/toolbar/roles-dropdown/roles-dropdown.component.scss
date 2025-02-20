@@ -1,0 +1,18 @@
+:host {
+    display: block;
+}
+
+:host ::ng-deep .p-dropdown .p-dropdown-label {
+    padding-block: 0;
+}
+:host ::ng-deep .p-button:focus {
+    outline: 0 none;
+    outline-offset: 0px;
+    box-shadow: none;
+}
+
+.display-none {
+    @media (max-width: 1115px) {
+        display: none;
+    }
+}

@@ -1,0 +1,68 @@
+<app-container-page
+    [title]="'Áreas Curriculares ERE: ' + cEvaluacionNombre"
+    [actions]="[]"
+>
+    <div class="container">
+        <article
+            *ngFor="let curso of cursos"
+            class="card p-0 p border-1 flex flex-column surface-border overflow-hidden h-full post-module"
+        >
+            <div class="curso__image-container img-transition">
+                <img
+                    [src]="backend + '/' + curso.cCursoImagen"
+                    [alt]="curso.cCursoNombre"
+                    class="w-full h-full"
+                    (error)="updateUrl(curso)"
+                />
+            </div>
+            <div class="flex flex-column h-13rem justify-content-between pb-3">
+                <div class="p-3">
+                    <h3 class="text-xl">
+                        {{ curso.cGradoAbreviacion }} {{ curso.cCursoNombre }}
+                    </h3>
+                    <p class="">
+                        Inicio del Examen:
+                        {{ curso.dtExamenFechaInicio | date: 'short' }}
+                    </p>
+                    <p class="">
+                        Fin del Examen:
+                        {{ curso.dtExamenFechaFin | date: 'short' }}
+                    </p>
+                </div>
+                <div class="flex">
+                    <footer
+                        class="flex w-full justify-content-between align-items-center"
+                    >
+                        <p-button
+                            [routerLink]="['./', curso.iExamCurId]"
+                            [queryParams]="{
+                                cCursoNombre: curso.cCursoNombre,
+                                cGradoAbreviacion: curso.cGradoAbreviacion,
+                                cNivelTipoNombre: curso.cNivelTipoNombre,
+                                cGradoNombre: curso.cGradoNombre,
+                                dtExamenFechaInicio: curso.dtExamenFechaInicio,
+                                dtExamenFechaFin: curso.dtExamenFechaFin,
+                            }"
+                            label="Rendir"
+                            styleClass="p-button-link"
+                        ></p-button>
+
+                        <p-button
+                            [routerLink]="['./', curso.iExamCurId]"
+                            [queryParams]="{
+                                cCursoNombre: curso.cCursoNombre,
+                                cGradoAbreviacion: curso.cGradoAbreviacion,
+                                cNivelTipoNombre: curso.cNivelTipoNombre,
+                                cGradoNombre: curso.cGradoNombre,
+                                dtExamenFechaInicio: curso.dtExamenFechaInicio,
+                                dtExamenFechaFin: curso.dtExamenFechaFin,
+                            }"
+                            label="Resultados"
+                            styleClass="p-button-link"
+                        ></p-button>
+                    </footer>
+                </div>
+            </div>
+        </article>
+    </div>
+</app-container-page>

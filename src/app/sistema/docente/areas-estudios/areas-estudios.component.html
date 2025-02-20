@@ -1,1 +1,276 @@
-<p>areas-estudios works!</p>
+<div class="grid">
+    <!-- <p-toolbar class="col-12">
+        <div class="p-toolbar-group-start">
+            <h4 class="text-primary font-bold">
+                Mis Áreas Curriculares
+            </h4>
+        </div>
+        <div class="p-toolbar-group-end">
+            <span class="p-input-icon-left">
+                <i class="pi pi-search"></i>
+                <input
+                    pInputText
+                    placeholder="Buscar área curricular"
+                    style="width: 350px"
+                    (input)="onGlobalFilter(dv, $event)"
+                />
+            </span>
+            <p-button
+                icon="pi pi-sync"
+                pTooltip="Refrescar áreas curriculares"
+                tooltipPosition="top"
+                [rounded]="true"
+                [text]="true"
+                severity="danger"
+                (onClick)="getCursos()"
+            />
+        </div>
+    </p-toolbar> -->
+    <div class="col-12">
+        <p-messages [(value)]="messages" [enableService]="false" />
+    </div>
+    <p-table
+        #dv
+        class="col-12 hoverTable"
+        [value]="data"
+        paginator="true"
+        [rows]="10"
+        [globalFilterFields]="['cCursoNombre']"
+    >
+        <ng-template pTemplate="header">
+            <tr>
+                @switch (iPerfilId) {
+                    @case (DOCENTE) {
+                        <th style="width: 1rem">#</th>
+                        <th style="width: 15rem">Nombre del Área Curricular</th>
+                        <th style="width: 2rem; text-align: center">
+                            Total Estudiantes
+                        </th>
+                        <th style="width: 2rem; text-align: center">
+                            Nivel de Estudio
+                        </th>
+                        <th style="width: 2rem; text-align: center">Grado</th>
+                        <th style="width: 2rem; text-align: center">Sección</th>
+                        <th style="width: 10rem; text-align: center">
+                            Avances %
+                        </th>
+                        <th style="width: 8rem; text-align: center">Acción</th>
+                        <th style="width: 2rem; text-align: center">
+                            Aula Virtual
+                        </th>
+                    }
+                    @case (ESTUDIANTE) {
+                        <th style="width: 1rem">#</th>
+                        <th style="width: 15rem">Nombre del Área Curricular</th>
+                        <th style="width: 2rem; text-align: center">Grado</th>
+                        <th style="width: 2rem; text-align: center">Sección</th>
+                        <th style="width: 2rem; text-align: center">
+                            % Asistencia
+                        </th>
+                        <th style="width: 2rem; text-align: center">
+                            % Inasistencia
+                        </th>
+                        <th style="width: 2rem; text-align: center">
+                            Aula Virtual
+                        </th>
+                    }
+                }
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage" let-columns>
+            <tr>
+                @switch (iPerfilId) {
+                    @case (DOCENTE) {
+                        <td [attr.colspan]="8">
+                            No se encontraron resultados.
+                        </td>
+                    }
+                    @case (ESTUDIANTE) {
+                        <td [attr.colspan]="5">
+                            No se encontraron resultados.
+                        </td>
+                    }
+                }
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
+            <tr>
+                @switch (iPerfilId) {
+                    @case (DOCENTE) {
+                        <td class="justify-content-center">
+                            {{ rowIndex + 1 }}
+                        </td>
+                        <td class="font-bold">
+                            {{ item.cCursoNombre }}
+                        </td>
+                        <td style="text-align: center">
+                            {{ item.iEstudiantes }}
+                        </td>
+                        <td style="text-align: center">
+                            {{ item.cNivelTipoNombre }}
+                        </td>
+                        <td style="text-align: center">
+                            {{ item.cGradoAbreviacion }}
+                        </td>
+                        <td style="text-align: center">{{ item.cSeccion }}</td>
+                        <td style="text-align: center">
+                            <div
+                                class="align-items-center align-content-center"
+                            >
+                                <button
+                                    pButton
+                                    pRipple
+                                    class="p-1 mx-1 p-button-warning"
+                                >
+                                    {{ item.iAvanceSilabo + '%' }}
+                                </button>
+                                <button
+                                    pButton
+                                    pRipple
+                                    class="p-1 mx-1 p-button-success"
+                                >
+                                    {{ item.iAvanceAsistencia + '%' }}
+                                </button>
+                                <button
+                                    pButton
+                                    pRipple
+                                    class="p-1 mx-1 p-button-danger"
+                                >
+                                    {{ item.iAvanceNotas + '%' }}
+                                </button>
+                            </div>
+                        </td>
+                        <td style="text-align: center">
+                            <div
+                                class="align-items-center align-content-center"
+                            >
+                                <button
+                                    pTooltip="Gestionar Área Curricular"
+                                    [rounded]="true"
+                                    pButton
+                                    pRipple
+                                    class="p-1 mx-1 p-button-rounded p-button-primary p-button-text"
+                                    (click)="
+                                        this.selectedData = item;
+                                        menu.toggle($event)
+                                    "
+                                >
+                                    <i class="pi pi-chevron-down"></i>
+                                </button>
+                                <!-- <button
+                                    pTooltip="Descargar Lista de Estudiantes"
+                                    tooltipPosition="top"
+                                    [rounded]="true"
+                                    pButton
+                                    pRipple
+                                    class="p-1 mx-1 p-button-rounded p-button-success p-button-text"
+                                >
+                                    <i class="pi pi-file-excel"></i>
+                                </button> -->
+                                <button
+                                    pTooltip="Descargar Programación Curricular"
+                                    tooltipPosition="top"
+                                    [rounded]="true"
+                                    pButton
+                                    pRipple
+                                    class="p-1 mx-1 p-button-rounded p-button-danger p-button-text"
+                                    (click)="this.getSilaboPdf(item.iSilaboId)"
+                                >
+                                    <i class="pi pi-file-pdf"></i>
+                                </button>
+                            </div>
+                        </td>
+                        <td style="text-align: center">
+                            <p-button
+                                severity="success"
+                                [routerLink]="['./', item.iSilaboId]"
+                                [queryParams]="{
+                                    cCursoNombre: item.cCursoNombre,
+                                    cNivelTipoNombre: item.cNivelTipoNombre,
+                                    cGradoAbreviacion: item.cGradoAbreviacion,
+                                    cSeccion: item.cSeccion,
+                                    cCicloRomanos: item.cCicloRomanos,
+                                    cNivelNombreCursos: item.cNivelNombreCursos,
+                                    iCursoId: item.iCursoId,
+                                    idDocCursoId: item.idDocCursoId,
+                                    iNivelCicloId: item.iNivelCicloId,
+                                }"
+                                label="Acceder"
+                                icon="pi pi-arrow-right"
+                                iconPos="right"
+                            />
+                        </td>
+                    }
+
+                    @case (ESTUDIANTE) {
+                        <td class="justify-content-center">
+                            {{ rowIndex + 1 }}
+                        </td>
+                        <td class="font-bold">
+                            {{ item.cCursoNombre }}
+                        </td>
+                        <td style="text-align: center">
+                            {{ item.cGradoAbreviacion }}
+                        </td>
+                        <td style="text-align: center">{{ item.cSeccion }}</td>
+                        <td style="text-align: center">
+                            {{ item.pAsistencia }} %
+                        </td>
+                        @if (item.pInasistencia > 33) {
+                            <td style="text-align: center; color: red">
+                                {{ item.pInasistencia }} %
+                            </td>
+                        } @else {
+                            <td style="text-align: center">
+                                {{ item.pInasistencia }} %
+                            </td>
+                        }
+                        <td style="text-align: center">
+                            <p-button
+                                severity="success"
+                                [routerLink]="['./', item.iSilaboId]"
+                                [queryParams]="{
+                                    cCursoNombre: item.cCursoNombre,
+                                    cNivelTipoNombre: item.cNivelTipoNombre,
+                                    cGradoAbreviacion: item.cGradoAbreviacion,
+                                    cSeccion: item.cSeccion,
+                                    cCicloRomanos: item.cCicloRomanos,
+                                    cNivelNombreCursos: item.cNivelNombreCursos,
+                                    iCursoId: item.iCursoId,
+                                    idDocCursoId: item.idDocCursoId,
+                                    iNivelCicloId: item.iNivelCicloId,
+                                }"
+                                label="Acceder"
+                                icon="pi pi-arrow-right"
+                                iconPos="right"
+                            />
+                        </td>
+                    }
+                }
+            </tr>
+        </ng-template>
+    </p-table>
+    @if (iPerfilId === DOCENTE) {
+        <div class="col-12 flex flex-column md:flex-row my-5 mx-5">
+            <p class="font-bold ml-2 mt-1">Leyenda:</p>
+
+            <p-tag
+                severity="warning"
+                value="Avance de la Programación curricular"
+                class="ml-2 mt-1"
+            />
+            <p-tag
+                severity="success"
+                value="Avance de Asistencia"
+                class="ml-2 mt-1"
+            />
+            <p-tag
+                severity="danger"
+                value="Avance de Nivel de Logros"
+                class="ml-2 mt-1"
+            />
+        </div>
+    }
+</div>
+
+<p-menu [style]="{ minWidth: '25rem' }" #menu [model]="items" [popup]="true" />

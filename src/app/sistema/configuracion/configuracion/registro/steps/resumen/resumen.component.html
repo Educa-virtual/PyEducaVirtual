@@ -1,0 +1,69 @@
+<div class="container py-4 gap-3 flex flex-column">
+    <div>
+        <h5 class="text-center">
+            {{ resumenInformation.calendar.cYAcadNombre }}
+        </h5>
+        <h6>Información general</h6>
+        <div class="flex justify-content-between">
+            <div>
+                <span>Fecha inicio:</span>
+                <span>{{
+                    this.ticketService.toVisualFechasFormat(
+                        this.ticketService.registroInformation?.stepYear
+                            .fechaInicio,
+                        'DD/MM/YYYY'
+                    )
+                }}</span>
+            </div>
+            <div>
+                <span>Fecha fin:</span>
+                <span>{{
+                    this.ticketService.toVisualFechasFormat(
+                        this.ticketService.registroInformation?.stepYear
+                            .fechaFin,
+                        'DD/MM/YYYY'
+                    )
+                }}</span>
+            </div>
+        </div>
+        <div>
+            <span>Dias Laborales:</span>
+            <span>{{ resumenInformation.diasLaborales }}</span>
+        </div>
+        <h6>Información horaria</h6>
+        <app-table-primeng
+            [showCaption]="false"
+            [columnas]="columnsFormasAtencion"
+            [showPaginator]="false"
+            [data]="resumenInformation.formasAtencion"
+        >
+        </app-table-primeng>
+        
+        <h6>Información del periodo académico</h6>
+        @for (periodo of resumenInformation.periodosAcademicos; track periodo.iFaseId) {
+            <div class="flex justify-content-between">
+                <div>
+                    <span>Periodo académico:</span>
+                    <span>{{periodo.cFasePromNombre}}</span>
+                </div>
+                <div>
+                    <span>Ciclo académico:</span>
+                    <span>{{periodo.cPeriodoEvalNombre}}</span>
+                </div>
+            </div>
+            <app-table-primeng
+            [showCaption]="false"
+            [columnas]="columnsPeriodosAcademicos"
+            [showPaginator]="false"
+            [data]="periodo.periodosEvalForm"
+        >
+            </app-table-primeng>
+        }
+        
+
+    </div>
+
+    <div class="navigator flex justify-content-between">
+        <p-button label="Regresar" (onClick)="prevPage()" />
+    </div>
+</div>

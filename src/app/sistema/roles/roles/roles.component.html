@@ -1,0 +1,140 @@
+<app-container-page [title]="'Mis Roles'" [actions]="[]">
+    <div class="grid">
+        <div class="grid p-fluid">
+            <div class="col-12">
+                <div class="card">
+                    <!--<h5>Hola! {{ item?.iCredEntPerfId }}</h5>-->
+                    <p-button
+                        icon="pi pi-folder-open"
+                        rounded="true"
+                        (click)="openNew()"
+                        severity="secondary"
+                        [style]="{ 'margin-right': '.5em' }"
+                    />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- <p-dialog
+        [(visible)]="productDialog"
+        [style]="{ width: '1000px' }"
+        [style]="{ width: '1000px' }"
+        header="Seleccionar un Perfil"
+        [modal]="true"
+        class="p-fluid"
+    >
+        <div class="flex flex-column md:flex-row gap-3 align-items-end">
+            <div class="field w-full max-w-md pb-0">
+                <div class="field w-full max-w-md pb-0">
+                    <label for="tipo-pregunta">Año Academico :</label>
+                    <p-dropdown
+                        [options]="[]"
+                        placeholder="Seleccione Año"
+                        styleClass="w-full"
+                        class="flex-1"
+                        [emptyMessage]="'2024'"
+                    >
+                    </p-dropdown>
+                </div>
+                <div class="field w-full max-w-md"></div>
+                <div class="field w-full max-w-md">
+                    <label for="tipo-pregunta">Año :</label>
+                    <p-dropdown
+                        [options]="[]"
+                        placeholder="Todos los Periodos"
+                        styleClass="w-full"
+                        class="flex-1"
+                        [emptyMessage]="'000237'"
+                    >
+                    </p-dropdown>
+                </div>
+                <div class="field displey flex gap-3 w-full max-w-md">
+                    <div class="w-full max-w-xs">
+                        <p-iconField iconPosition="left">
+                            <p-inputIcon styleClass="pi pi-search" />
+                            <input pInputText type="text" placeholder="Buscar..." />
+                        </p-iconField>
+                    </div>
+                    <div>
+                        <p-button
+                            icon="pi pi-search"
+                            type="button"
+                            label="Buscar"
+                            class="p-button-success"
+                        />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <h1 class="text-lg">Hola.</h1>
+            <app-table-primeng
+                [showCaption]="false"
+                [showPaginator]="false"
+                [columnas]="columnas"
+                [data]="roles"
+                [actions]="actions"
+            />
+            <h1> hh hola </h1>
+            <p-dataView
+                #dv
+                [value]="roles"
+                [paginator]="true"
+                [rows]="9"
+                filterBy="nombre"
+            >
+
+                <ng-template let-product pTemplate="listItem">
+                    <div class="p-col-12">
+                            <div class="product-list-item">
+                                <div class="product-list-detail">
+                                    <div class="product-name" ngModel>
+                                        {{ product.iCredEntPerfId }}
+                                    </div>
+                                    <div class="product-description">
+                                        {{ product.cPersNombreLargo }}
+                                    </div>
+                                    <i class="pi pi-tag product-category-icon"></i
+                                    ><span class="product-category">{{
+                                        product.cPersDocumento
+                                    }}</span>
+                                </div>
+                                <div class="product-list-action">
+                                    <span class="product-price">{{
+                                        product.cPerfilNombre
+                                    }}</span>
+                                    <p-button
+                                    
+                                    ></p-button>
+                                    <span
+                                    
+                                        >{{ product.cPerfilNombre }}</span
+                                    >
+                                </div>
+                            </div>
+                    </div> 
+                </ng-template>
+            </p-dataView>
+        </div>
+
+        <ng-template pTemplate="footer">
+            <button
+                pButton
+                pRipple
+                label="Ingresar"
+                icon="pi pi-check"
+                class="p-button-text"
+                (click)="hideDialog()"
+            ></button>
+            <button
+                pButton
+                pRipple
+                label="Cancelar"
+                icon="pi pi-times"
+                class="p-button-text"
+                (click)="hideDialog()"
+            ></button>
+        </ng-template>
+    </p-dialog> -->
+</app-container-page>

@@ -1,0 +1,43 @@
+.hoverTable {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px;
+}
+
+.hoverTable tr th {
+    background-color: #e6e6ee;
+}
+
+.hoverTable tr:hover {
+    background-color: var(--highlight-bg);
+}
+
+tr {
+    font-size: 0.75rem;
+}
+
+.p-button-rounded {
+    border-radius: 2rem !important;
+}
+
+:host ::ng-deep .custom-editor .p-editor-container {
+    max-height: 10rem;
+    overflow: auto;
+}
+
+.truncate-text {
+    display: -webkit-box;
+    max-width: 200px;
+    // -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+:host ::ng-deep p-inputGroupAddon {
+    background-color: var(--bg-header-modal) !important;
+    color: var(--primary-color-text) !important;
+
+    i {
+        color: var(--primary-color-text) !important;
+    }
+}

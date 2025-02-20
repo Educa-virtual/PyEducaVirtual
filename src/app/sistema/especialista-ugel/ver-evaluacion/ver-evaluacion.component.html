@@ -1,0 +1,603 @@
+<h2 class="text-center my-4">{{ 'Bienvenido ' + name }}</h2>
+<div class="card">
+    <h2 class="text-center">Recursos</h2>
+    <!-- Aqui va la parte de los 3 cards -->
+    <div class="flex align-items-center justify-content-center">
+        <a href="#">
+            <p-card
+                [style]="{
+                    width: '16.56rem',
+                    overflow: 'hidden',
+                    height: '6rem',
+                    background: '#ffa500',
+                }"
+            >
+                <div class="flex">
+                    <span
+                        class="pi pi-folder-open large-icon iconCardEvaluacion"
+                        style="font-size: 3rem"
+                    ></span>
+                    <br />
+                    <!-- <p-divider layout="vertical" /> -->
+                    <p>
+                        <strong class="bold-large">Materiales</strong> <br />
+                        <!-- <span>Materiales Academicas</span> -->
+                    </p>
+                </div>
+            </p-card>
+        </a>
+        <p-divider layout="vertical" />
+        <a href="#">
+            <p-card
+                [style]="{
+                    width: '18.56rem',
+                    overflow: 'hidden',
+                    height: '6rem',
+                    background: '#ffa500',
+                }"
+            >
+                <div class="flex">
+                    <span
+                        class="pi pi-folder-open large-icon iconCardEvaluacion"
+                        style="font-size: 3rem"
+                    ></span>
+                    <br />
+                    <!-- <p-divider layout="vertical" /> -->
+                    <p>
+                        <strong class="bold-large">Plantilla</strong> <br />
+                        <span>Pre-regeistro de datos</span>
+                    </p>
+                </div>
+            </p-card>
+        </a>
+        <p-divider layout="vertical" />
+        <a href="#">
+            <p-card
+                [style]="{
+                    width: '23.56rem',
+                    overflow: 'hidden',
+                    height: '6rem',
+                    background: '#ffa500',
+                }"
+            >
+                <div class="flex">
+                    <span
+                        class="pi pi-folder-open large-icon iconCardEvaluacion"
+                        style="font-size: 3rem"
+                    ></span>
+                    <p>
+                        <strong class="bold-large">Videos y Manuales</strong>
+                        <br />
+                        <span>Videos y manuales del aplicativo</span>
+                    </p>
+                </div>
+            </p-card>
+        </a>
+    </div>
+    <p-divider />
+    <div style="text-align: center; margin: 20px">
+        <div
+            class="valitarResultado"
+            style="display: flex; justify-content: center; gap: 10px"
+        >
+            <p>Validación de Resultados</p>
+            <p-button
+                icon="pi pi-check-circle"
+                label="Validar Resultados de Aplicativo Ugel"
+                [raised]="true"
+            />
+        </div>
+        <div class="card bg-red-200 bg-opacity-75 p-4 border border-red-500">
+            <p class="font-bold">
+                Esta opción solo estará disponible hasta el:
+                <b>viernes, 25/10/2024</b>
+            </p>
+            <p class="text-red-500">
+                Coordine con las IIEE, para que suban sus archivos EXCEL para
+                que pueda validarlos.
+            </p>
+        </div>
+    </div>
+    <p-divider />
+    <div class="card">
+        <h3 class="text-center">Primaria</h3>
+        <h5>2do</h5>
+        <p-table
+            [value]="products"
+            styleClass="p-datatable-gridlines"
+            [tableStyle]="{ 'min-width': '50rem' }"
+        >
+            <!-- Header template -->
+            <ng-template pTemplate="header">
+                <tr>
+                    <th
+                        style="
+                            width: 5%;
+                            text-align: center;
+                            background-color: var(--red-300);
+                        "
+                    >
+                        N°
+                    </th>
+                    <th
+                        style="
+                            width: 19%;
+                            text-align: center;
+                            background-color: var(--red-300);
+                        "
+                    >
+                        Area
+                    </th>
+                    <th
+                        style="
+                            width: 19%;
+                            text-align: center;
+                            background-color: var(--red-300);
+                        "
+                    >
+                        Matriz
+                    </th>
+                    <th
+                        style="
+                            width: 19%;
+                            text-align: center;
+                            background-color: var(--red-300);
+                        "
+                    >
+                        Cuadernillo
+                    </th>
+                    <th
+                        style="
+                            width: 19%;
+                            text-align: center;
+                            background-color: var(--red-300);
+                        "
+                    >
+                        Aplicacion
+                    </th>
+                    <th
+                        style="
+                            width: 19%;
+                            text-align: center;
+                            background-color: var(--red-300);
+                        "
+                    >
+                        Hoja de respuestas
+                    </th>
+                </tr>
+            </ng-template>
+            <!-- Body template -->
+            <ng-template pTemplate="body" let-product>
+                <tr>
+                    <td style="text-align: center">
+                        {{ product.code }}
+                    </td>
+                    <td style="text-align: center">
+                        <p>Matemática</p>
+                    </td>
+                    <td style="text-align: center">
+                        <p-button
+                            icon="pi pi-file-pdf"
+                            label="pdf"
+                            [raised]="true"
+                            severity="danger"
+                        />
+                    </td>
+                    <td
+                        style="
+                            display: flex;
+                            justify-content: center;
+                            gap: 10px;
+                        "
+                    >
+                        <p-button
+                            icon="pi pi-file-pdf"
+                            label="Pdf"
+                            [raised]="true"
+                            severity="danger"
+                        />
+                        <p-button
+                            icon="pi pi-file-pdf"
+                            label="Pdf"
+                            [raised]="true"
+                        />
+                    </td>
+                    <td style="text-align: center">
+                        <p-button
+                            icon="pi pi-file-excel"
+                            label="Excel"
+                            [raised]="true"
+                            severity="success"
+                        />
+                    </td>
+                    <td style="text-align: center">
+                        <p-button
+                            icon="pi pi-pen-to-square"
+                            label="Respuestas"
+                            [raised]="true"
+                            severity="warning"
+                        />
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+        <h5>4to</h5>
+        <p-table
+            [value]="products"
+            styleClass="p-datatable-gridlines"
+            [tableStyle]="{ 'min-width': '50rem' }"
+        >
+            <!-- Header template -->
+            <ng-template pTemplate="header">
+                <tr>
+                    <th style="width: 5%; text-align: center">N°</th>
+                    <th style="width: 19%; text-align: center">Area</th>
+                    <th style="width: 19%; text-align: center">Matriz</th>
+                    <th style="width: 19%; text-align: center">Cuadernillo</th>
+                    <th style="width: 19%; text-align: center">Aplicacion</th>
+                    <th style="width: 19%; text-align: center">
+                        Hoja de respuestas
+                    </th>
+                </tr>
+            </ng-template>
+
+            <!-- Body template -->
+            <ng-template pTemplate="body" let-product>
+                <tr>
+                    <td style="text-align: center">
+                        {{ product.code }}
+                    </td>
+                    <td style="text-align: center">
+                        <p>Matemática</p>
+                    </td>
+                    <td style="text-align: center">
+                        <p-button
+                            icon="pi pi-file-pdf"
+                            label="pdf"
+                            [raised]="true"
+                            severity="danger"
+                        />
+                    </td>
+                    <td
+                        style="
+                            display: flex;
+                            justify-content: center;
+                            gap: 10px;
+                        "
+                    >
+                        <p-button
+                            icon="pi pi-file-pdf"
+                            label="Pdf"
+                            [raised]="true"
+                            severity="danger"
+                        />
+                        <p-button
+                            icon="pi pi-file-pdf"
+                            label="Pdf"
+                            [raised]="true"
+                        />
+                    </td>
+                    <td style="text-align: center">
+                        <p-button
+                            icon="pi pi-file-excel"
+                            label="Excel"
+                            [raised]="true"
+                            severity="success"
+                        />
+                    </td>
+                    <td style="text-align: center">
+                        <p-button
+                            icon="pi pi-pen-to-square"
+                            label="Respuestas"
+                            [raised]="true"
+                            severity="warning"
+                        />
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+        <h5>2do</h5>
+        <p-table
+            [value]="products"
+            styleClass="p-datatable-gridlines"
+            [tableStyle]="{ 'min-width': '50rem' }"
+        >
+            <!-- Header template -->
+            <ng-template pTemplate="header">
+                <tr>
+                    <th style="width: 5%; text-align: center">N°</th>
+                    <th style="width: 19%; text-align: center">Area</th>
+                    <th style="width: 19%; text-align: center">Matriz</th>
+                    <th style="width: 19%; text-align: center">Cuadernillo</th>
+                    <th style="width: 19%; text-align: center">Aplicacion</th>
+                    <th style="width: 19%; text-align: center">
+                        Hoja de respuestas
+                    </th>
+                </tr>
+            </ng-template>
+
+            <!-- Body template -->
+            <ng-template pTemplate="body" let-product>
+                <tr>
+                    <td style="text-align: center">
+                        {{ product.code }}
+                    </td>
+                    <td style="text-align: center">
+                        <p>Matemática</p>
+                    </td>
+                    <td style="text-align: center">
+                        <p-button
+                            icon="pi pi-file-pdf"
+                            label="pdf"
+                            [raised]="true"
+                            severity="danger"
+                        />
+                    </td>
+                    <td
+                        style="
+                            display: flex;
+                            justify-content: center;
+                            gap: 10px;
+                        "
+                    >
+                        <p-button
+                            icon="pi pi-file-pdf"
+                            label="Pdf"
+                            [raised]="true"
+                            severity="danger"
+                        />
+                        <p-button
+                            icon="pi pi-file-pdf"
+                            label="Pdf"
+                            [raised]="true"
+                        />
+                    </td>
+                    <td style="text-align: center">
+                        <p-button
+                            icon="pi pi-file-excel"
+                            label="Excel"
+                            [raised]="true"
+                            severity="success"
+                        />
+                    </td>
+                    <td style="text-align: center">
+                        <p-button
+                            icon="pi pi-pen-to-square"
+                            label="Respuestas"
+                            [raised]="true"
+                            severity="warning"
+                        />
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+    <p-divider />
+    <div class="card">
+        <h3 class="text-center">Secundaria</h3>
+        <h5>2do</h5>
+        <p-table
+            [value]="products"
+            styleClass="p-datatable-gridlines"
+            [tableStyle]="{ 'min-width': '50rem' }"
+        >
+            <!-- Header template -->
+            <ng-template pTemplate="header">
+                <tr>
+                    <th style="width: 5%; text-align: center">N°</th>
+                    <th style="width: 19%; text-align: center">Area</th>
+                    <th style="width: 19%; text-align: center">Matriz</th>
+                    <th style="width: 19%; text-align: center">Cuadernillo</th>
+                    <th style="width: 19%; text-align: center">Aplicacion</th>
+                    <th style="width: 19%; text-align: center">
+                        Hoja de respuestas
+                    </th>
+                </tr>
+            </ng-template>
+            <!-- Body template -->
+            <ng-template pTemplate="body" let-product>
+                <tr>
+                    <td style="text-align: center">
+                        {{ product.code }}
+                    </td>
+                    <td style="text-align: center">
+                        <p>Matemática</p>
+                    </td>
+                    <td style="text-align: center">
+                        <p-button
+                            icon="pi pi-file-pdf"
+                            label="pdf"
+                            [raised]="true"
+                            severity="danger"
+                        />
+                    </td>
+                    <td
+                        style="
+                            display: flex;
+                            justify-content: center;
+                            gap: 10px;
+                        "
+                    >
+                        <p-button
+                            icon="pi pi-file-pdf"
+                            label="Pdf"
+                            [raised]="true"
+                            severity="danger"
+                        />
+                        <p-button
+                            icon="pi pi-file-pdf"
+                            label="Pdf"
+                            [raised]="true"
+                        />
+                    </td>
+                    <td style="text-align: center">
+                        <p-button
+                            icon="pi pi-file-excel"
+                            label="Excel"
+                            [raised]="true"
+                            severity="success"
+                        />
+                    </td>
+                    <td style="text-align: center">
+                        <p-button
+                            icon="pi pi-pen-to-square"
+                            label="Respuestas"
+                            [raised]="true"
+                            severity="warning"
+                        />
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+        <h5>2do</h5>
+        <p-table
+            [value]="products"
+            styleClass="p-datatable-gridlines"
+            [tableStyle]="{ 'min-width': '50rem' }"
+        >
+            <!-- Header template -->
+            <ng-template pTemplate="header">
+                <tr>
+                    <th style="width: 5%; text-align: center">N°</th>
+                    <th style="width: 19%; text-align: center">Area</th>
+                    <th style="width: 19%; text-align: center">Matriz</th>
+                    <th style="width: 19%; text-align: center">Cuadernillo</th>
+                    <th style="width: 19%; text-align: center">Aplicacion</th>
+                    <th style="width: 19%; text-align: center">
+                        Hoja de respuestas
+                    </th>
+                </tr>
+            </ng-template>
+
+            <!-- Body template -->
+            <ng-template pTemplate="body" let-product>
+                <tr>
+                    <td style="text-align: center">
+                        {{ product.code }}
+                    </td>
+                    <td style="text-align: center">
+                        <p>Matemática</p>
+                    </td>
+                    <td style="text-align: center">
+                        <p-button
+                            icon="pi pi-file-pdf"
+                            label="pdf"
+                            [raised]="true"
+                            severity="danger"
+                        />
+                    </td>
+                    <td
+                        style="
+                            display: flex;
+                            justify-content: center;
+                            gap: 10px;
+                        "
+                    >
+                        <p-button
+                            icon="pi pi-file-pdf"
+                            label="Pdf"
+                            [raised]="true"
+                            severity="danger"
+                        />
+                        <p-button
+                            icon="pi pi-file-pdf"
+                            label="Pdf"
+                            [raised]="true"
+                        />
+                    </td>
+                    <td style="text-align: center">
+                        <p-button
+                            icon="pi pi-file-excel"
+                            label="Excel"
+                            [raised]="true"
+                            severity="success"
+                        />
+                    </td>
+                    <td style="text-align: center">
+                        <p-button
+                            icon="pi pi-pen-to-square"
+                            label="Respuestas"
+                            [raised]="true"
+                            severity="warning"
+                        />
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+        <h5>2do</h5>
+        <p-table
+            [value]="products"
+            styleClass="p-datatable-gridlines"
+            [tableStyle]="{ 'min-width': '50rem' }"
+        >
+            <!-- Header template -->
+            <ng-template pTemplate="header">
+                <tr>
+                    <th style="width: 5%; text-align: center">N°</th>
+                    <th style="width: 19%; text-align: center">Area</th>
+                    <th style="width: 19%; text-align: center">Matriz</th>
+                    <th style="width: 19%; text-align: center">Cuadernillo</th>
+                    <th style="width: 19%; text-align: center">Aplicacion</th>
+                    <th style="width: 19%; text-align: center">
+                        Hoja de respuestas
+                    </th>
+                </tr>
+            </ng-template>
+
+            <!-- Body template -->
+            <ng-template pTemplate="body" let-product>
+                <tr>
+                    <td style="text-align: center">
+                        {{ product.code }}
+                    </td>
+                    <td style="text-align: center">
+                        <p>Matemática</p>
+                    </td>
+                    <td style="text-align: center">
+                        <p-button
+                            icon="pi pi-file-pdf"
+                            label="pdf"
+                            [raised]="true"
+                            severity="danger"
+                        />
+                    </td>
+                    <td
+                        style="
+                            display: flex;
+                            justify-content: center;
+                            gap: 10px;
+                        "
+                    >
+                        <p-button
+                            icon="pi pi-file-pdf"
+                            label="Pdf"
+                            [raised]="true"
+                            severity="danger"
+                        />
+                        <p-button
+                            icon="pi pi-file-pdf"
+                            label="Pdf"
+                            [raised]="true"
+                        />
+                    </td>
+                    <td style="text-align: center">
+                        <p-button
+                            icon="pi pi-file-excel"
+                            label="Excel"
+                            [raised]="true"
+                            severity="success"
+                        />
+                    </td>
+                    <td style="text-align: center">
+                        <p-button
+                            icon="pi pi-pen-to-square"
+                            label="Respuestas"
+                            [raised]="true"
+                            severity="warning"
+                        />
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</div>

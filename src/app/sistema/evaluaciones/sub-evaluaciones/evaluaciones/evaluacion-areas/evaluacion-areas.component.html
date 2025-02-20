@@ -1,0 +1,40 @@
+<div [ngClass]="{ 'disabled-div': isDisabled }">
+    <div
+        class="flex flex-column md:flex-row md:justify-content-between gap-2 padding:100px"
+    ></div>
+    <div class="flex justify-content-between">
+        <div class="card" *ngFor="let nivel of lista">
+            <!-- Título: Nivel -->
+            <div class="flex justify-content-start">
+                <h3>{{ nivel.nivel }}</h3>
+            </div>
+
+            <div
+                *ngFor="let grado of objectKeys(nivel.grados)"
+                class="flex flex-column gap-2"
+            >
+                <!-- Subtítulo: Grado -->
+                <div class="flex justify-content-start">
+                    <h4>{{ grado }}</h4>
+                </div>
+                <!-- Cursos -->
+                <div
+                    *ngFor="let curso of nivel.grados[grado]"
+                    class="field-checkbox"
+                >
+                    <p-checkbox
+                        [(ngModel)]="curso.isSelected"
+                        [binary]="true"
+                        [disabled]="isDisabled"
+                        [name]="'curso_' + curso.iCursoNivelGradId"
+                        inputId="'curso_' + curso.iCursoNivelGradId"
+                        (onChange)="onCursoSelect(curso)"
+                    ></p-checkbox>
+                    <label [for]="'curso_' + curso.iCursoNivelGradId">
+                        {{ curso.cCursoNombre }}
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,117 @@
+.horario-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 1rem;
+    font-family: Arial, sans-serif;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 1rem;
+    color: #4caf50;
+}
+
+table.horario {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+}
+
+table.horario thead th {
+    background-color: #4caf50;
+    color: white;
+    padding: 10px;
+    font-size: 1rem;
+}
+
+table.horario tbody td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    font-size: 0.9rem;
+}
+
+table.horario tbody td .evento {
+    display: block;
+    background-color: #f0f8ff;
+    padding: 5px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    color: #333;
+}
+
+// borrar las barras al costado del listar estudiantes
+:host ::ng-deep .listAlumno .p-orderlist-controls {
+    display: none;
+    //height: 600px;
+}
+
+// estilo de listar estudiantes
+:host ::ng-deep .perfilesList {
+    border-radius: 8px;
+    /* Radio del borde */
+    //border: 1px solid #ccc;
+    padding: 0px;
+    /* Espaciado interno mínimo */
+    /* Reducir el padding interno */
+    border-radius: 8px;
+
+    width: 100%;
+    //box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    /* Reducir la sombra */
+    /* Sombra para dar profundidad */
+    display: flex;
+    align-items: center;
+    margin-top: 0;
+    margin-bottom: 0;
+    /* Espacio entre elementos */
+
+    img {
+        width: 35px;
+        /* Reducir tamaño de la imagen */
+        height: 35px;
+        /* Asegurar proporciones cuadradas */
+        // box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        /* Sombra más suave */
+        margin-right: 1rem;
+
+        /* Espacio entre imagen y texto */
+        border-radius: 50%;
+        /* Imagen circular */
+    }
+}
+
+.btn {
+    border-radius: 50%;
+    width: 1rem;
+    // height: 1rem;
+    /* Ajustar el tamaño del botón */
+    // height: 2rem;
+    /* Ajustar el tamaño del botón */
+}
+
+i {
+    font-size: 0.7rem;
+}
+
+/* Ajustar el texto del perfil */
+:host ::ng-deep .perfil-name {
+    font-size: 0.75rem;
+    /* Reducir el tamaño de la fuente */
+    line-height: 1.1;
+    /* Separación compacta de líneas */
+    color: #333;
+    /* Texto oscuro */
+    font-weight: normal;
+    /* Asegurar que el texto no sea en negrita */
+}
+
+:host ::ng-deep .perfilesList:focus,
+:host ::ng-deep .perfilesList:hover,
+:host ::ng-deep .perfilesList:active {
+    background-color: none !important;
+    /* Evitar color de fondo en estos estados */
+    box-shadow: none !important;
+    /* Eliminar sombras */
+    outline: none;
+    /* Evitar borde adicional */
+}

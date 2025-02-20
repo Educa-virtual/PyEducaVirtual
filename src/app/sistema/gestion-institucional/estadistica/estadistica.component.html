@@ -1,0 +1,161 @@
+<section class="flex flex-column gap-4">
+    <div class="flex flex-column">
+        <!-- título -->
+        <div class="grid">
+            <p-toolbar class="col-12">
+                <div class="block">
+                    <h2 class="text-primary text-white font-bold block">
+                        ESTADÍSTICAS Y RANKING DE LOGROS DE APRENDIZAJE
+                    </h2>
+                </div>
+            </p-toolbar>
+        </div>
+
+        <!-- contenido -->
+        <div class="flex">
+            <div class="card w-full">
+                <p-fieldset>
+                    <ng-template pTemplate="header"
+                        >Orden de Mérito</ng-template
+                    >
+                    <div class="flex">
+                        <!-- Selección de Año Escolar -->
+                        <p-dropdown
+                            class="ml-1"
+                            [options]="years"
+                            optionLabel="cYearNombre"
+                            optionValue="iYAcadId"
+                            placeholder="Año Escolar"
+                            [(ngModel)]="selectYear"
+                        />
+
+                        <!-- Selección de Grado -->
+                        <p-dropdown
+                            class="ml-1"
+                            [options]="grado"
+                            optionLabel="cGradoNombre"
+                            optionValue="iGradoId"
+                            placeholder="Grado"
+                            [(ngModel)]="selectedGrado"
+                        ></p-dropdown>
+
+                        <!-- Selección de Orden de Mérito -->
+                        <p-dropdown
+                            class="ml-1"
+                            [options]="merito"
+                            [(ngModel)]="selectedMerito"
+                            optionLabel="label"
+                            placeholder="Tipo de Orden de Mérito"
+                        ></p-dropdown>
+
+                        <!-- Botón Buscar -->
+                        <button
+                            pButton
+                            pRipple
+                            label="Buscar"
+                            class="p-button-primary ml-1"
+                            (click)="obtenerReportes()"
+                        ></button>
+
+                        <!-- Botón Generar -->
+                        <button
+                            pButton
+                            pRipple
+                            label="Generar"
+                            class="p-button-primary ml-1"
+                            (click)="generarReporte()"
+                        ></button>
+                    </div>
+                </p-fieldset>
+                <br />
+
+                <!-- Tabla de Resultados -->
+                <p-table
+                    [value]="identidad"
+                    [paginator]="true"
+                    [rows]="5"
+                    [tableStyle]="{ 'min-width': '50rem' }"
+                >
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>Nº</th>
+                            <th>Orden de Mérito</th>
+                            <th>Grado</th>
+                            <th>Fecha de Generación</th>
+                            <th>Reporte Sin Valor Oficial</th>
+                            <th>Generado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template
+                        pTemplate="body"
+                        let-identidad
+                        let-i="rowIndex"
+                    >
+                        <tr>
+                            <td>{{ i + 1 }}</td>
+                            <td>{{ identidad.merito }}</td>
+                            <td>{{ identidad.grado }}</td>
+                            <td>{{ identidad.fecha }}</td>
+                            <td>
+                                <p-button
+                                    pButton
+                                    pRipple
+                                    icon="pi pi-file-pdf"
+                                    class="p-button-rounded p-button-danger p-button-text mr-1"
+                                    (click)="descargarPdf(identidad.url)"
+                                />
+                            </td>
+                            <td>
+                                <p-button
+                                    pButton
+                                    pRipple
+                                    icon="pi pi-check-circle"
+                                    class="p-button-rounded p-button-success p-button-text mr-1"
+                                />
+                            </td>
+                            <td>
+                                <p-button
+                                    pButton
+                                    pRipple
+                                    icon="pi pi-file-pdf"
+                                    class="p-button-rounded p-button-danger p-button-text mr-1"
+                                    (click)="descargarPdf(identidad.url)"
+                                />
+                                <p-button
+                                    pButton
+                                    pRipple
+                                    icon="pi pi-trash"
+                                    class="p-button-rounded p-button-danger p-button-text mr-1"
+                                />
+                                <p-button
+                                    pButton
+                                    pRipple
+                                    icon="pi pi-refresh"
+                                    class="p-button-rounded p-button-info p-button-text"
+                                />
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+                <br />
+
+                <!-- Estado de Reportes -->
+                <div class="grid mt-5">
+                    <div class="col">
+                        <p class="pi pi-spinner-dotted font-bold">Procesando</p>
+                    </div>
+                    <div class="col">
+                        <p class="pi pi-check-circle font-bold">Procesado</p>
+                    </div>
+                    <div class="col">
+                        <p class="pi pi-refresh font-bold">Actualizar</p>
+                    </div>
+                    <div class="col">
+                        <p class="pi pi-ban font-bold">Reprocesar</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

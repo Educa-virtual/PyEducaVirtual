@@ -1,0 +1,78 @@
+<div>
+    <div
+        class="flex flex-column md:flex-row md:justify-content-between gap-2 padding:100px"
+    >
+        <p-inputGroup>
+            <p-inputGroupAddon> Seleccine una Ugel </p-inputGroupAddon>
+            <!-- Componente de calendario para seleccionar una fecha y hora -->
+            <p-dropdown
+                [options]="Ugeles"
+                [(ngModel)]="selectedUgeles"
+                optionLabel="cUgelNombre"
+                placeholder="Seleccione"
+                styleClass="w-full"
+                class="flex-1"
+                (onChange)="onUgelChange($event)"
+                [disabled]="accion === 'ver'"
+            ></p-dropdown>
+        </p-inputGroup>
+        <p-inputGroup>
+            <p-inputGroupAddon>Seleccione un nivel</p-inputGroupAddon>
+            <!-- Componente de calendario para seleccionar una fecha y hora -->
+            <p-dropdown
+                [options]="nivelTipo"
+                [(ngModel)]="selectedNivelTipo"
+                optionLabel="cNivelTipoNombre"
+                placeholder="Seleccione"
+                styleClass="w-full"
+                class="flex-1"
+                (onChange)="onNivelTipoChange($event)"
+                [disabled]="accion === 'ver'"
+            ></p-dropdown>
+        </p-inputGroup>
+    </div>
+    <br />
+    <!-- <p>{{ cEvaluacionNombre }}</p> -->
+    <p-pickList
+        [source]="sourceProducts"
+        [target]="targetProducts"
+        sourceHeader="I.E No participan {{ noParticipanCount }}"
+        targetHeader="I.E Participan {{ participanCount }}"
+        (onMoveToTarget)="IEparticipan($event)"
+        (onMoveToSource)="IEnoparticipan($event)"
+        (onMoveAllToTarget)="IEparticipanall($event)"
+        (onMoveAllToSource)="IEnoparticipanall($event)"
+        dragdrop="true"
+        filter="true"
+        [responsive]="false"
+        [sourceStyle]="{ height: '300px' }"
+        [targetStyle]="{ height: '300px' }"
+        filterBy="cIieeNombre"
+        sourceFilterPlaceholder="Buscar por nombre de I.E"
+        targetFilterPlaceholder="Buscar por nombre de I.E"
+        [disabled]="accion === 'ver'"
+        [showSourceControls]="false"
+        [showTargetControls]="false"
+    >
+        <!-- controles de los costados [showSourceControls]="false" 
+        [showTargetControls]="false" -->
+        <ng-template let-product pTemplate="item">
+            <div class="flex flex-wrap p-2 align-items-center gap-3">
+                <div class="flex-1 flex flex-column gap-2">
+                    <span class="font-bold">
+                        {{ product.cIieeNombre }}
+                    </span>
+                    <div class="flex align-products-center gap-2">
+                        <i class="pi pi-tag text-sm"></i>
+                        <span>
+                            {{ product.cIieeCodigoModular }}
+                        </span>
+                        <span>
+                            <b>{{ product.cNivelTipoNombre }}</b>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+    </p-pickList>
+</div>

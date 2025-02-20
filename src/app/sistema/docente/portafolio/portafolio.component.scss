@@ -1,0 +1,35 @@
+:host ::ng-deep .p-toolbar {
+    background: var(--bg-header-modal) !important;
+    color: white !important;
+
+    .p-button {
+        border: 0px;
+        color: white !important;
+        background: var(--bg-header-modal) !important;
+
+        &:hover {
+            background: white !important;
+            color: var(--bg-header-modal) !important;
+        }
+    }
+}
+
+.btn-file-image {
+    position: relative;
+    overflow: hidden;
+}
+.btn-file-image input[type='file'] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    background: white;
+    cursor: inherit;
+    display: block;
+}

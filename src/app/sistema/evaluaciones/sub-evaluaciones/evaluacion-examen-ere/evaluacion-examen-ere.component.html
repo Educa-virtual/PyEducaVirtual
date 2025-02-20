@@ -1,0 +1,16 @@
+<router-outlet></router-outlet>
+
+<app-toolbar-primeng title="Evaluaciones ERE" />
+
+<div class="card">
+    <div class="formgrid grid p-3"></div>
+    <!-- Tabla Evaluacion -->
+    <app-table-primeng
+        [columnas]="columns"
+        [actions]="actions"
+        [data]="evaluacionEreTable"
+        [showCaption]="true"
+        [tableStyle]="null"
+        (accionBtnItem)="accionBtnItem($event)"
+    />
+</div>

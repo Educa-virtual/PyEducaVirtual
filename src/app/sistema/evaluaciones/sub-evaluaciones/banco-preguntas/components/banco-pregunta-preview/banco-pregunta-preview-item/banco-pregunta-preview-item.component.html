@@ -1,0 +1,70 @@
+<!-- Pregunta contenido -->
+<div [innerHTML]="pregunta.cPregunta" class="mb-2"></div>
+<!-- Pregunta texto ayuda -->
+<div [innerHTML]="pregunta.cPreguntaTextoAyuda"></div>
+
+@if (pregunta.iTipoPregId === 1 || pregunta.iTipoPregId === 2) {
+    @if (
+        pregunta.alternativas !== undefined && pregunta.alternativas.length > 0
+    ) {
+        <div class="flex flex-column gap-2">
+            @for (
+                alternativa of pregunta.alternativas;
+                track alternativa.iAlternativaId
+            ) {
+                <ng-container
+                    *ngIf="customAlternativeTemplate; else defaultAlternative"
+                >
+                    <ng-container
+                        *ngTemplateOutlet="
+                            customAlternativeTemplate;
+                            context: {
+                                alternativa: alternativa,
+                                pregunta: pregunta,
+                            }
+                        "
+                    ></ng-container>
+                </ng-container>
+                <ng-template #defaultAlternative>
+                    <app-banco-pregunta-alternativa
+                        [alternativa]="alternativa"
+                        [pregunta]="pregunta"
+                    ></app-banco-pregunta-alternativa>
+                </ng-template>
+            }
+            <ng-container *ngIf="footerPreguntaTemplate">
+                <ng-container
+                    *ngTemplateOutlet="
+                        footerPreguntaTemplate;
+                        context: { pregunta: pregunta }
+                    "
+                ></ng-container>
+            </ng-container>
+        </div>
+    }
+}
+
+@if (pregunta.iTipoPregId === 3) {
+    <ng-container *ngIf="customAlternativeTemplate; else defaultAlternative">
+        <ng-container
+            *ngTemplateOutlet="
+                customAlternativeTemplate;
+                context: { alternativa: null, pregunta: pregunta }
+            "
+        ></ng-container>
+    </ng-container>
+    <ng-template #defaultAlternative>
+        <app-banco-pregunta-alternativa
+            [alternativa]="null"
+            [pregunta]="pregunta"
+        ></app-banco-pregunta-alternativa>
+    </ng-template>
+    <ng-container *ngIf="footerPreguntaTemplate">
+        <ng-container
+            *ngTemplateOutlet="
+                footerPreguntaTemplate;
+                context: { pregunta: pregunta }
+            "
+        ></ng-container>
+    </ng-container>
+}

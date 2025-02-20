@@ -1,0 +1,15 @@
+<div class="grid">
+    <div class="col-12 md:col-6">
+        <app-actividades [iSilaboId]="this.iSilaboId"></app-actividades>
+        <p-divider></p-divider>
+        <app-indicador-actividades
+            [iSilaboId]="this.iSilaboId"
+        ></app-indicador-actividades>
+    </div>
+    <div class="col-12 md:col-6">
+        <app-contenido-semanas
+            [iSilaboId]="this.iSilaboId"
+        ></app-contenido-semanas>
+    </div>
+</div>
+<p-confirmDialog />

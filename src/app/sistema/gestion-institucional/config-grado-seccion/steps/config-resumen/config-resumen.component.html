@@ -1,0 +1,119 @@
+<app-container-page
+    title="Resumen de Ambientes"
+    [actions]="accionesPrincipal"
+    (accionBtnItem)="accionBtnItemTable($event)"
+>
+    <div class="card">
+        <p-steps [model]="items" [readonly]="true"></p-steps>
+    </div>
+    <div class="card">
+        <div class="grid p-fluid mt-2 card-container">
+            <div class="field col-12 md:col-12">
+                <app-toolbar-primeng
+                    title=" Resumen configuración para grados y secciones de la IE 2024"
+                ></app-toolbar-primeng>
+            </div>
+
+            <div class="field col-12 md:col-5">
+                <div class="grid p-fluid mt-2 align-items-center">
+                    <!-- Primer bloque: Horas de clase y Horas pendientes -->
+
+                    <div class="field col-12 md:col-4">
+                        <p-inputGroup>
+                            <p-inputGroupAddon
+                                >Educación Bilingüe:
+                                {{ bConfigEsBilingue }}</p-inputGroupAddon
+                            >
+                        </p-inputGroup>
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <p-inputGroup>
+                            <p-inputGroupAddon
+                                >Aulas habilitadas:
+                                {{ total_aulas }}</p-inputGroupAddon
+                            >
+                        </p-inputGroup>
+                    </div>
+
+                    <div class="field col-12 md:col-4">
+                        <p-inputGroup>
+                            <p-inputGroupAddon
+                                >Ambientes de otro tipo: 0
+                            </p-inputGroupAddon>
+                        </p-inputGroup>
+                    </div>
+                </div>
+
+                <p-panel header="Grados y secciones">
+                    <app-table-primeng
+                        [columnas]="columnSeccion"
+                        [data]="r_secciones"
+                        [showCaption]="false"
+                        [showPaginator]="false"
+                        (accionBtnItem)="accionBtnItemTable($event)"
+                        [(selectedRowData)]="accionBtnItemTable"
+                        [actions]="actions"
+                    >
+                        <!-- <ng-container slot="caption-content"> </ng-container> -->
+                    </app-table-primeng>
+                </p-panel>
+            </div>
+            <div class="field col-12 md:col-7">
+                <div class="grid p-fluid mt-2 align-items-center">
+                    <!-- Primer bloque: Horas de clase y Horas pendientes -->
+                    <div class="field col-12 md:col-3">
+                        <p-inputGroup>
+                            <p-inputGroupAddon
+                                >Total de horas a asignar:
+                                {{ totalHoras }}</p-inputGroupAddon
+                            >
+                        </p-inputGroup>
+                    </div>
+
+                    <div class="field col-12 md:col-3">
+                        <p-inputGroup>
+                            <p-inputGroupAddon
+                                >Horas pendientes:
+                                {{ totalHorasPendientes }}</p-inputGroupAddon
+                            >
+                        </p-inputGroup>
+                    </div>
+
+                    <!-- Segundo bloque: Total Docentes y Docentes pendientes -->
+                    <div class="field col-12 md:col-3">
+                        <p-inputGroup>
+                            <p-inputGroupAddon
+                                >Total de Docentes: 2
+                            </p-inputGroupAddon>
+                        </p-inputGroup>
+                    </div>
+
+                    <div class="field col-12 md:col-3">
+                        <p-inputGroup>
+                            <p-inputGroupAddon
+                                >Docentes pendientes: 0
+                            </p-inputGroupAddon>
+                        </p-inputGroup>
+                    </div>
+                </div>
+
+                <p-panel header="Resumen de horas asignadas de la I.E.">
+                    <app-table-primeng
+                        [columnas]="columnHora"
+                        [data]="r_horas"
+                        [showCaption]="false"
+                        [showPaginator]="false"
+                        (accionBtnItem)="accionBtnItemTable($event)"
+                        [(selectedRowData)]="accionBtnItemTable"
+                        [actions]="actions"
+                    >
+                        <!-- <ng-container slot="caption-content"> </ng-container> -->
+                    </app-table-primeng>
+                </p-panel>
+            </div>
+        </div>
+    </div>
+    <div class="flex justify-content-end">
+        <p-button (onClick)="confirm()" label="Finalizar" />
+    </div>
+</app-container-page>

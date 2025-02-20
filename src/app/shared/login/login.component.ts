@@ -1,51 +1,146 @@
 import { PrimengModule } from '@/app/primeng.module'
-import { Component, OnInit, HostListener } from '@angular/core'
-import { BtnLoadingComponent } from '../btn-loading/btn-loading.component'
+import { Component, OnInit } from '@angular/core'
 import { TokenStorageService } from '@/app/servicios/token.service'
 import { Router } from '@angular/router'
+import { FormBuilder, FormGroup, Validators } from '@angular/forms'
+import { AuthService } from '@/app/servicios/auth.service'
+import { MessageService } from 'primeng/api'
+import { ConstantesService } from '@/app/servicios/constantes.service'
+import { LocalStoreService } from '@/app/servicios/local-store.service'
+import { RecoverPasswordComponent } from '../recover-password/recover-password.component'
+
+interface Data {
+    accessToken: string
+    refreshToken: string
+    expires_in: number
+    msg?
+    data?
+    validated?: boolean
+    code?: number
+    user?
+    modulos?
+    entidades?
+    perfiles?
+    years?
+}
 
 @Component({
     selector: 'app-login',
     standalone: true,
-    imports: [PrimengModule, BtnLoadingComponent],
+    imports: [PrimengModule, RecoverPasswordComponent],
     templateUrl: './login.component.html',
     styleUrl: './login.component.scss',
+    providers: [MessageService],
 })
 export class LoginComponent implements OnInit {
     showPassword: boolean
-    width: number = window.innerWidth
     loading: boolean
     loadingText: string
+    formLogin!: FormGroup
 
     constructor(
         private tokenStorage: TokenStorageService,
-        private router: Router
-    ) {}
+        private router: Router,
+        private fb: FormBuilder,
+        private authService: AuthService,
+        private messageService: MessageService,
+        private ConstantesService: ConstantesService,
+        private store: LocalStoreService
+    ) {
+        this.formLogin = this.fb.group({
+            user: ['', Validators.required],
+            pass: ['', Validators.required],
+        })
+    }
 
     ngOnInit() {
         this.showPassword = false
+        const isLoggedIn = !!this.tokenStorage.getToken()
+        if (isLoggedIn) {
+            this.router.navigate(['./'])
+        }
     }
 
-    @HostListener('window:resize', ['$event'])
-    onResize(event: Event) {
-        this.width = (event.target as Window).innerWidth
-    }
-    signin() {
+    onSubmit() {
         this.loading = true
         this.loadingText = 'Verificando...'
-        setTimeout(() => {
-            const data = {
-                access_token:
-                    'ANB7xKhiUZmwltVd3f1odcHHM9VAwg02kwmLwtZwHv3SxGCOWLUf5W4G7X22PRjmR9StvFUqzpVZ1suOfyfOigdi-rnohxyEaSSuZceeLw_9OBW7fXldOG05HEgkeK3N-DBZZZyilodmjA1JWZHbgI3IU7Rmz5IPGyi-sDxHN3KlOr1BDZlLZpXPdFPwEyb6idq-z8AL-blKTSMtNI3_fz3oNBisfrHGUv5tXHoQT4B7FYcvdrap16gTOO7_wNt1zmgLJiUHvyxZgsgBchm_AhohVL-AYgcfCbCR0v7d2hgI4ag35pnZNeujDiBLfnCFcVMlqQGq8UEVZrmU9a8y4pVAGih_EImmghqmSrkxLPYZ800-vIWX-lw',
-                token_type: 'Bearer',
-                expires_in: 300,
-            }
-            this.tokenStorage.saveToken(data.access_token)
-            this.loading = false
-            this.router.navigate(['./'])
-        }, 200)
-        setTimeout(() => {
-            location.reload()
-        }, 350)
+        this.authService.login(this.formLogin.value).subscribe({
+            next: (response: Data) => {
+                this.loading = false
+
+                if (!response.user)
+                    return this.messageService.add({
+                        severity: 'error',
+                        summary: 'Acceso Denegado!',
+                        detail: 'No hay registros con las credenciales ingresadas',
+                    })
+
+                const item = response.user
+
+                this.tokenStorage.setItem('dremoToken', response.accessToken)
+                this.tokenStorage.setItem('dremoUser', response.user)
+
+                this.store.setItem('dremoModalPerfil', true)
+
+                const user = this.store.getItem('dremoUser')
+
+                const years = user ? user.years : null
+                const year = years.length ? years[0] : null
+                this.store.setItem('dremoYear', year?.iYearId)
+                this.store.setItem('dremoiYAcadId', year?.iYAcadId)
+
+                const modulos = user ? user.modulos : null
+                const modulo = modulos.length ? modulos[0] : null
+                this.store.setItem('dremoModulo', modulo)
+
+                this.tokenStorage.setItem(
+                    'dremoRefreshToken',
+                    response.refreshToken
+                )
+
+                this.tokenStorage.setItem(
+                    'dremoPerfilVerificado',
+                    item.bCredVerificado == 1 ? true : false
+                )
+
+                this.tokenStorage.saveToken(response.accessToken)
+                this.tokenStorage.saveRefreshToken(response.refreshToken)
+                this.tokenStorage.saveUser(item)
+
+                if (item.bCredVerificado == 1) {
+                    this.router.navigate(['./'])
+                    setTimeout(() => {
+                        location.reload()
+                    }, 500)
+                } else {
+                    this.router.navigateByUrl('verificacion')
+                }
+            },
+            complete: () => {},
+            error: (error) => {
+                // console.log(error)
+                this.loading = false
+                this.messageService.add({
+                    severity: 'error',
+                    summary: '¡Atención!',
+                    detail:
+                        error.pass || error.user
+                            ? 'Verifica haber ingresado correctamente tu usuario y contraseña'
+                            : error,
+                })
+            },
+        })
+    }
+
+    showModal: boolean = false
+
+    accionBtnItem(elemento): void {
+        const { accion } = elemento
+        // const { item } = elemento
+        switch (accion) {
+            case 'close-modal':
+                this.showModal = false
+                break
+        }
     }
 }

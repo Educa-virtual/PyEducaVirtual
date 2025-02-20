@@ -1,0 +1,15 @@
+:host ::ng-deep .container-page .p-panel-header {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+:host,
+p-panel,
+:host ::ng-deep div[data-pc-name='panel'],
+:host ::ng-deep div[role='region'],
+:host ::ng-deep .p-panel-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}

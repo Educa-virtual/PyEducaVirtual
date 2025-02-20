@@ -1,0 +1,95 @@
+:host {
+    display: block;
+}
+/* Estilo general */
+.container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    font-family: 'Roboto', Arial, sans-serif;
+    text-align: center;
+}
+
+/* Cabecera */
+.header {
+    margin-bottom: 20px;
+}
+
+.header .title {
+    font-size: 24px;
+    font-weight: 500;
+    color: #202124;
+    margin: 0 0 10px;
+}
+
+.header .subtitle {
+    font-size: 16px;
+    font-weight: 400;
+    color: #5f6368;
+    margin: 0;
+}
+
+/* Botones */
+.buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.create-meeting {
+    background-color: #1a73e8 !important;
+    border: none !important;
+    color: white !important;
+    font-weight: 500 !important;
+    text-transform: none !important;
+    padding: 10px 20px !important;
+    border-radius: 8px !important;
+}
+
+.create-meeting:hover {
+    background-color: #135bb5 !important;
+}
+
+/* Campo de texto */
+.meeting-code {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #dadce0;
+    border-radius: 8px;
+    outline: none;
+    transition: box-shadow 0.2s ease-in-out;
+}
+
+.meeting-code:focus {
+    box-shadow: 0 0 5px rgba(26, 115, 232, 0.5);
+    border-color: #1a73e8;
+}
+
+/* Botón para unirse */
+.join-meeting {
+    background-color: #34a853 !important;
+    border: none !important;
+    color: white !important;
+    font-weight: 500 !important;
+    text-transform: none !important;
+    padding: 10px 20px !important;
+    border-radius: 8px !important;
+}
+
+.join-meeting:hover {
+    background-color: #2a8a42 !important;
+}
+
+/* Responsividad */
+@media (max-width: 480px) {
+    .buttons {
+        flex-direction: column;
+    }
+
+    .meeting-code {
+        width: 100%;
+    }
+}

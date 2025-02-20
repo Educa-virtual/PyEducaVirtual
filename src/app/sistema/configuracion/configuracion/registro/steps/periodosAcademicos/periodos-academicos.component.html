@@ -1,0 +1,105 @@
+<div class="container">
+    <app-table-primeng
+        [showCaption]="false"
+        [columnas]="columnsPeriodosAcademicos"
+        [actions]="actionsFase"
+        [showPaginator]="false"
+        [data]="fasesPromocionales"
+        (accionBtnItem)="handleActionFase($event)"
+    >
+    </app-table-primeng>
+    <div class="navigator">
+        <p-button label="Regresar" (onClick)="prevPage()" />
+        <p-button label="Siguiente" (onClick)="nextPage()" />
+    </div>
+
+    <p-dialog
+        header="Periodo de evaluación formativa"
+        [(visible)]="visible"
+        [modal]="true"
+        [style]="{ width: '56rem' }"
+    >
+        <form [formGroup]="form" class="flex flex-column gap-3">
+            <section>
+                <span class="p-text-secondary block mb-5"
+                    ><!-- Asegúrate de definir las fechas y el tipo de periodo en su registro. --></span
+                >
+                <div class="flex align-items-center gap-3 mb-5">
+                    <p-dropdown
+                        (onChange)="setPeriodoFormativo($event.value)"
+                        [options]="periodosAcademicos"
+                        optionLabel="cPeriodoEvalNombre"
+                        placeholder="Seleccione un periodo"
+                        formControlName="periodo"
+                    />
+                </div>
+                <div>
+                    <app-table-primeng
+                        [showCaption]="false"
+                        [columnas]="columnasCicloAcademico"
+                        [actions]="actionPeriodo"
+                        [showPaginator]="false"
+                        [data]="ciclosAcademicos"
+                        (accionBtnItem)="handleActionPeriodos($event)"
+                    >
+                    </app-table-primeng>
+                </div>
+            </section>
+            <div class="flex justify-content-between gap-2">
+                <p-button
+                    label="Cancel"
+                    severity="secondary"
+                    (onClick)="visible = false"
+                />
+                <p-button label="Guardar" (onClick)="saveInformation()" />
+            </div>
+        </form>
+    </p-dialog>
+
+    <p-dialog
+        header="Editando periodo de formación"
+        [(visible)]="visibleEditPeriodo"
+        [modal]="true"
+    >
+        <form [formGroup]="formPeriodo" class="flex flex-column gap-4 py-5">
+            <p-inputGroup>
+                <p-inputGroupAddon
+                    >Periodo de evaluación formativa</p-inputGroupAddon
+                >
+                <input pInputText id="periodo" formControlName="periodo" />
+            </p-inputGroup>
+            <p-inputGroup>
+                <p-inputGroupAddon>Fecha inicio</p-inputGroupAddon>
+                <p-calendar
+                    styleClass="w-full"
+                    class="flex"
+                    [iconDisplay]="'input'"
+                    appendTo="body"
+                    [showOnFocus]="false"
+                    inputId="birth_date"
+                    [showIcon]="true"
+                    formControlName="fechaInicio"
+                />
+            </p-inputGroup>
+            <p-inputGroup>
+                <p-inputGroupAddon>Fecha fin</p-inputGroupAddon>
+                <p-calendar
+                    styleClass="w-full "
+                    [iconDisplay]="'input'"
+                    appendTo="body"
+                    inputId="birth_date"
+                    [showIcon]="true"
+                    formControlName="fechaFin"
+                />
+            </p-inputGroup>
+            <div class="flex justify-content-between gap-2">
+                <p-button
+                    label="Cancel"
+                    severity="secondary"
+                    (onClick)="visibleEditPeriodo = false"
+                />
+                <p-button label="Guardar" (onClick)="saveInformationEdit()" />
+            </div>
+        </form>
+    </p-dialog>
+</div>

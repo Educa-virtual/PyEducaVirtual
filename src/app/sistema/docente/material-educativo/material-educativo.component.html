@@ -1,0 +1,46 @@
+<div class="grid">
+    <p-toolbar class="col-12">
+        <div class="p-toolbar-group-start">
+            <h4 class="text-primary font-bold">
+                MATERIAL EDUCATIVO: {{ cCursoNombre }}
+            </h4>
+        </div>
+        <div class="p-toolbar-group-end">
+            <button
+                type="button"
+                pButton
+                icon="pi pi-plus"
+                class="p-button-success"
+                (click)="accionBtnItem({ accion: 'agregar', item: [] })"
+            >
+                &nbsp;Agregar
+            </button>
+        </div>
+    </p-toolbar>
+    <div class="col-12">
+        <p-messages
+            [(value)]="mensaje"
+            [enableService]="false"
+            [closable]="false"
+        />
+    </div>
+    <div class="col-12">
+        <app-table-primeng
+            [columnas]="columns"
+            [actions]="actions"
+            [data]="data"
+            [showCaption]="true"
+            [tableStyle]="null"
+            (accionBtnItem)="accionBtnItem($event)"
+        ></app-table-primeng>
+    </div>
+</div>
+
+<app-form-material-educativo
+    [showModal]="showModal"
+    [data]="item"
+    [titulo]="titulo"
+    [opcion]="opcion"
+    (accionBtnItem)="accionBtnItem($event)"
+>
+</app-form-material-educativo>

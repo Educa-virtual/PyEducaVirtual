@@ -1,0 +1,116 @@
+<p-tabView styleClass="tabview-custom">
+    <p-tabPanel>
+        <ng-template pTemplate="header">
+            <div class="flex align-items-center gap-2">
+                <p-avatar
+                    image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png"
+                    shape="circle"
+                />
+                <span class="font-bold white-space-nowrap m-0"> Importar </span>
+            </div>
+        </ng-template>
+        <div class="grid p-fluid mt-2">
+            <div class="field col-12 md:col-6">
+                <input
+                    type="file"
+                    (change)="onFileChange($event)"
+                    accept=".xsl, .xlsx"
+                    class="custom-file-input"
+                />
+                <div class="card">
+                    <p-messages
+                        [(value)]="messages"
+                        [enableService]="false"
+                        [closable]="true"
+                    />
+                </div>
+            </div>
+
+            <div class="field col-12 md:col-2">
+                <button
+                    pButton
+                    label="Procesar registros"
+                    icon="pi pi-list"
+                    size="small"
+                    (click)="accionBtnItem('listar')"
+                    class="p-button-primary"
+                ></button>
+                <!-- <pre>{{ jsonData | json }}</pre> -->
+            </div>
+        </div>
+        @if (jsonData.length > 0) {
+            <div class="card">
+                <app-table-primeng
+                    [columnas]="columns"
+                    [showCaption]="true"
+                    [data]="jsonData"
+                    (accionBtnItem)="([])"
+                    [showPaginator]="true"
+                    [actions]="actions"
+                >
+                    <!-- <ng-container slot="caption-content"> </ng-container> -->
+                </app-table-primeng>
+                <ng-container slot="caption-content"> </ng-container>
+            </div>
+        }
+    </p-tabPanel>
+    <p-tabPanel header="Header II">
+        <ng-template pTemplate="header">
+            <div class="flex align-items-center gap-2">
+                <p-avatar
+                    image="https://primefaces.org/cdn/primeng/images/demo/avatar/onyamalimba.png"
+                    shape="circle"
+                />
+                <span class="font-bold white-space-nowrap m-0"> Exportar </span>
+            </div>
+        </ng-template>
+        <form [formGroup]="form">
+            <div class="grid p-fluid mt-2">
+                <div class="field col-12 md:col-3">
+                    <span class="p-float-label">
+                        <p-dropdown
+                            [style]="{ width: '100%' }"
+                            [options]="reg_modulos"
+                            [filter]="true"
+                            filterBy="modulo"
+                            optionLabel="modulo"
+                            optionValue="id"
+                            formControlName="iTabla"
+                        />
+                        <label for="iTabla">Seleccionar tabla a exportar</label>
+                    </span>
+                </div>
+                <!--  (onChange)="selectTabla()" -->
+                <div class="field col-12 md:col-3">
+                    <button
+                        pButton
+                        label="Exportar registros"
+                        icon="pi pi-list"
+                        size="small"
+                        (click)="selectTabla()"
+                        class="p-button-primary"
+                    ></button>
+                    <!-- <pre>{{ jsonData | json }}</pre> -->
+                </div>
+                <div class="field col-12 md:col-6"></div>
+            </div>
+        </form>
+    </p-tabPanel>
+    <p-tabPanel header="Header III">
+        <ng-template pTemplate="header">
+            <div class="flex align-items-center gap-2">
+                <p-avatar
+                    image="https://primefaces.org/cdn/primeng/images/demo/avatar/ionibowcher.png"
+                    shape="circle"
+                />
+                <span class="font-bold white-space-nowrap m-0">
+                    Lista de Errores
+                </span>
+                <p-badge value="2" />
+            </div>
+        </ng-template>
+        <p>Mostrara los error encontraods...</p>
+    </p-tabPanel>
+</p-tabView>
+
+<!-- <p-toast /> -->

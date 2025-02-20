@@ -1,17 +1,22 @@
 .login {
+    min-height: 100dvh;
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-areas: 'banner form';
+    align-items: center;
 
     &__banner {
         grid-area: banner;
+        aspect-ratio: 1/1;
+        max-height: 100dvh;
     }
 
     &__form {
         grid-area: form;
+        max-width: 550px;
     }
 
-    @media (max-width: 800px) {
+    @media (max-width: 850px) {
         grid-template-columns: 1fr;
         grid-template-areas:
             'form'
@@ -21,14 +26,24 @@
                 display: none;
             }
         }
+        display: flex;
+        justify-content: center;
     }
 }
 .login_card {
     width: 80%;
-    margin-left: 20%;
-    @media (max-width: 800px) {
-        width: 100%;
-        margin-left: 0%;
-        margin-top: 20%;
+    margin-left: 25%;
+    @media (max-width: 850px) {
+        margin-left: 10%;
     }
+}
+
+.logo_dremo {
+    max-width: 100%;
+}
+
+:host ::ng-deep .p-button:focus {
+    outline: 0 none;
+    outline-offset: 0px;
+    box-shadow: none;
 }

@@ -1,0 +1,58 @@
+<div class="flex flex-column gap-4 mt-4">
+    <p-steps
+        [model]="evaluacionFormPasos"
+        [(activeIndex)]="activeStepper"
+        [readonly]="false"
+    ></p-steps>
+
+    @switch (activeStepper) {
+        @case (0) {
+            <app-evaluacion-form-info
+                [tipoEvaluaciones]="tipoEvaluaciones"
+                [evaluacionInfoForm]="evaluacionInfoForm"
+                [files]="files"
+                (filesChange)="files = $event"
+            ></app-evaluacion-form-info>
+        }
+        @case (1) {
+            <app-evaluacion-form-preguntas
+                [tituloEvaluacion]="tituloEvulacion"
+                [iEvaluacionId]="evaluacionInfoForm.get('iEvaluacionId').value"
+                [preguntas]="preguntasSeleccionadas"
+                (preguntasSeleccionadasChange)="
+                    preguntasSeleccionadasChange($event)
+                "
+                [iCursoId]="paramsData.iCursoId"
+            ></app-evaluacion-form-preguntas>
+        }
+
+        @default {}
+    }
+
+    <div class="flex justify-content-between">
+        @if (activeStepper !== 0) {
+            <button pButton size="small" (click)="goStep('back')">Atrás</button>
+        }
+        @if (activeStepper !== evaluacionFormPasos.length - 1) {
+            <button
+                pButton
+                size="small"
+                (click)="guardarCambios()"
+                class="ml-auto"
+            >
+                Guardar y Continuar
+            </button>
+        }
+        @if (activeStepper === evaluacionFormPasos.length - 1) {
+            <button
+                pButton
+                pRipple
+                label="Guardar y Finalizar"
+                icon="pi pi-save"
+                size="small"
+                class="p-button-primary ml-auto"
+                (click)="guardarCambios()"
+            ></button>
+        }
+    </div>
+</div>

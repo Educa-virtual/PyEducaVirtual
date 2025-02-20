@@ -1,0 +1,137 @@
+<p-dialog
+    [(visible)]="showModal"
+    [style]="{ width: '50%' }"
+    header="Bienvenido: "
+    [modal]="true"
+    class="p-fluid"
+    (onHide)="closeModal()"
+>
+    <ng-template pTemplate="ng-content">
+        <div class="mt-4 grid">
+            <div class="col-12">
+                Hola {{ name1 | uppercase }}, por favor seleccione el rol que
+                desea ingresar:
+            </div>
+
+            <div class="col-12 card">
+                <div class="grid m-2">
+                    @for (item of perfiles; track item) {
+                        <div class="col-12 md:col-4">
+                            <div
+                                class="card p-0 border-1 flex flex-column surface-border overflow-hidden h-full post-module"
+                            >
+                                <p-button
+                                    [text]="true"
+                                    severity="secondary"
+                                    class="p-col-12"
+                                    (onClick)="changePerfil(item)"
+                                >
+                                    <div class="p-3 mb-auto">
+                                        <h3 class="text-xl text-center">
+                                            @switch (item.iPerfilId) {
+                                                @case ('1') {
+                                                    <img
+                                                        src="assets/images/roles/admin.gif"
+                                                        alt="img"
+                                                        width="50%"
+                                                    />
+                                                }
+                                                @case ('2') {
+                                                    <img
+                                                        src="assets/images/roles/especialista DRE.gif"
+                                                        alt="img"
+                                                        width="50%"
+                                                    />
+                                                }
+                                                @case ('3') {
+                                                    <img
+                                                        src="assets/images/roles/especialista UGEL.gif"
+                                                        alt="img"
+                                                        width="50%"
+                                                    />
+                                                }
+                                                @case ('4') {
+                                                    <img
+                                                        src="assets/images/roles/director.gif"
+                                                        alt="img"
+                                                        width="50%"
+                                                    />
+                                                }
+                                                @case ('5') {
+                                                    <img
+                                                        src="assets/images/roles/subdirector.gif"
+                                                        alt="img"
+                                                        width="50%"
+                                                    />
+                                                }
+                                                @case ('6') {
+                                                    <img
+                                                        src="assets/images/roles/JefedePrograma.gif"
+                                                        alt="img"
+                                                        width="50%"
+                                                    />
+                                                }
+                                                @case ('7') {
+                                                    <img
+                                                        src="assets/images/roles/docente.gif"
+                                                        alt="img"
+                                                        width="50%"
+                                                    />
+                                                }
+                                                @case ('80') {
+                                                    <img
+                                                        src="assets/images/roles/alumno.gif"
+                                                        alt="img"
+                                                        width="50%"
+                                                    />
+                                                }
+                                                @case ('90') {
+                                                    <img
+                                                        src="assets/images/roles/apoderado.gif"
+                                                        alt="img"
+                                                        width="50%"
+                                                    />
+                                                }
+                                                @case ('90') {
+                                                    <img
+                                                        src="assets/images/roles/asistencia social.gif"
+                                                        alt="img"
+                                                        width="50%"
+                                                    />
+                                                }
+                                                @default {
+                                                    <img
+                                                        src="assets/images/roles/tutoria.gif"
+                                                        alt="img"
+                                                        width="50%"
+                                                    />
+                                                }
+                                            }
+                                        </h3>
+                                        <div class="text-center font-bold">
+                                            {{ item.cPerfilNombre }}
+                                        </div>
+                                        <div class="perfiles-list-detail mt-3">
+                                            <div class="perfil-description">
+                                                IE: {{ item.cEntNombreLargo }}
+                                            </div>
+                                            <div class="perfil-description">
+                                                Cod. Modular:{{
+                                                    item.cIieeCodigoModular
+                                                }}
+                                            </div>
+                                            <div class="perfil-description">
+                                                Nivel:
+                                                {{ item.cNivelTipoNombre }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </p-button>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </ng-template>
+</p-dialog>

@@ -1,6 +1,7 @@
 {
     "root": true,
     "ignorePatterns": ["projects/**/*"],
+    "plugins": ["unused-imports"],
     "overrides": [
         {
             "files": ["*.ts"],
@@ -11,6 +12,8 @@
                 "plugin:@angular-eslint/template/process-inline-templates"
             ],
             "rules": {
+                "@typescript-eslint/no-explicit-any": "off",
+                "no-case-declarations": "off",
                 "@angular-eslint/directive-selector": [
                     "error",
                     {
@@ -26,6 +29,16 @@
                         "prefix": "app",
                         "style": "kebab-case"
                     }
+                ],
+                "unused-imports/no-unused-imports": "error",
+                "unused-imports/no-unused-vars": [
+                    "warn",
+                    {
+                        "vars": "all",
+                        "varsIgnorePattern": "^_",
+                        "args": "after-used",
+                        "argsIgnorePattern": "^_"
+                    }
                 ]
             }
         },
@@ -36,7 +49,12 @@
                 "plugin:@angular-eslint/template/accessibility"
             ],
             "rules": {
-                
+                "@angular-eslint/template/elements-content": [
+                    "error",
+                    {
+                        "allowList": ["pTooltip", "label"]
+                    }
+                ]
             }
         }
     ]

@@ -1,17 +1,20 @@
 .layout-sidebar {
     position: fixed;
-    width: 300px;
-    height: calc(100vh - 9rem);
+    width: 260px;
+    height: 100%;
     z-index: 999;
     overflow-y: auto;
     user-select: none;
-    top: 7rem;
-    left: 2rem;
-    transition: transform $transitionDuration, left $transitionDuration;
-    background-color: var(--surface-overlay);
-    border-radius: $borderRadius;
-    padding: 0.5rem 1.5rem;
-    box-shadow: 0px 3px 5px rgba(0, 0, 0, .02), 0px 0px 2px rgba(0, 0, 0, .05), 0px 1px 4px rgba(0, 0, 0, .08);
+    top: 4rem;
+    transition:
+        transform $transitionDuration,
+        left $transitionDuration;
+    background-color: var(--surface-menu);
+    padding: 60px 1.5rem 0 15px;
+    box-shadow:
+        0px 3px 5px rgba(0, 0, 0, 0.02),
+        0px 0px 2px rgba(0, 0, 0, 0.05),
+        0px 1px 4px rgba(0, 0, 0, 0.08);
 }
 
 .layout-menu {
@@ -20,15 +23,15 @@
     list-style-type: none;
 
     .layout-root-menuitem {
-        >.layout-menuitem-root-text {
-            font-size: .857rem;
+        > .layout-menuitem-root-text {
+            font-size: 0.857rem;
             text-transform: uppercase;
             font-weight: 700;
-            color: var(--surface-900);
-            margin: .75rem 0;
+            color: var(--surface-a);
+            margin: 0.75rem 0;
         }
 
-        >a {
+        > a {
             display: none;
         }
     }
@@ -37,14 +40,14 @@
         user-select: none;
 
         &.active-menuitem {
-            >.layout-submenu-toggler {
+            > .layout-submenu-toggler {
                 transform: rotate(-180deg);
             }
         }
     }
 
     li.active-menuitem {
-        >a {
+        > a {
             .layout-submenu-toggler {
                 transform: rotate(-180deg);
             }
@@ -61,14 +64,16 @@
             align-items: center;
             position: relative;
             outline: 0 none;
-            color: var(--text-color);
+            color: var(--surface-a);
             cursor: pointer;
-            padding: .75rem 1rem;
+            padding: 0.75rem 1rem;
             border-radius: $borderRadius;
-            transition: background-color $transitionDuration, box-shadow $transitionDuration;
+            transition:
+                background-color $transitionDuration,
+                box-shadow $transitionDuration;
 
             .layout-menuitem-icon {
-                margin-right: .5rem;
+                margin-right: 0.5rem;
             }
 
             .layout-submenu-toggler {
@@ -78,12 +83,15 @@
             }
 
             &.active-route {
-                font-weight: 700;
-                color: var(--primary-color);
+                text-decoration: none;
+                background: var(--surface-a);
+                color: var(--surface-menu);
             }
 
             &:hover {
-                background-color: var(--surface-hover);
+                color: var(--surface-menu);
+                background-color: rgba(255, 255, 255, 0.2);
+                color: var(--surface-a);
             }
 
             &:focus {

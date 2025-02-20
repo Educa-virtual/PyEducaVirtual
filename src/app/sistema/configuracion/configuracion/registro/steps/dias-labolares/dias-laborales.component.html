@@ -1,0 +1,17 @@
+<div class="container">
+    <app-table-primeng
+        [showCaption]="false"
+        [columnas]="columns"
+        [actions]="actions"
+        [showPaginator]="false"
+        [(selectedRowData)]="diasSelections"
+        [data]="dias"
+        (selectedRowDataChange)="onSelectionChange($event)"
+    >
+    </app-table-primeng>
+
+    <div class="navigator">
+        <p-button label="Regresar" (onClick)="prevPage()" />
+        <p-button (onClick)="confirm()" label="Siguiente" />
+    </div>
+</div>

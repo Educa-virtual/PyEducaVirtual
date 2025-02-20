@@ -1,0 +1,52 @@
+<div class="flex flex-column gap-2">
+    <app-evaluacion-info
+        class="mb-2"
+        [evaluacionEstudiante]="evaluacionEstudiante"
+    ></app-evaluacion-info>
+    <div>
+        <h3 class="text-xl">Pregunta</h3>
+        <hr />
+    </div>
+    <p-accordion [multiple]="true">
+        <p-accordionTab [selected]="true">
+            <ng-template pTemplate="header">
+                <div class="ellipsis">
+                    <span class="">
+                        {{ pregunta.cPregunta | removeHTML }}
+                    </span>
+                </div>
+            </ng-template>
+            <app-evaluacion-pregunta
+                [hideButton]="true"
+                [pregunta]="pregunta"
+            ></app-evaluacion-pregunta>
+        </p-accordionTab>
+    </p-accordion>
+    <div>
+        <hr />
+        <h3 class="text-xl">
+            Calificación
+            {{
+                pregunta.logrosCalificacion?.length > 0
+                    ? 'por logros'
+                    : 'por rúbrica'
+            }}
+        </h3>
+        <hr />
+    </div>
+    @if (pregunta.logrosCalificacion?.length > 0) {
+        <app-evaluacion-pregunta-logro
+            [logrosCalificacion]="pregunta.logrosCalificacion ?? []"
+            [escalasCalificativas]="escalasCalificativas"
+            [pregunta]="pregunta"
+            (closeModalChange)="closeModal($event)"
+        ></app-evaluacion-pregunta-logro>
+    } @else {
+        <app-evaluacion-pregunta-rubrica
+            [escalasCalificativas]="escalasCalificativas"
+            [rubrica]="rubrica"
+            [pregunta]="pregunta"
+            (closeModalChange)="closeModal($event)"
+        ></app-evaluacion-pregunta-rubrica>
+    }
+</div>

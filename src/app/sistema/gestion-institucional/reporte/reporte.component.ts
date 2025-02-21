@@ -56,7 +56,6 @@ export class ReporteComponent {
     limpiar() {
         this.fila = []
         this.columna = []
-        this.grados = []
         this.documento = ''
         this.persona = false
         this.historico = false

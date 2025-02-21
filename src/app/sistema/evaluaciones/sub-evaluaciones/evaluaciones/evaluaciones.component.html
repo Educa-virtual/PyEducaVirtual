@@ -34,7 +34,7 @@
 >
     @defer (when showModalCursosEre) {
         <br />
-        <div>Agregar fechas de Publicación Areas Curriculares</div>
+        <div>Agregar hora de Publicación de las Areas Curriculares</div>
         <div class="container" [formGroup]="form">
             <!-- "form" -->
             <!-- Card por cada nivel -->
@@ -73,6 +73,24 @@
                                                     }}[{{
                                                         curso.iExamCurId
                                                     }}]Inicio"
+                                                    [timeOnly]="true"
+                                                    [hourFormat]="'24'"
+                                                    [showIcon]="true"
+                                                    placeholder="Hora"
+                                                    inputId="fechaHoraInicio-{{
+                                                        curso.cCursoNombre
+                                                    }}"
+                                                    [appendTo]="'body'"
+                                                    styleClass="w-full"
+                                                    class="calendar"
+                                                ></p-calendar>
+                                                <!-- <p-calendar
+                                                    formControlName="{{
+                                                        curso.cCursoNombre +
+                                                            curso.iCursoNivelGradId
+                                                    }}[{{
+                                                        curso.iExamCurId
+                                                    }}]Inicio"
                                                     [showTime]="true"
                                                     [hourFormat]="'24'"
                                                     [timeOnly]="false"
@@ -84,7 +102,7 @@
                                                     [appendTo]="'body'"
                                                     styleClass="w-full"
                                                     class="calendar"
-                                                ></p-calendar>
+                                                ></p-calendar> -->
                                             </p-inputGroup>
                                         </div>
 

@@ -340,6 +340,9 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
     toggleBotonc(): void {
         this.mostrarBoton = !this.mostrarBoton
     }
+    generarAccines(): boolean {
+        return this.iPerfilId !== DIRECTOR_IE
+    }
     // el buton select
     accionesPrincipal: MenuItem[] = [
         {
@@ -348,18 +351,8 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
                     label: 'Crear evaluación',
                     icon: 'pi pi-plus',
                     accion: 'seleccionar',
-                    command: () => {
-                        // funcion
-                    },
+                    visible: this.generarAccines(),
                 },
-                //comentado xk aun no se implemento la funcion importar.
-                // {
-                //     label: 'Importar evaluación',
-                //     icon: 'pi pi-plus',
-                //     command: () => {
-                //         // funcion
-                //     },
-                // },
             ],
         },
     ]
@@ -466,8 +459,15 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
             isVisible: () => this.iPerfilId !== DIRECTOR_IE,
         },
         {
-            labelTooltip: 'Asignar Fecha de publicación',
-            icon: 'pi pi-align-justify',
+            labelTooltip: 'Asignar hora de publicación',
+            icon: 'pi pi-clock',
+            accion: 'fechaPublicacion',
+            type: 'item',
+            class: 'p-button-rounded p-button-warning p-button-text',
+        },
+        {
+            labelTooltip: 'Estadistica',
+            icon: 'pi pi-chart-bar',
             accion: 'fechaPublicacion',
             type: 'item',
             class: 'p-button-rounded p-button-warning p-button-text',

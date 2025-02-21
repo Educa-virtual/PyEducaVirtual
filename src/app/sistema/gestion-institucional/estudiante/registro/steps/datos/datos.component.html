@@ -223,28 +223,6 @@
 
     <br />
 
-    <p-fieldset legend="Datos Generales">
-        <div class="grid p-fluid mt-3">
-            <div class="field col-12 md:col-4">
-                <span class="p-float-label">
-                    <p-dropdown
-                        [options]="religiones"
-                        formControlName="iReligionId"
-                        optionLabel="nombre"
-                        [checkmark]="true"
-                        optionValue="id"
-                        [filter]="true"
-                        [showClear]="true"
-                        [appendTo]="'body'"
-                    />
-                    <label for="iReligionId">Religión</label>
-                </span>
-            </div>
-        </div>
-    </p-fieldset>
-
-    <br />
-
     <p-fieldset legend="Datos de contacto">
         <div class="grid p-fluid mt-3">
             <div class="field col-12 md:col-4">
@@ -270,11 +248,23 @@
         </div>
     </p-fieldset>
 
-    <div class="grid p-fluid mt-3">
+    <br />
+
+    <div class="flex justify-content-end">
         <p-button
             label="Guardar"
             (onClick)="guardarEstudiante()"
             styleClass="p-button-primary"
+            [disabled]="form.invalid"
+            [hidden]="estudiante_registrado"
+        />
+        <p-button
+            label="Actualizar"
+            (onClick)="actualizarEstudiante()"
+            styleClass="p-button-primary"
+            [disabled]="form.invalid"
+            [hidden]="!estudiante_registrado"
         />
     </div>
 </form>
+<p-toast></p-toast>

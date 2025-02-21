@@ -3,6 +3,25 @@
 
     <input type="hidden" formControlName="iPersId" />
 
+    <p-fieldset legend="Estudiante">
+        <div class="grid p-fluid mt-3">
+            <div class="field col-3 md:col-4">
+                <span class="p-float-label">
+                    <input pInputText formControlName="cEstCodigo" />
+                    <label for="cEstCodigo">Código</label>
+                </span>
+            </div>
+            <div class="field col-9 md:col-8">
+                <span class="p-float-label">
+                    <input pInputText formControlName="cEstApenom" />
+                    <label for="cEstApenom">Estudiante</label>
+                </span>
+            </div>
+        </div>
+    </p-fieldset>
+
+    <br />
+
     <p-fieldset legend="Relación con el estudiante">
         <div class="grid p-fluid mt-3">
             <div class="field col-12 md:col-6">
@@ -223,11 +242,20 @@
         </div>
     </p-fieldset>
 
-    <div class="grid p-fluid mt-3">
+    <br />
+
+    <div class="flex justify-content-end">
         <p-button
             label="Guardar"
             (onClick)="guardarRepresentante()"
             styleClass="p-button-primary"
+            [hidden]="representante_registrado"
+        />
+        <p-button
+            label="Actualizar"
+            (onClick)="actualizarRepresentante()"
+            styleClass="p-button-primary"
+            [hidden]="!representante_registrado"
         />
     </div>
 </form>

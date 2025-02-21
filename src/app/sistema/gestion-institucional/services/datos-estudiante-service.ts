@@ -40,8 +40,23 @@ export class DatosEstudianteService implements OnDestroy {
         )
     }
 
+    actualizarEstudiante(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/estudiante/actualizarEstudiante`,
+            data
+        )
+    }
+
     guardarPersonaFamiliar(data: any) {
         return this.http.post(`${baseUrl}/grl/guardarPersonaFamiliar`, data)
+    }
+
+    actualizarPersonaFamiliar(data: any) {
+        return this.http.post(`${baseUrl}/grl/actualizarPersonaFamiliar`, data)
+    }
+
+    borrarPersonaFamiliar(data: any) {
+        return this.http.post(`${baseUrl}/grl/borrarPersonaFamiliar`, data)
     }
 
     searchEstudiante(data: any) {
@@ -70,6 +85,10 @@ export class DatosEstudianteService implements OnDestroy {
             `${baseUrl}/acad/estudiante/searchFamiliares`,
             data
         )
+    }
+
+    searchEstudianteFamiliar(data: any) {
+        return this.http.post(`${baseUrl}/acad/estudiante/searchFamiliar`, data)
     }
 
     validarEstudiante(data: any) {
@@ -159,7 +178,7 @@ export class DatosEstudianteService implements OnDestroy {
     }
 
     getEstadosCiviles() {
-        if (!this.departamentos) {
+        if (!this.estados_civiles) {
             return this.query
                 .searchTablaXwhere({
                     esquema: 'grl',
@@ -171,9 +190,9 @@ export class DatosEstudianteService implements OnDestroy {
                     takeUntil(this.onDestroy$),
                     map((data: any) => {
                         const items = data.data
-                        this.estados_civiles = items.map((documento) => ({
-                            id: documento.iTipoEstCivId,
-                            nombre: documento.cTipoEstCivilNombre,
+                        this.estados_civiles = items.map((estado_civil) => ({
+                            id: estado_civil.iTipoEstCivId,
+                            nombre: estado_civil.cTipoEstCivilNombre,
                         }))
                         return this.estados_civiles
                     })

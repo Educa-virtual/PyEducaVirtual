@@ -320,6 +320,7 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     @Input() enableCellSelection
     @Input() enableViewSelections
     @Input() showSortIcon = true
+    @Input() showAdvancedFilter = false
 
     // firstLoadRubrica = true
 

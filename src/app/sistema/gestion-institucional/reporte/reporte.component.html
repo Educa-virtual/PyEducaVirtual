@@ -132,7 +132,7 @@
             </p-tabPanel>
             <p-tabPanel header="Grados">
                 <!-- contenido de busqueda por grados-->
-                <div class="block mt-3">
+                <div class="block mt-1">
                     <p-fieldset class="w-full">
                         <ng-template pTemplate="header"
                             >Buscar por Grados</ng-template
@@ -159,6 +159,13 @@
                                 label="Buscar"
                                 (click)="buscarGrado()"
                             />
+                            <button
+                                pButton
+                                pRipple
+                                class="mr-1 p-button-warning"
+                                label="Limpiar"
+                                (click)="limpiarGrado()"
+                            ></button>
                         </div>
                     </p-fieldset>
                 </div>
@@ -195,17 +202,19 @@
                                 <td>
                                     <p-button
                                         class="mr-1"
-                                        label="Buscar"
+                                        label="Ver"
                                         (click)="
                                             buscarAlumnos(secciones.seccion)
                                         "
                                     />
-                                    <p-button
-                                        class="mr-1"
-                                        label="reporte"
+                                    <button
+                                        pButton
+                                        pRipple
+                                        class="mr-1 p-button-danger"
+                                        label="PDF"
                                         (click)="reporteGrado()"
                                         [disabled]="habilitar"
-                                    />
+                                    ></button>
                                 </td>
                             </tr>
                         </ng-template>
@@ -220,7 +229,7 @@
                         styleClass="p-datatable-gridlines"
                         [value]="tablaEstudiantes"
                         [scrollable]="true"
-                        scrollHeight="600px"
+                        scrollHeight="500px"
                         [tableStyle]="{ 'min-width': '50rem' }"
                         *ngIf="showAlumnos"
                     >
@@ -229,21 +238,21 @@
                                 <th colspan="2"></th>
                                 <th
                                     class="surface-100 text-center"
-                                    colspan="10"
+                                    [attr.colspan]="cursos.length"
                                 >
-                                    ÁREAS CURRICULAR
+                                    ÁREA CURRICULAR
                                 </th>
                                 <th
                                     class="bg-green-300 text-center"
-                                    colspan="10"
+                                    [attr.colspan]="cursos.length"
                                 >
                                     ÁREAS POR ADECUAR (RVM 094-2020-MINEDU)
                                 </th>
-                                <th rowspan="2">Promedio</th>
+                                <th></th>
                             </tr>
                             <tr>
-                                <th>#</th>
-                                <th>Nombres y Apellidos</th>
+                                <th pFrozenColumn>#</th>
+                                <th pFrozenColumn>Nombres y Apellidos</th>
                                 <th
                                     class="surface-100"
                                     *ngFor="let col of cursos"
@@ -256,6 +265,13 @@
                                 >
                                     {{ col }}
                                 </th>
+                                <th
+                                    rowspan="2"
+                                    alignFrozen="right"
+                                    pFrozenColumn
+                                >
+                                    Promedio
+                                </th>
                             </tr>
                         </ng-template>
                         <ng-template
@@ -264,8 +280,8 @@
                             let-index="rowIndex"
                         >
                             <tr>
-                                <td>{{ index + 1 }}</td>
-                                <td>
+                                <td pFrozenColumn>{{ index + 1 }}</td>
+                                <td pFrozenColumn>
                                     {{ tablaEstudiantes.cEstNombres }}
                                     {{ tablaEstudiantes.cEstPaterno }}
                                     {{ tablaEstudiantes.cEstMaterno }}
@@ -281,7 +297,7 @@
                                     }}
                                     <!-- Si no tiene nota, mostrar un guion. -->
                                 </td>
-                                <td>
+                                <td alignFrozen="right" pFrozenColumn>
                                     {{
                                         calcularPromedio(tablaEstudiantes)
                                             | number: '1.2-3'

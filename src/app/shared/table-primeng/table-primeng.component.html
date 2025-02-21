@@ -97,6 +97,17 @@
                                         [field]="col.header"
                                     ></p-sortIcon>
                                 }
+                                @if (showAdvancedFilter) {
+                                    <p-columnFilter
+                                        [type]="col.type"
+                                        [field]="col.field"
+                                        display="menu"
+                                        matchMode="contains"
+                                        [showMatchModes]="false"
+                                        [showOperator]="false"
+                                        [showAddButton]="false"
+                                    />
+                                }
                             </div>
                         }
                     }

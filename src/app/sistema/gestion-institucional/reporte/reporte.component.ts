@@ -41,6 +41,9 @@ export class ReporteComponent {
     alumnos = []
     habilitar = true
     balanceFrozen: boolean = false
+    selSeccion: string
+    cursos: string[] = []
+    tablaEstudiantes: any[] = []
     constructor(
         private messageService: MessageService,
         private ConstantesService: ConstantesService
@@ -56,6 +59,7 @@ export class ReporteComponent {
         this.historico = false
     }
     buscarAlumnos(grupo: string) {
+        this.selSeccion = grupo
         this.notas.map((item) => {
             if (item['cSeccionNombre'] == grupo) {
                 this.alumnos.push(item)
@@ -64,8 +68,7 @@ export class ReporteComponent {
         this.showAlumnos = true
         this.organizarEstudiantes()
     }
-    cursos: string[] = []
-    tablaEstudiantes: any[] = []
+
     organizarEstudiantes() {
         this.cursos = Array.from(
             new Set(this.alumnos.map((e) => e.cCursoNombre))
@@ -112,8 +115,31 @@ export class ReporteComponent {
         )
         return suma / notas.length
     }
-    limpiarGrado() {}
+    limpiarGrado() {
+        this.habilitar = true
+        this.cursos = []
+        this.tablaEstudiantes = []
+        this.selSeccion = ''
+        this.cursos = []
+        this.alumnos = []
+        this.academicoGrado = []
+        this.notas = []
+        this.showGrados = false
+        this.showAlumnos = false
+        //this.generarListaGrados()
+    }
     reporteGrado() {
+        const indexGrado = this.grados.findIndex(
+            (item) => item.iGradoId == this.selectGrado
+        )
+
+        this.ListGarados = this.grados[indexGrado]['cGradoNombre']
+
+        // this.notas.map((item) => {
+        //     const verSeccion = this.secciones.find(
+        //         (list) => list['seccion'] == item['cSeccionNombre']
+        // )})
+
         const params = {
             petition: 'post',
             group: 'aula-virtual',
@@ -122,10 +148,12 @@ export class ReporteComponent {
             data: {
                 cursos: JSON.stringify(this.cursos),
                 alumnos: JSON.stringify(this.alumnos),
+                iIieeId: this.iiee,
+                nombreGrado: this.ListGarados,
+                nombreSeccion: this.selSeccion,
             },
         }
         this.getReportePdf(params)
-        //this.getInformation(params,'test')
     }
     buscarGrado() {
         const params = {
@@ -179,7 +207,7 @@ export class ReporteComponent {
             prefix: 'academico',
             ruta: 'obtener_datos',
             data: {
-                cPersDocumento: this.tablaEstudiantes,
+                cPersDocumento: this.documento,
                 iIieeId: this.iiee,
             },
         }

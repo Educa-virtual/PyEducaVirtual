@@ -159,11 +159,13 @@
                                 label="Buscar"
                                 (click)="buscarGrado()"
                             />
-                            <p-button
-                                class="mr-1"
+                            <button
+                                pButton
+                                pRipple
+                                class="mr-1 p-button-warning"
                                 label="Limpiar"
                                 (click)="limpiarGrado()"
-                            />
+                            ></button>
                         </div>
                     </p-fieldset>
                 </div>
@@ -200,17 +202,19 @@
                                 <td>
                                     <p-button
                                         class="mr-1"
-                                        label="Buscar"
+                                        label="Ver"
                                         (click)="
                                             buscarAlumnos(secciones.seccion)
                                         "
                                     />
-                                    <p-button
-                                        class="mr-1"
-                                        label="reporte"
+                                    <button
+                                        pButton
+                                        pRipple
+                                        class="mr-1 p-button-danger"
+                                        label="PDF"
                                         (click)="reporteGrado()"
                                         [disabled]="habilitar"
-                                    />
+                                    ></button>
                                 </td>
                             </tr>
                         </ng-template>
@@ -219,7 +223,6 @@
                 <div class="block mt-3">
                     <p-toast />
                     <p-table
-                        class=""
                         [rows]="10"
                         [rowsPerPageOptions]="[10, 25, 50]"
                         [paginator]="true"
@@ -235,16 +238,17 @@
                                 <th colspan="2"></th>
                                 <th
                                     class="surface-100 text-center"
-                                    colspan="10"
+                                    [attr.colspan]="cursos.length"
                                 >
-                                    ÁREAS CURRICULAR
+                                    ÁREA CURRICULAR
                                 </th>
                                 <th
                                     class="bg-green-300 text-center"
-                                    colspan="10"
+                                    [attr.colspan]="cursos.length"
                                 >
                                     ÁREAS POR ADECUAR (RVM 094-2020-MINEDU)
                                 </th>
+                                <th></th>
                             </tr>
                             <tr>
                                 <th pFrozenColumn>#</th>

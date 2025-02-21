@@ -471,7 +471,7 @@ export class ApiEvaluacionesRService {
     }
 
     descargarMatrizPorEvaluacionArea(params) {
-        const url = `${this.urlBackendApi}/ere/evaluaciones/${params.iEvaluacionId}/areas/${params.iCursosNivelGradId}/matriz-competencias`
+        const url = `${this.urlBackendApi}/ere/evaluaciones/${params.iEvaluacionId}/areas/${params.iCursosNivelGradId}/matriz-competencias?docente=${params.iDocenteId}`
         window.open(url, '_blank')
     }
 }

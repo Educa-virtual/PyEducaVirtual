@@ -14,6 +14,7 @@ import { environment } from '@/environments/environment.template'
 import { CommonModule } from '@angular/common'
 import { ApiEvaluacionesRService } from '@/app/sistema/evaluaciones/services/api-evaluaciones-r.service'
 import { Router } from '@angular/router'
+import { LocalStoreService } from '@/app/servicios/local-store.service'
 
 @Component({
     selector: 'app-gestionar-preguntas-card',
@@ -31,6 +32,8 @@ export class GestionarPreguntasCardComponent implements OnInit {
     @Input() curso: ICurso
     selectedData = []
     acciones: MenuItem[] = []
+
+    constructor(private store: LocalStoreService) {}
 
     ngOnInit() {
         this.acciones = [
@@ -97,9 +100,11 @@ export class GestionarPreguntasCardComponent implements OnInit {
     }
 
     descargarMatrizPorEvaluacionArea() {
+        const user = this.store.getItem('dremoUser')
         const params = {
             iEvaluacionId: this.iEvaluacionIdHashed,
             iCursosNivelGradId: this.curso.iCursosNivelGradId,
+            iDocenteId: user.iDocenteId,
         }
         this.evaluacionesService.descargarMatrizPorEvaluacionArea(params)
     }

@@ -53,6 +53,7 @@ import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmatio
 import { GeneralService } from '@/app/servicios/general.service'
 import { ContainerPreguntasComponent } from '@/app/shared/container-preguntas/container-preguntas.component'
 import { AccordionModule } from 'primeng/accordion'
+import { DIRECTOR_IE } from '@/app/servicios/perfilesConstantes'
 @Component({
     selector: 'app-evaluaciones',
     standalone: true,
@@ -124,6 +125,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
     }
     public data = []
     public showModalCursosEre: boolean = false
+    public DIRECTOR_IE = DIRECTOR_IE
     form: FormGroup
 
     private _formBuilder = inject(FormBuilder) //form para obtener la variable
@@ -445,6 +447,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
             accion: 'editar',
             type: 'item',
             class: 'p-button-rounded p-button-warning p-button-text',
+            isVisible: () => this.iPerfilId !== DIRECTOR_IE,
         },
         {
             labelTooltip: 'Eliminar',
@@ -452,6 +455,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
             accion: 'eliminar',
             type: 'item',
             class: 'p-button-rounded p-button-warning p-button-text',
+            isVisible: () => this.iPerfilId !== DIRECTOR_IE,
         },
         {
             labelTooltip: 'Banco Preguntas',
@@ -459,6 +463,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
             accion: 'BancoPreguntas',
             type: 'item',
             class: 'p-button-rounded p-button-warning p-button-text',
+            isVisible: () => this.iPerfilId !== DIRECTOR_IE,
         },
         {
             labelTooltip: 'Asignar Fecha de publicación',

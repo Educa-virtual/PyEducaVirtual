@@ -6,6 +6,22 @@
             </h3>
         </div>
     </ng-template>
+    <ng-template pTemplate="icons" class="flex flex-column flex-1">
+        <div class="flex flex-wrap gap-2 justify-content-end">
+            <button
+                size="small"
+                [rounded]="true"
+                pButton
+                severity="secondary"
+                pTooltip="Regresar"
+                tooltipPosition="top"
+                (click)="salir()"
+            >
+                <i class="pi pi-arrow-left"></i>
+                <span class="ml-2 hidden sm:block">Regresar</span>
+            </button>
+        </div>
+    </ng-template>
     <ng-content>
         <form [formGroup]="form">
             <div class="grid p-fluid mt-3">
@@ -24,13 +40,13 @@
                             formControlName="cEstCodigo"
                             aria-describedby="cEstCodigo-help"
                         />
-                        <label for="cEstCodigo">Código de estudiante</label>
+                        <label for="cEstCodigo">Código de estudiante *</label>
                     </span>
                 </div>
                 <div class="field col-4 md:col-3">
                     <p-button
                         label="Buscar"
-                        (onClick)="buscarCodigo()"
+                        (onClick)="searchEstudiante()"
                         styleClass="p-button-warning"
                     />
                 </div>
@@ -133,14 +149,17 @@
                         <label for="cMatrObservaciones">Observación</label>
                     </span>
                 </div>
+                <div class="field col-offset-8 col-4 md:col-offset-9 md:col-3">
+                    <p-button
+                        label="Guardar"
+                        [disabled]="form.invalid"
+                        (onClick)="guardarMatricula()"
+                        styleClass="p-button-primary"
+                    />
+                </div>
             </div>
-
-            <p-button
-                label="Guardar"
-                [disabled]="form.invalid"
-                (onClick)="guardarMatricula()"
-                styleClass="p-button-primary"
-            />
         </form>
     </ng-content>
 </p-panel>
+
+<p-toast></p-toast>

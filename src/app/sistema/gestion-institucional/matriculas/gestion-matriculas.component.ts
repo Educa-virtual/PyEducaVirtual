@@ -9,21 +9,17 @@ import { Router } from '@angular/router'
 import { MessageService } from 'primeng/api'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { InputNumberModule } from 'primeng/inputnumber'
-import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { DatosMatriculaService } from '../services/datos-matricula.service'
 import { FormBuilder, FormGroup } from '@angular/forms'
+import { GeneralService } from '@/app/servicios/general.service'
+import { CompartirMatriculaService } from '../services/compartir-matricula.service'
 
 @Component({
     selector: 'app-gestion-matriculas',
     standalone: true,
-    imports: [
-        PrimengModule,
-        ContainerPageComponent,
-        InputNumberModule,
-        TablePrimengComponent,
-    ],
+    imports: [PrimengModule, InputNumberModule, TablePrimengComponent],
     templateUrl: './gestion-matriculas.component.html',
     styleUrl: './gestion-matriculas.component.scss',
 })
@@ -40,6 +36,7 @@ export class GestionMatriculasComponent implements OnInit {
     caption: string = '' // titulo o cabecera de dialogo
     c_accion: string //valos de las acciones
 
+    tipos_matriculas: Array<object>
     grados_secciones_turnos: Array<object>
     tipo_documentos: Array<object>
     nivel_grados: Array<object>
@@ -54,10 +51,11 @@ export class GestionMatriculasComponent implements OnInit {
 
     constructor(
         private router: Router,
-        private messageService: MessageService,
+        private query: GeneralService,
         private store: LocalStoreService,
         private constantesService: ConstantesService,
         private datosMatriculaService: DatosMatriculaService,
+        private compartirMatriculaService: CompartirMatriculaService,
         private fb: FormBuilder
     ) {
         const perfil = this.store.getItem('dremoPerfil')
@@ -80,21 +78,92 @@ export class GestionMatriculasComponent implements OnInit {
         }
         this.searchMatriculas()
         this.searchGradoSeccionTurno()
+        this.getTiposMatriculas()
 
         this.form.get('iNivelGradoId').valueChanges.subscribe((value) => {
-            this.filterTurnos(value)
+            this.filtrarTabla()
+            this.secciones = []
+            this.turnos = []
+            this.form.get('iTurnoId')?.setValue(null)
+            this.form.get('iSeccionId')?.setValue(null)
+            if (value) {
+                this.filterTurnos(value)
+            }
         })
         this.form.get('iTurnoId').valueChanges.subscribe((value) => {
-            this.filterSecciones(value)
+            this.filtrarTabla()
+            this.secciones = []
+            this.form.get('iSeccionId')?.setValue(null)
+            if (value) {
+                const iNivelGradoId = this.form.get('iNivelGradoId')?.value
+                this.filterSecciones(iNivelGradoId, value)
+            }
+        })
+
+        this.form.get('iSeccionId').valueChanges.subscribe(() => {
+            this.filtrarTabla()
+        })
+
+        this.form.get('iTipoMatrId').valueChanges.subscribe(() => {
+            this.filtrarTabla()
         })
     }
 
-    accionBtnItemTable({ accion }) {
+    filtrarTabla() {
+        if (!this.matriculas) {
+            return []
+        }
+        const iNivelGradoId = this.form.get('iNivelGradoId')?.value
+        const iTurnoId = this.form.get('iTurnoId')?.value
+        const iSeccionId = this.form.get('iSeccionId')?.value
+        const iTipoMatrId = this.form.get('iTipoMatrId')?.value
+        return this.matriculas.filter((matricula) => {
+            if (
+                iNivelGradoId &&
+                matricula.iNivelGradoId !==
+                    this.form.get('iNivelGradoId')?.value
+            ) {
+                return null
+            }
+            if (
+                iTurnoId &&
+                matricula.iTurnoId !== this.form.get('iTurnoId')?.value
+            ) {
+                return null
+            }
+            if (
+                iSeccionId &&
+                matricula.iSeccionId === this.form.get('iSeccionId')?.value
+            ) {
+                return null
+            }
+            if (
+                iTipoMatrId &&
+                matricula.iTipoMatrId !== this.form.get('iTipoMatrId')?.value
+            ) {
+                return null
+            }
+            return matricula
+        })
+    }
+
+    accionBtnItemTable({ accion, item }) {
         if (accion === 'editar') {
-            // TODO : Editar matricula
+            console.log(item)
+            this.compartirMatriculaService.setiMatrId(item?.iMatrId)
+            this.router.navigate([
+                '/gestion-institucional/matricula-individual',
+            ])
         }
         if (accion === 'anular') {
-            // TODO: Anular matricula
+            this._confirmService.openConfirm({
+                message: '¿Está seguro de anular la matrícula seleccionada?',
+                header: 'Anular matrícula',
+                icon: 'pi pi-exclamation-triangle',
+                accept: () => {
+                    this.deleteMatricula(item?.iMatrId)
+                },
+            })
         }
     }
     accionBtnItem(accion) {
@@ -194,10 +263,13 @@ export class GestionMatriculasComponent implements OnInit {
             },
             []
         )
+        if (this.turnos.length === 1) {
+            this.form.get('iTurnoId')?.setValue(this.turnos[0]['id'])
+        }
         console.log(this.turnos, 'turnos')
     }
 
-    filterSecciones(iNivelGradoId: any) {
+    filterSecciones(iNivelGradoId: any, iTurnoId: any) {
         this.secciones = this.grados_secciones_turnos.reduce(
             (prev: any, current: any) => {
                 const x = prev.find(
@@ -205,7 +277,11 @@ export class GestionMatriculasComponent implements OnInit {
                         item.id === current.iSeccionId &&
                         item.nombre === current.cSeccionNombre
                 )
-                if (!x && current.iNivelGradoId === iNivelGradoId) {
+                if (
+                    !x &&
+                    current.iNivelGradoId === iNivelGradoId &&
+                    current.iTurnoId === iTurnoId
+                ) {
                     return prev.concat([
                         {
                             id: current.iSeccionId,
@@ -218,7 +294,39 @@ export class GestionMatriculasComponent implements OnInit {
             },
             []
         )
+        if (this.turnos.length === 1) {
+            this.form.get('iSeccionId')?.setValue(this.secciones[0]['id'])
+        }
         console.log(this.secciones, 'secciones')
+    }
+
+    getTiposMatriculas() {
+        this.query
+            .searchTablaXwhere({
+                esquema: 'acad',
+                tabla: 'tipo_matriculas',
+                campos: '*',
+                condicion: '1=1',
+            })
+            .subscribe({
+                next: (data: any) => {
+                    const item = data.data
+                    this.tipos_matriculas = item.map((tipo) => ({
+                        id: tipo.iTipoMatrId,
+                        nombre: tipo.cTipoMatrNombre,
+                    }))
+                    console.log(this.tipos_matriculas, 'tipos de matriculas')
+                },
+                error: (error) => {
+                    console.error(
+                        'Error consultando tipos de matriculas:',
+                        error
+                    )
+                },
+                complete: () => {
+                    console.log('Request completed')
+                },
+            })
     }
 
     //Maquetar tablas
@@ -228,6 +336,30 @@ export class GestionMatriculasComponent implements OnInit {
 
     agregarMatricula() {
         this.router.navigate(['/gestion-institucional/matricula-individual'])
+    }
+
+    deleteMatricula(iMatrId: any) {
+        this.datosMatriculaService
+            .deleteMatricula({
+                iMatrId: iMatrId,
+                iCredSesionId: this.constantesService.iCredId,
+            })
+            .subscribe({
+                next: (data: any) => {
+                    console.log(data, 'delete matricula')
+                    this.router.navigate([
+                        '/gestion-institucional/gestion-matriculas',
+                    ])
+                },
+                error: (error) => {
+                    console.error('Error eliminando matricula:', error)
+                    this._MessageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error,
+                    })
+                },
+            })
     }
 
     selectedItems = []
@@ -241,9 +373,9 @@ export class GestionMatriculasComponent implements OnInit {
             class: 'p-button-rounded p-button-warning p-button-text',
         },
         {
-            labelTooltip: 'Registrar en esta sección',
-            icon: 'pi pi-plus',
-            accion: 'registrar',
+            labelTooltip: 'Anular',
+            icon: 'pi pi-trash',
+            accion: 'anular',
             type: 'item',
             class: 'p-button-rounded p-button-primary p-button-text',
         },
@@ -271,7 +403,7 @@ export class GestionMatriculasComponent implements OnInit {
         {
             type: 'text',
             width: '5rem',
-            field: 'cGradoAbreviacion',
+            field: 'cGradoNombre',
             header: 'Grado',
             text_header: 'center',
             text: 'center',

@@ -2,7 +2,7 @@
     <ng-template pTemplate="header">
         <div class="flex flex-column gap-2">
             <h3 class="m-0 text-uppercase text-primary">
-                Matrícula individual
+                Gestionar matrículas
             </h3>
         </div>
     </ng-template>
@@ -21,80 +21,83 @@
             </button>
         </div>
     </ng-template>
-    <div class="card">
-        <div class="grid p-fluid mt-3">
-            <div class="field col-12 md:col-3">
-                <span class="p-float-label">
-                    <p-dropdown
-                        [options]="nivel_grados"
-                        name="iNivelGradoId"
-                        optionLabel="nombre"
-                        optionValue="id"
-                        [filter]="true"
-                        [showClear]="true"
-                        [appendTo]="'body'"
-                    ></p-dropdown>
-                    <label for="iNivelGradoId">Grado</label>
-                </span>
-            </div>
 
-            <div class="field col-12 md:col-3">
-                <span class="p-float-label">
-                    <p-dropdown
-                        [options]="turnos"
-                        name="iTurnoId"
-                        optionLabel="nombre"
-                        optionValue="id"
-                        [filter]="true"
-                        [showClear]="true"
-                        [appendTo]="'body'"
-                    ></p-dropdown>
-                    <label for="iTurnoId">Turno</label>
-                </span>
-            </div>
+    <p-panel header="Aplicar Filtros" [toggleable]="true">
+        <form [formGroup]="form">
+            <div class="grid p-fluid m-0">
+                <div class="field col-12 md:col-3">
+                    <span class="p-float-label">
+                        <p-dropdown
+                            [options]="nivel_grados"
+                            formControlName="iNivelGradoId"
+                            optionLabel="nombre"
+                            optionValue="id"
+                            [filter]="true"
+                            [showClear]="true"
+                            [appendTo]="'body'"
+                        ></p-dropdown>
+                        <label for="iNivelGradoId">Grado</label>
+                    </span>
+                </div>
 
-            <div class="field col-12 md:col-3">
-                <span class="p-float-label">
-                    <p-dropdown
-                        [options]="secciones"
-                        name="iSeccionId"
-                        optionLabel="nombre"
-                        optionValue="id"
-                        [filter]="true"
-                        [showClear]="true"
-                        [appendTo]="'body'"
-                    ></p-dropdown>
-                    <label for="iSeccionId">Sección</label>
-                </span>
-            </div>
+                <div class="field col-12 md:col-3">
+                    <span class="p-float-label">
+                        <p-dropdown
+                            [options]="turnos"
+                            formControlName="iTurnoId"
+                            optionLabel="nombre"
+                            optionValue="id"
+                            [filter]="true"
+                            [showClear]="true"
+                            [appendTo]="'body'"
+                        ></p-dropdown>
+                        <label for="iTurnoId">Turno</label>
+                    </span>
+                </div>
 
-            <div class="field col-12 md:col-3">
-                <span class="p-float-label">
-                    <p-dropdown
-                        [options]="tipo_matriculas"
-                        name="iTipoMatrId"
-                        optionLabel="nombre"
-                        optionValue="id"
-                        [filter]="true"
-                        [showClear]="true"
-                        [appendTo]="'body'"
-                    ></p-dropdown>
-                    <label for="iTipoMatrId">Tipo</label>
-                </span>
-            </div>
-        </div>
+                <div class="field col-12 md:col-3">
+                    <span class="p-float-label">
+                        <p-dropdown
+                            [options]="secciones"
+                            formControlName="iSeccionId"
+                            optionLabel="nombre"
+                            optionValue="id"
+                            [filter]="true"
+                            [showClear]="true"
+                            [appendTo]="'body'"
+                        ></p-dropdown>
+                        <label for="iSeccionId">Sección</label>
+                    </span>
+                </div>
 
-        <app-table-primeng
-            [columnas]="columns"
-            [showCaption]="true"
-            [data]="matriculas"
-            (accionBtnItem)="accionBtnItemTable($event)"
-            [showPaginator]="true"
-            [(selectedRowData)]="selectedItems"
-            [actions]="actions"
-            [showAdvancedFilter]="true"
-        >
-        </app-table-primeng>
-        <ng-container slot="caption-content"> </ng-container>
-    </div>
+                <div class="field col-12 md:col-3">
+                    <span class="p-float-label">
+                        <p-dropdown
+                            [options]="tipos_matriculas"
+                            formControlName="iTipoMatrId"
+                            optionLabel="nombre"
+                            optionValue="id"
+                            [filter]="true"
+                            [showClear]="true"
+                            [appendTo]="'body'"
+                        ></p-dropdown>
+                        <label for="iTipoMatrId">Tipo</label>
+                    </span>
+                </div>
+            </div>
+        </form>
+    </p-panel>
+
+    <app-table-primeng
+        [columnas]="columns"
+        [showCaption]="true"
+        [data]="filtrarTabla()"
+        (accionBtnItem)="accionBtnItemTable($event)"
+        [showPaginator]="true"
+        [(selectedRowData)]="selectedItems"
+        [actions]="actions"
+        [showAdvancedFilter]="true"
+    >
+    </app-table-primeng>
+    <ng-container slot="caption-content"> </ng-container>
 </p-panel>

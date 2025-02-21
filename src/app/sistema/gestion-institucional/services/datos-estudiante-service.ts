@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core'
+import { Injectable, OnDestroy } from '@angular/core'
 import { GeneralService } from '@/app/servicios/general.service'
-import { Observable } from 'rxjs'
-import { map } from 'rxjs/operators'
+import { Observable, Subject } from 'rxjs'
+import { map, takeUntil } from 'rxjs/operators'
 import { of } from 'rxjs'
 import { HttpClient, HttpHeaders } from '@angular/common/http'
 import { environment } from '@/environments/environment.template'
@@ -11,7 +11,9 @@ const baseUrl = environment.backendApi
 @Injectable({
     providedIn: 'root',
 })
-export class DatosEstudianteService {
+export class DatosEstudianteService implements OnDestroy {
+    private onDestroy$ = new Subject<boolean>()
+
     constructor(
         private query: GeneralService,
         private http: HttpClient
@@ -45,6 +47,13 @@ export class DatosEstudianteService {
     searchEstudiante(data: any) {
         return this.http.post(
             `${baseUrl}/acad/estudiante/searchEstudiante`,
+            data
+        )
+    }
+
+    searchEstudiantes(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/estudiante/searchEstudiantes`,
             data
         )
     }
@@ -87,6 +96,7 @@ export class DatosEstudianteService {
                     condicion: '1 = 1',
                 })
                 .pipe(
+                    takeUntil(this.onDestroy$),
                     map((data: any) => {
                         const items = data.data
                         this.tipos_familiares = items.map((documento) => ({
@@ -110,6 +120,7 @@ export class DatosEstudianteService {
                     condicion: '1 = 1',
                 })
                 .pipe(
+                    takeUntil(this.onDestroy$),
                     map((data: any) => {
                         const items = data.data
                         this.nacionalidades = items.map((nacionalidad) => ({
@@ -133,6 +144,7 @@ export class DatosEstudianteService {
                     condicion: '1 = 1',
                 })
                 .pipe(
+                    takeUntil(this.onDestroy$),
                     map((data: any) => {
                         const items = data.data
                         this.tipos_documentos = items.map((documento) => ({
@@ -156,6 +168,7 @@ export class DatosEstudianteService {
                     condicion: '1 = 1',
                 })
                 .pipe(
+                    takeUntil(this.onDestroy$),
                     map((data: any) => {
                         const items = data.data
                         this.estados_civiles = items.map((documento) => ({
@@ -189,6 +202,7 @@ export class DatosEstudianteService {
                     condicion: '1 = 1',
                 })
                 .pipe(
+                    takeUntil(this.onDestroy$),
                     map((data: any) => {
                         const departamentos = data.data
                         this.departamentos = departamentos.map(
@@ -216,6 +230,7 @@ export class DatosEstudianteService {
                 condicion: 'iDptoId = ' + iDptoId,
             })
             .pipe(
+                takeUntil(this.onDestroy$),
                 map((data: any) => {
                     const items = data.data
                     this.distritos = items.map((provincia) => ({
@@ -239,6 +254,7 @@ export class DatosEstudianteService {
                 condicion: 'iPrvnId = ' + iPrvnId,
             })
             .pipe(
+                takeUntil(this.onDestroy$),
                 map((data: any) => {
                     const items = data.data
                     this.distritos = items.map((distrito) => ({
@@ -274,6 +290,7 @@ export class DatosEstudianteService {
                     condicion: '1 = 1',
                 })
                 .pipe(
+                    takeUntil(this.onDestroy$),
                     map((data: any) => {
                         const items = data.data
                         this.tipos_contacto = items.map((tipo_contacto) => ({
@@ -297,6 +314,7 @@ export class DatosEstudianteService {
                     condicion: '1 = 1',
                 })
                 .pipe(
+                    takeUntil(this.onDestroy$),
                     map((data: any) => {
                         const items = data.data
                         this.religiones = items.map((religion) => ({
@@ -310,10 +328,6 @@ export class DatosEstudianteService {
         return of(this.religiones)
     }
 
-    buscarCodigo(data: any) {
-        return this.http.post(`${baseUrl}/acad/estudiante/buscarCodigo`, data)
-    }
-
     subirArchivo(data: any) {
         return this.http.post(
             `${baseUrl}/acad/estudiante/importarEstudiantesPadresExcel`,
@@ -324,5 +338,10 @@ export class DatosEstudianteService {
                 }),
             }
         )
+    }
+
+    ngOnDestroy() {
+        this.onDestroy$.next(true)
+        this.onDestroy$.complete()
     }
 }

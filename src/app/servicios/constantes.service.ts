@@ -846,7 +846,7 @@ const administracion = [
                     {
                         label: 'Resultados de ERE',
                         icon: 'pi pi-chart-bar',
-                        routerLink: ['/configuracion/configuracion'],
+                        routerLink: ['/ere/informes-ere'],
                     },
                     {
                         label: 'Evaluaciones',

@@ -103,7 +103,7 @@ export class EstadisticaComponent implements OnInit {
                 grado: this.gradoValue,
                 merito: this.selectedMerito.label,
                 codModular: this.codModular,
-                sede: this.Isede,
+                sede: this.iiee,
                 yearid: this.selectYear,
                 gradoid: this.selectedGrado,
                 meritoid: this.selectedMerito.value,
@@ -184,7 +184,7 @@ export class EstadisticaComponent implements OnInit {
         }
     }
     obtenerReportes() {
-        if (!this.selectYear || !this.selectedGrado) {
+        if (!this.selectYear || !this.selectedGrado || !this.selectedMerito) {
             this.messageService.add({
                 severity: 'warn',
                 summary: 'Error de Datos',
@@ -203,6 +203,7 @@ export class EstadisticaComponent implements OnInit {
                 codModular: this.codModular,
                 grado: this.selectedGrado,
                 pdfBaseUrl: environment.backend,
+                merito: this.selectedMerito.label,
             },
         }
         this.getInformation(params, 'obtenerReportes')

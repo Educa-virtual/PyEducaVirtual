@@ -15,6 +15,7 @@ import { DatosMatriculaService } from '../services/datos-matricula.service'
 import { FormBuilder, FormGroup } from '@angular/forms'
 import { GeneralService } from '@/app/servicios/general.service'
 import { CompartirMatriculaService } from '../services/compartir-matricula.service'
+import { CompartirEstudianteService } from '../services/compartir-estudiante.service'
 
 @Component({
     selector: 'app-gestion-matriculas',
@@ -30,6 +31,7 @@ export class GestionMatriculasComponent implements OnInit {
     iSedeId: number
     iYAcadId: number
     matriculas: any[]
+    matriculas_filtradas: any[]
     option: boolean = false
 
     visible: boolean = false //mostrar dialogo
@@ -56,6 +58,7 @@ export class GestionMatriculasComponent implements OnInit {
         private constantesService: ConstantesService,
         private datosMatriculaService: DatosMatriculaService,
         private compartirMatriculaService: CompartirMatriculaService,
+        private compartirEstudianteService: CompartirEstudianteService,
         private fb: FormBuilder
     ) {
         const perfil = this.store.getItem('dremoPerfil')
@@ -117,7 +120,7 @@ export class GestionMatriculasComponent implements OnInit {
         const iTurnoId = this.form.get('iTurnoId')?.value
         const iSeccionId = this.form.get('iSeccionId')?.value
         const iTipoMatrId = this.form.get('iTipoMatrId')?.value
-        return this.matriculas.filter((matricula) => {
+        this.matriculas_filtradas = this.matriculas.filter((matricula) => {
             if (
                 iNivelGradoId &&
                 matricula.iNivelGradoId !==
@@ -145,14 +148,25 @@ export class GestionMatriculasComponent implements OnInit {
             }
             return matricula
         })
+        return null
     }
 
     accionBtnItemTable({ accion, item }) {
-        if (accion === 'editar') {
+        if (accion === 'editar_matricula') {
             console.log(item)
             this.compartirMatriculaService.setiMatrId(item?.iMatrId)
             this.router.navigate([
                 '/gestion-institucional/matricula-individual',
+            ])
+        }
+        if (accion === 'editar_estudiante') {
+            console.log(item)
+            this.compartirEstudianteService.setiEstudianteId(
+                item?.iEstudianteId
+            )
+            this.compartirEstudianteService.setiPersId(item?.iPersId)
+            this.router.navigate([
+                '/gestion-institucional/estudiante/registro/datos',
             ])
         }
         if (accion === 'anular') {
@@ -186,6 +200,7 @@ export class GestionMatriculasComponent implements OnInit {
             .subscribe({
                 next: (data: any) => {
                     this.matriculas = data.data
+                    this.matriculas_filtradas = this.matriculas
                     console.log(this.matriculas, 'matriculas')
                 },
                 error: (error) => {
@@ -366,18 +381,25 @@ export class GestionMatriculasComponent implements OnInit {
 
     actions: IActionTable[] = [
         {
-            labelTooltip: 'Editar',
+            labelTooltip: 'Editar Matrícula',
             icon: 'pi pi-pencil',
-            accion: 'editar',
+            accion: 'editar_matricula',
             type: 'item',
-            class: 'p-button-rounded p-button-warning p-button-text',
+            class: 'p-button-rounded p-button-primary p-button-text',
+        },
+        {
+            labelTooltip: 'Editar Estudiante',
+            icon: 'pi pi-user-edit',
+            accion: 'editar_estudiante',
+            type: 'item',
+            class: 'p-button-rounded p-button-secondary p-button-text',
         },
         {
             labelTooltip: 'Anular',
             icon: 'pi pi-trash',
             accion: 'anular',
             type: 'item',
-            class: 'p-button-rounded p-button-primary p-button-text',
+            class: 'p-button-rounded p-button-warning p-button-text',
         },
     ]
 

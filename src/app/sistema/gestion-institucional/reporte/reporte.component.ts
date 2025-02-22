@@ -54,6 +54,8 @@ export class ReporteComponent {
     }
 
     limpiar() {
+        this.fila = []
+        this.columna = []
         this.documento = ''
         this.persona = false
         this.historico = false

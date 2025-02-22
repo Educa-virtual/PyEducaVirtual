@@ -99,8 +99,10 @@
                                 <th>#</th>
                                 <th>Areas Curricular</th>
                                 <th *ngFor="let col of columna">
-                                    <div>Año : {{ col.cYAcadNombre }}</div>
-                                    <div>
+                                    <div class="text-center">
+                                        Año : {{ col.cYAcadNombre }}
+                                    </div>
+                                    <div class="text-center">
                                         Grado : {{ col.cGradoAbreviacion }}
                                     </div>
                                 </th>
@@ -115,17 +117,12 @@
                                 <td>{{ index + 1 }}</td>
                                 <td>{{ fila.cCursoNombre }}</td>
                                 @for (fl of fila.nota; track $index) {
-                                    <td>{{ fl.promedio }}</td>
+                                    <td class="text-center">
+                                        {{ fl.promedio }}
+                                    </td>
                                 }
                             </tr>
                         </ng-template>
-                        <!-- <ng-template pTemplate="footer">
-                                    <tr>
-                                        <td *ngFor="let fin of final">
-                                            {{ fin.promedio }}
-                                        </td>
-                                    </tr>
-                                </ng-template> -->
                     </p-table>
                 </div>
                 <!-- fin del contenido de busqueda por alumno -->

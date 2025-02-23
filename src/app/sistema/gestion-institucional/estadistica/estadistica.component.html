@@ -5,7 +5,7 @@
             <p-toolbar class="col-12">
                 <div class="block">
                     <h2 class="text-primary text-white font-bold block">
-                        REPORTE RANKING DE LOGROS DE APRENDIZAJE
+                        ORDEN DE MÉRITO ACADÉMICO
                     </h2>
                 </div>
             </p-toolbar>
@@ -68,7 +68,7 @@
                     </div>
                 </p-fieldset>
                 <br />
-
+                <p-toast position="top-right"></p-toast>
                 <!-- Tabla de Resultados -->
                 <p-table
                     [value]="identidad"
@@ -82,9 +82,9 @@
                             <th>Orden de Mérito</th>
                             <th>Grado</th>
                             <th>Fecha de Generación</th>
-                            <th>Reporte Sin Valor Oficial</th>
-                            <th>Generado</th>
-                            <th>Acciones</th>
+                            <th>Descargar PDF</th>
+                            <th>Compartir</th>
+                            <th>Eliminar / Ver</th>
                         </tr>
                     </ng-template>
                     <ng-template
@@ -101,7 +101,7 @@
                                 <p-button
                                     pButton
                                     pRipple
-                                    icon="pi pi-file-pdf"
+                                    icon="pi pi-download"
                                     class="p-button-rounded p-button-danger p-button-text mr-1"
                                     (click)="descargarPdf(identidad.url)"
                                 />
@@ -110,38 +110,58 @@
                                 <p-button
                                     pButton
                                     pRipple
-                                    icon="pi pi-check-circle"
-                                    class="p-button-rounded p-button-success p-button-text mr-1"
+                                    icon="pi pi-copy"
+                                    class="p-button-rounded p-button-success p-button-text mr-1 text-center"
+                                    (click)="compartirUrl(identidad.url)"
                                 />
                             </td>
                             <td>
-                                <p-button
-                                    pButton
-                                    pRipple
-                                    icon="pi pi-file-pdf"
-                                    class="p-button-rounded p-button-danger p-button-text mr-1"
-                                    (click)="descargarPdf(identidad.url)"
-                                />
                                 <p-button
                                     pButton
                                     pRipple
                                     icon="pi pi-trash"
                                     class="p-button-rounded p-button-danger p-button-text mr-1"
+                                    (click)="eliminarRegistro(identidad)"
                                 />
                                 <p-button
                                     pButton
                                     pRipple
-                                    icon="pi pi-refresh"
+                                    icon="pi pi-eye"
                                     class="p-button-rounded p-button-info p-button-text"
+                                    (click)="togglePreview(identidad)"
                                 />
+                            </td>
+                        </tr>
+                        <!-- Fila de expansión (solo aparece si rowData.expanded = true) -->
+                        <tr *ngIf="identidad.expanded">
+                            <td colspan="7">
+                                <div class="my-3">
+                                    <!-- Botón para cerrar la vista previa -->
+                                    <button
+                                        pButton
+                                        label="Cerrar Vista"
+                                        icon="pi pi-times"
+                                        class="mr-2"
+                                        (click)="togglePreview(identidad)"
+                                    ></button>
+                                </div>
+
+                                <!-- Aquí va el iframe con el PDF -->
+                                <iframe
+                                    #pdfFrame
+                                    [src]="identidad.safeUrl"
+                                    width="100%"
+                                    height="600px"
+                                    style="border: none"
+                                ></iframe>
                             </td>
                         </tr>
                     </ng-template>
                 </p-table>
                 <br />
-
+                <p-confirmDialog></p-confirmDialog>
                 <!-- Estado de Reportes -->
-                <div class="grid mt-5">
+                <!-- <div class="grid mt-5">
                     <div class="col">
                         <p class="pi pi-spinner-dotted font-bold">Procesando</p>
                     </div>
@@ -154,7 +174,7 @@
                     <div class="col">
                         <p class="pi pi-ban font-bold">Reprocesar</p>
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
     </div>

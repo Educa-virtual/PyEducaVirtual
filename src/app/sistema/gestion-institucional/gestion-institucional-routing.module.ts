@@ -23,6 +23,9 @@ import { SincronizarArchivoComponent } from './sincronizar-archivo/sincronizar-a
 
 //import { HorarioComponent } from './horario/horario.component'
 //import { ConfiguracionHorarioComponent } from './horario/configuracion-horario/configuracion-horario.component'
+import { GestionMatriculasComponent } from './matriculas/gestion-matriculas.component'
+import { MatriculaMasivaComponent } from './matriculas/matricula-masiva/matricula-masiva.component'
+import { MatriculaIndividualComponent } from './matriculas/matricula-individual/matricula-individual.component'
 
 const routes: Routes = [
     { path: 'calendarioAcademico', component: CalendarioAcademicoComponent },
@@ -82,6 +85,16 @@ const routes: Routes = [
             import(
                 './horario/configuracion-horario/configuracion-horario.component'
             ).then((c) => c.ConfiguracionHorarioComponent),
+    },
+    { path: 'gestion-matriculas', component: GestionMatriculasComponent },
+    { path: 'matricula-individual', component: MatriculaIndividualComponent },
+    { path: 'matricula-masiva', component: MatriculaMasivaComponent },
+    {
+        path: 'estudiante',
+        loadChildren: () =>
+            import('./estudiante/estudiante.module').then(
+                (c) => c.EstudianteModule
+            ),
     },
 ]
 

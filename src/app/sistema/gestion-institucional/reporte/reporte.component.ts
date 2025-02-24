@@ -40,6 +40,10 @@ export class ReporteComponent {
     ListGarados: string
     alumnos = []
     habilitar = true
+    balanceFrozen: boolean = false
+    selSeccion: string
+    cursos: string[] = []
+    tablaEstudiantes: any[] = []
     constructor(
         private messageService: MessageService,
         private ConstantesService: ConstantesService
@@ -50,11 +54,14 @@ export class ReporteComponent {
     }
 
     limpiar() {
+        this.fila = []
+        this.columna = []
         this.documento = ''
         this.persona = false
         this.historico = false
     }
     buscarAlumnos(grupo: string) {
+        this.selSeccion = grupo
         this.notas.map((item) => {
             if (item['cSeccionNombre'] == grupo) {
                 this.alumnos.push(item)
@@ -63,8 +70,7 @@ export class ReporteComponent {
         this.showAlumnos = true
         this.organizarEstudiantes()
     }
-    cursos: string[] = []
-    tablaEstudiantes: any[] = []
+
     organizarEstudiantes() {
         this.cursos = Array.from(
             new Set(this.alumnos.map((e) => e.cCursoNombre))
@@ -72,7 +78,6 @@ export class ReporteComponent {
         this.tablaEstudiantes = []
 
         // Agrupar los estudiantes por nombre y agregar las notas correspondientes.
-
         const estudiantesAgrupados = this.alumnos.reduce(
             (
                 acc,
@@ -101,15 +106,53 @@ export class ReporteComponent {
         this.tablaEstudiantes = Object.values(estudiantesAgrupados)
         this.habilitar = false
     }
+    calcularPromedio(estudiante: any): number {
+        const notas = this.cursos
+            .map((curso) => estudiante[curso])
+            .filter((nota) => typeof nota === 'number')
+        if (notas.length === 0) return 0
+        const suma = notas.reduce(
+            (acc, nota) => acc + ((nota * 3) / 8 + 2.5),
+            0
+        )
+        return suma / notas.length
+    }
+    limpiarGrado() {
+        this.habilitar = true
+        this.cursos = []
+        this.tablaEstudiantes = []
+        this.selSeccion = ''
+        this.cursos = []
+        this.alumnos = []
+        this.academicoGrado = []
+        this.notas = []
+        this.showGrados = false
+        this.showAlumnos = false
+        //this.generarListaGrados()
+    }
     reporteGrado() {
+        const indexGrado = this.grados.findIndex(
+            (item) => item.iGradoId == this.selectGrado
+        )
+
+        this.ListGarados = this.grados[indexGrado]['cGradoNombre']
+
+        // this.notas.map((item) => {
+        //     const verSeccion = this.secciones.find(
+        //         (list) => list['seccion'] == item['cSeccionNombre']
+        // )})
+
         const params = {
             petition: 'post',
             group: 'aula-virtual',
             prefix: 'academico',
             ruta: 'reporte_grado',
             data: {
-                cursos: this.cursos,
-                alumnos: this.alumnos,
+                cursos: JSON.stringify(this.cursos),
+                alumnos: JSON.stringify(this.alumnos),
+                iIieeId: this.iiee,
+                nombreGrado: this.ListGarados,
+                nombreSeccion: this.selSeccion,
             },
         }
         this.getReportePdf(params)
@@ -286,6 +329,9 @@ export class ReporteComponent {
                 this.academicoGrado = item
                 this.notas = JSON.parse(this.academicoGrado[0]['notas'])
                 this.generarListaGrados()
+                break
+            case 'test':
+                // console.table(item)
                 break
         }
     }

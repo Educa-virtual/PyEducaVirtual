@@ -1,0 +1,75 @@
+<p-panel>
+    <ng-template pTemplate="header">
+        <div class="flex flex-column gap-2">
+            <h3 class="m-0 text-uppercase text-primary">Matrícula masiva</h3>
+        </div>
+    </ng-template>
+    <ng-template pTemplate="icons" class="flex flex-column flex-1">
+        <div class="flex flex-wrap gap-2 justify-content-end">
+            <button
+                size="small"
+                [rounded]="true"
+                pButton
+                pTooltip="Importar"
+                tooltipPosition="top"
+                (click)="importarMatriculas()"
+            >
+                <i class="pi pi-file-import"></i>
+                <span class="ml-2 hidden sm:block">Importar Excel</span>
+            </button>
+        </div>
+    </ng-template>
+    <ng-template pTemplate="icons" class="flex flex-column flex-1">
+        <div class="flex flex-wrap gap-2 justify-content-end">
+            <button
+                size="small"
+                [rounded]="true"
+                pButton
+                pTooltip="Importar"
+                tooltipPosition="top"
+                (click)="importarAulas()"
+            >
+                <i class="pi pi-file-import"></i>
+                <span class="ml-2 hidden sm:block">Importar PDF</span>
+            </button>
+        </div>
+    </ng-template>
+    <ng-content>
+        <div class="grid p-fluid mt-3"></div>
+    </ng-content>
+</p-panel>
+
+<p-dialog
+    header="Cargar archivo"
+    [(visible)]="visible"
+    [style]="{ width: '56rem' }"
+    [modal]="true"
+    [contentStyle]="{ overflow: 'auto' }"
+>
+    <ng-content>
+        <form [formGroup]="form" (ngSubmit)="subirArchivo()">
+            <div class="grid p-fluid mt-3">
+                <div class="field col-12">
+                    <p-inputGroup class="mt-1">
+                        <app-input-file-upload
+                            class="w-full"
+                            label="Seleccionar archivo"
+                            acceptTypes=".xls,.xlsx"
+                            formControlName="archivo"
+                            (change)="handleArchivo($event)"
+                        />
+                    </p-inputGroup>
+                </div>
+            </div>
+            <div class="grid p-fluid mt-3">
+                <div class="field col-12">
+                    <p-button
+                        type="submit"
+                        label="Cargar"
+                        styleClass="p-button-primary"
+                    />
+                </div>
+            </div>
+        </form>
+    </ng-content>
+</p-dialog>

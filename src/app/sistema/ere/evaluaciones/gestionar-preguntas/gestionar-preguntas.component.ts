@@ -2,7 +2,6 @@ import { ContainerPageComponent } from '@/app/shared/container-page/container-pa
 import { CommonModule } from '@angular/common'
 import { Component, inject, OnInit } from '@angular/core'
 import { DataView } from 'primeng/dataview'
-import { ConstantesService } from '@/app/servicios/constantes.service'
 
 import { PrimengModule } from '@/app/primeng.module'
 import { GestionarPreguntasCardComponent } from '../../components/areas/gestionar-preguntas-card/gestionar-preguntas-card.component'
@@ -13,6 +12,8 @@ import { ActivatedRoute } from '@angular/router'
 import { ApiEvaluacionesRService } from '@/app/sistema/evaluaciones/services/api-evaluaciones-r.service'
 import { MessagesModule } from 'primeng/messages'
 import { Message } from 'primeng/api'
+import { ApiEspecialistasService } from '@/app/sistema/ere/services/api-especialistas.service'
+import { LocalStoreService } from '@/app/servicios/local-store.service'
 
 export type Layout = 'list' | 'grid'
 
@@ -30,9 +31,9 @@ export type Layout = 'list' | 'grid'
     styleUrl: './gestionar-preguntas.component.scss',
 })
 export class GestionarPreguntasComponent implements OnInit {
-    private constantesService = inject(ConstantesService)
     private evaluacionesService = inject(ApiEvaluacionesRService)
-
+    private especialistasService = inject(ApiEspecialistasService)
+    private store = new LocalStoreService()
     iEvaluacionIdHashed: string = ''
     sortField: string = ''
     sortOrder: number = 0
@@ -73,7 +74,7 @@ export class GestionarPreguntasComponent implements OnInit {
 
     obtenerEvaluacion() {
         this.evaluacionesService
-            .obtenerEvaluacionNuevo(this.iEvaluacionIdHashed)
+            .obtenerEvaluacionPorId(this.iEvaluacionIdHashed)
             .subscribe({
                 next: (resp: unknown) => {
                     this.evaluacion = resp
@@ -85,15 +86,14 @@ export class GestionarPreguntasComponent implements OnInit {
     }
 
     obtenerAreasPorEvaluacionyEspecialista() {
-        this.evaluacionesService
+        this.especialistasService
             .obtenerAreasPorEvaluacionyEspecialista(
-                this.constantesService.iPersId,
-                this.iEvaluacionIdHashed
+                this.iEvaluacionIdHashed,
+                this.store.getItem('dremoUser').iDocenteId
             )
             .subscribe({
                 next: (respuesta) => {
                     this.cursosInicial = respuesta.map((curso: ICurso) => ({
-                        //iCursoId: curso.idDocCursoId,
                         ...curso,
                     }))
                     this.cursos = this.cursosInicial

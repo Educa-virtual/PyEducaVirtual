@@ -464,4 +464,16 @@ export class ApiEvaluacionesRService {
         const url = `${this.urlBackendAspNet}/api/ere/evaluaciones/${params.iEvaluacionId}/areas/${params.iCursosNivelGradId}/exportar-preguntas`
         window.open(url, '_blank')
     }
+
+    guardarFechaCantidadExamenCursos(data: {
+        iEvaluacionId: number
+        iCursoNivelGradId: number | string
+        dtExamenFechaInicio
+        iExamenCantidadPreguntas: number
+    }): Observable<any> {
+        return this.http.post(
+            `${this.urlBackendApi}/ere/Evaluaciones/guardarFechaCantidadExamenCursos`,
+            data
+        )
+    }
 }

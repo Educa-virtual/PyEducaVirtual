@@ -430,6 +430,11 @@ const administracion = [
                         icon: 'pi pi-chart-bar',
                         routerLink: ['/configuracion/configuracion'],
                     },
+                    {
+                        label: 'Evaluaciones',
+                        icon: 'pi pi-fw pi-calendar',
+                        routerLink: ['/ere/evaluaciones'],
+                    },
                 ],
                 //ConfigGradoSeccion
             },

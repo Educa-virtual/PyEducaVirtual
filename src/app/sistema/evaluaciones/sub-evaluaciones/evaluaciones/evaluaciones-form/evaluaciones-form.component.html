@@ -211,13 +211,9 @@
                                 let-prevCallback="prevCallback"
                             >
                                 <app-evaluacion-areas
-                                    (closeModalEvent)="closeModal($event)"
                                     [_iEvaluacionId]="
                                         this._config.data.evaluacion
                                             .iEvaluacionId
-                                    "
-                                    [datosRecIeParticipanToAreas]="
-                                        datosRecIeParticipan
                                     "
                                 ></app-evaluacion-areas>
                                 <div class="flex pt-4 justify-content-between">

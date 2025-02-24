@@ -2,6 +2,7 @@
     <div class="col-12 md:col-6 text-left">
         <span class="text-sm"> Inicio > Mis Comunicados </span>
     </div>
+
     <!-- título -->
     <div class="grid">
         <p-toolbar class="col-12">
@@ -56,26 +57,115 @@
             </div>
         </div>
     </div>
-    <!-- Contenedor principal de los dos paneles (Lista - Crear) -->
+
     <div class="grid">
         <!-- Panel izquierdo: Lista de Comunicados -->
         <div class="col-12 md:col-6">
-            <p-panel header="Lista de Comunicados" [toggleable]="true">
-                <!-- Aquí puedes colocar una tabla o lista con tus comunicados -->
-                <div class="my-2">
-                    <p>Comunicado #1</p>
-                    <p>Comunicado #2</p>
-                    <p>Comunicado #3</p>
-                    <!-- Ejemplo estático, luego lo reemplazas con tu data -->
+            <p-panel>
+                <ng-template pTemplate="header">
+                    <div
+                        class="w-full bg-primary text-white p-3 border-round-top"
+                    >
+                        <h2 class="m-0 font-bold text-white">
+                            Lista Comunicados
+                        </h2>
+                    </div>
+                </ng-template>
+                <!-- Contenedor de comunicados dinámicos -->
+                <div class="flex flex-column gap-3 mt-2">
+                    <!-- Recorre el array con *ngFor -->
+                    <p-panel
+                        *ngFor="let comunicado of comunicados"
+                        [toggleable]="true"
+                        [collapsed]="true"
+                    >
+                        <!-- Personaliza el header de cada comunicado -->
+                        <ng-template pTemplate="header">
+                            <div
+                                class="flex justify-content-between align-items-center"
+                            >
+                                <strong>{{ comunicado.titulo }}</strong>
+                                <!-- Opcional: Botones de acción -->
+                                <div>
+                                    <button
+                                        pButton
+                                        icon="pi pi-pencil"
+                                        class="p-button-text p-button-sm mr-1"
+                                    >
+                                        Editar
+                                    </button>
+                                    <button
+                                        pButton
+                                        icon="pi pi-trash"
+                                        class="p-button-text p-button-sm"
+                                    >
+                                        Eliminar
+                                    </button>
+                                    <button
+                                        pButton
+                                        icon="pi pi-eye"
+                                        class="p-button-text p-button-sm"
+                                    >
+                                        Ver
+                                    </button>
+                                </div>
+                            </div>
+                        </ng-template>
+
+                        <!-- Contenido que se ve al expandir el panel -->
+                        <div class="grid p-2">
+                            <div class="col-12 md:col-6">
+                                <p>
+                                    <strong>Estado:</strong>
+                                    {{ comunicado.estado }}
+                                </p>
+                                <p>
+                                    <strong>Tipo:</strong> {{ comunicado.tipo }}
+                                </p>
+                                <p>
+                                    <strong>Publicado:</strong>
+                                    {{ comunicado.publicado }}
+                                </p>
+                            </div>
+                            <div class="col-12 md:col-6">
+                                <p>
+                                    <strong>Prioridad:</strong>
+                                    {{ comunicado.prioridad }}
+                                </p>
+                                <p>
+                                    <strong>Caduca:</strong>
+                                    {{ comunicado.caduca }}
+                                </p>
+                                <p>
+                                    <strong>Grupo:</strong>
+                                    {{ comunicado.grupo }}
+                                </p>
+                            </div>
+                            <div class="col-12">
+                                <p class="mt-2">
+                                    {{ comunicado.texto }}
+                                </p>
+                            </div>
+                        </div>
+                    </p-panel>
                 </div>
             </p-panel>
         </div>
 
         <!-- Panel derecho: Crear Comunicado -->
         <div class="col-12 md:col-6">
-            <p-panel header="Crear Comunicado" [toggleable]="true">
+            <p-panel>
+                <ng-template pTemplate="header">
+                    <div
+                        class="w-full bg-primary text-white p-3 border-round-top"
+                    >
+                        <h2 class="m-0 font-bold text-white">
+                            Crear Comunicado
+                        </h2>
+                    </div>
+                </ng-template>
+
                 <div class="flex flex-column gap-2">
-                    <!-- Campos del formulario -->
                     <div class="flex flex-column">
                         <label for="titulo" class="mb-1">Título</label>
                         <input
@@ -95,7 +185,6 @@
                         ></textarea>
                     </div>
 
-                    <!-- Botón para publicar -->
                     <button
                         pButton
                         pRipple
@@ -106,6 +195,7 @@
             </p-panel>
         </div>
     </div>
+
     <p-confirmDialog></p-confirmDialog>
     <p-toast position="top-right"></p-toast>
     <p-confirmDialog></p-confirmDialog>

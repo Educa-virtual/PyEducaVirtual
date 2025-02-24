@@ -8,8 +8,16 @@ import {
     JEFE_DE_PROGRAMA,
     SUBDIRECTOR_IE,
 } from './perfilesConstantes'
-import { ADMINISTRADOR_DREMO } from './seg/perfiles'
-import { administradorDremo } from './seg/menu-ere/administradorDremo'
+import {
+    ADMINISTRADOR_DREMO,
+    ESPECIALISTA_DREMO,
+    ESPECIALISTA_UGEL,
+} from './seg/perfiles'
+import {
+    administradorDremo,
+    especialistaDremo,
+    especialistaUgel,
+} from './seg/menu-ere/menuEre'
 
 const store = new LocalStoreService()
 // const modulo = store.getItem('dremoModulo')
@@ -493,10 +501,10 @@ export class ConstantesService {
                 return administrador
             case ADMINISTRADOR_DREMO:
                 return administradorDremo
-            // case ESPECIALISTA_DREMO:
-            //     return notas_evaluaciones
-            // case ESPECIALISTA_UGEL:
-            //     return notas_evaluaciones
+            case ESPECIALISTA_DREMO:
+                return especialistaDremo
+            case ESPECIALISTA_UGEL:
+                return especialistaUgel
             case ESTUDIANTE:
                 return estudiante
             case SUBDIRECTOR_IE:

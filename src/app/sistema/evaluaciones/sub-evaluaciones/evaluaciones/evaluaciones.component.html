@@ -4,20 +4,17 @@
     [actions]="accionesPrincipal"
     (accionBtnItem)="accionBtnItem($event)"
     class="custom-container-page"
->
-    <p-toast> </p-toast>
-    <div class="card">
-        <app-table-primeng
-            [columnas]="columnas"
-            [data]="data"
-            (accionBtnItem)="accionBtnItemTable($event)"
-            [(selectedRowData)]="selectedItems"
-            [actions]="accionesTabla"
-            [showPaginator]="true"
-        >
-        </app-table-primeng>
-    </div>
+    ><app-table-primeng
+        [columnas]="columnas"
+        [data]="data"
+        (accionBtnItem)="accionBtnItemTable($event)"
+        [(selectedRowData)]="selectedItems"
+        [actions]="accionesTabla"
+        [showPaginator]="true"
+    >
+    </app-table-primeng>
 </app-container-page-accionb>
+<p-toast> </p-toast>
 
 <p-dialog
     #dialogBancoPreguntas

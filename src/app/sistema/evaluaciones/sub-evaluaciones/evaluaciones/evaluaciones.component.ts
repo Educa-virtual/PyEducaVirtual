@@ -8,15 +8,6 @@ import {
     Output,
     OnDestroy,
 } from '@angular/core'
-/*GRILLA */
-import { TableModule } from 'primeng/table'
-import { CommonModule } from '@angular/common'
-/*BOTONES */
-import { ButtonModule } from 'primeng/button'
-/*MODAL */
-import { DialogModule } from 'primeng/dialog'
-/*INPUT TEXT */
-import { InputTextModule } from 'primeng/inputtext'
 import { EvaluacionesFormComponent } from '../evaluaciones/evaluaciones-form/evaluaciones-form.component'
 import { CompartirFormularioEvaluacionService } from './../../services/ereEvaluaciones/compartir-formulario-evaluacion.service'
 import { DialogService } from 'primeng/dynamicdialog'
@@ -28,22 +19,14 @@ import {
 } from '../../../../shared/table-primeng/table-primeng.component'
 import { ApiEvaluacionesRService } from '../../services/api-evaluaciones-r.service'
 import { BehaviorSubject, Subject, takeUntil } from 'rxjs'
-import {
-    ContainerPageComponent,
-    IActionContainer,
-} from '@/app/shared/container-page/container-page.component'
+import { IActionContainer } from '@/app/shared/container-page/container-page.component'
 //
 import { CompartirIdEvaluacionService } from './../../services/ereEvaluaciones/compartir-id-evaluacion.service'
 import { PrimengModule } from '@/app/primeng.module'
 import { MenuItem, MessageService } from 'primeng/api'
 import { Router } from '@angular/router'
 //Calendario
-import {
-    FormBuilder,
-    FormControl,
-    FormGroup,
-    ReactiveFormsModule,
-} from '@angular/forms'
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms'
 import { ApiService } from '@/app/servicios/api.service'
 import { IUpdateTableService } from '@/app/interfaces/api.interface'
 import { UtilService } from '@/app/servicios/utils.service'
@@ -55,15 +38,7 @@ import { GeneralService } from '@/app/servicios/general.service'
     selector: 'app-evaluaciones',
     standalone: true,
     imports: [
-        TableModule,
-        CommonModule,
-        ButtonModule,
-        DialogModule,
-        InputTextModule,
-        ReactiveFormsModule,
-
         TablePrimengComponent,
-        ContainerPageComponent,
         PrimengModule,
         ContainerPageAccionbComponent,
     ],

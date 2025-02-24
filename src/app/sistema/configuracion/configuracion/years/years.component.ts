@@ -3,6 +3,8 @@ import { ContainerPageComponent } from '@/app/shared/container-page/container-pa
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
 import { Router } from '@angular/router'
 import { TicketService } from '../registro/service/ticketservice'
+import { ApiService } from '@/app/servicios/api.service'
+import { MessageService } from 'primeng/api'
 
 @Component({
     selector: 'app-years',
@@ -17,6 +19,8 @@ export class YearsComponent implements OnInit {
 
     constructor(
         private router: Router,
+        private messageService: MessageService,
+        private apiService: ApiService,
         private ticketService: TicketService
     ) {}
 
@@ -66,7 +70,16 @@ export class YearsComponent implements OnInit {
                 console.log('Viendo')
             },
             crear: async () => {
-                this.navigateToRegistro()
+                const validRegister = await this.validNewRegister()
+                if (validRegister.length > 0) {
+                    return this.messageService.add({
+                        summary: 'Año escolar',
+                        detail: `El año ${new Date().getFullYear()} ya se ha registrado`,
+                        life: 3000,
+                        severity: 'warn',
+                    })
+                }
+                await this.navigateToRegistro()
             },
             editar: async () => {
                 console.log(row.item)
@@ -75,18 +88,10 @@ export class YearsComponent implements OnInit {
                     {
                         iCalAcadId: row.item.iCalAcadId,
                     },
-                    { onCompleteCallbacks: [() => this.navigateToRegistro()] }
+                    {
+                        onCompleteCallbacks: [() => this.navigateToRegistro()],
+                    }
                 )
-
-                // this.ticketService.getDiasLaborales({
-                //     iCalAcadId: row.item.iCalAcadId,
-                // })
-                // this.ticketService.getFormasAtencion({
-                //     iCalAcadId: row.item.iCalAcadId,
-                // })
-                // this.ticketService.getPeriodosAcademicos({
-                //     iCalAcadId: row.item.iCalAcadId,
-                // })
             },
             eliminar: () => {
                 // Lógica para la acción "eliminar"
@@ -147,7 +152,16 @@ export class YearsComponent implements OnInit {
         },
     ]
 
-    navigateToRegistro() {
+    async validNewRegister() {
+        return await this.apiService.getData({
+            esquema: 'acad',
+            tabla: 'V_CalendariosAcademicos',
+            campos: '*',
+            where: 'cYearNombre=' + new Date().getFullYear(),
+        })
+    }
+
+    async navigateToRegistro() {
         console.log('Navegando')
         this.router.navigate(['configuracion/configuracion/registro'])
     }

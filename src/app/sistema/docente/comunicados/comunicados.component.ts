@@ -1,5 +1,6 @@
 import { Component } from '@angular/core'
 import { PrimengModule } from '@/app/primeng.module'
+import { FormsModule } from '@angular/forms'
 
 interface Comunicado {
     id: number
@@ -16,9 +17,9 @@ interface Comunicado {
 @Component({
     selector: 'app-comunicados',
     standalone: true,
-    imports: [PrimengModule],
+    imports: [PrimengModule, FormsModule],
     templateUrl: './comunicados.component.html',
-    styleUrl: './comunicados.component.scss',
+    styleUrls: ['./comunicados.component.scss'],
 })
 export class ComunicadosComponent {
     comunicados = [
@@ -75,7 +76,7 @@ export class ComunicadosComponent {
     }
 
     // Cuando hacemos clic en "Editar"
-    ditComunicado(com: Comunicado) {
+    editComunicado(com: Comunicado) {
         // Creamos una copia del comunicado para no modificar el array original
         // si no deseas mutarlo directamente
         this.selectedComunicado = { ...com }

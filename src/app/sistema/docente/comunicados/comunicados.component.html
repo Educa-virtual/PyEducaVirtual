@@ -91,6 +91,7 @@
                                         pButton
                                         icon="pi pi-pencil"
                                         class="p-button-text p-button-sm mr-1"
+                                        (click)="editComunicado(comunicado)"
                                     >
                                         Editar
                                     </button>
@@ -160,38 +161,124 @@
                         class="w-full bg-primary text-white p-3 border-round-top"
                     >
                         <h2 class="m-0 font-bold text-white">
-                            Crear Comunicado
+                            <!-- Cambia el título dinámicamente -->
+                            {{
+                                selectedComunicado.id === 0
+                                    ? 'Crear Comunicado'
+                                    : 'Editar Comunicado'
+                            }}
                         </h2>
                     </div>
                 </ng-template>
+                <!-- FORMULARIO (Template-Driven) -->
+                <form
+                    (ngSubmit)="guardarComunicado()"
+                    #comunicadoForm="ngForm"
+                    class="flex flex-column gap-2"
+                >
+                    <div class="grid">
+                        <div class="flex flex-column col-12 md:col-6">
+                            <label for="estado" class="mb-1">Estado</label>
+                            <input
+                                pInputText
+                                id="estado"
+                                name="estado"
+                                [(ngModel)]="selectedComunicado.estado"
+                            />
+                        </div>
+                        <div class="flex flex-column col-12 md:col-6">
+                            <label for="prioridad" class="mb-1"
+                                >Prioridad</label
+                            >
+                            <input
+                                pInputText
+                                id="prioridad"
+                                name="prioridad"
+                                [(ngModel)]="selectedComunicado.prioridad"
+                            />
+                        </div>
+                    </div>
+                    <div class="grid">
+                        <div class="flex flex-column col-12 md:col-6">
+                            <label for="tipo" class="mb-1">Tipo</label>
+                            <input
+                                pInputText
+                                id="tipo"
+                                name="tipo"
+                                [(ngModel)]="selectedComunicado.tipo"
+                            />
+                        </div>
+                        <div class="flex flex-column col-12 md:col-6">
+                            <label for="grupo" class="mb-1">Grupo</label>
+                            <input
+                                pInputText
+                                id="grupo"
+                                name="grupo"
+                                [(ngModel)]="selectedComunicado.grupo"
+                            />
+                        </div>
+                    </div>
+                    <div class="grid">
+                        <div class="flex flex-column col-12 md:col-6">
+                            <label for="publicado" class="mb-1"
+                                >Publicado</label
+                            >
+                            <input
+                                pInputText
+                                id="publicado"
+                                name="publicado"
+                                [(ngModel)]="selectedComunicado.publicado"
+                            />
+                        </div>
+                        <div class="flex flex-column col-12 md:col-6">
+                            <label for="caduca" class="mb-1">Caduca</label>
+                            <input
+                                pInputText
+                                id="caduca"
+                                name="caduca"
+                                [(ngModel)]="selectedComunicado.caduca"
+                            />
+                        </div>
+                    </div>
 
-                <div class="flex flex-column gap-2">
                     <div class="flex flex-column">
                         <label for="titulo" class="mb-1">Título</label>
                         <input
                             pInputText
                             id="titulo"
+                            name="titulo"
                             placeholder="Ingrese el título"
+                            [(ngModel)]="selectedComunicado.titulo"
+                            required
                         />
                     </div>
 
                     <div class="flex flex-column">
-                        <label for="contenido" class="mb-1">Contenido</label>
+                        <label for="texto" class="mb-1">Contenido</label>
                         <textarea
                             pInputTextarea
-                            id="contenido"
+                            id="texto"
+                            name="texto"
                             rows="5"
                             placeholder="Escriba el comunicado..."
+                            [(ngModel)]="selectedComunicado.texto"
+                            required
                         ></textarea>
                     </div>
 
+                    <!-- Botón para crear o actualizar según corresponda -->
                     <button
                         pButton
                         pRipple
-                        label="Publicar"
+                        [label]="
+                            selectedComunicado.id === 0
+                                ? 'Publicar'
+                                : 'Guardar Cambios'
+                        "
                         class="p-button-success align-self-end"
+                        type="submit"
                     ></button>
-                </div>
+                </form>
             </p-panel>
         </div>
     </div>

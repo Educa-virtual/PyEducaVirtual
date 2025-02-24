@@ -50,7 +50,15 @@
                         @if (dataInformation.length > 0) {
                             <form>
                                 <div class="formgrid grid">
-                                    <div class="field col-12 md:col-12">
+                                    <div
+                                        class="field col-12 md:col-12"
+                                        *ngIf="
+                                            !(
+                                                nivelTipo === '3' ||
+                                                nivelTipo === '4'
+                                            )
+                                        "
+                                    >
                                         <label for=""
                                             >Programa de Estudios</label
                                         >
@@ -66,7 +74,15 @@
                                             disabled
                                         />
                                     </div>
-                                    <div class="field col-12 md:col-12">
+                                    <div
+                                        class="field col-12 md:col-12"
+                                        *ngIf="
+                                            !(
+                                                nivelTipo === '3' ||
+                                                nivelTipo === '4'
+                                            )
+                                        "
+                                    >
                                         <label for="">Módulo Formativo</label>
                                         <input
                                             type="text"
@@ -76,7 +92,15 @@
                                             disabled
                                         />
                                     </div>
-                                    <div class="field col-12">
+                                    <div
+                                        class="field col-12"
+                                        *ngIf="
+                                            !(
+                                                nivelTipo === '3' ||
+                                                nivelTipo === '4'
+                                            )
+                                        "
+                                    >
                                         <label for=""
                                             >Unidades Didácticas</label
                                         >
@@ -88,7 +112,15 @@
                                             disabled
                                         />
                                     </div>
-                                    <div class="field col-12 md:col-8">
+                                    <div
+                                        class="field col-12 md:col-8"
+                                        *ngIf="
+                                            !(
+                                                nivelTipo === '3' ||
+                                                nivelTipo === '4'
+                                            )
+                                        "
+                                    >
                                         <label for="">Carga Horaria</label>
                                         <input
                                             type="text"
@@ -98,7 +130,15 @@
                                             disabled
                                         />
                                     </div>
-                                    <div class="field col-12 md:col-4">
+                                    <div
+                                        class="field col-12 md:col-4"
+                                        *ngIf="
+                                            !(
+                                                nivelTipo === '3' ||
+                                                nivelTipo === '4'
+                                            )
+                                        "
+                                    >
                                         <label for="state"
                                             >Nro de Créditos</label
                                         >
@@ -145,9 +185,21 @@
                                 [formGroup]="dataSilabo"
                                 class="field col-12 md:col-5"
                             >
-                                <label for=""
-                                    >Descripción de la Unidad Didáctica</label
+                                <label
+                                    for=""
+                                    *ngIf="
+                                        !(
+                                            nivelTipo === '3' ||
+                                            nivelTipo === '4'
+                                        );
+                                        else tipos
+                                    "
                                 >
+                                    Descripción de la Unidad Didáctica</label
+                                >
+                                <ng-template #tipos>
+                                    Descripcion de Área curricular
+                                </ng-template>
                                 <p-editor
                                     formControlName="cSilaboDescripcionCurso"
                                     [style]="{

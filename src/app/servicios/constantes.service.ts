@@ -27,6 +27,11 @@ const docente = [
         items: [
             inicio,
             {
+                label: 'Comunicados',
+                icon: 'pi pi-fw pi-bell',
+                routerLink: ['/docente/comunicados'],
+            },
+            {
                 label: 'Portafolio',
                 icon: 'pi pi-fw pi-folder',
                 routerLink: ['/docente/portafolio'],
@@ -707,6 +712,11 @@ const administracion = [
                             '/gestion-institucional/calendarioAcademico',
                         ],
                     },
+                    {
+                        label: 'Información de la Institución',
+                        icon: 'pi pi-wrench',
+                        routerLink: ['/gestion-institucional/Informacion-ie'],
+                    },
                 ],
             },
 
@@ -783,13 +793,44 @@ const administracion = [
                 ],
             },
             {
+                label: 'Gestión de estudiantes',
+                icon: 'pi pi-fw pi-cog',
+                items: [
+                    {
+                        label: 'Ingresar estudiante',
+                        icon: 'pi pi-fw pi-circle',
+                        badge: 'NEW',
+                        routerLink: [
+                            '/gestion-institucional/estudiante/registro',
+                        ],
+                    },
+                ],
+            },
+            {
                 label: 'Gestión de Matrículas',
                 icon: 'pi pi-folder',
                 items: [
                     {
-                        label: 'Matrícula de estudiantes',
-                        icon: 'pi pi-user-edit',
-                        // routerLink: ['/gestion-institucional/gestion-traslados'],
+                        label: 'Gestionar matriculas',
+                        icon: 'pi pi-fw pi-file-edit',
+                        badge: '',
+                        routerLink: [
+                            '/gestion-institucional/gestion-matriculas',
+                        ],
+                    },
+                    {
+                        label: 'Matrícula Individual',
+                        icon: 'pi pi-fw pi-file-plus',
+                        badge: '',
+                        routerLink: [
+                            '/gestion-institucional/matricula-individual',
+                        ],
+                    },
+                    {
+                        label: 'Matrícula Masiva',
+                        icon: 'pi pi-fw pi-file-import',
+                        badge: '',
+                        routerLink: ['/gestion-institucional/matricula-masiva'],
                     },
                     {
                         label: 'Gestión de traslado',
@@ -856,6 +897,22 @@ const administracion = [
                 label: 'Enlaces de ayuda',
                 icon: 'pi pi-fw pi-share-alt',
                 routerLink: ['ayuda'],
+            },
+            {
+                label: 'Generar Reportes y Estadisticas',
+                icon: 'pi pi-chart-scatter',
+                items: [
+                    {
+                        label: 'Reportes Academicos',
+                        icon: 'pi pi-fw pi-circle',
+                        routerLink: ['/gestion-institucional/reporte'],
+                    },
+                    {
+                        label: 'Reportes Orden de Mérito',
+                        icon: 'pi pi-fw pi-circle',
+                        routerLink: ['/gestion-institucional/estadistica'],
+                    },
+                ],
             },
         ],
     },
@@ -962,4 +1019,11 @@ export class ConstantesService {
         ? user.cPersNombre + ' ' + user.cPersPaterno + ' ' + user.cPersMaterno
         : null
     nombre = user ? user.cPersNombre : null
+    codModular = perfil ? perfil.cIieeCodigoModular : null
+    iIieeId = perfil ? perfil.iIieeId : null
+    iSedeId = perfil ? perfil.iSedeId : null
+    grados = perfil ? perfil.grados : null
+    years = user ? user.years : null
+    cIieeNombre = perfil ? perfil.cIieeNombre : null
+    nivelTipo = perfil ? perfil.iNivelTipoId : null
 }

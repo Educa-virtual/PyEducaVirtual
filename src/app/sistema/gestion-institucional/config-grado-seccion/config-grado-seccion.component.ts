@@ -29,6 +29,7 @@ import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { InputNumberModule } from 'primeng/inputnumber'
 import { AdmStepGradoSeccionService } from '@/app/servicios/adm/adm-step-grado-seccion.service'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
+import { ToastModule } from 'primeng/toast'
 
 @Component({
     selector: 'app-config-grado-seccion',
@@ -46,6 +47,7 @@ import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmatio
         FloatLabelModule,
         InputTextModule,
         CardModule,
+        ToastModule,
     ],
     providers: [GeneralService],
     templateUrl: './config-grado-seccion.component.html',
@@ -80,6 +82,9 @@ export class ConfigGradoSeccionComponent implements OnInit {
     selAnio: string
     config = []
 
+    dremoYear: any
+    dremoiYAcadId: any
+    btnInvalido: boolean = false
     private _confirmService = inject(ConfirmationModalService)
     constructor(
         public query: GeneralService,
@@ -96,6 +101,9 @@ export class ConfigGradoSeccionComponent implements OnInit {
         this.stepService.iNivelTipoId = perfil.iNivelTipoId
 
         this.stepService.perfil = perfil
+
+        this.dremoYear = this.store.getItem('dremoYear')
+        this.dremoiYAcadId = this.store.getItem('dremoiYAcadId')
     }
 
     ngOnInit() {
@@ -146,15 +154,16 @@ export class ConfigGradoSeccionComponent implements OnInit {
                         cNivelTipoNombre:
                             this.stepService.perfil['cNivelTipoNombre'],
                         iSedeId: <number>this.iSedeId,
-                        iServEdId: <number>0,
+                        iServEdId: <number>this.sede[0].iServEdId,
                         cConfigNroRslAprobacion: '',
                         cConfigUrlRslAprobacion: '',
                         cConfigDescripcion: '',
                         bConfigEsBilingue: false,
                         cEstadoConfigNombre: '',
                         cSedeNombre: '',
-                        iNivelTipoId: this.stepService.iNivelTipoId,
+                        iNivelTipoId: this.stepService.perfil['iNivelTipoId'],
                         cYAcadNombre: <number>this.sede[0].cYAcadNombre,
+                        iEstado: 0,
                     },
                 ]
 
@@ -219,6 +228,47 @@ export class ConfigGradoSeccionComponent implements OnInit {
                 complete: () => {
                     console.log('Request completed')
                     // this.getYearCalendarios(this.formCalendario.value)
+
+                    if (
+                        Number(this.sede[0].iYAcadId) ===
+                        Number(this.dremoiYAcadId)
+                    ) {
+                        this._confirmService.openAlert({
+                            header: 'Advertencia de configuracion',
+                            message:
+                                'El año escolar de I.E. es: ' +
+                                this.sede[0].cYAcadNombre,
+                            icon: 'pi pi-check-circle',
+                            //severity : "success"
+                        })
+                        this.btnInvalido = true
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: 'Advertencia de configuración',
+                            detail: 'Año escolar habilitado para configuracion de ambientes',
+                        })
+                    } else {
+                        this._confirmService.openAlert({
+                            header: 'Advertencia de configuración',
+                            message:
+                                'El año escolar de I.E. es: ' +
+                                this.sede[0].cYAcadNombre +
+                                ' y el año vigente es : ' +
+                                this.dremoYear,
+                            icon: 'pi pi-times-circle',
+                            //severity : "error"
+                        })
+
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Registro no valido',
+                            detail: 'El calendario escolar y periodos no configurados',
+                        })
+
+                        this.btnInvalido = false
+                    }
+                    //this.sede[0].iYAcadId
+                    //this.sede[0].cYAcadNombre
                 },
             })
     }
@@ -273,30 +323,34 @@ export class ConfigGradoSeccionComponent implements OnInit {
         if (accion === 'agregar') {
             // this.selectedItems = []
             // this.selectedItems = [item]
-            this.visible = true
-            //VALIDACION SI PUEDE
-            this._confirmService.openConfiSave({
-                header: 'Advertencia de configuracion',
-                message: 'La configuración para este año ya existe',
-                icon: 'pi pi-exclamation-triangle',
-                accept: () => {
-                    // Acción para eliminar el registro
-                    this.opcion = 'seleccionar'
-                },
-                reject: () => {
-                    // Mensaje de cancelación (opcional)
-                    this.messageService.add({
-                        severity: 'error',
-                        summary: 'Cancelado',
-                        detail: 'Acción cancelada',
-                    })
-                },
-            })
+            const dremoYear = this.dremoYear // año
 
-            this.opcion = 'seleccionar'
-            this.caption = 'Seleccionar configuración'
-            // this.visible = true
-            // this.asignarPreguntas()
+            const resultado =
+                this.configuracion_lista?.filter(
+                    (item) => item['cYAcadNombre'] === dremoYear
+                ) || []
+
+            if (resultado.length > 0) {
+                this._confirmService.openAlert({
+                    header: 'Advertencia de configuracion',
+                    message:
+                        'El año escolar de I.E. ' +
+                        this.sede[0].cYAcadNombre +
+                        ' ya existe',
+                    icon: 'pi pi-exclamation-triangle',
+                    //severity : "success"
+                })
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Cancelado',
+                    detail: 'Acción cancelada',
+                })
+                return
+            } else {
+                this.visible = true
+                this.opcion = 'seleccionar'
+                this.caption = 'Seleccionar configuración'
+            }
         }
         if (accion === 'editar') {
             const registro = [
@@ -304,7 +358,7 @@ export class ConfigGradoSeccionComponent implements OnInit {
                     iConfigId: item.iConfigId,
                     iYAcadId: item.iYAcadId,
                     iEstadoConfigId: item.iEstadoConfigId,
-                    iNivelTipoId: this.stepService.iNivelTipoId,
+                    iNivelTipoId: this.stepService.perfil['iNivelTipoId'],
                     iSedeId: item.iSedeId,
                     iServEdId: item.iServEdId,
                     cConfigNroRslAprobacion: item.cConfigNroRslAprobacion,
@@ -317,8 +371,9 @@ export class ConfigGradoSeccionComponent implements OnInit {
                     cEstadoConfigNombre: '',
                     cSedeNombre: '',
                     cModalServId: this.stepService.perfil['cNivelNombre'],
-                    cYAcadNombre: <number>this.sede[0].cYAcadNombre,
+                    cYAcadNombre: <number>item.cYAcadNombre,
                     iProgId: this.stepService.perfil['iProgId'],
+                    iEstado: 1, // existente
                 },
             ]
 
@@ -367,6 +422,7 @@ export class ConfigGradoSeccionComponent implements OnInit {
             class: 'p-button-Primary',
         },
     ]
+
     selectedItems = []
     actions: IActionTable[] = [
         {

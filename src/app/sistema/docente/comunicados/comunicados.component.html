@@ -1,0 +1,112 @@
+<section class="flex flex-column gap-4">
+    <div class="col-12 md:col-6 text-left">
+        <span class="text-sm"> Inicio > Mis Comunicados </span>
+    </div>
+    <!-- título -->
+    <div class="grid">
+        <p-toolbar class="col-12">
+            <div class="block">
+                <h2 class="text-primary text-white font-bold block">
+                    Mis Comunicados
+                </h2>
+            </div>
+        </p-toolbar>
+        <p-toolbar class="col-12">
+            <!-- Sección de variables (Nivel, Ciclo, Grado, etc.) -->
+            <div class="flex flex-wrap gap-2 align-items-center">
+                <span class="font-medium"
+                    >Nivel: <strong>Educación Secundaria</strong></span
+                >
+                <span class="font-medium">Ciclo: <strong>VI</strong></span>
+                <span class="font-medium">Grado: <strong>1ro</strong></span>
+                <span class="font-medium">Sección: <strong>A</strong></span>
+                <span class="font-medium"
+                    >Área: <strong>Matemática</strong></span
+                >
+            </div>
+        </p-toolbar>
+    </div>
+
+    <!-- contenido -->
+    <div class="flex">
+        <div class="card w-full">
+            <div class="flex">
+                <button
+                    pButton
+                    pRipple
+                    icon="pi pi pi-home"
+                    label="Inicio"
+                    class="p-button-primary ml-1"
+                ></button>
+
+                <button
+                    pButton
+                    pRipple
+                    icon="pi pi pi-book"
+                    label="Contenido"
+                    class="p-button-primary ml-1"
+                ></button>
+                <button
+                    pButton
+                    pRipple
+                    icon="pi pi pi-users"
+                    label="Resultados"
+                    class="p-button-primary ml-1"
+                ></button>
+            </div>
+        </div>
+    </div>
+    <!-- Contenedor principal de los dos paneles (Lista - Crear) -->
+    <div class="grid">
+        <!-- Panel izquierdo: Lista de Comunicados -->
+        <div class="col-12 md:col-6">
+            <p-panel header="Lista de Comunicados" [toggleable]="true">
+                <!-- Aquí puedes colocar una tabla o lista con tus comunicados -->
+                <div class="my-2">
+                    <p>Comunicado #1</p>
+                    <p>Comunicado #2</p>
+                    <p>Comunicado #3</p>
+                    <!-- Ejemplo estático, luego lo reemplazas con tu data -->
+                </div>
+            </p-panel>
+        </div>
+
+        <!-- Panel derecho: Crear Comunicado -->
+        <div class="col-12 md:col-6">
+            <p-panel header="Crear Comunicado" [toggleable]="true">
+                <div class="flex flex-column gap-2">
+                    <!-- Campos del formulario -->
+                    <div class="flex flex-column">
+                        <label for="titulo" class="mb-1">Título</label>
+                        <input
+                            pInputText
+                            id="titulo"
+                            placeholder="Ingrese el título"
+                        />
+                    </div>
+
+                    <div class="flex flex-column">
+                        <label for="contenido" class="mb-1">Contenido</label>
+                        <textarea
+                            pInputTextarea
+                            id="contenido"
+                            rows="5"
+                            placeholder="Escriba el comunicado..."
+                        ></textarea>
+                    </div>
+
+                    <!-- Botón para publicar -->
+                    <button
+                        pButton
+                        pRipple
+                        label="Publicar"
+                        class="p-button-success align-self-end"
+                    ></button>
+                </div>
+            </p-panel>
+        </div>
+    </div>
+    <p-confirmDialog></p-confirmDialog>
+    <p-toast position="top-right"></p-toast>
+    <p-confirmDialog></p-confirmDialog>
+</section>

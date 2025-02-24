@@ -42,8 +42,9 @@ interface Data {
 })
 export class SilaboComponent implements OnInit, OnDestroy {
     @Input() idDocCursoId: string
-
     activeStepper: number = 0
+    nivelTipo: string
+    cambiar: boolean
     private unsubscribe$ = new Subject<boolean>()
 
     constructor(
@@ -52,7 +53,9 @@ export class SilaboComponent implements OnInit, OnDestroy {
         private ConstantesService: ConstantesService,
         private fb: FormBuilder,
         private messageService: MessageService
-    ) {}
+    ) {
+        this.nivelTipo = this.ConstantesService.nivelTipo
+    }
 
     silabo = [
         { iSilabo: 1, cSilaboTitle: 'Información General', icon: 'pi-info' },
@@ -75,6 +78,13 @@ export class SilaboComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.getSilabo(this.activeStepper, true, [])
         this.getTipoMetodologias()
+        this.cambiar =
+            this.nivelTipo == '3' || this.nivelTipo == '4' ? true : false
+
+        if (this.cambiar) {
+            this.silabo[1]['cSilaboTitle'] =
+                'Área Curricular, Capacidad y Metodología'
+        }
     }
     dataInformation = []
     dataSilabo = this.fb.group({

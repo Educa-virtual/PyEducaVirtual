@@ -29,6 +29,9 @@ export class CompartirEstudianteService {
     private iEstudianteId: string | null = null
     private iPersId: string | null = null
     private iPersRepresentanteLegalId: string | null = null
+    private iFamiliarId: string | null = null
+    private cEstCodigo: string | null = null
+    private cEstApenom: string | null = null
 
     clearData() {
         this.activeIndex = '0'
@@ -86,6 +89,36 @@ export class CompartirEstudianteService {
         return this.iPersId
     }
 
+    setcEstCodigo(id: string | null) {
+        this.cEstCodigo = id
+        localStorage.setItem('cEstCodigo', id)
+    }
+
+    getcEstCodigo(): string | null {
+        if (!this.cEstCodigo) {
+            this.cEstCodigo =
+                localStorage.getItem('cEstCodigo') == 'null'
+                    ? null
+                    : localStorage.getItem('cEstCodigo')
+        }
+        return this.cEstCodigo
+    }
+
+    setcEstApenom(id: string | null) {
+        this.cEstApenom = id
+        localStorage.setItem('cEstApenom', id)
+    }
+
+    getcEstApenom(): string | null {
+        if (!this.cEstApenom) {
+            this.cEstApenom =
+                localStorage.getItem('cEstApenom') == 'null'
+                    ? null
+                    : localStorage.getItem('cEstApenom')
+        }
+        return this.cEstApenom
+    }
+
     setiPersRepresentanteLegalId(id: string | null) {
         this.iPersRepresentanteLegalId = id
         localStorage.setItem('iPersRepresentanteLegalId', id)
@@ -99,5 +132,20 @@ export class CompartirEstudianteService {
                     : localStorage.getItem('iPersRepresentanteLegalId')
         }
         return this.iPersRepresentanteLegalId
+    }
+
+    setiFamiliarId(id: string | null) {
+        this.iFamiliarId = id
+        localStorage.setItem('iFamiliarId', id)
+    }
+
+    getiFamiliarId(): string | null {
+        if (!this.iFamiliarId) {
+            this.iFamiliarId =
+                localStorage.getItem('iFamiliarId') == 'null'
+                    ? null
+                    : localStorage.getItem('iFamiliarId')
+        }
+        return this.iFamiliarId
     }
 }

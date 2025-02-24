@@ -1,11 +1,11 @@
 import { PrimengModule } from '@/app/primeng.module'
 import { ConstantesService } from '@/app/servicios/constantes.service'
-import { GeneralService } from '@/app/servicios/general.service'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { CompartirEstudianteService } from '@/app/sistema/gestion-institucional/services/compartir-estudiante.service'
 import { DatosEstudianteService } from '@/app/sistema/gestion-institucional/services/datos-estudiante-service'
 import { Component, inject, OnInit } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
+import { Router } from '@angular/router'
 import { MessageService } from 'primeng/api'
 
 @Component({
@@ -28,6 +28,7 @@ export class RepresentanteComponent implements OnInit {
     distritos: Array<object>
     lenguas: Array<object>
     tipos_contacto: Array<object>
+    representante_registrado: boolean = false
 
     private _MessageService = inject(MessageService) // dialog Mensaje simple
     private _confirmService = inject(ConfirmationModalService) // componente de dialog mensaje
@@ -38,10 +39,16 @@ export class RepresentanteComponent implements OnInit {
         private constantesService: ConstantesService,
         private fb: FormBuilder,
         private messageService: MessageService,
-        private query: GeneralService
+        private router: Router
     ) {}
 
     ngOnInit(): void {
+        if (this.compartirEstudianteService.getiEstudianteId() === null) {
+            this.router.navigate([
+                '/gestion-institucional/estudiante/registro/datos',
+            ])
+        }
+
         this.datosEstudianteService.getTiposFamiliares().subscribe((data) => {
             this.tipos_familiares = data
         })
@@ -82,11 +89,13 @@ export class RepresentanteComponent implements OnInit {
                 iDptoId: [null],
                 iPrvnId: [null],
                 iDsttId: [null],
-                bEsRepresentante: [true],
+                bEsRepresentante: true,
                 iOcupacionId: [null],
                 bFamiliarVivoConEl: [false],
                 iGradoInstId: [null],
                 iCredId: this.constantesService.iCredId,
+                cEstCodigo: [{ value: '', disabled: true }],
+                cEstApenom: [{ value: '', disabled: true }],
             })
         } catch (error) {
             console.log(error, 'error de variables')
@@ -156,9 +165,9 @@ export class RepresentanteComponent implements OnInit {
                 error: (error) => {
                     console.error('Error obteniendo representante:', error)
                     this.messageService.add({
-                        severity: 'danger',
-                        summary: 'Mensaje',
-                        detail: 'Error en ejecución',
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error,
                     })
                 },
                 complete: () => {
@@ -191,18 +200,51 @@ export class RepresentanteComponent implements OnInit {
             .guardarPersonaFamiliar(this.form.value)
             .subscribe({
                 next: (data: any) => {
+                    this.representante_registrado = true
                     console.log(data, 'agregar representante')
                     this.compartirEstudianteService.setiPersRepresentanteLegalId(
-                        data.data[0].iPersId
+                        data.data[0].iPersRepresentanteLegalId
                     )
-                    this.compartirEstudianteService.setActiveIndex('2')
+                    this.router.navigate([
+                        '/gestion-institucional/estudiante/registro/familia',
+                    ])
                 },
                 error: (error) => {
                     console.error('Error guardando representante:', error)
                     this.messageService.add({
-                        severity: 'danger',
-                        summary: 'Mensaje',
-                        detail: 'Error en ejecución',
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error,
+                    })
+                },
+                complete: () => {
+                    console.log('Request completed')
+                },
+            })
+    }
+
+    actualizarRepresentante() {
+        this.form.patchValue({
+            iPersId: this.compartirEstudianteService.getiPersId(),
+        })
+        this.datosEstudianteService
+            .actualizarPersonaFamiliar(this.form.value)
+            .subscribe({
+                next: (data: any) => {
+                    console.log(data, 'agregar representante')
+                    this.compartirEstudianteService.setiPersRepresentanteLegalId(
+                        data.data[0].iPersRepresentanteLegalId
+                    )
+                    this.router.navigate([
+                        '/gestion-institucional/estudiante/registro/familia',
+                    ])
+                },
+                error: (error) => {
+                    console.error('Error actualizando representante:', error)
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error,
                     })
                 },
                 complete: () => {

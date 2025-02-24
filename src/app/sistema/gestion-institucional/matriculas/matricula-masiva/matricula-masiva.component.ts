@@ -45,6 +45,10 @@ export class MatriculaMasivaComponent implements OnInit {
         this.visible = true
     }
 
+    importarAulas() {
+        this.visible = true
+    }
+
     handleArchivo(event) {
         const file = (event.target as HTMLInputElement)?.files?.[0]
         this.form.patchValue({

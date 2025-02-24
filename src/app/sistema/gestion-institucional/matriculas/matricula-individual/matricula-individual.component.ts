@@ -9,6 +9,7 @@ import { DatosEstudianteService } from '../../services/datos-estudiante-service'
 import { GeneralService } from '@/app/servicios/general.service'
 import { Router } from '@angular/router'
 import { MessageService } from 'primeng/api'
+import { CompartirMatriculaService } from '../../services/compartir-matricula.service'
 
 @Component({
     selector: 'app-matricula-individual',
@@ -29,17 +30,18 @@ export class MatriculaIndividualComponent implements OnInit {
     secciones: Array<object>
     turnos: Array<object>
 
-    private _MessageService = inject(MessageService) // dialog Mensaje simple
     private _confirmService = inject(ConfirmationModalService) // componente de dialog mensaje
 
     constructor(
         private datosMatriculaService: DatosMatriculaService,
         private datosEstudianteService: DatosEstudianteService,
+        private compartirMatriculaService: CompartirMatriculaService,
         private constantesService: ConstantesService,
         private store: LocalStoreService,
         private fb: FormBuilder,
         private query: GeneralService,
-        private router: Router
+        private router: Router,
+        private messageService: MessageService
     ) {
         const perfil = this.store.getItem('dremoPerfil')
         console.log(perfil, 'perfil dremo', this.store)
@@ -58,7 +60,7 @@ export class MatriculaIndividualComponent implements OnInit {
                 iSeccionId: [null],
                 iTurnoId: [null, [Validators.required]],
                 iEstudianteId: [null, [Validators.required]],
-                cEstCodigo: [''],
+                cEstCodigo: ['', [Validators.required]],
                 apenomEstudiante: [{ value: '', disabled: true }],
                 cMatrObservaciones: [''],
             })
@@ -86,6 +88,8 @@ export class MatriculaIndividualComponent implements OnInit {
                 this.filterSecciones(iNivelGradoId, value)
             }
         })
+
+        this.setFormMatricula()
     }
 
     searchGradoSeccionTurno() {
@@ -222,23 +226,82 @@ export class MatriculaIndividualComponent implements OnInit {
             })
     }
 
-    buscarCodigo() {
+    searchEstudiante() {
         this.datosEstudianteService
-            .buscarCodigo({
+            .searchEstudiante({
                 cEstCodigo: this.form.get('cEstCodigo')?.value,
             })
             .subscribe({
                 next: (data: any) => {
-                    console.log(data, 'buscar estudiante')
-                    this.form
-                        .get('iEstudianteId')
-                        ?.setValue(data.data[0].iEstudianteId)
-                    this.form
-                        .get('apenomEstudiante')
-                        ?.setValue(data.data[0]._cPersApenom)
+                    console.log(data, 'search estudiante')
+                    if (!data) {
+                        this.messageService.add({
+                            severity: 'info',
+                            summary: 'Información',
+                            detail: 'No se encontró el estudiante',
+                        })
+                    } else {
+                        this.form
+                            .get('iEstudianteId')
+                            ?.setValue(data.data[0].iEstudianteId)
+                        this.form
+                            .get('apenomEstudiante')
+                            ?.setValue(data.data[0]._cPersApenom)
+                    }
                 },
                 error: (error) => {
                     console.error('Error buscando estudiante:', error)
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error,
+                    })
+                },
+                complete: () => {
+                    console.log('Request completed')
+                },
+            })
+    }
+
+    setFormMatricula() {
+        if (this.compartirMatriculaService.getiMatrId() == null) {
+            return null
+        }
+        this.datosMatriculaService
+            .searchMatricula({
+                iMatrId: this.compartirMatriculaService.getiMatrId(),
+                iCredSesionId: this.constantesService.iCredId,
+            })
+            .subscribe({
+                next: (data: any) => {
+                    const item = data.data[0]
+                    console.log(item)
+                    this.form.get('iEstudianteId')?.setValue(item.iEstudianteId)
+                    this.form.get('iTipoMatrId')?.setValue(item.iTipoMatrId)
+                    this.form.get('iNivelGradoId')?.setValue(item.iNivelGradoId)
+                    this.form.get('iSeccionId')?.setValue(item.iSeccionId)
+                    this.form.get('iTurnoId')?.setValue(item.iTurnoId)
+                    this.form.get('iEstudianteId')?.setValue(item.iEstudianteId)
+                    this.form.get('cEstCodigo')?.setValue(item.cEstCodigo)
+                    this.form
+                        .get('apenomEstudiante')
+                        ?.setValue(item._cEstApenom)
+                    this.form
+                        .get('cMatrObservaciones')
+                        ?.setValue(item.cMatrObservaciones)
+                    this.form
+                        .get('dtMatrFecha')
+                        ?.setValue(
+                            item.dtMatrFecha ? new Date(item.dtMatrFecha) : null
+                        )
+                },
+                error: (error) => {
+                    console.error('Error obteniendo matricula:', error)
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error,
+                    })
                 },
                 complete: () => {
                     console.log('Request completed')
@@ -269,15 +332,20 @@ export class MatriculaIndividualComponent implements OnInit {
                 },
                 error: (error) => {
                     console.error('Error guardando matricula:', error)
-                    this._MessageService.add({
-                        severity: 'danger',
-                        summary: 'Mensaje',
-                        detail: 'Error en ejecución',
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error,
                     })
                 },
                 complete: () => {
                     console.log('Request completed')
                 },
             })
+    }
+
+    salir() {
+        this.compartirMatriculaService.clearData()
+        this.router.navigate(['/gestion-institucional/gestion-matriculas'])
     }
 }

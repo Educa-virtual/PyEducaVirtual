@@ -92,11 +92,15 @@ export class GestionarPreguntasCardComponent implements OnInit {
     }
 
     descargarPreguntasPorArea() {
-        const params = {
-            iEvaluacionId: this.iEvaluacionIdHashed,
-            iCursosNivelGradId: this.curso.iCursosNivelGradId,
+        if (this.curso.bTieneArchivo) {
+            const params = {
+                iEvaluacionId: this.iEvaluacionIdHashed,
+                iCursosNivelGradId: this.curso.iCursosNivelGradId,
+            }
+            this.evaluacionesService.descargarPreguntasPorArea(params)
+        } else {
+            alert('No se ha subido un archivo para esta área.')
         }
-        this.evaluacionesService.descargarPreguntasPorArea(params)
     }
 
     descargarMatrizPorEvaluacionArea() {

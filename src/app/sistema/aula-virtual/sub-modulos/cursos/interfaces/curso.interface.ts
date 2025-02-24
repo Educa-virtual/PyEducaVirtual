@@ -16,4 +16,5 @@ export interface ICurso {
     iNivelCicloId?: any
     iCantidadPreguntas?: number
     iCursosNivelGradId?: string
+    bTieneArchivo?: boolean
 }

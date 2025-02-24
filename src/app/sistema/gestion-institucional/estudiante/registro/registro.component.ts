@@ -39,21 +39,14 @@ export class RegistroComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit() {
-        this.iEstudianteId = this.compartirEstudianteService.getiEstudianteId()
         this.items = [
             {
                 label: 'Datos del estudiante',
                 routerLink: 'datos',
             },
             {
-                label: 'Representante Legal',
+                label: 'Apoderado',
                 routerLink: 'representante',
-                // disabled: !this.iEstudianteId,
-            },
-            {
-                label: 'Familia',
-                routerLink: 'familia',
-                // disabled: !this.iEstudianteId,
             },
         ]
         this.setActiveIndexSteps()

@@ -1,7 +1,7 @@
 <form [formGroup]="form">
     <br />
 
-    <input type="hidden" formControlName="iPersId" />
+    <input type="hidden" formControlName="iPersApoderadoId" />
 
     <p-fieldset legend="Estudiante">
         <div class="grid p-fluid mt-3">
@@ -20,38 +20,7 @@
         </div>
     </p-fieldset>
 
-    <br />
-
-    <p-fieldset legend="Relación con el estudiante">
-        <div class="grid p-fluid mt-3">
-            <div class="field col-12 md:col-6">
-                <span class="p-float-label">
-                    <p-dropdown
-                        [options]="tipos_familiares"
-                        formControlName="iTipoFamiliarId"
-                        optionLabel="nombre"
-                        [checkmark]="true"
-                        optionValue="id"
-                        [filter]="true"
-                        [showClear]="true"
-                        [appendTo]="'body'"
-                    />
-                    <label for="iTipoFamiliarId">Relación / Parentesco *</label>
-                </span>
-            </div>
-            <div class="field col-12 md:col-6">
-                <p-checkbox
-                    value="true"
-                    formControlName="bFamiliarVivoConEl"
-                    label="Vive con el estudiante"
-                />
-            </div>
-        </div>
-    </p-fieldset>
-
-    <br />
-
-    <p-fieldset legend="Información del Representante Legal">
+    <p-fieldset legend="Información del Apoderado">
         <div class="grid p-fluid mt-3">
             <div class="field col-12 md:col-6">
                 <span class="p-float-label">
@@ -247,15 +216,16 @@
     <div class="flex justify-content-end">
         <p-button
             label="Guardar"
-            (onClick)="guardarRepresentante()"
+            (onClick)="guardarApoderado()"
             styleClass="p-button-primary"
-            [hidden]="representante_registrado"
+            [hidden]="apoderado_registrado"
         />
         <p-button
             label="Actualizar"
-            (onClick)="actualizarRepresentante()"
+            (onClick)="actualizarApoderado()"
             styleClass="p-button-primary"
-            [hidden]="!representante_registrado"
+            [hidden]="!apoderado_registrado"
         />
     </div>
 </form>
+<p-toast></p-toast>

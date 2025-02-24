@@ -14,10 +14,27 @@ export class CompartirMatriculaService {
     lista: any[] = []
 
     private iMatrId: string | null = null
+    private iEstudianteId: string | null = null
 
     clearData() {
         this.iMatrId = null
         localStorage.removeItem('iMatrId')
+        localStorage.removeItem('iEstudianteId')
+    }
+
+    setiEstudianteId(index: string | null) {
+        this.iEstudianteId = index
+        localStorage.setItem('iEstudianteId', index)
+    }
+
+    getiEstudianteId(): string | null {
+        if (!this.iEstudianteId) {
+            this.iEstudianteId =
+                localStorage.getItem('iEstudianteId') == 'null'
+                    ? null
+                    : localStorage.getItem('iEstudianteId')
+        }
+        return this.iEstudianteId
     }
 
     setiMatrId(index: string | null) {

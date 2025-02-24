@@ -2,6 +2,7 @@ import { PrimengModule } from '@/app/primeng.module'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { CompartirEstudianteService } from '@/app/sistema/gestion-institucional/services/compartir-estudiante.service'
+import { CompartirMatriculaService } from '@/app/sistema/gestion-institucional/services/compartir-matricula.service'
 import { DatosEstudianteService } from '@/app/sistema/gestion-institucional/services/datos-estudiante-service'
 import { Component, inject, OnInit } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
@@ -28,7 +29,7 @@ export class RepresentanteComponent implements OnInit {
     distritos: Array<object>
     lenguas: Array<object>
     tipos_contacto: Array<object>
-    representante_registrado: boolean = false
+    apoderado_registrado: boolean = false
 
     private _MessageService = inject(MessageService) // dialog Mensaje simple
     private _confirmService = inject(ConfirmationModalService) // componente de dialog mensaje
@@ -36,6 +37,7 @@ export class RepresentanteComponent implements OnInit {
     constructor(
         private datosEstudianteService: DatosEstudianteService,
         private compartirEstudianteService: CompartirEstudianteService,
+        private compartirMatriculaService: CompartirMatriculaService,
         private constantesService: ConstantesService,
         private fb: FormBuilder,
         private messageService: MessageService,
@@ -49,9 +51,6 @@ export class RepresentanteComponent implements OnInit {
             ])
         }
 
-        this.datosEstudianteService.getTiposFamiliares().subscribe((data) => {
-            this.tipos_familiares = data
-        })
         this.datosEstudianteService.getTiposDocumentos().subscribe((data) => {
             this.tipos_documentos = data
         })
@@ -70,10 +69,11 @@ export class RepresentanteComponent implements OnInit {
 
         try {
             this.form = this.fb.group({
-                iPersId: [
-                    this.compartirEstudianteService.getiPersId(),
+                iEstudianteId: [
+                    this.compartirEstudianteService.getiEstudianteId(),
                     Validators.required,
                 ], // PK
+                iPersApoderadoId: [null],
                 iTipoFamiliarId: [null, Validators.required],
                 iTipoIdentId: [null, Validators.required],
                 cPersDocumento: ['', Validators.required],
@@ -89,7 +89,6 @@ export class RepresentanteComponent implements OnInit {
                 iDptoId: [null],
                 iPrvnId: [null],
                 iDsttId: [null],
-                bEsRepresentante: true,
                 iOcupacionId: [null],
                 bFamiliarVivoConEl: [false],
                 iGradoInstId: [null],
@@ -100,6 +99,13 @@ export class RepresentanteComponent implements OnInit {
         } catch (error) {
             console.log(error, 'error de variables')
         }
+
+        this.form
+            .get('cEstCodigo')
+            .setValue(this.compartirEstudianteService.getcEstCodigo())
+        this.form
+            .get('cEstApenom')
+            .setValue(this.compartirEstudianteService.getcEstApenom())
 
         this.form.get('iDptoId').valueChanges.subscribe((value) => {
             this.getProvincias(value)
@@ -115,25 +121,23 @@ export class RepresentanteComponent implements OnInit {
                 ?.setValue(this.compartirEstudianteService.getiPersId())
         }
 
-        this.setFormRepresentante()
+        this.setFormApoderado()
     }
 
-    setFormRepresentante() {
-        if (
-            this.compartirEstudianteService.getiPersRepresentanteLegalId() ==
-            null
-        ) {
+    setFormApoderado() {
+        if (this.compartirEstudianteService.getiPersApoderadoId() == null) {
             return null
         }
+        this.apoderado_registrado = true
         this.datosEstudianteService
-            .searchRepresentante({
+            .searchApoderado({
                 iEstudianteId:
                     this.compartirEstudianteService.getiEstudianteId(),
             })
             .subscribe({
                 next: (data: any) => {
                     const item = data.data[0]
-                    this.form.get('iPersId')?.setValue(item.iPersId)
+                    this.form.get('iPersApoderadoId')?.setValue(item.iPersId)
                     this.form
                         .get('iTipoFamiliarId')
                         ?.setValue(item.iTipoFamiliarId)
@@ -163,7 +167,7 @@ export class RepresentanteComponent implements OnInit {
                         )
                 },
                 error: (error) => {
-                    console.error('Error obteniendo representante:', error)
+                    console.error('Error obteniendo apoderado:', error)
                     this.messageService.add({
                         severity: 'error',
                         summary: 'Error',
@@ -192,25 +196,27 @@ export class RepresentanteComponent implements OnInit {
         })
     }
 
-    guardarRepresentante() {
-        this.form.patchValue({
-            iPersId: this.compartirEstudianteService.getiPersId(),
-        })
+    guardarApoderado() {
         this.datosEstudianteService
-            .guardarPersonaFamiliar(this.form.value)
+            .guardarApoderado(this.form.value)
             .subscribe({
                 next: (data: any) => {
-                    this.representante_registrado = true
-                    console.log(data, 'agregar representante')
-                    this.compartirEstudianteService.setiPersRepresentanteLegalId(
-                        data.data[0].iPersRepresentanteLegalId
+                    this.apoderado_registrado = true
+                    console.log(data, 'agregar apoderado')
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Éxito',
+                        detail: 'Apoderado registrado',
+                    })
+                    this.compartirMatriculaService.setiEstudianteId(
+                        this.form.get('iEstudianteId')?.value
                     )
                     this.router.navigate([
-                        '/gestion-institucional/estudiante/registro/familia',
+                        '/gestion-institucional/matricula-individual',
                     ])
                 },
                 error: (error) => {
-                    console.error('Error guardando representante:', error)
+                    console.error('Error guardando apoderado:', error)
                     this.messageService.add({
                         severity: 'error',
                         summary: 'Error',
@@ -223,24 +229,20 @@ export class RepresentanteComponent implements OnInit {
             })
     }
 
-    actualizarRepresentante() {
-        this.form.patchValue({
-            iPersId: this.compartirEstudianteService.getiPersId(),
-        })
+    actualizarApoderado() {
         this.datosEstudianteService
-            .actualizarPersonaFamiliar(this.form.value)
+            .actualizarApoderado(this.form.value)
             .subscribe({
                 next: (data: any) => {
-                    console.log(data, 'agregar representante')
-                    this.compartirEstudianteService.setiPersRepresentanteLegalId(
-                        data.data[0].iPersRepresentanteLegalId
-                    )
-                    this.router.navigate([
-                        '/gestion-institucional/estudiante/registro/familia',
-                    ])
+                    console.log(data, 'actualizar apoderado')
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Éxito',
+                        detail: 'Apoderado actualizado',
+                    })
                 },
                 error: (error) => {
-                    console.error('Error actualizando representante:', error)
+                    console.error('Error actualizando apoderado:', error)
                     this.messageService.add({
                         severity: 'error',
                         summary: 'Error',

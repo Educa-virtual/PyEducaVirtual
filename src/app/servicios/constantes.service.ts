@@ -9,6 +9,7 @@ import {
     ESTUDIANTE,
     JEFE_DE_PROGRAMA,
     SUBDIRECTOR_IE,
+    APODERADO,
 } from './perfilesConstantes'
 
 const store = new LocalStoreService()
@@ -896,11 +897,33 @@ const administracion = [
 //     },
 // ]
 
-// const apoderados = [
-//     {
-//         items: [inicio],
-//     },
-// ]
+const apoderado = [
+    {
+        label: 'Apoderado',
+        items: [
+            {
+                label: 'Visualizar datos',
+                icon: 'pi pi-fw pi-eye',
+                routerLink: ['apoderado/seguimiento-apoderado'],
+            },
+            {
+                label: 'Registro de apoderados',
+                icon: 'pi pi-user-edit',
+                routerLink: ['apoderado/registro-apoderado'],
+            },
+            {
+                label: 'Notificaciones y anuncios',
+                icon: 'pi pi-megaphone',
+                routerLink: ['apoderado/notificacion-apoderado'],
+            },
+            {
+                label: 'Enlaces de ayuda',
+                icon: 'pi pi-fw pi-share-alt',
+                routerLink: ['ayuda'],
+            },
+        ],
+    },
+]
 
 const first = [
     {
@@ -945,6 +968,10 @@ export class ConstantesService {
                 return docente
             case DIRECTOR_IE:
                 return administracion
+
+            case APODERADO:
+                return apoderado
+
             default:
                 return first
         }

@@ -17,12 +17,15 @@
     background-color: #ffffff !important;
     border: 0px;
 }
-.vertical-header {
-    transform: rotate(-90deg); /* Rota el texto */
-    white-space: nowrap; /* Evita que el texto se rompa */
-    padding: 10px 0; /* Ajusta el espaciado */
-    width: 30px; /* Define un ancho para los encabezados verticales */
+.contenedor {
+    justify-content: center;
+    align-items: center;
     text-align: center;
-    height: 100px; /* Ajusta la altura */
-    font-size: 10px;
+}
+.horizontal {
+    text-align: center;
+    height: 70px;
+    font-size: 9px;
+    writing-mode: sideways-lr;
+    margin: 0 auto;
 }

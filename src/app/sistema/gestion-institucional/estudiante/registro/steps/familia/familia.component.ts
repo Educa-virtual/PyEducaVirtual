@@ -54,6 +54,7 @@ export class FamiliaComponent implements OnInit {
     distritos: Array<object>
     lenguas: Array<object>
     tipos_contacto: Array<object>
+    familiar_registrado: boolean = false
 
     private _MessageService = inject(MessageService) // dialog Mensaje simple
     private _confirmService = inject(ConfirmationModalService) // componente de dialog mensaje
@@ -77,6 +78,12 @@ export class FamiliaComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        if (this.compartirEstudianteService.getiEstudianteId() === null) {
+            this.router.navigate([
+                '/gestion-institucional/estudiante/registro/datos',
+            ])
+        }
+
         this.datosEstudianteService.getTiposFamiliares().subscribe((data) => {
             this.tipos_familiares = data
         })
@@ -100,7 +107,7 @@ export class FamiliaComponent implements OnInit {
 
         try {
             this.form = this.fb.group({
-                iPersId: [0, Validators.required], // PK
+                iFamiliarId: [0, Validators.required], // PK
                 iTipoFamiliarId: [0, Validators.required],
                 iTipoIdentId: [0, Validators.required],
                 cPersDocumento: ['', Validators.required],
@@ -118,7 +125,7 @@ export class FamiliaComponent implements OnInit {
                 iLenguaId: [0],
                 iLenguaSecundariaId: [0],
                 iTipoConId: [0],
-                cPersConNombre: [0],
+                iPersId: this.compartirEstudianteService.getiPersId(),
                 iCredId: this.constantesService.iCredId,
             })
         } catch (error) {
@@ -134,35 +141,33 @@ export class FamiliaComponent implements OnInit {
         })
     }
 
-    accionBtnItemTable({ accion }) {
+    accionBtnItemTable({ accion, item }) {
         if (accion === 'editar') {
             this.c_accion = accion
             this.caption = 'Editar solicitud'
+            this.compartirEstudianteService.setiFamiliarId(item?.iPersId)
             this.visible = true
         }
-        if (accion === 'agregar') {
-            this.c_accion = accion
-            this.form.get('iPersId')?.enable()
-            this.caption = 'Registrar solicitud'
-            this.clearForm()
-            this.visible = true
-        }
-        if (accion === 'registrar') {
-            this.router.navigate(['/matriculas/procesar'])
+        if (accion === 'anular') {
+            this._confirmService.openConfirm({
+                message:
+                    '¿Está seguro de anular la relación familiar seleccionada?',
+                header: 'Anular relación familiar',
+                icon: 'pi pi-exclamation-triangle',
+                accept: () => {
+                    this.borrarFamiliar(item?.iPersd)
+                },
+            })
         }
     }
+
     accionBtnItem(accion) {
         switch (accion) {
             case 'validar':
                 this.validar()
                 break
-            case 'guardar':
-                // this.addSolicitud()
-                this.visible = false
-                break
-            case 'editar':
-                // this.updateSolicitud()
-                this.visible = false
+            case 'agregar':
+                this.visible = true
                 break
         }
     }
@@ -186,42 +191,19 @@ export class FamiliaComponent implements OnInit {
                 },
                 error: (error) => {
                     console.error('Error al obtener familiares:', error)
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error,
+                    })
                 },
                 complete: () => {},
             })
     }
 
-    // Función para manejar el botón de "Siguiente"
-    handleNext() {
-        if (this.activeStep === 2) {
-            if (this.form.invalid) {
-                this._MessageService.add({
-                    severity: 'error',
-                    summary: 'Rellenar los campos',
-                    detail: 'Rellene todos los campos para registrar al familiar del estudiante',
-                })
-                // Marca los campos como tocados para que se muestren los errores
-                this.form.markAllAsTouched()
-                return
-            }
-        }
-
-        // Pasar al siguiente paso
-        if (this.activeStep < this.totalSteps - 1) {
-            this.activeStep++
-            return
-        }
-    }
-    // Función para manejar el botón "Atrás"
-    handlePrevious() {
-        if (this.activeStep > 0) {
-            this.activeStep--
-        }
-    }
-
     clearForm() {
         this.form.reset()
-        this.form.get('iPersId')?.setValue(0)
+        this.form.get('iFamiliarId')?.setValue(0)
     }
 
     getProvincias(iDptoId: number) {
@@ -253,7 +235,7 @@ export class FamiliaComponent implements OnInit {
                     this.form
                         .get('iEstudianteId')
                         ?.setValue(estudiante.iEstudianteId)
-                    this.form.get('iPersId')?.setValue(persona.iPersId)
+                    this.form.get('iFamiliarId')?.setValue(persona.iPersId)
                     this.form.get('cPersNombre')?.setValue(persona.cPersNombre)
                     this.form
                         .get('cPersPaterno')
@@ -274,9 +256,148 @@ export class FamiliaComponent implements OnInit {
                 error: (error) => {
                     console.error('Error validando familiar:', error)
                     this.messageService.add({
-                        severity: 'danger',
-                        summary: 'Mensaje',
-                        detail: 'Error en ejecución',
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error,
+                    })
+                },
+                complete: () => {
+                    console.log('Request completed')
+                },
+            })
+    }
+
+    guardarFarmiliar() {
+        this.datosEstudianteService
+            .guardarPersonaFamiliar(this.form.value)
+            .subscribe({
+                next: () => {
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Éxito',
+                        detail: 'Se registró exitosamente',
+                    })
+                    this.visible = false
+                    this.searchFamiliares()
+                },
+                error: (error) => {
+                    console.error('Error guardando familiar:', error)
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error,
+                    })
+                },
+                complete: () => {
+                    console.log('Request completed')
+                },
+            })
+    }
+
+    actualizarFarmiliar() {
+        this.datosEstudianteService
+            .actualizarPersonaFamiliar(this.form.value)
+            .subscribe({
+                next: () => {
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Éxito',
+                        detail: 'Se actualizó exitosamente',
+                    })
+                    this.visible = false
+                    this.searchFamiliares()
+                },
+                error: (error) => {
+                    console.error('Error actualizando familiar:', error)
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error,
+                    })
+                },
+                complete: () => {
+                    console.log('Request completed')
+                },
+            })
+    }
+
+    borrarFamiliar(iFamiliarId: any) {
+        this.datosEstudianteService
+            .borrarPersonaFamiliar({
+                iPersId: this.compartirEstudianteService.getiPersId(),
+                iFamiliarId: iFamiliarId,
+                iCredSesionId: this.constantesService.iCredId,
+            })
+            .subscribe({
+                next: (data: any) => {
+                    console.log(data, 'delete familiar')
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Éxito',
+                        detail: 'Se eliminó exitosamente',
+                    })
+                    this.familiares = this.familiares.filter(
+                        (item: any) => item.iPersId !== iFamiliarId
+                    )
+                },
+                error: (error) => {
+                    console.error('Error eliminando familiar:', error)
+                    this._MessageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error,
+                    })
+                },
+            })
+    }
+
+    setFormFamiliar() {
+        if (this.compartirEstudianteService.getiFamiliarId() == null) {
+            return null
+        }
+        this.familiar_registrado = true
+        this.datosEstudianteService
+            .searchEstudianteFamiliar({
+                iFamiliarId: this.compartirEstudianteService.getiFamiliarId(),
+            })
+            .subscribe({
+                next: (data: any) => {
+                    const item = data.data[0]
+                    this.form.get('iFamiliarId')?.setValue(item.iPersId)
+                    this.form
+                        .get('iTipoFamiliarId')
+                        ?.setValue(item.iTipoFamiliarId)
+                    this.form.get('iTipoIdentId')?.setValue(item.iTipoIdentId)
+                    this.form
+                        .get('cPersDocumento')
+                        ?.setValue(item.cPersDocumento)
+                    this.form.get('cPersNombre')?.setValue(item.cPersNombre)
+                    this.form.get('cPersPaterno')?.setValue(item.cPersPaterno)
+                    this.form.get('cPersMaterno')?.setValue(item.cPersMaterno)
+                    this.form.get('cPersSexo')?.setValue(item.cPersSexo)
+                    this.form.get('iTipoEstCivId')?.setValue(item.iTipoEstCivId)
+                    this.form.get('iNacionId')?.setValue(item.iNacionId)
+                    this.form
+                        .get('cPersDomicilio')
+                        ?.setValue(item.cPersDomicilio)
+                    this.form.get('iPaisId')?.setValue(item.iPaisId)
+                    this.form.get('iDptoId')?.setValue(item.iDptoId)
+                    this.form.get('iPrvnId')?.setValue(item.iPrvnId)
+                    this.form.get('iDsttId')?.setValue(item.iDsttId)
+                    this.form
+                        .get('dPersNacimiento')
+                        ?.setValue(
+                            item.dPersNacimiento
+                                ? new Date(item.dPersNacimiento)
+                                : null
+                        )
+                },
+                error: (error) => {
+                    console.error('Error obteniendo familiar:', error)
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error,
                     })
                 },
                 complete: () => {
@@ -311,9 +432,9 @@ export class FamiliaComponent implements OnInit {
             class: 'p-button-rounded p-button-warning p-button-text',
         },
         {
-            labelTooltip: 'Registrar en esta sección',
-            icon: 'pi pi-plus',
-            accion: 'registrar',
+            labelTooltip: 'Anular',
+            icon: 'pi pi-trash',
+            accion: 'anular',
             type: 'item',
             class: 'p-button-rounded p-button-primary p-button-text',
         },
@@ -349,6 +470,14 @@ export class FamiliaComponent implements OnInit {
         {
             type: 'text',
             width: '5rem',
+            field: 'cTipoIdentSigla',
+            header: 'Tipo',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'text',
+            width: '5rem',
             field: 'cPersDocumento',
             header: 'Documento',
             text_header: 'center',
@@ -357,17 +486,9 @@ export class FamiliaComponent implements OnInit {
         {
             type: 'text',
             width: '10rem',
-            field: 'cPersNombre',
+            field: '_cPersApenom',
             header: 'Nombre Completo',
             text_header: 'left',
-            text: 'left',
-        },
-        {
-            type: 'text',
-            width: '5rem',
-            field: '',
-            header: 'Celular',
-            text_header: 'center',
             text: 'left',
         },
         {

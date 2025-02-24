@@ -31,6 +31,10 @@ export class DatosMatriculaService {
         )
     }
 
+    searchMatricula(data: any) {
+        return this.http.post(`${baseUrl}/acad/matricula/searchMatricula`, data)
+    }
+
     searchMatriculas(data: any) {
         return this.http.post(
             `${baseUrl}/acad/matricula/searchMatriculas`,

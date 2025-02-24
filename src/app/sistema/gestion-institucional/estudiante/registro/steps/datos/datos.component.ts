@@ -1,11 +1,11 @@
 import { PrimengModule } from '@/app/primeng.module'
 import { ConstantesService } from '@/app/servicios/constantes.service'
-import { GeneralService } from '@/app/servicios/general.service'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { CompartirEstudianteService } from '@/app/sistema/gestion-institucional/services/compartir-estudiante.service'
 import { DatosEstudianteService } from '@/app/sistema/gestion-institucional/services/datos-estudiante-service'
 import { Component, inject, OnInit } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
+import { Router } from '@angular/router'
 import { MessageService } from 'primeng/api'
 
 @Component({
@@ -27,6 +27,7 @@ export class DatosComponent implements OnInit {
     religiones: Array<object>
     tipos_contacto: Array<object>
     ubigeo: Array<object>
+    estudiante_registrado: boolean = false
 
     private _MessageService = inject(MessageService) // dialog Mensaje simple
     private _confirmService = inject(ConfirmationModalService) // componente de dialog mensaje
@@ -37,7 +38,7 @@ export class DatosComponent implements OnInit {
         private constantesService: ConstantesService,
         private fb: FormBuilder,
         private messageService: MessageService,
-        private query: GeneralService
+        private router: Router
     ) {}
 
     ngOnInit(): void {
@@ -79,7 +80,6 @@ export class DatosComponent implements OnInit {
                 iPrvnId: [null],
                 iDsttId: [null],
                 iCredId: this.constantesService.iCredId,
-                iReligionId: [null],
                 cEstUbigeo: [''],
                 cEstTelefono: [''],
                 cEstCorreo: [''],
@@ -104,6 +104,7 @@ export class DatosComponent implements OnInit {
         })
 
         this.form.get('iDsttId').valueChanges.subscribe((value) => {
+            if (!value) return null
             const item = this.distritos.find((item: any) => item.id === value)
             if (item) {
                 this.form.get('cEstUbigeo').setValue(item['ubigeo'])
@@ -116,6 +117,7 @@ export class DatosComponent implements OnInit {
     }
 
     getProvincias(iDptoId: number) {
+        if (!iDptoId) return null
         this.datosEstudianteService.getProvincias(iDptoId).subscribe({
             next: (data) => {
                 this.provincias = data
@@ -124,6 +126,7 @@ export class DatosComponent implements OnInit {
     }
 
     getDistritos(iPrvnId: number) {
+        if (!iPrvnId) return null
         this.datosEstudianteService.getDistritos(iPrvnId).subscribe({
             next: (data) => {
                 this.distritos = data
@@ -135,6 +138,7 @@ export class DatosComponent implements OnInit {
         if (this.compartirEstudianteService.getiEstudianteId() == null) {
             return null
         }
+        this.estudiante_registrado = true
         this.datosEstudianteService
             .searchEstudiante({
                 iEstudianteId:
@@ -178,9 +182,9 @@ export class DatosComponent implements OnInit {
                 error: (error) => {
                     console.error('Error obteniendo estudiante:', error)
                     this.messageService.add({
-                        severity: 'danger',
-                        summary: 'Mensaje',
-                        detail: 'Error en ejecución',
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error,
                     })
                 },
                 complete: () => {
@@ -194,6 +198,7 @@ export class DatosComponent implements OnInit {
             .guardarEstudiante(this.form.value)
             .subscribe({
                 next: (data: any) => {
+                    this.estudiante_registrado = true
                     console.log(data, 'agregar estudiante')
                     this.compartirEstudianteService.setiEstudianteId(
                         data.data[0].iEstudianteId
@@ -201,14 +206,58 @@ export class DatosComponent implements OnInit {
                     this.compartirEstudianteService.setiPersId(
                         data.data[0].iPersId
                     )
-                    this.compartirEstudianteService.setActiveIndex('1')
+                    this.compartirEstudianteService.setcEstCodigo(
+                        data.data[0].cEstCodigo
+                    )
+                    this.compartirEstudianteService.setcEstApenom(
+                        data.data[0].cEstApenom
+                    )
+                    this.router.navigate([
+                        '/gestion-institucional/estudiante/registro/representante',
+                    ])
                 },
                 error: (error) => {
                     console.error('Error guardando estudiante:', error)
                     this.messageService.add({
-                        severity: 'danger',
-                        summary: 'Mensaje',
-                        detail: 'Error en ejecución',
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error,
+                    })
+                },
+                complete: () => {
+                    console.log('Request completed')
+                },
+            })
+    }
+
+    actualizarEstudiante() {
+        this.datosEstudianteService
+            .actualizarEstudiante(this.form.value)
+            .subscribe({
+                next: (data: any) => {
+                    console.log(data, 'actualizar estudiante')
+                    this.compartirEstudianteService.setiEstudianteId(
+                        data.data[0].iEstudianteId
+                    )
+                    this.compartirEstudianteService.setiPersId(
+                        data.data[0].iPersId
+                    )
+                    this.compartirEstudianteService.setcEstCodigo(
+                        data.data[0].cEstCodigo
+                    )
+                    this.compartirEstudianteService.setcEstApenom(
+                        data.data[0]._cPersApenom
+                    )
+                    this.router.navigate([
+                        '/gestion-institucional/estudiante/registro/representante',
+                    ])
+                },
+                error: (error) => {
+                    console.error('Error actualizando estudiante:', error)
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error,
                     })
                 },
                 complete: () => {

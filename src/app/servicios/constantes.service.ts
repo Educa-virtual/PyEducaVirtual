@@ -27,6 +27,11 @@ const docente = [
         items: [
             inicio,
             {
+                label: 'Comunicados',
+                icon: 'pi pi-fw pi-bell',
+                routerLink: ['/docente/comunicados'],
+            },
+            {
                 label: 'Portafolio',
                 icon: 'pi pi-fw pi-folder',
                 routerLink: ['/docente/portafolio'],
@@ -898,7 +903,7 @@ const administracion = [
                         routerLink: ['/gestion-institucional/reporte'],
                     },
                     {
-                        label: 'Reporte Orden de Mérito',
+                        label: 'Reportes Orden de Mérito',
                         icon: 'pi pi-fw pi-circle',
                         routerLink: ['/gestion-institucional/estadistica'],
                     },

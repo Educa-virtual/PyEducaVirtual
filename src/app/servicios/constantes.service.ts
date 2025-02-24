@@ -27,6 +27,11 @@ const docente = [
         items: [
             inicio,
             {
+                label: 'Comunicados',
+                icon: 'pi pi-fw pi-bell',
+                routerLink: ['/docente/comunicados'],
+            },
+            {
                 label: 'Portafolio',
                 icon: 'pi pi-fw pi-folder',
                 routerLink: ['/docente/portafolio'],

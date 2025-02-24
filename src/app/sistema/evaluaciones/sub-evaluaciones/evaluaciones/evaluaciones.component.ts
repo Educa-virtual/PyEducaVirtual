@@ -34,6 +34,7 @@ import { ConstantesService } from '@/app/servicios/constantes.service'
 import { ContainerPageAccionbComponent } from './container-page-accionb/container-page-accionb.component'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { GeneralService } from '@/app/servicios/general.service'
+import { DIRECTOR_IE } from '@/app/servicios/perfilesConstantes'
 @Component({
     selector: 'app-evaluaciones',
     standalone: true,
@@ -69,6 +70,12 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
     cursoSeleccionado: Map<number, boolean> = new Map()
     iiEvaluacionId: number // El ID de evaluación que quieras usar
     nombreEvaluacion: string
+    iPerfil: number
+    tabs = [
+        { title: 'Title 1', content: 'Content 1' },
+        { title: 'Title 2', content: 'Content 2' },
+        { title: 'Title 3', content: 'Content 3' },
+    ]
 
     @Output() opcionChange = new EventEmitter<string>()
     @Input() dataRow: any[] = [] // Los datos que recibe la tabla
@@ -80,6 +87,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
     private unsubscribe$: Subject<boolean> = new Subject()
     private _confirmService = inject(ConfirmationModalService) //intersector de eliminar
     private _generalService = inject(GeneralService)
+    private _constantesService = inject(ConstantesService) // traer los idGlobales
     public cEvaluacionNombre: string
     public params = {
         iCompentenciaId: 0,
@@ -89,11 +97,15 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
     }
     public data = []
     public showModalCursosEre: boolean = false
+    public DIRECTOR_IE = DIRECTOR_IE
     form: FormGroup
 
-    private ConstantesService = inject(ConstantesService)
     private _formBuilder = inject(FormBuilder) //form para obtener la variable
     public guardarIniFinCurso: FormGroup = this._formBuilder.group({})
+
+    // Variable donde se almacenan las acciones filtradas
+    // public accionesTabla: IActionTable[] = [];
+
     constructor(
         private router: Router,
         private compartirIdEvaluacionService: CompartirIdEvaluacionService,
@@ -107,8 +119,10 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
         this.form = this.fb.group({})
     }
     resetSelect: boolean = false
+    // se inicializa..
     ngOnInit() {
         this.obtenerEvaluacion()
+        this.obtenerPerfil()
         this.caption = 'Evaluaciones'
         this.dataSubject.subscribe((newData: any[]) => {
             this.data = newData
@@ -125,6 +139,18 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
         this.form.valueChanges.subscribe((value) => {
             value
         })
+    }
+
+    // obtener idPerfil
+    iPerfilId: number
+    iPerfilUsuario
+    obtenerPerfil() {
+        this.iPerfilId = this._constantesService.iPerfilId
+        console.log('idPerfil', this.iPerfilId)
+
+        this.iPerfilUsuario = {
+            rol: 'admin',
+        }
     }
     ejecutarAccion(event: { accion: string; item: IActionContainer }) {
         console.log('Acción seleccionada:', event.accion)
@@ -202,7 +228,6 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
 
             return Object.values(niveles)
         }
-
         const nivelesConGradosYCursos = agruparPorNivelYGrado()
         this.listaCursos = nivelesConGradosYCursos
         this.listaCursos.forEach((nivel) => {
@@ -287,6 +312,9 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
     toggleBotonc(): void {
         this.mostrarBoton = !this.mostrarBoton
     }
+    generarAccines(): boolean {
+        return this.iPerfilId !== DIRECTOR_IE
+    }
     // el buton select
     accionesPrincipal: MenuItem[] = [
         {
@@ -295,18 +323,8 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
                     label: 'Crear evaluación',
                     icon: 'pi pi-plus',
                     accion: 'seleccionar',
-                    command: () => {
-                        // funcion
-                    },
+                    visible: this.generarAccines(),
                 },
-                //comentado xk aun no se implemento la funcion importar.
-                // {
-                //     label: 'Importar evaluación',
-                //     icon: 'pi pi-plus',
-                //     command: () => {
-                //         // funcion
-                //     },
-                // },
             ],
         },
     ]
@@ -376,7 +394,8 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
             text: 'center',
         },
         ...this.columnasBase,
-    ]
+    ] // Perfil del usuario
+
     // Acciones del listar evaluaciones creadas
     public accionesTabla: IActionTable[] = [
         {
@@ -385,6 +404,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
             accion: 'ver',
             type: 'item',
             class: 'p-button-rounded p-button-warning p-button-text',
+            // visible: perfilUsuario.rol === 'admin'
         },
         {
             labelTooltip: 'Editar',
@@ -392,6 +412,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
             accion: 'editar',
             type: 'item',
             class: 'p-button-rounded p-button-warning p-button-text',
+            isVisible: () => this.iPerfilId !== DIRECTOR_IE,
         },
         {
             labelTooltip: 'Eliminar',
@@ -399,6 +420,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
             accion: 'eliminar',
             type: 'item',
             class: 'p-button-rounded p-button-warning p-button-text',
+            isVisible: () => this.iPerfilId !== DIRECTOR_IE,
         },
         {
             labelTooltip: 'Banco Preguntas',
@@ -406,15 +428,24 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
             accion: 'BancoPreguntas',
             type: 'item',
             class: 'p-button-rounded p-button-warning p-button-text',
+            isVisible: () => this.iPerfilId !== DIRECTOR_IE,
         },
         {
-            labelTooltip: 'Asignar Fecha de publicación',
-            icon: 'pi pi-align-justify',
+            labelTooltip: 'Asignar hora de publicación',
+            icon: 'pi pi-clock',
+            accion: 'fechaPublicacion',
+            type: 'item',
+            class: 'p-button-rounded p-button-warning p-button-text',
+        },
+        {
+            labelTooltip: 'Estadistica',
+            icon: 'pi pi-chart-bar',
             accion: 'fechaPublicacion',
             type: 'item',
             class: 'p-button-rounded p-button-warning p-button-text',
         },
     ]
+    // ].filter(accion => accion.visible !== false);
     onRowSelect(event: any) {
         this.selectedRow = [event]
         //this.selectedRowData.emit(this.selectedRow) // Emite los datos al componente padre
@@ -534,7 +565,8 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
                 value: item.iEvaluacionId,
                 value1: item.cEvaluacionNombre,
             })
-            console.log('Nombre:', item.cEvaluacionNombre)
+            this.cEvaluacionNombre = item.cEvaluacionNombre
+            console.log('Nombre:', item.cEvaluacionNombre, item.iEvaluacionId)
         }
     }
     eliminarEvaluacionXId(item) {
@@ -559,6 +591,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
         })
     }
     onEvaluacionSeleccionada(event: any) {
+        // console.log('Evento recibido:', event); // Verifica qué valores llegan
         // Asigna dinámicamente el valor seleccionado
         this.iiEvaluacionId = event.value
 

@@ -42,6 +42,13 @@ const routes: Routes = [
                 (c) => c.PreguntasComponent
             ),
     },
+    {
+        path: 'informes-ere',
+        loadComponent: () =>
+            import('./informes-ere/informes-ere/informes-ere.component').then(
+                (c) => c.InformesEreComponent
+            ),
+    },
 ]
 
 export class AppRoutingModule {}

@@ -71,9 +71,9 @@ export class DatosMatriculaService {
         )
     }
 
-    subirArchivo(data: any) {
+    subirArchivoMatriculas(data: any) {
         return this.http.post(
-            `${baseUrl}/acad/estudiante/importarEstudiantesPadresExcel`,
+            `${baseUrl}/acad/estudiante/importarEstudiantesMatriculasExcel`,
             data,
             {
                 headers: new HttpHeaders({

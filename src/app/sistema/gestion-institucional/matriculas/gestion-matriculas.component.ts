@@ -121,29 +121,16 @@ export class GestionMatriculasComponent implements OnInit {
         const iSeccionId = this.form.get('iSeccionId')?.value
         const iTipoMatrId = this.form.get('iTipoMatrId')?.value
         this.matriculas_filtradas = this.matriculas.filter((matricula) => {
-            if (
-                iNivelGradoId &&
-                matricula.iNivelGradoId !==
-                    this.form.get('iNivelGradoId')?.value
-            ) {
+            if (iNivelGradoId && matricula.iNivelGradoId !== iNivelGradoId) {
                 return null
             }
-            if (
-                iTurnoId &&
-                matricula.iTurnoId !== this.form.get('iTurnoId')?.value
-            ) {
+            if (iTurnoId && matricula.iTurnoId !== iTurnoId) {
                 return null
             }
-            if (
-                iSeccionId &&
-                matricula.iSeccionId === this.form.get('iSeccionId')?.value
-            ) {
+            if (iSeccionId && matricula.iSeccionId !== iSeccionId) {
                 return null
             }
-            if (
-                iTipoMatrId &&
-                matricula.iTipoMatrId !== this.form.get('iTipoMatrId')?.value
-            ) {
+            if (iTipoMatrId && matricula.iTipoMatrId !== iTipoMatrId) {
                 return null
             }
             return matricula
@@ -309,7 +296,7 @@ export class GestionMatriculasComponent implements OnInit {
             },
             []
         )
-        if (this.turnos.length === 1) {
+        if (this.secciones.length === 1) {
             this.form.get('iSeccionId')?.setValue(this.secciones[0]['id'])
         }
         console.log(this.secciones, 'secciones')

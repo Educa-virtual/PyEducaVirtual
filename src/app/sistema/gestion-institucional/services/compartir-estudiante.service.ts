@@ -28,7 +28,7 @@ export class CompartirEstudianteService {
     private activeIndex: string
     private iEstudianteId: string | null = null
     private iPersId: string | null = null
-    private iPersRepresentanteLegalId: string | null = null
+    private iPersApoderadoId: string | null = null
     private iFamiliarId: string | null = null
     private cEstCodigo: string | null = null
     private cEstApenom: string | null = null
@@ -37,11 +37,11 @@ export class CompartirEstudianteService {
         this.activeIndex = '0'
         this.iEstudianteId = null
         this.iPersId = null
-        this.iPersRepresentanteLegalId = null
+        this.iPersApoderadoId = null
         localStorage.removeItem('activeIndex')
         localStorage.removeItem('iEstudianteId')
         localStorage.removeItem('iPersId')
-        localStorage.removeItem('iPersRepresentanteLegalId')
+        localStorage.removeItem('iPersApoderadoId')
     }
 
     setActiveIndex(index: string | null) {
@@ -119,19 +119,19 @@ export class CompartirEstudianteService {
         return this.cEstApenom
     }
 
-    setiPersRepresentanteLegalId(id: string | null) {
-        this.iPersRepresentanteLegalId = id
-        localStorage.setItem('iPersRepresentanteLegalId', id)
+    setiPersApoderadoId(id: string | null) {
+        this.iPersApoderadoId = id
+        localStorage.setItem('iPersApoderadoId', id)
     }
 
-    getiPersRepresentanteLegalId(): string | null {
-        if (!this.iPersRepresentanteLegalId) {
-            this.iPersRepresentanteLegalId =
-                localStorage.getItem('iPersRepresentanteLegalId') == 'null'
+    getiPersApoderadoId(): string | null {
+        if (!this.iPersApoderadoId) {
+            this.iPersApoderadoId =
+                localStorage.getItem('iPersApoderadoId') == 'null'
                     ? null
-                    : localStorage.getItem('iPersRepresentanteLegalId')
+                    : localStorage.getItem('iPersApoderadoId')
         }
-        return this.iPersRepresentanteLegalId
+        return this.iPersApoderadoId
     }
 
     setiFamiliarId(id: string | null) {

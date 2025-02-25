@@ -73,9 +73,30 @@ export class DatosEstudianteService implements OnDestroy {
         )
     }
 
-    searchRepresentante(data: any) {
+    searchApoderado(data: any) {
         return this.http.post(
-            `${baseUrl}/acad/estudiante/searchRepresentante`,
+            `${baseUrl}/acad/estudiante/searchApoderado`,
+            data
+        )
+    }
+
+    guardarApoderado(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/estudiante/guardarApoderado`,
+            data
+        )
+    }
+
+    actualizarApoderado(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/estudiante/actualizarApoderado`,
+            data
+        )
+    }
+
+    validarApoderado(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/estudiante/validarApoderado`,
             data
         )
     }
@@ -94,13 +115,6 @@ export class DatosEstudianteService implements OnDestroy {
     validarEstudiante(data: any) {
         return this.http.post(
             `${baseUrl}/acad/estudiante/validarEstudiante`,
-            data
-        )
-    }
-
-    validarRepresentante(data: any) {
-        return this.http.post(
-            `${baseUrl}/acad/estudiante/validarRepresentante`,
             data
         )
     }

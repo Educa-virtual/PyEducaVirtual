@@ -45,6 +45,8 @@
     [style]="{ width: '56rem' }"
     [modal]="true"
     [contentStyle]="{ overflow: 'auto' }"
+    (onHide)="resetearInput()"
+    (onShow)="resetearResultados()"
 >
     <ng-content>
         <form [formGroup]="form" (ngSubmit)="subirArchivo()">
@@ -73,3 +75,20 @@
         </form>
     </ng-content>
 </p-dialog>
+
+<app-table-primeng
+    [columnas]="columns"
+    [showCaption]="true"
+    [data]="resultados"
+    [showPaginator]="true"
+    sortMode="single"
+    sortField="persona_nomape"
+    [sortOrder]="1"
+    [(selectedRowData)]="selectedItems"
+    [actions]="actions"
+    [hidden]="!hay_resultados"
+>
+</app-table-primeng>
+<ng-container slot="caption-content"> </ng-container>
+
+<p-toast></p-toast>

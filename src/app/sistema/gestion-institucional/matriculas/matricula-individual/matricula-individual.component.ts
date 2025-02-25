@@ -88,8 +88,8 @@ export class MatriculaIndividualComponent implements OnInit {
                 this.filterSecciones(iNivelGradoId, value)
             }
         })
-
         this.setFormMatricula()
+        this.setEstudiante()
     }
 
     searchGradoSeccionTurno() {
@@ -294,6 +294,39 @@ export class MatriculaIndividualComponent implements OnInit {
                         ?.setValue(
                             item.dtMatrFecha ? new Date(item.dtMatrFecha) : null
                         )
+                },
+                error: (error) => {
+                    console.error('Error obteniendo matricula:', error)
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error,
+                    })
+                },
+                complete: () => {
+                    console.log('Request completed')
+                },
+            })
+    }
+
+    setEstudiante() {
+        if (
+            this.compartirMatriculaService.getiEstudianteId() == null ||
+            this.compartirMatriculaService.getiMatrId() !== null
+        ) {
+            return null
+        }
+        this.datosEstudianteService
+            .searchEstudiante({
+                iEstudianteId:
+                    this.compartirMatriculaService.getiEstudianteId(),
+            })
+            .subscribe({
+                next: (data: any) => {
+                    const item = data.data[0]
+                    this.form.get('iEstudianteId')?.setValue(item.iEstudianteId)
+                    this.form.get('cEstCodigo')?.setValue(item.cEstCodigo)
+                    this.form.get('apenomEstudiante').setValue(item._cEstApenom)
                 },
                 error: (error) => {
                     console.error('Error obteniendo matricula:', error)

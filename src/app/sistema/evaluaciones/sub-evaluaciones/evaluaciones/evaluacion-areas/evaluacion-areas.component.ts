@@ -347,7 +347,12 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
                     console.log('Respuesta de la API:', resp)
                 },
                 error: (err) => {
-                    console.error('Error al insertar cursos:', err)
+                    this._MessageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: err,
+                    })
+                    //console.error('Error al insertar cursos:', err)
                 },
             })
     }

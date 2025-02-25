@@ -9,6 +9,7 @@ import {
     ESTUDIANTE,
     JEFE_DE_PROGRAMA,
     SUBDIRECTOR_IE,
+    APODERADO,
 } from './perfilesConstantes'
 
 const store = new LocalStoreService()
@@ -26,6 +27,11 @@ const docente = [
     {
         items: [
             inicio,
+            {
+                label: 'Comunicados',
+                icon: 'pi pi-fw pi-bell',
+                routerLink: ['/docente/comunicados'],
+            },
             {
                 label: 'Portafolio',
                 icon: 'pi pi-fw pi-folder',
@@ -790,13 +796,44 @@ const administracion = [
                 ],
             },
             {
+                label: 'Gestión de estudiantes',
+                icon: 'pi pi-fw pi-cog',
+                items: [
+                    {
+                        label: 'Ingresar estudiante',
+                        icon: 'pi pi-fw pi-circle',
+                        badge: 'NEW',
+                        routerLink: [
+                            '/gestion-institucional/estudiante/registro',
+                        ],
+                    },
+                ],
+            },
+            {
                 label: 'Gestión de Matrículas',
                 icon: 'pi pi-folder',
                 items: [
                     {
-                        label: 'Matrícula de estudiantes',
-                        icon: 'pi pi-user-edit',
-                        // routerLink: ['/gestion-institucional/gestion-traslados'],
+                        label: 'Gestionar matriculas',
+                        icon: 'pi pi-fw pi-file-edit',
+                        badge: '',
+                        routerLink: [
+                            '/gestion-institucional/gestion-matriculas',
+                        ],
+                    },
+                    {
+                        label: 'Matrícula Individual',
+                        icon: 'pi pi-fw pi-file-plus',
+                        badge: '',
+                        routerLink: [
+                            '/gestion-institucional/matricula-individual',
+                        ],
+                    },
+                    {
+                        label: 'Matrícula Masiva',
+                        icon: 'pi pi-fw pi-file-import',
+                        badge: '',
+                        routerLink: ['/gestion-institucional/matricula-masiva'],
                     },
                     {
                         label: 'Gestión de traslado',
@@ -874,7 +911,7 @@ const administracion = [
                         routerLink: ['/gestion-institucional/reporte'],
                     },
                     {
-                        label: 'Estadistica de logros de aprendizje',
+                        label: 'Reportes Orden de Mérito',
                         icon: 'pi pi-fw pi-circle',
                         routerLink: ['/gestion-institucional/estadistica'],
                     },
@@ -896,11 +933,33 @@ const administracion = [
 //     },
 // ]
 
-// const apoderados = [
-//     {
-//         items: [inicio],
-//     },
-// ]
+const apoderado = [
+    {
+        label: 'Apoderado',
+        items: [
+            {
+                label: 'Visualizar datos',
+                icon: 'pi pi-fw pi-eye',
+                routerLink: ['apoderado/seguimiento-apoderado'],
+            },
+            {
+                label: 'Registro de apoderados',
+                icon: 'pi pi-user-edit',
+                routerLink: ['apoderado/registro-apoderado'],
+            },
+            {
+                label: 'Notificaciones y anuncios',
+                icon: 'pi pi-megaphone',
+                routerLink: ['apoderado/notificacion-apoderado'],
+            },
+            {
+                label: 'Enlaces de ayuda',
+                icon: 'pi pi-fw pi-share-alt',
+                routerLink: ['ayuda'],
+            },
+        ],
+    },
+]
 
 const first = [
     {
@@ -945,6 +1004,10 @@ export class ConstantesService {
                 return docente
             case DIRECTOR_IE:
                 return administracion
+
+            case APODERADO:
+                return apoderado
+
             default:
                 return first
         }

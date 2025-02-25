@@ -16,10 +16,12 @@ import { ActividadesNoLectivasComponent } from './actividades-no-lectivas/activi
 import { MaterialEducativoComponent } from './material-educativo/material-educativo.component'
 import { CalendarioComponent } from './calendario/calendario.component'
 import { InformesComponent } from './informes/informes.component'
+import { ComunicadosComponent } from './comunicados/comunicados.component'
 
 @NgModule({
     imports: [
         RouterModule.forChild([
+            { path: 'comunicados', component: ComunicadosComponent },
             { path: 'portafolio', component: PortafolioComponent },
             { path: 'estudios', component: EstudiosComponent },
             { path: 'areas-curriculares', component: AreasEstudiosComponent },

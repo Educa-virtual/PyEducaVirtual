@@ -33,15 +33,15 @@ export class ApiEvaluacionesRService {
             )
     }
 
-    obtenerEvaluacionNuevo(iEvaluacionId): Observable<any> {
+    /*obtenerEvaluacionNuevo(iEvaluacionId): Observable<any> {
         return this.http
             .get(
-                `${this.urlBackendApi}/ere/evaluaciones/obtenerEvaluacion?iEvaluacionId=${iEvaluacionId}`
+                `${this.urlBackendApi}/ere/evaluaciones/${iEvaluacionId}`
             )
             .pipe(map((resp) => resp['data']))
-    }
+    }*/
 
-    obtenerAreasPorEvaluacionyEspecialista(
+    /*obtenerAreasPorEvaluacionyEspecialista(
         iPersId,
         iEvaluacionId
     ): Observable<any> {
@@ -50,7 +50,7 @@ export class ApiEvaluacionesRService {
                 `${this.urlBackendApi}/ere/evaluaciones/obtenerAreasPorEvaluacionyEspecialista?iPersId=${iPersId}&iEvaluacionId=${iEvaluacionId}`
             )
             .pipe(map((resp) => resp['data']))
-    }
+    }*/
 
     obtenerTipoPreguntas() {
         return this.http
@@ -473,5 +473,11 @@ export class ApiEvaluacionesRService {
     descargarMatrizPorEvaluacionArea(params) {
         const url = `${this.urlBackendApi}/ere/evaluaciones/${params.iEvaluacionId}/areas/${params.iCursosNivelGradId}/matriz-competencias?docente=${params.iDocenteId}`
         window.open(url, '_blank')
+    }
+
+    obtenerEvaluacionPorId(iEvaluacionId): Observable<any> {
+        return this.http
+            .get(`${this.urlBackendApi}/ere/evaluaciones/${iEvaluacionId}`)
+            .pipe(map((resp) => resp['data']))
     }
 }

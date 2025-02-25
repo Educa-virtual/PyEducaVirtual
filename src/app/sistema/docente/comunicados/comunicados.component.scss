@@ -19,10 +19,19 @@
 }
 
 :host ::ng-deep {
+    // Modifica el estilo del header del p-panel
     .p-panel-header {
         background: var(--bg-header-modal) !important;
     }
+
+    // Cambia el color del icono predeterminado del toggle en PrimeNG
     .p-panel .p-panel-header .p-panel-header-icon {
-        color: white;
+        color: white !important;
+        display: none !important; // Oculta el icono de toggle original
     }
+}
+
+// Asegurar que el título del panel esté oculto
+:host ::ng-deep .custom-panel .p-panel-header .p-panel-title {
+    display: none !important;
 }

@@ -1,33 +1,34 @@
-<section class="flex flex-column gap-4">
-    <div class="col-12 md:col-6 text-left">
+<section class="flex flex-column gap-2">
+    <div class="col-12 md:col-6 text-left p-0 m-0">
         <span class="text-sm"> Inicio > Mis Comunicados </span>
     </div>
-
     <!-- título -->
-    <div class="grid">
-        <p-toolbar class="col-12">
+    <div>
+        <p-toolbar class="col-12 p-0 m-0">
             <div class="block">
                 <h2 class="text-primary text-white font-bold block">
                     Mis Comunicados
                 </h2>
-            </div>
-        </p-toolbar>
-        <p-toolbar class="col-12">
-            <!-- Sección de variables (Nivel, Ciclo, Grado, etc.) -->
-            <div class="flex flex-wrap gap-2 align-items-center">
-                <span class="font-medium"
-                    >Nivel: <strong>Educación Secundaria</strong></span
-                >
-                <span class="font-medium">Ciclo: <strong>VI</strong></span>
-                <span class="font-medium">Grado: <strong>1ro</strong></span>
-                <span class="font-medium">Sección: <strong>A</strong></span>
-                <span class="font-medium"
-                    >Área: <strong>Matemática</strong></span
-                >
+                <div>
+                    <span class="font-medium">
+                        Ciclo: <strong>VI |</strong></span
+                    >
+                    <span class="font-medium">
+                        Grado: <strong>1ro |</strong></span
+                    >
+                    <span class="font-medium">
+                        Sección: <strong>A |</strong></span
+                    >
+                    <span class="font-medium">
+                        Área: <strong>Matemática |</strong></span
+                    >
+                    <span class="font-medium">
+                        Nivel: <strong>Educación Secundaria</strong></span
+                    >
+                </div>
             </div>
         </p-toolbar>
     </div>
-
     <!-- contenido -->
     <div class="flex">
         <div class="card w-full">
@@ -63,46 +64,60 @@
         <div class="col-12 md:col-6">
             <p-panel>
                 <ng-template pTemplate="header">
-                    <h2 class="m-0 font-bold text-white">Lista Comunicados</h2>
+                    <h4 class="p-0 m-0 font-bold text-white w-full text-center">
+                        Lista Comunicados
+                    </h4>
                 </ng-template>
                 <!-- Contenedor de comunicados dinámicos -->
                 <div class="flex flex-column gap-3 mt-2">
                     <!-- Recorre el array con *ngFor -->
                     <p-panel
                         *ngFor="let comunicado of comunicados"
+                        #panel
                         [toggleable]="true"
-                        [collapsed]="true"
+                        [collapsed]="comunicado.collapsed"
+                        (onCollapse)="comunicado.collapsed = true"
+                        (onExpand)="comunicado.collapsed = false"
+                        class="custom-panel"
                     >
                         <!-- Personaliza el header de cada comunicado -->
                         <ng-template pTemplate="header">
                             <div
-                                class="flex justify-content-between align-items-center text-white"
+                                class="flex align-items-center justify-content-between w-full text-white"
                             >
-                                <strong>{{ comunicado.titulo }}</strong>
-                                <!-- Opcional: Botones de acción -->
-                                <div>
+                                <div class="flex align-items-center">
+                                    <span
+                                        class="text-white font-bold px-2 py-1 border-round"
+                                    >
+                                        Comunicado # {{ comunicado.id }} :
+                                    </span>
+                                    <span class="ml-2 font-medium">{{
+                                        comunicado.titulo
+                                    }}</span>
+                                </div>
+                                <div class="flex gap-2">
+                                    <button
+                                        pButton
+                                        [icon]="
+                                            comunicado.collapsed
+                                                ? 'pi pi-eye'
+                                                : 'pi pi-eye-slash'
+                                        "
+                                        class="p-button-text p-button-sm text-white"
+                                        (click)="togglePanel(panel, comunicado)"
+                                        title="Ver"
+                                    ></button>
+                                    <button
+                                        pButton
+                                        icon="pi pi-trash"
+                                        class="p-button-text p-button-sm text-white"
+                                    ></button>
                                     <button
                                         pButton
                                         icon="pi pi-pencil"
                                         class="p-button-text p-button-sm mr-1 text-white"
                                         (click)="editComunicado(comunicado)"
-                                    >
-                                        Editar
-                                    </button>
-                                    <button
-                                        pButton
-                                        icon="pi pi-trash"
-                                        class="p-button-text p-button-sm text-white"
-                                    >
-                                        Eliminar
-                                    </button>
-                                    <button
-                                        pButton
-                                        icon="pi pi-eye"
-                                        class="p-button-text p-button-sm text-white"
-                                    >
-                                        Ver
-                                    </button>
+                                    ></button>
                                 </div>
                             </div>
                         </ng-template>
@@ -111,29 +126,29 @@
                         <div class="grid p-2">
                             <div class="col-12 md:col-6">
                                 <p>
-                                    <strong>Estado:</strong>
-                                    {{ comunicado.estado }}
+                                    <strong>Estado:</strong
+                                    >{{ comunicado.estado }}
                                 </p>
                                 <p>
                                     <strong>Tipo:</strong> {{ comunicado.tipo }}
                                 </p>
                                 <p>
-                                    <strong>Publicado:</strong>
-                                    {{ comunicado.publicado }}
+                                    <strong>Publicado:</strong
+                                    >{{ comunicado.publicado }}
                                 </p>
                             </div>
                             <div class="col-12 md:col-6">
                                 <p>
-                                    <strong>Prioridad:</strong>
-                                    {{ comunicado.prioridad }}
+                                    <strong>Prioridad:</strong
+                                    >{{ comunicado.prioridad }}
                                 </p>
                                 <p>
-                                    <strong>Caduca:</strong>
-                                    {{ comunicado.caduca }}
+                                    <strong>Caduca:</strong
+                                    >{{ comunicado.caduca }}
                                 </p>
                                 <p>
-                                    <strong>Grupo:</strong>
-                                    {{ comunicado.grupo }}
+                                    <strong>Grupo:</strong
+                                    >{{ comunicado.grupo }}
                                 </p>
                             </div>
                             <div class="col-12">
@@ -151,18 +166,14 @@
         <div class="col-12 md:col-6">
             <p-panel>
                 <ng-template pTemplate="header">
-                    <div
-                        class="w-full bg-primary text-white p-3 border-round-top"
-                    >
-                        <h2 class="m-0 font-bold text-white">
-                            <!-- Cambia el título dinámicamente -->
-                            {{
-                                selectedComunicado.id === 0
-                                    ? 'Crear Comunicado'
-                                    : 'Editar Comunicado'
-                            }}
-                        </h2>
-                    </div>
+                    <h4 class="p-0 m-0 font-bold text-white w-full text-center">
+                        <!-- Cambia el título dinámicamente -->
+                        {{
+                            selectedComunicado.id === 0
+                                ? 'Crear Comunicado'
+                                : 'Editar Comunicado'
+                        }}
+                    </h4>
                 </ng-template>
                 <!-- FORMULARIO (Template-Driven) -->
                 <form

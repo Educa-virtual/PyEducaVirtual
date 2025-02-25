@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core'
-import { HttpClient, HttpHeaders } from '@angular/common/http'
+import { HttpClient } from '@angular/common/http'
 import { environment } from '@/environments/environment.template'
 
 const baseUrl = environment.backendApi
@@ -12,15 +12,38 @@ export class DatosSugerenciaService {
 
     lista: any[] = []
 
-    subirArchivoSugerencias(data: any) {
+    buscarSugerencias(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/estudiante/buscarSugerencias`,
+            data
+        )
+    }
+
+    buscarSugerencia(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/estudiante/buscarSugerencia`,
+            data
+        )
+    }
+
+    guardarSugerencia(data: any) {
         return this.http.post(
             `${baseUrl}/acad/estudiante/guardarSugerencia`,
-            data,
-            {
-                headers: new HttpHeaders({
-                    Accept: 'application/json',
-                }),
-            }
+            data
+        )
+    }
+
+    actualizarSugerencia(data: any) {
+        return this.http.put(
+            `${baseUrl}/acad/estudiante/actualizarSugerencia`,
+            data
+        )
+    }
+
+    eliminarSugerencia(data: any) {
+        return this.http.delete(
+            `${baseUrl}/acad/estudiante/eliminarSugerencia`,
+            data
         )
     }
 }

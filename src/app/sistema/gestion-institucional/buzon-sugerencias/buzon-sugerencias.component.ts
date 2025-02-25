@@ -59,9 +59,57 @@ export class BuzonSugerenciasComponent implements OnInit {
         ]
 
         this.destinos = [
-            { id: 1, nombre: 'DIRECCION' },
-            { id: 2, nombre: 'BIENESTAR' },
-            { id: 3, nombre: 'TUTORIA' },
+            { id: 1, nombre: 'EQUIPO TECNICO' },
+            { id: 2, nombre: 'DIRECCION' },
+            { id: 3, nombre: 'PROFESORES' },
+            { id: 4, nombre: 'ESPECIALISTAS' },
+        ]
+
+        this.sugerencias = [
+            {
+                id: 1,
+                destino_id: [1, 3],
+                fecha: '2024-01-01',
+                asunto: 'Notificarme cuando el profesar ponga nota a mi examen',
+                estado: 'RECIBIDO',
+                prioridad: 'MEDIA',
+                prioridad_id: 2,
+                sugerencia:
+                    '<h1>Notificarme cuando el profesar ponga nota a mi examen</h1><strong>Texto de prueba</strong><em>Texto resaltado</em><br><br>Salto de linea.',
+            },
+            {
+                id: 2,
+                destino_id: [1],
+                fecha: '2024-01-02',
+                asunto: 'Opciones de preguntas deben ser mas grandes en celular',
+                estado: 'PENDIENTE',
+                prioridad: 'BAJA',
+                prioridad_id: 1,
+                sugerencia:
+                    '<h1>Opciones de preguntas deben ser mas grandes en celular</h1><strong>Texto de prueba</strong><em>Texto resaltado</em><br><br>Salto de linea.',
+            },
+            {
+                id: 3,
+                destino_id: [1, 2],
+                fecha: '2024-01-03',
+                asunto: 'Explicar como se calcula promedio final',
+                estado: 'ATENDIDO',
+                prioridad: 'ALTA',
+                prioridad_id: 3,
+                sugerencia:
+                    '<h1>Explicar como se calcula promedio final</h1><strong>Texto de prueba</strong><em>Texto resaltado</em><br><br>Salto de linea.',
+            },
+            {
+                id: 4,
+                destino_id: [4],
+                fecha: '2024-01-04',
+                asunto: 'Mas explicaciones en examenes de matematica',
+                estado: 'PENDIENTE',
+                prioridad: 'BAJA',
+                prioridad_id: 2,
+                sugerencia:
+                    '<h1>Mas explicaciones en examenes de matematica</h1><strong>Texto de prueba</strong><em>Texto resaltado</em><br><br>Salto de linea.',
+            },
         ]
     }
 
@@ -73,7 +121,7 @@ export class BuzonSugerenciasComponent implements OnInit {
 
     guardarSugerencia() {
         this.datosSugerenciaService
-            .subirArchivoSugerencias(this.form.value)
+            .guardarSugerencia(this.form.value)
             .subscribe({
                 next: (data: any) => {
                     this.sugerencia_registrada = true
@@ -100,12 +148,45 @@ export class BuzonSugerenciasComponent implements OnInit {
     }
 
     eliminarSugerencia(item: any) {
-        console.log(item, 'eliminarSugerencia')
+        this._confirmService.openConfirm({
+            header: 'Eliminar sugerencia',
+            icon: 'pi pi-exclamation-triangle',
+            message: '¿Está seguro de eliminar la sugerencia seleccionada?',
+            accept: () => {
+                this.datosSugerenciaService
+                    .eliminarSugerencia(item.iSugerenciaId)
+                    .subscribe({
+                        next: (data: any) => {
+                            this._MessageService.add({
+                                severity: 'success',
+                                summary: 'Éxito',
+                                detail: 'Sugerencia eliminada',
+                            })
+                            console.log(data, 'eliminar sugerencia')
+                            this.sugerencias = this.sugerencias.filter(
+                                (sug: any) =>
+                                    sug.iSugerenciaId !== item.iSugerenciaId
+                            )
+                        },
+                        error: (error) => {
+                            console.error('Error eliminando sugerencia:', error)
+                            this._MessageService.add({
+                                severity: 'error',
+                                summary: 'Error',
+                                detail: error,
+                            })
+                        },
+                        complete: () => {
+                            console.log('Request completed')
+                        },
+                    })
+            },
+        })
     }
 
     editarSugerencia(item: any) {
-        console.log(item, 'editarSugerencia')
         this.dialog_header = 'Editar sugerencia'
+        this.setFormSugerencia(item)
     }
 
     actualizarSugerencia() {
@@ -118,6 +199,15 @@ export class BuzonSugerenciasComponent implements OnInit {
 
     resetearInputs() {
         this.form.reset()
+    }
+
+    setFormSugerencia(item: any) {
+        // TODO: actualizar Quill a version 17.18.13
+        this.form.get('cAsunto')?.setValue(item.asunto)
+        this.form.get('cSugerencia')?.setValue(item.sugerencia)
+        this.form.get('iDestinoId')?.setValue(item.destino_id)
+        this.form.get('iPrioridadId')?.setValue(item.prioridad_id)
+        this.visible = true
     }
 
     accionBtnItemTable({ accion, item }) {
@@ -144,7 +234,7 @@ export class BuzonSugerenciasComponent implements OnInit {
         },
         {
             labelTooltip: 'Seguimiento de sugerencia',
-            icon: 'pi pi-user-edit',
+            icon: 'pi pi-search',
             accion: 'seguimiento',
             type: 'item',
             class: 'p-button-rounded p-button-secondary p-button-text',
@@ -167,15 +257,15 @@ export class BuzonSugerenciasComponent implements OnInit {
             field: 'item',
             header: 'Item',
             text_header: 'left',
-            text: 'left',
+            text: 'center',
         },
         {
-            type: 'text',
-            width: '5rem',
+            type: 'date',
+            width: '3rem',
             field: 'fecha',
             header: 'Fecha',
             text_header: 'left',
-            text: 'left',
+            text: 'center',
         },
         {
             type: 'text',
@@ -183,7 +273,7 @@ export class BuzonSugerenciasComponent implements OnInit {
             field: 'asunto',
             header: 'Asunto',
             text_header: 'center',
-            text: 'center',
+            text: 'left',
         },
         {
             type: 'text',

@@ -43,9 +43,6 @@ export class BreadcrumbService {
             return breadcrumbs
         }
         children.forEach((child, index) => {
-            // console.log(child.snapshot.data['breadcrumb'])
-            // console.log(index)
-            // console.log(url)
             const routeURL: string = child.snapshot.url
                 .map((segment) => segment.path)
                 .join('/')
@@ -65,7 +62,7 @@ export class BreadcrumbService {
             }
 
             // // Recursividad: para cada hijo, seguir agregando al breadcrumb
-            // return this.createBreadcrumbs(child, url, breadcrumbs);
+            //return this.createBreadcrumbs(child, url, breadcrumbs);
         })
 
         return breadcrumbs

@@ -531,6 +531,9 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
             this.cEvaluacionNombre = item.cEvaluacionNombre
             console.log('Nombre:', item.cEvaluacionNombre, item.iEvaluacionId)
         }
+        if (accion === 'resultados') {
+            alert('En proceso de desarrollo')
+        }
     }
     eliminarEvaluacionXId(item) {
         const params = {

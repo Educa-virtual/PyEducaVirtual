@@ -13,18 +13,17 @@
 >
     <div class="grid">
         <div class="col-12 md:col-6 align-content-center font-bold">
-            <b style="font-size: 18px"
+            <b class="ml-1" style="font-size: 18px"
                 >Evaluación: {{ data?.cEvaluacionNombre || '-' }} -
                 {{ data?.cNivelEvalNombre || '' }}</b
             ><br />
-            <!-- <small>Nota: Los datos ingresados se guardan de forma automática.</small> -->
         </div>
         <div class="col-12 md:col-3 text-center align-content-center font-bold">
             <span style="font-size: 18px">Total Preguntas:</span>
             <span>
                 <p-badge
                     [value]="preguntas?.length || 0"
-                    severity="info"
+                    severity="primary"
                     styleClass="ml-2"
                     badgeSize="large"
                 >
@@ -78,6 +77,8 @@
                                 >
                                     <span class="font-bold whitespace-nowrap">{{
                                         '#' + (id + 1) + ' ' + list.title
+                                            | removeHTMLCSS
+                                            | truncateText: 80
                                     }}</span>
                                     <p-button
                                         icon="pi pi-trash"
@@ -85,7 +86,6 @@
                                         severity="danger"
                                         class="ml-auto mr-2"
                                         [rounded]="true"
-                                        [text]="true"
                                         (onClick)="
                                             $event.stopPropagation();
                                             confirmarEliminarPregunta(
@@ -135,8 +135,16 @@
                                                                 <div
                                                                     class="text-primary font-bold"
                                                                 >
-                                                                    Lista de
-                                                                    Preguntas
+                                                                    <span
+                                                                        style="
+                                                                            color: var(
+                                                                                --primary-color
+                                                                            );
+                                                                        "
+                                                                        >Lista
+                                                                        de
+                                                                        Preguntas</span
+                                                                    >
                                                                 </div>
                                                             </ng-template>
 
@@ -198,9 +206,6 @@
                                                                                 severity="danger"
                                                                                 class="ml-auto mr-2"
                                                                                 [rounded]="
-                                                                                    true
-                                                                                "
-                                                                                [text]="
                                                                                     true
                                                                                 "
                                                                                 (onClick)="

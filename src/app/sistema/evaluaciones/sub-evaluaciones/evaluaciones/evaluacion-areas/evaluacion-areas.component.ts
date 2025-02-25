@@ -302,6 +302,9 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
         }))
     }
     guardarFechaCantidadExamenCursos(curso) {
+        if (this.accion === 'ver') {
+            return
+        }
         if (!this._iEvaluacionId) {
             console.error('No se ha proporcionado un iEvaluacionId válido')
             this._MessageService.add({

@@ -97,6 +97,7 @@
                                                 )
                                             "
                                             [style]="{ width: '180px' }"
+                                            [disabled]="isDisabled"
                                         >
                                         </p-calendar>
                                     </td>
@@ -109,12 +110,13 @@
                                             "
                                             min="1"
                                             placeholder="0"
-                                            style="width: 60px"
+                                            style="width: 65px"
                                             (input)="
                                                 guardarFechaCantidadExamenCursos(
                                                     curso
                                                 )
                                             "
+                                            [disabled]="isDisabled"
                                         />
                                     </td>
                                 </tr>
@@ -125,57 +127,4 @@
             </div>
         </p-accordionTab>
     </p-accordion>
-    <!--     
-    <div class="flex justify-content-between">
-        <div class="card" *ngFor="let nivel of lista">
-            
-            <div class="flex justify-content-start">
-                <h3>{{ nivel.nivel }}</h3>
-            </div>
-
-            <div
-                *ngFor="let grado of objectKeys(nivel.grados)"
-                class="flex flex-column gap-2"
-            >
-               
-                <div class="flex justify-content-start">
-                    <h4>{{ grado }}</h4>
-                </div>
-               
-                <div
-                    *ngFor="let curso of nivel.grados[grado]"
-                    class="field-checkbox"
-                >
-                    <p-checkbox
-                        [(ngModel)]="curso.isSelected"
-                        [binary]="true"
-                        [disabled]="isDisabled"
-                        [name]="'curso_' + curso.iCursoNivelGradId"
-                        inputId="'curso_' + curso.iCursoNivelGradId"
-                        (onChange)="onCursoSelect(curso)"
-                    ></p-checkbox>
-                    <label [for]="'curso_' + curso.iCursoNivelGradId">
-                        {{ curso.cCursoNombre }}
-                    </label>
-                    <div class="align-items-end" *ngIf="curso.isSelected">
-                        <p-inputGroup>
-                           
-                            <p-calendar
-                                controlKey="dtFin"
-                                [iconDisplay]="'input'"
-                                placeholder="Fecha de Evaluación"
-                                styleClass="w-full"
-                                class="pl-3 border-none"
-                                [showIcon]="true"
-                                inputId="dtFin"
-                                appendTo="body"
-                                [(ngModel)]="curso.dtExamenFechaInicio"
-                                (onSelect)="onCursoSelect(curso)"
-                            />
-                        </p-inputGroup>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div> -->
 </div>

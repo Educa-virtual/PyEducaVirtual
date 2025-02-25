@@ -68,6 +68,13 @@ const routes: Routes = [
                 (c) => c.InformesEreComponent
             ),
     },
+    {
+        path: 'especialista-dremo',
+        loadComponent: () =>
+            import(
+                './administrar/especialista-dremo/especialista-dremo.component'
+            ).then((c) => c.EspecialistaDremoComponent),
+    },
 ]
 
 export class AppRoutingModule {}

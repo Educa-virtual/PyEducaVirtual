@@ -14,6 +14,17 @@ const routes: Routes = [
         redirectTo: 'dashboard',
         pathMatch: 'full',
     },
+    {
+        path: 'evaluaciones/:iEvaluacionId/gestionar-preguntas',
+        loadComponent: () =>
+            import(
+                './evaluaciones/gestionar-preguntas/gestionar-preguntas.component'
+            ).then((c) => c.GestionarPreguntasComponent),
+        data: {
+            breadcrumb: 'Gestionar Preguntas',
+            icon: 'pi pi-list-check',
+        },
+    },
 
     {
         path: 'evaluaciones',
@@ -30,17 +41,17 @@ const routes: Routes = [
             icon: 'pi pi-check-square',
         },
         children: [
-            {
-                path: ':iEvaluacionId/gestionar-preguntas',
-                loadComponent: () =>
-                    import(
-                        './evaluaciones/gestionar-preguntas/gestionar-preguntas.component'
-                    ).then((c) => c.GestionarPreguntasComponent),
-                data: {
-                    breadcrumb: 'Gestionar Preguntas',
-                    icon: 'pi pi-list-check',
-                },
-            },
+            // {
+            //     path: ':iEvaluacionId/gestionar-preguntas',
+            //     loadComponent: () =>
+            //         import(
+            //             './evaluaciones/gestionar-preguntas/gestionar-preguntas.component'
+            //         ).then((c) => c.GestionarPreguntasComponent),
+            //     data: {
+            //         breadcrumb: 'Gestionar Preguntas',
+            //         icon: 'pi pi-list-check',
+            //     },
+            // },
         ],
     },
     {

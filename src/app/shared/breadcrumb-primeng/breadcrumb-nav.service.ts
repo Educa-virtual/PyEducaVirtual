@@ -43,16 +43,26 @@ export class BreadcrumbService {
             return breadcrumbs
         }
         children.forEach((child, index) => {
-            console.log(child.snapshot.data['breadcrumb'])
-            console.log(index)
-            console.log(url)
-            // const routeURL: string = child.snapshot.url.map(segment => segment.path).join('/');
-            // const breadcrumbLabel = child.snapshot.data['breadcrumb'] || routeURL; // Si no existe el 'breadcrumb', usamos el nombre de la ruta
-            // const breadcrumbIcon = child.snapshot.data['icon'] || 'pi pi-home';
-            // if (routeURL !== '') {
-            //     url += `/${routeURL}`;
-            //     breadcrumbs.push({ label: breadcrumbLabel, url: url, icon: breadcrumbIcon, route: breadcrumbs.length === children.length ? true : false, index: index });
-            // }
+            // console.log(child.snapshot.data['breadcrumb'])
+            // console.log(index)
+            // console.log(url)
+            const routeURL: string = child.snapshot.url
+                .map((segment) => segment.path)
+                .join('/')
+            const breadcrumbLabel =
+                child.snapshot.data['breadcrumb'] || routeURL // Si no existe el 'breadcrumb', usamos el nombre de la ruta
+            const breadcrumbIcon = child.snapshot.data['icon'] || 'pi pi-home'
+            if (routeURL !== '') {
+                url += `/${routeURL}`
+                breadcrumbs.push({
+                    label: breadcrumbLabel,
+                    url: url,
+                    icon: breadcrumbIcon,
+                    route:
+                        breadcrumbs.length === children.length ? true : false,
+                    index: index,
+                })
+            }
 
             // // Recursividad: para cada hijo, seguir agregando al breadcrumb
             // return this.createBreadcrumbs(child, url, breadcrumbs);

@@ -32,7 +32,7 @@ export class BreadcrumbPrimengComponent implements OnInit, OnDestroy {
             this.breadcrumbService.breadcrumbs$.subscribe((breadcrumbs) => {
                 this.breadcrumbs = breadcrumbs
             })
-        console.log(this.breadcrumbs)
+        //console.log(this.breadcrumbs)
         // this.breadcrumbs.forEach((i)=>{console.log(i)})
     }
 

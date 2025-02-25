@@ -126,14 +126,9 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
 
     // obtener idPerfil
     iPerfilId: number
-    iPerfilUsuario
+
     obtenerPerfil() {
         this.iPerfilId = this._constantesService.iPerfilId
-        console.log('idPerfil', this.iPerfilId)
-
-        this.iPerfilUsuario = {
-            rol: 'admin',
-        }
     }
     ejecutarAccion(event: { accion: string; item: IActionContainer }) {
         console.log('Acción seleccionada:', event.accion)
@@ -610,7 +605,6 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
                     // Acceder y mostrar el contenido específico de la respuesta
                     if (resp && resp['data']) {
                         this.data = resp['data'] // Asignar la data obtenida
-                        console.log('Respuesta de la API:', resp)
                     } else {
                         console.warn(
                             'La respuesta no contiene la propiedad "data" o es nula:',

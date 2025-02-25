@@ -55,6 +55,9 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
 
     //Funcion de oncoruseSelect
     onCursoSelect(curso: any): void {
+        if (this.accion === 'ver') {
+            return
+        }
         if (curso.isSelected) {
             this.insertarCursos([curso])
         } else {
@@ -175,7 +178,6 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
                         // Crear un mapa con los cursos seleccionados
 
                         this.data = resp.cursos
-
                         const cursosSeleccionados: Map<number, boolean> =
                             new Map(
                                 resp.cursos.map((curso: any) => [

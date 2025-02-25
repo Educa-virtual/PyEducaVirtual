@@ -157,7 +157,7 @@ export class YearsComponent implements OnInit {
             esquema: 'acad',
             tabla: 'V_CalendariosAcademicos',
             campos: '*',
-            where: 'cYearNombre=' + new Date().getFullYear(),
+            where: `cYearNombre=${new Date().getFullYear()} AND iSedeId=${JSON.parse(localStorage.getItem('dremoPerfil')).iSedeId}`,
         })
     }
 

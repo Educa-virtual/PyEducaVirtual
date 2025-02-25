@@ -35,7 +35,7 @@
                 </div>
             } @else {
                 <div class="grid">
-                    <div class="col-10" style="margin-left: -0.5rem">
+                    <div class="col" style="margin-left: -0.5rem">
                         <p-inputGroup>
                             <p-inputGroupAddon
                                 ><i class="pi pi-search"></i
@@ -52,17 +52,21 @@
                             />
                         </p-inputGroup>
                     </div>
-                    <div class="col-2 align-content-center">
-                        <div class="flex flex-wrap gap-2 justify-content-end">
-                            <ng-content
-                                select="[slot='caption-content']"
-                            ></ng-content>
-                            <app-table-column-filter
-                                [columns]="columnas"
-                                (columnsChange)="onColumnSelected($event)"
-                            ></app-table-column-filter>
+                    @if (showColumnFilter) {
+                        <div class="col-auto align-content-center">
+                            <div
+                                class="flex flex-wrap gap-2 justify-content-end"
+                            >
+                                <ng-content
+                                    select="[slot='caption-content']"
+                                ></ng-content>
+                                <app-table-column-filter
+                                    [columns]="columnas"
+                                    (columnsChange)="onColumnSelected($event)"
+                                ></app-table-column-filter>
+                            </div>
                         </div>
-                    </div>
+                    }
                 </div>
             }
         </ng-template>
@@ -202,11 +206,6 @@
                     @if (col.type === 'text') {
                         <div [style.text-align]="col.text">
                             {{ rowData[col.field] }}
-                        </div>
-                    }
-                    @if (col.type === 'date') {
-                        <div [style.text-align]="col.text">
-                            {{ rowData[col.field] | date: 'dd/MM/YYYY' }}
                         </div>
                     }
                     @if (col.type === 'checkbox') {

@@ -324,6 +324,7 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     @Input() enableViewSelections
     @Input() showSortIcon = true
     @Input() showAdvancedFilter = false
+    @Input() showColumnFilter = true
 
     // firstLoadRubrica = true
 

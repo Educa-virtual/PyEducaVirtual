@@ -14,14 +14,7 @@ const routes: Routes = [
         redirectTo: 'dashboard',
         pathMatch: 'full',
     },
-    {
-        path: 'evaluaciones/:iEvaluacionId/gestionar-preguntas',
-        loadComponent: () =>
-            import(
-                './evaluaciones/gestionar-preguntas/gestionar-preguntas.component'
-            ).then((c) => c.GestionarPreguntasComponent),
-        pathMatch: 'full',
-    },
+
     {
         path: 'evaluaciones',
         component: EvaluacionesComponent,
@@ -33,7 +26,22 @@ const routes: Routes = [
                 ESPECIALISTA_UGEL,
                 DIRECTOR_IE,
             ],
+            breadcrumb: 'Evaluaciones',
+            icon: 'pi pi-check-square',
         },
+        children: [
+            {
+                path: ':iEvaluacionId/gestionar-preguntas',
+                loadComponent: () =>
+                    import(
+                        './evaluaciones/gestionar-preguntas/gestionar-preguntas.component'
+                    ).then((c) => c.GestionarPreguntasComponent),
+                data: {
+                    breadcrumb: 'Gestionar Preguntas',
+                    icon: 'pi pi-list-check',
+                },
+            },
+        ],
     },
     {
         path: 'evaluaciones/:iEvaluacionId/gestionar-preguntas/areas/:iCursoNivelGradId',

@@ -1,13 +1,4 @@
-import {
-    ChangeDetectorRef,
-    Component,
-    EventEmitter,
-    inject,
-    Input,
-    OnInit,
-    Output,
-    OnDestroy,
-} from '@angular/core'
+import { Component, inject, OnInit, OnDestroy } from '@angular/core'
 import { EvaluacionesFormComponent } from '../evaluaciones/evaluaciones-form/evaluaciones-form.component'
 import { CompartirFormularioEvaluacionService } from './../../services/ereEvaluaciones/compartir-formulario-evaluacion.service'
 import { DialogService } from 'primeng/dynamicdialog'
@@ -20,12 +11,10 @@ import {
 import { ApiEvaluacionesRService } from '../../services/api-evaluaciones-r.service'
 import { BehaviorSubject, Subject, takeUntil } from 'rxjs'
 import { IActionContainer } from '@/app/shared/container-page/container-page.component'
-//
 import { CompartirIdEvaluacionService } from './../../services/ereEvaluaciones/compartir-id-evaluacion.service'
 import { PrimengModule } from '@/app/primeng.module'
 import { MenuItem, MessageService } from 'primeng/api'
 import { Router } from '@angular/router'
-//Calendario
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms'
 import { ApiService } from '@/app/servicios/api.service'
 import { IUpdateTableService } from '@/app/interfaces/api.interface'
@@ -35,6 +24,10 @@ import { ContainerPageAccionbComponent } from './container-page-accionb/containe
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { GeneralService } from '@/app/servicios/general.service'
 import { DIRECTOR_IE } from '@/app/servicios/perfilesConstantes'
+import {
+    ADMINISTRADOR_DREMO,
+    ESPECIALISTA_DREMO,
+} from '@/app/servicios/seg/perfiles'
 @Component({
     selector: 'app-evaluaciones',
     standalone: true,
@@ -48,6 +41,7 @@ import { DIRECTOR_IE } from '@/app/servicios/perfilesConstantes'
     styleUrl: './evaluaciones.component.scss',
 })
 export class EvaluacionesComponent implements OnInit, OnDestroy {
+    [x: string]: any
     dataSubject = new BehaviorSubject<any[]>([])
     mostrarBoton: boolean = false
     iEvaluacionId: number
@@ -71,15 +65,6 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
     iiEvaluacionId: number // El ID de evaluación que quieras usar
     nombreEvaluacion: string
     iPerfil: number
-    tabs = [
-        { title: 'Title 1', content: 'Content 1' },
-        { title: 'Title 2', content: 'Content 2' },
-        { title: 'Title 3', content: 'Content 3' },
-    ]
-
-    @Output() opcionChange = new EventEmitter<string>()
-    @Input() dataRow: any[] = [] // Los datos que recibe la tabla
-    @Input() columnasRow: any[] = [] // Las columnas que muestra la tabla
 
     private _dialogService = inject(DialogService)
     private _apiEre = inject(ApiEvaluacionesRService)
@@ -97,7 +82,6 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
     }
     public data = []
     public showModalCursosEre: boolean = false
-    public DIRECTOR_IE = DIRECTOR_IE
     form: FormGroup
 
     private _formBuilder = inject(FormBuilder) //form para obtener la variable
@@ -105,13 +89,11 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
 
     // Variable donde se almacenan las acciones filtradas
     // public accionesTabla: IActionTable[] = [];
-
+    showActions: boolean = false //Habilitar botón para crear evaluaciones
     constructor(
         private router: Router,
         private compartirIdEvaluacionService: CompartirIdEvaluacionService,
         private compartirFormularioEvaluacionService: CompartirFormularioEvaluacionService,
-        private messageService: MessageService,
-        private cdr: ChangeDetectorRef,
         private fb: FormBuilder,
         private apiservice: ApiService,
         private utils: UtilService
@@ -139,6 +121,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
         this.form.valueChanges.subscribe((value) => {
             value
         })
+        this.showActions = this.iPerfilId !== ADMINISTRADOR_DREMO ? false : true
     }
 
     // obtener idPerfil
@@ -259,16 +242,6 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
         curso.isSelected = !curso.isSelected // Cambiar el estado seleccionado
     }
     async guardarInicioFinalExmAreas() {
-        // const formatDate = (date: Date | null) => {
-        //     if (!date) return null // Si no hay fecha, regresa null
-        //     const day = String(date.getDate()).padStart(2, '0')
-        //     const month = String(date.getMonth() + 1).padStart(2, '0') // Mes comienza en 0
-        //     const year = date.getFullYear()
-        //     const hours = String(date.getHours()).padStart(2, '0')
-        //     const minutes = String(date.getMinutes()).padStart(2, '0')
-        //     const seconds = String(date.getSeconds()).padStart(2, '0')
-        //     return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`
-        // }
         const coincidencias: IUpdateTableService[] = [] // Arreglo para almacenar coincidencias
         this.evaluacionCursos.cursos_niveles.forEach((data) => {
             const inicioKey = `${data.cCursoNombre}${data.iCursoNivelGradId}[${data.iExamCurId}]Inicio`
@@ -277,11 +250,6 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
             // Obtén los valores de inicio y fin del formulario
             const inicioValue = this.form.value[inicioKey]
             const finValue = this.form.value[finKey]
-
-            // Formatea las fechas antes de enviarlas
-            // const formattedInicio = formatDate(inicioValue)
-            // const formattedFin = formatDate(finValue)
-            //if (formattedInicio || formattedFin) {
             if (inicioValue || finValue) {
                 coincidencias.push({
                     esquema: 'ere',
@@ -403,8 +371,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
             icon: 'pi pi-eye',
             accion: 'ver',
             type: 'item',
-            class: 'p-button-rounded p-button-warning p-button-text',
-            // visible: perfilUsuario.rol === 'admin'
+            class: 'p-button-rounded p-button-primary p-button-text',
         },
         {
             labelTooltip: 'Editar',
@@ -412,37 +379,38 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
             accion: 'editar',
             type: 'item',
             class: 'p-button-rounded p-button-warning p-button-text',
-            isVisible: () => this.iPerfilId !== DIRECTOR_IE,
+            isVisible: () => this.iPerfilId === ADMINISTRADOR_DREMO,
         },
         {
             labelTooltip: 'Eliminar',
             icon: 'pi pi-trash',
             accion: 'eliminar',
             type: 'item',
-            class: 'p-button-rounded p-button-warning p-button-text',
-            isVisible: () => this.iPerfilId !== DIRECTOR_IE,
+            class: 'p-button-rounded p-button-danger p-button-text',
+            isVisible: () => this.iPerfilId === ADMINISTRADOR_DREMO,
         },
         {
-            labelTooltip: 'Banco Preguntas',
-            icon: 'pi pi-cog',
-            accion: 'BancoPreguntas',
+            labelTooltip: 'Gestionar Preguntas',
+            icon: 'pi pi-list-check',
+            accion: 'gestionarPreguntas',
             type: 'item',
-            class: 'p-button-rounded p-button-warning p-button-text',
-            isVisible: () => this.iPerfilId !== DIRECTOR_IE,
+            class: 'p-button-rounded p-button-help p-button-text',
+            isVisible: () => this.iPerfilId === ESPECIALISTA_DREMO,
         },
         {
-            labelTooltip: 'Asignar hora de publicación',
+            labelTooltip: 'Asignar horario de publicación',
             icon: 'pi pi-clock',
             accion: 'fechaPublicacion',
             type: 'item',
-            class: 'p-button-rounded p-button-warning p-button-text',
+            class: 'p-button-rounded p-button-secondary p-button-text',
+            isVisible: () => this.iPerfilId === DIRECTOR_IE,
         },
         {
-            labelTooltip: 'Estadistica',
+            labelTooltip: 'Resultados',
             icon: 'pi pi-chart-bar',
-            accion: 'fechaPublicacion',
+            accion: 'resultados',
             type: 'item',
-            class: 'p-button-rounded p-button-warning p-button-text',
+            class: 'p-button-rounded p-button-info p-button-text',
         },
     ]
     // ].filter(accion => accion.visible !== false);
@@ -548,7 +516,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
                 },
             })
         }
-        if (accion === 'BancoPreguntas') {
+        if (accion === 'gestionarPreguntas') {
             this.compartirFormularioEvaluacionService.setcEvaluacionNombre(
                 item.cEvaluacionNombre
             )
@@ -629,9 +597,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
 
         // Manejar el cierre del modal
         refModal.onClose.subscribe((result) => {
-            if (result) {
-                this.obtenerEvaluacion() // Vuelve a obtener la lista de evaluaciones si hubo cambios
-            }
+            console.log(result)
         })
     }
     obtenerEvaluacion() {
@@ -710,69 +676,15 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
         })
     }
 
-    accionbtn(accion) {
-        switch (accion) {
-            case 'manual':
-                this.opcion = 'manual'
-                this.caption = 'Nueva Evaluacion'
-                this.acciones = 'manual'
-                break
-            case 'auto':
-                this.opcion = 'auto'
-                this.caption = 'Recuperar Evaluacion'
-                this.acciones = 'auto'
-                break
-        }
-    }
-
-    //CREANDO COPIA DE EVALUACION
-    copiarEvaluacion(iEvaluacionId: number): Promise<any[]> {
-        return new Promise((resolve, reject) => {
-            //this.copiarEvaluacion(iEvaluacionId)
-            this._apiEre
-                .copiarEvaluacion(iEvaluacionId)
-                .pipe(takeUntil(this.unsubscribe$))
-                .subscribe({
-                    next: (resp: any) => {
-                        this._MessageService.add({
-                            severity: 'success',
-                            summary: 'Éxito',
-                            detail: resp.message,
-                        })
-
-                        resolve(resp)
-                        console.log('Copiar Evaluacion exitosa:', resp)
-                    },
-                    error: (error) => {
-                        console.error('Error al Copiar Evaluacion:', error)
-                        this._MessageService.add({
-                            severity: 'error',
-                            summary: 'Error',
-                            detail: 'Error al copiar la Evaluacion',
-                        })
-                        reject(error)
-                    },
-                })
-        })
-    }
     // manejar las acciones
     accionBtnItem(elemento) {
         const { accion } = elemento
-        console.log(elemento)
         switch (accion) {
             case 'agregar':
                 this.agregarEditarPregunta({
                     iEvaluacionId: 0,
                 })
                 this.opcion = 'seleccionar'
-                break
-            case 'copiarEvaluacion':
-                this.copiarEvaluacion(this.selectedRow[0].iEvaluacionId).then(
-                    (resp) => {
-                        console.log('Copiar evaluacion', resp)
-                        this.closeDialog(resp)
-                    }
-                )
                 break
             case 'auto':
                 this.opcion = 'auto'

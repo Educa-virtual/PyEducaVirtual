@@ -2,9 +2,11 @@
     [title]="'Lista de Evaluaciones'"
     [titleBtn]="'Agregar Evaluación'"
     [actions]="accionesPrincipal"
+    [showActions]="showActions"
     (accionBtnItem)="accionBtnItem($event)"
     class="custom-container-page"
-    ><app-table-primeng
+>
+    <app-table-primeng
         [columnas]="columnas"
         [data]="data"
         (accionBtnItem)="accionBtnItemTable($event)"

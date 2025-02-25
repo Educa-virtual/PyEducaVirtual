@@ -190,6 +190,9 @@ export class IeparticipaComponent implements OnInit {
             })
     }
     IEparticipan(event: any) {
+        if (this.accion === 'ver') {
+            return
+        }
         const itemsMoved = event.items
 
         // Elimina de sourceProducts los elementos que se mueven a targetProducts
@@ -235,6 +238,9 @@ export class IeparticipaComponent implements OnInit {
     }
 
     IEnoparticipan(event: any) {
+        if (this.accion === 'ver') {
+            return
+        }
         const itemsMoved = event.items
 
         // Elimina de targetProducts los elementos que se mueven a sourceProducts
@@ -274,6 +280,9 @@ export class IeparticipaComponent implements OnInit {
         this.actualizarConteos()
     }
     IEparticipanall(event: any) {
+        if (this.accion === 'ver') {
+            return
+        }
         const itemsMoved = event.items
 
         // Filtrar los elementos movidos según los filtros seleccionados (nivel y ugel)
@@ -321,6 +330,9 @@ export class IeparticipaComponent implements OnInit {
         this.actualizarConteos() // Actualizar el conteo después de la operación
     }
     IEnoparticipanall(event: any) {
+        if (this.accion === 'ver') {
+            return
+        }
         const itemsMoved = event.items
 
         // Filtrar los elementos movidos según los filtros seleccionados (nivel y ugel)
@@ -523,5 +535,10 @@ export class IeparticipaComponent implements OnInit {
         // Actualizar los conteos
         this.participanCount = filteredParticipan.length
         this.noParticipanCount = filteredNoParticipan.length
+    }
+
+    onMove(event) {
+        console.log(this.accion)
+        event.preventDefault()
     }
 }

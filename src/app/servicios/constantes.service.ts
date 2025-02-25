@@ -119,13 +119,13 @@ const estudiante = [
             },
             {
                 label: 'Solicitudes y Tramites',
-                icon: 'pi pi-fw pi-book',
+                icon: 'pi pi-fw pi-inbox',
                 routerLink: ['/aula-virtual/02'],
             },
             {
                 label: 'Buzon de Sugerencias',
-                icon: 'pi pi-fw pi-book',
-                routerLink: ['/aula-virtual/01'],
+                icon: 'pi pi-fw pi-envelope',
+                routerLink: ['/gestion-institucional/buzon-sugerencias'],
             },
             {
                 label: 'Enlaces de ayuda',

@@ -1,0 +1,118 @@
+<p-panel>
+    <ng-template pTemplate="header">
+        <div class="flex flex-column gap-2">
+            <h3 class="m-0 text-uppercase text-primary">
+                Buzon de sugerencias
+            </h3>
+        </div>
+    </ng-template>
+    <ng-template pTemplate="icons" class="flex flex-column flex-1">
+        <div class="flex flex-wrap gap-2 justify-content-end">
+            <button
+                size="small"
+                [rounded]="true"
+                pButton
+                pTooltip="Registrar sugerencia"
+                tooltipPosition="top"
+                (click)="agregarSugerencia()"
+            >
+                <i class="pi pi-plus"></i>
+                <span class="ml-2 hidden sm:block">Registar sugerencia</span>
+            </button>
+        </div>
+    </ng-template>
+
+    <app-table-primeng
+        [columnas]="columns"
+        [showCaption]="true"
+        [data]="sugerencias"
+        (accionBtnItem)="accionBtnItemTable($event)"
+        [showPaginator]="true"
+        sortMode="single"
+        sortField="_cPersNomape"
+        [sortOrder]="1"
+        [(selectedRowData)]="selectedItems"
+        [actions]="actions"
+        [showAdvancedFilter]="true"
+    >
+    </app-table-primeng>
+    <ng-container slot="caption-content"> </ng-container>
+</p-panel>
+
+<p-dialog
+    [header]="dialog_header"
+    [(visible)]="visible"
+    [style]="{ width: '56rem' }"
+    [modal]="true"
+    [contentStyle]="{ overflow: 'auto' }"
+    (onHide)="resetearInputs()"
+>
+    <ng-content>
+        <form [formGroup]="form">
+            <div class="grid p-fluid mt-3">
+                <div class="field col-12 md:col-6">
+                    <span class="p-float-label">
+                        <p-multiSelect
+                            [options]="destinos"
+                            formControlName="iDestinoId"
+                            optionLabel="nombre"
+                            optionValue="id"
+                            [showClear]="true"
+                            [filter]="true"
+                            [appendTo]="'body'"
+                        />
+                        <label for="iDestinoId">Destino</label>
+                    </span>
+                </div>
+                <div class="field col-12 md:col-6">
+                    <span class="p-float-label">
+                        <p-dropdown
+                            [options]="prioridades"
+                            formControlName="iPrioridadId"
+                            optionLabel="nombre"
+                            [checkmark]="true"
+                            optionValue="id"
+                            [showClear]="true"
+                            [filter]="true"
+                            [appendTo]="'body'"
+                        />
+                        <label for="iPrioridadId">Prioridad *</label>
+                    </span>
+                </div>
+                <div class="field col-12">
+                    <span class="p-float-label">
+                        <input
+                            pInputText
+                            type="text"
+                            formControlName="cAsunto"
+                        />
+                        <label for="cAsunto">Asunto *</label>
+                    </span>
+                </div>
+                <div class="field col-12">
+                    <p-editor
+                        formControlName="cSugerencia"
+                        [style]="{ height: '150px' }"
+                        placeholder="Explique su sugerencia *"
+                    />
+                </div>
+            </div>
+            <div class="flex justify-content-end">
+                <p-button
+                    label="Guardar"
+                    (onClick)="guardarSugerencia()"
+                    styleClass="p-button-primary"
+                    [disabled]="form.invalid"
+                    [hidden]="sugerencia_registrada"
+                />
+                <p-button
+                    label="Actualizar"
+                    (onClick)="actualizarSugerencia()"
+                    styleClass="p-button-primary"
+                    [disabled]="form.invalid"
+                    [hidden]="!sugerencia_registrada"
+                />
+            </div>
+        </form>
+    </ng-content>
+</p-dialog>

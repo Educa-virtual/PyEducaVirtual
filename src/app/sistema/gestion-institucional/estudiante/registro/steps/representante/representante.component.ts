@@ -30,6 +30,10 @@ export class RepresentanteComponent implements OnInit {
     lenguas: Array<object>
     tipos_contacto: Array<object>
     apoderado_registrado: boolean = false
+    longitud_documento: number
+    formato_documento: string = '99999999'
+    es_peruano: boolean = true
+    documento_consultable: boolean = true
 
     private _MessageService = inject(MessageService) // dialog Mensaje simple
     private _confirmService = inject(ConfirmationModalService) // componente de dialog mensaje
@@ -40,7 +44,6 @@ export class RepresentanteComponent implements OnInit {
         private compartirMatriculaService: CompartirMatriculaService,
         private constantesService: ConstantesService,
         private fb: FormBuilder,
-        private messageService: MessageService,
         private router: Router
     ) {}
 
@@ -76,7 +79,7 @@ export class RepresentanteComponent implements OnInit {
                 iPersApoderadoId: [null],
                 iTipoFamiliarId: [null, Validators.required],
                 iTipoIdentId: [null, Validators.required],
-                cPersDocumento: ['', Validators.required],
+                cPersDocumento: [null, Validators.required],
                 cPersPaterno: ['', Validators.required],
                 cPersMaterno: [''],
                 cPersNombre: ['', Validators.required],
@@ -107,11 +110,32 @@ export class RepresentanteComponent implements OnInit {
             .get('cEstApenom')
             .setValue(this.compartirEstudianteService.getcEstApenom())
 
+        this.form.get('iTipoIdentId').valueChanges.subscribe((value) => {
+            this.form.get('cPersDocumento').setValue(null)
+            // Solo permitir validar DNI, CDE y RUC
+            this.documento_consultable = [1, 2, 3].includes(value)
+                ? true
+                : false
+            const tipo_doc = this.tipos_documentos.find(
+                (item: any) => item.id === value
+            )
+            this.longitud_documento = tipo_doc['longitud']
+            this.formato_documento = '9'.repeat(this.longitud_documento)
+        })
+
+        this.form.get('iNacionId').valueChanges.subscribe((value) => {
+            this.es_peruano = value === 193 ? true : false
+        })
+
         this.form.get('iDptoId').valueChanges.subscribe((value) => {
+            this.form.get('iPrvnId').setValue(null)
+            this.provincias = null
             this.getProvincias(value)
         })
 
         this.form.get('iPrvnId').valueChanges.subscribe((value) => {
+            this.form.get('iDsttId').setValue(null)
+            this.distritos = null
             this.getDistritos(value)
         })
 
@@ -121,10 +145,10 @@ export class RepresentanteComponent implements OnInit {
                 ?.setValue(this.compartirEstudianteService.getiPersId())
         }
 
-        this.setFormApoderado()
+        this.buscarApoderado()
     }
 
-    setFormApoderado() {
+    buscarApoderado() {
         if (this.compartirEstudianteService.getiPersApoderadoId() == null) {
             return null
         }
@@ -137,38 +161,71 @@ export class RepresentanteComponent implements OnInit {
             .subscribe({
                 next: (data: any) => {
                     const item = data.data[0]
-                    this.form.get('iPersApoderadoId')?.setValue(item.iPersId)
-                    this.form
-                        .get('iTipoFamiliarId')
-                        ?.setValue(item.iTipoFamiliarId)
-                    this.form.get('iTipoIdentId')?.setValue(item.iTipoIdentId)
-                    this.form
-                        .get('cPersDocumento')
-                        ?.setValue(item.cPersDocumento)
-                    this.form.get('cPersNombre')?.setValue(item.cPersNombre)
-                    this.form.get('cPersPaterno')?.setValue(item.cPersPaterno)
-                    this.form.get('cPersMaterno')?.setValue(item.cPersMaterno)
-                    this.form.get('cPersSexo')?.setValue(item.cPersSexo)
-                    this.form.get('iTipoEstCivId')?.setValue(item.iTipoEstCivId)
-                    this.form.get('iNacionId')?.setValue(item.iNacionId)
-                    this.form
-                        .get('cPersDomicilio')
-                        ?.setValue(item.cPersDomicilio)
-                    this.form.get('iPaisId')?.setValue(item.iPaisId)
-                    this.form.get('iDptoId')?.setValue(item.iDptoId)
-                    this.form.get('iPrvnId')?.setValue(item.iPrvnId)
-                    this.form.get('iDsttId')?.setValue(item.iDsttId)
-                    this.form
-                        .get('dPersNacimiento')
-                        ?.setValue(
-                            item.dPersNacimiento
-                                ? new Date(item.dPersNacimiento)
-                                : null
-                        )
+                    this.setFormApoderado(item)
                 },
                 error: (error) => {
                     console.error('Error obteniendo apoderado:', error)
-                    this.messageService.add({
+                    this._MessageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error,
+                    })
+                },
+                complete: () => {
+                    console.log('Request completed')
+                },
+            })
+    }
+
+    /**
+     * Setea los datos de un estudiante seleccionado
+     * @param item datos del estudiante seleccionado
+     */
+    setFormApoderado(item) {
+        this.form.get('iPersApoderadoId')?.setValue(item.iPersId)
+        this.form.get('iTipoFamiliarId')?.setValue(item.iTipoFamiliarId)
+        this.form.get('iTipoIdentId')?.setValue(item.iTipoIdentId)
+        this.form.get('cPersDocumento')?.setValue(item.cPersDocumento)
+        this.form.get('cPersNombre')?.setValue(item.cPersNombre)
+        this.form.get('cPersPaterno')?.setValue(item.cPersPaterno)
+        this.form.get('cPersMaterno')?.setValue(item.cPersMaterno)
+        this.form.get('cPersSexo')?.setValue(item.cPersSexo)
+        this.form.get('iTipoEstCivId')?.setValue(item.iTipoEstCivId)
+        this.form.get('iNacionId')?.setValue(item.iNacionId)
+        this.form.get('cPersDomicilio')?.setValue(item.cPersDomicilio)
+        this.form.get('iPaisId')?.setValue(item.iPaisId)
+        this.form.get('iDptoId')?.setValue(item.iDptoId)
+        this.form.get('iPrvnId')?.setValue(item.iPrvnId)
+        this.form.get('iDsttId')?.setValue(item.iDsttId)
+        this.form
+            .get('dPersNacimiento')
+            ?.setValue(
+                item.dPersNacimiento ? new Date(item.dPersNacimiento) : null
+            )
+    }
+
+    /**
+     * Buscar datos de persona segun documento en formulario
+     */
+    validarPersona() {
+        this.datosEstudianteService
+            .validarPersona({
+                iTipoIdentId: this.form.get('iTipoIdentId')?.value,
+                cPersDocumento: this.form.get('cPersDocumento')?.value,
+            })
+            .subscribe({
+                next: (data: any) => {
+                    console.log(data, 'validar persona')
+                    this.setFormApoderado(data.data)
+                    this._MessageService.add({
+                        severity: 'success',
+                        summary: 'Éxito',
+                        detail: data.message,
+                    })
+                },
+                error: (error) => {
+                    console.error('Error validando persona:', error)
+                    this._MessageService.add({
                         severity: 'error',
                         summary: 'Error',
                         detail: error,
@@ -203,7 +260,7 @@ export class RepresentanteComponent implements OnInit {
                 next: (data: any) => {
                     this.apoderado_registrado = true
                     console.log(data, 'agregar apoderado')
-                    this.messageService.add({
+                    this._MessageService.add({
                         severity: 'success',
                         summary: 'Éxito',
                         detail: 'Apoderado registrado',
@@ -217,7 +274,7 @@ export class RepresentanteComponent implements OnInit {
                 },
                 error: (error) => {
                     console.error('Error guardando apoderado:', error)
-                    this.messageService.add({
+                    this._MessageService.add({
                         severity: 'error',
                         summary: 'Error',
                         detail: error,
@@ -235,7 +292,7 @@ export class RepresentanteComponent implements OnInit {
             .subscribe({
                 next: (data: any) => {
                     console.log(data, 'actualizar apoderado')
-                    this.messageService.add({
+                    this._MessageService.add({
                         severity: 'success',
                         summary: 'Éxito',
                         detail: 'Apoderado actualizado',
@@ -243,7 +300,7 @@ export class RepresentanteComponent implements OnInit {
                 },
                 error: (error) => {
                     console.error('Error actualizando apoderado:', error)
-                    this.messageService.add({
+                    this._MessageService.add({
                         severity: 'error',
                         summary: 'Error',
                         detail: error,

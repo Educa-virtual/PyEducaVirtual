@@ -12,6 +12,11 @@ export class DatosSugerenciaService {
 
     lista: any[] = []
 
+    /**
+     * Buscar sugerencias segun criterios de busqueda
+     * @param data datos de busqueda
+     * @returns Observable<any>
+     */
     buscarSugerencias(data: any) {
         return this.http.post(
             `${baseUrl}/acad/estudiante/buscarSugerencias`,
@@ -19,6 +24,11 @@ export class DatosSugerenciaService {
         )
     }
 
+    /**
+     * Buscar sugerencia segun criterios de busqueda
+     * @param data datos de sugerencia seleccionada
+     * @returns Observable<any>
+     */
     buscarSugerencia(data: any) {
         return this.http.post(
             `${baseUrl}/acad/estudiante/buscarSugerencia`,
@@ -26,6 +36,11 @@ export class DatosSugerenciaService {
         )
     }
 
+    /**
+     * Guardar sugerencia
+     * @param data datos de nueva sugerencia
+     * @returns Observable<any>
+     */
     guardarSugerencia(data: any) {
         return this.http.post(
             `${baseUrl}/acad/estudiante/guardarSugerencia`,
@@ -33,6 +48,11 @@ export class DatosSugerenciaService {
         )
     }
 
+    /**
+     * Actualizar sugerencia
+     * @param data datos de sugerencia seleccionada
+     * @returns Observable<any>
+     */
     actualizarSugerencia(data: any) {
         return this.http.put(
             `${baseUrl}/acad/estudiante/actualizarSugerencia`,
@@ -40,6 +60,11 @@ export class DatosSugerenciaService {
         )
     }
 
+    /**
+     * Eliminar sugerencia
+     * @param data datos de sugerencia seleccionada
+     * @returns Observable<any>
+     */
     eliminarSugerencia(data: any) {
         return this.http.delete(
             `${baseUrl}/acad/estudiante/eliminarSugerencia`,

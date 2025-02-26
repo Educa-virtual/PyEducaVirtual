@@ -31,6 +31,7 @@ export class BuzonSugerenciasComponent implements OnInit {
     prioridades: Array<object>
     destinos: Array<object>
     dialog_header: string
+    uploadedFiles: any[] = []
 
     private _MessageService = inject(MessageService) // dialog Mensaje simple
     private _confirmService = inject(ConfirmationModalService) // componente de dialog mensaje
@@ -52,25 +53,22 @@ export class BuzonSugerenciasComponent implements OnInit {
             console.log(error, 'error de formulario')
         }
 
-        this.prioridades = [
-            { id: 1, nombre: 'BAJA' },
-            { id: 2, nombre: 'MEDIA' },
-            { id: 3, nombre: 'ALTA' },
-        ]
+        this.buscarPrioridades()
+        this.buscarDestinos()
+        this.buscarSugerencias()
+    }
 
-        this.destinos = [
-            { id: 1, nombre: 'EQUIPO TECNICO' },
-            { id: 2, nombre: 'DIRECCION' },
-            { id: 3, nombre: 'PROFESORES' },
-            { id: 4, nombre: 'ESPECIALISTAS' },
-        ]
-
+    /**
+     * Buscar sugerencias segun criterios de busqueda
+     */
+    buscarSugerencias() {
         this.sugerencias = [
             {
                 id: 1,
                 destino_id: [1, 3],
                 fecha: '2024-01-01',
                 asunto: 'Notificarme cuando el profesar ponga nota a mi examen',
+                estado_id: 2,
                 estado: 'RECIBIDO',
                 prioridad: 'MEDIA',
                 prioridad_id: 2,
@@ -82,6 +80,7 @@ export class BuzonSugerenciasComponent implements OnInit {
                 destino_id: [1],
                 fecha: '2024-01-02',
                 asunto: 'Opciones de preguntas deben ser mas grandes en celular',
+                estado_id: 1,
                 estado: 'PENDIENTE',
                 prioridad: 'BAJA',
                 prioridad_id: 1,
@@ -93,6 +92,7 @@ export class BuzonSugerenciasComponent implements OnInit {
                 destino_id: [1, 2],
                 fecha: '2024-01-03',
                 asunto: 'Explicar como se calcula promedio final',
+                estado_id: 3,
                 estado: 'ATENDIDO',
                 prioridad: 'ALTA',
                 prioridad_id: 3,
@@ -104,6 +104,7 @@ export class BuzonSugerenciasComponent implements OnInit {
                 destino_id: [4],
                 fecha: '2024-01-04',
                 asunto: 'Mas explicaciones en examenes de matematica',
+                estado_id: 1,
                 estado: 'PENDIENTE',
                 prioridad: 'BAJA',
                 prioridad_id: 2,
@@ -113,12 +114,34 @@ export class BuzonSugerenciasComponent implements OnInit {
         ]
     }
 
+    buscarDestinos() {
+        this.destinos = [
+            { id: 1, nombre: 'EQUIPO TECNICO' },
+            { id: 2, nombre: 'DIRECCION' },
+            { id: 3, nombre: 'PROFESORES' },
+            { id: 4, nombre: 'ESPECIALISTAS' },
+        ]
+    }
+
+    buscarPrioridades() {
+        this.prioridades = [
+            { id: 1, nombre: 'BAJA' },
+            { id: 2, nombre: 'MEDIA' },
+            { id: 3, nombre: 'ALTA' },
+        ]
+    }
+
+    /**
+     * Mostrar modal para agregar nueva sugerencia
+     */
     agregarSugerencia() {
         this.visible = true
         this.dialog_header = 'Registrar sugerencia'
-        console.log('agregarSugerencia')
     }
 
+    /**
+     * Enviar datos de nueva sugerencia a backend
+     */
     guardarSugerencia() {
         this.datosSugerenciaService
             .guardarSugerencia(this.form.value)
@@ -147,62 +170,111 @@ export class BuzonSugerenciasComponent implements OnInit {
             })
     }
 
+    /**
+     * Eliminar sugerencia segun id
+     * @param item sugerencia a eliminar
+     */
     eliminarSugerencia(item: any) {
+        if (item.estado_id !== 1) {
+            this._MessageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'No se puede eliminar sugerencia ya recibida',
+            })
+            return
+        }
         this._confirmService.openConfirm({
             header: 'Eliminar sugerencia',
             icon: 'pi pi-exclamation-triangle',
             message: '¿Está seguro de eliminar la sugerencia seleccionada?',
             accept: () => {
-                this.datosSugerenciaService
-                    .eliminarSugerencia(item.iSugerenciaId)
-                    .subscribe({
-                        next: (data: any) => {
-                            this._MessageService.add({
-                                severity: 'success',
-                                summary: 'Éxito',
-                                detail: 'Sugerencia eliminada',
-                            })
-                            console.log(data, 'eliminar sugerencia')
-                            this.sugerencias = this.sugerencias.filter(
-                                (sug: any) =>
-                                    sug.iSugerenciaId !== item.iSugerenciaId
-                            )
-                        },
-                        error: (error) => {
-                            console.error('Error eliminando sugerencia:', error)
-                            this._MessageService.add({
-                                severity: 'error',
-                                summary: 'Error',
-                                detail: error,
-                            })
-                        },
-                        complete: () => {
-                            console.log('Request completed')
-                        },
-                    })
+                this.datosSugerenciaService.eliminarSugerencia(item).subscribe({
+                    next: (data: any) => {
+                        this._MessageService.add({
+                            severity: 'success',
+                            summary: 'Éxito',
+                            detail: 'Sugerencia eliminada',
+                        })
+                        console.log(data, 'eliminar sugerencia')
+                        this.sugerencias = this.sugerencias.filter(
+                            (sug: any) =>
+                                sug.iSugerenciaId !== item.iSugerenciaId
+                        )
+                    },
+                    error: (error) => {
+                        console.error('Error eliminando sugerencia:', error)
+                        this._MessageService.add({
+                            severity: 'error',
+                            summary: 'Error',
+                            detail: error,
+                        })
+                    },
+                    complete: () => {
+                        console.log('Request completed')
+                    },
+                })
             },
         })
     }
 
+    /**
+     * Mostrar modal para editar sugerencia
+     * @param item sugerencia seleccionada en tabla
+     */
     editarSugerencia(item: any) {
         this.dialog_header = 'Editar sugerencia'
         this.setFormSugerencia(item)
     }
 
+    /**
+     * Actualizar sugerencia segun formulario
+     */
     actualizarSugerencia() {
-        console.log('actualizarSugerencia')
+        this.datosSugerenciaService
+            .actualizarSugerencia(this.form.value)
+            .subscribe({
+                next: (data: any) => {
+                    this._MessageService.add({
+                        severity: 'success',
+                        summary: 'Éxito',
+                        detail: 'Sugerencia eliminada',
+                    })
+                    console.log(data, 'actualizar sugerencia')
+                },
+                error: (error) => {
+                    console.error('Error actualizando sugerencia:', error)
+                    this._MessageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error,
+                    })
+                },
+                complete: () => {
+                    console.log('Request completed')
+                },
+            })
     }
 
+    /**
+     * Ir a vista para dar seguimiento a sugerencia
+     * @param item sugerencia seleccionada en tabla
+     */
     seguimientoSugerencia(item: any) {
         console.log(item, 'seguimientoSugerencia')
     }
 
+    /**
+     * Limpiar formulario
+     */
     resetearInputs() {
         this.form.reset()
     }
 
+    /**
+     * Rellenar formulario con datos de sugerencia
+     * @param item sugerencia seleccionada en tabla
+     */
     setFormSugerencia(item: any) {
-        // TODO: actualizar Quill a version 17.18.13
         this.form.get('cAsunto')?.setValue(item.asunto)
         this.form.get('cSugerencia')?.setValue(item.sugerencia)
         this.form.get('iDestinoId')?.setValue(item.destino_id)
@@ -210,6 +282,15 @@ export class BuzonSugerenciasComponent implements OnInit {
         this.visible = true
     }
 
+    onUpload(event: any) {
+        this.uploadedFiles = event.files
+    }
+
+    /**
+     * Acciones para botones en cada fila de tabla
+     * @param {object} accion accion seleccionada
+     * @param {object} item datos de la fila seleccionada
+     */
     accionBtnItemTable({ accion, item }) {
         if (accion === 'editar') {
             this.editarSugerencia(item)
@@ -224,6 +305,10 @@ export class BuzonSugerenciasComponent implements OnInit {
 
     selectedItems = []
 
+    /**
+     * Definir botones de cada fila en la tabla
+     * @type {IActionTable[]}
+     */
     actions: IActionTable[] = [
         {
             labelTooltip: 'Editar sugerencia',
@@ -250,6 +335,10 @@ export class BuzonSugerenciasComponent implements OnInit {
 
     actionsLista: IActionTable[]
 
+    /**
+     * Columnas de la tabla
+     * @type {any[]}
+     */
     columns = [
         {
             type: 'item',

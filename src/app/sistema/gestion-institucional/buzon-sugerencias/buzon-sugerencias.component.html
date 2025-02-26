@@ -37,7 +37,6 @@
         [showColumnFilter]="false"
     >
     </app-table-primeng>
-    <ng-container slot="caption-content"> </ng-container>
 </p-panel>
 
 <p-dialog
@@ -97,6 +96,25 @@
                         placeholder="Explique su sugerencia *"
                     />
                 </div>
+                <div class="field col-12">
+                    <p-fileUpload
+                        name="demo[]"
+                        showUploadButton="false"
+                        [multiple]="true"
+                        chooseLabel="Seleccione hasta 3 archivos (max. 10 MB)"
+                        cancelLabel="Quitar archivos"
+                        fileLimit="3"
+                        maxFileSize="10240"
+                    >
+                        <ng-template pTemplate="content">
+                            <ul *ngIf="uploadedFiles.length">
+                                <li *ngFor="let file of uploadedFiles">
+                                    {{ file.name }} - {{ file.size }} bytes
+                                </li>
+                            </ul>
+                        </ng-template>
+                    </p-fileUpload>
+                </div>
             </div>
             <div class="flex justify-content-end">
                 <p-button
@@ -117,3 +135,4 @@
         </form>
     </ng-content>
 </p-dialog>
+<p-toast></p-toast>

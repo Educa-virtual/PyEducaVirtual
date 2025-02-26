@@ -89,7 +89,7 @@ export class GestionarPreguntasComponent implements OnInit {
         this.especialistasService
             .obtenerAreasPorEvaluacionyEspecialista(
                 this.iEvaluacionIdHashed,
-                this.store.getItem('dremoUser').iDocenteId
+                this.store.getItem('dremoUser').iPersId
             )
             .subscribe({
                 next: (respuesta) => {

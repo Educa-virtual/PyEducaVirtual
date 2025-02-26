@@ -22,6 +22,8 @@ import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { MessageService } from 'primeng/api'
 import { MessagesModule } from 'primeng/messages'
 import { Message } from 'primeng/api'
+import { CursoDetalleNavigationComponent } from '../../aula-virtual/sub-modulos/cursos/curso-detalle/curso-detalle-navigation/curso-detalle-navigation.component'
+import { BulkDataImportComponent } from './bulk-data-import/bulk-data-import.component'
 
 @Component({
     selector: 'app-sincronizar-archivo',
@@ -35,6 +37,8 @@ import { Message } from 'primeng/api'
         ReactiveFormsModule,
         MessagesModule,
         FormsModule,
+        CursoDetalleNavigationComponent,
+        BulkDataImportComponent,
     ],
     templateUrl: './sincronizar-archivo.component.html',
     styleUrl: './sincronizar-archivo.component.scss',

@@ -22,6 +22,7 @@ export class ContainerPageAccionbComponent {
     @Output() accionBtnItem = new EventEmitter()
     @Input() title: string = ''
     @Input() titleBtn: string = ''
+    @Input() showActions: boolean = true
     @Input() actions: MenuItem[] | undefined = [
         {
             items: [

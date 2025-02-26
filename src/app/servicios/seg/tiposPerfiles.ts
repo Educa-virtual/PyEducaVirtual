@@ -1,0 +1,12 @@
+export const ADMINISTRADOR = 1
+export const USUARIO = 2
+export const PUBLICO_GENERAL = 3
+export const DIRECTOR = 4
+export const ESPECIALISTA_UGEL = 5
+export const ESPECIALISTA_DRE = 6
+export const ESTUDIANTE = 7
+export const APODERADO = 8
+export const ASISTENTE_SOCIAL = 9
+export const DOCENTE = 10
+export const AUXILIAR = 11
+export const TUTOR = 12

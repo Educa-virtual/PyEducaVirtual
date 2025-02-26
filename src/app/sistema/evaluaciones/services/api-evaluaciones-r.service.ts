@@ -475,6 +475,18 @@ export class ApiEvaluacionesRService {
         window.open(url, '_blank')
     }
 
+    guardarFechaCantidadExamenCursos(data: {
+        iEvaluacionId: number
+        iCursoNivelGradId: number | string
+        dtExamenFechaInicio
+        iExamenCantidadPreguntas: number
+    }): Observable<any> {
+        return this.http.post(
+            `${this.urlBackendApi}/ere/Evaluaciones/guardarFechaCantidadExamenCursos`,
+            data
+        )
+    }
+
     obtenerEvaluacionPorId(iEvaluacionId): Observable<any> {
         return this.http
             .get(`${this.urlBackendApi}/ere/evaluaciones/${iEvaluacionId}`)

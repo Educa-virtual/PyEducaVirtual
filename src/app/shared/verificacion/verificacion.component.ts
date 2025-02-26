@@ -46,7 +46,7 @@ export class VerificacionComponent {
             cCodeVerif: ['', Validators.required],
             correo: ['', Validators.required],
         })
-        const user = this.store.getItem('dremoToken')
+        const user = this.store.getItem('dremoUser')
         this.userName = user ? user.cPersNombreLargo : ''
         this.emails = user ? user.contactar : []
     }
@@ -54,7 +54,7 @@ export class VerificacionComponent {
     onVerify() {
         this.loading = true
         this.loadingText = 'Verificando...'
-        const user = this.store.getItem('dremoToken')
+        const user = this.store.getItem('dremoUser')
         const params = {
             cCodeVerif: this.formVerify.value.cCodeVerif,
             iPersId: user ? user.iPersId : null,
@@ -102,7 +102,7 @@ export class VerificacionComponent {
     }
 
     sendEmail() {
-        const user = this.store.getItem('dremoToken')
+        const user = this.store.getItem('dremoUser')
         const params = {
             iPersId: user ? user.iPersId : null,
             correo: this.formVerify.value.correo,

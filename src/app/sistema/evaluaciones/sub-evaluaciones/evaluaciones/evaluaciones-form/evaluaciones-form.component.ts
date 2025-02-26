@@ -261,18 +261,7 @@ export class EvaluacionesFormComponent implements OnInit {
     ereVerEvaluacion() {
         const evaluacionData = this._config.data.evaluacion // Obtener los datos del modal
         if (evaluacionData) {
-            console.log(evaluacionData)
-            //console.log(evaluacionData.dtEvaluacionCreacion)
-            this.evaluacionFormGroup.patchValue({
-                iEvaluacionId: evaluacionData.iEvaluacionId,
-                idTipoEvalId: evaluacionData.idTipoEvalId,
-                iNivelEvalId: evaluacionData.iNivelEvalId,
-                cEvaluacionNombre: evaluacionData.cEvaluacionNombre,
-                cEvaluacionDescripcion: evaluacionData.cEvaluacionDescripcion,
-                cEvaluacionUrlDrive: evaluacionData.cEvaluacionUrlDrive,
-                dtEvaluacionFechaInicio: evaluacionData.dtEvaluacionFechaInicio,
-                dtEvaluacionFechaFin: evaluacionData.dtEvaluacionFechaFin,
-            })
+            this.evaluacionFormGroup.patchValue(evaluacionData)
         }
     }
     guardarEvaluacion() {

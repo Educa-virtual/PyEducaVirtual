@@ -13,6 +13,8 @@ import { environment } from '@/environments/environment'
 import { catchError, map, throwError } from 'rxjs'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { FormImportarBancoPreguntasComponent } from './componentes/form-importar-banco-preguntas/form-importar-banco-preguntas.component'
+import { RemoveHTMLCSSPipe } from '@/app/shared/pipes/remove-html-style.pipe'
+import { TruncatePipe } from '@/app/shared/pipes/truncate-text.pipe'
 
 @Component({
     selector: 'app-preguntas',
@@ -23,6 +25,8 @@ import { FormImportarBancoPreguntasComponent } from './componentes/form-importar
         EditorComponent,
         NgIf,
         FormImportarBancoPreguntasComponent,
+        RemoveHTMLCSSPipe,
+        TruncatePipe,
     ],
     templateUrl: './preguntas.component.html',
     styleUrl: './preguntas.component.scss',
@@ -389,7 +393,7 @@ export class PreguntasComponent implements OnInit {
                 const evaluaciones = item.length
                     ? JSON.parse(item[0]['evaluaciones'])
                     : []
-                // console.log(evaluaciones)
+
                 if (!evaluaciones) {
                     return
                 }
@@ -417,11 +421,15 @@ export class PreguntasComponent implements OnInit {
                     if (itemSinEncabezado.length) {
                         this.preguntas.push({
                             pregunta: itemSinEncabezado,
-                            title: 'Pregunta sin enunciado',
+                            title:
+                                'Pregunta: ' +
+                                (itemSinEncabezado[0].cPregunta || '-'),
                             iEncabPregId: null,
+                            iOrden: key,
                         })
                         // total = 0
                     }
+                    // console.log(itemSinEncabezado)
                     const itemConEncabezado = evaluaciones.filter(
                         (i) =>
                             i.iEncabPregId &&
@@ -430,29 +438,27 @@ export class PreguntasComponent implements OnInit {
                     if (itemConEncabezado.length) {
                         this.preguntas.push({
                             pregunta: itemConEncabezado,
-                            title: 'Pregunta con enunciado',
+                            title:
+                                'Pregunta Múltiple: ' +
+                                (itemConEncabezado[0].cPregunta || '-'),
                             iEncabPregId: evaluaciones[key]['iEncabPregId'],
+                            iOrden: key,
                         })
                         // total = total + 1
                     }
                     // }
                 }
-                let sinEncabezado = []
-                sinEncabezado = this.preguntas.filter((i) => !i.iEncabPregId)
+                //console.log(this.preguntas)
 
-                let conEncabezado = []
-                conEncabezado = this.preguntas.filter(
+                this.preguntas = this.preguntas.filter(
                     (value, index, self) =>
+                        value.iEncabPregId === null ||
                         index ===
-                        self.findIndex(
-                            (t) =>
-                                t.iEncabPregId === value.iEncabPregId &&
-                                value.iEncabPregId
-                        )
+                            self.findIndex(
+                                (t) => t.iEncabPregId === value.iEncabPregId
+                            )
                 )
-                this.preguntas = []
-                this.preguntas = [...sinEncabezado, ...conEncabezado]
-                // console.log(this.preguntas)
+
                 this.preguntas.forEach((pregunta) => {
                     {
                         if (pregunta.pregunta.length > 1) {
@@ -488,6 +494,7 @@ export class PreguntasComponent implements OnInit {
                     summary: 'Actualizado',
                     detail: 'Se actualizó correctamente la pregunta',
                 })
+                this.obtenerPreguntasxiEvaluacionIdxiCursoNivelGradId()
                 break
             case 'GUARDAR':
                 this._MessageService.add({

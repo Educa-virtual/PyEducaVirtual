@@ -17,8 +17,7 @@
             ></p-dropdown>
         </p-inputGroup>
         <p-inputGroup>
-            <p-inputGroupAddon>Seleccione nivel</p-inputGroupAddon>
-            <!-- Componente de calendario para seleccionar una fecha y hora -->
+            <p-inputGroupAddon>Seleccione Nivel</p-inputGroupAddon>
             <p-dropdown
                 [options]="nivelTipo"
                 [(ngModel)]="selectedNivelTipo"
@@ -30,9 +29,8 @@
                 [disabled]="accion === 'ver'"
             ></p-dropdown>
         </p-inputGroup>
-        <p-inputGroup>
+        <!-- <p-inputGroup>
             <p-inputGroupAddon>Tipo I.E</p-inputGroupAddon>
-            <!-- Componente de calendario para seleccionar una fecha y hora -->
             <p-dropdown
                 [options]="nivelTipo"
                 [(ngModel)]="selectedNivelTipo"
@@ -43,22 +41,24 @@
                 (onChange)="onNivelTipoChange($event)"
                 [disabled]="accion === 'ver'"
             ></p-dropdown>
-        </p-inputGroup>
+        </p-inputGroup> -->
     </div>
     <br />
-    <!-- <p>{{ cEvaluacionNombre }}</p> -->
+
     <p-pickList
         [source]="sourceProducts"
         [target]="targetProducts"
-        sourceHeader="I.E No participan {{ noParticipanCount }}"
-        targetHeader="I.E Participan {{ participanCount }}"
+        sourceHeader="Cantidad de I.E que no participan: {{
+            noParticipanCount
+        }}"
+        targetHeader="Cantidad de I.E que participan: {{ participanCount }}"
         (onMoveToTarget)="IEparticipan($event)"
         (onMoveToSource)="IEnoparticipan($event)"
         (onMoveAllToTarget)="IEparticipanall($event)"
         (onMoveAllToSource)="IEnoparticipanall($event)"
-        dragdrop="true"
+        [dragdrop]="accion === 'ver' ? false : true"
         filter="true"
-        [responsive]="false"
+        [responsive]="true"
         [sourceStyle]="{ height: '300px' }"
         [targetStyle]="{ height: '300px' }"
         filterBy="cIieeNombre"

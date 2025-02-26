@@ -49,8 +49,9 @@
 }
 
 ::ng-deep .p-accordion-header-link {
-    //background-color: var(--green-100) !important; //your choice colour
+    background-color: var(--bg-header-modal) !important; //your choice colour
     height: 40px !important;
+    color: white;
 }
 
 ::ng-deep .p-dropdown-panel .p-dropdown-header .p-dropdown-filter {
@@ -89,4 +90,22 @@
 
 .indexTab ::ng-deep .p-accordion-header-link {
     //background-color: var(--green-100) !important;
+}
+
+::ng-deep .p-button.p-button-icon-only.p-button-rounded {
+    height: 2rem !important;
+    width: 2rem !important;
+}
+
+::ng-deep .p-panel .p-panel-header {
+    background: var(--bg-header-modal) !important;
+    color: white !important;
+}
+
+::ng-deep .text-primary {
+    color: white !important;
+}
+
+::ng-deep .container-page .p-panel-header {
+    gap: 0px !important;
 }

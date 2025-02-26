@@ -1,4 +1,200 @@
-<p-dropdown
+<app-container-page [title]="titulo" [actions]="[]">
+    <div class="grid">
+        <div class="col-12 md:col-7">
+            <p-inputGroup>
+                <p-inputGroupAddon>Especialista</p-inputGroupAddon>
+                <p-dropdown
+                    [options]="especialistas"
+                    optionValue="iDocenteId"
+                    placeholder="Selecciona un especialista"
+                    styleClass="w-full"
+                    [showClear]="true"
+                    [filter]="true"
+                    filterBy="cPersDocumento"
+                    (onChange)="obteneriCursosNivelGradIdxiDocenteId()"
+                    [(ngModel)]="iDocenteId"
+                >
+                    <ng-template pTemplate="item" let-item>
+                        {{ item.cPersDocumento }} - {{ item.cPersNombre }}
+                        {{ item.cPersPaterno }} {{ item.cPersMaterno }}
+                    </ng-template>
+                    <ng-template pTemplate="selectedItem" let-item>
+                        {{ item.cPersDocumento }} - {{ item.cPersNombre }}
+                        {{ item.cPersPaterno }} {{ item.cPersMaterno }}
+                    </ng-template>
+                </p-dropdown>
+            </p-inputGroup>
+        </div>
+
+        <!--  Dropdown para Ugees -->
+
+        <div class="col-12 md:col-6">
+            <p-inputGroup>
+                <p-inputGroupAddon>UgeLes</p-inputGroupAddon>
+                <p-dropdown
+                    [options]="ugeles"
+                    optionValue="iUgelId"
+                    optionLabel="cUgelNombre"
+                    placeholder="Selecciona una Ugel"
+                    styleClass="w-full"
+                    [showClear]="true"
+                    [filter]="true"
+                    filterBy="nombre"
+                    [(ngModel)]="iUgelId"
+                    (onChange)="obtenerAreasPorEspecialistaUgel()"
+                >
+                </p-dropdown>
+            </p-inputGroup>
+        </div>
+
+        <div class="col-12 md:col-5">
+            <p-inputGroup>
+                <p-button label="Áreas asignadas" severity="success" />
+                <input
+                    pInputText
+                    placeholder="Keyword"
+                    [value]="iAreasConAsignar"
+                />
+                <p-button label="Áreas sin asignar" severity="info" />
+                <input
+                    pInputText
+                    placeholder="Keyword"
+                    [value]="iAreasSinAsignar"
+                />
+            </p-inputGroup>
+        </div>
+        <div class="col-12">
+            <p-accordion
+                styleClass="w-full"
+                [activeIndex]="nivelPrimaria.length ? 0 : null"
+            >
+                <p-accordionTab iconPos="end" header="Nivel Primaria">
+                    <p-table
+                        [value]="objectKeys(areasPrimaria)"
+                        class="hoverTable"
+                    >
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th style="width: 1rem">#</th>
+                                <th style="width: 15rem">Nombre del área</th>
+                                <th
+                                    style="width: 1rem"
+                                    *ngFor="
+                                        let grado of objectKeys(gradosPrimaria)
+                                    "
+                                >
+                                    {{ grado }}
+                                </th>
+                            </tr>
+                        </ng-template>
+                        <ng-template
+                            pTemplate="body"
+                            let-curso
+                            let-i="rowIndex"
+                        >
+                            <tr>
+                                <td class="font-bold">{{ i + 1 }}</td>
+                                <td class="text-sm">{{ curso }}</td>
+                                <td
+                                    *ngFor="
+                                        let grado of objectKeys(gradosPrimaria)
+                                    "
+                                >
+                                    <div
+                                        *ngFor="
+                                            let item of nivelPrimaria;
+                                            let indexPrimaria = index
+                                        "
+                                    >
+                                        @if (
+                                            item.cGradoAbreviacion === grado &&
+                                            item.cCursoNombre === curso
+                                        ) {
+                                            <p-checkbox
+                                                [(ngModel)]="item.isSelected"
+                                                [binary]="true"
+                                                [value]="item"
+                                                [inputId]="
+                                                    item.iCursoNivelGradId
+                                                "
+                                                (onChange)="checkedCurso(item)"
+                                            ></p-checkbox>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </p-accordionTab>
+                <p-accordionTab iconPos="end" header="Nivel Secundaria">
+                    <p-table
+                        [value]="objectKeys(areasSecundaria)"
+                        class="hoverTable"
+                    >
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th style="width: 1rem">#</th>
+                                <th style="width: 15rem">Nombre del área</th>
+                                <th
+                                    style="width: 1rem"
+                                    *ngFor="
+                                        let grado of objectKeys(
+                                            gradosSecundaria
+                                        )
+                                    "
+                                >
+                                    {{ grado }}
+                                </th>
+                            </tr>
+                        </ng-template>
+                        <ng-template
+                            pTemplate="body"
+                            let-curso
+                            let-i="rowIndex"
+                        >
+                            <tr>
+                                <td class="font-bold">{{ i + 1 }}</td>
+                                <td class="text-sm">{{ curso }}</td>
+                                <td
+                                    *ngFor="
+                                        let grado of objectKeys(
+                                            gradosSecundaria
+                                        )
+                                    "
+                                >
+                                    <div
+                                        *ngFor="
+                                            let item of nivelSecundaria;
+                                            let indexSecundaria = index
+                                        "
+                                    >
+                                        @if (
+                                            item.cGradoAbreviacion === grado &&
+                                            item.cCursoNombre === curso
+                                        ) {
+                                            <p-checkbox
+                                                [(ngModel)]="item.isSelected"
+                                                [binary]="true"
+                                                [value]="item"
+                                                [inputId]="
+                                                    item.iCursoNivelGradId
+                                                "
+                                                (onChange)="checkedCurso(item)"
+                                            ></p-checkbox>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </p-accordionTab>
+            </p-accordion>
+        </div>
+    </div>
+</app-container-page>
+<p-toast></p-toast>
+
+<!-- <p-dropdown
     [options]="especialistas"
     optionLabel="label"
     placeholder="Seleccione un especialista"
@@ -78,4 +274,4 @@
             </ng-template>
         </p-table>
     </div>
-</div>
+</div> -->

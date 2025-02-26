@@ -55,11 +55,6 @@ export class ApiEspecialistasService {
         return this.http.get(url).pipe(map((resp: any) => resp['data']))
     }
 
-    listarEspecialistasUgel(): Observable<any> {
-        const url = `${this.urlBackendApi}/acad/especialistas-ugel`
-
-        return this.http.get(url).pipe(map((resp: any) => resp['data']))
-    }
     obtenerEspecialistasDremo(): Observable<any> {
         return this.http
             .get(`${this.urlBackendApi}/acad/especialistas-dremo`)
@@ -83,6 +78,48 @@ export class ApiEspecialistasService {
     }
 
     eliminarAreaEspecialista(iDocenteId: string, data: any): Observable<any> {
+        const url = `${this.urlBackendApi}/acad/especialistas-dremo/${iDocenteId}/areas`
+
+        return this.http.delete<void>(url, { body: data })
+    }
+
+    // Metodos Especialista Ugel
+
+    obtenerEspecialistasUgel(): Observable<any> {
+        const url = `${this.urlBackendApi}/acad/especialistas-ugel`
+
+        return this.http.get(url).pipe(map((resp: any) => resp['data']))
+    }
+
+    obtenerUgeles(): Observable<any> {
+        const url = `${this.urlBackendApi}/acad/ugeles`
+        return this.http.get(url).pipe(map((resp: any) => resp['data']))
+    }
+
+    obtenerCursosxNivelUgel(nivel: number): Observable<any> {
+        let url = `${this.urlBackendApi}/acad/cursos?`
+        if (nivel) url += `nivel=${nivel}`
+        return this.http.get(url).pipe(map((resp: any) => resp['data']))
+    }
+
+    // obtenerAreasPorEspecialista terminado a las 4:40PM
+    obtenerAreasPorEspecialistaUgel(
+        iDocenteId: string,
+        iUgelId: any
+    ): Observable<any> {
+        const url = `${this.urlBackendApi}/acad/ugeles/${iUgelId}/areas?iDocenteId=${iDocenteId}`
+        return this.http.get(url).pipe(map((resp: any) => resp['data']))
+    }
+
+    asignarAreaEspecialistaUgel(iDocenteId: string, data): Observable<any> {
+        const url = `${this.urlBackendApi}/acad/especialistas-dremo/${iDocenteId}/areas`
+        return this.http.post(url, data).pipe(map((resp: any) => resp))
+    }
+
+    eliminarAreaEspecialistaUgel(
+        iDocenteId: string,
+        data: any
+    ): Observable<any> {
         const url = `${this.urlBackendApi}/acad/especialistas-dremo/${iDocenteId}/areas`
 
         return this.http.delete<void>(url, { body: data })

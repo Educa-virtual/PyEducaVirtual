@@ -7,16 +7,17 @@ import {
 import { Component, inject, OnInit } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { MessageService } from 'primeng/api'
-import { DatosSugerenciaService } from '../services/datos.sugerencia.service'
+import { DatosSugerenciaService } from '../../services/datos.sugerencia.service'
+import { Router } from '@angular/router'
 
 @Component({
-    selector: 'app-buzon-sugerencias',
+    selector: 'app-gestionar-sugerencias',
     standalone: true,
     imports: [PrimengModule, TablePrimengComponent],
-    templateUrl: './buzon-sugerencias.component.html',
-    styleUrl: './buzon-sugerencias.component.scss',
+    templateUrl: './gestionar-sugerencias.component.html',
+    styleUrl: './gestionar-sugerencias.component.scss',
 })
-export class BuzonSugerenciasComponent implements OnInit {
+export class GestionarSugerenciasComponent implements OnInit {
     form: FormGroup
     sede: any[]
     iSedeId: number
@@ -38,7 +39,8 @@ export class BuzonSugerenciasComponent implements OnInit {
 
     constructor(
         private fb: FormBuilder,
-        private datosSugerenciaService: DatosSugerenciaService
+        private datosSugerenciaService: DatosSugerenciaService,
+        private router: Router
     ) {}
 
     ngOnInit(): void {
@@ -296,7 +298,9 @@ export class BuzonSugerenciasComponent implements OnInit {
             this.editarSugerencia(item)
         }
         if (accion === 'seguimiento') {
-            this.seguimientoSugerencia(item)
+            this.router.navigate([
+                '/gestion-institucional/seguimiento-sugerencia',
+            ])
         }
         if (accion === 'anular') {
             this.eliminarSugerencia(item)
@@ -318,7 +322,7 @@ export class BuzonSugerenciasComponent implements OnInit {
             class: 'p-button-rounded p-button-primary p-button-text',
         },
         {
-            labelTooltip: 'Seguimiento de sugerencia',
+            labelTooltip: 'Dar seguimiento',
             icon: 'pi pi-search',
             accion: 'seguimiento',
             type: 'item',

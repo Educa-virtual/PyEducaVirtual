@@ -125,7 +125,7 @@ const estudiante = [
             {
                 label: 'Buzon de Sugerencias',
                 icon: 'pi pi-fw pi-envelope',
-                routerLink: ['/gestion-institucional/buzon-sugerencias'],
+                routerLink: ['/gestion-institucional/gestionar-sugerencias'],
             },
             {
                 label: 'Enlaces de ayuda',

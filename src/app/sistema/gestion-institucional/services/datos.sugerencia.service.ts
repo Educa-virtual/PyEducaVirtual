@@ -71,4 +71,13 @@ export class DatosSugerenciaService {
             data
         )
     }
+
+    /**
+     * Dar seguimiento a sugerencia
+     * @param data datos de sugerencia seleccionada
+     * @returns Observable<any>
+     */
+    buscarSugerenciaSeguimiento(data: any) {
+        return this.http.post(`${baseUrl}/grl/sugerencias/seguimiento`, data)
+    }
 }

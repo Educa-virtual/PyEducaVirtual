@@ -216,6 +216,11 @@
                             {{ rowData[col.field] | date: 'dd/MM/YYYY' }}
                         </div>
                     }
+                    @if (col.type === 'datetime') {
+                        <div [style.text-align]="col.text">
+                            {{ rowData[col.field] | date: 'dd/MM/YYYY HH:mm' }}
+                        </div>
+                    }
                     @if (col.type === 'radio') {
                         <p-tableRadioButton
                             [value]="rowData"

@@ -25,7 +25,8 @@ import { InformacionComponent } from './informacion/informacion.component'
 import { GestionMatriculasComponent } from './matriculas/gestion-matriculas.component'
 import { MatriculaMasivaComponent } from './matriculas/matricula-masiva/matricula-masiva.component'
 import { MatriculaIndividualComponent } from './matriculas/matricula-individual/matricula-individual.component'
-import { BuzonSugerenciasComponent } from './buzon-sugerencias/buzon-sugerencias.component'
+import { GestionarSugerenciasComponent } from './buzon-sugerencias/gestionar-sugerencias/gestionar-sugerencias.component'
+import { SeguimientoSugerenciaComponent } from './buzon-sugerencias/seguimiento-sugerencia/seguimiento-sugerencia.component'
 
 const routes: Routes = [
     { path: 'calendarioAcademico', component: CalendarioAcademicoComponent },
@@ -95,7 +96,11 @@ const routes: Routes = [
                 (c) => c.EstudianteModule
             ),
     },
-    { path: 'buzon-sugerencias', component: BuzonSugerenciasComponent },
+    { path: 'gestionar-sugerencias', component: GestionarSugerenciasComponent },
+    {
+        path: 'seguimiento-sugerencia',
+        component: SeguimientoSugerenciaComponent,
+    },
 ]
 
 @NgModule({

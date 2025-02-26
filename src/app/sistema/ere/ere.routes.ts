@@ -7,6 +7,7 @@ import {
 import { RoleGuard } from '@/app/shared/_guards/role.guard'
 import { Routes } from '@angular/router'
 import { EvaluacionesComponent } from '../evaluaciones/sub-evaluaciones/evaluaciones/evaluaciones.component'
+import { EspecialistaDremoComponent } from './administrar/especialista-dremo/especialista-dremo.component'
 
 const routes: Routes = [
     {
@@ -69,11 +70,23 @@ const routes: Routes = [
             ),
     },
     {
-        path: 'especialista-dremo',
-        loadComponent: () =>
-            import(
-                './administrar/especialista-dremo/especialista-dremo.component'
-            ).then((c) => c.EspecialistaDremoComponent),
+        path: 'administrar',
+        canActivate: [RoleGuard],
+        data: {
+            expectedRole: [ADMINISTRADOR_DREMO],
+            breadcrumb: 'Administrar',
+            icon: 'pi pi-cog',
+        },
+        children: [
+            {
+                path: 'especialista-dremo',
+                component: EspecialistaDremoComponent,
+                data: {
+                    breadcrumb: 'Especialista DREMO',
+                    icon: 'pi pi-users',
+                },
+            },
+        ],
     },
 ]
 

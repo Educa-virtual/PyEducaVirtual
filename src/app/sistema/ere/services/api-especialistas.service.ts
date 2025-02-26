@@ -54,4 +54,32 @@ export class ApiEspecialistasService {
 
         return this.http.get(url).pipe(map((resp: any) => resp['data']))
     }
+
+    obtenerEspecialistasDremo(): Observable<any> {
+        return this.http
+            .get(`${this.urlBackendApi}/acad/especialistas-dremo`)
+            .pipe(map((resp) => resp['data']))
+    }
+
+    obtenerCursosxNivel(nivel: number): Observable<any> {
+        let url = `${this.urlBackendApi}/acad/cursos?`
+        if (nivel) url += `nivel=${nivel}`
+        return this.http.get(url).pipe(map((resp: any) => resp['data']))
+    }
+
+    obtenerAreasPorEspecialista(iDocenteId: string): Observable<any> {
+        const url = `${this.urlBackendApi}/acad/especialistas-dremo/${iDocenteId}/areas`
+        return this.http.get(url).pipe(map((resp: any) => resp['data']))
+    }
+
+    asignarAreaEspecialista(iDocenteId: string, data): Observable<any> {
+        const url = `${this.urlBackendApi}/acad/especialistas-dremo/${iDocenteId}/areas`
+        return this.http.post(url, data).pipe(map((resp: any) => resp))
+    }
+
+    eliminarAreaEspecialista(iDocenteId: string, data: any): Observable<any> {
+        const url = `${this.urlBackendApi}/acad/especialistas-dremo/${iDocenteId}/areas`
+
+        return this.http.delete<void>(url, { body: data, observe: 'response' })
+    }
 }

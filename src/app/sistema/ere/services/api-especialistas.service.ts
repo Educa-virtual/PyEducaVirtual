@@ -54,4 +54,10 @@ export class ApiEspecialistasService {
 
         return this.http.get(url).pipe(map((resp: any) => resp['data']))
     }
+
+    listarEspecialistasUgel(): Observable<any> {
+        const url = `${this.urlBackendApi}/acad/especialistas-ugel`
+
+        return this.http.get(url).pipe(map((resp: any) => resp['data']))
+    }
 }

@@ -30,6 +30,18 @@ export const administradorDremo = [
                 label: 'Administrar',
                 icon: 'pi pi-fw pi-cog',
                 routerLink: ['/ere/administrar'],
+                items: [
+                    {
+                        label: 'Especialista DREMO',
+                        icon: 'pi pi-fw pi-circle',
+                        routerLink: ['./ere/administrar/especialista-dremo'],
+                    },
+                    {
+                        label: 'Especialista UGEL',
+                        icon: 'pi pi-fw pi-circle',
+                        routerLink: ['./ere/administrar/especialista-ugel'],
+                    },
+                ],
             },
             reportesEre,
             {

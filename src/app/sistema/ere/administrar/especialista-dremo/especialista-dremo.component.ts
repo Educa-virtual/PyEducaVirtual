@@ -1,110 +1,212 @@
-import { Component, OnInit } from '@angular/core'
-import { CommonModule } from '@angular/common'
-import { TableModule } from 'primeng/table'
-import { DropdownModule } from 'primeng/dropdown'
-import { FormsModule } from '@angular/forms'
-import { InputGroupModule } from 'primeng/inputgroup'
-import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
-import { ButtonModule } from 'primeng/button'
-import { httpService } from '@/app/servicios/httpService'
-import { CheckboxModule } from 'primeng/checkbox'
+import { Component, inject, OnInit } from '@angular/core'
+import { PrimengModule } from '@/app/primeng.module'
+import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import { ApiEspecialistasService } from '../../services/api-especialistas.service'
-
-// Modelo de datos
-
-// interface titulo {
-//  nombre: string
-//}
-
-interface Product {
-    id: number
-    nombre: string
-    grado: boolean
-}
-
-interface Profesor {
-    id: number
-    nombre: string
-    grado: boolean
-}
-
-interface Especialista {
-    _id: string
-    label: string
-}
+import { forkJoin } from 'rxjs'
+import { MessageService } from 'primeng/api'
 
 @Component({
     selector: 'app-especialista-dremo',
     standalone: true,
     templateUrl: './especialista-dremo.component.html',
-    imports: [
-        CommonModule,
-        TableModule,
-        DropdownModule,
-        FormsModule,
-        InputGroupModule,
-        InputGroupAddonModule,
-        ButtonModule,
-        CheckboxModule,
-    ],
+    styleUrl: './especialista-dremo.component.scss',
+    imports: [PrimengModule, ContainerPageComponent],
 })
 export class EspecialistaDremoComponent implements OnInit {
-    products: Product[] = []
-    profesores: Profesor[] = []
-    titulo: string = 'Asignacion area de especialista'
-    especialistas: Especialista[] = []
-    especialistaSeleccionado: Especialista
+    private _ApiEspecialistasService = inject(ApiEspecialistasService)
+    private _MessageService = inject(MessageService)
 
-    constructor(
-        private httpService: httpService,
-        private apiEspecialistasService: ApiEspecialistasService
-    ) {}
+    objectKeys = Object.keys
+
+    titulo: string = 'Asignación de áreas a Especialistas DREMO'
+    especialistas: any[] = []
+    nivelPrimaria: any[] = []
+    gradosPrimaria: any = []
+    areasPrimaria: any = []
+    nivelSecundaria: any[] = []
+    gradosSecundaria: any = []
+    areasSecundaria: any = []
+
+    iDocenteId: string
+    iAreasSinAsignar: number = 0
+    iAreasConAsignar: number = 0
 
     ngOnInit() {
-        // Simulación de datos (puedes cambiar esto por una llamada HTTP)
-        /* 
-    this.apiEspecialistasService.listarEspecialista({
-      iPersId: '',
-      iDocenteId: '',
-      cPersDocumento: '',
-      cPersNombre: '',
-      cPersPaterno: '',
-      cPersMaterno: '',
-      iPerfIlId: '',
-      cPerfIlNombre: '',
-      iCredId: '',
-    }).subscribe({
-      next: (response) => {
-        if (response && response.data) {
-          this.especialistas = response.data.map(item => ({
-            _id: item.iPersId, // Usamos el mismo ID del API
-            label: `${item.cPersDocumento} - ${item.cPersNombre} ${item.cPersPaterno} ${item.cPersMaterno} - ${item.cPerfIlNombre} - (${item.iCredId} áreas)`
-          }));
+        this.obtenerEspecialistasDremo()
+        this.obtenerCursosxNivel()
+    }
+
+    obtenerEspecialistasDremo() {
+        this._ApiEspecialistasService.obtenerEspecialistasDremo().subscribe({
+            next: (respuesta) => {
+                this.especialistas = respuesta
+            },
+            error: (error) => {
+                console.error('Error obteniendo datos', error)
+            },
+        })
+    }
+
+    obtenerCursosxNivel() {
+        forkJoin({
+            primaria: this._ApiEspecialistasService.obtenerCursosxNivel(3),
+            secundaria: this._ApiEspecialistasService.obtenerCursosxNivel(4),
+        }).subscribe({
+            next: (respuesta) => {
+                this.nivelPrimaria = respuesta.primaria
+                this.gradosPrimaria = this.agruparPorGrado(this.nivelPrimaria)
+                this.areasPrimaria = this.agruparPorArea(this.nivelPrimaria)
+
+                this.nivelSecundaria = respuesta.secundaria
+                this.gradosSecundaria = this.agruparPorGrado(
+                    this.nivelSecundaria
+                )
+                this.areasSecundaria = this.agruparPorArea(this.nivelSecundaria)
+            },
+            error: (error) => {
+                console.error('Error obteniendo datos', error)
+            },
+        })
+    }
+
+    agruparPorGrado = (nivel: any[]) => {
+        if (!nivel.length) {
+            return
         }
-      },
-      error: (err) => {
-        console.error('Error obteniendo especialistas:', err);
-      }
-    }); 
- */
+        return nivel.reduce((resultado, index) => {
+            // Si el grado no existe en el resultado, la creamos
+            if (!resultado[index.cGradoAbreviacion]) {
+                resultado[index.cGradoAbreviacion] = []
+            }
+            // Añadimos el index a su grado correspondiente
+            resultado[index.cGradoAbreviacion].push(index)
+            return resultado
+        }, {}) // El objeto vacío es el valor inicial
+    }
 
-        // Simulación de datos (puedes cambiar esto por una llamada HTTP)
+    agruparPorArea = (nivel: any[]) => {
+        if (!nivel.length) {
+            return
+        }
+        return nivel.reduce((resultado, index) => {
+            // Si el grado no existe en el resultado, la creamos
+            if (!resultado[index.cCursoNombre]) {
+                resultado[index.cCursoNombre] = []
+            }
+            // Añadimos el index a su grado correspondiente
+            resultado[index.cCursoNombre].push(index)
+            return resultado
+        }, {}) // El objeto vacío es el valor inicial
+    }
 
-        this.products = [
-            { id: 1, nombre: 'Matematica 1', grado: true },
-            { id: 2, nombre: 'Comunicacion', grado: false },
-            { id: 3, nombre: 'Ciencias', grado: false },
-            { id: 4, nombre: 'Arte y cultura', grado: false },
-            { id: 5, nombre: 'Educacion religiosa', grado: false },
-        ]
+    obteneriCursosNivelGradIdxiDocenteId() {
+        if (!this.iDocenteId) {
+            return
+        }
+        this._ApiEspecialistasService
+            .obtenerAreasPorEspecialista(this.iDocenteId)
+            .subscribe({
+                next: (respuesta) => {
+                    this.iAreasConAsignar = respuesta.length
+                    this.iAreasSinAsignar =
+                        this.nivelPrimaria.length +
+                        this.nivelSecundaria.length -
+                        this.iAreasConAsignar
 
-        // Simulación de datos (puedes cambiar esto por una llamada HTTP)
-        this.profesores = [
-            { id: 1, nombre: 'Matematica', grado: true },
-            { id: 2, nombre: 'Comunicacion', grado: false },
-            { id: 3, nombre: 'Ciencias', grado: true },
-            { id: 4, nombre: 'Arte y cultura', grado: true },
-            { id: 5, nombre: 'Educacion religiosa', grado: true },
-        ]
+                    this.nivelPrimaria.forEach((nivelSinAsignar) => {
+                        nivelSinAsignar.isSelected = false
+                        respuesta.forEach((nivelConAsignar) => {
+                            if (
+                                nivelSinAsignar.iCursosNivelGradId ===
+                                nivelConAsignar.iCursosNivelGradId
+                            ) {
+                                nivelSinAsignar.isSelected = true
+                            }
+                        })
+                    })
+
+                    this.nivelSecundaria.forEach((nivelSinAsignar) => {
+                        nivelSinAsignar.isSelected = false
+                        respuesta.forEach((nivelConAsignar) => {
+                            if (
+                                nivelSinAsignar.iCursosNivelGradId ===
+                                nivelConAsignar.iCursosNivelGradId
+                            ) {
+                                nivelSinAsignar.isSelected = true
+                            }
+                        })
+                    })
+                },
+                error: (error) => {
+                    console.error('Error obteniendo datos', error)
+                },
+            })
+    }
+
+    checkedCurso(item) {
+        if (!this.iDocenteId) {
+            this.mostrarMensaje(
+                'error',
+                'Error',
+                'No ha seleccionado un docente'
+            )
+            return
+        }
+        if (item.isSelected) {
+            this.insertarCursos(item)
+        } else {
+            this.eliminarCursos(item)
+        }
+    }
+
+    insertarCursos(curso) {
+        const data = {
+            iCursosNivelGradId: curso.iCursosNivelGradId,
+        }
+        this._ApiEspecialistasService
+            .asignarAreaEspecialista(this.iDocenteId, data)
+            .subscribe({
+                next: (respuesta) => {
+                    this.mostrarMensaje(
+                        'success',
+                        'Guardado!',
+                        respuesta.message
+                    )
+                    this.iAreasConAsignar++
+                    this.iAreasSinAsignar--
+                },
+                error: (error) => {
+                    console.error('Error obteniendo datos', error)
+                },
+            })
+    }
+    eliminarCursos(curso) {
+        const data = {
+            iCursosNivelGradId: curso.iCursosNivelGradId,
+        }
+        this._ApiEspecialistasService
+            .eliminarAreaEspecialista(this.iDocenteId, data)
+            .subscribe({
+                next: (respuesta) => {
+                    this.mostrarMensaje(
+                        'success',
+                        'Eliminado!',
+                        respuesta.message
+                    )
+                    this.iAreasConAsignar--
+                    this.iAreasSinAsignar++
+                },
+                error: (err) => {
+                    console.error('Error al eliminar el área', err)
+                },
+            })
+    }
+
+    mostrarMensaje(severity, title, detail) {
+        this._MessageService.add({
+            severity: severity,
+            summary: title,
+            detail: detail,
+        })
     }
 }

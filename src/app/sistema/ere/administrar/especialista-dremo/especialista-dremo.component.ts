@@ -187,8 +187,14 @@ export class EspecialistaDremoComponent implements OnInit {
         this._ApiEspecialistasService
             .eliminarAreaEspecialista(this.iDocenteId, data)
             .subscribe({
-                next: () => {
-                    console.log('Área eliminada correctamente')
+                next: (respuesta) => {
+                    this.mostrarMensaje(
+                        'success',
+                        'Eliminado!',
+                        respuesta.message
+                    )
+                    this.iAreasConAsignar--
+                    this.iAreasSinAsignar++
                 },
                 error: (err) => {
                     console.error('Error al eliminar el área', err)

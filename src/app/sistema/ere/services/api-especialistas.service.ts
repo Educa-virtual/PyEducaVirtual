@@ -86,13 +86,25 @@ export class ApiEspecialistasService {
     // Metodos Especialista Ugel
 
     obtenerEspecialistasUgel(): Observable<any> {
+        // listo
         const url = `${this.urlBackendApi}/acad/especialistas-ugel`
 
         return this.http.get(url).pipe(map((resp: any) => resp['data']))
     }
 
     obtenerUgeles(): Observable<any> {
+        //listo
         const url = `${this.urlBackendApi}/acad/ugeles`
+        return this.http.get(url).pipe(map((resp: any) => resp['data']))
+    }
+
+    // obtenerAreasPorEspecialista terminado a las 4:40PM
+    obtenerAreasPorEspecialistaUgel(
+        //service listo, falta agregar en el ts y html
+        iUgelId: string,
+        iDocenteId: string
+    ): Observable<any> {
+        const url = `${this.urlBackendApi}/acad/ugeles/${iUgelId}/especialistas/${iDocenteId}/areas`
         return this.http.get(url).pipe(map((resp: any) => resp['data']))
     }
 
@@ -102,17 +114,12 @@ export class ApiEspecialistasService {
         return this.http.get(url).pipe(map((resp: any) => resp['data']))
     }
 
-    // obtenerAreasPorEspecialista terminado a las 4:40PM
-    obtenerAreasPorEspecialistaUgel(
+    asignarAreaEspecialistaUgel(
+        iUgelId: string,
         iDocenteId: string,
-        iUgelId: any
+        data
     ): Observable<any> {
-        const url = `${this.urlBackendApi}/acad/ugeles/${iUgelId}/areas?iDocenteId=${iDocenteId}`
-        return this.http.get(url).pipe(map((resp: any) => resp['data']))
-    }
-
-    asignarAreaEspecialistaUgel(iDocenteId: string, data): Observable<any> {
-        const url = `${this.urlBackendApi}/acad/especialistas-dremo/${iDocenteId}/areas`
+        const url = `${this.urlBackendApi}/acad/ugeles/${iUgelId}/especialistas/${iDocenteId}/areas`
         return this.http.post(url, data).pipe(map((resp: any) => resp))
     }
 

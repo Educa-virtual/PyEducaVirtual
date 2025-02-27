@@ -39,30 +39,6 @@ export class EspecialistaUgelComponent implements OnInit {
         this.obtenerUgeles()
     }
 
-    obtenerEspecialistasUgel() {
-        this._ApiEspecialistasService.obtenerEspecialistasUgel().subscribe({
-            next: (respuesta) => {
-                this.especialistas = respuesta
-            },
-            error: (error) => {
-                console.error('Error obteniendo datos', error)
-            },
-        })
-    }
-
-    obtenerUgeles() {
-        console.log('llamada a funcion')
-        this._ApiEspecialistasService.obtenerUgeles().subscribe({
-            next: (respuesta) => {
-                this.ugeles = respuesta
-                console.log(this.ugeles)
-            },
-            error: (error) => {
-                console.error('Error obtenido'), error
-            },
-        })
-    }
-
     obtenerCursosxNivel() {
         forkJoin({
             primaria: this._ApiEspecialistasService.obtenerCursosxNivel(3),
@@ -120,7 +96,7 @@ export class EspecialistaUgelComponent implements OnInit {
             return
         }
         this._ApiEspecialistasService
-            .obtenerAreasPorEspecialista(this.iDocenteId)
+            .obtenerAreasPorEspecialistaUgel(this.iUgelId, this.iDocenteId)
             .subscribe({
                 next: (respuesta) => {
                     this.iAreasConAsignar = respuesta.length
@@ -180,7 +156,7 @@ export class EspecialistaUgelComponent implements OnInit {
             iCursosNivelGradId: curso.iCursosNivelGradId,
         }
         this._ApiEspecialistasService
-            .asignarAreaEspecialista(this.iDocenteId, data)
+            .asignarAreaEspecialistaUgel(this.iUgelId, this.iDocenteId, data)
             .subscribe({
                 next: (respuesta) => {
                     this.mostrarMensaje(
@@ -227,6 +203,32 @@ export class EspecialistaUgelComponent implements OnInit {
     }
 
     // Ugel
+
+    obtenerEspecialistasUgel() {
+        //listo
+        this._ApiEspecialistasService.obtenerEspecialistasUgel().subscribe({
+            next: (respuesta) => {
+                this.especialistas = respuesta
+            },
+            error: (error) => {
+                console.error('Error obteniendo datos', error)
+            },
+        })
+    }
+
+    obtenerUgeles() {
+        //listo
+        console.log('llamada a funcion')
+        this._ApiEspecialistasService.obtenerUgeles().subscribe({
+            next: (respuesta) => {
+                this.ugeles = respuesta
+                console.log(this.ugeles)
+            },
+            error: (error) => {
+                console.error('Error obtenido'), error
+            },
+        })
+    }
 
     obtenerAreasPorEspecialistaUgel() {
         if (!this.iDocenteId || !this.ugeles) {

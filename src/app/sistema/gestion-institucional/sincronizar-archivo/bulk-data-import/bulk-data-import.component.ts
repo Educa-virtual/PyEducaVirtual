@@ -20,11 +20,15 @@ import {
 import { CommonModule } from '@angular/common'
 import { BulkDataImportService } from '../services/bulk-data-import.service'
 import * as XLSX from 'xlsx'
+import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
+import { ToastModule } from 'primeng/toast'
+import { MessageService } from 'primeng/api'
 
 @Component({
     selector: 'app-bulk-data-import',
     standalone: true,
     imports: [
+        ContainerPageComponent,
         DropdownModule,
         ReactiveFormsModule,
         FormsModule,
@@ -36,7 +40,9 @@ import * as XLSX from 'xlsx'
         TabPanelComponent,
         TablePrimengComponent,
         CommonModule,
+        ToastModule,
     ],
+    providers: [MessageService],
     templateUrl: './bulk-data-import.component.html',
     styleUrl: './bulk-data-import.component.scss',
 })
@@ -51,13 +57,16 @@ export class BulkDataImportComponent {
     disabled
 
     columns: IColumn[]
-    data
+    unverified_data
+    verified_data
 
     importLoad: boolean = false
 
     constructor(
         private fb: FormBuilder,
-        public bulkDataImport: BulkDataImportService
+        public bulkDataImport: BulkDataImportService,
+
+        private messageService: MessageService
     ) {
         this.typeCollectionForm = this.fb.group({
             typeCollection: [''],
@@ -66,6 +75,20 @@ export class BulkDataImportComponent {
         this.fileUploadForm = this.fb.group({
             file: new FormControl(''),
         })
+    }
+
+    downloadCollectionTemplate(typeCollection) {
+        if (!typeCollection['name']) {
+            this.messageService.clear()
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'No ha seleccionado una colección valida.',
+            })
+            return
+        }
+
+        this.bulkDataImport.downloadCollectionTemplate(typeCollection)
     }
 
     loadCollectionTemplate(file: any) {
@@ -88,35 +111,56 @@ export class BulkDataImportComponent {
             })
             console.log('Datos del archivo XLSX:', jsonData)
 
-            this.columns = jsonData[0].map((data) => {
-                return {
-                    type: 'text',
-                    width: 'max-content',
-                    padding: '1.25rem 2rem',
-                    field: data,
-                    header: data,
-                    text_header: 'center',
-                    text: 'center',
-                }
-            })
+            this.columns = jsonData[0]
+                .map((data, index) => {
+                    if (!jsonData[0][index]) {
+                        return null
+                    }
 
-            this.data = jsonData.slice(1).map((row) =>
+                    return {
+                        type: 'text',
+                        width: '5rem',
+                        field: jsonData[1][index],
+                        header: jsonData[0][index],
+                        text_header: 'center',
+                        text: 'center',
+                    }
+                })
+                .filter(
+                    (column): column is { [key: string]: any } =>
+                        column !== null
+                )
+
+            this.unverified_data = jsonData.slice(2).map((row) =>
                 row.reduce(
                     (acc, cell, index) => ({
                         ...acc,
-                        [jsonData[0][index]]: cell,
+                        [jsonData[1][index]]: cell,
                     }),
                     {}
                 )
             )
 
-            console.log(this.data)
+            console.log(this.unverified_data)
         }
 
         reader.readAsArrayBuffer(file)
     }
 
-    chargeImportData() {
+    validaImportData() {
         console.log(this.fileUploadForm.value)
+
+        this.bulkDataImport
+            .validateCollectionData(this.unverified_data)
+            .subscribe({
+                next: (response) => {
+                    this.verified_data = response.data
+
+                    console.log('Respuesta del servidor:', response)
+                },
+                error: (error) => {
+                    console.error('Error en la solicitud:', error)
+                },
+            })
     }
 }

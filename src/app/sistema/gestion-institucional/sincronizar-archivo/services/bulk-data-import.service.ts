@@ -1,11 +1,17 @@
 import { HttpClient } from '@angular/common/http'
-import { Injectable } from '@angular/core'
+import { Injectable, NgZone } from '@angular/core'
+import { MessageService } from 'primeng/api'
+import { Observable } from 'rxjs'
 
 @Injectable({
     providedIn: 'root',
 })
 export class BulkDataImportService {
-    constructor(private http: HttpClient) {}
+    constructor(
+        private http: HttpClient,
+        private messageService: MessageService,
+        private ngZone: NgZone
+    ) {}
 
     uploadFile(file: File): void {
         console.log('uploading file', file)
@@ -51,5 +57,16 @@ export class BulkDataImportService {
     }
     saveCollectionTemplate(template: any): void {
         console.log('saving collection template', template)
+    }
+
+    validateCollectionData(data: any): Observable<any> {
+        return this.http.post('http://localhost:8000/api/file/validate', {
+            iYAcadId: JSON.parse(
+                localStorage.getItem('dremoiYAcadId') || 'null'
+            ),
+            json: JSON.stringify(data),
+            iSedeId: JSON.parse(localStorage.getItem('dremoPerfil') || '{}')
+                .iSedeId,
+        })
     }
 }

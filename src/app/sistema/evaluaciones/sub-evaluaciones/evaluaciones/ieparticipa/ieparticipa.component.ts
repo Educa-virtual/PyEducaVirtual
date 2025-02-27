@@ -1,16 +1,13 @@
 import { CompartirIdEvaluacionService } from './../../../services/ereEvaluaciones/compartir-id-evaluacion.service'
 import { CompartirFormularioEvaluacionService } from './../../../services/ereEvaluaciones/compartir-formulario-evaluacion.service'
-
 import {
     Component,
-    ChangeDetectorRef,
     inject,
     OnInit,
     Input,
     Output,
     EventEmitter,
 } from '@angular/core'
-import { PickListModule } from 'primeng/picklist'
 import { ApiEvaluacionesRService } from '../../../services/api-evaluaciones-r.service'
 import {
     catchError,
@@ -20,24 +17,16 @@ import {
     takeUntil,
     throwError,
 } from 'rxjs'
-import { FormsModule } from '@angular/forms'
-import { DropdownModule } from 'primeng/dropdown'
-import { IconFieldModule } from 'primeng/iconfield'
-import { InputIconModule } from 'primeng/inputicon'
-import { InputTextModule } from 'primeng/inputtext'
-import { ButtonModule } from 'primeng/button'
 import { DynamicDialogConfig } from 'primeng/dynamicdialog'
-import { ReactiveFormsModule } from '@angular/forms'
-import { CommonModule } from '@angular/common'
 import { MessageService } from 'primeng/api'
 import { PrimengModule } from '@/app/primeng.module'
 interface NivelTipo {
     cNivelTipoNombre: string
-    iNivelTipoId: string
+    iNivelTipoId: number | string
 }
 interface Ugeles {
     cUgelNombre: string
-    iUgelId: string
+    iUgelId: number | string
 }
 interface EvaluacionCopia {
     iEvaluacionId: number
@@ -46,26 +35,19 @@ interface EvaluacionCopia {
 @Component({
     selector: 'app-ieparticipa',
     standalone: true,
-    imports: [
-        PickListModule,
-        ButtonModule,
-        InputTextModule,
-        DropdownModule,
-        FormsModule,
-        IconFieldModule,
-        InputIconModule,
-        FormsModule,
-        ReactiveFormsModule,
-        CommonModule,
-        PrimengModule,
-    ],
+    imports: [PrimengModule],
     templateUrl: './ieparticipa.component.html',
     styleUrl: './ieparticipa.component.scss',
 })
 export class IeparticipaComponent implements OnInit {
     nivelTipo: NivelTipo[] | undefined
     selectedNivelTipo: NivelTipo | undefined
-    Ugeles: Ugeles[] | undefined
+    Ugeles: Ugeles[] | undefined = [
+        {
+            iUgelId: 0,
+            cUgelNombre: 'Todos',
+        },
+    ]
     selectedUgeles: Ugeles | undefined
     EvaluacionCopia: EvaluacionCopia[] | undefined
     selectedEvaluacionCopia: EvaluacionCopia | number
@@ -102,40 +84,19 @@ export class IeparticipaComponent implements OnInit {
     private _MessageService = inject(MessageService) //Agregando Mensaje
 
     constructor(
-        private cdr: ChangeDetectorRef,
         private compartirIdEvaluacionService: CompartirIdEvaluacionService,
         private compartirFormularioEvaluacionService: CompartirFormularioEvaluacionService,
-        private _config: DynamicDialogConfig, // Inyectar configuración
-        private evaluacionesService: ApiEvaluacionesRService // Inyecta el servicio -> Evaliacion Copiar
+        private _config: DynamicDialogConfig // Inyectar configuración
     ) {}
 
     ngOnInit() {
         //Cambios servicio form
         this.cEvaluacionNombre =
             this.compartirFormularioEvaluacionService.getcEvaluacionNombre()
-        //console.log('Valor obtenido desde el servicio:', this.cEvaluacionNombre)
-        //Cambios servicio form
         this.accion = this._config.data?.accion || 'crear'
-        //console.log('Acción actual:', this.accion)
-
         this.obtenerNivelTipo()
         this.obtenerugel()
-
-        this.nivelTipo = [
-            { cNivelTipoNombre: 'Primaria', iNivelTipoId: 'NY' },
-            { cNivelTipoNombre: 'Secundaria', iNivelTipoId: 'RM' },
-        ]
-
-        // Inicializar según el modo
-        if (this.accion === 'nuevo') {
-            this.obtenerIEYParticipaciones()
-        }
-        if (this.accion === 'ver') {
-            this.obtenerIEYParticipaciones()
-        }
-        if (this.accion === 'editar') {
-            this.obtenerIEYParticipaciones()
-        }
+        this.obtenerIEYParticipaciones()
     }
 
     obtenerIE(): Observable<any[]> {
@@ -147,13 +108,7 @@ export class IeparticipaComponent implements OnInit {
             takeUntil(this.unsubscribe$),
             map((resp: any) => {
                 // Mapear todas las IEs
-                this.allIEs = resp.data.map((item: any) => ({
-                    iIieeId: item.iIieeId,
-                    cIieeNombre: item.cIieeNombre,
-                    cIieeCodigoModular: item.cIieeCodigoModular,
-                    cNivelTipoNombre: item.cNivelTipoNombre,
-                    cUgelNombre: item.cUgelNombre,
-                }))
+                this.allIEs = resp.data
 
                 // Si no hay un ID de evaluación, asignar todas las instituciones a sourceProducts (no participan)
                 if (!this.compartirIdEvaluacionService.iEvaluacionId) {
@@ -175,7 +130,13 @@ export class IeparticipaComponent implements OnInit {
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
                 next: (resp: unknown) => {
-                    this.nivelTipo = resp['data']
+                    this.nivelTipo = [
+                        {
+                            iNivelTipoId: 0,
+                            cNivelTipoNombre: 'Todos',
+                        },
+                        ...resp['data'],
+                    ]
                 },
             })
     }
@@ -185,7 +146,13 @@ export class IeparticipaComponent implements OnInit {
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
                 next: (resp: unknown) => {
-                    this.Ugeles = resp['data']
+                    this.Ugeles = [
+                        {
+                            iUgelId: 0,
+                            cUgelNombre: 'Todos',
+                        },
+                        ...resp['data'],
+                    ]
                 },
             })
     }
@@ -287,14 +254,18 @@ export class IeparticipaComponent implements OnInit {
 
         // Filtrar los elementos movidos según los filtros seleccionados (nivel y ugel)
         const filteredItems = itemsMoved.filter((item) => {
-            const nivelTipoMatch = this.selectedNivelTipo
-                ? item.cNivelTipoNombre ===
-                  this.selectedNivelTipo.cNivelTipoNombre
-                : true
+            const nivelTipoMatch =
+                this.selectedNivelTipo &&
+                this.selectedNivelTipo?.iNivelTipoId !== 0
+                    ? Number(item.iNivelTipoId) ===
+                      Number(this.selectedNivelTipo.iNivelTipoId)
+                    : true
 
-            const ugelMatch = this.selectedUgeles
-                ? item.cUgelNombre === this.selectedUgeles.cUgelNombre
-                : true
+            const ugelMatch =
+                this.selectedUgeles && this.selectedUgeles?.iUgelId !== 0
+                    ? Number(item.iUgelId) ===
+                      Number(this.selectedUgeles.iUgelId)
+                    : true
 
             return nivelTipoMatch && ugelMatch
         })
@@ -337,14 +308,18 @@ export class IeparticipaComponent implements OnInit {
 
         // Filtrar los elementos movidos según los filtros seleccionados (nivel y ugel)
         const filteredItems = itemsMoved.filter((item) => {
-            const nivelTipoMatch = this.selectedNivelTipo
-                ? item.cNivelTipoNombre ===
-                  this.selectedNivelTipo.cNivelTipoNombre
-                : true
+            const nivelTipoMatch =
+                this.selectedNivelTipo &&
+                this.selectedNivelTipo?.iNivelTipoId !== 0
+                    ? Number(item.iNivelTipoId) ===
+                      Number(this.selectedNivelTipo.iNivelTipoId)
+                    : true
 
-            const ugelMatch = this.selectedUgeles
-                ? item.cUgelNombre === this.selectedUgeles.cUgelNombre
-                : true
+            const ugelMatch =
+                this.selectedUgeles && this.selectedUgeles?.iUgelId !== 0
+                    ? Number(item.iUgelId) ===
+                      Number(this.selectedUgeles.iUgelId)
+                    : true
 
             return nivelTipoMatch && ugelMatch
         })
@@ -467,15 +442,18 @@ export class IeparticipaComponent implements OnInit {
         // Filtrar los elementos en sourceProducts (No Participan)
         this.sourceProducts = this.allIEs.filter((ie) => {
             // Filtrar por nivelTipo si hay uno seleccionado
-            const nivelTipoMatch = this.selectedNivelTipo
-                ? ie.cNivelTipoNombre ===
-                  this.selectedNivelTipo.cNivelTipoNombre
-                : true
+            const nivelTipoMatch =
+                this.selectedNivelTipo &&
+                this.selectedNivelTipo?.iNivelTipoId !== 0
+                    ? Number(ie.iNivelTipoId) ===
+                      Number(this.selectedNivelTipo.iNivelTipoId)
+                    : true
 
             // Filtrar por ugel si hay uno seleccionado
-            const ugelMatch = this.selectedUgeles
-                ? ie.cUgelNombre === this.selectedUgeles.cUgelNombre
-                : true
+            const ugelMatch =
+                this.selectedUgeles && this.selectedUgeles?.iUgelId !== 0
+                    ? Number(ie.iUgelId) === Number(this.selectedUgeles.iUgelId)
+                    : true
 
             // Asegurarse de que el elemento no esté en targetProducts
             const notInTarget = !this.targetProducts.some(
@@ -484,11 +462,22 @@ export class IeparticipaComponent implements OnInit {
 
             return nivelTipoMatch && ugelMatch && notInTarget
         })
-        this.targetProducts = this.targetProducts.filter((product) => {
+
+        // Filtrar los productos en targetProducts que están presentes en allIEs
+        const totalIEparticipan = this.targetProducts.filter((product) => {
             return this.allIEs.some((ie) => ie.iIieeId === product.iIieeId)
         })
+
+        // Reemplazar targetProducts con los productos válidos
+        this.targetProducts = totalIEparticipan
+
+        // Debugging: Verificar los productos en targetProducts
+        console.log(this.targetProducts)
+
+        // Actualizar los conteos de los productos
         this.actualizarConteos()
     }
+
     onNivelTipoChange(event: any) {
         this.selectedNivelTipo = event.value
         this.filterIEs() // Filtrar los elementos al cambiar el nivel tipo
@@ -511,24 +500,32 @@ export class IeparticipaComponent implements OnInit {
 
         // Aplicar los filtros
         const filteredParticipan = this.targetProducts.filter((item) => {
-            const nivelTipoMatch = this.selectedNivelTipo
-                ? item.cNivelTipoNombre ===
-                  this.selectedNivelTipo.cNivelTipoNombre
-                : true
-            const ugelMatch = this.selectedUgeles
-                ? item.cUgelNombre === this.selectedUgeles.cUgelNombre
-                : true
+            const nivelTipoMatch =
+                this.selectedNivelTipo &&
+                this.selectedNivelTipo?.iNivelTipoId !== 0
+                    ? Number(item.iNivelTipoId) ===
+                      Number(this.selectedNivelTipo.iNivelTipoId)
+                    : true
+            const ugelMatch =
+                this.selectedUgeles && this.selectedUgeles?.iUgelId !== 0
+                    ? Number(item.iUgelId) ===
+                      Number(this.selectedUgeles.iUgelId)
+                    : true
             return nivelTipoMatch && ugelMatch
         })
-
+        console.log(filteredParticipan)
         const filteredNoParticipan = this.sourceProducts.filter((item) => {
-            const nivelTipoMatch = this.selectedNivelTipo
-                ? item.cNivelTipoNombre ===
-                  this.selectedNivelTipo.cNivelTipoNombre
-                : true
-            const ugelMatch = this.selectedUgeles
-                ? item.cUgelNombre === this.selectedUgeles.cUgelNombre
-                : true
+            const nivelTipoMatch =
+                this.selectedNivelTipo &&
+                this.selectedNivelTipo?.iNivelTipoId !== 0
+                    ? Number(item.iNivelTipoId) ===
+                      Number(this.selectedNivelTipo.iNivelTipoId)
+                    : true
+            const ugelMatch =
+                this.selectedUgeles && this.selectedUgeles?.iUgelId !== 0
+                    ? Number(item.iUgelId) ===
+                      Number(this.selectedUgeles.iUgelId)
+                    : true
             return nivelTipoMatch && ugelMatch
         })
 

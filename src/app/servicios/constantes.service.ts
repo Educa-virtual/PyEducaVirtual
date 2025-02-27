@@ -436,21 +436,21 @@ const administracion = [
                 label: 'Evaluación - ERE',
                 icon: 'pi pi-address-book',
                 items: [
-                    {
-                        label: 'Configuración de ERE',
-                        icon: 'pi pi-wrench',
-                        routerLink: ['/configuracion/configuracion'],
-                    },
+                    // {
+                    //     label: 'Configuración de ERE',
+                    //     icon: 'pi pi-wrench',
+                    //     routerLink: ['/configuracion/configuracion'],
+                    // },
                     {
                         label: 'Resultados de ERE',
                         icon: 'pi pi-chart-bar',
                         routerLink: ['/ere/informes-ere'],
                     },
-                    {
-                        label: 'Evaluaciones',
-                        icon: 'pi pi-fw pi-calendar',
-                        routerLink: ['/ere/evaluaciones'],
-                    },
+                    // {
+                    //     label: 'Evaluaciones',
+                    //     icon: 'pi pi-fw pi-calendar',
+                    //     routerLink: ['/ere/evaluaciones'],
+                    // },
                 ],
                 //ConfigGradoSeccion
             },

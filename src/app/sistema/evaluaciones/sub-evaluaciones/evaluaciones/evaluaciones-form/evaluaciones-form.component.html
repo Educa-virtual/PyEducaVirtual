@@ -182,9 +182,7 @@
                     >
                         <div>
                             <app-ieparticipa
-                                [_iEvaluacionId]="
-                                    this._config.data.evaluacion.iEvaluacionId
-                                "
+                                [_iEvaluacionId]="iEvaluacionId"
                             ></app-ieparticipa>
                         </div>
                     </ng-template>
@@ -197,9 +195,7 @@
                         let-prevCallback="prevCallback"
                     >
                         <app-evaluacion-areas
-                            [_iEvaluacionId]="
-                                this._config.data.evaluacion.iEvaluacionId
-                            "
+                            [_iEvaluacionId]="iEvaluacionId"
                         ></app-evaluacion-areas>
                     </ng-template>
                 </p-stepperPanel>

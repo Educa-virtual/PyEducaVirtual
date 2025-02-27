@@ -134,15 +134,13 @@ export class AreaCardComponent implements OnChanges {
             )
             return
         }
-        // Obtener el areaId dinámicamente desde la ruta
         this.areaId = this.route.snapshot.paramMap.get('areaId')
         if (this.areaId) {
-            this.params.iCursosNivelGradId = parseInt(this.areaId) // Convertir el areaId a número
+            this.params.iCursosNivelGradId = parseInt(this.areaId)
         }
 
         this._apiEre.obtenerPreguntaSeleccionada(iEvaluacionId).subscribe({
             next: (data: any[]) => {
-                // Convertir ambos valores a string para asegurar la comparación
                 this.preguntasSeleccionadas = data.filter(
                     (item) =>
                         item.iCursosNivelGradId.toString() ===
@@ -159,13 +157,10 @@ export class AreaCardComponent implements OnChanges {
     }
 
     generarWord() {
-        // Aquí, en lugar de enviar los ids, se envía el iEvaluacionId.
         const params = {
-            iEvaluacionId: this._iEvaluacionId, // Se usa el iEvaluacionId aquí.
+            iEvaluacionId: this._iEvaluacionId,
             areaId: this.area.id,
         }
-        console.log('Params para generar Word:', params)
-        // Se llama a la función que genera el Word con el iEvaluacionId.
         this._apiEvaluacionesR.generarWordByEvaluacionId(params)
     }
 }

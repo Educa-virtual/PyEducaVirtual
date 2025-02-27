@@ -1,0 +1,12 @@
+<div class="pregunta-container">
+    <h3>{{ pregunta }}</h3>
+    <ul>
+        <li
+            *ngFor="let opcion of alternativas; let i = index"
+            (onclick)="seleccionarOpcion(opcion)"
+            [class.seleccionado]="opcion === seleccion"
+        >
+            {{ getLetra(i) }}. {{ opcion }}
+        </li>
+    </ul>
+</div>

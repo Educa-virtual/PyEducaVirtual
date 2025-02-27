@@ -63,13 +63,7 @@
         <div class="col-12 md:col-6">
             <p-panel>
                 <ng-template pTemplate="header">
-                    <div
-                        class="w-full bg-primary text-white p-3 border-round-top"
-                    >
-                        <h2 class="m-0 font-bold text-white">
-                            Lista Comunicados
-                        </h2>
-                    </div>
+                    <h2 class="m-0 font-bold text-white">Lista Comunicados</h2>
                 </ng-template>
                 <!-- Contenedor de comunicados dinámicos -->
                 <div class="flex flex-column gap-3 mt-2">
@@ -82,7 +76,7 @@
                         <!-- Personaliza el header de cada comunicado -->
                         <ng-template pTemplate="header">
                             <div
-                                class="flex justify-content-between align-items-center"
+                                class="flex justify-content-between align-items-center text-white"
                             >
                                 <strong>{{ comunicado.titulo }}</strong>
                                 <!-- Opcional: Botones de acción -->
@@ -90,7 +84,7 @@
                                     <button
                                         pButton
                                         icon="pi pi-pencil"
-                                        class="p-button-text p-button-sm mr-1"
+                                        class="p-button-text p-button-sm mr-1 text-white"
                                         (click)="editComunicado(comunicado)"
                                     >
                                         Editar
@@ -98,14 +92,14 @@
                                     <button
                                         pButton
                                         icon="pi pi-trash"
-                                        class="p-button-text p-button-sm"
+                                        class="p-button-text p-button-sm text-white"
                                     >
                                         Eliminar
                                     </button>
                                     <button
                                         pButton
                                         icon="pi pi-eye"
-                                        class="p-button-text p-button-sm"
+                                        class="p-button-text p-button-sm text-white"
                                     >
                                         Ver
                                     </button>

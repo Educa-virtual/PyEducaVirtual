@@ -1,21 +1,4 @@
-import {
-    ChangeDetectorRef,
-    Component,
-    EventEmitter,
-    inject,
-    Input,
-    OnInit,
-    Output,
-} from '@angular/core'
-/*GRILLA */
-import { TableModule } from 'primeng/table'
-import { CommonModule } from '@angular/common'
-/*BOTONES */
-import { ButtonModule } from 'primeng/button'
-/*MODAL */
-import { DialogModule } from 'primeng/dialog'
-/*INPUT TEXT */
-import { InputTextModule } from 'primeng/inputtext'
+import { Component, inject, OnInit, OnDestroy } from '@angular/core'
 import { EvaluacionesFormComponent } from '../evaluaciones/evaluaciones-form/evaluaciones-form.component'
 import { CompartirFormularioEvaluacionService } from './../../services/ereEvaluaciones/compartir-formulario-evaluacion.service'
 import { DialogService } from 'primeng/dynamicdialog'
@@ -27,45 +10,38 @@ import {
 } from '../../../../shared/table-primeng/table-primeng.component'
 import { ApiEvaluacionesRService } from '../../services/api-evaluaciones-r.service'
 import { BehaviorSubject, Subject, takeUntil } from 'rxjs'
-import {
-    ContainerPageComponent,
-    IActionContainer,
-} from '@/app/shared/container-page/container-page.component'
+import { IActionContainer } from '@/app/shared/container-page/container-page.component'
 import { CompartirIdEvaluacionService } from './../../services/ereEvaluaciones/compartir-id-evaluacion.service'
 import { PrimengModule } from '@/app/primeng.module'
-import { MessageService } from 'primeng/api'
+import { MenuItem, MessageService } from 'primeng/api'
 import { Router } from '@angular/router'
-//Calendario
-import {
-    FormBuilder,
-    FormControl,
-    FormGroup,
-    ReactiveFormsModule,
-} from '@angular/forms'
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms'
 import { ApiService } from '@/app/servicios/api.service'
 import { IUpdateTableService } from '@/app/interfaces/api.interface'
 import { UtilService } from '@/app/servicios/utils.service'
 import { ConstantesService } from '@/app/servicios/constantes.service'
+import { ContainerPageAccionbComponent } from './container-page-accionb/container-page-accionb.component'
+import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
+import { GeneralService } from '@/app/servicios/general.service'
+import { DIRECTOR_IE } from '@/app/servicios/perfilesConstantes'
+import {
+    ADMINISTRADOR_DREMO,
+    ESPECIALISTA_DREMO,
+} from '@/app/servicios/seg/perfiles'
 @Component({
     selector: 'app-evaluaciones',
     standalone: true,
     imports: [
-        TableModule,
-        CommonModule,
-        ButtonModule,
-        DialogModule,
-        InputTextModule,
-        ReactiveFormsModule,
-
         TablePrimengComponent,
-        ContainerPageComponent,
         PrimengModule,
+        ContainerPageAccionbComponent,
     ],
     providers: [DialogService],
     templateUrl: './evaluaciones.component.html',
     styleUrl: './evaluaciones.component.scss',
 })
-export class EvaluacionesComponent implements OnInit {
+export class EvaluacionesComponent implements OnInit, OnDestroy {
+    [x: string]: any
     dataSubject = new BehaviorSubject<any[]>([])
     mostrarBoton: boolean = false
     iEvaluacionId: number
@@ -88,15 +64,15 @@ export class EvaluacionesComponent implements OnInit {
     cursoSeleccionado: Map<number, boolean> = new Map()
     iiEvaluacionId: number // El ID de evaluación que quieras usar
     nombreEvaluacion: string
-
-    @Output() opcionChange = new EventEmitter<string>()
-    @Input() dataRow: any[] = [] // Los datos que recibe la tabla
-    @Input() columnasRow: any[] = [] // Las columnas que muestra la tabla
+    iPerfil: number
 
     private _dialogService = inject(DialogService)
     private _apiEre = inject(ApiEvaluacionesRService)
     private _MessageService = inject(MessageService)
     private unsubscribe$: Subject<boolean> = new Subject()
+    private _confirmService = inject(ConfirmationModalService) //intersector de eliminar
+    private _generalService = inject(GeneralService)
+    private _constantesService = inject(ConstantesService) // traer los idGlobales
     public cEvaluacionNombre: string
     public params = {
         iCompentenciaId: 0,
@@ -108,24 +84,27 @@ export class EvaluacionesComponent implements OnInit {
     public showModalCursosEre: boolean = false
     form: FormGroup
 
-    private ConstantesService = inject(ConstantesService)
     private _formBuilder = inject(FormBuilder) //form para obtener la variable
     public guardarIniFinCurso: FormGroup = this._formBuilder.group({})
+
+    // Variable donde se almacenan las acciones filtradas
+    // public accionesTabla: IActionTable[] = [];
+    showActions: boolean = false //Habilitar botón para crear evaluaciones
     constructor(
         private router: Router,
         private compartirIdEvaluacionService: CompartirIdEvaluacionService,
         private compartirFormularioEvaluacionService: CompartirFormularioEvaluacionService,
-        private messageService: MessageService,
-        private cdr: ChangeDetectorRef,
         private fb: FormBuilder,
         private apiservice: ApiService,
         private utils: UtilService
     ) {
         this.form = this.fb.group({})
     }
-
+    resetSelect: boolean = false
+    // se inicializa..
     ngOnInit() {
         this.obtenerEvaluacion()
+        this.obtenerPerfil()
         this.caption = 'Evaluaciones'
         this.dataSubject.subscribe((newData: any[]) => {
             this.data = newData
@@ -142,6 +121,22 @@ export class EvaluacionesComponent implements OnInit {
         this.form.valueChanges.subscribe((value) => {
             value
         })
+        this.showActions = this.iPerfilId !== ADMINISTRADOR_DREMO ? false : true
+    }
+
+    // obtener idPerfil
+    iPerfilId: number
+
+    obtenerPerfil() {
+        this.iPerfilId = this._constantesService.iPerfilId
+    }
+    ejecutarAccion(event: { accion: string; item: IActionContainer }) {
+        console.log('Acción seleccionada:', event.accion)
+        if (event.accion === 'agregar') {
+            // Lógica para agregar
+        } else if (event.accion === 'descargar_pdf') {
+            // Lógica para descargar PDF
+        }
     }
     listaCursos: any[] = []
     lista: any
@@ -211,7 +206,6 @@ export class EvaluacionesComponent implements OnInit {
 
             return Object.values(niveles)
         }
-
         const nivelesConGradosYCursos = agruparPorNivelYGrado()
         this.listaCursos = nivelesConGradosYCursos
         this.listaCursos.forEach((nivel) => {
@@ -243,16 +237,6 @@ export class EvaluacionesComponent implements OnInit {
         curso.isSelected = !curso.isSelected // Cambiar el estado seleccionado
     }
     async guardarInicioFinalExmAreas() {
-        // const formatDate = (date: Date | null) => {
-        //     if (!date) return null // Si no hay fecha, regresa null
-        //     const day = String(date.getDate()).padStart(2, '0')
-        //     const month = String(date.getMonth() + 1).padStart(2, '0') // Mes comienza en 0
-        //     const year = date.getFullYear()
-        //     const hours = String(date.getHours()).padStart(2, '0')
-        //     const minutes = String(date.getMinutes()).padStart(2, '0')
-        //     const seconds = String(date.getSeconds()).padStart(2, '0')
-        //     return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`
-        // }
         const coincidencias: IUpdateTableService[] = [] // Arreglo para almacenar coincidencias
         this.evaluacionCursos.cursos_niveles.forEach((data) => {
             const inicioKey = `${data.cCursoNombre}${data.iCursoNivelGradId}[${data.iExamCurId}]Inicio`
@@ -261,11 +245,6 @@ export class EvaluacionesComponent implements OnInit {
             // Obtén los valores de inicio y fin del formulario
             const inicioValue = this.form.value[inicioKey]
             const finValue = this.form.value[finKey]
-
-            // Formatea las fechas antes de enviarlas
-            // const formattedInicio = formatDate(inicioValue)
-            // const formattedFin = formatDate(finValue)
-            //if (formattedInicio || formattedFin) {
             if (inicioValue || finValue) {
                 coincidencias.push({
                     esquema: 'ere',
@@ -296,17 +275,24 @@ export class EvaluacionesComponent implements OnInit {
     toggleBotonc(): void {
         this.mostrarBoton = !this.mostrarBoton
     }
-
-    accionesPrincipal: IActionContainer[] = [
+    generarAccines(): boolean {
+        return this.iPerfilId !== DIRECTOR_IE
+    }
+    // el buton select
+    accionesPrincipal: MenuItem[] = [
         {
-            labelTooltip: 'Agregar evaluacións',
-            text: 'Agregar Evaluación',
-            icon: 'pi pi-plus',
-            accion: 'seleccionar',
-            class: 'p-button-lg',
+            items: [
+                {
+                    label: 'Crear evaluación',
+                    icon: 'pi pi-plus',
+                    accion: 'seleccionar',
+                    visible: this.generarAccines(),
+                },
+            ],
         },
     ]
     opcionesAuto: IActionTable[] = []
+    // nombre de las columnas de listar evaluaciones
     columnasBase: IColumn[] = [
         {
             field: 'cEvaluacionNombre',
@@ -333,8 +319,16 @@ export class EvaluacionesComponent implements OnInit {
             text_header: 'Puntaje',
         },
         {
-            field: 'dtEvaluacionCreacion',
-            header: 'Fecha creación',
+            field: 'dtEvaluacionFechaInicio',
+            header: 'Fecha Inicio',
+            type: 'text',
+            width: '4rem',
+            text: 'left',
+            text_header: 'Nivel',
+        },
+        {
+            field: 'dtEvaluacionFechaFin',
+            header: 'Fecha Fin',
             type: 'text',
             width: '3rem',
             text: 'left',
@@ -363,15 +357,16 @@ export class EvaluacionesComponent implements OnInit {
             text: 'center',
         },
         ...this.columnasBase,
-    ]
+    ] // Perfil del usuario
 
+    // Acciones del listar evaluaciones creadas
     public accionesTabla: IActionTable[] = [
         {
             labelTooltip: 'Ver',
             icon: 'pi pi-eye',
             accion: 'ver',
             type: 'item',
-            class: 'p-button-rounded p-button-warning p-button-text',
+            class: 'p-button-rounded p-button-primary p-button-text',
         },
         {
             labelTooltip: 'Editar',
@@ -379,23 +374,43 @@ export class EvaluacionesComponent implements OnInit {
             accion: 'editar',
             type: 'item',
             class: 'p-button-rounded p-button-warning p-button-text',
+            isVisible: () => this.iPerfilId === ADMINISTRADOR_DREMO,
         },
         {
-            labelTooltip: 'Banco Preguntas',
-            icon: 'pi pi-cog',
-            accion: 'BancoPreguntas',
+            labelTooltip: 'Eliminar',
+            icon: 'pi pi-trash',
+            accion: 'eliminar',
             type: 'item',
-            class: 'p-button-rounded p-button-warning p-button-text',
+            class: 'p-button-rounded p-button-danger p-button-text',
+            isVisible: () => this.iPerfilId === ADMINISTRADOR_DREMO,
         },
         {
-            labelTooltip: 'Asignar Fecha de publicación',
-            icon: 'pi pi-align-justify',
+            labelTooltip: 'Gestionar Preguntas',
+            icon: 'pi pi-list-check',
+            accion: 'gestionarPreguntas',
+            type: 'item',
+            class: 'p-button-rounded p-button-help p-button-text',
+            isVisible: () =>
+                this.iPerfilId === ESPECIALISTA_DREMO ||
+                this.iPerfilId === ADMINISTRADOR_DREMO,
+        },
+        {
+            labelTooltip: 'Asignar horario de publicación',
+            icon: 'pi pi-clock',
             accion: 'fechaPublicacion',
             type: 'item',
-            class: 'p-button-rounded p-button-warning p-button-text',
+            class: 'p-button-rounded p-button-secondary p-button-text',
+            isVisible: () => this.iPerfilId === DIRECTOR_IE,
+        },
+        {
+            labelTooltip: 'Resultados',
+            icon: 'pi pi-chart-bar',
+            accion: 'resultados',
+            type: 'item',
+            class: 'p-button-rounded p-button-info p-button-text',
         },
     ]
-
+    // ].filter(accion => accion.visible !== false);
     onRowSelect(event: any) {
         this.selectedRow = [event]
         //this.selectedRowData.emit(this.selectedRow) // Emite los datos al componente padre
@@ -487,12 +502,27 @@ export class EvaluacionesComponent implements OnInit {
         if (accion === 'actualizar') {
             this.actualizarDatos(item)
         }
-        if (accion === 'BancoPreguntas') {
+        if (accion === 'eliminar') {
+            this._confirmService.openConfirm({
+                header:
+                    '¿Esta seguro de eliminar la Evaluación: ' +
+                    item['cEvaluacionNombre'] +
+                    ' ?',
+                accept: () => {
+                    this.eliminarEvaluacionXId(item)
+                },
+            })
+        }
+        if (accion === 'gestionarPreguntas') {
             this.compartirFormularioEvaluacionService.setcEvaluacionNombre(
                 item.cEvaluacionNombre
             )
             this.compartirIdEvaluacionService.iEvaluacionId = item.iEvaluacionId
-            this.router.navigate(['/evaluaciones/areas'])
+            this.router.navigate([
+                'ere/evaluaciones/' +
+                    item.iEvaluacionIdxHash +
+                    '/gestionar-preguntas',
+            ])
         }
         if (accion === 'fechaPublicacion') {
             this.modalActivarCursosEre()
@@ -500,10 +530,36 @@ export class EvaluacionesComponent implements OnInit {
                 value: item.iEvaluacionId,
                 value1: item.cEvaluacionNombre,
             })
-            console.log('Nombre:', item.cEvaluacionNombre)
+            this.cEvaluacionNombre = item.cEvaluacionNombre
+            console.log('Nombre:', item.cEvaluacionNombre, item.iEvaluacionId)
+        }
+        if (accion === 'resultados') {
+            alert('En proceso de desarrollo')
         }
     }
+    eliminarEvaluacionXId(item) {
+        const params = {
+            petition: 'post',
+            group: 'ere',
+            prefix: 'evaluacion',
+            ruta: 'handleCrudOperation',
+            data: {
+                opcion: 'ELIMINARxiEvaluacionId',
+                valorBusqueda: null,
+                iEvaluacionId: item.iEvaluacionId,
+            },
+        }
+        console.log('datos para eliminar', params)
+        this._generalService.getGralPrefix(params).subscribe({
+            next: (resp) => {
+                if (resp.validated) {
+                    this.obtenerEvaluacion()
+                }
+            },
+        })
+    }
     onEvaluacionSeleccionada(event: any) {
+        // console.log('Evento recibido:', event); // Verifica qué valores llegan
         // Asigna dinámicamente el valor seleccionado
         this.iiEvaluacionId = event.value
 
@@ -531,6 +587,7 @@ export class EvaluacionesComponent implements OnInit {
         // Abrir el modal con el header dinámico
         const refModal = this._dialogService.open(EvaluacionesFormComponent, {
             ...MODAL_CONFIG,
+            maximizable: true,
             data: {
                 accion: 'ver', // Acción específica para ver
                 evaluacion: evaluacion, // Datos de la evaluación
@@ -540,9 +597,7 @@ export class EvaluacionesComponent implements OnInit {
 
         // Manejar el cierre del modal
         refModal.onClose.subscribe((result) => {
-            if (result) {
-                this.obtenerEvaluacion() // Vuelve a obtener la lista de evaluaciones si hubo cambios
-            }
+            console.log(result)
         })
     }
     obtenerEvaluacion() {
@@ -555,7 +610,6 @@ export class EvaluacionesComponent implements OnInit {
                     // Acceder y mostrar el contenido específico de la respuesta
                     if (resp && resp['data']) {
                         this.data = resp['data'] // Asignar la data obtenida
-                        console.log('Respuesta de la API:', resp)
                     } else {
                         console.warn(
                             'La respuesta no contiene la propiedad "data" o es nula:',
@@ -603,6 +657,7 @@ export class EvaluacionesComponent implements OnInit {
         // Abre el modal con el header dinámico y los datos correspondientes
         const refModal = this._dialogService.open(EvaluacionesFormComponent, {
             ...MODAL_CONFIG,
+            maximizable: true,
             data: {
                 accion: accion, // Acción (nuevo o editar)
                 evaluacion: evaluacion, // Datos de la evaluación a editar (si existe)
@@ -611,79 +666,24 @@ export class EvaluacionesComponent implements OnInit {
         })
         // Suscribirse al cierre del modal para actualizar las evaluaciones
         refModal.onClose.subscribe((result) => {
-            if (result) {
-                this.obtenerEvaluacion() // Actualizar la lista de evaluaciones después de cerrar el modal
-            }
+            console.log(result)
+            this.opcion = null
+            // if (result) {
+            this.resetSelect = true
+            this.obtenerEvaluacion() // Actualizar la lista de evaluaciones después de cerrar el modal
+            // }
         })
     }
 
-    accionbtn(accion) {
-        switch (accion) {
-            case 'manual':
-                this.opcion = 'manual'
-                this.caption = 'Nueva Evaluacion'
-                this.acciones = 'manual'
-                break
-            case 'auto':
-                this.opcion = 'auto'
-                this.caption = 'Recuperar Evaluacion'
-                this.acciones = 'auto'
-                break
-        }
-    }
-
-    //CREANDO COPIA DE EVALUACION
-    copiarEvaluacion(iEvaluacionId: number): Promise<any[]> {
-        return new Promise((resolve, reject) => {
-            //this.copiarEvaluacion(iEvaluacionId)
-            this._apiEre
-                .copiarEvaluacion(iEvaluacionId)
-                .pipe(takeUntil(this.unsubscribe$))
-                .subscribe({
-                    next: (resp: any) => {
-                        this._MessageService.add({
-                            severity: 'success',
-                            summary: 'Éxito',
-                            detail: resp.message,
-                        })
-
-                        resolve(resp)
-                        console.log('Copiar Evaluacion exitosa:', resp)
-                    },
-                    error: (error) => {
-                        console.error('Error al Copiar Evaluacion:', error)
-                        this._MessageService.add({
-                            severity: 'error',
-                            summary: 'Error',
-                            detail: 'Error al copiar la Evaluacion',
-                        })
-                        reject(error)
-                    },
-                })
-        })
-    }
     // manejar las acciones
     accionBtnItem(elemento) {
         const { accion } = elemento
-
         switch (accion) {
-            case 'seleccionar':
-                this.visible = true
-                this.opcion = 'seleccionar'
-                break
             case 'agregar':
                 this.agregarEditarPregunta({
                     iEvaluacionId: 0,
                 })
                 this.opcion = 'seleccionar'
-                break
-            case 'copiarEvaluacion':
-                this.copiarEvaluacion(this.selectedRow[0].iEvaluacionId).then(
-                    (resp) => {
-                        console.log('Copiar evaluacion', resp)
-                        this.closeDialog(resp)
-                    }
-                )
                 break
             case 'auto':
                 this.opcion = 'auto'
@@ -693,11 +693,13 @@ export class EvaluacionesComponent implements OnInit {
                 this.caption = 'Registrar'
 
                 break
-            case 'formularioEvaluacion':
+            // formulario de crear evaluación ERE
+            case 'seleccionar':
                 this.visible = false
                 this.opcion = 'formularioEvaluacion'
                 this.formCapas = 'formularioEvaluacion'
                 this.isDialogVisible = true
+                this.resetSelect = false
 
                 this.agregarEditarPregunta({ iEvaluacionId: null })
                 break

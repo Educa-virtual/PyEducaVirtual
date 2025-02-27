@@ -3,10 +3,11 @@ import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { Component, OnInit } from '@angular/core'
 import { DialogModule } from 'primeng/dialog'
 import { DropdownModule } from 'primeng/dropdown'
-import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
 import { DataViewModule } from 'primeng/dataview'
 import { OrderListModule } from 'primeng/orderlist'
 import { CommonModule } from '@angular/common'
+import { Router } from '@angular/router'
+import { TokenStorageService } from '@/app/servicios/token.service'
 @Component({
     selector: 'app-inicio',
     standalone: true,
@@ -17,7 +18,6 @@ import { CommonModule } from '@angular/common'
         CommonModule,
         OrderListModule,
         DropdownModule,
-        TablePrimengComponent,
         DataViewModule,
     ],
 })
@@ -31,10 +31,18 @@ export class InicioComponent implements OnInit {
 
     constructor(
         private ConstantesService: ConstantesService,
-        private ls: LocalStoreService
+        private ls: LocalStoreService,
+        private tokenStorage: TokenStorageService,
+        private router: Router
     ) {
         this.name = this.ConstantesService.nombres
         this.name1 = this.ConstantesService.nombre
+        if (!this.ConstantesService.verificado) {
+            setTimeout(() => {
+                this.tokenStorage.signOut()
+                this.router.navigate(['login'])
+            }, 3000)
+        }
     }
 
     ngOnInit() {

@@ -92,6 +92,11 @@
                             <p-tableHeaderCheckbox />
                         }
                         @case ('expansion') {}
+                        @case ('item-checkbox') {
+                            <div [style.text-align]="col.text_header">
+                                {{ col.header }}
+                            </div>
+                        }
                         @default {
                             <div [style.text-align]="col.text_header" class="">
                                 <span> {{ col.header }}</span>
@@ -384,6 +389,24 @@
                         } @else {
                             -
                         }
+                    }
+                    @if (col.type === 'item-checkbox') {
+                        <div [style.text-align]="col.text">
+                            <p-checkbox
+                                [inputId]="rowData[col.field]"
+                                [value]="rowData"
+                                [(ngModel)]="rowData[col.field]"
+                                [binary]="true"
+                                [trueValue]="1"
+                                [falseValue]="0"
+                                (onChange)="
+                                    accionBtn(
+                                        'setearDatax' + col.field,
+                                        rowData
+                                    )
+                                "
+                            />
+                        </div>
                     }
                 </td>
             }

@@ -8,6 +8,8 @@ import { RoleGuard } from '@/app/shared/_guards/role.guard'
 import { Routes } from '@angular/router'
 import { EvaluacionesComponent } from '../evaluaciones/sub-evaluaciones/evaluaciones/evaluaciones.component'
 import { EspecialistaDremoComponent } from './administrar/especialista-dremo/especialista-dremo.component'
+import { GestionarPreguntasComponent } from './evaluaciones/gestionar-preguntas/gestionar-preguntas.component'
+import { PreguntasComponent } from './evaluacion/preguntas/preguntas.component'
 
 const routes: Routes = [
     {
@@ -17,16 +19,14 @@ const routes: Routes = [
     },
     {
         path: 'evaluaciones/:iEvaluacionId/gestionar-preguntas',
-        loadComponent: () =>
-            import(
-                './evaluaciones/gestionar-preguntas/gestionar-preguntas.component'
-            ).then((c) => c.GestionarPreguntasComponent),
+        component: GestionarPreguntasComponent,
+        canActivate: [RoleGuard],
         data: {
+            expectedRole: [ADMINISTRADOR_DREMO, ESPECIALISTA_DREMO],
             breadcrumb: 'Gestionar Preguntas',
             icon: 'pi pi-list-check',
         },
     },
-
     {
         path: 'evaluaciones',
         component: EvaluacionesComponent,
@@ -41,33 +41,16 @@ const routes: Routes = [
             breadcrumb: 'Evaluaciones',
             icon: 'pi pi-check-square',
         },
-        children: [
-            // {
-            //     path: ':iEvaluacionId/gestionar-preguntas',
-            //     loadComponent: () =>
-            //         import(
-            //             './evaluaciones/gestionar-preguntas/gestionar-preguntas.component'
-            //         ).then((c) => c.GestionarPreguntasComponent),
-            //     data: {
-            //         breadcrumb: 'Gestionar Preguntas',
-            //         icon: 'pi pi-list-check',
-            //     },
-            // },
-        ],
     },
     {
         path: 'evaluaciones/:iEvaluacionId/gestionar-preguntas/areas/:iCursoNivelGradId',
-        loadComponent: () =>
-            import('./evaluacion/preguntas/preguntas.component').then(
-                (c) => c.PreguntasComponent
-            ),
-    },
-    {
-        path: 'informes-ere',
-        loadComponent: () =>
-            import('./informes-ere/informes-ere/informes-ere.component').then(
-                (c) => c.InformesEreComponent
-            ),
+        component: PreguntasComponent,
+        canActivate: [RoleGuard],
+        data: {
+            expectedRole: [ADMINISTRADOR_DREMO, ESPECIALISTA_DREMO],
+            breadcrumb: 'Gestionar Preguntas',
+            icon: 'pi pi-list-check',
+        },
     },
     {
         path: 'administrar',

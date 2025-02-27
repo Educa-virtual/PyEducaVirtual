@@ -15,6 +15,8 @@ import { CommonModule } from '@angular/common'
 import { ApiEvaluacionesRService } from '@/app/sistema/evaluaciones/services/api-evaluaciones-r.service'
 import { Router } from '@angular/router'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
+import { ESPECIALISTA_DREMO } from '@/app/servicios/seg/perfiles'
+import { ConstantesService } from '@/app/servicios/constantes.service'
 
 @Component({
     selector: 'app-gestionar-preguntas-card',
@@ -27,11 +29,14 @@ import { LocalStoreService } from '@/app/servicios/local-store.service'
 export class GestionarPreguntasCardComponent implements OnInit {
     private router: Router = inject(Router)
     private evaluacionesService = inject(ApiEvaluacionesRService)
+    private _ConstantesService = inject(ConstantesService)
+
     @Input() iEvaluacionIdHashed: string = ''
     backend = environment.backend
     @Input() curso: ICurso
     selectedData = []
     acciones: MenuItem[] = []
+    iPerfilId: number = this._ConstantesService.iPerfilId
 
     constructor(private store: LocalStoreService) {}
 
@@ -64,6 +69,7 @@ export class GestionarPreguntasCardComponent implements OnInit {
                 label: 'Subir PDF',
                 icon: 'pi pi-angle-right',
                 command: () => {},
+                disabled: this.iPerfilId !== ESPECIALISTA_DREMO,
             },
             {
                 label: 'Descargar PDF',

@@ -11,13 +11,19 @@
     </div>
     <div class="p-3 mb-auto">
         <h3 class="text-xl">
+            <small class="text-primary font-bold"
+                >{{ curso.cGradoAbreviacion.toString().substring(0, 1) }}° Grado
+                -
+                {{
+                    curso.cNivelTipoNombre.toString().replace('Educación ', '')
+                }}</small
+            >
+            <br />
             {{ curso.cCursoNombre | stringCase }}
-            - {{ curso.cGradoAbreviacion.toString().substring(0, 1) }}° grado -
-            {{ curso.cNivelTipoNombre.toString().replace('Educación ', '') }}
         </h3>
-        <p class="">{{ curso.iCantidadPreguntas }} preguntas</p>
     </div>
     <footer class="p-3 pt-0 flex align-items-center justify-content-between">
+        <p class="">{{ curso.iCantidadPreguntas }} preguntas</p>
         <button
             size="small"
             [rounded]="true"
@@ -26,52 +32,22 @@
             (click)="$event.stopPropagation(); menuContenido.toggle($event)"
             ngClass="p-button-primary"
         >
+            Ver más &nbsp;
             <i class="pi pi-plus"></i>
-            &nbsp;Actividad
         </button>
     </footer>
 </article>
 
 <p-menu #menuContenido [model]="acciones" [popup]="true" appendTo="body">
     <ng-template pTemplate="item" let-item>
-        <a pRipple class="flex align-items-center gap-2 p-2 px-3 text-color">
+        <a
+            *ngIf="!item.disabled"
+            pRipple
+            class="flex align-items-center gap-2 p-2 px-3 text-color cursor-pointer"
+        >
             <span>
                 {{ item.label }}
             </span>
         </a>
     </ng-template>
 </p-menu>
-<!--
-<div class="cursos gap-4 py-2">
-    <article class="card p-0 border-1 flex flex-column surface-border overflow-hidden h-full post-module">
-        <div class="curso__image-container img-transition">
-            <img
-            [src]="backend + '/' + curso.cCursoImagen"
-            [alt]="curso.cCursoNombre"
-            class="w-full h-full"
-            (error)="updateUrl(curso)"
-        />
-        </div>
-        <div class="p-3 mb-auto">
-            <h3 class="text-xl">
-                {{ curso.cCursoNombre }} - {{ curso.cGradoAbreviacion }} - {{ curso.cNivelTipoNombre }}
-            </h3>
-            <p class="">
-                0/20 preguntas
-            </p>
-        </div>
-        <footer class="p-3 pt-0 flex align-items-center justify-content-between">
-            <button size="small" [rounded]="true" pButton pRipple (click)="
-                                        $event.stopPropagation();
-                                        menuContenido.toggle($event)
-                                    " ngClass="p-button-primary">
-                <i class="pi pi-plus"></i>
-                &nbsp;Actividad
-            </button>
-
-        </footer>
-    </article>
-</div>
-
-
--->

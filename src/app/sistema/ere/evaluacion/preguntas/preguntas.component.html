@@ -32,6 +32,7 @@
         </div>
         <div class="col-12 md:col-3 text-right">
             <button
+                *ngIf="isDisabled"
                 pButton
                 class="p-button-primary gap-2"
                 (click)="menuAgregarPreguntas.toggle($event)"
@@ -73,7 +74,7 @@
                         >
                             <ng-template pTemplate="header">
                                 <span
-                                    class="flex align-items-center justify-content-center w-full"
+                                    class="flex align-items-center justify-content-start w-full"
                                 >
                                     <span class="font-bold whitespace-nowrap">{{
                                         '#' + (id + 1) + ' ' + list.title
@@ -81,6 +82,7 @@
                                             | truncateText: 80
                                     }}</span>
                                     <p-button
+                                        *ngIf="isDisabled"
                                         icon="pi pi-trash"
                                         iconPos="left"
                                         severity="danger"
@@ -152,6 +154,9 @@
                                                                 pTemplate="end"
                                                             >
                                                                 <button
+                                                                    *ngIf="
+                                                                        isDisabled
+                                                                    "
                                                                     pButton
                                                                     class="p-button-primary"
                                                                     size="small"
@@ -189,7 +194,7 @@
                                                                         pTemplate="header"
                                                                     >
                                                                         <span
-                                                                            class="flex align-items-center justify-content-center w-full"
+                                                                            class="flex align-items-center justify-content-start w-full"
                                                                         >
                                                                             <span
                                                                                 class="font-bold whitespace-nowrap"
@@ -201,6 +206,9 @@
                                                                                 }}</span
                                                                             >
                                                                             <p-button
+                                                                                *ngIf="
+                                                                                    isDisabled
+                                                                                "
                                                                                 icon="pi pi-trash"
                                                                                 iconPos="left"
                                                                                 severity="danger"
@@ -241,6 +249,9 @@
                                                                                 >Competencia</p-inputGroupAddon
                                                                             >
                                                                             <p-dropdown
+                                                                                [disabled]="
+                                                                                    !isDisabled
+                                                                                "
                                                                                 styleClass="w-full"
                                                                                 placeholder="Seleccione la Competencia"
                                                                                 optionValue="iCompetenciaId"
@@ -269,6 +280,9 @@
                                                                                 >Capacidad</p-inputGroupAddon
                                                                             >
                                                                             <p-dropdown
+                                                                                [disabled]="
+                                                                                    !isDisabled
+                                                                                "
                                                                                 styleClass="w-full"
                                                                                 placeholder="Seleccione la Capacidad"
                                                                                 optionValue="iCapacidadId"
@@ -297,6 +311,9 @@
                                                                                 >Desempeño
                                                                             </p-inputGroupAddon>
                                                                             <input
+                                                                                [disabled]="
+                                                                                    !isDisabled
+                                                                                "
                                                                                 type="text"
                                                                                 pInputText
                                                                                 placeholder="Ingrese el desempeño"
@@ -317,6 +334,9 @@
                                                                                     >Peso</p-inputGroupAddon
                                                                                 >
                                                                                 <p-dropdown
+                                                                                    [disabled]="
+                                                                                        !isDisabled
+                                                                                    "
                                                                                     [(ngModel)]="
                                                                                         encab.iPreguntaPeso
                                                                                     "
@@ -371,6 +391,9 @@
                                                                             </div>
                                                                             <div>
                                                                                 <button
+                                                                                    *ngIf="
+                                                                                        isDisabled
+                                                                                    "
                                                                                     pButton
                                                                                     pRipple
                                                                                     type="button"
@@ -430,6 +453,9 @@
                                                                                         "
                                                                                     />
                                                                                     <div
+                                                                                        *ngIf="
+                                                                                            isDisabled
+                                                                                        "
                                                                                         class="align-content-center p-2 border-img"
                                                                                     >
                                                                                         <p-image
@@ -455,6 +481,9 @@
                                                                                     class="flex justify-content-end"
                                                                                 >
                                                                                     <button
+                                                                                        *ngIf="
+                                                                                            isDisabled
+                                                                                        "
                                                                                         type="button"
                                                                                         pButton
                                                                                         [text]="
@@ -473,6 +502,9 @@
                                                                                         &nbsp;
                                                                                     </button>
                                                                                     <button
+                                                                                        *ngIf="
+                                                                                            isDisabled
+                                                                                        "
                                                                                         pButton
                                                                                         type="button"
                                                                                         [text]="
@@ -496,6 +528,14 @@
                                                                                         />
                                                                                     </button>
                                                                                     <p-checkbox
+                                                                                        [class]="
+                                                                                            !isDisabled
+                                                                                                ? 'mt-2'
+                                                                                                : ''
+                                                                                        "
+                                                                                        [disabled]="
+                                                                                            !isDisabled
+                                                                                        "
                                                                                         [label]="
                                                                                             'Respuesta Correcta'
                                                                                         "
@@ -543,6 +583,9 @@
                                                                     </div>
                                                                     <div
                                                                         class="col-12"
+                                                                        *ngIf="
+                                                                            isDisabled
+                                                                        "
                                                                     >
                                                                         <div
                                                                             class="text-center"
@@ -596,6 +639,7 @@
                                                     >Competencia</p-inputGroupAddon
                                                 >
                                                 <p-dropdown
+                                                    [disabled]="!isDisabled"
                                                     styleClass="w-full"
                                                     placeholder="Seleccione la Competencia"
                                                     optionValue="iCompetenciaId"
@@ -618,6 +662,7 @@
                                                     >Capacidad</p-inputGroupAddon
                                                 >
                                                 <p-dropdown
+                                                    [disabled]="!isDisabled"
                                                     styleClass="w-full"
                                                     placeholder="Seleccione la Capacidad"
                                                     optionValue="iCapacidadId"
@@ -644,6 +689,7 @@
                                                     >Desempeño
                                                 </p-inputGroupAddon>
                                                 <input
+                                                    [disabled]="!isDisabled"
                                                     type="text"
                                                     pInputText
                                                     placeholder="Ingrese el desempeño"
@@ -660,6 +706,7 @@
                                                         >Peso</p-inputGroupAddon
                                                     >
                                                     <p-dropdown
+                                                        [disabled]="!isDisabled"
                                                         [(ngModel)]="
                                                             item.iPreguntaPeso
                                                         "
@@ -730,6 +777,9 @@
                                                             type="text"
                                                             pInputText
                                                             placeholder="Ingrese la alternativa"
+                                                            [disabled]="
+                                                                !isDisabled
+                                                            "
                                                             [(ngModel)]="
                                                                 alternativa.cAlternativaDescripcion
                                                             "
@@ -756,6 +806,7 @@
                                                         </div>
 
                                                         <button
+                                                            *ngIf="isDisabled"
                                                             type="button"
                                                             pButton
                                                             [text]="true"
@@ -772,6 +823,7 @@
                                                             &nbsp;
                                                         </button>
                                                         <button
+                                                            *ngIf="isDisabled"
                                                             pButton
                                                             type="button"
                                                             [text]="true"
@@ -793,6 +845,11 @@
                                                             />
                                                         </button>
                                                         <p-checkbox
+                                                            [class]="
+                                                                !isDisabled
+                                                                    ? 'ml-2'
+                                                                    : ''
+                                                            "
                                                             [label]="
                                                                 'Respuesta Correcta'
                                                             "
@@ -806,6 +863,9 @@
                                                                 alternativa.bAlternativaCorrecta
                                                             "
                                                             [binary]="true"
+                                                            [disabled]="
+                                                                !isDisabled
+                                                            "
                                                             (onChange)="
                                                                 cambiarEstadoCheckbox(
                                                                     alternativa.iAlternativaId,
@@ -824,6 +884,9 @@
                                                                 Explicación
                                                             </p-inputGroupAddon>
                                                             <input
+                                                                [disabled]="
+                                                                    !isDisabled
+                                                                "
                                                                 type="text"
                                                                 pInputText
                                                                 placeholder="Ingrese la explicación"
@@ -839,6 +902,7 @@
                                         <div class="col-12">
                                             <div class="text-center">
                                                 <button
+                                                    *ngIf="isDisabled"
                                                     pButton
                                                     pRipple
                                                     type="button"
@@ -855,6 +919,7 @@
                                         <div class="col-12">
                                             <div class="text-center">
                                                 <button
+                                                    *ngIf="isDisabled"
                                                     pButton
                                                     pRipple
                                                     type="button"

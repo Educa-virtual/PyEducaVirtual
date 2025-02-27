@@ -15,6 +15,7 @@ import { ConstantesService } from '@/app/servicios/constantes.service'
 import { FormImportarBancoPreguntasComponent } from './componentes/form-importar-banco-preguntas/form-importar-banco-preguntas.component'
 import { RemoveHTMLCSSPipe } from '@/app/shared/pipes/remove-html-style.pipe'
 import { TruncatePipe } from '@/app/shared/pipes/truncate-text.pipe'
+import { ESPECIALISTA_DREMO } from '@/app/servicios/seg/perfiles'
 
 @Component({
     selector: 'app-preguntas',
@@ -52,6 +53,8 @@ export class PreguntasComponent implements OnInit {
     matrizCapacidad = []
     nIndexAcordionTab: number = null
     isSecundaria: boolean = false
+    isDisabled: boolean =
+        this._ConstantesService.iPerfilId === ESPECIALISTA_DREMO
     preguntaPeso = [
         {
             iPreguntaPesoId: 1,
@@ -78,6 +81,7 @@ export class PreguntasComponent implements OnInit {
             'alignleft aligncenter alignright alignjustify | bullist numlist | ' +
             'image table',
         height: 400,
+        editable_root: this.isDisabled,
     }
     initEnunciado: EditorComponent['init'] = {
         base_url: '/tinymce', // Root for resources
@@ -91,6 +95,7 @@ export class PreguntasComponent implements OnInit {
             'undo redo | forecolor backcolor | bold italic underline strikethrough | ' +
             'alignleft aligncenter alignright alignjustify | bullist numlist | ' +
             'image table',
+        editable_root: this.isDisabled,
     }
     encabezado = ''
     preguntas = []
@@ -176,6 +181,9 @@ export class PreguntasComponent implements OnInit {
     }
 
     confirmarEliminarPregunta(positicion, pregunta) {
+        if (!this.isDisabled) {
+            return
+        }
         this._ConfirmationModalService.openConfirm({
             header: '¿Esta seguro de eliminar el item #' + positicion + ' ?',
             accept: () => {
@@ -185,6 +193,9 @@ export class PreguntasComponent implements OnInit {
     }
 
     eliminarPregunta(pregunta) {
+        if (!this.isDisabled) {
+            return
+        }
         const itemPregunta = pregunta.length ? pregunta[0] : null
         if (!itemPregunta) return
 
@@ -202,6 +213,9 @@ export class PreguntasComponent implements OnInit {
         this.getInformation(params, params.data.opcion)
     }
     handleNuevaPreguntaConEnunciadoSinData(item) {
+        if (!this.isDisabled) {
+            return
+        }
         const params = {
             petition: 'post',
             group: 'ere',
@@ -218,6 +232,9 @@ export class PreguntasComponent implements OnInit {
     }
 
     guardarPreguntaSinEnunciadoSinData() {
+        if (!this.isDisabled) {
+            return
+        }
         const params = {
             petition: 'post',
             group: 'ere',
@@ -232,6 +249,9 @@ export class PreguntasComponent implements OnInit {
         this.getInformation(params, params.data.opcion)
     }
     guardarPreguntaConEnunciadoSinData() {
+        if (!this.isDisabled) {
+            return
+        }
         const params = {
             petition: 'post',
             group: 'ere',
@@ -247,6 +267,9 @@ export class PreguntasComponent implements OnInit {
         this.getInformation(params, params.data.opcion)
     }
     guardarPreguntaConData(encabezado, pregunta, contenido) {
+        if (!this.isDisabled) {
+            return
+        }
         const preguntas = pregunta.pregunta
 
         if (!this.isSecundaria && !encabezado) {
@@ -326,6 +349,9 @@ export class PreguntasComponent implements OnInit {
     }
 
     cambiarEstadoCheckbox(iAlternativaId, alternativas) {
+        if (!this.isDisabled) {
+            return
+        }
         alternativas.forEach((alternativa) => {
             {
                 if (alternativa.iAlternativaId != iAlternativaId) {
@@ -336,6 +362,9 @@ export class PreguntasComponent implements OnInit {
         })
     }
     agregarAlternativa(preguntas) {
+        if (!this.isDisabled) {
+            return
+        }
         if (!preguntas['alternativas']) {
             preguntas['alternativas'] = []
         }
@@ -350,6 +379,9 @@ export class PreguntasComponent implements OnInit {
     }
 
     eliminarAlternativa(index: number, alternativas) {
+        if (!this.isDisabled) {
+            return
+        }
         // Eliminar la alternativa en la posición indicada por index
         alternativas.splice(index, 1)
         this.ordenarAlternativaLetra(alternativas)
@@ -517,6 +549,9 @@ export class PreguntasComponent implements OnInit {
     }
 
     async onUploadChange(evt: any, alternativa) {
+        if (!this.isDisabled) {
+            return
+        }
         const file = evt.target.files[0]
         if (file) {
             const dataFile = await this.objectToFormData({

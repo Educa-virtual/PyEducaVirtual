@@ -390,7 +390,9 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
             accion: 'gestionarPreguntas',
             type: 'item',
             class: 'p-button-rounded p-button-help p-button-text',
-            isVisible: () => this.iPerfilId === ESPECIALISTA_DREMO,
+            isVisible: () =>
+                this.iPerfilId === ESPECIALISTA_DREMO ||
+                this.iPerfilId === ADMINISTRADOR_DREMO,
         },
         {
             labelTooltip: 'Asignar horario de publicación',

@@ -91,52 +91,6 @@ export class EspecialistaUgelComponent implements OnInit {
         }, {}) // El objeto vacío es el valor inicial
     }
 
-    checkedCurso(item) {
-        if (!this.iDocenteId) {
-            this.mostrarMensaje(
-                'error',
-                'Error',
-                'No ha seleccionado un docente'
-            )
-            return
-        }
-        if (item.isSelected) {
-            this.insertarCursos(item)
-        } else {
-            this.eliminarCursos(item)
-        }
-    }
-
-    insertarCursos(curso) {
-        const data = {
-            iCursosNivelGradId: curso.iCursosNivelGradId,
-        }
-        this._ApiEspecialistasService
-            .asignarAreaEspecialistaUgel(this.iUgelId, this.iDocenteId, data)
-            .subscribe({
-                next: (respuesta) => {
-                    this.mostrarMensaje(
-                        'success',
-                        'Guardado!',
-                        respuesta.message
-                    )
-                    this.iAreasConAsignar++
-                    this.iAreasSinAsignar--
-                },
-                error: (error) => {
-                    console.error('Error obteniendo datos', error)
-                },
-            })
-    }
-
-    mostrarMensaje(severity, title, detail) {
-        this._MessageService.add({
-            severity: severity,
-            summary: title,
-            detail: detail,
-        })
-    }
-
     // Ugel
 
     obtenerEspecialistasUgel() {
@@ -217,7 +171,7 @@ export class EspecialistaUgelComponent implements OnInit {
         }
 
         this._ApiEspecialistasService
-            .obtenerAreasPorEspecialistaUgel(this.iDocenteId, this.iUgelId)
+            .obtenerAreasPorEspecialistaUgel(this.iUgelId, this.iDocenteId)
             .subscribe({
                 next: (respuesta) => {
                     // respuesta son las áreas asignadas al especialista en esa UGEL
@@ -279,5 +233,51 @@ export class EspecialistaUgelComponent implements OnInit {
                     console.error('Error al eliminar el área', err)
                 },
             })
+    }
+
+    insertarCursos(curso) {
+        const data = {
+            iCursosNivelGradId: curso.iCursosNivelGradId,
+        }
+        this._ApiEspecialistasService
+            .asignarAreaEspecialistaUgel(this.iUgelId, this.iDocenteId, data)
+            .subscribe({
+                next: (respuesta) => {
+                    this.mostrarMensaje(
+                        'success',
+                        'Guardado!',
+                        respuesta.message
+                    )
+                    this.iAreasConAsignar++
+                    this.iAreasSinAsignar--
+                },
+                error: (error) => {
+                    console.error('Error obteniendo datos', error)
+                },
+            })
+    }
+
+    checkedCurso(item) {
+        if (!this.iDocenteId) {
+            this.mostrarMensaje(
+                'error',
+                'Error',
+                'No ha seleccionado un docente'
+            )
+            return
+        }
+        if (item.isSelected) {
+            this.insertarCursos(item)
+        } else {
+            this.eliminarCursos(item)
+        }
+    }
+
+    mostrarMensaje(severity, title, detail) {
+        this._MessageService.add({
+            severity: severity,
+            summary: title,
+            detail: detail,
+        })
     }
 }

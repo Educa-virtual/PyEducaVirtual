@@ -104,14 +104,14 @@ export class PreguntasComponent implements OnInit {
 
     tiposAgregarPregunta: MenuItem[] = [
         {
-            label: 'Nueva Pregunta sin Enunciado',
+            label: 'Nueva Pregunta simple',
             icon: 'pi pi-plus',
             command: () => {
                 this.handleNuevaPregunta(false)
             },
         },
         {
-            label: 'Nueva Pregunta con Enunciado',
+            label: 'Nueva Pregunta múltiple',
             icon: 'pi pi-plus',
             command: () => {
                 this.handleNuevaPregunta(true)

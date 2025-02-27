@@ -14,6 +14,7 @@ import { MessagesModule } from 'primeng/messages'
 import { Message } from 'primeng/api'
 import { ApiEspecialistasService } from '@/app/sistema/ere/services/api-especialistas.service'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
+import { ConstantesService } from '@/app/servicios/constantes.service'
 
 export type Layout = 'list' | 'grid'
 
@@ -34,6 +35,8 @@ export class GestionarPreguntasComponent implements OnInit {
     private evaluacionesService = inject(ApiEvaluacionesRService)
     private especialistasService = inject(ApiEspecialistasService)
     private store = new LocalStoreService()
+    private _ConstantesService = inject(ConstantesService)
+
     iEvaluacionIdHashed: string = ''
     sortField: string = ''
     sortOrder: number = 0
@@ -89,7 +92,8 @@ export class GestionarPreguntasComponent implements OnInit {
         this.especialistasService
             .obtenerAreasPorEvaluacionyEspecialista(
                 this.iEvaluacionIdHashed,
-                this.store.getItem('dremoUser').iPersId
+                this.store.getItem('dremoUser').iPersId,
+                this._ConstantesService.iPerfilId
             )
             .subscribe({
                 next: (respuesta) => {

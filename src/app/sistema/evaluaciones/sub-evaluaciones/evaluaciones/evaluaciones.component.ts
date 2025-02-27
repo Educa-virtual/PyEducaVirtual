@@ -27,6 +27,7 @@ import { DIRECTOR_IE } from '@/app/servicios/perfilesConstantes'
 import {
     ADMINISTRADOR_DREMO,
     ESPECIALISTA_DREMO,
+    ESPECIALISTA_UGEL,
 } from '@/app/servicios/seg/perfiles'
 @Component({
     selector: 'app-evaluaciones',
@@ -403,6 +404,14 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
             isVisible: () => this.iPerfilId === DIRECTOR_IE,
         },
         {
+            labelTooltip: 'Liberar Evaluación',
+            icon: 'pi pi-verified',
+            accion: 'liberarUgelEvaluacion',
+            type: 'item',
+            class: 'p-button-rounded p-button-success p-button-text',
+            isVisible: () => this.iPerfilId === ESPECIALISTA_UGEL,
+        },
+        {
             labelTooltip: 'Resultados',
             icon: 'pi pi-chart-bar',
             accion: 'resultados',
@@ -424,7 +433,6 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
     showDialog() {
         this.visible = true
     }
-    click() {}
     //No es la ventana modal
     agregarEvaluacion() {
         this._dialogService.open(EvaluacionesFormComponent, {
@@ -482,59 +490,60 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
 
     // asignar
     accionBtnItemTable({ accion, item }) {
-        if (accion === 'seleccionar') {
-            this.selectedItems = []
-            this.selectedItems = [item]
-        }
-        if (accion === 'editar') {
-            this.agregarEditarPregunta(item)
-        }
-
-        if (accion === 'ver') {
-            this.compartirIdEvaluacionService.iEvaluacionId = item.iEvaluacionId
-            this.verEreEvaluacion(item)
-        }
-        if (accion === 'agregar') {
-            this.opcion = 'seleccionar'
-            this.caption = 'Seleccionar configuración'
-            this.visible = true
-        }
-        if (accion === 'actualizar') {
-            this.actualizarDatos(item)
-        }
-        if (accion === 'eliminar') {
-            this._confirmService.openConfirm({
-                header:
-                    '¿Esta seguro de eliminar la Evaluación: ' +
-                    item['cEvaluacionNombre'] +
-                    ' ?',
-                accept: () => {
-                    this.eliminarEvaluacionXId(item)
-                },
-            })
-        }
-        if (accion === 'gestionarPreguntas') {
-            this.compartirFormularioEvaluacionService.setcEvaluacionNombre(
-                item.cEvaluacionNombre
-            )
-            this.compartirIdEvaluacionService.iEvaluacionId = item.iEvaluacionId
-            this.router.navigate([
-                'ere/evaluaciones/' +
-                    item.iEvaluacionIdxHash +
-                    '/gestionar-preguntas',
-            ])
-        }
-        if (accion === 'fechaPublicacion') {
-            this.modalActivarCursosEre()
-            this.onEvaluacionSeleccionada({
-                value: item.iEvaluacionId,
-                value1: item.cEvaluacionNombre,
-            })
-            this.cEvaluacionNombre = item.cEvaluacionNombre
-            console.log('Nombre:', item.cEvaluacionNombre, item.iEvaluacionId)
-        }
-        if (accion === 'resultados') {
-            alert('En proceso de desarrollo')
+        switch (accion) {
+            case 'seleccionar':
+                this.selectedItems = []
+                this.selectedItems = [item]
+                break
+            case 'editar':
+                this.agregarEditarPregunta(item)
+                break
+            case 'ver':
+                this.verEreEvaluacion(item)
+                break
+            case 'agregar':
+                this.opcion = 'seleccionar'
+                this.caption = 'Seleccionar configuración'
+                this.visible = true
+                break
+            case 'actualizar':
+                this.actualizarDatos(item)
+                break
+            case 'eliminar':
+                this._confirmService.openConfirm({
+                    header:
+                        '¿Esta seguro de eliminar la Evaluación: ' +
+                        item['cEvaluacionNombre'] +
+                        ' ?',
+                    accept: () => {
+                        this.eliminarEvaluacionXId(item)
+                    },
+                })
+                break
+            case 'gestionarPreguntas':
+                this.compartirFormularioEvaluacionService.setcEvaluacionNombre(
+                    item.cEvaluacionNombre
+                )
+                this.router.navigate([
+                    'ere/evaluaciones/' +
+                        item.iEvaluacionIdxHash +
+                        '/gestionar-preguntas',
+                ])
+                break
+            case 'fechaPublicacion':
+                this.modalActivarCursosEre()
+                this.onEvaluacionSeleccionada({
+                    value: item.iEvaluacionId,
+                    value1: item.cEvaluacionNombre,
+                })
+                this.cEvaluacionNombre = item.cEvaluacionNombre
+                break
+            case 'resultados':
+                alert('En proceso de desarrollo')
+                break
+            case 'liberarUgelEvaluacion':
+                alert('En proceso de desarrollo')
+                break
         }
     }
     eliminarEvaluacionXId(item) {

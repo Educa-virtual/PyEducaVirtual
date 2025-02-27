@@ -319,4 +319,10 @@ export class GeneralService {
             data
         )
     }
+    obtenerCredencialesSede(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/gestionInstitucional/obtenerCredencialesSede`,
+            data
+        )
+    }
 }

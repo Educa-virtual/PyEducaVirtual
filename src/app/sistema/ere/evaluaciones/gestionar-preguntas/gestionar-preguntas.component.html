@@ -48,6 +48,9 @@
                         <app-gestionar-preguntas-card
                             [curso]="curso"
                             [iEvaluacionIdHashed]="iEvaluacionIdHashed"
+                            (dialogSubirArchivoEvent)="
+                                recibirDatosParaSubirArchivo($event)
+                            "
                         ></app-gestionar-preguntas-card>
                     }
                 </div>
@@ -55,3 +58,4 @@
         </p-dataView>
     }
 </app-container-page>
+<app-subir-archivo-preguntas></app-subir-archivo-preguntas>

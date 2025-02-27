@@ -1,0 +1,28 @@
+<form [formGroup]="form" (ngSubmit)="subirArchivo()">
+    <p-dialog
+        [header]="titulo"
+        [modal]="true"
+        [(visible)]="visible"
+        [style]="{ width: '40rem' }"
+    >
+        <br />
+        <div class="flex align-items-center gap-3 mb-3">
+            <app-input-file-upload
+                class="w-full"
+                label="Seleccionar archivo"
+                acceptTypes="application/pdf"
+                [canViewLocalFile]="false"
+                (change)="handleArchivo($event)"
+            ></app-input-file-upload>
+        </div>
+        <br />
+        <div class="flex justify-content-end gap-2">
+            <p-button
+                label="Cancelar"
+                severity="secondary"
+                (onClick)="visible = false"
+            />
+            <p-button label="Subir archivo" (onClick)="visible = false" />
+        </div>
+    </p-dialog>
+</form>

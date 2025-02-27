@@ -2,9 +2,11 @@ import { StringCasePipe } from '@shared/pipes/string-case.pipe'
 import {
     ChangeDetectionStrategy,
     Component,
+    EventEmitter,
     inject,
     Input,
     OnInit,
+    Output,
 } from '@angular/core'
 import { MenuModule } from 'primeng/menu'
 import { ButtonModule } from 'primeng/button'
@@ -37,6 +39,10 @@ export class GestionarPreguntasCardComponent implements OnInit {
     selectedData = []
     acciones: MenuItem[] = []
     iPerfilId: number = this._ConstantesService.iPerfilId
+    @Output() dialogSubirArchivoEvent = new EventEmitter<{
+        curso: ICurso
+        iEvaluacionIdHashed: string
+    }>()
 
     constructor(private store: LocalStoreService) {}
 
@@ -68,7 +74,12 @@ export class GestionarPreguntasCardComponent implements OnInit {
             {
                 label: 'Subir PDF',
                 icon: 'pi pi-angle-right',
-                command: () => {},
+                command: () => {
+                    this.dialogSubirArchivoEvent.emit({
+                        curso: this.curso,
+                        iEvaluacionIdHashed: this.iEvaluacionIdHashed,
+                    })
+                },
                 disabled: this.iPerfilId !== ESPECIALISTA_DREMO,
             },
             {

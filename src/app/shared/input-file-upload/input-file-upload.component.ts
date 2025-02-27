@@ -24,6 +24,7 @@ import { NG_VALUE_ACCESSOR } from '@angular/forms'
 })
 export class InputFileUploadComponent {
     @Input() label: string = ''
+    @Input() canViewLocalFile: boolean = true
     @Input() acceptTypes: string = ''
     selectFile: File | null = null
     fileBlob: Blob | null = null

@@ -1,6 +1,6 @@
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import { CommonModule } from '@angular/common'
-import { Component, inject, OnInit } from '@angular/core'
+import { Component, inject, OnInit, ViewChild } from '@angular/core'
 import { DataView } from 'primeng/dataview'
 
 import { PrimengModule } from '@/app/primeng.module'
@@ -15,6 +15,7 @@ import { Message } from 'primeng/api'
 import { ApiEspecialistasService } from '@/app/sistema/ere/services/api-especialistas.service'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { ConstantesService } from '@/app/servicios/constantes.service'
+import { SubirArchivoPreguntasComponent } from '../../components/areas/subir-archivo/subir-archivo-preguntas.component'
 
 export type Layout = 'list' | 'grid'
 
@@ -27,6 +28,7 @@ export type Layout = 'list' | 'grid'
         PrimengModule,
         MessagesModule,
         GestionarPreguntasCardComponent,
+        SubirArchivoPreguntasComponent,
     ],
     templateUrl: './gestionar-preguntas.component.html',
     styleUrl: './gestionar-preguntas.component.scss',
@@ -36,6 +38,8 @@ export class GestionarPreguntasComponent implements OnInit {
     private especialistasService = inject(ApiEspecialistasService)
     private store = new LocalStoreService()
     private _ConstantesService = inject(ConstantesService)
+    @ViewChild(SubirArchivoPreguntasComponent)
+    dialogSubirArchivo!: SubirArchivoPreguntasComponent
 
     iEvaluacionIdHashed: string = ''
     sortField: string = ''
@@ -59,6 +63,15 @@ export class GestionarPreguntasComponent implements OnInit {
                 curso.cCursoNombre.toLowerCase().includes(text)
             )
         }
+    }
+
+    recibirDatosParaSubirArchivo(datos: {
+        curso: ICurso
+        iEvaluacionIdHashed: string
+    }) {
+        //this.dialogSubirArchivo.curso=datos.curso;
+        //this.dialogSubirArchivo.iEvaluacionIdHashed=datos.iEvaluacionIdHashed;
+        this.dialogSubirArchivo.mostrarDialog(datos)
     }
 
     ngOnInit() {

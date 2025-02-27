@@ -28,8 +28,9 @@
                 tooltipPosition="top"
                 (click)="derivar()"
                 class="p-button-primary"
+                *ngIf="!es_estudiante"
             >
-                <i class="pi pi-plus"></i>
+                <i class="pi pi-send"></i>
                 <span class="ml-2 hidden sm:block">Derivar</span>
             </button>
         </div>
@@ -50,4 +51,19 @@
     >
     </app-table-primeng>
 </p-panel>
+<p-dialog
+    header="Registrar derivación"
+    [(visible)]="visible"
+    [style]="{ width: '56rem' }"
+    [modal]="true"
+    [contentStyle]="{ overflow: 'auto' }"
+>
+    <ng-content>
+        <app-derivar-sugerencia
+            [item]="item_seleccionado"
+            [disable]="disable_form"
+        ></app-derivar-sugerencia>
+    </ng-content>
+</p-dialog>
+
 <p-toast></p-toast>

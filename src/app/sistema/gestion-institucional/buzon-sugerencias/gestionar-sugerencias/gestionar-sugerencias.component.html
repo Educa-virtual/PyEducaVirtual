@@ -15,6 +15,8 @@
                 pTooltip="Registrar sugerencia"
                 tooltipPosition="top"
                 (click)="agregarSugerencia()"
+                class="p-button-primary"
+                *ngIf="es_estudiante"
             >
                 <i class="pi pi-plus"></i>
                 <span class="ml-2 hidden sm:block">Registar sugerencia</span>
@@ -94,29 +96,67 @@
                         formControlName="cSugerencia"
                         [style]="{ height: '150px' }"
                         placeholder="Explique su sugerencia *"
+                        [readonly]="disable_form"
                     />
                 </div>
-                <div class="field col-12">
-                    <p-fileUpload
-                        name="demo[]"
-                        showUploadButton="false"
-                        [multiple]="true"
-                        chooseLabel="Seleccione hasta 3 archivos (max. 10 MB)"
-                        cancelLabel="Quitar archivos"
-                        fileLimit="3"
-                        maxFileSize="10240"
-                    >
-                        <ng-template pTemplate="content">
-                            <ul *ngIf="uploadedFiles.length">
-                                <li *ngFor="let file of uploadedFiles">
-                                    {{ file.name }} - {{ file.size }} bytes
-                                </li>
-                            </ul>
-                        </ng-template>
-                    </p-fileUpload>
-                </div>
+                @if (disable_form) {
+                    <div class="field col-12">
+                        <a
+                            href="#"
+                            class="p-button-link p-button-text mr-2"
+                            target="_blank"
+                        >
+                            <p-chip>
+                                <span
+                                    class="bg-primary border-circle w-2rem h-2rem flex align-items-center justify-content-center"
+                                >
+                                    <i class="pi pi-file"></i>
+                                </span>
+                                <span class="ml-2">
+                                    Mi_sugerencia_2023.pdf
+                                </span>
+                            </p-chip>
+                        </a>
+                        <a
+                            href="#"
+                            class="p-button-link p-button-text mx-2"
+                            target="_blank"
+                        >
+                            <p-chip>
+                                <span
+                                    class="bg-primary border-circle w-2rem h-2rem flex align-items-center justify-content-center"
+                                >
+                                    <i class="pi pi-file"></i>
+                                </span>
+                                <span class="ml-2">
+                                    Foto_adjunta_20230101.jpg
+                                </span>
+                            </p-chip>
+                        </a>
+                    </div>
+                } @else {
+                    <div class="field col-12">
+                        <p-fileUpload
+                            name="demo[]"
+                            showUploadButton="false"
+                            [multiple]="true"
+                            chooseLabel="Seleccione hasta 3 archivos (max. 10 MB)"
+                            cancelLabel="Quitar archivos"
+                            fileLimit="3"
+                            maxFileSize="10240"
+                        >
+                            <ng-template pTemplate="content">
+                                <ul *ngIf="uploadedFiles.length">
+                                    <li *ngFor="let file of uploadedFiles">
+                                        {{ file.name }} - {{ file.size }} bytes
+                                    </li>
+                                </ul>
+                            </ng-template>
+                        </p-fileUpload>
+                    </div>
+                }
             </div>
-            <div class="flex justify-content-end">
+            <div class="flex justify-content-end" *ngIf="!disable_form">
                 <p-button
                     label="Guardar"
                     (onClick)="guardarSugerencia()"

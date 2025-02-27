@@ -799,6 +799,13 @@ const administracion = [
                             '/gestion-institucional/estudiante/registro',
                         ],
                     },
+                    {
+                        label: 'Buzon de Sugerencias',
+                        icon: 'pi pi-fw pi-envelope',
+                        routerLink: [
+                            '/gestion-institucional/gestionar-sugerencias',
+                        ],
+                    },
                 ],
             },
             {

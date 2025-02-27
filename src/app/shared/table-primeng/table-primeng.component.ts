@@ -38,6 +38,7 @@ export interface IColumn {
     header: string
     text_header: string
     text: string
+    styles?: object | undefined
     customFalsy?: {
         trueText: string
         falseText: string
@@ -362,5 +363,26 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     }
     updateUrl(item) {
         item.ruta = 'users/no-image.png'
+    }
+
+    /***
+     * Mapea estilos de tag
+     * @param row fila seleccionada
+     * @param col datos del header de columna seleccionada
+     * @returns string 'success' | 'info' | 'warning' | 'danger' | 'secondary' | 'contrast'
+     */
+    mapTagStyles(
+        row,
+        col
+    ): 'success' | 'info' | 'warning' | 'danger' | 'secondary' | 'contrast' {
+        if (col.styles === undefined) return 'secondary'
+        const severity = [
+            'success',
+            'info',
+            'warning',
+            'danger',
+            'secondary',
+        ].includes(col.styles[row[col.field]])
+        return severity ? col.styles[row[col.field]] : 'secondary'
     }
 }

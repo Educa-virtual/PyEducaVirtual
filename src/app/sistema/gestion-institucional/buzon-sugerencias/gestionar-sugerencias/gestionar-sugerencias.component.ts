@@ -33,6 +33,9 @@ export class GestionarSugerenciasComponent implements OnInit {
     destinos: Array<object>
     dialog_header: string
     uploadedFiles: any[] = []
+    perfil: any = JSON.parse(localStorage.getItem('dremoPerfil'))
+    es_estudiante: boolean = this.perfil.iPerfilId == 80
+    disable_form: boolean = false
 
     private _MessageService = inject(MessageService) // dialog Mensaje simple
     private _confirmService = inject(ConfirmationModalService) // componente de dialog mensaje
@@ -44,6 +47,7 @@ export class GestionarSugerenciasComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
+        console.log(this.es_estudiante)
         try {
             this.form = this.fb.group({
                 iPrioridadId: [null, Validators.required],
@@ -106,8 +110,8 @@ export class GestionarSugerenciasComponent implements OnInit {
                 destino_id: [4],
                 fecha: '2024-01-04',
                 asunto: 'Mas explicaciones en examenes de matematica',
-                estado_id: 1,
-                estado: 'PENDIENTE',
+                estado_id: 4,
+                estado: 'DERIVADO',
                 prioridad: 'BAJA',
                 prioridad_id: 2,
                 sugerencia:
@@ -137,8 +141,11 @@ export class GestionarSugerenciasComponent implements OnInit {
      * Mostrar modal para agregar nueva sugerencia
      */
     agregarSugerencia() {
-        this.visible = true
         this.dialog_header = 'Registrar sugerencia'
+        this.disable_form = false
+        this.visible = true
+        this.resetearInputs()
+        this.disableForm(false)
     }
 
     /**
@@ -177,14 +184,6 @@ export class GestionarSugerenciasComponent implements OnInit {
      * @param item sugerencia a eliminar
      */
     eliminarSugerencia(item: any) {
-        if (item.estado_id !== 1) {
-            this._MessageService.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: 'No se puede eliminar sugerencia ya recibida',
-            })
-            return
-        }
         this._confirmService.openConfirm({
             header: 'Eliminar sugerencia',
             icon: 'pi pi-exclamation-triangle',
@@ -225,7 +224,21 @@ export class GestionarSugerenciasComponent implements OnInit {
      */
     editarSugerencia(item: any) {
         this.dialog_header = 'Editar sugerencia'
+        this.disable_form = false
         this.setFormSugerencia(item)
+        this.visible = true
+    }
+
+    /**
+     * Mostrar modal para ver sugerencia
+     * @param item sugerencia seleccionada en tabla
+     */
+    mostrarSugerencia(item: any) {
+        this.dialog_header = 'Ver sugerencia'
+        this.disable_form = true
+        this.setFormSugerencia(item)
+        this.visible = true
+        this.disableForm(true)
     }
 
     /**
@@ -273,6 +286,24 @@ export class GestionarSugerenciasComponent implements OnInit {
     }
 
     /**
+     * Deshabilitar inputs de formulario
+     * @param disable booleano para deshabilitar o habilitar
+     */
+    disableForm(disable: boolean) {
+        if (disable) {
+            this.form.get('cAsunto')?.disable()
+            this.form.get('cSugerencia')?.enable()
+            this.form.get('iDestinoId')?.disable()
+            this.form.get('iPrioridadId')?.disable()
+        } else {
+            this.form.get('cAsunto')?.enable()
+            this.form.get('cSugerencia')?.enable()
+            this.form.get('iDestinoId')?.enable()
+            this.form.get('iPrioridadId')?.enable()
+        }
+    }
+
+    /**
      * Rellenar formulario con datos de sugerencia
      * @param item sugerencia seleccionada en tabla
      */
@@ -297,6 +328,9 @@ export class GestionarSugerenciasComponent implements OnInit {
         if (accion === 'editar') {
             this.editarSugerencia(item)
         }
+        if (accion === 'ver') {
+            this.mostrarSugerencia(item)
+        }
         if (accion === 'seguimiento') {
             this.router.navigate([
                 '/gestion-institucional/seguimiento-sugerencia',
@@ -315,18 +349,11 @@ export class GestionarSugerenciasComponent implements OnInit {
      */
     actions: IActionTable[] = [
         {
-            labelTooltip: 'Editar sugerencia',
-            icon: 'pi pi-pencil',
-            accion: 'editar',
+            labelTooltip: 'Ver sugerencia',
+            icon: 'pi pi-eye',
+            accion: 'ver',
             type: 'item',
             class: 'p-button-rounded p-button-primary p-button-text',
-        },
-        {
-            labelTooltip: 'Dar seguimiento',
-            icon: 'pi pi-search',
-            accion: 'seguimiento',
-            type: 'item',
-            class: 'p-button-rounded p-button-secondary p-button-text',
         },
         {
             labelTooltip: 'Anular sugerencia',
@@ -334,6 +361,16 @@ export class GestionarSugerenciasComponent implements OnInit {
             accion: 'anular',
             type: 'item',
             class: 'p-button-rounded p-button-warning p-button-text',
+            isVisible: (row) => {
+                return row.estado_id === 1 && 2 == this.perfil.iCredId
+            },
+        },
+        {
+            labelTooltip: 'Seguimiento',
+            icon: 'pi pi-search',
+            accion: 'seguimiento',
+            type: 'item',
+            class: 'p-button-rounded p-button-secondary p-button-text',
         },
     ]
 
@@ -369,10 +406,16 @@ export class GestionarSugerenciasComponent implements OnInit {
             text: 'left',
         },
         {
-            type: 'text',
+            type: 'tag',
             width: '5rem',
             field: 'estado',
             header: 'Estado',
+            styles: {
+                PENDIENTE: 'danger', // REGISTRADO/PENDIENTE
+                RECIBIDO: 'success', // RECIBIDO
+                DERIVADO: 'secondary', // DERIVADO
+                ATENDIDO: 'info', // ATENDIDO
+            },
             text_header: 'center',
             text: 'center',
         },
@@ -390,7 +433,7 @@ export class GestionarSugerenciasComponent implements OnInit {
             field: 'actions',
             header: 'Acciones',
             text_header: 'center',
-            text: 'center',
+            text: 'right',
         },
     ]
 }

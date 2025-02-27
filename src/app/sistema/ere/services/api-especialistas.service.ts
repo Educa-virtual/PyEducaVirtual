@@ -78,7 +78,7 @@ export class ApiEspecialistasService {
     }
 
     eliminarAreaEspecialista(iDocenteId: string, data: any): Observable<any> {
-        const url = `${this.urlBackendApi}/acad/especialistas-dremo/${iDocenteId}/areas`
+        const url = `${this.urlBackendApi}/acad/ugeles/${iDocenteId}/areas`
 
         return this.http.delete<void>(url, { body: data })
     }
@@ -124,10 +124,11 @@ export class ApiEspecialistasService {
     }
 
     eliminarAreaEspecialistaUgel(
+        iUgelId: string,
         iDocenteId: string,
-        data: any
+        data
     ): Observable<any> {
-        const url = `${this.urlBackendApi}/acad/especialistas-dremo/${iDocenteId}/areas`
+        const url = `${this.urlBackendApi}/acad/ugeles/${iUgelId}/especialistas/${iDocenteId}/areas`
 
         return this.http.delete<void>(url, { body: data })
     }

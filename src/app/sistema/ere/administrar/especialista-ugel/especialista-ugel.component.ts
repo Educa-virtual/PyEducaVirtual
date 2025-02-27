@@ -91,6 +91,81 @@ export class EspecialistaUgelComponent implements OnInit {
         }, {}) // El objeto vacío es el valor inicial
     }
 
+    checkedCurso(item) {
+        if (!this.iDocenteId) {
+            this.mostrarMensaje(
+                'error',
+                'Error',
+                'No ha seleccionado un docente'
+            )
+            return
+        }
+        if (item.isSelected) {
+            this.insertarCursos(item)
+        } else {
+            this.eliminarCursos(item)
+        }
+    }
+
+    insertarCursos(curso) {
+        const data = {
+            iCursosNivelGradId: curso.iCursosNivelGradId,
+        }
+        this._ApiEspecialistasService
+            .asignarAreaEspecialistaUgel(this.iUgelId, this.iDocenteId, data)
+            .subscribe({
+                next: (respuesta) => {
+                    this.mostrarMensaje(
+                        'success',
+                        'Guardado!',
+                        respuesta.message
+                    )
+                    this.iAreasConAsignar++
+                    this.iAreasSinAsignar--
+                },
+                error: (error) => {
+                    console.error('Error obteniendo datos', error)
+                },
+            })
+    }
+
+    mostrarMensaje(severity, title, detail) {
+        this._MessageService.add({
+            severity: severity,
+            summary: title,
+            detail: detail,
+        })
+    }
+
+    // Ugel
+
+    obtenerEspecialistasUgel() {
+        //listo
+        this._ApiEspecialistasService.obtenerEspecialistasUgel().subscribe({
+            next: (respuesta) => {
+                this.especialistas = respuesta
+            },
+            error: (error) => {
+                console.error('Error obteniendo datos', error)
+            },
+        })
+    }
+
+    obtenerUgeles() {
+        //listo
+        console.log('llamada a funcion')
+        this._ApiEspecialistasService.obtenerUgeles().subscribe({
+            next: (respuesta) => {
+                this.ugeles = respuesta
+                console.log(this.ugeles)
+            },
+            error: (error) => {
+                console.error('Error obtenido'), error
+            },
+        })
+    }
+
+    // Obtener Curso Niveles Grados 9:40 AM
     obteneriCursosNivelGradIdxiDocenteId() {
         if (!this.iDocenteId) {
             return
@@ -133,101 +208,6 @@ export class EspecialistaUgelComponent implements OnInit {
                     console.error('Error obteniendo datos', error)
                 },
             })
-    }
-
-    checkedCurso(item) {
-        if (!this.iDocenteId) {
-            this.mostrarMensaje(
-                'error',
-                'Error',
-                'No ha seleccionado un docente'
-            )
-            return
-        }
-        if (item.isSelected) {
-            this.insertarCursos(item)
-        } else {
-            this.eliminarCursos(item)
-        }
-    }
-
-    insertarCursos(curso) {
-        const data = {
-            iCursosNivelGradId: curso.iCursosNivelGradId,
-        }
-        this._ApiEspecialistasService
-            .asignarAreaEspecialistaUgel(this.iUgelId, this.iDocenteId, data)
-            .subscribe({
-                next: (respuesta) => {
-                    this.mostrarMensaje(
-                        'success',
-                        'Guardado!',
-                        respuesta.message
-                    )
-                    this.iAreasConAsignar++
-                    this.iAreasSinAsignar--
-                },
-                error: (error) => {
-                    console.error('Error obteniendo datos', error)
-                },
-            })
-    }
-    eliminarCursos(curso) {
-        const data = {
-            iCursosNivelGradId: curso.iCursosNivelGradId,
-        }
-        this._ApiEspecialistasService
-            .eliminarAreaEspecialista(this.iDocenteId, data)
-            .subscribe({
-                next: (respuesta) => {
-                    this.mostrarMensaje(
-                        'success',
-                        'Eliminado!',
-                        respuesta.message
-                    )
-                    this.iAreasConAsignar--
-                    this.iAreasSinAsignar++
-                },
-                error: (err) => {
-                    console.error('Error al eliminar el área', err)
-                },
-            })
-    }
-
-    mostrarMensaje(severity, title, detail) {
-        this._MessageService.add({
-            severity: severity,
-            summary: title,
-            detail: detail,
-        })
-    }
-
-    // Ugel
-
-    obtenerEspecialistasUgel() {
-        //listo
-        this._ApiEspecialistasService.obtenerEspecialistasUgel().subscribe({
-            next: (respuesta) => {
-                this.especialistas = respuesta
-            },
-            error: (error) => {
-                console.error('Error obteniendo datos', error)
-            },
-        })
-    }
-
-    obtenerUgeles() {
-        //listo
-        console.log('llamada a funcion')
-        this._ApiEspecialistasService.obtenerUgeles().subscribe({
-            next: (respuesta) => {
-                this.ugeles = respuesta
-                console.log(this.ugeles)
-            },
-            error: (error) => {
-                console.error('Error obtenido'), error
-            },
-        })
     }
 
     obtenerAreasPorEspecialistaUgel() {
@@ -275,6 +255,28 @@ export class EspecialistaUgelComponent implements OnInit {
                 },
                 error: (error) => {
                     console.error('Error obteniendo áreas UGEL', error)
+                },
+            })
+    }
+
+    eliminarCursos(curso) {
+        const data = {
+            iCursosNivelGradId: curso.iCursosNivelGradId,
+        }
+        this._ApiEspecialistasService
+            .eliminarAreaEspecialistaUgel(this.iUgelId, this.iDocenteId, data)
+            .subscribe({
+                next: (respuesta) => {
+                    this.mostrarMensaje(
+                        'success',
+                        'Eliminado!',
+                        respuesta.message
+                    )
+                    this.iAreasConAsignar--
+                    this.iAreasSinAsignar++
+                },
+                error: (err) => {
+                    console.error('Error al eliminar el área', err)
                 },
             })
     }

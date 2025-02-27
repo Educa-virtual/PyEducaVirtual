@@ -238,6 +238,7 @@ export class RepresentanteComponent implements OnInit {
     }
 
     getProvincias(iDptoId: number) {
+        if (!iDptoId) return null
         this.datosEstudianteService.getProvincias(iDptoId).subscribe({
             next: (data) => {
                 this.provincias = data
@@ -246,6 +247,7 @@ export class RepresentanteComponent implements OnInit {
     }
 
     getDistritos(iPrvnId: number) {
+        if (!iPrvnId) return null
         this.datosEstudianteService.getDistritos(iPrvnId).subscribe({
             next: (data) => {
                 this.distritos = data
@@ -268,9 +270,11 @@ export class RepresentanteComponent implements OnInit {
                     this.compartirMatriculaService.setiEstudianteId(
                         this.form.get('iEstudianteId')?.value
                     )
-                    this.router.navigate([
-                        '/gestion-institucional/matricula-individual',
-                    ])
+                    setTimeout(() => {
+                        this.router.navigate([
+                            '/gestion-institucional/matricula-individual',
+                        ])
+                    }, 1000)
                 },
                 error: (error) => {
                     console.error('Error guardando apoderado:', error)

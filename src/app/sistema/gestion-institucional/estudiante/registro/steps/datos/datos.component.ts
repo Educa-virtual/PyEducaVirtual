@@ -254,7 +254,6 @@ export class DatosComponent implements OnInit {
         this.form.get('cPersMaterno')?.setValue(item?.cPersMaterno)
         this.form.get('cPersSexo')?.setValue(item?.cPersSexo)
         this.form.get('iTipoEstCivId')?.setValue(item?.iTipoEstCivId)
-        console.log(item?.iNacionId)
         this.form.get('iNacionId')?.setValue(item?.iNacionId)
         this.form
             .get('cEstPartidaNacimiento')
@@ -279,11 +278,6 @@ export class DatosComponent implements OnInit {
             .subscribe({
                 next: (data: any) => {
                     this.estudiante_registrado = true
-                    this._MessageService.add({
-                        severity: 'success',
-                        summary: 'Éxito',
-                        detail: 'Estudiante registrado',
-                    })
                     console.log(data, 'agregar estudiante')
                     this.compartirEstudianteService.setiEstudianteId(
                         data.data[0].iEstudianteId
@@ -303,6 +297,11 @@ export class DatosComponent implements OnInit {
                     this.router.navigate([
                         '/gestion-institucional/estudiante/registro/representante',
                     ])
+                    this._MessageService.add({
+                        severity: 'success',
+                        summary: 'Éxito',
+                        detail: 'Estudiante registrado',
+                    })
                 },
                 error: (error) => {
                     console.error('Error guardando estudiante:', error)
@@ -341,9 +340,11 @@ export class DatosComponent implements OnInit {
                     this.compartirEstudianteService.setcEstApenom(
                         data.data[0]._cPersApenom
                     )
-                    this.router.navigate([
-                        '/gestion-institucional/estudiante/registro/representante',
-                    ])
+                    setTimeout(() => {
+                        this.router.navigate([
+                            '/gestion-institucional/estudiante/registro/representante',
+                        ])
+                    }, 1000)
                 },
                 error: (error) => {
                     console.error('Error actualizando estudiante:', error)

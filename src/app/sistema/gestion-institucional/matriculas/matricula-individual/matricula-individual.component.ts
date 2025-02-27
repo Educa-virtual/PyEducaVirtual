@@ -359,9 +359,16 @@ export class MatriculaIndividualComponent implements OnInit {
             .subscribe({
                 next: (data: any) => {
                     console.log(data, 'guardar matricula')
-                    this.router.navigate([
-                        '/gestion-institucional/gestion-matriculas',
-                    ])
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Éxito',
+                        detail: 'Matrícula registrada',
+                    })
+                    setTimeout(() => {
+                        this.router.navigate([
+                            '/gestion-institucional/gestion-matriculas',
+                        ])
+                    }, 1000)
                 },
                 error: (error) => {
                     console.error('Error guardando matricula:', error)

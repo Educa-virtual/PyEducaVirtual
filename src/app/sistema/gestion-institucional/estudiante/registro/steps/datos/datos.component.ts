@@ -2,6 +2,7 @@ import { PrimengModule } from '@/app/primeng.module'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 import { CompartirEstudianteService } from '@/app/sistema/gestion-institucional/services/compartir-estudiante.service'
+import { CompartirMatriculaService } from '@/app/sistema/gestion-institucional/services/compartir-matricula.service'
 import { DatosEstudianteService } from '@/app/sistema/gestion-institucional/services/datos-estudiante-service'
 import { Component, inject, OnInit } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
@@ -35,6 +36,7 @@ export class DatosComponent implements OnInit {
     constructor(
         private datosEstudianteService: DatosEstudianteService,
         private compartirEstudianteService: CompartirEstudianteService,
+        private compartirMatriculaService: CompartirMatriculaService,
         private constantesService: ConstantesService,
         private fb: FormBuilder,
         private messageService: MessageService,
@@ -147,6 +149,18 @@ export class DatosComponent implements OnInit {
             .subscribe({
                 next: (data: any) => {
                     const item = data.data[0]
+
+                    this.compartirEstudianteService.setiPersId(item.iPersId)
+                    this.compartirEstudianteService.setiPersApoderadoId(
+                        item.iPersApoderadoId
+                    )
+                    this.compartirEstudianteService.setcEstCodigo(
+                        item.cEstCodigo
+                    )
+                    this.compartirEstudianteService.setcEstApenom(
+                        item._cEstApenom
+                    )
+
                     this.form.get('iEstudianteId')?.setValue(item.iEstudianteId)
                     this.form.get('iPersId')?.setValue(item.iPersId)
                     this.form.get('cEstCodigo')?.setValue(item.cEstCodigo)
@@ -199,6 +213,11 @@ export class DatosComponent implements OnInit {
             .subscribe({
                 next: (data: any) => {
                     this.estudiante_registrado = true
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Éxito',
+                        detail: 'Estudiante registrado',
+                    })
                     console.log(data, 'agregar estudiante')
                     this.compartirEstudianteService.setiEstudianteId(
                         data.data[0].iEstudianteId
@@ -210,7 +229,10 @@ export class DatosComponent implements OnInit {
                         data.data[0].cEstCodigo
                     )
                     this.compartirEstudianteService.setcEstApenom(
-                        data.data[0].cEstApenom
+                        data.data[0]._cEstApenom
+                    )
+                    this.compartirMatriculaService.setiEstudianteId(
+                        data.data[0].iEstudianteId
                     )
                     this.router.navigate([
                         '/gestion-institucional/estudiante/registro/representante',
@@ -236,6 +258,11 @@ export class DatosComponent implements OnInit {
             .subscribe({
                 next: (data: any) => {
                     console.log(data, 'actualizar estudiante')
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Éxito',
+                        detail: 'Estudiante actualizado',
+                    })
                     this.compartirEstudianteService.setiEstudianteId(
                         data.data[0].iEstudianteId
                     )

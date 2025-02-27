@@ -88,6 +88,9 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     @Input() showCaption: boolean = true
     @Input() caption: string | undefined | null
     @Input() showPaginator: boolean = true
+    @Input() sortMode: 'single' | 'multiple' | null = 'multiple'
+    @Input() sortField: string | undefined | null = null
+    @Input() sortOrder: number | undefined | null = null
 
     @Input() selectedRowData
     @Input() scrollable: boolean = false

@@ -99,6 +99,10 @@ export class InputFileUploadComponent {
     }
 
     triggerFileInput() {
+        this.selectFile = null
+        this.fileInput.nativeElement.value = ''
+        this.fileView.nativeElement.value = ''
+        this.fileBlob = null
         this.fileInput.nativeElement.click()
     }
 }

@@ -17,3 +17,12 @@
     background-color: #ffffff !important;
     border: 0px;
 }
+
+:host ::ng-deep {
+    .p-panel-header {
+        background: var(--bg-header-modal) !important;
+    }
+    .p-panel .p-panel-header .p-panel-header-icon {
+        color: white;
+    }
+}

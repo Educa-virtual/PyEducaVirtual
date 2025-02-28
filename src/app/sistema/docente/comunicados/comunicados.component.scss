@@ -40,10 +40,10 @@
     margin: 0 !important;
 }
 
-// :host ::ng-deep .p-panel-content {
-//     padding: 0 !important;
-//     margin: 0 !important;
-// }
+:host ::ng-deep .p-panel-content {
+    padding: 1 !important;
+    margin: 0 !important;
+}
 
 // nuevos
 :host ::ng-deep .custom-panel .p-panel-header {

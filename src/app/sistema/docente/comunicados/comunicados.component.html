@@ -69,7 +69,7 @@
                     </h4>
                 </ng-template>
                 <!-- Contenedor de comunicados dinámicos -->
-                <div class="p-0 m-0 flex flex-column gap-0 mt-2">
+                <div class="p-0 m-0 flex flex-column gap-3 mt-2">
                     <!-- Recorre el array con *ngFor -->
                     <p-panel
                         *ngFor="let comunicado of comunicados"
@@ -132,35 +132,35 @@
                         </ng-template>
 
                         <!-- Contenido que se ve al expandir el panel -->
-                        <div class="grid p-4">
+                        <div class="grid p-1">
                             <div class="col-12 md:col-6">
                                 <div class="grid pb-3">
                                     <div
-                                        class="col-6 bg-header-style font-bold"
+                                        class="col-3 bg-header-style font-bold"
                                     >
                                         Estado:
                                     </div>
-                                    <div class="col-6">
+                                    <div class="col-9">
                                         {{ comunicado.estado }}
                                     </div>
                                 </div>
                                 <div class="grid pb-3">
                                     <div
-                                        class="col-6 bg-header-style font-bold"
+                                        class="col-4 bg-header-style font-bold"
                                     >
                                         Publicado:
                                     </div>
-                                    <div class="col-6">
+                                    <div class="col-8">
                                         {{ comunicado.publicado }}
                                     </div>
                                 </div>
                                 <div class="grid">
                                     <div
-                                        class="col-6 bg-header-style font-bold"
+                                        class="col-4 bg-header-style font-bold"
                                     >
                                         Caduca:
                                     </div>
-                                    <div class="col-6">
+                                    <div class="col-8">
                                         {{ comunicado.caduca }}
                                     </div>
                                 </div>
@@ -169,32 +169,32 @@
                             <div class="col-12 md:col-6">
                                 <div class="grid pb-3">
                                     <div
-                                        class="col-6 bg-header-style font-bold"
+                                        class="col-3 bg-header-style font-bold"
                                     >
                                         Tipo:
                                     </div>
-                                    <div class="col-6">
+                                    <div class="col-9">
                                         {{ comunicado.tipo }}
                                     </div>
                                 </div>
                                 <div class="grid pb-3">
                                     <div
-                                        class="col-6 bg-header-style font-bold"
+                                        class="col-4 bg-header-style font-bold"
                                     >
                                         Prioridad:
                                     </div>
-                                    <div class="col-6">
+                                    <div class="col-8">
                                         {{ comunicado.prioridad }}
                                     </div>
                                 </div>
                                 <div class="grid">
                                     <div
-                                        class="col-6 flex h-full bg-header-style font-bold justify-center"
+                                        class="col-3 flex h-full bg-header-style font-bold justify-center"
                                     >
                                         Grupo:
                                     </div>
                                     <div
-                                        class="col-6 flex h-full justify-center"
+                                        class="col-9 flex h-full justify-center"
                                     >
                                         {{ comunicado.grupo }}
                                     </div>
@@ -255,47 +255,56 @@
                     <div class="grid">
                         <div class="flex flex-column col-12 md:col-6">
                             <label for="estado" class="mb-1">Estado</label>
-                            <input
-                                pInputText
+                            <p-dropdown
                                 id="estado"
                                 name="estado"
-                                placeholder="Seleccione Activo/Inactivo"
+                                [options]="estados"
                                 [(ngModel)]="selectedComunicado.estado"
-                            />
+                                placeholder="Seleccione Estado"
+                                optionLabel="label"
+                                optionValue="value"
+                            ></p-dropdown>
                         </div>
                         <div class="flex flex-column col-12 md:col-6">
                             <label for="prioridad" class="mb-1"
                                 >Prioridad</label
                             >
-                            <input
-                                pInputText
+                            <p-dropdown
                                 id="prioridad"
                                 name="prioridad"
-                                placeholder="Seleccione la Prioridad"
+                                [options]="prioridades"
                                 [(ngModel)]="selectedComunicado.prioridad"
-                            />
+                                placeholder="Seleccione Prioridad"
+                                optionLabel="label"
+                                optionValue="value"
+                            ></p-dropdown>
                         </div>
                     </div>
                     <div class="grid">
                         <div class="flex flex-column col-12 md:col-6">
                             <label for="tipo" class="mb-1">Tipo</label>
-                            <input
-                                pInputText
+                            <p-dropdown
                                 id="tipo"
                                 name="tipo"
-                                placeholder="Seleccione Tipo de anuncio"
+                                [options]="tipos"
                                 [(ngModel)]="selectedComunicado.tipo"
-                            />
+                                placeholder="Seleccione Tipo"
+                                optionLabel="label"
+                                optionValue="value"
+                            ></p-dropdown>
                         </div>
                         <div class="flex flex-column col-12 md:col-6">
                             <label for="grupo" class="mb-1">Grupo</label>
-                            <input
-                                pInputText
+                            <p-multiSelect
                                 id="grupo"
                                 name="grupo"
-                                placeholder="Seleccione Grupos a comunicar"
+                                [options]="grupos"
                                 [(ngModel)]="selectedComunicado.grupo"
-                            />
+                                placeholder="Seleccione Grupos"
+                                optionLabel="label"
+                                optionValue="value"
+                                [filter]="true"
+                            ></p-multiSelect>
                         </div>
                     </div>
                     <div class="grid">
@@ -303,23 +312,31 @@
                             <label for="publicado" class="mb-1"
                                 >Publicado</label
                             >
-                            <input
-                                pInputText
+                            <p-calendar
                                 id="publicado"
                                 name="publicado"
-                                placeholder="Seleccione Fecha de publicacion"
                                 [(ngModel)]="selectedComunicado.publicado"
-                            />
+                                dateFormat="dd/mm/yy"
+                                showIcon="true"
+                                (onSelect)="
+                                    selectedComunicado.publicado =
+                                        formatDate($event)
+                                "
+                            ></p-calendar>
                         </div>
                         <div class="flex flex-column col-12 md:col-6">
                             <label for="caduca" class="mb-1">Caduca</label>
-                            <input
-                                pInputText
+                            <p-calendar
                                 id="caduca"
                                 name="caduca"
-                                placeholder="Seleccione Fecha"
                                 [(ngModel)]="selectedComunicado.caduca"
-                            />
+                                dateFormat="dd/mm/yy"
+                                showIcon="true"
+                                (onSelect)="
+                                    selectedComunicado.caduca =
+                                        formatDate($event)
+                                "
+                            ></p-calendar>
                         </div>
                     </div>
                     <div class="flex flex-column">

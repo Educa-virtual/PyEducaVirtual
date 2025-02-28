@@ -32,7 +32,7 @@ export class ComunicadosComponent {
             publicado: '12/02/2025',
             prioridad: 'Urgente',
             caduca: '12/03/2025',
-            grupo: 'Apoderados y Estudiantes',
+            grupo: 'Apoderados,Estudiantes',
             texto: 'Estimados padres de familia y estudiantes las matriculas son hasta....',
             collapsed: true,
         },
@@ -44,7 +44,7 @@ export class ComunicadosComponent {
             publicado: '10/02/2025',
             prioridad: 'Normal',
             caduca: '10/03/2025',
-            grupo: 'Docentes y Estudiantes',
+            grupo: 'Docentes,Estudiantes',
             texto: 'Se informa a la comunidad educativa que las notas ponderadas son...',
             collapsed: true,
         },
@@ -60,6 +60,28 @@ export class ComunicadosComponent {
             texto: 'Se comunica a los docentes que el numero de horas lectiva son 40 por semana',
             collapsed: true,
         },
+    ]
+    estados = [
+        { label: 'Activo', value: 'Activo' },
+        { label: 'Inactivo', value: 'Inactivo' },
+    ]
+
+    prioridades = [
+        { label: 'Urgente', value: 'Urgente' },
+        { label: 'Normal', value: 'Normal' },
+        { label: 'Baja', value: 'Baja' },
+    ]
+
+    tipos = [
+        { label: 'Anuncio', value: 'Anuncio' },
+        { label: 'Aviso', value: 'Aviso' },
+        { label: 'Circular', value: 'Circular' },
+    ]
+
+    grupos = [
+        { label: 'Alumnos', value: 'Alumnos' },
+        { label: 'Docentes', value: 'Docentes' },
+        { label: 'Apoderados', value: 'Apoderados' },
     ]
 
     // Variable para el comunicado seleccionado (para editar)
@@ -122,5 +144,12 @@ export class ComunicadosComponent {
     deleteComunicado(id: number) {
         this.comunicados = this.comunicados.filter((com) => com.id !== id)
         console.log('Comunicado eliminado:', id)
+    }
+    formatDate(date: Date): string {
+        if (!date) return '' // Manejo de valores nulos
+        const day = date.getDate().toString().padStart(2, '0')
+        const month = (date.getMonth() + 1).toString().padStart(2, '0') // Los meses van de 0 a 11
+        const year = date.getFullYear()
+        return `${day}/${month}/${year}`
     }
 }

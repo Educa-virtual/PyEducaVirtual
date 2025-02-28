@@ -29,6 +29,7 @@ import {
     ESPECIALISTA_DREMO,
     ESPECIALISTA_UGEL,
 } from '@/app/servicios/seg/perfiles'
+import { FormLiberarAreasUgelComponent } from '../../../ere/components/areas/form-liberar-areas-ugel/form-liberar-areas-ugel.component'
 @Component({
     selector: 'app-evaluaciones',
     standalone: true,
@@ -36,6 +37,7 @@ import {
         TablePrimengComponent,
         PrimengModule,
         ContainerPageAccionbComponent,
+        FormLiberarAreasUgelComponent,
     ],
     providers: [DialogService],
     templateUrl: './evaluaciones.component.html',
@@ -66,6 +68,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
     iiEvaluacionId: number // El ID de evaluación que quieras usar
     nombreEvaluacion: string
     iPerfil: number
+    item = []
 
     private _dialogService = inject(DialogService)
     private _apiEre = inject(ApiEvaluacionesRService)
@@ -83,6 +86,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
     }
     public data = []
     public showModalCursosEre: boolean = false
+    public showModalLiberarUgel: boolean = false
     form: FormGroup
 
     private _formBuilder = inject(FormBuilder) //form para obtener la variable
@@ -542,7 +546,15 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
                 alert('En proceso de desarrollo')
                 break
             case 'liberarUgelEvaluacion':
-                alert('En proceso de desarrollo')
+                if (!(this.iPerfilId === ESPECIALISTA_UGEL)) {
+                    return
+                }
+                this.showModalLiberarUgel = true
+                this.item = item
+
+                break
+            case 'close-modal-liberar-ugel-evaluacion':
+                this.showModalLiberarUgel = false
                 break
         }
     }

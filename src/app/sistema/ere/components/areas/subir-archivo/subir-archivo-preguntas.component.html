@@ -6,11 +6,31 @@
         [style]="{ width: '40rem' }"
     >
         <br />
+
+        @if (curso !== undefined && curso.bTieneArchivo) {
+            <p-messages severity="info">
+                <ng-template pTemplate>
+                    <i class="pi pi-info-circle text-blue-500 text-xl mr-2"></i>
+                    <div class="ml-2">
+                        Ya existe un
+                        <strong
+                            ><a
+                                href="#"
+                                (click)="descargarArchivoEnSistema($event)"
+                                >archivo</a
+                            ></strong
+                        >
+                        subido para esta área. Subir otro reemplazará el actual.
+                    </div>
+                </ng-template>
+            </p-messages>
+        }
         <div class="flex align-items-center gap-3 mb-3">
             <app-input-file-upload
                 class="w-full"
                 label="Seleccionar archivo"
                 acceptTypes="application/pdf"
+                formControlName="archivo"
                 [canViewLocalFile]="false"
                 (change)="handleArchivo($event)"
             ></app-input-file-upload>
@@ -22,7 +42,16 @@
                 severity="secondary"
                 (onClick)="visible = false"
             />
-            <p-button label="Subir archivo" (onClick)="visible = false" />
+            @if (curso !== undefined && curso.bTieneArchivo) {
+                <p-button
+                    label="Reemplazar archivo"
+                    (onClick)="subirArchivo()"
+                />
+            } @else {
+                <p-button label="Subir archivo" (onClick)="subirArchivo()" />
+            }
         </div>
     </p-dialog>
 </form>
+
+<p-toast></p-toast>

@@ -793,8 +793,9 @@ const administracion = [
                             '/gestion-institucional/gestion-traslados',
                         ],
                     },
+
                     {
-                        label: 'Informe de vacantes',
+                        label: 'Registro de vacantes',
                         icon: 'pi pi-file-import',
                         routerLink: ['/gestion-institucional/gestion-vacantes'],
                     },

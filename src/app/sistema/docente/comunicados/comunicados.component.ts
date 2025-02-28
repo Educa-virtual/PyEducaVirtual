@@ -113,14 +113,14 @@ export class ComunicadosComponent {
         // Limpia el formulario o vuelve a modo "crear"
         this.selectedComunicado = this.initComunicado()
     }
-
-    toggleComunicado(comunicado: any) {
+    togglePanel(event: Event, panel: any, comunicado: Comunicado) {
+        // Alterna el estado local para cambiar el icono
         comunicado.collapsed = !comunicado.collapsed
-        this.comunicados = [...this.comunicados] // Forzar actualización de la vista
+        // Dispara la animación interna de PrimeNG con el evento correcto
+        panel.toggle(event)
     }
-
-    togglePanel(panel: any, comunicado: any) {
-        panel.toggle() // Usa el método interno de PrimeNG para aplicar la animación
-        comunicado.collapsed = !comunicado.collapsed
+    deleteComunicado(id: number) {
+        this.comunicados = this.comunicados.filter((com) => com.id !== id)
+        console.log('Comunicado eliminado:', id)
     }
 }

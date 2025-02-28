@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core'
-import { environment } from '@/environments/environment.template'
+import { environment } from '@/environments/environment'
 import { HttpClient } from '@angular/common/http'
 import { map, Observable, catchError, tap, throwError } from 'rxjs' //catchError, , tap, throwError
 import { mapData } from '../sub-evaluaciones/banco-preguntas/models/pregunta-data-transformer'

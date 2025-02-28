@@ -132,9 +132,8 @@ export class SilaboComponent implements OnInit, OnDestroy {
                 }
                 break
             case 1:
-                this.dataSilabo.controls.opcion.setValue(
-                    'CONSULTARxidDocCursoIdxiSemAcadIdxiYAcadId'
-                )
+                // CONSULTARxidDocCursoIdxiSemAcadIdxiYAcadId => 1
+                this.dataSilabo.controls.opcion.setValue('1')
                 this.dataSilabo.controls.idDocCursoId.setValue(
                     this.idDocCursoId
                 )
@@ -150,6 +149,7 @@ export class SilaboComponent implements OnInit, OnDestroy {
                         detail: 'Formulario no validado',
                     })
                 }
+
                 params = {
                     petition: 'post',
                     group: 'docente',

@@ -7,7 +7,7 @@ import { PrimengModule } from '@/app/primeng.module'
 import { GestionarPreguntasCardComponent } from '../../components/areas/gestionar-preguntas-card/gestionar-preguntas-card.component'
 
 import { ICurso } from '@/app/sistema/aula-virtual/sub-modulos/cursos/interfaces/curso.interface'
-import { environment } from '@/environments/environment.template'
+import { environment } from '@/environments/environment'
 import { ActivatedRoute } from '@angular/router'
 import { ApiEvaluacionesRService } from '@/app/sistema/evaluaciones/services/api-evaluaciones-r.service'
 import { MessagesModule } from 'primeng/messages'

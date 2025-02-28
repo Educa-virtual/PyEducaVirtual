@@ -74,6 +74,7 @@
                 <th
                     [pSortableColumn]="col.field"
                     [style.width]="col.width"
+                    [style.padding]="col.padding"
                     [pSortableColumnDisabled]="enableCellSelection"
                 >
                     @switch (col.type) {
@@ -91,6 +92,11 @@
                             <p-tableHeaderCheckbox />
                         }
                         @case ('expansion') {}
+                        @case ('item-checkbox') {
+                            <div [style.text-align]="col.text_header">
+                                {{ col.header }}
+                            </div>
+                        }
                         @default {
                             <div [style.text-align]="col.text_header" class="">
                                 <span> {{ col.header }}</span>
@@ -292,7 +298,7 @@
                     }
                     @if (col.type === 'estado-activo') {
                         <div [style.text-align]="col.text">
-                            @if (rowData[col.field] === '1') {
+                            @if (rowData[col.field].toString() === '1') {
                                 <i
                                     class="pi pi-check-circle"
                                     style="color: green"
@@ -383,6 +389,24 @@
                         } @else {
                             -
                         }
+                    }
+                    @if (col.type === 'item-checkbox') {
+                        <div [style.text-align]="col.text">
+                            <p-checkbox
+                                [inputId]="rowData[col.field]"
+                                [value]="rowData"
+                                [(ngModel)]="rowData[col.field]"
+                                [binary]="true"
+                                [trueValue]="1"
+                                [falseValue]="0"
+                                (onChange)="
+                                    accionBtn(
+                                        'setearDatax' + col.field,
+                                        rowData
+                                    )
+                                "
+                            />
+                        </div>
                     }
                 </td>
             }

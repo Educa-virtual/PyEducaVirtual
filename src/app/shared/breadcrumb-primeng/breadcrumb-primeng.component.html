@@ -1,10 +1,30 @@
-<!-- <ul class="breadcrumb">
-  <li class="breadcrumb-item" *ngFor="let item of breadcrumbList; let i = index"
-    [class.active]="i===breadcrumbList.length-1">
-    <a [routerLink]="item.path" *ngIf="i!==breadcrumbList.length-1">
-      {{ item.name }}
-    </a>
-    <span *ngIf="i===breadcrumbList.length-1">{{ item.name }}</span>
-  </li>
-fff
-</ul> -->
+<!-- @if (breadcrumbs.length) {
+    <div class="mb-1">
+        <p-breadcrumb class="max-w-full" [model]="breadcrumbs" [home]="home">
+            <ng-template pTemplate="item" let-item>
+                <ng-container *ngIf="item.route; else elseBlock">
+                    <a [routerLink]="item.route" class="p-breadcrumb-item-link">
+                        <i
+                            style="color: var(--primary-color)"
+                            [class]="item.icon"
+                        ></i>
+                        <span class="text-primary font-semibold ml-1">{{
+                            item.label
+                        }}</span>
+                    </a>
+                </ng-container>
+                <ng-template #elseBlock>
+                    <a [routerLink]="item.url">
+                        <span
+                            [ngClass]="[
+                                item.icon ? item.icon : '',
+                                'text-color',
+                            ]"
+                        ></span>
+                        <span class="text-color ml-1">{{ item.label }}</span>
+                    </a>
+                </ng-template>
+            </ng-template>
+        </p-breadcrumb>
+    </div>
+} -->

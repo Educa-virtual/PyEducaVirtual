@@ -1,74 +1,45 @@
-import { Router, RouterLink } from '@angular/router'
-import { Component, OnInit } from '@angular/core'
-import { CommonModule, NgFor } from '@angular/common'
-import { MenuService } from '@/app/layout/app.menu.service'
-import { ConstantesService } from '@/app/servicios/constantes.service'
+import { Component, OnInit, OnDestroy } from '@angular/core'
 
+import { RouterLink } from '@angular/router'
+import { CommonModule } from '@angular/common'
+import { Subscription } from 'rxjs'
+import { BreadcrumbService } from './breadcrumb-nav.service'
+import { PrimengModule } from '@/app/primeng.module'
+import { MenuItem } from 'primeng/api'
+
+export interface Breadcrumb {
+    label: string
+    link: string
+}
 @Component({
     selector: 'app-breadcrumb-primeng',
     standalone: true,
-    imports: [NgFor, CommonModule, RouterLink],
+    imports: [CommonModule, RouterLink, PrimengModule],
     templateUrl: './breadcrumb-primeng.component.html',
     styleUrl: './breadcrumb-primeng.component.scss',
 })
-export class BreadcrumbPrimengComponent implements OnInit {
-    name: string
-    menu: Array<any> = []
-    breadcrumbList: Array<any> = []
+export class BreadcrumbPrimengComponent implements OnInit, OnDestroy {
+    breadcrumbs: Array<{ label: string; url: string }> = []
+    private breadcrumbSubscription: Subscription
 
-    constructor(
-        private _router: Router,
-        private menuService: MenuService,
-        private ConstantesService: ConstantesService
-    ) {}
+    constructor(private breadcrumbService: BreadcrumbService) {}
+    home: MenuItem | undefined
+    items: MenuItem[] | undefined
 
-    ngOnInit() {
-        this.menu = this.ConstantesService.getMenu()
-        // this.listenRouting();
+    ngOnInit(): void {
+        // Nos suscribimos al observable de breadcrumbs
+        this.breadcrumbSubscription =
+            this.breadcrumbService.breadcrumbs$.subscribe((breadcrumbs) => {
+                this.breadcrumbs = breadcrumbs
+            })
+        //console.log(this.breadcrumbs)
+        // this.breadcrumbs.forEach((i)=>{console.log(i)})
     }
 
-    // listenRouting() {
-    //   let routerUrl: string, routerList: Array<any>, target: any;
-    //   this._router.events.subscribe((router: any) => {
-
-    //     routerUrl = router.urlAfterRedirects;
-
-    //     if (routerUrl && typeof routerUrl === 'string') {
-    //       target = this.menu;
-
-    //       target.filter((i) => {
-    //         i.items.filter((j) => {
-    //           this.breadcrumbList.push({
-    //             name: j.label,
-
-    //             path: i.routerLink
-    //           });
-    //         })
-    //       })
-
-    //       // this.breadcrumbList.length = 0;
-    //       // routerList = routerUrl.slice(1).split('/');
-    //       // console.log(routerList)
-    //       // routerList.forEach((router,index)=>{
-    //       //   console.log(router,index)
-    //       // })
-    //       // routerList.forEach((router, index) => {
-
-    //       //   target = target.find(page => page.path.slice(2) === router);
-
-    //       //   this.breadcrumbList.push({
-    //       //     name: target.name,
-
-    //       //     path: (index === 0) ? target.path : `${this.breadcrumbList[index-1].path}/${target.path.slice(2)}`
-    //       //   });
-
-    //       //   if (index+1 !== routerList.length) {
-    //       //     target = target.children;
-    //       //   }
-    //       // });
-
-    //       console.log(this.breadcrumbList);
-    //     }
-    //   });
-    // }
+    ngOnDestroy(): void {
+        // Asegúrate de desuscribirte para evitar fugas de memoria
+        if (this.breadcrumbSubscription) {
+            this.breadcrumbSubscription.unsubscribe()
+        }
+    }
 }

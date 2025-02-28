@@ -22,7 +22,8 @@
         "useDefineForClassFields": false,
         "lib": ["ES2022", "dom"],
         "paths": {
-            "@/*": ["./src/*"]
+            "@/*": ["./src/*"],
+            "@shared/*": ["src/app/shared/*"]
         },
         "allowSyntheticDefaultImports": true,
         "resolveJsonModule": true,

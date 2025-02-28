@@ -1,0 +1,32 @@
+::ng-deep .custom-dropdown .p-dropdown {
+    background-color: #1b5583 !important; /* Verde */
+    color: white !important;
+    border-radius: 8px;
+    color: white;
+}
+
+::ng-deep .custom-dropdown .p-dropdown .p-dropdown-label {
+    color: white !important; /* Hace el texto blanco */
+}
+
+::ng-deep .custom-dropdown .p-dropdown .p-dropdown-trigger {
+    color: white !important; /* Hace el icono del dropdown blanco */
+}
+
+:host ::ng-deep .p-menu .p-submenu-header {
+    display: none !important;
+}
+:host ::ng-deep .p-button:focus {
+    outline: 0 none;
+    outline-offset: 0px;
+    box-shadow: none;
+}
+
+:host ::ng-deep .p-button .p-button-label {
+    font-weight: normal !important;
+    color: black !important;
+}
+:host ::ng-deep .p-button .p-button-icon {
+    font-weight: normal !important;
+    color: black !important;
+}

@@ -1,0 +1,43 @@
+<p-panel styleClass="container-page">
+    <ng-template pTemplate="header" class="encabezado">
+        <div class="flex flex-column gap-2">
+            <h3 class="m-0 text-uppercase text-primary">
+                {{ title }}
+            </h3>
+        </div>
+    </ng-template>
+    <ng-template pTemplate="icons" class="flex flex-column flex-1">
+        <div class="flex flex-wrap gap-2 justify-content-end m-2">
+            <ng-content select="[icons]"></ng-content>
+            @if (showActions) {
+                <button
+                    size="small"
+                    [rounded]="true"
+                    pButton
+                    pRipple
+                    (click)="menu.toggle($event)"
+                    ngClass="p-button-primary"
+                >
+                    <i class="pi pi-plus"></i>
+                    &nbsp;{{ titleBtn }}
+                </button>
+            }
+        </div>
+    </ng-template>
+    <ng-content></ng-content>
+</p-panel>
+
+<p-menu #menu [model]="actions" [popup]="true">
+    <ng-template pTemplate="item" let-item>
+        <div class="text-note">
+            <p-button
+                [text]="true"
+                [label]="item.label"
+                [icon]="item.icon"
+                size="small"
+                (onClick)="accionBtn(item.accion)"
+            >
+            </p-button>
+        </div>
+    </ng-template>
+</p-menu>

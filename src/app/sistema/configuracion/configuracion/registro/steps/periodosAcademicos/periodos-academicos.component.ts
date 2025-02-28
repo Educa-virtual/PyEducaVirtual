@@ -20,6 +20,7 @@ import { CalendarModule } from 'primeng/calendar'
 import { InputGroupModule } from 'primeng/inputgroup'
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
 import { StepConfirmationService } from '@/app/servicios/confirm.service'
+import { ApiService } from '@/app/servicios/api.service'
 @Component({
     selector: 'app-periodos-academicos',
     standalone: true,
@@ -67,6 +68,7 @@ export class PeriodosAcademicosComponent implements OnInit {
     periodosInformation
     constructor(
         private httpService: httpService,
+        private apiService: ApiService,
         public ticketService: TicketService,
         private router: Router,
         private stepConfirmationService: StepConfirmationService,
@@ -165,6 +167,23 @@ export class PeriodosAcademicosComponent implements OnInit {
         }
     }
 
+    async assignedPeriodo() {
+        if (this.faseCurrent.cFasePromNombre == 'FASE REGULAR') {
+            await this.apiService.updateData({
+                esquema: 'acad',
+                tabla: 'calendario_academicos',
+                campos: {
+                    iPeriodoEvalId: this.periodoCurrent.iPeriodoEvalId,
+                },
+                where: {
+                    COLUMN_NAME: 'iCalAcadId',
+                    VALUE: this.ticketService.registroInformation.calendar
+                        .iCalAcadId,
+                },
+            })
+        }
+    }
+
     nextPage() {
         this.router.navigate(['configuracion/configuracion/registro/resumen'])
     }
@@ -195,6 +214,8 @@ export class PeriodosAcademicosComponent implements OnInit {
             this.faseCurrent,
             this.periodoCurrent
         )
+
+        await this.assignedPeriodo()
 
         await this.ticketService.setCalendar()
 

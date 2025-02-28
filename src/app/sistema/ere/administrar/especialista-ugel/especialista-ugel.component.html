@@ -1,6 +1,6 @@
 <app-container-page [title]="titulo" [actions]="[]">
     <div class="grid">
-        <div class="col-12 md:col-7">
+        <div class="col-12">
             <p-inputGroup>
                 <p-inputGroupAddon>Especialista</p-inputGroupAddon>
                 <p-dropdown
@@ -13,6 +13,7 @@
                     filterBy="cPersDocumento"
                     (onChange)="obteneriCursosNivelGradIdxiDocenteId()"
                     [(ngModel)]="iDocenteId"
+                    (onClear)="formatearData()"
                 >
                     <ng-template pTemplate="item" let-item>
                         {{ item.cPersDocumento }} - {{ item.cPersNombre }}
@@ -42,28 +43,23 @@
                     filterBy="nombre"
                     [(ngModel)]="iUgelId"
                     (onChange)="obtenerAreasPorEspecialistaUgel()"
+                    (onClear)="formatearData()"
                 >
                 </p-dropdown>
             </p-inputGroup>
         </div>
 
-        <div class="col-12 md:col-5">
-            <p-inputGroup>
-                <p-button label="Áreas asignadas" severity="success" />
-                <input
-                    pInputText
-                    placeholder="Keyword"
-                    [value]="iAreasConAsignar"
-                    disabled
+        <div class="col-12 md:col-6">
+            <div class="flex justify-content-between flex-wrap">
+                <p-button
+                    [label]="'Áreas asignadas: ' + iAreasConAsignar"
+                    severity="success"
                 />
-                <p-button label="Áreas sin asignar" severity="info" />
-                <input
-                    pInputText
-                    placeholder="Keyword"
-                    [value]="iAreasSinAsignar"
-                    disabled
+                <p-button
+                    [label]="'Áreas sin asignar: ' + iAreasSinAsignar"
+                    severity="info"
                 />
-            </p-inputGroup>
+            </div>
         </div>
         <div class="col-12">
             <p-accordion

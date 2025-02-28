@@ -280,4 +280,17 @@ export class EspecialistaUgelComponent implements OnInit {
             detail: detail,
         })
     }
+
+    formatearData() {
+        this.nivelPrimaria.forEach((nivelSinAsignar) => {
+            nivelSinAsignar.isSelected = false
+        })
+
+        this.nivelSecundaria.forEach((nivelSinAsignar) => {
+            nivelSinAsignar.isSelected = false
+        })
+
+        this.iAreasConAsignar = 0
+        this.iAreasSinAsignar = 0
+    }
 }

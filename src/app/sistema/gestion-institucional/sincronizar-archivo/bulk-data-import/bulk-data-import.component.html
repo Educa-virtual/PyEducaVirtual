@@ -38,7 +38,6 @@
                 <span>Archivo de origen:</span>
                 <app-btn-file-upload
                     accept=".xlsx"
-                    formControlName="file"
                     (fileChange)="loadCollectionTemplate($event)"
                 />
             </div>
@@ -62,7 +61,7 @@
                     <app-table-primeng
                         [columnas]="columns"
                         [data]="unverified_data"
-                        [showCaption]="false"
+                        [showCaption]="true"
                         [showSortIcon]="false"
                     ></app-table-primeng>
                 } @else {
@@ -74,10 +73,10 @@
         </app-tab-panel>
         <app-tab-panel title="Registrados">
             <div class="card">
-                @if (verified_data) {
+                @if (verified_data_recorded) {
                     <app-table-primeng
                         [columnas]="columns"
-                        [data]="verified_data"
+                        [data]="verified_data_recorded"
                         [showCaption]="false"
                         [showSortIcon]="false"
                     ></app-table-primeng>
@@ -90,10 +89,11 @@
         </app-tab-panel>
         <app-tab-panel title="No registrados">
             <div class="card">
-                @if (verified_data) {
+                @if (verified_data_not_recorded) {
                     <app-table-primeng
-                        [columnas]="columns"
-                        [data]="verified_data"
+                        [columnas]="verified_columns_not_recorded"
+                        [actions]="verified_actions_not_recorded"
+                        [data]="verified_data_not_recorded"
                         [showCaption]="false"
                         [showSortIcon]="false"
                     ></app-table-primeng>
@@ -106,10 +106,10 @@
         </app-tab-panel>
         <app-tab-panel title="Revisar errores">
             <div class="card">
-                @if (verified_data) {
+                @if (data_verified_with_errors) {
                     <app-table-primeng
                         [columnas]="columns"
-                        [data]="verified_data"
+                        [data]="data_verified_with_errors"
                         [showCaption]="false"
                         [showSortIcon]="false"
                     ></app-table-primeng>

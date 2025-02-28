@@ -2,7 +2,6 @@ import { Component } from '@angular/core'
 import { DropdownModule } from 'primeng/dropdown'
 import {
     FormBuilder,
-    FormControl,
     FormGroup,
     FormsModule,
     ReactiveFormsModule,
@@ -23,6 +22,7 @@ import * as XLSX from 'xlsx'
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import { ToastModule } from 'primeng/toast'
 import { MessageService } from 'primeng/api'
+import { check, decline } from './actions-table-primeng'
 
 @Component({
     selector: 'app-bulk-data-import',
@@ -57,9 +57,13 @@ export class BulkDataImportComponent {
     disabled
 
     columns: IColumn[]
-    unverified_data
-    verified_data
+    verified_columns_not_recorded
+    verified_actions_not_recorded = [check, decline]
 
+    unverified_data
+    verified_data_recorded
+    verified_data_not_recorded
+    data_verified_with_errors
     importLoad: boolean = false
 
     constructor(
@@ -70,10 +74,6 @@ export class BulkDataImportComponent {
     ) {
         this.typeCollectionForm = this.fb.group({
             typeCollection: [''],
-        })
-
-        this.fileUploadForm = this.fb.group({
-            file: new FormControl(''),
         })
     }
 
@@ -148,15 +148,46 @@ export class BulkDataImportComponent {
     }
 
     validaImportData() {
-        console.log(this.fileUploadForm.value)
+        if (!this.unverified_data) {
+            this.messageService.clear()
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'No ha cargando información.',
+            })
+            return
+        }
 
         this.bulkDataImport
             .validateCollectionData(this.unverified_data)
             .subscribe({
                 next: (response) => {
-                    this.verified_data = response.data
+                    this.verified_data_recorded = response.data
 
                     console.log('Respuesta del servidor:', response)
+
+                    this.verified_data_not_recorded = response.data.flatMap(
+                        (data) => JSON.parse(data.lista_no_d)
+                    )
+
+                    if (this.verified_data_not_recorded) {
+                        console.log(this.columns)
+
+                        this.verified_columns_not_recorded = [
+                            ...this.columns,
+                            {
+                                type: 'actions',
+                                width: '3rem',
+                                field: 'actions',
+                                header: 'Acciones',
+                                text_header: 'center',
+                                text: 'center',
+                            },
+                        ]
+                    }
+
+                    console.log('this.verified_data_not_recorded')
+                    console.log(this.verified_data_not_recorded)
                 },
                 error: (error) => {
                     console.error('Error en la solicitud:', error)

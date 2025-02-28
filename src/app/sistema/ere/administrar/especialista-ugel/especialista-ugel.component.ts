@@ -1,9 +1,9 @@
 import { Component, inject, OnInit } from '@angular/core'
 import { PrimengModule } from '@/app/primeng.module'
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
-import { ApiEspecialistasService } from '../../services/api-especialistas.service'
 import { forkJoin } from 'rxjs'
 import { MessageService } from 'primeng/api'
+import { ApiEspecialistasUgelService } from '../../services/api.especialistas-ugel.services'
 
 @Component({
     selector: 'app-especialista-ugel',
@@ -13,7 +13,7 @@ import { MessageService } from 'primeng/api'
     imports: [PrimengModule, ContainerPageComponent],
 })
 export class EspecialistaUgelComponent implements OnInit {
-    private _ApiEspecialistasService = inject(ApiEspecialistasService)
+    private _ApiEspecialistasService = inject(ApiEspecialistasUgelService)
     private _MessageService = inject(MessageService)
 
     objectKeys = Object.keys

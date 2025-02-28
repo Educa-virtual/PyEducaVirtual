@@ -203,7 +203,7 @@ export class IeparticipaComponent implements OnInit {
         // Actualiza los conteos (si es necesario)
         this.actualizarConteos()
     }
-
+    //
     IEnoparticipan(event: any) {
         if (this.accion === 'ver') {
             return
@@ -499,21 +499,6 @@ export class IeparticipaComponent implements OnInit {
         }
 
         // Aplicar los filtros
-        const filteredParticipan = this.targetProducts.filter((item) => {
-            const nivelTipoMatch =
-                this.selectedNivelTipo &&
-                this.selectedNivelTipo?.iNivelTipoId !== 0
-                    ? Number(item.iNivelTipoId) ===
-                      Number(this.selectedNivelTipo.iNivelTipoId)
-                    : true
-            const ugelMatch =
-                this.selectedUgeles && this.selectedUgeles?.iUgelId !== 0
-                    ? Number(item.iUgelId) ===
-                      Number(this.selectedUgeles.iUgelId)
-                    : true
-            return nivelTipoMatch && ugelMatch
-        })
-        console.log(filteredParticipan)
         const filteredNoParticipan = this.sourceProducts.filter((item) => {
             const nivelTipoMatch =
                 this.selectedNivelTipo &&
@@ -530,7 +515,7 @@ export class IeparticipaComponent implements OnInit {
         })
 
         // Actualizar los conteos
-        this.participanCount = filteredParticipan.length
+        this.participanCount = this.targetProducts.length
         this.noParticipanCount = filteredNoParticipan.length
     }
 

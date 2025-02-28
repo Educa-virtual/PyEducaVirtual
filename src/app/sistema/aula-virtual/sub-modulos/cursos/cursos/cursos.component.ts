@@ -19,6 +19,7 @@ import { AreasEstudiosComponent } from '../../../../docente/areas-estudios/areas
 import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { PrimengModule } from '@/app/primeng.module'
 import { DOCENTE, ESTUDIANTE } from '@/app/servicios/perfilesConstantes'
+import { SplitButtonModule } from 'primeng/splitbutton'
 
 export type Layout = 'list' | 'grid'
 @Component({
@@ -31,6 +32,7 @@ export type Layout = 'list' | 'grid'
         DataViewModule,
         TableModule,
         TablePrimengComponent,
+        SplitButtonModule,
         IconFieldModule,
         InputIconModule,
         InputTextModule,

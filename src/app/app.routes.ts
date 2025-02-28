@@ -35,6 +35,10 @@ export const routes: Routes = [
                 loadChildren: () =>
                     import('./sistema/evaluaciones/evaluaciones.routes'),
             },
+            {
+                path: 'ere',
+                loadChildren: () => import('./sistema/ere/ere.routes'),
+            },
             // Ruta de Especialista
             {
                 path: 'especialista-ugel',
@@ -93,6 +97,14 @@ export const routes: Routes = [
             import(
                 './sistema/gestion-institucional/horario/horario.module'
             ).then((m) => m.HorarioModule),
+    },
+    {
+        path: 'apoderado',
+
+        loadChildren: () =>
+            import('./sistema/apoderado/apoderado.module').then(
+                (m) => m.ApoderadoModule
+            ),
     },
 
     { path: 'notfound', component: NotfoundComponent },

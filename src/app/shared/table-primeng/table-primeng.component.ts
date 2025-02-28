@@ -34,6 +34,7 @@ export interface IColumn {
     type: TColumnType
 
     width: string
+    padding?: string
     field: string
     header: string
     text_header: string

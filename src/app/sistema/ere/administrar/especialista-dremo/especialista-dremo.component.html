@@ -25,6 +25,7 @@
                 </p-dropdown>
             </p-inputGroup>
         </div>
+
         <div class="col-12 md:col-5">
             <p-inputGroup>
                 <p-button label="Áreas asignadas" severity="success" />
@@ -32,12 +33,14 @@
                     pInputText
                     placeholder="Keyword"
                     [value]="iAreasConAsignar"
+                    disabled
                 />
                 <p-button label="Áreas sin asignar" severity="info" />
                 <input
                     pInputText
                     placeholder="Keyword"
                     [value]="iAreasSinAsignar"
+                    disabled
                 />
             </p-inputGroup>
         </div>

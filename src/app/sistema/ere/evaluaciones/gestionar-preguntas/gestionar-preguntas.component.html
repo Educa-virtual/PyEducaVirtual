@@ -58,4 +58,6 @@
         </p-dataView>
     }
 </app-container-page>
-<app-subir-archivo-preguntas></app-subir-archivo-preguntas>
+<app-subir-archivo-preguntas
+    (archivoSubidoEvent)="actualizarEstadoArchivoSubido($event)"
+></app-subir-archivo-preguntas>

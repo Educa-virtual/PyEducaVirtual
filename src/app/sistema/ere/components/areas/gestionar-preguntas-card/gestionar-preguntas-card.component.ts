@@ -34,14 +34,13 @@ export class GestionarPreguntasCardComponent implements OnInit {
     private _ConstantesService = inject(ConstantesService)
 
     @Input() iEvaluacionIdHashed: string = ''
-    backend = environment.backend
     @Input() curso: ICurso
+    backend = environment.backend
     selectedData = []
     acciones: MenuItem[] = []
     iPerfilId: number = this._ConstantesService.iPerfilId
     @Output() dialogSubirArchivoEvent = new EventEmitter<{
         curso: ICurso
-        iEvaluacionIdHashed: string
     }>()
 
     constructor(private store: LocalStoreService) {}
@@ -77,7 +76,6 @@ export class GestionarPreguntasCardComponent implements OnInit {
                 command: () => {
                     this.dialogSubirArchivoEvent.emit({
                         curso: this.curso,
-                        iEvaluacionIdHashed: this.iEvaluacionIdHashed,
                     })
                 },
                 disabled: this.iPerfilId !== ESPECIALISTA_DREMO,

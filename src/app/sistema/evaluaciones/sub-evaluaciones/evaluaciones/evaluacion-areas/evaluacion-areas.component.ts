@@ -208,18 +208,18 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
                                         ) || false
                                     curso.dtExamenFechaInicio = this.data.find(
                                         (i) =>
-                                            i.iCursoNivelGradId ===
+                                            i.iCursosNivelGradId ===
                                             curso.iCursoNivelGradId
                                     )?.dtExamenFechaInicio
                                     curso.dtExamenFechaFin = this.data.find(
                                         (i) =>
-                                            i.iCursoNivelGradId ===
+                                            i.iCursosNivelGradId ===
                                             curso.iCursoNivelGradId
                                     )?.dtExamenFechaFin
                                     curso.iExamenCantidadPreguntas =
                                         this.data.find(
                                             (i) =>
-                                                i.iCursoNivelGradId ===
+                                                i.iCursosNivelGradId ===
                                                 curso.iCursoNivelGradId
                                         )?.iExamenCantidadPreguntas
                                 })

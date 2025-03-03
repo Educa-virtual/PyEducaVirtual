@@ -1,5 +1,12 @@
 import { PrimengModule } from '@/app/primeng.module'
-import { Component, inject, OnInit, ViewChild } from '@angular/core'
+import {
+    Component,
+    EventEmitter,
+    inject,
+    OnInit,
+    Output,
+    ViewChild,
+} from '@angular/core'
 import { InputFileUploadComponent } from '../../../../../shared/input-file-upload/input-file-upload.component'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { ICurso } from '@/app/sistema/aula-virtual/sub-modulos/cursos/interfaces/curso.interface'
@@ -23,7 +30,7 @@ export class SubirArchivoPreguntasComponent implements OnInit {
     titulo: string = ''
     form: FormGroup
     curso: ICurso
-    iEvaluacionIdHashed: string = ''
+    @Output() archivoSubidoEvent = new EventEmitter<{ curso: ICurso }>()
 
     constructor(
         private fb: FormBuilder,
@@ -45,7 +52,7 @@ export class SubirArchivoPreguntasComponent implements OnInit {
         event.preventDefault()
         if (this.curso.bTieneArchivo) {
             const params = {
-                iEvaluacionId: this.iEvaluacionIdHashed,
+                iEvaluacionId: this.curso.iEvaluacionIdHashed,
                 iCursosNivelGradId: this.curso.iCursosNivelGradId,
             }
             this.evaluacionesService.descargarPreguntasPorArea(params)
@@ -54,12 +61,11 @@ export class SubirArchivoPreguntasComponent implements OnInit {
         }
     }
 
-    mostrarDialog(datos: { curso: ICurso; iEvaluacionIdHashed: string }) {
+    mostrarDialog(datos: { curso: ICurso }) {
         this.titulo = `Subir PDF: ${this.stringCasePipe.transform(datos.curso.cCursoNombre)} - ${datos.curso.cGradoAbreviacion.toString().substring(0, 1)}° Grado
         - ${datos.curso.cNivelTipoNombre.toString().replace('Educación ', '')}`
         this.visible = true
         this.curso = datos.curso
-        this.iEvaluacionIdHashed = datos.iEvaluacionIdHashed
         this.fileUploadComponent.clear()
     }
 
@@ -75,7 +81,7 @@ export class SubirArchivoPreguntasComponent implements OnInit {
         formData.append('archivo', this.form.controls['archivo'].value)
         this.evaluacionesService
             .subirArchivoEvaluacionArea(
-                this.iEvaluacionIdHashed,
+                this.curso.iEvaluacionIdHashed,
                 this.curso.iCursosNivelGradId,
                 formData
             )
@@ -83,6 +89,10 @@ export class SubirArchivoPreguntasComponent implements OnInit {
                 next: (data: any) => {
                     if (data.status.toLowerCase() == 'success') {
                         this.visible = false
+                        this.curso.bTieneArchivo == true
+                        this.archivoSubidoEvent.emit({
+                            curso: this.curso,
+                        })
                     }
                     this.messageService.add({
                         severity: data.status.toLowerCase(),
@@ -93,8 +103,8 @@ export class SubirArchivoPreguntasComponent implements OnInit {
                 },
                 error: (error) => {
                     this.messageService.add({
-                        severity: 'danger',
-                        summary: 'Mensaje',
+                        severity: 'error',
+                        summary: 'Error',
                         detail: error,
                         life: 5000,
                     })

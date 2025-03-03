@@ -110,16 +110,36 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     @ContentChild('rowExpansionTemplate', { static: false })
     rowExpansionTemplate: TemplateRef<unknown>
 
+    // buscador de palabras en el primeng
     @ViewChild('dt') dt!: Table
     searchTerm: string = ''
+
     buscarPalabras(event: string) {
+        //     this.searchTerm = event.trim().toLowerCase();
+
+        // if (this.dt) {
+        //     const columnasFiltrar = [this.columnas[1].field, this.columnas[2].field, this.columnas[3].field];
+
+        //     columnasFiltrar.forEach(col => {
+        //         this.dt.filter(this.searchTerm, col, 'contains');
+        //     });
+        // }
         this.searchTerm = event
 
         if (this.dt) {
             // solo va buscar en el indice(1)
+            // const filas = [this.columnas[1].field, this.columnas[2].field]
             this.dt.filter(this.searchTerm, this.columnas[1].field, 'contains')
         }
     }
+    // otra forma de buscar en la table pero general demora en buscar
+    // buscarPalabras(event: string) {
+    //     this.searchTerm = event;
+
+    //     if (this.dt) {
+    //       this.dt.filterGlobal(this.searchTerm, 'contains');
+    //     }
+    // }
 
     public isIIcon = isIIcon
 

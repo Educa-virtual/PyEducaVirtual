@@ -196,6 +196,22 @@ export class GeneralService {
         )
     }
 
+    updateCalAcademico(data: any) {
+        // coleccion de procedimiento para calendario academico y usuarios
+        return this.http.post(
+            `${baseUrl}/acad/calendarioAcademico/updateCalAcademico`,
+            data
+        )
+    }
+
+    deleteCalAcademico(data: any) {
+        // coleccion de procedimiento para calendario academico y usuarios
+        return this.http.post(
+            `${baseUrl}/acad/calendarioAcademico/deleteCalAcademico`,
+            data
+        )
+    }
+
     deleteAcademico(data: any) {
         return this.http.post(
             `${baseUrl}/acad/calendarioAcademico/deleteCalendario`,

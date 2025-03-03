@@ -1,26 +1,117 @@
 <div class="grid mt-2">
-    <div class="col-12 md:col-6">
-        <app-container-page
-            title="Accesos de usuario IE"
-            [actions]="[]"
-            (accionBtnItem)="accionBtnItemTable($event)"
-        >
+    <div class="col-12 md:col-8">
+        <ng-container *ngIf="selectedItems.length > 0; else sinSeleccion">
+            <app-container-page
+                title="Accesos de usuario IE"
+                [actions]="accionesPrincipal"
+                (accionBtnItem)="accionBtnItemTable($event)"
+            >
+                <div class="card">
+                    <app-table-primeng
+                        [columnas]="columns"
+                        [showCaption]="true"
+                        [data]="lista_accesos"
+                        (accionBtnItem)="accionBtnItemTable($event)"
+                        [showPaginator]="true"
+                        [(selectedRowData)]="selectedItems"
+                        [actions]="actionsUsuario"
+                        [ariaDisabled]="true"
+                    >
+                        <!-- <ng-container slot="caption-content"> </ng-container> -->
+                    </app-table-primeng>
+                </div>
+            </app-container-page>
+        </ng-container>
+        <ng-template #sinSeleccion>
             <div class="card">
-                <app-table-primeng
-                    [columnas]="columns"
-                    [showCaption]="true"
-                    [data]="lista_accesos"
+                <app-container-page
+                    title="Accesos de usuario IE"
+                    [actions]="[]"
                     (accionBtnItem)="accionBtnItemTable($event)"
-                    [showPaginator]="true"
-                    [(selectedRowData)]="selectedItems"
-                    [actions]="actions"
                 >
-                    <!-- <ng-container slot="caption-content"> </ng-container> -->
-                </app-table-primeng>
+                    <app-table-primeng
+                        [columnas]="columns"
+                        [showCaption]="true"
+                        [data]="lista_accesos"
+                        (accionBtnItem)="accionBtnItemTable($event)"
+                        [showPaginator]="true"
+                        [subactions]=""
+                        [(selectedRowData)]="selectedItems"
+                        [actions]="actionsUsuario"
+                        [ariaDisabled]="true"
+                    >
+                        <!-- <ng-container slot="caption-content"> </ng-container> -->
+                    </app-table-primeng>
+                </app-container-page>
             </div>
-        </app-container-page>
+        </ng-template>
     </div>
-    <div class="col-12 md:col-3"></div>
-    <div class="col-12 md:col-3"></div>
+    <div class="col-12 md:col-4">
+        <div
+            *ngIf="
+                usuario?.cPersDocumento || usuario?.nombre_completo;
+                else noData
+            "
+        >
+            <app-container-page
+                title="Perfil de usuario"
+                [actions]="accionesPerfil"
+                (accionBtnItem)="accionBtnItemTable($event)"
+            >
+                <p-panel header="Información del Usuario" class="p-mb-3">
+                    <div class="p-d-flex p-ai-center">
+                        <p-tag severity="info" class="p-mr-2">
+                            <span>{{
+                                usuario?.cPersDocumento || 'Sin Documento'
+                            }}</span>
+                        </p-tag>
+                        <p-tag severity="success">
+                            <span>{{
+                                usuario?.nombre_completo || 'Sin Nombre'
+                            }}</span>
+                        </p-tag>
+                    </div>
+                </p-panel>
+
+                <form [formGroup]="form_perfil">
+                    <div class="field col-12 md:col-12">
+                        <span class="p-float-label">
+                            <p-dropdown
+                                [style]="{ width: '100%' }"
+                                [options]="search_perfiles"
+                                [filter]="false"
+                                filterBy="cPerfilNombre"
+                                optionLabel="cPerfilNombre"
+                                optionValue="iPerfilId"
+                                formControlName="iPerfilId"
+                            />
+                            <label for="iGrado">Perfil</label>
+                        </span>
+                    </div>
+                </form>
+                @if (form_usuario.invalid) {
+                    <div class="card">
+                        <app-table-primeng
+                            [columnas]="columa_perfil"
+                            [showCaption]="false"
+                            [data]="perfil_usuario"
+                            (accionBtnItem)="accionBtnItemTable($event)"
+                            [showPaginator]="false"
+                            [(selectedRowData)]="selectedItems"
+                            [actions]="actionsPerfil"
+                        >
+                            <!-- <ng-container slot="caption-content"> </ng-container> -->
+                        </app-table-primeng>
+                    </div>
+                }
+            </app-container-page>
+        </div>
+        <ng-template #noData>
+            <p-message
+                severity="warn"
+                text="No hay datos del usuario"
+            ></p-message>
+        </ng-template>
+    </div>
 </div>
 <p-toast />

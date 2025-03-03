@@ -1,0 +1,29 @@
+::ng-deep .btn-ver {
+    background-color: #2f56a6 !important; /* Color azul */
+    border-color: #6c757d !important;
+    color: white !important;
+}
+
+::ng-deep .btn-agregar {
+    background-color: #28a745 !important;
+    border-color: #28a745 !important;
+    color: white !important;
+}
+
+::ng-deep .btn-eliminar {
+    background-color: #dc3545 !important;
+    border-color: #dc3545 !important;
+    color: white !important;
+}
+
+.boton-contenedor {
+    display: flex;
+    justify-content: flex-end;
+    padding: 10px;
+}
+
+::ng-deep .p-inputgroup-addon {
+    background-color: #2f56a6 !important; /* Color azul */
+    color: white !important; /* Color del ícono */
+    border-radius: 5px 0 0 5px !important; /* Bordes redondeados solo a la izquierda */
+}

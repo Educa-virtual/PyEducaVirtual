@@ -1,0 +1,54 @@
+<app-container-page [title]="titulo" [actions]="[]">
+    <p-tabView>
+        <p-tabPanel header="Crear">
+            <p>
+                Se creará una copia de seguridad completa dentro del servidor,
+                con las siguientes configuraciones:
+            </p>
+            <p>
+                <p-inputGroup class="w-1/2">
+                    <button
+                        type="button"
+                        pButton
+                        label="Carpeta de destino"
+                    ></button>
+                    <input
+                        type="text"
+                        pInputText
+                        value="D:\Programas\Microsoft SQL Server\MSSQL16.MSSQLSERVER\MSSQL\Backup"
+                    />
+                </p-inputGroup>
+            </p>
+            <p>
+                <p-inputGroup class="w-1/2">
+                    <button
+                        type="button"
+                        pButton
+                        label="Nombre del archivo"
+                    ></button>
+                    <input
+                        type="text"
+                        pInputText
+                        value="NombreBd_backup_yyyy_MM_dd_HHmmss.bak"
+                    />
+                </p-inputGroup>
+            </p>
+            <p>
+                <p-inputGroup class="w-1/2">
+                    <button
+                        type="button"
+                        pButton
+                        label="Tiempo de almacenamiento"
+                    ></button>
+                    <input type="text" pInputText value="30 días" />
+                </p-inputGroup>
+            </p>
+        </p-tabPanel>
+        <p-tabPanel header="Historial">
+            <p>
+                Sed ut perspiciatis unde omnis iste natus error sit voluptatem
+                accusantium...
+            </p>
+        </p-tabPanel>
+    </p-tabView>
+</app-container-page>

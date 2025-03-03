@@ -6,21 +6,9 @@
     (accionBtnItem)="accionBtnItem($event)"
     class="custom-container-page"
 >
-    <div class="mb-2 col-6" style="margin-left: -0.5rem">
-        <p-inputGroup>
-            <p-inputGroupAddon><i class="pi pi-search"></i></p-inputGroupAddon>
-            <input
-                type="text"
-                pInputText
-                placeholder="Buscar evaluación...."
-                [(ngModel)]="searchTerm"
-                (input)="filterData()"
-            />
-        </p-inputGroup>
-    </div>
     <app-table-primeng
         [columnas]="columnas"
-        [data]="filteredData"
+        [data]="data"
         (accionBtnItem)="accionBtnItemTable($event)"
         [(selectedRowData)]="selectedItems"
         [actions]="accionesTabla"

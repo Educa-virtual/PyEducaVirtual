@@ -17,8 +17,8 @@ import { IconComponent } from '../icon/icon.component'
 import { isIIcon } from '../utils/is-icon-object'
 import { IsIconTypePipe } from '../pipes/is-icon-type.pipe'
 import { environment } from '@/environments/environment.template'
-import { SearchWordsComponent } from './search-words/search-words.component'
 import { Table } from 'primeng/table'
+import { SearchWordsComponent } from './search-words/search-words.component'
 
 type TColumnType =
     | 'actions'

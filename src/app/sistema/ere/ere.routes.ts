@@ -87,6 +87,13 @@ const routes: Routes = [
                 (c) => c.InformesEreComponent
             ),
     },
+    {
+        path: 'examen',
+        loadComponent: () =>
+            import('./examen/rendir-examen/rendir-examen.component').then(
+                (c) => c.RendirExamenComponent
+            ),
+    },
 ]
 
 export class AppRoutingModule {}

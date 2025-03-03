@@ -153,6 +153,11 @@ const estudiante = [
                             '/evaluaciones/sub-evaluaciones/evaluacion-examen-ere',
                         ],
                     },
+                    {
+                        label: 'Rendir examen ERE',
+                        icon: 'pi pi-pen-to-square',
+                        routerLink: ['/ere/examen'],
+                    },
                     // {
                     //     label: 'Examen',
                     //     icon: 'pi pi-fw pi-share-alt',

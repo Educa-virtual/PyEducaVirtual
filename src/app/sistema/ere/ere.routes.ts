@@ -78,6 +78,14 @@ const routes: Routes = [
                 (c) => c.InformesEreComponent
             ),
     },
+
+    {
+        path: 'banco-preguntas',
+        loadComponent: () =>
+            import('./banco-preguntas/banco-preguntas.component').then(
+                (c) => c.BancoPreguntasComponent
+            ),
+    },
 ]
 
 export class AppRoutingModule {}

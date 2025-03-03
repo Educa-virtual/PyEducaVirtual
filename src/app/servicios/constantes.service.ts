@@ -181,6 +181,11 @@ const administrador = [
                 routerLink: ['/administrador/componentes'],
             },
             {
+                label: 'Backup de BD',
+                icon: 'pi pi-fw pi-database',
+                routerLink: ['/administrador/backup-bd'],
+            },
+            {
                 label: 'Enlaces de ayuda',
                 icon: 'pi pi-fw pi-share-alt',
                 routerLink: ['ayuda'],

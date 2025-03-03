@@ -33,31 +33,32 @@
                     "
                 />
             </div>
-
-            <div class="flex flex-column gap-3">
-                <span>Archivo de origen:</span>
-                <app-btn-file-upload
-                    accept=".xlsx"
-                    (fileChange)="loadCollectionTemplate($event)"
-                />
-            </div>
-
-            <div class="flex flex-column gap-3">
-                <span>Iniciar proceso:</span>
-                <p-button
-                    label="Verificar"
-                    icon="pi pi-file-import"
-                    [loading]="importLoad"
-                    (onClick)="validaImportData()"
-                />
-            </div>
         </div>
     </section>
 
     <app-tab-view>
-        <app-tab-panel title="Por procesar">
+        <app-tab-panel title="Información del archivo">
             <div class="card">
-                @if (unverified_data) {
+                <section class="flex justify-content-between">
+                    <div class="flex flex-column gap-3">
+                        <span>Archivo de origen:</span>
+                        <app-btn-file-upload
+                            accept=".xlsx"
+                            (fileChange)="loadCollectionTemplate($event)"
+                        />
+                    </div>
+
+                    <div class="flex flex-column gap-3">
+                        <span>Iniciar proceso:</span>
+                        <p-button
+                            label="Verificar"
+                            icon="pi pi-file-import"
+                            [loading]="importLoad"
+                            (onClick)="validaImportData()"
+                        />
+                    </div>
+                </section>
+                @if (unverified_data && unverified_data.length > 0) {
                     <app-table-primeng
                         [columnas]="columns"
                         [data]="unverified_data"
@@ -66,20 +67,26 @@
                     ></app-table-primeng>
                 } @else {
                     <span class="block text-center"
-                        >Sin datos que procesar</span
+                        >Sin datos que verificar</span
                     >
                 }
             </div>
         </app-tab-panel>
-        <app-tab-panel title="Registrados">
+        <app-tab-panel title="Datos ">
             <div class="card">
-                @if (verified_data_recorded) {
+                @if (verified_data) {
+                    <!-- [data]="verified_data" -->
+
                     <app-table-primeng
-                        [columnas]="columns"
-                        [data]="verified_data_recorded"
-                        [showCaption]="false"
+                        [columnas]="verified_columns_recorded"
+                        [showCaption]="true"
                         [showSortIcon]="false"
-                    ></app-table-primeng>
+                        [data]="verified_data"
+                        dataKey="cPersDocumento"
+                        groupRowsBy="cPersDocumento"
+                        template="expandable"
+                    >
+                    </app-table-primeng>
                 } @else {
                     <span class="block text-center"
                         >Sin datos que procesar</span
@@ -87,29 +94,12 @@
                 }
             </div>
         </app-tab-panel>
-        <app-tab-panel title="No registrados">
+        <app-tab-panel title="Importación de datos">
             <div class="card">
-                @if (verified_data_not_recorded) {
-                    <app-table-primeng
-                        [columnas]="verified_columns_not_recorded"
-                        [actions]="verified_actions_not_recorded"
-                        [data]="verified_data_not_recorded"
-                        [showCaption]="false"
-                        [showSortIcon]="false"
-                    ></app-table-primeng>
-                } @else {
-                    <span class="block text-center"
-                        >Sin datos que procesar</span
-                    >
-                }
-            </div>
-        </app-tab-panel>
-        <app-tab-panel title="Revisar errores">
-            <div class="card">
-                @if (data_verified_with_errors) {
+                @if (import_data_recorded) {
                     <app-table-primeng
                         [columnas]="columns"
-                        [data]="data_verified_with_errors"
+                        [data]="import_data_recorded"
                         [showCaption]="false"
                         [showSortIcon]="false"
                     ></app-table-primeng>

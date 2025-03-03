@@ -57,13 +57,13 @@ export class BulkDataImportComponent {
     disabled
 
     columns: IColumn[]
+    unverified_data
     verified_columns_not_recorded
     verified_actions_not_recorded = [check, decline]
+    verified_data
+    verified_columns_recorded
+    import_data_recorded
 
-    unverified_data
-    verified_data_recorded
-    verified_data_not_recorded
-    data_verified_with_errors
     importLoad: boolean = false
 
     constructor(
@@ -153,7 +153,7 @@ export class BulkDataImportComponent {
             this.messageService.add({
                 severity: 'error',
                 summary: 'Error',
-                detail: 'No ha cargando información.',
+                detail: 'El archivo cargado no contiene datos válidos.',
             })
             return
         }
@@ -162,36 +162,91 @@ export class BulkDataImportComponent {
             .validateCollectionData(this.unverified_data)
             .subscribe({
                 next: (response) => {
-                    this.verified_data_recorded = response.data
+                    // this.verified_data = response.data
 
                     console.log('Respuesta del servidor:', response)
 
-                    this.verified_data_not_recorded = response.data.flatMap(
-                        (data) => JSON.parse(data.lista_no_d)
+                    const excel = []
+
+                    const status = []
+
+                    const filteredData = response.data.map((obj) => {
+                        const { json_excel, lista_no_d, ...rest } = obj
+
+                        status.push(
+                            Object.keys(obj)
+                                .filter(
+                                    (key) =>
+                                        key.startsWith('v_') ||
+                                        key === 'cPersDocumento'
+                                ) // Filtra solo las claves que inician con "v_"
+                                .reduce((acc, key) => {
+                                    const newKey = key.replace('v_', '')
+                                    acc[newKey] = obj[key] // Agrega las claves filtradas al nuevo objeto
+                                    return acc
+                                }, {} as any)
+                        )
+                        excel.push(...JSON.parse(json_excel))
+                        console.log(json_excel, lista_no_d)
+                        return { ...rest }
+                    })
+
+                    this.verified_data = [...filteredData, ...excel, ...status]
+
+                    console.log('filteredData')
+                    console.log(this.verified_data)
+
+                    this.unverified_data = response.data.flatMap((data) =>
+                        JSON.parse(data.lista_no_d)
                     )
 
-                    if (this.verified_data_not_recorded) {
+                    if (this.unverified_data) {
                         console.log(this.columns)
 
-                        this.verified_columns_not_recorded = [
-                            ...this.columns,
-                            {
-                                type: 'actions',
-                                width: '3rem',
-                                field: 'actions',
-                                header: 'Acciones',
-                                text_header: 'center',
-                                text: 'center',
-                            },
-                        ]
+                        // this.verified_columns_recorded = [
+                        //     ...this.columns,
+                        //     {
+                        //         type: 'actions',
+                        //         width: '3rem',
+                        //         field: 'actions',
+                        //         header: 'Acciones',
+                        //         text_header: 'center',
+                        //         text: 'center',
+                        //     },
+                        // ]
+
+                        this.verified_columns_recorded = this.columns.map(
+                            (column) => ({
+                                ...column,
+                                type: 'expansion',
+                            })
+                        )
+
+                        // this.verified_columns_recorded = [
+                        //     ...this.columns,
+                        //     {
+                        //         type: 'actions',
+                        //         width: '3rem',
+                        //         field: 'actions',
+                        //         header: 'Acciones',
+                        //         text_header: 'center',
+                        //         text: 'center',
+                        //     },
+                        // ]
+
+                        this.unverified_data = []
                     }
 
                     console.log('this.verified_data_not_recorded')
-                    console.log(this.verified_data_not_recorded)
+                    console.log(this.unverified_data)
                 },
                 error: (error) => {
                     console.error('Error en la solicitud:', error)
                 },
             })
+    }
+
+    debug(data) {
+        console.log(data)
     }
 }

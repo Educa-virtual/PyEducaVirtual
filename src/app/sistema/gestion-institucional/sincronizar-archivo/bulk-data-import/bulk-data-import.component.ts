@@ -58,11 +58,11 @@ export class BulkDataImportComponent {
 
     columns: IColumn[]
     unverified_data
-    verified_columns_not_recorded
-    verified_actions_not_recorded = [check, decline]
     verified_data
     verified_columns_recorded
-    import_data_recorded
+    import_data_actions = [check, decline]
+    verified_columns_not_recorded
+    import_data
 
     importLoad: boolean = false
 
@@ -203,17 +203,20 @@ export class BulkDataImportComponent {
                     if (this.unverified_data) {
                         console.log(this.columns)
 
-                        // this.verified_columns_recorded = [
-                        //     ...this.columns,
-                        //     {
-                        //         type: 'actions',
-                        //         width: '3rem',
-                        //         field: 'actions',
-                        //         header: 'Acciones',
-                        //         text_header: 'center',
-                        //         text: 'center',
-                        //     },
-                        // ]
+                        this.verified_columns_not_recorded = [
+                            ...this.columns.map((column) => ({
+                                ...column,
+                                type: 'cell-editor',
+                            })),
+                            {
+                                type: 'actions',
+                                width: '3rem',
+                                field: 'actions',
+                                header: 'Acciones',
+                                text_header: 'center',
+                                text: 'center',
+                            },
+                        ]
 
                         this.verified_columns_recorded = this.columns.map(
                             (column) => ({
@@ -222,17 +225,26 @@ export class BulkDataImportComponent {
                             })
                         )
 
-                        // this.verified_columns_recorded = [
-                        //     ...this.columns,
-                        //     {
-                        //         type: 'actions',
-                        //         width: '3rem',
-                        //         field: 'actions',
-                        //         header: 'Acciones',
-                        //         text_header: 'center',
-                        //         text: 'center',
-                        //     },
-                        // ]
+                        this.verified_columns_recorded = [
+                            ...this.columns,
+                            {
+                                type: 'actions',
+                                width: '3rem',
+                                field: 'actions',
+                                header: 'Acciones',
+                                text_header: 'center',
+                                text: 'center',
+                            },
+                        ]
+
+                        // this.import_data = this.unverified_data.filter(un_obj => !this.verified_data.some(v_obj => un_obj['cPersDocumento'] === v_obj['cPersDocumento']));
+
+                        console.log('this.import_data')
+                        console.log(this.unverified_data)
+                        console.log(this.import_data)
+                        this.import_data = this.unverified_data.filter(
+                            (obj) => Object.keys(obj).length > 0
+                        )
 
                         this.unverified_data = []
                     }

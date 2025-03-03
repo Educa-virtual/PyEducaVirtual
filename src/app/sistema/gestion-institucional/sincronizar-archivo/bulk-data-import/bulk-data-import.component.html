@@ -96,10 +96,11 @@
         </app-tab-panel>
         <app-tab-panel title="Importación de datos">
             <div class="card">
-                @if (import_data_recorded) {
+                @if (import_data) {
                     <app-table-primeng
-                        [columnas]="columns"
-                        [data]="import_data_recorded"
+                        [columnas]="verified_columns_not_recorded"
+                        [data]="import_data"
+                        [actions]="import_data_actions"
                         [showCaption]="false"
                         [showSortIcon]="false"
                     ></app-table-primeng>

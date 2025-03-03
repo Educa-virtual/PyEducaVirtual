@@ -98,6 +98,11 @@
                                 {{ col.header }}
                             </div>
                         }
+                        @case ('cell-editor') {
+                            <div [style.text-align]="col.text_header">
+                                {{ col.header }}
+                            </div>
+                        }
                         @case ('item-checkbox') {
                             <div [style.text-align]="col.text_header">
                                 {{ col.header }}
@@ -136,6 +141,7 @@
             let-columns="columns"
             let-rowIndex="rowIndex"
             let-expanded="expanded"
+            let-editing="editing"
         >
             <tr
                 [pSelectableRow]="rowData"
@@ -157,6 +163,8 @@
                                 rowData.values?.[col.field]?.logros !== null,
                             'cursor-pointer': enableCellSelection,
                         }"
+                        [pEditableColumn]="rowData[col.field]"
+                        [pEditableColumnField]="col.field"
                     >
                         @if (col.type === 'expansion') {
                             <button
@@ -210,6 +218,20 @@
                             <div [style.text-align]="col.text">
                                 <span>{{ rowIndex + 1 }}</span>
                             </div>
+                        }
+                        @if (col.type === 'cell-editor') {
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <input
+                                        pInputText
+                                        type="text"
+                                        [(ngModel)]="rowData[col.field]"
+                                    />
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{ rowData[col.field] }}
+                                </ng-template>
+                            </p-cellEditor>
                         }
                         @if (col.type === 'p-editor') {
                             <p-editor

@@ -1,0 +1,210 @@
+<form [formGroup]="formFamiliar">
+    <div class="pt-2 grid p-fluid mt-3">
+        <input type="hidden" formControlName="iPersId" />
+
+        <div class="field col-12 sm:col-4">
+            <span class="p-float-label">
+                <p-dropdown
+                    [options]="tipos_documentos"
+                    formControlName="iTipoIdentId"
+                    optionLabel="nombre"
+                    optionValue="id"
+                    [filter]="true"
+                    [showClear]="true"
+                    [appendTo]="'body'"
+                />
+                <label for="iTipoIdentId">Tipo de documento *</label>
+            </span>
+        </div>
+        <div class="field col-6 sm:col-4">
+            <span class="p-float-label">
+                <p-inputMask
+                    formControlName="cPersDocumento"
+                    aria-describedby="cPersDocumento-help"
+                    [maxlength]="longitud_documento"
+                    [mask]="formato_documento"
+                />
+                <label for="cPersDocumento">Documento *</label>
+            </span>
+        </div>
+        <div class="field col-6 sm:col-4">
+            <p-button
+                label="Validar"
+                styleClass="p-button-primary"
+                (onClick)="validarPersona()"
+            />
+        </div>
+
+        <div class="field col-12 sm:col-4">
+            <span class="p-float-label">
+                <p-dropdown
+                    [options]="tipos_familiares"
+                    formControlName="iTipoFamiliarId"
+                    optionLabel="nombre"
+                    optionValue="id"
+                    [filter]="true"
+                    [showClear]="true"
+                    [appendTo]="'body'"
+                />
+                <label for="iTipoFamiliarId">Relación / Parentesco *</label>
+            </span>
+        </div>
+        <div class="field col-6 sm:col-4">
+            <span class="p-float-label">
+                <p-dropdown
+                    [options]="sexos"
+                    formControlName="cPersSexo"
+                    optionLabel="nombre"
+                    optionValue="id"
+                    [filter]="true"
+                    [showClear]="true"
+                    [appendTo]="'body'"
+                />
+                <label for="cPersSexo">Sexo *</label>
+            </span>
+        </div>
+        <div class="field col-6 sm:col-4">
+            <span class="p-float-label">
+                <p-dropdown
+                    [options]="estados_civiles"
+                    formControlName="iTipoEstCivId"
+                    optionLabel="nombre"
+                    optionValue="id"
+                    [filter]="true"
+                    [showClear]="true"
+                    [appendTo]="'body'"
+                />
+                <label for="iTipoEstCivId">Estado Civil</label>
+            </span>
+        </div>
+
+        <div class="field col-12 sm:col-4">
+            <span class="p-float-label">
+                <input
+                    pInputText
+                    id="cPersNombre"
+                    formControlName="cPersNombre"
+                    aria-describedby="cPersNombre-help"
+                />
+                <label for="cPersNombre">Nombres *</label>
+            </span>
+        </div>
+        <div class="field col-12 sm:col-4">
+            <span class="p-float-label">
+                <input
+                    pInputText
+                    id="cPersPaterno"
+                    formControlName="cPersPaterno"
+                    aria-describedby="cPersPaterno-help"
+                />
+                <label for="cPersPaterno">Primer Apellido *</label>
+            </span>
+        </div>
+        <div class="field col-12 sm:col-4">
+            <span class="p-float-label">
+                <input
+                    pInputText
+                    id="cPersMaterno"
+                    formControlName="cPersMaterno"
+                    aria-describedby="cPersMaterno-help"
+                />
+                <label for="cPersMaterno">Segundo Apellido *</label>
+            </span>
+        </div>
+
+        <div class="field col-12 sm:col-8">
+            <span class="p-float-label">
+                <p-dropdown
+                    [options]="nacionalidades"
+                    formControlName="iNacionId"
+                    optionLabel="nombre"
+                    optionValue="id"
+                    [filter]="true"
+                    [showClear]="true"
+                    [appendTo]="'body'"
+                />
+                <label for="cPersPais">Nacionalidad</label>
+            </span>
+        </div>
+        <div class="field col-12 sm:col-4">
+            <span class="p-float-label">
+                <p-calendar
+                    formControlName="dPersNacimiento"
+                    [iconDisplay]="'input'"
+                    [showIcon]="true"
+                    inputId="dPersNacimiento"
+                    [appendTo]="'body'"
+                />
+                <label for="dPersNacimiento">Fecha de nacimiento *</label>
+            </span>
+        </div>
+        <div class="field col-12 sm:col-4">
+            <span class="p-float-label">
+                <p-dropdown
+                    [options]="departamentos"
+                    formControlName="iDptoId"
+                    optionLabel="nombre"
+                    optionValue="id"
+                    [filter]="true"
+                    [showClear]="true"
+                    [appendTo]="'body'"
+                />
+                <label for="iDptoId">Departamento</label>
+            </span>
+        </div>
+        <div class="field col-12 sm:col-4">
+            <span class="p-float-label">
+                <p-dropdown
+                    [options]="provincias"
+                    formControlName="iPrvnId"
+                    optionLabel="nombre"
+                    optionValue="id"
+                    [filter]="true"
+                    [showClear]="true"
+                    [appendTo]="'body'"
+                />
+                <label for="iPrvnId">Provincia</label>
+            </span>
+        </div>
+        <div class="field col-12 sm:col-4">
+            <span class="p-float-label">
+                <p-dropdown
+                    [options]="distritos"
+                    formControlName="iDsttId"
+                    optionLabel="nombre"
+                    optionValue="id"
+                    [filter]="true"
+                    [showClear]="true"
+                    [appendTo]="'body'"
+                />
+                <label for="iDsttId">Distrito</label>
+            </span>
+        </div>
+
+        <div class="field col-12">
+            <span class="p-float-label">
+                <input
+                    pInputText
+                    formControlName="cPersDomicNombre"
+                    aria-describedby="cPersDomicNombre-help"
+                />
+                <label for="cPersDireccion">Dirección</label>
+            </span>
+        </div>
+    </div>
+</form>
+
+<div class="flex justify-content-end">
+    <p-button
+        label="Guardar"
+        (onClick)="guardarFarmiliar()"
+        styleClass="p-button-primary"
+        [hidden]="familiar_registrado"
+    />
+    <p-button
+        label="Actualizar"
+        (onClick)="actualizarFarmiliar()"
+        styleClass="p-button-primary"
+        [hidden]="!familiar_registrado"
+    />
+</div>

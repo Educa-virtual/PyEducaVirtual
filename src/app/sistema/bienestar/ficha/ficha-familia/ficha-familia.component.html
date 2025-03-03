@@ -1,0 +1,40 @@
+<div class="p-2 grid p-fluid mt-3">
+    <div class="col" style="margin-left: -0.5rem">
+        <p-inputGroup>
+            <p-inputGroupAddon><i class="pi pi-search"></i></p-inputGroupAddon>
+            <input pInputText placeholder="Buscar" />
+        </p-inputGroup>
+    </div>
+    <div class="col-auto align-content-center">
+        <div class="flex flex-wrap gap-2 justify-content-end">
+            <p-button
+                label="Agregar"
+                (onClick)="agregarFamiliar()"
+                styleClass="p-button-primary"
+            />
+        </div>
+    </div>
+</div>
+
+<app-table-primeng
+    [columnas]="columns"
+    [showCaption]="false"
+    [data]="familiares"
+    (accionBtnItem)="accionBtnItemTable($event)"
+    [showPaginator]="true"
+    [(selectedRowData)]="selectedItems"
+    [actions]="actions"
+    [showAdvancedFilter]="false"
+>
+</app-table-primeng>
+
+<p-dialog
+    header="{{ dialogTitle }}"
+    [(visible)]="visibleDialogFamiliar"
+    [style]="{ width: '56rem' }"
+    [modal]="true"
+    [contentStyle]="{ overflow: 'auto' }"
+>
+    <app-ficha-familia-registro></app-ficha-familia-registro>
+</p-dialog>
+<p-toast></p-toast>

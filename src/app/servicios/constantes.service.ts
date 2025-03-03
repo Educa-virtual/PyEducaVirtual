@@ -103,11 +103,11 @@ const docente = [
             //     icon: 'pi pi-fw pi-folder',
             //     routerLink: ['/comunicados/principal'],
             // },
-            // {
-            //     label: 'bienestar',
-            //     icon: 'pi pi-fw pi-folder',
-            //     routerLink: ['/bienestar/principal'],
-            // },
+            {
+                label: 'bienestar',
+                icon: 'pi pi-fw pi-folder',
+                routerLink: ['/bienestar/ficha'],
+            },
         ],
     },
 ]

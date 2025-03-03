@@ -9,6 +9,7 @@ import {
     OnInit,
     ContentChild,
     TemplateRef,
+    ViewChild,
 } from '@angular/core'
 import { TableColumnFilterComponent } from './table-column-filter/table-column-filter.component'
 import { IIcon } from '../icon/icon.interface'
@@ -16,6 +17,8 @@ import { IconComponent } from '../icon/icon.component'
 import { isIIcon } from '../utils/is-icon-object'
 import { IsIconTypePipe } from '../pipes/is-icon-type.pipe'
 import { environment } from '@/environments/environment.template'
+import { SearchWordsComponent } from './search-words/search-words.component'
+import { Table } from 'primeng/table'
 
 type TColumnType =
     | 'actions'
@@ -65,6 +68,7 @@ export interface IActionTable {
         TableColumnFilterComponent,
         IconComponent,
         IsIconTypePipe,
+        SearchWordsComponent,
     ],
 })
 export class TablePrimengComponent implements OnChanges, OnInit {
@@ -105,6 +109,17 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     @Input() placeholder = 'Buscar'
     @ContentChild('rowExpansionTemplate', { static: false })
     rowExpansionTemplate: TemplateRef<unknown>
+
+    @ViewChild('dt') dt!: Table
+    searchTerm: string = ''
+    buscarPalabras(event: string) {
+        this.searchTerm = event
+
+        if (this.dt) {
+            // solo va buscar en el indice(1)
+            this.dt.filter(this.searchTerm, this.columnas[1].field, 'contains')
+        }
+    }
 
     public isIIcon = isIIcon
 

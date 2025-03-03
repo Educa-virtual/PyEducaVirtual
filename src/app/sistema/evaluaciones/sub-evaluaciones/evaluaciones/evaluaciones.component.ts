@@ -116,8 +116,6 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
         this.caption = 'Evaluaciones'
         this.dataSubject.subscribe((newData: any[]) => {
             this.data = newData
-            console.log('mis eva', this.data)
-            this.filteredData = this.data
         })
         this.cEvaluacionNombre =
             this.compartirFormularioEvaluacionService.getcEvaluacionNombre()
@@ -656,7 +654,7 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
                     if (resp && resp['data']) {
                         this.data = resp['data'] // Asignar la data obtenida
                         this.filteredData = this.data
-                        console.log('evaluaciones', this.filteredData)
+                        // console.log('evaluaciones', this.filteredData)
                     } else {
                         console.warn(
                             'La respuesta no contiene la propiedad "data" o es nula:',

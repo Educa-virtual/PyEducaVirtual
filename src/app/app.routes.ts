@@ -98,6 +98,14 @@ export const routes: Routes = [
                 './sistema/gestion-institucional/horario/horario.module'
             ).then((m) => m.HorarioModule),
     },
+    {
+        path: 'apoderado',
+
+        loadChildren: () =>
+            import('./sistema/apoderado/apoderado.module').then(
+                (m) => m.ApoderadoModule
+            ),
+    },
 
     { path: 'notfound', component: NotfoundComponent },
 

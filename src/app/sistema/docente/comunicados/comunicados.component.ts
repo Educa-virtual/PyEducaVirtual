@@ -12,6 +12,7 @@ interface Comunicado {
     prioridad: string
     caduca: string
     grupo: string
+    collapsed: boolean
 }
 
 @Component({
@@ -25,36 +26,39 @@ export class ComunicadosComponent {
     comunicados = [
         {
             id: 1,
-            titulo: 'Comunicado #1',
+            titulo: 'Matriculas 2025',
             estado: 'Activo',
             tipo: 'Anuncio',
             publicado: '12/02/2025',
             prioridad: 'Urgente',
             caduca: '12/03/2025',
             grupo: 'Apoderados y Estudiantes',
-            texto: 'Estimados padres de familia y estudiantes...',
+            texto: 'Estimados padres de familia y estudiantes las matriculas son hasta....',
+            collapsed: true,
         },
         {
             id: 2,
-            titulo: 'Comunicado #2',
+            titulo: 'Publicacion de Nuevos Ponderados',
             estado: 'Activo',
             tipo: 'Circular',
             publicado: '10/02/2025',
             prioridad: 'Normal',
             caduca: '10/03/2025',
             grupo: 'Docentes y Estudiantes',
-            texto: 'Se informa a la comunidad educativa que...',
+            texto: 'Se informa a la comunidad educativa que las notas ponderadas son...',
+            collapsed: true,
         },
         {
             id: 3,
-            titulo: 'Comunicado #3',
+            titulo: 'Carga Lectiva',
             estado: 'Inactivo',
             tipo: 'Aviso',
             publicado: '01/02/2025',
             prioridad: 'Baja',
             caduca: '15/03/2025',
             grupo: 'Apoderados',
-            texto: 'Recuerden actualizar sus datos de contacto...',
+            texto: 'Se comunica a los docentes que el numero de horas lectiva son 40 por semana',
+            collapsed: true,
         },
     ]
 
@@ -72,6 +76,7 @@ export class ComunicadosComponent {
             prioridad: '',
             caduca: '',
             grupo: '',
+            collapsed: true,
         }
     }
 
@@ -87,7 +92,10 @@ export class ComunicadosComponent {
             // Caso CREAR
             const nuevoId = this.comunicados.length + 1
             this.selectedComunicado.id = nuevoId
-            this.comunicados.push({ ...this.selectedComunicado })
+            this.comunicados.push({
+                ...this.selectedComunicado,
+                collapsed: true,
+            })
             console.log('Comunicado creado:', this.selectedComunicado)
         } else {
             // Caso EDITAR
@@ -95,11 +103,24 @@ export class ComunicadosComponent {
                 (c) => c.id === this.selectedComunicado.id
             )
             if (index !== -1) {
-                this.comunicados[index] = { ...this.selectedComunicado }
+                this.comunicados[index] = {
+                    ...this.selectedComunicado,
+                    collapsed: this.comunicados[index].collapsed,
+                }
                 console.log('Comunicado actualizado:', this.selectedComunicado)
             }
         }
         // Limpia el formulario o vuelve a modo "crear"
         this.selectedComunicado = this.initComunicado()
+    }
+    togglePanel(event: Event, panel: any, comunicado: Comunicado) {
+        // Alterna el estado local para cambiar el icono
+        comunicado.collapsed = !comunicado.collapsed
+        // Dispara la animación interna de PrimeNG con el evento correcto
+        panel.toggle(event)
+    }
+    deleteComunicado(id: number) {
+        this.comunicados = this.comunicados.filter((com) => com.id !== id)
+        console.log('Comunicado eliminado:', id)
     }
 }

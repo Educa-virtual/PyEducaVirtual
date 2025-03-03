@@ -106,6 +106,9 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
         this.form = this.fb.group({})
     }
     resetSelect: boolean = false
+    searchTerm: string = ''
+    filteredData: any[] = []
+
     // se inicializa..
     ngOnInit() {
         this.obtenerEvaluacion()
@@ -113,6 +116,8 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
         this.caption = 'Evaluaciones'
         this.dataSubject.subscribe((newData: any[]) => {
             this.data = newData
+            console.log('mis eva', this.data)
+            this.filteredData = this.data
         })
         this.cEvaluacionNombre =
             this.compartirFormularioEvaluacionService.getcEvaluacionNombre()
@@ -128,7 +133,18 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
         })
         this.showActions = this.iPerfilId !== ADMINISTRADOR_DREMO ? false : true
     }
+    filterData() {
+        if (!this.searchTerm) {
+            this.filteredData = [...this.data] // Restablecer si el input está vacío
+            return
+        }
 
+        const lowerCaseTerm = this.searchTerm.toLowerCase().trim()
+
+        this.filteredData = this.data.filter((item) =>
+            item.cEvaluacionNombre?.toLowerCase().includes(lowerCaseTerm)
+        )
+    }
     // obtener idPerfil
     iPerfilId: number
 
@@ -299,6 +315,14 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
     opcionesAuto: IActionTable[] = []
     // nombre de las columnas de listar evaluaciones
     columnasBase: IColumn[] = [
+        {
+            type: 'item',
+            width: '0.5rem',
+            field: 'index',
+            header: '#',
+            text_header: 'center',
+            text: 'center',
+        },
         {
             field: 'cEvaluacionNombre',
             header: 'Nombre evaluación',
@@ -631,6 +655,8 @@ export class EvaluacionesComponent implements OnInit, OnDestroy {
                     // Acceder y mostrar el contenido específico de la respuesta
                     if (resp && resp['data']) {
                         this.data = resp['data'] // Asignar la data obtenida
+                        this.filteredData = this.data
+                        console.log('evaluaciones', this.filteredData)
                     } else {
                         console.warn(
                             'La respuesta no contiene la propiedad "data" o es nula:',

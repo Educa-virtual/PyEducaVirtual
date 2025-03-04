@@ -2,162 +2,361 @@
 
 <form [formGroup]="form">
     <div class="grid p-fluid mt-3">
-        <input type="hidden" name="iPersId" />
+        <input type="hidden" name="iFichaDGId" />
 
-        <div class="field col-12 md:col-4">
-            <span class="p-float-label">
-                <p-dropdown
-                    [options]="situaciones_vivienda"
-                    name="iSituacionViviendaId"
-                    optionLabel="nombre"
-                    optionValue="id"
-                    [filter]="true"
-                    [showClear]="true"
-                    [appendTo]="'body'"
-                />
-                <label for="iSituacionViviendaId"
-                    >La vivienda que ocupa es *</label
-                >
-            </span>
+        <div class="field col-12 md:col-6">
+            <div class="grid">
+                <div class="col w-full">
+                    <span class="p-float-label">
+                        <p-dropdown
+                            [options]="situaciones_vivienda"
+                            formControlName="iTipoOcupaVivId"
+                            optionLabel="nombre"
+                            optionValue="id"
+                            [filter]="false"
+                            [showClear]="true"
+                            [appendTo]="'body'"
+                            (onChange)="handleDropdownChange($event, 0)"
+                        />
+                        <label for="iTipoOcupaVivId"
+                            >Ocupación de vivienda *</label
+                        >
+                    </span>
+                </div>
+                @if (visibleInput[0] === true) {
+                    <div class="col">
+                        <input
+                            pInputText
+                            formControlName="cTipoOcupaVivDescripcion"
+                            placeholder="Especifique"
+                            type="text"
+                        />
+                    </div>
+                }
+            </div>
         </div>
-        <div class="field col-12 md:col-4">
-            <span class="p-float-label">
-                <p-dropdown
-                    [options]="pisos_vivienda"
-                    name="iPisosViviendaId"
-                    optionLabel="nombre"
-                    optionValue="id"
-                    [filter]="true"
-                    [showClear]="true"
-                    [appendTo]="'body'"
-                />
-                <label for="iPisosViviendaId"
-                    >Cuántos pisos tiene la vivienda *</label
-                >
-            </span>
-        </div>
-        <div class="field col-12 md:col-4">
-            <span class="p-float-label">
-                <p-dropdown
-                    [options]="estados_vivienda"
-                    optionLabel="nombre"
-                    optionValue="id"
-                    [filter]="true"
-                    [showClear]="true"
-                    [appendTo]="'body'"
-                />
-                <label for="iPisosViviendaId">Estado de la vivienda *</label>
-            </span>
-        </div>
-
-        <div class="field col-12 md:col-4">
-            <span class="p-float-label">
-                <p-dropdown
-                    [options]="materiales_techos_vivienda"
-                    optionLabel="nombre"
-                    optionValue="id"
-                    [filter]="true"
-                    [showClear]="true"
-                    [appendTo]="'body'"
-                />
-                <label for="iPisosViviendaId"
-                    >Material predominante del techo *</label
-                >
-            </span>
-        </div>
-        <div class="field col-12 md:col-4">
-            <span class="p-float-label">
-                <p-dropdown
-                    [options]="materiales_pisos_vivienda"
-                    optionLabel="nombre"
-                    optionValue="id"
-                    [filter]="true"
-                    [showClear]="true"
-                    [appendTo]="'body'"
-                />
-                <label for="iPisosViviendaId"
-                    >Material predominante del piso *</label
-                >
-            </span>
-        </div>
-        <div class="field col-12 md:col-4">
-            <span class="p-float-label">
-                <p-dropdown
-                    [options]="materiales_paredes_vivienda"
-                    optionLabel="nombre"
-                    optionValue="id"
-                    [filter]="true"
-                    [showClear]="true"
-                    [appendTo]="'body'"
-                />
-                <label for="iPisosViviendaId"
-                    >Material predominante de las paredes exteriores *</label
-                >
-            </span>
+        <div class="field col-12 md:col-6">
+            <div class="grid">
+                <div class="col w-full">
+                    <span class="p-float-label">
+                        <p-dropdown
+                            [options]="estados_vivienda"
+                            formControlName="iEstadoVivId"
+                            optionLabel="nombre"
+                            optionValue="id"
+                            [filter]="true"
+                            [showClear]="true"
+                            [appendTo]="'body'"
+                            (onChange)="handleDropdownChange($event, 1)"
+                        />
+                        <label for="iEstadoVivId"
+                            >Estado de la vivienda *</label
+                        >
+                    </span>
+                </div>
+                @if (visibleInput[1] === true) {
+                    <div class="col">
+                        <input
+                            pInputText
+                            formControlName="cEstadoVivDescripcion"
+                            placeholder="Especifique"
+                            type="text"
+                        />
+                    </div>
+                }
+            </div>
         </div>
 
         <div class="field col-12 md:col-4">
             <span class="p-float-label">
-                <p-dropdown
-                    [options]="suministros_agua"
-                    optionLabel="nombre"
-                    optionValue="id"
-                    [filter]="true"
-                    [showClear]="true"
-                    [appendTo]="'body'"
+                <p-inputNumber
+                    formControlName="iViviendaCarNroPisos"
+                    min="1"
+                    showButtons="true"
                 />
-                <label for="iPisosViviendaId"
-                    >Material predominante del piso *</label
+                <label for="iViviendaCarNroPisos">Número de pisos *</label>
+            </span>
+        </div>
+        <div class="field col-12 md:col-4">
+            <span class="p-float-label">
+                <p-inputNumber
+                    formControlName="iViviendaCarNroAmbientes"
+                    min="1"
+                    showButtons="true"
+                />
+                <label for="iViviendaCarNroAmbientes"
+                    >Número de ambientes *</label
                 >
             </span>
         </div>
         <div class="field col-12 md:col-4">
             <span class="p-float-label">
-                <p-dropdown
-                    [options]="conexiones_servicio"
-                    optionLabel="nombre"
-                    optionValue="id"
-                    [filter]="true"
-                    [showClear]="true"
-                    [appendTo]="'body'"
+                <p-inputNumber
+                    formControlName="iViviendaCarNroHabitaciones"
+                    min="0"
+                    showButtons="true"
                 />
-                <label for="iPisosViviendaId"
-                    >Material predominante de las paredes exteriores *</label
+                <label for="iViviendaCarNroHabitaciones"
+                    >Número de habitaciones/dormitorios *</label
                 >
             </span>
         </div>
 
         <div class="field col-12 md:col-6">
-            <span class="p-float-label">
-                <p-multiSelect
-                    [options]="tipos_alumbrado"
-                    optionLabel="nombre"
-                    optionValue="id"
-                    [filter]="true"
-                    [showClear]="true"
-                    [appendTo]="'body'"
-                    multiple="true"
-                />
-                <label for="iPisosViviendaId"
-                    >Seleccione los tipos de alumbrado *</label
-                >
-            </span>
+            <div class="grid">
+                <div class="col w-full">
+                    <span class="p-float-label">
+                        <p-dropdown
+                            [options]="materiales_techos_vivienda"
+                            formControlName="iMatTecVivId"
+                            optionLabel="nombre"
+                            optionValue="id"
+                            [filter]="true"
+                            [showClear]="true"
+                            [appendTo]="'body'"
+                            (onChange)="handleDropdownChange($event, 2)"
+                        />
+                        <label for="iMatTecVivId"
+                            >Material predominante del techo *</label
+                        >
+                    </span>
+                </div>
+                @if (visibleInput[2] === true) {
+                    <div class="col">
+                        <input
+                            pInputText
+                            formControlName="cMatTecVivDescripcion"
+                            placeholder="Especifique"
+                            type="text"
+                        />
+                    </div>
+                }
+            </div>
         </div>
         <div class="field col-12 md:col-6">
-            <span class="p-float-label">
-                <p-multiSelect
-                    [options]="otros_servicios"
-                    optionLabel="nombre"
-                    optionValue="id"
-                    [filter]="true"
-                    [showClear]="true"
-                    [appendTo]="'body'"
-                    multiple="true"
-                />
-                <label for="iPisosViviendaId"
-                    >Seleccione los elementos que tiene en su hogar *</label
-                >
-            </span>
+            <div class="grid">
+                <div class="col w-full">
+                    <span class="p-float-label">
+                        <p-dropdown
+                            [options]="materiales_pisos_vivienda"
+                            formControlName="iMatPisoVivId"
+                            optionLabel="nombre"
+                            optionValue="id"
+                            [filter]="true"
+                            [showClear]="true"
+                            [appendTo]="'body'"
+                            (onChange)="handleDropdownChange($event, 3)"
+                        />
+                        <label for="iMatPisoVivId"
+                            >Material predominante del piso *</label
+                        >
+                    </span>
+                </div>
+                @if (visibleInput[3] === true) {
+                    <div class="col">
+                        <input
+                            pInputText
+                            formControlName="cMatPisoVivDescripcion"
+                            placeholder="Especifique"
+                            type="text"
+                        />
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="field col-12 md:col-6">
+            <div class="grid">
+                <div class="col w-full">
+                    <span class="p-float-label">
+                        <p-dropdown
+                            [options]="materiales_paredes_vivienda"
+                            formControlName="iMatPreId"
+                            optionLabel="nombre"
+                            optionValue="id"
+                            [filter]="false"
+                            [showClear]="true"
+                            [appendTo]="'body'"
+                            (onChange)="handleDropdownChange($event, 4)"
+                        />
+                        <label for="iMatPreId"
+                            >Material predominante de las paredes *</label
+                        >
+                    </span>
+                </div>
+                @if (visibleInput[4] === true) {
+                    <div class="col">
+                        <input
+                            pInputText
+                            formControlName="cMatPreDescripcion"
+                            placeholder="Especifique"
+                            type="text"
+                        />
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="field col-12 md:col-6">
+            <div class="grid">
+                <div class="col w-full">
+                    <span class="p-float-label">
+                        <p-dropdown
+                            [options]="suministros_agua"
+                            formControlName="iTipoSumAId"
+                            optionLabel="nombre"
+                            optionValue="id"
+                            [filter]="true"
+                            [showClear]="true"
+                            [appendTo]="'body'"
+                            (onChange)="handleDropdownChange($event, 5)"
+                        />
+                        <label for="iTipoSumAId"
+                            >Tipo de suministro de agua *</label
+                        >
+                    </span>
+                </div>
+                @if (visibleInput[5] === true) {
+                    <div class="col">
+                        <input
+                            pInputText
+                            formControlName="cTipoSumADescripcion"
+                            placeholder="Especifique"
+                            type="text"
+                        />
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="field col-12 md:col-6">
+            <div class="grid">
+                <div class="col w-full">
+                    <span class="p-float-label">
+                        <p-dropdown
+                            [options]="tipos_vivienda"
+                            formControlName="iTipoVivId"
+                            optionLabel="nombre"
+                            optionValue="id"
+                            [filter]="false"
+                            [showClear]="true"
+                            [appendTo]="'body'"
+                            (onChange)="handleDropdownChange($event, 6)"
+                        />
+                        <label for="iTipoVivId">Tipo de vivienda *</label>
+                    </span>
+                </div>
+                @if (visibleInput[6] === true) {
+                    <div class="col">
+                        <input
+                            pInputText
+                            formControlName="cTipoVivDescripcion"
+                            placeholder="Especifique"
+                            type="text"
+                        />
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="field col-12 md:col-6">
+            <div class="grid">
+                <div class="col w-full">
+                    <span class="p-float-label">
+                        <p-dropdown
+                            [options]="tipos_sshh"
+                            formControlName="iTiposSsHhId"
+                            optionLabel="nombre"
+                            optionValue="id"
+                            [filter]="true"
+                            [showClear]="true"
+                            [appendTo]="'body'"
+                            (onChange)="handleDropdownChange($event, 7)"
+                        />
+                        <label for="iTiposSsHhId"
+                            >Tipo de servicio higiénico *</label
+                        >
+                    </span>
+                </div>
+                @if (visibleInput[7] === true) {
+                    <div class="col">
+                        <input
+                            pInputText
+                            formControlName="cTipoSsHhDescripcion"
+                            placeholder="Especifique"
+                            type="text"
+                        />
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="field col-12 md:col-6">
+            <div class="grid">
+                <div class="col w-full">
+                    <span class="p-float-label">
+                        <p-multiSelect
+                            display="chip"
+                            [options]="tipos_alumbrado"
+                            formControlName="iTipoAlumId"
+                            optionLabel="nombre"
+                            optionValue="id"
+                            [filter]="true"
+                            [showClear]="true"
+                            [appendTo]="'body'"
+                            multiple="true"
+                            (onChange)="handleDropdownChange($event, 8)"
+                            (onClear)="handleDropdownChange($event, 8)"
+                        />
+                        <label for="iPisosViviendaId"
+                            >Seleccione los tipos de alumbrado *</label
+                        >
+                    </span>
+                </div>
+                @if (visibleInput[8] === true) {
+                    <div class="col-12">
+                        <input
+                            pInputText
+                            formControlName="cTipoAlumDescripcion"
+                            placeholder="Especifique"
+                            type="text"
+                        />
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="field col-12 md:col-6">
+            <div class="grid">
+                <div class="col w-full">
+                    <span class="p-float-label">
+                        <p-multiSelect
+                            display="chip"
+                            [options]="otros_elementos"
+                            formControlName="iEleParaVivId"
+                            optionLabel="nombre"
+                            optionValue="id"
+                            [filter]="true"
+                            [showClear]="true"
+                            [appendTo]="'body'"
+                            multiple="true"
+                            (onChange)="handleDropdownChange($event, 9)"
+                            (onClear)="handleDropdownChange($event, 9)"
+                        />
+                        <label for="iEleParaVivId"
+                            >Seleccione los elementos que tiene en su hogar
+                            *</label
+                        >
+                    </span>
+                </div>
+                @if (visibleInput[9] === true) {
+                    <div class="col-12">
+                        <input
+                            pInputText
+                            formControlName="cEleParaVivDescripcion"
+                            placeholder="Especifique"
+                            type="text"
+                        />
+                    </div>
+                }
+            </div>
         </div>
     </div>
 </form>

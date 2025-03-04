@@ -1,6 +1,6 @@
 import { PrimengModule } from '@/app/primeng.module'
 import { Component, OnInit } from '@angular/core'
-import { FormBuilder, FormGroup } from '@angular/forms'
+import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 
 @Component({
     selector: 'app-ficha-vivienda',
@@ -20,21 +20,23 @@ export class FichaViviendaComponent implements OnInit {
     materiales_techos_vivienda: Array<object>
     tipos_vivienda: Array<object>
     suministros_agua: Array<object>
-    conexiones_servicio: Array<object>
+    tipos_sshh: Array<object>
     tipos_alumbrado: Array<object>
-    otros_servicios: Array<object>
+    otros_elementos: Array<object>
+
+    visibleInput: Array<boolean>
 
     constructor(private fb: FormBuilder) {}
 
     ngOnInit(): void {
         this.situaciones_vivienda = [
+            { id: 0, nombre: 'OTRO' },
             { id: 1, nombre: 'PROPIA' },
             { id: 2, nombre: 'PROPIA, COMPRÁNDOLA A PLAZOS' },
             { id: 3, nombre: 'ALQUILADA' },
             { id: 4, nombre: 'ANTICRESIS' },
             { id: 5, nombre: 'CEDIDA POR OTRO HOGAR' },
             { id: 6, nombre: 'ALOJADO' },
-            { id: 7, nombre: 'OTRO' },
         ]
 
         this.pisos_vivienda = [
@@ -46,13 +48,22 @@ export class FichaViviendaComponent implements OnInit {
         ]
 
         this.estados_vivienda = [
+            { id: 0, nombre: 'OTRO' },
             { id: 1, nombre: 'TOTALMENTE CONSTRUIDA' },
             { id: 2, nombre: 'EN CONSTRUCCIÓN' },
             { id: 3, nombre: 'VIVIENDA IMPROVISADA' },
-            { id: 4, nombre: 'OTRO' },
+        ]
+
+        this.tipos_vivienda = [
+            { id: 0, nombre: 'OTRO TIPO DE VIVIENDA' },
+            { id: 1, nombre: 'CASA INDEPENDIENTE' },
+            { id: 2, nombre: 'DEPARTAMENTO EN EDIFICIO' },
+            { id: 3, nombre: 'VIVIENDA EN QUINTA' },
+            { id: 4, nombre: 'CUARTO / HABITACIÓN' },
         ]
 
         this.materiales_paredes_vivienda = [
+            { id: 0, nombre: 'OTRO' },
             { id: 1, nombre: 'LADRILLO REVESTIDO' },
             { id: 2, nombre: 'LADRILLO NO REVESTIDO' },
             { id: 3, nombre: 'BLOQUETA DE CEMENTO REVESTIDO' },
@@ -61,27 +72,27 @@ export class FichaViviendaComponent implements OnInit {
             { id: 6, nombre: 'QUINCHA (CAÑA CON BARRO)' },
             { id: 7, nombre: 'MADERA' },
             { id: 8, nombre: 'ESTERA' },
-            { id: 9, nombre: 'OTRO' },
         ]
 
         this.materiales_pisos_vivienda = [
+            { id: 0, nombre: 'OTRO' },
             { id: 1, nombre: 'PARQUET O MADERA PULIDA' },
             { id: 2, nombre: 'VINÍLICOS O SIMILARES' },
             { id: 3, nombre: 'LOSETAS' },
             { id: 4, nombre: 'CEMENTO' },
             { id: 5, nombre: 'TIERRA' },
-            { id: 6, nombre: 'OTRO' },
         ]
 
         this.materiales_techos_vivienda = [
+            { id: 0, nombre: 'OTRO' },
             { id: 1, nombre: 'CONCRETO ARMADO' },
             { id: 2, nombre: 'CALAMINA' },
             { id: 3, nombre: 'FIBRA DE CEMENTO' },
             { id: 4, nombre: 'ESTERA' },
-            { id: 5, nombre: 'OTRO' },
         ]
 
         this.suministros_agua = [
+            { id: 0, nombre: 'OTRO' },
             { id: 1, nombre: 'RED PÚBLICA DENTRO DE LA VIVIENDA' },
             {
                 id: 2,
@@ -90,24 +101,24 @@ export class FichaViviendaComponent implements OnInit {
             { id: 3, nombre: 'PILÓN DE USO PÚBLICO' },
             { id: 4, nombre: 'CAMIÓN - CISTERNA U OTRO SIMILAR' },
             { id: 5, nombre: 'RÍO, ACEQUIA, MANANTIAL O SIMILAR' },
-            { id: 6, nombre: 'OTRO' },
         ]
 
-        this.conexiones_servicio = [
+        this.tipos_sshh = [
+            { id: 0, nombre: 'OTRO' },
             { id: 1, nombre: 'RED PÚBLICA DE DESAGÜE' },
             { id: 2, nombre: 'LETRINA O SILO' },
-            { id: 3, nombre: 'OTRO' },
         ]
 
         this.tipos_alumbrado = [
+            { id: 0, nombre: 'OTRO' },
             { id: 1, nombre: 'ELECTRICIDAD' },
             { id: 2, nombre: 'MECHERO' },
             { id: 3, nombre: 'VELA' },
             { id: 4, nombre: 'PANEL SOLAR' },
-            { id: 5, nombre: 'OTRO' },
         ]
 
-        this.otros_servicios = [
+        this.otros_elementos = [
+            { id: 0, nombre: 'OTRO' },
             { id: 1, nombre: 'EQUIPO DE SONIDO' },
             { id: 2, nombre: 'TELEVISOR' },
             { id: 3, nombre: 'SERVICIO DE CABLE' },
@@ -117,22 +128,63 @@ export class FichaViviendaComponent implements OnInit {
             { id: 7, nombre: 'CELULAR' },
             { id: 8, nombre: 'COMPUTADORA (PC)' },
             { id: 9, nombre: 'LAPTOP' },
-            {
-                id: 10,
-                nombre: 'SERVICIO DE INTERNET (PAQUETES DE DATOS PREPAGO Y POSTPAGO NO CUENTAN COMO SERVICIO DE INTERNET)',
-            },
+            { id: 10, nombre: 'SERVICIO DE INTERNET HOGAR' },
             { id: 11, nombre: 'TABLET' },
             { id: 12, nombre: 'AUTOMÓVIL / CAMINETA' },
             { id: 13, nombre: 'MOTO / MOTOTAXI' },
-            { id: 14, nombre: 'OTRO' },
         ]
+
+        this.visibleInput = Array(10).fill(false)
 
         try {
             this.form = this.fb.group({
-                iPersId: [null, null],
+                iFichaDGId: [null, Validators.required],
+                iTipoOcupaVivId: [null],
+                cTipoOcupaVivDescripcion: [''],
+                iEstadoVivId: [null],
+                cEstadoVivDescripcion: [''],
+                iViviendaCarNroPisos: [null],
+                iViviendaCarNroAmbientes: [null],
+                iViviendaCarNroHabitaciones: [null],
+                iMatTecVivId: [null],
+                cMatTecVivDescripcion: [''],
+                iMatPisoVivId: [null],
+                cMatPisoVivDescripcion: [''],
+                iMatPreId: [null],
+                cMatPreDescripcion: [''],
+                iTipoSumAId: [null],
+                cTipoSumADescripcion: [''],
+                iTipoAlumId: [null],
+                cTipoAlumDescripcion: [''],
+                iEleParaVivId: [null],
+                cEleParaVivDescripcion: [''],
+                iTipoVivId: [null],
+                cTipoVivDescripcion: [null],
+                iTiposSsHhId: [null],
+                cTiposSsHhDescripcion: [null],
             })
         } catch (error) {
             console.log(error, 'error inicializando formulario')
+        }
+    }
+
+    handleDropdownChange(event: any, index: number) {
+        if (event?.value === undefined) {
+            this.visibleInput[index] = false
+            return null
+        }
+        if (Array.isArray(event.value)) {
+            if (event.value.includes(0)) {
+                this.visibleInput[index] = true
+            } else {
+                this.visibleInput[index] = false
+            }
+        } else {
+            if (event.value == 0) {
+                this.visibleInput[index] = true
+            } else {
+                this.visibleInput[index] = false
+            }
         }
     }
 

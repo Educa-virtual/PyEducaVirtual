@@ -16,7 +16,6 @@ import { IconComponent } from '../icon/icon.component'
 import { isIIcon } from '../utils/is-icon-object'
 import { IsIconTypePipe } from '../pipes/is-icon-type.pipe'
 import { environment } from '@/environments/environment.template'
-
 type TColumnType =
     | 'actions'
     | 'item'
@@ -38,6 +37,23 @@ export interface IColumn {
     field: string
     header: string
     text_header: string
+    inputType?: string
+    outputType?: string
+
+    severity?: (
+        option
+    ) =>
+        | 'success'
+        | 'secondary'
+        | 'info'
+        | 'warning'
+        | 'danger'
+        | 'contrast'
+        | undefined
+    options?: {
+        label: string
+        value: string
+    }[]
     text: string
     customFalsy?: {
         trueText: string

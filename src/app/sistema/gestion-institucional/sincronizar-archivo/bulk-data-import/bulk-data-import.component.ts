@@ -23,6 +23,7 @@ import { ContainerPageComponent } from '@/app/shared/container-page/container-pa
 import { ToastModule } from 'primeng/toast'
 import { MessageService } from 'primeng/api'
 import { check, decline } from './actions-table-primeng'
+import { inputTypeColumns } from './bulk-table-columns'
 
 @Component({
     selector: 'app-bulk-data-import',
@@ -60,8 +61,9 @@ export class BulkDataImportComponent {
     unverified_data
     verified_data
     verified_columns_recorded
+    verified_actions_recorded = [check]
     import_data_actions = [check, decline]
-    verified_columns_not_recorded
+    import_data_columns
     import_data
 
     importLoad: boolean = false
@@ -106,30 +108,44 @@ export class BulkDataImportComponent {
             const worksheet = workbook.Sheets[firstSheetName]
 
             // Convertir los datos de la hoja a formato JSON
-            const jsonData: Array<any> = XLSX.utils.sheet_to_json(worksheet, {
-                header: 1,
-            })
+            const jsonData: any[] = XLSX.utils
+                .sheet_to_json(worksheet, { header: 1 })
+                .filter((row: any[]) => Array.isArray(row) && row.length > 0)
+
             console.log('Datos del archivo XLSX:', jsonData)
 
-            this.columns = jsonData[0]
-                .map((data, index) => {
-                    if (!jsonData[0][index]) {
-                        return null
-                    }
+            this.columns = inputTypeColumns.map((column) => {
+                const { width, field, header, text, text_header } = column
 
-                    return {
-                        type: 'text',
-                        width: '5rem',
-                        field: jsonData[1][index],
-                        header: jsonData[0][index],
-                        text_header: 'center',
-                        text: 'center',
-                    }
-                })
-                .filter(
-                    (column): column is { [key: string]: any } =>
-                        column !== null
-                )
+                return {
+                    type: 'text',
+                    width,
+                    field,
+                    header,
+                    text,
+                    text_header,
+                }
+            })
+
+            // this.columns = jsonData[0]
+            //     .map((data, index) => {
+            //         if (!jsonData[0][index]) {
+            //             return null
+            //         }
+
+            //         return {
+            //             type: 'text',
+            //             width: '5rem',
+            //             field: jsonData[1][index],
+            //             header: jsonData[0][index],
+            //             text_header: 'center',
+            //             text: 'center',
+            //         }
+            //     })
+            //     .filter(
+            //         (column): column is { [key: string]: any } =>
+            //             column !== null
+            //     )
 
             this.unverified_data = jsonData.slice(2).map((row) =>
                 row.reduce(
@@ -196,18 +212,11 @@ export class BulkDataImportComponent {
                     console.log('filteredData')
                     console.log(this.verified_data)
 
-                    this.unverified_data = response.data.flatMap((data) =>
-                        JSON.parse(data.lista_no_d)
-                    )
-
                     if (this.unverified_data) {
                         console.log(this.columns)
 
-                        this.verified_columns_not_recorded = [
-                            ...this.columns.map((column) => ({
-                                ...column,
-                                type: 'cell-editor',
-                            })),
+                        this.import_data_columns = [
+                            ...inputTypeColumns,
                             {
                                 type: 'actions',
                                 width: '3rem',
@@ -217,6 +226,21 @@ export class BulkDataImportComponent {
                                 text: 'center',
                             },
                         ]
+
+                        // this.import_data_columns = [
+                        //     ...this.columns.map((column) => ({
+                        //         ...column,
+                        //         type: 'cell-editor',
+                        //     })),
+                        //     {
+                        //         type: 'actions',
+                        //         width: '3rem',
+                        //         field: 'actions',
+                        //         header: 'Acciones',
+                        //         text_header: 'center',
+                        //         text: 'center',
+                        //     },
+                        // ]
 
                         this.verified_columns_recorded = this.columns.map(
                             (column) => ({
@@ -241,12 +265,17 @@ export class BulkDataImportComponent {
 
                         console.log('this.import_data')
                         console.log(this.unverified_data)
-                        console.log(this.import_data)
+                        console.log(this.verified_data)
                         this.import_data = this.unverified_data.filter(
-                            (obj) => Object.keys(obj).length > 0
+                            (unData) =>
+                                !this.verified_data.some(
+                                    (vData) =>
+                                        vData.cPersDocumento ==
+                                        unData.cPersDocumento
+                                )
                         )
 
-                        this.unverified_data = []
+                        // this.unverified_data = []
                     }
 
                     console.log('this.verified_data_not_recorded')

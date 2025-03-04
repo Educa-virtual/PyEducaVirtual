@@ -222,14 +222,41 @@
                         @if (col.type === 'cell-editor') {
                             <p-cellEditor>
                                 <ng-template pTemplate="input">
-                                    <input
-                                        pInputText
-                                        type="text"
-                                        [(ngModel)]="rowData[col.field]"
-                                    />
+                                    @switch (col.inputType) {
+                                        @case ('dropdown') {
+                                            <p-dropdown
+                                                [options]="col.options"
+                                                appendTo="body"
+                                                [(ngModel)]="rowData[col.field]"
+                                                [style]="{ width: '100%' }"
+                                            />
+                                        }
+                                        @default {
+                                            <input
+                                                pInputText
+                                                [type]="col.inputType ?? 'text'"
+                                                [(ngModel)]="rowData[col.field]"
+                                            />
+                                        }
+                                    }
                                 </ng-template>
+
                                 <ng-template pTemplate="output">
-                                    {{ rowData[col.field] }}
+                                    @switch (col.outputType) {
+                                        @case ('tag') {
+                                            <p-tag
+                                                [value]="rowData[col.field]"
+                                                [severity]="
+                                                    col.severity(
+                                                        rowData[col.field]
+                                                    )
+                                                "
+                                            />
+                                        }
+                                        @default {
+                                            {{ rowData[col.field] }}
+                                        }
+                                    }
                                 </ng-template>
                             </p-cellEditor>
                         }

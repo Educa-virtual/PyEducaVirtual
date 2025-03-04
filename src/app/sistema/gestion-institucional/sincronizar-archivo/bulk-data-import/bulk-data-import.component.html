@@ -72,7 +72,7 @@
                 }
             </div>
         </app-tab-panel>
-        <app-tab-panel title="Datos ">
+        <app-tab-panel title="Datos en sistema">
             <div class="card">
                 @if (verified_data) {
                     <!-- [data]="verified_data" -->
@@ -81,6 +81,7 @@
                         [columnas]="verified_columns_recorded"
                         [showCaption]="true"
                         [showSortIcon]="false"
+                        [actions]="verified_actions_recorded"
                         [data]="verified_data"
                         dataKey="cPersDocumento"
                         groupRowsBy="cPersDocumento"
@@ -98,7 +99,7 @@
             <div class="card">
                 @if (import_data) {
                     <app-table-primeng
-                        [columnas]="verified_columns_not_recorded"
+                        [columnas]="import_data_columns"
                         [data]="import_data"
                         [actions]="import_data_actions"
                         [showCaption]="false"

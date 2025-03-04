@@ -14,6 +14,7 @@ import { FormBuilder, Validators } from '@angular/forms'
 import { MessageService } from 'primeng/api'
 import { MetodologiaComponent } from './components/metodologia/metodologia.component'
 import { Subject, takeUntil } from 'rxjs'
+import { EditorComponent, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular'
 interface Data {
     accessToken: string
     refreshToken: string
@@ -30,6 +31,7 @@ interface Data {
         ContainerPageComponent,
         PrimengModule,
         BtnLoadingComponent,
+        EditorComponent,
         TablePrimengComponent,
         RecursosDidacticosComponent,
         ActividadesAprendizajeEvaluacionComponent,
@@ -39,6 +41,9 @@ interface Data {
     ],
     templateUrl: './silabo.component.html',
     styleUrl: './silabo.component.scss',
+    providers: [
+        { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },
+    ],
 })
 export class SilaboComponent implements OnInit, OnDestroy {
     @Input() idDocCursoId: string
@@ -55,6 +60,43 @@ export class SilaboComponent implements OnInit, OnDestroy {
         private messageService: MessageService
     ) {
         this.nivelTipo = this.ConstantesService.nivelTipo
+    }
+
+    initDescripcion: EditorComponent['init'] = {
+        base_url: '/tinymce', // Root for resources
+        suffix: '.min', // Suffix to use when loading resources
+        menubar: false,
+        selector: 'textarea',
+        setup: (editor) => {
+            editor.on('blur', (e) =>
+                this.actualizar(e, 'cSilaboDescripcionCurso')
+            )
+        },
+        placeholder: 'Escribe aqui...',
+        height: 250,
+        plugins: 'lists image table',
+        toolbar:
+            'undo redo | forecolor backcolor | bold italic underline strikethrough | ' +
+            'alignleft aligncenter alignright alignjustify | bullist numlist | ' +
+            'image table',
+        editable_root: true,
+    }
+    initCapacidad: EditorComponent['init'] = {
+        base_url: '/tinymce', // Root for resources
+        suffix: '.min', // Suffix to use when loading resources
+        menubar: false,
+        selector: 'textarea',
+        setup: (editor) => {
+            editor.on('blur', (e) => this.actualizar(e, 'cSilaboCapacidad'))
+        },
+        placeholder: 'Escribe aqui...',
+        height: 250,
+        plugins: 'lists image table',
+        toolbar:
+            'undo redo | forecolor backcolor | bold italic underline strikethrough | ' +
+            'alignleft aligncenter alignright alignjustify | bullist numlist | ' +
+            'image table',
+        editable_root: true,
     }
 
     silabo = [
@@ -86,6 +128,23 @@ export class SilaboComponent implements OnInit, OnDestroy {
                 'Área Curricular, Capacidad y Metodología'
         }
     }
+    actualizar(data: any, index: string) {
+        const json_update: any = {}
+        json_update['iSilaboId'] =
+            this.dataSilabo.controls.iSilaboId.getRawValue()
+        json_update['valor'] = data.target.getContent()
+        json_update['columna'] = index
+        let params = {}
+        params = {
+            petition: 'post',
+            group: 'acad',
+            prefix: 'silabos',
+            ruta: 'actualizar',
+            data: json_update,
+            params: { skipSuccessMessage: true },
+        }
+        this.getInformation(null, params)
+    }
     dataInformation = []
     dataSilabo = this.fb.group({
         opcion: ['', Validators.required],
@@ -96,7 +155,6 @@ export class SilaboComponent implements OnInit, OnDestroy {
         dtSilabo: [''],
         cSilaboDescripcionCurso: ['', Validators.required],
         cSilaboCapacidad: ['', Validators.required],
-
         iCredId: [this.ConstantesService.iCredId, Validators.required],
     })
 
@@ -197,7 +255,9 @@ export class SilaboComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
                 next: (response: Data) => {
-                    this.getSilabo(index, false, response.data)
+                    if (index != null) {
+                        this.getSilabo(index, false, response.data)
+                    }
                 },
                 complete: () => {},
                 error: (error) => {

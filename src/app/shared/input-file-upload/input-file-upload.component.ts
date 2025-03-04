@@ -24,6 +24,7 @@ import { NG_VALUE_ACCESSOR } from '@angular/forms'
 })
 export class InputFileUploadComponent {
     @Input() label: string = ''
+    @Input() canViewLocalFile: boolean = true
     @Input() acceptTypes: string = ''
     selectFile: File | null = null
     fileBlob: Blob | null = null
@@ -85,7 +86,6 @@ export class InputFileUploadComponent {
         const input = event.target as HTMLInputElement
         if (input.files && input.files.length > 0) {
             this.selectFile = input.files[0] // Archivo seleccionado
-            console.log(this.selectFile)
             this.fileView.nativeElement.value = this.selectFile.name
 
             this.fileBlob = new Blob([this.selectFile], {
@@ -99,10 +99,14 @@ export class InputFileUploadComponent {
     }
 
     triggerFileInput() {
+        this.clear()
+        this.fileInput.nativeElement.click()
+    }
+
+    clear() {
         this.selectFile = null
         this.fileInput.nativeElement.value = ''
         this.fileView.nativeElement.value = ''
         this.fileBlob = null
-        this.fileInput.nativeElement.click()
     }
 }

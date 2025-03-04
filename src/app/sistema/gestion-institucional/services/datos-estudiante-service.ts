@@ -4,7 +4,7 @@ import { Observable, Subject } from 'rxjs'
 import { map, takeUntil } from 'rxjs/operators'
 import { of } from 'rxjs'
 import { HttpClient, HttpHeaders } from '@angular/common/http'
-import { environment } from '@/environments/environment.template'
+import { environment } from '@/environments/environment'
 
 const baseUrl = environment.backendApi
 
@@ -119,6 +119,10 @@ export class DatosEstudianteService implements OnDestroy {
         )
     }
 
+    validarPersona(data: any) {
+        return this.http.post(`${baseUrl}/grl/validarPersona`, data)
+    }
+
     getTiposFamiliares() {
         if (!this.tipos_familiares) {
             return this.query
@@ -183,6 +187,7 @@ export class DatosEstudianteService implements OnDestroy {
                         this.tipos_documentos = items.map((documento) => ({
                             id: documento.iTipoIdentId,
                             nombre: documento.cTipoIdentNombre,
+                            longitud: documento.iTipoIdentLongitud,
                         }))
                         return this.tipos_documentos
                     })

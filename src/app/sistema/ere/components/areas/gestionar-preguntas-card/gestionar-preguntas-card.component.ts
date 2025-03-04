@@ -2,15 +2,17 @@ import { StringCasePipe } from '@shared/pipes/string-case.pipe'
 import {
     ChangeDetectionStrategy,
     Component,
+    EventEmitter,
     inject,
     Input,
     OnInit,
+    Output,
 } from '@angular/core'
 import { MenuModule } from 'primeng/menu'
 import { ButtonModule } from 'primeng/button'
 import { MenuItem } from 'primeng/api'
 import { ICurso } from '@/app/sistema/aula-virtual/sub-modulos/cursos/interfaces/curso.interface'
-import { environment } from '@/environments/environment.template'
+import { environment } from '@/environments/environment'
 import { CommonModule } from '@angular/common'
 import { ApiEvaluacionesRService } from '@/app/sistema/evaluaciones/services/api-evaluaciones-r.service'
 import { Router } from '@angular/router'
@@ -32,11 +34,14 @@ export class GestionarPreguntasCardComponent implements OnInit {
     private _ConstantesService = inject(ConstantesService)
 
     @Input() iEvaluacionIdHashed: string = ''
-    backend = environment.backend
     @Input() curso: ICurso
+    backend = environment.backend
     selectedData = []
     acciones: MenuItem[] = []
     iPerfilId: number = this._ConstantesService.iPerfilId
+    @Output() dialogSubirArchivoEvent = new EventEmitter<{
+        curso: ICurso
+    }>()
 
     constructor(private store: LocalStoreService) {}
 
@@ -68,7 +73,11 @@ export class GestionarPreguntasCardComponent implements OnInit {
             {
                 label: 'Subir PDF',
                 icon: 'pi pi-angle-right',
-                command: () => {},
+                command: () => {
+                    this.dialogSubirArchivoEvent.emit({
+                        curso: this.curso,
+                    })
+                },
                 disabled: this.iPerfilId !== ESPECIALISTA_DREMO,
             },
             {

@@ -45,10 +45,10 @@ export class MostrarEvaluacionComponent implements OnInit {
     // meto de al seleccionar una opción
     seleccionarOpcion(opcion: string) {
         this.seleccion = opcion
-        console.log('Seleccionaste', opcion)
     }
     // como convertir el (id) en letras y poder listar
     getLetra(index: number): string {
-        return String.fromCharCode(65 + index) // Convierte 0 → A, 1 → B, 2 → C, etc.
+        return String.fromCharCode(65 + index)
+        // Convierte 0 → A, 1 → B, 2 → C, etc.
     }
 }

@@ -1,7 +1,7 @@
 <app-container-page [title]="'Evaluación ERE:'" [actions]="[]">
     <!-- interface de Inicio -->
     <div class="grid col-12" *ngIf="!mostrarOtraInterfaz">
-        <div class="card col-4 align-content-center">
+        <div class="col-4 align-content-center">
             <div class="">
                 <article class="">
                     <div class="">
@@ -49,7 +49,7 @@
         </div>
 
         <!-- tiempo de evaluación  -->
-        <div class="card col-4 align-content-center">
+        <div class="col-4 align-content-center">
             <div class="flex flex-column gap-2">
                 <span class="font-bold text-xl flex gap-2">
                     <app-icon
@@ -72,17 +72,15 @@
         </div>
 
         <!-- Instrucciones del examen -->
-        <div class="card col-4">
-            <div class="col">
-                <span class="font-bold text-xl text-center">
-                    Instrucciones:
-                </span>
-                <div class="bg-red-400 rounded-lg p-4">
-                    <p class="flex gap-2 flex-wrap">
-                        1. Tener en cuenta su ortografía <br />
-                        2. Leer bien el enunciado de la Pregunta
-                    </p>
-                </div>
+        <div class="col-4">
+            <div class="col text-center">
+                <span class="font-bold text-xl"> Instrucciones </span>
+            </div>
+            <div class="backColor p-4">
+                <p class="flex gap-2 flex-wrap">
+                    1. Tener en cuenta su ortografía <br />
+                    2. Leer bien el enunciado de la Pregunta
+                </p>
             </div>
         </div>
     </div>
@@ -93,7 +91,7 @@
     </div>
     <div class="col-12 text-center">
         <p-button
-            class="align-content-center"
+            class="align-content-center w-64"
             *ngIf="!mostrarOtraInterfaz"
             (click)="cambiarInterfaz()"
             >Iniciar Evaluación</p-button

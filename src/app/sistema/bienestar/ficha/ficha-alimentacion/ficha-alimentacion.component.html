@@ -1,0 +1,263 @@
+<br />
+
+<form [formGroup]="formAlimentacion">
+    <div class="grid p-fluid mt-3">
+        <input type="hidden" name="iFichaDGId" />
+
+        <div class="field col-12">
+            <div class="grid">
+                <div class="col w-full">
+                    <span class="p-float-label">
+                        <p-multiSelect
+                            display="chip"
+                            [options]="programas_alimentarios"
+                            formControlName="iProAlimId"
+                            optionLabel="nombre"
+                            optionValue="id"
+                            [filter]="true"
+                            [showClear]="true"
+                            [appendTo]="'body'"
+                            multiple="true"
+                            (onChange)="handleDropdownChange($event, 9)"
+                            (onClear)="handleDropdownChange($event, 9)"
+                        />
+                        <label for="iProAlimId"
+                            >Programas de alimentación estatales *</label
+                        >
+                    </span>
+                </div>
+                @if (visibleInput[9] === true) {
+                    <div class="col-12">
+                        <input
+                            pInputText
+                            formControlName="cProAlimNombre"
+                            placeholder="Especifique"
+                            type="text"
+                        />
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="field col-12 md:col-6">
+            <p-fieldset legend="Lugar de alimentación durante la semana">
+                <div class="grid mt-3">
+                    <div class="col w-full">
+                        <span class="p-float-label">
+                            <p-dropdown
+                                [options]="lugares_alimentacion"
+                                formControlName="iLugarAlimIdDesayuno"
+                                optionLabel="nombre"
+                                optionValue="id"
+                                [filter]="false"
+                                [showClear]="true"
+                                [appendTo]="'body'"
+                                (onChange)="handleDropdownChange($event, 0)"
+                            />
+                            <label for="iLugAlimId">Desayuno *</label>
+                        </span>
+                    </div>
+                    @if (visibleInput[0] === true) {
+                        <div class="col">
+                            <input
+                                pInputText
+                                formControlName="cLugarAlimDesayuno"
+                                placeholder="Especifique"
+                                type="text"
+                            />
+                        </div>
+                    }
+                </div>
+                <div class="grid mt-3">
+                    <div class="col w-full">
+                        <span class="p-float-label">
+                            <p-dropdown
+                                [options]="lugares_alimentacion"
+                                formControlName="iLugarAlimIdAlmuerzo"
+                                optionLabel="nombre"
+                                optionValue="id"
+                                [filter]="false"
+                                [showClear]="true"
+                                [appendTo]="'body'"
+                                (onChange)="handleDropdownChange($event, 1)"
+                            />
+                            <label for="iLugAlimId">Almuerzo *</label>
+                        </span>
+                    </div>
+                    @if (visibleInput[1] === true) {
+                        <div class="col">
+                            <input
+                                pInputText
+                                formControlName="cLugarAlimAlmuerzo"
+                                placeholder="Especifique"
+                                type="text"
+                            />
+                        </div>
+                    }
+                </div>
+                <div class="grid mt-3">
+                    <div class="col w-full">
+                        <span class="p-float-label">
+                            <p-dropdown
+                                [options]="lugares_alimentacion"
+                                formControlName="iLugarAlimIdCena"
+                                optionLabel="nombre"
+                                optionValue="id"
+                                [filter]="false"
+                                [showClear]="true"
+                                [appendTo]="'body'"
+                                (onChange)="handleDropdownChange($event, 2)"
+                            />
+                            <label for="iLugAlimId">Cena *</label>
+                        </span>
+                    </div>
+                    @if (visibleInput[2] === true) {
+                        <div class="col">
+                            <input
+                                pInputText
+                                formControlName="cLugarAlimCena"
+                                placeholder="Especifique"
+                                type="text"
+                            />
+                        </div>
+                    }
+                </div>
+            </p-fieldset>
+        </div>
+
+        <div class="field col-12 md:col-6">
+            <p-fieldset legend="Información alimenticia adicional">
+                <div class="grid">
+                    <div class="col-12">
+                        <p-inputGroup>
+                            <p-inputGroupAddon
+                                >Dieta Vegetariana</p-inputGroupAddon
+                            >
+                            <p-inputGroupAddon
+                                ><p-inputSwitch
+                                    formControlName="bDietaVegetariana"
+                            /></p-inputGroupAddon>
+                            <input
+                                type="text"
+                                formControlName="cDietaVegetarianaObs"
+                                pInputText
+                                placeholder="Observación"
+                            />
+                        </p-inputGroup>
+                    </div>
+                    <div class="col-12">
+                        <p-inputGroup>
+                            <p-inputGroupAddon>Dieta Vegana</p-inputGroupAddon>
+                            <p-inputGroupAddon
+                                ><p-inputSwitch formControlName="bDietaVegana"
+                            /></p-inputGroupAddon>
+                            <input
+                                type="text"
+                                formControlName="cDietaVeganaObs"
+                                pInputText
+                                placeholder="Observación"
+                            />
+                        </p-inputGroup>
+                    </div>
+                    <div class="col-12">
+                        <p-inputGroup>
+                            <p-inputGroupAddon
+                                >Alergias alimenticias</p-inputGroupAddon
+                            >
+                            <p-inputGroupAddon
+                                ><p-inputSwitch formControlName="bAlergiasAlim"
+                            /></p-inputGroupAddon>
+                            <input
+                                type="text"
+                                formControlName="cAlergiasAlimObs"
+                                pInputText
+                                placeholder="Observación"
+                            />
+                        </p-inputGroup>
+                    </div>
+                    <div class="col-12">
+                        <p-inputGroup>
+                            <p-inputGroupAddon
+                                >Intolerancias alimenticias</p-inputGroupAddon
+                            >
+                            <p-inputGroupAddon
+                                ><p-inputSwitch
+                                    formControlName="bIntoleranciaAlim"
+                            /></p-inputGroupAddon>
+                            <input
+                                type="text"
+                                formControlName="cIntoleranciaAlimObs"
+                                pInputText
+                                placeholder="Observación"
+                            />
+                        </p-inputGroup>
+                    </div>
+                    <div class="col-12">
+                        <p-inputGroup>
+                            <p-inputGroupAddon
+                                >Suplementos alimenticios</p-inputGroupAddon
+                            >
+                            <p-inputGroupAddon
+                                ><p-inputSwitch
+                                    formControlName="bSumplementosAlim"
+                            /></p-inputGroupAddon>
+                            <input
+                                type="text"
+                                formControlName="cSumplementosAlimObs"
+                                pInputText
+                                placeholder="Observación"
+                            />
+                        </p-inputGroup>
+                    </div>
+                    <div class="col-12">
+                        <p-inputGroup>
+                            <p-inputGroupAddon
+                                >Dificultad de acceso a
+                                alimentos</p-inputGroupAddon
+                            >
+                            <p-inputGroupAddon
+                                ><p-inputSwitch
+                                    formControlName="bDificultadAlim"
+                            /></p-inputGroupAddon>
+                            <input
+                                type="text"
+                                formControlName="cDificultadAlimObs"
+                                pInputText
+                                placeholder="Observación"
+                            />
+                        </p-inputGroup>
+                    </div>
+                    <div class="col-12">
+                        <p-inputGroup>
+                            <p-inputGroupAddon
+                                >Otra información adicional</p-inputGroupAddon
+                            >
+                            <input
+                                type="text"
+                                formControlName="cInfoAdicionalAlimObs"
+                                pInputText
+                                placeholder="Observación"
+                            />
+                        </p-inputGroup>
+                    </div>
+                </div>
+            </p-fieldset>
+        </div>
+    </div>
+</form>
+
+<br />
+
+<div class="flex justify-content-end gap-2">
+    <p-button
+        label="Salir sin guardar"
+        (onClick)="actualizarDatos()"
+        styleClass="p-button-secondary"
+    />
+    <p-button
+        label="Guardar y continuar"
+        (onClick)="guardarDatos()"
+        styleClass="p-button-primary"
+    />
+</div>
+<p-toast></p-toast>

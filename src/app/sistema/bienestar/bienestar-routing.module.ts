@@ -5,6 +5,7 @@ import { FichaComponent } from './ficha/ficha.component'
 import { FichaFamiliaComponent } from './ficha/ficha-familia/ficha-familia.component'
 import { FichaEconomicoComponent } from './ficha/ficha-economico/ficha-economico.component'
 import { FichaViviendaComponent } from './ficha/ficha-vivienda/ficha-vivienda.component'
+import { FichaAlimentacionComponent } from './ficha/ficha-alimentacion/ficha-alimentacion.component'
 
 const routes: Routes = [
     { path: 'principal', component: PrincipalComponent },
@@ -17,6 +18,7 @@ const routes: Routes = [
             { path: 'familia', component: FichaFamiliaComponent },
             { path: 'economico', component: FichaEconomicoComponent },
             { path: 'vivienda', component: FichaViviendaComponent },
+            { path: 'alimentacion', component: FichaAlimentacionComponent },
         ],
     },
 ]

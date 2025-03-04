@@ -1,0 +1,10 @@
+<p-inputGroup>
+    <p-inputGroupAddon><i class="pi pi-search"></i></p-inputGroupAddon>
+    <input
+        type="text"
+        pInputText
+        placeholder="Buscar por nombre...."
+        [(ngModel)]="searchTerm"
+        (input)="filtrarDatos($event)"
+    />
+</p-inputGroup>

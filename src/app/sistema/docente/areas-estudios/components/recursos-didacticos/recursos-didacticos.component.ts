@@ -74,6 +74,7 @@ export class RecursosDidacticosComponent implements OnChanges, OnDestroy {
             })
     }
     updateRecursoSilabos(item) {
+        // GUARDARxiEstado => 1
         item.valorBusqueda = item.iEstado
         item.iSilaboId = this.iSilaboId
         item.opcion = 'GUARDARxiEstado'

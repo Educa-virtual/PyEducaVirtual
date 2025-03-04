@@ -13,7 +13,9 @@
         [(selectedRowData)]="selectedItems"
         [actions]="accionesTabla"
         [showPaginator]="true"
+        [showCaption]="true"
     >
+        <input type="text" />
     </app-table-primeng>
 </app-container-page-accionb>
 <p-toast> </p-toast>
@@ -168,3 +170,9 @@
         </div>
     </ng-template>
 </p-dialog>
+
+<app-form-liberar-areas-ugel
+    [showModal]="showModalLiberarUgel"
+    [data]="item"
+    [titulo]="'Liberar áreas para la evaluación: '"
+></app-form-liberar-areas-ugel>

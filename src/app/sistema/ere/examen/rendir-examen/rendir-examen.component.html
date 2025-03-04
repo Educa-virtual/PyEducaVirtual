@@ -1,16 +1,102 @@
-<app-container-page
-    [title]="'Resultados ERE:'"
-    [actions]="[]"
-    class="custom-container-page"
->
-    <div class="grid">
-        <div class="card col-4">
-            <input type="text" />
+<app-container-page [title]="'Evaluación ERE:'" [actions]="[]">
+    <!-- interface de Inicio -->
+    <div class="grid col-12" *ngIf="!mostrarOtraInterfaz">
+        <div class="card col-4 align-content-center">
+            <div class="">
+                <article class="">
+                    <div class="">
+                        <div class="">
+                            <span class="font-bold text-xl flex gap-2">
+                                <app-icon
+                                    name="matCalendarMonth"
+                                    class="text-primary"
+                                    size="sm"
+                                ></app-icon>
+                                Inicio de Evaluación:
+                            </span>
+                            <!-- {{ foro.dtForoInicio }} -->
+                            <p class="flex gap-2 flex-wrap">
+                                <!-- {{
+                                    examen?.dtEvaluacionInicio
+                                        | date
+                                            : "EEEE, d 'de' MMMM 'de' yyyy"
+                                }} -->
+                                Lunes, 29 de octubre de 2024 08:00
+                            </p>
+                        </div>
+                        <div class="">
+                            <span class="font-bold text-xl flex gap-2">
+                                <app-icon
+                                    name="matCalendarMonth"
+                                    class="text-primary"
+                                    size="sm"
+                                ></app-icon>
+                                Cierre de Evaluación
+                            </span>
+                            <!-- {{ foro.dtForoFin }} -->
+                            <p class="flex gap-2 flex-wrap">
+                                <!-- {{
+                                    foro?.dtForoFin
+                                        | date
+                                            : "EEEE, d 'de' MMMM 'de' yyyy"
+                                }} -->
+                                Lunes, 28 de octubre de 2024 13:15
+                            </p>
+                        </div>
+                    </div>
+                </article>
+            </div>
         </div>
-        <div class="card col-4"></div>
-        <div class="card col-4"></div>
+
+        <!-- tiempo de evaluación  -->
+        <div class="card col-4 align-content-center">
+            <div class="flex flex-column gap-2">
+                <span class="font-bold text-xl flex gap-2">
+                    <app-icon
+                        name="matCalendarMonth"
+                        class="text-primary"
+                        size="sm"
+                    ></app-icon>
+                    Duración: 60minutos
+                </span>
+                <!-- {{ foro.dtForoInicio }} -->
+                <p class="flex gap-2 flex-wrap">
+                    <!-- {{
+                        examen?.dtEvaluacionInicio
+                            | date
+                                : "EEEE, d 'de' MMMM 'de' yyyy"
+                    }} -->
+                    Total de Preguntas: (20)
+                </p>
+            </div>
+        </div>
+
+        <!-- Instrucciones del examen -->
+        <div class="card col-4">
+            <div class="col">
+                <span class="font-bold text-xl text-center">
+                    Instrucciones:
+                </span>
+                <div class="bg-red-400 rounded-lg p-4">
+                    <p class="flex gap-2 flex-wrap">
+                        1. Tener en cuenta su ortografía <br />
+                        2. Leer bien el enunciado de la Pregunta
+                    </p>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="card">
-        <p-button class="align-content-center">Iniciar Evaluación</p-button>
+
+    <!-- Interface de rendir examen -->
+    <div class="col-12" *ngIf="mostrarOtraInterfaz">
+        <app-mostrar-evaluacion></app-mostrar-evaluacion>
+    </div>
+    <div class="col-12 text-center">
+        <p-button
+            class="align-content-center"
+            *ngIf="!mostrarOtraInterfaz"
+            (click)="cambiarInterfaz()"
+            >Iniciar Evaluación</p-button
+        >
     </div>
 </app-container-page>

@@ -1,0 +1,107 @@
+<div class="card col-12">
+    <div class="py-2">
+        <p-progressBar [value]="30" />
+    </div>
+
+    <p-accordion [activeIndex]="0">
+        <p-accordionTab [header]="tab.title" *ngFor="let tab of pregunta">
+            <!-- pregunta multiple -->
+            <div *ngIf="tab.tipo === 'múltiple'">
+                <div class="grid">
+                    <div class="card col-6">
+                        <!-- {{Imprimir el enunciado}} -->
+                        <span class="font-bold flex gap-2 p-3">
+                            <p>
+                                En un enorme parque lleno de árboles y flores,
+                                al amanecer, hay 36 palomas descansando en las
+                                ramas y 14 gorriones volando entre los arbustos.
+                                Con el paso de las horas, llegan 8 palomas más
+                                para unirse a sus amigas, pero, de repente, 6
+                                gorriones deciden emprender vuelo y alejarse del
+                                lugar.
+                            </p>
+                        </span>
+                        <div class="image-container">
+                            <img
+                                src="/assets/demo/images/matemit/3054120.jpg"
+                                alt=""
+                            />
+                        </div>
+                    </div>
+                    <div class="card col-6">
+                        <!-- Mostrar las sub-preguntas de la pregunta multiple -->
+                        <p-accordion [multiple]="true" [activeIndex]="0">
+                            <p-accordionTab
+                                [header]="tab.title"
+                                *ngFor="let tab of subPreguntas"
+                            >
+                                <ul>
+                                    <li
+                                        *ngFor="
+                                            let opcion of subAlternativas;
+                                            let i = index
+                                        "
+                                        (onclick)="seleccionarOpcion(opcion)"
+                                        [class.seleccionado]="
+                                            opcion === seleccion
+                                        "
+                                    >
+                                        <p-radioButton
+                                            name="opciones"
+                                            [value]="opcion"
+                                            [(ngModel)]="seleccion"
+                                        >
+                                        </p-radioButton>
+                                        <p class="ml-2">
+                                            {{ getLetra(i) }}.- {{ opcion }}
+                                        </p>
+                                    </li>
+                                </ul>
+                            </p-accordionTab>
+                        </p-accordion>
+                        <div class="backColor p-4">
+                            <span class="font-bold text-xl flex gap-2">
+                                Texto de ayuda:
+                            </span>
+                            <p class="flex gap-2 flex-wrap">
+                                <!-- {{imprimir texto de ayuda}} -->
+                                Tu eres muy inteligente,, no vas poner jajaj
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mostrar preguntas Unicas -->
+            <div *ngIf="tab.tipo === 'unica'">
+                <div>
+                    <ul>
+                        <li
+                            *ngFor="let opcion of alternativas; let i = index"
+                            (onclick)="seleccionarOpcion(opcion)"
+                            [class.seleccionado]="opcion === seleccion"
+                        >
+                            <!-- imprimir las respuestas -->
+                            <p-radioButton
+                                name="opciones"
+                                [value]="opcion"
+                                [(ngModel)]="seleccion"
+                            >
+                            </p-radioButton>
+                            <p class="ml-2">{{ getLetra(i) }}.- {{ opcion }}</p>
+                        </li>
+                    </ul>
+                </div>
+                <div class="backColor p-4">
+                    <span class="font-bold text-xl flex gap-2">
+                        Texto de ayuda:
+                    </span>
+                    <p class="flex gap-2 flex-wrap">
+                        <!-- {{imprimir texto de ayuda}} -->
+                        Tu eres muy inteligente,, no vas poner jajaj
+                    </p>
+                </div>
+            </div>
+        </p-accordionTab>
+    </p-accordion>
+</div>

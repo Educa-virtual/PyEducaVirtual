@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core'
+import { HttpClient, HttpHeaders } from '@angular/common/http'
 import { environment } from '@/environments/environment'
-import { HttpClient } from '@angular/common/http'
 import { map, Observable, catchError, tap, throwError } from 'rxjs' //catchError, , tap, throwError
 import { mapData } from '../sub-evaluaciones/banco-preguntas/models/pregunta-data-transformer'
 
@@ -491,5 +491,17 @@ export class ApiEvaluacionesRService {
         return this.http
             .get(`${this.urlBackendApi}/ere/evaluaciones/${iEvaluacionId}`)
             .pipe(map((resp) => resp['data']))
+    }
+
+    subirArchivoEvaluacionArea(iEvaluacionId, iCursosNivelGradId, dataArchivo) {
+        return this.http.post(
+            `${this.urlBackendApi}/ere/evaluaciones/${iEvaluacionId}/areas/${iCursosNivelGradId}/archivo-preguntas`,
+            dataArchivo,
+            {
+                headers: new HttpHeaders({
+                    Accept: 'application/json',
+                }),
+            }
+        )
     }
 }

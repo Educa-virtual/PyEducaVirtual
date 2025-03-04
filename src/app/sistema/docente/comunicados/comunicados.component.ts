@@ -1,7 +1,7 @@
-import { Component } from '@angular/core'
+import { Component, inject } from '@angular/core'
 import { PrimengModule } from '@/app/primeng.module'
 import { FormsModule } from '@angular/forms'
-
+import { GeneralService } from '@/app/servicios/general.service'
 interface Comunicado {
     id: number
     titulo: string
@@ -23,6 +23,7 @@ interface Comunicado {
     styleUrls: ['./comunicados.component.scss'],
 })
 export class ComunicadosComponent {
+    private GeneralService = inject(GeneralService)
     comunicados = [
         {
             id: 1,
@@ -32,7 +33,7 @@ export class ComunicadosComponent {
             publicado: '12/02/2025',
             prioridad: 'Urgente',
             caduca: '12/03/2025',
-            grupo: 'Apoderados y Estudiantes',
+            grupo: 'Apoderados,Estudiantes',
             texto: 'Estimados padres de familia y estudiantes las matriculas son hasta....',
             collapsed: true,
         },
@@ -44,7 +45,7 @@ export class ComunicadosComponent {
             publicado: '10/02/2025',
             prioridad: 'Normal',
             caduca: '10/03/2025',
-            grupo: 'Docentes y Estudiantes',
+            grupo: 'Docentes,Estudiantes',
             texto: 'Se informa a la comunidad educativa que las notas ponderadas son...',
             collapsed: true,
         },
@@ -60,6 +61,28 @@ export class ComunicadosComponent {
             texto: 'Se comunica a los docentes que el numero de horas lectiva son 40 por semana',
             collapsed: true,
         },
+    ]
+    estados = [
+        { label: 'Activo', value: 'Activo' },
+        { label: 'Inactivo', value: 'Inactivo' },
+    ]
+
+    prioridades = [
+        { label: 'Urgente', value: 'Urgente' },
+        { label: 'Normal', value: 'Normal' },
+        { label: 'Baja', value: 'Baja' },
+    ]
+
+    tipos = [
+        { label: 'Anuncio', value: 'Anuncio' },
+        { label: 'Aviso', value: 'Aviso' },
+        { label: 'Circular', value: 'Circular' },
+    ]
+
+    grupos = [
+        { label: 'Alumnos', value: 'Alumnos' },
+        { label: 'Docentes', value: 'Docentes' },
+        { label: 'Apoderados', value: 'Apoderados' },
     ]
 
     // Variable para el comunicado seleccionado (para editar)
@@ -88,30 +111,16 @@ export class ComunicadosComponent {
     }
     // Al hacer clic en "Publicar" o "Actualizar"
     guardarComunicado() {
-        if (this.selectedComunicado.id === 0) {
-            // Caso CREAR
-            const nuevoId = this.comunicados.length + 1
-            this.selectedComunicado.id = nuevoId
-            this.comunicados.push({
-                ...this.selectedComunicado,
-                collapsed: true,
-            })
-            console.log('Comunicado creado:', this.selectedComunicado)
-        } else {
-            // Caso EDITAR
-            const index = this.comunicados.findIndex(
-                (c) => c.id === this.selectedComunicado.id
-            )
-            if (index !== -1) {
-                this.comunicados[index] = {
-                    ...this.selectedComunicado,
-                    collapsed: this.comunicados[index].collapsed,
-                }
-                console.log('Comunicado actualizado:', this.selectedComunicado)
-            }
+        const params = {
+            petition: 'post',
+            group: 'com',
+            prefix: 'comunicado',
+            ruta: 'registrar_comunicado',
+            data: {
+                //    comunicados : this.comunicados -> reemplazar para guaardar datos en la DB
+            },
         }
-        // Limpia el formulario o vuelve a modo "crear"
-        this.selectedComunicado = this.initComunicado()
+        this.getInformation(params, 'obtenerAcademicoGrado')
     }
     togglePanel(event: Event, panel: any, comunicado: Comunicado) {
         // Alterna el estado local para cambiar el icono
@@ -122,5 +131,32 @@ export class ComunicadosComponent {
     deleteComunicado(id: number) {
         this.comunicados = this.comunicados.filter((com) => com.id !== id)
         console.log('Comunicado eliminado:', id)
+    }
+    formatDate(date: Date): string {
+        if (!date) return '' // Manejo de valores nulos
+        const day = date.getDate().toString().padStart(2, '0')
+        const month = (date.getMonth() + 1).toString().padStart(2, '0') // Los meses van de 0 a 11
+        const year = date.getFullYear()
+        return `${day}/${month}/${year}`
+    }
+
+    getInformation(params, accion) {
+        this.GeneralService.getGralPrefix(params).subscribe({
+            next: (response: any) => {
+                this.accionBtnItem({ accion, item: response?.data })
+            },
+            complete: () => {},
+        })
+    }
+
+    accionBtnItem(event): void {
+        const { accion } = event
+        const { item } = event
+
+        switch (accion) {
+            case 'registrar':
+                console.log(item)
+                break
+        }
     }
 }

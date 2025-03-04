@@ -93,6 +93,9 @@ export class ContenidosComponent implements OnInit {
     grupos = []
 
     ngOnInit() {
+        this.cargaDatos()
+    }
+    cargaDatos() {
         const params = {
             petition: 'post',
             group: 'com',

@@ -14,14 +14,19 @@
     </div>
     <!-- contenido -->
     <p-tabView>
-        <p-tabPanel header="Contenido" [selected]="true">
+        <p-tabPanel>
+            <ng-template pTemplate="header">
+                <i class="pi pi-users"></i>
+                <span class="ml-2">Contenido</span>
+            </ng-template>
             <app-contenidos></app-contenidos>
         </p-tabPanel>
-        <p-tabPanel header="Grupos">
+        <p-tabPanel>
             <ng-template pTemplate="header">
                 <i class="pi pi-users"></i>
                 <span class="ml-2">Crear Grupo</span>
             </ng-template>
+            <app-grupos></app-grupos>
         </p-tabPanel>
     </p-tabView>
 </section>

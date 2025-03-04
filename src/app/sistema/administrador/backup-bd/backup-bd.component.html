@@ -5,50 +5,80 @@
                 Se creará una copia de seguridad completa dentro del servidor,
                 con las siguientes configuraciones:
             </p>
+
             <p>
-                <p-inputGroup class="w-1/2">
+                <p-inputGroup>
                     <button
                         type="button"
                         pButton
-                        label="Carpeta de destino"
+                        severity="secondary"
+                        label="Carpeta de destino:"
                     ></button>
                     <input
                         type="text"
                         pInputText
+                        class="sin-borde"
                         value="D:\Programas\Microsoft SQL Server\MSSQL16.MSSQLSERVER\MSSQL\Backup"
+                        readonly
                     />
                 </p-inputGroup>
             </p>
             <p>
-                <p-inputGroup class="w-1/2">
+                <p-inputGroup>
                     <button
                         type="button"
+                        severity="secondary"
                         pButton
-                        label="Nombre del archivo"
+                        label="Nombre del archivo:"
                     ></button>
                     <input
                         type="text"
+                        class="sin-borde"
                         pInputText
                         value="NombreBd_backup_yyyy_MM_dd_HHmmss.bak"
+                        readonly
                     />
                 </p-inputGroup>
             </p>
             <p>
-                <p-inputGroup class="w-1/2">
+                <p-inputGroup>
                     <button
                         type="button"
+                        severity="secondary"
                         pButton
-                        label="Tiempo de almacenamiento"
+                        label="Tiempo de almacenamiento:"
                     ></button>
-                    <input type="text" pInputText value="30 días" />
+                    <input
+                        type="text"
+                        pInputText
+                        value="30 días"
+                        class="sin-borde"
+                        readonly
+                    />
                 </p-inputGroup>
             </p>
+
+            <p-messages severity="info">
+                <ng-template pTemplate>
+                    <i class="pi pi-info-circle text-blue-500 text-xl mr-2"></i>
+                    <div class="font-bold">Nota</div>
+                    <div class="ml-2">
+                        Crear una copia de seguridad tomará un tiempo
+                        considerable.
+                    </div>
+                </ng-template>
+            </p-messages>
+
+            <div class="text-center">
+                <p-button label="Crear backup" (onClick)="crearCopia()" />
+            </div>
         </p-tabPanel>
-        <p-tabPanel header="Historial">
-            <p>
-                Sed ut perspiciatis unde omnis iste natus error sit voluptatem
-                accusantium...
-            </p>
-        </p-tabPanel>
+        <!--<p-tabPanel header="Historial">
+            <app-table-primeng [columnas]="columnas" [data]="filteredData" [showPaginator]="true" [showCaption]="false">
+                <input type="text" />
+            </app-table-primeng>
+        </p-tabPanel>-->
     </p-tabView>
 </app-container-page>
+
+<p-toast></p-toast>

@@ -1,7 +1,8 @@
-import { Component, inject } from '@angular/core'
+import { Component, OnInit, inject } from '@angular/core'
 import { PrimengModule } from '@/app/primeng.module'
 import { FormsModule } from '@angular/forms'
 import { GeneralService } from '@/app/servicios/general.service'
+import { ConstantesService } from '@/app/servicios/constantes.service'
 interface Comunicado {
     id: number
     titulo: string
@@ -22,8 +23,28 @@ interface Comunicado {
     templateUrl: './comunicados.component.html',
     styleUrls: ['./comunicados.component.scss'],
 })
-export class ComunicadosComponent {
+export class ComunicadosComponent implements OnInit {
     private GeneralService = inject(GeneralService)
+    iPersId: any
+    Isede: any
+    iYAcadId: any
+    iDocenteId: any
+    iEstudianteId: any
+    iEspecialistaId: any
+    grado: any
+    iSemAcadId: any
+    year: any
+
+    constructor(private ConstantesService: ConstantesService) {
+        this.grado = JSON.parse(this.ConstantesService.grados)
+        this.iPersId = this.ConstantesService.iPersId
+        this.iYAcadId = this.ConstantesService.iYAcadId
+        this.Isede = this.ConstantesService.iSedeId
+        this.iDocenteId = this.ConstantesService.iDocenteId
+        this.iEstudianteId = this.ConstantesService.iEstudianteId
+        this.iEspecialistaId = this.ConstantesService.iEspecialistaId
+    }
+
     comunicados = [
         {
             id: 1,
@@ -63,28 +84,41 @@ export class ComunicadosComponent {
         },
     ]
     estados = [
-        { label: 'Activo', value: 'Activo' },
-        { label: 'Inactivo', value: 'Inactivo' },
+        { label: 'Activo', value: 1 },
+        { label: 'Inactivo', value: 0 },
     ]
 
     prioridades = [
-        { label: 'Urgente', value: 'Urgente' },
-        { label: 'Normal', value: 'Normal' },
-        { label: 'Baja', value: 'Baja' },
+        // { label: 'Urgente', value: 'Urgente' },
+        // { label: 'Normal', value: 'Normal' },
+        // { label: 'Baja', value: 'Baja' },
     ]
 
     tipos = [
-        { label: 'Anuncio', value: 'Anuncio' },
-        { label: 'Aviso', value: 'Aviso' },
-        { label: 'Circular', value: 'Circular' },
+        // { label: 'Anuncio', value: 'Anuncio' },
+        // { label: 'Aviso', value: 'Aviso' },
+        // { label: 'Circular', value: 'Circular' },
     ]
 
     grupos = [
-        { label: 'Alumnos', value: 'Alumnos' },
-        { label: 'Docentes', value: 'Docentes' },
-        { label: 'Apoderados', value: 'Apoderados' },
+        // { label: 'Alumnos', value: 'Alumnos' },
+        // { label: 'Docentes', value: 'Docentes' },
+        // { label: 'Apoderados', value: 'Apoderados' },
     ]
 
+    ngOnInit() {
+        const params = {
+            petition: 'post',
+            group: 'com',
+            prefix: 'comunicado',
+            ruta: 'obtener_datos',
+            data: {
+                year: this.iYAcadId,
+                iPersId: this.iPersId,
+            },
+        }
+        this.getInformation(params, 'obtenerDatos')
+    }
     // Variable para el comunicado seleccionado (para editar)
     selectedComunicado: Comunicado = this.initComunicado()
     // Inicializa un comunicado vacío (para crear uno nuevo)
@@ -150,13 +184,26 @@ export class ComunicadosComponent {
     }
 
     accionBtnItem(event): void {
-        const { accion } = event
-        const { item } = event
+        const { accion, item } = event
 
         switch (accion) {
-            case 'registrar':
-                console.log(item)
+            case 'obtenerDatos':
+                this.prioridades = item.tipo_prioridad.map((p: any) => ({
+                    label: p.cPrioridadNombre,
+                    value: Number(p.iPrioridadId), // Convertimos a número
+                }))
+
+                this.tipos = item.tipo_comunicado.map((t: any) => ({
+                    label: t.cTipoComNombre,
+                    value: Number(t.iTipoComId),
+                }))
+                this.grupos = item.grupos.map((g: any) => ({
+                    label: g.cGrupoNombre,
+                    value: Number(g.iPersId),
+                }))
                 break
+
+            // Agrega más casos
         }
     }
 }

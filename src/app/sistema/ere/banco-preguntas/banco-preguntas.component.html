@@ -1,48 +1,61 @@
 <div>
-    <div>
-        <button pButton label="Anio" class="p-button-primary"></button>
-        <p-dropdown
-            [options]="filtros"
-            optionLabel="label"
-            optionGroupLabel="categoria"
-            [group]="true"
-            placeholder="Anio"
-        >
-        </p-dropdown>
+    <div class="grid">
+        <div class="col-2">
+            <button pButton label="Anio" class="p-mr-1 btn-azul"></button>
+            <p-dropdown
+                [options]="filtros"
+                optionLabel="label"
+                optionGroupLabel="categoria"
+                [group]="true"
+                placeholder="Anio"
+                class="w-full"
+            >
+            </p-dropdown>
+        </div>
 
-        <button pButton label="Proceso" class="p-button-primary"></button>
-        <p-dropdown
-            [options]="filtros"
-            optionLabel="label"
-            optionGroupLabel="categoria"
-            [group]="true"
-            placeholder="Proceso"
-        >
-        </p-dropdown>
+        <!-- Botón "ver" 
+        <p-button icon="pi pi-eye" class="p-button-rounded p-mr-1 btn-ver">
+        </p-button> -->
+        <div class="col-2">
+            <button pButton label="Proceso" class="btn-azul"></button>
+            <p-dropdown
+                [options]="filtros"
+                optionLabel="label"
+                optionGroupLabel="categoria"
+                [group]="true"
+                placeholder="Proceso"
+            >
+            </p-dropdown>
+        </div>
 
-        <button pButton label="Competencia" class="p-button-primary"></button>
-        <p-dropdown
-            [options]="filtros"
-            optionLabel="label"
-            optionGroupLabel="categoria"
-            [group]="true"
-            placeholder="Competencia"
-        >
-        </p-dropdown>
+        <div class="col-4">
+            <button pButton label="Competencia" class="btn-azul"></button>
+            <p-dropdown
+                [options]="filtros"
+                optionLabel="label"
+                optionGroupLabel="categoria"
+                [group]="true"
+                placeholder="Competencia"
+                class="w-full"
+            >
+            </p-dropdown>
+        </div>
     </div>
-    <div>
-        <button pButton label="Tipo" class="p-button-primary"></button>
-        <p-dropdown
-            [options]="filtros"
-            optionLabel="label"
-            optionGroupLabel="categoria"
-            [group]="true"
-            placeholder="Tipo"
-        >
-        </p-dropdown>
+    <div class="grid">
+        <div class="col-2">
+            <button pButton label="Tipo" class="btn-azul"></button>
+            <p-dropdown
+                [options]="filtros"
+                optionLabel="label"
+                optionGroupLabel="categoria"
+                [group]="true"
+                placeholder="Tipo"
+            >
+            </p-dropdown>
+        </div>
 
-        <p-inputGroup>
-            <button pButton label="Capacidad" class="p-button-primary"></button>
+        <div class="col-4">
+            <button pButton label="Capacidad" class="btn-azul"></button>
             <p-dropdown
                 [options]="filtros"
                 optionLabel="label"
@@ -51,8 +64,10 @@
                 placeholder="Capacidad"
             >
             </p-dropdown>
-        </p-inputGroup>
+        </div>
+    </div>
 
+    <div>
         <p-inputGroup>
             <p-inputGroupAddon>
                 <i class="pi pi-search"></i>
@@ -140,7 +155,7 @@
         <button
             pButton
             label="Agregar preguntas seleccionadas"
-            class="p-button-primary"
+            class="btn-azul"
         ></button>
     </div>
 </div>

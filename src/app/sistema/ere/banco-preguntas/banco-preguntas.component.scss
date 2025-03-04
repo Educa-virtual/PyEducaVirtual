@@ -1,16 +1,16 @@
-::ng-deep .btn-ver {
+::ng-deep .btn-ver .p-button {
     background-color: #2f56a6 !important; /* Color azul */
     border-color: #6c757d !important;
     color: white !important;
 }
 
-::ng-deep .btn-agregar {
+::ng-deep .btn-agregar .p-button {
     background-color: #28a745 !important;
     border-color: #28a745 !important;
     color: white !important;
 }
 
-::ng-deep .btn-eliminar {
+::ng-deep .btn-eliminar .p-button {
     background-color: #dc3545 !important;
     border-color: #dc3545 !important;
     color: white !important;
@@ -26,4 +26,17 @@
     background-color: #2f56a6 !important; /* Color azul */
     color: white !important; /* Color del ícono */
     border-radius: 5px 0 0 5px !important; /* Bordes redondeados solo a la izquierda */
+}
+
+::ng-deep .btn-anio .p-button {
+    background-color: #2f56a6 !important;
+    border-color: #2f56a6 !important;
+    color: white !important;
+}
+
+// FILTROS
+::ng-deep .btn-azul {
+    background-color: #2f56a6 !important;
+    border-color: #2f56a6 !important;
+    color: white !important;
 }

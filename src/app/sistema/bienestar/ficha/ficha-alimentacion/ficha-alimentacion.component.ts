@@ -15,11 +15,13 @@ export class FichaAlimentacionComponent implements OnInit {
     lugares_alimentacion: Array<object>
     programas_alimentarios: Array<object>
     visibleInput: Array<boolean>
+    visibleAdicionalInput: Array<boolean>
 
     constructor(private fb: FormBuilder) {}
 
     ngOnInit(): void {
         this.visibleInput = Array(1).fill(false)
+        this.visibleAdicionalInput = Array(6).fill(false)
 
         this.horarios_alimentacion = [
             { id: 0, nombre: 'DESAYUNO' },
@@ -91,6 +93,18 @@ export class FichaAlimentacionComponent implements OnInit {
             } else {
                 this.visibleInput[index] = false
             }
+        }
+    }
+
+    handleSwitchChange(event: any, index: number) {
+        if (event?.checked === undefined) {
+            this.visibleAdicionalInput[index] = false
+            return null
+        }
+        if (event.checked === true) {
+            this.visibleAdicionalInput[index] = true
+        } else {
+            this.visibleAdicionalInput[index] = false
         }
     }
 

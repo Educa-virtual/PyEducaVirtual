@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core'
+import { Component, inject, OnInit } from '@angular/core'
 import { PrimengModule } from '@/app/primeng.module'
 import {
     IActionTable,
@@ -12,6 +12,7 @@ import {
     ContainerPageComponent,
     IActionContainer,
 } from '@/app/shared/container-page/container-page.component'
+import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 
 @Component({
     selector: 'app-mantenimiento-usuarios',
@@ -30,11 +31,13 @@ export class MantenimientoUsuariosComponent implements OnInit {
     form_perfil: FormGroup // formulario para gestionar perfiles
     selectRowData: any
     selectedItems = []
+    selectedItemsPerfil = []
 
     //Informacion de usuario
     usuario: any //Informacion del usuario seleccionado
     perfil_usuario: any //Informacion del perfil seleccionado
 
+    private _confirmService = inject(ConfirmationModalService)
     constructor(
         private fb: FormBuilder,
         private store: LocalStoreService,
@@ -102,7 +105,7 @@ export class MantenimientoUsuariosComponent implements OnInit {
                 tabla: 'perfiles',
                 campos: '*',
                 condicion:
-                    'iTipoPerfilId = 7 or iTipoPerfilId = 4 or iTipoPerfilId = 10 or iTipoPerfilId = 12 or iTipoPerfilId = 9',
+                    'iTipoPerfilId = 7 or iTipoPerfilId = 4 or iTipoPerfilId = 10 or iTipoPerfilId = 12 or iTipoPerfilId = 9 or iTipoPerfilId = 8',
             })
             .subscribe({
                 next: (data: any) => {
@@ -117,10 +120,10 @@ export class MantenimientoUsuariosComponent implements OnInit {
                     })
                 },
                 complete: () => {
-                    this.search_perfiles.unshift({
-                        iPerfilId: '0',
-                        cPerfilNombre: 'Todos los perfiles',
-                    }) // console.log('Request completed')
+                    // this.search_perfiles.unshift({
+                    //     iPerfilId: '0',
+                    //     cPerfilNombre: 'Todos los perfiles',
+                    // }) // console.log('Request completed')
                 },
             })
     }
@@ -162,21 +165,93 @@ export class MantenimientoUsuariosComponent implements OnInit {
             // envia la informacion del perfil seleccionado
             this.usuario = item
             this.getPerfilUsuario()
-            console.log(this.usuario, 'usuario')
         }
         if (accion === 'habilitar_usuario') {
-            this.habilitar_usuario('updateHabilitarAccesosIE')
+            this.btnItem(
+                'Habilitar_usuario',
+                '¿Desea habilitar los accesos de los usuarios seleccionados?'
+            )
         }
         if (accion === 'Deshabilitar_usuario') {
-            this.habilitar_usuario('updateDeshabilitarAccesosIE')
+            this.btnItem(
+                'Deshabilitar_usuario',
+                '¿Desea deshabilitar los accesos de los usuarios seleccionados?'
+            )
+        }
+
+        if (accion === 'resetear_contrasena') {
+            this.btnItem(
+                'Resetea_contrasena',
+                '¿Desea resetear la contraseña de los usuarios seleccionados?'
+            )
+        }
+
+        if (accion === 'eliminar_perfiles') {
+            this.btnItem(
+                'eliminar_perfiles',
+                '¿Desea eliminar todos los perfiles del usuario seleccionado?'
+            )
+        }
+
+        if (accion === 'eliminar_perfil') {
+            // elimina perfil seleccionado
+            this.selectedItemsPerfil = item
+            this.btnItem(
+                'eliminar_perfil',
+                '¿Desea eliminar el perfil seleccionado?'
+            )
         }
     }
-    btnItem(accion: string) {
-        console.log(accion, 'accion_btn')
-        if (accion === 'agregar') {
-            // agregar
-            console.log('agregar')
-        }
+    btnItem(accion: string, mensaje: string) {
+        console.log(accion, 'accion_btn', mensaje)
+
+        this._confirmService.openConfiSave({
+            header: 'Advertencia de procesamiento',
+            message: mensaje,
+            icon: 'pi pi-exclamation-triangle',
+            accept: () => {
+                if (accion === 'agregar') {
+                    // agregar
+                    console.log('agregar')
+                }
+                if (accion === 'perfil') {
+                    // agrega perfil seleccionado
+                    this.asignar_perfil()
+                    console.log('perfil', this.form_perfil.value.iPerfilId)
+                }
+                if (accion === 'Habilitar_usuario') {
+                    // habilita usuario
+                    this.habilitar_usuario('updateHabilitarAccesosIE')
+                }
+                if (accion === 'Deshabilitar_usuario') {
+                    // deshabilita usuario
+                    this.habilitar_usuario('updateDeshabilitarAccesosIE')
+                }
+                if (accion === 'Resetea_contrasena') {
+                    // resetea contraseña
+                    this.resetear_contrasena('resetear_contrasena')
+                }
+
+                if (accion === 'eliminar_perfiles') {
+                    // elimina todos los perfiles del usuario seleccionado
+                    this.eliminar_perfiles(0)
+                }
+                if (accion === 'eliminar_perfil') {
+                    // elimina perfil seleccionado del usuario
+                    this.eliminar_perfiles(
+                        this.selectedItemsPerfil['iPerfilId']
+                    )
+                }
+            },
+            reject: () => {
+                // Mensaje de cancelación (opcional)
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Cancelado',
+                    detail: 'Acción cancelada',
+                })
+            },
+        })
     }
 
     habilitar_usuario(option: string) {
@@ -213,8 +288,8 @@ export class MantenimientoUsuariosComponent implements OnInit {
             })
     }
 
-    resetear_contrasena() {
-        console.log('resetear_contrasena')
+    resetear_contrasena(option: string) {
+        console.log(option, 'resetear_contrasena')
     }
 
     eliminar_perfiles(id: number) {
@@ -224,7 +299,7 @@ export class MantenimientoUsuariosComponent implements OnInit {
                 esquema: 'seg',
                 tabla: 'credenciales_entidades_perfiles',
                 campo: 'iCredEntId',
-                valorId: id,
+                valorId: this.usuario.iCredEntId,
             }
         } else {
             params = {
@@ -240,7 +315,11 @@ export class MantenimientoUsuariosComponent implements OnInit {
                 console.log(data.data)
             },
             error: (error) => {
-                console.error('Error fetching perfiles:', error)
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Mensaje',
+                    detail: 'Error. No se proceso petición ' + error,
+                })
             },
             complete: () => {
                 this.messageService.add({
@@ -252,6 +331,38 @@ export class MantenimientoUsuariosComponent implements OnInit {
                 this.getPerfilUsuario()
             },
         })
+    }
+
+    asignar_perfil() {
+        this.query
+            .addCalAcademico({
+                json: JSON.stringify({
+                    iCredEntId: this.usuario.iCredEntId,
+                    iPerfilId: this.form_perfil.value.iPerfilId,
+                }),
+                _opcion: 'addPerfil',
+            })
+            .subscribe({
+                next: (data: any) => {
+                    console.log(data, 'addPerfil')
+                },
+                error: (error) => {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Mensaje',
+                        detail: 'Error. No se proceso petición ' + error,
+                    })
+                },
+                complete: () => {
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Mensaje',
+                        detail: 'Proceso exitoso',
+                    })
+                    console.log('Request completed')
+                    this.getPerfilUsuario()
+                },
+            })
     }
 
     // container
@@ -281,7 +392,7 @@ export class MantenimientoUsuariosComponent implements OnInit {
     accionesPerfil: IActionContainer[] = [
         {
             labelTooltip: 'Eliminar todos los perfiles',
-            text: 'Elimnar perfiles',
+            text: 'Eliminar perfiles',
             icon: 'pi pi-trash',
             accion: 'eliminar_perfiles',
             class: 'p-button-danger',
@@ -303,7 +414,7 @@ export class MantenimientoUsuariosComponent implements OnInit {
         {
             labelTooltip: 'Eliminar perfil',
             icon: 'pi pi-trash', // pi pi-ban
-            accion: 'Eliminar',
+            accion: 'eliminar_perfil',
             type: 'item',
             class: 'p-button-rounded p-button-warning p-button-text',
         },

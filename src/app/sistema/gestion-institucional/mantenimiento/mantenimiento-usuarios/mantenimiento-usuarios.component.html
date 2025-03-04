@@ -84,6 +84,9 @@
                                 optionLabel="cPerfilNombre"
                                 optionValue="iPerfilId"
                                 formControlName="iPerfilId"
+                                (onChange)="
+                                    btnItem('perfil', 'Desea asignar perfil')
+                                "
                             />
                             <label for="iGrado">Perfil</label>
                         </span>
@@ -97,7 +100,7 @@
                             [data]="perfil_usuario"
                             (accionBtnItem)="accionBtnItemTable($event)"
                             [showPaginator]="false"
-                            [(selectedRowData)]="selectedItems"
+                            [(selectedRowData)]="selectedItemsPerfil"
                             [actions]="actionsPerfil"
                         >
                             <!-- <ng-container slot="caption-content"> </ng-container> -->

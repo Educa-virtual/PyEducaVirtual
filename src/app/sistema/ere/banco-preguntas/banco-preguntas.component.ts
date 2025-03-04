@@ -7,6 +7,7 @@ import { ButtonModule } from 'primeng/button'
 import { CheckboxModule } from 'primeng/checkbox'
 import { DropdownModule } from 'primeng/dropdown'
 import { PaginatorModule } from 'primeng/paginator'
+import { DialogModule } from 'primeng/dialog'
 
 interface PageEvent {
     first: number
@@ -27,6 +28,7 @@ interface PageEvent {
         CheckboxModule,
         DropdownModule,
         PaginatorModule,
+        DialogModule,
     ],
     templateUrl: './banco-preguntas.component.html',
     styleUrls: ['./banco-preguntas.component.scss'],

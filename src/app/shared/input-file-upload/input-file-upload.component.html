@@ -16,14 +16,17 @@
         [accept]="acceptTypes"
         hidden
     />
-    <button
-        type="button"
-        pButton
-        aria-label="ver archivo"
-        (click)="viewFile()"
-        style="background-color: #6cb3c9; border-color: #7676764d"
-        icon="pi pi-eye"
-    ></button>
+    @if (canViewLocalFile) {
+        <button
+            type="button"
+            pButton
+            aria-label="ver archivo"
+            (click)="viewFile()"
+            style="background-color: #6cb3c9; border-color: #7676764d"
+            icon="pi pi-eye"
+        ></button>
+    }
+
     <button
         type="button"
         aria-label="adjuntar archivo"

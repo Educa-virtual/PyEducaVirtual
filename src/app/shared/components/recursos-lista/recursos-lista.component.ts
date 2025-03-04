@@ -1,5 +1,5 @@
 import { PrimengModule } from '@/app/primeng.module'
-import { environment } from '@/environments/environment.template'
+import { environment } from '@/environments/environment'
 import { CommonModule } from '@angular/common'
 import { Component, Input } from '@angular/core'
 

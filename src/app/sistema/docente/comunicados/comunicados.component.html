@@ -1,33 +1,34 @@
-<section class="flex flex-column gap-4">
-    <div class="col-12 md:col-6 text-left">
+<section class="flex flex-column gap-2">
+    <div class="col-12 md:col-6 text-left p-0 m-0">
         <span class="text-sm"> Inicio > Mis Comunicados </span>
     </div>
-
     <!-- título -->
-    <div class="grid">
-        <p-toolbar class="col-12">
+    <div>
+        <p-toolbar class="col-12 p-0 m-0">
             <div class="block">
                 <h2 class="text-primary text-white font-bold block">
                     Mis Comunicados
                 </h2>
-            </div>
-        </p-toolbar>
-        <p-toolbar class="col-12">
-            <!-- Sección de variables (Nivel, Ciclo, Grado, etc.) -->
-            <div class="flex flex-wrap gap-2 align-items-center">
-                <span class="font-medium"
-                    >Nivel: <strong>Educación Secundaria</strong></span
-                >
-                <span class="font-medium">Ciclo: <strong>VI</strong></span>
-                <span class="font-medium">Grado: <strong>1ro</strong></span>
-                <span class="font-medium">Sección: <strong>A</strong></span>
-                <span class="font-medium"
-                    >Área: <strong>Matemática</strong></span
-                >
+                <div>
+                    <span class="font-medium">
+                        Ciclo: <strong>VI |</strong></span
+                    >
+                    <span class="font-medium">
+                        Grado: <strong>1ro |</strong></span
+                    >
+                    <span class="font-medium">
+                        Sección: <strong>A |</strong></span
+                    >
+                    <span class="font-medium">
+                        Área: <strong>Matemática |</strong></span
+                    >
+                    <span class="font-medium">
+                        Nivel: <strong>Educación Secundaria</strong></span
+                    >
+                </div>
             </div>
         </p-toolbar>
     </div>
-
     <!-- contenido -->
     <div class="flex">
         <div class="card w-full">
@@ -61,85 +62,147 @@
     <div class="grid">
         <!-- Panel izquierdo: Lista de Comunicados -->
         <div class="col-12 md:col-6">
-            <p-panel>
+            <p-panel class="custom-header-panel">
                 <ng-template pTemplate="header">
-                    <h2 class="m-0 font-bold text-white">Lista Comunicados</h2>
+                    <h4 class="p-2 m-0 font-bold text-white w-full text-center">
+                        Lista Comunicados
+                    </h4>
                 </ng-template>
                 <!-- Contenedor de comunicados dinámicos -->
-                <div class="flex flex-column gap-3 mt-2">
+                <div class="p-0 m-0 flex flex-column gap-3 mt-2">
                     <!-- Recorre el array con *ngFor -->
                     <p-panel
                         *ngFor="let comunicado of comunicados"
+                        #panel
                         [toggleable]="true"
-                        [collapsed]="true"
+                        [collapsed]="comunicado.collapsed"
+                        class="custom-panel"
                     >
                         <!-- Personaliza el header de cada comunicado -->
                         <ng-template pTemplate="header">
                             <div
-                                class="flex justify-content-between align-items-center text-white"
+                                class="flex align-items-center justify-content-between w-full text-white"
                             >
-                                <strong>{{ comunicado.titulo }}</strong>
-                                <!-- Opcional: Botones de acción -->
-                                <div>
+                                <div class="flex align-items-center">
+                                    <div
+                                        class="bg-header-style flex justify-content-center px-2 py-2"
+                                    >
+                                        Comunicado #{{ comunicado.id }}:
+                                    </div>
+                                    <div class="ml-2 comunicado-titulo">
+                                        {{ comunicado.titulo }}
+                                    </div>
+                                </div>
+                                <div class="flex gap-0">
                                     <button
                                         pButton
-                                        icon="pi pi-pencil"
-                                        class="p-button-text p-button-sm mr-1 text-white"
-                                        (click)="editComunicado(comunicado)"
-                                    >
-                                        Editar
-                                    </button>
+                                        [icon]="
+                                            comunicado.collapsed
+                                                ? 'pi pi-eye'
+                                                : 'pi pi-eye-slash'
+                                        "
+                                        class="p-button-text p-button-xs text-white"
+                                        (click)="
+                                            togglePanel(
+                                                $event,
+                                                panel,
+                                                comunicado
+                                            )
+                                        "
+                                        title="Ver"
+                                    ></button>
                                     <button
                                         pButton
                                         icon="pi pi-trash"
-                                        class="p-button-text p-button-sm text-white"
-                                    >
-                                        Eliminar
-                                    </button>
+                                        class="p-button-text p-button-xs text-white"
+                                        title="Eliminar"
+                                        (click)="
+                                            deleteComunicado(comunicado.id)
+                                        "
+                                    ></button>
                                     <button
                                         pButton
-                                        icon="pi pi-eye"
-                                        class="p-button-text p-button-sm text-white"
-                                    >
-                                        Ver
-                                    </button>
+                                        icon="pi pi-pencil"
+                                        class="p-button-text p-button-xs mr-1 text-white"
+                                        (click)="editComunicado(comunicado)"
+                                        title="Editar"
+                                    ></button>
                                 </div>
                             </div>
                         </ng-template>
 
                         <!-- Contenido que se ve al expandir el panel -->
-                        <div class="grid p-2">
+                        <div class="grid p-1">
                             <div class="col-12 md:col-6">
-                                <p>
-                                    <strong>Estado:</strong>
-                                    {{ comunicado.estado }}
-                                </p>
-                                <p>
-                                    <strong>Tipo:</strong> {{ comunicado.tipo }}
-                                </p>
-                                <p>
-                                    <strong>Publicado:</strong>
-                                    {{ comunicado.publicado }}
-                                </p>
+                                <div class="grid pb-3">
+                                    <div
+                                        class="col-3 bg-header-style font-bold"
+                                    >
+                                        Estado:
+                                    </div>
+                                    <div class="col-9">
+                                        {{ comunicado.estado }}
+                                    </div>
+                                </div>
+                                <div class="grid pb-3">
+                                    <div
+                                        class="col-4 bg-header-style font-bold"
+                                    >
+                                        Publicado:
+                                    </div>
+                                    <div class="col-8">
+                                        {{ comunicado.publicado }}
+                                    </div>
+                                </div>
+                                <div class="grid">
+                                    <div
+                                        class="col-4 bg-header-style font-bold"
+                                    >
+                                        Caduca:
+                                    </div>
+                                    <div class="col-8">
+                                        {{ comunicado.caduca }}
+                                    </div>
+                                </div>
                             </div>
+
                             <div class="col-12 md:col-6">
-                                <p>
-                                    <strong>Prioridad:</strong>
-                                    {{ comunicado.prioridad }}
-                                </p>
-                                <p>
-                                    <strong>Caduca:</strong>
-                                    {{ comunicado.caduca }}
-                                </p>
-                                <p>
-                                    <strong>Grupo:</strong>
-                                    {{ comunicado.grupo }}
-                                </p>
+                                <div class="grid pb-3">
+                                    <div
+                                        class="col-3 bg-header-style font-bold"
+                                    >
+                                        Tipo:
+                                    </div>
+                                    <div class="col-9">
+                                        {{ comunicado.tipo }}
+                                    </div>
+                                </div>
+                                <div class="grid pb-3">
+                                    <div
+                                        class="col-4 bg-header-style font-bold"
+                                    >
+                                        Prioridad:
+                                    </div>
+                                    <div class="col-8">
+                                        {{ comunicado.prioridad }}
+                                    </div>
+                                </div>
+                                <div class="grid">
+                                    <div
+                                        class="col-3 flex h-full bg-header-style font-bold justify-center"
+                                    >
+                                        Grupo:
+                                    </div>
+                                    <div
+                                        class="col-9 flex h-full justify-center"
+                                    >
+                                        {{ comunicado.grupo }}
+                                    </div>
+                                </div>
                             </div>
+
                             <div class="col-12">
-                                <p class="mt-2">
-                                    {{ comunicado.texto }}
-                                </p>
+                                <p class="mt-2">{{ comunicado.texto }}</p>
                             </div>
                         </div>
                     </p-panel>
@@ -149,20 +212,16 @@
 
         <!-- Panel derecho: Crear Comunicado -->
         <div class="col-12 md:col-6">
-            <p-panel>
+            <p-panel class="custom-header-panel">
                 <ng-template pTemplate="header">
-                    <div
-                        class="w-full bg-primary text-white p-3 border-round-top"
-                    >
-                        <h2 class="m-0 font-bold text-white">
-                            <!-- Cambia el título dinámicamente -->
-                            {{
-                                selectedComunicado.id === 0
-                                    ? 'Crear Comunicado'
-                                    : 'Editar Comunicado'
-                            }}
-                        </h2>
-                    </div>
+                    <h4 class="p-2 m-0 font-bold text-white w-full text-center">
+                        <!-- Cambia el título dinámicamente -->
+                        {{
+                            selectedComunicado.id === 0
+                                ? 'Crear Comunicado'
+                                : 'Editar Comunicado'
+                        }}
+                    </h4>
                 </ng-template>
                 <!-- FORMULARIO (Template-Driven) -->
                 <form
@@ -170,71 +229,18 @@
                     #comunicadoForm="ngForm"
                     class="flex flex-column gap-2"
                 >
-                    <div class="grid">
-                        <div class="flex flex-column col-12 md:col-6">
-                            <label for="estado" class="mb-1">Estado</label>
-                            <input
-                                pInputText
-                                id="estado"
-                                name="estado"
-                                [(ngModel)]="selectedComunicado.estado"
-                            />
-                        </div>
-                        <div class="flex flex-column col-12 md:col-6">
-                            <label for="prioridad" class="mb-1"
-                                >Prioridad</label
-                            >
-                            <input
-                                pInputText
-                                id="prioridad"
-                                name="prioridad"
-                                [(ngModel)]="selectedComunicado.prioridad"
-                            />
-                        </div>
-                    </div>
-                    <div class="grid">
-                        <div class="flex flex-column col-12 md:col-6">
-                            <label for="tipo" class="mb-1">Tipo</label>
-                            <input
-                                pInputText
-                                id="tipo"
-                                name="tipo"
-                                [(ngModel)]="selectedComunicado.tipo"
-                            />
-                        </div>
-                        <div class="flex flex-column col-12 md:col-6">
-                            <label for="grupo" class="mb-1">Grupo</label>
-                            <input
-                                pInputText
-                                id="grupo"
-                                name="grupo"
-                                [(ngModel)]="selectedComunicado.grupo"
-                            />
-                        </div>
-                    </div>
-                    <div class="grid">
-                        <div class="flex flex-column col-12 md:col-6">
-                            <label for="publicado" class="mb-1"
-                                >Publicado</label
-                            >
-                            <input
-                                pInputText
-                                id="publicado"
-                                name="publicado"
-                                [(ngModel)]="selectedComunicado.publicado"
-                            />
-                        </div>
-                        <div class="flex flex-column col-12 md:col-6">
-                            <label for="caduca" class="mb-1">Caduca</label>
-                            <input
-                                pInputText
-                                id="caduca"
-                                name="caduca"
-                                [(ngModel)]="selectedComunicado.caduca"
-                            />
-                        </div>
-                    </div>
-
+                    <!-- <div class="flex flex-row align-items-center">
+                        <label for="titulo" class="w-2">Título</label>
+                        <input
+                            pInputText
+                            id="titulo"
+                            name="titulo"
+                            placeholder="Ingrese el título"
+                            [(ngModel)]="selectedComunicado.titulo"
+                            required
+                            class="flex-1"
+                        />
+                    </div> -->
                     <div class="flex flex-column">
                         <label for="titulo" class="mb-1">Título</label>
                         <input
@@ -246,7 +252,93 @@
                             required
                         />
                     </div>
-
+                    <div class="grid">
+                        <div class="flex flex-column col-12 md:col-6">
+                            <label for="estado" class="mb-1">Estado</label>
+                            <p-dropdown
+                                id="estado"
+                                name="estado"
+                                [options]="estados"
+                                [(ngModel)]="selectedComunicado.estado"
+                                placeholder="Seleccione Estado"
+                                optionLabel="label"
+                                optionValue="value"
+                            ></p-dropdown>
+                        </div>
+                        <div class="flex flex-column col-12 md:col-6">
+                            <label for="prioridad" class="mb-1"
+                                >Prioridad</label
+                            >
+                            <p-dropdown
+                                id="prioridad"
+                                name="prioridad"
+                                [options]="prioridades"
+                                [(ngModel)]="selectedComunicado.prioridad"
+                                placeholder="Seleccione Prioridad"
+                                optionLabel="label"
+                                optionValue="value"
+                            ></p-dropdown>
+                        </div>
+                    </div>
+                    <div class="grid">
+                        <div class="flex flex-column col-12 md:col-6">
+                            <label for="tipo" class="mb-1">Tipo</label>
+                            <p-dropdown
+                                id="tipo"
+                                name="tipo"
+                                [options]="tipos"
+                                [(ngModel)]="selectedComunicado.tipo"
+                                placeholder="Seleccione Tipo"
+                                optionLabel="label"
+                                optionValue="value"
+                            ></p-dropdown>
+                        </div>
+                        <div class="flex flex-column col-12 md:col-6">
+                            <label for="grupo" class="mb-1">Grupo</label>
+                            <p-multiSelect
+                                id="grupo"
+                                name="grupo"
+                                [options]="grupos"
+                                [(ngModel)]="selectedComunicado.grupo"
+                                placeholder="Seleccione Grupos"
+                                optionLabel="label"
+                                optionValue="value"
+                                [filter]="true"
+                            ></p-multiSelect>
+                        </div>
+                    </div>
+                    <div class="grid">
+                        <div class="flex flex-column col-12 md:col-6">
+                            <label for="publicado" class="mb-1"
+                                >Publicado</label
+                            >
+                            <p-calendar
+                                id="publicado"
+                                name="publicado"
+                                [(ngModel)]="selectedComunicado.publicado"
+                                dateFormat="dd/mm/yy"
+                                showIcon="true"
+                                (onSelect)="
+                                    selectedComunicado.publicado =
+                                        formatDate($event)
+                                "
+                            ></p-calendar>
+                        </div>
+                        <div class="flex flex-column col-12 md:col-6">
+                            <label for="caduca" class="mb-1">Caduca</label>
+                            <p-calendar
+                                id="caduca"
+                                name="caduca"
+                                [(ngModel)]="selectedComunicado.caduca"
+                                dateFormat="dd/mm/yy"
+                                showIcon="true"
+                                (onSelect)="
+                                    selectedComunicado.caduca =
+                                        formatDate($event)
+                                "
+                            ></p-calendar>
+                        </div>
+                    </div>
                     <div class="flex flex-column">
                         <label for="texto" class="mb-1">Contenido</label>
                         <textarea

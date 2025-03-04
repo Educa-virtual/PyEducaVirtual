@@ -10,6 +10,7 @@ import { EvaluacionesComponent } from '../evaluaciones/sub-evaluaciones/evaluaci
 import { EspecialistaDremoComponent } from './administrar/especialista-dremo/especialista-dremo.component'
 import { GestionarPreguntasComponent } from './evaluaciones/gestionar-preguntas/gestionar-preguntas.component'
 import { PreguntasComponent } from './evaluacion/preguntas/preguntas.component'
+import { EspecialistaUgelComponent } from './administrar/especialista-ugel/especialista-ugel.component'
 
 const routes: Routes = [
     {
@@ -66,6 +67,14 @@ const routes: Routes = [
                 component: EspecialistaDremoComponent,
                 data: {
                     breadcrumb: 'Especialista DREMO',
+                    icon: 'pi pi-users',
+                },
+            },
+            {
+                path: 'especialista-ugel',
+                component: EspecialistaUgelComponent,
+                data: {
+                    breadcrumb: 'Especialista UGEL',
                     icon: 'pi pi-users',
                 },
             },

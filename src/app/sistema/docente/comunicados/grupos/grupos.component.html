@@ -136,12 +136,18 @@
                     class="text-center font-bold p-button-success w-full"
                     pButton
                     pRipple
+                    (click)="mostrarDocentes()"
                 >
                     Agregar Selecionados &nbsp;<i class="pi pi-plus-circle"></i>
                 </button>
             </div>
         </div>
-        <app-table-primeng [columnas]="columnas" [data]="data">
+        <app-table-primeng
+            [columnas]="columnas"
+            [data]="data"
+            (accionBtnItem)="accionBtnItem($event)"
+        >
         </app-table-primeng>
     </p-dialog>
 </div>
+<p-toast />

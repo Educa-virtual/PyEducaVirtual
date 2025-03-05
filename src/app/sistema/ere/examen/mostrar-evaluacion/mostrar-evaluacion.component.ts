@@ -35,6 +35,7 @@ export class MostrarEvaluacionComponent implements OnInit {
     subAlternativas: string[] = ['23', 'ya 24', '30?', 'N/A']
     alternativas: string[] = ['no se tu dime', 'ya 24', '30?', 'N/A']
 
+    activeIndex = 0
     seleccion: string | null = null
 
     constructor() {}
@@ -50,5 +51,10 @@ export class MostrarEvaluacionComponent implements OnInit {
     getLetra(index: number): string {
         return String.fromCharCode(65 + index)
         // Convierte 0 → A, 1 → B, 2 → C, etc.
+    }
+    siguientePregunta(index: number) {
+        if (index < this.pregunta.length - 1) {
+            this.activeIndex = index + 1
+        }
     }
 }

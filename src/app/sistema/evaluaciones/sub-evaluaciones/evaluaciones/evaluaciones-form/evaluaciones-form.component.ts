@@ -163,28 +163,53 @@ export class EvaluacionesFormComponent implements OnInit {
         }
 
         if (this.activeStep === 0 && this.accion === 'editar') {
-            if (this.evaluacionFormGroup.invalid) {
+            const camposInvalidos: string[] = []
+            Object.keys(this.evaluacionFormGroup.controls).forEach((campo) => {
+                const control = this.evaluacionFormGroup.get(campo)
+                if (control?.invalid) {
+                    camposInvalidos.push(campo)
+                }
+            })
+            if (camposInvalidos.length > 0) {
                 this._MessageService.add({
                     severity: 'error',
                     summary: 'Rellenar los campos',
-                    detail: 'Rellene todos los campos para editar la evaluación.',
+                    detail: `Rellene los campos que esten vacíos o inválidos: ${camposInvalidos.join(', ')}`,
                 })
                 // Marca los campos como tocados para que se muestren los errores
                 this.evaluacionFormGroup.markAllAsTouched()
                 return
             }
-            this.esModoEdicion = true
-            this.actualizarEvaluacion()
+            // if (this.evaluacionFormGroup.invalid) {
+            //     this._MessageService.add({
+            //         severity: 'error',
+            //         summary: 'Rellenar los campos',
+            //         detail: 'Rellene todos los campos para editar la evaluación.',
+            //     })
+            //     // Marca los campos como tocados para que se muestren los errores
+            //     this.evaluacionFormGroup.markAllAsTouched()
+            //     return
+            // }
+            // this.esModoEdicion = true
+            // this.actualizarEvaluacion()
             //console.log('Formulario EDITAR DESDE HANDLE', this.accion)
         }
 
         if (this.activeStep === 0 && this.accion === 'nuevo') {
-            console.log(this.evaluacionFormGroup)
-            if (this.evaluacionFormGroup.invalid) {
+            // console.log(this.evaluacionFormGroup)
+
+            const camposInvalidos: string[] = []
+            Object.keys(this.evaluacionFormGroup.controls).forEach((campo) => {
+                const control = this.evaluacionFormGroup.get(campo)
+                if (control?.invalid) {
+                    camposInvalidos.push(campo)
+                }
+            })
+            if (camposInvalidos.length > 0) {
                 this._MessageService.add({
                     severity: 'error',
                     summary: 'Rellenar los campos',
-                    detail: 'Rellene todos los campos para crear la evaluación.',
+                    detail: `Los siguientes campos están vacíos o inválidos: ${camposInvalidos.join(', ')}`,
                 })
                 // Marca los campos como tocados para que se muestren los errores
                 this.evaluacionFormGroup.markAllAsTouched()

@@ -5,38 +5,41 @@
         <input type="hidden" name="iFichaDGId" />
 
         <div class="field col-12">
-            <div class="grid">
-                <div class="col w-full">
-                    <span class="p-float-label">
-                        <p-multiSelect
-                            display="chip"
-                            [options]="programas_alimentarios"
-                            formControlName="iProAlimId"
-                            optionLabel="nombre"
-                            optionValue="id"
-                            [filter]="true"
-                            [showClear]="true"
-                            [appendTo]="'body'"
-                            multiple="true"
-                            (onChange)="handleDropdownChange($event, 9)"
-                            (onClear)="handleDropdownChange($event, 9)"
-                        />
-                        <label for="iProAlimId"
-                            >Programas de alimentación estatales *</label
-                        >
-                    </span>
-                </div>
-                @if (visibleInput[9] === true) {
-                    <div class="col-12">
-                        <input
-                            pInputText
-                            formControlName="cProAlimNombre"
-                            placeholder="Especifique"
-                            type="text"
-                        />
+            <p-fieldset legend="Programas de alimentación estatales">
+                <div class="grid">
+                    <div class="col w-full">
+                        <span class="p-float-label">
+                            <p-multiSelect
+                                display="chip"
+                                [options]="programas_alimentarios"
+                                formControlName="iProAlimId"
+                                optionLabel="nombre"
+                                optionValue="id"
+                                [filter]="true"
+                                [showClear]="true"
+                                [appendTo]="'body'"
+                                multiple="true"
+                                [maxSelectedLabels]="undefined"
+                                (onChange)="handleDropdownChange($event, 9)"
+                                (onClear)="handleDropdownChange($event, 9)"
+                            />
+                            <label for="iProAlimId">
+                                Seleccione programas *
+                            </label>
+                        </span>
                     </div>
-                }
-            </div>
+                    @if (visibleInput[9] === true) {
+                        <div class="col-12">
+                            <input
+                                pInputText
+                                formControlName="cProAlimNombre"
+                                placeholder="Especifique otro *"
+                                type="text"
+                            />
+                        </div>
+                    }
+                </div>
+            </p-fieldset>
         </div>
 
         <div class="field col-12 lg:col-6">

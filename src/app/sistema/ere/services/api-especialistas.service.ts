@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core'
-import { environment } from '@/environments/environment.template'
+import { environment } from '@/environments/environment'
 import { HttpClient } from '@angular/common/http'
 import { map, Observable } from 'rxjs' //catchError, , tap, throwError
 // import { AdministradorModule } from '../../administrador/administrador.module'
@@ -79,7 +79,7 @@ export class ApiEspecialistasService {
     }
 
     eliminarAreaEspecialista(iDocenteId: string, data: any): Observable<any> {
-        const url = `${this.urlBackendApi}/acad/ugeles/${iDocenteId}/areas`
+        const url = `${this.urlBackendApi}/acad/especialistas-dremo/${iDocenteId}/areas`
 
         return this.http.delete<void>(url, { body: data })
     }

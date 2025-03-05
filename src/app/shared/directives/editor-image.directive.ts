@@ -2,7 +2,7 @@ import { GeneralService } from '@/app/servicios/general.service'
 import { Directive, Host, inject, Input } from '@angular/core'
 import { Editor } from 'primeng/editor'
 import { objectToFormData } from '../utils/object-to-form-data'
-import { environment } from '@/environments/environment.template'
+import { environment } from '@/environments/environment'
 
 const containerToolbarOptions = [
     ['bold', 'italic', 'underline', 'strike'],

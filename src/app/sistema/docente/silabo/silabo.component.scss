@@ -9,3 +9,9 @@ input {
 textarea {
     font-size: 1rem !important;
 }
+:host ::ng-deep .tox .tox-statusbar .tox-statusbar__path-item {
+    display: none !important;
+}
+:host ::ng-deep .tox .tox-statusbar a {
+    display: none !important;
+}

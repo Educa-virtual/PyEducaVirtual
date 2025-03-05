@@ -17,8 +17,9 @@ export interface ICurso {
     iCantidadPreguntas?: number
     iCursosNivelGradId?: string
     bTieneArchivo?: boolean
-    iCursoNivelGradId?: string
+    //iCursoNivelGradId?: string
     dtExamenFechaInicio?: string
     dtExamenFechaFin?: string
     iExamenCantidadPreguntas?: string
+    iEvaluacionIdHashed?: string
 }

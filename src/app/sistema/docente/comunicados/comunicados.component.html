@@ -13,10 +13,10 @@
         </p-toolbar>
     </div>
     <!-- contenido -->
-    <p-tabView>
+    <p-tabView [activeIndex]="0">
         <p-tabPanel>
             <ng-template pTemplate="header">
-                <i class="pi pi-users"></i>
+                <i class="pi pi-inbox"></i>
                 <span class="ml-2">Contenido</span>
             </ng-template>
             <app-contenidos></app-contenidos>

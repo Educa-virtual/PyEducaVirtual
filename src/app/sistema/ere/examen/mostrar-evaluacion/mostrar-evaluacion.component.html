@@ -1,10 +1,24 @@
 <div class="card col-12">
     <div class="py-2">
-        <p-progressBar [value]="30" />
+        <p-progressBar [value]="75" />
     </div>
 
-    <p-accordion [activeIndex]="0">
-        <p-accordionTab [header]="tab.title" *ngFor="let tab of pregunta">
+    <div class="flex mb-3 gap-2 justify-content-end">
+        <p-button
+            *ngFor="let index of [0, 1, 2]"
+            (click)="activeIndex = index"
+            [rounded]="true"
+            [label]="index + 1 + ''"
+            styleClass="w-2rem h-2rem p-0"
+            [outlined]="activeIndex !== index"
+        />
+    </div>
+
+    <p-accordion [activeIndex]="activeIndex">
+        <p-accordionTab
+            [header]="tab.title"
+            *ngFor="let tab of pregunta; let i = index"
+        >
             <!-- pregunta multiple -->
             <div *ngIf="tab.tipo === 'múltiple'">
                 <div class="grid">
@@ -74,6 +88,7 @@
                                     icon="pi pi-arrow-right"
                                     [rounded]="true"
                                     [outlined]="true"
+                                    (click)="siguientePregunta(i)"
                                 />
                             </div>
                         </div>
@@ -108,7 +123,7 @@
                         </span>
                         <p class="flex gap-2 flex-wrap">
                             <!-- {{imprimir texto de ayuda}} -->
-                            Tu eres muy inteligente,, no vas poner jajaj
+                            Tu eres muy inteligente, no vas poner jajaj
                         </p>
                     </div>
                     <div class="col-1 p-4 text-right">
@@ -116,6 +131,7 @@
                             icon="pi pi-arrow-right"
                             [rounded]="true"
                             [outlined]="true"
+                            (click)="siguientePregunta(i)"
                         />
                     </div>
                 </div>

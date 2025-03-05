@@ -19,7 +19,6 @@
                 optionValue="iNivelEvalId"
                 placeholder="Proceso"
                 class="w-full"
-                [(ngModel)]="procesoAnio"
             >
             </p-dropdown>
         </div>
@@ -32,7 +31,6 @@
                 optionValue="iCompetenciaId"
                 placeholder="Competencia"
                 class="w-full"
-                [(ngModel)]="competencia"
             >
             </p-dropdown>
         </div>
@@ -45,7 +43,6 @@
                 optionLabel="cTipoPregDescripcion"
                 placeholder="tipo"
                 optionValue="iTipoPregId"
-                [(ngModel)]="tipoPreguntaSeleccionada"
             >
             </p-dropdown>
         </div>
@@ -57,7 +54,6 @@
                 optionLabel="cCapacidadNombre"
                 optionValue="iCapacidadId"
                 placeholder="Capacidad"
-                [(ngModel)]="Capacidade"
             >
             </p-dropdown>
         </div>
@@ -90,7 +86,7 @@
                 <th>#</th>
                 <th>{{ fechaEvaluacion }}</th>
                 <th>{{ pregunta }}</th>
-                <th>{{ tipoPregunta }}</th>
+                <th>{{ tipoDePregunta }}</th>
                 <th>{{ proceso }}</th>
                 <th>{{ grado }}</th>
                 <th>{{ accion }}</th>

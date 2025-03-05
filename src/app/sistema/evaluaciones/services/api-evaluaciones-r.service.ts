@@ -508,7 +508,39 @@ export class ApiEvaluacionesRService {
     obtenerAnios(): Observable<any> {
         return this.http
             .get(`${this.urlBackendApi}/ere/evaluaciones/anios`)
-
             .pipe(map((resp) => resp['data']))
+    }
+
+    tipoPregunta(): Observable<any> {
+        return this.http
+            .get(
+                `${this.urlBackendApi}/evaluaciones/tipo-preguntas/obtenerTipoPreguntas`
+            )
+            .pipe(map((resp) => resp['data']))
+    }
+
+    capacidadesFiltro(): Observable<any> {
+        return this.http
+            .get(
+                `${this.urlBackendApi}/ere/Evaluaciones/obtenerMatrizCapacidades`
+            )
+            .pipe(map((resp) => resp['data']))
+    }
+
+    competenciaFiltro(): Observable<any> {
+        return this.http
+            .get(
+                `${this.urlBackendApi}/ere/Evaluaciones/obtenerMatrizCompetencias`
+            )
+            .pipe(map((resp) => resp['data']))
+    }
+
+    procesoFiltro(): Observable<any> {
+        return this.http
+            .get(
+                `${this.urlBackendApi}/ere/nivelEvaluacion/obtenerNivelEvaluacion`
+            )
+            .pipe(map((resp) => resp['data']))
+        //{{local_url}}///
     }
 }

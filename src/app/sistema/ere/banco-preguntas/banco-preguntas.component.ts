@@ -42,7 +42,7 @@ export class BancoPreguntasComponent {
     // variables para los filtros seleccionados
     fechaEvaluacion: string = 'Fecha de Evaluacion'
     pregunta: string = 'pregunta'
-    tipoPregunta: string = 'Tipo Pregunta'
+    tipoDePregunta: string = 'Tipo Pregunta'
     proceso: string = 'Proceso'
     grado: string = 'Grado'
     accion: string = 'Acciones'
@@ -59,71 +59,34 @@ export class BancoPreguntasComponent {
     // Listas seleccionables
     anios: any[] = []
 
-    tipoPreguntas: any[] = [
-        {
-            iTipoPregId: 1,
-            cTipoPregDescripcion: 'Opcion Única',
-        },
-        {
-            iTipoPregId: 2,
-            cTipoPregDescripcion: 'Opcion Múltiple',
-        },
-    ]
+    tipoPreguntas: any[] = []
 
-    procesos: any[] = [
-        {
-            iNivelEvalId: '1',
-            cNivelEvalNombre: 'Inicio',
-        },
-        {
-            iNivelEvalId: '2',
-            cNivelEvalNombre: 'Proceso',
-        },
-        {
-            iNivelEvalId: '3',
-            cNivelEvalNombre: 'Salida',
-        },
-    ]
+    capacidades: any[] = []
 
-    capacidades: any[] = [
-        {
-            iCapacidadId: '1',
-            cCapacidadNombre: 'Se valora a sí mismo',
-        },
-        {
-            iCapacidadId: '2',
-            cCapacidadNombre: 'Autorregula sus emociones',
-        },
-    ]
+    competencias: any[] = []
 
-    competencias: any[] = [
-        {
-            iCompetenciaId: '1',
-            cCompetenciaNombre: 'Construye su identidad',
-        },
-        {
-            iCompetenciaId: '2',
-            cCompetenciaNombre:
-                'Se desenvuelve de manera autónoma a través de su motricidad',
-        },
-    ]
+    procesos: any[] = []
+
+    // Tabla
+
+    preguntas: any[] = []
 
     //anios
 
     //Tipo Pregunta
-    tipoPreguntaSeleccionada: string
 
     //Capacidades
-    Capacidade: string
 
     //competencias
-    competencia: string
 
     //procesos
-    procesoAnio: string
 
     ngOnInit(): void {
         this.obtenerAnios()
+        this.tipoPregunta()
+        this.capacidadesFiltro()
+        this.competenciaFiltro()
+        this.procesoFiltro()
     }
 
     obtenerAnios() {
@@ -132,7 +95,55 @@ export class BancoPreguntasComponent {
                 this.anios = respuesta
             },
             error: (error) => {
-                console.error('error obtenido', error)
+                console.error('error obtenido' + error)
+            },
+        })
+    }
+
+    tipoPregunta() {
+        this._ApiEvaluacionesRService.tipoPregunta().subscribe({
+            next: (respuesta) => {
+                this.tipoPreguntas = respuesta
+            },
+
+            error: (error) => {
+                console.error('error obtenido' + error)
+            },
+        })
+    }
+
+    capacidadesFiltro() {
+        this._ApiEvaluacionesRService.capacidadesFiltro().subscribe({
+            next: (respuesta) => {
+                this.capacidades = respuesta.selectData
+            },
+
+            error: (error) => {
+                console.log('error obtenido' + error)
+            },
+        })
+    }
+
+    competenciaFiltro() {
+        this._ApiEvaluacionesRService.competenciaFiltro().subscribe({
+            next: (respuesta) => {
+                this.competencias = respuesta.selectData
+            },
+
+            error: (error) => {
+                console.log('error obtenido' + error)
+            },
+        })
+    }
+
+    procesoFiltro() {
+        this._ApiEvaluacionesRService.procesoFiltro().subscribe({
+            next: (respuesta) => {
+                this.procesos = respuesta
+            },
+
+            error: (error) => {
+                console.log('error obtenido' + error)
             },
         })
     }

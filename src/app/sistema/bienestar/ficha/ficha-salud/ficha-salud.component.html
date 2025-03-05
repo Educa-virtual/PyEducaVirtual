@@ -1,0 +1,107 @@
+<br />
+
+<form [formGroup]="formSalud">
+    <div class="grid p-fluid mt-3">
+        <input type="hidden" name="iFichaDGId" />
+
+        <div class="field col-12 lg:col-6">
+            <p-fieldset legend="Dolencias o enfermedades crónicas">
+                <div class="grid">
+                    <div
+                        class="col-12"
+                        *ngFor="let dolencia of dolencias; let i = index"
+                    >
+                        <p-inputGroup>
+                            <p-inputGroupAddon>
+                                <p-inputSwitch
+                                    (onChange)="handleSwitchChange($event, i)"
+                                    name="bDolencia[{{ dolencia['id'] }}]"
+                                />
+                            </p-inputGroupAddon>
+                            <p-inputGroupAddon>
+                                {{ dolencia['nombre'] }}
+                            </p-inputGroupAddon>
+                            @if (visibleInput[i] === true) {
+                                <input
+                                    type="text"
+                                    name="cDolenciaObs[{{ dolencia['id'] }}]"
+                                    pInputText
+                                    placeholder="Especifique *"
+                                />
+                            }
+                        </p-inputGroup>
+                    </div>
+                </div>
+            </p-fieldset>
+        </div>
+
+        <div class="field col-12 lg:col-6">
+            <p-fieldset legend="Indique si tiene alergias">
+                <div class="grid">
+                    <div class="col-12">
+                        <p-inputGroup>
+                            <p-inputGroupAddon>
+                                <p-inputSwitch
+                                    (onChange)="
+                                        handleSwitchAlergiaChange($event, 0)
+                                    "
+                                    formControlName="bFichaDGAlergiaMedicamentos"
+                                />
+                            </p-inputGroupAddon>
+                            <p-inputGroupAddon>
+                                Alergia a medicamentos
+                            </p-inputGroupAddon>
+                            @if (visibleAlergiaInput[0] === true) {
+                                <input
+                                    type="text"
+                                    formControlName="cFichaDGAlergiaMedicamentos"
+                                    pInputText
+                                    placeholder="Especifique"
+                                />
+                            }
+                        </p-inputGroup>
+                    </div>
+                    <div class="col-12">
+                        <p-inputGroup>
+                            <p-inputGroupAddon>
+                                <p-inputSwitch
+                                    formControlName="bFichaDGAlergiaOtros"
+                                    (onChange)="
+                                        handleSwitchAlergiaChange($event, 1)
+                                    "
+                                />
+                            </p-inputGroupAddon>
+                            <p-inputGroupAddon>
+                                Otras alergias
+                            </p-inputGroupAddon>
+                            @if (visibleAlergiaInput[1] === true) {
+                                <input
+                                    type="text"
+                                    formControlName="cFichaDGAlergiaOtros"
+                                    pInputText
+                                    placeholder="Especifique"
+                                />
+                            }
+                        </p-inputGroup>
+                    </div>
+                </div>
+            </p-fieldset>
+        </div>
+    </div>
+</form>
+
+<br />
+
+<div class="flex justify-content-end gap-2">
+    <p-button
+        label="Salir sin guardar"
+        (onClick)="actualizarDatos()"
+        styleClass="p-button-secondary"
+    />
+    <p-button
+        label="Guardar y continuar"
+        (onClick)="guardarDatos()"
+        styleClass="p-button-primary"
+    />
+</div>
+<p-toast></p-toast>

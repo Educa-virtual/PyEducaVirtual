@@ -102,25 +102,8 @@ export const routes: Routes = [
         path: 'bienestar',
 
         loadChildren: () =>
-            import('./sistema/bienestar/ficha-socioeconomica.module').then(
-                (m) => m.Socioeconomica
-            ),
-    },
-    {
-        path: 'bienestar',
-
-        loadChildren: () =>
-            import('./sistema/bienestar/ficha-socioeconomica.module').then(
-                (m) => m.Socioeconomica
-            ),
-    },
-
-    {
-        path: 'bienestar',
-
-        loadChildren: () =>
-            import('./sistema/bienestar/ficha-socioeconomica.module').then(
-                (m) => m.Socioeconomica
+            import('./sistema/bienestar/bienestar.module').then(
+                (m) => m.BienestarModule
             ),
     },
     {

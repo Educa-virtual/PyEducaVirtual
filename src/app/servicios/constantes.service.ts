@@ -105,7 +105,7 @@ const docente = [
             // },
             {
                 label: 'bienestar',
-                icon: 'pi pi-fw pi-folder',
+                icon: 'pi pi-fw pi-file-edit',
                 routerLink: ['/bienestar/ficha'],
             },
         ],
@@ -407,7 +407,7 @@ const administracion = [
 
             {
                 label: 'Bienestar Social',
-                icon: 'pi pi-folder',
+                icon: 'pi pi-check-square',
                 items: [
                     {
                         label: 'Consulta Asistenta Social',
@@ -416,13 +416,13 @@ const administracion = [
                     },
                     {
                         label: 'Consulta Apoderado',
-                        icon: 'pi pi-folder-open',
+                        icon: 'pi pi-users',
                         routerLink: ['/bienestar/fichavistapoderado'],
                     },
                     {
                         label: 'Ficha Socioeconomica',
-                        icon: 'pi pi-folder-open',
-                        routerLink: ['/bienestar/fichasocgeneral'],
+                        icon: 'pi pi-file-edit',
+                        routerLink: ['/bienestar/ficha'],
                     },
                 ],
             },

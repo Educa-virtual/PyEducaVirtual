@@ -22,11 +22,10 @@ import * as XLSX from 'xlsx'
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import { ToastModule } from 'primeng/toast'
 import { MessageService } from 'primeng/api'
-import { check, decline, derive } from './actions-table-primeng'
+import { derive, trash, upload } from './actions-table-primeng'
 import {
     docenteTemplateColumns,
     estudianteTemplateColumns,
-    mapColumns,
 } from './bulk-table-columns'
 
 @Component({
@@ -54,19 +53,28 @@ import {
 export class BulkDataImportComponent {
     typeCollectionForm: FormGroup
     typeCollections = [
-        { label: 'Docente', name: 'plantilla-docente.xlsx' },
-        { label: 'Estudiante', name: 'plantilla-estudiante.xlsx' },
+        {
+            label: 'Docente',
+            name: 'plantilla-docente.xlsx',
+            api: 'validatedDocentes',
+        },
+        {
+            label: 'Estudiante',
+            name: 'plantilla-estudiante.xlsx',
+            api: 'validatedEstudiantes',
+        },
     ]
     fileUploadForm: FormGroup
     fileOrigin: File
     disabled
 
     columns: IColumn[]
+    unverified_columns
     unverified_data
     verified_data
     verified_columns_recorded
     verified_actions_recorded = [derive]
-    import_data_actions = [check, decline]
+    import_data_actions = [upload, trash]
     import_data_columns
     groupRowsBy = 'cPersDocumento'
     import_data
@@ -99,13 +107,14 @@ export class BulkDataImportComponent {
     }
 
     mapColumnsImport() {
+        this.unverified_data = undefined
         switch (this.typeCollectionForm.value.typeCollection.label) {
             case 'Docente':
-                this.columns = mapColumns(docenteTemplateColumns)
+                this.columns = docenteTemplateColumns
 
                 break
             case 'Estudiante':
-                this.columns = mapColumns(estudianteTemplateColumns)
+                this.columns = estudianteTemplateColumns
 
                 break
 
@@ -115,6 +124,8 @@ export class BulkDataImportComponent {
 
         console.log(this.columns)
     }
+
+    jsonData
 
     loadCollectionTemplate(file: any) {
         console.log('file')
@@ -131,56 +142,27 @@ export class BulkDataImportComponent {
             const worksheet = workbook.Sheets[firstSheetName]
 
             // Convertir los datos de la hoja a formato JSON
-            const jsonData: any[] = XLSX.utils
+            this.jsonData = XLSX.utils
                 .sheet_to_json(worksheet, { header: 1 })
                 .filter((row: any[]) => Array.isArray(row) && row.length > 0)
 
-            console.log('Datos del archivo XLSX:', jsonData)
-
-            this.mapColumnsImport()
-            // this.columns = jsonData[0]
-            //     .map((data, index) => {
-            //         if (!jsonData[0][index]) {
-            //             return null
-            //         }
-
-            //         return {
-            //             type: 'text',
-            //             width: '5rem',
-            //             field: jsonData[1][index],
-            //             header: jsonData[0][index],
-            //             text_header: 'center',
-            //             text: 'center',
-            //         }
-            //     })
-            //     .filter(
-            //         (column): column is { [key: string]: any } =>
-            //             column !== null
-            //     )
-            console.log('jsonData')
-            console.log(jsonData)
-
-            const validFormat = docenteTemplateColumns.some(
-                (obj, index) => obj.header === jsonData[0][index]
+            this.unverified_columns = this.columns.map(
+                ({ width, field, header, text, text_header }) => ({
+                    type: 'text',
+                    width,
+                    field,
+                    header,
+                    text,
+                    text_header,
+                })
             )
 
-            if (!validFormat) {
-                this.messageService.add({
-                    severity: 'error',
-                    summary: 'Plantilla',
-                    detail: 'La plantilla no cumple el formato de la colección.',
-                })
-
-                this.unverified_data = undefined
-
-                return
-            }
-
-            this.unverified_data = jsonData.slice(1).map((row) =>
+            this.unverified_data = this.jsonData.slice(1).map((row) =>
                 row.reduce((acc, value, index) => {
-                    const column = docenteTemplateColumns[index]
+                    const column = this.columns[index]
+
                     const key =
-                        column?.header === jsonData[0][index]
+                        column?.header === this.jsonData[0][index]
                             ? column.field
                             : 'error'
                     return Object.assign(acc, { [key]: value })
@@ -188,50 +170,37 @@ export class BulkDataImportComponent {
             )
 
             console.log(this.unverified_data)
+            this.validFormatTemplate()
         }
 
         reader.readAsArrayBuffer(file)
     }
 
-    status = []
+    validFormatTemplate() {
+        console.log('isValid')
+        console.log(this.columns)
+        console.log(this.jsonData)
 
-    handleActions(row) {
-        console.log('row')
-        console.log(row)
-        const actions = {
-            derivar: () => {
-                // Lógica para la acción "ver"
-                if (!row.item) {
-                    this.messageService.clear()
-                    this.messageService.add({
-                        severity: 'error',
-                        summary: 'Error',
-                        detail: 'No se ha seleccionado un item para derivar.',
-                    })
-                } else {
-                    // this.import_data = this.import_data.unshift(row.item)
+        console.log(this.unverified_data)
 
-                    this.import_data = [row.item, ...this.import_data]
+        const validFormat = this.columns.some(
+            (obj, index) => obj.header === this.jsonData?.[0][index]
+        )
 
-                    this.verified_data = this.verified_data.filter(
-                        (item) =>
-                            item[this.groupRowsBy] !==
-                            row.item[this.groupRowsBy]
-                    )
+        if (!validFormat) {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Plantilla',
+                detail: 'La plantilla no cumple el formato de la colección.',
+            })
 
-                    console.log('this.import_data')
-                    console.log(this.import_data)
-                }
-            },
-        }
+            this.unverified_data = undefined
 
-        const action = actions[row.accion]
-        if (action) {
-            action()
-        } else {
-            console.log(`Acción desconocida: ${row.action}`)
+            return
         }
     }
+
+    status = []
 
     validaImportData() {
         if (!this.unverified_data) {
@@ -245,7 +214,10 @@ export class BulkDataImportComponent {
         }
 
         this.bulkDataImport
-            .validateCollectionData(this.unverified_data)
+            .validateCollectionData(
+                this.unverified_data,
+                this.typeCollectionForm.value.typeCollection.api
+            )
             .subscribe({
                 next: (response) => {
                     // this.verified_data = response.data
@@ -284,7 +256,7 @@ export class BulkDataImportComponent {
                         console.log(this.columns)
 
                         this.import_data_columns = [
-                            ...docenteTemplateColumns,
+                            ...this.columns,
                             {
                                 type: 'actions',
                                 width: '3rem',
@@ -292,6 +264,14 @@ export class BulkDataImportComponent {
                                 header: 'Acciones',
                                 text_header: 'center',
                                 text: 'center',
+                            },
+                            {
+                                field: 'checked',
+                                header: '',
+                                type: 'checkbox',
+                                width: '1rem',
+                                text: 'left',
+                                text_header: '',
                             },
                         ]
 
@@ -363,7 +343,77 @@ export class BulkDataImportComponent {
             })
     }
 
-    debug(data) {
-        console.log(data)
+    handleActionsVerifiedData(row) {
+        const actions = {
+            derivar: () => {
+                // Lógica para la acción "ver"
+                if (!row.item) {
+                    this.messageService.clear()
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: 'No se ha seleccionado un item para derivar.',
+                    })
+                } else {
+                    // this.import_data = this.import_data.unshift(row.item)
+
+                    this.import_data = [row.item, ...this.import_data]
+
+                    this.verified_data = this.verified_data.filter(
+                        (item) =>
+                            item[this.groupRowsBy] !==
+                            row.item[this.groupRowsBy]
+                    )
+
+                    console.log('this.import_data')
+                    console.log(this.import_data)
+                }
+            },
+        }
+
+        const action = actions[row.accion]
+        if (action) {
+            action()
+        } else {
+            console.log(`Acción desconocida: ${row.action}`)
+        }
     }
+
+    handleActionsImportData(row) {
+        const actions = {
+            derivar: () => {
+                // Lógica para la acción "ver"
+                if (!row.item) {
+                    this.messageService.clear()
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: 'No se ha seleccionado un item para derivar.',
+                    })
+                } else {
+                    // this.import_data = this.import_data.unshift(row.item)
+
+                    this.import_data = [row.item, ...this.import_data]
+
+                    this.verified_data = this.verified_data.filter(
+                        (item) =>
+                            item[this.groupRowsBy] !==
+                            row.item[this.groupRowsBy]
+                    )
+
+                    console.log('this.import_data')
+                    console.log(this.import_data)
+                }
+            },
+        }
+
+        const action = actions[row.accion]
+        if (action) {
+            action()
+        } else {
+            console.log(`Acción desconocida: ${row.action}`)
+        }
+    }
+
+    selectedRowImportData = []
 }

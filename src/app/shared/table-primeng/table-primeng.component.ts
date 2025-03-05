@@ -41,6 +41,7 @@ export interface IColumn {
     field: string
     header: string
     text_header: string
+    placeholder?: string
     inputType?: string
     outputType?: string
 

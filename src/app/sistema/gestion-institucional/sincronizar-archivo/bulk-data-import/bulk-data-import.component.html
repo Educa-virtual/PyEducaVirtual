@@ -40,7 +40,7 @@
     @if (this.typeCollectionForm.value.typeCollection.label) {
         <app-tab-view>
             <app-tab-panel title="Información del archivo">
-                <div class="card">
+                <div class="card flex flex-column gap-2">
                     <section class="flex justify-content-between">
                         <div class="flex flex-column gap-3">
                             <span>Archivo de origen:</span>
@@ -62,7 +62,7 @@
                     </section>
                     <!-- @if (unverified_data && unverified_data.length > 0) { -->
                     <app-table-primeng
-                        [columnas]="columns"
+                        [columnas]="unverified_columns"
                         [data]="unverified_data"
                         [showCaption]="true"
                         [showSortIcon]="false"
@@ -90,7 +90,7 @@
                             dataKey="cPersDocumento"
                             [groupRowsBy]="groupRowsBy"
                             template="expandable"
-                            (accionBtnItem)="handleActions($event)"
+                            (accionBtnItem)="handleActionsVerifiedData($event)"
                         >
                         </app-table-primeng>
                     } @else {
@@ -101,14 +101,30 @@
                 </div>
             </app-tab-panel>
             <app-tab-panel title="Importación de datos">
-                <div class="card">
+                <div class="card flex flex-column gap-2">
                     @if (import_data) {
+                        <section>
+                            <div class="flex flex-column gap-3">
+                                <span>Iniciar proceso:</span>
+                                <p-button
+                                    label="Importación en bloque"
+                                    icon="pi pi-database"
+                                    [loading]="importLoad"
+                                    (onClick)="validaImportData()"
+                                    [disabled]="
+                                        selectedRowImportData.length <= 0
+                                    "
+                                />
+                            </div>
+                        </section>
+
                         <app-table-primeng
                             [columnas]="import_data_columns"
                             [data]="import_data"
                             [actions]="import_data_actions"
                             [showCaption]="false"
                             [showSortIcon]="false"
+                            [(selectedRowData)]="selectedRowImportData"
                         ></app-table-primeng>
                     } @else {
                         <span class="block text-center"

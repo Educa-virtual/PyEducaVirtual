@@ -21,3 +21,11 @@ export const decline = {
     type: 'item',
     class: 'p-button-rounded p-button-warning p-button-text',
 }
+
+export const derive = {
+    labelTooltip: 'Derivar',
+    icon: 'pi pi-angle-double-right',
+    accion: 'derivar',
+    type: 'item',
+    class: 'p-button-rounded p-button-warning p-button-text',
+}

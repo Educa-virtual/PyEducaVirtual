@@ -22,8 +22,12 @@ import * as XLSX from 'xlsx'
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import { ToastModule } from 'primeng/toast'
 import { MessageService } from 'primeng/api'
-import { check, decline } from './actions-table-primeng'
-import { inputTypeColumns } from './bulk-table-columns'
+import { check, decline, derive } from './actions-table-primeng'
+import {
+    docenteTemplateColumns,
+    estudianteTemplateColumns,
+    mapColumns,
+} from './bulk-table-columns'
 
 @Component({
     selector: 'app-bulk-data-import',
@@ -61,9 +65,10 @@ export class BulkDataImportComponent {
     unverified_data
     verified_data
     verified_columns_recorded
-    verified_actions_recorded = [check]
+    verified_actions_recorded = [derive]
     import_data_actions = [check, decline]
     import_data_columns
+    groupRowsBy = 'cPersDocumento'
     import_data
 
     importLoad: boolean = false
@@ -93,6 +98,22 @@ export class BulkDataImportComponent {
         this.bulkDataImport.downloadCollectionTemplate(typeCollection)
     }
 
+    mapColumnsImport() {
+        switch (this.typeCollectionForm.value.typeCollection.label) {
+            case 'Docente':
+                this.columns = mapColumns(docenteTemplateColumns)
+
+                break
+            case 'Estudiante':
+                this.columns = mapColumns(estudianteTemplateColumns)
+
+                break
+
+            default:
+                break
+        }
+    }
+
     loadCollectionTemplate(file: any) {
         console.log('file')
         console.log(file)
@@ -114,19 +135,7 @@ export class BulkDataImportComponent {
 
             console.log('Datos del archivo XLSX:', jsonData)
 
-            this.columns = inputTypeColumns.map((column) => {
-                const { width, field, header, text, text_header } = column
-
-                return {
-                    type: 'text',
-                    width,
-                    field,
-                    header,
-                    text,
-                    text_header,
-                }
-            })
-
+            this.mapColumnsImport()
             // this.columns = jsonData[0]
             //     .map((data, index) => {
             //         if (!jsonData[0][index]) {
@@ -163,6 +172,46 @@ export class BulkDataImportComponent {
         reader.readAsArrayBuffer(file)
     }
 
+    status = []
+
+    handleActions(row) {
+        console.log('row')
+        console.log(row)
+        const actions = {
+            derivar: () => {
+                // Lógica para la acción "ver"
+                if (!row.item) {
+                    this.messageService.clear()
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: 'No se ha seleccionado un item para derivar.',
+                    })
+                } else {
+                    // this.import_data = this.import_data.unshift(row.item)
+
+                    this.import_data = [row.item, ...this.import_data]
+
+                    this.verified_data = this.verified_data.filter(
+                        (item) =>
+                            item[this.groupRowsBy] !==
+                            row.item[this.groupRowsBy]
+                    )
+
+                    console.log('this.import_data')
+                    console.log(this.import_data)
+                }
+            },
+        }
+
+        const action = actions[row.accion]
+        if (action) {
+            action()
+        } else {
+            console.log(`Acción desconocida: ${row.action}`)
+        }
+    }
+
     validaImportData() {
         if (!this.unverified_data) {
             this.messageService.clear()
@@ -184,12 +233,10 @@ export class BulkDataImportComponent {
 
                     const excel = []
 
-                    const status = []
-
                     const filteredData = response.data.map((obj) => {
                         const { json_excel, lista_no_d, ...rest } = obj
 
-                        status.push(
+                        this.status.push(
                             Object.keys(obj)
                                 .filter(
                                     (key) =>
@@ -207,7 +254,7 @@ export class BulkDataImportComponent {
                         return { ...rest }
                     })
 
-                    this.verified_data = [...filteredData, ...excel, ...status]
+                    this.verified_data = [...filteredData, ...excel]
 
                     console.log('filteredData')
                     console.log(this.verified_data)
@@ -216,7 +263,7 @@ export class BulkDataImportComponent {
                         console.log(this.columns)
 
                         this.import_data_columns = [
-                            ...inputTypeColumns,
+                            ...docenteTemplateColumns,
                             {
                                 type: 'actions',
                                 width: '3rem',
@@ -250,6 +297,14 @@ export class BulkDataImportComponent {
                         )
 
                         this.verified_columns_recorded = [
+                            {
+                                field: 'radio',
+                                header: '',
+                                type: 'radio',
+                                width: '5rem',
+                                text: 'left',
+                                text_header: '',
+                            },
                             ...this.columns,
                             {
                                 type: 'actions',

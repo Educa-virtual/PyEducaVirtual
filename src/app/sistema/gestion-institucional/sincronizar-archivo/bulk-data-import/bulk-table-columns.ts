@@ -1,4 +1,6 @@
-export const inputTypeColumns = [
+import { IColumn } from '@/app/shared/table-primeng/table-primeng.component'
+
+export const docenteTemplateColumns = [
     {
         type: 'text',
         width: '5rem',
@@ -132,4 +134,33 @@ export const inputTypeColumns = [
         text: 'center',
     },
 ]
-3
+
+export const estudianteTemplateColumns = [
+    {
+        type: 'cell-editor',
+        width: '5rem',
+        field: 'cTipoIdentSigla',
+        header: 'Tipo  de documento',
+        text_header: 'center',
+        text: 'center',
+
+        inputType: 'dropdown',
+        options: [
+            { label: 'DNI', value: 'M' },
+            { label: 'RUC', value: 'M' },
+            { label: 'CDE', value: 'M' },
+            { label: 'OTD', value: 'M' },
+        ],
+    },
+]
+
+export const mapColumns = (template: IColumn[]) => {
+    return template.map(({ width, field, header, text, text_header }) => ({
+        type: 'text',
+        width,
+        field,
+        header,
+        text,
+        text_header,
+    }))
+}

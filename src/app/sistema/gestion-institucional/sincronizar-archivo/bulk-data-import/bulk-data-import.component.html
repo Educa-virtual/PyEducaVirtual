@@ -16,6 +16,7 @@
                         formControlName="typeCollection"
                         [options]="typeCollections"
                         optionLabel="label"
+                        (onChange)="mapColumnsImport()"
                         placeholder="Seleccione una colección"
                     />
                 </form>
@@ -81,11 +82,14 @@
                         [columnas]="verified_columns_recorded"
                         [showCaption]="true"
                         [showSortIcon]="false"
+                        groupHeader="cPersDocumento - cPersPaterno cPersMaterno cPersNombre"
+                        [groupfooter]="status"
                         [actions]="verified_actions_recorded"
                         [data]="verified_data"
                         dataKey="cPersDocumento"
-                        groupRowsBy="cPersDocumento"
+                        [groupRowsBy]="groupRowsBy"
                         template="expandable"
+                        (accionBtnItem)="handleActions($event)"
                     >
                     </app-table-primeng>
                 } @else {

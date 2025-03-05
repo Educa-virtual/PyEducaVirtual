@@ -117,7 +117,15 @@
                                     Grupo:
                                 </div>
                                 <div class="col-9 flex h-full justify-center">
-                                    {{ comunicado.grupo }}
+                                    <span
+                                        *ngFor="
+                                            let grupo of comunicado.grupo;
+                                            let last = last
+                                        "
+                                    >
+                                        {{ grupo.cGrupoNombre
+                                        }}{{ last ? '' : ', ' }}
+                                    </span>
                                 </div>
                             </div>
                         </div>

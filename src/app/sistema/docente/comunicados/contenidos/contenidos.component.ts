@@ -13,7 +13,7 @@ interface Comunicado {
     publicado: string
     prioridad: string
     caduca: string
-    grupo: string
+    grupo: { iGrupoId: string; cGrupoNombre: string }[]
     collapsed: boolean
 }
 
@@ -55,7 +55,10 @@ export class ContenidosComponent implements OnInit {
             publicado: '12/02/2025',
             prioridad: 'Urgente',
             caduca: '12/03/2025',
-            grupo: 'Apoderados,Estudiantes',
+            grupo: [
+                { iGrupoId: '1', cGrupoNombre: 'Apoderados' },
+                { iGrupoId: '2', cGrupoNombre: 'Estudiantes' },
+            ],
             texto: 'Estimados padres de familia y estudiantes las matriculas son hasta....',
             collapsed: true,
         },
@@ -67,7 +70,10 @@ export class ContenidosComponent implements OnInit {
             publicado: '10/02/2025',
             prioridad: 'Normal',
             caduca: '10/03/2025',
-            grupo: 'Docentes,Estudiantes',
+            grupo: [
+                { iGrupoId: '1', cGrupoNombre: 'Apoderados' },
+                { iGrupoId: '2', cGrupoNombre: 'Estudiantes' },
+            ],
             texto: 'Se informa a la comunidad educativa que las notas ponderadas son...',
             collapsed: true,
         },
@@ -79,7 +85,10 @@ export class ContenidosComponent implements OnInit {
             publicado: '01/02/2025',
             prioridad: 'Baja',
             caduca: '15/03/2025',
-            grupo: 'Apoderados',
+            grupo: [
+                { iGrupoId: '1', cGrupoNombre: 'Apoderados' },
+                { iGrupoId: '2', cGrupoNombre: 'Estudiantes' },
+            ],
             texto: 'Se comunica a los docentes que el numero de horas lectiva son 40 por semana',
             collapsed: true,
         },
@@ -109,7 +118,19 @@ export class ContenidosComponent implements OnInit {
         this.getInformation(params, 'obtenerDatos')
     }
     // Variable para el comunicado seleccionado (para editar)
-    selectedComunicado: Comunicado = this.initComunicado()
+    selectedComunicado: Comunicado = {
+        id: 0,
+        titulo: '',
+        texto: '',
+        estado: '',
+        tipo: '',
+        publicado: '',
+        prioridad: '',
+        caduca: '',
+        grupo: [], // array vacío
+        collapsed: true,
+    }
+
     // Inicializa un comunicado vacío (para crear uno nuevo)
     initComunicado(): Comunicado {
         return {
@@ -121,16 +142,17 @@ export class ContenidosComponent implements OnInit {
             publicado: '',
             prioridad: '',
             caduca: '',
-            grupo: '',
+            grupo: [],
             collapsed: true,
         }
     }
 
     // Cuando hacemos clic en "Editar"
     editComunicado(com: Comunicado) {
-        // Creamos una copia del comunicado para no modificar el array original
-        // si no deseas mutarlo directamente
-        this.selectedComunicado = { ...com }
+        this.selectedComunicado = {
+            ...com,
+            grupo: com.grupo.map((g: any) => g.iGrupoId),
+        }
     }
     // Al hacer clic en "Publicar" o "Actualizar"
     guardarComunicado() {
@@ -140,9 +162,20 @@ export class ContenidosComponent implements OnInit {
             prefix: 'comunicado',
             ruta: 'registrar_comunicado',
             data: {
-                //    comunicados : this.comunicados -> reemplazar para guaardar datos en la DB
+                //    comunicados enviados al backend
+                iPersId: this.iPersId, //iPersId,
+                iTipoComId: this.selectedComunicado.tipo, // Tipo de comunicado
+                iPrioridadId: this.selectedComunicado.prioridad, // Prioridad
+                cComunicadoTitulo: this.selectedComunicado.titulo, // Título
+                cComunicadoDescripcion: this.selectedComunicado.texto, // Descripción
+                dtComunicadoEmision: this.selectedComunicado.publicado || null, // Fecha de emisión
+                dtComunicadoHasta: this.selectedComunicado.caduca || null, // Fecha de caducidad
+                iEstado: this.selectedComunicado.estado, //bComunicadoArchivado,
+                iYAcadId: this.iYAcadId, //iYAcadId,
+                listaGrupos: this.selectedComunicado.grupo,
             },
         }
+        console.table(params)
         this.getInformation(params, 'obtenerAcademicoGrado')
     }
     togglePanel(event: Event, panel: any, comunicado: Comunicado) {
@@ -188,7 +221,7 @@ export class ContenidosComponent implements OnInit {
                 }))
                 this.grupos = item.grupos.map((g: any) => ({
                     label: g.cGrupoNombre,
-                    value: Number(g.iPersId),
+                    value: Number(g.iGrupoId),
                 }))
                 break
 

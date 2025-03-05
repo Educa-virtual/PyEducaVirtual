@@ -16,7 +16,7 @@ import {
 
 import { HttpClient } from '@angular/common/http'
 import { environment } from '@/environments/environment'
-import { MatSnackBar } from '@angular/material/snack-bar'
+import { MessageService } from 'primeng/api'
 
 @Component({
     selector: 'app-gestion-vacantes',
@@ -114,7 +114,7 @@ export class GestionVacantesComponent implements OnInit {
     //vacante: any;
 
     constructor(
-        private snackBar: MatSnackBar,
+        private snackBar: MessageService,
         private fb: FormBuilder,
         private cdRef: ChangeDetectorRef,
         private http: HttpClient // Inyectar HttpClient,
@@ -174,9 +174,11 @@ export class GestionVacantesComponent implements OnInit {
     enviarVacantes() {
         if (this.guardar_vacantes.length === 0) {
             // Mostrar mensaje de advertencia al usuario
-            this.snackBar.open('No hay vacantes para enviar.', 'Cerrar', {
-                duration: 3000,
-                panelClass: ['warning-snackbar'],
+            this.snackBar.add({
+                severity: 'warn',
+                summary: 'Cerrar',
+                detail: 'No hay vacantes para enviar.',
+                life: 3000,
             })
             return
         }
@@ -186,21 +188,21 @@ export class GestionVacantesComponent implements OnInit {
         this.http.post(url, { vacantes: this.guardar_vacantes }).subscribe({
             error: () => {
                 // Mostrar mensaje de error al usuario
-                this.snackBar.open('Error al guardar las vacantes', 'Cerrar', {
-                    duration: 3000,
-                    panelClass: ['error-snackbar'],
+                this.snackBar.add({
+                    detail: 'Error al guardar las vacantes',
+                    summary: 'Cerrar',
+                    life: 3000,
+                    severity: 'warn',
                 })
             },
             complete: () => {
                 // Mostrar mensaje de finalización al usuario
-                this.snackBar.open(
-                    'Vacantes guardadas correctamente',
-                    'Cerrar',
-                    {
-                        duration: 3000,
-                        panelClass: ['info-snackbar'],
-                    }
-                )
+                this.snackBar.add({
+                    detail: 'Vacantes guardadas correctamente',
+                    summary: 'Cerrar',
+                    life: 3000,
+                    severity: 'info',
+                })
             },
         })
     }
@@ -252,10 +254,11 @@ export class GestionVacantesComponent implements OnInit {
             this.guardar_vacantes = [...this.guardar_vacantes]
 
             // Mostrar mensaje de confirmación
-            this.snackBar.open('✅ La vacante fue eliminada.', 'Cerrar', {
-                duration: 3000,
-                verticalPosition: 'top',
-                horizontalPosition: 'center',
+            this.snackBar.add({
+                detail: '✅ La vacante fue eliminada.',
+                summary: 'Cerrar',
+                life: 3000,
+                severity: 'success',
             })
         }
     }

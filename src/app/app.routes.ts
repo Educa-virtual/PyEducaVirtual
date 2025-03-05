@@ -131,14 +131,6 @@ export const routes: Routes = [
                 (m) => m.ApoderadoModule
             ),
     },
-    {
-        path: 'bienestar',
-
-        loadChildren: () =>
-            import('./sistema/bienestar/bienestar.module').then(
-                (m) => m.BienestarModule
-            ),
-    },
 
     { path: 'notfound', component: NotfoundComponent },
 

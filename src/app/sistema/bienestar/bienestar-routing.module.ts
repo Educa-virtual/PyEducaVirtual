@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core'
 import { RouterModule, Routes } from '@angular/router'
-import { PrincipalComponent } from './principal/principal.component'
 import { FichaComponent } from './ficha/ficha.component'
 import { FichaFamiliaComponent } from './ficha/ficha-familia/ficha-familia.component'
 import { FichaEconomicoComponent } from './ficha/ficha-economico/ficha-economico.component'
@@ -8,15 +7,15 @@ import { FichaViviendaComponent } from './ficha/ficha-vivienda/ficha-vivienda.co
 import { FichaAlimentacionComponent } from './ficha/ficha-alimentacion/ficha-alimentacion.component'
 import { FichaDiscapacidadComponent } from './ficha/ficha-discapacidad/ficha-discapacidad.component'
 import { FichaSaludComponent } from './ficha/ficha-salud/ficha-salud.component'
+import { FichasocgeneralComponent } from './fichasocgeneral/fichasocgeneral.component'
 
 const routes: Routes = [
-    { path: 'principal', component: PrincipalComponent },
     {
         path: 'ficha',
         component: FichaComponent,
         children: [
             { path: '', redirectTo: 'general', pathMatch: 'full' },
-            { path: 'general', component: FichaFamiliaComponent },
+            { path: 'general', component: FichasocgeneralComponent },
             { path: 'familia', component: FichaFamiliaComponent },
             { path: 'economico', component: FichaEconomicoComponent },
             { path: 'vivienda', component: FichaViviendaComponent },

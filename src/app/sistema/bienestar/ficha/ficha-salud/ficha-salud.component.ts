@@ -1,11 +1,12 @@
 import { PrimengModule } from '@/app/primeng.module'
 import { Component, OnInit } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
+import { GestionPandemiaDosisComponent } from './gestion-pandemia-dosis/gestion-pandemia-dosis.component'
 
 @Component({
     selector: 'app-ficha-salud',
     standalone: true,
-    imports: [PrimengModule],
+    imports: [PrimengModule, GestionPandemiaDosisComponent],
     templateUrl: './ficha-salud.component.html',
     styleUrl: './ficha-salud.component.scss',
 })

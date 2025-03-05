@@ -32,6 +32,7 @@ export class DatosFichaBienestarService implements OnDestroy {
     lenguas: Array<object>
     tipos_contacto: Array<object>
     religiones: Array<object>
+    pandemias: Array<object>
 
     guardarFamiliar(data: any) {
         return this.http.post(`${baseUrl}/obe/ficha/familia/save`, data)
@@ -296,6 +297,30 @@ export class DatosFichaBienestarService implements OnDestroy {
         return of(this.religiones)
     }
 
+    getPandemias() {
+        if (!this.pandemias) {
+            return this.query
+                .searchTablaXwhere({
+                    esquema: 'obe',
+                    tabla: 'pandemias',
+                    campos: '*',
+                    condicion: '1 = 1',
+                })
+                .pipe(
+                    takeUntil(this.onDestroy$),
+                    map((data: any) => {
+                        const items = data.data
+                        this.pandemias = items.map((religion) => ({
+                            id: religion.iPandemiaId,
+                            nombre: religion.cPandemiaNombre,
+                        }))
+                        return this.pandemias
+                    })
+                )
+        }
+        return of(this.pandemias)
+    }
+
     subirArchivo(data: any) {
         return this.http.post(
             `${baseUrl}/acad/estudiante/importarEstudiantesPadresExcel`,
@@ -306,6 +331,18 @@ export class DatosFichaBienestarService implements OnDestroy {
                 }),
             }
         )
+    }
+
+    searchDosis(data: any) {
+        return this.http.post(`${baseUrl}/obe/dosis/index`, data)
+    }
+
+    agregarDosis(data: any) {
+        return this.http.post(`${baseUrl}/obe/dosis/save`, data)
+    }
+
+    borrarDosis(data: any) {
+        return this.http.post(`${baseUrl}/obe/dosis/delete`, data)
     }
 
     ngOnDestroy() {

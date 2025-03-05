@@ -1,0 +1,264 @@
+<div
+    class="card"
+    style="
+        background-color: #e9eaed;
+        min-height: 100vh;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 10px;
+    "
+>
+    <div class="header">
+        <h2
+            class="title"
+            style="
+                color: white;
+                border: 2px solid #3b5998;
+                padding: 10px;
+                background-color: #3b5998;
+            "
+        >
+            Ficha Socioeconómica - 2025
+            <small style="color: white; font-size: 15px">
+                (con Carácter de Declaración Jurada)
+            </small>
+        </h2>
+        <div class="progress-bar-container">
+            <div class="progress-bar" style="width: 10%"></div>
+        </div>
+    </div>
+
+    <!-- Contenido del Formulario de Datos Generales -->
+    <p-card>
+        <ng-template pTemplate="header">
+            <h3
+                style="
+                    margin: 0;
+                    background-color: #dadde1;
+                    color: rgba(14, 13, 13, 0.864);
+                    padding: 10px;
+                    font-family: 'Roboto', sans-serif;
+                    font-size: 20px;
+                "
+            >
+                1. Datos Generales del Estudiante
+            </h3>
+        </ng-template>
+
+        <ng-template pTemplate="content">
+            <form [formGroup]="form" class="section">
+                <!-- Dirección Actual -->
+                <div class="form-group">
+                    <label for="direccionGeneral" style="font-weight: bold"
+                        >a) Dirección actual :</label
+                    >
+                    <div class="grid">
+                        <div class="col-12 md:col-4">
+                            <p-inputGroup [style]="{ width: '100%' }">
+                                <p-inputGroupAddon>
+                                    Tipo de vía:
+                                </p-inputGroupAddon>
+                                <p-dropdown
+                                    id="tipoVia"
+                                    formControlName="tipoVia"
+                                    [options]="tipoVias"
+                                    placeholder="Seleccione"
+                                    [style]="{ flex: '1', minWidth: '120px' }"
+                                ></p-dropdown>
+                            </p-inputGroup>
+                        </div>
+
+                        <div class="col-12 md:col-8">
+                            <p-inputGroup>
+                                <p-inputGroupAddon>
+                                    Nombre de la vía
+                                </p-inputGroupAddon>
+                                <input
+                                    type="text"
+                                    pInputText
+                                    formControlName="text"
+                                />
+                            </p-inputGroup>
+                        </div>
+                    </div>
+
+                    <div class="grid">
+                        <div class="col-12 md:col-2">
+                            <p-inputGroup>
+                                <p-inputGroupAddon
+                                    >Nro.Puerta</p-inputGroupAddon
+                                >
+                                <input
+                                    id="nroPuerta"
+                                    type="text"
+                                    pInputText
+                                    formControlName="nroPuerta"
+                                />
+                            </p-inputGroup>
+                        </div>
+
+                        <div class="col-12 md:col-2">
+                            <p-inputGroup>
+                                <p-inputGroupAddon>Bloque</p-inputGroupAddon>
+                                <input
+                                    id="bloque"
+                                    type="text"
+                                    pInputText
+                                    formControlName="bloque"
+                                />
+                            </p-inputGroup>
+                        </div>
+
+                        <div class="col-12 md:col-2">
+                            <p-inputGroup>
+                                <p-inputGroupAddon>Interior</p-inputGroupAddon>
+                                <input
+                                    id="interior"
+                                    type="text"
+                                    pInputText
+                                    formControlName="interior"
+                                />
+                            </p-inputGroup>
+                        </div>
+
+                        <div class="col-12 md:col-2">
+                            <p-inputGroup>
+                                <p-inputGroupAddon>Piso</p-inputGroupAddon>
+                                <input
+                                    id="piso"
+                                    type="text"
+                                    pInputText
+                                    formControlName="piso"
+                                />
+                            </p-inputGroup>
+                        </div>
+
+                        <div class="col-12 md:col-2">
+                            <p-inputGroup>
+                                <p-inputGroupAddon>Mz</p-inputGroupAddon>
+                                <input
+                                    id="mz"
+                                    type="text"
+                                    pInputText
+                                    formControlName="mz"
+                                />
+                            </p-inputGroup>
+                        </div>
+
+                        <div class="col-12 md:col-1">
+                            <p-inputGroup>
+                                <p-inputGroupAddon>Lote</p-inputGroupAddon>
+                                <input
+                                    id="lote"
+                                    type="text"
+                                    pInputText
+                                    formControlName="lote"
+                                />
+                            </p-inputGroup>
+                        </div>
+
+                        <div class="col-12 md:col-1">
+                            <p-inputGroup>
+                                <p-inputGroupAddon>Km</p-inputGroupAddon>
+                                <input
+                                    id="km"
+                                    type="text"
+                                    pInputText
+                                    formControlName="km"
+                                />
+                            </p-inputGroup>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contacto -->
+
+                <!-- Contacto -->
+                <div>
+                    <label for="contacto" style="font-weight: bold"
+                        >b) Contacto:</label
+                    >
+                </div>
+
+                <div class="grid">
+                    <div class="col-12 md:col-6">
+                        <p-inputGroup>
+                            <p-inputGroupAddon>Telf./Cel.:</p-inputGroupAddon>
+                            <input
+                                id="telefono"
+                                type="text"
+                                pInputText
+                                formControlName="telefono"
+                                style="width: 50%"
+                            />
+                        </p-inputGroup>
+                    </div>
+
+                    <div class="col-12 md:col-6">
+                        <p-inputGroup>
+                            <p-inputGroupAddon>Email:</p-inputGroupAddon>
+                            <input
+                                id="email"
+                                type="text"
+                                pInputText
+                                formControlName="email"
+                                style="width: 50%"
+                            />
+                        </p-inputGroup>
+                    </div>
+                </div>
+
+                <!-- Tiene Hijos -->
+                <div class="grid">
+                    <div class="col-12 md: 8">
+                        <label for="tieneHijos" style="font-weight: bold"
+                            >c) <strong>¿Tiene Hijos?</strong>:</label
+                        >
+                        <p-inputSwitch
+                            id="tieneHijos"
+                            formControlName="tieneHijos"
+                        >
+                        </p-inputSwitch>
+                    </div>
+                    <div
+                        class="col-12 md: 6"
+                        *ngIf="form.get('tieneHijos')?.value"
+                        class="children-row"
+                    >
+                        <p-inputGroup>
+                            <p-inputGroupAddon
+                                >¿Cuántos Hijos?</p-inputGroupAddon
+                            >
+                            <input
+                                id="cantidadHijos"
+                                type="number"
+                                pInputText
+                                formControlName="cantidadHijos"
+                                style="width: 50%"
+                            />
+                        </p-inputGroup>
+                    </div>
+                </div>
+
+                <!-- Botón Guardar y Seguir -->
+                <div
+                    class="col-12"
+                    style="
+                        display: flex;
+                        justify-content: flex-end;
+                        margin-top: 10px;
+                    "
+                >
+                    <button
+                        pButton
+                        type="button"
+                        label="Guardar y seguir"
+                        icon="pi pi-save"
+                        class="p-button-success"
+                        (click)="guardar()"
+                    ></button>
+                </div>
+            </form>
+        </ng-template>
+    </p-card>
+</div>

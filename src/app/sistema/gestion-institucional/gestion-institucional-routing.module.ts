@@ -33,7 +33,6 @@ const routes: Routes = [
     { path: 'gestion-traslados', component: GestionTrasladosComponent },
     { path: 'gestion-vacantes', component: GestionVacantesComponent },
     { path: 'registro-vacantes', component: GestionVacantesComponent },
-
     // { path: 'horario', component: HorarioComponent },
     //{ path: 'configurar-horario', component: ConfiguracionHorarioComponent },
     {

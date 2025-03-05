@@ -1,0 +1,51 @@
+<div>
+    <div class="card">
+        <h2 class="title">Ficha Socioeconómica</h2>
+        <div class="search-container">
+            <label for="bestudiante">Buscar Estudiante:</label>
+            <button
+                pButton
+                type="button"
+                (click)="nuevoIngreso()"
+                label="+ Nuevo ingreso"
+                class="p-button-warning"
+                [raised]="true"
+                size="small"
+            ></button>
+        </div>
+
+        <form>
+            <div class="form-container">
+                <div class="col-12 md:col-6 gap-2">
+                    <p-inputGroup>
+                        <p-inputGroupAddon>
+                            Apellido y Nombre
+                        </p-inputGroupAddon>
+                        <input type="text" pInputText />
+                    </p-inputGroup>
+                </div>
+                <div class="col-12 md:col-6 gap-2">
+                    <p-inputGroup>
+                        <p-inputGroupAddon> DNI / CEL: </p-inputGroupAddon>
+                        <input type="text" pInputText />
+                    </p-inputGroup>
+                </div>
+            </div>
+        </form>
+
+        <!-- Resto de tu tabla -->
+        <p-dataView #dv [rows]="5" filterBy="completoalumno">
+            <ng-template let-products pTemplate="listItem">
+                <app-table-primeng
+                    [columnas]="columnasTabla"
+                    [data]="estudiantes"
+                    (accionBtnItem)="accionBnt($event)"
+                    [actions]="accionesTabla"
+                    [showCaption]="false"
+                >
+                    <!--(accionBtnItem)="accionBnt($event)" -->
+                </app-table-primeng>
+            </ng-template>
+        </p-dataView>
+    </div>
+</div>

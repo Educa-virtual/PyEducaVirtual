@@ -803,6 +803,28 @@ const administracion = [
             },
 
             {
+                label: 'Bienestar Social',
+                icon: 'pi pi-folder',
+                items: [
+                    {
+                        label: 'Consulta Asistenta Social',
+                        icon: 'pi pi-user-edit',
+                        routerLink: ['/bienestar/ficha-socioeconomica'],
+                    },
+                    {
+                        label: 'Consulta Apoderado',
+                        icon: 'pi pi-folder-open',
+                        routerLink: ['/bienestar/fichavistapoderado'],
+                    },
+                    {
+                        label: 'Ficha Socioeconomica',
+                        icon: 'pi pi-folder-open',
+                        routerLink: ['/bienestar/fichasocgeneral'],
+                    },
+                ],
+            },
+
+            {
                 label: 'Generación de Reportes y estadísticas',
                 icon: 'pi pi-chart-bar',
                 items: [

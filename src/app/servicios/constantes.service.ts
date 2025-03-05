@@ -279,6 +279,13 @@ const administracion = [
                             '/gestion-institucional/sincronizar-archivo',
                         ],
                     },
+                    {
+                        label: 'Mantenimiento de usuarios',
+                        icon: 'pi pi-wrench',
+                        routerLink: [
+                            '/gestion-institucional/mantenimiento-usuario',
+                        ],
+                    },
                 ],
             },
 

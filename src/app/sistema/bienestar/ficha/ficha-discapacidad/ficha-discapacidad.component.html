@@ -1,0 +1,178 @@
+<br />
+
+<form [formGroup]="formDiscapacidad">
+    <div class="grid p-fluid mt-3">
+        <input type="hidden" name="iFichaDGId" />
+
+        <div class="field col-12 lg:col-6">
+            <p-fieldset legend="Programas del estado">
+                <div class="grid">
+                    <div class="col-12">
+                        <p-inputGroup>
+                            <p-inputGroupAddon>
+                                <p-inputSwitch
+                                    (onChange)="
+                                        handleSwitchProgramaChange($event, 0)
+                                    "
+                                    formControlName="bFichaDGEstaEnCONADIS"
+                                />
+                            </p-inputGroupAddon>
+                            <p-inputGroupAddon> CONADIS </p-inputGroupAddon>
+                            @if (visibleProgramaInput[0] === true) {
+                                <input
+                                    type="text"
+                                    formControlName="cCodigoCONADIS"
+                                    pInputText
+                                    placeholder="Código de carnet"
+                                />
+                            }
+                        </p-inputGroup>
+                    </div>
+                    <div class="col-12">
+                        <p-inputGroup>
+                            <p-inputGroupAddon>
+                                <p-inputSwitch
+                                    formControlName="bFichaDGEstaEnOMAPED"
+                                    (onChange)="
+                                        handleSwitchProgramaChange($event, 1)
+                                    "
+                                />
+                            </p-inputGroupAddon>
+                            <p-inputGroupAddon>OMAPED</p-inputGroupAddon>
+                            @if (visibleProgramaInput[1] === true) {
+                                <input
+                                    type="text"
+                                    formControlName="cCodigoOMAPED"
+                                    pInputText
+                                    placeholder="Código de carnet"
+                                />
+                            }
+                        </p-inputGroup>
+                    </div>
+                    <div class="col-12">
+                        <p-inputGroup>
+                            <p-inputGroupAddon> Otro </p-inputGroupAddon>
+                            <input
+                                type="text"
+                                formControlName="cOtroProgramaDiscapacidad"
+                                pInputText
+                                placeholder="Observación"
+                            />
+                        </p-inputGroup>
+                    </div>
+                </div>
+            </p-fieldset>
+        </div>
+
+        <div class="field col-12 lg:col-6">
+            <p-fieldset legend="Indique si tiene alguna limitación permanente">
+                <div class="grid">
+                    <div class="col-12">
+                        <p-inputGroup>
+                            <p-inputGroupAddon>
+                                <p-inputSwitch
+                                    (onChange)="
+                                        handleSwitchLimitacionChange($event, 0)
+                                    "
+                                    formControlName="bLimFisica"
+                                />
+                            </p-inputGroupAddon>
+                            <p-inputGroupAddon>
+                                Física o Motora
+                            </p-inputGroupAddon>
+                            @if (visibleLimitacionesInput[0] === true) {
+                                <input
+                                    type="text"
+                                    formControlName="cLimFisicaObs"
+                                    pInputText
+                                    placeholder="Observación"
+                                />
+                            }
+                        </p-inputGroup>
+                    </div>
+                    <div class="col-12">
+                        <p-inputGroup>
+                            <p-inputGroupAddon>
+                                <p-inputSwitch
+                                    formControlName="bLimSensorial"
+                                    (onChange)="
+                                        handleSwitchLimitacionChange($event, 1)
+                                    "
+                                />
+                            </p-inputGroupAddon>
+                            <p-inputGroupAddon>Sensorial</p-inputGroupAddon>
+                            @if (visibleLimitacionesInput[1] === true) {
+                                <input
+                                    type="text"
+                                    formControlName="cLimSensorialObs"
+                                    pInputText
+                                    placeholder="Observación"
+                                />
+                            }
+                        </p-inputGroup>
+                    </div>
+                    <div class="col-12">
+                        <p-inputGroup>
+                            <p-inputGroupAddon>
+                                <p-inputSwitch
+                                    formControlName="bLimIntelectual"
+                                    (onChange)="
+                                        handleSwitchLimitacionChange($event, 2)
+                                    "
+                                />
+                            </p-inputGroupAddon>
+                            <p-inputGroupAddon> Intelectual </p-inputGroupAddon>
+                            @if (visibleLimitacionesInput[2] === true) {
+                                <input
+                                    type="text"
+                                    formControlName="cLimIntelectualObs"
+                                    pInputText
+                                    placeholder="Observación"
+                                />
+                            }
+                        </p-inputGroup>
+                    </div>
+                    <div class="col-12">
+                        <p-inputGroup>
+                            <p-inputGroupAddon>
+                                <p-inputSwitch
+                                    formControlName="bLimMental"
+                                    (onChange)="
+                                        handleSwitchLimitacionChange($event, 3)
+                                    "
+                                />
+                            </p-inputGroupAddon>
+                            <p-inputGroupAddon>
+                                Mental o Psíquica
+                            </p-inputGroupAddon>
+                            @if (visibleLimitacionesInput[3] === true) {
+                                <input
+                                    type="text"
+                                    formControlName="cLimMentalObs"
+                                    pInputText
+                                    placeholder="Observación"
+                                />
+                            }
+                        </p-inputGroup>
+                    </div>
+                </div>
+            </p-fieldset>
+        </div>
+    </div>
+</form>
+
+<br />
+
+<div class="flex justify-content-end gap-2">
+    <p-button
+        label="Salir sin guardar"
+        (onClick)="actualizarDatos()"
+        styleClass="p-button-secondary"
+    />
+    <p-button
+        label="Guardar y continuar"
+        (onClick)="guardarDatos()"
+        styleClass="p-button-primary"
+    />
+</div>
+<p-toast></p-toast>

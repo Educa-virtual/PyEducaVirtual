@@ -42,6 +42,7 @@ import localeEs from '@angular/common/locales/es'
 import dayjs from 'dayjs'
 import 'dayjs/locale/es'
 import { AuditoriaInterceptor } from '@/app/shared/interceptors/auditoria-interceptor/auditoria.interceptor'
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async'
 
 registerLocaleData(localeEs)
 
@@ -110,5 +111,6 @@ export const appConfig: ApplicationConfig = {
             useFactory: initializeDayjs,
             multi: true,
         },
+        provideAnimationsAsync(),
     ],
 }

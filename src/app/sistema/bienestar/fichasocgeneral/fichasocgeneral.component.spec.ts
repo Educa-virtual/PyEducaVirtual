@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing'
 
-import { PrincipalComponent } from './principal.component'
+import { FichasocgeneralComponent } from './fichasocgeneral.component'
 
-describe('PrincipalComponent', () => {
-    let component: PrincipalComponent
-    let fixture: ComponentFixture<PrincipalComponent>
+describe('FichasocgeneralComponent', () => {
+    let component: FichasocgeneralComponent
+    let fixture: ComponentFixture<FichasocgeneralComponent>
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: [PrincipalComponent],
+            imports: [FichasocgeneralComponent],
         }).compileComponents()
 
-        fixture = TestBed.createComponent(PrincipalComponent)
+        fixture = TestBed.createComponent(FichasocgeneralComponent)
         component = fixture.componentInstance
         fixture.detectChanges()
     })

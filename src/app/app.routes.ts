@@ -99,6 +99,31 @@ export const routes: Routes = [
             ).then((m) => m.HorarioModule),
     },
     {
+        path: 'bienestar',
+
+        loadChildren: () =>
+            import('./sistema/bienestar/ficha-socioeconomica.module').then(
+                (m) => m.Socioeconomica
+            ),
+    },
+    {
+        path: 'bienestar',
+
+        loadChildren: () =>
+            import('./sistema/bienestar/ficha-socioeconomica.module').then(
+                (m) => m.Socioeconomica
+            ),
+    },
+
+    {
+        path: 'bienestar',
+
+        loadChildren: () =>
+            import('./sistema/bienestar/ficha-socioeconomica.module').then(
+                (m) => m.Socioeconomica
+            ),
+    },
+    {
         path: 'apoderado',
 
         loadChildren: () =>

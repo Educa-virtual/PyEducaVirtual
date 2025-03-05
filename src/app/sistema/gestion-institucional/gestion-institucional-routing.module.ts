@@ -46,6 +46,7 @@ const routes: Routes = [
     { path: 'estadistica', component: EstadisticaComponent },
     { path: 'gestion-traslados', component: GestionTrasladosComponent },
     { path: 'gestion-vacantes', component: GestionVacantesComponent },
+    { path: 'registro-vacantes', component: GestionVacantesComponent },
     { path: 'Informacion-ie', component: InformacionComponent },
     { path: 'sincronizar-archivo', component: SincronizarArchivoComponent },
     // { path: 'horario', component: HorarioComponent },

@@ -396,10 +396,33 @@ const administracion = [
                             '/gestion-institucional/gestion-traslados',
                         ],
                     },
+
                     {
-                        label: 'Informe de vacantes',
+                        label: 'Registro de vacantes',
                         icon: 'pi pi-file-import',
                         routerLink: ['/gestion-institucional/gestion-vacantes'],
+                    },
+                ],
+            },
+
+            {
+                label: 'Bienestar Social',
+                icon: 'pi pi-folder',
+                items: [
+                    {
+                        label: 'Consulta Asistenta Social',
+                        icon: 'pi pi-user-edit',
+                        routerLink: ['/bienestar/ficha-socioeconomica'],
+                    },
+                    {
+                        label: 'Consulta Apoderado',
+                        icon: 'pi pi-folder-open',
+                        routerLink: ['/bienestar/fichavistapoderado'],
+                    },
+                    {
+                        label: 'Ficha Socioeconomica',
+                        icon: 'pi pi-folder-open',
+                        routerLink: ['/bienestar/fichasocgeneral'],
                     },
                 ],
             },

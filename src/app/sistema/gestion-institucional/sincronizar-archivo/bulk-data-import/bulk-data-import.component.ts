@@ -112,6 +112,8 @@ export class BulkDataImportComponent {
             default:
                 break
         }
+
+        console.log(this.columns)
     }
 
     loadCollectionTemplate(file: any) {
@@ -155,15 +157,34 @@ export class BulkDataImportComponent {
             //         (column): column is { [key: string]: any } =>
             //             column !== null
             //     )
+            console.log('jsonData')
+            console.log(jsonData)
 
-            this.unverified_data = jsonData.slice(2).map((row) =>
-                row.reduce(
-                    (acc, cell, index) => ({
-                        ...acc,
-                        [jsonData[1][index]]: cell,
-                    }),
-                    {}
-                )
+            const validFormat = docenteTemplateColumns.some(
+                (obj, index) => obj.header === jsonData[0][index]
+            )
+
+            if (!validFormat) {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Plantilla',
+                    detail: 'La plantilla no cumple el formato de la colección.',
+                })
+
+                this.unverified_data = undefined
+
+                return
+            }
+
+            this.unverified_data = jsonData.slice(1).map((row) =>
+                row.reduce((acc, value, index) => {
+                    const column = docenteTemplateColumns[index]
+                    const key =
+                        column?.header === jsonData[0][index]
+                            ? column.field
+                            : 'error'
+                    return Object.assign(acc, { [key]: value })
+                }, {})
             )
 
             console.log(this.unverified_data)
@@ -218,7 +239,7 @@ export class BulkDataImportComponent {
             this.messageService.add({
                 severity: 'error',
                 summary: 'Error',
-                detail: 'El archivo cargado no contiene datos válidos.',
+                detail: 'No se ha cargado datos a verificar.',
             })
             return
         }

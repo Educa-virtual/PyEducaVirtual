@@ -1,5 +1,6 @@
 import { IColumn } from '@/app/shared/table-primeng/table-primeng.component'
 
+// export const columns = docenteTemplateColumns.
 export const docenteTemplateColumns = [
     {
         type: 'text',

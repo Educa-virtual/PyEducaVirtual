@@ -3,10 +3,8 @@
         <div class="col-2">
             <button pButton label="Anio" class="p-mr-1 btn-azul"></button>
             <p-dropdown
-                [options]="filtros"
-                optionLabel="label"
-                optionGroupLabel="categoria"
-                [group]="true"
+                [options]="anios"
+                optionLabel="anio"
                 placeholder="Anio"
                 class="w-full"
             >
@@ -16,11 +14,12 @@
         <div class="col-2">
             <button pButton label="Proceso" class="btn-azul"></button>
             <p-dropdown
-                [options]="filtros"
-                optionLabel="label"
-                optionGroupLabel="categoria"
-                [group]="true"
+                [options]="procesos"
+                optionLabel="cNivelEvalNombre"
+                optionValue="iNivelEvalId"
                 placeholder="Proceso"
+                class="w-full"
+                [(ngModel)]="procesoAnio"
             >
             </p-dropdown>
         </div>
@@ -28,12 +27,12 @@
         <div class="col-4">
             <button pButton label="Competencia" class="btn-azul"></button>
             <p-dropdown
-                [options]="filtros"
-                optionLabel="label"
-                optionGroupLabel="categoria"
-                [group]="true"
+                [options]="competencias"
+                optionLabel="cCompetenciaNombre"
+                optionValue="iCompetenciaId"
                 placeholder="Competencia"
                 class="w-full"
+                [(ngModel)]="competencia"
             >
             </p-dropdown>
         </div>
@@ -42,11 +41,11 @@
         <div class="col-2">
             <button pButton label="Tipo" class="btn-azul"></button>
             <p-dropdown
-                [options]="filtros"
-                optionLabel="label"
-                optionGroupLabel="categoria"
-                [group]="true"
-                placeholder="Tipo"
+                [options]="tipoPreguntas"
+                optionLabel="cTipoPregDescripcion"
+                placeholder="tipo"
+                optionValue="iTipoPregId"
+                [(ngModel)]="tipoPreguntaSeleccionada"
             >
             </p-dropdown>
         </div>
@@ -54,11 +53,11 @@
         <div class="col-4">
             <button pButton label="Capacidad" class="btn-azul"></button>
             <p-dropdown
-                [options]="filtros"
-                optionLabel="label"
-                optionGroupLabel="categoria"
-                [group]="true"
+                [options]="capacidades"
+                optionLabel="cCapacidadNombre"
+                optionValue="iCapacidadId"
                 placeholder="Capacidad"
+                [(ngModel)]="Capacidade"
             >
             </p-dropdown>
         </div>
@@ -77,7 +76,7 @@
         </p-inputGroup>
     </div>
 
-    <p-table [value]="datos">
+    <p-table [value]="">
         <ng-template pTemplate="header">
             <tr>
                 <th>

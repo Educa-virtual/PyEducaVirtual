@@ -504,4 +504,11 @@ export class ApiEvaluacionesRService {
             }
         )
     }
+
+    obtenerAnios(): Observable<any> {
+        return this.http
+            .get(`${this.urlBackendApi}/ere/evaluaciones/anios`)
+
+            .pipe(map((resp) => resp['data']))
+    }
 }

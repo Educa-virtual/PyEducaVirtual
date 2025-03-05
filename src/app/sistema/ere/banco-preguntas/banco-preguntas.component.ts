@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common'
-import { Component } from '@angular/core'
+import { Component, inject } from '@angular/core'
 import { FormsModule } from '@angular/forms'
 import { PrimengModule } from '@/app/primeng.module'
 import { TableModule } from 'primeng/table'
@@ -8,6 +8,7 @@ import { CheckboxModule } from 'primeng/checkbox'
 import { DropdownModule } from 'primeng/dropdown'
 import { PaginatorModule } from 'primeng/paginator'
 import { DialogModule } from 'primeng/dialog'
+import { ApiEvaluacionesRService } from '../../evaluaciones/services/api-evaluaciones-r.service'
 
 interface PageEvent {
     first: number
@@ -34,6 +35,8 @@ interface PageEvent {
     styleUrls: ['./banco-preguntas.component.scss'],
 })
 export class BancoPreguntasComponent {
+    private _ApiEvaluacionesRService = inject(ApiEvaluacionesRService)
+
     checked: boolean = false
 
     // variables para los filtros seleccionados
@@ -53,129 +56,84 @@ export class BancoPreguntasComponent {
         this.rows = event.rows
     }
 
-    filtros = [
+    // Listas seleccionables
+    anios: any[] = []
+
+    tipoPreguntas: any[] = [
         {
-            categoria: 'General',
-            items: [
-                { label: 'Año', value: 'anio' },
-                { label: 'Proceso', value: 'proceso' },
-                { label: 'Tipo', value: 'tipo' },
-            ],
+            iTipoPregId: 1,
+            cTipoPregDescripcion: 'Opcion Única',
         },
         {
-            categoria: 'Competencias y Capacidades',
-            items: [
-                { label: 'Competencia', value: 'competencia' },
-                { label: 'Capacidad', value: 'capacidad' },
-            ],
-        },
-        {
-            categoria: 'Búsqueda',
-            items: [
-                { label: 'Descripción de la pregunta', value: 'descripcion' },
-            ],
+            iTipoPregId: 2,
+            cTipoPregDescripcion: 'Opcion Múltiple',
         },
     ]
 
-    datos = [
+    procesos: any[] = [
         {
-            id: 1,
-            fechaEval: '2024-03-03',
-            pregunta: '¿Cuál es la capital de Francia?',
-            tipo: 'Opción Múltiple',
-            proceso: 'Inicio',
-            grado: '2do',
-            acciones: '',
+            iNivelEvalId: '1',
+            cNivelEvalNombre: 'Inicio',
         },
         {
-            id: 2,
-            fechaEval: '2024-03-04',
-            pregunta: '¿Cuánto es 5+5?',
-            tipo: 'Opción Múltiple',
-            proceso: 'Desarrollo',
-            grado: '3ro',
-            acciones: '',
+            iNivelEvalId: '2',
+            cNivelEvalNombre: 'Proceso',
         },
         {
-            id: 3,
-            fechaEval: '2024-03-05',
-            pregunta: '¿Quién escribió "Cien años de soledad"?',
-            tipo: 'Abierta',
-            proceso: 'Cierre',
-            grado: '4to',
-            acciones: '',
-        },
-        {
-            id: 4,
-            fechaEval: '2024-03-03',
-            pregunta: '¿Cuál es la capital de Francia?',
-            tipo: 'Opción Múltiple',
-            proceso: 'Inicio',
-            grado: '2do',
-            acciones: '',
-        },
-        {
-            id: 5,
-            fechaEval: '2024-03-04',
-            pregunta: '¿Cuánto es 5+5?',
-            tipo: 'Opción Múltiple',
-            proceso: 'Desarrollo',
-            grado: '3ro',
-            acciones: '',
-        },
-        {
-            id: 6,
-            fechaEval: '2024-03-05',
-            pregunta: '¿Quién escribió "Cien años de soledad"?',
-            tipo: 'Abierta',
-            proceso: 'Cierre',
-            grado: '4to',
-            acciones: '',
-        },
-        {
-            id: 7,
-            fechaEval: '2024-03-04',
-            pregunta: '¿Cuánto es 5+5?',
-            tipo: 'Opción Múltiple',
-            proceso: 'Desarrollo',
-            grado: '3ro',
-            acciones: '',
-        },
-        {
-            id: 8,
-            fechaEval: '2024-03-05',
-            pregunta: '¿Quién escribió "Cien años de soledad"?',
-            tipo: 'Abierta',
-            proceso: 'Cierre',
-            grado: '4to',
-            acciones: '',
-        },
-        {
-            id: 9,
-            fechaEval: '2024-03-04',
-            pregunta: '¿Cuánto es 5+5?',
-            tipo: 'Opción Múltiple',
-            proceso: 'Desarrollo',
-            grado: '3ro',
-            acciones: '',
-        },
-        {
-            id: 10,
-            fechaEval: '2024-03-05',
-            pregunta: '¿Quién escribió "Cien años de soledad"?',
-            tipo: 'Abierta',
-            proceso: 'Cierre',
-            grado: '4to',
-            acciones: '',
-        },
-        {
-            id: 11,
-            fechaEval: '2024-03-05',
-            pregunta: '¿Quién escribió "Cien años de soledad"?',
-            tipo: 'Abierta',
-            proceso: 'Cierre',
-            grado: '4to',
-            acciones: '',
+            iNivelEvalId: '3',
+            cNivelEvalNombre: 'Salida',
         },
     ]
+
+    capacidades: any[] = [
+        {
+            iCapacidadId: '1',
+            cCapacidadNombre: 'Se valora a sí mismo',
+        },
+        {
+            iCapacidadId: '2',
+            cCapacidadNombre: 'Autorregula sus emociones',
+        },
+    ]
+
+    competencias: any[] = [
+        {
+            iCompetenciaId: '1',
+            cCompetenciaNombre: 'Construye su identidad',
+        },
+        {
+            iCompetenciaId: '2',
+            cCompetenciaNombre:
+                'Se desenvuelve de manera autónoma a través de su motricidad',
+        },
+    ]
+
+    //anios
+
+    //Tipo Pregunta
+    tipoPreguntaSeleccionada: string
+
+    //Capacidades
+    Capacidade: string
+
+    //competencias
+    competencia: string
+
+    //procesos
+    procesoAnio: string
+
+    ngOnInit(): void {
+        this.obtenerAnios()
+    }
+
+    obtenerAnios() {
+        this._ApiEvaluacionesRService.obtenerAnios().subscribe({
+            next: (respuesta) => {
+                this.anios = respuesta
+            },
+            error: (error) => {
+                console.error('error obtenido', error)
+            },
+        })
+    }
 }

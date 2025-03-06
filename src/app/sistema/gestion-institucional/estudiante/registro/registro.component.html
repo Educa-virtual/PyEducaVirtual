@@ -22,11 +22,13 @@
             </button>
         </div>
     </ng-template>
-    <p-steps
-        styleClass="w-full overflow-scroll"
-        [model]="items"
-        [activeIndex]="setActiveIndexSteps()"
-        [readonly]="false"
-    />
+    <div class="card">
+        <p-steps
+            styleClass="w-full overflow-scroll"
+            [model]="items"
+            [activeIndex]="setActiveIndexSteps()"
+            [readonly]="false"
+        />
+    </div>
     <router-outlet></router-outlet>
 </p-panel>

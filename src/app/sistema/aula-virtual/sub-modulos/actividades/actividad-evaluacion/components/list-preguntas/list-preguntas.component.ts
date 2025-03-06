@@ -279,10 +279,10 @@ export class ListPreguntasComponent implements OnChanges {
     /**
      * Guarda o actualiza una pregunta con sus alternativas en el sistema.
      *
-     * @param {Object} data - Los datos de la pregunta y sus alternativas que se desean guardar o actualizar.
-     * @param {string} data.pregunta - La pregunta a guardar o actualizar.
-     * @param {Array} data.alternativas - Las alternativas asociadas a la pregunta.
-     * @param {number} [data.id] - El ID de la pregunta en caso de actualización. Si no se proporciona, se realiza una operación de inserción.
+     * @param {Object} unverified_data - Los datos de la pregunta y sus alternativas que se desean guardar o actualizar.
+     * @param {string} unverified_data.pregunta - La pregunta a guardar o actualizar.
+     * @param {Array} unverified_data.alternativas - Las alternativas asociadas a la pregunta.
+     * @param {number} [unverified_data.id] - El ID de la pregunta en caso de actualización. Si no se proporciona, se realiza una operación de inserción.
      *
      * @returns {void} - No retorna valor. Realiza una petición HTTP para guardar o actualizar los datos en el backend.
      */

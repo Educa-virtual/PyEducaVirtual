@@ -465,8 +465,8 @@ export class ApiEvaluacionesRService {
         window.open(url, '_blank')
     }
 
-    descargarPreguntasPorArea(params) {
-        const url = `${this.urlBackendApi}/ere/evaluaciones/${params.iEvaluacionId}/areas/${params.iCursosNivelGradId}/archivo-preguntas`
+    descargarArchivoPreguntasPorArea(params) {
+        const url = `${this.urlBackendApi}/ere/evaluaciones/${params.iEvaluacionId}/areas/${params.iCursosNivelGradId}/archivo-preguntas?tipo=${params.tipoArchivo}`
         window.open(url, '_blank')
     }
 

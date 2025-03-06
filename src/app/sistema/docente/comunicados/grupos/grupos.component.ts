@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core'
+import { Component, inject, OnChanges } from '@angular/core'
 import { PrimengModule } from '@/app/primeng.module'
 import { FormsModule } from '@angular/forms'
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
@@ -12,7 +12,7 @@ import { MessageService } from 'primeng/api'
     templateUrl: './grupos.component.html',
     styleUrl: './grupos.component.scss',
 })
-export class GruposComponent {
+export class GruposComponent implements OnChanges {
     private GeneralService = inject(GeneralService)
     constructor(
         private ConstantesService: ConstantesService,
@@ -27,6 +27,8 @@ export class GruposComponent {
     iYAcadId: string = ''
     visible = true
     grupo: string
+    data: any = []
+    miembros: any = []
     columnas = [
         {
             type: 'item-checkbox',
@@ -77,14 +79,19 @@ export class GruposComponent {
             text: 'center',
         },
     ]
-    data = []
+
     cities = [
-        { grupo: 'Docentes', codigo: 2 },
         { grupo: 'Estudiantes', codigo: 1 },
-        // { grupo: 'Personal Ugel', codigo: 4 },
+        { grupo: 'Docentes', codigo: 2 },
     ]
 
-    mostrarMdoal() {
+    ngOnChanges(changes) {
+        if (changes) {
+            console.log(changes.miembros?.currentValue)
+        }
+    }
+
+    mostrarModal() {
         this.visible = !this.visible
     }
 
@@ -115,6 +122,9 @@ export class GruposComponent {
         }
         this.getInformation(params, 'obtenerMiembros')
     }
+    quitarMiembros() {
+        console.table(this.miembros)
+    }
     getInformation(params, accion) {
         this.GeneralService.getGralPrefix(params).subscribe({
             next: (response: any) => {
@@ -132,7 +142,7 @@ export class GruposComponent {
                 this.data = item
                 break
             case 'setearDataxiSeleccionado':
-                console.log(item)
+                this.miembros.push(item)
                 break
         }
     }

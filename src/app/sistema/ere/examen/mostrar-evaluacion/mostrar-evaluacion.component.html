@@ -1,0 +1,96 @@
+<app-container-page
+    [title]="
+        'Evaluación ERE: ' +
+        (evaluacion?.cEvaluacionNombre || '-') +
+        ' - ' +
+        (evaluacion?.cCursoNombre || '-')
+    "
+    [subtitle]="
+        'Nivel: ' +
+        (evaluacion?.cNivelTipoNombre || '-') +
+        ' | Grado: ' +
+        (evaluacion?.cGradoAbreviacion || '-')
+    "
+    [actions]="[]"
+>
+    <!-- interface de Inicio -->
+    <div class="grid" *ngIf="!iniciarEvaluacion">
+        <div class="col-12 md:col-4 align-content-center">
+            <div>
+                <span class="font-bold text-xl flex gap-2">
+                    <app-icon
+                        name="matCalendarMonth"
+                        class="text-primary"
+                        size="sm"
+                    ></app-icon>
+                    Inicio de Evaluación:
+                </span>
+                <p class="flex gap-2 flex-wrap ml-5">
+                    {{
+                        evaluacion?.dtEvaluacionFechaInicio
+                            | date: "EEEE, d 'de' MMMM 'de' yyyy"
+                    }}
+                </p>
+            </div>
+            <div>
+                <span class="font-bold text-xl flex gap-2 mt-2">
+                    <app-icon
+                        name="matCalendarMonth"
+                        class="text-primary"
+                        size="sm"
+                    ></app-icon>
+                    Cierre de Evaluación
+                </span>
+                <p class="flex gap-2 flex-wrap ml-5">
+                    {{
+                        evaluacion?.dtEvaluacionFechaFin
+                            | date: "EEEE, d 'de' MMMM 'de' yyyy"
+                    }}
+                </p>
+            </div>
+        </div>
+
+        <!-- tiempo de evaluación  -->
+        <div class="col-12 md:col-4 align-content-center">
+            <div class="flex flex-column gap-2">
+                <span class="font-bold text-xl flex gap-2">
+                    <app-icon
+                        name="matCalendarMonth"
+                        class="text-primary"
+                        size="sm"
+                    ></app-icon>
+                    Duración: {{ evaluacion?.tDuracion }} minutos
+                </span>
+                <p class="flex gap-2 flex-wrap ml-5">
+                    Total de Preguntas: (20)
+                </p>
+            </div>
+        </div>
+
+        <!-- Instrucciones del examen -->
+        <div class="col-12 md:col-4 align-content-center">
+            <div class="col text-center">
+                <span class="font-bold text-xl"> Instrucciones </span>
+            </div>
+            <div class="backColor p-4">
+                <p class="flex gap-2 flex-wrap">
+                    1. Tener en cuenta su ortografía <br />
+                    2. Leer bien el enunciado de la Pregunta
+                </p>
+            </div>
+        </div>
+
+        <div class="col-12 text-center">
+            <button
+                pButton
+                pRipple
+                type="button"
+                class="p-button-success pulse"
+                (click)="rendirExamen()"
+            >
+                <i class="pi pi-check-square"></i>&nbsp; Iniciar Evaluación
+            </button>
+        </div>
+    </div>
+</app-container-page>
+<p-toast></p-toast>

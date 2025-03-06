@@ -15,12 +15,15 @@ export class FichaSaludComponent implements OnInit {
     dolencias: Array<object>
     visibleInput: Array<boolean>
     visibleAlergiaInput: Array<boolean>
+    visibleSeguroInput: Array<boolean>
+    seguros_salud: Array<object>
 
     constructor(private fb: FormBuilder) {}
 
     ngOnInit(): void {
         this.visibleInput = Array(7).fill(false)
         this.visibleAlergiaInput = Array(2).fill(false)
+        this.visibleSeguroInput = Array(1).fill(false)
 
         this.dolencias = [
             { id: 1, nombre: 'Asma' },
@@ -32,6 +35,15 @@ export class FichaSaludComponent implements OnInit {
             { id: 7, nombre: 'Estrés' },
         ]
 
+        this.seguros_salud = [
+            { id: 0, nombre: 'Otro' },
+            { id: 1, nombre: 'Seguro Integral de Salud' },
+            { id: 2, nombre: 'ESSALUD' },
+            { id: 3, nombre: 'Seguro Privado de Salud' },
+            { id: 4, nombre: 'Entidad Prestadora de Salud' },
+            { id: 5, nombre: 'Seguro de Fuerzas Armadas / Policiales' },
+        ]
+
         try {
             this.formSalud = this.fb.group({
                 iFichaDGId: [null, Validators.required],
@@ -39,6 +51,8 @@ export class FichaSaludComponent implements OnInit {
                 cFichaDGAlergiaMedicamentos: [null],
                 bFichaDGAlergiaOtros: [false],
                 cFichaDGAlergiaOtros: [null],
+                iSeguroSaludId: [null],
+                cSeguroSaludObs: [null],
             })
         } catch (error) {
             console.log(error, 'error inicializando formulario')
@@ -66,6 +80,26 @@ export class FichaSaludComponent implements OnInit {
             this.visibleAlergiaInput[index] = true
         } else {
             this.visibleAlergiaInput[index] = false
+        }
+    }
+
+    handleDropdownChange(event: any, index: number) {
+        if (event?.value === undefined) {
+            this.visibleSeguroInput[index] = false
+            return null
+        }
+        if (Array.isArray(event.value)) {
+            if (event.value.includes(0)) {
+                this.visibleSeguroInput[index] = true
+            } else {
+                this.visibleSeguroInput[index] = false
+            }
+        } else {
+            if (event.value == 0) {
+                this.visibleSeguroInput[index] = true
+            } else {
+                this.visibleSeguroInput[index] = false
+            }
         }
     }
 

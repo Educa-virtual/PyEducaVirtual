@@ -167,12 +167,13 @@
     <p-button
         label="Salir sin guardar"
         (onClick)="actualizarDatos()"
-        styleClass="p-button-secondary"
+        severity="secondary"
     />
     <p-button
         label="Guardar y continuar"
         (onClick)="guardarDatos()"
-        styleClass="p-button-primary"
+        severity="success"
+        icon="pi pi-save"
     />
 </div>
 <p-toast></p-toast>

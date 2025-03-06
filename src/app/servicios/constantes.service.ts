@@ -104,9 +104,15 @@ const docente = [
             //     routerLink: ['/comunicados/principal'],
             // },
             {
-                label: 'bienestar',
-                icon: 'pi pi-fw pi-file-edit',
-                routerLink: ['/bienestar/ficha'],
+                label: 'Bienestar Social',
+                icon: 'pi pi-fw pi-check-square',
+                items: [
+                    {
+                        label: 'Consultar Fichas Socioeconómicas',
+                        icon: 'pi pi-fw pi-user-edit',
+                        routerLink: ['/bienestar/ficha-socioeconomica'],
+                    },
+                ],
             },
         ],
     },
@@ -160,6 +166,17 @@ const estudiante = [
                     //         '/evaluaciones/sub-evaluaciones/evaluacion-examen-ere/examen-ere',
                     //     ],
                     // },
+                ],
+            },
+            {
+                label: 'Bienestar Social',
+                icon: 'pi pi-fw pi-check-square',
+                items: [
+                    {
+                        label: 'Consultar Fichas Socioeconómicas',
+                        icon: 'pi pi-fw pi-user-edit',
+                        routerLink: ['/bienestar/ficha-socioeconomica'],
+                    },
                 ],
             },
         ],
@@ -407,21 +424,21 @@ const administracion = [
 
             {
                 label: 'Bienestar Social',
-                icon: 'pi pi-check-square',
+                icon: 'pi pi-fw pi-check-square',
                 items: [
                     {
                         label: 'Consulta Asistenta Social',
-                        icon: 'pi pi-user-edit',
+                        icon: 'pi pi-fw pi-user-edit',
                         routerLink: ['/bienestar/ficha-socioeconomica'],
                     },
                     {
                         label: 'Consulta Apoderado',
-                        icon: 'pi pi-users',
+                        icon: 'pi pi-fw pi-users',
                         routerLink: ['/bienestar/fichavistapoderado'],
                     },
                     {
                         label: 'Ficha Socioeconomica',
-                        icon: 'pi pi-file-edit',
+                        icon: 'pi pi-fw pi-file-edit',
                         routerLink: ['/bienestar/ficha'],
                     },
                 ],

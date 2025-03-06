@@ -87,6 +87,53 @@
                 </div>
             </p-fieldset>
         </div>
+
+        <div class="col-12">
+            <p-fieldset legend="Seguros">
+                <div class="grid">
+                    <div class="col-12">
+                        <div class="grid">
+                            <div class="col w-full">
+                                <span class="p-float-label">
+                                    <p-multiSelect
+                                        display="chip"
+                                        [options]="seguros_salud"
+                                        formControlName="iSeguroSaludId"
+                                        optionLabel="nombre"
+                                        optionValue="id"
+                                        [filter]="true"
+                                        [showClear]="true"
+                                        [appendTo]="'body'"
+                                        multiple="true"
+                                        [maxSelectedLabels]="undefined"
+                                        (onChange)="
+                                            handleDropdownChange($event, 0)
+                                        "
+                                        (onClear)="
+                                            handleDropdownChange($event, 0)
+                                        "
+                                    />
+                                    <label for="iEleParaVivId"
+                                        >Seleccione los elementos que tiene en
+                                        su hogar *</label
+                                    >
+                                </span>
+                            </div>
+                            @if (visibleSeguroInput[0] === true) {
+                                <div class="col-12">
+                                    <input
+                                        pInputText
+                                        formControlName="cSeguroSaludObs"
+                                        placeholder="Especifique"
+                                        type="text"
+                                    />
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </p-fieldset>
+        </div>
     </div>
 </form>
 
@@ -100,14 +147,14 @@
     <p-button
         label="Salir sin guardar"
         (onClick)="actualizarDatos()"
-        styleClass="p-button-secondary"
+        severity="secondary"
     />
     <p-button
         type="button"
         label="Guardar y continuar"
-        icon="pi pi-save"
         (onClick)="guardarDatos()"
         severity="success"
+        icon="pi pi-save"
     />
 </div>
 

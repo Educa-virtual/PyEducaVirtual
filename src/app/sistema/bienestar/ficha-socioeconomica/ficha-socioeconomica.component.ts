@@ -7,6 +7,7 @@ import {
     IColumn,
     IActionTable,
 } from '@/app/shared/table-primeng/table-primeng.component'
+import { Router } from '@angular/router'
 
 interface Estudiante {
     id: number
@@ -108,7 +109,10 @@ export class FichaSocioeconomicaComponent {
 
     searchForm: FormGroup
 
-    constructor(private fb: FormBuilder) {
+    constructor(
+        private fb: FormBuilder,
+        private router: Router
+    ) {
         this.searchForm = this.fb.group({
             nombre: [''],
             dni: [''],
@@ -212,7 +216,7 @@ export class FichaSocioeconomicaComponent {
     ]
 
     nuevoIngreso() {
-        console.log('Nuevo ingreso')
+        this.router.navigate(['/bienestar/ficha/general'])
     }
     accionBnt({ accion }): void {
         switch (accion) {

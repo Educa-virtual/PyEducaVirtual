@@ -183,5 +183,13 @@ export class MatriculaMasivaComponent implements OnInit {
             text_header: 'center',
             text: 'center',
         },
+        {
+            type: 'text',
+            width: '3rem',
+            field: 'usuario_creado',
+            header: 'Usuario',
+            text_header: 'center',
+            text: 'center',
+        },
     ]
 }

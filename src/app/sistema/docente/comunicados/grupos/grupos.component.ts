@@ -19,8 +19,12 @@ export class GruposComponent {
         private messageService: MessageService
     ) {
         this.iSedeId = this.ConstantesService.iSedeId
+        this.iIieeId = this.ConstantesService.iIieeId
+        this.iYAcadId = this.ConstantesService.iYAcadId
     }
-    iSedeId = ''
+    iSedeId: string = ''
+    iIieeId: string = ''
+    iYAcadId: string = ''
     visible = true
     grupo: string
     columnas = [
@@ -43,7 +47,7 @@ export class GruposComponent {
         {
             type: 'text',
             width: '1rem',
-            field: 'cPersDocumento',
+            field: 'documento',
             header: 'Documento',
             text_header: 'center',
             text: 'center',
@@ -57,9 +61,9 @@ export class GruposComponent {
             text: 'center',
         },
         {
-            type: 'item',
+            type: 'text',
             width: '1rem',
-            field: 'cItem',
+            field: 'contacto',
             header: 'Numero Telf. del Contacto',
             text_header: 'center',
             text: 'center',
@@ -67,7 +71,7 @@ export class GruposComponent {
         {
             type: 'text',
             width: '1rem',
-            field: 'cPersDomicilio',
+            field: 'domicilio',
             header: 'Direccion Domiciliaria',
             text_header: 'center',
             text: 'center',
@@ -81,12 +85,12 @@ export class GruposComponent {
     ]
 
     mostrarMdoal() {
-        this.visible = true
+        this.visible = !this.visible
     }
 
     mostrarDocentes() {
         if (this.grupo) {
-            this.obtenerDocentes(2)
+            this.obtenerMiembros(this.grupo['codigo'])
         } else {
             this.messageService.add({
                 severity: 'error',
@@ -96,7 +100,7 @@ export class GruposComponent {
         }
     }
 
-    obtenerDocentes(opcion: number) {
+    obtenerMiembros(opcion: number | string) {
         const params = {
             petition: 'post',
             group: 'com',
@@ -104,10 +108,12 @@ export class GruposComponent {
             ruta: 'obtener_miembros',
             data: {
                 opcion: opcion,
+                iIieeId: this.iIieeId,
+                iYAcadId: this.iYAcadId,
                 iSedeId: this.iSedeId,
             },
         }
-        this.getInformation(params, 'obtenerDocentes')
+        this.getInformation(params, 'obtenerMiembros')
     }
     getInformation(params, accion) {
         this.GeneralService.getGralPrefix(params).subscribe({
@@ -122,7 +128,7 @@ export class GruposComponent {
         const { item } = event
 
         switch (accion) {
-            case 'obtenerDocentes':
+            case 'obtenerMiembros':
                 this.data = item
                 break
             case 'setearDataxiSeleccionado':

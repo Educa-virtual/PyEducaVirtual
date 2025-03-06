@@ -67,7 +67,11 @@ export class GestionarPreguntasCardComponent implements OnInit {
                 label: 'Exportar a Word',
                 icon: 'pi pi-angle-right',
                 command: () => {
-                    this.exportarPreguntasPorArea()
+                    if (this.curso.iCantidadPreguntas == 0) {
+                        alert('No hay preguntas para exportar')
+                    } else {
+                        this.descargarArchivoPreguntasPorArea('word')
+                    }
                 },
             },
             {
@@ -84,7 +88,11 @@ export class GestionarPreguntasCardComponent implements OnInit {
                 label: 'Descargar PDF',
                 icon: 'pi pi-angle-right',
                 command: () => {
-                    this.descargarPreguntasPorArea()
+                    if (this.curso.bTieneArchivo) {
+                        this.descargarArchivoPreguntasPorArea('pdf')
+                    } else {
+                        alert('No se ha subido un archivo para esta área.')
+                    }
                 },
             },
         ]
@@ -94,28 +102,13 @@ export class GestionarPreguntasCardComponent implements OnInit {
         item.cCursoImagen = 'cursos/images/no-image.jpg'
     }
 
-    exportarPreguntasPorArea() {
-        if (this.curso.iCantidadPreguntas == 0) {
-            alert('No hay preguntas para exportar')
-        } else {
-            const params = {
-                iEvaluacionId: this.iEvaluacionIdHashed,
-                iCursosNivelGradId: this.curso.iCursosNivelGradId,
-            }
-            this.evaluacionesService.exportarPreguntasPorArea(params)
+    descargarArchivoPreguntasPorArea(tipoArchivo: string) {
+        const params = {
+            iEvaluacionId: this.iEvaluacionIdHashed,
+            iCursosNivelGradId: this.curso.iCursosNivelGradId,
+            tipoArchivo: tipoArchivo,
         }
-    }
-
-    descargarPreguntasPorArea() {
-        if (this.curso.bTieneArchivo) {
-            const params = {
-                iEvaluacionId: this.iEvaluacionIdHashed,
-                iCursosNivelGradId: this.curso.iCursosNivelGradId,
-            }
-            this.evaluacionesService.descargarPreguntasPorArea(params)
-        } else {
-            alert('No se ha subido un archivo para esta área.')
-        }
+        this.evaluacionesService.descargarArchivoPreguntasPorArea(params)
     }
 
     descargarMatrizPorEvaluacionArea() {

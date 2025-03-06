@@ -62,121 +62,7 @@ export class BancoPreguntasComponent {
     capacidades: any[] = []
     competencias: any[] = []
     procesos: any[] = []
-    preguntas: any[] = [
-        {
-            iPreguntaId: '183',
-            cPregunta: '',
-            dtUltimaFechaEvaluacion: '11/03/2025',
-            iNivelEvalId: '3',
-            cNivelEvalNombre: 'Salida',
-            iCapacidadId: null,
-            iCompetenciaId: null,
-        },
-        {
-            iPreguntaId: '197',
-            cPregunta: '\n  ¿Cuántos segundos hay en un día?\n\n ',
-            dtUltimaFechaEvaluacion: '28/02/2025',
-            iNivelEvalId: '1',
-            cNivelEvalNombre: 'Inicio',
-            iCapacidadId: '1',
-            iCompetenciaId: '1',
-        },
-        {
-            iPreguntaId: '202',
-            cPregunta: '¿El promedio de los primeros 50 números naturales?',
-            dtUltimaFechaEvaluacion: '28/02/2025',
-            iNivelEvalId: '1',
-            cNivelEvalNombre: 'Inicio',
-            iCapacidadId: null,
-            iCompetenciaId: null,
-        },
-        {
-            iPreguntaId: '203',
-            cPregunta: ' ¿Cuál es el último mes del año con 31 días?',
-            dtUltimaFechaEvaluacion: '28/02/2025',
-            iNivelEvalId: '1',
-            cNivelEvalNombre: 'Inicio',
-            iCapacidadId: null,
-            iCompetenciaId: null,
-        },
-        {
-            iPreguntaId: '230',
-            cPregunta: '',
-            dtUltimaFechaEvaluacion: '28/02/2025',
-            iNivelEvalId: '1',
-            cNivelEvalNombre: 'Inicio',
-            iCapacidadId: null,
-            iCompetenciaId: null,
-        },
-        {
-            iPreguntaId: '231',
-            cPregunta: '',
-            dtUltimaFechaEvaluacion: '28/02/2025',
-            iNivelEvalId: '1',
-            cNivelEvalNombre: 'Inicio',
-            iCapacidadId: null,
-            iCompetenciaId: null,
-        },
-        {
-            iPreguntaId: '232',
-            cPregunta: 'ddd',
-            dtUltimaFechaEvaluacion: '28/02/2025',
-            iNivelEvalId: '1',
-            cNivelEvalNombre: 'Inicio',
-            iCapacidadId: '3',
-            iCompetenciaId: '1',
-        },
-        {
-            iPreguntaId: '278',
-            cPregunta:
-                'Pregunta simple 1 original de Eval. - Inicio - Nuevas preguntas - WGV - Inicio',
-            dtUltimaFechaEvaluacion: '04/03/2025',
-            iNivelEvalId: '1',
-            cNivelEvalNombre: 'Inicio',
-            iCapacidadId: '3',
-            iCompetenciaId: '1',
-        },
-        {
-            iPreguntaId: '279',
-            cPregunta:
-                'Pregunta simple 2 original de Eval. - Inicio - Nuevas preguntas - WGV - Inicio',
-            dtUltimaFechaEvaluacion: '04/03/2025',
-            iNivelEvalId: '1',
-            cNivelEvalNombre: 'Inicio',
-            iCapacidadId: '2',
-            iCompetenciaId: '1',
-        },
-        {
-            iPreguntaId: '280',
-            cPregunta:
-                'Pregunta simple 3 original de Eval. - Inicio - Nuevas preguntas - WGV - Inicio',
-            dtUltimaFechaEvaluacion: '04/03/2025',
-            iNivelEvalId: '1',
-            cNivelEvalNombre: 'Inicio',
-            iCapacidadId: '2',
-            iCompetenciaId: '1',
-        },
-        {
-            iPreguntaId: '281',
-            cPregunta:
-                'Pregunta simple 4 original de Eval. - Inicio - Nuevas preguntas - WGV - Inicio',
-            dtUltimaFechaEvaluacion: '04/03/2025',
-            iNivelEvalId: '1',
-            cNivelEvalNombre: 'Inicio',
-            iCapacidadId: '4',
-            iCompetenciaId: '1',
-        },
-        {
-            iPreguntaId: '286',
-            cPregunta:
-                'Pregunta 6 original de Eval. - Inicio - Nuevas preguntas - WGV - Inicio',
-            dtUltimaFechaEvaluacion: '04/03/2025',
-            iNivelEvalId: '1',
-            cNivelEvalNombre: 'Inicio',
-            iCapacidadId: null,
-            iCompetenciaId: null,
-        },
-    ]
+    preguntas: any[] = []
 
     ngOnInit(): void {
         this.obtenerAnios()
@@ -184,6 +70,7 @@ export class BancoPreguntasComponent {
         this.capacidadesFiltro()
         this.competenciaFiltro()
         this.procesoFiltro()
+        this.obtenerPreguntas()
     }
 
     obtenerAnios() {
@@ -243,5 +130,23 @@ export class BancoPreguntasComponent {
                 console.log('error obtenido' + error)
             },
         })
+    }
+
+    obtenerPreguntas() {
+        const iEvaluacionId = '1'
+        const iCursosNivelGradId = 'matematica'
+        const queryParams = {}
+
+        this._ApiEvaluacionesRService
+            .obtenerPreguntas(iEvaluacionId, iCursosNivelGradId, queryParams)
+            .subscribe({
+                next: (respuesta) => {
+                    this.preguntas = respuesta
+                },
+
+                error: (error) => {
+                    console.log('error obtenido' + error)
+                },
+            })
     }
 }

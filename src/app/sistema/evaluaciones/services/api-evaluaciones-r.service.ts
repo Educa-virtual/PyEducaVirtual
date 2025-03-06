@@ -544,4 +544,17 @@ export class ApiEvaluacionesRService {
             )
             .pipe(map((resp) => resp['data']))
     }
+
+    obtenerPreguntas(
+        iEvaluacionId: string,
+        iCursosNivelGradId: string,
+        queryParams: any
+    ): Observable<any> {
+        return this.http
+            .get(
+                `${this.urlBackendApi}/ere/evaluaciones/${iEvaluacionId}/areas/${iCursosNivelGradId}`,
+                { params: queryParams }
+            )
+            .pipe(map((resp) => resp['data']))
+    }
 }

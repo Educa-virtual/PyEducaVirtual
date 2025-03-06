@@ -46,6 +46,7 @@ export class FichasocgeneralComponent implements OnInit {
             mz: [''],
             lote: [''],
             km: [''],
+            referencia: [''],
             telefono: ['', Validators.required],
             email: ['', [Validators.required, Validators.email]],
             tieneHijos: [false],

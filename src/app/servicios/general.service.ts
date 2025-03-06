@@ -341,4 +341,10 @@ export class GeneralService {
             data
         )
     }
+    importarDocente_IE(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/gestionInstitucional/importarDocente_IE`,
+            data
+        )
+    }
 }

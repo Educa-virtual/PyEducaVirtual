@@ -16,7 +16,7 @@ export class SearchWordsComponent implements OnInit {
     constructor() {}
 
     ngOnInit() {
-        console.log('xikitas')
+        console.log('..')
     }
     filtrarDatos(event: any) {
         this.searchTerm = event.target.value

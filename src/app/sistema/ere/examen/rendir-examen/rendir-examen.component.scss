@@ -1,0 +1,64 @@
+.backColor {
+    background-color: rgb(234, 234, 234);
+    padding: 2px;
+    border-radius: 5px;
+}
+.pregunta-container {
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 5px;
+    max-width: 100%;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    padding: 8px;
+    margin: 5px 0;
+    background-color: white;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: 0.3s;
+
+    display: flex;
+    align-items: center;
+}
+
+li:hover {
+    background-color: #ddd;
+}
+
+// .seleccionado {
+//     background-color: #077D38;
+//     color: white;
+// }
+// --------------- estilo de la imagen
+.image-container {
+    display: flex;
+    justify-content: center; /* Centra horizontalmente */
+    align-items: center; /* Centra verticalmente si es necesario */
+    width: 100%;
+}
+
+.image-container img {
+    max-width: 50%; /* Se ajusta al ancho del contenedor */
+    height: auto; /* Mantiene la proporción */
+    border-radius: 8px; /* Opcional: bordes redondeados */
+}
+// ------------------------------------
+
+::ng-deep .p-panel .p-panel-header {
+    background: var(--bg-header-modal) !important;
+    color: white !important;
+}
+
+::ng-deep .text-primary {
+    color: white !important;
+}
+
+::ng-deep .container-page .p-panel-header {
+    gap: 0px !important;
+}

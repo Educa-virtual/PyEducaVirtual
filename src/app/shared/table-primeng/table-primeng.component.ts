@@ -90,6 +90,7 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     @Input() selectionMode: 'single' | 'multiple' | null = null
     @Input() expandedRowKeys = {}
     @Input() dataKey: string
+    @Input() groupRowsBy
     @Input() showCaption: boolean = true
     @Input() caption: string | undefined | null
     @Input() showPaginator: boolean = true
@@ -101,6 +102,8 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     @Input() scrollable: boolean = false
     @Input() scrollHeight: string = ''
 
+    @Input() template: 'body' | 'expandable' = 'body'
+
     @Input() data = []
     @Input() tableStyle: {
         [klass: string]: unknown
@@ -109,6 +112,7 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     @Input() placeholder = 'Buscar'
     @ContentChild('rowExpansionTemplate', { static: false })
     rowExpansionTemplate: TemplateRef<unknown>
+    rowGroupheader: TemplateRef<unknown>
 
     // buscador de palabras en el primeng
     @ViewChild('dt') dt!: Table

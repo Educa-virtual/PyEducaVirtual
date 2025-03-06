@@ -505,6 +505,8 @@ export class ApiEvaluacionesRService {
         )
     }
 
+    // Banco-Preguntas
+
     obtenerAnios(): Observable<any> {
         return this.http
             .get(`${this.urlBackendApi}/ere/evaluaciones/anios`)
@@ -541,6 +543,5 @@ export class ApiEvaluacionesRService {
                 `${this.urlBackendApi}/ere/nivelEvaluacion/obtenerNivelEvaluacion`
             )
             .pipe(map((resp) => resp['data']))
-        //{{local_url}}///
     }
 }

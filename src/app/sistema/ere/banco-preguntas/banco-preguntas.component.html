@@ -5,7 +5,7 @@
             <p-dropdown
                 [options]="anios"
                 optionLabel="anio"
-                placeholder="Anio"
+                placeholder="Año"
                 class="w-full"
             >
             </p-dropdown>
@@ -72,7 +72,7 @@
         </p-inputGroup>
     </div>
 
-    <p-table [value]="">
+    <p-table [value]="preguntas">
         <ng-template pTemplate="header">
             <tr>
                 <th>
@@ -86,9 +86,7 @@
                 <th>#</th>
                 <th>{{ fechaEvaluacion }}</th>
                 <th>{{ pregunta }}</th>
-                <th>{{ tipoDePregunta }}</th>
                 <th>{{ proceso }}</th>
-                <th>{{ grado }}</th>
                 <th>{{ accion }}</th>
             </tr>
         </ng-template>
@@ -103,11 +101,9 @@
                     />
                 </td>
                 <td>{{ rowData.id }}</td>
-                <td>{{ rowData.fechaEval }}</td>
-                <td>{{ rowData.pregunta }}</td>
-                <td>{{ rowData.tipo }}</td>
-                <td>{{ rowData.proceso }}</td>
-                <td>{{ rowData.grado }}</td>
+                <td>{{ rowData.dtUltimaFechaEvaluacion }}</td>
+                <td>{{ rowData.cPregunta }}</td>
+                <td>{{ rowData.cNivelEvalNombre }}</td>
                 <td>
                     <!-- Botón "ver" -->
                     <p-button

@@ -1,13 +1,20 @@
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import { CommonModule } from '@angular/common'
-import { Component, inject, OnInit, ViewChild } from '@angular/core'
+import {
+    Component,
+    inject,
+    OnInit,
+    QueryList,
+    ViewChild,
+    ViewChildren,
+} from '@angular/core'
 import { DataView } from 'primeng/dataview'
 
 import { PrimengModule } from '@/app/primeng.module'
 import { GestionarPreguntasCardComponent } from '../../components/areas/gestionar-preguntas-card/gestionar-preguntas-card.component'
 
 import { ICurso } from '@/app/sistema/aula-virtual/sub-modulos/cursos/interfaces/curso.interface'
-import { environment } from '@/environments/environment.template'
+import { environment } from '@/environments/environment'
 import { ActivatedRoute } from '@angular/router'
 import { ApiEvaluacionesRService } from '@/app/sistema/evaluaciones/services/api-evaluaciones-r.service'
 import { MessagesModule } from 'primeng/messages'
@@ -40,6 +47,8 @@ export class GestionarPreguntasComponent implements OnInit {
     private _ConstantesService = inject(ConstantesService)
     @ViewChild(SubirArchivoPreguntasComponent)
     dialogSubirArchivo!: SubirArchivoPreguntasComponent
+    @ViewChildren(GestionarPreguntasCardComponent)
+    gestionarPreguntasCard!: QueryList<GestionarPreguntasCardComponent>
 
     iEvaluacionIdHashed: string = ''
     sortField: string = ''
@@ -65,13 +74,18 @@ export class GestionarPreguntasComponent implements OnInit {
         }
     }
 
-    recibirDatosParaSubirArchivo(datos: {
-        curso: ICurso
-        iEvaluacionIdHashed: string
-    }) {
-        //this.dialogSubirArchivo.curso=datos.curso;
-        //this.dialogSubirArchivo.iEvaluacionIdHashed=datos.iEvaluacionIdHashed;
+    recibirDatosParaSubirArchivo(datos: { curso: ICurso }) {
         this.dialogSubirArchivo.mostrarDialog(datos)
+    }
+
+    actualizarEstadoArchivoSubido(datos: { curso: ICurso }) {
+        this.gestionarPreguntasCard.forEach((card) => {
+            if (
+                card.curso.iCursosNivelGradId === datos.curso.iCursosNivelGradId
+            ) {
+                card.curso.bTieneArchivo = true
+            }
+        })
     }
 
     ngOnInit() {

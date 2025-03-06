@@ -1,0 +1,24 @@
+<div class="pt-4 flex flex-column align-items-center border-1 border-round-3xl">
+    <div
+        class="bg-white-alpha-80 flex justify-content-center gap-8 py-2 px-2 border-round-2xl bg-black-alpha-10 w-max"
+    >
+        @for (tab of tabs; track i; let i = $index) {
+            <button
+                (click)="selectTab(i)"
+                [class.active]="i === activeIndex"
+                style="background-color: transparent"
+                class="py-2 px-4 border-none border-round cursor-pointer"
+                [class]="{ 'bg-white-alpha-80': activeIndex === i }"
+            >
+                {{ tab.title }}
+            </button>
+        }
+    </div>
+
+    <div class="w-full tab-content p-4 border border-gray-300 rounded-md">
+        <ng-template
+            #contentContainer
+            [ngTemplateOutlet]="tabs[activeIndex]?.content"
+        ></ng-template>
+    </div>
+</div>

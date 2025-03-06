@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core'
-import { environment } from '@/environments/environment.template'
 import { HttpClient, HttpHeaders } from '@angular/common/http'
+import { environment } from '@/environments/environment'
 import { map, Observable, catchError, tap, throwError } from 'rxjs' //catchError, , tap, throwError
 import { mapData } from '../sub-evaluaciones/banco-preguntas/models/pregunta-data-transformer'
 
@@ -8,7 +8,6 @@ import { mapData } from '../sub-evaluaciones/banco-preguntas/models/pregunta-dat
     providedIn: 'root',
 })
 export class ApiEvaluacionesRService {
-    private urlBackendAspNet = environment.backendAspNet
     private urlBackendApi = environment.backendApi
     private urlBackend = environment.backend
     private http = inject(HttpClient)
@@ -460,13 +459,13 @@ export class ApiEvaluacionesRService {
         window.open(fullUrl, '_blank')
     }
 
-    exportarPreguntasPorArea(params) {
+    /*exportarPreguntasPorArea(params) {
         const url = `${this.urlBackendAspNet}/api/ere/evaluaciones/${params.iEvaluacionId}/areas/${params.iCursosNivelGradId}/archivo-preguntas`
         window.open(url, '_blank')
-    }
+    }*/
 
-    descargarPreguntasPorArea(params) {
-        const url = `${this.urlBackendApi}/ere/evaluaciones/${params.iEvaluacionId}/areas/${params.iCursosNivelGradId}/archivo-preguntas`
+    descargarArchivoPreguntasPorArea(params) {
+        const url = `${this.urlBackendApi}/ere/evaluaciones/${params.iEvaluacionId}/areas/${params.iCursosNivelGradId}/archivo-preguntas?tipo=${params.tipoArchivo}`
         window.open(url, '_blank')
     }
 

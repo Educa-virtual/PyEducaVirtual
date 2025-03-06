@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core'
-import { environment } from '@/environments/environment.template'
+import { environment } from '@/environments/environment'
 import { HttpClient } from '@angular/common/http'
 import { map, Observable } from 'rxjs' //catchError, , tap, throwError
 // import { AdministradorModule } from '../../administrador/administrador.module'
@@ -56,11 +56,6 @@ export class ApiEspecialistasService {
         return this.http.get(url).pipe(map((resp: any) => resp['data']))
     }
 
-    listarEspecialistasUgel(): Observable<any> {
-        const url = `${this.urlBackendApi}/acad/especialistas-ugel`
-
-        return this.http.get(url).pipe(map((resp: any) => resp['data']))
-    }
     obtenerEspecialistasDremo(): Observable<any> {
         return this.http
             .get(`${this.urlBackendApi}/acad/especialistas-dremo`)

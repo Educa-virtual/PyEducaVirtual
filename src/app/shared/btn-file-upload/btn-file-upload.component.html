@@ -1,0 +1,35 @@
+<section class="flex gap-2">
+    <input
+        #FileInput
+        class="cursor-pointer"
+        [hidden]="true"
+        [accept]="accept"
+        type="file"
+        (change)="onFileSelected()"
+    />
+
+    <label class="p-button p-button-label cursor-pointer">
+        <i [class]="icon"></i>
+        <input
+            #FileView
+            type="submit"
+            [value]="label"
+            class="cursor-pointer"
+            style="
+                background-color: transparent;
+                border-radius: 6px;
+                color: inherit;
+                font-family: inherit;
+                outline: none;
+                border: none;
+                font-weight: inherit;
+            "
+            [class]="disabled ? 'cursor-not-allowed' : 'cursor-pointer '"
+            icon="pi pi pi-upload"
+            (click)="FileInput.click()"
+        />
+    </label>
+    <!-- @if (isAttachedFile) {
+        <p-button icon="pi pi-trash" (click)="onDeletedFile()" />
+    } -->
+</section>

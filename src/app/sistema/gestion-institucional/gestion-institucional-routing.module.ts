@@ -19,13 +19,14 @@ import { EstadisticaComponent } from './estadistica/estadistica.component'
 import { GestionTrasladosComponent } from './gestion-traslados/gestion-traslados.component'
 import { GestionVacantesComponent } from './gestion-vacantes/gestion-vacantes.component'
 import { InformacionComponent } from './informacion/informacion.component'
+import { SincronizarArchivoComponent } from './sincronizar-archivo/sincronizar-archivo.component'
+import { MantenimientoUsuariosComponent } from './mantenimiento/mantenimiento-usuarios/mantenimiento-usuarios.component'
 
 //import { HorarioComponent } from './horario/horario.component'
 //import { ConfiguracionHorarioComponent } from './horario/configuracion-horario/configuracion-horario.component'
 import { GestionMatriculasComponent } from './matriculas/gestion-matriculas.component'
 import { MatriculaMasivaComponent } from './matriculas/matricula-masiva/matricula-masiva.component'
 import { MatriculaIndividualComponent } from './matriculas/matricula-individual/matricula-individual.component'
-
 const routes: Routes = [
     { path: 'calendarioAcademico', component: CalendarioAcademicoComponent },
     { path: 'configGradoSeccion', component: ConfigGradoSeccionComponent },
@@ -46,6 +47,7 @@ const routes: Routes = [
     { path: 'gestion-traslados', component: GestionTrasladosComponent },
     { path: 'gestion-vacantes', component: GestionVacantesComponent },
     { path: 'Informacion-ie', component: InformacionComponent },
+    { path: 'sincronizar-archivo', component: SincronizarArchivoComponent },
     // { path: 'horario', component: HorarioComponent },
     //{ path: 'configurar-horario', component: ConfiguracionHorarioComponent },
     {
@@ -87,12 +89,17 @@ const routes: Routes = [
     { path: 'gestion-matriculas', component: GestionMatriculasComponent },
     { path: 'matricula-individual', component: MatriculaIndividualComponent },
     { path: 'matricula-masiva', component: MatriculaMasivaComponent },
+
     {
         path: 'estudiante',
         loadChildren: () =>
             import('./estudiante/estudiante.module').then(
                 (c) => c.EstudianteModule
             ),
+    },
+    {
+        path: 'mantenimiento-usuario',
+        component: MantenimientoUsuariosComponent,
     },
 ]
 

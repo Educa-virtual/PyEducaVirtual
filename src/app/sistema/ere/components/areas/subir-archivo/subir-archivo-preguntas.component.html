@@ -8,9 +8,11 @@
         <br />
 
         @if (curso !== undefined && curso.bTieneArchivo) {
-            <p-messages severity="info">
+            <p-messages severity="warn">
                 <ng-template pTemplate>
-                    <i class="pi pi-info-circle text-blue-500 text-xl mr-2"></i>
+                    <i
+                        class="pi pi-exclamation-triangle text-yellow-500 text-xl mr-2"
+                    ></i>
                     <div class="ml-2">
                         Ya existe un
                         <strong
@@ -35,6 +37,12 @@
                 (change)="handleArchivo($event)"
             ></app-input-file-upload>
         </div>
+        <p-messages severity="info">
+            <ng-template pTemplate>
+                <i class="pi pi-info-circle text-blue-500 text-xl mr-2"></i>
+                <div class="ml-2">El tamaño máximo permitido es de 50MB.</div>
+            </ng-template>
+        </p-messages>
         <br />
         <div class="flex justify-content-end gap-2">
             <p-button

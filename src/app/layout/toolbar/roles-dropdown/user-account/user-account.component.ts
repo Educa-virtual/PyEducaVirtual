@@ -14,15 +14,21 @@ export class UserAccountComponent implements OnInit {
     @Output() actionTopBar = new EventEmitter()
 
     @Input() modulos = []
-    @Input() selectedModulo: string
+    @Input() roles = []
+    @Input() selectedModulo: string //perfil seleccionado
 
     name: string
+
     constructor(private ConstantesService: ConstantesService) {
         this.name = this.ConstantesService.nombres
+        // this.cPerfilNombre = this.selectedModulo[0]['cPerfilNombre']
     }
 
     items: MenuItem[] | undefined
     ngOnInit() {
+        // console.log(this.selectedModulo, 'selectedModulo')
+        // this.cPerfilNombre = this.selectedModulo[0]['cPerfilNombre']
+
         this.items = [
             {
                 items: [
@@ -49,6 +55,7 @@ export class UserAccountComponent implements OnInit {
                 (item) => item.iModuloId === this.selectedModulo
             ),
         }
+        console.log(this.modulos, 'this.modulos')
         this.actionTopBar.emit(data)
     }
 }

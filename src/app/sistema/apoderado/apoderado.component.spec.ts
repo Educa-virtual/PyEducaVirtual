@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing'
 
-import { SubirArchivoComponent } from './subir-archivo.component'
+import { ApoderadoComponent } from './apoderado.component'
 
-describe('SubirArchivoComponent', () => {
-    let component: SubirArchivoComponent
-    let fixture: ComponentFixture<SubirArchivoComponent>
+describe('ApoderadoComponent', () => {
+    let component: ApoderadoComponent
+    let fixture: ComponentFixture<ApoderadoComponent>
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: [SubirArchivoComponent],
+            imports: [ApoderadoComponent],
         }).compileComponents()
 
-        fixture = TestBed.createComponent(SubirArchivoComponent)
+        fixture = TestBed.createComponent(ApoderadoComponent)
         component = fixture.componentInstance
         fixture.detectChanges()
     })

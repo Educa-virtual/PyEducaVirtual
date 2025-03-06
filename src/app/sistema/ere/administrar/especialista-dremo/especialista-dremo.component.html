@@ -11,6 +11,7 @@
                     [showClear]="true"
                     [filter]="true"
                     filterBy="cPersDocumento"
+                    (onClear)="formatearData()"
                     (onChange)="obteneriCursosNivelGradIdxiDocenteId()"
                     [(ngModel)]="iDocenteId"
                 >
@@ -25,22 +26,23 @@
                 </p-dropdown>
             </p-inputGroup>
         </div>
+
         <div class="col-12 md:col-5">
-            <p-inputGroup>
-                <p-button label="Áreas asignadas" severity="success" />
-                <input
-                    pInputText
-                    placeholder="Keyword"
-                    [value]="iAreasConAsignar"
+            <div class="flex justify-content-between flex-wrap">
+                <p-button
+                    [label]="'Áreas asignadas: ' + iAreasConAsignar"
+                    severity="success"
                 />
-                <p-button label="Áreas sin asignar" severity="info" />
-                <input
-                    pInputText
-                    placeholder="Keyword"
-                    [value]="iAreasSinAsignar"
+                <p-button
+                    [label]="'Áreas sin asignar: ' + iAreasSinAsignar"
+                    severity="info"
                 />
-            </p-inputGroup>
+            </div>
         </div>
+        <!-- <div class="col-12 lg:col-2">
+            
+        </div> -->
+
         <div class="col-12">
             <p-accordion
                 styleClass="w-full"

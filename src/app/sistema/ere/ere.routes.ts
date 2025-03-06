@@ -3,6 +3,7 @@ import {
     DIRECTOR_IE,
     ESPECIALISTA_DREMO,
     ESPECIALISTA_UGEL,
+    ESTUDIANTE,
 } from '@/app/servicios/seg/perfiles'
 import { RoleGuard } from '@/app/shared/_guards/role.guard'
 import { Routes } from '@angular/router'
@@ -10,6 +11,9 @@ import { EvaluacionesComponent } from '../evaluaciones/sub-evaluaciones/evaluaci
 import { EspecialistaDremoComponent } from './administrar/especialista-dremo/especialista-dremo.component'
 import { GestionarPreguntasComponent } from './evaluaciones/gestionar-preguntas/gestionar-preguntas.component'
 import { PreguntasComponent } from './evaluacion/preguntas/preguntas.component'
+import { EspecialistaUgelComponent } from './administrar/especialista-ugel/especialista-ugel.component'
+import { MostrarEvaluacionComponent } from './examen/mostrar-evaluacion/mostrar-evaluacion.component'
+import { RendirExamenComponent } from './examen/rendir-examen/rendir-examen.component'
 
 const routes: Routes = [
     {
@@ -69,6 +73,14 @@ const routes: Routes = [
                     icon: 'pi pi-users',
                 },
             },
+            {
+                path: 'especialista-ugel',
+                component: EspecialistaUgelComponent,
+                data: {
+                    breadcrumb: 'Especialista UGEL',
+                    icon: 'pi pi-users',
+                },
+            },
         ],
     },
     {
@@ -77,6 +89,26 @@ const routes: Routes = [
             import('./informes-ere/informes-ere/informes-ere.component').then(
                 (c) => c.InformesEreComponent
             ),
+    },
+    {
+        path: 'mostrar-evaluacion',
+        component: MostrarEvaluacionComponent,
+        canActivate: [RoleGuard],
+        data: {
+            expectedRole: [ESTUDIANTE],
+            breadcrumb: 'Examen',
+            icon: 'pi pi-share-alt',
+        },
+    },
+    {
+        path: 'rendir-examen/:iEvaluacionId/areas/:iCursoNivelGradId/:cEvaluacionNombre/:cCursoNombre',
+        component: RendirExamenComponent,
+        canActivate: [RoleGuard],
+        data: {
+            expectedRole: [ESTUDIANTE],
+            breadcrumb: 'Examen',
+            icon: 'pi pi-share-alt',
+        },
     },
 
     {

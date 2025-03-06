@@ -16,6 +16,17 @@ const routes: Routes = [
                 (module) => module.AuditoriaModule
             ),
     },
+    {
+        path: 'backup-bd',
+        loadComponent: () =>
+            import('./backup-bd/backup-bd.component').then(
+                (m) => m.BackupBdComponent
+            ),
+        /*loadChildren: () =>
+            import('./backu/componentes.module').then(
+                (module) => module.BackupBdComponent
+            ),*/
+    },
 ]
 
 @NgModule({

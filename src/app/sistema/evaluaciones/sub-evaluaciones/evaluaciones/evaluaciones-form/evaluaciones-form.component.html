@@ -124,11 +124,34 @@
                         </div>
                         <!-- URLs -->
                         <div class="formgrid grid flex">
-                            <div class="field col-12">
-                                <app-common-input
-                                    controlKey="cEvaluacionUrlDrive"
-                                    label="Url Drive"
-                                ></app-common-input>
+                            <div class="field col">
+                                <label for="descripcion" class="mt-1"
+                                    >Url
+                                    <span class="text-red-500 text-xs"
+                                        >(*) Obligatorio</span
+                                    ></label
+                                >
+                                <div class="mt-2">
+                                    <input
+                                        pInputText
+                                        class="w-full"
+                                        formControlName="cEvaluacionUrlDrive"
+                                        placeholder="'Ingrese Url'"
+                                        pattern="[Hh][Tt][Tt][Pp][Ss]?:\/\/(?:(?:[a-zA-Z\u00a1-\uffff0-9]+-?)*[a-zA-Z\u00a1-\uffff0-9]+)(?:\.(?:[a-zA-Z\u00a1-\uffff0-9]+-?)*[a-zA-Z\u00a1-\uffff0-9]+)*(?:\.(?:[a-zA-Z\u00a1-\uffff]{2,}))(?::\d{2,5})?(?:\/[^\s]*)?"
+                                    />
+                                </div>
+                                <!-- Mostrar error si la URL es inválida -->
+                                <div
+                                    *ngIf="
+                                        evaluacionFormGroup.controls
+                                            .cEvaluacionUrlDrive.invalid &&
+                                        evaluacionFormGroup.controls
+                                            .cEvaluacionUrlDrive.touched
+                                    "
+                                    class="text-red-500 text-sm"
+                                >
+                                    La URL debe comenzar con http:// o https://
+                                </div>
                             </div>
                         </div>
                         <div class="formgrid grid flex">
@@ -182,9 +205,7 @@
                     >
                         <div>
                             <app-ieparticipa
-                                [_iEvaluacionId]="
-                                    this._config.data.evaluacion.iEvaluacionId
-                                "
+                                [_iEvaluacionId]="iEvaluacionId"
                             ></app-ieparticipa>
                         </div>
                     </ng-template>
@@ -197,9 +218,7 @@
                         let-prevCallback="prevCallback"
                     >
                         <app-evaluacion-areas
-                            [_iEvaluacionId]="
-                                this._config.data.evaluacion.iEvaluacionId
-                            "
+                            [_iEvaluacionId]="iEvaluacionId"
                         ></app-evaluacion-areas>
                     </ng-template>
                 </p-stepperPanel>

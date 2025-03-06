@@ -9,13 +9,16 @@ import {
     OnInit,
     ContentChild,
     TemplateRef,
+    ViewChild,
 } from '@angular/core'
 import { TableColumnFilterComponent } from './table-column-filter/table-column-filter.component'
 import { IIcon } from '../icon/icon.interface'
 import { IconComponent } from '../icon/icon.component'
 import { isIIcon } from '../utils/is-icon-object'
 import { IsIconTypePipe } from '../pipes/is-icon-type.pipe'
-import { environment } from '@/environments/environment.template'
+import { Table } from 'primeng/table'
+import { SearchWordsComponent } from './search-words/search-words.component'
+import { environment } from '@/environments/environment'
 
 type TColumnType =
     | 'actions'
@@ -34,6 +37,7 @@ export interface IColumn {
     type: TColumnType
 
     width: string
+    padding?: string
     field: string
     header: string
     text_header: string
@@ -64,6 +68,7 @@ export interface IActionTable {
         TableColumnFilterComponent,
         IconComponent,
         IsIconTypePipe,
+        SearchWordsComponent,
     ],
 })
 export class TablePrimengComponent implements OnChanges, OnInit {
@@ -85,6 +90,7 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     @Input() selectionMode: 'single' | 'multiple' | null = null
     @Input() expandedRowKeys = {}
     @Input() dataKey: string
+    @Input() groupRowsBy
     @Input() showCaption: boolean = true
     @Input() caption: string | undefined | null
     @Input() showPaginator: boolean = true
@@ -96,6 +102,8 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     @Input() scrollable: boolean = false
     @Input() scrollHeight: string = ''
 
+    @Input() template: 'body' | 'expandable' = 'body'
+
     @Input() data = []
     @Input() tableStyle: {
         [klass: string]: unknown
@@ -104,6 +112,38 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     @Input() placeholder = 'Buscar'
     @ContentChild('rowExpansionTemplate', { static: false })
     rowExpansionTemplate: TemplateRef<unknown>
+    rowGroupheader: TemplateRef<unknown>
+
+    // buscador de palabras en el primeng
+    @ViewChild('dt') dt!: Table
+    searchTerm: string = ''
+
+    buscarPalabras(event: string) {
+        //     this.searchTerm = event.trim().toLowerCase();
+
+        // if (this.dt) {
+        //     const columnasFiltrar = [this.columnas[1].field, this.columnas[2].field, this.columnas[3].field];
+
+        //     columnasFiltrar.forEach(col => {
+        //         this.dt.filter(this.searchTerm, col, 'contains');
+        //     });
+        // }
+        this.searchTerm = event
+
+        if (this.dt) {
+            // solo va buscar en el indice(1)
+            // const filas = [this.columnas[1].field, this.columnas[2].field]
+            this.dt.filter(this.searchTerm, this.columnas[1].field, 'contains')
+        }
+    }
+    // otra forma de buscar en la table pero general demora en buscar
+    // buscarPalabras(event: string) {
+    //     this.searchTerm = event;
+
+    //     if (this.dt) {
+    //       this.dt.filterGlobal(this.searchTerm, 'contains');
+    //     }
+    // }
 
     public isIIcon = isIIcon
 

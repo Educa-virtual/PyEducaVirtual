@@ -100,17 +100,19 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
             .subscribe({
                 next: (resp: any) => {
                     if (this.accion == 'nuevo') {
-                        this._MessageService.add({
-                            severity: 'success',
-                            summary: 'Cursos registrados',
-                            detail: 'Los cursos se han registrado correctamente.',
-                        })
+                        // this._MessageService.add({
+                        //     severity: 'success',
+                        //     summary: 'Cursos registrados',
+                        //     detail: 'Los cursos se han registrado correctamente.',
+                        // })
+                        console.log(this.accion)
                     } else if (this.accion == 'editar') {
-                        this._MessageService.add({
-                            severity: 'success',
-                            summary: 'Cursos editados',
-                            detail: 'Los cursos se han editado correctamente.',
-                        })
+                        // this._MessageService.add({
+                        //     severity: 'success',
+                        //     summary: 'Cursos editados',
+                        //     detail: 'Los cursos se han editado correctamente.',
+                        // })
+                        console.log(this.accion)
                     }
                     console.log('Respuesta de la API:', resp)
                 },
@@ -208,18 +210,18 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
                                         ) || false
                                     curso.dtExamenFechaInicio = this.data.find(
                                         (i) =>
-                                            i.iCursoNivelGradId ===
+                                            i.iCursosNivelGradId ===
                                             curso.iCursoNivelGradId
                                     )?.dtExamenFechaInicio
                                     curso.dtExamenFechaFin = this.data.find(
                                         (i) =>
-                                            i.iCursoNivelGradId ===
+                                            i.iCursosNivelGradId ===
                                             curso.iCursoNivelGradId
                                     )?.dtExamenFechaFin
                                     curso.iExamenCantidadPreguntas =
                                         this.data.find(
                                             (i) =>
-                                                i.iCursoNivelGradId ===
+                                                i.iCursosNivelGradId ===
                                                 curso.iCursoNivelGradId
                                         )?.iExamenCantidadPreguntas
                                 })
@@ -339,22 +341,38 @@ export class EvaluacionAreasComponent implements OnDestroy, OnInit {
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
                 next: (resp: any) => {
-                    this._MessageService.add({
-                        severity: 'success',
-                        summary: 'Guardado',
-                        detail: 'Se guardó exitosamente',
-                    })
+                    // this._MessageService.add({
+                    //     severity: 'success',
+                    //     summary: 'Guardado',
+                    //     detail: 'Se guardó exitosamente',
+                    // })
                     console.log('Respuesta de la API:', resp)
                 },
                 error: (err) => {
-                    this._MessageService.add({
-                        severity: 'error',
-                        summary: 'Error',
-                        detail: err,
-                    })
-                    //console.error('Error al insertar cursos:', err)
+                    // this._MessageService.add({
+                    //     severity: 'error',
+                    //     summary: 'Error',
+                    //     detail: err,
+                    // })
+                    console.error('Error al insertar cursos:', err)
                 },
             })
+    }
+    // Habilitar el calendar y input, si esta seleccionado áres y grado
+    habiltarButton(grados: any, curso: any): boolean {
+        let gradoKey
+        let item
+        for (gradoKey of Object.keys(grados)) {
+            for (item of grados[gradoKey]) {
+                if (
+                    item.cCursoNombre === curso.cCursoNombre &&
+                    item.isSelected
+                ) {
+                    return true
+                }
+            }
+        }
+        return false
     }
     ngOnDestroy() {
         this.unsubscribe$.next(true)

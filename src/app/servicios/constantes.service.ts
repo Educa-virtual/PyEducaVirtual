@@ -7,6 +7,7 @@ import {
     ESTUDIANTE,
     JEFE_DE_PROGRAMA,
     SUBDIRECTOR_IE,
+    APODERADO,
 } from './perfilesConstantes'
 import {
     ADMINISTRADOR_DREMO,
@@ -152,6 +153,11 @@ const estudiante = [
                             '/evaluaciones/sub-evaluaciones/evaluacion-examen-ere',
                         ],
                     },
+                    {
+                        label: 'Rendir examen ERE',
+                        icon: 'pi pi-pen-to-square',
+                        routerLink: ['/ere/mostrar-evaluacion'],
+                    },
                     // {
                     //     label: 'Examen',
                     //     icon: 'pi pi-fw pi-share-alt',
@@ -178,6 +184,11 @@ const administrador = [
                 label: 'Componentes',
                 icon: 'pi pi-fw pi-folder',
                 routerLink: ['/administrador/componentes'],
+            },
+            {
+                label: 'Backup de BD',
+                icon: 'pi pi-fw pi-database',
+                routerLink: ['/administrador/backup-bd'],
             },
             {
                 label: 'Enlaces de ayuda',
@@ -265,6 +276,20 @@ const administracion = [
                         label: 'Información de la Institución',
                         icon: 'pi pi-wrench',
                         routerLink: ['/gestion-institucional/Informacion-ie'],
+                    },
+                    {
+                        label: 'Sincronizar archivos',
+                        icon: 'pi pi-wrench',
+                        routerLink: [
+                            '/gestion-institucional/sincronizar-archivo',
+                        ],
+                    },
+                    {
+                        label: 'Mantenimiento de usuarios',
+                        icon: 'pi pi-wrench',
+                        routerLink: [
+                            '/gestion-institucional/mantenimiento-usuario',
+                        ],
                     },
                 ],
             },
@@ -428,21 +453,21 @@ const administracion = [
                 label: 'Evaluación - ERE',
                 icon: 'pi pi-address-book',
                 items: [
-                    {
-                        label: 'Configuración de ERE',
-                        icon: 'pi pi-wrench',
-                        routerLink: ['/configuracion/configuracion'],
-                    },
+                    // {
+                    //     label: 'Configuración de ERE',
+                    //     icon: 'pi pi-wrench',
+                    //     routerLink: ['/configuracion/configuracion'],
+                    // },
                     {
                         label: 'Resultados de ERE',
                         icon: 'pi pi-chart-bar',
                         routerLink: ['/ere/informes-ere'],
                     },
-                    {
-                        label: 'Evaluaciones',
-                        icon: 'pi pi-fw pi-calendar',
-                        routerLink: ['/ere/evaluaciones'],
-                    },
+                    // {
+                    //     label: 'Evaluaciones',
+                    //     icon: 'pi pi-fw pi-calendar',
+                    //     routerLink: ['/ere/evaluaciones'],
+                    // },
                 ],
                 //ConfigGradoSeccion
             },
@@ -467,6 +492,46 @@ const administracion = [
                         routerLink: ['/gestion-institucional/estadistica'],
                     },
                 ],
+            },
+        ],
+    },
+]
+
+// const comunicado = [
+//     {
+//         items: [inicio],
+//     },
+// ]
+
+// const concurso_docente = [
+//     {
+//         items: [inicio],
+//     },
+// ]
+
+const apoderado = [
+    {
+        label: 'Apoderado',
+        items: [
+            {
+                label: 'Visualizar datos',
+                icon: 'pi pi-fw pi-eye',
+                routerLink: ['apoderado/seguimiento-apoderado'],
+            },
+            {
+                label: 'Registro de apoderados',
+                icon: 'pi pi-user-edit',
+                routerLink: ['apoderado/registro-apoderado'],
+            },
+            {
+                label: 'Notificaciones y anuncios',
+                icon: 'pi pi-megaphone',
+                routerLink: ['apoderado/notificacion-apoderado'],
+            },
+            {
+                label: 'Enlaces de ayuda',
+                icon: 'pi pi-fw pi-share-alt',
+                routerLink: ['ayuda'],
             },
         ],
     },
@@ -515,6 +580,10 @@ export class ConstantesService {
                 return docente
             case DIRECTOR_IE:
                 return administracion
+
+            case APODERADO:
+                return apoderado
+
             default:
                 return first
         }

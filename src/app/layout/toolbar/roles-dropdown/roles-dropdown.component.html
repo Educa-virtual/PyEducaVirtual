@@ -1,23 +1,43 @@
 <p-button [text]="true" severity="secondary" (onClick)="showModal = true">
     <div class="flex align-items-center gap-2">
-        <i
-            class="pi pi-graduation-cap"
-            style="color: var(--surface-menu); font-size: 1.5rem"
-        ></i>
-        <div class="flex flex-column text-xs text-left">
-            <span class="block p-0 font-bold"
-                >Perfil: {{ selectedPerfil.cPerfilNombre }}</span
-            >
-            <span class="block p-0 font-bold"
-                >IE: {{ selectedPerfil.cEntNombreLargo }}</span
-            >
-            <span class="p-0 display-none"
-                >Cod. Modular:{{ selectedPerfil.cIieeCodigoModular }} - Nivel:{{
-                    selectedPerfil.cNivelTipoNombre
-                }}
-                - / UGEL: -</span
-            >
-        </div>
+        @if (selectedPerfil?.cIieeLogo) {
+            <p-avatar
+                size="large"
+                [image]="selectedPerfil?.cIieeLogo"
+                alt="Logo de la institución"
+            />
+
+            <div class="flex flex-column text-xs text-left">
+                <!-- <span class="block p-0 font-bold">Perfil: {{ selectedPerfil.cPerfilNombre  }}</span> -->
+
+                <span class="block p-0 font-bold"
+                    >IE: {{ selectedPerfil.cIieeNombre }}</span
+                >
+                <span class="p-0 display-none"
+                    >Cod. Modular:{{ selectedPerfil.cIieeCodigoModular }} -
+                    Nivel:{{ selectedPerfil.cNivelTipoNombre }} - UGEL:
+                    {{ selectedPerfil.cUgelNombre }}
+                </span>
+            </div>
+        } @else {
+            <i
+                class="pi pi-graduation-cap"
+                style="color: var(--surface-menu); font-size: 1.5rem"
+            ></i>
+
+            <div class="flex flex-column text-xs text-left">
+                <!-- <span class="block p-0 font-bold">Perfil: {{ selectedPerfil.cPerfilNombre }}</span> -->
+
+                <span class="block p-0 font-bold"
+                    >IE: {{ selectedPerfil.cEntNombreLargo }}</span
+                >
+                <span class="p-0 display-none"
+                    >Cod. Modular:{{ selectedPerfil.cIieeCodigoModular }} -
+                    Nivel:{{ selectedPerfil.cNivelTipoNombre }} - UGEL:
+                    {{ selectedPerfil.cUgelNombre }}
+                </span>
+            </div>
+        }
     </div>
 </p-button>
 

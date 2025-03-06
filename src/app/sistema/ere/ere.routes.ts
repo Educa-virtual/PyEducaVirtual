@@ -3,6 +3,7 @@ import {
     DIRECTOR_IE,
     ESPECIALISTA_DREMO,
     ESPECIALISTA_UGEL,
+    ESTUDIANTE,
 } from '@/app/servicios/seg/perfiles'
 import { RoleGuard } from '@/app/shared/_guards/role.guard'
 import { Routes } from '@angular/router'
@@ -11,6 +12,8 @@ import { EspecialistaDremoComponent } from './administrar/especialista-dremo/esp
 import { GestionarPreguntasComponent } from './evaluaciones/gestionar-preguntas/gestionar-preguntas.component'
 import { PreguntasComponent } from './evaluacion/preguntas/preguntas.component'
 import { EspecialistaUgelComponent } from './administrar/especialista-ugel/especialista-ugel.component'
+import { MostrarEvaluacionComponent } from './examen/mostrar-evaluacion/mostrar-evaluacion.component'
+import { RendirExamenComponent } from './examen/rendir-examen/rendir-examen.component'
 
 const routes: Routes = [
     {
@@ -88,11 +91,24 @@ const routes: Routes = [
             ),
     },
     {
-        path: 'examen',
-        loadComponent: () =>
-            import('./examen/rendir-examen/rendir-examen.component').then(
-                (c) => c.RendirExamenComponent
-            ),
+        path: 'mostrar-evaluacion',
+        component: MostrarEvaluacionComponent,
+        canActivate: [RoleGuard],
+        data: {
+            expectedRole: [ESTUDIANTE],
+            breadcrumb: 'Examen',
+            icon: 'pi pi-share-alt',
+        },
+    },
+    {
+        path: 'rendir-examen/:iEvaluacionId/areas/:iCursoNivelGradId/:cEvaluacionNombre/:cCursoNombre',
+        component: RendirExamenComponent,
+        canActivate: [RoleGuard],
+        data: {
+            expectedRole: [ESTUDIANTE],
+            breadcrumb: 'Examen',
+            icon: 'pi pi-share-alt',
+        },
     },
 ]
 

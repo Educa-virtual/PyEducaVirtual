@@ -1,144 +1,96 @@
-<div class="card col-12">
-    <div class="py-2">
-        <p-progressBar [value]="75" />
-    </div>
-
-    <div class="flex mb-3 gap-2 justify-content-end">
-        <p-button
-            *ngFor="let index of [0, 1, 2]"
-            (click)="activeIndex = index"
-            [rounded]="true"
-            [label]="index + 1 + ''"
-            styleClass="w-2rem h-2rem p-0"
-            [outlined]="activeIndex !== index"
-        />
-    </div>
-
-    <p-accordion [activeIndex]="activeIndex">
-        <p-accordionTab
-            [header]="tab.title"
-            *ngFor="let tab of pregunta; let i = index"
-        >
-            <!-- pregunta multiple -->
-            <div *ngIf="tab.tipo === 'múltiple'">
-                <div class="grid">
-                    <div class="card col-6">
-                        <!-- {{Imprimir el enunciado}} -->
-                        <span class="font-bold flex gap-2 p-3">
-                            <p>
-                                En un enorme parque lleno de árboles y flores,
-                                al amanecer, hay 36 palomas descansando en las
-                                ramas y 14 gorriones volando entre los arbustos.
-                                Con el paso de las horas, llegan 8 palomas más
-                                para unirse a sus amigas, pero, de repente, 6
-                                gorriones deciden emprender vuelo y alejarse del
-                                lugar.
-                            </p>
-                        </span>
-                        <div class="image-container">
-                            <img
-                                src="/assets/demo/images/matemit/3054120.jpg"
-                                alt=""
-                            />
-                        </div>
-                    </div>
-                    <div class="card col-6">
-                        <!-- Mostrar las sub-preguntas de la pregunta multiple -->
-                        <p-accordion [multiple]="true" [activeIndex]="0">
-                            <p-accordionTab
-                                [header]="tab.title"
-                                *ngFor="let tab of subPreguntas"
-                            >
-                                <ul>
-                                    <li
-                                        *ngFor="
-                                            let opcion of subAlternativas;
-                                            let i = index
-                                        "
-                                        (onclick)="seleccionarOpcion(opcion)"
-                                        [class.seleccionado]="
-                                            opcion === seleccion
-                                        "
-                                    >
-                                        <p-radioButton
-                                            name="opciones"
-                                            [value]="opcion"
-                                            [(ngModel)]="seleccion"
-                                        >
-                                        </p-radioButton>
-                                        <p class="ml-2">
-                                            {{ getLetra(i) }}.- {{ opcion }}
-                                        </p>
-                                    </li>
-                                </ul>
-                            </p-accordionTab>
-                        </p-accordion>
-                        <div class="displey flex">
-                            <div class="col-10 backColor p-4">
-                                <span class="font-bold text-xl flex gap-2">
-                                    Texto de ayuda:
-                                </span>
-                                <p class="flex gap-2 flex-wrap">
-                                    <!-- {{imprimir texto de ayuda}} -->
-                                    Tu eres muy inteligente,, no vas poner jajaj
-                                </p>
-                            </div>
-                            <div class="col-2 p-4">
-                                <p-button
-                                    icon="pi pi-arrow-right"
-                                    [rounded]="true"
-                                    [outlined]="true"
-                                    (click)="siguientePregunta(i)"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                </div>
+<app-container-page
+    [title]="
+        'Evaluación ERE: ' +
+        (evaluacion?.cEvaluacionNombre || '-') +
+        ' - ' +
+        (evaluacion?.cCursoNombre || '-')
+    "
+    [subtitle]="
+        'Nivel: ' +
+        (evaluacion?.cNivelTipoNombre || '-') +
+        ' | Grado: ' +
+        (evaluacion?.cGradoAbreviacion || '-')
+    "
+    [actions]="[]"
+>
+    <!-- interface de Inicio -->
+    <div class="grid" *ngIf="!iniciarEvaluacion">
+        <div class="col-12 md:col-4 align-content-center">
+            <div>
+                <span class="font-bold text-xl flex gap-2">
+                    <app-icon
+                        name="matCalendarMonth"
+                        class="text-primary"
+                        size="sm"
+                    ></app-icon>
+                    Inicio de Evaluación:
+                </span>
+                <p class="flex gap-2 flex-wrap ml-5">
+                    {{
+                        evaluacion?.dtEvaluacionFechaInicio
+                            | date: "EEEE, d 'de' MMMM 'de' yyyy"
+                    }}
+                </p>
             </div>
-
-            <!-- Mostrar preguntas Unicas -->
-            <div *ngIf="tab.tipo === 'unica'">
-                <div>
-                    <ul>
-                        <li
-                            *ngFor="let opcion of alternativas; let i = index"
-                            (onclick)="seleccionarOpcion(opcion)"
-                            [class.seleccionado]="opcion === seleccion"
-                        >
-                            <!-- imprimir las respuestas -->
-                            <p-radioButton
-                                name="opciones"
-                                [value]="opcion"
-                                [(ngModel)]="seleccion"
-                            >
-                            </p-radioButton>
-                            <p class="ml-2">{{ getLetra(i) }}.- {{ opcion }}</p>
-                        </li>
-                    </ul>
-                </div>
-                <div class="displey flex">
-                    <div class="col-11 backColor p-4">
-                        <span class="font-bold text-xl flex gap-2">
-                            Texto de ayuda:
-                        </span>
-                        <p class="flex gap-2 flex-wrap">
-                            <!-- {{imprimir texto de ayuda}} -->
-                            Tu eres muy inteligente, no vas poner jajaj
-                        </p>
-                    </div>
-                    <div class="col-1 p-4 text-right">
-                        <p-button
-                            icon="pi pi-arrow-right"
-                            [rounded]="true"
-                            [outlined]="true"
-                            (click)="siguientePregunta(i)"
-                        />
-                    </div>
-                </div>
+            <div>
+                <span class="font-bold text-xl flex gap-2 mt-2">
+                    <app-icon
+                        name="matCalendarMonth"
+                        class="text-primary"
+                        size="sm"
+                    ></app-icon>
+                    Cierre de Evaluación
+                </span>
+                <p class="flex gap-2 flex-wrap ml-5">
+                    {{
+                        evaluacion?.dtEvaluacionFechaFin
+                            | date: "EEEE, d 'de' MMMM 'de' yyyy"
+                    }}
+                </p>
             </div>
-        </p-accordionTab>
-    </p-accordion>
-    <div class="col-12 text-center">
-        <p-button label="Terminar Exámen" severity="success" />
+        </div>
+
+        <!-- tiempo de evaluación  -->
+        <div class="col-12 md:col-4 align-content-center">
+            <div class="flex flex-column gap-2">
+                <span class="font-bold text-xl flex gap-2">
+                    <app-icon
+                        name="matCalendarMonth"
+                        class="text-primary"
+                        size="sm"
+                    ></app-icon>
+                    Duración: {{ evaluacion?.tDuracion }} minutos
+                </span>
+                <p class="flex gap-2 flex-wrap ml-5">
+                    Total de Preguntas: (20)
+                </p>
+            </div>
+        </div>
+
+        <!-- Instrucciones del examen -->
+        <div class="col-12 md:col-4 align-content-center">
+            <div class="col text-center">
+                <span class="font-bold text-xl"> Instrucciones </span>
+            </div>
+            <div class="backColor p-4">
+                <p class="flex gap-2 flex-wrap">
+                    1. Tener en cuenta su ortografía <br />
+                    2. Leer bien el enunciado de la Pregunta
+                </p>
+            </div>
+        </div>
+
+        <div class="col-12 text-center">
+            <button
+                pButton
+                pRipple
+                type="button"
+                class="p-button-success pulse"
+                (click)="rendirExamen()"
+            >
+                <i class="pi pi-check-square"></i>&nbsp; Iniciar Evaluación
+            </button>
+        </div>
     </div>
-</div>
+</app-container-page>
+<p-toast></p-toast>

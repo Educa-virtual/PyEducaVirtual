@@ -156,7 +156,7 @@ const estudiante = [
                     {
                         label: 'Rendir examen ERE',
                         icon: 'pi pi-pen-to-square',
-                        routerLink: ['/ere/examen'],
+                        routerLink: ['/ere/mostrar-evaluacion'],
                     },
                     // {
                     //     label: 'Examen',

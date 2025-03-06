@@ -1,51 +1,38 @@
 .backColor {
-    background-color: rgb(234, 234, 234);
+    background-color: #e0e8f6;
     padding: 2px;
     border-radius: 5px;
 }
-.pregunta-container {
-    border: 1px solid #ddd;
-    padding: 10px;
-    border-radius: 5px;
-    max-width: 100%;
+
+.pulse {
+    animation: pulse-black 1s infinite;
+}
+@keyframes pulse-black {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.7);
+    }
+
+    70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
+    }
+
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+    }
 }
 
-ul {
-    list-style-type: none;
-    padding: 0;
+::ng-deep .p-panel .p-panel-header {
+    background: var(--bg-header-modal) !important;
+    color: white !important;
 }
 
-li {
-    padding: 8px;
-    margin: 5px 0;
-    background-color: white;
-    cursor: pointer;
-    border-radius: 5px;
-    transition: 0.3s;
-
-    display: flex;
-    align-items: center;
+::ng-deep .text-primary {
+    color: white !important;
 }
 
-li:hover {
-    background-color: #ddd;
+::ng-deep .container-page .p-panel-header {
+    gap: 0px !important;
 }
-
-// .seleccionado {
-//     background-color: #077D38;
-//     color: white;
-// }
-// --------------- estilo de la imagen
-.image-container {
-    display: flex;
-    justify-content: center; /* Centra horizontalmente */
-    align-items: center; /* Centra verticalmente si es necesario */
-    width: 100%;
-}
-
-.image-container img {
-    max-width: 50%; /* Se ajusta al ancho del contenedor */
-    height: auto; /* Mantiene la proporción */
-    border-radius: 8px; /* Opcional: bordes redondeados */
-}
-// ------------------------------------

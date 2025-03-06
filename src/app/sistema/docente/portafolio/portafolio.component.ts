@@ -264,6 +264,8 @@ export class PortafolioComponent implements OnInit {
                                     cCicloRomanos: curso.cCicloRomanos,
                                     cNivelNombreCursos:
                                         curso.cNivelNombreCursos,
+                                    iCursoId: curso.iCursoId,
+                                    idDocCursoId: curso.idDocCursoId,
                                     tab: 'resultados',
                                 },
                             }

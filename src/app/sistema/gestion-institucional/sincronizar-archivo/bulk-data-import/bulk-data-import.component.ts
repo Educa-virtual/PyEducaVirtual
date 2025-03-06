@@ -22,8 +22,11 @@ import * as XLSX from 'xlsx'
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import { ToastModule } from 'primeng/toast'
 import { MessageService } from 'primeng/api'
-import { check, decline } from './actions-table-primeng'
-import { inputTypeColumns } from './bulk-table-columns'
+import { derive, trash, upload } from './actions-table-primeng'
+import {
+    docenteTemplateColumns,
+    estudianteTemplateColumns,
+} from './bulk-table-columns'
 
 @Component({
     selector: 'app-bulk-data-import',
@@ -50,20 +53,30 @@ import { inputTypeColumns } from './bulk-table-columns'
 export class BulkDataImportComponent {
     typeCollectionForm: FormGroup
     typeCollections = [
-        { label: 'Docente', name: 'plantilla-docente.xlsx' },
-        { label: 'Estudiante', name: 'plantilla-estudiante.xlsx' },
+        {
+            label: 'Docente',
+            name: 'plantilla-docente.xlsx',
+            api: 'validatedDocentes',
+        },
+        {
+            label: 'Estudiante',
+            name: 'plantilla-estudiante.xlsx',
+            api: 'validatedEstudiantes',
+        },
     ]
     fileUploadForm: FormGroup
     fileOrigin: File
     disabled
 
     columns: IColumn[]
+    unverified_columns
     unverified_data
     verified_data
     verified_columns_recorded
-    verified_actions_recorded = [check]
-    import_data_actions = [check, decline]
+    verified_actions_recorded = [derive]
+    import_data_actions = [upload, trash]
     import_data_columns
+    groupRowsBy = 'cPersDocumento'
     import_data
 
     importLoad: boolean = false
@@ -93,6 +106,27 @@ export class BulkDataImportComponent {
         this.bulkDataImport.downloadCollectionTemplate(typeCollection)
     }
 
+    mapColumnsImport() {
+        this.unverified_data = undefined
+        switch (this.typeCollectionForm.value.typeCollection.label) {
+            case 'Docente':
+                this.columns = docenteTemplateColumns
+
+                break
+            case 'Estudiante':
+                this.columns = estudianteTemplateColumns
+
+                break
+
+            default:
+                break
+        }
+
+        console.log(this.columns)
+    }
+
+    jsonData
+
     loadCollectionTemplate(file: any) {
         console.log('file')
         console.log(file)
@@ -108,60 +142,65 @@ export class BulkDataImportComponent {
             const worksheet = workbook.Sheets[firstSheetName]
 
             // Convertir los datos de la hoja a formato JSON
-            const jsonData: any[] = XLSX.utils
+            this.jsonData = XLSX.utils
                 .sheet_to_json(worksheet, { header: 1 })
                 .filter((row: any[]) => Array.isArray(row) && row.length > 0)
 
-            console.log('Datos del archivo XLSX:', jsonData)
-
-            this.columns = inputTypeColumns.map((column) => {
-                const { width, field, header, text, text_header } = column
-
-                return {
+            this.unverified_columns = this.columns.map(
+                ({ width, field, header, text, text_header }) => ({
                     type: 'text',
                     width,
                     field,
                     header,
                     text,
                     text_header,
-                }
-            })
+                })
+            )
 
-            // this.columns = jsonData[0]
-            //     .map((data, index) => {
-            //         if (!jsonData[0][index]) {
-            //             return null
-            //         }
+            this.unverified_data = this.jsonData.slice(1).map((row) =>
+                row.reduce((acc, value, index) => {
+                    const column = this.columns[index]
 
-            //         return {
-            //             type: 'text',
-            //             width: '5rem',
-            //             field: jsonData[1][index],
-            //             header: jsonData[0][index],
-            //             text_header: 'center',
-            //             text: 'center',
-            //         }
-            //     })
-            //     .filter(
-            //         (column): column is { [key: string]: any } =>
-            //             column !== null
-            //     )
-
-            this.unverified_data = jsonData.slice(2).map((row) =>
-                row.reduce(
-                    (acc, cell, index) => ({
-                        ...acc,
-                        [jsonData[1][index]]: cell,
-                    }),
-                    {}
-                )
+                    const key =
+                        column?.header === this.jsonData[0][index]
+                            ? column.field
+                            : 'error'
+                    return Object.assign(acc, { [key]: value })
+                }, {})
             )
 
             console.log(this.unverified_data)
+            this.validFormatTemplate()
         }
 
         reader.readAsArrayBuffer(file)
     }
+
+    validFormatTemplate() {
+        console.log('isValid')
+        console.log(this.columns)
+        console.log(this.jsonData)
+
+        console.log(this.unverified_data)
+
+        const validFormat = this.columns.some(
+            (obj, index) => obj.header === this.jsonData?.[0][index]
+        )
+
+        if (!validFormat) {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Plantilla',
+                detail: 'La plantilla no cumple el formato de la colección.',
+            })
+
+            this.unverified_data = undefined
+
+            return
+        }
+    }
+
+    status = []
 
     validaImportData() {
         if (!this.unverified_data) {
@@ -169,13 +208,16 @@ export class BulkDataImportComponent {
             this.messageService.add({
                 severity: 'error',
                 summary: 'Error',
-                detail: 'El archivo cargado no contiene datos válidos.',
+                detail: 'No se ha cargado datos a verificar.',
             })
             return
         }
 
         this.bulkDataImport
-            .validateCollectionData(this.unverified_data)
+            .validateCollectionData(
+                this.unverified_data,
+                this.typeCollectionForm.value.typeCollection.api
+            )
             .subscribe({
                 next: (response) => {
                     // this.verified_data = response.data
@@ -184,12 +226,10 @@ export class BulkDataImportComponent {
 
                     const excel = []
 
-                    const status = []
-
                     const filteredData = response.data.map((obj) => {
                         const { json_excel, lista_no_d, ...rest } = obj
 
-                        status.push(
+                        this.status.push(
                             Object.keys(obj)
                                 .filter(
                                     (key) =>
@@ -207,7 +247,7 @@ export class BulkDataImportComponent {
                         return { ...rest }
                     })
 
-                    this.verified_data = [...filteredData, ...excel, ...status]
+                    this.verified_data = [...filteredData, ...excel]
 
                     console.log('filteredData')
                     console.log(this.verified_data)
@@ -216,7 +256,7 @@ export class BulkDataImportComponent {
                         console.log(this.columns)
 
                         this.import_data_columns = [
-                            ...inputTypeColumns,
+                            ...this.columns,
                             {
                                 type: 'actions',
                                 width: '3rem',
@@ -224,6 +264,14 @@ export class BulkDataImportComponent {
                                 header: 'Acciones',
                                 text_header: 'center',
                                 text: 'center',
+                            },
+                            {
+                                field: 'checked',
+                                header: '',
+                                type: 'checkbox',
+                                width: '1rem',
+                                text: 'left',
+                                text_header: '',
                             },
                         ]
 
@@ -250,6 +298,14 @@ export class BulkDataImportComponent {
                         )
 
                         this.verified_columns_recorded = [
+                            {
+                                field: 'radio',
+                                header: '',
+                                type: 'radio',
+                                width: '5rem',
+                                text: 'left',
+                                text_header: '',
+                            },
                             ...this.columns,
                             {
                                 type: 'actions',
@@ -287,7 +343,77 @@ export class BulkDataImportComponent {
             })
     }
 
-    debug(data) {
-        console.log(data)
+    handleActionsVerifiedData(row) {
+        const actions = {
+            derivar: () => {
+                // Lógica para la acción "ver"
+                if (!row.item) {
+                    this.messageService.clear()
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: 'No se ha seleccionado un item para derivar.',
+                    })
+                } else {
+                    // this.import_data = this.import_data.unshift(row.item)
+
+                    this.import_data = [row.item, ...this.import_data]
+
+                    this.verified_data = this.verified_data.filter(
+                        (item) =>
+                            item[this.groupRowsBy] !==
+                            row.item[this.groupRowsBy]
+                    )
+
+                    console.log('this.import_data')
+                    console.log(this.import_data)
+                }
+            },
+        }
+
+        const action = actions[row.accion]
+        if (action) {
+            action()
+        } else {
+            console.log(`Acción desconocida: ${row.action}`)
+        }
     }
+
+    handleActionsImportData(row) {
+        const actions = {
+            derivar: () => {
+                // Lógica para la acción "ver"
+                if (!row.item) {
+                    this.messageService.clear()
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: 'No se ha seleccionado un item para derivar.',
+                    })
+                } else {
+                    // this.import_data = this.import_data.unshift(row.item)
+
+                    this.import_data = [row.item, ...this.import_data]
+
+                    this.verified_data = this.verified_data.filter(
+                        (item) =>
+                            item[this.groupRowsBy] !==
+                            row.item[this.groupRowsBy]
+                    )
+
+                    console.log('this.import_data')
+                    console.log(this.import_data)
+                }
+            },
+        }
+
+        const action = actions[row.accion]
+        if (action) {
+            action()
+        } else {
+            console.log(`Acción desconocida: ${row.action}`)
+        }
+    }
+
+    selectedRowImportData = []
 }

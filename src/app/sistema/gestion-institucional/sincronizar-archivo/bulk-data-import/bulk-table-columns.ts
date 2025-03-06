@@ -1,4 +1,7 @@
-export const inputTypeColumns = [
+import { IColumn } from '@/app/shared/table-primeng/table-primeng.component'
+
+// export const columns = docenteTemplateColumns.
+export const docenteTemplateColumns = [
     {
         type: 'text',
         width: '5rem',
@@ -43,10 +46,11 @@ export const inputTypeColumns = [
         text: 'center',
 
         inputType: 'dropdown',
-        outputType: 'tag',
+        placeholder: 'Seleccione un género',
+        // outputType: 'tag',
         options: [
-            { label: 'M', value: 'M' },
-            { label: 'F', value: 'F' },
+            { label: 'Masculino', value: 'M', id: null },
+            { label: 'Femenino', value: 'F', id: null },
         ],
         severity: (option) => {
             switch (option) {
@@ -124,7 +128,8 @@ export const inputTypeColumns = [
     {
         type: 'cell-editor',
         inputType: 'dropdown',
-        options: [{ label: 'Docente', value: '3' }],
+        placeholder: 'Seleccione un cargo',
+        options: [{ label: 'Docente', value: 'Docente', id: null }],
         width: '5rem',
         field: 'iPersCargoId',
         header: 'Cargo',
@@ -132,4 +137,108 @@ export const inputTypeColumns = [
         text: 'center',
     },
 ]
-3
+
+export const estudianteTemplateColumns = [
+    {
+        type: 'text',
+        width: '5rem',
+        field: 'iNivelGradoId',
+        header: 'Grado',
+        text_header: 'center',
+        text: 'center',
+    },
+    {
+        type: 'text',
+        width: '5rem',
+        field: 'iSeccionId',
+        header: 'Seccion',
+        text_header: 'center',
+        text: 'center',
+    },
+    {
+        type: 'cell-editor',
+        width: '5rem',
+        field: 'cTipoIdentSigla',
+        header: 'Tipo  de documento',
+        text_header: 'center',
+        text: 'center',
+
+        inputType: 'dropdown',
+        placeholder: 'Seleccione un tipo de documento',
+        options: [
+            { label: 'DNI', value: 'M' },
+            { label: 'RUC', value: 'M' },
+            { label: 'CDE', value: 'M' },
+            { label: 'OTD', value: 'M' },
+        ],
+    },
+    {
+        type: 'text',
+        width: '5rem',
+        field: 'cPersDocumento',
+        header: 'Numero de documento',
+        text_header: 'center',
+        text: 'center',
+    },
+
+    {
+        type: 'text',
+        width: '5rem',
+        field: 'cEstCodigo',
+        header: 'Codigo de estudiante',
+        text_header: 'center',
+        text: 'center',
+    },
+
+    {
+        type: 'text',
+        width: '5rem',
+        field: 'cPersPaterno',
+        header: 'Apellido paterno',
+        text_header: 'center',
+        text: 'center',
+    },
+    {
+        type: 'text',
+        width: '5rem',
+        field: 'cPersMaterno',
+        header: 'Apellido materno',
+        text_header: 'center',
+        text: 'center',
+    },
+    {
+        type: 'text',
+        width: '5rem',
+        field: 'cPersNombre',
+        header: 'Nombres',
+        text_header: 'center',
+        text: 'center',
+    },
+    {
+        type: 'text',
+        width: '5rem',
+        field: 'cPersSexo',
+        header: 'Sexo',
+        text_header: 'center',
+        text: 'center',
+    },
+    {
+        type: 'text',
+        width: '5rem',
+        field: 'dPersNacimiento',
+        header: 'Fecha de nacimiento',
+        text_header: 'center',
+        text: 'center',
+    },
+]
+
+export const mapColumns = (template: IColumn[]) => {
+    return template.map(({ width, field, header, text, text_header }) => ({
+        type: 'text',
+        width,
+        field,
+        header,
+        text,
+        text_header,
+    }))
+}

@@ -16,6 +16,7 @@
                         formControlName="typeCollection"
                         [options]="typeCollections"
                         optionLabel="label"
+                        (onChange)="mapColumnsImport()"
                         placeholder="Seleccione una colección"
                     />
                 </form>
@@ -36,81 +37,102 @@
         </div>
     </section>
 
-    <app-tab-view>
-        <app-tab-panel title="Información del archivo">
-            <div class="card">
-                <section class="flex justify-content-between">
-                    <div class="flex flex-column gap-3">
-                        <span>Archivo de origen:</span>
-                        <app-btn-file-upload
-                            accept=".xlsx"
-                            (fileChange)="loadCollectionTemplate($event)"
-                        />
-                    </div>
+    @if (this.typeCollectionForm.value.typeCollection.label) {
+        <app-tab-view>
+            <app-tab-panel title="Información del archivo">
+                <div class="card flex flex-column gap-2">
+                    <section class="flex justify-content-between">
+                        <div class="flex flex-column gap-3">
+                            <span>Archivo de origen:</span>
+                            <app-btn-file-upload
+                                accept=".xlsx"
+                                (fileChange)="loadCollectionTemplate($event)"
+                            />
+                        </div>
 
-                    <div class="flex flex-column gap-3">
-                        <span>Iniciar proceso:</span>
-                        <p-button
-                            label="Verificar"
-                            icon="pi pi-file-import"
-                            [loading]="importLoad"
-                            (onClick)="validaImportData()"
-                        />
-                    </div>
-                </section>
-                @if (unverified_data && unverified_data.length > 0) {
+                        <div class="flex flex-column gap-3">
+                            <span>Iniciar proceso:</span>
+                            <p-button
+                                label="Verificar"
+                                icon="pi pi-file-import"
+                                [loading]="importLoad"
+                                (onClick)="validaImportData()"
+                            />
+                        </div>
+                    </section>
+                    <!-- @if (unverified_data && unverified_data.length > 0) { -->
                     <app-table-primeng
-                        [columnas]="columns"
+                        [columnas]="unverified_columns"
                         [data]="unverified_data"
                         [showCaption]="true"
                         [showSortIcon]="false"
                     ></app-table-primeng>
-                } @else {
+                    <!-- } @else {
                     <span class="block text-center"
                         >Sin datos que verificar</span
                     >
-                }
-            </div>
-        </app-tab-panel>
-        <app-tab-panel title="Datos en sistema">
-            <div class="card">
-                @if (verified_data) {
-                    <!-- [data]="verified_data" -->
+                } -->
+                </div>
+            </app-tab-panel>
+            <app-tab-panel title="Datos en sistema">
+                <div class="card">
+                    @if (verified_data) {
+                        <!-- [data]="verified_data" -->
 
-                    <app-table-primeng
-                        [columnas]="verified_columns_recorded"
-                        [showCaption]="true"
-                        [showSortIcon]="false"
-                        [actions]="verified_actions_recorded"
-                        [data]="verified_data"
-                        dataKey="cPersDocumento"
-                        groupRowsBy="cPersDocumento"
-                        template="expandable"
-                    >
-                    </app-table-primeng>
-                } @else {
-                    <span class="block text-center"
-                        >Sin datos que procesar</span
-                    >
-                }
-            </div>
-        </app-tab-panel>
-        <app-tab-panel title="Importación de datos">
-            <div class="card">
-                @if (import_data) {
-                    <app-table-primeng
-                        [columnas]="import_data_columns"
-                        [data]="import_data"
-                        [actions]="import_data_actions"
-                        [showCaption]="false"
-                        [showSortIcon]="false"
-                    ></app-table-primeng>
-                } @else {
-                    <span class="block text-center"
-                        >Sin datos que procesar</span
-                    >
-                }
-            </div>
-        </app-tab-panel>
-    </app-tab-view>
+                        <app-table-primeng
+                            [columnas]="verified_columns_recorded"
+                            [showCaption]="true"
+                            [showSortIcon]="false"
+                            groupHeader="cPersDocumento - cPersPaterno cPersMaterno cPersNombre"
+                            [groupfooter]="status"
+                            [actions]="verified_actions_recorded"
+                            [data]="verified_data"
+                            dataKey="cPersDocumento"
+                            [groupRowsBy]="groupRowsBy"
+                            template="expandable"
+                            (accionBtnItem)="handleActionsVerifiedData($event)"
+                        >
+                        </app-table-primeng>
+                    } @else {
+                        <span class="block text-center"
+                            >Sin datos que procesar</span
+                        >
+                    }
+                </div>
+            </app-tab-panel>
+            <app-tab-panel title="Importación de datos">
+                <div class="card flex flex-column gap-2">
+                    @if (import_data) {
+                        <section>
+                            <div class="flex flex-column gap-3">
+                                <span>Iniciar proceso:</span>
+                                <p-button
+                                    label="Importación en bloque"
+                                    icon="pi pi-database"
+                                    [loading]="importLoad"
+                                    (onClick)="validaImportData()"
+                                    [disabled]="
+                                        selectedRowImportData.length <= 0
+                                    "
+                                />
+                            </div>
+                        </section>
+
+                        <app-table-primeng
+                            [columnas]="import_data_columns"
+                            [data]="import_data"
+                            [actions]="import_data_actions"
+                            [showCaption]="false"
+                            [showSortIcon]="false"
+                            [(selectedRowData)]="selectedRowImportData"
+                        ></app-table-primeng>
+                    } @else {
+                        <span class="block text-center"
+                            >Sin datos que procesar</span
+                        >
+                    }
+                </div>
+            </app-tab-panel>
+        </app-tab-view>
+    }
 </div>

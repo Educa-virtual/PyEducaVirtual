@@ -59,8 +59,8 @@ export class BulkDataImportService {
         console.log('saving collection template', template)
     }
 
-    validateCollectionData(data: any): Observable<any> {
-        return this.http.post('http://localhost:8000/api/file/validate', {
+    validateCollectionData(data: any, api: string): Observable<any> {
+        return this.http.post(`http://localhost:8000/api/file/${api}`, {
             iYAcadId: JSON.parse(
                 localStorage.getItem('dremoiYAcadId') || 'null'
             ),

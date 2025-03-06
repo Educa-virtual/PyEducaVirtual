@@ -41,6 +41,7 @@ export interface IColumn {
     field: string
     header: string
     text_header: string
+    placeholder?: string
     inputType?: string
     outputType?: string
 
@@ -105,9 +106,17 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     @Output() selectedRowDataChange = new EventEmitter()
 
     @Input() selectionMode: 'single' | 'multiple' | null = null
+    @Input() groupHeader: string
+
     @Input() expandedRowKeys = {}
     @Input() dataKey: string
     @Input() groupRowsBy
+    @Input() groupfooter: IColumn[]
+
+    debug(d) {
+        console.log('d')
+        console.log(d)
+    }
     @Input() showCaption: boolean = true
     @Input() caption: string | undefined | null
     @Input() showPaginator: boolean = true
@@ -382,6 +391,10 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     @Input() showSortIcon = true
     @Input() showAdvancedFilter = false
 
+    isAction(columns) {
+        return columns.filter((column) => column.type === 'actions')[0]
+    }
+
     // firstLoadRubrica = true
 
     // isCellSelected(rowData: any, field: string): boolean {
@@ -418,5 +431,10 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     }
     updateUrl(item) {
         item.ruta = 'users/no-image.png'
+    }
+
+    selectedValue: { [key: string]: any } = {}
+    formatGroupHeader(header: string, data: any): string {
+        return header.replace(/\b\w+\b/g, (key) => data[key] || key)
     }
 }

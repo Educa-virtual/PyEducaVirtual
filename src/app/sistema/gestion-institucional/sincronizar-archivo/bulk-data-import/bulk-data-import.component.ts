@@ -2,7 +2,6 @@ import { Component } from '@angular/core'
 import { DropdownModule } from 'primeng/dropdown'
 import {
     FormBuilder,
-    FormControl,
     FormGroup,
     FormsModule,
     ReactiveFormsModule,
@@ -20,11 +19,16 @@ import {
 import { CommonModule } from '@angular/common'
 import { BulkDataImportService } from '../services/bulk-data-import.service'
 import * as XLSX from 'xlsx'
+import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
+import { ToastModule } from 'primeng/toast'
+import { MessageService } from 'primeng/api'
+import { check, decline } from './actions-table-primeng'
 
 @Component({
     selector: 'app-bulk-data-import',
     standalone: true,
     imports: [
+        ContainerPageComponent,
         DropdownModule,
         ReactiveFormsModule,
         FormsModule,
@@ -36,7 +40,9 @@ import * as XLSX from 'xlsx'
         TabPanelComponent,
         TablePrimengComponent,
         CommonModule,
+        ToastModule,
     ],
+    providers: [MessageService],
     templateUrl: './bulk-data-import.component.html',
     styleUrl: './bulk-data-import.component.scss',
 })
@@ -51,21 +57,38 @@ export class BulkDataImportComponent {
     disabled
 
     columns: IColumn[]
-    data
+    unverified_data
+    verified_data
+    verified_columns_recorded
+    import_data_actions = [check, decline]
+    verified_columns_not_recorded
+    import_data
 
     importLoad: boolean = false
 
     constructor(
         private fb: FormBuilder,
-        public bulkDataImport: BulkDataImportService
+        public bulkDataImport: BulkDataImportService,
+
+        private messageService: MessageService
     ) {
         this.typeCollectionForm = this.fb.group({
             typeCollection: [''],
         })
+    }
 
-        this.fileUploadForm = this.fb.group({
-            file: new FormControl(''),
-        })
+    downloadCollectionTemplate(typeCollection) {
+        if (!typeCollection['name']) {
+            this.messageService.clear()
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'No ha seleccionado una colección valida.',
+            })
+            return
+        }
+
+        this.bulkDataImport.downloadCollectionTemplate(typeCollection)
     }
 
     loadCollectionTemplate(file: any) {
@@ -88,35 +111,154 @@ export class BulkDataImportComponent {
             })
             console.log('Datos del archivo XLSX:', jsonData)
 
-            this.columns = jsonData[0].map((data) => {
-                return {
-                    type: 'text',
-                    width: 'max-content',
-                    padding: '1.25rem 2rem',
-                    field: data,
-                    header: data,
-                    text_header: 'center',
-                    text: 'center',
-                }
-            })
+            this.columns = jsonData[0]
+                .map((data, index) => {
+                    if (!jsonData[0][index]) {
+                        return null
+                    }
 
-            this.data = jsonData.slice(1).map((row) =>
+                    return {
+                        type: 'text',
+                        width: '5rem',
+                        field: jsonData[1][index],
+                        header: jsonData[0][index],
+                        text_header: 'center',
+                        text: 'center',
+                    }
+                })
+                .filter(
+                    (column): column is { [key: string]: any } =>
+                        column !== null
+                )
+
+            this.unverified_data = jsonData.slice(2).map((row) =>
                 row.reduce(
                     (acc, cell, index) => ({
                         ...acc,
-                        [jsonData[0][index]]: cell,
+                        [jsonData[1][index]]: cell,
                     }),
                     {}
                 )
             )
 
-            console.log(this.data)
+            console.log(this.unverified_data)
         }
 
         reader.readAsArrayBuffer(file)
     }
 
-    chargeImportData() {
-        console.log(this.fileUploadForm.value)
+    validaImportData() {
+        if (!this.unverified_data) {
+            this.messageService.clear()
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'El archivo cargado no contiene datos válidos.',
+            })
+            return
+        }
+
+        this.bulkDataImport
+            .validateCollectionData(this.unverified_data)
+            .subscribe({
+                next: (response) => {
+                    // this.verified_data = response.data
+
+                    console.log('Respuesta del servidor:', response)
+
+                    const excel = []
+
+                    const status = []
+
+                    const filteredData = response.data.map((obj) => {
+                        const { json_excel, lista_no_d, ...rest } = obj
+
+                        status.push(
+                            Object.keys(obj)
+                                .filter(
+                                    (key) =>
+                                        key.startsWith('v_') ||
+                                        key === 'cPersDocumento'
+                                ) // Filtra solo las claves que inician con "v_"
+                                .reduce((acc, key) => {
+                                    const newKey = key.replace('v_', '')
+                                    acc[newKey] = obj[key] // Agrega las claves filtradas al nuevo objeto
+                                    return acc
+                                }, {} as any)
+                        )
+                        excel.push(...JSON.parse(json_excel))
+                        console.log(json_excel, lista_no_d)
+                        return { ...rest }
+                    })
+
+                    this.verified_data = [...filteredData, ...excel, ...status]
+
+                    console.log('filteredData')
+                    console.log(this.verified_data)
+
+                    this.unverified_data = response.data.flatMap((data) =>
+                        JSON.parse(data.lista_no_d)
+                    )
+
+                    if (this.unverified_data) {
+                        console.log(this.columns)
+
+                        this.verified_columns_not_recorded = [
+                            ...this.columns.map((column) => ({
+                                ...column,
+                                type: 'cell-editor',
+                            })),
+                            {
+                                type: 'actions',
+                                width: '3rem',
+                                field: 'actions',
+                                header: 'Acciones',
+                                text_header: 'center',
+                                text: 'center',
+                            },
+                        ]
+
+                        this.verified_columns_recorded = this.columns.map(
+                            (column) => ({
+                                ...column,
+                                type: 'expansion',
+                            })
+                        )
+
+                        this.verified_columns_recorded = [
+                            ...this.columns,
+                            {
+                                type: 'actions',
+                                width: '3rem',
+                                field: 'actions',
+                                header: 'Acciones',
+                                text_header: 'center',
+                                text: 'center',
+                            },
+                        ]
+
+                        // this.import_data = this.unverified_data.filter(un_obj => !this.verified_data.some(v_obj => un_obj['cPersDocumento'] === v_obj['cPersDocumento']));
+
+                        console.log('this.import_data')
+                        console.log(this.unverified_data)
+                        console.log(this.import_data)
+                        this.import_data = this.unverified_data.filter(
+                            (obj) => Object.keys(obj).length > 0
+                        )
+
+                        this.unverified_data = []
+                    }
+
+                    console.log('this.verified_data_not_recorded')
+                    console.log(this.unverified_data)
+                },
+                error: (error) => {
+                    console.error('Error en la solicitud:', error)
+                },
+            })
+    }
+
+    debug(data) {
+        console.log(data)
     }
 }

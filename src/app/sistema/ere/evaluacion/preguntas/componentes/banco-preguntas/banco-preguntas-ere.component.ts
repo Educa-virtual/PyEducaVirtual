@@ -1,15 +1,15 @@
-import { Component, inject, OnInit } from '@angular/core'
+import { Component, inject, Input, OnInit } from '@angular/core'
 import { FormBuilder, FormGroup } from '@angular/forms'
 import { PrimengModule } from '@/app/primeng.module'
-import { ApiEvaluacionesRService } from '../../evaluaciones/services/api-evaluaciones-r.service'
-import { ContainerPageAccionbComponent } from '../../docente/informes/container-page-accionb/container-page-accionb.component'
+import { ApiEvaluacionesRService } from '../../../../../evaluaciones/services/api-evaluaciones-r.service'
+import { ContainerPageAccionbComponent } from '../../../../../docente/informes/container-page-accionb/container-page-accionb.component'
 import {
     IActionTable,
     IColumn,
     TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component'
 import { HttpParams } from '@angular/common/http'
-import { PreguntasReutilizablesService } from '../../evaluaciones/services/preguntas-reutilizables.service'
+import { PreguntasReutilizablesService } from '../../../../../evaluaciones/services/preguntas-reutilizables.service'
 
 /*interface PageEvent {
     first: number
@@ -19,21 +19,21 @@ import { PreguntasReutilizablesService } from '../../evaluaciones/services/pregu
 }*/
 
 @Component({
-    selector: 'app-banco-preguntas',
+    selector: 'app-banco-preguntas-ere',
     standalone: true,
     imports: [
         PrimengModule,
         ContainerPageAccionbComponent,
         TablePrimengComponent,
     ],
-    templateUrl: './banco-preguntas.component.html',
-    styleUrls: ['./banco-preguntas.component.scss'],
+    templateUrl: './banco-preguntas-ere.component.html',
+    styleUrls: ['./banco-preguntas-ere.component.scss'],
 })
 export class BancoPreguntasComponent implements OnInit {
     private evaluacionesRService = inject(ApiEvaluacionesRService)
     private preguntasService = inject(PreguntasReutilizablesService)
     //checked: boolean = false
-    visible: boolean = true
+    @Input() visible: boolean = false
     formCriterios!: FormGroup
     matrizCompetencia: any[] = []
     procesos: any[] = []
@@ -42,8 +42,9 @@ export class BancoPreguntasComponent implements OnInit {
     selectedTipoPregunta: any
     matrizCapacidad: any[] = []
     preguntas: any[] = []
+    preguntasSeleccionadas: any[] = []
 
-    accionesTabla: IActionTable[] = [
+    botonesTabla: IActionTable[] = [
         {
             labelTooltip: 'Ver',
             icon: 'pi pi-eye',
@@ -57,7 +58,7 @@ export class BancoPreguntasComponent implements OnInit {
         {
             type: 'item-checkbox',
             width: '1rem',
-            field: 'iPreguntaId',
+            field: 'seleccionado',
             header: 'Elegir',
             text_header: 'center',
             text: 'center',
@@ -114,6 +115,9 @@ export class BancoPreguntasComponent implements OnInit {
             ddNivelEvaluacion: [null],
             ddCapacidad: [null],
         })
+    }
+
+    obtenerDatos() {
         this.obtenerAnios()
         this.obtenerProcesos()
         this.obtenerMatrizCompetencias()
@@ -121,10 +125,25 @@ export class BancoPreguntasComponent implements OnInit {
         this.obtenerMatrizCapacidad()
     }
 
-    accionBtnItemTable({ accion }) {
+    accionesTabla({ accion, item }) {
         switch (accion) {
             case 'ver':
                 console.log('visto')
+                break
+            case 'setearDataxseleccionado':
+                if (item.seleccionado) {
+                    this.preguntasSeleccionadas.push({
+                        id: item.iPreguntaId,
+                        tipo: item.iEncabPregId == null ? 'unica' : 'multiple',
+                    })
+                } else {
+                    this.preguntasSeleccionadas =
+                        this.preguntasSeleccionadas.filter(
+                            (o) => o.id !== item.iPreguntaId
+                        )
+                    //this.preguntasSeleccionadas = this.preguntasSeleccionadas.filter(valor => valor !== item.iPreguntaId);
+                }
+                console.log(this.preguntasSeleccionadas)
                 break
         }
     }
@@ -188,6 +207,14 @@ export class BancoPreguntasComponent implements OnInit {
                 console.error('Error al cargar datos:', err)
             },
         })
+    }
+
+    registrarPreguntasSeleccionadas() {
+        if (this.preguntasSeleccionadas.length > 0) {
+            console.log(this.preguntasSeleccionadas)
+        } else {
+            alert('No hay preguntas seleccionadas')
+        }
     }
 
     obtenerPreguntas() {

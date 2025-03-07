@@ -12,10 +12,10 @@ import { HttpClient } from '@angular/common/http'
 import { environment } from '@/environments/environment'
 import { catchError, map, throwError } from 'rxjs'
 import { ConstantesService } from '@/app/servicios/constantes.service'
-import { FormImportarBancoPreguntasComponent } from './componentes/form-importar-banco-preguntas/form-importar-banco-preguntas.component'
 import { RemoveHTMLCSSPipe } from '@/app/shared/pipes/remove-html-style.pipe'
 import { TruncatePipe } from '@/app/shared/pipes/truncate-text.pipe'
 import { ESPECIALISTA_DREMO } from '@/app/servicios/seg/perfiles'
+import { BancoPreguntasComponent } from './componentes/banco-preguntas/banco-preguntas-ere.component'
 
 @Component({
     selector: 'app-preguntas',
@@ -25,9 +25,9 @@ import { ESPECIALISTA_DREMO } from '@/app/servicios/seg/perfiles'
         ContainerPageComponent,
         EditorComponent,
         NgIf,
-        FormImportarBancoPreguntasComponent,
         RemoveHTMLCSSPipe,
         TruncatePipe,
+        BancoPreguntasComponent,
     ],
     templateUrl: './preguntas.component.html',
     styleUrl: './preguntas.component.scss',
@@ -123,6 +123,7 @@ export class PreguntasComponent implements OnInit {
             label: 'Agregar del banco de preguntas',
             icon: 'pi pi-plus',
             command: () => {
+                this.showModalBancoPreguntas = true
                 /*this.accionBtnItem({
                     accion: 'importar-banco-preguntas',
                     item: null,
@@ -596,12 +597,6 @@ export class PreguntasComponent implements OnInit {
             case 'GUARDAR-PREGUNTAS':
             case 'GUARDAR-ENCABEZADO-PREGUNTAS':
                 this.obtenerPreguntasxiEvaluacionIdxiCursoNivelGradId()
-                break
-            case 'importar-banco-preguntas':
-                this.showModalBancoPreguntas = true
-                break
-            case 'close-modal':
-                this.showModalBancoPreguntas = false
                 break
         }
     }

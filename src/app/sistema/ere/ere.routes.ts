@@ -114,9 +114,9 @@ const routes: Routes = [
     {
         path: 'banco-preguntas',
         loadComponent: () =>
-            import('./banco-preguntas/banco-preguntas.component').then(
-                (c) => c.BancoPreguntasComponent
-            ),
+            import(
+                './evaluacion/preguntas/componentes/banco-preguntas/banco-preguntas-ere.component'
+            ).then((c) => c.BancoPreguntasComponent),
     },
 ]
 

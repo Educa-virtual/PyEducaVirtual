@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing'
 
-import { BancoPreguntasComponent } from './banco-preguntas.component'
+import { BancoPreguntasComponent } from './banco-preguntas-ere.component'
 
 describe('BancoPreguntasComponent', () => {
     let component: BancoPreguntasComponent

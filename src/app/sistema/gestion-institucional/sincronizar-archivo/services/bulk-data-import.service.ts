@@ -70,5 +70,75 @@ export class BulkDataImportService {
         })
     }
 
+    importDataCollection(file, data: any) {
+        console.log(data)
+
+        const formData = new FormData()
+        formData.append('file', file)
+        formData.append(
+            'iSedeId',
+            JSON.parse(localStorage.getItem('dremoPerfil') || '{}').iSedeId
+        )
+        formData.append(
+            'iYAcadId',
+            JSON.parse(localStorage.getItem('dremoiYAcadId') || 'null')
+        )
+        formData.append(
+            'iCredId',
+            JSON.parse(localStorage.getItem('dremoPerfil') || '{}').iCredId
+        )
+        formData.append('iSemAcadId', null)
+        // formData.append('json', Array.isArray(data) ? data.map(row => {
+        //     return {
+        //         grado: row.GRADO,
+        //         seccion: row.SECCIÓN,
+        //         cod_tipo_documento: row["TIPO DE DOCUMENTO"],
+        //         documento: row["NÚMERO DE DOCUMENTO"],
+        //         codigo_estudiante: row["CÓDIGO DEL ESTUDIANTE"],
+        //         paterno: row["APELLIDO PATERNO"],
+        //         materno: row["APELLIDO MATERNO"],
+        //         nombres: row.NOMBRES,
+        //         sexo: row.SEXO,
+        //         nacimiento: row["FECHA DE NACIMIENTO"],
+        //         estado_matricula: row["ESTADO DE MATRICULA"],
+        //     }
+        // }) : data)
+
+        return this.http.post(
+            `http://localhost:8000/api/acad/estudiante/importarEstudiantesMatriculasExcel`,
+            formData
+        )
+
+        // return this.http.post(
+        //     `http://localhost:8000/api/acad/estudiante/importarEstudiantesMatriculasExcel`,
+        //     {
+        //         iSedeId: JSON.parse(localStorage.getItem('dremoPerfil') || '{}')
+        //             .iSedeId,
+        //         iYAcadId: JSON.parse(
+        //             localStorage.getItem('dremoiYAcadId') || 'null'
+        //         ),
+        //         iCredId: JSON.parse(localStorage.getItem('dremoPerfil') || '{}')
+        //         .iCredId,
+        //         iSemAcadId: null,
+        //         json: Array.isArray(data) && data.map(row => {
+
+        //             return {
+        //                 grado: row.GRADO,
+        //                 seccion: row.SECCIÓN,
+        //                 cod_tipo_documento: row["TIPO DE DOCUMENTO"],
+        //                 documento: row["NÚMERO DE DOCUMENTO"],
+        //                 codigo_estudiante: row["CÓDIGO DEL ESTUDIANTE"],
+        //                 paterno: row["APELLIDO PATERNO"],
+        //                 materno: row["APELLIDO MATERNO"],
+        //                 nombres: row.NOMBRES,
+        //                 sexo: row.SEXO,
+        //                 nacimiento: row["FECHA DE NACIMIENTO"],
+        //                 estado_matricula: row["ESTADO DE MATRICULA"],
+        //             }
+        //         }),
+        //     }
+        // )
+    }
+
     filteredData() {}
 }

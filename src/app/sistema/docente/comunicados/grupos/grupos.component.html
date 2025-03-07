@@ -8,6 +8,13 @@
                     Grupos
                 </div>
             </ng-template>
+            <div class="flex">
+                <p-accordion class="w-full">
+                    <p-accordionTab header="Header I">
+                        <p>Lorem ipsum dolor sit amet...</p>
+                    </p-accordionTab>
+                </p-accordion>
+            </div>
         </p-panel>
     </div>
     <div class="flex-1 p-1 border-round">
@@ -24,7 +31,7 @@
                     <p-inputGroupAddon class="font-bold"
                         >Nombre del Grupo :</p-inputGroupAddon
                     >
-                    <input type="text" pInputText />
+                    <input type="text" [(ngModel)]="cGrupoNombre" pInputText />
                 </p-inputGroup>
             </div>
             <div class="flex mt-2">
@@ -32,7 +39,11 @@
                     <p-inputGroupAddon class="font-bold"
                         >Descripcion :</p-inputGroupAddon
                     >
-                    <input type="text" pInputText />
+                    <input
+                        type="text"
+                        [(ngModel)]="cGrupoDescripcion"
+                        pInputText
+                    />
                 </p-inputGroup>
             </div>
 
@@ -42,7 +53,7 @@
                     <button
                         type="button"
                         size="small"
-                        class="font-bold p-button-success"
+                        class="font-bold p-button-primary"
                         pButton
                         pRipple
                         (click)="mostrarModal()"
@@ -53,18 +64,19 @@
                     <button
                         type="button"
                         size="small"
-                        class="font-bold p-button-danger"
+                        class="font-bold p-button-success"
                         pButton
                         pRipple
-                        (click)="quitarMiembros()"
+                        (click)="guardarMiembros()"
                     >
-                        Quitar Mienbros &nbsp;<i class="pi pi-trash"></i>
+                        Guardar Mienbros &nbsp;<i class="pi pi-save"></i>
                     </button>
                 </div>
             </div>
 
             <app-table-primeng
-                [columnas]="columnas"
+                #componente1
+                [columnas]="columna"
                 [data]="miembros"
                 (accionBtnItem)="accionBtnItem($event)"
             >
@@ -94,16 +106,17 @@
             <div class="col-12 md:col-3">
                 <button
                     type="button"
-                    class="text-center font-bold p-button-success w-full"
+                    class="justify-content-center font-bold p-button-primary w-full"
                     pButton
                     pRipple
                     (click)="mostrarDocentes()"
                 >
-                    Agregar Selecionados &nbsp;<i class="pi pi-plus-circle"></i>
+                    Buscar Miembros &nbsp;<i class="pi pi-search"></i>
                 </button>
             </div>
         </div>
         <app-table-primeng
+            #componente2
             [columnas]="columnas"
             [data]="data"
             (accionBtnItem)="accionBtnItem($event)"

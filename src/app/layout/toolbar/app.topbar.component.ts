@@ -153,6 +153,7 @@ export class AppTopBarComponent implements OnInit {
                     return a.diferencias - b.diferencias
                 })
                 this.totalNotificaciones = data.length
+
                 this.items = [
                     {
                         label: 'Notificaciones',

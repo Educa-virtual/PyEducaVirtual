@@ -1,4 +1,4 @@
-import { Component, inject, OnChanges } from '@angular/core'
+import { Component, inject } from '@angular/core'
 import { PrimengModule } from '@/app/primeng.module'
 import { FormsModule } from '@angular/forms'
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
@@ -12,7 +12,7 @@ import { MessageService } from 'primeng/api'
     templateUrl: './grupos.component.html',
     styleUrl: './grupos.component.scss',
 })
-export class GruposComponent implements OnChanges {
+export class GruposComponent {
     private GeneralService = inject(GeneralService)
     constructor(
         private ConstantesService: ConstantesService,
@@ -21,14 +21,68 @@ export class GruposComponent implements OnChanges {
         this.iSedeId = this.ConstantesService.iSedeId
         this.iIieeId = this.ConstantesService.iIieeId
         this.iYAcadId = this.ConstantesService.iYAcadId
+        this.iPersId = this.ConstantesService.iPersId
     }
+    iPersId: number
     iSedeId: string = ''
     iIieeId: string = ''
     iYAcadId: string = ''
-    visible = true
+    cGrupoNombre: string
+    cGrupoDescripcion: string
+    visible = false
     grupo: string
     data: any = []
     miembros: any = []
+    columna = [
+        {
+            type: 'item-checkbox',
+            width: '1rem',
+            field: 'iEliminado',
+            header: 'Elegir',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'item',
+            width: '1rem',
+            field: 'cItem',
+            header: '#',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'text',
+            width: '1rem',
+            field: 'documento',
+            header: 'Documento',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'text',
+            width: '1rem',
+            field: 'completos',
+            header: 'Apellidos y Nombres',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'text',
+            width: '1rem',
+            field: 'contacto',
+            header: 'Numero Telf. del Contacto',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'text',
+            width: '1rem',
+            field: 'domicilio',
+            header: 'Direccion Domiciliaria',
+            text_header: 'center',
+            text: 'center',
+        },
+    ]
     columnas = [
         {
             type: 'item-checkbox',
@@ -85,12 +139,6 @@ export class GruposComponent implements OnChanges {
         { grupo: 'Docentes', codigo: 2 },
     ]
 
-    ngOnChanges(changes) {
-        if (changes) {
-            console.log(changes.miembros?.currentValue)
-        }
-    }
-
     mostrarModal() {
         this.visible = !this.visible
     }
@@ -122,9 +170,22 @@ export class GruposComponent implements OnChanges {
         }
         this.getInformation(params, 'obtenerMiembros')
     }
-    quitarMiembros() {
-        console.table(this.miembros)
+    guardarMiembros() {
+        const params = {
+            petition: 'post',
+            group: 'com',
+            prefix: 'miembros',
+            ruta: 'guardar_miembros',
+            data: {
+                iPersId: this.iPersId,
+                cGrupoNombre: this.cGrupoNombre,
+                cGrupoDescripcion: this.cGrupoDescripcion,
+                miembros: JSON.stringify(this.miembros),
+            },
+        }
+        this.getInformation(params, 'guardarMiembros')
     }
+
     getInformation(params, accion) {
         this.GeneralService.getGralPrefix(params).subscribe({
             next: (response: any) => {
@@ -139,10 +200,33 @@ export class GruposComponent implements OnChanges {
 
         switch (accion) {
             case 'obtenerMiembros':
-                this.data = item
+                if (this.data == false) {
+                    this.data = item
+                } else {
+                    const buscarMiembros = new Set(this.miembros)
+                    this.data = this.data.filter(
+                        (elemento) => !buscarMiembros.has(elemento)
+                    )
+                }
+
+                break
+            case 'guardarMiembros':
+                console.log(item)
+
                 break
             case 'setearDataxiSeleccionado':
-                this.miembros.push(item)
+                console.log(item)
+                this.miembros = this.miembros.concat(item)
+                this.data = this.data.filter((elemento) => elemento != item)
+
+                break
+            case 'setearDataxiEliminado':
+                item['iSeleccionado'] = 0
+                this.data = this.data.concat(item)
+                this.miembros = this.miembros.filter(
+                    (elemento) => elemento != item
+                )
+
                 break
         }
     }

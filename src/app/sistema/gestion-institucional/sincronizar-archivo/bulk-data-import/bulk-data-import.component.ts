@@ -208,9 +208,7 @@ export class BulkDataImportComponent {
     @ViewChild('importBtn') importBtn!: Button
 
     validaImportData() {
-        this.importBtn.label = 'Importar datos'
-        this.importBtn.icon = 'pi pi-database'
-        this.importBtn.loading = true
+        this.importLoad = true
 
         this.bulkDataImport
             .importDataCollection(this.file, this.unverified_data)
@@ -218,14 +216,27 @@ export class BulkDataImportComponent {
                 next: (response) => {
                     console.log('response')
                     console.log(response)
-                    this.importBtn.loading = false
+                    this.importLoad = false
                 },
                 error: (error) => {
                     console.log('error')
                     console.log(error)
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Importación de datos',
+                        detail: 'Ha ocurrido un error al importar los datos',
+                        life: 3000,
+                    })
                 },
                 complete: () => {
-                    this.importBtn.loading = false
+                    this.importLoad = false
+
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Importación de datos',
+                        detail: 'Los datos han sido importados correctamente',
+                        life: 3000,
+                    })
                 },
             })
     }

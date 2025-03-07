@@ -210,13 +210,22 @@ export class BulkDataImportComponent {
     validaImportData() {
         this.importBtn.label = 'Importar datos'
         this.importBtn.icon = 'pi pi-database'
+        this.importBtn.loading = true
 
         this.bulkDataImport
             .importDataCollection(this.file, this.unverified_data)
             .subscribe({
-                next(response) {
+                next: (response) => {
                     console.log('response')
                     console.log(response)
+                    this.importBtn.loading = false
+                },
+                error: (error) => {
+                    console.log('error')
+                    console.log(error)
+                },
+                complete: () => {
+                    this.importBtn.loading = false
                 },
             })
     }

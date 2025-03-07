@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http'
 import { Injectable, NgZone } from '@angular/core'
 import { MessageService } from 'primeng/api'
 import { Observable } from 'rxjs'
+import { DatosMatriculaService } from '../../services/datos-matricula.service'
 
 @Injectable({
     providedIn: 'root',
@@ -10,6 +11,7 @@ export class BulkDataImportService {
     constructor(
         private http: HttpClient,
         private messageService: MessageService,
+        private datosMatriculaService: DatosMatriculaService,
         private ngZone: NgZone
     ) {}
 
@@ -70,11 +72,16 @@ export class BulkDataImportService {
         })
     }
 
-    importDataCollection(file, data: any) {
+    importDataCollection(file, data: any): Observable<any> {
         console.log(data)
 
-        const formData = new FormData()
-        formData.append('file', file)
+        const formData: FormData = new FormData()
+        formData.append('archivo', file)
+
+        console.log('file')
+        console.log(file)
+
+        formData.append('tipo', 'matriculas')
         formData.append(
             'iSedeId',
             JSON.parse(localStorage.getItem('dremoPerfil') || '{}').iSedeId
@@ -87,7 +94,7 @@ export class BulkDataImportService {
             'iCredId',
             JSON.parse(localStorage.getItem('dremoPerfil') || '{}').iCredId
         )
-        formData.append('iSemAcadId', null)
+        // formData.append('iSemAcadId', undefined)
         // formData.append('json', Array.isArray(data) ? data.map(row => {
         //     return {
         //         grado: row.GRADO,
@@ -103,6 +110,23 @@ export class BulkDataImportService {
         //         estado_matricula: row["ESTADO DE MATRICULA"],
         //     }
         // }) : data)
+
+        // this.datosMatriculaService.subirArchivoMatriculas(formData).subscribe({
+        //     next: (data: any) => {
+        //         console.log(data, 'subir archivo')
+        //     },
+        //     error: (error) => {
+        //         console.error('Error subiendo archivo:', error)
+        //         this.messageService.add({
+        //             severity: 'error',
+        //             summary: 'Error',
+        //             detail: error,
+        //         })
+        //     },
+        //     complete: () => {
+        //         console.log('Request completed')
+        //     },
+        // })
 
         return this.http.post(
             `http://localhost:8000/api/acad/estudiante/importarEstudiantesMatriculasExcel`,

@@ -1,0 +1,635 @@
+<div style="display: flex; justify-content: center; width: 100%">
+    <div style="width: 80%; max-width: 1200px">
+        <h1 style="font-size: 18px; font-weight: bold; margin: 10px 0">
+            6. Deporte y Recreación
+        </h1>
+        <small style="font-size: 18px; font-weight: bold; margin: 8px 0"
+            >6.1 Deporte</small
+        >
+
+        <div class="grid">
+            <!-- Tarjeta de deportes -->
+            <div class="col-12 md:col-3">
+                <p-card class="custom-card">
+                    <ng-template pTemplate="title">
+                        <span style="font-size: 15px; font-weight: normal"
+                            >Deporte que practica</span
+                        >
+                    </ng-template>
+
+                    <div class="deporte-lista">
+                        <div
+                            class="deporte-item"
+                            *ngFor="let deporte of deportes; let i = index"
+                            style="
+                                display: flex;
+                                align-items: center;
+                                gap: 15px;
+                            "
+                        >
+                            <span>{{ deporte.nombre }}</span>
+                            <p-inputSwitch
+                                [(ngModel)]="deporte.seleccionado"
+                                [ngStyle]="{ 'margin-left': 'auto' }"
+                            ></p-inputSwitch>
+                        </div>
+                    </div>
+
+                    <div
+                        class="otros-deporte"
+                        style="
+                            display: flex;
+                            flex-direction: column;
+                            gap: 5px;
+                            width: 100%;
+                        "
+                    >
+                        <div
+                            style="
+                                display: flex;
+                                align-items: center;
+                                gap: 15px;
+                                width: 100%;
+                            "
+                        >
+                            <span>. Otros</span>
+                            <p-inputSwitch
+                                [(ngModel)]="otrosDeportesSeleccionado"
+                                [ngStyle]="{ 'margin-left': 'auto' }"
+                            ></p-inputSwitch>
+                        </div>
+
+                        <!-- Usa input normal con directiva pInputText -->
+                        <input
+                            pInputText
+                            type="text"
+                            [(ngModel)]="otrosDeportes"
+                            [disabled]="!otrosDeportesSeleccionado"
+                            placeholder="Especifique"
+                            style="width: 100%"
+                        />
+                    </div>
+                </p-card>
+            </div>
+
+            <!--Espacio entre columnas-->
+            <div class="col-1"></div>
+
+            <!-- Tarjeta de club o federación -->
+            <div class="col-3">
+                <p-card class="custom-card">
+                    <ng-template pTemplate="title">
+                        <span style="font-size: 15px; font-weight: normal"
+                            >¿Participó de algún club, liga o Federación
+                            Deportiva?</span
+                        >
+                    </ng-template>
+
+                    <div
+                        class="otros-deporte"
+                        style="
+                            display: flex;
+                            flex-direction: column;
+                            gap: 5px;
+                            width: 100%;
+                        "
+                    >
+                        <div
+                            style="
+                                display: flex;
+                                align-items: center;
+                                gap: 15px;
+                                width: 100%;
+                            "
+                        >
+                            <span>Si</span>
+                            <p-inputSwitch
+                                [(ngModel)]="otrosClubesSeleccionado"
+                                [ngStyle]="{ 'margin-left': 'auto' }"
+                            ></p-inputSwitch>
+                        </div>
+
+                        <!-- Usa input normal con directiva pInputText -->
+                        <input
+                            pInputText
+                            type="text"
+                            [(ngModel)]="otrosClubes"
+                            [disabled]="!otrosClubesSeleccionado"
+                            placeholder="Especifique el Club"
+                            style="width: 100%"
+                        />
+                    </div>
+                </p-card>
+            </div>
+        </div>
+
+        <!-- Línea divisoria -->
+        <hr style="margin: 20px 0; border-top: 1px solid #ccc" />
+
+        <!--Segmento 2 de los switch-->
+        <small style="font-size: 18px; font-weight: bold; margin: 8px 0"
+            >6.2 Cultura y Recreación</small
+        >
+        <div class="grid">
+            <div class="col-2">
+                <p-card class="custom-card">
+                    <ng-template pTemplate="title">
+                        <span style="font-size: 15px; font-weight: normal">
+                            Religión que profesa
+                        </span>
+                    </ng-template>
+
+                    <div class="form-group" style="width: 100%">
+                        <p-dropdown
+                            [options]="religion"
+                            [(ngModel)]="religionSeleccionada"
+                            optionLabel="nombre"
+                            placeholder="Seleccione una religión"
+                            styleClass="w-full"
+                            inputId="religion"
+                        >
+                        </p-dropdown>
+                    </div>
+                </p-card>
+            </div>
+
+            <div class="col-1"></div>
+
+            <div class="col-2">
+                <p-card class="custom-card">
+                    <ng-template pTemplate="title">
+                        <span style="font-size: 15px; font-weight: normal"
+                            >¿Has formado o formas parte d un Centro Artístico
+                            y/o Cultural?</span
+                        >
+                    </ng-template>
+
+                    <div
+                        class="otros-clubes"
+                        style="
+                            display: flex;
+                            flex-direction: column;
+                            gap: 5px;
+                            width: 100%;
+                        "
+                    >
+                        <div
+                            style="
+                                display: flex;
+                                align-items: center;
+                                gap: 15px;
+                                width: 100%;
+                            "
+                        >
+                            <span>Si</span>
+                            <p-inputSwitch
+                                [(ngModel)]="otrasCulturasSeleccionado"
+                                [ngStyle]="{ 'margin-left': 'auto' }"
+                            ></p-inputSwitch>
+                        </div>
+
+                        <!-- Usa input normal con directiva pInputText -->
+                        <input
+                            pInputText
+                            type="text"
+                            [(ngModel)]="otrasCulturas"
+                            [disabled]="!otrasCulturasSeleccionado"
+                            placeholder="escribe el nombre del centro"
+                            style="width: 100%"
+                        />
+                    </div>
+                </p-card>
+            </div>
+
+            <div class="col-1"></div>
+
+            <div class="col-3">
+                <p-card class="custom-card">
+                    <ng-template pTemplate="title">
+                        <span style="font-size: 15px; font-weight: normal"
+                            >Actividad artistica que practica</span
+                        >
+                    </ng-template>
+
+                    <div class="act_artistica-lista">
+                        <div
+                            class="act_artistica-item"
+                            *ngFor="
+                                let actividad of act_artistica;
+                                let i = index
+                            "
+                            style="
+                                display: flex;
+                                align-items: center;
+                                gap: 15px;
+                            "
+                        >
+                            <span>{{ actividad.nombre }}</span>
+                            <p-inputSwitch
+                                [(ngModel)]="actividad.seleccionado"
+                                [ngStyle]="{ 'margin-left': 'auto' }"
+                            ></p-inputSwitch>
+                        </div>
+                    </div>
+
+                    <div
+                        class="otros-act_artistica"
+                        style="
+                            display: flex;
+                            flex-direction: column;
+                            gap: 5px;
+                            width: 100%;
+                        "
+                    >
+                        <div
+                            style="
+                                display: flex;
+                                align-items: center;
+                                gap: 15px;
+                                width: 100%;
+                            "
+                        >
+                            <span>. Otros</span>
+                            <p-inputSwitch
+                                [(ngModel)]="otrosActividadSeleccionado"
+                                [ngStyle]="{ 'margin-left': 'auto' }"
+                            ></p-inputSwitch>
+                        </div>
+
+                        <!-- Usa input normal con directiva pInputText -->
+                        <input
+                            pInputText
+                            type="text"
+                            [(ngModel)]="otrasActividades"
+                            [disabled]="!otrosActividadSeleccionado"
+                            placeholder="Especifique"
+                            style="width: 100%"
+                        />
+                    </div>
+                </p-card>
+            </div>
+            <div class="col-1"></div>
+            <div class="col-3">
+                <p-card class="custom-card">
+                    <ng-template pTemplate="title">
+                        <span style="font-size: 15px; font-weight: normal"
+                            >Pasatiempos</span
+                        >
+                    </ng-template>
+
+                    <div class="pasatiempos-lista">
+                        <div
+                            class="pasatiempos-item"
+                            *ngFor="
+                                let pasatiempo of Pasatiempos;
+                                let i = index
+                            "
+                            style="
+                                display: flex;
+                                align-items: center;
+                                gap: 15px;
+                            "
+                        >
+                            <span>{{ pasatiempo.nombre }}</span>
+                            <p-inputSwitch
+                                [(ngModel)]="pasatiempo.seleccionado"
+                                [ngStyle]="{ 'margin-left': 'auto' }"
+                            ></p-inputSwitch>
+                        </div>
+                    </div>
+
+                    <div
+                        class="otros-act_artistica"
+                        style="
+                            display: flex;
+                            flex-direction: column;
+                            gap: 5px;
+                            width: 100%;
+                        "
+                    >
+                        <div
+                            style="
+                                display: flex;
+                                align-items: center;
+                                gap: 15px;
+                                width: 100%;
+                            "
+                        >
+                            <span>. Otros</span>
+                            <p-inputSwitch
+                                [(ngModel)]="otrosPasatiemposSelecccionado"
+                                [ngStyle]="{ 'margin-left': 'auto' }"
+                            ></p-inputSwitch>
+                        </div>
+
+                        <!-- Usa input normal con directiva pInputText -->
+                        <input
+                            pInputText
+                            type="text"
+                            [(ngModel)]="otrosPasatiempos"
+                            [disabled]="!otrosPasatiemposSelecccionado"
+                            placeholder="Especifique"
+                            style="width: 100%"
+                        />
+                    </div>
+                </p-card>
+            </div>
+        </div>
+
+        <!-- Línea divisoria -->
+        <hr style="margin: 20px 0; border-top: 1px solid #ccc" />
+
+        <!--Segmento 3 -->
+        <small style="font-size: 18px; font-weight: bold; margin: 8px 0"
+            >6.3 Psicopedagógico</small
+        >
+        <div class="grid">
+            <div class="col-3">
+                <p-card class="custom-card">
+                    <ng-template pTemplate="title">
+                        <span style="font-size: 15px; font-weight: normal"
+                            >Has Asistido alguna vez a una consulta
+                            Psicológica?</span
+                        >
+                    </ng-template>
+
+                    <div
+                        class="otros-consPsicopedagogicas"
+                        style="
+                            display: flex;
+                            flex-direction: column;
+                            gap: 5px;
+                            width: 100%;
+                        "
+                    >
+                        <div
+                            style="
+                                display: flex;
+                                align-items: center;
+                                gap: 15px;
+                                width: 100%;
+                            "
+                        >
+                            <span>Si</span>
+                            <p-inputSwitch
+                                [(ngModel)]="otrasConsultsPsicopedagogicas"
+                                [ngStyle]="{ 'margin-left': 'auto' }"
+                            ></p-inputSwitch>
+                        </div>
+
+                        <!-- Usa input normal con directiva pInputText -->
+                        <input
+                            pInputText
+                            type="text"
+                            [(ngModel)]="otrasConsultas"
+                            [disabled]="!otrasConsultsPsicopedagogicas"
+                            placeholder="Escribe cuando fue la consuta"
+                            style="width: 100%"
+                        />
+                    </div>
+                </p-card>
+            </div>
+
+            <!--Espacio entre columnas-->
+            <div class="col-1"></div>
+
+            <div class="col-3">
+                <p-card class="custom-card">
+                    <ng-template pTemplate="title">
+                        <span style="font-size: 15px; font-weight: normal"
+                            >¿A quién acudes cuando tienes un problema
+                            emocional?
+                        </span>
+                    </ng-template>
+
+                    <div class="problememocional-lista">
+                        <div
+                            class="problememocional-item"
+                            *ngFor="
+                                let problemaemo of Problememocional;
+                                let i = index
+                            "
+                            style="
+                                display: flex;
+                                align-items: center;
+                                gap: 15px;
+                            "
+                        >
+                            <span>{{ problemaemo.nombre }}</span>
+                            <p-inputSwitch
+                                [(ngModel)]="problemaemo.seleccionado"
+                                [ngStyle]="{ 'margin-left': 'auto' }"
+                            ></p-inputSwitch>
+                        </div>
+                    </div>
+
+                    <div
+                        class="otros-act_artistica"
+                        style="
+                            display: flex;
+                            flex-direction: column;
+                            gap: 5px;
+                            width: 100%;
+                        "
+                    >
+                        <div
+                            style="
+                                display: flex;
+                                align-items: center;
+                                gap: 15px;
+                                width: 100%;
+                            "
+                        >
+                            <span>. Otros</span>
+                            <p-inputSwitch
+                                [(ngModel)]="otroProblemasSeleccionados"
+                                [ngStyle]="{ 'margin-left': 'auto' }"
+                            ></p-inputSwitch>
+                        </div>
+
+                        <!-- Usa input normal con directiva pInputText -->
+                        <input
+                            pInputText
+                            type="text"
+                            [(ngModel)]="otrosProblemas"
+                            [disabled]="!otroProblemasSeleccionados"
+                            placeholder="Especifique"
+                            style="width: 100%"
+                        />
+                    </div>
+                </p-card>
+            </div>
+
+            <!--Espacio entre columnas-->
+            <div class="col-1"></div>
+
+            <div class="col-3">
+                <p-card class="custom-card">
+                    <ng-template pTemplate="title">
+                        <span style="font-size: 15px; font-weight: normal">
+                            ¿Como calificarias la relación con sus padres o
+                            familiares?
+                        </span>
+                    </ng-template>
+
+                    <div class="form-group" style="width: 100%">
+                        <p-dropdown
+                            [options]="Relac_familiar"
+                            [(ngModel)]="relfamiliarSeleccionada"
+                            optionLabel="nombre"
+                            placeholder="Seleccione una religión"
+                            styleClass="w-full"
+                            inputId="Relac_familiar"
+                        >
+                        </p-dropdown>
+                    </div>
+                </p-card>
+            </div>
+
+            <div class="col-3">
+                <p-card class="custom-card">
+                    <ng-template pTemplate="title">
+                        <span style="font-size: 15px; font-weight: normal"
+                            >¿Que temas te gustaria abordar para mejorar tu
+                            desarrollo personal?</span
+                        >
+                    </ng-template>
+
+                    <div class="dpersonal-lista">
+                        <div
+                            class="dpersonal-item"
+                            *ngFor="let despersonal of dpersonal; let i = index"
+                            style="
+                                display: flex;
+                                align-items: center;
+                                gap: 15px;
+                            "
+                        >
+                            <span>{{ despersonal.nombre }}</span>
+                            <p-inputSwitch
+                                [(ngModel)]="despersonal.seleccionado"
+                                [ngStyle]="{ 'margin-left': 'auto' }"
+                            ></p-inputSwitch>
+                        </div>
+                    </div>
+
+                    <div
+                        class="otros-act_artistica"
+                        style="
+                            display: flex;
+                            flex-direction: column;
+                            gap: 5px;
+                            width: 100%;
+                        "
+                    >
+                        <div
+                            style="
+                                display: flex;
+                                align-items: center;
+                                gap: 15px;
+                                width: 100%;
+                            "
+                        >
+                            <span>. Otros</span>
+                            <p-inputSwitch
+                                [(ngModel)]="otrosdpersonalSeleccionados"
+                                [ngStyle]="{ 'margin-left': 'auto' }"
+                            ></p-inputSwitch>
+                        </div>
+
+                        <!-- Usa input normal con directiva pInputText -->
+                        <input
+                            pInputText
+                            type="text"
+                            [(ngModel)]="otrosdpersonal"
+                            [disabled]="!otrosdpersonalSeleccionados"
+                            placeholder="Especifique"
+                            style="width: 100%"
+                        />
+                    </div>
+                </p-card>
+            </div>
+        </div>
+        <!-- Línea divisoria -->
+        <hr style="margin: 20px 0; border-top: 1px solid #ccc" />
+        <small style="font-size: 18px; font-weight: bold; margin: 8px 0"
+            >6.4 Transporte</small
+        >
+        <div class="grid">
+            <div class="col-3">
+                <p-card class="custom-card">
+                    <ng-template pTemplate="title">
+                        <span style="font-size: 15px; font-weight: normal">
+                            ¿Cuál es el medio de transporte que más utilizas?
+                        </span>
+                    </ng-template>
+
+                    <div class="form-group" style="width: 100%">
+                        <p-dropdown
+                            [options]="mTransporteUrbano"
+                            [(ngModel)]="mTransporteUrbSeleccionado"
+                            optionLabel="nombre"
+                            placeholder="Seleccione un transporte"
+                            styleClass="w-full"
+                            inputId="mTransporteUrbano"
+                        >
+                        </p-dropdown>
+                    </div>
+                </p-card>
+            </div>
+
+            <!--Espacio entre columnas-->
+
+            <div class="col-1"></div>
+            <div class="col-3">
+                <p-card class="custom-card">
+                    <ng-template pTemplate="title">
+                        <span style="font-size: 15px; font-weight: normal">
+                            ¿Cuánto gastas aproximadamente en pasajes?
+                        </span>
+                    </ng-template>
+
+                    <div class="form-group" style="width: 100%">
+                        <p-dropdown
+                            [options]="mTransporteUrbano"
+                            [(ngModel)]="mTransporteUrbSeleccionado"
+                            optionLabel="nombre"
+                            placeholder="Seleccione el monto"
+                            styleClass="w-full"
+                            inputId="mTransporteUrbano"
+                        >
+                        </p-dropdown>
+                    </div>
+                </p-card>
+            </div>
+        </div>
+
+        <div
+            style="
+                display: flex;
+                justify-content: flex-end;
+                gap: 15px;
+                margin-top: 20px;
+                padding-right: 15px;
+            "
+        >
+            <button
+                pButton
+                type="button"
+                label="Guardar"
+                icon="pi pi-save"
+                class="p-button-success"
+                (click)="guardarFormulario()"
+            ></button>
+
+            <button
+                pButton
+                type="button"
+                label="Imprimir"
+                icon="pi pi-print"
+                class="p-button-secondary"
+                (click)="imprimirFormulario()"
+            ></button>
+        </div>
+    </div>
+</div>

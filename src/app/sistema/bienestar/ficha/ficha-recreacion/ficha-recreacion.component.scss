@@ -1,0 +1,38 @@
+:host ::ng-deep p-inputGroupAddon {
+    background-color: var(--bg-header-modal) !important;
+    color: var(--primary-color-text) !important;
+    i {
+        color: var(--primary-color-text) !important;
+    }
+}
+
+:host ::ng-deep .p-card-title {
+    background-color: var(--bg-header-modal) !important;
+    color: var(--primary-color-text) !important;
+    padding: 10px;
+    font-weight: bold;
+    font-size: 16px;
+    margin: -1rem -1rem 1rem -1rem; /* Esto puede ser opcional, sirve para expandir el título al borde del card */
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+}
+
+/* Estado activado (ON) - verde */
+.p-inputswitch.p-inputswitch-checked {
+    background-color: #28a745; /* Fondo de la barra cuando está ON */
+    border-color: #28a745;
+}
+
+.p-inputswitch.p-inputswitch-checked .p-inputswitch-slider:before {
+    background-color: white; /* Color del círculo */
+}
+
+/* Estado desactivado (OFF) - rojo ocre */
+.p-inputswitch {
+    background-color: #b22222; /* Fondo de la barra cuando está OFF */
+    border-color: #b22222;
+}
+
+.p-inputswitch .p-inputswitch-slider:before {
+    background-color: white; /* Color del círculo */
+}

@@ -10,7 +10,7 @@ import { FichaSaludComponent } from './ficha/ficha-salud/ficha-salud.component'
 import { FichasocgeneralComponent } from './fichasocgeneral/fichasocgeneral.component'
 import { FichaSocioeconomicaComponent } from './ficha-socioeconomica/ficha-socioeconomica.component'
 import { FichavistapoderadoComponent } from './fichavistapoderado/fichavistapoderado.component'
-
+import { FichaRecreacionComponent } from './ficha/ficha-recreacion/ficha-recreacion.component'
 const routes: Routes = [
     { path: 'ficha-socioeconomica', component: FichaSocioeconomicaComponent },
     { path: 'fichavistapoderado', component: FichavistapoderadoComponent },
@@ -26,6 +26,7 @@ const routes: Routes = [
             { path: 'alimentacion', component: FichaAlimentacionComponent },
             { path: 'discapacidad', component: FichaDiscapacidadComponent },
             { path: 'salud', component: FichaSaludComponent },
+            { path: 'recreacion', component: FichaRecreacionComponent },
         ],
     },
 ]

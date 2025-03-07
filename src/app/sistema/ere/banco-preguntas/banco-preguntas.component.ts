@@ -32,7 +32,7 @@ import { PreguntasReutilizablesService } from '../../evaluaciones/services/pregu
 export class BancoPreguntasComponent implements OnInit {
     private evaluacionesRService = inject(ApiEvaluacionesRService)
     private preguntasService = inject(PreguntasReutilizablesService)
-    checked: boolean = false
+    //checked: boolean = false
     visible: boolean = true
     formCriterios!: FormGroup
     matrizCompetencia: any[] = []
@@ -54,6 +54,14 @@ export class BancoPreguntasComponent implements OnInit {
     ]
 
     columnas: IColumn[] = [
+        {
+            type: 'item-checkbox',
+            width: '1rem',
+            field: 'iPreguntaId',
+            header: 'Elegir',
+            text_header: 'center',
+            text: 'center',
+        },
         {
             type: 'item',
             width: '0.5rem',
@@ -115,7 +123,8 @@ export class BancoPreguntasComponent implements OnInit {
 
     accionBtnItemTable({ accion }) {
         switch (accion) {
-            case 'seleccionar':
+            case 'ver':
+                console.log('visto')
                 break
         }
     }

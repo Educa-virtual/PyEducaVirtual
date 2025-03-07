@@ -123,10 +123,10 @@ export class PreguntasComponent implements OnInit {
             label: 'Agregar del banco de preguntas',
             icon: 'pi pi-plus',
             command: () => {
-                this.accionBtnItem({
+                /*this.accionBtnItem({
                     accion: 'importar-banco-preguntas',
                     item: null,
-                })
+                })*/
             },
         },
     ]

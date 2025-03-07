@@ -46,63 +46,18 @@ export class ContenidosComponent implements OnInit {
         this.iEspecialistaId = this.ConstantesService.iEspecialistaId
     }
 
-    comunicados = [
-        {
-            id: 1,
-            titulo: 'Matriculas 2025',
-            estado: 'Activo',
-            tipo: 'Anuncio',
-            publicado: '12/02/2025',
-            prioridad: 'Urgente',
-            caduca: '12/03/2025',
-            grupo: [
-                { iGrupoId: '1', cGrupoNombre: 'Apoderados' },
-                { iGrupoId: '2', cGrupoNombre: 'Estudiantes' },
-            ],
-            texto: 'Estimados padres de familia y estudiantes las matriculas son hasta....',
-            collapsed: true,
-        },
-        {
-            id: 2,
-            titulo: 'Publicacion de Nuevos Ponderados',
-            estado: 'Activo',
-            tipo: 'Circular',
-            publicado: '10/02/2025',
-            prioridad: 'Normal',
-            caduca: '10/03/2025',
-            grupo: [
-                { iGrupoId: '1', cGrupoNombre: 'Apoderados' },
-                { iGrupoId: '2', cGrupoNombre: 'Estudiantes' },
-            ],
-            texto: 'Se informa a la comunidad educativa que las notas ponderadas son...',
-            collapsed: true,
-        },
-        {
-            id: 3,
-            titulo: 'Carga Lectiva',
-            estado: 'Inactivo',
-            tipo: 'Aviso',
-            publicado: '01/02/2025',
-            prioridad: 'Baja',
-            caduca: '15/03/2025',
-            grupo: [
-                { iGrupoId: '1', cGrupoNombre: 'Apoderados' },
-                { iGrupoId: '2', cGrupoNombre: 'Estudiantes' },
-            ],
-            texto: 'Se comunica a los docentes que el numero de horas lectiva son 40 por semana',
-            collapsed: true,
-        },
-    ]
+    comunicados = []
+    prioridades = []
+    tipos = []
+    grupos = []
     estados = [
         { label: 'ACTIVO', value: 1 },
         { label: 'INACTIVO', value: 0 },
     ]
-    prioridades = []
-    tipos = []
-    grupos = []
 
     ngOnInit() {
         this.cargaDatos()
+        this.cargarComunicadosUsuario()
     }
     cargaDatos() {
         const params = {
@@ -151,7 +106,14 @@ export class ContenidosComponent implements OnInit {
     editComunicado(com: Comunicado) {
         this.selectedComunicado = {
             ...com,
-            grupo: com.grupo.map((g: any) => g.iGrupoId),
+            grupo: com.grupo.map((g: any) => g.iGrupoId.toString()),
+            // estado: com.estado === 1 ? 'Activo' : 'Inactivo', // Convertir a string
+            prioridad:
+                this.prioridades.find((p: any) => p.label === com.prioridad)
+                    ?.value || com.prioridad,
+            tipo:
+                this.tipos.find((t: any) => t.label === com.tipo)?.value ||
+                com.tipo,
         }
     }
     // Al hacer clic en "Publicar" o "Actualizar"
@@ -176,7 +138,7 @@ export class ContenidosComponent implements OnInit {
             },
         }
         console.table(params)
-        this.getInformation(params, 'obtenerAcademicoGrado')
+        this.getInformation(params, 'registrar')
     }
     togglePanel(event: Event, panel: any, comunicado: Comunicado) {
         // Alterna el estado local para cambiar el icono
@@ -212,20 +174,71 @@ export class ContenidosComponent implements OnInit {
             case 'obtenerDatos':
                 this.prioridades = item.tipo_prioridad.map((p: any) => ({
                     label: p.cPrioridadNombre,
-                    value: Number(p.iPrioridadId), // Convertimos a número
+                    value: p.iPrioridadId, // Convertimos a número
                 }))
 
                 this.tipos = item.tipo_comunicado.map((t: any) => ({
                     label: t.cTipoComNombre,
-                    value: Number(t.iTipoComId),
+                    value: t.iTipoComId,
                 }))
                 this.grupos = item.grupos.map((g: any) => ({
                     label: g.cGrupoNombre,
-                    value: Number(g.iGrupoId),
+                    value: g.iGrupoId,
                 }))
                 break
+            case 'obtenerComunicadosPersona':
+                // item es el array devuelto por el SP
+                this.comunicados = item.map((c: any) => {
+                    return {
+                        id: c.iComunicadoId,
+                        titulo: c.cComunicadoTitulo,
+                        texto: c.cComunicadoDescripcion,
+                        // Si iEstado es 1 => 'Activo', 0 => 'Inactivo' (ajusta según tu lógica)
+                        estado: c.iEstado === 1 ? 'Activo' : 'Inactivo',
+                        // Nombres leídos del SP
+                        tipo: c.cTipoComNombre,
+                        prioridad: c.cPrioridadNombre,
+                        // Formatear fechas si quieres mostrar dd/mm/aaaa
+                        publicado: c.dtComunicadoEmision
+                            ? this.formatDate(new Date(c.dtComunicadoEmision))
+                            : '',
+                        caduca: c.dtComunicadoHasta
+                            ? this.formatDate(new Date(c.dtComunicadoHasta))
+                            : '',
+                        // Convertir la lista de grupos (STRING_AGG) a un array
+                        grupo:
+                            c.iGrupoIds && c.cGrupos
+                                ? (() => {
+                                      // Separamos los arreglos de IDs y nombres
+                                      const ids = c.iGrupoIds.split(',')
+                                      const names = c.cGrupos.split(',')
 
+                                      // Mapeamos
+                                      return ids.map(
+                                          (id: string, index: number) => ({
+                                              iGrupoId: parseInt(id.trim(), 10),
+                                              cGrupoNombre: names[index].trim(),
+                                          })
+                                      )
+                                  })()
+                                : [],
+                        collapsed: true,
+                    }
+                })
+                break
             // Agrega más casos
         }
+    }
+    cargarComunicadosUsuario() {
+        const params = {
+            petition: 'post',
+            group: 'com',
+            prefix: 'comunicado',
+            ruta: 'obtener_comunicados_persona',
+            data: {
+                iPersId: this.iPersId,
+            },
+        }
+        this.getInformation(params, 'obtenerComunicadosPersona')
     }
 }

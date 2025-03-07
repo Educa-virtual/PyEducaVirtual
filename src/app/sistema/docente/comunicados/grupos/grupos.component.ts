@@ -21,12 +21,68 @@ export class GruposComponent {
         this.iSedeId = this.ConstantesService.iSedeId
         this.iIieeId = this.ConstantesService.iIieeId
         this.iYAcadId = this.ConstantesService.iYAcadId
+        this.iPersId = this.ConstantesService.iPersId
     }
+    iPersId: number
     iSedeId: string = ''
     iIieeId: string = ''
     iYAcadId: string = ''
-    visible = true
+    cGrupoNombre: string
+    cGrupoDescripcion: string
+    visible = false
     grupo: string
+    data: any = []
+    miembros: any = []
+    columna = [
+        {
+            type: 'item-checkbox',
+            width: '1rem',
+            field: 'iEliminado',
+            header: 'Elegir',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'item',
+            width: '1rem',
+            field: 'cItem',
+            header: '#',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'text',
+            width: '1rem',
+            field: 'documento',
+            header: 'Documento',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'text',
+            width: '1rem',
+            field: 'completos',
+            header: 'Apellidos y Nombres',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'text',
+            width: '1rem',
+            field: 'contacto',
+            header: 'Numero Telf. del Contacto',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'text',
+            width: '1rem',
+            field: 'domicilio',
+            header: 'Direccion Domiciliaria',
+            text_header: 'center',
+            text: 'center',
+        },
+    ]
     columnas = [
         {
             type: 'item-checkbox',
@@ -77,14 +133,13 @@ export class GruposComponent {
             text: 'center',
         },
     ]
-    data = []
+
     cities = [
-        { grupo: 'Docentes', codigo: 2 },
         { grupo: 'Estudiantes', codigo: 1 },
-        // { grupo: 'Personal Ugel', codigo: 4 },
+        { grupo: 'Docentes', codigo: 2 },
     ]
 
-    mostrarMdoal() {
+    mostrarModal() {
         this.visible = !this.visible
     }
 
@@ -115,6 +170,22 @@ export class GruposComponent {
         }
         this.getInformation(params, 'obtenerMiembros')
     }
+    guardarMiembros() {
+        const params = {
+            petition: 'post',
+            group: 'com',
+            prefix: 'miembros',
+            ruta: 'guardar_miembros',
+            data: {
+                iPersId: this.iPersId,
+                cGrupoNombre: this.cGrupoNombre,
+                cGrupoDescripcion: this.cGrupoDescripcion,
+                miembros: JSON.stringify(this.miembros),
+            },
+        }
+        this.getInformation(params, 'guardarMiembros')
+    }
+
     getInformation(params, accion) {
         this.GeneralService.getGralPrefix(params).subscribe({
             next: (response: any) => {
@@ -129,10 +200,33 @@ export class GruposComponent {
 
         switch (accion) {
             case 'obtenerMiembros':
-                this.data = item
+                if (this.data == false) {
+                    this.data = item
+                } else {
+                    const buscarMiembros = new Set(this.miembros)
+                    this.data = this.data.filter(
+                        (elemento) => !buscarMiembros.has(elemento)
+                    )
+                }
+
+                break
+            case 'guardarMiembros':
+                console.log(item)
+
                 break
             case 'setearDataxiSeleccionado':
                 console.log(item)
+                this.miembros = this.miembros.concat(item)
+                this.data = this.data.filter((elemento) => elemento != item)
+
+                break
+            case 'setearDataxiEliminado':
+                item['iSeleccionado'] = 0
+                this.data = this.data.concat(item)
+                this.miembros = this.miembros.filter(
+                    (elemento) => elemento != item
+                )
+
                 break
         }
     }

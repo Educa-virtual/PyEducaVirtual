@@ -8,6 +8,30 @@
                     Grupos
                 </div>
             </ng-template>
+            <div class="flex">
+                <p-accordion
+                    class="w-full p-0 m-0"
+                    expandIcon="pi pi-plus"
+                    collapseIcon="pi pi-minus"
+                >
+                    <p-accordionTab>
+                        <ng-template pTemplate="header">
+                            <span class="flex align-items-center gap-2 w-full">
+                                <p-inputGroup>
+                                    <p-inputGroupAddon class="font-bold"
+                                        >Nombre del Grupo :</p-inputGroupAddon
+                                    >
+                                    <input
+                                        type="text"
+                                        [(ngModel)]="cGrupoNombre"
+                                        pInputText
+                                    />
+                                </p-inputGroup>
+                            </span>
+                        </ng-template>
+                    </p-accordionTab>
+                </p-accordion>
+            </div>
         </p-panel>
     </div>
     <div class="flex-1 p-1 border-round">
@@ -24,7 +48,7 @@
                     <p-inputGroupAddon class="font-bold"
                         >Nombre del Grupo :</p-inputGroupAddon
                     >
-                    <input type="text" pInputText />
+                    <input type="text" [(ngModel)]="cGrupoNombre" pInputText />
                 </p-inputGroup>
             </div>
             <div class="flex mt-2">
@@ -32,74 +56,48 @@
                     <p-inputGroupAddon class="font-bold"
                         >Descripcion :</p-inputGroupAddon
                     >
-                    <input type="text" pInputText />
+                    <input
+                        type="text"
+                        [(ngModel)]="cGrupoDescripcion"
+                        pInputText
+                    />
                 </p-inputGroup>
             </div>
 
             <div class="flex font-bold mt-3 mb-3 w-full">
-                <div class="flex-1 p-2">Integrantes del Grupo</div>
+                <div class="flex p-2">Integrantes del Grupo</div>
                 <div class="flex-1 text-right">
+                    <button
+                        type="button"
+                        size="small"
+                        class="font-bold p-button-primary"
+                        pButton
+                        pRipple
+                        (click)="mostrarModal()"
+                    >
+                        Agregar Mienbros &nbsp;<i class="pi pi-plus-circle"></i>
+                    </button>
+                    &nbsp;
                     <button
                         type="button"
                         size="small"
                         class="font-bold p-button-success"
                         pButton
                         pRipple
-                        (click)="mostrarMdoal()"
+                        (click)="guardarMiembros()"
                     >
-                        Agregar Mienbros &nbsp;<i class="pi pi-plus-circle"></i>
+                        Guardar Mienbros &nbsp;<i class="pi pi-save"></i>
                     </button>
                 </div>
             </div>
 
-            <p-table
-                [globalFilterFields]="[
-                    'name',
-                    'country.name',
-                    'representative.name',
-                    'status',
-                ]"
-                selectionMode="single"
-                dataKey="id"
-                [tableStyle]="{ 'min-width': '50rem' }"
-                [rows]="5"
-                [paginator]="true"
-                stateStorage="session"
-                stateKey="statedemo-session"
+            <app-table-primeng
+                #componente1
+                [columnas]="columna"
+                [data]="miembros"
+                (accionBtnItem)="accionBtnItem($event)"
             >
-                <ng-template pTemplate="header">
-                    <tr>
-                        <th pSortableColumn="name" style="width: 10%">
-                            # <p-sortIcon field="#" />
-                        </th>
-                        <th pSortableColumn="country.name" style="width: 30%">
-                            Apellidos y Nombres
-                            <p-sortIcon field="Apellidos y Nombres" />
-                        </th>
-                        <th
-                            pSortableColumn="representative.name"
-                            style="width: 20%"
-                        >
-                            Nro de Contacto <p-sortIcon field="contacto" />
-                        </th>
-                        <th pSortableColumn="status" style="width: 30%">
-                            Direccion Domiciliaria
-                            <p-sortIcon field="direccion" />
-                        </th>
-                        <th pSortableColumn="name" style="width: 10%">
-                            <i class="pi pi-trash"></i> <p-sortIcon field="#" />
-                        </th>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-customer>
-                    <tr [pSelectableRow]="customer"></tr>
-                </ng-template>
-                <ng-template pTemplate="emptymessage">
-                    <tr>
-                        <td colspan="5">Ningun Usurio Registrado.</td>
-                    </tr>
-                </ng-template>
-            </p-table>
+            </app-table-primeng>
         </p-panel>
     </div>
 </div>
@@ -122,27 +120,20 @@
                     appendTo="body"
                 />
             </div>
-            <!-- <div class="col-12 md:col-6">
-                <p-inputGroup>
-                    <p-inputGroupAddon>
-                        <i class="pi pi-user"></i>
-                    </p-inputGroupAddon>
-                    <input pInputText placeholder="Ingresar Datos"/>
-                </p-inputGroup>
-            </div> -->
             <div class="col-12 md:col-3">
                 <button
                     type="button"
-                    class="text-center font-bold p-button-success w-full"
+                    class="justify-content-center font-bold p-button-primary w-full"
                     pButton
                     pRipple
                     (click)="mostrarDocentes()"
                 >
-                    Agregar Selecionados &nbsp;<i class="pi pi-plus-circle"></i>
+                    Buscar Miembros &nbsp;<i class="pi pi-search"></i>
                 </button>
             </div>
         </div>
         <app-table-primeng
+            #componente2
             [columnas]="columnas"
             [data]="data"
             (accionBtnItem)="accionBtnItem($event)"

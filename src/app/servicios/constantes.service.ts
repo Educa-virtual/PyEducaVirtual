@@ -598,6 +598,7 @@ export class ConstantesService {
     iIieeId = perfil ? perfil.iIieeId : null
     iSedeId = perfil ? perfil.iSedeId : null
     grados = perfil ? perfil.grados : null
+    iSemAcadId = perfil ? perfil.semestres_acad : null
     years = user ? user.years : null
     cIieeNombre = perfil ? perfil.cIieeNombre : null
     nivelTipo = perfil ? perfil.iNivelTipoId : null

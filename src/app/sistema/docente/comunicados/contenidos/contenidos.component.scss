@@ -1,0 +1,89 @@
+:host ::ng-deep .p-toolbar {
+    background: var(--bg-header-modal) !important;
+    color: white !important;
+
+    .p-button {
+        border: 0px;
+        color: white !important;
+        background: var(--bg-header-modal) !important;
+
+        &:hover {
+            background: white !important;
+            color: var(--bg-header-modal) !important;
+        }
+    }
+}
+:host ::ng-deep .p-fieldset .p-fieldset-legend {
+    background-color: #ffffff !important;
+    border: 0px;
+}
+
+:host ::ng-deep {
+    // Modifica el estilo del header del p-panel
+    .p-panel-header {
+        background: var(--bg-header-modal) !important;
+    }
+
+    // Cambia el color del icono predeterminado del toggle en PrimeNG
+    .p-panel .p-panel-header .p-panel-header-icon {
+        color: white !important;
+        display: none !important; // Oculta el icono de toggle original
+    }
+}
+
+// Asegurar que el título del panel esté oculto
+:host ::ng-deep .custom-panel .p-panel-header .p-panel-title {
+    display: none !important;
+}
+:host ::ng-deep .custom-header-panel .p-panel-header {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+:host ::ng-deep .p-panel-content {
+    padding: 1 !important;
+    margin: 0 !important;
+}
+
+// nuevos
+:host ::ng-deep .custom-panel .p-panel-header {
+    background: white !important; // Fondo blanco del header
+    color: black !important; // Texto en negro
+}
+
+:host ::ng-deep .custom-panel .p-panel-header span {
+    background: white !important;
+    color: black !important;
+    padding: 2px 5px;
+    border-radius: 4px;
+}
+
+:host ::ng-deep .custom-panel .p-button-text {
+    background: white !important; // Fondo blanco para los botones
+    color: black !important; // Iconos en negro
+    border: 1px solid black !important;
+}
+
+// Estilo para los iconos dentro de los botones
+:host ::ng-deep .custom-panel .p-button .pi {
+    color: black !important; // Color negro para los íconos
+}
+
+:host ::ng-deep .bg-header-style {
+    background: var(--bg-header-modal) !important;
+    color: white !important;
+    // padding: 2px 5px;
+    border-radius: 4px;
+    font-weight: bold;
+    height: 100%;
+}
+:host ::ng-deep .comunicado-titulo {
+    color: black !important;
+    font-weight: bold;
+}
+// :host ::ng-deep .p-button-xs {
+//     padding: 2px 5px !important;  /* Reduce el espacio interno */
+//     font-size: 12px !important;   /* Tamaño de ícono/texto más pequeño */
+//     height: 24px !important;      /* Define una altura menor */
+//     min-width: 24px !important;   /* Asegura que los botones sean más pequeños */
+// }

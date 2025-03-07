@@ -35,6 +35,7 @@ export class ContenidosComponent implements OnInit {
     grado: any
     iSemAcadId: any
     year: any
+    selectedEstado: number
 
     constructor(private ConstantesService: ConstantesService) {
         this.grado = JSON.parse(this.ConstantesService.grados)
@@ -107,7 +108,7 @@ export class ContenidosComponent implements OnInit {
         this.selectedComunicado = {
             ...com,
             grupo: com.grupo.map((g: any) => g.iGrupoId.toString()),
-            // estado: com.estado === 1 ? 'Activo' : 'Inactivo', // Convertir a string
+            // estado: com.estado === 'Activo' ? 1 : 0, // Convierte el string a número
             prioridad:
                 this.prioridades.find((p: any) => p.label === com.prioridad)
                     ?.value || com.prioridad,
@@ -115,30 +116,42 @@ export class ContenidosComponent implements OnInit {
                 this.tipos.find((t: any) => t.label === com.tipo)?.value ||
                 com.tipo,
         }
+        this.selectedEstado = com.estado === 'Activo' ? 1 : 0
     }
     // Al hacer clic en "Publicar" o "Actualizar"
     guardarComunicado() {
+        // objeto con el cual evaluamos si se actualiza o se ingresa un nuevo registro
+        let dataObj: any = {
+            iPersId: this.iPersId,
+            iTipoComId: this.selectedComunicado.tipo, // Tipo de comunicado
+            iPrioridadId: this.selectedComunicado.prioridad, // Prioridad
+            cComunicadoTitulo: this.selectedComunicado.titulo, // Título
+            cComunicadoDescripcion: this.selectedComunicado.texto, // Descripción
+            dtComunicadoEmision: this.selectedComunicado.publicado || null, // Fecha de emisión
+            dtComunicadoHasta: this.selectedComunicado.caduca || null, // Fecha de caducidad
+            iEstado: this.selectedEstado, // Estado (1 o 0)
+            iYAcadId: this.iYAcadId,
+            listaGrupos: this.selectedComunicado.grupo,
+        }
+
+        // Si el comunicado ya existe, se añade el id para la actualización
+        let ruta = 'registrar_comunicado'
+        if (this.selectedComunicado.id !== 0) {
+            ruta = 'actualizar_comunicado'
+            dataObj = { ...dataObj, iComunicadoId: this.selectedComunicado.id }
+        }
+
         const params = {
             petition: 'post',
             group: 'com',
             prefix: 'comunicado',
-            ruta: 'registrar_comunicado',
-            data: {
-                //    comunicados enviados al backend
-                iPersId: this.iPersId, //iPersId,
-                iTipoComId: this.selectedComunicado.tipo, // Tipo de comunicado
-                iPrioridadId: this.selectedComunicado.prioridad, // Prioridad
-                cComunicadoTitulo: this.selectedComunicado.titulo, // Título
-                cComunicadoDescripcion: this.selectedComunicado.texto, // Descripción
-                dtComunicadoEmision: this.selectedComunicado.publicado || null, // Fecha de emisión
-                dtComunicadoHasta: this.selectedComunicado.caduca || null, // Fecha de caducidad
-                iEstado: this.selectedComunicado.estado, //bComunicadoArchivado,
-                iYAcadId: this.iYAcadId, //iYAcadId,
-                listaGrupos: this.selectedComunicado.grupo,
-            },
+            ruta: ruta,
+            data: dataObj,
         }
+
         console.table(params)
-        this.getInformation(params, 'registrar')
+        this.getInformation(params, ruta)
+        this.cargarComunicadosUsuario()
     }
     togglePanel(event: Event, panel: any, comunicado: Comunicado) {
         // Alterna el estado local para cambiar el icono
@@ -147,9 +160,16 @@ export class ContenidosComponent implements OnInit {
         panel.toggle(event)
     }
     deleteComunicado(id: number) {
-        this.comunicados = this.comunicados.filter((com) => com.id !== id)
-        console.log('Comunicado eliminado:', id)
+        const params = {
+            petition: 'post',
+            group: 'com',
+            prefix: 'comunicado',
+            ruta: 'eliminar',
+            data: { iComunicadoId: id },
+        }
+        this.getInformation(params, 'eliminar')
     }
+
     formatDate(date: Date): string {
         if (!date) return '' // Manejo de valores nulos
         const day = date.getDate().toString().padStart(2, '0')
@@ -194,7 +214,10 @@ export class ContenidosComponent implements OnInit {
                         titulo: c.cComunicadoTitulo,
                         texto: c.cComunicadoDescripcion,
                         // Si iEstado es 1 => 'Activo', 0 => 'Inactivo' (ajusta según tu lógica)
-                        estado: c.iEstado === 1 ? 'Activo' : 'Inactivo',
+                        estado:
+                            Number(c.bComunicadoArchivado) === 1
+                                ? 'Activo'
+                                : 'Inactivo',
                         // Nombres leídos del SP
                         tipo: c.cTipoComNombre,
                         prioridad: c.cPrioridadNombre,
@@ -226,7 +249,11 @@ export class ContenidosComponent implements OnInit {
                     }
                 })
                 break
-            // Agrega más casos
+            case 'eliminar':
+                // Tras la eliminación refrescamos la lista
+                this.cargarComunicadosUsuario()
+                // Opcional: toast de éxito
+                break
         }
     }
     cargarComunicadosUsuario() {

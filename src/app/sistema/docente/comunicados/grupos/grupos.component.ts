@@ -35,7 +35,7 @@ export class GruposComponent {
     miembros: any = []
     columna = [
         {
-            type: 'item-checkbox',
+            type: 'actions',
             width: '1rem',
             field: 'iEliminado',
             header: 'Elegir',
@@ -83,9 +83,9 @@ export class GruposComponent {
             text: 'center',
         },
     ]
-    columnas = [
+    columnaModal = [
         {
-            type: 'item-checkbox',
+            type: 'actions',
             width: '1rem',
             field: 'iSeleccionado',
             header: 'Elegir',
@@ -131,6 +131,25 @@ export class GruposComponent {
             header: 'Direccion Domiciliaria',
             text_header: 'center',
             text: 'center',
+        },
+    ]
+    accion = [
+        {
+            labelTooltip: 'Seleccionar',
+            icon: 'pi pi-user-minus',
+            accion: 'setearDataxiEliminado',
+            type: 'item',
+            class: 'p-button-rounded p-button-success p-button-text',
+        },
+    ]
+
+    accionModal = [
+        {
+            labelTooltip: 'Seleccionar',
+            icon: 'pi pi-user-plus',
+            accion: 'setearDataxiSeleccionado',
+            type: 'item',
+            class: 'p-button-rounded p-button-success p-button-text',
         },
     ]
 
@@ -200,6 +219,7 @@ export class GruposComponent {
 
         switch (accion) {
             case 'obtenerMiembros':
+                this.data = []
                 if (this.data == false) {
                     this.data = item
                 } else {
@@ -215,9 +235,13 @@ export class GruposComponent {
 
                 break
             case 'setearDataxiSeleccionado':
-                console.log(item)
                 this.miembros = this.miembros.concat(item)
                 this.data = this.data.filter((elemento) => elemento != item)
+                this.messageService.add({
+                    severity: 'info',
+                    summary: 'Info',
+                    detail: 'Se agrego a : ' + item['completos'],
+                })
 
                 break
             case 'setearDataxiEliminado':

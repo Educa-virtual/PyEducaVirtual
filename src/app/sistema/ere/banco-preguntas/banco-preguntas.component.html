@@ -1,149 +1,98 @@
-<div>
-    <div class="grid">
-        <div class="col-2">
-            <button pButton label="Anio" class="p-mr-1 btn-azul"></button>
+<div class="grid">
+    <div class="col-6">
+        <p-inputGroup>
+            <p-inputGroupAddon>Tipo</p-inputGroupAddon>
             <p-dropdown
-                [options]="anios"
-                optionLabel="anio"
-                placeholder="Año"
-                class="w-full"
-            >
-            </p-dropdown>
-        </div>
-
-        <div class="col-2">
-            <button pButton label="Proceso" class="btn-azul"></button>
-            <p-dropdown
-                [options]="procesos"
-                optionLabel="cNivelEvalNombre"
-                optionValue="iNivelEvalId"
-                placeholder="Proceso"
-                class="w-full"
-            >
-            </p-dropdown>
-        </div>
-
-        <div class="col-4">
-            <button pButton label="Competencia" class="btn-azul"></button>
-            <p-dropdown
-                [options]="competencias"
-                optionLabel="cCompetenciaNombre"
-                optionValue="iCompetenciaId"
-                placeholder="Competencia"
-                class="w-full"
-            >
-            </p-dropdown>
-        </div>
-    </div>
-    <div class="grid">
-        <div class="col-2">
-            <button pButton label="Tipo" class="btn-azul"></button>
-            <p-dropdown
+                styleClass="w-full"
+                placeholder="Seleccione..."
+                optionValue="iTipoPregId"
                 [options]="tipoPreguntas"
                 optionLabel="cTipoPregDescripcion"
-                placeholder="tipo"
-                optionValue="iTipoPregId"
-            >
-            </p-dropdown>
-        </div>
-
-        <div class="col-4">
-            <button pButton label="Capacidad" class="btn-azul"></button>
-            <p-dropdown
-                [options]="capacidades"
-                optionLabel="cCapacidadNombre"
-                optionValue="iCapacidadId"
-                placeholder="Capacidad"
-            >
-            </p-dropdown>
-        </div>
-    </div>
-
-    <div>
-        <p-inputGroup>
-            <p-inputGroupAddon>
-                <i class="pi pi-search"></i>
-            </p-inputGroupAddon>
-            <input
-                type="text"
-                pInputText
-                placeholder="Descripción de la pregunta"
+                [filter]="true"
+                filterBy="cTipoPregDescripcion"
+                [(ngModel)]="selectedTipoPregunta"
             />
         </p-inputGroup>
     </div>
 
-    <p-table [value]="preguntas">
-        <ng-template pTemplate="header">
-            <tr>
-                <th>
-                    <p-checkbox
-                        [(ngModel)]="checked"
-                        [binary]="true"
-                        inputId="binary"
-                        class="ng-invalid ng-dirty"
-                    />
-                </th>
-                <th>#</th>
-                <th>{{ fechaEvaluacion }}</th>
-                <th>{{ pregunta }}</th>
-                <th>{{ proceso }}</th>
-                <th>{{ accion }}</th>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-rowData>
-            <tr>
-                <td>
-                    <p-checkbox
-                        [(ngModel)]="checked"
-                        [binary]="true"
-                        inputId="binary"
-                        class="ng-invalid ng-dirty"
-                    />
-                </td>
-                <td>{{ rowData.id }}</td>
-                <td>{{ rowData.dtUltimaFechaEvaluacion }}</td>
-                <td>{{ rowData.preguntas }}</td>
-                <td>{{ rowData.cNivelEvalNombre }}</td>
-                <td>
-                    <!-- Botón "ver" -->
-                    <p-button
-                        icon="pi pi-eye"
-                        class="p-button-rounded p-mr-1 btn-ver"
-                    >
-                    </p-button>
-
-                    <!-- Botón "agregar" -->
-                    <p-button
-                        icon="pi pi-plus"
-                        class="p-button-rounded p-mr-1 btn-agregar"
-                    >
-                    </p-button>
-
-                    <!-- Botón "eliminar" -->
-                    <p-button
-                        icon="pi pi-trash"
-                        class="p-button-rounded btn-eliminar"
-                    >
-                    </p-button>
-                </td>
-            </tr>
-        </ng-template>
-    </p-table>
-
-    <div class="card flex justify-content-center">
-        <p-paginator
-            [first]="first"
-            [rows]="rows"
-            [totalRecords]="120"
-            [rowsPerPageOptions]="[10, 20, 30]"
-        />
-    </div>
-
-    <div class="boton-contenedor">
-        <button
-            pButton
-            label="Agregar preguntas seleccionadas"
-            class="btn-azul"
-        ></button>
+    <div class="col-6">
+        <p-inputGroup>
+            <p-inputGroupAddon>Competencia</p-inputGroupAddon>
+            <p-dropdown
+                styleClass="w-full"
+                placeholder="Seleccione..."
+                optionValue="iCompetenciaId"
+                [options]="matrizCompetencia"
+                optionLabel="cCompetenciaNombre"
+                [filter]="true"
+                filterBy="cCompetenciaNombre"
+                [showClear]="true"
+            />
+        </p-inputGroup>
     </div>
 </div>
+<div class="grid">
+    <div class="col-3">
+        <p-inputGroup>
+            <p-inputGroupAddon>Año</p-inputGroupAddon>
+            <p-dropdown
+                styleClass="w-full"
+                placeholder="Seleccione..."
+                optionValue="anio"
+                [options]="anios"
+                optionLabel="anio"
+                [filter]="true"
+                filterBy="anio"
+                [showClear]="true"
+            />
+        </p-inputGroup>
+    </div>
+    <div class="col-3">
+        <p-inputGroup>
+            <p-inputGroupAddon>Proceso</p-inputGroupAddon>
+            <p-dropdown
+                styleClass="w-full"
+                placeholder="Seleccione..."
+                optionValue="iNivelEvalId"
+                [options]="procesos"
+                optionLabel="cNivelEvalNombre"
+                [filter]="true"
+                filterBy="cNivelEvalNombre"
+                [showClear]="true"
+            />
+        </p-inputGroup>
+    </div>
+    <div class="col-6">
+        <p-inputGroup>
+            <p-inputGroupAddon>Capacidad</p-inputGroupAddon>
+            <p-dropdown
+                styleClass="w-full"
+                placeholder="Seleccione..."
+                optionValue="iCapacidadId"
+                [options]="matrizCapacidad"
+                optionLabel="cCapacidadNombre"
+                [filter]="true"
+                filterBy="cCapacidadNombre"
+                [showClear]="true"
+            />
+        </p-inputGroup>
+    </div>
+</div>
+
+<app-container-page-accionb
+    [title]="'Lista de Evaluaciones'"
+    class="custom-container-page"
+>
+    <app-table-primeng
+        [columnas]="columnas"
+        [data]="preguntas"
+        (accionBtnItem)="accionBtnItemTable($event)"
+        [actions]="accionesTabla"
+        [showPaginator]="true"
+        [showCaption]="true"
+    >
+        <input type="text" />
+    </app-table-primeng>
+</app-container-page-accionb>
+
+<!--[(selectedRowData)]="selectedItems"-->

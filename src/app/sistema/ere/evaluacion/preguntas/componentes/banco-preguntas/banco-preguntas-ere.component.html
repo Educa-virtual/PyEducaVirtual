@@ -1,0 +1,126 @@
+<p-dialog
+    header="Edit Profile"
+    [modal]="true"
+    [(visible)]="visible"
+    (onShow)="obtenerDatos()"
+    [style]="{ width: '85rem' }"
+>
+    <form [formGroup]="formCriterios">
+        <br />
+        <p>Seleccione las preguntas que desea agregar a la evaluación</p>
+        <div class="grid">
+            <div class="col-6">
+                <p-inputGroup>
+                    <p-inputGroupAddon>Tipo</p-inputGroupAddon>
+                    <p-dropdown
+                        formControlName="ddTipoPregunta"
+                        styleClass="w-full"
+                        placeholder="Seleccione..."
+                        optionValue="iTipoPregId"
+                        [options]="tipoPreguntas"
+                        optionLabel="cTipoPregDescripcion"
+                        [filter]="true"
+                        filterBy="cTipoPregDescripcion"
+                        (onChange)="obtenerPreguntas()"
+                    />
+                </p-inputGroup>
+            </div>
+
+            <div class="col-6">
+                <p-inputGroup>
+                    <p-inputGroupAddon>Competencia</p-inputGroupAddon>
+                    <p-dropdown
+                        formControlName="ddCompetencia"
+                        styleClass="w-full"
+                        placeholder="Seleccione..."
+                        optionValue="iCompetenciaId"
+                        [options]="matrizCompetencia"
+                        optionLabel="cCompetenciaNombre"
+                        [filter]="true"
+                        filterBy="cCompetenciaNombre"
+                        [showClear]="true"
+                        (onChange)="obtenerPreguntas()"
+                    />
+                </p-inputGroup>
+            </div>
+        </div>
+        <div class="grid">
+            <div class="col-3">
+                <p-inputGroup>
+                    <p-inputGroupAddon>Año</p-inputGroupAddon>
+                    <p-dropdown
+                        formControlName="ddAnioEvaluacion"
+                        styleClass="w-full"
+                        placeholder="Seleccione..."
+                        optionValue="anio"
+                        [options]="anios"
+                        optionLabel="anio"
+                        [filter]="true"
+                        filterBy="anio"
+                        [showClear]="true"
+                        (onChange)="obtenerPreguntas()"
+                    />
+                </p-inputGroup>
+            </div>
+            <div class="col-3">
+                <p-inputGroup>
+                    <p-inputGroupAddon>Nivel eval.</p-inputGroupAddon>
+                    <p-dropdown
+                        formControlName="ddNivelEvaluacion"
+                        styleClass="w-full"
+                        placeholder="Seleccione..."
+                        optionValue="iNivelEvalId"
+                        [options]="procesos"
+                        optionLabel="cNivelEvalNombre"
+                        [filter]="true"
+                        filterBy="cNivelEvalNombre"
+                        [showClear]="true"
+                        (onChange)="obtenerPreguntas()"
+                    />
+                </p-inputGroup>
+            </div>
+            <div class="col-6">
+                <p-inputGroup>
+                    <p-inputGroupAddon>Capacidad</p-inputGroupAddon>
+                    <p-dropdown
+                        formControlName="ddCapacidad"
+                        styleClass="w-full"
+                        placeholder="Seleccione..."
+                        optionValue="iCapacidadId"
+                        [options]="matrizCapacidad"
+                        optionLabel="cCapacidadNombre"
+                        [filter]="true"
+                        filterBy="cCapacidadNombre"
+                        [showClear]="true"
+                        (onChange)="obtenerPreguntas()"
+                    />
+                </p-inputGroup>
+            </div>
+        </div>
+    </form>
+    <app-table-primeng
+        [columnas]="columnas"
+        [data]="preguntas"
+        (accionBtnItem)="accionesTabla($event)"
+        [actions]="botonesTabla"
+        [showPaginator]="true"
+        [indiceColumnaBuscar]="3"
+        [showCaption]="true"
+    >
+        <input type="text" />
+    </app-table-primeng>
+
+    <br />
+    <div class="flex justify-content-end gap-2">
+        <p-button
+            label="Cancelar"
+            severity="secondary"
+            (onClick)="visible = false"
+        />
+        <p-button
+            label="Agregar"
+            (onClick)="registrarPreguntasSeleccionadas()"
+        />
+    </div>
+</p-dialog>
+<!--[(selectedRowData)]="selectedItems"-->

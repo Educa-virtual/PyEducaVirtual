@@ -24,7 +24,12 @@
                 pBadge
                 style="font-size: 2rem"
                 [value]="totalNotificaciones"
+                *ngIf="totalNotificaciones !== 0; else alarma"
             ></i>
+
+            <ng-template #alarma>
+                <i class="pi pi-bell" style="font-size: 2rem"></i>
+            </ng-template>
         </button>
         <app-anio-escolar
             class="ml-5 mr-1"

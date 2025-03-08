@@ -1,23 +1,17 @@
-import { CommonModule } from '@angular/common'
-import { Component, inject, OnInit } from '@angular/core'
-import { FormsModule } from '@angular/forms'
+import { Component, inject, Input, OnInit } from '@angular/core'
+import { FormBuilder, FormGroup } from '@angular/forms'
 import { PrimengModule } from '@/app/primeng.module'
-import { TableModule } from 'primeng/table'
-import { ButtonModule } from 'primeng/button'
-import { CheckboxModule } from 'primeng/checkbox'
-import { DropdownModule } from 'primeng/dropdown'
-import { PaginatorModule } from 'primeng/paginator'
-import { DialogModule } from 'primeng/dialog'
-import { ApiEvaluacionesRService } from '../../evaluaciones/services/api-evaluaciones-r.service'
-import { ContainerPageAccionbComponent } from '../../docente/informes/container-page-accionb/container-page-accionb.component'
+import { ApiEvaluacionesRService } from '../../../../../evaluaciones/services/api-evaluaciones-r.service'
+import { ContainerPageAccionbComponent } from '../../../../../docente/informes/container-page-accionb/container-page-accionb.component'
 import {
     IActionTable,
     IColumn,
     TablePrimengComponent,
 } from '@/app/shared/table-primeng/table-primeng.component'
 import { HttpParams } from '@angular/common/http'
-import { PreguntasReutilizablesService } from '../../evaluaciones/services/preguntas-reutilizables.service'
-import { VerBancoPreguntaComponent } from './ver-banco-pregunta/ver-banco-pregunta.component'
+
+import { PreguntasReutilizablesService } from '@/app/sistema/evaluaciones/services/preguntas-reutilizables.service'
+import { VerBancoPreguntaComponent } from '@/app/sistema/ere/banco-preguntas/ver-banco-pregunta/ver-banco-pregunta.component'
 
 /*interface PageEvent {
     first: number
@@ -27,39 +21,23 @@ import { VerBancoPreguntaComponent } from './ver-banco-pregunta/ver-banco-pregun
 }*/
 
 @Component({
-    selector: 'app-banco-preguntas',
+    selector: 'app-banco-preguntas-ere',
     standalone: true,
     imports: [
-        CommonModule,
-        FormsModule,
         PrimengModule,
-        TableModule,
-        ButtonModule,
-        CheckboxModule,
-        DropdownModule,
-        PaginatorModule,
-        DialogModule,
         ContainerPageAccionbComponent,
         TablePrimengComponent,
         VerBancoPreguntaComponent,
     ],
-    templateUrl: './banco-preguntas.component.html',
-    styleUrls: ['./banco-preguntas.component.scss'],
+    templateUrl: './banco-preguntas-ere.component.html',
+    styleUrls: ['./banco-preguntas-ere.component.scss'],
 })
 export class BancoPreguntasComponent implements OnInit {
     private evaluacionesRService = inject(ApiEvaluacionesRService)
     private preguntasService = inject(PreguntasReutilizablesService)
-    checked: boolean = false
-    // variables para los filtros seleccionados
-    /*fechaEvaluacion: string = 'Fecha de Evaluacion'
-    pregunta: string = 'pregunta'
-    tipoDePregunta: string = 'Tipo Pregunta'
-    proceso: string = 'Proceso'
-    grado: string = 'Grado'
-    accion: string = 'Acciones'
-    first: number = 0
-    rows: number = 10*/
-
+    //checked: boolean = false
+    @Input() visible: boolean = false
+    formCriterios!: FormGroup
     matrizCompetencia: any[] = []
     procesos: any[] = []
     anios: any[] = []
@@ -67,11 +45,9 @@ export class BancoPreguntasComponent implements OnInit {
     selectedTipoPregunta: any
     matrizCapacidad: any[] = []
     preguntas: any[] = []
-    /*onPageChange(event: PageEvent) {
-        //this.first = event.first
-        //this.rows = event.rows
-    }*/
-    accionesTabla: IActionTable[] = [
+    preguntasSeleccionadas: any[] = []
+
+    botonesTabla: IActionTable[] = [
         {
             labelTooltip: 'Ver',
             icon: 'pi pi-eye',
@@ -82,6 +58,14 @@ export class BancoPreguntasComponent implements OnInit {
     ]
 
     columnas: IColumn[] = [
+        {
+            type: 'item-checkbox',
+            width: '1rem',
+            field: 'seleccionado',
+            header: 'Elegir',
+            text_header: 'center',
+            text: 'center',
+        },
         {
             type: 'item',
             width: '0.5rem',
@@ -94,55 +78,79 @@ export class BancoPreguntasComponent implements OnInit {
             field: 'dtUltimaFechaEvaluacion',
             header: 'Últ. fecha eval.',
             type: 'text',
-            width: '7rem',
-            text: 'left',
-            text_header: 'dtUltimaFechaEvaluacion',
+            width: '2rem',
+            text: 'center',
+            text_header: 'center',
         },
         {
             field: 'cPregunta',
             header: 'Pregunta',
             type: 'text',
-            width: '7rem',
+            width: '15rem',
             text: 'left',
-            text_header: 'cPregunta',
+            text_header: 'center',
         },
         {
             field: 'cNivelEvalNombre',
             header: 'Últ. nivel eval.',
             type: 'text',
-            width: '7rem',
-            text: 'left',
-            text_header: 'cNivelEvalNombre',
+            width: '4rem',
+            text: 'center',
+            text_header: 'center',
         },
         {
             field: '',
             header: 'Acciones',
             type: 'actions',
-            width: '5rem',
-            text: 'left',
-            text_header: '',
+            width: '3rem',
+            text: 'center',
+            text_header: 'center',
         },
     ]
 
     mostrarDialogoPreguntas: boolean
+    constructor(private fb: FormBuilder) {}
 
     ngOnInit(): void {
+        this.formCriterios = this.fb.group({
+            ddTipoPregunta: [null],
+            ddCompetencia: [null],
+            ddAnioEvaluacion: [null],
+            ddNivelEvaluacion: [null],
+            ddCapacidad: [null],
+        })
+    }
+
+    obtenerDatos() {
         this.obtenerAnios()
         this.obtenerProcesos()
         this.obtenerMatrizCompetencias()
         this.obtenerTipoPreguntas()
         this.obtenerMatrizCapacidad()
-        this.obtenerPreguntas()
-        /*this.tipoPregunta()
-        this.capacidadesFiltro()
-
-
-        this.obtenerPreguntas()*/
     }
 
-    accionBtnItemTable({ accion }) {
-        void accion
-        this.mostrarDialogoPreguntas = true
+    accionesTabla({ accion, item }) {
+        switch (accion) {
+            case 'ver':
+                console.log('visto')
+                this.mostrarDialogoPreguntas = true
+                break
+            case 'setearDataxseleccionado':
+                if (item.seleccionado) {
+                    this.preguntasSeleccionadas.push({
+                        id: item.iPreguntaId,
+                        tipo: item.iEncabPregId == null ? 'unica' : 'multiple',
+                    })
+                } else {
+                    this.preguntasSeleccionadas =
+                        this.preguntasSeleccionadas.filter(
+                            (o) => o.id !== item.iPreguntaId
+                        )
+                    //this.preguntasSeleccionadas = this.preguntasSeleccionadas.filter(valor => valor !== item.iPreguntaId);
+                }
+                console.log(this.preguntasSeleccionadas)
+                break
+        }
     }
 
     obtenerAnios() {
@@ -183,7 +191,10 @@ export class BancoPreguntasComponent implements OnInit {
         this.evaluacionesRService.obtenerTipoPreguntas().subscribe({
             next: (respuesta) => {
                 this.tipoPreguntas = respuesta
-                this.selectedTipoPregunta = respuesta[0].iTipoPregId
+                this.formCriterios.patchValue({
+                    ddTipoPregunta: respuesta[0].iTipoPregId,
+                })
+                this.obtenerPreguntas()
             },
 
             error: (error) => {
@@ -203,17 +214,13 @@ export class BancoPreguntasComponent implements OnInit {
         })
     }
 
-    /*obtenerMatrizCapacidades() {
-        this.evaluacionesRService.obtenerMatrizCapacidades().subscribe({
-            next: (respuesta) => {
-                this.capacidades = respuesta.selectData
-            },
-
-            error: (error) => {
-                console.log('error obtenido' + error)
-            },
-        })
-    }*/
+    registrarPreguntasSeleccionadas() {
+        if (this.preguntasSeleccionadas.length > 0) {
+            console.log(this.preguntasSeleccionadas)
+        } else {
+            alert('No hay preguntas seleccionadas')
+        }
+    }
 
     obtenerPreguntas() {
         const iEvaluacionId =
@@ -221,7 +228,35 @@ export class BancoPreguntasComponent implements OnInit {
         const iCursosNivelGradId =
             'p4a702dYbzM9l5WZwmxEeok6x2eOrGQVqJgDy8AvXpB1NjLRK3'
         let params = new HttpParams()
-        params = params.set('tipo_pregunta', 1)
+        params = params.set(
+            'tipo_pregunta',
+            this.formCriterios.get('ddTipoPregunta')?.value
+        )
+
+        if (this.formCriterios.get('ddCompetencia')?.value != null) {
+            params = params.set(
+                'competencia',
+                this.formCriterios.get('ddCompetencia')?.value
+            )
+        }
+        if (this.formCriterios.get('ddAnioEvaluacion')?.value != null) {
+            params = params.set(
+                'anio_evaluacion',
+                this.formCriterios.get('ddAnioEvaluacion')?.value
+            )
+        }
+        if (this.formCriterios.get('ddNivelEvaluacion')?.value != null) {
+            params = params.set(
+                'nivel_evaluacion',
+                this.formCriterios.get('ddNivelEvaluacion')?.value
+            )
+        }
+        if (this.formCriterios.get('ddCapacidad')?.value != null) {
+            params = params.set(
+                'capacidad',
+                this.formCriterios.get('ddCapacidad')?.value
+            )
+        }
         this.preguntasService
             .obtenerPreguntas(iEvaluacionId, iCursosNivelGradId, params)
             .subscribe({

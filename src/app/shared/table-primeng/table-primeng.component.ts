@@ -97,6 +97,7 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     @Input() sortMode: 'single' | 'multiple' | null = 'multiple'
     @Input() sortField: string | undefined | null = null
     @Input() sortOrder: number | undefined | null = null
+    @Input() indiceColumnaBuscar: number = 1
 
     @Input() selectedRowData
     @Input() scrollable: boolean = false
@@ -129,11 +130,15 @@ export class TablePrimengComponent implements OnChanges, OnInit {
         //     });
         // }
         this.searchTerm = event
-
+        console.log('Valor es ' + this.indiceColumnaBuscar)
         if (this.dt) {
             // solo va buscar en el indice(1)
             // const filas = [this.columnas[1].field, this.columnas[2].field]
-            this.dt.filter(this.searchTerm, this.columnas[1].field, 'contains')
+            this.dt.filter(
+                this.searchTerm,
+                this.columnas[this.indiceColumnaBuscar].field,
+                'contains'
+            )
         }
     }
     // otra forma de buscar en la table pero general demora en buscar
@@ -192,7 +197,6 @@ export class TablePrimengComponent implements OnChanges, OnInit {
 
     @Input()
     set columnas(value: IColumn[] | undefined) {
-        console.log
         if (value) {
             this._columnas = value.map((column) => ({
                 ...column,

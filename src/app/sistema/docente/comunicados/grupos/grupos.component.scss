@@ -1,0 +1,9 @@
+:host ::ng-deep {
+    .p-panel .p-panel-header {
+        padding: 10px !important;
+    }
+    .p-inputgroup-addon {
+        background: var(--bg-header-modal) !important;
+        color: white !important;
+    }
+}

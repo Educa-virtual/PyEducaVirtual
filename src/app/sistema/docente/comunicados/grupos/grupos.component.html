@@ -1,0 +1,161 @@
+<div class="flex w-full">
+    <div class="flex-1 p-1 border-round">
+        <p-panel>
+            <ng-template pTemplate="header" class="p-0">
+                <div
+                    class="text-white justify-content-center text-center text-2xl font-bold w-full"
+                >
+                    Grupos
+                </div>
+            </ng-template>
+            <div class="flex">
+                <p-accordion
+                    class="w-full p-0 m-0"
+                    expandIcon="pi pi-angle-down"
+                    collapseIcon="pi pi-angle-up"
+                >
+                    <p-accordionTab iconPos="end">
+                        <ng-template pTemplate="header">
+                            <p-inputGroup>
+                                <p-inputGroupAddon class="font-bold"
+                                    >GRUPO 1 :</p-inputGroupAddon
+                                >
+                                <input
+                                    type="text"
+                                    [(ngModel)]="cGrupoNombre"
+                                    pInputText
+                                />
+                            </p-inputGroup>
+                            <!-- <p-buttonGroup>
+                                    <p-button type="button" icon="pi pi-pen-to-square"></p-button>
+                                    <p-button type="button" icon="pi pi-trash"></p-button>
+                                </p-buttonGroup> -->
+
+                            &nbsp;
+                        </ng-template>
+                        <p class="m-0">
+                            Lorem ipsum dolor sit amet, consectetur adipiscing
+                            elit, sed do eiusmod tempor incididunt ut labore et
+                            dolore magna aliqua. Ut enim ad minim veniam, quis
+                            nostrud exercitation ullamco laboris nisi ut aliquip
+                            ex ea commodo consequat. Duis aute irure dolor in
+                            reprehenderit in voluptate velit esse cillum dolore
+                            eu fugiat nulla pariatur. Excepteur sint occaecat
+                            cupidatat non proident, sunt in culpa qui officia
+                            deserunt mollit anim id est laborum.
+                        </p>
+                    </p-accordionTab>
+                </p-accordion>
+            </div>
+        </p-panel>
+    </div>
+    <div class="flex-1 p-1 border-round">
+        <p-panel>
+            <ng-template pTemplate="header">
+                <div
+                    class="text-white justify-content-center text-center text-2xl font-bold w-full"
+                >
+                    Configuracion de Grupos
+                </div>
+            </ng-template>
+            <div class="flex">
+                <p-inputGroup>
+                    <p-inputGroupAddon class="font-bold"
+                        >Nombre del Grupo :</p-inputGroupAddon
+                    >
+                    <input type="text" [(ngModel)]="cGrupoNombre" pInputText />
+                </p-inputGroup>
+            </div>
+            <div class="flex mt-2">
+                <p-inputGroup>
+                    <p-inputGroupAddon class="font-bold"
+                        >Descripcion :</p-inputGroupAddon
+                    >
+                    <input
+                        type="text"
+                        [(ngModel)]="cGrupoDescripcion"
+                        pInputText
+                    />
+                </p-inputGroup>
+            </div>
+
+            <div class="flex font-bold mt-3 mb-3 w-full">
+                <div class="flex p-2">Integrantes del Grupo</div>
+                <div class="flex-1 text-right">
+                    <button
+                        type="button"
+                        size="small"
+                        class="font-bold p-button-primary"
+                        pButton
+                        pRipple
+                        (click)="mostrarModal()"
+                    >
+                        Agregar Mienbros &nbsp;<i class="pi pi-plus-circle"></i>
+                    </button>
+                    &nbsp;
+                    <button
+                        type="button"
+                        size="small"
+                        class="font-bold p-button-success"
+                        pButton
+                        pRipple
+                        (click)="guardarMiembros()"
+                    >
+                        Guardar Mienbros &nbsp;<i class="pi pi-save"></i>
+                    </button>
+                </div>
+            </div>
+
+            <app-table-primeng
+                [columnas]="columna"
+                [data]="miembros"
+                (accionBtnItem)="accionBtnItem($event)"
+                [actions]="accion"
+            >
+            </app-table-primeng>
+        </p-panel>
+    </div>
+</div>
+
+<div class="card">
+    <p-dialog
+        header="Buscar Nuevos Miembros"
+        [modal]="true"
+        [(visible)]="visible"
+        [style]="{ width: '70rem', height: '700px' }"
+    >
+        <div class="grid mt-3">
+            <div class="col-12 md:col-4">
+                <p-dropdown
+                    [style]="{ width: '100%' }"
+                    [options]="cities"
+                    [(ngModel)]="grupo"
+                    optionLabel="grupo"
+                    placeholder="Seleccionar Tipo de persona"
+                    appendTo="body"
+                />
+            </div>
+            <div class="col-12 md:col-4">
+                <button
+                    type="button"
+                    class="justify-content-center font-bold p-button-primary w-full"
+                    pButton
+                    pRipple
+                    (click)="mostrarDocentes()"
+                >
+                    Seleccionar Tipo de Persona &nbsp;<i
+                        class="pi pi-search"
+                    ></i>
+                </button>
+            </div>
+        </div>
+        <app-table-primeng
+            [columnas]="columnaModal"
+            [data]="data"
+            (accionBtnItem)="accionBtnItem($event)"
+            [actions]="accionModal"
+        >
+        </app-table-primeng>
+    </p-dialog>
+</div>
+<p-toast />

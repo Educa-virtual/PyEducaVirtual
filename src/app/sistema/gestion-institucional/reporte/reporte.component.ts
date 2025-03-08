@@ -158,18 +158,26 @@ export class ReporteComponent {
         this.getReportePdf(params)
     }
     buscarGrado() {
-        const params = {
-            petition: 'post',
-            group: 'aula-virtual',
-            prefix: 'academico',
-            ruta: 'obtener_academico_grado',
-            data: {
-                iGrado: this.selectGrado,
-                iYear: this.selectYear,
-                iIieeId: this.iiee,
-            },
+        if (this.selectGrado != undefined && this.selectYear != undefined) {
+            const params = {
+                petition: 'post',
+                group: 'aula-virtual',
+                prefix: 'academico',
+                ruta: 'obtener_academico_grado',
+                data: {
+                    iGrado: this.selectGrado,
+                    iYear: this.selectYear,
+                    iIieeId: this.iiee,
+                },
+            }
+            this.getInformation(params, 'obtenerAcademicoGrado')
+        } else {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Mensaje',
+                detail: 'No ha seleccionado el grado o Seccion',
+            })
         }
-        this.getInformation(params, 'obtenerAcademicoGrado')
     }
     // Genera la tabla de grados
     generarListaGrados() {
@@ -203,17 +211,25 @@ export class ReporteComponent {
         }
     }
     buscarDocumento() {
-        const params = {
-            petition: 'post',
-            group: 'aula-virtual',
-            prefix: 'academico',
-            ruta: 'obtener_datos',
-            data: {
-                cPersDocumento: this.documento,
-                iIieeId: this.iiee,
-            },
+        if (this.documento != '') {
+            const params = {
+                petition: 'post',
+                group: 'aula-virtual',
+                prefix: 'academico',
+                ruta: 'obtener_datos',
+                data: {
+                    cPersDocumento: this.documento,
+                    iIieeId: this.iiee,
+                },
+            }
+            this.getInformation(params, 'obtenerHistorial')
+        } else {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Mensaje',
+                detail: 'Debe Ingresar Documento de Identidad',
+            })
         }
-        this.getInformation(params, 'obtenerHistorial')
     }
     mostrarReporte() {
         const params = {

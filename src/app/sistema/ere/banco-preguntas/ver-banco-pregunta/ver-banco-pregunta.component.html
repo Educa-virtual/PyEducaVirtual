@@ -1,0 +1,163 @@
+accordion
+
+<div [innerHTML]="encab.cPregunta"></div>
+<ng-template pTemplate="header">
+    <span class="flex align-items-center justify-content-start w-full">
+        <span class="font-bold whitespace-nowrap">{{
+            encab.title | removeHTMLCSS | truncateText: 80
+        }}</span>
+        <p-button
+            *ngIf="true"
+            icon="pi pi-trash"
+            iconPos="left"
+            severity="danger"
+            class="ml-auto mr-2"
+            [rounded]="true"
+        ></p-button>
+    </span>
+</ng-template>
+<div class="col-12">
+    <label for="matriz" class="mt-1 font-bold"
+        >Matriz <span class="text-red-500 text-xs">(*) Obligatorio</span></label
+    >
+</div>
+<div class="col-12">
+    <p-inputGroup>
+        <p-inputGroupAddon>Competencia</p-inputGroupAddon>
+    </p-inputGroup>
+</div>
+<div class="col-12">
+    <p-inputGroup>
+        <p-inputGroupAddon>Capacidad</p-inputGroupAddon>
+    </p-inputGroup>
+</div>
+<div class="col-12">
+    <p-inputGroup>
+        <p-inputGroupAddon>Desempeño </p-inputGroupAddon>
+        <input
+            [disabled]="!true"
+            type="text"
+            pInputText
+            placeholder="Ingrese el desempeño"
+            [(ngModel)]="encab.cDesempenoDescripcion"
+        />
+    </p-inputGroup>
+</div>
+<!-- es secundaria-->
+@if (true) {
+    <div class="col-12">
+        <p-inputGroup>
+            <p-inputGroupAddon>Peso</p-inputGroupAddon>
+        </p-inputGroup>
+    </div>
+}
+<div class="col-12">
+    <label for="enunciado" class="mt-1 font-bold"
+        >Pregunta
+        <span class="text-red-500 text-xs">(*) Obligatorio</span></label
+    >
+    <editor [(ngModel)]="encab.cPregunta" />
+</div>
+
+<div class="col-12 mt-1">
+    <div class="flex font-bold justify-content-between">
+        <div class="flex font-bold justify-content-start align-items-center">
+            Lista de Alternativas
+        </div>
+    </div>
+</div>
+
+<div class="col-12">
+    @for (
+        alternativa of encab.alternativas;
+        track alternativa;
+        let keyx = $index
+    ) {
+        <div
+            class="p-2"
+            [ngStyle]="{
+                'border-left': alternativa.bAlternativaCorrecta
+                    ? '4px solid #22c55e'
+                    : 'inherit',
+                background: alternativa.bAlternativaCorrecta
+                    ? 'rgb(227 253 237)'
+                    : 'transparent',
+            }"
+        >
+            <p-inputGroup class="mt-1">
+                <p-inputGroupAddon>
+                    {{ alternativa.cAlternativaLetra }}
+                </p-inputGroupAddon>
+                <input
+                    type="text"
+                    pInputText
+                    placeholder="Ingrese la alternativa"
+                    [(ngModel)]="alternativa.cAlternativaDescripcion"
+                />
+                <div *ngIf="true" class="align-content-center p-2 border-img">
+                    <p-image
+                        [src]="backend + '/' + alternativa.cAlternativaImagen"
+                        alt="Image"
+                        width="25"
+                        [preview]="true"
+                    />
+                </div>
+            </p-inputGroup>
+            <div class="flex justify-content-end">
+                <button
+                    *ngIf="true"
+                    type="button"
+                    pButton
+                    [text]="true"
+                    icon="pi pi-trash"
+                    class="p-button-danger"
+                    size="small"
+                >
+                    &nbsp;
+                </button>
+                <button
+                    *ngIf="true"
+                    pButton
+                    type="button"
+                    [text]="true"
+                    class="p-button-primary btn-file-image"
+                    size="small"
+                >
+                    <i class="pi pi-image"></i>
+                </button>
+                <p-checkbox
+                    [class]="true ? 'mt-2' : ''"
+                    [disabled]="!true"
+                    [label]="'Respuesta Correcta'"
+                    [inputId]="alternativa.iAlternativaId"
+                    [value]="alternativa"
+                    [(ngModel)]="alternativa.bAlternativaCorrecta"
+                    [binary]="true"
+                />
+            </div>
+            @if (alternativa.bAlternativaCorrecta) {
+                <p-inputGroup class="mt-1">
+                    <p-inputGroupAddon> Explicación </p-inputGroupAddon>
+                    <input
+                        type="text"
+                        pInputText
+                        placeholder="Ingrese la explicación"
+                        [(ngModel)]="alternativa.cAlternativaExplicacion"
+                    />
+                </p-inputGroup>
+            }
+        </div>
+    }
+</div>
+<div class="col-12" *ngIf="true">
+    <div class="text-center">
+        <button
+            pButton
+            pRipple
+            type="button"
+            class="p-button-success btn-block"
+        >
+            <i class="pi pi-check"></i>&nbsp; Guardar Pregunta
+        </button>
+    </div>
+</div>

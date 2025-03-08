@@ -24,4 +24,15 @@ export class PreguntasReutilizablesService {
             )
             .pipe(map((resp) => resp['data']))
     }
+
+    obtenerDetallePregunta(iPreguntaId: string, params): Observable<any> {
+        return this.http
+            .get(
+                `${this.urlBackendApi}/ere/preguntas/obtenerBancoPreguntas?iPreguntaId=${iPreguntaId}`,
+                params
+            )
+            .pipe(map((resp) => resp['data'][0]))
+    }
+
+    //{{local_url}}/ere/preguntas/obtenerBancoPreguntas?iPreguntaId=281
 }

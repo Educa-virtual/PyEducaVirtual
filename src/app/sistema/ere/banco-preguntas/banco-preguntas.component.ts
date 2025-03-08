@@ -17,6 +17,7 @@ import {
 } from '@/app/shared/table-primeng/table-primeng.component'
 import { HttpParams } from '@angular/common/http'
 import { PreguntasReutilizablesService } from '../../evaluaciones/services/preguntas-reutilizables.service'
+import { VerBancoPreguntaComponent } from './ver-banco-pregunta/ver-banco-pregunta.component'
 
 /*interface PageEvent {
     first: number
@@ -40,6 +41,7 @@ import { PreguntasReutilizablesService } from '../../evaluaciones/services/pregu
         DialogModule,
         ContainerPageAccionbComponent,
         TablePrimengComponent,
+        VerBancoPreguntaComponent,
     ],
     templateUrl: './banco-preguntas.component.html',
     styleUrls: ['./banco-preguntas.component.scss'],
@@ -122,6 +124,8 @@ export class BancoPreguntasComponent implements OnInit {
         },
     ]
 
+    mostrarDialogoPreguntas: boolean
+
     ngOnInit(): void {
         this.obtenerAnios()
         this.obtenerProcesos()
@@ -137,10 +141,8 @@ export class BancoPreguntasComponent implements OnInit {
     }
 
     accionBtnItemTable({ accion }) {
-        switch (accion) {
-            case 'seleccionar':
-                break
-        }
+        void accion
+        this.mostrarDialogoPreguntas = true
     }
 
     obtenerAnios() {

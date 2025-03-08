@@ -263,19 +263,28 @@
                         required
                     ></textarea>
                 </div>
-
-                <!-- Botón para crear o actualizar según corresponda -->
-                <button
-                    pButton
-                    pRipple
-                    [label]="
-                        selectedComunicado.id === 0
-                            ? 'Publicar'
-                            : 'Guardar Cambios'
-                    "
-                    class="p-button-success align-self-end"
-                    type="submit"
-                ></button>
+                <div class="form-buttons">
+                    <button
+                        pButton
+                        pRipple
+                        label="Limpiar"
+                        class="p-button-success align-self-end"
+                        type="button"
+                        (click)="limpiarFormulario()"
+                    ></button>
+                    <!-- Botón para crear o actualizar según corresponda -->
+                    <button
+                        pButton
+                        pRipple
+                        [label]="
+                            selectedComunicado.id === 0
+                                ? 'Publicar'
+                                : 'Guardar Cambios'
+                        "
+                        class="p-button-success align-self-end"
+                        type="submit"
+                    ></button>
+                </div>
             </form>
         </p-panel>
     </div>

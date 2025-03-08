@@ -252,7 +252,7 @@ export class ContenidosComponent implements OnInit {
             case 'eliminar':
                 // Tras la eliminación refrescamos la lista
                 this.cargarComunicadosUsuario()
-                // Opcional: toast de éxito
+                // aqui toast de éxito
                 break
         }
     }
@@ -267,5 +267,10 @@ export class ContenidosComponent implements OnInit {
             },
         }
         this.getInformation(params, 'obtenerComunicadosPersona')
+    }
+    limpiarFormulario(): void {
+        // Reinicia el comunicado
+        this.selectedComunicado = this.initComunicado()
+        this.selectedEstado = null
     }
 }

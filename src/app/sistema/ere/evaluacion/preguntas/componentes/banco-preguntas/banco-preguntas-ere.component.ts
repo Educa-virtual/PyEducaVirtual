@@ -119,6 +119,9 @@ export class BancoPreguntasComponent implements OnInit {
             ddNivelEvaluacion: [null],
             ddCapacidad: [null],
         })
+
+        // Agregado por bug de visualizacion
+        this.visible = true
     }
 
     obtenerDatos() {

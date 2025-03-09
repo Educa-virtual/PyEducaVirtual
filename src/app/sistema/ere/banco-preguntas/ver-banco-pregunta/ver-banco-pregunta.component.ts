@@ -40,7 +40,7 @@ export class VerBancoPreguntaComponent implements OnInit {
         }
 
         this._PreguntasReutilizablesService
-            .obtenerDetallePregunta('449', params)
+            .obtenerDetallePregunta(this.iPreguntaId, params)
             .subscribe({
                 next: (respuesta) => {
                     this.encab = respuesta
@@ -51,5 +51,7 @@ export class VerBancoPreguntaComponent implements OnInit {
                     console.error('error obtenido', error)
                 },
             })
+
+        console.log('probando' + this.iPreguntaId)
     }
 }

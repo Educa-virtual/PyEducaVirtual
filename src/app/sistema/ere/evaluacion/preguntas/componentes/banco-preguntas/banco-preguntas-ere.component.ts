@@ -108,7 +108,7 @@ export class BancoPreguntasComponent implements OnInit {
         },
     ]
 
-    mostrarDialogoPreguntas: boolean
+    mostrarDialogoPreguntas: boolean = false
     constructor(private fb: FormBuilder) {}
 
     ngOnInit(): void {

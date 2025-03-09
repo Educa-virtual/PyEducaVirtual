@@ -8,45 +8,56 @@
                     Grupos
                 </div>
             </ng-template>
-            <div class="flex">
-                <p-accordion
-                    class="w-full p-0 m-0"
-                    expandIcon="pi pi-angle-down"
-                    collapseIcon="pi pi-angle-up"
+            <p-scrollPanel
+                [style]="{ width: '100%', height: '500px' }"
+                styleClass="custombar1"
+            >
+                <div
+                    class="flex"
+                    *ngFor="let agregar of miembrosAgregados; index as i"
                 >
-                    <p-accordionTab iconPos="end">
-                        <ng-template pTemplate="header">
-                            <p-inputGroup>
-                                <p-inputGroupAddon class="font-bold"
-                                    >GRUPO 1 :</p-inputGroupAddon
-                                >
-                                <input
-                                    type="text"
-                                    [(ngModel)]="cGrupoNombre"
-                                    pInputText
-                                />
-                            </p-inputGroup>
-                            <!-- <p-buttonGroup>
-                                    <p-button type="button" icon="pi pi-pen-to-square"></p-button>
-                                    <p-button type="button" icon="pi pi-trash"></p-button>
-                                </p-buttonGroup> -->
-
-                            &nbsp;
-                        </ng-template>
-                        <p class="m-0">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing
-                            elit, sed do eiusmod tempor incididunt ut labore et
-                            dolore magna aliqua. Ut enim ad minim veniam, quis
-                            nostrud exercitation ullamco laboris nisi ut aliquip
-                            ex ea commodo consequat. Duis aute irure dolor in
-                            reprehenderit in voluptate velit esse cillum dolore
-                            eu fugiat nulla pariatur. Excepteur sint occaecat
-                            cupidatat non proident, sunt in culpa qui officia
-                            deserunt mollit anim id est laborum.
-                        </p>
-                    </p-accordionTab>
-                </p-accordion>
-            </div>
+                    <p-accordion
+                        class="w-full p-0 m-0"
+                        expandIcon="pi pi-angle-down"
+                        collapseIcon="pi pi-angle-up"
+                    >
+                        <p-accordionTab iconPos="end">
+                            <ng-template pTemplate="header">
+                                <p-inputGroup>
+                                    <p-inputGroupAddon class="font-bold"
+                                        >GRUPO {{ i + 1 }} :</p-inputGroupAddon
+                                    >
+                                    <input
+                                        type="text"
+                                        [(ngModel)]="agregar.cGrupoNombre"
+                                        pInputText
+                                        readonly
+                                    /> </p-inputGroup
+                                >&nbsp;
+                                <p-button
+                                    type="button"
+                                    icon="pi pi-pen-to-square"
+                                    (click)="$event.stopPropagation()"
+                                ></p-button
+                                >&nbsp;
+                                <p-button
+                                    type="button"
+                                    icon="pi pi-trash"
+                                    (click)="$event.stopPropagation()"
+                                ></p-button
+                                >&nbsp;
+                            </ng-template>
+                            <p class="m-0" label="cGrupoDescripcion">
+                                {{ agregar.cGrupoDescripcion }}
+                            </p>
+                            <div class="text-right">
+                                <i class="pi pi-users"></i>
+                                {{ agregar.miembroTotal }} integrantes
+                            </div>
+                        </p-accordionTab>
+                    </p-accordion>
+                </div>
+            </p-scrollPanel>
         </p-panel>
     </div>
     <div class="flex-1 p-1 border-round">
@@ -117,45 +128,41 @@
     </div>
 </div>
 
-<div class="card">
-    <p-dialog
-        header="Buscar Nuevos Miembros"
-        [modal]="true"
-        [(visible)]="visible"
-        [style]="{ width: '70rem', height: '700px' }"
-    >
-        <div class="grid mt-3">
-            <div class="col-12 md:col-4">
-                <p-dropdown
-                    [style]="{ width: '100%' }"
-                    [options]="cities"
-                    [(ngModel)]="grupo"
-                    optionLabel="grupo"
-                    placeholder="Seleccionar Tipo de persona"
-                    appendTo="body"
-                />
-            </div>
-            <div class="col-12 md:col-4">
-                <button
-                    type="button"
-                    class="justify-content-center font-bold p-button-primary w-full"
-                    pButton
-                    pRipple
-                    (click)="mostrarDocentes()"
-                >
-                    Seleccionar Tipo de Persona &nbsp;<i
-                        class="pi pi-search"
-                    ></i>
-                </button>
-            </div>
+<p-dialog
+    header="Buscar Nuevos Miembros"
+    [modal]="true"
+    [(visible)]="visible"
+    [style]="{ width: '70rem', height: '700px' }"
+>
+    <div class="grid mt-3">
+        <div class="col-12 md:col-4">
+            <p-dropdown
+                [style]="{ width: '100%' }"
+                [options]="cities"
+                [(ngModel)]="grupo"
+                optionLabel="grupo"
+                placeholder="Seleccionar Tipo de persona"
+                appendTo="body"
+            />
         </div>
-        <app-table-primeng
-            [columnas]="columnaModal"
-            [data]="data"
-            (accionBtnItem)="accionBtnItem($event)"
-            [actions]="accionModal"
-        >
-        </app-table-primeng>
-    </p-dialog>
-</div>
+        <div class="col-12 md:col-4">
+            <button
+                type="button"
+                class="justify-content-center font-bold p-button-primary w-full"
+                pButton
+                pRipple
+                (click)="mostrarDocentes()"
+            >
+                Seleccionar Tipo de Persona &nbsp;<i class="pi pi-search"></i>
+            </button>
+        </div>
+    </div>
+    <app-table-primeng
+        [columnas]="columnaModal"
+        [data]="data"
+        (accionBtnItem)="accionBtnItem($event)"
+        [actions]="accionModal"
+    >
+    </app-table-primeng>
+</p-dialog>
 <p-toast />

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core'
+import { Component, OnInit, inject } from '@angular/core'
 import { PrimengModule } from '@/app/primeng.module'
 import { FormsModule } from '@angular/forms'
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
@@ -12,7 +12,7 @@ import { MessageService } from 'primeng/api'
     templateUrl: './grupos.component.html',
     styleUrl: './grupos.component.scss',
 })
-export class GruposComponent {
+export class GruposComponent implements OnInit {
     private GeneralService = inject(GeneralService)
     constructor(
         private ConstantesService: ConstantesService,
@@ -23,6 +23,7 @@ export class GruposComponent {
         this.iYAcadId = this.ConstantesService.iYAcadId
         this.iPersId = this.ConstantesService.iPersId
     }
+    miembrosAgregados = []
     iPersId: number
     iSedeId: string = ''
     iIieeId: string = ''
@@ -158,6 +159,23 @@ export class GruposComponent {
         { grupo: 'Docentes', codigo: 2 },
     ]
 
+    ngOnInit() {
+        this.obtenerGrupos()
+    }
+
+    obtenerGrupos() {
+        const params = {
+            petition: 'post',
+            group: 'com',
+            prefix: 'miembros',
+            ruta: 'obtener_grupos',
+            data: {
+                iPersId: this.iPersId,
+            },
+        }
+        this.getInformation(params, 'obtenerGrupos')
+    }
+
     mostrarModal() {
         this.visible = !this.visible
     }
@@ -231,8 +249,7 @@ export class GruposComponent {
 
                 break
             case 'guardarMiembros':
-                console.log(item)
-
+                this.miembrosAgregados = this.miembrosAgregados.concat(item)
                 break
             case 'setearDataxiSeleccionado':
                 this.miembros = this.miembros.concat(item)
@@ -251,6 +268,9 @@ export class GruposComponent {
                     (elemento) => elemento != item
                 )
 
+                break
+            case 'obtenerGrupos':
+                this.miembrosAgregados = item
                 break
         }
     }

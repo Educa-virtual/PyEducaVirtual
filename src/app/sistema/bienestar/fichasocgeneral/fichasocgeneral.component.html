@@ -1,17 +1,20 @@
 <br />
 
 <!-- Contenido del Formulario de Datos Generales -->
-<form [formGroup]="form" class="section">
+<form [formGroup]="formGeneral" class="section">
     <!-- Dirección Actual -->
-    <p-fieldset legend="1. Datos Generales del Estudiante">
+    <p-fieldset legend="1. Datos generales">
         <div class="grid p-fluid">
             <div class="col-12 lg:col-4 md:col-6">
                 <p-inputGroup>
                     <p-inputGroupAddon> Tipo de vía: </p-inputGroupAddon>
                     <p-dropdown
-                        formControlName="tipoVia"
-                        [options]="tipoVias"
+                        formControlName="iTipoViaId"
+                        [options]="tipos_vias"
                         placeholder="Seleccione"
+                        [filter]="true"
+                        [showClear]="true"
+                        [appendTo]="'body'"
                         [style]="{ flex: '1', width: '100%' }"
                     ></p-dropdown>
                 </p-inputGroup>
@@ -20,7 +23,11 @@
             <div class="col-12 lg:col-8 md:col-6">
                 <p-inputGroup>
                     <p-inputGroupAddon> Nombre de la vía </p-inputGroupAddon>
-                    <input type="text" pInputText formControlName="text" />
+                    <input
+                        type="text"
+                        pInputText
+                        formControlName="cFichaDGDireccionNombreVia"
+                    />
                 </p-inputGroup>
             </div>
         </div>
@@ -29,49 +36,77 @@
             <div class="col-12 lg:col-4 md:col-6">
                 <p-inputGroup>
                     <p-inputGroupAddon> Nro.Puerta </p-inputGroupAddon>
-                    <input type="text" pInputText formControlName="nroPuerta" />
+                    <input
+                        type="text"
+                        pInputText
+                        formControlName="cFichaDGDireccionNroPuerta"
+                    />
                 </p-inputGroup>
             </div>
 
             <div class="col-12 lg:col-4 md:col-6">
                 <p-inputGroup>
                     <p-inputGroupAddon>Bloque</p-inputGroupAddon>
-                    <input type="text" pInputText formControlName="bloque" />
+                    <input
+                        type="text"
+                        pInputText
+                        formControlName="cFichaDGDireccionBlock"
+                    />
                 </p-inputGroup>
             </div>
 
             <div class="col-12 lg:col-4 md:col-6">
                 <p-inputGroup>
                     <p-inputGroupAddon>Interior</p-inputGroupAddon>
-                    <input type="text" pInputText formControlName="interior" />
+                    <input
+                        type="text"
+                        pInputText
+                        formControlName="cFichaDGDirecionInterior"
+                    />
                 </p-inputGroup>
             </div>
 
             <div class="col-12 lg:col-4 md:col-6">
                 <p-inputGroup>
                     <p-inputGroupAddon>Piso</p-inputGroupAddon>
-                    <input type="text" pInputText formControlName="piso" />
+                    <input
+                        type="text"
+                        pInputText
+                        formControlName="cFichaDGDirecionPiso"
+                    />
                 </p-inputGroup>
             </div>
 
             <div class="col-12 lg:col-4 md:col-6">
                 <p-inputGroup>
                     <p-inputGroupAddon>Manzana</p-inputGroupAddon>
-                    <input type="text" pInputText formControlName="mz" />
+                    <input
+                        type="text"
+                        pInputText
+                        formControlName="cFichaDGDireccionManzana"
+                    />
                 </p-inputGroup>
             </div>
 
             <div class="col-12 lg:col-4 md:col-6">
                 <p-inputGroup>
                     <p-inputGroupAddon>Lote</p-inputGroupAddon>
-                    <input type="text" pInputText formControlName="lote" />
+                    <input
+                        type="text"
+                        pInputText
+                        formControlName="cFichaDGDireccionLote"
+                    />
                 </p-inputGroup>
             </div>
 
             <div class="col-12 lg:col-4 md:col-6">
                 <p-inputGroup>
                     <p-inputGroupAddon>Km</p-inputGroupAddon>
-                    <input type="text" pInputText formControlName="km" />
+                    <input
+                        type="text"
+                        pInputText
+                        formControlName="cFichaDGDireccionKm"
+                    />
                 </p-inputGroup>
             </div>
 
@@ -81,30 +116,31 @@
                     <input
                         type="text"
                         pInputText
-                        formControlName="referencia"
+                        formControlName="cFichaDGDireccionReferencia"
                     />
                 </p-inputGroup>
             </div>
         </div>
     </p-fieldset>
 
-    <!-- Contacto -->
+    <!-- Religión -->
 
     <br />
 
-    <p-fieldset legend="2. Contacto">
+    <p-fieldset legend="2. Afiliaciones y creencias">
         <div class="grid p-fluid">
-            <div class="col-12 md:col-6">
+            <div class="col-12 md:col-4">
                 <p-inputGroup>
-                    <p-inputGroupAddon> Telf./Cel. </p-inputGroupAddon>
-                    <input type="tel" pInputText formControlName="telefono" />
-                </p-inputGroup>
-            </div>
-
-            <div class="col-12 md:col-6">
-                <p-inputGroup>
-                    <p-inputGroupAddon> Email </p-inputGroupAddon>
-                    <input type="email" pInputText formControlName="email" />
+                    <p-inputGroupAddon> Religión: </p-inputGroupAddon>
+                    <p-dropdown
+                        [options]="religiones"
+                        formControlName="iReligionId"
+                        placeholder="Seleccione"
+                        [filter]="true"
+                        [showClear]="true"
+                        [appendTo]="'body'"
+                        [style]="{ flex: '1', width: '100%' }"
+                    />
                 </p-inputGroup>
             </div>
         </div>
@@ -112,33 +148,59 @@
 
     <br />
 
-    <!-- Tiene Hijos -->
-    <p-fieldset legend="Paternidad">
+    <!-- Relaciones familiares -->
+    <p-fieldset legend="3. Relaciones familiares">
         <div class="grid">
-            <div class="col-12 md:col-6">
+            <div class="col-12 md:col-4">
                 <p-inputGroup>
                     <p-inputGroupAddon>
-                        <p-inputSwitch formControlName="tieneHijos" />
+                        <p-inputSwitch formControlName="bFamiliarPadreVive" />
+                    </p-inputGroupAddon>
+                    <p-inputGroupAddon> ¿Vive su padre? </p-inputGroupAddon>
+                </p-inputGroup>
+            </div>
+            <div class="col-12 md:col-4">
+                <p-inputGroup>
+                    <p-inputGroupAddon>
+                        <p-inputSwitch formControlName="bFamiliarMadreVive" />
+                    </p-inputGroupAddon>
+                    <p-inputGroupAddon> ¿Vive su madre? </p-inputGroupAddon>
+                </p-inputGroup>
+            </div>
+            <div class="col-12 md:col-4">
+                <p-inputGroup>
+                    <p-inputGroupAddon>
+                        <p-inputSwitch
+                            formControlName="bFamiliarPadresVivenJuntos"
+                        />
+                    </p-inputGroupAddon>
+                    <p-inputGroupAddon>
+                        ¿Sus padres viven juntos?
+                    </p-inputGroupAddon>
+                </p-inputGroup>
+            </div>
+            <div class="col-12 md:col-4">
+                <p-inputGroup>
+                    <p-inputGroupAddon>
+                        <p-inputSwitch formControlName="bFichaDGTieneHijos" />
                     </p-inputGroupAddon>
                     <p-inputGroupAddon> ¿Tiene Hijos? </p-inputGroupAddon>
                 </p-inputGroup>
             </div>
-            <div
-                class="col-12 md:col-6"
-                *ngIf="form.get('tieneHijos')?.value"
-                class="children-row"
-            >
-                <p-inputGroup>
-                    <p-inputGroupAddon> ¿Cuántos Hijos? </p-inputGroupAddon>
-                    <p-inputNumber
-                        formControlName="cantidadHijos"
-                        min="0"
-                        maxlength="3"
-                        useGrouping="false"
-                        showButtons="true"
-                    />
-                </p-inputGroup>
-            </div>
+            @if (visibleInput) {
+                <div class="col-12 md:col-4">
+                    <p-inputGroup>
+                        <p-inputGroupAddon> ¿Cuántos Hijos? </p-inputGroupAddon>
+                        <p-inputNumber
+                            formControlName="iFichaDGNroHijos"
+                            min="0"
+                            maxlength="3"
+                            useGrouping="false"
+                            showButtons="true"
+                        />
+                    </p-inputGroup>
+                </div>
+            }
         </div>
     </p-fieldset>
 

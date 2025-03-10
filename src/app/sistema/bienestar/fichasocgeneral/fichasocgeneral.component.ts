@@ -21,13 +21,10 @@ import { InputTextModule } from 'primeng/inputtext'
 })
 export class FichasocgeneralComponent implements OnInit {
     formGroup: FormGroup | undefined
-    form: FormGroup
-
-    tipoVias = [
-        { label: 'Avenida', value: 'Avenida' },
-        { label: 'Jirón', value: 'Jiron' },
-        { label: 'Calle', value: 'Calle' },
-    ]
+    formGeneral: FormGroup
+    religiones: Array<object>
+    tipos_vias: Array<object>
+    visibleInput: boolean = false
 
     constructor(private fb: FormBuilder) {}
 
@@ -36,40 +33,61 @@ export class FichasocgeneralComponent implements OnInit {
             text: new FormControl<string | null>(null),
         })
 
-        this.form = this.fb.group({
-            tipoVia: ['Avenida'],
-            nombreVia: ['', Validators.required],
-            nroPuerta: ['', Validators.required],
-            bloque: [''],
-            interior: [''],
-            piso: [''],
-            mz: [''],
-            lote: [''],
-            km: [''],
-            referencia: [''],
-            telefono: ['', Validators.required],
-            email: ['', [Validators.required, Validators.email]],
-            tieneHijos: [false],
-            cantidadHijos: [{ value: null, disabled: true }],
+        this.religiones = [
+            { label: 'Ninguno/Ateísmo', value: '1' },
+            { label: 'Católicismo', value: '2' },
+            { label: 'Adventista', value: '3' },
+            { label: 'Mormonismo', value: '4' },
+            { label: 'Islamismo', value: '5' },
+            { label: 'Budismo', value: '6' },
+            { label: 'Islamismo', value: '7' },
+            { label: 'Pentescostal', value: '8' },
+        ]
+
+        this.tipos_vias = [
+            { label: 'Avenida', value: 'Avenida' },
+            { label: 'Jirón', value: 'Jiron' },
+            { label: 'Calle', value: 'Calle' },
+        ]
+
+        this.formGeneral = this.fb.group({
+            iTipoViaId: [null],
+            cFichaDGDireccionNombreVia: ['', Validators.required],
+            cFichaDGDireccionNroPuerta: [''],
+            cFichaDGDireccionBlock: [''],
+            cFichaDGDirecionInterior: [''],
+            cFichaDGDirecionPiso: [''],
+            cFichaDGDireccionManzana: [''],
+            cFichaDGDireccionLote: [''],
+            cFichaDGDireccionKm: [''],
+            cFichaDGDireccionReferencia: [''],
+            iReligionId: [null],
+            bFamiliarPadreVive: [false],
+            bFamiliarMadreVive: [''],
+            bFamiliarPadresVivenJuntos: [''],
+            bFichaDGTieneHijos: [false],
+            iFichaDGNroHijos: [null],
         })
 
-        // Habilitar o deshabilitar el campo "cantidadHijos" en función de "tieneHijos"
-        this.form.get('tieneHijos')?.valueChanges.subscribe((value) => {
-            if (value) {
-                this.form.get('cantidadHijos')?.enable()
-            } else {
-                this.form.get('cantidadHijos')?.disable()
-                this.form.get('cantidadHijos')?.setValue(null) // Limpia si desactivan
-            }
-        })
+        // Habilitar o deshabilitar el campo "iFichaDGNroHijos" en función de "bFichaDGTieneHijos"
+        this.formGeneral
+            .get('bFichaDGTieneHijos')
+            ?.valueChanges.subscribe((value) => {
+                if (value) {
+                    this.visibleInput = true
+                } else {
+                    this.visibleInput = false
+                    this.formGeneral.get('iFichaDGNroHijos')?.setValue(null) // Limpia si desactivan
+                }
+            })
     }
 
     guardar() {
-        if (this.form.valid) {
-            console.log('Datos a guardar:', this.form.value)
+        if (this.formGeneral.valid) {
+            console.log('Datos a guardar:', this.formGeneral.value)
         } else {
             console.warn('El formulario tiene errores')
-            this.form.markAllAsTouched() // Para resaltar campos con errores
+            this.formGeneral.markAllAsTouched() // Para resaltar campos con errores
         }
     }
 }

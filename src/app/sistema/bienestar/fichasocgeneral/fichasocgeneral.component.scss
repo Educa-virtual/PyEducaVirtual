@@ -5,3 +5,7 @@
         color: var(--primary-color-text) !important;
     }
 }
+
+:host ::ng-deep .p-inputswitch {
+    height: 1rem !important;
+}

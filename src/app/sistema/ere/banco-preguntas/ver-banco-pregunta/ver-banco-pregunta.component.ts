@@ -1,5 +1,12 @@
 import { PreguntasReutilizablesService } from '@/app/sistema/evaluaciones/services/preguntas-reutilizables.service'
-import { Component, inject, Input, OnInit } from '@angular/core'
+import {
+    Component,
+    inject,
+    Input,
+    OnChanges,
+    OnInit,
+    SimpleChanges,
+} from '@angular/core'
 import { PrimengModule } from '@/app/primeng.module'
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import { NgIf } from '@angular/common'
@@ -22,17 +29,34 @@ import { TruncatePipe } from '@/app/shared/pipes/truncate-text.pipe'
     templateUrl: './ver-banco-pregunta.component.html',
     styleUrl: './ver-banco-pregunta.component.scss',
 })
-export class VerBancoPreguntaComponent implements OnInit {
+export class VerBancoPreguntaComponent implements OnInit, OnChanges {
     private _PreguntasReutilizablesService = inject(
         PreguntasReutilizablesService
     )
-
     encab: any
-    private backendApi = environment.backendApi
     backend = environment.backend
     @Input() iPreguntaId: string = ''
 
     ngOnInit(): void {
+        void this.iPreguntaId
+    }
+
+    ngOnChanges(changes: SimpleChanges): void {
+        if (changes['iPreguntaId']) {
+            const prevValue = changes['iPreguntaId'].previousValue
+            const currentValue = changes['iPreguntaId'].currentValue
+            console.log('iPreguntaId cambió:', prevValue, '=>', currentValue)
+
+            // Si quieres volver a llamar al servicio cuando cambie iPreguntaId, hazlo aquí
+            if (currentValue) {
+                this.iPreguntaId = currentValue
+                this.cargarPregunta()
+                // this._PreguntasReutilizablesService.obtenerDetallePregunta(currentValue, {...}).subscribe(...)
+            }
+        }
+    }
+
+    cargarPregunta(): void {
         console.log('hijo recibe iPreguntaId=', this.iPreguntaId)
         if (!this.iPreguntaId) {
             console.warn('No hay iPreguntaId válido, no se hace la llamada')

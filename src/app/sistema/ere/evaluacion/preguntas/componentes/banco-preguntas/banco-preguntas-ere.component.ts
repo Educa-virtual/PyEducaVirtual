@@ -1,8 +1,7 @@
-import { Component, inject, Input, OnInit } from '@angular/core'
+import { Component, inject, Input, OnInit, Output } from '@angular/core'
 import { FormBuilder, FormGroup } from '@angular/forms'
 import { PrimengModule } from '@/app/primeng.module'
 import { ApiEvaluacionesRService } from '../../../../../evaluaciones/services/api-evaluaciones-r.service'
-import { ContainerPageAccionbComponent } from '../../../../../docente/informes/container-page-accionb/container-page-accionb.component'
 import {
     IActionTable,
     IColumn,
@@ -10,6 +9,8 @@ import {
 } from '@/app/shared/table-primeng/table-primeng.component'
 import { HttpParams } from '@angular/common/http'
 import { PreguntasReutilizablesService } from '../../../../../evaluaciones/services/preguntas-reutilizables.service'
+import { EventEmitter } from '@angular/core'
+import { MessageService } from 'primeng/api'
 
 /*interface PageEvent {
     first: number
@@ -21,19 +22,19 @@ import { PreguntasReutilizablesService } from '../../../../../evaluaciones/servi
 @Component({
     selector: 'app-banco-preguntas-ere',
     standalone: true,
-    imports: [
-        PrimengModule,
-        ContainerPageAccionbComponent,
-        TablePrimengComponent,
-    ],
+    imports: [PrimengModule, TablePrimengComponent],
     templateUrl: './banco-preguntas-ere.component.html',
     styleUrls: ['./banco-preguntas-ere.component.scss'],
 })
 export class BancoPreguntasComponent implements OnInit {
     private evaluacionesRService = inject(ApiEvaluacionesRService)
     private preguntasService = inject(PreguntasReutilizablesService)
+    @Output() cerrarDialogEvent: EventEmitter<boolean> = new EventEmitter()
+    @Output() actualizarListaPreguntasEvent: EventEmitter<boolean> =
+        new EventEmitter()
     //checked: boolean = false
-    @Input() visible: boolean = false
+    @Input() iEvaluacionId: string = ''
+    @Input() iCursosNivelGradId: string = ''
     formCriterios!: FormGroup
     matrizCompetencia: any[] = []
     procesos: any[] = []
@@ -105,7 +106,10 @@ export class BancoPreguntasComponent implements OnInit {
         },
     ]
 
-    constructor(private fb: FormBuilder) {}
+    constructor(
+        private fb: FormBuilder,
+        private messageService: MessageService
+    ) {}
 
     ngOnInit(): void {
         this.formCriterios = this.fb.group({
@@ -117,7 +121,11 @@ export class BancoPreguntasComponent implements OnInit {
         })
     }
 
-    obtenerDatos() {
+    cerrarDialog() {
+        this.cerrarDialogEvent.emit(false)
+    }
+    obtenerFiltros() {
+        this.preguntasSeleccionadas = []
         this.obtenerAnios()
         this.obtenerProcesos()
         this.obtenerMatrizCompetencias()
@@ -133,17 +141,16 @@ export class BancoPreguntasComponent implements OnInit {
             case 'setearDataxseleccionado':
                 if (item.seleccionado) {
                     this.preguntasSeleccionadas.push({
-                        id: item.iPreguntaId,
-                        tipo: item.iEncabPregId == null ? 'unica' : 'multiple',
+                        iPreguntaId: item.iPreguntaId,
+                        cTipoPregDescripcion:
+                            item.iEncabPregId == null ? 'unica' : 'multiple',
                     })
                 } else {
                     this.preguntasSeleccionadas =
                         this.preguntasSeleccionadas.filter(
-                            (o) => o.id !== item.iPreguntaId
+                            (o) => o.iPreguntaId !== item.iPreguntaId
                         )
-                    //this.preguntasSeleccionadas = this.preguntasSeleccionadas.filter(valor => valor !== item.iPreguntaId);
                 }
-                console.log(this.preguntasSeleccionadas)
                 break
         }
     }
@@ -211,17 +218,41 @@ export class BancoPreguntasComponent implements OnInit {
 
     registrarPreguntasSeleccionadas() {
         if (this.preguntasSeleccionadas.length > 0) {
-            console.log(this.preguntasSeleccionadas)
+            this.preguntasService
+                .registrarPreguntasEnEvaluacion(
+                    this.iEvaluacionId,
+                    this.iCursosNivelGradId,
+                    this.preguntasSeleccionadas
+                )
+                .subscribe({
+                    next: (respuesta) => {
+                        //console.log(respuesta['message'])
+                        this.messageService.add({
+                            severity: respuesta['status'].toLowerCase(),
+                            //summary: 'Error',
+                            detail: respuesta['message'],
+                        })
+                        if (respuesta['status'] == 'Success') {
+                            this.actualizarListaPreguntasEvent.emit(true)
+                        }
+
+                        this.cerrarDialog()
+                    },
+                    error: (respuesta) => {
+                        console.log(respuesta)
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Error',
+                            detail: respuesta,
+                        })
+                    },
+                })
         } else {
             alert('No hay preguntas seleccionadas')
         }
     }
 
     obtenerPreguntas() {
-        const iEvaluacionId =
-            'JB8LQ3vGbkEzKJ2qXVNxDY06g55Ogyj5oRlr41mpaZeW7AM9wd'
-        const iCursosNivelGradId =
-            'p4a702dYbzM9l5WZwmxEeok6x2eOrGQVqJgDy8AvXpB1NjLRK3'
         let params = new HttpParams()
         params = params.set(
             'tipo_pregunta',
@@ -253,7 +284,11 @@ export class BancoPreguntasComponent implements OnInit {
             )
         }
         this.preguntasService
-            .obtenerPreguntas(iEvaluacionId, iCursosNivelGradId, params)
+            .obtenerPreguntas(
+                this.iEvaluacionId,
+                this.iCursosNivelGradId,
+                params
+            )
             .subscribe({
                 next: (respuesta) => {
                     this.preguntas = respuesta

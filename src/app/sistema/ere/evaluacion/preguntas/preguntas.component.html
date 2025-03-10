@@ -945,7 +945,29 @@
         }
     </div>
 </app-container-page>
-<app-banco-preguntas-ere
-    [visible]="showModalBancoPreguntas"
-></app-banco-preguntas-ere>
+<p-dialog
+    [header]="
+        'Agregar preguntas de ' +
+        data?.cCursoNombre +
+        ' - ' +
+        data?.cGradoAbreviacion +
+        ' - ' +
+        data?.cNivelTipoNombre +
+        ''
+    "
+    [modal]="true"
+    [(visible)]="showModalBancoPreguntas"
+    (onShow)="bancoPreguntasEre.obtenerFiltros()"
+    [style]="{ width: '85rem' }"
+>
+    <app-banco-preguntas-ere
+        #bancoPreguntasEre
+        (actualizarListaPreguntasEvent)="
+            obtenerPreguntasxiEvaluacionIdxiCursoNivelGradId()
+        "
+        (cerrarDialogEvent)="showModalBancoPreguntas = $event"
+        [iEvaluacionId]="iEvaluacionId"
+        [iCursosNivelGradId]="iCursoNivelGradId"
+    ></app-banco-preguntas-ere>
+</p-dialog>
 <p-toast></p-toast>

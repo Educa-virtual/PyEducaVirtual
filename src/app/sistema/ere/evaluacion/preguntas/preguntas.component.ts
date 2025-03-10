@@ -124,10 +124,6 @@ export class PreguntasComponent implements OnInit {
             icon: 'pi pi-plus',
             command: () => {
                 this.showModalBancoPreguntas = true
-                /*this.accionBtnItem({
-                    accion: 'importar-banco-preguntas',
-                    item: null,
-                })*/
             },
         },
     ]

@@ -24,4 +24,15 @@ export class PreguntasReutilizablesService {
             )
             .pipe(map((resp) => resp['data']))
     }
+
+    registrarPreguntasEnEvaluacion(
+        iEvaluacionId,
+        iCursosNivelGradId,
+        preguntas
+    ) {
+        return this.http.post(
+            `${this.urlBackendApi}/ere/evaluaciones/${iEvaluacionId}/areas/${iCursosNivelGradId}/preguntas-reutilizables`,
+            { preguntas: preguntas }
+        )
+    }
 }

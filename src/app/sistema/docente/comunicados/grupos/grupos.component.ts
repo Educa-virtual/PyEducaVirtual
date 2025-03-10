@@ -193,12 +193,6 @@ export class GruposComponent implements OnInit {
             },
         }
         this.getInformation(params, 'actualizarGrupo')
-        // [console.table(this.miembros)
-        // const buscarMiembros = new Set(this.miembros)
-        // this.data = this.data.filter(
-        //     (items) => !buscarMiembros.has(items)
-        // )
-        // console.table(this.data)]
     }
     editarGrupo(id: number, nombre: string, descripcion: string, grupo: any[]) {
         this.iGrupoId = id
@@ -241,6 +235,7 @@ export class GruposComponent implements OnInit {
                 iIieeId: this.iIieeId,
                 iYAcadId: this.iYAcadId,
                 iSedeId: this.iSedeId,
+                iPersId: this.iPersId,
             },
         }
         this.getInformation(params, 'obtenerMiembros')
@@ -269,23 +264,22 @@ export class GruposComponent implements OnInit {
             complete: () => {},
         })
     }
+    // filtramos las 2 tablas para que no haya repetidos al momento de registrar nuevos miembros
+    filtrarGrupo() {
+        const capturarId = this.miembros.map((item) => item.id)
+        const buscarMiembros = new Set(capturarId)
+        this.data = this.data.filter((items) => !buscarMiembros.has(items.id))
+    }
     accionBtnItem(event): void {
         const { accion } = event
         const { item } = event
 
         switch (accion) {
             case 'obtenerMiembros':
-                console.log(this.data.length)
-                if (this.data.length === 0) {
-                    this.data = []
-                    const json_datos = item
-                    this.data = JSON.parse(json_datos[0]['miembroGrupo'])
-                } else {
-                    const buscarMiembros = new Set(this.miembros)
-                    this.data = this.data.filter(
-                        (elemento) => !buscarMiembros.has(elemento)
-                    )
-                }
+                this.data = []
+                const json_datos = item
+                this.data = JSON.parse(json_datos[0]['miembroGrupo'])
+                this.filtrarGrupo()
 
                 break
             case 'guardarMiembros':
@@ -320,9 +314,6 @@ export class GruposComponent implements OnInit {
                 this.estadoGuardar = false
                 this.estadoEditar = true
                 this.obtenerGrupos()
-                break
-            case 'test':
-                console.log('oks')
                 break
         }
     }

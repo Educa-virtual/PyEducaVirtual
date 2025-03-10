@@ -7,6 +7,8 @@ import { RadioButtonModule } from 'primeng/radiobutton'
 import { RemoveHTMLCSSPipe } from '@/app/shared/pipes/remove-html-style.pipe'
 import { TruncatePipe } from '@/app/shared/pipes/truncate-text.pipe'
 import { DomSanitizer } from '@angular/platform-browser'
+import { PdfService } from '@/app/servicios/pdf.service'
+import { NgxDocViewerModule } from 'ngx-doc-viewer'
 
 @Component({
     selector: 'app-rendir-examen',
@@ -19,6 +21,7 @@ import { DomSanitizer } from '@angular/platform-browser'
         RadioButtonModule,
         TruncatePipe,
         RemoveHTMLCSSPipe,
+        NgxDocViewerModule,
     ],
 })
 export class RendirExamenComponent implements OnInit {
@@ -30,24 +33,11 @@ export class RendirExamenComponent implements OnInit {
     private _GeneralService = inject(GeneralService)
     private _MessageService = inject(MessageService)
     private _DomSanitizer = inject(DomSanitizer)
+    private _PdfService = inject(PdfService)
 
     totalPregunta: number = 0
 
-    preguntas = [
-        // {
-        //     title: 'Pregunta N°1: Si tienes 48 caramelos y regalas 23, ¿Cuántos te quedan?',
-        //     tipo: 'unica',
-        //     opciones: ['Opción A', 'Opción B', 'Opción C'],
-        // },
-        // {
-        //     title: 'Pregunta N°2: Si en cada caja hay 5 lápices y tienes 4 cajas, ¿cuántos lápices tienes en total?  ',
-        //     tipo: 'múltiple',
-        //     enunciado:
-        //         'Selecciona las respuestas correctas según el siguiente enunciado:',
-        //     opciones: ['Opción 1', 'Opción 2', 'Opción 3', 'Opción 4'],
-        // },
-        // { title: 'Title 3', content: 'Content 3' },
-    ]
+    preguntas = []
 
     subPreguntas = [
         { title: 'pregunta 1' },
@@ -61,9 +51,20 @@ export class RendirExamenComponent implements OnInit {
     seleccion: string | null = null
 
     constructor() {}
-
+    pdfUrl: string = ''
     ngOnInit() {
         this.obtenerPreguntaxiEvaluacionId()
+        const text =
+            'Este es un texto de ejemplo para generar un PDF en ngx-doc-viewer.'
+        this.generatePdf(text)
+    }
+    async generatePdf(text: string) {
+        const pdfBytes = await this._PdfService.createPdfFromText(text)
+
+        // Convertir el Uint8Array en una URL
+        const pdfBlob = new Blob([pdfBytes], { type: 'application/pdf' })
+        const pdfUrl = URL.createObjectURL(pdfBlob)
+        this.pdfUrl = pdfUrl
     }
     // meto de al seleccionar una opción
     seleccionarOpcion(opcion: string) {

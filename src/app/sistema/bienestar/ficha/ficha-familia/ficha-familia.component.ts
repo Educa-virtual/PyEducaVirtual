@@ -48,7 +48,7 @@ export class FichaFamiliaComponent implements OnInit {
 
     searchFamiliares() {
         this.DatosFichaBienestarService.searchFamiliares({
-            iPersId: 1,
+            iFichaDGId: 1,
         }).subscribe({
             next: (data: any) => {
                 this.familiares = data.data
@@ -179,7 +179,7 @@ export class FichaFamiliaComponent implements OnInit {
         {
             type: 'text',
             width: '10rem',
-            field: '_cPersApenom',
+            field: 'cPersNomape',
             header: 'Nombre Completo',
             text_header: 'left',
             text: 'left',

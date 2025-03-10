@@ -20,13 +20,17 @@ export class FichaFamiliaRegistroComponent implements OnInit {
     tipos_familiares: Array<object>
     sexos: Array<object>
     estados_civiles: Array<object>
+    tipos_vias: Array<object>
     nacionalidades: Array<object>
     departamentos: Array<object>
     provincias: Array<object>
     distritos: Array<object>
-    religiones: Array<object>
     tipos_contacto: Array<object>
     ubigeo: Array<object>
+    ocupaciones: Array<object>
+    grados_instruccion: Array<object>
+    tipos_ies: Array<object>
+
     estudiante_registrado: boolean = false
     longitud_documento: number
     formato_documento: string = '99999999'
@@ -53,9 +57,9 @@ export class FichaFamiliaRegistroComponent implements OnInit {
                 this.tipos_documentos = data
             })
         this.datosFichaBienestarService
-            .getNacionalidades()
+            .getEstadosCiviles()
             .subscribe((data) => {
-                this.nacionalidades = data
+                this.estados_civiles = data
             })
         this.datosFichaBienestarService.getDepartamentos().subscribe((data) => {
             this.departamentos = data
@@ -63,8 +67,19 @@ export class FichaFamiliaRegistroComponent implements OnInit {
         this.datosFichaBienestarService.getTiposContacto().subscribe((data) => {
             this.tipos_contacto = data
         })
-        this.datosFichaBienestarService.getReligiones().subscribe((data) => {
-            this.religiones = data
+        this.datosFichaBienestarService.getTiposVias().subscribe((data) => {
+            this.tipos_vias = data
+        })
+        this.datosFichaBienestarService.getOcupaciones().subscribe((data) => {
+            this.ocupaciones = data
+        })
+        this.datosFichaBienestarService
+            .getGradosInstruccion()
+            .subscribe((data) => {
+                this.grados_instruccion = data
+            })
+        this.datosFichaBienestarService.getTiposIes().subscribe((data) => {
+            this.tipos_ies = data
         })
         this.sexos = this.datosFichaBienestarService.getSexos()
 
@@ -73,6 +88,7 @@ export class FichaFamiliaRegistroComponent implements OnInit {
                 iFichaDGId: [null, Validators.required], // PK
                 iPersId: [null, Validators.required],
                 iTipoFamiliarId: [null, Validators.required],
+                bFamiliarVivoConEl: [false],
                 iTipoIdentId: [null, Validators.required],
                 cPersDocumento: ['', Validators.required],
                 cPersNombre: ['', Validators.required],
@@ -85,10 +101,20 @@ export class FichaFamiliaRegistroComponent implements OnInit {
                 iDptoId: [null],
                 iPrvnId: [null],
                 iDsttId: [null],
-                cPersDomicNombre: [''],
-                iLenguaId: [null],
-                iLenguaSecundariaId: [null],
-                iTipoConId: [null],
+                cPersDomicilio: [''],
+                iTipoViaId: [null],
+                cFichaDGDireccionNombreVia: ['', Validators.required],
+                cFichaDGDireccionNroPuerta: [''],
+                cFichaDGDireccionBlock: [''],
+                cFichaDGDirecionInterior: [''],
+                cFichaDGDirecionPiso: [''],
+                cFichaDGDireccionManzana: [''],
+                cFichaDGDireccionLote: [''],
+                cFichaDGDireccionKm: [''],
+                cFichaDGDireccionReferencia: [''],
+                iOcupacionId: [null],
+                iGradoInstId: [null],
+                iTipoIeEstId: [null],
             })
         } catch (error) {
             console.log(error, 'error al inicializar formulario')
@@ -137,22 +163,6 @@ export class FichaFamiliaRegistroComponent implements OnInit {
             } else {
                 this.formFamiliar.get('cEstUbigeo').setValue('')
             }
-        })
-    }
-
-    getTiposFamiliares() {
-        this.datosFichaBienestarService.getTiposFamiliares().subscribe({
-            next: (data) => {
-                this.tipos_familiares = data
-            },
-        })
-    }
-
-    getEstadosCiviles() {
-        this.datosFichaBienestarService.getEstadosCiviles().subscribe({
-            next: (data) => {
-                this.estados_civiles = data
-            },
         })
     }
 

@@ -33,6 +33,10 @@ export class DatosFichaBienestarService implements OnDestroy {
     tipos_contacto: Array<object>
     religiones: Array<object>
     pandemias: Array<object>
+    tipos_vias: Array<object>
+    ocupaciones: Array<object>
+    grados_instruccion: Array<object>
+    tipos_ies: Array<object>
 
     guardarFamiliar(data: any) {
         return this.http.post(`${baseUrl}/obe/ficha/familia/save`, data)
@@ -47,11 +51,109 @@ export class DatosFichaBienestarService implements OnDestroy {
     }
 
     searchFamiliares(data: any) {
-        return this.http.post(`${baseUrl}/grl/searchPersonaFamiliar`, data)
+        return this.http.post(`${baseUrl}/obe/searchFichaFamiliares`, data)
     }
 
     validarPersona(data: any) {
         return this.http.post(`${baseUrl}/grl/validarPersona`, data)
+    }
+
+    getTiposVias() {
+        if (!this.tipos_vias) {
+            return this.query
+                .searchTablaXwhere({
+                    esquema: 'obe',
+                    tabla: 'tipos_vias',
+                    campos: '*',
+                    condicion: '1 = 1',
+                })
+                .pipe(
+                    takeUntil(this.onDestroy$),
+                    map((data: any) => {
+                        const items = data.data
+                        this.tipos_vias = items.map((tipo_via) => ({
+                            value: tipo_via.iTipoViaId,
+                            label: tipo_via.cTipoViaNombre,
+                        }))
+                        return this.tipos_vias
+                    })
+                )
+        }
+        return of(this.tipos_vias)
+    }
+
+    getOcupaciones() {
+        if (!this.ocupaciones) {
+            return this.query
+                .searchTablaXwhere({
+                    esquema: 'obe',
+                    tabla: 'ocupaciones',
+                    campos: '*',
+                    condicion: '1 = 1',
+                })
+                .pipe(
+                    takeUntil(this.onDestroy$),
+                    map((data: any) => {
+                        const items = data.data
+                        this.ocupaciones = items.map((ocupacion) => ({
+                            value: ocupacion.iOcupacionId,
+                            label: ocupacion.cOcupacionNombre,
+                        }))
+                        return this.ocupaciones
+                    })
+                )
+        }
+        return of(this.ocupaciones)
+    }
+
+    getGradosInstruccion() {
+        if (!this.grados_instruccion) {
+            return this.query
+                .searchTablaXwhere({
+                    esquema: 'obe',
+                    tabla: 'grados_instruccion',
+                    campos: '*',
+                    condicion: '1 = 1',
+                })
+                .pipe(
+                    takeUntil(this.onDestroy$),
+                    map((data: any) => {
+                        const items = data.data
+                        this.grados_instruccion = items.map(
+                            (grado_instruccion) => ({
+                                value: grado_instruccion.iGradoInstId,
+                                label: grado_instruccion.cGradoInstNombre,
+                            })
+                        )
+                        return this.grados_instruccion
+                    })
+                )
+        }
+        return of(this.grados_instruccion)
+    }
+
+    getTiposIes() {
+        if (!this.tipos_ies) {
+            return this.query
+                .searchTablaXwhere({
+                    esquema: 'obe',
+                    tabla: 'tiopos_ies_estudio',
+                    campos: '*',
+                    condicion: '1 = 1',
+                })
+                .pipe(
+                    takeUntil(this.onDestroy$),
+                    map((data: any) => {
+                        const items = data.data
+                        this.tipos_ies = items.map((tipo_ie) => ({
+                            value: tipo_ie.iNivelEstudiosId,
+                            label: tipo_ie.cNivelEstudiosNombre,
+                        }))
+                        return this.tipos_ies
+                    })
+                )
+        }
+        return of(this.tipos_ies)
     }
 
     getTiposFamiliares() {
@@ -68,8 +170,8 @@ export class DatosFichaBienestarService implements OnDestroy {
                     map((data: any) => {
                         const items = data.data
                         this.tipos_familiares = items.map((documento) => ({
-                            id: documento.iTipoFamiliarId,
-                            nombre: documento.cTipoFamiliarDescripcion,
+                            value: documento.iTipoFamiliarId,
+                            label: documento.cTipoFamiliarDescripcion,
                         }))
                         return this.tipos_familiares
                     })
@@ -92,8 +194,8 @@ export class DatosFichaBienestarService implements OnDestroy {
                     map((data: any) => {
                         const items = data.data
                         this.nacionalidades = items.map((nacionalidad) => ({
-                            id: nacionalidad.iNacionId,
-                            nombre: nacionalidad.cNacionNombre,
+                            value: nacionalidad.iNacionId,
+                            label: nacionalidad.cNacionNombre,
                         }))
                         return this.nacionalidades
                     })
@@ -116,8 +218,11 @@ export class DatosFichaBienestarService implements OnDestroy {
                     map((data: any) => {
                         const items = data.data
                         this.tipos_documentos = items.map((documento) => ({
-                            id: documento.iTipoIdentId,
-                            nombre: documento.cTipoIdentNombre,
+                            value: documento.iTipoIdentId,
+                            label:
+                                documento.cTipoIdentSigla +
+                                ' - ' +
+                                documento.cTipoIdentNombre,
                             longitud: documento.iTipoIdentLongitud,
                         }))
                         return this.tipos_documentos
@@ -141,8 +246,8 @@ export class DatosFichaBienestarService implements OnDestroy {
                     map((data: any) => {
                         const items = data.data
                         this.estados_civiles = items.map((estado_civil) => ({
-                            id: estado_civil.iTipoEstCivId,
-                            nombre: estado_civil.cTipoEstCivilNombre,
+                            value: estado_civil.iTipoEstCivId,
+                            label: estado_civil.cTipoEstCivilNombre,
                         }))
                         return this.estados_civiles
                     })
@@ -154,8 +259,8 @@ export class DatosFichaBienestarService implements OnDestroy {
     getSexos() {
         if (!this.sexos) {
             this.sexos = [
-                { nombre: 'MASCULINO', id: 'M' },
-                { nombre: 'FEMENINO', id: 'F' },
+                { label: 'MASCULINO', value: 'M' },
+                { label: 'FEMENINO', value: 'F' },
             ]
         }
         return this.sexos
@@ -176,8 +281,8 @@ export class DatosFichaBienestarService implements OnDestroy {
                         const departamentos = data.data
                         this.departamentos = departamentos.map(
                             (departamento) => ({
-                                id: departamento.iDptoId,
-                                nombre: departamento.cDptoNombre,
+                                value: departamento.iDptoId,
+                                label: departamento.cDptoNombre,
                             })
                         )
                         return this.departamentos
@@ -203,8 +308,8 @@ export class DatosFichaBienestarService implements OnDestroy {
                 map((data: any) => {
                     const items = data.data
                     this.distritos = items.map((provincia) => ({
-                        id: provincia.iPrvnId,
-                        nombre: provincia.cPrvnNombre,
+                        value: provincia.iPrvnId,
+                        label: provincia.cPrvnNombre,
                     }))
                     return this.distritos
                 })
@@ -227,8 +332,8 @@ export class DatosFichaBienestarService implements OnDestroy {
                 map((data: any) => {
                     const items = data.data
                     this.distritos = items.map((distrito) => ({
-                        id: distrito.iDsttId,
-                        nombre: distrito.cDsttNombre,
+                        value: distrito.iDsttId,
+                        label: distrito.cDsttNombre,
                         ubigeo: distrito.cDsttCodigo,
                         ubigeo_inei: distrito.cDsttCodigoINEI,
                     }))
@@ -240,10 +345,10 @@ export class DatosFichaBienestarService implements OnDestroy {
     getLenguas() {
         if (!this.lenguas) {
             this.lenguas = [
-                { nombre: 'ESPAÑOL', id: '1' },
-                { nombre: 'QUECHUA', id: '2' },
-                { nombre: 'AYMARA', id: '3' },
-                { nombre: 'INGLÉS', id: '4' },
+                { label: 'ESPAÑOL', value: '1' },
+                { label: 'QUECHUA', value: '2' },
+                { label: 'AYMARA', value: '3' },
+                { label: 'INGLÉS', value: '4' },
             ]
         }
         return this.lenguas
@@ -263,8 +368,8 @@ export class DatosFichaBienestarService implements OnDestroy {
                     map((data: any) => {
                         const items = data.data
                         this.tipos_contacto = items.map((tipo_contacto) => ({
-                            id: tipo_contacto.iTipoConId,
-                            nombre: tipo_contacto.cTipoConNombre,
+                            value: tipo_contacto.iTipoConId,
+                            label: tipo_contacto.cTipoConNombre,
                         }))
                         return this.tipos_contacto
                     })
@@ -287,8 +392,8 @@ export class DatosFichaBienestarService implements OnDestroy {
                     map((data: any) => {
                         const items = data.data
                         this.religiones = items.map((religion) => ({
-                            id: religion.iReligionId,
-                            nombre: religion.cReligionNombre,
+                            value: religion.iReligionId,
+                            label: religion.cReligionNombre,
                         }))
                         return this.religiones
                     })
@@ -311,8 +416,8 @@ export class DatosFichaBienestarService implements OnDestroy {
                     map((data: any) => {
                         const items = data.data
                         this.pandemias = items.map((religion) => ({
-                            id: religion.iPandemiaId,
-                            nombre: religion.cPandemiaNombre,
+                            value: religion.iPandemiaId,
+                            label: religion.cPandemiaNombre,
                         }))
                         return this.pandemias
                     })

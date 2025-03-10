@@ -1,10 +1,5 @@
-:host {
-    display: block;
-}
-
 .curso__image-container {
     height: 8rem;
-
     img {
         object-fit: cover;
     }
@@ -71,4 +66,37 @@
 footer {
     margin-top: auto; /* Empuja el footer hacia el final de la tarjeta */
     text-align: center;
+}
+
+::ng-deep .p-panel .p-panel-header {
+    background: var(--bg-header-modal) !important;
+    color: white !important;
+}
+
+::ng-deep .text-primary {
+    color: white !important;
+}
+
+::ng-deep .container-page .p-panel-header {
+    gap: 0px !important;
+}
+
+.pulse {
+    animation: pulse-black 1s infinite;
+}
+@keyframes pulse-black {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.7);
+    }
+
+    70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
+    }
+
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+    }
 }

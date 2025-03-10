@@ -1,0 +1,295 @@
+<div class="grid">
+    <!-- Panel izquierdo: Lista de Comunicados -->
+    <div class="col-12 md:col-6">
+        <p-panel class="custom-header-panel">
+            <ng-template pTemplate="header">
+                <h4 class="p-2 m-0 font-bold text-white w-full text-center">
+                    Lista Comunicados
+                </h4>
+            </ng-template>
+            <!-- Contenedor de comunicados dinámicos -->
+            <div class="p-0 m-0 flex flex-column gap-3 mt-2">
+                <!-- Recorre el array con *ngFor -->
+                <p-panel
+                    *ngFor="let comunicado of comunicados; let i = index"
+                    #panel
+                    [toggleable]="true"
+                    [collapsed]="comunicado.collapsed"
+                    class="custom-panel"
+                >
+                    <!-- Personaliza el header de cada comunicado -->
+                    <ng-template pTemplate="header">
+                        <div
+                            class="flex align-items-center justify-content-between w-full text-white"
+                        >
+                            <div class="flex align-items-center">
+                                <div
+                                    class="bg-header-style flex justify-content-center px-2 py-2"
+                                >
+                                    Nº {{ i + 1 }}:
+                                </div>
+                                <div class="ml-2 comunicado-titulo">
+                                    {{ comunicado.titulo }}
+                                </div>
+                            </div>
+                            <div class="flex gap-0">
+                                <button
+                                    pButton
+                                    [icon]="
+                                        comunicado.collapsed
+                                            ? 'pi pi-eye'
+                                            : 'pi pi-eye-slash'
+                                    "
+                                    class="p-button-text p-button-xs text-white"
+                                    (click)="
+                                        togglePanel($event, panel, comunicado)
+                                    "
+                                    title="Ver"
+                                ></button>
+                                <button
+                                    pButton
+                                    icon="pi pi-trash"
+                                    class="p-button-text p-button-xs text-white"
+                                    title="Eliminar"
+                                    (click)="deleteComunicado(comunicado.id)"
+                                ></button>
+                                <button
+                                    pButton
+                                    icon="pi pi-pencil"
+                                    class="p-button-text p-button-xs mr-1 text-white"
+                                    (click)="editComunicado(comunicado)"
+                                    title="Editar"
+                                ></button>
+                            </div>
+                        </div>
+                    </ng-template>
+
+                    <!-- Contenido que se ve al expandir el panel -->
+                    <div class="grid p-1">
+                        <div class="col-12 md:col-6">
+                            <div class="grid pb-3">
+                                <div class="col-3 bg-header-style font-bold">
+                                    Estado:
+                                </div>
+                                <div class="col-9">
+                                    {{ comunicado.estado }}
+                                </div>
+                            </div>
+                            <div class="grid pb-3">
+                                <div class="col-4 bg-header-style font-bold">
+                                    Publicado:
+                                </div>
+                                <div class="col-8">
+                                    {{ comunicado.publicado }}
+                                </div>
+                            </div>
+                            <div class="grid">
+                                <div class="col-4 bg-header-style font-bold">
+                                    Caduca:
+                                </div>
+                                <div class="col-8">
+                                    {{ comunicado.caduca }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 md:col-6">
+                            <div class="grid pb-3">
+                                <div class="col-3 bg-header-style font-bold">
+                                    Tipo:
+                                </div>
+                                <div class="col-9">
+                                    {{ comunicado.tipo }}
+                                </div>
+                            </div>
+                            <div class="grid pb-3">
+                                <div class="col-4 bg-header-style font-bold">
+                                    Prioridad:
+                                </div>
+                                <div class="col-8">
+                                    {{ comunicado.prioridad }}
+                                </div>
+                            </div>
+                            <div class="grid">
+                                <div
+                                    class="col-3 flex h-full bg-header-style font-bold justify-center"
+                                >
+                                    Grupo:
+                                </div>
+                                <div class="col-9 flex h-full justify-center">
+                                    <span
+                                        *ngFor="
+                                            let grupo of comunicado.grupo;
+                                            let last = last
+                                        "
+                                    >
+                                        {{ grupo.cGrupoNombre
+                                        }}{{ last ? '' : ', ' }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <p class="mt-2">{{ comunicado.texto }}</p>
+                        </div>
+                    </div>
+                </p-panel>
+            </div>
+        </p-panel>
+    </div>
+
+    <!-- Panel derecho: Crear Comunicado -->
+    <div class="col-12 md:col-6">
+        <p-panel class="custom-header-panel">
+            <ng-template pTemplate="header">
+                <h4 class="p-2 m-0 font-bold text-white w-full text-center">
+                    <!-- Cambia el título dinámicamente -->
+                    {{
+                        selectedComunicado.id === 0
+                            ? 'Crear Comunicado'
+                            : 'Editar Comunicado'
+                    }}
+                </h4>
+            </ng-template>
+            <!-- FORMULARIO (Template-Driven) -->
+            <form
+                (ngSubmit)="guardarComunicado()"
+                #comunicadoForm="ngForm"
+                class="flex flex-column gap-2"
+            >
+                <div class="flex flex-column">
+                    <label for="titulo" class="mb-1">Título</label>
+                    <input
+                        pInputText
+                        id="titulo"
+                        name="titulo"
+                        placeholder="Ingrese el título"
+                        [(ngModel)]="selectedComunicado.titulo"
+                        required
+                    />
+                </div>
+                <div class="grid">
+                    <div class="flex flex-column col-12 md:col-6">
+                        <label for="estado" class="mb-1">Estado</label>
+                        <p-dropdown
+                            id="estado"
+                            name="estado"
+                            [options]="estados"
+                            [(ngModel)]="selectedEstado"
+                            placeholder="Seleccione Estado"
+                            optionLabel="label"
+                            optionValue="value"
+                        ></p-dropdown>
+                    </div>
+                    <div class="flex flex-column col-12 md:col-6">
+                        <label for="prioridad" class="mb-1">Prioridad</label>
+                        <p-dropdown
+                            id="prioridad"
+                            name="prioridad"
+                            [options]="prioridades"
+                            [(ngModel)]="selectedComunicado.prioridad"
+                            placeholder="Seleccione Prioridad"
+                            optionLabel="label"
+                            optionValue="value"
+                        ></p-dropdown>
+                    </div>
+                </div>
+                <div class="grid">
+                    <div class="flex flex-column col-12 md:col-6">
+                        <label for="tipo" class="mb-1">Tipo</label>
+                        <p-dropdown
+                            id="tipo"
+                            name="tipo"
+                            [options]="tipos"
+                            [(ngModel)]="selectedComunicado.tipo"
+                            placeholder="Seleccione Tipo"
+                            optionLabel="label"
+                            optionValue="value"
+                        ></p-dropdown>
+                    </div>
+                    <div class="flex flex-column col-12 md:col-6">
+                        <label for="grupo" class="mb-1">Grupo</label>
+                        <p-multiSelect
+                            id="grupo"
+                            name="grupo"
+                            [options]="grupos"
+                            [(ngModel)]="selectedComunicado.grupo"
+                            placeholder="Seleccione Grupos"
+                            optionLabel="label"
+                            optionValue="value"
+                            [filter]="true"
+                        ></p-multiSelect>
+                    </div>
+                </div>
+                <div class="grid">
+                    <div class="flex flex-column col-12 md:col-6">
+                        <label for="publicado" class="mb-1">Publicado</label>
+                        <p-calendar
+                            id="publicado"
+                            name="publicado"
+                            [(ngModel)]="selectedComunicado.publicado"
+                            dateFormat="dd/mm/yy"
+                            showIcon="true"
+                            (onSelect)="
+                                selectedComunicado.publicado =
+                                    formatDate($event)
+                            "
+                        ></p-calendar>
+                    </div>
+                    <div class="flex flex-column col-12 md:col-6">
+                        <label for="caduca" class="mb-1">Caduca</label>
+                        <p-calendar
+                            id="caduca"
+                            name="caduca"
+                            [(ngModel)]="selectedComunicado.caduca"
+                            dateFormat="dd/mm/yy"
+                            showIcon="true"
+                            (onSelect)="
+                                selectedComunicado.caduca = formatDate($event)
+                            "
+                        ></p-calendar>
+                    </div>
+                </div>
+                <div class="flex flex-column">
+                    <label for="texto" class="mb-1">Contenido</label>
+                    <textarea
+                        pInputTextarea
+                        id="texto"
+                        name="texto"
+                        rows="5"
+                        placeholder="Escriba el comunicado..."
+                        [(ngModel)]="selectedComunicado.texto"
+                        required
+                    ></textarea>
+                </div>
+                <div class="form-buttons">
+                    <button
+                        pButton
+                        pRipple
+                        label="Limpiar"
+                        class="p-button-success align-self-end"
+                        type="button"
+                        (click)="limpiarFormulario()"
+                    ></button>
+                    <!-- Botón para crear o actualizar según corresponda -->
+                    <button
+                        pButton
+                        pRipple
+                        [label]="
+                            selectedComunicado.id === 0
+                                ? 'Publicar'
+                                : 'Guardar Cambios'
+                        "
+                        class="p-button-success align-self-end"
+                        type="submit"
+                    ></button>
+                </div>
+            </form>
+        </p-panel>
+    </div>
+</div>
+
+<p-confirmDialog></p-confirmDialog>
+<p-toast position="top-right"></p-toast>
+<p-confirmDialog></p-confirmDialog>

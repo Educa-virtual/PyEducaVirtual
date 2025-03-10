@@ -1,80 +1,92 @@
-accordion
+<!-- 
+  Elimina "accordion" si no usas un componente real de Angular/PrimeNG.
+  O reemplázalo por <p-accordion> si estás usando PrimeNG Accordion.
+-->
+<div *ngIf="encab">
+    <!-- Muestra encab.cPregunta como HTML -->
+    <div [innerHTML]="encab.cPregunta"></div>
 
-<div [innerHTML]="encab.cPregunta"></div>
-<ng-template pTemplate="header">
-    <span class="flex align-items-center justify-content-start w-full">
-        <span class="font-bold whitespace-nowrap">{{
-            encab.title | removeHTMLCSS | truncateText: 80
-        }}</span>
-        <p-button
-            *ngIf="true"
-            icon="pi pi-trash"
-            iconPos="left"
-            severity="danger"
-            class="ml-auto mr-2"
-            [rounded]="true"
-        ></p-button>
-    </span>
-</ng-template>
-<div class="col-12">
-    <label for="matriz" class="mt-1 font-bold"
-        >Matriz <span class="text-red-500 text-xs">(*) Obligatorio</span></label
-    >
-</div>
-<div class="col-12">
-    <p-inputGroup>
-        <p-inputGroupAddon>Competencia</p-inputGroupAddon>
-    </p-inputGroup>
-</div>
-<div class="col-12">
-    <p-inputGroup>
-        <p-inputGroupAddon>Capacidad</p-inputGroupAddon>
-    </p-inputGroup>
-</div>
-<div class="col-12">
-    <p-inputGroup>
-        <p-inputGroupAddon>Desempeño </p-inputGroupAddon>
-        <input
-            [disabled]="!true"
-            type="text"
-            pInputText
-            placeholder="Ingrese el desempeño"
-            [(ngModel)]="encab.cDesempenoDescripcion"
-        />
-    </p-inputGroup>
-</div>
-<!-- es secundaria-->
-@if (true) {
+    <!-- Ejemplo de un template pTemplate="header", si usas un componente TabView/Accordion de PrimeNG -->
+    <ng-template pTemplate="header">
+        <span class="flex align-items-center justify-content-start w-full">
+            <span class="font-bold whitespace-nowrap">
+                {{ encab.title | removeHTMLCSS | truncateText: 80 }}
+            </span>
+            <p-button
+                icon="pi pi-trash"
+                iconPos="left"
+                severity="danger"
+                class="ml-auto mr-2"
+                [rounded]="true"
+            ></p-button>
+        </span>
+    </ng-template>
+
+    <div class="col-12">
+        <label for="matriz" class="mt-1 font-bold">
+            Matriz
+            <span class="text-red-500 text-xs">(*) Obligatorio</span>
+        </label>
+    </div>
+
+    <div class="col-12">
+        <p-inputGroup>
+            <p-inputGroupAddon>Competencia</p-inputGroupAddon>
+        </p-inputGroup>
+    </div>
+
+    <div class="col-12">
+        <p-inputGroup>
+            <p-inputGroupAddon>Capacidad</p-inputGroupAddon>
+        </p-inputGroup>
+    </div>
+
+    <div class="col-12">
+        <p-inputGroup>
+            <p-inputGroupAddon>Desempeño</p-inputGroupAddon>
+            <!-- Two-way binding a encab.cDesempenoDescripcion -->
+            <input
+                type="text"
+                pInputText
+                placeholder="Ingrese el desempeño"
+                [(ngModel)]="encab.cDesempenoDescripcion"
+            />
+        </p-inputGroup>
+    </div>
+
+    <!-- Si siempre muestras "Peso", quita la condición @if (true).
+         Simplemente deja el div normal: -->
     <div class="col-12">
         <p-inputGroup>
             <p-inputGroupAddon>Peso</p-inputGroupAddon>
         </p-inputGroup>
     </div>
-}
-<div class="col-12">
-    <label for="enunciado" class="mt-1 font-bold"
-        >Pregunta
-        <span class="text-red-500 text-xs">(*) Obligatorio</span></label
-    >
-    <editor [(ngModel)]="encab.cPregunta" />
-</div>
 
-<div class="col-12 mt-1">
-    <div class="flex font-bold justify-content-between">
-        <div class="flex font-bold justify-content-start align-items-center">
-            Lista de Alternativas
+    <div class="col-12">
+        <label for="enunciado" class="mt-1 font-bold">
+            Pregunta
+            <span class="text-red-500 text-xs">(*) Obligatorio</span>
+        </label>
+        <!-- Editor con two-way binding a encab.cPregunta.
+           Asegúrate de no usar encab?.cPregunta en [(ngModel)]. -->
+        <editor [(ngModel)]="encab.cPregunta"></editor>
+    </div>
+
+    <div class="col-12 mt-1">
+        <div class="flex font-bold justify-content-between">
+            <div
+                class="flex font-bold justify-content-start align-items-center"
+            >
+                Lista de Alternativas
+            </div>
         </div>
     </div>
-</div>
 
-<div class="col-12">
-    @for (
-        alternativa of encab.alternativas;
-        track alternativa;
-        let keyx = $index
-    ) {
+    <!-- Reemplaza @for(...) con *ngFor="let alternativa of encab.alternativas" -->
+    <div class="col-12">
         <div
             class="p-2"
+            *ngFor="let alternativa of encab.alternativas; let i = index"
             [ngStyle]="{
                 'border-left': alternativa.bAlternativaCorrecta
                     ? '4px solid #22c55e'
@@ -94,18 +106,18 @@ accordion
                     placeholder="Ingrese la alternativa"
                     [(ngModel)]="alternativa.cAlternativaDescripcion"
                 />
-                <div *ngIf="true" class="align-content-center p-2 border-img">
+                <div class="align-content-center p-2 border-img">
                     <p-image
                         [src]="backend + '/' + alternativa.cAlternativaImagen"
                         alt="Image"
                         width="25"
                         [preview]="true"
-                    />
+                    ></p-image>
                 </div>
             </p-inputGroup>
+
             <div class="flex justify-content-end">
                 <button
-                    *ngIf="true"
                     type="button"
                     pButton
                     [text]="true"
@@ -116,7 +128,6 @@ accordion
                     &nbsp;
                 </button>
                 <button
-                    *ngIf="true"
                     pButton
                     type="button"
                     [text]="true"
@@ -126,18 +137,20 @@ accordion
                     <i class="pi pi-image"></i>
                 </button>
                 <p-checkbox
-                    [class]="true ? 'mt-2' : ''"
+                    class="mt-2"
                     [disabled]="!true"
                     [label]="'Respuesta Correcta'"
                     [inputId]="alternativa.iAlternativaId"
                     [value]="alternativa"
                     [(ngModel)]="alternativa.bAlternativaCorrecta"
                     [binary]="true"
-                />
+                ></p-checkbox>
             </div>
-            @if (alternativa.bAlternativaCorrecta) {
-                <p-inputGroup class="mt-1">
-                    <p-inputGroupAddon> Explicación </p-inputGroupAddon>
+
+            <!-- Reemplaza @if (alternativa.bAlternativaCorrecta) con *ngIf -->
+            <div class="mt-1" *ngIf="alternativa.bAlternativaCorrecta">
+                <p-inputGroup>
+                    <p-inputGroupAddon>Explicación</p-inputGroupAddon>
                     <input
                         type="text"
                         pInputText
@@ -145,19 +158,20 @@ accordion
                         [(ngModel)]="alternativa.cAlternativaExplicacion"
                     />
                 </p-inputGroup>
-            }
+            </div>
         </div>
-    }
-</div>
-<div class="col-12" *ngIf="true">
-    <div class="text-center">
-        <button
-            pButton
-            pRipple
-            type="button"
-            class="p-button-success btn-block"
-        >
-            <i class="pi pi-check"></i>&nbsp; Guardar Pregunta
-        </button>
+    </div>
+
+    <div class="col-12">
+        <div class="text-center">
+            <button
+                pButton
+                pRipple
+                type="button"
+                class="p-button-success btn-block"
+            >
+                <i class="pi pi-check"></i>&nbsp; Guardar Pregunta
+            </button>
+        </div>
     </div>
 </div>

@@ -108,7 +108,9 @@ export class BancoPreguntasComponent implements OnInit {
         },
     ]
 
+    selectedPreguntaId: string | null = null
     mostrarDialogoPreguntas: boolean = false
+    break
     constructor(private fb: FormBuilder) {}
 
     ngOnInit(): void {
@@ -133,9 +135,16 @@ export class BancoPreguntasComponent implements OnInit {
     }
 
     accionesTabla({ accion, item }) {
+        console.log('item recibido:', item)
+        if (!item.iPreguntaId) {
+            console.error('No hay iPreguntaId en item, se quedará en null')
+        }
         switch (accion) {
             case 'ver':
                 console.log('visto')
+                this.selectedPreguntaId = item.iPreguntaId
+                    ? String(item.iPreguntaId)
+                    : null
                 this.mostrarDialogoPreguntas = true
                 break
             case 'setearDataxseleccionado':

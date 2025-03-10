@@ -33,6 +33,11 @@ export class VerBancoPreguntaComponent implements OnInit {
     @Input() iPreguntaId: string = ''
 
     ngOnInit(): void {
+        console.log('hijo recibe iPreguntaId=', this.iPreguntaId)
+        if (!this.iPreguntaId) {
+            console.warn('No hay iPreguntaId válido, no se hace la llamada')
+            return
+        }
         console.log('cargo pregunta 1')
 
         const params: any = {
@@ -44,8 +49,7 @@ export class VerBancoPreguntaComponent implements OnInit {
             .subscribe({
                 next: (respuesta) => {
                     this.encab = respuesta
-                    console.log('cargo pregunta 2')
-                    console.log(respuesta)
+                    console.log('cargo pregunta 2', respuesta)
                 },
                 error: (error) => {
                     console.error('error obtenido', error)

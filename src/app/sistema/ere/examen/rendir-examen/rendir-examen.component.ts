@@ -79,15 +79,19 @@ export class RendirExamenComponent implements OnInit {
                 iEvaluacionId: this.iEvaluacionId,
                 iCursoNivelGradId: this.iCursoNivelGradId,
                 iEstudianteId: this._ConstantesService.iEstudianteId,
+                iIieeId: this._ConstantesService.iIieeId,
+                iYAcadId: this._ConstantesService.iYAcadId,
             },
         }
         this.getInformation(params, params.data.opcion)
     }
 
     guardarPregunta(alternativas, alternativa, marcado) {
-        // console.log(marcado)
-        // console.log(alternativa)
-        // console.log(alternativas)
+        alternativas.forEach((i) => {
+            if (i.iAlternativaId !== alternativa.iAlternativaId) {
+                i.iMarcado = false
+            }
+        })
         alternativa.iMarcado = marcado
         this.preguntas.forEach((pregunta) => {
             pregunta.pregunta.forEach((i) => {
@@ -118,10 +122,32 @@ export class RendirExamenComponent implements OnInit {
         this.getInformation(params, params.data.opcion)
     }
 
+    terminarExamen() {
+        const params = {
+            petition: 'post',
+            group: 'ere',
+            prefix: 'resultados',
+            ruta: 'terminarExamenxiEstudianteId',
+            data: {
+                opcion: 'terminarExamenxiEstudianteId',
+                iEstudianteId: this._ConstantesService.iEstudianteId,
+                iIieeId: this._ConstantesService.iIieeId,
+                iEvaluacionId: this.iEvaluacionId,
+                iYAcadId: this._ConstantesService.iYAcadId,
+                iCursoNivelGradId: this.iCursoNivelGradId,
+            },
+        }
+        this.getInformation(params, params.data.opcion)
+    }
+
     getInformation(params, accion) {
         this._GeneralService.getGralPrefix(params).subscribe({
             next: (response) => {
-                if (response.validated) {
+                if (
+                    response.validated &&
+                    accion ==
+                        'guardarResultadosxiEstudianteIdxiResultadoRptaEstudiante'
+                ) {
                     this._MessageService.add({
                         severity: 'success',
                         summary: 'Exitoso',
@@ -243,6 +269,17 @@ export class RendirExamenComponent implements OnInit {
                 //console.log(this.preguntas)
                 break
             case 'guardarResultadosxiEstudianteIdxiResultadoRptaEstudiante':
+                break
+            case 'terminarExamenxiEstudianteId':
+                this.finalizado = false
+                if (
+                    item.length &&
+                    item[item.length - 1]['iFinalizado'] === '0'
+                ) {
+                    this.finalizado = true
+                    //window.location.reload()
+                }
+
                 break
         }
     }

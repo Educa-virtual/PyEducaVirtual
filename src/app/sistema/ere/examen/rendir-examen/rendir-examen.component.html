@@ -236,7 +236,11 @@
             class="col-12 text-center"
             *ngIf="activeIndex === preguntas.length - 1"
         >
-            <p-button label="Terminar Exámen" severity="success" />
+            <p-button
+                label="Terminar Exámen"
+                severity="success"
+                (onClick)="terminarExamen()"
+            />
         </div>
     </div>
 </p-panel>

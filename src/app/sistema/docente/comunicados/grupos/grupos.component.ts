@@ -25,6 +25,7 @@ export class GruposComponent implements OnInit {
     }
     miembrosAgregados = []
     iPersId: number
+    iGrupoId: number
     iSedeId: string = ''
     iIieeId: string = ''
     iYAcadId: string = ''
@@ -32,8 +33,10 @@ export class GruposComponent implements OnInit {
     cGrupoDescripcion: string
     visible = false
     grupo: string
-    data: any = []
-    miembros: any = []
+    data = []
+    miembros = []
+    estadoEditar: boolean = true
+    estadoGuardar: boolean = false
     columna = [
         {
             type: 'actions',
@@ -175,6 +178,41 @@ export class GruposComponent implements OnInit {
         }
         this.getInformation(params, 'obtenerGrupos')
     }
+    actualizarDatosGrupo() {
+        const params = {
+            petition: 'post',
+            group: 'com',
+            prefix: 'miembros',
+            ruta: 'actualizar_grupo',
+            data: {
+                iPersId: this.iPersId,
+                iGrupoId: this.iGrupoId,
+                cGrupoNombre: this.cGrupoNombre,
+                cGrupoDescripcion: this.cGrupoDescripcion,
+                miembros: JSON.stringify(this.miembros),
+            },
+        }
+        this.getInformation(params, 'actualizarGrupo')
+        // [console.table(this.miembros)
+        // const buscarMiembros = new Set(this.miembros)
+        // this.data = this.data.filter(
+        //     (items) => !buscarMiembros.has(items)
+        // )
+        // console.table(this.data)]
+    }
+    editarGrupo(id: number, nombre: string, descripcion: string, grupo: any[]) {
+        this.iGrupoId = id
+        this.cGrupoNombre = nombre
+        this.cGrupoDescripcion = descripcion
+        const convertir = grupo.toString()
+        const jsonGrupo = JSON.parse(convertir)
+        this.miembros = jsonGrupo
+        this.estadoEditar = false
+        this.estadoGuardar = true
+    }
+    // eliminarGrupo(id: string){
+    //     console.log(id)
+    // }
 
     mostrarModal() {
         this.visible = !this.visible
@@ -237,9 +275,11 @@ export class GruposComponent implements OnInit {
 
         switch (accion) {
             case 'obtenerMiembros':
-                this.data = []
-                if (this.data == false) {
-                    this.data = item
+                console.log(this.data.length)
+                if (this.data.length === 0) {
+                    this.data = []
+                    const json_datos = item
+                    this.data = JSON.parse(json_datos[0]['miembroGrupo'])
                 } else {
                     const buscarMiembros = new Set(this.miembros)
                     this.data = this.data.filter(
@@ -267,10 +307,22 @@ export class GruposComponent implements OnInit {
                 this.miembros = this.miembros.filter(
                     (elemento) => elemento != item
                 )
-
                 break
             case 'obtenerGrupos':
                 this.miembrosAgregados = item
+                break
+            case 'actualizarGrupo':
+                this.iPersId = undefined
+                this.iGrupoId = undefined
+                this.cGrupoNombre = ''
+                this.cGrupoDescripcion = ''
+                this.miembros = []
+                this.estadoGuardar = false
+                this.estadoEditar = true
+                this.obtenerGrupos()
+                break
+            case 'test':
+                console.log('oks')
                 break
         }
     }

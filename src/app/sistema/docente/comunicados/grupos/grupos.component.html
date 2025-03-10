@@ -37,15 +37,23 @@
                                 <p-button
                                     type="button"
                                     icon="pi pi-pen-to-square"
-                                    (click)="$event.stopPropagation()"
+                                    (click)="
+                                        $event.stopPropagation();
+                                        editarGrupo(
+                                            agregar.iGrupoId,
+                                            agregar.cGrupoNombre,
+                                            agregar.cGrupoDescripcion,
+                                            agregar.miembroGrupo
+                                        )
+                                    "
                                 ></p-button
                                 >&nbsp;
-                                <p-button
+                                <!-- <p-button
                                     type="button"
                                     icon="pi pi-trash"
-                                    (click)="$event.stopPropagation()"
+                                    (click)="$event.stopPropagation();eliminarGrupo(agregar.iGrupoId);"
                                 ></p-button
-                                >&nbsp;
+                                >&nbsp; -->
                             </ng-template>
                             <p class="m-0" label="cGrupoDescripcion">
                                 {{ agregar.cGrupoDescripcion }}
@@ -103,17 +111,6 @@
                     >
                         Agregar Mienbros &nbsp;<i class="pi pi-plus-circle"></i>
                     </button>
-                    &nbsp;
-                    <button
-                        type="button"
-                        size="small"
-                        class="font-bold p-button-success"
-                        pButton
-                        pRipple
-                        (click)="guardarMiembros()"
-                    >
-                        Guardar Mienbros &nbsp;<i class="pi pi-save"></i>
-                    </button>
                 </div>
             </div>
 
@@ -124,6 +121,28 @@
                 [actions]="accion"
             >
             </app-table-primeng>
+            <button
+                type="button"
+                size="small"
+                class="font-bold p-button-success"
+                pButton
+                pRipple
+                (click)="guardarMiembros()"
+                [disabled]="estadoGuardar"
+            >
+                Guardar Grupo &nbsp;<i class="pi pi-save"></i></button
+            >&nbsp;
+            <button
+                type="button"
+                size="small"
+                class="font-bold p-button-warning"
+                pButton
+                pRipple
+                (click)="actualizarDatosGrupo()"
+                [disabled]="estadoEditar"
+            >
+                Actualizar Grupo &nbsp;<i class="pi pi-save"></i>
+            </button>
         </p-panel>
     </div>
 </div>

@@ -306,11 +306,11 @@ export class GruposComponent implements OnInit {
                 this.miembrosAgregados = item
                 break
             case 'actualizarGrupo':
-                this.iPersId = undefined
                 this.iGrupoId = undefined
                 this.cGrupoNombre = ''
                 this.cGrupoDescripcion = ''
                 this.miembros = []
+                this.data = []
                 this.estadoGuardar = false
                 this.estadoEditar = true
                 this.obtenerGrupos()

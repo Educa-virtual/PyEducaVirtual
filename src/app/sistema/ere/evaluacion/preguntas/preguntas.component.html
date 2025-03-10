@@ -957,7 +957,8 @@
     "
     [modal]="true"
     [(visible)]="showModalBancoPreguntas"
-    (onShow)="bancoPreguntasEre.obtenerFiltros()"
+    (onShow)="bancoPreguntasEre.obtenerDatos()"
+    (onHide)="bancoPreguntasEre.limpiarDatos()"
     [style]="{ width: '85rem' }"
 >
     <app-banco-preguntas-ere

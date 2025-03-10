@@ -29,10 +29,10 @@ import { MessageService } from 'primeng/api'
 export class BancoPreguntasComponent implements OnInit {
     private evaluacionesRService = inject(ApiEvaluacionesRService)
     private preguntasService = inject(PreguntasReutilizablesService)
+    private debeObtenerFiltros: boolean = true
     @Output() cerrarDialogEvent: EventEmitter<boolean> = new EventEmitter()
     @Output() actualizarListaPreguntasEvent: EventEmitter<boolean> =
         new EventEmitter()
-    //checked: boolean = false
     @Input() iEvaluacionId: string = ''
     @Input() iCursosNivelGradId: string = ''
     formCriterios!: FormGroup
@@ -124,9 +124,23 @@ export class BancoPreguntasComponent implements OnInit {
     cerrarDialog() {
         this.cerrarDialogEvent.emit(false)
     }
-    obtenerFiltros() {
+
+    limpiarDatos() {
         this.preguntas = []
         this.preguntasSeleccionadas = []
+    }
+
+    obtenerDatos() {
+        if (this.debeObtenerFiltros) {
+            this.debeObtenerFiltros = false
+            this.obtenerFiltros()
+        } else {
+            this.obtenerPreguntas()
+        }
+    }
+
+    obtenerFiltros() {
+        console.log('obteniendo filtros')
         this.obtenerAnios()
         this.obtenerProcesos()
         this.obtenerMatrizCompetencias()
@@ -256,6 +270,7 @@ export class BancoPreguntasComponent implements OnInit {
     }
 
     obtenerPreguntas() {
+        console.log('obteniendo preguntas')
         let params = new HttpParams()
         params = params.set(
             'tipo_pregunta',

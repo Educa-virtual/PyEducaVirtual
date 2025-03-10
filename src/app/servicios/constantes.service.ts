@@ -143,20 +143,20 @@ const estudiante = [
             },
 
             {
-                label: 'Dremo ERE',
-                icon: 'pi pi-fw pi-user',
+                label: 'Evaluaciones y Resultados',
+                icon: 'pi pi-fw pi-list-check',
                 items: [
+                    // {
+                    //     label: 'Evaluacion',
+                    //     icon: 'pi pi-fw pi-share-alt',
+                    //     routerLink: [
+                    //         '/evaluaciones/sub-evaluaciones/evaluacion-examen-ere',
+                    //     ],
+                    // },
                     {
-                        label: 'Evaluacion',
-                        icon: 'pi pi-fw pi-share-alt',
-                        routerLink: [
-                            '/evaluaciones/sub-evaluaciones/evaluacion-examen-ere',
-                        ],
-                    },
-                    {
-                        label: 'Rendir examen ERE',
+                        label: 'ERE',
                         icon: 'pi pi-pen-to-square',
-                        routerLink: ['/ere/mostrar-evaluacion'],
+                        routerLink: ['/ere/areas-rendir-examen'],
                     },
                     // {
                     //     label: 'Examen',

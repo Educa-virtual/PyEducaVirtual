@@ -8,138 +8,240 @@
         </div>
     </ng-template>
     <ng-template pTemplate="icons" class="flex flex-column flex-1">
-        <div class="flex flex-wrap gap-2 justify-content-end">
+        <!-- <div class="flex flex-wrap gap-2 justify-content-end">
             <p>Tiempo restante: {{ getTiempoFormateado() }}</p>
-        </div>
+        </div> -->
     </ng-template>
-    <div class="grid">
+    <div class="grid" *ngIf="!finalizado">
+        <div class="col-12 text-center">
+            <p-button
+                *ngFor="let item of preguntas; let i = index"
+                (onClick)="activeIndex = i"
+                [rounded]="true"
+                [label]="i + 1 + ''"
+                styleClass="w-2rem h-2rem p-0 mx-1"
+                [outlined]="activeIndex !== i"
+                size="small"
+                [severity]="item.iMarcado ? 'success' : 'primary'"
+            />
+        </div>
         <div class="col-12 py-2" *ngIf="preguntas.length">
             <p-progressBar [value]="75" />
         </div>
-
-        <!-- <div class="flex mb-3 gap-2 justify-content-end">
-            <p-button
-                *ngFor="let index of preguntas"
-                (click)="activeIndex = index"
-                [rounded]="true"
-                [label]="index + 1 + ''"
-                styleClass="w-2rem h-2rem p-0"
-                [outlined]="activeIndex !== index"
-            />
-        </div> -->
-
-        <p-accordion class="col-12" [activeIndex]="activeIndex">
-            <p-accordionTab
-                [header]="tab.title | removeHTMLCSS | truncateText: 120"
-                *ngFor="let tab of preguntas; let i = index"
-            >
-                <!-- pregunta multiple -->
-                <div *ngIf="tab.iEncabPregId">
-                    <div class="grid">
-                        <div class="card col-6">
-                            <!-- {{Imprimir el enunciado}} -->
-                            <div [innerHTML]="tab.cEncabPregContenido"></div>
-                        </div>
-                        <div class="card col-6">
-                            <!-- Mostrar las sub-preguntas de la pregunta multiple -->
-                            <p-accordion [multiple]="true">
-                                <p-accordionTab
-                                    [header]="
-                                        pregunta.title
-                                            | removeHTMLCSS
-                                            | truncateText: 60
-                                    "
-                                    *ngFor="let pregunta of tab.pregunta"
-                                >
-                                    <div [innerHTML]="pregunta.cPregunta"></div>
-                                    <ul>
-                                        <li
-                                            *ngFor="
-                                                let opcion of pregunta.alternativas;
-                                                let i = index
+        <p-accordion class="col-12" [activeIndex]="0">
+            <div *ngFor="let tab of preguntas; let i = index">
+                @if (activeIndex === i) {
+                    <p-accordionTab
+                        [header]="tab.title | removeHTMLCSS | truncateText: 120"
+                    >
+                        <!-- pregunta multiple -->
+                        <div *ngIf="tab.iEncabPregId">
+                            <div class="grid">
+                                <div class="card col-6">
+                                    <!-- {{Imprimir el enunciado}} -->
+                                    <div
+                                        [innerHTML]="tab.cEncabPregContenido"
+                                    ></div>
+                                </div>
+                                <div class="card col-6">
+                                    <!-- Mostrar las sub-preguntas de la pregunta multiple -->
+                                    <p-accordion [activeIndex]="0">
+                                        <p-accordionTab
+                                            [header]="
+                                                pregunta.title
+                                                    | removeHTMLCSS
+                                                    | truncateText: 60
                                             "
-                                            [class.seleccionado]="
-                                                opcion === seleccion
+                                            *ngFor="
+                                                let pregunta of tab.pregunta
                                             "
                                         >
-                                            <p-radioButton
-                                                name="opciones"
-                                                [value]="opcion"
-                                                [(ngModel)]="seleccion"
+                                            <div
+                                                [innerHTML]="pregunta.cPregunta"
+                                            ></div>
+                                            <ul>
+                                                <li
+                                                    *ngFor="
+                                                        let opcion of pregunta.alternativas;
+                                                        let i = index
+                                                    "
+                                                    [class.seleccionado]="
+                                                        opcion === seleccion
+                                                    "
+                                                >
+                                                    <p-checkbox
+                                                        [inputId]="
+                                                            opcion.iMarcado
+                                                        "
+                                                        [value]="opcion"
+                                                        [(ngModel)]="
+                                                            opcion.iMarcado
+                                                        "
+                                                        [binary]="true"
+                                                        [trueValue]="1"
+                                                        [falseValue]="0"
+                                                        (onChange)="
+                                                            guardarPregunta(
+                                                                pregunta.alternativas,
+                                                                opcion,
+                                                                opcion.iMarcado
+                                                            )
+                                                        "
+                                                    />
+                                                    <!-- <p-radioButton name="opciones" [value]="opcion" [(ngModel)]="seleccion"
+                                                    (onClick)="guardarPregunta(opcion)">
+                                                </p-radioButton> -->
+                                                    <div class="ml-2">
+                                                        <!-- {{ getLetra(i) }}.--->
+                                                        {{
+                                                            opcion.cAlternativaDescripcion
+                                                        }}
+                                                        <p-image
+                                                            *ngIf="
+                                                                opcion.cAlternativaImagen
+                                                            "
+                                                            [src]="
+                                                                backend +
+                                                                '/' +
+                                                                opcion.cAlternativaImagen
+                                                            "
+                                                            alt="Image"
+                                                            width="75"
+                                                            [preview]="true"
+                                                        />
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </p-accordionTab>
+                                    </p-accordion>
+                                    <div class="displey flex grid">
+                                        <div class="col-6 p-4 text-left">
+                                            <p-button
+                                                icon="pi pi-arrow-left"
+                                                [rounded]="true"
+                                                variant="text"
+                                                severity="success"
+                                                (click)="anteriorPregunta(i)"
+                                                *ngIf="i !== 0"
+                                            />
+                                        </div>
+                                        <div class="col-6 p-4 text-right">
+                                            <p-button
+                                                icon="pi pi-arrow-right"
+                                                [rounded]="true"
+                                                variant="text"
+                                                severity="success"
+                                                (click)="siguientePregunta(i)"
+                                                *ngIf="
+                                                    i !== preguntas.length - 1
+                                                "
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Mostrar preguntas Unicas -->
+                        <div *ngIf="!tab.iEncabPregId">
+                            <div *ngFor="let pregunta of tab.pregunta">
+                                <div [innerHTML]="pregunta.cPregunta"></div>
+                                <ul>
+                                    <li
+                                        *ngFor="
+                                            let opcion of pregunta.alternativas;
+                                            let i = index
+                                        "
+                                        [class.seleccionado]="
+                                            opcion === seleccion
+                                        "
+                                    >
+                                        <p-checkbox
+                                            [inputId]="opcion.iAlternativaId"
+                                            [value]="opcion"
+                                            [(ngModel)]="opcion.iMarcado"
+                                            [binary]="true"
+                                            [trueValue]="1"
+                                            [falseValue]="0"
+                                            (onChange)="
+                                                guardarPregunta(
+                                                    pregunta.alternativas,
+                                                    opcion,
+                                                    opcion.iMarcado
+                                                )
+                                            "
+                                        />
+                                        <!-- <p-radioButton name="opciones" [value]="opcion" [(ngModel)]="seleccion"
+                                        (onClick)="guardarPregunta(opcion)">
+                                    </p-radioButton> -->
+                                        <div class="ml-2">
+                                            <!-- {{ getLetra(i) }}.--->
+                                            <div
+                                                *ngIf="
+                                                    !opcion.cAlternativaImagen
+                                                "
                                             >
-                                            </p-radioButton>
-                                            <p class="ml-2">
-                                                <!-- {{ getLetra(i) }}.--->
                                                 {{
                                                     opcion.cAlternativaDescripcion
                                                 }}
-                                            </p>
-                                        </li>
-                                    </ul>
-                                </p-accordionTab>
-                            </p-accordion>
-                            <!-- <div class="displey flex">
-                                <div class="col-10 backColor p-4">
-                                    <span class="font-bold text-xl flex gap-2">
-                                        Texto de ayuda:
-                                    </span>
-                                    <p class="flex gap-2 flex-wrap">
-                                        Tu eres muy inteligente,, no vas poner jajaj
-                                    </p>
+                                            </div>
+                                            <p-image
+                                                *ngIf="
+                                                    opcion.cAlternativaImagen
+                                                "
+                                                [src]="
+                                                    backend +
+                                                    '/' +
+                                                    opcion.cAlternativaImagen
+                                                "
+                                                alt="Image"
+                                                width="75"
+                                                [preview]="true"
+                                                (onImageError)="
+                                                    updateUrl(opcion)
+                                                "
+                                            />
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="displey flex grid">
+                                <div class="col-6 p-4 text-left">
+                                    <p-button
+                                        icon="pi pi-arrow-left"
+                                        [rounded]="true"
+                                        variant="text"
+                                        severity="success"
+                                        (click)="anteriorPregunta(i)"
+                                        *ngIf="i !== 0"
+                                    />
                                 </div>
-                                <div class="col-2 p-4">
-                                    <p-button icon="pi pi-arrow-right" [rounded]="true" [outlined]="true"
-                                        (click)="siguientePregunta(i)" />
+                                <div class="col-6 p-4 text-right">
+                                    <p-button
+                                        icon="pi pi-arrow-right"
+                                        [rounded]="true"
+                                        variant="text"
+                                        severity="success"
+                                        (click)="siguientePregunta(i)"
+                                        *ngIf="i !== preguntas.length - 1"
+                                    />
                                 </div>
-                            </div> -->
+                            </div>
                         </div>
-                    </div>
-                </div>
-
-                <!-- Mostrar preguntas Unicas -->
-                <div *ngIf="!tab.iEncabPregId">
-                    <div *ngFor="let pregunta of tab.pregunta">
-                        <div [innerHTML]="pregunta.cPregunta"></div>
-                        <ul>
-                            <li
-                                *ngFor="
-                                    let opcion of pregunta.alternativas;
-                                    let i = index
-                                "
-                                [class.seleccionado]="opcion === seleccion"
-                            >
-                                <p-radioButton
-                                    name="opciones"
-                                    [value]="opcion"
-                                    [(ngModel)]="seleccion"
-                                >
-                                </p-radioButton>
-                                <p class="ml-2">
-                                    {{ opcion.cAlternativaDescripcion }}
-                                </p>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="displey flex">
-                        <!-- <div class="col-11 backColor p-4">
-                            <span class="font-bold text-xl flex gap-2">
-                                Texto de ayuda:
-                            </span>
-                            <p class="flex gap-2 flex-wrap">
-                                Tu eres muy inteligente, no vas poner jajaj
-                            </p>
-                        </div> -->
-                        <!-- <div class="col-1 p-4 text-right">
-                            <p-button icon="pi pi-arrow-right" [rounded]="true" [outlined]="true"
-                                (click)="siguientePregunta(i)" />
-                        </div> -->
-                    </div>
-                </div>
-            </p-accordionTab>
+                    </p-accordionTab>
+                }
+            </div>
         </p-accordion>
-        <div class="col-12 text-center" *ngIf="preguntas.length">
+        <div
+            class="col-12 text-center"
+            *ngIf="activeIndex === preguntas.length - 1"
+        >
             <p-button label="Terminar Exámen" severity="success" />
         </div>
     </div>
 </p-panel>
 <p-toast></p-toast>
+
+<app-modal-evaluacion-finalizada
+    *ngIf="finalizado"
+></app-modal-evaluacion-finalizada>

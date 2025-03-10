@@ -1,0 +1,18 @@
+@if (!bMensaje) {
+    <div class="card">
+        <div class="col-12">
+            <app-no-data
+                [showIcon]="'NO-DATA'"
+                [mensaje]="
+                    'En estos momentos no hay una evaluación ERE en curso'
+                "
+            ></app-no-data>
+        </div>
+    </div>
+} @else {
+    <app-examen-ere
+        [iEvaluacionId]="iEvaluacionId"
+        [cEvaluacionNombre]="cEvaluacionNombre"
+        [cursos]="cursos"
+    ></app-examen-ere>
+}

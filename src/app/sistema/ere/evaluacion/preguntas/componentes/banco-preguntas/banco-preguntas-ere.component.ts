@@ -125,6 +125,7 @@ export class BancoPreguntasComponent implements OnInit {
         this.cerrarDialogEvent.emit(false)
     }
     obtenerFiltros() {
+        this.preguntas = []
         this.preguntasSeleccionadas = []
         this.obtenerAnios()
         this.obtenerProcesos()
@@ -232,14 +233,16 @@ export class BancoPreguntasComponent implements OnInit {
                             //summary: 'Error',
                             detail: respuesta['message'],
                         })
+
                         if (respuesta['status'] == 'Success') {
+                            this.preguntas = []
+                            this.preguntasSeleccionadas = []
                             this.actualizarListaPreguntasEvent.emit(true)
                         }
 
                         this.cerrarDialog()
                     },
                     error: (respuesta) => {
-                        console.log(respuesta)
                         this.messageService.add({
                             severity: 'error',
                             summary: 'Error',

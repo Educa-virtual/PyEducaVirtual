@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core'
+import { Component, inject, Input, OnInit } from '@angular/core'
 import { PrimengModule } from '@/app/primeng.module'
 import { GeneralService } from '@/app/servicios/general.service'
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
@@ -39,9 +39,11 @@ export class MostrarEvaluacionComponent implements OnInit {
     private _MessageService = inject(MessageService)
     private router = inject(Router)
 
-    iEvaluacionId: string = '854'
-    iCursosNivelGradId: string =
-        'ZMDNgoXjdk9Qz0ZyWKra3B1PQ3nRG54pY2lwq78vEAeVbmLJx1' //'BL5XB8NQmabwA3zDlgW710Jn0bPxMYeRVory4jKZvpGEkq2d90' //ZMDNgoXjdk9Qz0ZyWKra3B1PQ3nRG54pY2lwq78vEAeVbmLJx1
+    @Input() iEvaluacionId: string = ''
+    @Input() iCursoNivelGradId: string = ''
+    @Input() cEvaluacionNombre: string = ''
+    @Input() cCursoNombre: string = ''
+
     iniciarEvaluacion: boolean = false
     evaluacion
 
@@ -57,6 +59,7 @@ export class MostrarEvaluacionComponent implements OnInit {
             data: {
                 opcion: 'CONSULTARxiEvaluacionId',
                 iEvaluacionId: this.iEvaluacionId,
+                valorBusqueda: this.iCursoNivelGradId,
             },
         }
         this.getInformation(params, params.data.opcion)
@@ -104,7 +107,7 @@ export class MostrarEvaluacionComponent implements OnInit {
                 item.length
                     ? item[0]['iEstado']
                         ? this.router.navigate([
-                              `ere/rendir-examen/${this.iEvaluacionId}/areas/${this.iCursosNivelGradId}/${this.evaluacion?.cEvaluacionNombre}/${this.evaluacion?.cCursoNombre}`,
+                              `ere/rendir-examen/${this.iEvaluacionId}/areas/${this.iCursoNivelGradId}/${this.cEvaluacionNombre}/${this.cCursoNombre}`,
                           ])
                         : null
                     : null

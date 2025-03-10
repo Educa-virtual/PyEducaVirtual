@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core'
+import { Component, OnInit, inject } from '@angular/core'
 import { PrimengModule } from '@/app/primeng.module'
 import { FormsModule } from '@angular/forms'
 import { TablePrimengComponent } from '@/app/shared/table-primeng/table-primeng.component'
@@ -12,7 +12,7 @@ import { MessageService } from 'primeng/api'
     templateUrl: './grupos.component.html',
     styleUrl: './grupos.component.scss',
 })
-export class GruposComponent {
+export class GruposComponent implements OnInit {
     private GeneralService = inject(GeneralService)
     constructor(
         private ConstantesService: ConstantesService,
@@ -23,7 +23,9 @@ export class GruposComponent {
         this.iYAcadId = this.ConstantesService.iYAcadId
         this.iPersId = this.ConstantesService.iPersId
     }
+    miembrosAgregados = []
     iPersId: number
+    iGrupoId: number
     iSedeId: string = ''
     iIieeId: string = ''
     iYAcadId: string = ''
@@ -31,8 +33,10 @@ export class GruposComponent {
     cGrupoDescripcion: string
     visible = false
     grupo: string
-    data: any = []
-    miembros: any = []
+    data = []
+    miembros = []
+    estadoEditar: boolean = true
+    estadoGuardar: boolean = false
     columna = [
         {
             type: 'actions',
@@ -158,6 +162,58 @@ export class GruposComponent {
         { grupo: 'Docentes', codigo: 2 },
     ]
 
+    ngOnInit() {
+        this.obtenerGrupos()
+    }
+
+    obtenerGrupos() {
+        const params = {
+            petition: 'post',
+            group: 'com',
+            prefix: 'miembros',
+            ruta: 'obtener_grupos',
+            data: {
+                iPersId: this.iPersId,
+            },
+        }
+        this.getInformation(params, 'obtenerGrupos')
+    }
+    actualizarDatosGrupo() {
+        const params = {
+            petition: 'post',
+            group: 'com',
+            prefix: 'miembros',
+            ruta: 'actualizar_grupo',
+            data: {
+                iPersId: this.iPersId,
+                iGrupoId: this.iGrupoId,
+                cGrupoNombre: this.cGrupoNombre,
+                cGrupoDescripcion: this.cGrupoDescripcion,
+                miembros: JSON.stringify(this.miembros),
+            },
+        }
+        this.getInformation(params, 'actualizarGrupo')
+        // [console.table(this.miembros)
+        // const buscarMiembros = new Set(this.miembros)
+        // this.data = this.data.filter(
+        //     (items) => !buscarMiembros.has(items)
+        // )
+        // console.table(this.data)]
+    }
+    editarGrupo(id: number, nombre: string, descripcion: string, grupo: any[]) {
+        this.iGrupoId = id
+        this.cGrupoNombre = nombre
+        this.cGrupoDescripcion = descripcion
+        const convertir = grupo.toString()
+        const jsonGrupo = JSON.parse(convertir)
+        this.miembros = jsonGrupo
+        this.estadoEditar = false
+        this.estadoGuardar = true
+    }
+    // eliminarGrupo(id: string){
+    //     console.log(id)
+    // }
+
     mostrarModal() {
         this.visible = !this.visible
     }
@@ -219,9 +275,11 @@ export class GruposComponent {
 
         switch (accion) {
             case 'obtenerMiembros':
-                this.data = []
-                if (this.data == false) {
-                    this.data = item
+                console.log(this.data.length)
+                if (this.data.length === 0) {
+                    this.data = []
+                    const json_datos = item
+                    this.data = JSON.parse(json_datos[0]['miembroGrupo'])
                 } else {
                     const buscarMiembros = new Set(this.miembros)
                     this.data = this.data.filter(
@@ -231,8 +289,7 @@ export class GruposComponent {
 
                 break
             case 'guardarMiembros':
-                console.log(item)
-
+                this.miembrosAgregados = this.miembrosAgregados.concat(item)
                 break
             case 'setearDataxiSeleccionado':
                 this.miembros = this.miembros.concat(item)
@@ -250,7 +307,22 @@ export class GruposComponent {
                 this.miembros = this.miembros.filter(
                     (elemento) => elemento != item
                 )
-
+                break
+            case 'obtenerGrupos':
+                this.miembrosAgregados = item
+                break
+            case 'actualizarGrupo':
+                this.iPersId = undefined
+                this.iGrupoId = undefined
+                this.cGrupoNombre = ''
+                this.cGrupoDescripcion = ''
+                this.miembros = []
+                this.estadoGuardar = false
+                this.estadoEditar = true
+                this.obtenerGrupos()
+                break
+            case 'test':
+                console.log('oks')
                 break
         }
     }

@@ -14,6 +14,7 @@ import { PreguntasComponent } from './evaluacion/preguntas/preguntas.component'
 import { EspecialistaUgelComponent } from './administrar/especialista-ugel/especialista-ugel.component'
 import { MostrarEvaluacionComponent } from './examen/mostrar-evaluacion/mostrar-evaluacion.component'
 import { RendirExamenComponent } from './examen/rendir-examen/rendir-examen.component'
+import { AreasRendirExamenComponent } from './examen/areas-rendir-examen/areas-rendir-examen.component'
 
 const routes: Routes = [
     {
@@ -91,12 +92,22 @@ const routes: Routes = [
             ),
     },
     {
-        path: 'mostrar-evaluacion',
+        path: 'areas-rendir-examen',
+        component: AreasRendirExamenComponent,
+        canActivate: [RoleGuard],
+        data: {
+            expectedRole: [ESTUDIANTE],
+            breadcrumb: 'Áreas Examen',
+            icon: 'pi pi-share-alt',
+        },
+    },
+    {
+        path: 'mostrar-evaluacion/:iEvaluacionId/areas/:iCursoNivelGradId/:cEvaluacionNombre/:cCursoNombre',
         component: MostrarEvaluacionComponent,
         canActivate: [RoleGuard],
         data: {
             expectedRole: [ESTUDIANTE],
-            breadcrumb: 'Examen',
+            breadcrumb: 'Información Evaluación',
             icon: 'pi pi-share-alt',
         },
     },
@@ -106,7 +117,7 @@ const routes: Routes = [
         canActivate: [RoleGuard],
         data: {
             expectedRole: [ESTUDIANTE],
-            breadcrumb: 'Examen',
+            breadcrumb: 'Rendir Examen',
             icon: 'pi pi-share-alt',
         },
     },

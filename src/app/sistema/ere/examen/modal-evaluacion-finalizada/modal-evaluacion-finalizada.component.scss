@@ -1,0 +1,11 @@
+::ng-deep .p-dialog-header {
+    background: #b51f32 !important;
+    color: white !important;
+    .p-icon {
+        color: white !important;
+        &:hover {
+            background: white !important;
+            color: #b51f32 !important;
+        }
+    }
+}

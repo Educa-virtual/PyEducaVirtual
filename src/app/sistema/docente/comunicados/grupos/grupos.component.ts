@@ -241,19 +241,31 @@ export class GruposComponent implements OnInit {
         this.getInformation(params, 'obtenerMiembros')
     }
     guardarMiembros() {
-        const params = {
-            petition: 'post',
-            group: 'com',
-            prefix: 'miembros',
-            ruta: 'guardar_miembros',
-            data: {
-                iPersId: this.iPersId,
-                cGrupoNombre: this.cGrupoNombre,
-                cGrupoDescripcion: this.cGrupoDescripcion,
-                miembros: JSON.stringify(this.miembros),
-            },
+        if (
+            this.cGrupoNombre == '' ||
+            this.cGrupoDescripcion == '' ||
+            this.miembros.length > 0
+        ) {
+            const params = {
+                petition: 'post',
+                group: 'com',
+                prefix: 'miembros',
+                ruta: 'guardar_miembros',
+                data: {
+                    iPersId: this.iPersId,
+                    cGrupoNombre: this.cGrupoNombre,
+                    cGrupoDescripcion: this.cGrupoDescripcion,
+                    miembros: JSON.stringify(this.miembros),
+                },
+            }
+            this.getInformation(params, 'guardarMiembros')
+        } else {
+            this.messageService.add({
+                severity: 'warn',
+                summary: 'Advertencia',
+                detail: 'Debe Ingresar Datos del Nombre del grupo, Descripción o al menos un miembro',
+            })
         }
-        this.getInformation(params, 'guardarMiembros')
     }
 
     getInformation(params, accion) {
@@ -306,11 +318,11 @@ export class GruposComponent implements OnInit {
                 this.miembrosAgregados = item
                 break
             case 'actualizarGrupo':
-                this.iPersId = undefined
                 this.iGrupoId = undefined
                 this.cGrupoNombre = ''
                 this.cGrupoDescripcion = ''
                 this.miembros = []
+                this.data = []
                 this.estadoGuardar = false
                 this.estadoEditar = true
                 this.obtenerGrupos()

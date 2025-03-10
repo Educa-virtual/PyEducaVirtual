@@ -25,9 +25,9 @@
                 [severity]="item.iMarcado ? 'success' : 'primary'"
             />
         </div>
-        <div class="col-12 py-2" *ngIf="preguntas.length">
+        <!-- <div class="col-12 py-2" *ngIf="preguntas.length">
             <p-progressBar [value]="75" />
-        </div>
+        </div> -->
         <p-accordion class="col-12" [activeIndex]="0">
             <div *ngFor="let tab of preguntas; let i = index">
                 @if (activeIndex === i) {

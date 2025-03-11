@@ -140,7 +140,6 @@ export class BancoPreguntasComponent implements OnInit {
     }
 
     obtenerFiltros() {
-        console.log('obteniendo filtros')
         this.obtenerAnios()
         this.obtenerProcesos()
         this.obtenerMatrizCompetencias()

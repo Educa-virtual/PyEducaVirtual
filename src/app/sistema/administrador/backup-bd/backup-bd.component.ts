@@ -7,21 +7,17 @@ import {
     IColumn,
     TablePrimengComponent,
 } from '../../../shared/table-primeng/table-primeng.component'
+import { LocalStoreService } from '@/app/servicios/local-store.service'
 
 @Component({
     selector: 'app-backup-bd',
     standalone: true,
-    imports: [
-        ContainerPageComponent,
-        PrimengModule,
-        TablePrimengComponent,
-        TablePrimengComponent,
-    ],
+    imports: [ContainerPageComponent, PrimengModule, TablePrimengComponent],
     templateUrl: './backup-bd.component.html',
     styleUrl: './backup-bd.component.scss',
 })
 export class BackupBdComponent {
-    titulo: string = 'Crear backup de Base de Datos'
+    titulo: string = 'Crear backup de base de datos'
     private backupBdService = inject(BackupBdService)
     filteredData: any[] = []
     columnas: IColumn[] = [
@@ -75,7 +71,10 @@ export class BackupBdComponent {
         },
     ]
 
-    constructor(private messageService: MessageService) {}
+    constructor(
+        private messageService: MessageService,
+        private store: LocalStoreService
+    ) {}
 
     crearCopia() {
         this.backupBdService.realizarCopiaSeguridad().subscribe({

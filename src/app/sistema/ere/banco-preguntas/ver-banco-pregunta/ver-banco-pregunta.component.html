@@ -1,4 +1,4 @@
-<div *ngIf="encab">
+<div *ngIf="encab" [ngClass]="{ 'disabled-dialog': isDisabled }">
     <!-- Muestra encab.cPregunta como HTML -->
     <div [innerHTML]="encab.cPregunta"></div>
 
@@ -46,6 +46,8 @@
                 pInputText
                 placeholder="Ingrese el desempeño"
                 [(ngModel)]="encab.cDesempenoDescripcion"
+                [disabled]="true"
+                readonly
             />
         </p-inputGroup>
     </div>
@@ -65,7 +67,7 @@
         </label>
         <!-- Editor con two-way binding a encab.cPregunta.
            Asegúrate de no usar encab?.cPregunta en [(ngModel)]. -->
-        <editor [(ngModel)]="encab.cPregunta"></editor>
+        <editor [(ngModel)]="encab.cPregunta" [disabled]="true"></editor>
     </div>
 
     <div class="col-12 mt-1">
@@ -101,6 +103,7 @@
                     pInputText
                     placeholder="Ingrese la alternativa"
                     [(ngModel)]="alternativa.cAlternativaDescripcion"
+                    [disabled]="true"
                 />
                 <div class="align-content-center p-2 border-img">
                     <p-image
@@ -140,6 +143,7 @@
                     [value]="alternativa"
                     [(ngModel)]="alternativa.bAlternativaCorrecta"
                     [binary]="true"
+                    [disabled]="true"
                 ></p-checkbox>
             </div>
 
@@ -152,22 +156,10 @@
                         pInputText
                         placeholder="Ingrese la explicación"
                         [(ngModel)]="alternativa.cAlternativaExplicacion"
+                        [disabled]="true"
                     />
                 </p-inputGroup>
             </div>
-        </div>
-    </div>
-
-    <div class="col-12">
-        <div class="text-center">
-            <button
-                pButton
-                pRipple
-                type="button"
-                class="p-button-success btn-block"
-            >
-                <i class="pi pi-check"></i>&nbsp; Guardar Pregunta
-            </button>
         </div>
     </div>
 </div>

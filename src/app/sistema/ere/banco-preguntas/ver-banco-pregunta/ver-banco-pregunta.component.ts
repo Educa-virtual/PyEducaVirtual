@@ -37,6 +37,7 @@ export class VerBancoPreguntaComponent implements OnInit, OnChanges {
     backend = environment.backend
     @Input() iPreguntaId: string = ''
     @Input() iEncabPregId: string = ''
+    isDisabled: any
 
     ngOnInit(): void {
         void this.iPreguntaId

@@ -11,7 +11,7 @@
             <div class="p-0 m-0 flex flex-column gap-3 mt-2">
                 <!-- Recorre el array con *ngFor -->
                 <p-panel
-                    *ngFor="let comunicado of comunicados"
+                    *ngFor="let comunicado of comunicados; let i = index"
                     #panel
                     [toggleable]="true"
                     [collapsed]="comunicado.collapsed"
@@ -26,7 +26,7 @@
                                 <div
                                     class="bg-header-style flex justify-content-center px-2 py-2"
                                 >
-                                    Comunicado #{{ comunicado.id }}:
+                                    Nº {{ i + 1 }}:
                                 </div>
                                 <div class="ml-2 comunicado-titulo">
                                     {{ comunicado.titulo }}
@@ -176,7 +176,7 @@
                             id="estado"
                             name="estado"
                             [options]="estados"
-                            [(ngModel)]="selectedComunicado.estado"
+                            [(ngModel)]="selectedEstado"
                             placeholder="Seleccione Estado"
                             optionLabel="label"
                             optionValue="value"
@@ -263,19 +263,28 @@
                         required
                     ></textarea>
                 </div>
-
-                <!-- Botón para crear o actualizar según corresponda -->
-                <button
-                    pButton
-                    pRipple
-                    [label]="
-                        selectedComunicado.id === 0
-                            ? 'Publicar'
-                            : 'Guardar Cambios'
-                    "
-                    class="p-button-success align-self-end"
-                    type="submit"
-                ></button>
+                <div class="form-buttons">
+                    <button
+                        pButton
+                        pRipple
+                        label="Limpiar"
+                        class="p-button-success align-self-end"
+                        type="button"
+                        (click)="limpiarFormulario()"
+                    ></button>
+                    <!-- Botón para crear o actualizar según corresponda -->
+                    <button
+                        pButton
+                        pRipple
+                        [label]="
+                            selectedComunicado.id === 0
+                                ? 'Publicar'
+                                : 'Guardar Cambios'
+                        "
+                        class="p-button-success align-self-end"
+                        type="submit"
+                    ></button>
+                </div>
             </form>
         </p-panel>
     </div>

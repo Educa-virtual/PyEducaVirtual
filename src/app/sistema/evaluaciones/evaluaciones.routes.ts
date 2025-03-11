@@ -55,13 +55,13 @@ const routes: Routes = [
                 './sub-evaluaciones/evaluacion-examen-ere/evaluacion-examen-ere.component'
             ).then((c) => c.EvaluacionExamenEreComponent),
     },
-    {
-        path: 'sub-evaluaciones/evaluacion-examen-ere/examen-ere',
-        loadComponent: () =>
-            import(
-                './sub-evaluaciones/evaluacion-examen-ere/examen-ere/examen-ere.component'
-            ).then((c) => c.ExamenEreComponent),
-    },
+    // {
+    //     path: 'sub-evaluaciones/evaluacion-examen-ere/examen-ere',
+    //     loadComponent: () =>
+    //         import(
+    //             './sub-evaluaciones/evaluacion-examen-ere/examen-ere/examen-ere.component'
+    //         ).then((c) => c.ExamenEreComponent),
+    // },
     // {
     //     path: 'sub-evaluaciones/evaluacion-examen-ere',
     //     loadComponent: () =>

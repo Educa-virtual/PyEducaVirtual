@@ -12,6 +12,13 @@ export class DatosInformesService {
 
     lista: any[] = []
 
+    obtenerEvaluacionesCursosIes(data: any) {
+        return this.http.post(
+            `${baseUrl}/ere/Evaluaciones/obtenerEvaluacionesCursosIes`,
+            data
+        )
+    }
+
     obtenerInformeResumen(data: any) {
         return this.http.post(
             `${baseUrl}/ere/Evaluaciones/obtenerInformeResumen`,

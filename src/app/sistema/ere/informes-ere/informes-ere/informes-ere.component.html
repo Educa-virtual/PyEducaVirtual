@@ -22,7 +22,7 @@
                     <p-dropdown
                         [options]="cursos"
                         formControlName="iCursoId"
-                        placeholder="Seleccion un curso"
+                        placeholder="Seleccione un curso"
                         styleClass="w-full"
                     ></p-dropdown>
                 </p-inputGroup>
@@ -70,6 +70,7 @@
                         severity="success"
                         label="Buscar"
                         icon="pi pi-fw pi-search"
+                        (onClick)="searchResultados()"
                     />
                 </div>
             </div>
@@ -85,52 +86,25 @@
 
         <br />
 
-        <div class="flex justify-content-center">
+        <div class="flex justify-content-center" [hidden]="visible_chart">
             <p-chart type="doughnut" [data]="data" [options]="options" />
         </div>
 
         <div>
             <p-accordion [activeIndex]="0">
                 <p-accordionTab header="Relación de Estudiantes">
-                    <p-table
+                    <app-table-primeng
+                        [columnas]="columns"
+                        [showCaption]="true"
+                        [data]="resultados"
+                        (accionBtnItem)="accionBtnItemTable($event)"
+                        [showPaginator]="true"
+                        sortMode="single"
                         sortField="estudiante"
                         [sortOrder]="1"
-                        size="small"
-                    >
-                        <ng-template pTemplate="header">
-                            <tr>
-                                <th>#</th>
-                                <th>Cód. Modular</th>
-                                <th>Distrito</th>
-                                <th>Sección</th>
-                                <th>Estudiante</th>
-                                <th>Aciertos</th>
-                                <th>Desaciertos</th>
-                                <th>Blancos</th>
-                                <th>Nivel</th>
-                                <th>Docente</th>
-                            </tr>
-                        </ng-template>
-                        <ng-template
-                            class="text-sm"
-                            pTemplate="body"
-                            let-resultados
-                            let-i="rowIndex"
-                        >
-                            <tr>
-                                <td>{{ i }}</td>
-                                <td>{{ resultados.codigo_modular }}</td>
-                                <td>{{ resultados.distrito }}</td>
-                                <td>{{ resultados.seccion }}</td>
-                                <td>{{ resultados.estudiante }}</td>
-                                <td>{{ resultados.aciertos }}</td>
-                                <td>{{ resultados.desaciertos }}</td>
-                                <td>{{ resultados.blancos }}</td>
-                                <td>{{ resultados.nivel_alcanzado }}</td>
-                                <td>{{ resultados.docente }}</td>
-                            </tr>
-                        </ng-template>
-                    </p-table>
+                        [(selectedRowData)]="selectedItems"
+                        [actions]="actions"
+                    />
                 </p-accordionTab>
                 <p-accordionTab header="Estadisticas Avanzadas">
                     <p>
@@ -148,3 +122,4 @@
         </div>
     </p-panel>
 </app-container-page>
+<p-toast></p-toast>

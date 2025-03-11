@@ -7,11 +7,11 @@ import { RadioButtonModule } from 'primeng/radiobutton'
 import { RemoveHTMLCSSPipe } from '@/app/shared/pipes/remove-html-style.pipe'
 import { TruncatePipe } from '@/app/shared/pipes/truncate-text.pipe'
 import { DomSanitizer } from '@angular/platform-browser'
-import { PdfService } from '@/app/servicios/pdf.service'
 import { NgxDocViewerModule } from 'ngx-doc-viewer'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { environment } from '@/environments/environment'
 import { ModalEvaluacionFinalizadaComponent } from '../modal-evaluacion-finalizada/modal-evaluacion-finalizada.component'
+import { ImagePreviewComponent } from '@/app/shared/image-preview/image-preview.component'
 
 @Component({
     selector: 'app-rendir-examen',
@@ -26,6 +26,7 @@ import { ModalEvaluacionFinalizadaComponent } from '../modal-evaluacion-finaliza
         RemoveHTMLCSSPipe,
         NgxDocViewerModule,
         ModalEvaluacionFinalizadaComponent,
+        ImagePreviewComponent,
     ],
 })
 export class RendirExamenComponent implements OnInit {
@@ -37,7 +38,6 @@ export class RendirExamenComponent implements OnInit {
     private _GeneralService = inject(GeneralService)
     private _MessageService = inject(MessageService)
     private _DomSanitizer = inject(DomSanitizer)
-    private _PdfService = inject(PdfService)
     private _ConstantesService = inject(ConstantesService)
 
     totalPregunta: number = 0
@@ -46,25 +46,12 @@ export class RendirExamenComponent implements OnInit {
 
     activeIndex: number = 0
     seleccion: string | null = null
-
-    constructor() {}
-    pdfUrl: string = ''
     backend = environment.backend
 
     ngOnInit() {
         this.obtenerPreguntaxiEvaluacionId()
-        const text =
-            'Este es un texto de ejemplo para generar un PDF en ngx-doc-viewer.'
-        this.generatePdf(text)
     }
-    async generatePdf(text: string) {
-        const pdfBytes = await this._PdfService.createPdfFromText(text)
 
-        // Convertir el Uint8Array en una URL
-        const pdfBlob = new Blob([pdfBytes], { type: 'application/pdf' })
-        const pdfUrl = URL.createObjectURL(pdfBlob)
-        this.pdfUrl = pdfUrl
-    }
     // meto de al seleccionar una opción
     seleccionarOpcion(opcion: string) {
         this.seleccion = opcion
@@ -299,9 +286,24 @@ export class RendirExamenComponent implements OnInit {
                 }
 
                 break
+            case 'close-modal':
+                this.showModalPreview = false
+                break
         }
     }
     updateUrl(item) {
         item.cAlternativaImagen = 'users/no-image.png'
+    }
+
+    previewImage: string | null = null
+    showModalPreview: boolean = false
+    onImageClick(event: MouseEvent) {
+        const target = event.target as HTMLImageElement
+
+        // Verifica si el clic fue en una imagen
+        if (target.tagName.toLowerCase() === 'img') {
+            this.previewImage = target.src // Asigna la URL de la imagen al preview
+            this.showModalPreview = true
+        }
     }
 }

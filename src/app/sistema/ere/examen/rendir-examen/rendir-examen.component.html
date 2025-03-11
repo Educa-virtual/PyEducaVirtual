@@ -1,4 +1,3 @@
-<ngx-doc-viewer [url]="pdfUrl" viewer="pdf"></ngx-doc-viewer>
 <p-panel styleClass="container-page">
     <ng-template pTemplate="header" class="encabezado">
         <div class="flex flex-column gap-2">
@@ -42,6 +41,11 @@
                                     <!-- {{Imprimir el enunciado}} -->
                                     <div
                                         [innerHTML]="tab.cEncabPregContenido"
+                                        tabindex="0"
+                                        role="button"
+                                        (click)="onImageClick($event)"
+                                        (keyup)="onImageClick(null)"
+                                        aria-label="Haga clic o presione Enter para interactuar con la imagen"
                                     ></div>
                                 </div>
                                 <div class="card col-6">
@@ -250,3 +254,9 @@
 <app-modal-evaluacion-finalizada
     *ngIf="finalizado"
 ></app-modal-evaluacion-finalizada>
+
+<app-image-preview
+    [imageUrl]="previewImage"
+    [showModal]="showModalPreview"
+    (accionBtnItem)="accionBtnItem($event)"
+></app-image-preview>

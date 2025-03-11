@@ -1,8 +1,5 @@
 <div *ngIf="encab" [ngClass]="{ 'disabled-dialog': isDisabled }">
-    <!-- Muestra encab.cPregunta como HTML -->
     <div [innerHTML]="encab.cPregunta"></div>
-
-    <!-- Ejemplo de un template pTemplate="header" de PrimeNG -->
     <ng-template pTemplate="header">
         <span class="flex align-items-center justify-content-start w-full">
             <span class="font-bold whitespace-nowrap">
@@ -17,6 +14,69 @@
             ></p-button>
         </span>
     </ng-template>
+
+    <div class="col-12">
+        <label for="matriz" class="mt-1 font-bold">
+            Matriz
+            <span class="text-red-500 text-xs">(*) Obligatorio</span>
+        </label>
+    </div>
+
+    <div class="col-12">
+        <p-inputGroup>
+            <p-inputGroupAddon>Competencia</p-inputGroupAddon>
+            <input
+                type="text"
+                pInputText
+                placeholder="Ingrese la competencia"
+                [(ngModel)]="encab.cCompetenciaNombre"
+                [disabled]="true"
+                readonly
+            />
+        </p-inputGroup>
+    </div>
+
+    <div class="col-12">
+        <p-inputGroup>
+            <p-inputGroupAddon>Capacidad</p-inputGroupAddon>
+            <input
+                type="text"
+                pInputText
+                placeholder="Ingrese la capacidad"
+                [(ngModel)]="encab.cCapacidadNombre"
+                [disabled]="true"
+                readonly
+            />
+        </p-inputGroup>
+    </div>
+
+    <div class="col-12">
+        <p-inputGroup>
+            <p-inputGroupAddon>Desempeño</p-inputGroupAddon>
+            <input
+                type="text"
+                pInputText
+                placeholder="Ingrese el desempeño"
+                [(ngModel)]="encab.cDesempenoDescripcion"
+                [disabled]="true"
+                readonly
+            />
+        </p-inputGroup>
+    </div>
+
+    <div class="col-12">
+        <p-inputGroup>
+            <p-inputGroupAddon>Peso</p-inputGroupAddon>
+            <input
+                type="text"
+                pInputText
+                placeholder="Ingrese el peso"
+                [(ngModel)]="encab.iPreguntaPeso"
+                [disabled]="true"
+                readonly
+            />
+        </p-inputGroup>
+    </div>
 
     <div class="col-12">
         <label for="enunciado" class="mt-1 font-bold">
@@ -37,7 +97,6 @@
         </div>
     </div>
 
-    <!-- Se reemplaza @for(...) con *ngFor="let alternativa of encab.alternativas" -->
     <div class="col-12">
         <div
             class="p-2"
@@ -104,7 +163,6 @@
                 ></p-checkbox>
             </div>
 
-            <!-- Se reemplaza @if (alternativa.bAlternativaCorrecta) con *ngIf -->
             <div class="mt-1" *ngIf="alternativa.bAlternativaCorrecta">
                 <p-inputGroup>
                     <p-inputGroupAddon>Explicación</p-inputGroupAddon>

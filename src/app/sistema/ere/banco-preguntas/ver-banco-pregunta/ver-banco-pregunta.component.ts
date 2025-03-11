@@ -36,22 +36,23 @@ export class VerBancoPreguntaComponent implements OnInit, OnChanges {
     encab: any
     backend = environment.backend
     @Input() iPreguntaId: string = ''
+    @Input() iEncabPregId: string = ''
 
     ngOnInit(): void {
         void this.iPreguntaId
     }
 
     ngOnChanges(changes: SimpleChanges): void {
+        console.log('ejecutando changes', changes)
+
         if (changes['iPreguntaId']) {
             const prevValue = changes['iPreguntaId'].previousValue
             const currentValue = changes['iPreguntaId'].currentValue
             console.log('iPreguntaId cambió:', prevValue, '=>', currentValue)
 
-            // Si quieres volver a llamar al servicio cuando cambie iPreguntaId, hazlo aquí
             if (currentValue) {
                 this.iPreguntaId = currentValue
                 this.cargarPregunta()
-                // this._PreguntasReutilizablesService.obtenerDetallePregunta(currentValue, {...}).subscribe(...)
             }
         }
     }

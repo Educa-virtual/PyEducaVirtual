@@ -108,6 +108,7 @@ export class BancoPreguntasComponent implements OnInit {
         },
     ]
 
+    selectedPreguntaMultiple: string | null = null
     selectedPreguntaId: string | null = null
     mostrarDialogoPreguntas: boolean = false
     break
@@ -141,12 +142,23 @@ export class BancoPreguntasComponent implements OnInit {
         }
         switch (accion) {
             case 'ver':
-                console.log('visto')
-                this.selectedPreguntaId = item.iPreguntaId
-                    ? String(item.iPreguntaId)
-                    : null
+                // Lógica: si item.iPreguntaId existe => Pregunta simple
+                // Sino, si item.iEncabPregId => Pregunta múltiple
+                if (item.iPreguntaId) {
+                    this.selectedPreguntaId = String(item.iPreguntaId)
+                    this.selectedPreguntaMultiple = null
+                } else if (item.iEncabPregId) {
+                    this.selectedPreguntaMultiple = String(item.iEncabPregId)
+                    this.selectedPreguntaId = null
+                } else {
+                    console.warn('No hay iPreguntaId ni iEncabPregId en item')
+                    this.selectedPreguntaId = null
+                    this.selectedPreguntaMultiple = null
+                }
+
                 this.mostrarDialogoPreguntas = true
                 break
+
             case 'setearDataxseleccionado':
                 if (item.seleccionado) {
                     this.preguntasSeleccionadas.push({
@@ -158,7 +170,6 @@ export class BancoPreguntasComponent implements OnInit {
                         this.preguntasSeleccionadas.filter(
                             (o) => o.id !== item.iPreguntaId
                         )
-                    //this.preguntasSeleccionadas = this.preguntasSeleccionadas.filter(valor => valor !== item.iPreguntaId);
                 }
                 console.log(this.preguntasSeleccionadas)
                 break

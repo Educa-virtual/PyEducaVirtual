@@ -2,7 +2,7 @@
     <!-- Muestra encab.cPregunta como HTML -->
     <div [innerHTML]="encab.cPregunta"></div>
 
-    <!-- Ejemplo de un template pTemplate="header", si usas un componente TabView/Accordion de PrimeNG -->
+    <!-- Ejemplo de un template pTemplate="header" de PrimeNG -->
     <ng-template pTemplate="header">
         <span class="flex align-items-center justify-content-start w-full">
             <span class="font-bold whitespace-nowrap">
@@ -19,54 +19,11 @@
     </ng-template>
 
     <div class="col-12">
-        <label for="matriz" class="mt-1 font-bold">
-            Matriz
-            <span class="text-red-500 text-xs">(*) Obligatorio</span>
-        </label>
-    </div>
-
-    <div class="col-12">
-        <p-inputGroup>
-            <p-inputGroupAddon>Competencia</p-inputGroupAddon>
-        </p-inputGroup>
-    </div>
-
-    <div class="col-12">
-        <p-inputGroup>
-            <p-inputGroupAddon>Capacidad</p-inputGroupAddon>
-        </p-inputGroup>
-    </div>
-
-    <div class="col-12">
-        <p-inputGroup>
-            <p-inputGroupAddon>Desempeño</p-inputGroupAddon>
-            <!-- Two-way binding a encab.cDesempenoDescripcion -->
-            <input
-                type="text"
-                pInputText
-                placeholder="Ingrese el desempeño"
-                [(ngModel)]="encab.cDesempenoDescripcion"
-                [disabled]="true"
-                readonly
-            />
-        </p-inputGroup>
-    </div>
-
-    <!-- Si siempre muestras "Peso", quita la condición @if (true).
-         Simplemente deja el div normal: -->
-    <div class="col-12">
-        <p-inputGroup>
-            <p-inputGroupAddon>Peso</p-inputGroupAddon>
-        </p-inputGroup>
-    </div>
-
-    <div class="col-12">
         <label for="enunciado" class="mt-1 font-bold">
             Pregunta
             <span class="text-red-500 text-xs">(*) Obligatorio</span>
         </label>
-        <!-- Editor con two-way binding a encab.cPregunta.
-           Asegúrate de no usar encab?.cPregunta en [(ngModel)]. -->
+
         <editor [(ngModel)]="encab.cPregunta" [disabled]="true"></editor>
     </div>
 
@@ -80,7 +37,7 @@
         </div>
     </div>
 
-    <!-- Reemplaza @for(...) con *ngFor="let alternativa of encab.alternativas" -->
+    <!-- Se reemplaza @for(...) con *ngFor="let alternativa of encab.alternativas" -->
     <div class="col-12">
         <div
             class="p-2"
@@ -147,7 +104,7 @@
                 ></p-checkbox>
             </div>
 
-            <!-- Reemplaza @if (alternativa.bAlternativaCorrecta) con *ngIf -->
+            <!-- Se reemplaza @if (alternativa.bAlternativaCorrecta) con *ngIf -->
             <div class="mt-1" *ngIf="alternativa.bAlternativaCorrecta">
                 <p-inputGroup>
                     <p-inputGroupAddon>Explicación</p-inputGroupAddon>

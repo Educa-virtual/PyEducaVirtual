@@ -1,9 +1,13 @@
-import { Component, OnInit } from '@angular/core'
+import { Component, inject, OnInit } from '@angular/core'
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { PrimengModule } from '@/app/primeng.module'
 import { DropdownModule } from 'primeng/dropdown'
 import { InputTextModule } from 'primeng/inputtext'
+import { DatosFichaBienestarService } from '../services/datos-ficha-bienestar.service'
+import { MessageService } from 'primeng/api'
+import { CompartirFichaService } from '../services/compartir-ficha.service'
+import { LocalStoreService } from '@/app/servicios/local-store.service'
 
 @Component({
     selector: 'app-ficha-socioeconomica',
@@ -25,32 +29,36 @@ export class FichasocgeneralComponent implements OnInit {
     religiones: Array<object>
     tipos_vias: Array<object>
     visibleInput: boolean = false
+    ficha_registrada: boolean = false
 
-    constructor(private fb: FormBuilder) {}
+    private _MessageService = inject(MessageService)
+
+    constructor(
+        private fb: FormBuilder,
+        private datosFichaBienestarService: DatosFichaBienestarService,
+        private compartirFichaService: CompartirFichaService,
+        private store: LocalStoreService
+    ) {}
 
     ngOnInit() {
+        const perfil = this.store.getItem('dremoPerfil')
+
         this.formGroup = new FormGroup({
             text: new FormControl<string | null>(null),
         })
 
-        this.religiones = [
-            { label: 'Ninguno/Ateísmo', value: '1' },
-            { label: 'Católicismo', value: '2' },
-            { label: 'Adventista', value: '3' },
-            { label: 'Mormonismo', value: '4' },
-            { label: 'Islamismo', value: '5' },
-            { label: 'Budismo', value: '6' },
-            { label: 'Islamismo', value: '7' },
-            { label: 'Pentescostal', value: '8' },
-        ]
+        this.datosFichaBienestarService.getReligiones().subscribe((data) => {
+            this.religiones = data
+        })
 
-        this.tipos_vias = [
-            { label: 'Avenida', value: 'Avenida' },
-            { label: 'Jirón', value: 'Jiron' },
-            { label: 'Calle', value: 'Calle' },
-        ]
+        this.datosFichaBienestarService.getTiposVias().subscribe((data) => {
+            this.tipos_vias = data
+        })
 
         this.formGeneral = this.fb.group({
+            iSesionId: perfil?.iCredId,
+            iPersId: perfil?.iPersId,
+            iFichaDGId: [null],
             iTipoViaId: [null],
             cFichaDGDireccionNombreVia: ['', Validators.required],
             cFichaDGDireccionNroPuerta: [''],
@@ -63,8 +71,8 @@ export class FichasocgeneralComponent implements OnInit {
             cFichaDGDireccionReferencia: [''],
             iReligionId: [null],
             bFamiliarPadreVive: [false],
-            bFamiliarMadreVive: [''],
-            bFamiliarPadresVivenJuntos: [''],
+            bFamiliarMadreVive: [false],
+            bFamiliarPadresVivenJuntos: [false],
             bFichaDGTieneHijos: [false],
             iFichaDGNroHijos: [null],
         })
@@ -83,11 +91,68 @@ export class FichasocgeneralComponent implements OnInit {
     }
 
     guardar() {
-        if (this.formGeneral.valid) {
-            console.log('Datos a guardar:', this.formGeneral.value)
-        } else {
-            console.warn('El formulario tiene errores')
-            this.formGeneral.markAllAsTouched() // Para resaltar campos con errores
+        if (this.formGeneral.invalid) {
+            this._MessageService.add({
+                severity: 'warning',
+                summary: 'Advertencia',
+                detail: 'Debe completar los campos requeridos',
+            })
+            return
         }
+        this.datosFichaBienestarService
+            .guardarFichaBienestar(this.formGeneral.value)
+            .subscribe({
+                next: (data: any) => {
+                    this.compartirFichaService.setiFichaDGId(
+                        data.data.iFichaDGId
+                    )
+                    this.compartirFichaService.setiPersId(data.data.iPersId)
+                    this.ficha_registrada = true
+                },
+                error: (error) => {
+                    console.error('Error guardando ficha:', error)
+                    this._MessageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error,
+                    })
+                },
+                complete: () => {
+                    console.log('Request completed')
+                },
+            })
+    }
+
+    actualizar() {
+        if (this.formGeneral.invalid) {
+            this._MessageService.add({
+                severity: 'warning',
+                summary: 'Advertencia',
+                detail: 'Debe completar los campos requeridos',
+            })
+            return
+        }
+        this.datosFichaBienestarService
+            .actualizarFichaBienestar(this.formGeneral.value)
+            .subscribe({
+                next: (data: any) => {
+                    this.compartirFichaService.setiFichaDGId(
+                        data.data.iFichaDGId
+                    )
+                    this.compartirFichaService.setiPersId(data.data.iPersId)
+                    this.ficha_registrada = true
+                },
+                error: (error) => {
+                    console.error('Error actualizando ficha:', error)
+                    this._MessageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error,
+                    })
+                },
+                complete: () => {
+                    console.log('Request completed')
+                },
+            })
     }
 }

@@ -38,20 +38,37 @@ export class DatosFichaBienestarService implements OnDestroy {
     grados_instruccion: Array<object>
     tipos_ies: Array<object>
 
+    guardarFichaBienestar(data: any) {
+        return this.http.post(`${baseUrl}/bienestar/guardarFicha`, data)
+    }
+
+    actualizarFichaBienestar(data: any) {
+        return this.http.post(`${baseUrl}/bienestar/actualizarFicha`, data)
+    }
+
     guardarFamiliar(data: any) {
-        return this.http.post(`${baseUrl}/obe/ficha/familia/save`, data)
+        return this.http.post(`${baseUrl}/bienestar/ficha/familia/save`, data)
     }
 
     actualizarFamiliar(data: any) {
-        return this.http.post(`${baseUrl}/obe/ficha/familiar/update`, data)
+        return this.http.post(
+            `${baseUrl}/bienestar/ficha/familiar/update`,
+            data
+        )
     }
 
     borrarFamiliar(data: any) {
-        return this.http.post(`${baseUrl}/obe/ficha/familiar/delete`, data)
+        return this.http.post(
+            `${baseUrl}/bienestar/ficha/familiar/delete`,
+            data
+        )
     }
 
     searchFamiliares(data: any) {
-        return this.http.post(`${baseUrl}/obe/searchFichaFamiliares`, data)
+        return this.http.post(
+            `${baseUrl}/bienestar/searchFichaFamiliares`,
+            data
+        )
     }
 
     validarPersona(data: any) {
@@ -63,7 +80,7 @@ export class DatosFichaBienestarService implements OnDestroy {
             return this.query
                 .searchTablaXwhere({
                     esquema: 'obe',
-                    tabla: 'tipos_vias',
+                    tabla: 'tipo_vias',
                     campos: '*',
                     condicion: '1 = 1',
                 })
@@ -111,7 +128,7 @@ export class DatosFichaBienestarService implements OnDestroy {
             return this.query
                 .searchTablaXwhere({
                     esquema: 'obe',
-                    tabla: 'grados_instruccion',
+                    tabla: 'grado_instrucciones',
                     campos: '*',
                     condicion: '1 = 1',
                 })
@@ -137,7 +154,7 @@ export class DatosFichaBienestarService implements OnDestroy {
             return this.query
                 .searchTablaXwhere({
                     esquema: 'obe',
-                    tabla: 'tiopos_ies_estudio',
+                    tabla: 'tipo_ie_estudios',
                     campos: '*',
                     condicion: '1 = 1',
                 })

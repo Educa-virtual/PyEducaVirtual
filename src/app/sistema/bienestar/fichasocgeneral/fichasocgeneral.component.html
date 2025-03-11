@@ -22,7 +22,7 @@
 
             <div class="col-12 lg:col-8 md:col-6">
                 <p-inputGroup>
-                    <p-inputGroupAddon> Nombre de la vía </p-inputGroupAddon>
+                    <p-inputGroupAddon> Nombre de la vía * </p-inputGroupAddon>
                     <input
                         type="text"
                         pInputText
@@ -193,7 +193,7 @@
                         <p-inputGroupAddon> ¿Cuántos Hijos? </p-inputGroupAddon>
                         <p-inputNumber
                             formControlName="iFichaDGNroHijos"
-                            min="0"
+                            min="1"
                             maxlength="3"
                             useGrouping="false"
                             showButtons="true"
@@ -208,12 +208,22 @@
 
     <!-- Botón Guardar y Seguir -->
     <div class="flex justify-content-end gap-2">
-        <p-button
-            type="button"
-            label="Guardar y continuar"
-            icon="pi pi-save"
-            severity="success"
-            (click)="guardar()"
-        />
+        @if (!ficha_registrada) {
+            <p-button
+                type="button"
+                label="Guardar y continuar"
+                icon="pi pi-save"
+                severity="success"
+                (click)="guardar()"
+            />
+        } @else {
+            <p-button
+                type="button"
+                label="Actualizar y continuar"
+                icon="pi pi-save"
+                severity="secondary"
+                (click)="actualizar()"
+            />
+        }
     </div>
 </form>

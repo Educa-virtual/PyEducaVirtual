@@ -12,6 +12,7 @@ import { ConstantesService } from '@/app/servicios/constantes.service'
 import { environment } from '@/environments/environment'
 import { ModalEvaluacionFinalizadaComponent } from '../modal-evaluacion-finalizada/modal-evaluacion-finalizada.component'
 import { ImagePreviewComponent } from '@/app/shared/image-preview/image-preview.component'
+import { LocalStoreService } from '@/app/servicios/local-store.service'
 
 @Component({
     selector: 'app-rendir-examen',
@@ -47,8 +48,15 @@ export class RendirExamenComponent implements OnInit {
     activeIndex: number = 0
     seleccion: string | null = null
     backend = environment.backend
+    evalEreRespuestas: any[] = []
+
+    constructor(private store: LocalStoreService) {}
 
     ngOnInit() {
+        this.evalEreRespuestas = this.store.getItem('evalEreRespuestas')
+        if (this.evalEreRespuestas == null) {
+            this.evalEreRespuestas = []
+        }
         this.obtenerPreguntaxiEvaluacionId()
     }
 
@@ -98,15 +106,42 @@ export class RendirExamenComponent implements OnInit {
             }
         })
         alternativa.iMarcado = marcado
-        this.preguntas.forEach((pregunta) => {
-            pregunta.pregunta.forEach((i) => {
-                if (i.iPreguntaId === Number(alternativa.iPreguntaId)) {
-                    i.iMarcado = true
+        outerLoop: for (const pregunta of this.preguntas) {
+            for (const i of pregunta.pregunta) {
+                if (i.iPreguntaId == alternativa.iPreguntaId) {
+                    pregunta.iMarcado = marcado
+                    break outerLoop
                 }
-            })
-        })
-        // alternativa.iMarcado = 1
-        const params = {
+            }
+        }
+
+        const respuesta = {
+            opcion: 'guardarResultadosxiEstudianteIdxiResultadoRptaEstudiante',
+            iResultadoId: alternativa.iResultadoId,
+            iEstudianteId: this._ConstantesService.iEstudianteId,
+            iResultadoRptaEstudiante: alternativa.iAlternativaId,
+            iIieeId: this._ConstantesService.iIieeId,
+            iEvaluacionId: this.iEvaluacionId,
+            iYAcadId: this._ConstantesService.iYAcadId,
+            iPreguntaId: alternativa.iPreguntaId,
+            iCursoNivelGradId: this.iCursoNivelGradId,
+            iMarcado: alternativa.iMarcado,
+        }
+        console.log(respuesta)
+
+        this.evalEreRespuestas = this.evalEreRespuestas.filter(
+            (item) =>
+                !(
+                    item.iPreguntaId === respuesta.iPreguntaId &&
+                    item.iEvaluacionId === respuesta.iEvaluacionId
+                )
+        )
+        if (respuesta.iMarcado) {
+            this.evalEreRespuestas.push(respuesta)
+        }
+
+        this.store.setItem('evalEreRespuestas', this.evalEreRespuestas)
+        /*const params = {
             petition: 'post',
             group: 'ere',
             prefix: 'resultados',
@@ -123,8 +158,8 @@ export class RendirExamenComponent implements OnInit {
                 iCursoNivelGradId: this.iCursoNivelGradId,
                 iMarcado: alternativa.iMarcado,
             },
-        }
-        this.getInformation(params, params.data.opcion)
+        }*/
+        //this.getInformation(params, params.data.opcion)
     }
 
     terminarExamen() {
@@ -140,6 +175,7 @@ export class RendirExamenComponent implements OnInit {
                 iEvaluacionId: this.iEvaluacionId,
                 iYAcadId: this._ConstantesService.iYAcadId,
                 iCursoNivelGradId: this.iCursoNivelGradId,
+                respuestas: this.evalEreRespuestas,
             },
         }
         this.getInformation(params, params.data.opcion)
@@ -227,7 +263,7 @@ export class RendirExamenComponent implements OnInit {
                 this.preguntas.forEach((pregunta) => {
                     {
                         if (pregunta.pregunta.length) {
-                            let iMarcado = 0
+                            //let iMarcado = 0
                             pregunta.pregunta.forEach((item) => {
                                 this.totalPregunta = this.totalPregunta + 1
                                 item.title =
@@ -238,6 +274,24 @@ export class RendirExamenComponent implements OnInit {
                                 item.alternativas = item.alternativas
                                     ? JSON.parse(item.alternativas)
                                     : item.alternativas
+
+                                item.alternativas.forEach((alter) => {
+                                    const respuesta =
+                                        this.evalEreRespuestas.find(
+                                            (item) =>
+                                                item.iResultadoRptaEstudiante ===
+                                                    alter.iAlternativaId &&
+                                                item.iPreguntaId ===
+                                                    alter.iPreguntaId &&
+                                                item.iEvaluacionId ===
+                                                    this.iEvaluacionId
+                                        )
+                                    if (respuesta !== undefined) {
+                                        alter.iMarcado = 1
+                                        pregunta.iMarcado = 1
+                                    }
+                                })
+
                                 item.cPregunta =
                                     this._DomSanitizer.bypassSecurityTrustHtml(
                                         item.cPregunta
@@ -246,17 +300,14 @@ export class RendirExamenComponent implements OnInit {
                                     this._DomSanitizer.bypassSecurityTrustHtml(
                                         item.cEncabPregContenido
                                     )
-                                iMarcado = item.alternativas.find(
+                                /*iMarcado = item.alternativas.find(
                                     (alternativa) =>
                                         Number(alternativa.iMarcado) === 1
                                 )
                                     ? 1
-                                    : 0
-                                // item.alternativas.forEach(alternativa => {
-                                //         alternativa.iMarcado = alternativa.iMarcado ? true : false
-                                // });
+                                    : 0*/
                             })
-                            pregunta.iMarcado = iMarcado
+                            //pregunta.iMarcado = iMarcado
                         }
 
                         if (pregunta.pregunta.length > 1) {

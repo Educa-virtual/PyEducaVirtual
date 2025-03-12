@@ -1,6 +1,6 @@
 import { PrimengModule } from '@/app/primeng.module'
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
-import { Component, inject } from '@angular/core'
+import { Component, inject, OnInit } from '@angular/core'
 import { BackupBdService } from './services/backup-bd.service'
 import { MessageService } from 'primeng/api'
 import {
@@ -16,10 +16,10 @@ import { LocalStoreService } from '@/app/servicios/local-store.service'
     templateUrl: './backup-bd.component.html',
     styleUrl: './backup-bd.component.scss',
 })
-export class BackupBdComponent {
+export class BackupBdComponent implements OnInit {
     titulo: string = 'Crear backup de base de datos'
     private backupBdService = inject(BackupBdService)
-    filteredData: any[] = []
+    dataHistorialBackups: any[] = []
     columnas: IColumn[] = [
         {
             type: 'item',
@@ -33,42 +33,54 @@ export class BackupBdComponent {
             field: 'dtBackupCreacion',
             header: 'Fecha y hora',
             type: 'text',
-            width: '3rem',
+            width: '5rem',
             text: 'left',
-            text_header: 'Fecha y hora',
+            text_header: 'center',
+        },
+        {
+            field: 'cPersNombre',
+            header: 'Creado por',
+            type: 'text',
+            width: '10rem',
+            text: 'left',
+            text_header: 'center',
         },
         {
             field: 'cBackupNombre',
             header: 'Nombre de archivo',
             type: 'text',
-            width: '3rem',
+            width: '9rem',
             text: 'left',
-            text_header: 'Nombre de archivo',
+            text_header: 'center',
         },
         {
             field: 'cBackupStatus',
             header: 'Estado de copia',
             type: 'text',
-            width: '3rem',
-            text: 'left',
-            text_header: 'Estado de copia',
+            width: '4rem',
+            text: 'center',
+            text_header: 'center',
         },
         {
-            field: 'iDiasEliminacion',
+            field: 'iDiasParaEliminarse',
             header: 'Días para eliminarse',
             type: 'text',
             width: '3rem',
-            text: 'left',
+            text: 'center',
             text_header: 'Días para eliminarse',
         },
-        {
+        /*{
             field: 'bArchivoEliminado',
             header: 'Eliminado',
-            type: 'text',
+            type: 'tag',
             width: '3rem',
-            text: 'left',
-            text_header: 'Eliminado',
-        },
+            text: 'center',
+            text_header: 'center',
+            styles: {
+                'SI' : 'danger',
+                'NO' : 'success'
+            }
+        },*/
     ]
 
     constructor(
@@ -76,24 +88,44 @@ export class BackupBdComponent {
         private store: LocalStoreService
     ) {}
 
-    crearCopia() {
-        this.backupBdService.realizarCopiaSeguridad().subscribe({
-            next: (data: any) => {
-                this.messageService.add({
-                    severity: data.status.toLowerCase(),
-                    summary: 'Mensaje',
-                    detail: data.message,
-                    life: 5000,
-                })
+    ngOnInit() {
+        this.obtenerHistorialBackups()
+    }
+
+    obtenerHistorialBackups() {
+        this.backupBdService.obtenerHistorialBackups().subscribe({
+            next: (respuesta: any) => {
+                this.dataHistorialBackups = respuesta['data']
             },
             error: (error) => {
-                this.messageService.add({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: error,
-                    life: 5000,
-                })
+                console.log('error obtenido' + error)
             },
         })
+    }
+
+    crearCopia() {
+        this.backupBdService
+            .realizarCopiaSeguridad(this.store.getItem('dremoUser').iPersId)
+            .subscribe({
+                next: (data: any) => {
+                    this.messageService.add({
+                        severity: data.status.toLowerCase(),
+                        summary: 'Mensaje',
+                        detail: data.message,
+                        life: 5000,
+                    })
+                    if (data.status == 'Success') {
+                        this.obtenerHistorialBackups()
+                    }
+                },
+                error: (error) => {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error,
+                        life: 5000,
+                    })
+                },
+            })
     }
 }

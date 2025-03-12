@@ -465,6 +465,13 @@
                                 />
                             </div>
                         }
+                        @if (col.type === 'tag') {
+                            <p-tag
+                                [severity]="mapTagStyles(rowData, col)"
+                                [value]="rowData[col.field]"
+                            >
+                            </p-tag>
+                        }
                     </td>
                 }
             </tr>

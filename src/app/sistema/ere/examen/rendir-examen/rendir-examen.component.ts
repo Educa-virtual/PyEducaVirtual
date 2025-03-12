@@ -48,7 +48,7 @@ export class RendirExamenComponent implements OnInit {
     activeIndex: number = 0
     seleccion: string | null = null
     backend = environment.backend
-    evalEreRespuestas: any[] = []
+    evalEreRespuestas: any[]
 
     constructor(private store: LocalStoreService) {}
 
@@ -99,7 +99,25 @@ export class RendirExamenComponent implements OnInit {
         this.getInformation(params, params.data.opcion)
     }
 
+    agregarRespuestaAStorage(respuesta: any) {
+        //Previene duplicados
+        this.evalEreRespuestas = this.evalEreRespuestas.filter(
+            (item) =>
+                !(
+                    item.iPreguntaId == respuesta.iPreguntaId &&
+                    item.iEvaluacionId == respuesta.iEvaluacionId &&
+                    item.iEstudianteId == this._ConstantesService.iEstudianteId
+                )
+        )
+        this.evalEreRespuestas.push(respuesta)
+        /*if (respuesta.iMarcado) {
+
+        }*/
+        this.store.setItem('evalEreRespuestas', this.evalEreRespuestas)
+    }
+
     guardarPregunta(alternativas, alternativa, marcado) {
+        console.log(alternativa)
         alternativas.forEach((i) => {
             if (i.iAlternativaId !== alternativa.iAlternativaId) {
                 i.iMarcado = false
@@ -116,8 +134,6 @@ export class RendirExamenComponent implements OnInit {
         }
 
         const respuesta = {
-            opcion: 'guardarResultadosxiEstudianteIdxiResultadoRptaEstudiante',
-            iResultadoId: alternativa.iResultadoId,
             iEstudianteId: this._ConstantesService.iEstudianteId,
             iResultadoRptaEstudiante: alternativa.iAlternativaId,
             iIieeId: this._ConstantesService.iIieeId,
@@ -127,39 +143,7 @@ export class RendirExamenComponent implements OnInit {
             iCursoNivelGradId: this.iCursoNivelGradId,
             iMarcado: alternativa.iMarcado,
         }
-        console.log(respuesta)
-
-        this.evalEreRespuestas = this.evalEreRespuestas.filter(
-            (item) =>
-                !(
-                    item.iPreguntaId === respuesta.iPreguntaId &&
-                    item.iEvaluacionId === respuesta.iEvaluacionId
-                )
-        )
-        if (respuesta.iMarcado) {
-            this.evalEreRespuestas.push(respuesta)
-        }
-
-        this.store.setItem('evalEreRespuestas', this.evalEreRespuestas)
-        /*const params = {
-            petition: 'post',
-            group: 'ere',
-            prefix: 'resultados',
-            ruta: 'guardarResultadosxiEstudianteIdxiResultadoRptaEstudiante',
-            data: {
-                opcion: 'guardarResultadosxiEstudianteIdxiResultadoRptaEstudiante',
-                iResultadoId: alternativa.iResultadoId,
-                iEstudianteId: this._ConstantesService.iEstudianteId,
-                iResultadoRptaEstudiante: alternativa.iAlternativaId,
-                iIieeId: this._ConstantesService.iIieeId,
-                iEvaluacionId: this.iEvaluacionId,
-                iYAcadId: this._ConstantesService.iYAcadId,
-                iPreguntaId: alternativa.iPreguntaId,
-                iCursoNivelGradId: this.iCursoNivelGradId,
-                iMarcado: alternativa.iMarcado,
-            },
-        }*/
-        //this.getInformation(params, params.data.opcion)
+        this.agregarRespuestaAStorage(respuesta)
     }
 
     terminarExamen() {
@@ -276,19 +260,47 @@ export class RendirExamenComponent implements OnInit {
                                     : item.alternativas
 
                                 item.alternativas.forEach((alter) => {
-                                    const respuesta =
-                                        this.evalEreRespuestas.find(
-                                            (item) =>
-                                                item.iResultadoRptaEstudiante ===
-                                                    alter.iAlternativaId &&
-                                                item.iPreguntaId ===
-                                                    alter.iPreguntaId &&
-                                                item.iEvaluacionId ===
-                                                    this.iEvaluacionId
-                                        )
-                                    if (respuesta !== undefined) {
-                                        alter.iMarcado = 1
+                                    //Si en la BD está marcado, dejarlo como está
+                                    if (alter.iMarcado == 1) {
                                         pregunta.iMarcado = 1
+                                        const respuesta = {
+                                            //iResultadoId: alter.iResultadoId,
+                                            iEvaluacionId: this.iEvaluacionId,
+                                            iCursoNivelGradId:
+                                                this.iCursoNivelGradId,
+                                            iEstudianteId:
+                                                this._ConstantesService
+                                                    .iEstudianteId,
+                                            iIieeId:
+                                                this._ConstantesService.iIieeId,
+                                            iYAcadId:
+                                                this._ConstantesService
+                                                    .iYAcadId,
+                                            iResultadoRptaEstudiante:
+                                                alter.iAlternativaId,
+                                            iPreguntaId: alter.iPreguntaId,
+                                            iMarcado: 1,
+                                        }
+                                        this.agregarRespuestaAStorage(respuesta)
+                                    } else {
+                                        //Si no está marcado, buscar en el localStorage si ha sido marcado
+                                        const respuesta =
+                                            this.evalEreRespuestas.find(
+                                                (item) =>
+                                                    item.iResultadoRptaEstudiante ==
+                                                        alter.iAlternativaId &&
+                                                    item.iPreguntaId ==
+                                                        alter.iPreguntaId &&
+                                                    item.iEvaluacionId ==
+                                                        this.iEvaluacionId &&
+                                                    item.iEstudianteId ==
+                                                        this._ConstantesService
+                                                            .iEstudianteId
+                                            )
+                                        if (respuesta !== undefined) {
+                                            alter.iMarcado = 1
+                                            pregunta.iMarcado = 1
+                                        }
                                     }
                                 })
 

@@ -4,6 +4,7 @@ import { Component, inject, OnInit } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { MessageService } from 'primeng/api'
 import { DatosFichaBienestarService } from '../../../services/datos-ficha-bienestar.service'
+import { CompartirFichaService } from '../../../services/compartir-ficha.service'
 
 @Component({
     selector: 'app-ficha-familia-registro',
@@ -42,7 +43,8 @@ export class FichaFamiliaRegistroComponent implements OnInit {
 
     constructor(
         private fb: FormBuilder,
-        private datosFichaBienestarService: DatosFichaBienestarService
+        private datosFichaBienestarService: DatosFichaBienestarService,
+        private compartirFichaService: CompartirFichaService
     ) {}
 
     ngOnInit(): void {
@@ -85,7 +87,7 @@ export class FichaFamiliaRegistroComponent implements OnInit {
 
         try {
             this.formFamiliar = this.fb.group({
-                iFichaDGId: [null, Validators.required], // PK
+                iFichaDGId: this.compartirFichaService.getiFichaDGId(), // PK
                 iPersId: [null, Validators.required],
                 iTipoFamiliarId: [null, Validators.required],
                 bFamiliarVivoConEl: [false],
@@ -258,11 +260,47 @@ export class FichaFamiliaRegistroComponent implements OnInit {
             )
     }
 
-    guardarFarmiliar() {
-        console.log(this.formFamiliar.value)
+    guardarFamiliar() {
+        this.datosFichaBienestarService
+            .guardarFamiliar(this.formFamiliar.value)
+            .subscribe({
+                next: (data: any) => {
+                    console.log(data, 'guardado')
+                    this.familiar_registrado = true
+                },
+                error: (error) => {
+                    console.error('Error guardando familiar:', error)
+                    this._messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error,
+                    })
+                },
+                complete: () => {
+                    console.log('Request completed')
+                },
+            })
     }
 
-    actualizarFarmiliar() {
-        console.log(this.formFamiliar.value)
+    actualizarFamiliar() {
+        this.datosFichaBienestarService
+            .actualizarFamiliar(this.formFamiliar.value)
+            .subscribe({
+                next: (data: any) => {
+                    console.log(data, 'actualizado')
+                    this.familiar_registrado = true
+                },
+                error: (error) => {
+                    console.error('Error actualizando familiar:', error)
+                    this._messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error,
+                    })
+                },
+                complete: () => {
+                    console.log('Request completed')
+                },
+            })
     }
 }

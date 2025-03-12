@@ -11,6 +11,7 @@ import { MessageService } from 'primeng/api'
 import { DatosFichaBienestarService } from '../../services/datos-ficha-bienestar.service'
 import { PrimengModule } from '@/app/primeng.module'
 import { FichaFamiliaRegistroComponent } from './ficha-familia-registro/ficha-familia-registro.component'
+import { CompartirFichaService } from '../../services/compartir-ficha.service'
 
 @Component({
     selector: 'app-ficha-familia',
@@ -34,11 +35,18 @@ export class FichaFamiliaComponent implements OnInit {
     constructor(
         private router: Router,
         private store: LocalStoreService,
-        private DatosFichaBienestarService: DatosFichaBienestarService
-    ) {}
+        private DatosFichaBienestarService: DatosFichaBienestarService,
+        private compartirFichaService: CompartirFichaService
+    ) {
+        if (this.compartirFichaService.getiFichaDGId() === null) {
+            this.router.navigate(['/bienestar/ficha/general'])
+        }
+    }
 
     ngOnInit(): void {
-        this.searchFamiliares()
+        if (this.compartirFichaService.getiFichaDGId() !== null) {
+            this.searchFamiliares()
+        }
     }
 
     agregarFamiliar() {
@@ -48,7 +56,7 @@ export class FichaFamiliaComponent implements OnInit {
 
     searchFamiliares() {
         this.DatosFichaBienestarService.searchFamiliares({
-            iFichaDGId: 1,
+            iFichaDGId: this.compartirFichaService.getiFichaDGId(),
         }).subscribe({
             next: (data: any) => {
                 this.familiares = data.data

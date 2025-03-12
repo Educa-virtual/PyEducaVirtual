@@ -88,6 +88,24 @@ export class FichasocgeneralComponent implements OnInit {
                     this.formGeneral.get('iFichaDGNroHijos')?.setValue(null) // Limpia si desactivan
                 }
             })
+
+        if (this.compartirFichaService.getiFichaDGId() !== null) {
+            this.searchFichaGeneral()
+        }
+    }
+
+    searchFichaGeneral() {
+        this.datosFichaBienestarService
+            .searchFichaGeneral({
+                iFichaDGId: this.compartirFichaService.getiFichaDGId(),
+            })
+            .subscribe((data: any) => {
+                this.setFormGeneral(data)
+            })
+    }
+
+    setFormGeneral(data: any) {
+        this.formGeneral.patchValue(data)
     }
 
     guardar() {
@@ -100,7 +118,7 @@ export class FichasocgeneralComponent implements OnInit {
             return
         }
         this.datosFichaBienestarService
-            .guardarFichaBienestar(this.formGeneral.value)
+            .guardarFichaGeneral(this.formGeneral.value)
             .subscribe({
                 next: (data: any) => {
                     this.compartirFichaService.setiFichaDGId(
@@ -133,7 +151,7 @@ export class FichasocgeneralComponent implements OnInit {
             return
         }
         this.datosFichaBienestarService
-            .actualizarFichaBienestar(this.formGeneral.value)
+            .actualizarFichaGeneral(this.formGeneral.value)
             .subscribe({
                 next: (data: any) => {
                     this.compartirFichaService.setiFichaDGId(

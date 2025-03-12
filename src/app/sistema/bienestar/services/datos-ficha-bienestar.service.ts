@@ -38,23 +38,27 @@ export class DatosFichaBienestarService implements OnDestroy {
     grados_instruccion: Array<object>
     tipos_ies: Array<object>
 
-    guardarFichaBienestar(data: any) {
-        return this.http.post(`${baseUrl}/bienestar/guardarFicha`, data)
+    searchFichaGeneral(data: any) {
+        return this.http.post(`${baseUrl}/bienestar/searchFichaGeneral`, data)
     }
 
-    actualizarFichaBienestar(data: any) {
-        return this.http.post(`${baseUrl}/bienestar/actualizarFicha`, data)
+    guardarFichaGeneral(data: any) {
+        return this.http.post(`${baseUrl}/bienestar/guardarFichaGeneral`, data)
+    }
+
+    actualizarFichaGeneral(data: any) {
+        return this.http.post(
+            `${baseUrl}/bienestar/actualizarFichaGeneral`,
+            data
+        )
     }
 
     guardarFamiliar(data: any) {
-        return this.http.post(`${baseUrl}/bienestar/ficha/familia/save`, data)
+        return this.http.post(`${baseUrl}/bienestar/guardarFamiliar`, data)
     }
 
     actualizarFamiliar(data: any) {
-        return this.http.post(
-            `${baseUrl}/bienestar/ficha/familiar/update`,
-            data
-        )
+        return this.http.post(`${baseUrl}/bienestar/actualizarFamiliar`, data)
     }
 
     borrarFamiliar(data: any) {

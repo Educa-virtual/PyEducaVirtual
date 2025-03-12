@@ -213,11 +213,7 @@
             <div class="col-12 sm:col-6">
                 <p-inputGroup>
                     <p-inputGroupAddon> Domicilio</p-inputGroupAddon>
-                    <input
-                        pInputText
-                        formControlName="cPersDomicNombre"
-                        aria-describedby="cPersDomicNombre-help"
-                    />
+                    <input pInputText formControlName="cPersDomicilio" />
                 </p-inputGroup>
             </div>
 
@@ -343,7 +339,7 @@
         <div class="grid p-fluid mt-3">
             <div class="col-12">
                 <p-inputGroup>
-                    <p-inputGroupAddon> Ocupación *</p-inputGroupAddon>
+                    <p-inputGroupAddon> Ocupación </p-inputGroupAddon>
                     <p-dropdown
                         [options]="ocupaciones"
                         formControlName="iOcupacionId"
@@ -356,7 +352,7 @@
             </div>
             <div class="col-12 sm:col-6">
                 <p-inputGroup>
-                    <p-inputGroupAddon> Instrucción *</p-inputGroupAddon>
+                    <p-inputGroupAddon> Instrucción </p-inputGroupAddon>
                     <p-dropdown
                         [options]="grados_instruccion"
                         formControlName="iGradoInstId"
@@ -369,7 +365,7 @@
             </div>
             <div class="col-12 sm:col-6">
                 <p-inputGroup>
-                    <p-inputGroupAddon> Tipo *</p-inputGroupAddon>
+                    <p-inputGroupAddon> Tipo </p-inputGroupAddon>
                     <p-dropdown
                         [options]="tipos_ies"
                         formControlName="iTipoIeEstId"
@@ -384,16 +380,22 @@
     </p-fieldset>
 </form>
 
+<br />
+
 <div class="flex justify-content-end">
     <p-button
-        label="Guardar"
-        (onClick)="guardarFarmiliar()"
+        label="Guardar y salir"
+        severity="success"
+        icon="pi pi-fw pi-save"
+        (onClick)="guardarFamiliar()"
         styleClass="p-button-primary"
         [hidden]="familiar_registrado"
     />
     <p-button
-        label="Actualizar"
-        (onClick)="actualizarFarmiliar()"
+        label="Actualizar y salir"
+        severity="success"
+        icon="pi pi-fw pi-save"
+        (onClick)="actualizarFamiliar()"
         styleClass="p-button-primary"
         [hidden]="!familiar_registrado"
     />

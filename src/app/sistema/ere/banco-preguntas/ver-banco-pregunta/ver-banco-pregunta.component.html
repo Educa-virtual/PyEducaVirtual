@@ -1,3 +1,4 @@
+<!-- eslint-disable @angular-eslint/template/label-has-associated-control -->
 <div *ngIf="encab" [ngClass]="{ 'disabled-dialog': isDisabled }">
     <div [innerHTML]="encab.cPregunta"></div>
     <ng-template pTemplate="header">
@@ -84,7 +85,11 @@
             <span class="text-red-500 text-xs">(*) Obligatorio</span>
         </label>
 
-        <editor [(ngModel)]="encab.cPregunta" [disabled]="true"></editor>
+        <editor
+            [(ngModel)]="encab.cPregunta"
+            [disabled]="true"
+            [init]="init"
+        ></editor>
     </div>
 
     <div class="col-12 mt-1">

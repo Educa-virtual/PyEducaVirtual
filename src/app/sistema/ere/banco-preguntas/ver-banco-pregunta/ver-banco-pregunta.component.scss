@@ -2,3 +2,24 @@
     pointer-events: none;
     opacity: 0.5;
 }
+.dialog-container {
+    width: 60vw;
+    max-width: 1200px;
+}
+
+.dialog-container .col-12 {
+    width: 100%;
+}
+
+::ng-deep .p-panel .p-panel-header {
+    background: var(--bg-header-modal) !important;
+    color: white !important;
+}
+
+::ng-deep .text-primary {
+    color: white !important;
+}
+
+::ng-deep .container-page .p-panel-header {
+    gap: 0px !important;
+}

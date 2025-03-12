@@ -10,7 +10,7 @@ import {
 import { PrimengModule } from '@/app/primeng.module'
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import { NgIf } from '@angular/common'
-import { EditorComponent } from '@tinymce/tinymce-angular'
+import { EditorComponent, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular'
 import { environment } from '@/environments/environment'
 import { RemoveHTMLCSSPipe } from '@/app/shared/pipes/remove-html-style.pipe'
 import { TruncatePipe } from '@/app/shared/pipes/truncate-text.pipe'
@@ -26,6 +26,9 @@ import { TruncatePipe } from '@/app/shared/pipes/truncate-text.pipe'
         RemoveHTMLCSSPipe,
         TruncatePipe,
     ],
+    providers: [
+        { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },
+    ],
     templateUrl: './ver-banco-pregunta.component.html',
     styleUrl: './ver-banco-pregunta.component.scss',
 })
@@ -34,10 +37,26 @@ export class VerBancoPreguntaComponent implements OnInit, OnChanges {
         PreguntasReutilizablesService
     )
     encab: any
+
     backend = environment.backend
     @Input() iPreguntaId: string = ''
     @Input() iEncabPregId: string = ''
     isDisabled: any
+    seleccion: string | null = null
+    init: EditorComponent['init'] = {
+        base_url: '/tinymce', // Root for resources
+        suffix: '.min', // Suffix to use when loading resources
+        menubar: false,
+        selector: 'textarea',
+        placeholder: 'Escribe aqui...',
+        plugins: 'lists image table',
+        toolbar:
+            'undo redo | forecolor backcolor | bold italic underline strikethrough | ' +
+            'alignleft aligncenter alignright alignjustify | bullist numlist | ' +
+            'image table',
+        height: 400,
+        editable_root: true,
+    }
 
     ngOnInit(): void {
         void this.iPreguntaId

@@ -58,7 +58,12 @@ export class InicioComponent implements OnInit {
 
     ngOnInit() {
         this.obtenerPerfiles()
-        this.cargarComunicadosDestino()
+        const perfil = this.ls.getItem('dremoPerfil')
+        if (perfil) {
+            this.cargarComunicadosDestino()
+        } else {
+            this.openModal()
+        }
     }
 
     obtenerPerfiles() {
@@ -70,13 +75,19 @@ export class InicioComponent implements OnInit {
         this.modalPerfiles = true
     }
 
-    seleccionarElemento(perfiles: any): void {
-        const found = (this.perfilSeleccionado = perfiles)
+    seleccionarElemento(perfil: any): void {
+        // const found = (this.perfilSeleccionado = perfiles)
+        const found = perfil
+        this.perfilSeleccionado = found
+
         this.ls.setItem('dremoPerfil', found)
+
+        this.modalPerfiles = false
+
+        // cargar la interfaz del perfil seleccionado.
         setTimeout(() => {
             window.location.reload()
         }, 200)
-        this.modalPerfiles = false
     }
 
     cargarComunicadosDestino(): void {

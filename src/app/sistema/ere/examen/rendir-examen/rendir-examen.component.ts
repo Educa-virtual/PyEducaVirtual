@@ -7,9 +7,11 @@ import { RadioButtonModule } from 'primeng/radiobutton'
 import { RemoveHTMLCSSPipe } from '@/app/shared/pipes/remove-html-style.pipe'
 import { TruncatePipe } from '@/app/shared/pipes/truncate-text.pipe'
 import { DomSanitizer } from '@angular/platform-browser'
+import { NgxDocViewerModule } from 'ngx-doc-viewer'
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { environment } from '@/environments/environment'
 import { ModalEvaluacionFinalizadaComponent } from '../modal-evaluacion-finalizada/modal-evaluacion-finalizada.component'
+import { ImagePreviewComponent } from '@/app/shared/image-preview/image-preview.component'
 
 @Component({
     selector: 'app-rendir-examen',
@@ -22,7 +24,9 @@ import { ModalEvaluacionFinalizadaComponent } from '../modal-evaluacion-finaliza
         RadioButtonModule,
         TruncatePipe,
         RemoveHTMLCSSPipe,
+        NgxDocViewerModule,
         ModalEvaluacionFinalizadaComponent,
+        ImagePreviewComponent,
     ],
 })
 export class RendirExamenComponent implements OnInit {
@@ -47,6 +51,7 @@ export class RendirExamenComponent implements OnInit {
     ngOnInit() {
         this.obtenerPreguntaxiEvaluacionId()
     }
+
     // meto de al seleccionar una opción
     seleccionarOpcion(opcion: string) {
         this.seleccion = opcion
@@ -281,9 +286,24 @@ export class RendirExamenComponent implements OnInit {
                 }
 
                 break
+            case 'close-modal':
+                this.showModalPreview = false
+                break
         }
     }
     updateUrl(item) {
         item.cAlternativaImagen = 'users/no-image.png'
+    }
+
+    previewImage: string | null = null
+    showModalPreview: boolean = false
+    onImageClick(event: MouseEvent) {
+        const target = event.target as HTMLImageElement
+
+        // Verifica si el clic fue en una imagen
+        if (target.tagName.toLowerCase() === 'img') {
+            this.previewImage = target.src // Asigna la URL de la imagen al preview
+            this.showModalPreview = true
+        }
     }
 }

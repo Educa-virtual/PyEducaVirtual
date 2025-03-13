@@ -34,6 +34,7 @@ export class RendirExamenComponent implements OnInit {
     @Input() iCursoNivelGradId: string
     @Input() cEvaluacionNombre: string
     @Input() cCursoNombre: string
+    @Input() cGradoNombre: string
 
     private _GeneralService = inject(GeneralService)
     private _MessageService = inject(MessageService)
@@ -176,6 +177,7 @@ export class RendirExamenComponent implements OnInit {
     accionBtnItem(elemento): void {
         const { accion } = elemento
         const { item } = elemento
+        this.cGradoNombre = this.cGradoNombre.toLowerCase()
         switch (accion) {
             case 'ConsultarPreguntasxiEvaluacionIdxiCursoNivelGradIdxiEstudianteId':
                 this.finalizado = false

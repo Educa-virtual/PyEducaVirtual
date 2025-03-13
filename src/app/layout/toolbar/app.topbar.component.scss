@@ -2,7 +2,7 @@
     display: grid;
     grid-template-columns: 15% 5% 80%;
     grid-template-areas: 'logo bars_modulo notif_anio_inst_account';
-    gap: 10px;
+    //gap: 10px;
     position: fixed;
     height: 60px;
     z-index: 1000;
@@ -47,6 +47,9 @@
         display: flex;
         justify-content: end;
         align-items: center;
+        @media (max-width: 500px) {
+            justify-content: center;
+        }
     }
 
     @media (max-width: 1285px) {
@@ -69,10 +72,17 @@
 
         &__bars_modulo {
             padding-left: 2rem;
+            @media (max-width: 500px) {
+                padding-left: 0rem;
+            }
         }
     }
     @media (max-width: 780px) {
         height: 100px;
+    }
+
+    @media (max-width: 350px) {
+        padding: 0rem 0.2rem;
     }
 }
 

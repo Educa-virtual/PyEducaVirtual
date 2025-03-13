@@ -3,91 +3,123 @@
     [actions]="[]"
     class="custom-container-page"
 >
-    <!-- <label for="">hola xikitas:</label> -->
-    <br />
-    <!-- select para los resultados de la ERE -->
-    <div
-        class="flex flex-column md:flex-row md:justify-content-between gap-2 padding:100px"
-    >
-        <!-- Buscar x nievel (Primaria y Secundaria) -->
-        <p-inputGroup>
-            <p-inputGroupAddon> Nivel </p-inputGroupAddon>
-            <p-dropdown
-                optionLabel="cUgelNombre"
-                placeholder="Seleccionar"
-                styleClass="w-full"
-                class="flex-1"
-            ></p-dropdown>
-        </p-inputGroup>
-        <!-- Buscar Grado -->
-        <p-inputGroup>
-            <p-inputGroupAddon> Grado</p-inputGroupAddon>
-            <p-dropdown
-                optionLabel="cUgelNombre"
-                placeholder="Seleccione"
-                styleClass="w-full"
-                class="flex-1"
-            ></p-dropdown>
-        </p-inputGroup>
-        <!-- Buscar Sección -->
-        <p-inputGroup>
-            <p-inputGroupAddon> Sección</p-inputGroupAddon>
-            <p-dropdown
-                optionLabel="cUgelNombre"
-                placeholder="Seleccione"
-                styleClass="w-full"
-                class="flex-1"
-            ></p-dropdown>
-        </p-inputGroup>
-        <!-- Bsucar resultados x área -->
-        <p-inputGroup>
-            <p-inputGroupAddon> Área</p-inputGroupAddon>
-            <p-dropdown
-                optionLabel="cUgelNombre"
-                placeholder="Área"
-                styleClass="w-full"
-                class="flex-1"
-            ></p-dropdown>
-        </p-inputGroup>
-        <p-button class="ml-5" severity="success"> Buscar </p-button>
-        <!-- <p-dropdown
-                [options]="Ugeles"
-                [(ngModel)]="selectedUgeles"
-                optionLabel="cUgelNombre"
-                placeholder="Seleccionar"
-                styleClass="w-full"
-                class="flex-1"
-                (onChange)="onUgelChange($event)"
-                [disabled]="accion === 'ver'"
-            ></p-dropdown> -->
-    </div>
-    <br />
-    <label for="" class=""
-        >Resumen de participación y nivel de logro alcanzado</label
-    >
+    <form [formGroup]="formFiltros">
+        <div class="grid p-fluid">
+            <div class="col-6">
+                <p-inputGroup>
+                    <p-inputGroupAddon>Evaluación *</p-inputGroupAddon>
+                    <p-dropdown
+                        [options]="evaluaciones"
+                        formControlName="iEvaluacionId"
+                        placeholder="Seleccione una evaluación"
+                        styleClass="w-full"
+                    />
+                </p-inputGroup>
+            </div>
+            <div class="col-6">
+                <p-inputGroup>
+                    <p-inputGroupAddon>Área *</p-inputGroupAddon>
+                    <p-dropdown
+                        [options]="cursos"
+                        formControlName="iCursoId"
+                        placeholder="Seleccione un curso"
+                        styleClass="w-full"
+                    ></p-dropdown>
+                </p-inputGroup>
+            </div>
+        </div>
+
+        <p-panel header="Aplicar Filtros">
+            <div class="grid p-fluid">
+                <div class="col-3">
+                    <p-inputGroup>
+                        <p-inputGroupAddon>Nivel *</p-inputGroupAddon>
+                        <p-dropdown
+                            [options]="nivel_tipos"
+                            formControlName="iNivelTipoId"
+                            placeholder="Seleccione un nivel"
+                            styleClass="w-full"
+                        ></p-dropdown>
+                    </p-inputGroup>
+                </div>
+                <div class="col-3">
+                    <p-inputGroup>
+                        <p-inputGroupAddon>Grado *</p-inputGroupAddon>
+                        <p-dropdown
+                            [options]="nivel_grados"
+                            formControlName="iNivelGradoId"
+                            placeholder="Seleccione un grado"
+                            styleClass="w-full"
+                        ></p-dropdown>
+                    </p-inputGroup>
+                </div>
+                <div class="col-3">
+                    <p-inputGroup>
+                        <p-inputGroupAddon>Sección</p-inputGroupAddon>
+                        <p-dropdown
+                            [options]="secciones"
+                            formControlName="iSeccionId"
+                            placeholder="Seleccione una sección"
+                            styleClass="w-full"
+                        ></p-dropdown>
+                    </p-inputGroup>
+                </div>
+                <div class="col-3">
+                    <p-button
+                        pRipple
+                        severity="success"
+                        label="Buscar"
+                        icon="pi pi-fw pi-search"
+                        (onClick)="searchResultados()"
+                    />
+                </div>
+            </div>
+        </p-panel>
+    </form>
 
     <br />
-    <div class="flex justify-content-center">
-        <p-chart type="doughnut" [data]="data" [options]="options" />
-    </div>
-    <!-- Menu p-accordion -->
-    <div>
-        <p-accordion [activeIndex]="0">
-            <p-accordionTab header="Relación de Estudiantes">
-                <p>Lorem ipsum dolor sit amet...</p>
-            </p-accordionTab>
-            <p-accordionTab header="Estadisticas Avanzadas">
-                <p>
-                    Sed ut perspiciatis unde omnis iste natus error sit
-                    voluptatem accusantium...
-                </p>
-            </p-accordionTab>
-            <p-accordionTab header="Matris de Evaluación">
-                <p>At vero eos et accusamus et iusto odio dignissimos...</p>
-            </p-accordionTab>
-            <p-accordionTab header="Promedio Final">
-                <p>At vero eos et accusamus et iusto odio dignissimos...</p>
-            </p-accordionTab>
-        </p-accordion>
-    </div>
+
+    <p-panel>
+        <h3 class="m-0 text-uppercase text-primary">
+            Resumen de participación y nivel de logro alcanzado
+        </h3>
+
+        <br />
+
+        <div class="flex justify-content-center" [hidden]="visible_chart">
+            <p-chart type="doughnut" [data]="data" [options]="options" />
+        </div>
+
+        <div>
+            <p-accordion [activeIndex]="0">
+                <p-accordionTab header="Relación de Estudiantes">
+                    <app-table-primeng
+                        [columnas]="columns"
+                        [showCaption]="true"
+                        [data]="resultados"
+                        (accionBtnItem)="accionBtnItemTable($event)"
+                        [showPaginator]="true"
+                        sortMode="single"
+                        sortField="estudiante"
+                        [sortOrder]="1"
+                        [(selectedRowData)]="selectedItems"
+                        [actions]="actions"
+                    />
+                </p-accordionTab>
+                <p-accordionTab header="Estadisticas Avanzadas">
+                    <p>
+                        Sed ut perspiciatis unde omnis iste natus error sit
+                        voluptatem accusantium...
+                    </p>
+                </p-accordionTab>
+                <p-accordionTab header="Matris de Evaluación">
+                    <p>At vero eos et accusamus et iusto odio dignissimos...</p>
+                </p-accordionTab>
+                <p-accordionTab header="Promedio Final">
+                    <p>At vero eos et accusamus et iusto odio dignissimos...</p>
+                </p-accordionTab>
+            </p-accordion>
+        </div>
+    </p-panel>
 </app-container-page>
+<p-toast></p-toast>

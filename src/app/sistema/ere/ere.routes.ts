@@ -102,7 +102,7 @@ const routes: Routes = [
         },
     },
     {
-        path: 'mostrar-evaluacion/:iEvaluacionId/areas/:iCursoNivelGradId/:cEvaluacionNombre/:cCursoNombre',
+        path: 'mostrar-evaluacion/:iEvaluacionId/areas/:iCursoNivelGradId/:cEvaluacionNombre/:cCursoNombre/:cGradoNombre',
         component: MostrarEvaluacionComponent,
         canActivate: [RoleGuard],
         data: {
@@ -112,7 +112,7 @@ const routes: Routes = [
         },
     },
     {
-        path: 'rendir-examen/:iEvaluacionId/areas/:iCursoNivelGradId/:cEvaluacionNombre/:cCursoNombre',
+        path: 'rendir-examen/:iEvaluacionId/areas/:iCursoNivelGradId/:cEvaluacionNombre/:cCursoNombre/:cGradoNombre',
         component: RendirExamenComponent,
         canActivate: [RoleGuard],
         data: {

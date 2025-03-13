@@ -1,8 +1,10 @@
 import {
     Component,
+    EventEmitter,
     Input,
     OnChanges,
     OnDestroy,
+    Output,
     SimpleChanges,
 } from '@angular/core'
 
@@ -14,15 +16,18 @@ import {
     imports: [],
 })
 export class TimeComponent implements OnChanges, OnDestroy {
-    @Input() inicio: Date = new Date() // Fecha y hora de inicio
-    @Input() fin: Date = new Date() // Fecha y hora de fin
+    @Output() accionTime = new EventEmitter()
+
+    @Input() inicio // Fecha y hora de inicio
+    @Input() fin // Fecha y hora de fin
 
     tiempoRestante: number = 0 // Tiempo restante en segundos
     intervalo: any
-    constructor() {}
 
     ngOnChanges(changes: SimpleChanges): void {
         if (changes['inicio'] || changes['fin']) {
+            this.inicio = new Date(this.inicio)
+            this.fin = new Date(this.fin)
             this.detenerContador() // Reinicia el contador si las fechas cambian
             this.calcularTiempoRestante()
             this.iniciarContador()
@@ -55,8 +60,19 @@ export class TimeComponent implements OnChanges, OnDestroy {
     }
 
     getTiempoFormateado(): string {
-        const minutos = Math.floor(this.tiempoRestante / 60)
-        const segundos = this.tiempoRestante % 60
-        return `${minutos}:${segundos < 10 ? '0' + segundos : segundos}`
+        const hours = Math.floor(this.tiempoRestante / 3600) // 1 hora = 3600000 milisegundos
+        const minutos = Math.floor((this.tiempoRestante % 3600) / 60) // 1 minuto = 60000 milisegundos
+        const segundos = Math.floor(this.tiempoRestante % 60)
+        const data = {
+            accion: 'tiempo-finalizado',
+            item: null,
+        }
+        if (hours == 0 && minutos == 0 && segundos == 0) {
+            this.accionTime.emit(data)
+        } else {
+            data.accion = 'tiempo-espera'
+            this.accionTime.emit(data)
+        }
+        return `${hours}:${minutos}:${segundos < 10 ? '0' + segundos : segundos}`
     }
 }

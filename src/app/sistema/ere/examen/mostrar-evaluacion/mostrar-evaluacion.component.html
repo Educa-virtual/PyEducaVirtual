@@ -48,6 +48,26 @@
                     }}
                 </p>
             </div>
+
+            <div>
+                <span class="font-bold text-xl flex gap-2 mt-2">
+                    <app-icon
+                        name="matCalendarMonth"
+                        class="text-primary"
+                        size="sm"
+                    ></app-icon>
+                    Inicio de evaluación
+                </span>
+                <p class="flex gap-2 flex-wrap ml-5">
+                    @if (evaluacion?.dtExamenFechaInicio) {
+                        <app-time
+                            [inicio]="tiempoActual"
+                            [fin]="evaluacion?.dtExamenFechaInicio"
+                            (accionTime)="accionBtnItem($event)"
+                        ></app-time>
+                    }
+                </p>
+            </div>
         </div>
 
         <!-- tiempo de evaluación  -->
@@ -85,15 +105,27 @@
         </div>
 
         <div class="col-12 text-center">
-            <button
-                pButton
-                pRipple
-                type="button"
-                class="p-button-success pulse"
-                (click)="rendirExamen()"
-            >
-                <i class="pi pi-check-square"></i>&nbsp; Iniciar Evaluación
-            </button>
+            @if (bEstadoTiempo) {
+                <button
+                    pButton
+                    pRipple
+                    type="button"
+                    class="p-button-secondary"
+                    [disabled]="bEstadoTiempo"
+                >
+                    <i class="pi pi-check-square"></i>&nbsp; Iniciar Evaluación
+                </button>
+            } @else {
+                <button
+                    pButton
+                    pRipple
+                    type="button"
+                    class="p-button-success pulse"
+                    (click)="rendirExamen()"
+                >
+                    <i class="pi pi-check-square"></i>&nbsp; Iniciar Evaluación
+                </button>
+            }
         </div>
     </div>
 </app-container-page>

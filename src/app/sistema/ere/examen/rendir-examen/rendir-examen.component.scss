@@ -19,12 +19,15 @@ li {
     padding: 8px;
     margin: 5px 0;
     background-color: white;
-    cursor: pointer;
+
     border-radius: 5px;
     transition: 0.3s;
 
     display: flex;
     align-items: center;
+}
+label {
+    cursor: pointer;
 }
 
 li:hover {

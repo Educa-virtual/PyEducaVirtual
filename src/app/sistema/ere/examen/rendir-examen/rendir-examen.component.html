@@ -176,37 +176,35 @@
                                                 )
                                             "
                                         />
-                                        <!-- <p-radioButton name="opciones" [value]="opcion" [(ngModel)]="seleccion"
-                                        (onClick)="guardarPregunta(opcion)">
-                                    </p-radioButton> -->
-                                        <div class="ml-2">
-                                            <!-- {{ getLetra(i) }}.--->
-                                            <div
-                                                *ngIf="
-                                                    !opcion.cAlternativaImagen
-                                                "
-                                            >
-                                                {{
-                                                    opcion.cAlternativaDescripcion
-                                                }}
+                                        <label [for]="opcion.iAlternativaId">
+                                            <div class="ml-2">
+                                                <div
+                                                    *ngIf="
+                                                        !opcion.cAlternativaImagen
+                                                    "
+                                                >
+                                                    {{
+                                                        opcion.cAlternativaDescripcion
+                                                    }}
+                                                </div>
+                                                <p-image
+                                                    *ngIf="
+                                                        opcion.cAlternativaImagen
+                                                    "
+                                                    [src]="
+                                                        backend +
+                                                        '/' +
+                                                        opcion.cAlternativaImagen
+                                                    "
+                                                    alt="Image"
+                                                    width="75"
+                                                    [preview]="true"
+                                                    (onImageError)="
+                                                        updateUrl(opcion)
+                                                    "
+                                                />
                                             </div>
-                                            <p-image
-                                                *ngIf="
-                                                    opcion.cAlternativaImagen
-                                                "
-                                                [src]="
-                                                    backend +
-                                                    '/' +
-                                                    opcion.cAlternativaImagen
-                                                "
-                                                alt="Image"
-                                                width="75"
-                                                [preview]="true"
-                                                (onImageError)="
-                                                    updateUrl(opcion)
-                                                "
-                                            />
-                                        </div>
+                                        </label>
                                     </li>
                                 </ul>
                             </div>

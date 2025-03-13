@@ -110,14 +110,10 @@ export class RendirExamenComponent implements OnInit {
                 )
         )
         this.evalEreRespuestas.push(respuesta)
-        /*if (respuesta.iMarcado) {
-
-        }*/
         this.store.setItem('evalEreRespuestas', this.evalEreRespuestas)
     }
 
     guardarPregunta(alternativas, alternativa, marcado) {
-        console.log(alternativa)
         alternativas.forEach((i) => {
             if (i.iAlternativaId !== alternativa.iAlternativaId) {
                 i.iMarcado = false
@@ -183,7 +179,6 @@ export class RendirExamenComponent implements OnInit {
             },
             complete: () => {},
             error: (error) => {
-                //console.log(error)
                 this._MessageService.add({
                     severity: 'error',
                     summary: 'Error',
@@ -243,11 +238,10 @@ export class RendirExamenComponent implements OnInit {
                             )
                 )
                 this.totalPregunta = 0
-                // //console.log(this.preguntas)
+
                 this.preguntas.forEach((pregunta) => {
                     {
                         if (pregunta.pregunta.length) {
-                            //let iMarcado = 0
                             pregunta.pregunta.forEach((item) => {
                                 this.totalPregunta = this.totalPregunta + 1
                                 item.title =
@@ -260,11 +254,10 @@ export class RendirExamenComponent implements OnInit {
                                     : item.alternativas
 
                                 item.alternativas.forEach((alter) => {
-                                    //Si en la BD está marcado, dejarlo como está
                                     if (alter.iMarcado == 1) {
                                         pregunta.iMarcado = 1
+                                        //Sólo guardar la respuesta marcada, sino se registrarán todas las alternativas, aunque no estén marcadas
                                         const respuesta = {
-                                            //iResultadoId: alter.iResultadoId,
                                             iEvaluacionId: this.iEvaluacionId,
                                             iCursoNivelGradId:
                                                 this.iCursoNivelGradId,
@@ -298,8 +291,9 @@ export class RendirExamenComponent implements OnInit {
                                                             .iEstudianteId
                                             )
                                         if (respuesta !== undefined) {
-                                            alter.iMarcado = 1
-                                            pregunta.iMarcado = 1
+                                            alter.iMarcado = respuesta.iMarcado
+                                            pregunta.iMarcado =
+                                                respuesta.iMarcado
                                         }
                                     }
                                 })
@@ -312,14 +306,7 @@ export class RendirExamenComponent implements OnInit {
                                     this._DomSanitizer.bypassSecurityTrustHtml(
                                         item.cEncabPregContenido
                                     )
-                                /*iMarcado = item.alternativas.find(
-                                    (alternativa) =>
-                                        Number(alternativa.iMarcado) === 1
-                                )
-                                    ? 1
-                                    : 0*/
                             })
-                            //pregunta.iMarcado = iMarcado
                         }
 
                         if (pregunta.pregunta.length > 1) {
@@ -334,7 +321,7 @@ export class RendirExamenComponent implements OnInit {
                         }
                     }
                 })
-                //console.log(this.preguntas)
+
                 break
             case 'guardarResultadosxiEstudianteIdxiResultadoRptaEstudiante':
                 break
@@ -345,6 +332,7 @@ export class RendirExamenComponent implements OnInit {
                     item[item.length - 1]['iFinalizado'] === '0'
                 ) {
                     this.finalizado = true
+                    this.store.remove('evalEreRespuestas')
                     //window.location.reload()
                 }
 

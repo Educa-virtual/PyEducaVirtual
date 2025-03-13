@@ -21,6 +21,7 @@ export class DatosFichaBienestarService implements OnDestroy {
 
     lista: any[] = []
 
+    paramsGeneral: any
     tipos_documentos: Array<object>
     tipos_familiares: Array<object>
     estados_civiles: Array<object>
@@ -79,202 +80,123 @@ export class DatosFichaBienestarService implements OnDestroy {
         return this.http.post(`${baseUrl}/grl/validarPersona`, data)
     }
 
-    getTiposVias() {
-        if (!this.tipos_vias) {
-            return this.query
-                .searchTablaXwhere({
-                    esquema: 'obe',
-                    tabla: 'tipo_vias',
-                    campos: '*',
-                    condicion: '1 = 1',
-                })
+    /*
+     * Funciones para popular parametros de formularios de ficha general
+     */
+
+    /**
+     * Función para obtener los parametros de la ficha general
+     */
+    getFichaGeneralParametros() {
+        if (!this.paramsGeneral) {
+            return this.http
+                .get(`${baseUrl}/bienestar/createFichaGeneral`)
                 .pipe(
-                    takeUntil(this.onDestroy$),
                     map((data: any) => {
-                        const items = data.data
-                        this.tipos_vias = items.map((tipo_via) => ({
-                            value: tipo_via.iTipoViaId,
-                            label: tipo_via.cTipoViaNombre,
-                        }))
-                        return this.tipos_vias
+                        this.paramsGeneral = data.data[0]
+                        return this.paramsGeneral
                     })
                 )
         }
-        return of(this.tipos_vias)
+        return of(this.paramsGeneral)
     }
 
-    getOcupaciones() {
-        if (!this.ocupaciones) {
-            return this.query
-                .searchTablaXwhere({
-                    esquema: 'obe',
-                    tabla: 'ocupaciones',
-                    campos: '*',
-                    condicion: '1 = 1',
-                })
-                .pipe(
-                    takeUntil(this.onDestroy$),
-                    map((data: any) => {
-                        const items = data.data
-                        this.ocupaciones = items.map((ocupacion) => ({
-                            value: ocupacion.iOcupacionId,
-                            label: ocupacion.cOcupacionNombre,
-                        }))
-                        return this.ocupaciones
-                    })
-                )
+    getTiposVias(data: any) {
+        if (!this.tipos_vias && data) {
+            const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'))
+            return items.map((tipo_via: any) => ({
+                value: tipo_via.iTipoViaId,
+                label: tipo_via.cTipoViaNombre,
+            }))
         }
-        return of(this.ocupaciones)
+        return this.tipos_vias
     }
 
-    getGradosInstruccion() {
-        if (!this.grados_instruccion) {
-            return this.query
-                .searchTablaXwhere({
-                    esquema: 'obe',
-                    tabla: 'grado_instrucciones',
-                    campos: '*',
-                    condicion: '1 = 1',
-                })
-                .pipe(
-                    takeUntil(this.onDestroy$),
-                    map((data: any) => {
-                        const items = data.data
-                        this.grados_instruccion = items.map(
-                            (grado_instruccion) => ({
-                                value: grado_instruccion.iGradoInstId,
-                                label: grado_instruccion.cGradoInstNombre,
-                            })
-                        )
-                        return this.grados_instruccion
-                    })
-                )
+    getOcupaciones(data: any) {
+        if (!this.ocupaciones && data) {
+            const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'))
+            this.ocupaciones = items.map((ocupacion: any) => ({
+                value: ocupacion.iOcupacionId,
+                label: ocupacion.cOcupacionNombre,
+            }))
+            return this.ocupaciones
         }
-        return of(this.grados_instruccion)
+        return this.ocupaciones
     }
 
-    getTiposIes() {
-        if (!this.tipos_ies) {
-            return this.query
-                .searchTablaXwhere({
-                    esquema: 'obe',
-                    tabla: 'tipo_ie_estudios',
-                    campos: '*',
-                    condicion: '1 = 1',
-                })
-                .pipe(
-                    takeUntil(this.onDestroy$),
-                    map((data: any) => {
-                        const items = data.data
-                        this.tipos_ies = items.map((tipo_ie) => ({
-                            value: tipo_ie.iNivelEstudiosId,
-                            label: tipo_ie.cNivelEstudiosNombre,
-                        }))
-                        return this.tipos_ies
-                    })
-                )
+    getGradosInstruccion(data: any) {
+        if (!this.grados_instruccion && data) {
+            const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'))
+            this.grados_instruccion = items.map((grado) => ({
+                value: grado.iGradoInstId,
+                label: grado.cGradoInstNombre,
+            }))
+            return this.grados_instruccion
         }
-        return of(this.tipos_ies)
+        return this.grados_instruccion
     }
 
-    getTiposFamiliares() {
-        if (!this.tipos_familiares) {
-            return this.query
-                .searchTablaXwhere({
-                    esquema: 'obe',
-                    tabla: 'tipo_familiares',
-                    campos: '*',
-                    condicion: '1 = 1',
-                })
-                .pipe(
-                    takeUntil(this.onDestroy$),
-                    map((data: any) => {
-                        const items = data.data
-                        this.tipos_familiares = items.map((documento) => ({
-                            value: documento.iTipoFamiliarId,
-                            label: documento.cTipoFamiliarDescripcion,
-                        }))
-                        return this.tipos_familiares
-                    })
-                )
+    getTiposIes(data: any) {
+        if (!this.tipos_ies && data) {
+            const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'))
+            this.tipos_ies = items.map((tipo_ie) => ({
+                value: tipo_ie.iNivelEstudiosId,
+                label: tipo_ie.cNivelEstudiosNombre,
+            }))
+            return this.tipos_ies
         }
-        return of(this.tipos_familiares)
+        return this.tipos_ies
     }
 
-    getNacionalidades() {
-        if (!this.nacionalidades) {
-            return this.query
-                .searchTablaXwhere({
-                    esquema: 'grl',
-                    tabla: 'nacionalidades',
-                    campos: '*',
-                    condicion: '1 = 1',
-                })
-                .pipe(
-                    takeUntil(this.onDestroy$),
-                    map((data: any) => {
-                        const items = data.data
-                        this.nacionalidades = items.map((nacionalidad) => ({
-                            value: nacionalidad.iNacionId,
-                            label: nacionalidad.cNacionNombre,
-                        }))
-                        return this.nacionalidades
-                    })
-                )
+    getTiposFamiliares(data: any) {
+        if (!this.tipos_familiares && data) {
+            const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'))
+            this.tipos_familiares = items.map((documento) => ({
+                value: documento.iTipoFamiliarId,
+                label: documento.cTipoFamiliarDescripcion,
+            }))
+            return this.tipos_familiares
         }
-        return of(this.nacionalidades)
+        return this.tipos_familiares
     }
 
-    getTiposDocumentos() {
-        if (!this.tipos_documentos) {
-            return this.query
-                .searchTablaXwhere({
-                    esquema: 'grl',
-                    tabla: 'tipos_Identificaciones',
-                    campos: '*',
-                    condicion: '1 = 1',
-                })
-                .pipe(
-                    takeUntil(this.onDestroy$),
-                    map((data: any) => {
-                        const items = data.data
-                        this.tipos_documentos = items.map((documento) => ({
-                            value: documento.iTipoIdentId,
-                            label:
-                                documento.cTipoIdentSigla +
-                                ' - ' +
-                                documento.cTipoIdentNombre,
-                            longitud: documento.iTipoIdentLongitud,
-                        }))
-                        return this.tipos_documentos
-                    })
-                )
+    getNacionalidades(data: any) {
+        if (!this.nacionalidades && data) {
+            const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'))
+            this.nacionalidades = items.map((nacionalidad) => ({
+                value: nacionalidad.iNacionId,
+                label: nacionalidad.cNacionNombre,
+            }))
+            return this.nacionalidades
         }
-        return of(this.tipos_documentos)
+        return this.nacionalidades
     }
 
-    getEstadosCiviles() {
-        if (!this.estados_civiles) {
-            return this.query
-                .searchTablaXwhere({
-                    esquema: 'grl',
-                    tabla: 'tipos_estados_civiles',
-                    campos: '*',
-                    condicion: '1 = 1',
-                })
-                .pipe(
-                    takeUntil(this.onDestroy$),
-                    map((data: any) => {
-                        const items = data.data
-                        this.estados_civiles = items.map((estado_civil) => ({
-                            value: estado_civil.iTipoEstCivId,
-                            label: estado_civil.cTipoEstCivilNombre,
-                        }))
-                        return this.estados_civiles
-                    })
-                )
+    getTiposDocumentos(data: any) {
+        if (!this.tipos_documentos && data) {
+            const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'))
+            this.tipos_documentos = items.map((documento) => ({
+                value: documento.iTipoIdentId,
+                label:
+                    documento.cTipoIdentSigla +
+                    ' - ' +
+                    documento.cTipoIdentNombre,
+                longitud: documento.iTipoIdentLongitud,
+            }))
         }
-        return of(this.estados_civiles)
+        return this.tipos_documentos
+    }
+
+    getEstadosCiviles(data: any) {
+        if (!this.estados_civiles && data) {
+            const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'))
+            this.estados_civiles = items.map((estado_civil) => ({
+                value: estado_civil.iTipoEstCivId,
+                label: estado_civil.cTipoEstCivilNombre,
+            }))
+            return this.estados_civiles
+        }
+        return this.estados_civiles
     }
 
     getSexos() {
@@ -287,30 +209,16 @@ export class DatosFichaBienestarService implements OnDestroy {
         return this.sexos
     }
 
-    getDepartamentos(): Observable<Array<object>> {
-        if (!this.departamentos) {
-            return this.query
-                .searchTablaXwhere({
-                    esquema: 'grl',
-                    tabla: 'departamentos',
-                    campos: '*',
-                    condicion: '1 = 1',
-                })
-                .pipe(
-                    takeUntil(this.onDestroy$),
-                    map((data: any) => {
-                        const departamentos = data.data
-                        this.departamentos = departamentos.map(
-                            (departamento) => ({
-                                value: departamento.iDptoId,
-                                label: departamento.cDptoNombre,
-                            })
-                        )
-                        return this.departamentos
-                    })
-                )
+    getDepartamentos(data: any) {
+        if (!this.departamentos && data) {
+            const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'))
+            this.departamentos = items.map((departamento) => ({
+                value: departamento.iDptoId,
+                label: departamento.cDptoNombre,
+            }))
+            return this.departamentos
         }
-        return of(this.departamentos)
+        return this.departamentos
     }
 
     getProvincias(iDptoId: number): Observable<Array<object>> {
@@ -375,52 +283,15 @@ export class DatosFichaBienestarService implements OnDestroy {
         return this.lenguas
     }
 
-    getTiposContacto() {
-        if (!this.tipos_contacto) {
-            return this.query
-                .searchTablaXwhere({
-                    esquema: 'grl',
-                    tabla: 'tipos_contactos',
-                    campos: '*',
-                    condicion: '1 = 1',
-                })
-                .pipe(
-                    takeUntil(this.onDestroy$),
-                    map((data: any) => {
-                        const items = data.data
-                        this.tipos_contacto = items.map((tipo_contacto) => ({
-                            value: tipo_contacto.iTipoConId,
-                            label: tipo_contacto.cTipoConNombre,
-                        }))
-                        return this.tipos_contacto
-                    })
-                )
+    getReligiones(data: any) {
+        if (!this.religiones && data) {
+            const items = JSON.parse(data.replace(/^"(.*)"$/, '$1'))
+            return items.map((religion: any) => ({
+                value: religion.iReligionId,
+                label: religion.cReligionNombre,
+            }))
         }
-        return of(this.tipos_contacto)
-    }
-
-    getReligiones() {
-        if (!this.religiones) {
-            return this.query
-                .searchTablaXwhere({
-                    esquema: 'obe',
-                    tabla: 'religiones',
-                    campos: '*',
-                    condicion: '1 = 1',
-                })
-                .pipe(
-                    takeUntil(this.onDestroy$),
-                    map((data: any) => {
-                        const items = data.data
-                        this.religiones = items.map((religion) => ({
-                            value: religion.iReligionId,
-                            label: religion.cReligionNombre,
-                        }))
-                        return this.religiones
-                    })
-                )
-        }
-        return of(this.religiones)
+        return this.religiones
     }
 
     getPandemias() {

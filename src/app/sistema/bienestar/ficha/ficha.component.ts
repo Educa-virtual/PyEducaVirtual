@@ -53,43 +53,36 @@ export class FichaComponent implements OnInit {
             label: 'Familia',
             icon: 'pi pi-fw pi-users',
             route: '/bienestar/ficha/familia',
-            disabled: !this.ficha_registrada,
         },
         {
             label: 'Economico',
             icon: 'pi pi-fw pi-wallet',
             route: '/bienestar/ficha/economico',
-            disabled: !this.ficha_registrada,
         },
         {
             label: 'Vivienda',
             icon: 'pi pi-fw pi-home',
             route: '/bienestar/ficha/vivienda',
-            disabled: !this.ficha_registrada,
         },
         {
             label: 'Alimentación',
             icon: 'pi pi-fw pi-shopping-cart',
             route: '/bienestar/ficha/alimentacion',
-            disabled: !this.ficha_registrada,
         },
         {
             label: 'Discapacidad',
             icon: 'pi pi-fw pi-heart-fill',
             route: '/bienestar/ficha/discapacidad',
-            disabled: !this.ficha_registrada,
         },
         {
             label: 'Salud',
             icon: 'pi pi-fw pi-heart',
             route: '/bienestar/ficha/salud',
-            disabled: !this.ficha_registrada,
         },
         {
             label: 'Recreación',
             icon: 'pi pi-fw pi-image',
             route: '/bienestar/ficha/recreacion',
-            disabled: !this.ficha_registrada,
         },
     ]
 }

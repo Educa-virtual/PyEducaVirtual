@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core'
-import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms'
+import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { PrimengModule } from '@/app/primeng.module'
 import { DropdownModule } from 'primeng/dropdown'
@@ -43,18 +43,6 @@ export class FichasocgeneralComponent implements OnInit {
     ngOnInit() {
         const perfil = this.store.getItem('dremoPerfil')
 
-        this.formGroup = new FormGroup({
-            text: new FormControl<string | null>(null),
-        })
-
-        this.datosFichaBienestarService.getReligiones().subscribe((data) => {
-            this.religiones = data
-        })
-
-        this.datosFichaBienestarService.getTiposVias().subscribe((data) => {
-            this.tipos_vias = data
-        })
-
         this.formGeneral = this.fb.group({
             iSesionId: perfil?.iCredId,
             iPersId: perfil?.iPersId,
@@ -89,7 +77,18 @@ export class FichasocgeneralComponent implements OnInit {
                 }
             })
 
-        if (this.compartirFichaService.getiFichaDGId() !== null) {
+        this.datosFichaBienestarService
+            .getFichaGeneralParametros()
+            .subscribe((data: any) => {
+                this.tipos_vias = this.datosFichaBienestarService.getTiposVias(
+                    data?.tipos_vias
+                )
+                this.religiones = this.datosFichaBienestarService.getReligiones(
+                    data?.religiones
+                )
+            })
+
+        if (this.compartirFichaService.getiFichaDGId()) {
             this.searchFichaGeneral()
         }
     }
@@ -105,7 +104,7 @@ export class FichasocgeneralComponent implements OnInit {
     }
 
     setFormGeneral(data: any) {
-        this.formGeneral.patchValue(data)
+        this.formGeneral.patchValue(data.data[0])
     }
 
     guardar() {
@@ -121,10 +120,10 @@ export class FichasocgeneralComponent implements OnInit {
             .guardarFichaGeneral(this.formGeneral.value)
             .subscribe({
                 next: (data: any) => {
+                    console.log(data.data[0].iFichaDGId, 'ficha')
                     this.compartirFichaService.setiFichaDGId(
-                        data.data.iFichaDGId
+                        data.data[0].iFichaDGId
                     )
-                    this.compartirFichaService.setiPersId(data.data.iPersId)
                     this.ficha_registrada = true
                 },
                 error: (error) => {
@@ -155,9 +154,8 @@ export class FichasocgeneralComponent implements OnInit {
             .subscribe({
                 next: (data: any) => {
                     this.compartirFichaService.setiFichaDGId(
-                        data.data.iFichaDGId
+                        data.data[0].iFichaDGId
                     )
-                    this.compartirFichaService.setiPersId(data.data.iPersId)
                     this.ficha_registrada = true
                 },
                 error: (error) => {

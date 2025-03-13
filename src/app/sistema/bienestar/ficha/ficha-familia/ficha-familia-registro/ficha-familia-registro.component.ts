@@ -49,41 +49,44 @@ export class FichaFamiliaRegistroComponent implements OnInit {
 
     ngOnInit(): void {
         this.datosFichaBienestarService
-            .getTiposFamiliares()
-            .subscribe((data) => {
-                this.tipos_familiares = data
+            .getFichaGeneralParametros()
+            .subscribe((data: any) => {
+                this.sexos = this.datosFichaBienestarService.getSexos()
+                this.tipos_familiares =
+                    this.datosFichaBienestarService.getTiposFamiliares(
+                        data?.tipos_familiares
+                    )
+                this.tipos_documentos =
+                    this.datosFichaBienestarService.getTiposDocumentos(
+                        data?.tipos_documentos
+                    )
+                this.estados_civiles =
+                    this.datosFichaBienestarService.getEstadosCiviles(
+                        data?.estados_civiles
+                    )
+                this.nacionalidades =
+                    this.datosFichaBienestarService.getNacionalidades(
+                        data?.nacionalidades
+                    )
+                this.departamentos =
+                    this.datosFichaBienestarService.getDepartamentos(
+                        data?.departamentos
+                    )
+                this.tipos_vias = this.datosFichaBienestarService.getTiposVias(
+                    data?.tipos_vias
+                )
+                this.ocupaciones =
+                    this.datosFichaBienestarService.getOcupaciones(
+                        data?.ocupaciones
+                    )
+                this.grados_instruccion =
+                    this.datosFichaBienestarService.getGradosInstruccion(
+                        data?.grados_instruccion
+                    )
+                this.tipos_ies = this.datosFichaBienestarService.getTiposIes(
+                    data?.tipos_ies
+                )
             })
-        this.datosFichaBienestarService
-            .getTiposDocumentos()
-            .subscribe((data) => {
-                this.tipos_documentos = data
-            })
-        this.datosFichaBienestarService
-            .getEstadosCiviles()
-            .subscribe((data) => {
-                this.estados_civiles = data
-            })
-        this.datosFichaBienestarService.getDepartamentos().subscribe((data) => {
-            this.departamentos = data
-        })
-        this.datosFichaBienestarService.getTiposContacto().subscribe((data) => {
-            this.tipos_contacto = data
-        })
-        this.datosFichaBienestarService.getTiposVias().subscribe((data) => {
-            this.tipos_vias = data
-        })
-        this.datosFichaBienestarService.getOcupaciones().subscribe((data) => {
-            this.ocupaciones = data
-        })
-        this.datosFichaBienestarService
-            .getGradosInstruccion()
-            .subscribe((data) => {
-                this.grados_instruccion = data
-            })
-        this.datosFichaBienestarService.getTiposIes().subscribe((data) => {
-            this.tipos_ies = data
-        })
-        this.sexos = this.datosFichaBienestarService.getSexos()
 
         try {
             this.formFamiliar = this.fb.group({

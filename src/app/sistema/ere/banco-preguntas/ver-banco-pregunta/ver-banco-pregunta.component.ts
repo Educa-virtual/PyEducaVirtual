@@ -13,6 +13,7 @@ import { EditorComponent, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular'
 import { environment } from '@/environments/environment'
 import { RemoveHTMLCSSPipe } from '@/app/shared/pipes/remove-html-style.pipe'
 import { TruncatePipe } from '@/app/shared/pipes/truncate-text.pipe'
+import { InputTextareaModule } from 'primeng/inputtextarea'
 
 // Servicio
 import { PreguntasReutilizablesService } from '@/app/sistema/evaluaciones/services/preguntas-reutilizables.service'
@@ -27,6 +28,7 @@ import { PreguntasReutilizablesService } from '@/app/sistema/evaluaciones/servic
         NgIf,
         RemoveHTMLCSSPipe,
         TruncatePipe,
+        InputTextareaModule,
     ],
     providers: [
         { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },

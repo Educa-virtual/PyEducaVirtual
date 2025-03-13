@@ -1,4 +1,11 @@
-import { Component, inject, Input, OnInit } from '@angular/core'
+import {
+    Component,
+    inject,
+    Input,
+    OnInit,
+    AfterViewChecked,
+    ChangeDetectorRef,
+} from '@angular/core'
 import { PrimengModule } from '@/app/primeng.module'
 import { GeneralService } from '@/app/servicios/general.service'
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
@@ -40,10 +47,11 @@ import { TimeComponent } from '../../../../shared/time/time.component'
         }),
     ],
 })
-export class MostrarEvaluacionComponent implements OnInit {
+export class MostrarEvaluacionComponent implements OnInit, AfterViewChecked {
     private _GeneralService = inject(GeneralService)
     private _MessageService = inject(MessageService)
     private router = inject(Router)
+    private _ChangeDetectorRef = inject(ChangeDetectorRef)
 
     @Input() iEvaluacionId: string = ''
     @Input() iCursoNivelGradId: string = ''
@@ -132,5 +140,9 @@ export class MostrarEvaluacionComponent implements OnInit {
                 this.bEstadoTiempo = true
                 break
         }
+    }
+
+    ngAfterViewChecked() {
+        this._ChangeDetectorRef.detectChanges()
     }
 }

@@ -23,7 +23,6 @@ export class TimeComponent implements OnChanges, OnDestroy {
 
     tiempoRestante: number = 0 // Tiempo restante en segundos
     intervalo: any
-    constructor() {}
 
     ngOnChanges(changes: SimpleChanges): void {
         if (changes['inicio'] || changes['fin']) {

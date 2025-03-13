@@ -222,6 +222,58 @@
                         ></p-multiSelect>
                     </div>
                 </div>
+                <div class="flex flex-column">
+                    <label for="destinatario" class="mb-1"
+                        >Buscar por nombre</label
+                    >
+                    <input
+                        pInputText
+                        id="destinatario"
+                        name="destinatario"
+                        placeholder="Buscar por nombre"
+                        [value]="destinatarioNombre"
+                        readonly
+                        (click)="abrirDialogBuscarDestinatario()"
+                    />
+                </div>
+                <div class="grid">
+                    <div class="flex flex-column col-12 md:col-4">
+                        <label for="curso" class="mb-1">Curso</label>
+                        <p-dropdown
+                            id="curso"
+                            name="curso"
+                            [options]="cursos"
+                            [(ngModel)]="selectedComunicado.curso"
+                            placeholder="Curso"
+                            optionLabel="label"
+                            optionValue="value"
+                        ></p-dropdown>
+                    </div>
+                    <div class="flex flex-column col-12 md:col-4">
+                        <label for="seccion" class="mb-1">Sección</label>
+                        <p-dropdown
+                            id="seccion"
+                            name="seccion"
+                            [options]="secciones"
+                            [(ngModel)]="selectedComunicado.seccion"
+                            placeholder="Sección"
+                            optionLabel="label"
+                            optionValue="value"
+                        ></p-dropdown>
+                    </div>
+                    <div class="flex flex-column col-12 md:col-4">
+                        <label for="grado" class="mb-1">Grado</label>
+                        <p-dropdown
+                            id="grado"
+                            name="grado"
+                            [options]="grados"
+                            [(ngModel)]="selectedComunicado.grado"
+                            placeholder="Grado"
+                            optionLabel="label"
+                            optionValue="value"
+                        ></p-dropdown>
+                    </div>
+                </div>
                 <div class="grid">
                     <div class="flex flex-column col-12 md:col-6">
                         <label for="publicado" class="mb-1">Publicado</label>
@@ -289,6 +341,42 @@
         </p-panel>
     </div>
 </div>
+<p-dialog
+    header="Buscar Destinatario"
+    [(visible)]="visibleDialog"
+    [modal]="true"
+    [style]="{ width: '70rem', height: '700px' }"
+>
+    <div class="grid mt-3">
+        <div class="col-12 md:col-4">
+            <p-dropdown
+                [style]="{ width: '100%' }"
+                [options]="tiposPersona"
+                [(ngModel)]="tipoPersona"
+                optionLabel="grupo"
+                optionValue="codigo"
+                placeholder="Seleccionar Tipo de Persona"
+                appendTo="body"
+            ></p-dropdown>
+        </div>
+        <div class="col-12 md:col-4">
+            <button
+                type="button"
+                class="justify-content-center font-bold p-button-primary w-full"
+                pButton
+                pRipple
+                (click)="cargarDestinatarios()"
+            >
+                Seleccionar Tipo de Persona &nbsp;<i class="pi pi-search"></i>
+            </button>
+        </div>
+    </div>
+    <app-table-primeng
+        [columnas]="columnasDestinatarios"
+        [data]="destinatarios"
+        (accionBtnItem)="seleccionarDestinatario($event)"
+    ></app-table-primeng>
+</p-dialog>
 
 <p-confirmDialog></p-confirmDialog>
 <p-toast position="top-right"></p-toast>

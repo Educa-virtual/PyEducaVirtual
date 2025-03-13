@@ -124,13 +124,7 @@
     </div>
 </p-dialog>
 
-<p-dialog
-    [(visible)]="mostrarDialogoPreguntas"
-    header="Detalles"
-    style="width: 1000px; height: 700px"
-    [contentStyle]="{ height: '600px' }"
-    [modal]="true"
->
+<p-dialog [(visible)]="mostrarDialogoPreguntas" [modal]="true">
     <app-ver-banco-pregunta
         [iPreguntaId]="selectedPreguntaId"
         [iEncabPregId]="selectedPreguntaMultiple"

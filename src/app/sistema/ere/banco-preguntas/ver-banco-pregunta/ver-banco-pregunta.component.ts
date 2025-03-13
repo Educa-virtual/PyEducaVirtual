@@ -1,19 +1,21 @@
-import { PreguntasReutilizablesService } from '@/app/sistema/evaluaciones/services/preguntas-reutilizables.service'
 import {
     Component,
-    inject,
-    Input,
-    OnChanges,
     OnInit,
+    OnChanges,
     SimpleChanges,
+    Input,
+    inject,
 } from '@angular/core'
+import { NgIf } from '@angular/common'
 import { PrimengModule } from '@/app/primeng.module'
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
-import { NgIf } from '@angular/common'
 import { EditorComponent, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular'
 import { environment } from '@/environments/environment'
 import { RemoveHTMLCSSPipe } from '@/app/shared/pipes/remove-html-style.pipe'
 import { TruncatePipe } from '@/app/shared/pipes/truncate-text.pipe'
+
+// Servicio
+import { PreguntasReutilizablesService } from '@/app/sistema/evaluaciones/services/preguntas-reutilizables.service'
 
 @Component({
     selector: 'app-ver-banco-pregunta',
@@ -30,25 +32,34 @@ import { TruncatePipe } from '@/app/shared/pipes/truncate-text.pipe'
         { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },
     ],
     templateUrl: './ver-banco-pregunta.component.html',
-    styleUrl: './ver-banco-pregunta.component.scss',
+    styleUrls: ['./ver-banco-pregunta.component.scss'],
 })
 export class VerBancoPreguntaComponent implements OnInit, OnChanges {
+    // Servicio inyectado
     private _PreguntasReutilizablesService = inject(
         PreguntasReutilizablesService
     )
+
+    // Objeto donde guardaremos la data recibida de la API
     encab: any
 
+    // Para construir la ruta de imágenes, etc.
     backend = environment.backend
-    @Input() iPreguntaId: string = ''
-    @Input() iEncabPregId: string = ''
-    isDisabled: any
-    seleccion: string | null = null
+
+    // Entradas desde el padre
+    @Input() iPreguntaId: string = '' // ID para Pregunta Simple
+    @Input() iEncabPregId: string = '' // ID para Pregunta Múltiple
+
+    // Variable para marcar si es solo lectura
+    isDisabled: boolean = true
+
+    // Config del Editor TinyMCE
     init: EditorComponent['init'] = {
-        base_url: '/tinymce', // Root for resources
-        suffix: '.min', // Suffix to use when loading resources
+        base_url: '/tinymce',
+        suffix: '.min',
         menubar: false,
         selector: 'textarea',
-        placeholder: 'Escribe aqui...',
+        placeholder: 'Escribe aquí...',
         plugins: 'lists image table',
         toolbar:
             'undo redo | forecolor backcolor | bold italic underline strikethrough | ' +
@@ -56,51 +67,94 @@ export class VerBancoPreguntaComponent implements OnInit, OnChanges {
             'image table',
         height: 400,
         editable_root: true,
+        // readonly: 1, // Otra forma de deshabilitar edición si deseas
     }
 
     ngOnInit(): void {
-        void this.iPreguntaId
+        // Aquí no cargamos nada; la carga se hace en ngOnChanges cuando detecte iPreguntaId o iEncabPregId
+        console.log('Componente Hijo - OnInit')
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        console.log('ejecutando changes', changes)
+        console.log('Componente Hijo - OnChanges', changes)
 
-        if (changes['iPreguntaId']) {
-            const prevValue = changes['iPreguntaId'].previousValue
-            const currentValue = changes['iPreguntaId'].currentValue
-            console.log('iPreguntaId cambió:', prevValue, '=>', currentValue)
+        // 1. Detecta si cambió iPreguntaId (PREGUNTA SIMPLE)
+        if (changes['iPreguntaId'] && changes['iPreguntaId'].currentValue) {
+            const nuevoId = changes['iPreguntaId'].currentValue
+            console.log(
+                'iPreguntaId cambió:',
+                changes['iPreguntaId'].previousValue,
+                '=>',
+                nuevoId
+            )
 
-            if (currentValue) {
-                this.iPreguntaId = currentValue
-                this.cargarPregunta()
-            }
+            // Llamamos al método de carga para pregunta simple
+            this.cargarPreguntaSimple(nuevoId)
+        }
+
+        // 2. Detecta si cambió iEncabPregId (PREGUNTA MÚLTIPLE)
+        if (changes['iEncabPregId'] && changes['iEncabPregId'].currentValue) {
+            const nuevoEncabId = changes['iEncabPregId'].currentValue
+            console.log(
+                'iEncabPregId cambió:',
+                changes['iEncabPregId'].previousValue,
+                '=>',
+                nuevoEncabId
+            )
+
+            // Llamamos al método de carga para pregunta múltiple
+            this.cargarPreguntaMultiple(nuevoEncabId)
         }
     }
 
-    cargarPregunta(): void {
-        console.log('hijo recibe iPreguntaId=', this.iPreguntaId)
-        if (!this.iPreguntaId) {
+    // ============================================================
+    // Carga PREGUNTA SIMPLE
+    // ============================================================
+    private cargarPreguntaSimple(preguntaId: string): void {
+        if (!preguntaId) {
             console.warn('No hay iPreguntaId válido, no se hace la llamada')
             return
         }
-        console.log('cargo pregunta 1')
+        console.log('Cargando Pregunta Simple con ID:', preguntaId)
 
-        const params: any = {
-            tipo_pregunta: 1,
-        }
+        const params = { tipo_pregunta: 1 }
 
         this._PreguntasReutilizablesService
-            .obtenerDetallePregunta(this.iPreguntaId, params)
+            .obtenerDetallePregunta(preguntaId, params)
             .subscribe({
                 next: (respuesta) => {
                     this.encab = respuesta
-                    console.log('cargo pregunta 2', respuesta)
+                    console.log('Pregunta Simple cargada:', respuesta)
                 },
                 error: (error) => {
-                    console.error('error obtenido', error)
+                    console.error('Error al cargar pregunta simple:', error)
                 },
             })
+    }
 
-        console.log('probando' + this.iPreguntaId)
+    // ============================================================
+    // Carga PREGUNTA MÚLTIPLE
+    // ============================================================
+    private cargarPreguntaMultiple(encabPregId: string): void {
+        if (!encabPregId) {
+            console.warn('No hay iEncabPregId válido, no se hace la llamada')
+            return
+        }
+        console.log('Cargando Pregunta Múltiple con ID:', encabPregId)
+
+        const params = { tipo_pregunta: 2 }
+
+        // Ajusta si tu servicio es distinto
+        this._PreguntasReutilizablesService
+            .obtenerDetallePregunta(encabPregId, params)
+            .subscribe({
+                next: (respuesta) => {
+                    this.encab = respuesta
+                    console.log('Pregunta Múltiple cargada:', respuesta)
+                },
+                error: (error) => {
+                    console.error('Error al cargar pregunta múltiple:', error)
+                },
+            })
     }
 }

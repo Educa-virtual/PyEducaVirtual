@@ -347,4 +347,11 @@ export class GeneralService {
             data
         )
     }
+
+    importarAmbiente_IE(data: any) {
+        return this.http.post(
+            `${baseUrl}/acad/gestionInstitucional/importarAmbiente_IE`,
+            data
+        )
+    }
 }

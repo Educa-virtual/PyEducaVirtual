@@ -1,30 +1,17 @@
 import { ConstantesService } from '@/app/servicios/constantes.service'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { Component, OnInit } from '@angular/core'
-import { DialogModule } from 'primeng/dialog'
-import { DropdownModule } from 'primeng/dropdown'
-import { DataViewModule } from 'primeng/dataview'
-import { OrderListModule } from 'primeng/orderlist'
 import { CommonModule } from '@angular/common'
+import { PrimengModule } from '@/app/primeng.module'
 import { Router } from '@angular/router'
 import { TokenStorageService } from '@/app/servicios/token.service'
 import { GeneralService } from '@/app/servicios/general.service'
-import { ButtonModule } from 'primeng/button'
-import { AccordionModule } from 'primeng/accordion'
 @Component({
     selector: 'app-inicio',
     standalone: true,
     templateUrl: './inicio.component.html',
     styleUrl: './inicio.component.scss',
-    imports: [
-        DialogModule,
-        CommonModule,
-        OrderListModule,
-        DropdownModule,
-        DataViewModule,
-        ButtonModule,
-        AccordionModule,
-    ],
+    imports: [CommonModule, PrimengModule],
 })
 export class InicioComponent implements OnInit {
     name: string
@@ -39,6 +26,9 @@ export class InicioComponent implements OnInit {
     comunicado: any = null
     comunicados: any[] = []
 
+    products: any = undefined
+    responsiveOptions: any[] | undefined
+
     constructor(
         private ConstantesService: ConstantesService,
         private ls: LocalStoreService,
@@ -46,6 +36,23 @@ export class InicioComponent implements OnInit {
         private router: Router,
         private generalService: GeneralService
     ) {
+        this.responsiveOptions = [
+            {
+                breakpoint: '1199px',
+                numVisible: 1,
+                numScroll: 1,
+            },
+            {
+                breakpoint: '991px',
+                numVisible: 2,
+                numScroll: 1,
+            },
+            {
+                breakpoint: '767px',
+                numVisible: 1,
+                numScroll: 1,
+            },
+        ]
         this.name = this.ConstantesService.nombres
         this.name1 = this.ConstantesService.nombre
         if (!this.ConstantesService.verificado) {

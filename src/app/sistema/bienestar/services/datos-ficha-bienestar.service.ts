@@ -5,6 +5,7 @@ import { map, takeUntil } from 'rxjs/operators'
 import { of } from 'rxjs'
 import { HttpClient, HttpHeaders } from '@angular/common/http'
 import { environment } from '@/environments/environment.template'
+import { FichaGeneral } from '../interfaces/ficha'
 
 const baseUrl = environment.backendApi
 
@@ -21,7 +22,7 @@ export class DatosFichaBienestarService implements OnDestroy {
 
     lista: any[] = []
 
-    paramsGeneral: any
+    parametros: any
     tipos_documentos: Array<object>
     tipos_familiares: Array<object>
     estados_civiles: Array<object>
@@ -39,8 +40,20 @@ export class DatosFichaBienestarService implements OnDestroy {
     grados_instruccion: Array<object>
     tipos_ies: Array<object>
 
+    formGeneral: FichaGeneral
+
     searchFichaGeneral(data: any) {
-        return this.http.post(`${baseUrl}/bienestar/searchFichaGeneral`, data)
+        if (!this.formGeneral) {
+            return this.http
+                .post(`${baseUrl}/bienestar/searchFichaGeneral`, data)
+                .pipe(
+                    map((data: any) => {
+                        this.formGeneral = data.data[0]
+                        return this.formGeneral
+                    })
+                )
+        }
+        return of(this.formGeneral)
     }
 
     guardarFichaGeneral(data: any) {
@@ -88,17 +101,17 @@ export class DatosFichaBienestarService implements OnDestroy {
      * Función para obtener los parametros de la ficha general
      */
     getFichaGeneralParametros() {
-        if (!this.paramsGeneral) {
+        if (!this.parametros) {
             return this.http
                 .get(`${baseUrl}/bienestar/createFichaGeneral`)
                 .pipe(
                     map((data: any) => {
-                        this.paramsGeneral = data.data[0]
-                        return this.paramsGeneral
+                        this.parametros = data.data[0]
+                        return this.parametros
                     })
                 )
         }
-        return of(this.paramsGeneral)
+        return of(this.parametros)
     }
 
     getTiposVias(data: any) {

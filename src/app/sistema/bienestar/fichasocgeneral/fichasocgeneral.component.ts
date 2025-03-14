@@ -8,6 +8,8 @@ import { DatosFichaBienestarService } from '../services/datos-ficha-bienestar.se
 import { MessageService } from 'primeng/api'
 import { CompartirFichaService } from '../services/compartir-ficha.service'
 import { LocalStoreService } from '@/app/servicios/local-store.service'
+import { FichaGeneral } from '../interfaces/ficha'
+import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 
 @Component({
     selector: 'app-ficha-socioeconomica',
@@ -32,6 +34,7 @@ export class FichasocgeneralComponent implements OnInit {
     ficha_registrada: boolean = false
 
     private _MessageService = inject(MessageService)
+    private _ConfirmService = inject(ConfirmationModalService)
 
     constructor(
         private fb: FormBuilder,
@@ -99,12 +102,30 @@ export class FichasocgeneralComponent implements OnInit {
                 iFichaDGId: this.compartirFichaService.getiFichaDGId(),
             })
             .subscribe((data: any) => {
-                this.setFormGeneral(data)
+                if (data) {
+                    this.setFormGeneral(data)
+                }
             })
     }
 
-    setFormGeneral(data: any) {
-        this.formGeneral.patchValue(data.data[0])
+    setFormGeneral(data: FichaGeneral) {
+        this.ficha_registrada = true
+        this.formGeneral.patchValue(data)
+        this.formGeneral.get('iTipoViaId').setValue(+data.iTipoViaId)
+        this.formGeneral.get('iReligionId').setValue(+data.iReligionId)
+        this.formGeneral
+            .get('bFamiliarPadreVive')
+            .setValue(!!+data.bFamiliarPadreVive)
+        this.formGeneral
+            .get('bFamiliarMadreVive')
+            .setValue(!!+data.bFamiliarMadreVive)
+        this.formGeneral
+            .get('bFamiliarPadresVivenJuntos')
+            .setValue(!!+data.bFamiliarPadresVivenJuntos)
+        this.formGeneral
+            .get('bFichaDGTieneHijos')
+            .setValue(!!+data.bFichaDGTieneHijos)
+        this.formGeneral.get('iFichaDGNroHijos').setValue(data.iFichaDGNroHijos)
     }
 
     guardar() {
@@ -125,6 +146,8 @@ export class FichasocgeneralComponent implements OnInit {
                         data.data[0].iFichaDGId
                     )
                     this.ficha_registrada = true
+                    this.datosFichaBienestarService.formGeneral =
+                        this.formGeneral.value
                 },
                 error: (error) => {
                     console.error('Error guardando ficha:', error)
@@ -157,6 +180,8 @@ export class FichasocgeneralComponent implements OnInit {
                         data.data[0].iFichaDGId
                     )
                     this.ficha_registrada = true
+                    this.datosFichaBienestarService.formGeneral =
+                        this.formGeneral.value
                 },
                 error: (error) => {
                     console.error('Error actualizando ficha:', error)

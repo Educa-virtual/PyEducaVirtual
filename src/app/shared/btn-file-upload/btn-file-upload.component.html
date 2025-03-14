@@ -1,22 +1,26 @@
 <section class="flex gap-2">
     <input
         #FileInput
-        class="cursor-pointer"
+        [class]="disabled ? 'cursor-not-allowed' : 'cursor-pointer '"
         [hidden]="true"
         [accept]="accept"
         type="file"
         (change)="onFileSelected()"
     />
 
-    <label class="p-button p-button-label cursor-pointer">
+    <label
+        class="p-button p-button-label cursor-pointer"
+        [ngClass]="{
+            'p-disabled': disabled,
+        }"
+    >
         <i [class]="icon"></i>
         <input
             #FileView
             type="submit"
             [value]="label"
-            class="cursor-pointer"
             style="
-                background-color: transparent;
+                background-color: inherit;
                 border-radius: 6px;
                 color: inherit;
                 font-family: inherit;

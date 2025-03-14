@@ -3,11 +3,15 @@ import { Injectable, NgZone } from '@angular/core'
 import { MessageService } from 'primeng/api'
 import { Observable } from 'rxjs'
 import { DatosMatriculaService } from '../../services/datos-matricula.service'
+import { objectToFormData } from '@/app/shared/utils/object-to-form-data'
 
 @Injectable({
     providedIn: 'root',
 })
 export class BulkDataImportService {
+    importEndPoint: string
+    params: any = {}
+
     constructor(
         private http: HttpClient,
         private messageService: MessageService,
@@ -75,93 +79,12 @@ export class BulkDataImportService {
     importDataCollection(file, data: any): Observable<any> {
         console.log(data)
 
-        const formData: FormData = new FormData()
-        formData.append('archivo', file)
-
-        console.log('file')
-        console.log(file)
-
-        formData.append('tipo', 'matriculas')
-        formData.append(
-            'iSedeId',
-            JSON.parse(localStorage.getItem('dremoPerfil') || '{}').iSedeId
-        )
-        formData.append(
-            'iYAcadId',
-            JSON.parse(localStorage.getItem('dremoiYAcadId') || 'null')
-        )
-        formData.append(
-            'iCredId',
-            JSON.parse(localStorage.getItem('dremoPerfil') || '{}').iCredId
-        )
-        // formData.append('iSemAcadId', undefined)
-        // formData.append('json', Array.isArray(data) ? data.map(row => {
-        //     return {
-        //         grado: row.GRADO,
-        //         seccion: row.SECCIÓN,
-        //         cod_tipo_documento: row["TIPO DE DOCUMENTO"],
-        //         documento: row["NÚMERO DE DOCUMENTO"],
-        //         codigo_estudiante: row["CÓDIGO DEL ESTUDIANTE"],
-        //         paterno: row["APELLIDO PATERNO"],
-        //         materno: row["APELLIDO MATERNO"],
-        //         nombres: row.NOMBRES,
-        //         sexo: row.SEXO,
-        //         nacimiento: row["FECHA DE NACIMIENTO"],
-        //         estado_matricula: row["ESTADO DE MATRICULA"],
-        //     }
-        // }) : data)
-
-        // this.datosMatriculaService.subirArchivoMatriculas(formData).subscribe({
-        //     next: (data: any) => {
-        //         console.log(data, 'subir archivo')
-        //     },
-        //     error: (error) => {
-        //         console.error('Error subiendo archivo:', error)
-        //         this.messageService.add({
-        //             severity: 'error',
-        //             summary: 'Error',
-        //             detail: error,
-        //         })
-        //     },
-        //     complete: () => {
-        //         console.log('Request completed')
-        //     },
-        // })
+        const formData = objectToFormData({ file, ...this.params })
 
         return this.http.post(
-            `http://localhost:8000/api/acad/estudiante/importarEstudiantesMatriculasExcel`,
+            `http://localhost:8000/api/${this.importEndPoint}`,
             formData
         )
-
-        // return this.http.post(
-        //     `http://localhost:8000/api/acad/estudiante/importarEstudiantesMatriculasExcel`,
-        //     {
-        //         iSedeId: JSON.parse(localStorage.getItem('dremoPerfil') || '{}')
-        //             .iSedeId,
-        //         iYAcadId: JSON.parse(
-        //             localStorage.getItem('dremoiYAcadId') || 'null'
-        //         ),
-        //         iCredId: JSON.parse(localStorage.getItem('dremoPerfil') || '{}')
-        //         .iCredId,
-        //         iSemAcadId: null,
-        //         json: Array.isArray(data) && data.map(row => {
-
-        //             return {
-        //                 grado: row.GRADO,
-        //                 seccion: row.SECCIÓN,
-        //                 cod_tipo_documento: row["TIPO DE DOCUMENTO"],
-        //                 documento: row["NÚMERO DE DOCUMENTO"],
-        //                 codigo_estudiante: row["CÓDIGO DEL ESTUDIANTE"],
-        //                 paterno: row["APELLIDO PATERNO"],
-        //                 materno: row["APELLIDO MATERNO"],
-        //                 nombres: row.NOMBRES,
-        //                 sexo: row.SEXO,
-        //                 nacimiento: row["FECHA DE NACIMIENTO"],
-        //                 estado_matricula: row["ESTADO DE MATRICULA"],
-        //             }
-        //         }),
-        //     }
-        // )
     }
 
     filteredData() {}

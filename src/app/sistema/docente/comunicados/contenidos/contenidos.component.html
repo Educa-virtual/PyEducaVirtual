@@ -224,20 +224,22 @@
                 </div>
                 <div class="flex flex-column">
                     <label for="destinatario" class="mb-1"
-                        >Buscar por nombre</label
+                        >Destinatario Unico</label
                     >
                     <input
                         pInputText
                         id="destinatario"
                         name="destinatario"
-                        placeholder="Buscar por nombre"
+                        placeholder="Buscar por nombre o DNI"
                         [value]="destinatarioNombre"
                         readonly
                         (click)="abrirDialogBuscarDestinatario()"
+                        [ngClass]="{ 'input-seleccionado': destinatarioNombre }"
+                        (click)="abrirDialogBuscarDestinatario()"
                     />
                 </div>
-                <div class="grid">
-                    <div class="flex flex-column col-12 md:col-4">
+                <div class="row-with-wrap">
+                    <div class="dropdown-container">
                         <label for="curso" class="mb-1">Curso</label>
                         <p-dropdown
                             id="curso"
@@ -249,7 +251,7 @@
                             optionValue="value"
                         ></p-dropdown>
                     </div>
-                    <div class="flex flex-column col-12 md:col-4">
+                    <div class="dropdown-container">
                         <label for="seccion" class="mb-1">Sección</label>
                         <p-dropdown
                             id="seccion"
@@ -261,7 +263,7 @@
                             optionValue="value"
                         ></p-dropdown>
                     </div>
-                    <div class="flex flex-column col-12 md:col-4">
+                    <div class="dropdown-container">
                         <label for="grado" class="mb-1">Grado</label>
                         <p-dropdown
                             id="grado"
@@ -276,10 +278,11 @@
                 </div>
                 <div class="grid">
                     <div class="flex flex-column col-12 md:col-6">
-                        <label for="publicado" class="mb-1">Publicado</label>
+                        <label for="publicado" class="mb-1">Inicio</label>
                         <p-calendar
                             id="publicado"
                             name="publicado"
+                            placeholder="Fecha de Inicio"
                             [(ngModel)]="selectedComunicado.publicado"
                             dateFormat="dd/mm/yy"
                             showIcon="true"
@@ -290,10 +293,11 @@
                         ></p-calendar>
                     </div>
                     <div class="flex flex-column col-12 md:col-6">
-                        <label for="caduca" class="mb-1">Caduca</label>
+                        <label for="caduca" class="mb-1">Fin</label>
                         <p-calendar
                             id="caduca"
                             name="caduca"
+                            placeholder="Fecha de Fin"
                             [(ngModel)]="selectedComunicado.caduca"
                             dateFormat="dd/mm/yy"
                             showIcon="true"
@@ -372,9 +376,10 @@
         </div>
     </div>
     <app-table-primeng
-        [columnas]="columnasDestinatarios"
+        [columnas]="columnaModal"
         [data]="destinatarios"
         (accionBtnItem)="seleccionarDestinatario($event)"
+        [actions]="accionModal"
     ></app-table-primeng>
 </p-dialog>
 

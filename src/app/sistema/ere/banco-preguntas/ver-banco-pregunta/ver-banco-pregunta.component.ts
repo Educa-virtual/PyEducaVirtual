@@ -55,7 +55,6 @@ export class VerBancoPreguntaComponent implements OnInit, OnChanges {
 
     // Variable para marcar si es solo lectura
     isDisabled: boolean = true
-
     // Config del Editor TinyMCE
     init: EditorComponent['init'] = {
         base_url: '/tinymce',
@@ -138,6 +137,7 @@ export class VerBancoPreguntaComponent implements OnInit, OnChanges {
     }
 
     // Carga PREGUNTA MÚLTIPLE
+    // Carga PREGUNTA MÚLTIPLE
     private cargarPreguntaMultiple(encabPregId: string): void {
         if (!encabPregId) {
             console.warn('No hay iEncabPregId válido, no se hace la llamada')
@@ -152,6 +152,7 @@ export class VerBancoPreguntaComponent implements OnInit, OnChanges {
                 next: (respuesta) => {
                     console.log('data')
                     console.log(respuesta)
+
                     if (
                         respuesta &&
                         respuesta.data &&
@@ -163,13 +164,30 @@ export class VerBancoPreguntaComponent implements OnInit, OnChanges {
                         this.encab = {
                             ...data,
                             subPreguntas: data.preguntas.map((pregunta) => ({
-                                titulo: pregunta.cPregunta,
+                                titulo:
+                                    pregunta.cEncabPregTitulo || 'Sin Título',
                                 contenido: pregunta.cPregunta,
-                                alternativas: pregunta.alternativas || [], // Agrega alternativas a cada subpregunta
+                                alternativas: pregunta.alternativas.map(
+                                    (alt) => ({
+                                        cAlternativaLetra:
+                                            alt.cAlternativaLetra,
+                                        cAlternativaDescripcion:
+                                            alt.cAlternativaDescripcion,
+                                        bAlternativaCorrecta:
+                                            alt.bAlternativaCorrecta,
+                                        cAlternativaExplicacion:
+                                            alt.cAlternativaExplicacion || '',
+                                        cAlternativaImagen:
+                                            alt.cAlternativaImagen || '',
+                                    })
+                                ),
                             })),
                         }
 
-                        console.log('Pregunta Múltiple cargada:', this.encab)
+                        console.log(
+                            'Pregunta Múltiple cargada correctamente:',
+                            this.encab
+                        )
                     } else {
                         console.warn('No hay datos para mostrar')
                     }

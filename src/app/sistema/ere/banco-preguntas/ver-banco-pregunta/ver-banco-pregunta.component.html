@@ -1,9 +1,10 @@
 <div *ngIf="encab" [ngClass]="{ 'disabled-dialog': isDisabled }">
     <h3>Preguntas</h3>
-    <!-- Pregunta Simple -->
-    <ng-container *ngIf="!iEncabPregId; else multipleCase" class="grid">
+
+    <!-- Condición correcta -->
+    <ng-container *ngIf="iPreguntaId && !iEncabPregId; else multipleCase">
+        <!-- Pregunta Simple -->
         <div class="row">
-            <!-- Primera fila: Competencia y Capacidad -->
             <div class="col-6">
                 <p-inputGroup>
                     <p-inputGroupAddon>Competencia</p-inputGroupAddon>
@@ -30,7 +31,6 @@
         </div>
 
         <div class="row mt-2">
-            <!-- Segunda fila: Desempeño y Peso -->
             <div class="col-6">
                 <p-inputGroup>
                     <p-inputGroupAddon>Desempeño</p-inputGroupAddon>
@@ -55,24 +55,19 @@
                 </p-inputGroup>
             </div>
         </div>
-        Pregunta
-        <div>
-            <span class="text-red-500 text-xs">(*) Obligatorio</span>
-        </div>
+
         <textarea
             disabled
             rows="12"
             cols="100"
-            name=""
-            id=""
             [(ngModel)]="encab.cPregunta"
         ></textarea>
-        <!-- Alternativas Pregunta Simple -->
+
         <div class="col-12 mt-3">
             <h5>Lista de Alternativas</h5>
             <div
                 class="p-2"
-                *ngFor="let alt of encab.alternativas; let i = index"
+                *ngFor="let alt of encab.alternativas"
                 [ngStyle]="{
                     'border-left': alt.bAlternativaCorrecta
                         ? '4px solid #22c55e'
@@ -82,7 +77,7 @@
                         : 'transparent',
                 }"
             >
-                <p-inputGroup class="mt-1">
+                <p-inputGroup>
                     <p-inputGroupAddon>{{
                         alt.cAlternativaLetra
                     }}</p-inputGroupAddon>
@@ -92,19 +87,10 @@
                         [(ngModel)]="alt.cAlternativaDescripcion"
                         [disabled]="true"
                     />
-                    <div class="align-content-center p-2 border-img">
-                        <p-image
-                            [src]="backend + '/' + alt.cAlternativaImagen"
-                            alt="Image"
-                            width="25"
-                            [preview]="true"
-                        ></p-image>
-                    </div>
                 </p-inputGroup>
 
                 <div class="flex justify-content-end">
                     <p-checkbox
-                        class="mt-2"
                         [disabled]="true"
                         label="Respuesta Correcta"
                         [binary]="true"
@@ -129,14 +115,20 @@
 
     <!-- Pregunta Múltiple -->
     <ng-template #multipleCase>
-        <h3 class="mb-3">Pregunta Múltiple</h3>
+        <h3>Pregunta Múltiple</h3>
+
+        <div class="mt-3 p-3 border-round surface-100">
+            <h4>Contexto General</h4>
+            <editor
+                id="editorEncabContenido"
+                [init]="init"
+                [(ngModel)]="encab.cEncabPregContenido"
+                [disabled]="true"
+            ></editor>
+        </div>
 
         <div class="grid">
             <div class="col-7">
-                <label for="editorEnunciadoMultiple" class="font-bold">
-                    Descripción del Enunciado
-                    <span class="text-red-500 text-xs">(*) Obligatorio</span>
-                </label>
                 <editor
                     id="editorEnunciadoMultiple"
                     [init]="init"
@@ -154,6 +146,7 @@
                         />
                     </p-inputGroup>
                 </div>
+
                 <div class="mt-2">
                     <p-inputGroup>
                         <p-inputGroupAddon>Capacidad</p-inputGroupAddon>
@@ -165,6 +158,7 @@
                         />
                     </p-inputGroup>
                 </div>
+
                 <div class="mt-2">
                     <p-inputGroup>
                         <p-inputGroupAddon>Desempeño</p-inputGroupAddon>
@@ -176,6 +170,7 @@
                         />
                     </p-inputGroup>
                 </div>
+
                 <div class="mt-2">
                     <p-inputGroup>
                         <p-inputGroupAddon>Peso</p-inputGroupAddon>
@@ -187,77 +182,13 @@
                         />
                     </p-inputGroup>
                 </div>
-
-                <!-- Alternativas Pregunta Múltiple -->
-                <div class="mt-3">
-                    <h5 class="mb-1">Lista de Alternativas</h5>
-                    <div
-                        class="p-2"
-                        *ngFor="let alt of encab.alternativas; let i = index"
-                        [ngStyle]="{
-                            'border-left': alt.bAlternativaCorrecta
-                                ? '4px solid #22c55e'
-                                : 'inherit',
-                            background: alt.bAlternativaCorrecta
-                                ? 'rgb(227 253 237)'
-                                : 'transparent',
-                        }"
-                    >
-                        <p-inputGroup class="mt-1">
-                            <p-inputGroupAddon>{{
-                                alt.cAlternativaLetra
-                            }}</p-inputGroupAddon>
-                            <input
-                                type="text"
-                                pInputText
-                                [(ngModel)]="alt.cAlternativaDescripcion"
-                                [disabled]="true"
-                            />
-                            <div class="align-content-center p-2 border-img">
-                                <p-image
-                                    [src]="
-                                        backend + '/' + alt.cAlternativaImagen
-                                    "
-                                    alt="Image"
-                                    width="25"
-                                    [preview]="true"
-                                ></p-image>
-                            </div>
-                        </p-inputGroup>
-
-                        <div class="flex justify-content-end">
-                            <p-checkbox
-                                class="mt-2"
-                                [disabled]="true"
-                                label="Respuesta Correcta"
-                                [binary]="true"
-                                [(ngModel)]="alt.bAlternativaCorrecta"
-                            ></p-checkbox>
-                        </div>
-
-                        <div class="mt-1" *ngIf="alt.bAlternativaCorrecta">
-                            <p-inputGroup>
-                                <p-inputGroupAddon
-                                    >Explicación</p-inputGroupAddon
-                                >
-                                <input
-                                    type="text"
-                                    pInputText
-                                    [(ngModel)]="alt.cAlternativaExplicacion"
-                                    [disabled]="true"
-                                />
-                            </p-inputGroup>
-                        </div>
-                    </div>
-                </div>
             </div>
 
-            <!-- Sub-preguntas -->
             <div class="col-5">
                 <div
                     class="flex justify-content-between align-items-center mb-2"
                 >
-                    <h4 class="m-0">Lista de Preguntas</h4>
+                    <h4>Lista de Preguntas</h4>
                     <p-button
                         label="Agregar Pregunta"
                         icon="pi pi-plus"
@@ -276,15 +207,70 @@
                                 Pregunta #{{ i + 1 }}: {{ sp.titulo }}
                             </div>
                             <p class="mt-1 text-sm">{{ sp.contenido }}</p>
+
+                            <div class="mt-3" *ngIf="sp.alternativas?.length">
+                                <h5>Alternativas</h5>
+                                <div
+                                    *ngFor="let alt of sp.alternativas"
+                                    [ngStyle]="{
+                                        'border-left': alt.bAlternativaCorrecta
+                                            ? '4px solid #22c55e'
+                                            : 'inherit',
+                                        background: alt.bAlternativaCorrecta
+                                            ? 'rgb(227 253 237)'
+                                            : 'transparent',
+                                    }"
+                                >
+                                    <p-inputGroup>
+                                        <p-inputGroupAddon>{{
+                                            alt.cAlternativaLetra
+                                        }}</p-inputGroupAddon>
+                                        <input
+                                            type="text"
+                                            pInputText
+                                            [(ngModel)]="
+                                                alt.cAlternativaDescripcion
+                                            "
+                                            [disabled]="true"
+                                        />
+                                    </p-inputGroup>
+
+                                    <div class="flex justify-content-end">
+                                        <p-checkbox
+                                            [disabled]="true"
+                                            label="Respuesta Correcta"
+                                            [binary]="true"
+                                            [(ngModel)]="
+                                                alt.bAlternativaCorrecta
+                                            "
+                                        ></p-checkbox>
+                                    </div>
+
+                                    <div
+                                        class="mt-1"
+                                        *ngIf="alt.bAlternativaCorrecta"
+                                    >
+                                        <p-inputGroup>
+                                            <p-inputGroupAddon
+                                                >Explicación</p-inputGroupAddon
+                                            >
+                                            <input
+                                                type="text"
+                                                pInputText
+                                                [(ngModel)]="
+                                                    alt.cAlternativaExplicacion
+                                                "
+                                                [disabled]="true"
+                                            />
+                                        </p-inputGroup>
+                                    </div>
+                                </div>
+                            </div>
                         </li>
                     </ul>
                 </div>
 
-                <div
-                    *ngIf="
-                        !encab.subPreguntas || encab.subPreguntas.length === 0
-                    "
-                >
+                <div *ngIf="!encab.subPreguntas?.length">
                     <p>No hay sub-preguntas registradas</p>
                 </div>
             </div>

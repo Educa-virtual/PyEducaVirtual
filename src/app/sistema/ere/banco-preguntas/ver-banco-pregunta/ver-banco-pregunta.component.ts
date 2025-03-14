@@ -5,8 +5,9 @@ import {
     SimpleChanges,
     Input,
     inject,
+    TemplateRef,
 } from '@angular/core'
-import { NgIf } from '@angular/common'
+import { NgIf, NgIfContext } from '@angular/common'
 import { PrimengModule } from '@/app/primeng.module'
 import { ContainerPageComponent } from '@/app/shared/container-page/container-page.component'
 import { EditorComponent, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular'
@@ -71,6 +72,8 @@ export class VerBancoPreguntaComponent implements OnInit, OnChanges {
         editable_root: true,
         // readonly: 1, // Otra forma de deshabilitar edición si deseas
     }
+    multipleCase: TemplateRef<NgIfContext<string>>
+    simpleCase: TemplateRef<NgIfContext<string>>
 
     ngOnInit(): void {
         // Aquí no cargamos nada; la carga se hace en ngOnChanges cuando detecte iPreguntaId o iEncabPregId
@@ -94,6 +97,8 @@ export class VerBancoPreguntaComponent implements OnInit, OnChanges {
             this.cargarPreguntaSimple(nuevoId)
         }
 
+        console.log('LLego')
+
         // 2. Detecta si cambió iEncabPregId (PREGUNTA MÚLTIPLE)
         if (changes['iEncabPregId'] && changes['iEncabPregId'].currentValue) {
             const nuevoEncabId = changes['iEncabPregId'].currentValue
@@ -109,9 +114,7 @@ export class VerBancoPreguntaComponent implements OnInit, OnChanges {
         }
     }
 
-    // ============================================================
     // Carga PREGUNTA SIMPLE
-    // ============================================================
     private cargarPreguntaSimple(preguntaId: string): void {
         if (!preguntaId) {
             console.warn('No hay iPreguntaId válido, no se hace la llamada')
@@ -134,25 +137,42 @@ export class VerBancoPreguntaComponent implements OnInit, OnChanges {
             })
     }
 
-    // ============================================================
     // Carga PREGUNTA MÚLTIPLE
-    // ============================================================
     private cargarPreguntaMultiple(encabPregId: string): void {
         if (!encabPregId) {
             console.warn('No hay iEncabPregId válido, no se hace la llamada')
             return
         }
-        console.log('Cargando Pregunta Múltiple con ID:', encabPregId)
 
         const params = { tipo_pregunta: 2 }
 
-        // Ajusta si tu servicio es distinto
         this._PreguntasReutilizablesService
             .obtenerDetallePregunta(encabPregId, params)
             .subscribe({
                 next: (respuesta) => {
-                    this.encab = respuesta
-                    console.log('Pregunta Múltiple cargada:', respuesta)
+                    console.log('data')
+                    console.log(respuesta)
+                    if (
+                        respuesta &&
+                        respuesta.data &&
+                        respuesta.data.length > 0
+                    ) {
+                        const data = respuesta.data[0]
+
+                        // Asignar el contexto general
+                        this.encab = {
+                            ...data,
+                            subPreguntas: data.preguntas.map((pregunta) => ({
+                                titulo: pregunta.cPregunta,
+                                contenido: pregunta.cPregunta,
+                                alternativas: pregunta.alternativas || [], // Agrega alternativas a cada subpregunta
+                            })),
+                        }
+
+                        console.log('Pregunta Múltiple cargada:', this.encab)
+                    } else {
+                        console.warn('No hay datos para mostrar')
+                    }
                 },
                 error: (error) => {
                     console.error('Error al cargar pregunta múltiple:', error)

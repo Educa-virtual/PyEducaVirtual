@@ -140,11 +140,15 @@ export class BancoPreguntasComponent implements OnInit {
         if (!item.iPreguntaId) {
             console.error('No hay iPreguntaId en item, se quedará en null')
         }
+        console.log('this.selectedPreguntaId')
+        console.log(item)
+        console.log(this.selectedPreguntaId)
+        console.log(this.selectedPreguntaMultiple)
         switch (accion) {
             case 'ver':
                 // Lógica: si item.iPreguntaId existe => Pregunta simple
                 // Sino, si item.iEncabPregId => Pregunta múltiple
-                if (item.iPreguntaId) {
+                if (item.iPreguntaId && !item.iEncabPregId) {
                     this.selectedPreguntaId = String(item.iPreguntaId)
                     this.selectedPreguntaMultiple = null
                 } else if (item.iEncabPregId) {
@@ -285,6 +289,8 @@ export class BancoPreguntasComponent implements OnInit {
             .subscribe({
                 next: (respuesta) => {
                     this.preguntas = respuesta
+                    console.log('this.preguntas')
+                    console.log(this.preguntas)
                 },
                 error: (error) => {
                     console.log('error obtenido' + error)

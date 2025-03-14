@@ -286,7 +286,6 @@ export class ContenidosComponent implements OnInit {
             data: dataObj,
         }
 
-        console.table(params)
         this.getInformation(params, ruta)
         this.cargarComunicadosUsuario()
     }

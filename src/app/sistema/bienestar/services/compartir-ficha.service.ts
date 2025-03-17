@@ -1,15 +1,18 @@
+import { LocalStoreService } from '@/app/servicios/local-store.service'
 import { Injectable, OnDestroy } from '@angular/core'
 
 @Injectable({
     providedIn: 'root',
 })
 export class CompartirFichaService implements OnDestroy {
-    constructor() {}
+    constructor(private store: LocalStoreService) {}
 
     lista: any[] = []
 
     private iPersId: string | null = null
     private iFichaDGId: string | null = null
+
+    perfil = this.store.getItem('dremoPerfil')
 
     clearData() {
         this.iPersId = null

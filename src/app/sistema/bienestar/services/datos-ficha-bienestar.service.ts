@@ -1,11 +1,12 @@
 import { Injectable, OnDestroy } from '@angular/core'
 import { GeneralService } from '@/app/servicios/general.service'
-import { Observable, Subject } from 'rxjs'
+import { Subject } from 'rxjs'
 import { map, takeUntil } from 'rxjs/operators'
 import { of } from 'rxjs'
 import { HttpClient, HttpHeaders } from '@angular/common/http'
 import { environment } from '@/environments/environment.template'
-import { FichaGeneral } from '../interfaces/ficha'
+import { FichaGeneral } from '../interfaces/fichaGeneral'
+import { FichaFamiliar } from '../interfaces/fichaFamiliar'
 
 const baseUrl = environment.backendApi
 
@@ -41,6 +42,7 @@ export class DatosFichaBienestarService implements OnDestroy {
     tipos_ies: Array<object>
 
     formGeneral: FichaGeneral
+    formFamiliar: FichaFamiliar
 
     searchFichaGeneral(data: any) {
         if (!this.formGeneral) {
@@ -68,18 +70,18 @@ export class DatosFichaBienestarService implements OnDestroy {
     }
 
     guardarFamiliar(data: any) {
-        return this.http.post(`${baseUrl}/bienestar/guardarFamiliar`, data)
+        return this.http.post(`${baseUrl}/bienestar/guardarFichaFamiliar`, data)
     }
 
     actualizarFamiliar(data: any) {
-        return this.http.post(`${baseUrl}/bienestar/actualizarFamiliar`, data)
+        return this.http.post(
+            `${baseUrl}/bienestar/actualizarFichaFamiliar`,
+            data
+        )
     }
 
     borrarFamiliar(data: any) {
-        return this.http.post(
-            `${baseUrl}/bienestar/ficha/familiar/delete`,
-            data
-        )
+        return this.http.post(`${baseUrl}/bienestar/borrarFichaFamiliar`, data)
     }
 
     searchFamiliares(data: any) {
@@ -234,28 +236,13 @@ export class DatosFichaBienestarService implements OnDestroy {
         return this.departamentos
     }
 
-    getProvincias(iDptoId: number): Observable<Array<object>> {
+    getProvincias(iDptoId: number) {
         if (!iDptoId) {
             return null
         }
-        return this.query
-            .searchTablaXwhere({
-                esquema: 'grl',
-                tabla: 'provincias',
-                campos: '*',
-                condicion: 'iDptoId = ' + iDptoId,
-            })
-            .pipe(
-                takeUntil(this.onDestroy$),
-                map((data: any) => {
-                    const items = data.data
-                    this.distritos = items.map((provincia) => ({
-                        value: provincia.iPrvnId,
-                        label: provincia.cPrvnNombre,
-                    }))
-                    return this.distritos
-                })
-            )
+        return this.parametros.provincias.filter((provincia) => {
+            return provincia.iDptoId === iDptoId ? provincia : null
+        })
     }
 
     getDistritos(iPrvnId: number) {

@@ -5,6 +5,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { MessageService } from 'primeng/api'
 import { DatosFichaBienestarService } from '../../../services/datos-ficha-bienestar.service'
 import { CompartirFichaService } from '../../../services/compartir-ficha.service'
+import { FichaFamiliar } from '../../../interfaces/fichaFamiliar'
 
 @Component({
     selector: 'app-ficha-familia-registro',
@@ -37,6 +38,7 @@ export class FichaFamiliaRegistroComponent implements OnInit {
     formato_documento: string = '99999999'
     es_peruano: boolean = true
     documento_consultable: boolean = true
+    fecha_actual: Date = new Date()
 
     private _messageService = inject(MessageService) // dialog Mensaje simple
     private _confirmService = inject(ConfirmationModalService) // componente de dialog mensaje
@@ -90,8 +92,9 @@ export class FichaFamiliaRegistroComponent implements OnInit {
 
         try {
             this.formFamiliar = this.fb.group({
+                iSesionId: this.compartirFichaService.perfil?.iCredId,
                 iFichaDGId: this.compartirFichaService.getiFichaDGId(), // PK
-                iPersId: [null, Validators.required],
+                iPersId: [null],
                 iTipoFamiliarId: [null, Validators.required],
                 bFamiliarVivoConEl: [false],
                 iTipoIdentId: [null, Validators.required],
@@ -134,8 +137,9 @@ export class FichaFamiliaRegistroComponent implements OnInit {
                     ? true
                     : false
                 const tipo_doc = this.tipos_documentos.find(
-                    (item: any) => item.id === value
+                    (item: any) => item.value === value
                 )
+                console.log(tipo_doc)
                 this.longitud_documento = tipo_doc['longitud']
                 this.formato_documento = '9'.repeat(this.longitud_documento)
             })
@@ -160,7 +164,9 @@ export class FichaFamiliaRegistroComponent implements OnInit {
             this.formFamiliar.get('cEstUbigeo').setValue(null)
             if (!value) return null
             if (!this.distritos) return null
-            const item = this.distritos.find((item: any) => item.id === value)
+            const item = this.distritos.find(
+                (item: any) => item.value === value
+            )
             if (item) {
                 this.formFamiliar
                     .get('cEstUbigeo')
@@ -233,29 +239,25 @@ export class FichaFamiliaRegistroComponent implements OnInit {
      * Setea los datos de un familiar seleccionado
      * @param item datos del familiar seleccionado
      */
-    setFormFamiliar(item: any) {
+    setFormFamiliar(item: FichaFamiliar) {
         // Deben ser strings o null
-        this.formFamiliar.get('iFichaDGId')?.setValue(item?.iFichaDGId)
-        this.formFamiliar.get('iPersId')?.setValue(item?.iPersId)
-        this.formFamiliar.get('cEstCodigo')?.setValue(item?.cEstCodigo)
-        this.formFamiliar.get('iTipoIdentId')?.setValue(item?.iTipoIdentId)
-        this.formFamiliar.get('cPersDocumento')?.setValue(item?.cPersDocumento)
-        this.formFamiliar.get('cPersNombre')?.setValue(item?.cPersNombre)
-        this.formFamiliar.get('cPersPaterno')?.setValue(item?.cPersPaterno)
-        this.formFamiliar.get('cPersMaterno')?.setValue(item?.cPersMaterno)
-        this.formFamiliar.get('cPersSexo')?.setValue(item?.cPersSexo)
-        this.formFamiliar.get('iTipoEstCivId')?.setValue(item?.iTipoEstCivId)
-        this.formFamiliar.get('iNacionId')?.setValue(item?.iNacionId)
+        this.formFamiliar.patchValue(item)
         this.formFamiliar
-            .get('cEstPartidaNacimiento')
-            ?.setValue(item?.cEstPartidaNacimiento)
-        this.formFamiliar.get('iDptoId')?.setValue(item?.iDptoId)
-        this.formFamiliar.get('iPrvnId')?.setValue(item?.iPrvnId)
-        this.formFamiliar.get('iDsttId')?.setValue(item?.iDsttId)
-        this.formFamiliar.get('cEstUbigeo')?.setValue(item?.cEstUbigeo)
-        this.formFamiliar.get('cPersDomicilio')?.setValue(item?.cPersDomicilio)
-        this.formFamiliar.get('cEstTelefono')?.setValue(item?.cEstTelefono)
-        this.formFamiliar.get('cEstCorreo')?.setValue(item?.cEstCorreo)
+            .get('iTipoIdentId')
+            ?.setValue(!!+item?.bFamiliarVivoConEl)
+        this.formFamiliar
+            .get('iTipoFamiliarId')
+            ?.setValue(+item?.iTipoFamiliarId)
+        this.formFamiliar.get('iTipoIdentId')?.setValue(+item?.iTipoIdentId)
+        this.formFamiliar.get('iTipoEstCivId')?.setValue(+item?.iTipoEstCivId)
+        this.formFamiliar.get('iNacionId')?.setValue(+item?.iNacionId)
+        this.formFamiliar.get('iDptoId')?.setValue(+item?.iDptoId)
+        this.formFamiliar.get('iPrvnId')?.setValue(+item?.iPrvnId)
+        this.formFamiliar.get('iDsttId')?.setValue(+item?.iDsttId)
+        this.formFamiliar.get('iTipoViaId')?.setValue(+item?.iTipoViaId)
+        this.formFamiliar.get('iOcupacionId')?.setValue(+item?.iOcupacionId)
+        this.formFamiliar.get('iGradoInstId')?.setValue(+item?.iGradoInstId)
+        this.formFamiliar.get('iTipoIeEstId')?.setValue(+item?.iTipoIeEstId)
         this.formFamiliar
             .get('dPersNacimiento')
             ?.setValue(
@@ -270,6 +272,8 @@ export class FichaFamiliaRegistroComponent implements OnInit {
                 next: (data: any) => {
                     console.log(data, 'guardado')
                     this.familiar_registrado = true
+                    this.datosFichaBienestarService.formFamiliar =
+                        this.formFamiliar.value
                 },
                 error: (error) => {
                     console.error('Error guardando familiar:', error)
@@ -292,6 +296,8 @@ export class FichaFamiliaRegistroComponent implements OnInit {
                 next: (data: any) => {
                     console.log(data, 'actualizado')
                     this.familiar_registrado = true
+                    this.datosFichaBienestarService.formFamiliar =
+                        this.formFamiliar.value
                 },
                 error: (error) => {
                     console.error('Error actualizando familiar:', error)

@@ -60,7 +60,6 @@ export class FichaFamiliaComponent implements OnInit {
         }).subscribe({
             next: (data: any) => {
                 this.familiares = data.data
-                console.log(this.familiares, 'familiares')
             },
             error: (error) => {
                 console.error('Error al obtener familiares:', error)

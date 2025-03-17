@@ -103,6 +103,7 @@
                         id="cPersNombre"
                         formControlName="cPersNombre"
                         aria-describedby="cPersNombre-help"
+                        maxlength="50"
                     />
                 </p-inputGroup>
             </div>
@@ -115,6 +116,7 @@
                         id="cPersPaterno"
                         formControlName="cPersPaterno"
                         aria-describedby="cPersPaterno-help"
+                        maxlength="50"
                     />
                 </p-inputGroup>
             </div>
@@ -126,6 +128,7 @@
                         id="cPersMaterno"
                         formControlName="cPersMaterno"
                         aria-describedby="cPersMaterno-help"
+                        maxlength="50"
                     />
                 </p-inputGroup>
             </div>
@@ -160,6 +163,7 @@
                         [showIcon]="true"
                         inputId="dPersNacimiento"
                         [appendTo]="'body'"
+                        [maxDate]="fecha_actual"
                     />
                 </p-inputGroup>
             </div>
@@ -239,6 +243,7 @@
                         type="text"
                         pInputText
                         formControlName="cFichaDGDireccionNombreVia"
+                        maxlength="150"
                     />
                 </p-inputGroup>
             </div>
@@ -250,6 +255,7 @@
                         type="text"
                         pInputText
                         formControlName="cFichaDGDireccionNroPuerta"
+                        maxlength="10"
                     />
                 </p-inputGroup>
             </div>
@@ -261,6 +267,7 @@
                         type="text"
                         pInputText
                         formControlName="cFichaDGDireccionBlock"
+                        maxlength="3"
                     />
                 </p-inputGroup>
             </div>
@@ -272,6 +279,7 @@
                         type="text"
                         pInputText
                         formControlName="cFichaDGDirecionInterior"
+                        maxlength="3"
                     />
                 </p-inputGroup>
             </div>
@@ -279,10 +287,11 @@
             <div class="col-12 lg:col-4 md:col-6">
                 <p-inputGroup>
                     <p-inputGroupAddon>Piso</p-inputGroupAddon>
-                    <input
-                        type="text"
-                        pInputText
+                    <p-inputNumber
                         formControlName="cFichaDGDirecionPiso"
+                        maxlength="3"
+                        useGrouping="false"
+                        showButtons="true"
                     />
                 </p-inputGroup>
             </div>
@@ -294,6 +303,7 @@
                         type="text"
                         pInputText
                         formControlName="cFichaDGDireccionManzana"
+                        maxlength="10"
                     />
                 </p-inputGroup>
             </div>
@@ -305,6 +315,7 @@
                         type="text"
                         pInputText
                         formControlName="cFichaDGDireccionLote"
+                        maxlength="3"
                     />
                 </p-inputGroup>
             </div>
@@ -316,6 +327,7 @@
                         type="text"
                         pInputText
                         formControlName="cFichaDGDireccionKm"
+                        maxlength="10"
                     />
                 </p-inputGroup>
             </div>
@@ -365,7 +377,7 @@
             </div>
             <div class="col-12 sm:col-6">
                 <p-inputGroup>
-                    <p-inputGroupAddon> Tipo </p-inputGroupAddon>
+                    <p-inputGroupAddon> Tipo I.E. </p-inputGroupAddon>
                     <p-dropdown
                         [options]="tipos_ies"
                         formControlName="iTipoIeEstId"

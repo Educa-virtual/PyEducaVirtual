@@ -7,8 +7,7 @@ import { InputTextModule } from 'primeng/inputtext'
 import { DatosFichaBienestarService } from '../services/datos-ficha-bienestar.service'
 import { MessageService } from 'primeng/api'
 import { CompartirFichaService } from '../services/compartir-ficha.service'
-import { LocalStoreService } from '@/app/servicios/local-store.service'
-import { FichaGeneral } from '../interfaces/ficha'
+import { FichaGeneral } from '../interfaces/fichaGeneral'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
 
 @Component({
@@ -39,16 +38,13 @@ export class FichasocgeneralComponent implements OnInit {
     constructor(
         private fb: FormBuilder,
         private datosFichaBienestarService: DatosFichaBienestarService,
-        private compartirFichaService: CompartirFichaService,
-        private store: LocalStoreService
+        private compartirFichaService: CompartirFichaService
     ) {}
 
     ngOnInit() {
-        const perfil = this.store.getItem('dremoPerfil')
-
         this.formGeneral = this.fb.group({
-            iSesionId: perfil?.iCredId,
-            iPersId: perfil?.iPersId,
+            iSesionId: this.compartirFichaService.perfil?.iCredId,
+            iPersId: this.compartirFichaService.perfil?.iPersId,
             iFichaDGId: [null],
             iTipoViaId: [null],
             cFichaDGDireccionNombreVia: ['', Validators.required],

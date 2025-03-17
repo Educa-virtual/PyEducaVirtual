@@ -1,6 +1,8 @@
 import { PrimengModule } from '@/app/primeng.module'
-import { Component } from '@angular/core'
+import { Component, OnInit } from '@angular/core'
 import { FormBuilder, FormGroup } from '@angular/forms'
+import { CompartirFichaService } from '../../services/compartir-ficha.service'
+import { Router } from '@angular/router'
 
 @Component({
     selector: 'app-ficha-economico',
@@ -9,7 +11,7 @@ import { FormBuilder, FormGroup } from '@angular/forms'
     templateUrl: './ficha-economico.component.html',
     styleUrl: './ficha-economico.component.scss',
 })
-export class FichaEconomicoComponent {
+export class FichaEconomicoComponent implements OnInit {
     formEconomico: FormGroup
     familiares: Array<object>
     modalidades: Array<object>
@@ -17,7 +19,15 @@ export class FichaEconomicoComponent {
     percibe: Array<object>
     tipos_apoyos: Array<object>
 
-    constructor(private fb: FormBuilder) {}
+    constructor(
+        private fb: FormBuilder,
+        private router: Router,
+        private compartirFichaService: CompartirFichaService
+    ) {
+        if (this.compartirFichaService.getiFichaDGId() === null) {
+            this.router.navigate(['/bienestar/ficha/general'])
+        }
+    }
 
     ngOnInit(): void {
         this.familiares = [

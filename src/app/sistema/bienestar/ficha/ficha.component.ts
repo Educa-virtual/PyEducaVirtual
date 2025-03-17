@@ -1,8 +1,9 @@
 import { PrimengModule } from '@/app/primeng.module'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
-import { Component, inject, ViewChild } from '@angular/core'
-import { MessageService } from 'primeng/api'
+import { Component, inject, OnInit, ViewChild } from '@angular/core'
+import { MenuItem, MessageService } from 'primeng/api'
 import { TabMenu } from 'primeng/tabmenu'
+import { CompartirFichaService } from '../services/compartir-ficha.service'
 
 @Component({
     selector: 'app-ficha',
@@ -11,26 +12,35 @@ import { TabMenu } from 'primeng/tabmenu'
     templateUrl: './ficha.component.html',
     styleUrl: './ficha.component.scss',
 })
-export class FichaComponent {
+export class FichaComponent implements OnInit {
     @ViewChild('tabMenu') tabMenu: TabMenu
+    activeItem: any
+    previousItem: any
+    ficha_registrada: boolean | string = false
 
     private _messageService = inject(MessageService) // dialog Mensaje simple
     private _confirmService = inject(ConfirmationModalService) // componente de dialog mensaje
+
+    constructor(private compartirFichaService: CompartirFichaService) {}
+
+    ngOnInit(): void {
+        this.activeItem = this.items[0]
+        this.previousItem = this.items[0]
+
+        this.ficha_registrada = this.compartirFichaService.getiFichaDGId()
+    }
 
     /**
      * Controlar accion al cambiar de pestaña
      * @param event
      */
-    handleTabChange(event: any) {
-        console.log(event)
-        this._confirmService.openConfirm({
-            message: '¿Está seguro de anular la matrícula seleccionada?',
-            header: 'Anular matrícula',
-            icon: 'pi pi-exclamation-triangle',
-            accept: () => {
-                // pasar a sgte. tab
-            },
-        })
+    handleTabChange(newItem: MenuItem) {
+        if (this.compartirFichaService.getiFichaDGId() === null) {
+            this.activeItem = this.previousItem
+        } else {
+            this.previousItem = this.activeItem
+            this.activeItem = newItem
+        }
     }
 
     items = [

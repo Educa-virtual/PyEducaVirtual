@@ -1,209 +1,413 @@
 <form [formGroup]="formFamiliar">
-    <div class="pt-2 grid p-fluid mt-3">
-        <input type="hidden" formControlName="iPersId" />
+    <input type="hidden" formControlName="iPersId" />
 
-        <div class="field col-12 sm:col-4">
-            <span class="p-float-label">
-                <p-dropdown
-                    [options]="tipos_documentos"
-                    formControlName="iTipoIdentId"
-                    optionLabel="nombre"
-                    optionValue="id"
-                    [filter]="true"
-                    [showClear]="true"
-                    [appendTo]="'body'"
-                />
-                <label for="iTipoIdentId">Tipo de documento *</label>
-            </span>
-        </div>
-        <div class="field col-6 sm:col-4">
-            <span class="p-float-label">
-                <p-inputMask
-                    formControlName="cPersDocumento"
-                    aria-describedby="cPersDocumento-help"
-                    [maxlength]="longitud_documento"
-                    [mask]="formato_documento"
-                />
-                <label for="cPersDocumento">Documento *</label>
-            </span>
-        </div>
-        <div class="field col-6 sm:col-4">
-            <p-button
-                label="Validar"
-                styleClass="p-button-primary"
-                (onClick)="validarPersona()"
-            />
-        </div>
+    <br />
 
-        <div class="field col-12 sm:col-4">
-            <span class="p-float-label">
-                <p-dropdown
-                    [options]="tipos_familiares"
-                    formControlName="iTipoFamiliarId"
-                    optionLabel="nombre"
-                    optionValue="id"
-                    [filter]="true"
-                    [showClear]="true"
-                    [appendTo]="'body'"
-                />
-                <label for="iTipoFamiliarId">Relación / Parentesco *</label>
-            </span>
+    <p-fieldset legend="Relación familiar">
+        <div class="pt-2 grid p-fluid mt-3">
+            <div class="col-12 sm:col-6">
+                <p-inputGroup>
+                    <p-inputGroupAddon> Relación * </p-inputGroupAddon>
+                    <p-dropdown
+                        [options]="tipos_familiares"
+                        formControlName="iTipoFamiliarId"
+                        [filter]="true"
+                        [showClear]="true"
+                        [appendTo]="'body'"
+                        [style]="{ flex: '1', width: '100%' }"
+                    />
+                </p-inputGroup>
+            </div>
+            <div class="col-12 sm:col-6">
+                <p-inputGroup>
+                    <p-inputGroupAddon>
+                        <p-inputSwitch formControlName="bFamiliarVivoConEl" />
+                    </p-inputGroupAddon>
+                    <p-inputGroupAddon>
+                        ¿Comparte residencia?
+                    </p-inputGroupAddon>
+                </p-inputGroup>
+            </div>
         </div>
-        <div class="field col-6 sm:col-4">
-            <span class="p-float-label">
-                <p-dropdown
-                    [options]="sexos"
-                    formControlName="cPersSexo"
-                    optionLabel="nombre"
-                    optionValue="id"
-                    [filter]="true"
-                    [showClear]="true"
-                    [appendTo]="'body'"
-                />
-                <label for="cPersSexo">Sexo *</label>
-            </span>
-        </div>
-        <div class="field col-6 sm:col-4">
-            <span class="p-float-label">
-                <p-dropdown
-                    [options]="estados_civiles"
-                    formControlName="iTipoEstCivId"
-                    optionLabel="nombre"
-                    optionValue="id"
-                    [filter]="true"
-                    [showClear]="true"
-                    [appendTo]="'body'"
-                />
-                <label for="iTipoEstCivId">Estado Civil</label>
-            </span>
-        </div>
+    </p-fieldset>
 
-        <div class="field col-12 sm:col-4">
-            <span class="p-float-label">
-                <input
-                    pInputText
-                    id="cPersNombre"
-                    formControlName="cPersNombre"
-                    aria-describedby="cPersNombre-help"
-                />
-                <label for="cPersNombre">Nombres *</label>
-            </span>
-        </div>
-        <div class="field col-12 sm:col-4">
-            <span class="p-float-label">
-                <input
-                    pInputText
-                    id="cPersPaterno"
-                    formControlName="cPersPaterno"
-                    aria-describedby="cPersPaterno-help"
-                />
-                <label for="cPersPaterno">Primer Apellido *</label>
-            </span>
-        </div>
-        <div class="field col-12 sm:col-4">
-            <span class="p-float-label">
-                <input
-                    pInputText
-                    id="cPersMaterno"
-                    formControlName="cPersMaterno"
-                    aria-describedby="cPersMaterno-help"
-                />
-                <label for="cPersMaterno">Segundo Apellido *</label>
-            </span>
-        </div>
+    <br />
 
-        <div class="field col-12 sm:col-8">
-            <span class="p-float-label">
-                <p-dropdown
-                    [options]="nacionalidades"
-                    formControlName="iNacionId"
-                    optionLabel="nombre"
-                    optionValue="id"
-                    [filter]="true"
-                    [showClear]="true"
-                    [appendTo]="'body'"
-                />
-                <label for="cPersPais">Nacionalidad</label>
-            </span>
-        </div>
-        <div class="field col-12 sm:col-4">
-            <span class="p-float-label">
-                <p-calendar
-                    formControlName="dPersNacimiento"
-                    [iconDisplay]="'input'"
-                    [showIcon]="true"
-                    inputId="dPersNacimiento"
-                    [appendTo]="'body'"
-                />
-                <label for="dPersNacimiento">Fecha de nacimiento *</label>
-            </span>
-        </div>
-        <div class="field col-12 sm:col-4">
-            <span class="p-float-label">
-                <p-dropdown
-                    [options]="departamentos"
-                    formControlName="iDptoId"
-                    optionLabel="nombre"
-                    optionValue="id"
-                    [filter]="true"
-                    [showClear]="true"
-                    [appendTo]="'body'"
-                />
-                <label for="iDptoId">Departamento</label>
-            </span>
-        </div>
-        <div class="field col-12 sm:col-4">
-            <span class="p-float-label">
-                <p-dropdown
-                    [options]="provincias"
-                    formControlName="iPrvnId"
-                    optionLabel="nombre"
-                    optionValue="id"
-                    [filter]="true"
-                    [showClear]="true"
-                    [appendTo]="'body'"
-                />
-                <label for="iPrvnId">Provincia</label>
-            </span>
-        </div>
-        <div class="field col-12 sm:col-4">
-            <span class="p-float-label">
-                <p-dropdown
-                    [options]="distritos"
-                    formControlName="iDsttId"
-                    optionLabel="nombre"
-                    optionValue="id"
-                    [filter]="true"
-                    [showClear]="true"
-                    [appendTo]="'body'"
-                />
-                <label for="iDsttId">Distrito</label>
-            </span>
-        </div>
+    <p-fieldset legend="Identidad">
+        <div class="pt-2 grid p-fluid mt-3">
+            <div class="col-12 sm:col-6">
+                <p-inputGroup>
+                    <p-inputGroupAddon> Tipo Doc. *</p-inputGroupAddon>
+                    <p-dropdown
+                        [options]="tipos_documentos"
+                        formControlName="iTipoIdentId"
+                        [filter]="true"
+                        [showClear]="true"
+                        [appendTo]="'body'"
+                        [style]="{ flex: '1', width: '100%' }"
+                    />
+                </p-inputGroup>
+            </div>
+            <div class="col-6 sm:col-6">
+                <p-inputGroup>
+                    <p-inputGroupAddon> Documento *</p-inputGroupAddon>
+                    <p-inputMask
+                        formControlName="cPersDocumento"
+                        [maxlength]="longitud_documento"
+                        [mask]="formato_documento"
+                        autoClear="false"
+                        slotChar=""
+                        [style]="{ flex: '1', width: '100%' }"
+                    />
+                    <p-button
+                        label="Validar"
+                        styleClass="p-button-primary"
+                        (onClick)="validarPersona()"
+                        severity="success"
+                    />
+                </p-inputGroup>
+            </div>
 
-        <div class="field col-12">
-            <span class="p-float-label">
-                <input
-                    pInputText
-                    formControlName="cPersDomicNombre"
-                    aria-describedby="cPersDomicNombre-help"
-                />
-                <label for="cPersDireccion">Dirección</label>
-            </span>
+            <div class="col-6 sm:col-6">
+                <p-inputGroup>
+                    <p-inputGroupAddon> Sexo *</p-inputGroupAddon>
+                    <p-dropdown
+                        [options]="sexos"
+                        formControlName="cPersSexo"
+                        [filter]="true"
+                        [showClear]="true"
+                        [appendTo]="'body'"
+                        [style]="{ flex: '1', width: '100%' }"
+                    />
+                </p-inputGroup>
+            </div>
+            <div class="col-6 sm:col-6">
+                <p-inputGroup>
+                    <p-inputGroupAddon> Estado Civil</p-inputGroupAddon>
+                    <p-dropdown
+                        [options]="estados_civiles"
+                        formControlName="iTipoEstCivId"
+                        [filter]="true"
+                        [showClear]="true"
+                        [appendTo]="'body'"
+                        [style]="{ flex: '1', width: '100%' }"
+                    />
+                </p-inputGroup>
+            </div>
+
+            <div class="col-12">
+                <p-inputGroup>
+                    <p-inputGroupAddon> Nombres *</p-inputGroupAddon>
+                    <input
+                        pInputText
+                        id="cPersNombre"
+                        formControlName="cPersNombre"
+                        aria-describedby="cPersNombre-help"
+                        maxlength="50"
+                    />
+                </p-inputGroup>
+            </div>
+
+            <div class="col-12 sm:col-6">
+                <p-inputGroup>
+                    <p-inputGroupAddon> Primer Apellido *</p-inputGroupAddon>
+                    <input
+                        pInputText
+                        id="cPersPaterno"
+                        formControlName="cPersPaterno"
+                        aria-describedby="cPersPaterno-help"
+                        maxlength="50"
+                    />
+                </p-inputGroup>
+            </div>
+            <div class="col-12 sm:col-6">
+                <p-inputGroup>
+                    <p-inputGroupAddon> Segundo Apellido </p-inputGroupAddon>
+                    <input
+                        pInputText
+                        id="cPersMaterno"
+                        formControlName="cPersMaterno"
+                        aria-describedby="cPersMaterno-help"
+                        maxlength="50"
+                    />
+                </p-inputGroup>
+            </div>
         </div>
-    </div>
+    </p-fieldset>
+
+    <br />
+
+    <p-fieldset legend="Nacimiento">
+        <div class="grid p-fluid mt-3">
+            <div class="col-12 sm:col-6">
+                <p-inputGroup>
+                    <p-inputGroupAddon> Nacionalidad</p-inputGroupAddon>
+                    <p-dropdown
+                        [options]="nacionalidades"
+                        formControlName="iNacionId"
+                        [filter]="true"
+                        [showClear]="true"
+                        [appendTo]="'body'"
+                        [style]="{ flex: '1', width: '100%' }"
+                    />
+                </p-inputGroup>
+            </div>
+            <div class="col-12 sm:col-6">
+                <p-inputGroup>
+                    <p-inputGroupAddon>
+                        Fecha de nacimiento *</p-inputGroupAddon
+                    >
+                    <p-calendar
+                        formControlName="dPersNacimiento"
+                        [iconDisplay]="'input'"
+                        [showIcon]="true"
+                        inputId="dPersNacimiento"
+                        [appendTo]="'body'"
+                        [maxDate]="fecha_actual"
+                    />
+                </p-inputGroup>
+            </div>
+        </div>
+    </p-fieldset>
+
+    <br />
+
+    <p-fieldset legend="Ubigeo" [toggleable]="true">
+        <div class="grid p-fluid mt-3">
+            <div class="col-12 sm:col-6">
+                <p-inputGroup>
+                    <p-inputGroupAddon> Departamento</p-inputGroupAddon>
+                    <p-dropdown
+                        [options]="departamentos"
+                        formControlName="iDptoId"
+                        [filter]="true"
+                        [showClear]="true"
+                        [appendTo]="'body'"
+                        [style]="{ flex: '1', width: '100%' }"
+                    />
+                </p-inputGroup>
+            </div>
+            <div class="col-12 sm:col-6">
+                <p-inputGroup>
+                    <p-inputGroupAddon> Provincia</p-inputGroupAddon>
+                    <p-dropdown
+                        [options]="provincias"
+                        formControlName="iPrvnId"
+                        [filter]="true"
+                        [showClear]="true"
+                        [appendTo]="'body'"
+                        [style]="{ flex: '1', width: '100%' }"
+                    />
+                </p-inputGroup>
+            </div>
+
+            <div class="col-12 sm:col-6">
+                <p-inputGroup>
+                    <p-inputGroupAddon> Distrito</p-inputGroupAddon>
+                    <p-dropdown
+                        [options]="distritos"
+                        formControlName="iDsttId"
+                        [filter]="true"
+                        [showClear]="true"
+                        [appendTo]="'body'"
+                        [style]="{ flex: '1', width: '100%' }"
+                    />
+                </p-inputGroup>
+            </div>
+            <div class="col-12 sm:col-6">
+                <p-inputGroup>
+                    <p-inputGroupAddon> Domicilio</p-inputGroupAddon>
+                    <input pInputText formControlName="cPersDomicilio" />
+                </p-inputGroup>
+            </div>
+
+            <div class="col-12 lg:col-4 md:col-6">
+                <p-inputGroup>
+                    <p-inputGroupAddon> Tipo de vía: </p-inputGroupAddon>
+                    <p-dropdown
+                        formControlName="iTipoViaId"
+                        [options]="tipos_vias"
+                        placeholder="Seleccione"
+                        [filter]="true"
+                        [showClear]="true"
+                        [appendTo]="'body'"
+                        [style]="{ flex: '1', width: '100%' }"
+                    ></p-dropdown>
+                </p-inputGroup>
+            </div>
+
+            <div class="col-12 lg:col-8 md:col-6">
+                <p-inputGroup>
+                    <p-inputGroupAddon> Nombre de la vía </p-inputGroupAddon>
+                    <input
+                        type="text"
+                        pInputText
+                        formControlName="cFichaDGDireccionNombreVia"
+                        maxlength="150"
+                    />
+                </p-inputGroup>
+            </div>
+
+            <div class="col-12 lg:col-4 md:col-6">
+                <p-inputGroup>
+                    <p-inputGroupAddon> Nro.Puerta </p-inputGroupAddon>
+                    <input
+                        type="text"
+                        pInputText
+                        formControlName="cFichaDGDireccionNroPuerta"
+                        maxlength="10"
+                    />
+                </p-inputGroup>
+            </div>
+
+            <div class="col-12 lg:col-4 md:col-6">
+                <p-inputGroup>
+                    <p-inputGroupAddon>Bloque</p-inputGroupAddon>
+                    <input
+                        type="text"
+                        pInputText
+                        formControlName="cFichaDGDireccionBlock"
+                        maxlength="3"
+                    />
+                </p-inputGroup>
+            </div>
+
+            <div class="col-12 lg:col-4 md:col-6">
+                <p-inputGroup>
+                    <p-inputGroupAddon>Interior</p-inputGroupAddon>
+                    <input
+                        type="text"
+                        pInputText
+                        formControlName="cFichaDGDirecionInterior"
+                        maxlength="3"
+                    />
+                </p-inputGroup>
+            </div>
+
+            <div class="col-12 lg:col-4 md:col-6">
+                <p-inputGroup>
+                    <p-inputGroupAddon>Piso</p-inputGroupAddon>
+                    <p-inputNumber
+                        formControlName="cFichaDGDirecionPiso"
+                        maxlength="3"
+                        useGrouping="false"
+                        showButtons="true"
+                    />
+                </p-inputGroup>
+            </div>
+
+            <div class="col-12 lg:col-4 md:col-6">
+                <p-inputGroup>
+                    <p-inputGroupAddon>Manzana</p-inputGroupAddon>
+                    <input
+                        type="text"
+                        pInputText
+                        formControlName="cFichaDGDireccionManzana"
+                        maxlength="10"
+                    />
+                </p-inputGroup>
+            </div>
+
+            <div class="col-12 lg:col-4 md:col-6">
+                <p-inputGroup>
+                    <p-inputGroupAddon>Lote</p-inputGroupAddon>
+                    <input
+                        type="text"
+                        pInputText
+                        formControlName="cFichaDGDireccionLote"
+                        maxlength="3"
+                    />
+                </p-inputGroup>
+            </div>
+
+            <div class="col-12 lg:col-4 md:col-6">
+                <p-inputGroup>
+                    <p-inputGroupAddon>Km</p-inputGroupAddon>
+                    <input
+                        type="text"
+                        pInputText
+                        formControlName="cFichaDGDireccionKm"
+                        maxlength="10"
+                    />
+                </p-inputGroup>
+            </div>
+
+            <div class="col-12 lg:col-8 md:col-6">
+                <p-inputGroup>
+                    <p-inputGroupAddon>Referencia</p-inputGroupAddon>
+                    <input
+                        type="text"
+                        pInputText
+                        formControlName="cFichaDGDireccionReferencia"
+                    />
+                </p-inputGroup>
+            </div>
+        </div>
+    </p-fieldset>
+
+    <br />
+
+    <p-fieldset legend="Adicionales" [toggleable]="true">
+        <div class="grid p-fluid mt-3">
+            <div class="col-12">
+                <p-inputGroup>
+                    <p-inputGroupAddon> Ocupación </p-inputGroupAddon>
+                    <p-dropdown
+                        [options]="ocupaciones"
+                        formControlName="iOcupacionId"
+                        [filter]="true"
+                        [showClear]="true"
+                        [appendTo]="'body'"
+                        [style]="{ flex: '1', width: '100%' }"
+                    />
+                </p-inputGroup>
+            </div>
+            <div class="col-12 sm:col-6">
+                <p-inputGroup>
+                    <p-inputGroupAddon> Instrucción </p-inputGroupAddon>
+                    <p-dropdown
+                        [options]="grados_instruccion"
+                        formControlName="iGradoInstId"
+                        [filter]="true"
+                        [showClear]="true"
+                        [appendTo]="'body'"
+                        [style]="{ flex: '1', width: '100%' }"
+                    />
+                </p-inputGroup>
+            </div>
+            <div class="col-12 sm:col-6">
+                <p-inputGroup>
+                    <p-inputGroupAddon> Tipo I.E. </p-inputGroupAddon>
+                    <p-dropdown
+                        [options]="tipos_ies"
+                        formControlName="iTipoIeEstId"
+                        [filter]="true"
+                        [showClear]="true"
+                        [appendTo]="'body'"
+                        [style]="{ flex: '1', width: '100%' }"
+                    />
+                </p-inputGroup>
+            </div>
+        </div>
+    </p-fieldset>
 </form>
+
+<br />
 
 <div class="flex justify-content-end">
     <p-button
-        label="Guardar"
-        (onClick)="guardarFarmiliar()"
+        label="Guardar y salir"
+        severity="success"
+        icon="pi pi-fw pi-save"
+        (onClick)="guardarFamiliar()"
         styleClass="p-button-primary"
         [hidden]="familiar_registrado"
     />
     <p-button
-        label="Actualizar"
-        (onClick)="actualizarFarmiliar()"
+        label="Actualizar y salir"
+        severity="success"
+        icon="pi pi-fw pi-save"
+        (onClick)="actualizarFamiliar()"
         styleClass="p-button-primary"
         [hidden]="!familiar_registrado"
     />

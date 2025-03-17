@@ -8,7 +8,8 @@
         #tabMenu
         [model]="items"
         scrollable="true"
-        (onChange)="handleTabChange($event)"
+        [(activeItem)]="activeItem"
+        (activeItemChange)="handleTabChange($event)"
     >
         <ng-template pTemplate="item" let-item>
             <ng-container *ngIf="item.route">

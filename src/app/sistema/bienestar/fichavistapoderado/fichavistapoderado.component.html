@@ -1,41 +1,80 @@
-<div>
-    <div class="card">
-        <h2 class="title">Ficha Socioeconómica</h2>
-        <div class="search-container">
-            <label for="bestudiante">Buscar Fichas Pasadas:</label>
-        </div>
-
-        <form>
-            <div class="form-container">
-                <div class="col-12 md:col-6 gap-3">
-                    <p-inputGroup>
-                        <p-inputGroupAddon>
-                            Apellido y Nombre
-                        </p-inputGroupAddon>
-                        <input type="text" pInputText />
-                    </p-inputGroup>
-                </div>
-                <div class="col-12 md:col-6 gap-3">
-                    <p-inputGroup>
-                        <p-inputGroupAddon> DNI / CEL: </p-inputGroupAddon>
-                        <input type="text" pInputText />
-                    </p-inputGroup>
-                </div>
-            </div>
-        </form>
-
-        <p-dataView #dv [rows]="5" filterBy="completoalumno">
-            <ng-template let-products pTemplate="listItem">
-                <app-table-primeng
-                    [columnas]="columnasTabla"
-                    [data]="estudiantes"
-                    (accionBtnItem)="accionBnt($event)"
-                    [actions]="accionesTabla"
-                    [showCaption]="false"
-                >
-                    <!--(accionBtnItem)="accionBnt($event)" -->
-                </app-table-primeng>
-            </ng-template>
-        </p-dataView>
+<p-panel>
+    <div class="header-container" style="margin-bottom: 20px">
+        <h3 class="m-0 text-white" style="font-size: 1.5rem; text-align: left">
+            Gestionar Fichas Socioeconómicas
+        </h3>
     </div>
-</div>
+
+    <div class="grid">
+        <div class="col-12 md:col-6">
+            <label for="Buscar_f" style="font-weight: bold"
+                >Buscar Fichas Pasadas:</label
+            >
+        </div>
+    </div>
+
+    <form [formGroup]="searchForm">
+        <!-- Contenedor principal con grid para control responsivo -->
+        <div class="grid p-fluid">
+            <!-- Input de Nombre -->
+            <div class="col-12 md:col-6">
+                <p-inputGroup
+                    class="w-full"
+                    [ngStyle]="{ display: 'flex', 'align-items': 'center' }"
+                >
+                    <p-inputGroupAddon
+                        [ngStyle]="{
+                            'white-space': 'nowrap',
+                            'min-width': 'auto',
+                            width: 'auto',
+                            padding: '0.5rem 1rem',
+                        }"
+                    >
+                        Apellido y Nombre
+                    </p-inputGroupAddon>
+                    <input
+                        type="text"
+                        pInputText
+                        formControlName="nombre"
+                        (input)="filtrarEstudiantes()"
+                        class="w-full"
+                    />
+                </p-inputGroup>
+            </div>
+
+            <!-- Input de DNI / CEL -->
+            <div class="col-12 md:col-6">
+                <p-inputGroup
+                    class="w-full"
+                    [ngStyle]="{ display: 'flex', 'align-items': 'center' }"
+                >
+                    <p-inputGroupAddon
+                        [ngStyle]="{
+                            'white-space': 'nowrap',
+                            'min-width': 'auto',
+                            width: 'auto',
+                            padding: '0.5rem 1rem',
+                        }"
+                    >
+                        DNI / CEL:
+                    </p-inputGroupAddon>
+                    <input
+                        type="text"
+                        pInputText
+                        formControlName="dni"
+                        (input)="filtrarEstudiantes()"
+                        class="w-full"
+                    />
+                </p-inputGroup>
+            </div>
+        </div>
+    </form>
+
+    <app-table-primeng
+        [columnas]="columnasTabla"
+        [data]="estudiantes"
+        (accionBtnItem)="accionBnt($event)"
+        [actions]="accionesTabla"
+        [showCaption]="false"
+    />
+</p-panel>

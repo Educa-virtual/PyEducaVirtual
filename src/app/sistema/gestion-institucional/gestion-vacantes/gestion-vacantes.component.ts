@@ -110,9 +110,6 @@ export class GestionVacantesComponent implements OnInit {
         },
     ]
 
-    //onDropdownChange: any;
-    //vacante: any;
-
     constructor(
         private snackBar: MessageService,
         private fb: FormBuilder,

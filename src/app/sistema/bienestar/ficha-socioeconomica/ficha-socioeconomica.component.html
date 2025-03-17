@@ -1,31 +1,80 @@
 <p-panel>
-    <ng-template pTemplate="header">
-        <div class="flex flex-column gap-2">
-            <h3 class="m-0 text-primary">Gestionar Fichas Socioeconómicas</h3>
-        </div>
-    </ng-template>
-    <ng-template pTemplate="icons">
-        <p-button
-            type="button"
-            (click)="nuevoIngreso()"
-            label="Nueva ficha"
-            icon="pi pi-plus"
-            severity="primary"
-        />
-    </ng-template>
+    <div class="header-container" style="margin-bottom: 20px">
+        <h3 class="m-0 text-white" style="font-size: 1.5rem; text-align: left">
+            Gestionar Fichas Socioeconómicas
+        </h3>
+    </div>
 
-    <form>
-        <div class="form-container">
-            <div class="col-12 md:col-6 gap-2">
-                <p-inputGroup>
-                    <p-inputGroupAddon> Apellido y Nombre </p-inputGroupAddon>
-                    <input type="text" pInputText />
+    <div class="grid d-flex align-items-center justify-content-between mb-3">
+        <div class="col-auto" style="margin-left: 10px">
+            <label for="Buscar_f" style="font-weight: bold"
+                >Buscar Estudiante:</label
+            >
+        </div>
+
+        <div class="col-auto">
+            <p-button
+                type="button"
+                (click)="nuevoIngreso()"
+                label="Nuevo Ingreso"
+                icon="pi pi-plus"
+                severity="warning"
+            />
+        </div>
+    </div>
+
+    <form [formGroup]="searchForm">
+        <!-- Contenedor principal con grid para control responsivo -->
+        <div class="grid p-fluid">
+            <!-- Input de Nombre -->
+            <div class="col-12 md:col-6">
+                <p-inputGroup
+                    class="w-full"
+                    [ngStyle]="{ display: 'flex', 'align-items': 'center' }"
+                >
+                    <p-inputGroupAddon
+                        [ngStyle]="{
+                            'white-space': 'nowrap',
+                            'min-width': 'auto',
+                            width: 'auto',
+                            padding: '0.5rem 1rem',
+                        }"
+                    >
+                        Apellido y Nombre
+                    </p-inputGroupAddon>
+                    <input
+                        type="text"
+                        pInputText
+                        formControlName="nombre"
+                        (input)="filtrarEstudiantes()"
+                        class="w-full"
+                    />
                 </p-inputGroup>
             </div>
-            <div class="col-12 md:col-6 gap-2">
-                <p-inputGroup>
-                    <p-inputGroupAddon> DNI / CEL: </p-inputGroupAddon>
-                    <input type="text" pInputText />
+
+            <!-- Input de DNI / CEL -->
+            <div class="col-12 md:col-6">
+                <p-inputGroup
+                    class="w-full"
+                    [ngStyle]="{ display: 'flex', 'align-items': 'center' }"
+                >
+                    <p-inputGroupAddon
+                        [ngStyle]="{
+                            'white-space': 'nowrap',
+                            'min-width': 'auto',
+                            width: 'auto',
+                            padding: '0.5rem 1rem',
+                        }"
+                    >
+                        DNI / CEL:
+                    </p-inputGroupAddon>
+                    <input
+                        type="text"
+                        pInputText
+                        formControlName="dni"
+                        (input)="filtrarEstudiantes()"
+                        class="w-full"
+                    />
                 </p-inputGroup>
             </div>
         </div>

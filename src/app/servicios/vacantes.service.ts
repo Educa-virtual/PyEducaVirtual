@@ -6,7 +6,7 @@ import { Observable } from 'rxjs'
     providedIn: 'root',
 })
 export class VacantesService {
-    private apiUrl = 'http://tu-backend-laravel/api/vacantes' // URL del backend
+    private apiUrl = 'http://localhost:4200/api/vacantes' // URL del backend
 
     constructor(private http: HttpClient) {}
 

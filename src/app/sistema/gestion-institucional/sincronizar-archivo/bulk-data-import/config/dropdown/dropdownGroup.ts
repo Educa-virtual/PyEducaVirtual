@@ -55,6 +55,7 @@ export const dropdownGroupConfig = [
                             localStorage.getItem('dremoPerfil') || '{}'
                         ).iCredId,
                     },
+                    typeSend: 'file',
                 },
             },
         ],
@@ -68,28 +69,42 @@ export const dropdownGroupConfig = [
         placeholder: 'Seleccione una colección',
         options: [
             {
-                label: 'Docente',
+                label: 'Docentes',
                 value: {
                     id: 1,
                     cellData: 'A2',
                     columns: docentePlatformTemplateColumns,
                     endPoint: '',
+                    template: 'plantilla-docentes',
+                    typeSend: 'json',
+                    params: {
+                        iSedeId: JSON.parse(
+                            localStorage.getItem('dremoPerfil') || '{}'
+                        ).iSedeId,
+                        iYAcadId: JSON.parse(
+                            localStorage.getItem('dremoiYAcadId') || 'null'
+                        ),
+                    },
                 },
             },
             {
-                label: 'Estudiante',
+                label: 'Estudiantes',
                 value: {
                     id: 2,
-                    cellData: 'A2',
+                    cellData: 'A3',
                     columns: estudiantePlatformTemplateColumns,
+                    template: 'plantilla-estudiantes',
+                    typeSend: 'json',
                 },
             },
             {
                 label: 'Ambientes',
                 value: {
                     id: 3,
-                    cellData: 'A2',
+                    cellData: 'A3',
                     columns: ambientesPlatformTemplateColumns,
+                    template: 'plantilla-ambientes',
+                    typeSend: 'json',
                 },
             },
         ],

@@ -55,7 +55,7 @@ export class BtnFileUploadComponent
     attachFileInput(file: File): void {
         if (!file) {
             this.fileInput.nativeElement.value = ''
-            this.fileView.nativeElement.value = ''
+            this.fileView.nativeElement.value = this.label
             this.isAttachedFile = false
         } else {
             this.fileView.nativeElement.value = file.name

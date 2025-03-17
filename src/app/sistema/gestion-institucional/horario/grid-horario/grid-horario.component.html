@@ -102,8 +102,12 @@
                                 <td>{{ bloque }}</td>
                                 <td *ngFor="let dia of dias">
                                     <div
-                                        *ngIf="horario[bloque]?.[dia] as evento"
+                                        *ngIf="
+                                            horario?.[bloque]?.[dia] as evento;
+                                            else noData
+                                        "
                                     >
+                                        <!-- Aquí puedes acceder a 'evento' -->
                                         <div class="evento">
                                             <strong>{{
                                                 evento.profesor
@@ -112,6 +116,19 @@
                                             {{ evento.asignatura }}
                                         </div>
                                     </div>
+
+                                    <ng-template #noData>
+                                        <p-button
+                                            icon="pi pi-user"
+                                            [rounded]="true"
+                                            [text]="true"
+                                            severity="info"
+                                            (click)="
+                                                addBloqueAsignatura(bloque, dia)
+                                            "
+                                        />
+                                        <!-- Contenido alternativo si no hay datos -->
+                                    </ng-template>
                                 </td>
                             </tr>
                         </tbody>

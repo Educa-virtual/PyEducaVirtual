@@ -357,6 +357,16 @@ export class ContenidosComponent implements OnInit {
             case 'obtenerComunicadosPersona':
                 // item es el array devuelto por el SP
                 this.comunicados = item.map((c: any) => {
+                    const foundCurso = this.cursos.find(
+                        (cs: any) => cs.value == c.iCursoId
+                    )
+                    const foundSeccion = this.secciones.find(
+                        (ss: any) => ss.value == c.iSeccionId
+                    )
+                    const foundGrado = this.grados.find(
+                        (gg: any) => gg.value == c.iGradoId
+                    )
+
                     return {
                         id: c.iComunicadoId,
                         titulo: c.cComunicadoTitulo,
@@ -398,6 +408,9 @@ export class ContenidosComponent implements OnInit {
                         seccion: c.iSeccionId,
                         grado: c.iGradoId,
                         // nombre del destinatario
+                        cursoName: foundCurso ? foundCurso.label : null,
+                        seccionName: foundSeccion ? foundSeccion.label : null,
+                        gradoName: foundGrado ? foundGrado.label : null,
                         destinatario: c.NombreUsuario || '',
                         collapsed: true,
                     }

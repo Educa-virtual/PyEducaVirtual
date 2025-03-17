@@ -74,8 +74,8 @@
                 <app-tab-panel title="Resultado de la importación">
                     @if (columns) {
                         <app-table-primeng
-                            [columnas]="columns"
-                            [data]="data"
+                            [columnas]="responseColumnsImport"
+                            [data]="responseDataImport"
                             [showCaption]="true"
                             [showSortIcon]="false"
                         ></app-table-primeng>

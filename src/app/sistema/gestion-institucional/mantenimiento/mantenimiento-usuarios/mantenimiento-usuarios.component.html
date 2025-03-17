@@ -6,6 +6,54 @@
                 [actions]="accionesPrincipal"
                 (accionBtnItem)="accionBtnItemTable($event)"
             >
+                <form [formGroup]="form_search">
+                    <div class="field grid mt-2">
+                        <div class="col-6 md:col-6">
+                            <span class="p-float-label">
+                                <p-dropdown
+                                    [style]="{ width: '100%' }"
+                                    [options]="search_perfiles"
+                                    [filter]="false"
+                                    filterBy="cPerfilNombre"
+                                    optionLabel="cPerfilNombre"
+                                    optionValue="iPerfilId"
+                                    formControlName="iPerfilId"
+                                />
+                                <label for="iPerfilId">Perfil</label>
+                            </span>
+                        </div>
+                        <div class="col-3">
+                            <button
+                                pButton
+                                [label]="'Filtro avanzado'"
+                                icon="pi pi-filter"
+                                size="small"
+                                class="p-button-success"
+                                (click)="
+                                    btnItem(
+                                        'searh_perfil',
+                                        'Desea filtrar por perfil del sistema'
+                                    )
+                                "
+                            ></button>
+                        </div>
+                        <div class="col-3">
+                            <button
+                                pButton
+                                [label]="'Mostrar todo'"
+                                icon="pi pi-search"
+                                size="small"
+                                class="p-button-primary"
+                                (click)="
+                                    btnItem(
+                                        'searh_perfil_all',
+                                        'Desea cargar todos los accesos'
+                                    )
+                                "
+                            ></button>
+                        </div>
+                    </div>
+                </form>
                 <div class="card">
                     <app-table-primeng
                         [columnas]="columns"
@@ -23,12 +71,60 @@
             </app-container-page>
         </ng-container>
         <ng-template #sinSeleccion>
-            <div class="card">
-                <app-container-page
-                    title="Accesos de usuario IE"
-                    [actions]="[]"
-                    (accionBtnItem)="accionBtnItemTable($event)"
-                >
+            <app-container-page
+                title="Accesos de usuario IE"
+                [actions]="[]"
+                (accionBtnItem)="accionBtnItemTable($event)"
+            >
+                <form [formGroup]="form_search">
+                    <div class="field grid mt-2">
+                        <div class="col-6 md:col-6">
+                            <span class="p-float-label">
+                                <p-dropdown
+                                    [style]="{ width: '100%' }"
+                                    [options]="search_perfiles"
+                                    [filter]="false"
+                                    filterBy="cPerfilNombre"
+                                    optionLabel="cPerfilNombre"
+                                    optionValue="iPerfilId"
+                                    formControlName="iPerfilId"
+                                />
+                                <label for="iPerfilId">Perfil</label>
+                            </span>
+                        </div>
+                        <div class="col-3">
+                            <button
+                                pButton
+                                [label]="'Filtro avanzado'"
+                                icon="pi pi-filter"
+                                size="small"
+                                class="p-button-success"
+                                (click)="
+                                    btnItem(
+                                        'searh_perfil',
+                                        'Desea filtrar por perfil del sistema'
+                                    )
+                                "
+                            ></button>
+                        </div>
+                        <div class="col-3">
+                            <button
+                                pButton
+                                [label]="'Mostrar todo'"
+                                icon="pi pi-search"
+                                size="small"
+                                class="p-button-primary"
+                                (click)="
+                                    btnItem(
+                                        'searh_perfil_all',
+                                        'Desea cargar todos los accesos'
+                                    )
+                                "
+                            ></button>
+                        </div>
+                    </div>
+                </form>
+                <div class="card">
                     <app-table-primeng
                         [columnas]="columns"
                         [showCaption]="true"
@@ -42,8 +138,8 @@
                     >
                         <!-- <ng-container slot="caption-content"> </ng-container> -->
                     </app-table-primeng>
-                </app-container-page>
-            </div>
+                </div>
+            </app-container-page>
         </ng-template>
     </div>
     <div class="col-12 md:col-4">

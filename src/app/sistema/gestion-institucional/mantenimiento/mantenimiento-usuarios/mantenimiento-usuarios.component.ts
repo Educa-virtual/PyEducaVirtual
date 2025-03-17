@@ -13,16 +13,26 @@ import {
     IActionContainer,
 } from '@/app/shared/container-page/container-page.component'
 import { ConfirmationModalService } from '@/app/shared/confirm-modal/confirmation-modal.service'
+import { NgIcon, NgIconComponent, provideIcons } from '@ng-icons/core'
+import { mat10k } from '@ng-icons/material-icons/baseline'
 
 @Component({
     selector: 'app-mantenimiento-usuarios',
     standalone: true,
-    imports: [PrimengModule, TablePrimengComponent, ContainerPageComponent],
+    imports: [
+        PrimengModule,
+        TablePrimengComponent,
+        ContainerPageComponent,
+        NgIcon,
+        NgIconComponent,
+    ],
     templateUrl: './mantenimiento-usuarios.component.html',
     styleUrl: './mantenimiento-usuarios.component.scss',
+    viewProviders: [provideIcons({ mat10k })],
 })
 export class MantenimientoUsuariosComponent implements OnInit {
     form_usuario: FormGroup // formulario para gestionar mantenimiento-usuarios
+    form_search: FormGroup // formulario para buscar mantenimiento-usuarios
     iSedeId: number
     iYAcadId: number
     lista_accesos: any[] = [] // lista de accesos
@@ -36,6 +46,7 @@ export class MantenimientoUsuariosComponent implements OnInit {
     //Informacion de usuario
     usuario: any //Informacion del usuario seleccionado
     perfil_usuario: any //Informacion del perfil seleccionado
+    perfil: number = 0
 
     private _confirmService = inject(ConfirmationModalService)
     constructor(
@@ -50,6 +61,10 @@ export class MantenimientoUsuariosComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.form_search = this.fb.group({
+            iPerfilId: ['', [Validators.required]],
+        })
+
         this.form_usuario = this.fb.group({
             iPerfilId: ['', [Validators.required]],
             cContrasena: ['', [Validators.required]],
@@ -57,16 +72,19 @@ export class MantenimientoUsuariosComponent implements OnInit {
         this.form_perfil = this.fb.group({
             iPerfilId: ['', [Validators.required]],
         })
-        this.getAccesosSedes()
+        this.getAccesosSedes(0)
         this.getPerfilSedes()
 
         console.log(this.selectedItems, 'selectedItems')
     }
-    getAccesosSedes() {
+    getAccesosSedes(option: number) {
         //obtiene los accesos de la sede
+        this.perfil = option
+
         this.query
             .obtenerCredencialesSede({
                 iSedeId: this.iSedeId,
+                option: option,
             })
             .subscribe({
                 next: (data: any) => {
@@ -206,7 +224,7 @@ export class MantenimientoUsuariosComponent implements OnInit {
         console.log(accion, 'accion_btn', mensaje)
 
         this._confirmService.openConfiSave({
-            header: 'Advertencia de procesamiento',
+            header: 'Advertencia de procesamiento 1',
             message: mensaje,
             icon: 'pi pi-exclamation-triangle',
             accept: () => {
@@ -241,6 +259,43 @@ export class MantenimientoUsuariosComponent implements OnInit {
                     this.eliminar_perfiles(
                         this.selectedItemsPerfil['iPerfilId']
                     )
+                }
+                if (accion === 'searh_perfil') {
+                    const id = this.form_search.value.iPerfilId
+
+                    switch (id) {
+                        case '4':
+                            'Director IE'
+                            this.getAccesosSedes(4)
+                            break
+                        case '7':
+                            'Docente'
+                            this.getAccesosSedes(7)
+                            break
+                        case '80':
+                            'Estudiante'
+                            this.getAccesosSedes(80)
+                            break
+                        case '90':
+                            'Apoderado'
+                            this.getAccesosSedes(90)
+                            break
+                        case '100':
+                            'Asistencia social'
+                            this.getAccesosSedes(100)
+                            break
+                        case '215':
+                            'Tutor de aula'
+                            this.getAccesosSedes(215)
+                            break
+                        default:
+                            'all'
+                            this.getAccesosSedes(0)
+                            break
+                    }
+                }
+                if (accion === 'searh_perfil_all') {
+                    this.getAccesosSedes(0)
                 }
             },
             reject: () => {
@@ -283,7 +338,7 @@ export class MantenimientoUsuariosComponent implements OnInit {
                         detail: 'Proceso exitoso',
                     })
                     this.selectedItems = []
-                    this.getAccesosSedes()
+                    this.getAccesosSedes(this.perfil)
                 },
             })
     }
@@ -493,3 +548,19 @@ export class MantenimientoUsuariosComponent implements OnInit {
         },
     ] // iCredEntId  iCredEntEstado
 }
+
+/**
+ *
+ * bootstrapPersonVcardFill
+ * bootstrapPersonSquare Director
+ * bootstrapPersonVideo
+ * bootstrapPersonVcard personal
+ * bootstrapPersonWorkspace tutor
+ * bootstrapPersonVideo2  asistenta social
+ * bootstrapPersonVideo3 docemte
+ *
+ * bootstrapPersonBadgeFill --apoderado
+ * bootstrapPersonBadge -- estudiante
+ *
+ * bootstrapPeople all
+ */

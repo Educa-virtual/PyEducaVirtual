@@ -31,40 +31,79 @@
 
         <p-panel header="Aplicar Filtros">
             <div class="grid p-fluid">
-                <div class="col-3">
+                <div class="col-12 sm:col-5">
                     <p-inputGroup>
                         <p-inputGroupAddon>Nivel *</p-inputGroupAddon>
                         <p-dropdown
                             [options]="nivel_tipos"
+                            [showClear]="true"
                             formControlName="iNivelTipoId"
                             placeholder="Seleccione un nivel"
                             styleClass="w-full"
                         ></p-dropdown>
                     </p-inputGroup>
                 </div>
-                <div class="col-3">
+                <div class="col-12 sm:col-5">
                     <p-inputGroup>
                         <p-inputGroupAddon>Grado *</p-inputGroupAddon>
                         <p-dropdown
                             [options]="nivel_grados"
+                            [showClear]="true"
                             formControlName="iNivelGradoId"
                             placeholder="Seleccione un grado"
                             styleClass="w-full"
                         ></p-dropdown>
                     </p-inputGroup>
                 </div>
-                <div class="col-3">
+                <div class="col-12 sm:col-5">
+                    <p-inputGroup>
+                        <p-inputGroupAddon>Distrito</p-inputGroupAddon>
+                        <p-dropdown
+                            [options]="distritos"
+                            [showClear]="true"
+                            formControlName="iDsttId"
+                            placeholder="Seleccione un distrito"
+                            styleClass="w-full"
+                        ></p-dropdown>
+                    </p-inputGroup>
+                </div>
+                <div class="col-12 sm:col-5">
+                    <p-inputGroup>
+                        <p-inputGroupAddon>I. E.</p-inputGroupAddon>
+                        <p-dropdown
+                            [options]="ies"
+                            [showClear]="true"
+                            formControlName="iIieeId"
+                            placeholder="Seleccione una Institución Educativa"
+                            styleClass="w-full"
+                        ></p-dropdown>
+                    </p-inputGroup>
+                </div>
+                <div class="col-12 sm:col-5">
                     <p-inputGroup>
                         <p-inputGroupAddon>Sección</p-inputGroupAddon>
                         <p-dropdown
                             [options]="secciones"
+                            [showClear]="true"
                             formControlName="iSeccionId"
                             placeholder="Seleccione una sección"
                             styleClass="w-full"
                         ></p-dropdown>
                     </p-inputGroup>
                 </div>
-                <div class="col-3">
+                <div class="col-12 sm:col-5">
+                    <p-inputGroup>
+                        <p-inputGroupAddon>Sexo</p-inputGroupAddon>
+                        <p-dropdown
+                            [options]="sexos"
+                            [showClear]="true"
+                            formControlName="cPersSexo"
+                            placeholder="Seleccione un sexo"
+                            styleClass="w-full"
+                        ></p-dropdown>
+                    </p-inputGroup>
+                </div>
+                <div class="col-12 sm:col-2">
                     <p-button
                         pRipple
                         severity="success"
@@ -86,9 +125,11 @@
 
         <br />
 
-        <div class="flex justify-content-center" [hidden]="visible_chart">
-            <p-chart type="doughnut" [data]="data" [options]="options" />
-        </div>
+        @if (hay_resultados) {
+            <div class="flex justify-content-center">
+                <p-chart type="doughnut" [data]="data" [options]="options" />
+            </div>
+        }
 
         <div>
             <p-accordion [activeIndex]="0">
@@ -107,10 +148,17 @@
                     />
                 </p-accordionTab>
                 <p-accordionTab header="Estadisticas Avanzadas">
-                    <p>
-                        Sed ut perspiciatis unde omnis iste natus error sit
-                        voluptatem accusantium...
-                    </p>
+                    <app-table-primeng
+                        [columnas]="columns_resumen"
+                        [showCaption]="true"
+                        [data]="resumen"
+                        [showPaginator]="true"
+                        sortMode="single"
+                        sortField="iPreguntaId"
+                        [sortOrder]="1"
+                        [(selectedRowData)]="selectedItems"
+                        [actions]="actions"
+                    />
                 </p-accordionTab>
                 <p-accordionTab header="Matris de Evaluación">
                     <p>At vero eos et accusamus et iusto odio dignissimos...</p>

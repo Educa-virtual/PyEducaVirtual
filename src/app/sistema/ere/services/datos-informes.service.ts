@@ -11,6 +11,17 @@ export class DatosInformesService {
     constructor(private http: HttpClient) {}
 
     lista: any[] = []
+    sexos: Array<object>
+
+    getSexos() {
+        if (!this.sexos) {
+            this.sexos = [
+                { label: 'MASCULINO', value: 'M' },
+                { label: 'FEMENINO', value: 'F' },
+            ]
+        }
+        return this.sexos
+    }
 
     obtenerEvaluacionesCursosIes(data: any) {
         return this.http.post(

@@ -28,16 +28,20 @@ export class InformesEreComponent implements OnInit {
     data: any
     options: any
     resultados: Array<object>
+    resumen: Array<object>
     niveles_nombres: Array<any>
     niveles_resumen: Array<any>
-    visible_chart: boolean = false
+    hay_resultados: boolean = false
 
     evaluaciones_cursos_ies: Array<object>
     evaluaciones: Array<object>
     cursos: Array<object>
     nivel_tipos: Array<object>
     nivel_grados: Array<object>
+    distritos: Array<object>
+    ies: Array<object>
     secciones: Array<object>
+    sexos: Array<object>
 
     private _MessageService = inject(MessageService)
 
@@ -58,17 +62,20 @@ export class InformesEreComponent implements OnInit {
                     this.constantesService.iCredId,
                     Validators.required,
                 ],
-                iIieeId: this.constantesService.iIieeId,
                 iEvaluacionId: [null, Validators.required],
                 iCursoId: [null, Validators.required],
                 iNivelTipoId: [null, Validators.required],
                 iNivelGradoId: [null, Validators.required],
+                iDsttId: [null],
+                iIieeId: this.constantesService.iIieeId,
                 iSeccionId: [null],
+                cPersSexo: [null],
             })
         } catch (error) {
             console.log(error, 'error de formulario')
         }
 
+        this.sexos = this.datosInformes.getSexos()
         this.datosInformes
             .obtenerEvaluacionesCursosIes(this.formFiltros.value)
             .subscribe({
@@ -93,11 +100,21 @@ export class InformesEreComponent implements OnInit {
             .get('iEvaluacionId')
             .valueChanges.subscribe((value) => {
                 this.cursos = []
+                this.distritos = []
                 this.formFiltros.get('iCursoId')?.setValue(null)
+                this.formFiltros.get('iDsttId')?.setValue(null)
                 if (value) {
                     this.filterCursos(value)
+                    this.filterDistritos(value)
                 }
             })
+        this.formFiltros.get('iDsttId').valueChanges.subscribe((value) => {
+            this.ies = []
+            this.formFiltros.get('iIieeId')?.setValue(null)
+            if (value) {
+                this.filterIes(value)
+            }
+        })
         this.formFiltros.get('iNivelTipoId').valueChanges.subscribe((value) => {
             this.nivel_grados = []
             this.secciones = []
@@ -214,6 +231,54 @@ export class InformesEreComponent implements OnInit {
         console.log(this.nivel_grados, 'nivel grados')
     }
 
+    filterDistritos(iEvaluacionId: any) {
+        this.distritos = this.evaluaciones_cursos_ies.reduce(
+            (prev: any, current: any) => {
+                const x = prev.find(
+                    (item) =>
+                        item.value === current.iDsttId &&
+                        item.label === current.cDsttNombre
+                )
+                if (!x && current.iEvaluacionId === iEvaluacionId) {
+                    return prev.concat([
+                        {
+                            value: current.iDsttId,
+                            label: current.cDsttNombre,
+                        },
+                    ])
+                } else {
+                    return prev
+                }
+            },
+            []
+        )
+        console.log(this.distritos, 'distritos')
+    }
+
+    filterIes(iDsstId: any) {
+        this.ies = this.evaluaciones_cursos_ies.reduce(
+            (prev: any, current: any) => {
+                const x = prev.find(
+                    (item) =>
+                        item.value === current.iIieeId &&
+                        item.label === current.cIieeNombre
+                )
+                if (!x && current.iDsstId === iDsstId) {
+                    return prev.concat([
+                        {
+                            value: current.iIieeId,
+                            label: current.cIieeNombre,
+                        },
+                    ])
+                } else {
+                    return prev
+                }
+            },
+            []
+        )
+        console.log(this.distritos, 'distritos')
+    }
+
     filterSecciones(iNivelGradoId: any) {
         this.secciones = this.evaluaciones_cursos_ies.reduce(
             (prev: any, current: any) => {
@@ -256,8 +321,10 @@ export class InformesEreComponent implements OnInit {
             .obtenerInformeResumen(this.formFiltros.value)
             .subscribe({
                 next: (data: any) => {
-                    this.resultados = data.data
+                    this.resultados = data.data[0]
+                    this.resumen = data.data[1]
                     this.mostrarEstadisticaNivel()
+                    this.mostrarResumen()
                 },
                 error: (error) => {
                     console.error('Error consultando resultados:', error)
@@ -275,14 +342,14 @@ export class InformesEreComponent implements OnInit {
 
     mostrarEstadisticaNivel() {
         if (this.resultados.length == 0) {
-            this.visible_chart = false
+            this.hay_resultados = false
             return
         }
 
         const documentStyle = getComputedStyle(document.documentElement)
         const textColor = documentStyle.getPropertyValue('--text-color')
 
-        this.visible_chart = true
+        this.hay_resultados = true
 
         this.niveles_nombres = this.resultados.reduce(
             (prev: any, current: any) => {
@@ -345,6 +412,12 @@ export class InformesEreComponent implements OnInit {
         }
     }
 
+    mostrarResumen() {
+        if (this.resumen.length == 0) {
+            return
+        }
+    }
+
     accionBtnItemTable({ accion, item }) {
         console.log(accion, item)
     }
@@ -391,6 +464,81 @@ export class InformesEreComponent implements OnInit {
             type: 'text',
             width: '10rem',
             field: 'estudiante',
+            header: 'Estudiante',
+            text_header: 'center',
+            text: 'left',
+        },
+        {
+            type: 'text',
+            width: '3rem',
+            field: 'aciertos',
+            header: 'Aciertos',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'text',
+            width: '3rem',
+            field: 'desaciertos',
+            header: 'Desaciertos',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'text',
+            width: '3rem',
+            field: 'blancos',
+            header: 'Blancos',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'text',
+            width: '5rem',
+            field: 'nivel_alcanzado',
+            header: 'Nivel',
+            text_header: 'center',
+            text: 'center',
+        },
+    ]
+
+    columns_resumen = [
+        {
+            type: 'item',
+            width: '1rem',
+            field: 'item',
+            header: '#',
+            text_header: 'left',
+            text: 'left',
+        },
+        {
+            type: 'text',
+            width: '5rem',
+            field: 'aciertos',
+            header: 'Aciertos',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'text',
+            width: '3rem',
+            field: 'desaciertos',
+            header: 'Desaciertos',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'text',
+            width: '3rem',
+            field: 'blancos',
+            header: 'Blancos',
+            text_header: 'center',
+            text: 'center',
+        },
+        {
+            type: 'text',
+            width: '10rem',
+            field: 'total',
             header: 'Estudiante',
             text_header: 'center',
             text: 'center',

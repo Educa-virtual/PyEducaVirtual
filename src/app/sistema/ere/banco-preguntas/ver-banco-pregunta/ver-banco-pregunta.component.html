@@ -1,7 +1,5 @@
 <div *ngIf="encab" [ngClass]="{ 'disabled-dialog': isDisabled }">
     <h3>Preguntas</h3>
-
-    <!-- Condición correcta -->
     <ng-container *ngIf="iPreguntaId && !iEncabPregId; else multipleCase">
         <!-- Pregunta Simple -->
         <div class="row">

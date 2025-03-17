@@ -69,13 +69,11 @@ export class VerBancoPreguntaComponent implements OnInit, OnChanges {
             'image table',
         height: 400,
         editable_root: true,
-        // readonly: 1, // Otra forma de deshabilitar edición si deseas
     }
     multipleCase: TemplateRef<NgIfContext<string>>
     simpleCase: TemplateRef<NgIfContext<string>>
 
     ngOnInit(): void {
-        // Aquí no cargamos nada; la carga se hace en ngOnChanges cuando detecte iPreguntaId o iEncabPregId
         console.log('Componente Hijo - OnInit')
     }
 
@@ -91,14 +89,12 @@ export class VerBancoPreguntaComponent implements OnInit, OnChanges {
                 '=>',
                 nuevoId
             )
-
-            // Llamamos al método de carga para pregunta simple
             this.cargarPreguntaSimple(nuevoId)
         }
 
         console.log('LLego')
 
-        // 2. Detecta si cambió iEncabPregId (PREGUNTA MÚLTIPLE)
+        // Detecta si cambió iEncabPregId (PREGUNTA MÚLTIPLE)
         if (changes['iEncabPregId'] && changes['iEncabPregId'].currentValue) {
             const nuevoEncabId = changes['iEncabPregId'].currentValue
             console.log(
@@ -136,7 +132,6 @@ export class VerBancoPreguntaComponent implements OnInit, OnChanges {
             })
     }
 
-    // Carga PREGUNTA MÚLTIPLE
     // Carga PREGUNTA MÚLTIPLE
     private cargarPreguntaMultiple(encabPregId: string): void {
         if (!encabPregId) {

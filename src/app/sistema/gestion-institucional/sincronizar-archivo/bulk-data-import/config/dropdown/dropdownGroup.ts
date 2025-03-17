@@ -6,6 +6,7 @@ import {
     ambientesPlatformTemplateColumns,
     docentePlatformTemplateColumns,
     estudiantePlatformTemplateColumns,
+    resultAmbientesPlatformTemplateColumns,
 } from '../table/bulk-table-columns-platform'
 
 export const dropdownGroupConfig = [
@@ -55,6 +56,10 @@ export const dropdownGroupConfig = [
                             localStorage.getItem('dremoPerfil') || '{}'
                         ).iCredId,
                     },
+                    typeSend: 'file',
+                    response: (response: any) => {
+                        return response.data
+                    },
                 },
             },
         ],
@@ -68,28 +73,51 @@ export const dropdownGroupConfig = [
         placeholder: 'Seleccione una colección',
         options: [
             {
-                label: 'Docente',
+                label: 'Docentes',
                 value: {
                     id: 1,
                     cellData: 'A2',
                     columns: docentePlatformTemplateColumns,
-                    endPoint: '',
+                    columnsResultImport: resultAmbientesPlatformTemplateColumns,
+                    importEndPoint:
+                        'acad/gestionInstitucional/importarDocente_IE',
+                    template: 'plantilla-docentes',
+                    typeSend: 'json',
+                    params: {
+                        iSedeId: JSON.parse(
+                            localStorage.getItem('dremoPerfil') || '{}'
+                        ).iSedeId,
+                        iYAcadId: JSON.parse(
+                            localStorage.getItem('dremoiYAcadId') || 'null'
+                        ),
+                    },
+                    response: (response: any) => {
+                        return response.procesados.map((data) => ({
+                            ...data.item,
+                            nombreCompleto: `${data.item.cPersPaterno} ${data.item.cPersMaterno} ${data.item.cPersNombre}`,
+                            ...data.data[0],
+                        }))
+                    },
                 },
             },
             {
-                label: 'Estudiante',
+                label: 'Estudiantes',
                 value: {
                     id: 2,
-                    cellData: 'A2',
+                    cellData: 'A3',
                     columns: estudiantePlatformTemplateColumns,
+                    template: 'plantilla-estudiantes',
+                    typeSend: 'json',
                 },
             },
             {
                 label: 'Ambientes',
                 value: {
                     id: 3,
-                    cellData: 'A2',
+                    cellData: 'A3',
                     columns: ambientesPlatformTemplateColumns,
+                    template: 'plantilla-ambientes',
+                    typeSend: 'json',
                 },
             },
         ],

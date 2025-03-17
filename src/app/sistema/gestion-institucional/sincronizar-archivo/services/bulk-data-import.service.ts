@@ -28,11 +28,11 @@ export class BulkDataImportService {
 
     loadCollectionTemplate() {}
 
-    downloadCollectionTemplate(filename: { [key: string]: string }): void {
+    downloadCollectionTemplate(file: { [key: string]: string }): void {
         console.log('filename')
-        console.log(filename)
+        console.log(file)
 
-        if (!filename['name']) {
+        if (!file['name']) {
             return
         }
 
@@ -40,7 +40,7 @@ export class BulkDataImportService {
             this.http
                 .get('http://localhost:8000/api/file/import', {
                     params: {
-                        fileName: filename['name'],
+                        template: file['name'],
                     },
                     responseType: 'blob',
                 })
@@ -51,7 +51,7 @@ export class BulkDataImportService {
 
                     const a = document.createElement('a')
                     a.href = url
-                    a.download = filename['name']
+                    a.download = file['name']
                     a.target = '_self'
                     a.click()
 
@@ -77,15 +77,23 @@ export class BulkDataImportService {
     }
 
     importDataCollection(file, data: any): Observable<any> {
-        console.log(data)
+        console.log('file')
+        console.log(file)
 
-        const formData = objectToFormData({ file, ...this.params })
-
-        return this.http.post(
-            `http://localhost:8000/api/${this.importEndPoint}`,
-            formData
-        )
+        if (file) {
+            const formData = objectToFormData({ file, ...this.params })
+            return this.http.post(
+                `http://localhost:8000/api/${this.importEndPoint}`,
+                formData
+            )
+        } else {
+            return this.http.post(
+                `http://localhost:8000/api/${this.importEndPoint}`,
+                {
+                    data: data,
+                    ...this.params,
+                }
+            )
+        }
     }
-
-    filteredData() {}
 }

@@ -28,7 +28,7 @@
                         label="Descargar plantilla"
                         icon="pi pi-download"
                         [loading]="importLoad"
-                        (onClick)="validaImportData()"
+                        (onClick)="downloadTemplate()"
                         [disabled]="isDisabled.downloadTemplate"
                     />
                 </div>
@@ -45,7 +45,8 @@
                             <span>Archivo de origen:</span>
                             <app-btn-file-upload
                                 accept=".xlsx"
-                                (fileChange)="loadCollectionTemplate($event)"
+                                (fileChange)="uploadFile($event)"
+                                [(ngModel)]="file"
                             />
                         </div>
 
@@ -61,7 +62,7 @@
                         </div>
                     </section>
                 </div>
-                @if (columns) {
+                @if (collection.columns) {
                     <app-table-primeng
                         [columnas]="columns"
                         [data]="data"
@@ -74,7 +75,7 @@
                 <app-tab-panel title="Resultado de la importación">
                     @if (columns) {
                         <app-table-primeng
-                            [columnas]="responseColumnsImport"
+                            [columnas]="collection.columnsResultImport"
                             [data]="responseDataImport"
                             [showCaption]="true"
                             [showSortIcon]="false"

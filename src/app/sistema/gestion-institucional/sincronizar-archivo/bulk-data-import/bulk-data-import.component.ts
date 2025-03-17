@@ -56,17 +56,15 @@ export class BulkDataImportComponent implements OnInit {
         downloadTemplate: false,
     }
 
+    file
     dropdownConfigs = dropdownGroupConfig
+    collection
 
     typeCollectionForm: FormGroup
 
     columns: IColumn[]
     data
     responseDataImport
-    responseColumnsImport
-    groupRowsBy = 'cPersDocumento'
-    import_data
-
     importLoad: boolean = false
 
     constructor(
@@ -85,10 +83,6 @@ export class BulkDataImportComponent implements OnInit {
         })
     }
 
-    ieData
-
-    file
-
     ngOnInit(): void {
         this.dropdownConfigs.forEach((config) => {
             if (config.dependency) {
@@ -99,11 +93,8 @@ export class BulkDataImportComponent implements OnInit {
                         // Al cambiar el valor del dropdown padre, reinicia el valor del hijo
                         const currentControlName = `${config.label}${config.id}`
                         this.typeCollectionForm.get(currentControlName)?.reset()
-
                         ;(this.bulkDataImport.importEndPoint = ''),
                             (this.bulkDataImport.params = {})
-                        this.data = undefined
-                        this.columns = undefined
 
                         this.clearDescendants(config.id)
                     })
@@ -113,8 +104,12 @@ export class BulkDataImportComponent implements OnInit {
         this.typeCollectionForm.valueChanges.subscribe((value) => {
             console.log('value')
             console.log(value)
+            this.data = undefined
+            this.columns = undefined
+            this.file = undefined
             this.isDisabled.downloadTemplate =
                 !this.isSelectedTypeCollection(value)
+            this.loadCollectionTemplate()
         })
     }
 
@@ -155,23 +150,38 @@ export class BulkDataImportComponent implements OnInit {
         )
     }
 
-    loadCollectionTemplate(file: any) {
-        const [, collection] = Object.entries(
+    loadCollectionTemplate() {
+        const foundEntry: [any, any] = Object.entries(
             this.typeCollectionForm.value
         ).find(
             ([key, value]) =>
                 key.startsWith('Tipo de la colección:') && value !== null
         )
 
-        this.bulkDataImport.importEndPoint = collection['importEndPoint']
-        this.bulkDataImport.params = collection['params']
+        if (!foundEntry) {
+            return
+        }
 
-        this.columns = collection['columns']
-        this.responseColumnsImport = collection['columnsResultImport']
+        const [, collection] = foundEntry
+
+        this.collection = collection
+
+        this.columns = this.collection.columns
+
+        this.bulkDataImport.importEndPoint = this.collection.importEndPoint
+        this.bulkDataImport.params = this.collection.params
+    }
+
+    uploadFile(file: any) {
+        if (!file) return
 
         const reader = new FileReader()
 
-        this.file = file
+        if (this.collection.typeSend === 'file') {
+            this.file = file
+        } else {
+            this.file = undefined
+        }
 
         reader.onload = (e: ProgressEvent<FileReader>) => {
             const data = new Uint8Array(e.target?.result as ArrayBuffer)
@@ -181,31 +191,74 @@ export class BulkDataImportComponent implements OnInit {
             const firstSheetName = workbook.SheetNames[0]
             const worksheet = workbook.Sheets[firstSheetName]
 
-            const row = XLSX.utils.decode_cell(collection['cellData']).r
+            const row = XLSX.utils.decode_cell(this.collection.cellData).r
 
-            const headers = this.columns.map((column) => column.field)
+            const headers = this.collection.columns.map(
+                (column) => column.field
+            )
 
             const excelData: any = XLSX.utils.sheet_to_json(worksheet, {
                 header: 1,
                 range: row,
             })
 
-            const cleanColumnsEmpty = excelData.map((row) =>
-                row.filter((cell) => cell != null)
-            )
+            console.log('this.typeCollectionForm.value')
+            console.log(this.typeCollectionForm.value)
 
-            this.data = cleanColumnsEmpty.map((row) =>
-                Object.fromEntries(
-                    headers.map((key, index) => [key, row[index] ?? null])
-                )
-            )
+            switch (
+                this.typeCollectionForm.value['Origen de la colección:1'].id
+            ) {
+                case 1:
+                    const cleanColumnsEmpty = excelData.map((row) =>
+                        row.filter((cell) => cell != null)
+                    )
+
+                    this.data = cleanColumnsEmpty.map((row) =>
+                        Object.fromEntries(
+                            headers.map((key, index) => [
+                                key,
+                                row[index] ?? null,
+                            ])
+                        )
+                    )
+                    break
+                case 2:
+                    this.data = excelData.map((row) =>
+                        Object.fromEntries(
+                            headers.map((key, index) => [
+                                key,
+                                row[index] ?? null,
+                            ])
+                        )
+                    )
+                    break
+
+                default:
+                    break
+            }
+
+            console.log('excelData')
+            console.log(excelData)
+
+            console.log('this.data')
+            console.log(this.collection.columns)
+            console.log(this.data)
         }
 
         reader.readAsArrayBuffer(file)
     }
 
+    downloadTemplate() {
+        this.bulkDataImport.downloadCollectionTemplate({
+            name: this.collection.template,
+        })
+    }
+
     validaImportData() {
         this.importLoad = true
+
+        console.log('this.collection')
+        console.log(this.collection)
 
         this.bulkDataImport
             .importDataCollection(this.file, this.data)
@@ -214,7 +267,11 @@ export class BulkDataImportComponent implements OnInit {
                     console.log('response')
                     console.log(response)
                     this.importLoad = false
-                    this.responseDataImport = response.data ?? undefined
+                    this.responseDataImport =
+                        this.collection.response(response) ?? undefined
+
+                    console.log('this.responseDataImport')
+                    console.log(this.responseDataImport)
                 },
                 error: (error) => {
                     console.log('error')

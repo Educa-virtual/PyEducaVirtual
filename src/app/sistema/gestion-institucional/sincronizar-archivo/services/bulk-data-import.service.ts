@@ -77,6 +77,9 @@ export class BulkDataImportService {
     }
 
     importDataCollection(file, data: any): Observable<any> {
+        console.log('file')
+        console.log(file)
+
         if (file) {
             const formData = objectToFormData({ file, ...this.params })
             return this.http.post(
@@ -87,7 +90,7 @@ export class BulkDataImportService {
             return this.http.post(
                 `http://localhost:8000/api/${this.importEndPoint}`,
                 {
-                    json: JSON.stringify(data),
+                    data: data,
                     ...this.params,
                 }
             )

@@ -168,15 +168,19 @@ export class BulkDataImportComponent implements OnInit {
 
         this.columns = this.collection.columns
 
-        this.bulkDataImport.importEndPoint = collection.importEndPoint
-        this.bulkDataImport.params = collection.params
+        this.bulkDataImport.importEndPoint = this.collection.importEndPoint
+        this.bulkDataImport.params = this.collection.params
     }
 
     uploadFile(file: any) {
+        if (!file) return
+
         const reader = new FileReader()
 
-        if (this.collection.type === 'file') {
+        if (this.collection.typeSend === 'file') {
             this.file = file
+        } else {
+            this.file = undefined
         }
 
         reader.onload = (e: ProgressEvent<FileReader>) => {
@@ -253,6 +257,9 @@ export class BulkDataImportComponent implements OnInit {
     validaImportData() {
         this.importLoad = true
 
+        console.log('this.collection')
+        console.log(this.collection)
+
         this.bulkDataImport
             .importDataCollection(this.file, this.data)
             .subscribe({
@@ -260,7 +267,11 @@ export class BulkDataImportComponent implements OnInit {
                     console.log('response')
                     console.log(response)
                     this.importLoad = false
-                    this.responseDataImport = response.data ?? undefined
+                    this.responseDataImport =
+                        this.collection.response(response) ?? undefined
+
+                    console.log('this.responseDataImport')
+                    console.log(this.responseDataImport)
                 },
                 error: (error) => {
                     console.log('error')

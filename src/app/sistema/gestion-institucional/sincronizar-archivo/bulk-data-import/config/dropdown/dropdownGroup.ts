@@ -6,6 +6,7 @@ import {
     ambientesPlatformTemplateColumns,
     docentePlatformTemplateColumns,
     estudiantePlatformTemplateColumns,
+    resultAmbientesPlatformTemplateColumns,
 } from '../table/bulk-table-columns-platform'
 
 export const dropdownGroupConfig = [
@@ -56,6 +57,9 @@ export const dropdownGroupConfig = [
                         ).iCredId,
                     },
                     typeSend: 'file',
+                    response: (response: any) => {
+                        return response.data
+                    },
                 },
             },
         ],
@@ -74,7 +78,9 @@ export const dropdownGroupConfig = [
                     id: 1,
                     cellData: 'A2',
                     columns: docentePlatformTemplateColumns,
-                    endPoint: '',
+                    columnsResultImport: resultAmbientesPlatformTemplateColumns,
+                    importEndPoint:
+                        'acad/gestionInstitucional/importarDocente_IE',
                     template: 'plantilla-docentes',
                     typeSend: 'json',
                     params: {
@@ -84,6 +90,13 @@ export const dropdownGroupConfig = [
                         iYAcadId: JSON.parse(
                             localStorage.getItem('dremoiYAcadId') || 'null'
                         ),
+                    },
+                    response: (response: any) => {
+                        return response.procesados.map((data) => ({
+                            ...data.item,
+                            nombreCompleto: `${data.item.cPersPaterno} ${data.item.cPersMaterno} ${data.item.cPersNombre}`,
+                            ...data.data[0],
+                        }))
                     },
                 },
             },

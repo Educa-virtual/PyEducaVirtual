@@ -361,3 +361,54 @@ export const ambientesPlatformTemplateColumns: IColumn[] = [
         text: 'center',
     },
 ]
+
+export const resultAmbientesPlatformTemplateColumns: IColumn[] = [
+    {
+        type: 'text',
+        width: '5rem',
+        field: 'cTipoIdentId',
+        header: 'Tipo de documento',
+        text_header: 'center',
+        text: 'center',
+    },
+    {
+        type: 'text',
+        width: '5rem',
+        field: 'cPersDocumento',
+        header: 'Numero de documento',
+        text_header: 'center',
+        text: 'center',
+    },
+    {
+        type: 'text',
+        width: '5rem',
+        field: 'nombreCompleto',
+        header: 'Nombres',
+        text_header: 'center',
+        text: 'center',
+    },
+    {
+        type: 'text',
+        width: '5rem',
+        field: 'tbl_persona',
+        header: 'Persona',
+        text_header: 'center',
+        text: 'center',
+    },
+    {
+        type: 'text',
+        width: '5rem',
+        field: 'tbl_docente',
+        header: 'Docente',
+        text_header: 'center',
+        text: 'center',
+    },
+    {
+        type: 'text',
+        width: '5rem',
+        field: 'tbl_docente_ie',
+        header: 'Institución educativa',
+        text_header: 'center',
+        text: 'center',
+    },
+]

@@ -1,0 +1,78 @@
+<app-container-page
+    [title]="'Áreas curriculares ERE : ' + nombreEvaluacion"
+    [actions]="[]"
+>
+    <p-dataView
+        #dv
+        [value]="area"
+        [paginator]="true"
+        [rows]="9"
+        filterBy="name"
+        [sortField]="sortField"
+        [sortOrder]="sortOrder"
+        layout="grid"
+    >
+        <ng-template pTemplate="header">
+            <div
+                class="flex flex-column md:flex-row md:justify-content-between gap-2"
+            >
+                <p-iconField iconPosition="left">
+                    <p-inputIcon styleClass="pi pi-search" />
+                    <input
+                        pInputText
+                        type="text"
+                        (input)="onFilter(dv, $event)"
+                        placeholder="Buscar..."
+                    />
+                </p-iconField>
+
+                <div class="flex justify-center">
+                    <input
+                        pInputText
+                        [disabled]="true"
+                        [(ngModel)]="nombreEvaluacion"
+                    />
+                </div>
+
+                <!-- <p-dropdown
+                    [options]="[]"
+                    placeholder="Todos los Periodos"
+                    styleClass="w-full"
+                    class="flex-1"
+                    [emptyMessage]="'000237'"
+                >
+                </p-dropdown>
+                <p-dropdown
+                    [options]="[]"
+                    placeholder="2024"
+                    styleClass="w-full"
+                    class="flex-1"
+                    [emptyMessage]="'2023'"
+                >
+                </p-dropdown>
+
+                <p-dataViewLayoutOptions></p-dataViewLayoutOptions>-->
+            </div>
+        </ng-template>
+        <ng-template let-products pTemplate="listItem">
+            <app-table-primeng
+                [showPaginator]="false"
+                [showCaption]="false"
+                [data]="[]"
+            ></app-table-primeng>
+        </ng-template>
+        <ng-template let-products pTemplate="gridItem">
+            <div class="area gap-4 py-2">
+                @for (item of areaData; track item.id) {
+                    <app-area-card
+                        class=""
+                        [area]="item"
+                        [_iEvaluacionId]="iEvaluacionId"
+                        [_nombreEvaluacion]="nombreEvaluacion"
+                        [cantidadPreguntas]="cantidadPreguntas"
+                    ></app-area-card>
+                }
+            </div>
+        </ng-template>
+    </p-dataView>
+</app-container-page>

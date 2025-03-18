@@ -365,60 +365,60 @@ const administracion = [
             //         },
             //     ],
             // },
-            // {
-            //     label: 'Gestión de estudiantes',
-            //     icon: 'pi pi-fw pi-cog',
-            //     items: [
-            //         {
-            //             label: 'Ingresar estudiante',
-            //             icon: 'pi pi-fw pi-circle',
-            //             badge: 'NEW',
-            //             routerLink: [
-            //                 '/gestion-institucional/estudiante/registro',
-            //             ],
-            //         },
-            //     ],
-            // },
-            // {
-            //     label: 'Gestión de Matrículas',
-            //     icon: 'pi pi-folder',
-            //     items: [
-            //         {
-            //             label: 'Gestionar matriculas',
-            //             icon: 'pi pi-fw pi-file-edit',
-            //             badge: '',
-            //             routerLink: [
-            //                 '/gestion-institucional/gestion-matriculas',
-            //             ],
-            //         },
-            //         {
-            //             label: 'Matrícula Individual',
-            //             icon: 'pi pi-fw pi-file-plus',
-            //             badge: '',
-            //             routerLink: [
-            //                 '/gestion-institucional/matricula-individual',
-            //             ],
-            //         },
-            //         {
-            //             label: 'Matrícula Masiva',
-            //             icon: 'pi pi-fw pi-file-import',
-            //             badge: '',
-            //             routerLink: ['/gestion-institucional/matricula-masiva'],
-            //         },
-            //         {
-            //             label: 'Gestión de traslado',
-            //             icon: 'pi pi-folder-open',
-            //             routerLink: [
-            //                 '/gestion-institucional/gestion-traslados',
-            //             ],
-            //         },
-            //         {
-            //             label: 'Informe de vacantes',
-            //             icon: 'pi pi-file-import',
-            //             routerLink: ['/gestion-institucional/gestion-vacantes'],
-            //         },
-            //     ],
-            // },
+            {
+                label: 'Gestión de estudiantes',
+                icon: 'pi pi-fw pi-cog',
+                items: [
+                    {
+                        label: 'Ingresar estudiante',
+                        icon: 'pi pi-fw pi-circle',
+                        badge: 'NEW',
+                        routerLink: [
+                            '/gestion-institucional/estudiante/registro',
+                        ],
+                    },
+                ],
+            },
+            {
+                label: 'Gestión de Matrículas',
+                icon: 'pi pi-folder',
+                items: [
+                    {
+                        label: 'Gestionar matriculas',
+                        icon: 'pi pi-fw pi-file-edit',
+                        badge: '',
+                        routerLink: [
+                            '/gestion-institucional/gestion-matriculas',
+                        ],
+                    },
+                    {
+                        label: 'Matrícula Individual',
+                        icon: 'pi pi-fw pi-file-plus',
+                        badge: '',
+                        routerLink: [
+                            '/gestion-institucional/matricula-individual',
+                        ],
+                    },
+                    {
+                        label: 'Matrícula Masiva',
+                        icon: 'pi pi-fw pi-file-import',
+                        badge: '',
+                        routerLink: ['/gestion-institucional/matricula-masiva'],
+                    },
+                    {
+                        label: 'Gestión de traslado',
+                        icon: 'pi pi-folder-open',
+                        routerLink: [
+                            '/gestion-institucional/gestion-traslados',
+                        ],
+                    },
+                    {
+                        label: 'Informe de vacantes',
+                        icon: 'pi pi-file-import',
+                        routerLink: ['/gestion-institucional/gestion-vacantes'],
+                    },
+                ],
+            },
 
             // {
             //     label: 'Generación de Reportes y estadísticas',
@@ -456,11 +456,11 @@ const administracion = [
                     //     icon: 'pi pi-wrench',
                     //     routerLink: ['/configuracion/configuracion'],
                     // },
-                    // {
-                    //     label: 'Resultados de ERE',
-                    //     icon: 'pi pi-chart-bar',
-                    //     routerLink: ['/ere/informes-ere'],
-                    // },
+                    {
+                        label: 'Resultados de ERE',
+                        icon: 'pi pi-chart-bar',
+                        routerLink: ['/ere/informes-ere'],
+                    },
                     {
                         label: 'Evaluaciones',
                         icon: 'pi pi-fw pi-calendar',

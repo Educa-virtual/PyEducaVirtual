@@ -134,6 +134,27 @@ export class DatosFichaBienestarService implements OnDestroy {
         )
     }
 
+    searchFichaRecreacion(data: any) {
+        return this.http.post(
+            `${baseUrl}/bienestar/searchFichaRecreacion`,
+            data
+        )
+    }
+
+    guardarFichaRecreacion(data: any) {
+        return this.http.post(
+            `${baseUrl}/bienestar/guardarFichaRecreacion`,
+            data
+        )
+    }
+
+    actualizarFichaRecreacion(data: any) {
+        return this.http.post(
+            `${baseUrl}/bienestar/actualizarFichaRecreacion`,
+            data
+        )
+    }
+
     /*
      * Funciones para popular parametros de formularios de ficha
      */

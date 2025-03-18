@@ -121,6 +121,14 @@ const routes: Routes = [
             icon: 'pi pi-share-alt',
         },
     },
+
+    {
+        path: 'banco-preguntas',
+        loadComponent: () =>
+            import(
+                './evaluacion/preguntas/componentes/banco-preguntas/banco-preguntas-ere.component'
+            ).then((c) => c.BancoPreguntasComponent),
+    },
 ]
 
 export class AppRoutingModule {}

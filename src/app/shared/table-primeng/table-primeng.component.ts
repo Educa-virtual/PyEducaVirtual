@@ -46,6 +46,7 @@ export interface IColumn {
         trueText: string
         falseText: string
     }
+    styles?: object | undefined
 }
 
 export interface IActionTable {
@@ -97,6 +98,7 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     @Input() sortMode: 'single' | 'multiple' | null = 'multiple'
     @Input() sortField: string | undefined | null = null
     @Input() sortOrder: number | undefined | null = null
+    @Input() indiceColumnaBuscar: number = 1
 
     @Input() selectedRowData
     @Input() scrollable: boolean = false
@@ -129,11 +131,15 @@ export class TablePrimengComponent implements OnChanges, OnInit {
         //     });
         // }
         this.searchTerm = event
-
+        console.log('Valor es ' + this.indiceColumnaBuscar)
         if (this.dt) {
             // solo va buscar en el indice(1)
             // const filas = [this.columnas[1].field, this.columnas[2].field]
-            this.dt.filter(this.searchTerm, this.columnas[1].field, 'contains')
+            this.dt.filter(
+                this.searchTerm,
+                this.columnas[this.indiceColumnaBuscar].field,
+                'contains'
+            )
         }
     }
     // otra forma de buscar en la table pero general demora en buscar
@@ -192,7 +198,6 @@ export class TablePrimengComponent implements OnChanges, OnInit {
 
     @Input()
     set columnas(value: IColumn[] | undefined) {
-        console.log
         if (value) {
             this._columnas = value.map((column) => ({
                 ...column,
@@ -401,5 +406,25 @@ export class TablePrimengComponent implements OnChanges, OnInit {
     }
     updateUrl(item) {
         item.ruta = 'users/no-image.png'
+    }
+    /*
+     * Mapea estilos de tag
+     * @param row fila seleccionada
+     * @param col datos del header de columna seleccionada
+     * @returns string 'success' | 'info' | 'warning' | 'danger' | 'secondary' | 'contrast'
+     */
+    mapTagStyles(
+        row,
+        col
+    ): 'success' | 'info' | 'warning' | 'danger' | 'secondary' | 'contrast' {
+        if (col.styles === undefined) return 'secondary'
+        const severity = [
+            'success',
+            'info',
+            'warning',
+            'danger',
+            'secondary',
+        ].includes(col.styles[row[col.field]])
+        return severity ? col.styles[row[col.field]] : 'secondary'
     }
 }
